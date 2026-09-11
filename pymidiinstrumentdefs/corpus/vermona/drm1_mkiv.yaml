@@ -1,0 +1,48 @@
+definition: 1
+
+model:
+  manufacturer: Vermona
+  name: DRM1
+  # The MkIV is not the MkIII: a revision that changes the facts gets its own
+  # file rather than a field that has to hold two note maps at once.
+  revision: MkIV
+
+source: >-
+  User manual pp. 19-20 and 23-24. The factory note numbers below were
+  cross-checked against a working Subsequence note map for the same machine and
+  agree exactly. NOT RECORDED: MIDI clock and transport, which those pages do
+  not cover.
+
+midi:
+  # "Any other MIDI data, such as controller data, will not be processed by the
+  # DRM1 MKIV." A checked absence, and the strongest kind there is -- the manual
+  # says so in as many words. Do not go looking for a CC map; there is not one.
+  control_change: none
+
+voice:
+  addressing: voices
+
+  # Velocity is received: "including the corresponding velocity data ... This
+  # way, its sounds can be played dynamically."
+  velocity:
+    note_on: received
+
+  # Every note number AND channel is assigned by MIDI learn, per voice, so these
+  # are the factory defaults rather than fixed facts. A machine in front of you
+  # may answer to anything. The closed hi-hat of each pair is always two
+  # semitones below its open one, which is derived by the machine and not
+  # separately assignable.
+  voices:
+    kick: 36
+    snare: 38
+    clap: 39
+    hihat_1_closed: 44
+    drum_1: 45
+    hihat_1_open: 46
+    hihat_2_closed: 49
+    drum_2: 50
+    hihat_2_open: 51
+    multi: 56
+
+# No controls section: see midi.control_change above. Its absence here is the
+# fact, not an omission.

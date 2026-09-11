@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pymidiinstrumentdefs"
+dynamic = ["version"]
+description = "What a particular model of MIDI instrument answers to: definitions transcribed from manufacturers' manuals, with a loader and a validator."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+	{name = "Simon Holliday"},
+]
+keywords = [
+	"midi",
+	"music",
+	"synthesizer",
+	"instrument",
+	"definitions",
+	"midnam",
+]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Topic :: Multimedia :: Sound/Audio :: MIDI",
+	"Typing :: Typed",
+]
+dependencies = [
+	# The specification facts that these model facts sit beside.
+	"pymididefs>=0.4",
+	# Every definition is a YAML file, so reading one is the package's whole job.
+	"PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+	"pytest",
+	"mypy",
+	"types-PyYAML",
+]
+
+[project.urls]
+Homepage = "https://github.com/simonholliday/PyMidiInstrumentDefs"
+Repository = "https://github.com/simonholliday/PyMidiInstrumentDefs"
+Issues = "https://github.com/simonholliday/PyMidiInstrumentDefs/issues"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+# Ship the package, its tests, and the standard project metadata; keep
+# local editor/agent config and caches out of the published source archive.
+exclude = [
+	".claude",
+	".github",
+	".mypy_cache",
+	".pytest_cache",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
+# The working tree lives on CIFS, where mypy's incremental cache goes stale in
+# ways that abort the run with an INTERNAL ERROR rather than a type error.
+# Keep the cache on local disk; it is disposable and never committed.
+cache_dir = "/tmp/mypy-cache-pymidiinstrumentdefs"

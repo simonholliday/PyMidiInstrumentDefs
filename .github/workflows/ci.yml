@@ -1,0 +1,82 @@
+name: Tests
+
+# Runs the suite and the type checker on every push and pull request. The
+# publish workflow deliberately does not do this — it fires only on a version
+# tag, which is far too late to learn that something is broken.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false  # one version failing should not hide the others
+      matrix:
+        # The versions pyproject.toml claims support for in its classifiers.
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # full history + tags so hatch-vcs can derive the version
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install the package and its dev dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -e ".[dev]"
+      - name: Run the tests
+        run: python -m pytest
+      - name: Type-check
+        run: python -m mypy pymidiinstrumentdefs tests
+
+  wheel:
+    # The suite above runs against the checkout, where every definition is on
+    # disk whether or not it would be packaged. This job installs the built
+    # wheel into a fresh venv, somewhere the checkout cannot be imported from,
+    # and proves that every definition in the checkout ships and loads —
+    # maker folders included.
+    name: Every definition ships in the wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Build the wheel
+        run: pipx run build --wheel --outdir "$RUNNER_TEMP/dist"
+      - name: Install it into a fresh venv
+        run: |
+          python -m venv "$RUNNER_TEMP/fresh"
+          "$RUNNER_TEMP/fresh/bin/python" -m pip install "$RUNNER_TEMP"/dist/*.whl
+      - name: Load every bundled definition from the installed wheel
+        working-directory: ${{ runner.temp }}
+        run: |
+          "$RUNNER_TEMP/fresh/bin/python" - "$GITHUB_WORKSPACE/pymidiinstrumentdefs/corpus" <<'EOF'
+          import pathlib
+          import sys
+
+          import pymidiinstrumentdefs
+
+          checkout = pathlib.Path(sys.argv[1])
+          bundled = pymidiinstrumentdefs.loading.BUNDLED
+
+          # Proves this is the installed copy, not the checkout on sys.path.
+          assert "site-packages" in str(bundled), bundled
+
+          expected = sorted(f"{path.parent.name}/{path.stem}" for path in checkout.glob("*/*.yaml"))
+          shipped = sorted(pymidiinstrumentdefs.available([bundled]))
+
+          assert expected, "the checkout has no definitions, so this proves nothing"
+          assert shipped == expected, f"in the checkout but not the wheel: {sorted(set(expected) - set(shipped))}"
+
+          for name in shipped:
+              pymidiinstrumentdefs.load(name, [bundled])
+
+          print(f"{len(shipped)} definitions ship and load: {', '.join(shipped)}")
+          EOF

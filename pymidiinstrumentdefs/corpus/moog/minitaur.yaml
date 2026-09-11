@@ -1,0 +1,295 @@
+definition: 1
+
+model:
+  manufacturer: Moog Music
+  name: Minitaur
+  firmware: "2.1"
+
+source: >-
+  User manual (c)2012 pp. 21-24, and the firmware v2.1 addendum. Two band
+  boundaries below are the addendum's corrections and differ from the manual:
+  trigger mode's third band starts at 86 rather than 85, and key priority's at
+  86 rather than 87. The manual leaves 85-86 unassigned for key priority, which
+  is the printing error the addendum fixes -- and the widely shared
+  Moog_Minitaur.midnam has it as 85, which is wrong.
+  NOT RECORDED, and marked in place: the 22 bands of the LFO clock division and
+  the 8 bands of bend up/down, for which the source gives only the first and
+  last. The LSB of EG amount and filter KB tracking are deliberately omitted --
+  see the note above those controls.
+
+midi:
+  channels: [1, 16]
+  mode: 4                  # Omni off, Mono
+  clock: receives
+  program_change:
+    receives: true
+    presets: 94
+
+voice:
+  addressing: pitches
+  # C-1 to C5. On the original firmware anything above is ignored; from v2.1 a
+  # higher note sounds the equivalent pitch in the top octave. Either way,
+  # transposing a part up here goes silent or wrong rather than sounding.
+  note_range: [0, 72]
+  polyphony: 1
+  velocity:
+    # Received, but it does nothing at all unless one of the two sensitivity
+    # parameters is up. That is why a velocity lane can appear dead on a
+    # correctly wired Minitaur.
+    note_on: gated
+    note_off: false
+    gated_by: [filter_velocity_sensitivity, volume_velocity_sensitivity]
+  aftertouch: none
+  pitch_bend:
+    semitones: 24
+    programmable: true
+
+controls:
+
+  # ── Modulation ────────────────────────────────────────────────────────────
+
+  lfo_rate:
+    label: LFO Rate
+    cc: 3
+    lsb: 35
+    group: modulation
+  lfo_to_vco_amount:
+    label: LFO to VCO Amount
+    cc: 13
+    lsb: 45
+    group: modulation
+  lfo_to_vcf_amount:
+    label: LFO to VCF Amount
+    cc: 12
+    lsb: 44
+    group: modulation
+  lfo_midi_sync:
+    label: LFO MIDI Sync
+    cc: 87
+    values: {internal: 0, midi_clock: 64}
+    panel_only: true
+    group: modulation
+  lfo_sync_clock_division:
+    label: LFO Sync Clock Division
+    cc: 86
+    # 22 divisions, from four whole notes (0-6) to a 1/64 triplet (122-127).
+    # The source gives only the two ends, so the bands between them are not
+    # recorded and are not guessed at here.
+    kind: choice
+    panel_only: true
+    group: modulation
+  lfo_key_trigger:
+    label: LFO Key Trigger
+    cc: 82
+    values: {"off": 0, "on": 64}
+    panel_only: true
+    group: modulation
+
+  # ── Oscillators and glide ─────────────────────────────────────────────────
+
+  vco_1_wave:
+    label: VCO 1 Wave
+    cc: 70
+    values: {saw: 0, square: 64}
+    group: oscillator
+  vco_2_wave:
+    label: VCO 2 Wave
+    cc: 71
+    values: {saw: 0, square: 64}
+    group: oscillator
+  vco_2_freq:
+    label: VCO 2 Frequency
+    cc: 17
+    lsb: 49
+    default: 64              # unison; plus or minus one octave
+    group: oscillator
+  vco_2_beat:
+    label: VCO 2 Beat
+    cc: 18
+    lsb: 50
+    default: 64              # plus or minus 50 cents
+    panel_only: true
+    group: oscillator
+  note_sync:
+    label: Note Sync
+    cc: 81
+    values: {"off": 0, "on": 64}
+    panel_only: true
+    group: oscillator
+  glide_rate:
+    label: Glide Rate
+    cc: 5
+    group: glide
+  glide_switch:
+    label: Glide
+    cc: 65
+    values: {"off": 0, "on": 64}
+    group: glide
+  glide_type:
+    label: Glide Type
+    cc: 92
+    values: {lcr: 0, lct: 43, exp: 85}
+    panel_only: true
+    group: glide
+  legato_glide:
+    label: Legato Glide
+    cc: 83
+    values: {always: 0, legato_only: 64}
+    panel_only: true
+    group: glide
+
+  # ── Mixer ─────────────────────────────────────────────────────────────────
+
+  vco_1_level:
+    label: VCO 1 Level
+    cc: 15
+    lsb: 47
+    group: mixer
+  vco_2_level:
+    label: VCO 2 Level
+    cc: 16
+    lsb: 48
+    group: mixer
+  external_in_level:
+    label: External In Level
+    cc: 27
+    lsb: 59
+    default: 64              # up to 200%
+    panel_only: true
+    group: mixer
+
+  # ── Filter ────────────────────────────────────────────────────────────────
+  # EG amount and filter KB tracking are 7-bit only here on purpose. The manual
+  # prints their LSBs as 50 and 54, but 50 is already VCO 2 Beat's LSB and the
+  # manual's own stated rule (LSB = MSB + 32) would make them 54 and 52. Two of
+  # the three cannot be right and the source does not settle it, so the coarse
+  # numbers -- confirmed twice each -- are published and the fine ones are not.
+  # A wrong LSB moves a different parameter silently, which is the one failure
+  # this package exists to prevent.
+
+  cutoff:
+    label: Cutoff
+    cc: 19
+    lsb: 51
+    unit: hz                 # 20 Hz to 20 kHz
+    group: filter
+  resonance:
+    label: Resonance
+    cc: 21
+    lsb: 53
+    group: filter
+  eg_amount:
+    label: EG Amount
+    cc: 22
+    group: filter
+  filter_kb_tracking:
+    label: Filter Keyboard Tracking
+    cc: 20
+    default: 32
+    panel_only: true
+    group: filter
+  filter_velocity_sensitivity:
+    label: Filter Velocity Sensitivity
+    cc: 89
+    default: 64
+    panel_only: true
+    group: filter
+
+  # ── Envelopes ─────────────────────────────────────────────────────────────
+
+  vcf_attack:
+    label: VCF Attack
+    cc: 23
+    lsb: 55
+    group: envelope
+  vcf_decay_release:
+    label: VCF Decay / Release
+    cc: 24
+    lsb: 56
+    group: envelope
+  vcf_sustain:
+    label: VCF Sustain
+    cc: 25
+    lsb: 57
+    group: envelope
+  vca_attack:
+    label: VCA Attack
+    cc: 28
+    lsb: 60
+    group: envelope
+  vca_decay_release:
+    label: VCA Decay / Release
+    cc: 29
+    lsb: 61
+    group: envelope
+  vca_sustain:
+    label: VCA Sustain
+    cc: 30
+    lsb: 62
+    group: envelope
+  release_switch:
+    label: Release
+    cc: 72
+    values: {"off": 0, "on": 64}
+    group: envelope
+  trigger_mode:
+    label: Trigger Mode
+    cc: 73
+    # Third band starts at 86, per the v2.1 addendum. The manual prints 85.
+    values: {legato_on: 0, legato_off: 43, eg_reset: 86}
+    panel_only: true
+    group: envelope
+
+  # ── Volume ────────────────────────────────────────────────────────────────
+
+  vca_output_level:
+    label: VCA Output Level
+    cc: 7
+    lsb: 39
+    panel_only: true
+    group: volume
+  volume_velocity_sensitivity:
+    label: Volume Velocity Sensitivity
+    cc: 90
+    default: 64              # 50%
+    panel_only: true
+    group: volume
+
+  # ── Keyboard ──────────────────────────────────────────────────────────────
+
+  key_priority:
+    label: Key Priority
+    cc: 91
+    # Third band starts at 86, per the v2.1 addendum. The manual prints 87 and
+    # leaves 85-86 assigned to nothing; the shared .midnam file says 85.
+    values: {low: 0, high: 43, last: 86}
+    panel_only: true
+    group: keyboard
+
+  # ── Performance ───────────────────────────────────────────────────────────
+
+  mod_wheel:
+    label: Mod Wheel
+    cc: 1
+    lsb: 33
+    group: performance
+  bend_up:
+    label: Bend Up
+    cc: 107
+    # Eight bands of sixteen: 0-15 off, 16-31 two semitones, up to 112-127
+    # twenty-four. The source gives the first, the second and the last, so the
+    # five between them are not recorded.
+    kind: choice
+    panel_only: true
+    group: performance
+  bend_down:
+    label: Bend Down
+    cc: 108
+    kind: choice
+    panel_only: true
+    group: performance
+
+# Local Control (CC 122), All Sound Off (120) and All Notes Off (123) are
+# recognised, and are deliberately not listed here: they are the same on every
+# instrument that has them, so they are specification facts and live in
+# pymididefs.cc. Only what is particular to this model belongs in a definition.

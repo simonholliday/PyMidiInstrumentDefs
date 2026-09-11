@@ -1,0 +1,266 @@
+definition: 1
+
+model:
+  manufacturer: Moog Music
+  name: Matriarch
+
+source: >-
+  User manual (88pp), pp. 5, 9-10, 31-32, 50-51, 54, 57-59, and the MMA v2 MIDI
+  implementation chart at pp. 70-74. The control-change map is the manual's own
+  table at pp. 73-74, whose columns are Parameter | CC Number (MSB) | CC Number
+  (LSB) | Values. Band boundaries below are quoted from that table.
+  NOT RECORDED, and marked in place: the band boundaries for Arp Mode, Arp
+  Pattern and Arp Range, which the source notes as three-state controls without
+  giving their values; and the power-on default for the voice mode switch.
+
+midi:
+  # 1-16 is what it can be set to. Which one yours is on belongs to your
+  # composition, not here.
+  channels: [1, 16]
+  clock: both
+  # Start and Stop travel both ways; Continue is recognised but not
+  # transmitted. The format has one field, so the asymmetry is recorded here.
+  transport: both
+  program_change:
+    receives: true
+    presets: 12          # "Selects saved sequences"
+  nrpn: none             # chart section 1: NRPNs not supported
+  sysex: true            # transmitted and recognised, but undocumented by Moog
+
+voice:
+  addressing: pitches
+  note_range: [0, 127]
+  # Voicing is a three-position front-panel switch AND is settable over MIDI at
+  # CC 94, so there is no single number that is true. The manual gives no
+  # power-on default, so this stays unknown rather than guessed: see
+  # voicing_modes for what it can be, and paraphony_voice_mode for how to change
+  # it while playing.
+  polyphony: null
+  paraphonic: true
+  voicing_modes: [1, 2, 4]
+  velocity:
+    note_on: received
+    note_off: false
+  aftertouch: channel
+  pitch_bend:
+    programmable: true   # RPN 00 pitch bend sensitivity is recognised
+
+controls:
+
+  # ── 14-bit pairs ──────────────────────────────────────────────────────────
+  # Twelve controls the manual pairs explicitly, each "MIN TO MAX (0 TO 16383)".
+  # Sending the coarse number alone is still a legal 7-bit message.
+
+  mod_wheel:
+    label: Mod Wheel
+    cc: 1
+    lsb: 33
+    range: [0, 16383]
+    group: modulation
+  mod_rate:
+    label: Mod Rate
+    cc: 3
+    lsb: 35
+    range: [0, 16383]
+    group: modulation
+  glide_time:
+    label: Glide Time
+    cc: 5
+    lsb: 37
+    range: [0, 16383]
+    group: glide
+  arp_rate:
+    label: Arp Rate
+    cc: 8
+    lsb: 40
+    range: [0, 16383]
+    group: arpeggiator
+  noise_filter_cutoff:
+    label: Noise Filter Cutoff
+    cc: 9
+    lsb: 41
+    range: [0, 16383]
+    group: noise
+  delay_time:
+    label: Delay Time
+    cc: 12
+    lsb: 44
+    range: [0, 16383]
+    group: delay
+  delay_spacing:
+    label: Delay Spacing
+    cc: 13
+    lsb: 45
+    range: [0, 16383]
+    group: delay
+  arp_swing:
+    label: Arp Swing
+    cc: 14
+    lsb: 46
+    range: [0, 16383]
+    group: arpeggiator
+  arp_gate_length:
+    label: Arp Gate Length
+    cc: 15
+    lsb: 47
+    range: [0, 16383]
+    group: arpeggiator
+  osc_2_frequency:
+    label: Osc 2 Frequency
+    cc: 16
+    lsb: 48
+    range: [0, 16383]
+    group: oscillator
+  osc_3_frequency:
+    label: Osc 3 Frequency
+    cc: 17
+    lsb: 49
+    range: [0, 16383]
+    group: oscillator
+  osc_4_frequency:
+    label: Osc 4 Frequency
+    cc: 18
+    lsb: 50
+    range: [0, 16383]
+    group: oscillator
+
+  # ── Switches ──────────────────────────────────────────────────────────────
+  # All written "0-63 = OFF, 64-127 = ON" in the manual's table.
+
+  sustain_pedal:
+    label: Sustain Pedal
+    cc: 64
+    values: {"off": 0, "on": 64}
+    group: keyboard
+  glide_on:
+    label: Glide On
+    cc: 65
+    values: {"off": 0, "on": 64}
+    group: glide
+  arp_latch:
+    label: Arp Latch
+    cc: 69
+    values: {"off": 0, "on": 64}
+    group: arpeggiator
+  arp_play:
+    label: Arp Play
+    cc: 73
+    values: {"off": 0, "on": 64}
+    group: arpeggiator
+  hard_sync_enable:
+    label: Hard Sync Enable
+    cc: 80
+    values: {"off": 0, "on": 64}
+    group: oscillator
+  osc_2_sync:
+    label: Osc 2 Sync
+    cc: 81
+    values: {"off": 0, "on": 64}
+    group: oscillator
+  osc_3_sync:
+    label: Osc 3 Sync
+    cc: 82
+    values: {"off": 0, "on": 64}
+    group: oscillator
+  osc_4_sync:
+    label: Osc 4 Sync
+    cc: 83
+    values: {"off": 0, "on": 64}
+    group: oscillator
+  gated_glide:
+    label: Gated Glide
+    cc: 86
+    values: {"off": 0, "on": 64}
+    group: glide
+  legato_glide:
+    label: Legato Glide
+    cc: 87
+    values: {"off": 0, "on": 64}
+    group: glide
+  delay_ping_pong:
+    label: Delay Ping Pong
+    cc: 88
+    values: {"off": 0, "on": 64}
+    group: delay
+  delay_sync:
+    label: Delay Sync
+    cc: 89
+    values: {"off": 0, "on": 64}
+    group: delay
+  multi_trig:
+    label: Multi Trig
+    cc: 95
+    values: {"off": 0, "on": 64}
+    group: keyboard
+
+  # ── Choices with quoted bands ─────────────────────────────────────────────
+
+  osc_1_octave:
+    label: Osc 1 Octave
+    cc: 74
+    values: {sixteen_foot: 0, eight_foot: 32, four_foot: 64, two_foot: 96}
+    group: oscillator
+  osc_2_octave:
+    label: Osc 2 Octave
+    cc: 75
+    values: {sixteen_foot: 0, eight_foot: 32, four_foot: 64, two_foot: 96}
+    group: oscillator
+  osc_3_octave:
+    label: Osc 3 Octave
+    cc: 76
+    values: {sixteen_foot: 0, eight_foot: 32, four_foot: 64, two_foot: 96}
+    group: oscillator
+  osc_4_octave:
+    label: Osc 4 Octave
+    cc: 77
+    values: {sixteen_foot: 0, eight_foot: 32, four_foot: 64, two_foot: 96}
+    group: oscillator
+
+  glide_type:
+    label: Glide Type
+    cc: 85
+    # "0-42 = LCR, 43-84 = LCT, 85-127 = EXP." -- the Minitaur's glide type with
+    # the same boundaries and the same option names.
+    values: {lcr: 0, lct: 43, exp: 85}
+    group: glide
+
+  square_lfo_polarity:
+    label: Square LFO Polarity
+    cc: 90
+    values: {unipolar: 0, bipolar: 64}
+    group: modulation
+
+  paraphony_voice_mode:
+    label: Paraphony Voice Mode
+    cc: 94
+    # The front-panel voicing switch, reachable over MIDI: a panel can move this
+    # instrument between monophonic and four-note paraphonic while it plays.
+    values: {one_voice: 0, two_voice: 43, four_voice: 85}
+    group: voicing
+
+  kb_octave:
+    label: KB Octave
+    cc: 105
+    values: {minus_2: 0, minus_1: 26, zero: 51, plus_1: 77, plus_2: 102}
+    group: keyboard
+
+  # ── Choices whose bands are not recorded ──────────────────────────────────
+  # The source names each of these as a three-state control and does not give
+  # the value ranges. `kind` says what they are; the absence of `values` says
+  # nobody has the numbers yet. Add them when the manual is next to hand.
+
+  arp_mode:
+    label: Arp Mode
+    cc: 91
+    kind: choice
+    group: arpeggiator
+  arp_pattern:
+    label: Arp Pattern
+    cc: 92
+    kind: choice
+    group: arpeggiator
+  arp_range:
+    label: Arp Range
+    cc: 93
+    kind: choice
+    group: arpeggiator

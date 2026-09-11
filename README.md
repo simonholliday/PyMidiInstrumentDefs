@@ -34,6 +34,12 @@ on, which port it is plugged into, which notes you have chosen to play -- those
 belong to your own project, not to a definition shared by everyone who owns the
 same box.
 
+**And specification facts stay in PyMidiDefs.** The channel mode messages, CC
+120 to 127 -- All Sound Off, Local Control and the rest -- mean the same on every
+instrument that has them, so a definition does not list them as controls even
+where a manufacturer's chart prints them. The validator refuses one, and names
+the PyMidiDefs constant it would have duplicated.
+
 ## Installation
 
 ```bash
@@ -94,14 +100,26 @@ self-contained YAML file, and you share it by sending it.
 
 | Name | Instrument |
 |------|------------|
+| `behringer/model_d` | Behringer MODEL D -- no control changes at all; its remote surface is SysEx |
+| `modal/carbon8m` | Modal CARBON8M -- 106 controls, and a voice count set per patch |
 | `moog/dfam` | Moog DFAM -- no MIDI at all, and the file says so |
+| `moog/labyrinth` | Moog Labyrinth -- answers to notes, clock and transport, and nothing else |
 | `moog/matriarch` | Moog Matriarch -- 36 controls, and a voice count you can switch over MIDI |
 | `moog/minitaur` | Moog Minitaur -- plays notes 0-72, with the firmware v2.1 corrections |
+| `moog/subharmonicon` | Moog Subharmonicon -- reads a note as an offset from C4, not as a pitch |
+| `pwm/malevolent` | PWM Malevolent -- from its quick-start guide alone, and says so |
+| `roland/tr8s` | Roland TR-8S -- eleven voices of four controls, and two it only sends |
+| `sequential/take_5` | Sequential Take 5 -- 170 controls, most reachable by CC and by finer NRPN |
+| `soma/pulsar_23` | Soma Pulsar-23 -- every note and controller assigned by MIDI learn |
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV -- a drum machine that ignores controller data |
+| `voce/electric_piano` | Voce ELECTRIC PIANO -- 16 or 32 voices, depending on the chorus |
+| `waldorf/streichfett` | Waldorf Streichfett -- controls whose values are exact numbers, not bands |
 
-The set is deliberately small and is a starting point rather than a catalogue.
-`moog/dfam` is five lines, because the DFAM has no MIDI at all and saying so is
-worth more than saying nothing.
+The set is a starting point rather than a catalogue. `moog/dfam` is five lines,
+because the DFAM has no MIDI at all and saying so is worth more than saying
+nothing. Three others -- the Labyrinth, the MODEL D and the DRM1 -- are nearly
+as short for the same reason: somebody read the whole manual and found no
+control changes, and the file records that it looked.
 
 ### Starting from a MIDNAM file
 
@@ -140,11 +158,13 @@ matriarch.is_unverified # True if nobody has checked it yet
 matriarch.warnings      # what the validator thought worth saying
 ```
 
-The definitions bundled here were read out of **manufacturers' own user
-manuals**, page by page, and each names the manual and the pages it came from.
-Two of the four were checked against a second source as well: the Minitaur
-against Moog's firmware v2.1 addendum, and the DRM1's note map against a working
-implementation of the same machine.
+The definitions bundled here were read out of **manufacturers' own
+documents**, page by page, and each names the document and the pages it came
+from. Usually that is the user manual. For the TR-8S and the Take 5 it is the
+maker's MIDI implementation document, and for the Malevolent a quick-start
+guide, because that is all there is, and its file keeps to what the guide says. Two were checked against a second source as well: the
+Minitaur against Moog's firmware v2.1 addendum, and the DRM1's note map against
+a working implementation of the same machine.
 
 **None of them was imported from a `.midnam` file, and none ever will be.** The
 importer is a tool for starting a definition of *your* instrument; it is not

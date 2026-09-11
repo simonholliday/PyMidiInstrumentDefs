@@ -30,6 +30,18 @@ CHOICE: typing.Final[str] = "choice"
 KINDS: typing.Final[frozenset[str]] = frozenset({CONTINUOUS, SWITCH, CHOICE})
 
 
+# ── Directions ───────────────────────────────────────────────────────────────
+# Which way a control travels, from the instrument's side, as the two columns of
+# a MIDI implementation chart have always said.  Most go both ways; a control
+# the instrument only transmits is one a panel must never offer to send.
+
+BOTH: typing.Final[str] = "both"
+TRANSMITS: typing.Final[str] = "transmits"
+RECEIVES: typing.Final[str] = "receives"
+
+DIRECTIONS: typing.Final[frozenset[str]] = frozenset({BOTH, TRANSMITS, RECEIVES})
+
+
 # ── Identity ─────────────────────────────────────────────────────────────────
 
 @dataclasses.dataclass(frozen=True)
@@ -63,6 +75,15 @@ class Control:
 	them and how MIDNAM stores them, so nothing has to be converted on the way
 	in.  The arithmetic of turning a band into a number to send is this class's
 	job, not the file's.
+
+	``choices`` is the other shape a stepped control can take: named values sent
+	exactly as written, for a manual that prints ``0 = Base, 1 = Both, 2 = 8va``
+	and means 0, 1 and 2.  A control has one or the other, never both.
+
+	``nrpn_range`` is the value range over NRPN where it differs from ``range``,
+	for an instrument that offers finer resolution one way than the other.
+	``direction`` says which way the control travels, and one the instrument
+	only transmits must never be offered as something to send.
 	"""
 
 	name: str
@@ -71,12 +92,15 @@ class Control:
 	lsb: int | None = None
 	nrpn: int | None = None
 	values: dict[str, int] = dataclasses.field(default_factory=dict)
+	choices: dict[str, int] = dataclasses.field(default_factory=dict)
 	range: tuple[int, int] = (0, 127)
+	nrpn_range: tuple[int, int] | None = None
 	default: int | None = None
 	step: int = 1
 	unit: str | None = None
 	group: str | None = None
 	panel_only: bool = False
+	direction: str = BOTH
 	kind_override: str | None = None
 
 
@@ -92,10 +116,10 @@ class Control:
 		if self.kind_override is not None:
 			return self.kind_override
 
-		if not self.values:
+		if not self.states:
 			return CONTINUOUS
 
-		return SWITCH if len(self.values) == 2 else CHOICE
+		return SWITCH if len(self.states) == 2 else CHOICE
 
 
 	@property
@@ -109,12 +133,32 @@ class Control:
 		return self.lsb is not None
 
 
+	@property
+	def states (self) -> list[str]:
+
+		"""The names of the states this control offers, in order, whichever shape they take."""
+
+		return list(self.values or self.choices)
+
+
+	@property
+	def is_sendable (self) -> bool:
+
+		"""False for a control the instrument transmits and does not recognise."""
+
+		return self.direction != TRANSMITS
+
+
 	def band (self, name: str) -> tuple[int, int]:
 
 		"""The inclusive range of values that mean ``name``.
 
-		Raises ``KeyError`` if this control has no such named value.
+		A choice is one exact value, so its band is that value alone.  Raises
+		``KeyError`` if this control has no such named state.
 		"""
+
+		if name in self.choices:
+			return self.choices[name], self.choices[name]
 
 		if name not in self.values:
 			raise KeyError(f"{self.name} has no value named {name!r}")
@@ -132,8 +176,9 @@ class Control:
 
 		"""The number to send to put this control into the state called ``name``.
 
-		The middle of the band rather than its edge, so a value that drifts by
-		one does not silently become a different setting.
+		For a band, the middle rather than the edge, so a value that drifts by
+		one does not silently become a different setting.  For a choice, exactly
+		the value the manual prints, because any other number means nothing.
 		"""
 
 		low, high = self.band(name)
@@ -143,7 +188,14 @@ class Control:
 
 	def name_for (self, value: int) -> str | None:
 
-		"""Which named state ``value`` falls in, or None if this control has none."""
+		"""Which named state ``value`` falls in, or None if this control has none.
+
+		A choice matches only its exact value.  A number between two choices
+		means nothing on the instrument, so it names nothing here.
+		"""
+
+		if self.choices:
+			return next((name for name, number in self.choices.items() if number == value), None)
 
 		found = None
 
@@ -190,9 +242,16 @@ class Voice:
 	nobody has established it, which is honest and different from unstated.
 	Where voicing is a setting, ``voicing_modes`` lists what it can be and
 	``polyphony`` names the default.
+
+	``addressing`` is ``relative`` for an instrument that reads a note as an
+	offset from ``reference_note`` rather than as a pitch.  ``note_map`` is
+	``learned`` where notes are assigned by MIDI learn, in which case any
+	``voices`` given are the factory defaults rather than fixed facts.
 	"""
 
 	addressing: str | None = None
+	reference_note: int | None = None
+	note_map: str | None = None
 	note_range: tuple[int, int] | None = None
 	polyphony: int | None = None
 	paraphonic: bool | None = None
@@ -264,6 +323,18 @@ class Midi:
 		"""
 
 		return self.stated_none or self.control_change == "none"
+
+
+	@property
+	def learns_control_change (self) -> bool:
+
+		"""True when the instrument answers to control changes assigned by MIDI learn.
+
+		There is no factory map to publish, so there are no controls, and that
+		is neither an unread page nor a checked absence: it is by design.
+		"""
+
+		return self.control_change == "learned"
 
 
 # ── The whole document ───────────────────────────────────────────────────────

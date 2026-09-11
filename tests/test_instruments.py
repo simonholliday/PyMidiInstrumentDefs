@@ -49,12 +49,22 @@ class TestBundledCorpus:
 			pymidiinstrumentdefs.load_file(path)
 
 	def test_the_bundled_names (self) -> None:
-		"""The four definitions that moved from PyMidiDefs 0.4.0, by their new names."""
+		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
+			"behringer/model_d",
+			"modal/carbon8m",
 			"moog/dfam",
+			"moog/labyrinth",
 			"moog/matriarch",
 			"moog/minitaur",
+			"moog/subharmonicon",
+			"pwm/malevolent",
+			"roland/tr8s",
+			"sequential/take_5",
+			"soma/pulsar_23",
 			"vermona/drm1_mkiv",
+			"voce/electric_piano",
+			"waldorf/streichfett",
 		]
 
 	def test_nothing_bundled_sits_outside_a_makers_folder (self) -> None:
@@ -74,6 +84,13 @@ class TestBundledCorpus:
 			assert maker.startswith(path.parent.name), (
 				f"{path.parent.name}/{path.name} says it was made by {definition.model.manufacturer!r}"
 			)
+
+	def test_no_bundled_definition_carries_a_warning (self) -> None:
+		"""Whatever the validator thinks worth saying about one of ours is fixed before it ships."""
+		for path in bundled():
+			definition = pymidiinstrumentdefs.load_file(path)
+
+			assert definition.warnings == (), f"{path.parent.name}/{path.name}: {definition.warnings}"
 
 	def test_every_bundled_definition_states_its_provenance (self) -> None:
 		"""A definition without a source is a rumour, so ours all have one."""
@@ -101,19 +118,21 @@ class TestBundledCorpus:
 			assert "imported from" not in source, f"{path.name} is an import: {source[:60]!r}"
 
 	def test_every_bundled_definition_cites_pages (self) -> None:
-		"""The README promises each one names its manual and its pages.
+		"""The README promises each one names its document and its pages.
 
 		"The manual" cannot be checked by anybody; "p.13" can. This keeps that
 		promise true as the corpus grows, since a source line is the one part of
-		a definition nothing else can verify for you.
+		a definition nothing else can verify for you. The document is usually a
+		user manual, and for one instrument a quick-start guide is all there is.
 		"""
+		document = re.compile(r"\b(manual|guide|chart|addendum)\b", re.I)
 		cites = re.compile(r"\bpp?\.\s*\d|\b\d+\s*pages?\b|\bevery page\b", re.I)
 
 		for path in bundled():
 			definition = pymidiinstrumentdefs.load_file(path)
 			source = definition.source or ""
 
-			assert "manual" in source.lower(), f"{path.name} does not name a document"
+			assert document.search(source), f"{path.name} does not name a document"
 			assert cites.search(source), f"{path.name} names no page: {source[:80]!r}"
 
 	def test_dfam_is_the_minimum_case (self) -> None:
@@ -156,6 +175,405 @@ class TestBundledCorpus:
 		assert mode.band("one_voice") == (0, 42)
 		assert mode.band("two_voice") == (43, 84)
 		assert mode.band("four_voice") == (85, 127)
+
+	def test_the_matriarch_names_every_state_it_offers (self) -> None:
+		"""A choice with no states draws a label and nothing to press.
+
+		The three arp controls shipped that way until the table at p. 74 was read
+		again.
+		"""
+		matriarch = pymidiinstrumentdefs.load("moog/matriarch", [CORPUS])
+		empty = [
+			control.name for control in matriarch.controls.values()
+			if control.kind == pymidiinstrumentdefs.CHOICE and not control.values
+		]
+
+		assert empty == []
+		assert matriarch.controls["arp_mode"].band("seq") == (43, 84)
+		assert matriarch.controls["arp_pattern"].value_for("random") == 106
+		assert matriarch.controls["arp_range"].name_for(0) == "one"
+
+
+class TestAbsences:
+
+	"""A checked absence and an unread page are different facts, and must not look alike."""
+
+	def test_the_labyrinth_answers_to_notes_clock_and_transport_only (self) -> None:
+		labyrinth = pymidiinstrumentdefs.load("moog/labyrinth", [CORPUS])
+
+		assert labyrinth.midi.refuses_control_change
+		assert labyrinth.midi.clock == "receives"
+		assert labyrinth.midi.transport == "receives"
+		assert labyrinth.controls == {}
+
+	def test_the_labyrinth_does_not_guess_its_polyphony (self) -> None:
+		"""Unknown is honest; a guessed 1 would be a fact nobody established."""
+		labyrinth = pymidiinstrumentdefs.load("moog/labyrinth", [CORPUS])
+
+		assert labyrinth.voice.polyphony is None
+
+	def test_the_model_d_is_reached_only_by_sysex (self) -> None:
+		model_d = pymidiinstrumentdefs.load("behringer/model_d", [CORPUS])
+
+		assert model_d.midi.refuses_control_change
+		assert model_d.midi.sysex is True
+		assert model_d.voice.polyphony == 1
+		assert model_d.controls == {}
+
+	def test_the_malevolent_claims_no_absence_nobody_checked (self) -> None:
+		"""Its only document is a quick-start guide, which lists no controllers.
+
+		That is not the same as having none, so the file must not say it has
+		none: silence here means "not in the guide", and says so in its source.
+		"""
+		malevolent = pymidiinstrumentdefs.load("pwm/malevolent", [CORPUS])
+
+		assert not malevolent.midi.refuses_control_change
+		assert malevolent.midi.control_change is None
+		assert malevolent.voice.polyphony == 1
+		assert "guide" in (malevolent.source or "").lower()
+
+
+class TestCarbon8M:
+
+	def test_the_whole_chart_arrives (self) -> None:
+		"""111 assigned numbers, less the five channel mode messages PyMidiDefs owns."""
+		carbon = pymidiinstrumentdefs.load("modal/carbon8m", [CORPUS])
+
+		assert len(carbon.controls) == 106
+		assert all(control.cc is not None and control.cc < 120 for control in carbon.controls.values())
+
+	def test_no_number_is_used_twice (self) -> None:
+		carbon = pymidiinstrumentdefs.load("modal/carbon8m", [CORPUS])
+		numbers = [control.cc for control in carbon.controls.values()]
+
+		assert len(numbers) == len(set(numbers))
+
+	def test_the_numbers_the_chart_marks_unassigned_stay_unassigned (self) -> None:
+		"""The chart prints "-" for 17 numbers, so their absence is a checked one."""
+		carbon = pymidiinstrumentdefs.load("modal/carbon8m", [CORPUS])
+		used = {control.cc for control in carbon.controls.values()}
+		unassigned = {2, 4, 6, 8, 10, 38, 65, 66, 74, 76, 77, 97, 98, 99, 122, 126, 127}
+
+		assert used & unassigned == set()
+
+	def test_each_mod_slot_is_a_group_of_depth_source_and_destination (self) -> None:
+		"""Three runs of eight numbers, paired by slot rather than by kind."""
+		groups = pymidiinstrumentdefs.load("modal/carbon8m", [CORPUS]).grouped_controls()
+
+		for slot in range(1, 9):
+			members = [control.cc for control in groups[f"modslot_{slot}"]]
+
+			assert members == [87 + slot, 99 + slot, 107 + slot]
+
+	def test_the_joysticks_missing_axis_is_the_mod_wheel (self) -> None:
+		"""The chart has X+, X- and Y- only, because Y+ sends CC 1."""
+		carbon = pymidiinstrumentdefs.load("modal/carbon8m", [CORPUS])
+
+		assert "joystick_y_plus" not in carbon.controls
+		assert carbon.controls["mod_wheel"].cc == 1
+
+	def test_voicing_is_a_mode_so_polyphony_is_not_a_constant (self) -> None:
+		carbon = pymidiinstrumentdefs.load("modal/carbon8m", [CORPUS])
+
+		assert carbon.voice.polyphony is None
+		assert carbon.voice.voicing_modes == (1, 2, 4, 8)
+		assert carbon.midi.program_change is not None
+		assert carbon.midi.program_change.presets == 500
+
+
+class TestTR8S:
+
+	def test_the_two_auto_fill_controls_are_never_offered_for_sending (self) -> None:
+		"""The chart marks them transmitted and not recognised, and a panel must respect that."""
+		tr8s = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS])
+		unsendable = sorted(control.name for control in tr8s.controls.values() if not control.is_sendable)
+
+		assert unsendable == ["auto_fill_in", "auto_fill_in_manual"]
+
+	def test_every_voice_has_tune_decay_level_and_ctrl (self) -> None:
+		groups = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS]).grouped_controls()
+
+		for voice in ("bd", "sd", "lt", "mt", "ht", "rs", "hc", "ch", "oh", "cc", "rc"):
+			names = [control.name for control in groups[voice]]
+
+			assert names == [f"{voice}_tune", f"{voice}_decay", f"{voice}_level", f"{voice}_ctrl"]
+
+	def test_the_whole_chart_arrives (self) -> None:
+		tr8s = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS])
+
+		assert len(tr8s.controls) == 55
+		assert len(tr8s.voice.voices) == 11
+		assert tr8s.voice.voices["bd"] == 36
+
+
+class TestSubharmonicon:
+
+	def test_notes_are_offsets_from_c4 (self) -> None:
+		subharmonicon = pymidiinstrumentdefs.load("moog/subharmonicon", [CORPUS])
+
+		assert subharmonicon.voice.addressing == "relative"
+		assert subharmonicon.voice.reference_note == 60
+
+	def test_a_sub_divider_names_its_divisor (self) -> None:
+		"""The values rise while the divisor falls, and the names say which is which."""
+		divider = pymidiinstrumentdefs.load("moog/subharmonicon", [CORPUS]).controls["vco_1_sub_1_frequency"]
+
+		assert divider.band("divide_16") == (0, 7)
+		assert divider.band("divide_1") == (120, 127)
+		assert divider.name_for(64) == "divide_8"
+
+	def test_six_fourteen_bit_pairs_each_obey_the_plus_32_rule (self) -> None:
+		controls = pymidiinstrumentdefs.load("moog/subharmonicon", [CORPUS]).controls.values()
+		pairs = [control for control in controls if control.is_14_bit]
+
+		assert len(pairs) == 6
+		assert all(control.cc is not None and control.lsb == control.cc + 32 for control in pairs)
+
+
+class TestStreichfett:
+
+	def test_an_enumeration_sends_the_number_the_manual_prints (self) -> None:
+		"""Read as bands, 8va would have gone out as 64. The manual says 2."""
+		streichfett = pymidiinstrumentdefs.load("waldorf/streichfett", [CORPUS])
+
+		assert streichfett.controls["string_registration"].value_for("octave") == 2
+		assert streichfett.controls["fx_type"].value_for("animate") == 2
+		assert streichfett.controls["solo_sustain"].kind == pymidiinstrumentdefs.SWITCH
+
+	def test_the_sustain_pedal_is_still_a_band (self) -> None:
+		"""One table mixes both conventions, and each control keeps its own."""
+		pedal = pymidiinstrumentdefs.load("waldorf/streichfett", [CORPUS]).controls["sustain_pedal"]
+
+		assert pedal.band("on") == (64, 127)
+
+
+class TestVoce:
+
+	def test_the_whole_effects_table_arrives (self) -> None:
+		"""Rate, depth and tremolo were thought undocumented; they are at pp. 8-9."""
+		voce = pymidiinstrumentdefs.load("voce/electric_piano", [CORPUS])
+
+		assert {control.cc for control in voce.controls.values()} == {1, 7, 80, 81, 82, 83, 91, 94}
+
+	def test_channel_16_cannot_be_the_basic_channel (self) -> None:
+		"""The switch's sixteenth position is omni, not channel 16."""
+		voce = pymidiinstrumentdefs.load("voce/electric_piano", [CORPUS])
+
+		assert voce.midi.channels == (1, 15)
+
+	def test_polyphony_is_a_state_not_a_constant (self) -> None:
+		"""Chorus takes two voices a note, and CC 80 switches it."""
+		voce = pymidiinstrumentdefs.load("voce/electric_piano", [CORPUS])
+
+		assert voce.voice.polyphony is None
+		assert voce.voice.voicing_modes == (16, 32)
+
+
+class TestTake5:
+
+	def test_the_cutoff_is_four_times_finer_over_nrpn (self) -> None:
+		"""One parameter, two addresses, two resolutions, and the file keeps both."""
+		cutoff = pymidiinstrumentdefs.load("sequential/take_5", [CORPUS]).controls["filter_cutoff"]
+
+		assert (cutoff.cc, cutoff.range) == (33, (0, 127))
+		assert (cutoff.nrpn, cutoff.nrpn_range) == (29, (0, 1023))
+
+	def test_the_whole_cc_table_arrives_less_the_nrpn_transport (self) -> None:
+		"""CC 1-89, less Data Entry MSB and LSB, which carry NRPN values rather than parameters."""
+		controls = pymidiinstrumentdefs.load("sequential/take_5", [CORPUS]).controls.values()
+		numbers = [control.cc for control in controls if control.cc is not None]
+
+		assert sorted(numbers) == sorted(set(range(1, 90)) - {6, 38})
+
+	def test_no_nrpn_is_used_twice (self) -> None:
+		controls = pymidiinstrumentdefs.load("sequential/take_5", [CORPUS]).controls.values()
+		numbers = [control.nrpn for control in controls if control.nrpn is not None]
+
+		assert len(numbers) == len(set(numbers))
+
+	def test_the_fine_tunes_are_cc_only (self) -> None:
+		"""Their NRPN range is printed as -700 to 700, with no word on how that is sent."""
+		controls = pymidiinstrumentdefs.load("sequential/take_5", [CORPUS]).controls
+
+		assert controls["osc_1_fine_freq"].nrpn is None
+		assert controls["osc_2_fine_freq"].nrpn is None
+
+	def test_nrpn_is_the_preferred_transport (self) -> None:
+		take_5 = pymidiinstrumentdefs.load("sequential/take_5", [CORPUS])
+
+		assert take_5.midi.nrpn == "preferred"
+		assert take_5.voice.polyphony == 5
+
+
+class TestPulsar23:
+
+	def test_its_map_is_learned_and_says_so (self) -> None:
+		"""Neither a checked absence nor an unread page: every assignment is the owner's."""
+		pulsar = pymidiinstrumentdefs.load("soma/pulsar_23", [CORPUS])
+
+		assert pulsar.midi.learns_control_change
+		assert not pulsar.midi.refuses_control_change
+		assert pulsar.voice.note_map == "learned"
+		assert pulsar.voice.voices == {}
+
+	def test_portamento_is_its_one_fixed_control (self) -> None:
+		pulsar = pymidiinstrumentdefs.load("soma/pulsar_23", [CORPUS])
+
+		assert list(pulsar.controls) == ["portamento"]
+		assert pulsar.controls["portamento"].cc == 5
+
+
+class TestChoices:
+
+	"""Exact values, for a manual that prints 0 = Base, 1 = Both, 2 = 8va and means them."""
+
+	BODY = (
+		"definition: 1\nmodel: {name: X}\nsource: hand\n"
+		"controls: {registration: {cc: 70, choices: {base: 0, both: 1, octave: 2}}}\n"
+	)
+
+	def test_a_choice_sends_exactly_the_number_printed (self) -> None:
+		"""Read as bands, the last of these would absorb 2-127 and send 64."""
+		control = pymidiinstrumentdefs.parse(self.BODY, source = "x.yaml").controls["registration"]
+
+		assert control.value_for("base") == 0
+		assert control.value_for("octave") == 2
+		assert control.band("octave") == (2, 2)
+		assert control.kind == pymidiinstrumentdefs.CHOICE
+		assert control.states == ["base", "both", "octave"]
+
+	def test_a_number_between_choices_names_nothing (self) -> None:
+		control = pymidiinstrumentdefs.parse(self.BODY, source = "x.yaml").controls["registration"]
+
+		assert control.name_for(1) == "both"
+		assert control.name_for(64) is None
+
+	def test_two_choices_make_a_switch (self) -> None:
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"controls: {sustain: {cc: 79, choices: {no_sustain: 0, full_sustain: 1}}}\n"
+		)
+		control = pymidiinstrumentdefs.parse(body, source = "x.yaml").controls["sustain"]
+
+		assert control.kind == pymidiinstrumentdefs.SWITCH
+		assert control.value_for("full_sustain") == 1
+
+	def test_values_and_choices_together_are_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\ncontrols: {a: {cc: 1, values: {p: 0, q: 64}, choices: {r: 0, s: 1}}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "both values and choices" in str(raised.value)
+
+	def test_two_choices_cannot_share_a_number (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\ncontrols: {a: {cc: 1, choices: {p: 1, q: 1}}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "controls.a.choices.q" in str(raised.value)
+
+
+class TestDirection:
+
+	def test_a_control_goes_both_ways_unless_it_says_otherwise (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\ncontrols: {a: {cc: 14}}"
+		control = pymidiinstrumentdefs.parse(body, source = "x.yaml").controls["a"]
+
+		assert control.direction == pymidiinstrumentdefs.definition.BOTH
+		assert control.is_sendable
+
+	def test_a_control_the_instrument_only_transmits_is_not_for_sending (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\ncontrols: {auto_fill: {cc: 14, direction: transmits}}"
+		control = pymidiinstrumentdefs.parse(body, source = "x.yaml").controls["auto_fill"]
+
+		assert not control.is_sendable
+
+	def test_an_unknown_direction_is_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\ncontrols: {a: {cc: 14, direction: sideways}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "controls.a.direction" in str(raised.value)
+
+
+class TestRelativeNotes:
+
+	def test_a_relative_instrument_names_the_note_its_offsets_are_from (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nvoice: {addressing: relative, reference_note: 60}\n"
+		voice = pymidiinstrumentdefs.parse(body, source = "x.yaml").voice
+
+		assert voice.addressing == "relative"
+		assert voice.reference_note == 60
+
+	def test_relative_without_a_reference_note_is_refused (self) -> None:
+		"""An offset from nowhere cannot be drawn, so the file has to say which note."""
+		body = "definition: 1\nmodel: {name: X}\nvoice: {addressing: relative}\n"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "voice.reference_note" in str(raised.value)
+
+	def test_a_reference_note_means_nothing_to_a_pitched_instrument (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nvoice: {addressing: pitches, reference_note: 60}\n"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError):
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+
+class TestLearnedMaps:
+
+	def test_learned_controls_are_neither_absent_nor_unread (self) -> None:
+		"""The third state: it answers to controllers, and nobody can publish which."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"midi: {control_change: learned}\nvoice: {addressing: voices, note_map: learned}\n"
+		)
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.midi.learns_control_change
+		assert not definition.midi.refuses_control_change
+		assert definition.voice.note_map == "learned"
+
+	def test_the_drm1s_note_map_is_its_factory_default (self) -> None:
+		drm1 = pymidiinstrumentdefs.load("vermona/drm1_mkiv", [CORPUS])
+
+		assert drm1.voice.note_map == "learned"
+		assert drm1.voice.voices["kick"] == 36
+
+	def test_an_unknown_note_map_is_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nvoice: {note_map: guessed}\n"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "voice.note_map" in str(raised.value)
+
+
+class TestNrpnRange:
+
+	def test_an_nrpn_can_be_finer_than_its_cc_twin (self) -> None:
+		"""One control, two addresses, two resolutions: a consumer picks the finer."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"controls: {cutoff: {cc: 33, nrpn: 29, nrpn_range: [0, 1023]}}\n"
+		)
+		control = pymidiinstrumentdefs.parse(body, source = "x.yaml").controls["cutoff"]
+
+		assert control.range == (0, 127)
+		assert control.nrpn_range == (0, 1023)
+
+	def test_an_nrpn_range_needs_an_nrpn (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\ncontrols: {cutoff: {cc: 33, nrpn_range: [0, 1023]}}\n"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "controls.cutoff.nrpn_range" in str(raised.value)
 
 
 class TestBands:
@@ -202,18 +620,18 @@ class TestBands:
 		assert two.kind == pymidiinstrumentdefs.SWITCH
 		assert three.kind == pymidiinstrumentdefs.CHOICE
 
-	def test_kind_may_be_stated_when_the_bands_are_not_known (self) -> None:
-		"""Saying "this is a choice" without the numbers is honest, and useful.
+	def test_a_choice_with_no_states_loads_and_says_what_is_wrong (self) -> None:
+		"""A kind that promises states the file does not name gives a panel nothing to offer.
 
-		Three of the Matriarch's controls are named as three-state in the source
-		with no value ranges given. The override records what they are without
-		inventing where the bands fall.
+		The format allows the override, so the file still loads. But it is the one
+		combination a consumer cannot do anything sensible with, so the validator
+		says so rather than letting it ship quietly.
 		"""
-		matriarch = pymidiinstrumentdefs.load("moog/matriarch", [CORPUS])
-		arp_mode = matriarch.controls["arp_mode"]
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\ncontrols: {division: {cc: 86, kind: choice}}"
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
 
-		assert arp_mode.kind == pymidiinstrumentdefs.CHOICE
-		assert arp_mode.values == {}
+		assert definition.controls["division"].kind == pymidiinstrumentdefs.CHOICE
+		assert any("no states" in warning for warning in definition.warnings)
 
 
 class TestRefusals:
@@ -276,6 +694,29 @@ class TestRefusals:
 			pymidiinstrumentdefs.parse(body, source = "x.yaml")
 
 		assert "0-127" in str(raised.value)
+
+	@pytest.mark.parametrize("cc", range(120, 128))
+	def test_a_channel_mode_message_is_not_a_control (self, cc: int) -> None:
+		"""CC 120-127 mean the same everywhere, so they are PyMidiDefs' and not a definition's.
+
+		Manufacturers' charts print them beside everything else, which is exactly
+		how they would get copied into a definition by somebody transcribing one.
+		"""
+		body = f"definition: 1\nmodel: {{name: X}}\ncontrols: {{local: {{cc: {cc}}}}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "controls.local.cc" in str(raised.value)
+		assert "pymididefs.cc." in str(raised.value)
+
+	def test_the_refusal_names_the_constant_it_duplicates (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\ncontrols: {local: {cc: 122}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "pymididefs.cc.LOCAL_CONTROL_ON_OFF" in str(raised.value)
 
 	def test_a_name_must_be_addressable (self) -> None:
 		body = "definition: 1\nmodel: {name: X}\ncontrols: {'Glide Type': {cc: 1}}"

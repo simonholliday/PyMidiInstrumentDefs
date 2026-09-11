@@ -1,0 +1,45 @@
+# Nearly empty for the opposite reason to the DFAM's. The DFAM has no MIDI at
+# all; the Model D is remotely controllable, but only by System Exclusive, and
+# the format has no way yet to describe a SysEx surface. What it can say, it
+# says: that somebody looked for control changes and there are none.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: MODEL D
+
+source: >-
+  User manual, 44 pages: the MIDI and USB connections at p. 8, the rear-panel
+  MIDI channel switches at p. 11, the Poly Chain system at p. 29, the System
+  Exclusive format and command table at pp. 30-31, setting the channel in a
+  Eurorack at p. 33, and the specifications at p. 34. Every page was searched
+  for "control change", "CC" and "controller number": the only hit is the
+  glossary defining a continuous controller (p. 36), so the absence of controls
+  below is checked rather than assumed. NOT RECORDED: velocity, note range and
+  the factory pitch-bend range, which the manual does not state.
+
+midi:
+  # "MIDI In/Thru 5-pin DIN / 16 channels", plus class-compliant USB MIDI in and
+  # out (pp. 8, 34). The channel is set by four rear-panel switches, or by SysEx
+  # when the unit is racked and the switches are gone (pp. 11, 33). Which one
+  # yours is on belongs to your project, not here.
+  channels: [1, 16]
+  control_change: none
+  # F0 00 20 32 aa bb cc dd ee ff F7, where bb is a device ID that is "the same
+  # as the Poly Chain ID. It is not the MIDI Channel" (p. 30). The command table
+  # at p. 31 sets MIDI channel, key priority, multi trigger, pitch-bend range,
+  # MIDI-in transpose, the note at zero volts, Poly Chain and its style, device
+  # ID, the channel switches, and the modulation curve.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "Number of voices: Monophonic" (p. 34). Several units make one polyphonic
+  # instrument through the 16-voice Poly Chain (p. 29), each playing the next
+  # note -- a fact about a rig of Model Ds, not about one, so it is not here.
+  polyphony: 1
+  pitch_bend:
+    # Settable in semitones over SysEx, with a separate command to make the
+    # range take effect (p. 31). The factory range is not stated.
+    programmable: true

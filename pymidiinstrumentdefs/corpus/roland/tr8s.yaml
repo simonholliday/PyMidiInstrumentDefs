@@ -1,0 +1,141 @@
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TR-8S
+
+source: >-
+  MIDI Implementation Chart, Version 1.10, dated 4 October 2018: a single page
+  (p. 1), and every row of it is below. Its 55 control numbers and 11 note
+  numbers agree exactly with a working Subsequence map of the same machine,
+  whose names these follow. NOT RECORDED: values, bands and defaults for any
+  control, none of which the chart gives.
+
+midi:
+  # Default 10, memorised; settable to 1-16 or OFF. Which one yours is on
+  # belongs to your project, not here.
+  channels: [1, 16]
+  mode: 4                    # Omni off, mono -- the chart's default both ways
+  clock: both
+  # Start and Stop go both ways; Continue is recognised and never transmitted.
+  # Active Sensing goes both ways.
+  transport: both
+  program_change:
+    receives: true
+    sends: true
+    presets: 128             # "True Number 0-127", both ways
+  sysex: false               # "x" both ways, as are Song Position and Song Select
+
+voice:
+  addressing: voices
+  velocity:
+    # Recognised; the machine itself sends a fixed velocity of 80.
+    note_on: received
+  # Neither key nor channel aftertouch, and no pitch bend, either way. Mode
+  # messages and every Aux message -- All Notes Off, Local, Omni -- are "x" both
+  # ways as well.
+  aftertouch: none
+  # The chart's INST map. Both it and the second, ALT map it prints are factory
+  # defaults, "configurable on UTILITY:MIDI:Inst Note". The ALT map is:
+  #   bd 35, sd 40, lt 41, mt 45, ht 48, rs 56, hc 54, ch 44, oh 55, cc 61, rc 63
+  # The TRIGGER OUT voice has no note.
+  voices:
+    bd: 36
+    sd: 38
+    lt: 43
+    mt: 47
+    ht: 50
+    rs: 37
+    hc: 39
+    ch: 42
+    oh: 46
+    cc: 49
+    rc: 51
+
+controls:
+
+  # ── Global ────────────────────────────────────────────────────────────────
+
+  shuffle:           {label: Shuffle,           cc: 9,  group: global}
+  external_in_level: {label: External In Level, cc: 12, group: global}
+  master_fx_on:      {label: "Master FX [On]",  cc: 15, group: global}
+  delay_level:       {label: Delay Level,       cc: 16, group: global}
+  delay_time:        {label: Delay Time,        cc: 17, group: global}
+  delay_feedback:    {label: Delay Feedback,    cc: 18, group: global}
+  master_fx_ctrl:    {label: Master FX Ctrl,    cc: 19, group: global}
+  accent:            {label: Accent,            cc: 71, group: global}
+  reverb_level:      {label: Reverb Level,      cc: 91, group: global}
+
+  # Transmitted, and not recognised: the chart's "*2", sent only while
+  # UTILITY:SOUND:LocalSw is SURFACE. A panel may read these and must never
+  # offer to send them.
+  auto_fill_in:
+    label: Auto Fill In [On]
+    cc: 14
+    direction: transmits
+    group: global
+  auto_fill_in_manual:
+    label: Auto Fill In [Manual Trig]
+    cc: 70
+    direction: transmits
+    group: global
+
+  # ── Eleven voices, four controls each ─────────────────────────────────────
+  # BD and SD are numbered differently from the other nine, which leaves 21, 22,
+  # 26 and 27 unassigned inside the block. That is the chart, not a gap in the
+  # reading.
+
+  bd_tune:  {label: BD Tune,  cc: 20,  group: bd}
+  bd_decay: {label: BD Decay, cc: 23,  group: bd}
+  bd_level: {label: BD Level, cc: 24,  group: bd}
+  bd_ctrl:  {label: BD Ctrl,  cc: 96,  group: bd}
+
+  sd_tune:  {label: SD Tune,  cc: 25,  group: sd}
+  sd_decay: {label: SD Decay, cc: 28,  group: sd}
+  sd_level: {label: SD Level, cc: 29,  group: sd}
+  sd_ctrl:  {label: SD Ctrl,  cc: 97,  group: sd}
+
+  lt_tune:  {label: LT Tune,  cc: 46,  group: lt}
+  lt_decay: {label: LT Decay, cc: 47,  group: lt}
+  lt_level: {label: LT Level, cc: 48,  group: lt}
+  lt_ctrl:  {label: LT Ctrl,  cc: 102, group: lt}
+
+  mt_tune:  {label: MT Tune,  cc: 49,  group: mt}
+  mt_decay: {label: MT Decay, cc: 50,  group: mt}
+  mt_level: {label: MT Level, cc: 51,  group: mt}
+  mt_ctrl:  {label: MT Ctrl,  cc: 103, group: mt}
+
+  ht_tune:  {label: HT Tune,  cc: 52,  group: ht}
+  ht_decay: {label: HT Decay, cc: 53,  group: ht}
+  ht_level: {label: HT Level, cc: 54,  group: ht}
+  ht_ctrl:  {label: HT Ctrl,  cc: 104, group: ht}
+
+  rs_tune:  {label: RS Tune,  cc: 55,  group: rs}
+  rs_decay: {label: RS Decay, cc: 56,  group: rs}
+  rs_level: {label: RS Level, cc: 57,  group: rs}
+  rs_ctrl:  {label: RS Ctrl,  cc: 105, group: rs}
+
+  hc_tune:  {label: HC Tune,  cc: 58,  group: hc}
+  hc_decay: {label: HC Decay, cc: 59,  group: hc}
+  hc_level: {label: HC Level, cc: 60,  group: hc}
+  hc_ctrl:  {label: HC Ctrl,  cc: 106, group: hc}
+
+  ch_tune:  {label: CH Tune,  cc: 61,  group: ch}
+  ch_decay: {label: CH Decay, cc: 62,  group: ch}
+  ch_level: {label: CH Level, cc: 63,  group: ch}
+  ch_ctrl:  {label: CH Ctrl,  cc: 107, group: ch}
+
+  oh_tune:  {label: OH Tune,  cc: 80,  group: oh}
+  oh_decay: {label: OH Decay, cc: 81,  group: oh}
+  oh_level: {label: OH Level, cc: 82,  group: oh}
+  oh_ctrl:  {label: OH Ctrl,  cc: 108, group: oh}
+
+  cc_tune:  {label: CC Tune,  cc: 83,  group: cc}
+  cc_decay: {label: CC Decay, cc: 84,  group: cc}
+  cc_level: {label: CC Level, cc: 85,  group: cc}
+  cc_ctrl:  {label: CC Ctrl,  cc: 109, group: cc}
+
+  rc_tune:  {label: RC Tune,  cc: 86,  group: rc}
+  rc_decay: {label: RC Decay, cc: 87,  group: rc}
+  rc_level: {label: RC Level, cc: 88,  group: rc}
+  rc_ctrl:  {label: RC Ctrl,  cc: 110, group: rc}

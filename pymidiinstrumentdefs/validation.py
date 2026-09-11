@@ -17,6 +17,8 @@ import pathlib
 import re
 import typing
 
+import pymididefs.cc
+
 import pymidiinstrumentdefs.definition
 
 
@@ -28,7 +30,23 @@ VERSION: typing.Final[int] = 1
 # the grammar the project definition files already use.
 NAME: typing.Final[re.Pattern[str]] = re.compile(r"[a-z][a-z0-9_]*")
 
-_ADDRESSING: typing.Final[frozenset[str]] = frozenset({"pitches", "voices", "none"})
+_ADDRESSING: typing.Final[frozenset[str]] = frozenset({"pitches", "voices", "relative", "none"})
+
+_NOTE_MAPS: typing.Final[frozenset[str]] = frozenset({"fixed", "learned"})
+
+# The channel mode messages, CC 120-127, by the name PyMidiDefs gives each. They
+# mean the same on every instrument that has them, so they are specification
+# facts, and a definition listing one as a control is duplicating the standard.
+_CHANNEL_MODE: typing.Final[dict[int, str]] = {
+	pymididefs.cc.ALL_SOUND_OFF: "ALL_SOUND_OFF",
+	pymididefs.cc.RESET_ALL_CONTROLLERS: "RESET_ALL_CONTROLLERS",
+	pymididefs.cc.LOCAL_CONTROL_ON_OFF: "LOCAL_CONTROL_ON_OFF",
+	pymididefs.cc.ALL_NOTES_OFF: "ALL_NOTES_OFF",
+	pymididefs.cc.OMNI_MODE_OFF: "OMNI_MODE_OFF",
+	pymididefs.cc.OMNI_MODE_ON: "OMNI_MODE_ON",
+	pymididefs.cc.MONO_MODE_ON: "MONO_MODE_ON",
+	pymididefs.cc.POLY_MODE_ON: "POLY_MODE_ON",
+}
 
 
 class DefinitionError(ValueError):
@@ -234,6 +252,20 @@ class _Reader:
 		if addressing is not None and addressing not in _ADDRESSING:
 			self.refuse("voice.addressing", f"{addressing!r} is not one of {sorted(_ADDRESSING)}")
 
+		reference_note = None if section.get("reference_note") is None \
+			else self.integer(section["reference_note"], "voice.reference_note", 0, 127)
+
+		if addressing == "relative" and reference_note is None:
+			self.refuse("voice.reference_note", "absent — a relative instrument has to say which note an offset is from")
+
+		if reference_note is not None and addressing != "relative":
+			self.refuse("voice.reference_note", "only means something when addressing is relative")
+
+		note_map = self.optional_text(section, "note_map", "voice")
+
+		if note_map is not None and note_map not in _NOTE_MAPS:
+			self.refuse("voice.note_map", f"{note_map!r} is not one of {sorted(_NOTE_MAPS)}")
+
 		voices: dict[str, int] = {}
 
 		for name, note in self.mapping(section.get("voices"), "voice.voices").items():
@@ -242,6 +274,8 @@ class _Reader:
 
 		return pymidiinstrumentdefs.definition.Voice(
 			addressing = addressing,
+			reference_note = reference_note,
+			note_map = note_map,
 			note_range = None if section.get("note_range") is None
 				else self.pair(section["note_range"], "voice.note_range", 0, 127),
 			polyphony = None if section.get("polyphony") is None
@@ -324,7 +358,7 @@ class _Reader:
 
 	def control (self, name: str, value: object) -> pymidiinstrumentdefs.definition.Control:
 
-		"""Read one control, and the bands it has if it is stepped."""
+		"""Read one control, and the bands or choices it has if it is stepped."""
 
 		where = f"controls.{name}"
 		section = self.mapping(value, where)
@@ -339,6 +373,22 @@ class _Reader:
 		if kind is not None and kind not in kinds:
 			self.refuse(f"{where}.kind", f"{kind!r} is not one of {sorted(kinds)}")
 
+		if section.get("values") is not None and section.get("choices") is not None:
+			self.refuse(
+				where,
+				"has both values and choices — a stepped control's numbers are either "
+				"where its bands start or the exact values it takes, not both",
+			)
+
+		direction = self.optional_text(section, "direction", where) or pymidiinstrumentdefs.definition.BOTH
+		directions = pymidiinstrumentdefs.definition.DIRECTIONS
+
+		if direction not in directions:
+			self.refuse(f"{where}.direction", f"{direction!r} is not one of {sorted(directions)}")
+
+		if section.get("nrpn_range") is not None and section.get("nrpn") is None:
+			self.refuse(f"{where}.nrpn_range", "given without an nrpn for it to apply to")
+
 		control = pymidiinstrumentdefs.definition.Control(
 			name  = name,
 			label = self.optional_text(section, "label", where) or name.replace("_", " "),
@@ -349,7 +399,10 @@ class _Reader:
 			nrpn = None if section.get("nrpn") is None
 				else self.integer(section["nrpn"], f"{where}.nrpn", 0, 16383),
 			values = self.values(section.get("values"), where, extent),
+			choices = self.choices(section.get("choices"), where, extent),
 			range  = extent,
+			nrpn_range = None if section.get("nrpn_range") is None
+				else self.pair(section["nrpn_range"], f"{where}.nrpn_range", 0, 16383),
 			default = None if section.get("default") is None
 				else self.integer(section["default"], f"{where}.default", extent[0], extent[1]),
 			step = 1 if section.get("step") is None
@@ -358,8 +411,26 @@ class _Reader:
 			group = self.optional_text(section, "group", where),
 			panel_only = False if section.get("panel_only") is None
 				else self.flag(section["panel_only"], f"{where}.panel_only"),
+			direction = direction,
 			kind_override = kind,
 		)
+
+		stepped = (pymidiinstrumentdefs.definition.CHOICE, pymidiinstrumentdefs.definition.SWITCH)
+
+		if control.kind_override in stepped and not control.states:
+			self.warn(
+				where,
+				f"is declared a {control.kind_override} with no states, so a panel has nothing "
+				f"to offer — name the states, or leave it continuous",
+			)
+
+		if control.cc in _CHANNEL_MODE:
+			self.refuse(
+				f"{where}.cc",
+				f"{control.cc} is a channel mode message, pymididefs.cc.{_CHANNEL_MODE[control.cc]}, "
+				f"which means the same on every instrument that has it — it belongs in PyMidiDefs, "
+				f"not in a definition",
+			)
 
 		if control.cc is None and control.nrpn is None:
 			self.warn(where, "declares neither cc nor nrpn, so nothing can be sent to it")
@@ -392,6 +463,29 @@ class _Reader:
 
 			named[name] = low
 			previous = low
+
+		return named
+
+
+	def choices (self, value: object, where: str, extent: tuple[int, int]) -> dict[str, int]:
+
+		"""Read the named exact values of an enumerated control.
+
+		Each entry is a number sent exactly as written — ``0 = Base, 1 = Both,
+		2 = 8va`` — rather than the low end of a band.  Two names may not share a
+		number, because only one of them could ever be read back.
+		"""
+
+		named: dict[str, int] = {}
+
+		for raw_name, raw_value in self.mapping(value, f"{where}.choices").items():
+			name = self.name(raw_name, f"{where}.choices")
+			number = self.integer(raw_value, f"{where}.choices.{name}", extent[0], extent[1])
+
+			if number in named.values():
+				self.refuse(f"{where}.choices.{name}", f"{number} is already another choice's value")
+
+			named[name] = number
 
 		return named
 

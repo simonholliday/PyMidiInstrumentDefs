@@ -74,8 +74,9 @@ controls:
     cc: 86
     # 22 divisions, from four whole notes (0-6) to a 1/64 triplet (122-127).
     # The source gives only the two ends, so the bands between them are not
-    # recorded and are not guessed at here.
-    kind: choice
+    # recorded and are not guessed at here. It is left continuous rather than
+    # declared a choice, because a choice with no states gives a panel nothing
+    # to offer.
     panel_only: true
     group: modulation
   lfo_key_trigger:
@@ -278,14 +279,14 @@ controls:
     cc: 107
     # Eight bands of sixteen: 0-15 off, 16-31 two semitones, up to 112-127
     # twenty-four. The source gives the first, the second and the last, so the
-    # five between them are not recorded.
-    kind: choice
+    # five between them are not recorded, and the control is left continuous
+    # for the same reason as the LFO clock division.
     panel_only: true
     group: performance
   bend_down:
     label: Bend Down
     cc: 108
-    kind: choice
+    # The same eight bands as Bend Up.
     panel_only: true
     group: performance
 

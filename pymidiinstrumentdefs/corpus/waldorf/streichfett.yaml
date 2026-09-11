@@ -1,0 +1,141 @@
+definition: 1
+
+model:
+  manufacturer: Waldorf
+  name: Streichfett
+
+source: >-
+  Reference manual, 31 pages: the MIDI Controller Numbers table at p. 21, which
+  gives a value range for every controller; the MIDI Implementation at p. 22;
+  MIDI channel setting at p. 18; and the technical data and factory settings
+  at p. 20. NOT RECORDED: polyphony, aftertouch and clock, which those pages do
+  not cover.
+
+midi:
+  # Set by holding all four Memory buttons and playing a note on the channel
+  # wanted; Omni by holding them while powering on. From the factory it
+  # receives Omni and transmits on 1 (pp. 18, 20). Which one yours is on belongs
+  # to your project, not here.
+  channels: [1, 16]
+  program_change:
+    receives: true
+    presets: 12              # "Program number (0 - 11)", where pp = preset + 4 x bank (p. 22)
+
+# When the channel is 1-14, the Solo section can also be played on the next
+# channel up, independently of the Strings, with the split ignored (p. 18). The
+# format has no field for a second part, so this file describes one.
+
+voice:
+  addressing: pitches
+  velocity:
+    # Note On carries key velocity and Note Off release velocity (p. 22).
+    note_on: received
+    note_off: true
+  pitch_bend:
+    semitones: 2             # the factory setting (p. 20)
+
+controls:
+
+  # Two conventions share this table, and each control keeps its own. Sustain
+  # Pedal's "0 = Off, 64 = On" is a band, as it is everywhere. Five others are
+  # exact values -- "0 = Base, 1 = Both, 2 = 8va" means 0, 1 and 2, and nothing
+  # above 2 -- so they are choices, sent exactly as printed.
+
+  # ── Performance ───────────────────────────────────────────────────────────
+
+  mod_wheel:
+    label: Modulation Wheel
+    cc: 1
+    # Sets the vibrato level and speed of both sections (p. 18).
+    group: performance
+  sustain_pedal:
+    label: Sustain Pedal
+    cc: 64
+    values: {"off": 0, "on": 64}
+    group: performance
+
+  # ── Strings ───────────────────────────────────────────────────────────────
+
+  string_registration:
+    label: String Registration
+    cc: 70
+    choices: {base: 0, both: 1, octave: 2}     # "2 = 8va"
+    group: strings
+  string_octaves:
+    label: String Octaves
+    cc: 71
+    group: strings
+  string_release:
+    label: String Release
+    cc: 72
+    group: strings
+  crescendo:
+    label: Crescendo
+    cc: 73
+    group: strings
+  string_ensemble_type:
+    label: String Ensemble Type
+    cc: 74
+    choices: {string: 0, string_chorus: 1, chorus: 2}
+    group: strings
+  string_ensemble:
+    label: String Ensemble
+    cc: 75
+    group: strings
+
+  # ── Solo ──────────────────────────────────────────────────────────────────
+
+  solo_tone:
+    label: Solo Tone
+    cc: 76
+    group: solo
+  solo_tremolo:
+    label: Solo Tremolo
+    cc: 77
+    group: solo
+  solo_split:
+    label: Solo Split
+    cc: 78
+    choices: {low: 0, layer: 1, high: 2}
+    group: solo
+  solo_sustain:
+    label: Solo Sustain
+    cc: 79
+    choices: {no_sustain: 0, full_sustain: 1}
+    group: solo
+  solo_attack:
+    label: Solo Attack
+    cc: 80
+    group: solo
+  solo_decay:
+    label: Solo Decay
+    cc: 81
+    group: solo
+  balance:
+    label: Balance
+    cc: 82
+    group: solo
+
+  # ── Effects ───────────────────────────────────────────────────────────────
+
+  fx_type:
+    label: FX Type
+    cc: 91
+    choices: {reverb: 0, phaser: 1, animate: 2}
+    group: fx
+  fx_animate_amount:
+    label: FX Animate Amount
+    cc: 92
+    group: fx
+  fx_phaser_amount:
+    label: FX Phaser Amount
+    cc: 93
+    group: fx
+  fx_reverb_amount:
+    label: FX Reverb Amount
+    cc: 94
+    group: fx
+
+# The table also lists 120-123 -- All Sound Off, Reset All Controllers, Local
+# Control and All Notes Off. They are channel mode messages, the same on every
+# instrument that has them, so they live in pymididefs.cc and not here.

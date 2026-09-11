@@ -1,0 +1,127 @@
+definition: 1
+
+model:
+  manufacturer: Moog Music
+  name: Subharmonicon
+
+source: >-
+  User manual, 58 pages: MIDI OPERATIONS at pp. 42-44, which is the complete
+  control-change table; tempo and MIDI clock at p. 25; and the specifications
+  at p. 57. Every band and every default below is quoted from that table. NOT
+  RECORDED: polyphony and velocity, which the manual does not state, and the
+  contents of the SysEx files that set channel and transport, which Moog
+  publishes separately.
+
+midi:
+  # 1-16 or All, factory 1, and set only by a SysEx file from moogmusic.com
+  # (p. 44). Which one yours is on belongs to your project, not here.
+  channels: [1, 16]
+  # MIDI clock overrides both the internal clock and any analogue clock, and
+  # with it the sequencers run at 4 PPQ, 16th notes (p. 25).
+  clock: receives
+  # "Play (MIDI Transport)": whether it follows MIDI transport is itself a
+  # setting, ON from the factory and changed only by SysEx (p. 44).
+  transport: receives
+  sysex: true
+
+voice:
+  # "MIDI note data received by Subharmonicon is referenced as an offset from
+  # the note C4 (middle C)" (p. 42). With both VCO FREQ knobs fully
+  # anticlockwise the oscillators sit at C4 and notes arrive unchanged -- but
+  # that is a knob position, not a property of the instrument, so a grid
+  # showing absolute pitches would misdraw it.
+  addressing: relative
+  reference_note: 60
+
+# Every control below carries the same remark in the table: the CC replaces the
+# knob setting, and moving the knob overrides the CC. The instrument does not
+# report that override, so a panel's idea of a value can be wrong at any moment.
+
+controls:
+
+  # ── Oscillators ───────────────────────────────────────────────────────────
+  # The VCO frequencies give +/-2.5 octaves, added to the FREQ knob; with the
+  # knob centred, the CC sweeps the knob's own range. Every sub divider has the
+  # same sixteen bands, with the divisor falling as the value rises.
+
+  vco_1_frequency:
+    label: VCO 1 Frequency
+    cc: 4
+    lsb: 36
+    range: [0, 16383]
+    default: 0
+    group: vco_1
+  vco_1_sub_1_frequency:
+    label: VCO 1 Sub 1 Frequency
+    cc: 103
+    values: {divide_16: 0, divide_15: 8, divide_14: 16, divide_13: 24, divide_12: 32, divide_11: 40, divide_10: 48, divide_9: 56, divide_8: 64, divide_7: 72, divide_6: 80, divide_5: 88, divide_4: 96, divide_3: 104, divide_2: 112, divide_1: 120}
+    default: 0
+    group: vco_1
+  vco_1_sub_2_frequency:
+    label: VCO 1 Sub 2 Frequency
+    cc: 104
+    values: {divide_16: 0, divide_15: 8, divide_14: 16, divide_13: 24, divide_12: 32, divide_11: 40, divide_10: 48, divide_9: 56, divide_8: 64, divide_7: 72, divide_6: 80, divide_5: 88, divide_4: 96, divide_3: 104, divide_2: 112, divide_1: 120}
+    default: 0
+    group: vco_1
+
+  vco_2_frequency:
+    label: VCO 2 Frequency
+    cc: 12
+    lsb: 44
+    range: [0, 16383]
+    default: 0
+    group: vco_2
+  vco_2_sub_1_frequency:
+    label: VCO 2 Sub 1 Frequency
+    cc: 105
+    values: {divide_16: 0, divide_15: 8, divide_14: 16, divide_13: 24, divide_12: 32, divide_11: 40, divide_10: 48, divide_9: 56, divide_8: 64, divide_7: 72, divide_6: 80, divide_5: 88, divide_4: 96, divide_3: 104, divide_2: 112, divide_1: 120}
+    default: 0
+    group: vco_2
+  vco_2_sub_2_frequency:
+    label: VCO 2 Sub 2 Frequency
+    cc: 106
+    values: {divide_16: 0, divide_15: 8, divide_14: 16, divide_13: 24, divide_12: 32, divide_11: 40, divide_10: 48, divide_9: 56, divide_8: 64, divide_7: 72, divide_6: 80, divide_5: 88, divide_4: 96, divide_3: 104, divide_2: 112, divide_1: 120}
+    default: 0
+    group: vco_2
+
+  # ── Envelopes ─────────────────────────────────────────────────────────────
+
+  vcf_eg_attack:
+    label: VCF EG Attack
+    cc: 23
+    lsb: 55
+    range: [0, 16383]
+    default: 0
+    group: envelopes
+  vcf_eg_decay:
+    label: VCF EG Decay
+    cc: 24
+    lsb: 56
+    range: [0, 16383]
+    default: 0
+    group: envelopes
+  vca_eg_attack:
+    label: VCA EG Attack
+    cc: 28
+    lsb: 60
+    range: [0, 16383]
+    default: 0
+    group: envelopes
+  vca_eg_decay:
+    label: VCA EG Decay
+    cc: 29
+    lsb: 61
+    range: [0, 16383]
+    default: 0
+    group: envelopes
+
+  # ── Sequencer ─────────────────────────────────────────────────────────────
+
+  rhythm_generator_logic:
+    label: Rhythm Generator Logic
+    cc: 113
+    # OR advances the sequencer whenever either rhythm generator clocks; XOR
+    # only when exactly one does, so with both true it does not advance.
+    values: {or: 0, xor: 64}
+    default: 0
+    group: sequencer

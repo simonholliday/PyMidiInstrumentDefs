@@ -1,0 +1,475 @@
+definition: 1
+
+model:
+  manufacturer: Modal Electronics
+  name: CARBON8M
+
+source: >-
+  User manual v1 (warranty update), printed two pages to a sheet: the MIDI CC
+  Implemention Chart (Modal's spelling) at pp. 62-63, MIDI at pp. 58-61, MPE at
+  pp. 64-65, Polychain at p. 66, the specification at pp. 5-7, voice modes at
+  p. 48, and the descriptions of stepped controls at pp. 26-27, 30, 32-33, 40
+  and 50. The chart prints a row for every number from 0 to 127 and marks 17 of
+  them "-", so the numbers missing below are checked absences. It gives names
+  and numbers only -- no values, bands, ranges or defaults -- so every control
+  here is continuous by derivation, including those the manual describes as
+  stepped, whose states are named in comments rather than guessed at as bands.
+  NOT RECORDED: note range, velocity response and pitch-bend range.
+
+midi:
+  # 1-16, and "MIDI can be made omni within the Settings pages" (p. 61). Which
+  # one yours is on belongs to your project, not here.
+  channels: [1, 16]
+  # Sends and receives clock; "To use CARBON8 as a master MIDI clock, set Clock
+  # Source to 'Master'" (p. 59). The DIN output passes everything but clock by
+  # default (p. 61).
+  clock: both
+  program_change:
+    receives: true
+    # "Sending a bank change (0-4) followed by a program change (0-99) ... will
+    # load the relevant preset" (p. 60): five banks of 100, the "500 patch
+    # memories" of the specification (p. 6).
+    presets: 500
+
+# MPE is supported (pp. 64-65), with a settable master channel and member
+# count: X is pitch bend, Y is CC 74 (which is why the chart leaves 74 blank),
+# and Z is channel aftertouch. It is not available in Polychain mode, cannot be
+# recorded into the sequencer, and does not support MPE's MIDI Mode 4. The
+# format has no MPE field yet, so none of this is below.
+
+voice:
+  addressing: pitches
+  # Eight voices at most, and the count is a per-patch voice mode rather than
+  # a constant (p. 48): Mono and Unison-2/4/8 sound one note, Stack-4 two,
+  # Stack-2 four, and Poly eight. The manual gives no default, so polyphony
+  # stays unknown; see voicing_modes for what it can be. Two units polychain
+  # into sixteen voices (p. 66), which is a fact about a pair, not about one.
+  polyphony: null
+  voicing_modes: [1, 2, 4, 8]
+  # "AftT" is a modulation source, and MPE's Z axis arrives as channel
+  # aftertouch (pp. 44, 65).
+  aftertouch: channel
+
+controls:
+
+  # ── Program and performance ───────────────────────────────────────────────
+
+  bank_change:
+    label: Bank Change
+    cc: 0
+    range: [0, 4]              # "a bank change (0-4)" (p. 60)
+    group: program
+  mod_wheel:
+    label: Mod Wheel
+    cc: 1
+    # The chart has Joystick X+, X- and Y- and no Y+: Y+ is this. "Y+ sends MIDI
+    # mod wheel data (CC1)" (p. 50).
+    group: performance
+  expression_pedal:
+    label: Expression Pedal
+    cc: 11
+    group: performance
+  sustain_pedal:
+    label: Sustain Pedal
+    cc: 64
+    group: performance
+
+  # ── Voice ─────────────────────────────────────────────────────────────────
+
+  glide:
+    label: Glide
+    cc: 5
+    group: voice
+  voice_mode:
+    label: Voice Mode
+    cc: 9
+    # Stepped: Mono, Poly, Unison-2, Unison-4, Unison-8, Stack-2, Stack-4 (p. 48).
+    group: voice
+  octave:
+    label: Octave
+    cc: 40
+    # Transposes incoming notes only when the "In Oct Offset" setting is on
+    # (p. 48).
+    group: voice
+  transpose:
+    label: Transpose
+    cc: 75
+    group: voice
+  chord_mode:
+    label: Chord Mode
+    cc: 96
+    group: voice
+
+  # ── Oscillators ───────────────────────────────────────────────────────────
+
+  osc_1_tune:
+    label: Osc1 Tune
+    cc: 14
+    group: oscillator
+  osc_1_fine:
+    label: Osc1 Fine
+    cc: 15
+    group: oscillator
+  osc_1_contour:
+    label: Osc1 Contour
+    cc: 16
+    group: oscillator
+  osc_1_level:
+    label: Osc1 Level
+    cc: 19
+    group: oscillator
+  osc_1_core:
+    label: Osc1 Core
+    cc: 62
+    # Stepped: one of 56 Core types (p. 22).
+    group: oscillator
+  osc_2_tune:
+    label: Osc2 Tune
+    cc: 30
+    group: oscillator
+  osc_2_fine:
+    label: Osc2 Fine
+    cc: 31
+    group: oscillator
+  osc_2_contour:
+    label: Osc2 Contour
+    cc: 17
+    group: oscillator
+  osc_2_level:
+    label: Osc2 Level
+    cc: 20
+    group: oscillator
+  osc_2_core:
+    label: Osc2 Core
+    cc: 63
+    # Stepped: one of 56 Core types (p. 22).
+    group: oscillator
+  osc_xmod:
+    label: Osc XMod
+    cc: 18
+    group: oscillator
+  osc_mod_mode:
+    label: OscMod Mode
+    cc: 21
+    group: oscillator
+
+  # ── Filter ────────────────────────────────────────────────────────────────
+
+  filter_cutoff:
+    label: Filter Cutoff
+    cc: 34
+    unit: hz                   # "from 0Hz up to 22kHz" (p. 27)
+    group: filter
+  filter_resonance:
+    label: Filter Resonance
+    cc: 35
+    group: filter
+  filter_warp:
+    label: Filter Warp
+    cc: 33
+    group: filter
+  filter_type:
+    label: Filter Type
+    cc: 42
+    # Stepped. The manual says 34 types twice (pp. 5, 27) and "31 filter types
+    # in total" once (p. 27); its own list at pp. 28-29 has 34.
+    group: filter
+
+  # ── Envelopes ─────────────────────────────────────────────────────────────
+  # FEG is the filter's, AEG the amplifier's, MEG the modulation envelope's. The
+  # chart has no FEG Attack. Each Type is stepped: Expo, Snappy, Soft, Linear,
+  # and a Long version of each with twice the time (p. 30).
+
+  feg_amount:
+    label: FEG Amount
+    cc: 32
+    group: filter_envelope
+  feg_decay:
+    label: FEG Decay
+    cc: 23
+    group: filter_envelope
+  feg_sustain:
+    label: FEG Sustain
+    cc: 24
+    group: filter_envelope
+  feg_release:
+    label: FEG Release
+    cc: 25
+    group: filter_envelope
+  feg_type:
+    label: FEG Type
+    cc: 81
+    group: filter_envelope
+
+  aeg_depth:
+    label: AEG Depth
+    cc: 51
+    group: amp_envelope
+  aeg_attack:
+    label: AEG Attack
+    cc: 26
+    group: amp_envelope
+  aeg_decay:
+    label: AEG Decay
+    cc: 27
+    group: amp_envelope
+  aeg_sustain:
+    label: AEG Sustain
+    cc: 28
+    group: amp_envelope
+  aeg_release:
+    label: AEG Release
+    cc: 29
+    group: amp_envelope
+  aeg_type:
+    label: AEG Type
+    cc: 80
+    group: amp_envelope
+
+  meg_depth:
+    label: MEG Depth
+    cc: 49
+    group: mod_envelope
+  meg_attack:
+    label: MEG Attack
+    cc: 43
+    group: mod_envelope
+  meg_decay:
+    label: MEG Decay
+    cc: 44
+    group: mod_envelope
+  meg_sustain:
+    label: MEG Sustain
+    cc: 45
+    group: mod_envelope
+  meg_release:
+    label: MEG Release
+    cc: 46
+    group: mod_envelope
+  meg_type:
+    label: MEG Type
+    cc: 82
+    group: mod_envelope
+
+  # All three envelopes at once, as holding FILT-EG or AMP-EG does on the panel
+  # (p. 31).
+  all_eg_attack:
+    label: All EG Attack
+    cc: 84
+    group: all_envelopes
+  all_eg_decay:
+    label: All EG Decay
+    cc: 85
+    group: all_envelopes
+  all_eg_sustain:
+    label: All EG Sustain
+    cc: 86
+    group: all_envelopes
+  all_eg_release:
+    label: All EG Release
+    cc: 87
+    group: all_envelopes
+
+  # ── LFOs ──────────────────────────────────────────────────────────────────
+  # LFO1 is global, LFO2 and LFO3 per voice. Each Shape is stepped: Sine, Tri,
+  # Sqr, Saw up, Saw down, S+H, Slewed S+H. LFO Modes is stepped: Retrigger,
+  # Single, Free (p. 32).
+
+  lfo_1_rate:
+    label: LFO1 Rate
+    cc: 36
+    group: lfo
+  lfo_1_depth:
+    label: LFO1 Depth
+    cc: 37
+    group: lfo
+  lfo_1_shape:
+    label: LFO1 Shape
+    cc: 39
+    group: lfo
+  lfo_1_transform:
+    label: LFO1 Transform
+    cc: 56
+    group: lfo
+  lfo_2_rate:
+    label: LFO2 Rate
+    cc: 47
+    group: lfo
+  lfo_2_depth:
+    label: LFO2 Depth
+    cc: 48
+    group: lfo
+  lfo_2_shape:
+    label: LFO2 Shape
+    cc: 50
+    group: lfo
+  lfo_2_transform:
+    label: LFO2 Transform
+    cc: 57
+    group: lfo
+  lfo_3_rate:
+    label: LFO3 Rate
+    cc: 3
+    group: lfo
+  lfo_3_depth:
+    label: LFO3 Depth
+    cc: 13
+    group: lfo
+  lfo_3_shape:
+    label: LFO3 Shape
+    cc: 22
+    group: lfo
+  lfo_3_transform:
+    label: LFO3 Transform
+    cc: 12
+    group: lfo
+  lfo_midi_sync:
+    label: LFO MIDI Sync
+    cc: 52
+    group: lfo
+  lfo_modes:
+    label: LFO Modes
+    cc: 54
+    group: lfo
+
+  # ── Arpeggiator ───────────────────────────────────────────────────────────
+
+  arp_status:
+    label: Arp Status
+    cc: 58
+    group: arpeggiator
+  arp_division:
+    label: Arp Division
+    cc: 61
+    group: arpeggiator
+  arp_octave:
+    label: Arp Octave
+    cc: 59
+    group: arpeggiator
+  arp_direction:
+    label: Arp Direction
+    cc: 60
+    group: arpeggiator
+  arp_gate:
+    label: Arp Gate
+    cc: 53
+    group: arpeggiator
+  swing:
+    label: Swing
+    cc: 78
+    group: arpeggiator
+
+  # ── Sequencer ─────────────────────────────────────────────────────────────
+
+  seq_length:
+    label: Seq Length
+    cc: 67
+    group: sequencer
+  seq_mute:
+    label: Seq Mute
+    cc: 68
+    group: sequencer
+  seq_clear:
+    label: Seq Clear
+    cc: 69
+    group: sequencer
+  seq_hold:
+    label: Seq Hold
+    cc: 70
+    group: sequencer
+  seq_loop:
+    label: Seq Loop
+    cc: 71
+    group: sequencer
+  seq_record:
+    label: Seq Record
+    cc: 72
+    group: sequencer
+  seq_quantise:
+    label: Seq Quantise
+    cc: 79
+    group: sequencer
+
+  # ── Effects ───────────────────────────────────────────────────────────────
+
+  fx_amount:
+    label: FX Amount
+    cc: 73
+    group: fx
+  delay_mode:
+    label: Delay Mode
+    cc: 41
+    # Stepped: Colour, Clean, Long (p. 40).
+    group: fx
+  delay_midi_sync:
+    label: Delay MIDI Sync
+    cc: 55
+    group: fx
+
+  # ── Modulation slots ──────────────────────────────────────────────────────
+  # Eight slots, each a depth, a source and a destination on three separate runs
+  # of numbers. Each slot is a group, so slot 3's three controls stay together.
+
+  modslot_1_depth:  {label: ModSlot 1 Depth,  cc: 88,  group: modslot_1}
+  modslot_1_source: {label: ModSlot 1 Source, cc: 100, group: modslot_1}
+  modslot_1_dest:   {label: ModSlot 1 Dest,   cc: 108, group: modslot_1}
+  modslot_2_depth:  {label: ModSlot 2 Depth,  cc: 89,  group: modslot_2}
+  modslot_2_source: {label: ModSlot 2 Source, cc: 101, group: modslot_2}
+  modslot_2_dest:   {label: ModSlot 2 Dest,   cc: 109, group: modslot_2}
+  modslot_3_depth:  {label: ModSlot 3 Depth,  cc: 90,  group: modslot_3}
+  modslot_3_source: {label: ModSlot 3 Source, cc: 102, group: modslot_3}
+  modslot_3_dest:   {label: ModSlot 3 Dest,   cc: 110, group: modslot_3}
+  modslot_4_depth:  {label: ModSlot 4 Depth,  cc: 91,  group: modslot_4}
+  modslot_4_source: {label: ModSlot 4 Source, cc: 103, group: modslot_4}
+  modslot_4_dest:   {label: ModSlot 4 Dest,   cc: 111, group: modslot_4}
+  modslot_5_depth:  {label: ModSlot 5 Depth,  cc: 92,  group: modslot_5}
+  modslot_5_source: {label: ModSlot 5 Source, cc: 104, group: modslot_5}
+  modslot_5_dest:   {label: ModSlot 5 Dest,   cc: 112, group: modslot_5}
+  modslot_6_depth:  {label: ModSlot 6 Depth,  cc: 93,  group: modslot_6}
+  modslot_6_source: {label: ModSlot 6 Source, cc: 105, group: modslot_6}
+  modslot_6_dest:   {label: ModSlot 6 Dest,   cc: 113, group: modslot_6}
+  modslot_7_depth:  {label: ModSlot 7 Depth,  cc: 94,  group: modslot_7}
+  modslot_7_source: {label: ModSlot 7 Source, cc: 106, group: modslot_7}
+  modslot_7_dest:   {label: ModSlot 7 Dest,   cc: 114, group: modslot_7}
+  modslot_8_depth:  {label: ModSlot 8 Depth,  cc: 95,  group: modslot_8}
+  modslot_8_source: {label: ModSlot 8 Source, cc: 107, group: modslot_8}
+  modslot_8_dest:   {label: ModSlot 8 Dest,   cc: 115, group: modslot_8}
+
+  # ── Joystick ──────────────────────────────────────────────────────────────
+  # Y+ is CC 1, above. X also sends pitch bend by default (p. 50).
+
+  joystick_x_plus:
+    label: Joystick X+
+    cc: 116
+    group: joystick
+  joystick_x_minus:
+    label: Joystick X-
+    cc: 117
+    group: joystick
+  joystick_y_minus:
+    label: Joystick Y-
+    cc: 118
+    group: joystick
+
+  # ── Input and output ──────────────────────────────────────────────────────
+
+  audio_in:
+    label: Audio In
+    cc: 83
+    group: output
+  patch_gain:
+    label: Patch Gain
+    cc: 119
+    # "Values in the range 0-100 should be transparent"; above that it can
+    # begin to saturate the limiter (p. 50).
+    group: output
+  main_volume:
+    label: Main Volume
+    cc: 7
+    group: output
+
+# The chart also lists 120, 121, 123, 124 and 125 -- All Sound Off, Reset All
+# Controllers, All Notes Off, Omni Off and Omni On. They are channel mode
+# messages, the same on every instrument that has them, so they live in
+# pymididefs.cc and not here. 122, Local Control, is printed "-": this
+# instrument does not answer to it.

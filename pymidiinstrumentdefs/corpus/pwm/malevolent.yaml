@@ -1,0 +1,37 @@
+# Nearly empty on purpose. The only document to hand for this instrument is a
+# twelve-page quick-start guide, so this file records what that guide says and
+# nothing it does not. In particular it does NOT say `control_change: none`:
+# the guide gives no controller numbers, which is a different thing from saying
+# there are none, and the two must never look alike.
+
+definition: 1
+
+model:
+  manufacturer: PWM
+  name: Malevolent
+
+source: >-
+  Quick start guide, doc v4.1 (c)2022, 12 pages: the introduction at p. 2 and
+  "USB-MIDI and Additional Functions" at p. 10. It is the only document for
+  this instrument among those supplied, and it never claims to be complete. It
+  names no control-change numbers anywhere, so none are listed here, and the
+  absence is unchecked rather than confirmed. NOT RECORDED: note range,
+  velocity, pitch-bend range and clock, which the guide does not state.
+
+midi:
+  # "Malevolent receives and transmits messages on MIDI Channel 1 by default",
+  # over class-compliant USB or its MIDI input. The channel is chosen by holding
+  # a key while powering on -- lowest F for 1, highest G for 16 -- and is
+  # remembered (p. 10). Which one yours is on belongs to your project.
+  channels: [1, 16]
+
+voice:
+  addressing: pitches
+  # "a mono-synth" (p. 10). The same page says it can be used as a polyphonic
+  # MIDI controller; that is a fact about what it sends, not about what it
+  # answers to.
+  polyphony: 1
+
+# Also on p. 10, and with no field to hold them: Local Off is enabled by holding
+# Arp while powering on and is not saved; the pitch-bend range is a stored
+# setting, reset to its factory default by holding the top C while powering on.

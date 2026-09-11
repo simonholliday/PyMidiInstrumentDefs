@@ -1,0 +1,54 @@
+# Nearly every note and controller this instrument answers to is assigned by
+# MIDI learn, so there is no factory map to publish. `control_change: learned`
+# and `note_map: learned` say so -- which is neither a checked absence nor an
+# unread page. What is fixed, and so true of every Pulsar-23, is below.
+
+definition: 1
+
+model:
+  # The manual names its maker only in a web address, somasynths.com.
+  manufacturer: Soma
+  name: Pulsar-23
+
+source: >-
+  User manual, version 1.2 (2020), 32 pages: the MIDI section at p. 5, the
+  clock section at p. 7, and the BASS synthesis module at pp. 14-15. NOT
+  RECORDED: note range, and the channel anything answers on, since each
+  channel is learned along with its key or controller.
+
+midi:
+  # Twelve parameters can be automated over MIDI: the triggers of the four
+  # synthesis modules, four freely assignable MIDI-to-CV converters, and the
+  # BASS module's SHAPE, WARP, portamento and pitch bend. All but the last two
+  # are assigned by pressing a LRN button and then a key or a controller; the
+  # Pulsar remembers the channel, the key or the CC number, through power-off.
+  # Pressing the four module LRN buttons together clears every assignment
+  # (p. 5).
+  control_change: learned
+  # With the INT MIDI switch at MIDI, external clock drives the clock dividers
+  # and the looper (pp. 5, 7).
+  clock: receives
+
+voice:
+  # Each synthesis module fires from a learned key, "taking into account
+  # velocity" (p. 5). With its DCO in MIDI mode the BASS module plays as a
+  # chromatic monophonic synthesizer instead (pp. 14-15).
+  addressing: voices
+  note_map: learned
+  velocity:
+    note_on: received
+  pitch_bend:
+    # BASS only, and fixed to the pitch bender: "the range is +/- 12 semitones"
+    # (p. 5).
+    semitones: 12
+
+controls:
+
+  portamento:
+    label: Portamento
+    cc: 5
+    # Fixed to "the standard portamento midi controller (CC05)", received on
+    # the channel of the keyboard assigned to BASS (pp. 5, 15). "Portamento can
+    # only be adjusted via MIDI", so the box has no control for it.
+    panel_only: true
+    group: bass

@@ -1,0 +1,90 @@
+definition: 1
+
+model:
+  manufacturer: Voce
+  name: ELECTRIC PIANO
+
+source: >-
+  Product manual, 9 pages: the front and rear panels at pp. 2-3, presets at
+  pp. 6-7, OMNI ON and multi-timbral modes at pp. 7-8, the MIDI Controlled
+  Effects table at pp. 8-9, and the specifications at p. 9. The unit also
+  shipped with a separate printed MIDI implementation chart, which is not among
+  the files; everything below is from the manual itself. NOT RECORDED: note
+  range and clock, which the manual does not mention.
+
+midi:
+  # A 16-position rotary switch: positions 1-15 set the basic channel and 0 is
+  # OMNI ON, so 16 cannot be the basic channel (p. 3). Which one yours is on
+  # belongs to your project, not here.
+  channels: [1, 15]
+  program_change:
+    receives: true
+    # All 32 over MIDI, the first 22 from the front panel too. Program changes
+    # are accepted only with the PRESET selector at P (pp. 3, 6).
+    presets: 32
+
+# Multi-timbral mode, which the format has no field for, so this file describes
+# one part. With the PRESET selector at M it plays three adjacent channels, the
+# basic channel and the two above it, wrapping at 16 (so 15 plays 15, 16 and 1),
+# each with its own preset by program change. Effect control changes are global
+# to all three. OMNI ON takes precedence over it (pp. 7-8).
+
+voice:
+  addressing: pitches
+  # "32 notes maximum, 16 notes minimum" (p. 9): chorus takes two voices for
+  # each note (p. 6), and CC 80 switches chorus, so the count is a state rather
+  # than a constant. Which preset is playing decides it, so it stays unknown.
+  polyphony: null
+  voicing_modes: [16, 32]
+  velocity:
+    # The timbre "varies greatly and smoothly over the entire key velocity
+    # range" (p. 1), and Auto Wah-wah follows key velocity (p. 2).
+    note_on: received
+
+controls:
+
+  volume:
+    label: Volume
+    cc: 7                      # "Volume can also be controlled via MIDI control number 7" (p. 2)
+    group: output
+
+  # ── Effects, all from the table at pp. 8-9 ────────────────────────────────
+  # Rate and Depth drive both the Tremolo and the Chorus.
+
+  rate:
+    label: Rate
+    cc: 94                     # 0 slowest, 127 fastest
+    group: effects
+  depth:
+    label: Depth
+    cc: 91                     # 0 least, 127 most
+    group: effects
+  chorus:
+    label: Chorus
+    cc: 80
+    values: {"off": 0, "on": 64}
+    group: effects
+  tremolo:
+    label: Tremolo
+    cc: 81
+    values: {"off": 0, "on": 64}
+    group: effects
+
+  # ── Wah-wah ───────────────────────────────────────────────────────────────
+
+  wah_wah:
+    label: Wah-wah On
+    cc: 82
+    # Lets the mod wheel (CC 1) and the foot pedal move the filter.
+    values: {"off": 0, "on": 64}
+    group: wah_wah
+  wah_wah_frequency:
+    label: Wah-wah Frequency
+    cc: 1                      # only while Wah-wah is on; 0 lowest, 127 highest
+    group: wah_wah
+  auto_wah_wah:
+    label: Auto Wah-wah
+    cc: 83
+    # Lets key velocity move the filter.
+    values: {"off": 0, "on": 64}
+    group: wah_wah

@@ -1,0 +1,36 @@
+definition: 1
+
+model:
+  manufacturer: Moog Music
+  name: Labyrinth
+
+source: >-
+  User manual, 62 pages: MIDI OPERATIONS at p. 47, the MIDI input on the patch
+  bay at p. 45, the MIDI channel and clock-division button combinations at
+  p. 37, and the specifications at p. 60. Every page was searched for "control
+  change", "CC" and "controller number" without a single hit, so the absence
+  of controls below is checked rather than assumed. NOT RECORDED: polyphony,
+  velocity and note range, which the manual does not state.
+
+midi:
+  # "MIDI responds to Clock, Note On, and Start/Stop/Continue messages" (p. 45),
+  # on a 3.5mm Type A input. There is no MIDI output.
+  # 1-16, or omni: "All green LEDs are OMNI" (p. 37). Which one yours is on
+  # belongs to your project, not here.
+  channels: [1, 16]
+  # 24 PPQN, divided by the MIDI Clock Div setting, 1-16 (pp. 37, 47). MIDI clock
+  # takes over from the internal clock when it arrives, and gives way again
+  # after five seconds without it.
+  clock: receives
+  # Start resets the sequencers and runs them, Stop stops them, and Continue
+  # runs them without resetting. Song Position is honoured only at 0, which
+  # resets; any other position is ignored (p. 47).
+  transport: receives
+  control_change: none
+
+voice:
+  # A note does not choose a pitch the way a keyboard synth's does. With the
+  # quantizer on, it transposes the root of both sequencers' quantized CVs; with
+  # the sequencers stopped, it also fires a trigger, "allowing Labyrinth to be
+  # played like a keyboard instrument" (p. 47).
+  addressing: pitches

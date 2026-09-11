@@ -9,9 +9,8 @@ source: >-
   implementation chart at pp. 70-74. The control-change map is the manual's own
   table at pp. 73-74, whose columns are Parameter | CC Number (MSB) | CC Number
   (LSB) | Values. Band boundaries below are quoted from that table.
-  NOT RECORDED, and marked in place: the band boundaries for Arp Mode, Arp
-  Pattern and Arp Range, which the source notes as three-state controls without
-  giving their values; and the power-on default for the voice mode switch.
+  NOT RECORDED, and marked in place: the power-on default for the voice mode
+  switch.
 
 midi:
   # 1-16 is what it can be set to. Which one yours is on belongs to your
@@ -244,23 +243,25 @@ controls:
     values: {minus_2: 0, minus_1: 26, zero: 51, plus_1: 77, plus_2: 102}
     group: keyboard
 
-  # ── Choices whose bands are not recorded ──────────────────────────────────
-  # The source names each of these as a three-state control and does not give
-  # the value ranges. `kind` says what they are; the absence of `values` says
-  # nobody has the numbers yet. Add them when the manual is next to hand.
+  # ── Arpeggiator choices ───────────────────────────────────────────────────
+  # All three quoted from the table at p. 74.
 
   arp_mode:
     label: Arp Mode
     cc: 91
-    kind: choice
+    # "0-42 = ARP, 43-84 = SEQ, 85-127 = REC"
+    values: {arp: 0, seq: 43, rec: 85}
     group: arpeggiator
   arp_pattern:
     label: Arp Pattern
     cc: 92
-    kind: choice
+    # "0-42 = ORDER, 43-84 = FW/BW, 85-127 = RANDOM"
+    values: {order: 0, fw_bw: 43, random: 85}
     group: arpeggiator
   arp_range:
-    label: Arp Range
+    label: Arp Range / Bank
     cc: 93
-    kind: choice
+    # "0-42 = 1, 43-84 = 2, 85-127 = 3" -- the manual labels it Arp Range / Bank
+    # and names its states only by number.
+    values: {one: 0, two: 43, three: 85}
     group: arpeggiator

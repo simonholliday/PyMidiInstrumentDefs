@@ -310,7 +310,37 @@ Before offering one, check that:
 - every row of the source is either in the file or excluded for a stated reason;
 - every `none` records what you searched for and where;
 - disagreements between sources are recorded rather than resolved silently;
+- the citation check below passes against your own copies of the documents;
 - `pytest` and `mypy` both pass.
 
-Then open a pull request. Expect to be asked which document, which edition, and which
-page — because that is the question this whole guide exists to make answerable.
+### Let a script follow your citation
+
+`tools/check_citations.py` does by machine what a reviewer would do by hand. Point it
+at the folder of documents you fetched, and for each definition it finds the document
+by the `sha256` in your `sources` block, turns to the pages your `source` line cites —
+applying the `page_offset` and `pages_per_sheet` you recorded — and reports every
+control number, LSB, NRPN and note number that is **not** printed there.
+
+```bash
+export PYMIDIINSTRUMENTDEFS_LIBRARY=/path/to/your/manuals
+python tools/check_citations.py moog/minitaur       # or no name, for all of them
+```
+
+It separates four faults, because they have four different fixes: a number that is not
+on the page you cited, a page the document does not have, a document whose hash matches
+nothing you have — which usually means the maker has revised it since you read it, so
+your citation now points into an edition nobody here has seen — and a definition too
+broken to load, which it reports as a sentence rather than a stack trace.
+
+It is not part of the test suite, and that is deliberate: the documents it reads are
+copyrighted and are never committed, so in CI it could only skip, and a skip nobody
+reads is a green tick certifying nothing.
+
+**A pass is narrower than it looks.** It means the cited page carries the number. It
+does not mean the number means what you say it means, that a band boundary is right,
+or that nothing was left out — a check that reads your definition to know what to look
+for can never tell you about a control you never wrote down.
+
+When all of that is done, open a pull request. Expect to be asked which document, which
+edition, and which page — because that is the question this whole guide exists to make
+answerable.

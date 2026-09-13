@@ -337,6 +337,56 @@ class Midi:
 		return self.control_change == "learned"
 
 
+# ── Where the facts came from ────────────────────────────────────────────────
+
+@dataclasses.dataclass(frozen=True)
+class Source:
+
+	"""One document the facts were read from, named so a stranger can fetch it.
+
+	``edition`` and ``dated`` are what the document says about *itself*, which is
+	not always what the page serving it says: one maker's MIDI implementation
+	states a revision a month earlier than the date printed beside its download.
+
+	``landing`` and ``url`` are both kept because they fail differently.  The
+	landing page is what a person can still navigate to next year; the file URL
+	is what was actually read, and is often a content-hashed path that names no
+	product and will not survive the maker's next site change.
+
+	``page_offset`` is what to add to a printed page number to reach the page of
+	the file.  It is data rather than a rule because there is no rule: across the
+	manuals here it has been -9, +1, 0, and one that prints two pages to a sheet.
+	A document with no pages at all -- a plain-text implementation chart runs to
+	numbered sections instead -- says so with ``paginated: false``.
+	"""
+
+	kind: str | None = None
+	title: str | None = None
+	edition: str | None = None
+	dated: str | None = None
+	landing: str | None = None
+	url: str | None = None
+	sha256: str | None = None
+	retrieved: str | None = None
+	page_offset: int = 0
+	pages_per_sheet: int = 1
+	paginated: bool = True
+
+
+	def file_page (self, printed: int) -> int | None:
+
+		"""Which page of the file carries a given printed page number.
+
+		``None`` where the document has no pages, so a caller asking the question
+		is told the question does not apply rather than given a number.
+		"""
+
+		if not self.paginated:
+			return None
+
+		return (printed + self.page_offset + self.pages_per_sheet - 1) // self.pages_per_sheet
+
+
 # ── The whole document ───────────────────────────────────────────────────────
 
 @dataclasses.dataclass(frozen=True)
@@ -352,6 +402,7 @@ class Definition:
 	version: int
 	model: Model
 	source: str | None = None
+	sources: dict[str, Source] = dataclasses.field(default_factory=dict)
 	midi: Midi = dataclasses.field(default_factory=Midi)
 	voice: Voice = dataclasses.field(default_factory=Voice)
 	controls: dict[str, Control] = dataclasses.field(default_factory=dict)

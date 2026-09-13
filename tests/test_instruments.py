@@ -771,6 +771,83 @@ class TestWarnings:
 		assert any("neither cc nor nrpn" in warning for warning in definition.warnings)
 
 
+class TestSources:
+
+	def test_a_citation_keeps_the_landing_page_and_the_file_apart (self) -> None:
+		"""They fail differently: the page outlives the file's address.
+
+		A maker's file often sits on a content-hashed path that names no product
+		and does not survive the next site change, while the page a person can
+		navigate to stays put.
+		"""
+		body = (
+			"definition: 1\nmodel: {name: X}\n"
+			"sources:\n"
+			"  midi_impl:\n"
+			"    kind: midi_implementation\n"
+			"    title: minilogue xd/MIDI Implimentation\n"
+			"    edition: Revision 1.01\n"
+			"    landing: https://example.test/support/product/811/\n"
+			"    url: https://cdn.example.test/files/5227b0b2.txt\n"
+			"    sha256: f34014c103b0127f\n"
+		)
+		document = pymidiinstrumentdefs.parse(body, source = "x.yaml").sources["midi_impl"]
+
+		assert document.edition == "Revision 1.01"
+		assert document.title == "minilogue xd/MIDI Implimentation"
+		assert document.landing == "https://example.test/support/product/811/"
+		assert document.url == "https://cdn.example.test/files/5227b0b2.txt"
+
+	def test_a_bare_date_is_kept_as_it_prints (self) -> None:
+		"""YAML hands `dated: 2020-02-10` over as a date rather than as text.
+
+		It is the obvious way to write one, so a file that looks perfectly correct
+		must not be refused for writing it that way.
+		"""
+		body = "definition: 1\nmodel: {name: X}\nsources: {m: {dated: 2020-02-10}}"
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.sources["m"].dated == "2020-02-10"
+
+	def test_a_printed_page_becomes_a_page_of_the_file (self) -> None:
+		"""One manual here prints two pages to a sheet, so printed 21 is sheet 12.
+
+		Its definition cites pp. 21-24 of a file with 19 pages, which is only not a
+		contradiction once the sheet count is known.
+		"""
+		body = "definition: 1\nmodel: {name: X}\nsources: {m: {page_offset: 2, pages_per_sheet: 2}}"
+		document = pymidiinstrumentdefs.parse(body, source = "x.yaml").sources["m"]
+
+		assert [document.file_page(printed) for printed in (21, 22, 23, 24)] == [12, 12, 13, 13]
+
+	def test_a_document_with_no_pages_says_so (self) -> None:
+		"""A plain-text implementation chart runs to numbered sections, not pages."""
+		body = "definition: 1\nmodel: {name: X}\nsources: {m: {paginated: false}}"
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").sources["m"].file_page(5) is None
+
+	def test_no_sources_section_is_no_error (self) -> None:
+		definition = pymidiinstrumentdefs.parse("definition: 1\nmodel: {name: X}", source = "x.yaml")
+
+		assert definition.sources == {}
+
+	def test_a_source_name_must_be_addressable (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsources: {'Manual': {}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "is not a name" in str(raised.value)
+
+	def test_a_malformed_offset_names_the_entry (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsources: {m: {page_offset: nine}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "sources.m.page_offset" in str(raised.value)
+
+
 class TestSearchPath:
 
 	def test_the_nearest_definition_wins (self, tmp_path: pathlib.Path) -> None:

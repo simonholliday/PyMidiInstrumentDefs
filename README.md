@@ -154,6 +154,7 @@ authority -- not this README.**
 matriarch = pymidiinstrumentdefs.load("moog/matriarch")
 
 matriarch.source        # the manual and the pages, in the file's own words
+matriarch.sources       # the same, in fields: edition, address, SHA-256, page offset
 matriarch.is_unverified # True if nobody has checked it yet
 matriarch.warnings      # what the validator thought worth saying
 ```
@@ -207,6 +208,13 @@ controller does what, and not yet reliable about what its values mean.
 **And a definition you supply yourself is yours.** Files you drop beside your
 project or into your own library beat the ones bundled here, by design, and
 this package makes no claim about where their numbers came from.
+
+**Writing one, and want the numbers to be right?**
+[docs/adding-an-instrument.md](docs/adding-an-instrument.md) is the long answer:
+where makers actually publish, which kinds of source can be the only source for a
+fact and which can do no more than disagree with you, how to tell which firmware a
+document describes when its own date will not tell you, and how to cite it so that a
+stranger can check every number in the file.
 
 ## History
 

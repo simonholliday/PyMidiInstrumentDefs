@@ -13,6 +13,7 @@ field inside a known section, an empty file, an absent section, and a null
 section.  That is what lets one tool grow a section without breaking another.
 """
 
+import datetime
 import pathlib
 import re
 import typing
@@ -142,6 +143,26 @@ class _Reader:
 		return value
 
 
+	def stamp (self, section: dict[str, typing.Any], field: str, where: str) -> str | None:
+
+		"""Read a date, written either as text or as a bare YAML date.
+
+		``dated: 2020-02-10`` is the obvious way to write one and YAML hands it
+		over as a date object rather than as text, so a file that looks perfectly
+		correct would be refused.  Both forms are kept as the text they print as.
+		"""
+
+		if field not in section or section[field] is None:
+			return None
+
+		written: object = section[field]
+
+		if isinstance(written, (datetime.date, datetime.datetime)):
+			return written.isoformat()
+
+		return self.text(written, f"{where}.{field}")
+
+
 	def name (self, value: object, where: str) -> str:
 
 		"""Read an addressable name, which must be lower case, digits and underscores."""
@@ -197,6 +218,39 @@ class _Reader:
 			return None
 
 		return self.text(section[field], f"{where}.{field}")
+
+
+	def sources (self, value: object) -> dict[str, pymidiinstrumentdefs.definition.Source]:
+
+		"""Read the documents the facts came from, each under a short name.
+
+		Every field is optional, because a definition written from a manual
+		somebody has on paper can still say which manual it was.  What is checked
+		is that whatever *is* given has the right shape, so a citation a script
+		follows cannot quietly be a number where a name should be.
+		"""
+
+		found = {}
+
+		for name, entry in self.mapping(value, "sources").items():
+			where = f"sources.{name}"
+			fields = self.mapping(entry, where)
+
+			found[self.name(name, "sources")] = pymidiinstrumentdefs.definition.Source(
+				kind            = self.optional_text(fields, "kind", where),
+				title           = self.optional_text(fields, "title", where),
+				edition         = self.optional_text(fields, "edition", where),
+				dated           = self.stamp(fields, "dated", where),
+				landing         = self.optional_text(fields, "landing", where),
+				url             = self.optional_text(fields, "url", where),
+				sha256          = self.optional_text(fields, "sha256", where),
+				retrieved       = self.stamp(fields, "retrieved", where),
+				page_offset     = self.integer(fields["page_offset"], f"{where}.page_offset", -999, 999) if "page_offset" in fields else 0,
+				pages_per_sheet = self.integer(fields["pages_per_sheet"], f"{where}.pages_per_sheet", 1, 8) if "pages_per_sheet" in fields else 1,
+				paginated       = self.flag(fields["paginated"], f"{where}.paginated") if "paginated" in fields else True,
+			)
+
+		return found
 
 
 	def midi (self, value: object) -> pymidiinstrumentdefs.definition.Midi:
@@ -558,6 +612,7 @@ def build (
 
 	model = reader.model(raw["model"])
 	provenance = reader.optional_text(raw, "source", "file")
+	documents = reader.sources(raw.get("sources"))
 	controls = reader.controls(raw.get("controls"))
 	voice = reader.voice(raw.get("voice"))
 
@@ -582,6 +637,7 @@ def build (
 		version  = version,
 		model    = model,
 		source   = provenance,
+		sources  = documents,
 		midi     = reader.midi(raw.get("midi")),
 		voice    = voice,
 		controls = controls,

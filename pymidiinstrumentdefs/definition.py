@@ -385,7 +385,10 @@ class Part:
 	``receives`` is what a consumer reads to know what a part is *for*: which kinds
 	of message reach it at all.  It is a list rather than a flag because the cases
 	need one — the Voce's three parts each take notes and their own program change
-	while its effect controls are global to all three.  ``addressing`` says how
+	while its effect controls are global to all three.  ``None`` is nobody having
+	recorded it, and an empty tuple is a part recorded as receiving nothing, which
+	a consumer may treat differently: offering a note grid a musician can try, or
+	knowing not to draw one.  ``addressing`` says how
 	notes are read **when** the part takes them, and means nothing when it does not.
 
 	``polyphony`` is how many voices a part has to itself, and it counts **each
@@ -397,7 +400,7 @@ class Part:
 	channel: str | None = None
 	channel_offset: int | None = None
 	count: int = 1
-	receives: tuple[str, ...] = ()
+	receives: tuple[str, ...] | None = None
 	addressing: str | None = None
 	polyphony: int | None = None
 
@@ -405,9 +408,13 @@ class Part:
 	@property
 	def is_assigned (self) -> bool:
 
-		"""True when this part is given a channel rather than deriving one."""
+		"""True when this part is given a channel rather than deriving one.
 
-		return self.channel_offset is None
+		False for a part that says neither, which nothing can address: offering a
+		channel picker for it would claim something nobody recorded.
+		"""
+
+		return self.channel == ASSIGNED
 
 
 	def takes (self, message: str) -> bool:
@@ -415,10 +422,11 @@ class Part:
 		"""Whether this part answers to a kind of message — notes, controls, program change.
 
 		A part that says nothing about what it receives answers ``False`` to
-		everything, which is honest: nobody recorded it.
+		everything, which is honest: nobody recorded it.  Read ``receives`` itself
+		to tell that apart from a part recorded as receiving nothing.
 		"""
 
-		return message in self.receives
+		return self.receives is not None and message in self.receives
 
 
 	def channel_for (self, base: int, instance: int = 0) -> int | None:
@@ -431,7 +439,17 @@ class Part:
 		Channels wrap at 16, which is documented behaviour rather than arithmetic
 		convenience: a Voce on a base channel of 15 plays its three parts on 15,
 		16 and 1.
+
+		A base channel outside 1-16, or an instance this part does not have, is
+		refused rather than answered: a plausible channel for a fourth instance of
+		a part with three would send to something that does not exist.
 		"""
+
+		if not 1 <= base <= 16:
+			raise ValueError(f"base channel {base} is outside 1-16")
+
+		if not 0 <= instance < self.count:
+			raise ValueError(f"instance {instance} is outside 0-{self.count - 1}, as this part has {self.count}")
 
 		if self.channel_offset is None:
 			return None
@@ -561,6 +579,45 @@ class Definition:
 			parts.setdefault(control.part or "", []).append(control)
 
 		return parts
+
+
+	def controls_reaching (self, part: str, instance: int = 0) -> list[Control]:
+
+		"""The controls one instance of a part answers to on its channel, in file order.
+
+		A part's own controls, and — for the one instance sitting on the base
+		channel, where the part is recorded as receiving controls — the controls
+		that name no part, since those are sent on the base channel too.  So a
+		Streichfett's strings part gets all nineteen, because its channel *is* the
+		base channel and it takes controls there, while its solo part gets none.
+
+		A Voce is why the rule asks what the part receives.  Its three parts start
+		on the base channel but take only notes and program change, and its effect
+		controls are "global to all three": they stay with the instrument rather
+		than being filed under its first part.
+
+		An assigned part gets only its own.  Whether a player happens to put it
+		on the base channel is their project's business, not this file's.  A
+		control the instrument only transmits is included like any other; read
+		``is_sendable`` for which a panel may send.
+		"""
+
+		found = self.parts[part]
+
+		if not 0 <= instance < found.count:
+			raise ValueError(f"instance {instance} is outside 0-{found.count - 1}, as {part!r} has {found.count}")
+
+		# Offsets wrap at 16 like channels do, so an instance is on the base
+		# channel whenever its offset comes round to a whole number of sixteen.
+
+		on_base = found.channel_offset is not None \
+			and (found.channel_offset + instance) % 16 == 0 \
+			and found.takes(CONTROLS)
+
+		return [
+			control for control in self.controls.values()
+			if control.part == part or (control.part is None and on_base)
+		]
 
 
 	def panel_first (self) -> list[Control]:

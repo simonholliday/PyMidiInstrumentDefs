@@ -282,11 +282,13 @@ Four rules worth holding on to:
   are all of that kind.
 - **`receives` is a list because one flag is not enough.** A Voce's three parts each take
   notes *and their own program change*, while its effect controls are global to all three.
-  No single true-or-false can say that.
+  No single true-or-false can say that. Leave `receives` out where the document does not
+  say; `receives: []` says the part was found to take nothing, which is a different fact.
 - **Claim only what the document says.** A Streichfett's manual says its solo section can be
   *triggered* on the next channel up. It never says a control change reaches it there — so
   that part receives `notes`, and nothing more is claimed. A control sent to a channel an
-  instrument ignores does nothing, and says nothing about why.
+  instrument ignores does nothing, and says nothing about why. So a control naming a part
+  whose `receives` leaves out `controls` is refused: the file would be saying both.
 - **Say whether parts share their voices.** A Digitone's eight voices go to whichever of
   its tracks plays next, so eight is a ceiling across all four, not a figure each can count
   on. A Streichfett's two sections have voices of their own, 128 and eight. Those are

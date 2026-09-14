@@ -86,6 +86,7 @@ streichfett.parts["solo"].channel_for(1)   # 2 — one channel above the strings
 streichfett.parts["solo"].takes("notes")   # True
 streichfett.parts["solo"].polyphony        # 8 — its own voices, not the strings'
 streichfett.controls_by_part()[""]         # the controls on the base channel
+streichfett.controls_reaching("strings")   # all 19 — the strings sit on the base channel
 ```
 
 ### Names, and where the files go

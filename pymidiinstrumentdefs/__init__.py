@@ -60,6 +60,8 @@ Control = pymidiinstrumentdefs.definition.Control
 Definition = pymidiinstrumentdefs.definition.Definition
 Midi = pymidiinstrumentdefs.definition.Midi
 Model = pymidiinstrumentdefs.definition.Model
+Part = pymidiinstrumentdefs.definition.Part
+Source = pymidiinstrumentdefs.definition.Source
 Voice = pymidiinstrumentdefs.definition.Voice
 
 DefinitionNotFound = pymidiinstrumentdefs.loading.DefinitionNotFound
@@ -84,6 +86,8 @@ __all__ = [
 	"DefinitionNotFound",
 	"Midi",
 	"Model",
+	"Part",
+	"Source",
 	"Voice",
 	"available",
 	"load",

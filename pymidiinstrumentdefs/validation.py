@@ -296,6 +296,9 @@ class _Reader:
 
 			receives: list[str] = []
 
+			# Absent is unrecorded and an empty list is a part receiving nothing,
+			# so the two are kept apart rather than both read as empty.
+
 			for message in self.sequence(fields.get("receives"), f"{where}.receives"):
 				kind = self.text(message, f"{where}.receives")
 
@@ -312,7 +315,7 @@ class _Reader:
 				channel        = channel,
 				channel_offset = offset,
 				count          = self.integer(fields["count"], f"{where}.count", 1, 16) if "count" in fields else 1,
-				receives       = tuple(receives),
+				receives       = None if fields.get("receives") is None else tuple(receives),
 				addressing     = addressing,
 				polyphony      = None if fields.get("polyphony") is None
 					else self.integer(fields["polyphony"], f"{where}.polyphony", 0, 256),
@@ -775,6 +778,24 @@ def build (
 			reader.refuse(
 				f"controls.{control.name}.part",
 				f"names {control.part!r}, which is not one of this instrument's parts",
+			)
+
+	# The same silent failure from the other side: a control put on a part the
+	# file itself says takes no controls would be sent to a channel that ignores
+	# it.  Only where receiving is recorded, and not for a control the instrument
+	# only transmits, since what the part receives is then not the question.
+
+	for control in controls.values():
+		if control.part is None or control.direction == pymidiinstrumentdefs.definition.TRANSMITS:
+			continue
+
+		part = parts[control.part]
+
+		if part.receives is not None and not part.takes(pymidiinstrumentdefs.definition.CONTROLS):
+			reader.refuse(
+				f"controls.{control.name}.part",
+				f"names {control.part!r}, which this file says receives no controls — "
+				f"either the control is on another channel or the part's receives is incomplete",
 			)
 
 	return pymidiinstrumentdefs.definition.Definition(

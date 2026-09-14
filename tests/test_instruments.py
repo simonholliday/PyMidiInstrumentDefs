@@ -899,6 +899,23 @@ class TestParts:
 
 		assert [part.channel_for(15, instance) for instance in (0, 1, 2)] == [15, 16, 1]
 
+	def test_an_instance_the_part_does_not_have_has_no_channel (self) -> None:
+		"""A plausible channel for a fourth of three parts would send to nothing at all."""
+		part = self.make("parts: {voice: {channel_offset: 0, count: 3}}").parts["voice"]
+
+		with pytest.raises(ValueError):
+			part.channel_for(1, 3)
+
+		with pytest.raises(ValueError):
+			part.channel_for(1, -1)
+
+	def test_a_base_channel_outside_the_sixteen_is_refused (self) -> None:
+		part = self.make("parts: {solo: {channel_offset: 1}}").parts["solo"]
+
+		for base in (0, 17):
+			with pytest.raises(ValueError):
+				part.channel_for(base)
+
 	def test_a_part_says_which_messages_reach_it (self) -> None:
 		"""The Voce's parts take notes and program change; its effects are global to all three.
 
@@ -914,8 +931,22 @@ class TestParts:
 		"""Silence is nobody having recorded it, not a checked absence."""
 		part = self.make("parts: {solo: {channel_offset: 1}}").parts["solo"]
 
+		assert part.receives is None
+		assert part.takes("notes") is False
+
+	def test_a_part_recorded_as_receiving_nothing_is_not_unrecorded (self) -> None:
+		"""One lets a consumer offer a note grid a musician can try; the other says not to draw one."""
+		part = self.make("parts: {lane: {channel: assigned, receives: []}}").parts["lane"]
+
 		assert part.receives == ()
 		assert part.takes("notes") is False
+
+	def test_a_part_nothing_can_address_is_not_assigned_a_channel (self) -> None:
+		"""Otherwise a consumer would offer a channel picker for a part nobody said takes one."""
+		definition = self.make("parts: {ghost: {label: Ghost}, synth: {channel: assigned}}")
+
+		assert definition.parts["ghost"].is_assigned is False
+		assert definition.parts["synth"].is_assigned is True
 
 	def test_controls_are_collected_by_the_part_they_name (self) -> None:
 		"""A control naming no part is on the base channel, which is a real case.
@@ -936,6 +967,54 @@ class TestParts:
 		assert [control.name for control in by_part["synth"]] == ["cutoff"]
 		assert [control.name for control in by_part["fx"]] == ["reverb_amount"]
 		assert [control.name for control in by_part[""]] == ["balance"]
+
+	def test_a_part_on_the_base_channel_answers_to_the_unparted_controls_too (self) -> None:
+		"""A Streichfett's strings take every control, since their channel is the base channel.
+
+		Its solo part, a channel above, takes notes and none of them.
+		"""
+		streichfett = pymidiinstrumentdefs.load("waldorf/streichfett", [CORPUS])
+
+		assert len(streichfett.controls_reaching("strings")) == len(streichfett.controls) == 19
+		assert streichfett.controls_reaching("solo") == []
+
+	def test_a_part_taking_no_controls_is_not_handed_the_instruments_own (self) -> None:
+		"""A Voce's parts start on the base channel, but its effects are global to all three."""
+		voce = pymidiinstrumentdefs.load("voce/electric_piano", [CORPUS])
+
+		assert [voce.controls_reaching("multi", instance) for instance in (0, 1, 2)] == [[], [], []]
+
+	def test_only_the_instance_on_the_base_channel_takes_the_unparted_controls (self) -> None:
+		"""An offset of -1 comes round to the base channel on the second instance, not the first."""
+		definition = self.make(
+			"parts: {layer: {channel_offset: -1, count: 3, receives: [notes, controls]}}\n"
+			"controls:\n"
+			"  cutoff: {cc: 23, part: layer}\n"
+			"  volume: {cc: 7}\n"
+		)
+		reaching = [[control.name for control in definition.controls_reaching("layer", instance)] for instance in (0, 1, 2)]
+
+		assert reaching == [["cutoff"], ["cutoff", "volume"], ["cutoff"]]
+
+	def test_an_assigned_part_answers_only_to_its_own_controls (self) -> None:
+		"""Whether a player puts it on the base channel is their project's business."""
+		definition = self.make(
+			"parts: {synth: {channel: assigned, count: 4, receives: [notes, controls]}}\n"
+			"controls:\n"
+			"  cutoff: {cc: 23, part: synth}\n"
+			"  volume: {cc: 7}\n"
+		)
+
+		assert [control.name for control in definition.controls_reaching("synth", 3)] == ["cutoff"]
+
+	def test_asking_for_an_instance_or_part_that_does_not_exist_is_refused (self) -> None:
+		definition = self.make("parts: {synth: {channel: assigned, count: 4}}")
+
+		with pytest.raises(ValueError):
+			definition.controls_reaching("synth", 4)
+
+		with pytest.raises(KeyError):
+			definition.controls_reaching("fx")
 
 	def test_the_same_number_means_different_things_in_different_parts (self) -> None:
 		"""A Digitone's CC 70 is filter attack on a track and chorus high-pass on the FX channel.
@@ -958,6 +1037,39 @@ class TestParts:
 			self.make("parts: {synth: {channel: assigned}}\ncontrols: {cutoff: {cc: 23, part: fx}}")
 
 		assert "controls.cutoff.part" in str(raised.value)
+
+	def test_a_control_on_a_part_that_takes_no_controls_is_refused (self) -> None:
+		"""A Streichfett's solo channel takes notes, and a control sent there does nothing.
+
+		That took a measurement to establish on the instrument, so a file that
+		says both things at once is refused rather than left to fail on the wire.
+		"""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make(
+				"parts: {solo: {channel_offset: 1, receives: [notes]}}\n"
+				"controls: {solo_tone: {cc: 76, part: solo}}\n"
+			)
+
+		assert "controls.solo_tone.part" in str(raised.value)
+		assert "receives no controls" in str(raised.value)
+
+	def test_a_control_on_a_part_whose_receiving_is_unrecorded_still_loads (self) -> None:
+		"""Nothing is contradicted when nobody recorded what the part receives."""
+		definition = self.make(
+			"parts: {synth: {channel: assigned}}\n"
+			"controls: {cutoff: {cc: 23, part: synth}}\n"
+		)
+
+		assert definition.controls["cutoff"].part == "synth"
+
+	def test_a_control_the_instrument_only_transmits_may_sit_on_any_part (self) -> None:
+		"""What a part receives says nothing about what the instrument sends from it."""
+		definition = self.make(
+			"parts: {lane: {channel: assigned, receives: [notes]}}\n"
+			"controls: {pressure_out: {cc: 2, part: lane, direction: transmits}}\n"
+		)
+
+		assert definition.controls["pressure_out"].part == "lane"
 
 	def test_a_part_cannot_both_be_given_a_channel_and_derive_one (self) -> None:
 		"""A reader could not tell which to believe."""
@@ -1187,6 +1299,15 @@ class TestSearchPath:
 			pymidiinstrumentdefs.load_file(path)
 
 		assert "moog/matriarch" in str(raised.value)
+
+
+class TestPublicSurface:
+
+	def test_every_type_a_definition_hands_out_is_importable_from_the_package (self) -> None:
+		"""So a consumer can annotate what it holds without reaching into a submodule."""
+		assert pymidiinstrumentdefs.Part is pymidiinstrumentdefs.definition.Part
+		assert pymidiinstrumentdefs.Source is pymidiinstrumentdefs.definition.Source
+		assert {"Part", "Source"} <= set(pymidiinstrumentdefs.__all__)
 
 
 class TestGrouping:

@@ -237,6 +237,28 @@ class Followed:
 		return page is not None and 1 <= page <= self.extent
 
 
+def unreachable_pages (cited: set[int], documents: "list[Followed]") -> set[int]:
+
+	"""The printed pages a citation names that no cited document has.
+
+	A printed page nobody can turn to is a different fault from a number that is
+	not there, and it has a different fix: the citation is wrong, or the document
+	it belongs to was never recorded.
+
+	**Only a paginated document can have a page**, so only those can answer.  An
+	earlier version excused every page citation in a definition as soon as any of
+	its sources had no pages -- which meant citing a plain-text chart or a saved web
+	page beside a manual silently switched off this check for the manual too.  A
+	citation of a page is a claim about a document that has pages, whatever else
+	the definition also cites.
+	"""
+
+	return {
+		printed for printed in cited
+		if not any(document.covers(printed) for document in documents)
+	}
+
+
 @dataclasses.dataclass
 class Result:
 
@@ -298,18 +320,7 @@ def follow (
 
 		result.documents.append(document)
 
-	# A printed page nobody can turn to is a different fault from a number that
-	# is not there, and it has a different fix: the citation is wrong, or the
-	# document it belongs to was never recorded.
-
-	unpaginated = [
-		document for document in result.documents
-		if document.path is not None and document.extent is None
-	]
-
-	for printed in result.cited:
-		if not unpaginated and not any(document.covers(printed) for document in result.documents):
-			result.unreachable.add(printed)
+	result.unreachable = unreachable_pages(result.cited, result.documents)
 
 	for document in result.documents:
 		if document.path is None:

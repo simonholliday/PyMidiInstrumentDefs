@@ -144,6 +144,27 @@ class TestFollowingAPageIntoAFile:
 
 		assert document.covers(20) is False
 
+	def test_a_page_citation_is_still_checked_beside_a_document_with_no_pages (self) -> None:
+		"""Citing a plain-text chart or a saved web page must not excuse the manual's pages.
+
+		An earlier version stopped reporting unreachable pages for a whole
+		definition the moment any of its sources had no pages.  A Korg minilogue xd
+		pairs a PDF manual with a plain-text MIDI implementation, which is exactly
+		the shape that would have hidden a wrong citation.
+		"""
+		manual = self.make("page_offset: 0")
+		chart = self.make("paginated: false")
+		chart.extent = None
+
+		assert tool.unreachable_pages({5, 400}, [manual, chart]) == {400}
+
+	def test_a_page_of_a_document_with_no_pages_is_unreachable (self) -> None:
+		"""A document with no pages has no page 5, so citing one is a fault to report."""
+		chart = self.make("paginated: false")
+		chart.extent = None
+
+		assert tool.unreachable_pages({5}, [chart]) == {5}
+
 	def test_a_document_that_is_not_in_the_library_covers_nothing (self) -> None:
 		"""Nothing can be checked against a file nobody has, and that is its own fault."""
 		document = self.make("page_offset: 0")

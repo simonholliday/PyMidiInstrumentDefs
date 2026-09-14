@@ -244,6 +244,15 @@ class Voice:
 	Where voicing is a setting, ``voicing_modes`` lists what it can be and
 	``polyphony`` names the default.
 
+	``polyphony_shared`` means something only for an instrument with parts, and
+	says whether those parts draw on one pool of voices.  ``True`` is a Digitone,
+	whose eight voices are taken by whichever of its four tracks plays next, so
+	``polyphony`` is a ceiling across all of them together and not a figure each
+	track can count on.  ``False`` is a Streichfett, whose strings and solo
+	sections each have voices of their own, stated against each part.  ``None``
+	is nobody having recorded it.  How a player divides a shared pool, where the
+	instrument lets them, is a setting and belongs to their project.
+
 	``addressing`` is ``relative`` for an instrument that reads a note as an
 	offset from ``reference_note`` rather than as a pitch.  ``note_map`` is
 	``learned`` where notes are assigned by MIDI learn, in which case any
@@ -255,6 +264,7 @@ class Voice:
 	note_map: str | None = None
 	note_range: tuple[int, int] | None = None
 	polyphony: int | None = None
+	polyphony_shared: bool | None = None
 	paraphonic: bool | None = None
 	voicing_modes: tuple[int, ...] = ()
 	velocity: Velocity | None = None
@@ -377,6 +387,10 @@ class Part:
 	need one — the Voce's three parts each take notes and their own program change
 	while its effect controls are global to all three.  ``addressing`` says how
 	notes are read **when** the part takes them, and means nothing when it does not.
+
+	``polyphony`` is how many voices a part has to itself, and it counts **each
+	instance**: three parts at eight voices is eight each.  Voices shared across
+	parts are stated once, on the instrument, rather than here.
 	"""
 
 	label: str | None = None
@@ -385,6 +399,7 @@ class Part:
 	count: int = 1
 	receives: tuple[str, ...] = ()
 	addressing: str | None = None
+	polyphony: int | None = None
 
 
 	@property

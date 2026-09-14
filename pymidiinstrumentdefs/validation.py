@@ -314,6 +314,8 @@ class _Reader:
 				count          = self.integer(fields["count"], f"{where}.count", 1, 16) if "count" in fields else 1,
 				receives       = tuple(receives),
 				addressing     = addressing,
+				polyphony      = None if fields.get("polyphony") is None
+					else self.integer(fields["polyphony"], f"{where}.polyphony", 0, 256),
 			)
 
 		return found
@@ -400,6 +402,8 @@ class _Reader:
 				else self.pair(section["note_range"], "voice.note_range", 0, 127),
 			polyphony = None if section.get("polyphony") is None
 				else self.integer(section["polyphony"], "voice.polyphony", 0, 256),
+			polyphony_shared = None if section.get("polyphony_shared") is None
+				else self.flag(section["polyphony_shared"], "voice.polyphony_shared"),
 			paraphonic = None if section.get("paraphonic") is None
 				else self.flag(section["paraphonic"], "voice.paraphonic"),
 			voicing_modes = tuple(
@@ -411,6 +415,64 @@ class _Reader:
 			pitch_bend   = self.pitch_bend(section.get("pitch_bend")),
 			voices       = voices,
 		)
+
+
+	def polyphony (
+		self,
+		voice: pymidiinstrumentdefs.definition.Voice,
+		parts: dict[str, pymidiinstrumentdefs.definition.Part],
+	) -> None:
+
+		"""Refuse voices counted in two places that cannot both be true.
+
+		An instrument with parts has one pool of voices its parts draw on, or a
+		pool for each part, and never both.  Each refusal is a file that would
+		give a consumer two answers to how many notes a part can hold.  Leaving
+		the question unanswered is allowed; answering half of it is warned, so
+		that whoever reads a figure is not left guessing what it covers.
+		"""
+
+		own = [name for name, part in parts.items() if part.polyphony is not None]
+
+		if voice.polyphony_shared is not None and not parts:
+			self.refuse(
+				"voice.polyphony_shared",
+				"says whether parts share their voices, and this instrument declares no parts",
+			)
+
+		if voice.polyphony_shared is True and own:
+			self.refuse(
+				f"parts.{own[0]}.polyphony",
+				"gives this part voices of its own, and voice.polyphony_shared says every part draws on one pool",
+			)
+
+		if voice.polyphony_shared is False and voice.polyphony is not None:
+			self.refuse(
+				"voice.polyphony",
+				"gives one figure for the whole instrument, and voice.polyphony_shared says each part "
+				"has voices of its own — give each part its figure instead",
+			)
+
+		if voice.polyphony is not None and own:
+			self.refuse(
+				"voice.polyphony",
+				f"gives one figure for the whole instrument, and parts.{own[0]} gives voices of its own "
+				f"— say it once, where it is true",
+			)
+
+		if own and voice.polyphony_shared is None:
+			self.warn(
+				f"parts.{own[0]}.polyphony",
+				"gives this part voices of its own without voice.polyphony_shared: false, so asking the "
+				"instrument whether its parts share voices gets no answer",
+			)
+
+		if parts and voice.polyphony is not None and voice.polyphony_shared is None:
+			self.warn(
+				"voice.polyphony",
+				"gives one figure for an instrument with parts without saying whether they share it "
+				"— add voice.polyphony_shared",
+			)
 
 
 	def sequence (self, value: object, where: str) -> list[typing.Any]:
@@ -701,6 +763,8 @@ def build (
 					"voice.velocity.gated_by",
 					f"names {gate!r}, which is not one of this instrument's controls",
 				)
+
+	reader.polyphony(voice, parts)
 
 	# A control naming a part nothing declares would be addressed on a channel
 	# that does not exist, which fails silently on the wire.  Refused for the

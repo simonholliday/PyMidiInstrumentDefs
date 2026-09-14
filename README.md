@@ -84,6 +84,7 @@ streichfett = pymidiinstrumentdefs.load("waldorf/streichfett")
 
 streichfett.parts["solo"].channel_for(1)   # 2 — one channel above the strings
 streichfett.parts["solo"].takes("notes")   # True
+streichfett.parts["solo"].polyphony        # 8 — its own voices, not the strings'
 streichfett.controls_by_part()[""]         # the controls on the base channel
 ```
 

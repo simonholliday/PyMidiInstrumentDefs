@@ -274,7 +274,7 @@ parts:
   solo:    {channel_offset: 1, receives: [notes], addressing: pitches}
 ```
 
-Three rules worth holding on to:
+Four rules worth holding on to:
 
 - **A control naming no part is on the base channel.** In a file that declares parts there
   is no single part to fall back on, so that is what leaving `part` off means. It is a real
@@ -287,6 +287,26 @@ Three rules worth holding on to:
   *triggered* on the next channel up. It never says a control change reaches it there — so
   that part receives `notes`, and nothing more is claimed. A control sent to a channel an
   instrument ignores does nothing, and says nothing about why.
+- **Say whether parts share their voices.** A Digitone's eight voices go to whichever of
+  its tracks plays next, so eight is a ceiling across all four, not a figure each can count
+  on. A Streichfett's two sections have voices of their own, 128 and eight. Those are
+  different instruments to play, and one number cannot tell them apart:
+
+  ```yaml
+  # one pool, drawn on by every part
+  voice: {polyphony: 8, polyphony_shared: true}
+
+  # a pool for each part, counted per instance
+  parts:
+    strings: {channel_offset: 0, polyphony: 128}
+    solo:    {channel_offset: 1, polyphony: 8}
+  voice: {polyphony_shared: false}
+  ```
+
+  Where an instrument lets a player divide a shared pool between parts, that division is a
+  setting and belongs to their project, like the channel. Saying nothing about voices is
+  still honest; one figure for an instrument with parts, without saying which it is, draws
+  a warning.
 
 A part is not a panel. It says where a control is addressed, not how anything should be
 drawn — that stays the consuming page's business, as with everything else here.

@@ -347,6 +347,19 @@ class TestStreichfett:
 
 		assert pedal.band("on") == (64, 127)
 
+	def test_each_section_counts_its_own_voices (self) -> None:
+		"""128 for the strings and eight for the solo, from two engines that do not share.
+
+		One figure for the instrument would be wrong for one section or the other,
+		and a consumer capping notes per section would cap the wrong one.
+		"""
+		streichfett = pymidiinstrumentdefs.load("waldorf/streichfett", [CORPUS])
+
+		assert streichfett.parts["strings"].polyphony == 128
+		assert streichfett.parts["solo"].polyphony == 8
+		assert streichfett.voice.polyphony is None
+		assert streichfett.voice.polyphony_shared is False
+
 
 class TestVoce:
 
@@ -991,6 +1004,106 @@ class TestParts:
 		definition = pymidiinstrumentdefs.parse("definition: 1\nmodel: {name: X}", source = "x.yaml")
 
 		assert definition.parts == {}
+
+
+class TestPolyphonyAcrossParts:
+
+	def make (self, body: str) -> pymidiinstrumentdefs.Definition:
+		"""Parse a fragment that declares parts and says something about their voices."""
+		return pymidiinstrumentdefs.parse(f"definition: 1\nmodel: {{name: X}}\nsource: hand\n{body}", source = "x.yaml")
+
+	def test_parts_may_draw_on_one_pool (self) -> None:
+		"""A Digitone's eight voices go to whichever of its four tracks plays next.
+
+		So eight is a ceiling across all of them, not a figure each can count on.
+		"""
+		definition = self.make(
+			"parts: {synth: {channel: assigned, count: 4}}\n"
+			"voice: {polyphony: 8, polyphony_shared: true}\n"
+		)
+
+		assert definition.voice.polyphony == 8
+		assert definition.voice.polyphony_shared is True
+		assert definition.parts["synth"].polyphony is None
+		assert definition.warnings == ()
+
+	def test_a_part_may_have_voices_of_its_own (self) -> None:
+		"""Counted per instance: three parts at eight voices is eight each."""
+		definition = self.make(
+			"parts: {voice: {channel_offset: 0, count: 3, polyphony: 8}}\n"
+			"voice: {polyphony_shared: false}\n"
+		)
+
+		assert definition.parts["voice"].polyphony == 8
+		assert definition.warnings == ()
+
+	def test_saying_nothing_about_sharing_claims_nothing (self) -> None:
+		"""Absent is nobody having recorded it, not a checked answer either way."""
+		definition = self.make("parts: {synth: {channel: assigned}}")
+
+		assert definition.voice.polyphony_shared is None
+		assert definition.warnings == ()
+
+	def test_sharing_between_parts_needs_parts (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("voice: {polyphony: 8, polyphony_shared: true}")
+
+		assert "voice.polyphony_shared" in str(raised.value)
+
+	def test_one_pool_and_a_part_with_its_own_is_refused (self) -> None:
+		"""A consumer would be told two different things about how many notes that part holds."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make(
+				"parts: {synth: {channel: assigned, polyphony: 4}}\n"
+				"voice: {polyphony: 8, polyphony_shared: true}\n"
+			)
+
+		assert "parts.synth.polyphony" in str(raised.value)
+
+	def test_one_figure_for_parts_that_do_not_share_is_refused (self) -> None:
+		"""136 for a Streichfett is a number its maker never states and no section has."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make(
+				"parts: {strings: {channel_offset: 0}, solo: {channel_offset: 1}}\n"
+				"voice: {polyphony: 136, polyphony_shared: false}\n"
+			)
+
+		assert "voice.polyphony: gives one figure" in str(raised.value)
+		assert "each part has voices of its own" in str(raised.value)
+
+	def test_a_figure_for_the_instrument_and_for_a_part_is_refused (self) -> None:
+		"""Even without saying whether they share, the two cannot both be the answer."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make(
+				"parts: {solo: {channel_offset: 1, polyphony: 8}}\n"
+				"voice: {polyphony: 8}\n"
+			)
+
+		assert "voice.polyphony: gives one figure" in str(raised.value)
+		assert "parts.solo gives voices of its own" in str(raised.value)
+
+	def test_a_part_with_its_own_voices_asks_for_sharing_to_be_said (self) -> None:
+		"""Otherwise asking the instrument whether its parts share gets no answer."""
+		definition = self.make("parts: {solo: {channel_offset: 1, polyphony: 8}}")
+
+		assert any("polyphony_shared: false" in warning for warning in definition.warnings)
+
+	def test_one_figure_for_an_instrument_with_parts_asks_what_it_covers (self) -> None:
+		"""Eight across four tracks and eight on each are very different instruments."""
+		definition = self.make(
+			"parts: {synth: {channel: assigned, count: 4}}\n"
+			"voice: {polyphony: 8}\n"
+		)
+
+		assert any("whether they share it" in warning for warning in definition.warnings)
+
+	def test_an_instrument_with_no_parts_is_unchanged (self) -> None:
+		"""Every definition written before parts still says polyphony the way it always did."""
+		definition = self.make("voice: {polyphony: 5}")
+
+		assert definition.voice.polyphony == 5
+		assert definition.voice.polyphony_shared is None
+		assert definition.warnings == ()
 
 
 class TestSearchPath:

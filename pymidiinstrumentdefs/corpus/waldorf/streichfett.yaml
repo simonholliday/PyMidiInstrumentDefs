@@ -11,7 +11,7 @@ source: >-
   at p. 18; the technical data and factory settings at p. 20; and what Balance
   does at p. 14, with its sound parameter at p. 26. Polyphony, which the manual
   does not state, is from Waldorf's hardware product page as saved on 2026-09-14,
-  and is recorded against each part. One fact is measured rather than read, and
+  which gives each section its own. One fact is measured rather than read, and
   says so where it is used: that the Solo section's channel takes notes but not
   control changes, measured on one unit running OS 1.14. NOT RECORDED: aftertouch
   and clock, which neither source covers.
@@ -59,9 +59,8 @@ parts:
     label: Strings
     channel_offset: 0
     addressing: pitches
-    # 128 voices: "128 voice fully polyphonic Strings section", from Waldorf's
-    # hardware product page. Recorded here and not in voice.polyphony -- see there.
     receives: [notes, controls, program_change]
+    polyphony: 128           # "128 voice fully polyphonic Strings section" (product page)
   solo:
     label: Solo
     channel_offset: 1
@@ -79,17 +78,14 @@ parts:
     # firmware.
     #
     # Only when the base channel is 1-14.
-    #
-    # Eight voices: "Eight voice polyphonic Solo section", from Waldorf's hardware
-    # product page.
     receives: [notes]
+    polyphony: 8             # "Eight voice polyphonic Solo section" (product page)
 
 voice:
   addressing: pitches
-  # No polyphony here, deliberately. Waldorf gives two -- 128 voices for the Strings
-  # section and eight for the Solo section, two engines that do not share -- and this
-  # field holds one number for the whole instrument, which would be wrong for one
-  # section or the other. Both are recorded against their part above.
+  # No single figure for the whole instrument: Waldorf gives one per section, and
+  # each is recorded against its part above. 136 is a number Waldorf never states.
+  polyphony_shared: false
   velocity:
     # Note On carries key velocity and Note Off release velocity (p. 22).
     note_on: received

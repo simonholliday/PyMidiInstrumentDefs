@@ -35,11 +35,21 @@ midi:
     # are accepted only with the PRESET selector at P (pp. 3, 6).
     presets: 32
 
-# Multi-timbral mode, which the format has no field for, so this file describes
-# one part. With the PRESET selector at M it plays three adjacent channels, the
-# basic channel and the two above it, wrapping at 16 (so 15 plays 15, 16 and 1),
-# each with its own preset by program change. Effect control changes are global
-# to all three. OMNI ON takes precedence over it (pp. 7-8).
+parts:
+  # Three identical parts, and only with the PRESET selector at M: it plays the
+  # basic channel and the two above it, wrapping at 16 -- so a basic channel of
+  # 15 plays 15, 16 and 1 -- each with its own preset by program change
+  # (pp. 7-8). OMNI ON takes precedence over it.
+  #
+  # Every control below is unparted, that is, on the base channel: "Effect
+  # control changes are global to all three" (p. 8). That is why `receives`
+  # names notes and program change and not controls.
+  multi:
+    label: Multi-timbral Part
+    count: 3
+    channel_offset: 0
+    addressing: pitches
+    receives: [notes, program_change]
 
 voice:
   addressing: pitches

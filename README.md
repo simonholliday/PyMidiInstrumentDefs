@@ -74,6 +74,19 @@ matriarch.controls["glide_type"].value_for("exp")   # 106
 pymidiinstrumentdefs.available()         # what is on the search path
 ```
 
+Some instruments are several instruments at once, each answering on its own
+MIDI channel. A definition says so with `parts`, and a control names the part
+it belongs to — so the same controller number can mean two different things
+and still be unambiguous:
+
+```python
+streichfett = pymidiinstrumentdefs.load("waldorf/streichfett")
+
+streichfett.parts["solo"].channel_for(1)   # 2 — one channel above the strings
+streichfett.parts["solo"].takes("notes")   # True
+streichfett.controls_by_part()[""]         # the controls on the base channel
+```
+
 ### Names, and where the files go
 
 A definition is named for its maker and its model, and the name is also where

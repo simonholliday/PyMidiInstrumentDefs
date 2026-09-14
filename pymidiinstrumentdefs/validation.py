@@ -253,6 +253,72 @@ class _Reader:
 		return found
 
 
+	def parts (self, value: object) -> dict[str, pymidiinstrumentdefs.definition.Part]:
+
+		"""Read the separately addressable parts of an instrument, each under a short name.
+
+		Most instruments have none, and an absent section is the ordinary case
+		rather than an omission.  What is checked is that a part which *is*
+		declared can be addressed: a channel it is given or one it derives, never
+		both, because a reader could not tell which to believe.
+		"""
+
+		found = {}
+		receivable = pymidiinstrumentdefs.definition.RECEIVABLE
+
+		for name, entry in self.mapping(value, "parts").items():
+			where = f"parts.{name}"
+			fields = self.mapping(entry, where)
+
+			channel = self.optional_text(fields, "channel", where)
+			assigned = pymidiinstrumentdefs.definition.ASSIGNED
+
+			if channel is not None and channel != assigned:
+				self.refuse(
+					f"{where}.channel",
+					f"{channel!r} is not {assigned!r} — a part is either given a channel "
+					f"or derives one with channel_offset",
+				)
+
+			offset = None if fields.get("channel_offset") is None \
+				else self.integer(fields["channel_offset"], f"{where}.channel_offset", -15, 15)
+
+			if channel is not None and offset is not None:
+				self.refuse(where, "has both channel and channel_offset — a part is given a channel or derives one, not both")
+
+			if channel is None and offset is None:
+				self.warn(where, "says neither channel nor channel_offset, so nothing can address it")
+
+			addressing = self.optional_text(fields, "addressing", where)
+
+			if addressing is not None and addressing not in _ADDRESSING:
+				self.refuse(f"{where}.addressing", f"{addressing!r} is not one of {sorted(_ADDRESSING)}")
+
+			receives: list[str] = []
+
+			for message in self.sequence(fields.get("receives"), f"{where}.receives"):
+				kind = self.text(message, f"{where}.receives")
+
+				if kind not in receivable:
+					self.refuse(f"{where}.receives", f"{kind!r} is not one of {sorted(receivable)}")
+
+				if kind in receives:
+					self.refuse(f"{where}.receives", f"names {kind!r} twice")
+
+				receives.append(kind)
+
+			found[self.name(name, "parts")] = pymidiinstrumentdefs.definition.Part(
+				label          = self.optional_text(fields, "label", where),
+				channel        = channel,
+				channel_offset = offset,
+				count          = self.integer(fields["count"], f"{where}.count", 1, 16) if "count" in fields else 1,
+				receives       = tuple(receives),
+				addressing     = addressing,
+			)
+
+		return found
+
+
 	def midi (self, value: object) -> pymidiinstrumentdefs.definition.Midi:
 
 		"""Read ``midi``, the rows of the implementation chart.
@@ -463,6 +529,8 @@ class _Reader:
 				else self.integer(section["step"], f"{where}.step", 1, 16383),
 			unit  = self.optional_text(section, "unit", where),
 			group = self.optional_text(section, "group", where),
+			part = None if section.get("part") is None
+				else self.name(section["part"], f"{where}.part"),
 			panel_only = False if section.get("panel_only") is None
 				else self.flag(section["panel_only"], f"{where}.panel_only"),
 			direction = direction,
@@ -613,6 +681,7 @@ def build (
 	model = reader.model(raw["model"])
 	provenance = reader.optional_text(raw, "source", "file")
 	documents = reader.sources(raw.get("sources"))
+	parts = reader.parts(raw.get("parts"))
 	controls = reader.controls(raw.get("controls"))
 	voice = reader.voice(raw.get("voice"))
 
@@ -633,6 +702,17 @@ def build (
 					f"names {gate!r}, which is not one of this instrument's controls",
 				)
 
+	# A control naming a part nothing declares would be addressed on a channel
+	# that does not exist, which fails silently on the wire.  Refused for the
+	# same reason gated_by is: a name that resolves to nothing is a typo.
+
+	for control in controls.values():
+		if control.part is not None and control.part not in parts:
+			reader.refuse(
+				f"controls.{control.name}.part",
+				f"names {control.part!r}, which is not one of this instrument's parts",
+			)
+
 	return pymidiinstrumentdefs.definition.Definition(
 		version  = version,
 		model    = model,
@@ -640,6 +720,7 @@ def build (
 		sources  = documents,
 		midi     = reader.midi(raw.get("midi")),
 		voice    = voice,
+		parts    = parts,
 		controls = controls,
 		path     = path,
 		warnings = tuple(reader.warnings),

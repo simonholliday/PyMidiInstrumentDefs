@@ -848,6 +848,151 @@ class TestSources:
 		assert "sources.m.page_offset" in str(raised.value)
 
 
+class TestParts:
+
+	def make (self, body: str) -> pymidiinstrumentdefs.Definition:
+		"""Parse a fragment that declares parts."""
+		return pymidiinstrumentdefs.parse(f"definition: 1\nmodel: {{name: X}}\n{body}", source = "x.yaml")
+
+	def test_a_part_may_be_given_a_channel_of_its_own (self) -> None:
+		"""Each of the Digitone's four synth tracks is assigned a channel by the player.
+
+		There is no offset to derive one from, so asking which channel it sits on
+		is a question that does not apply, and it says so rather than guessing.
+		"""
+		part = self.make("parts: {synth: {channel: assigned, count: 4}}").parts["synth"]
+
+		assert part.is_assigned is True
+		assert part.channel_for(1) is None
+		assert part.count == 4
+
+	def test_a_part_may_derive_its_channel_instead (self) -> None:
+		"""The Streichfett's solo section answers one channel above its strings.
+
+		It cannot be set on its own, so the definition records the relationship
+		rather than a number.
+		"""
+		part = self.make("parts: {solo: {channel_offset: 1}}").parts["solo"]
+
+		assert part.is_assigned is False
+		assert [part.channel_for(base) for base in (1, 7)] == [2, 8]
+
+	def test_derived_channels_wrap_at_sixteen (self) -> None:
+		"""A Voce on a base channel of 15 plays its three parts on 15, 16 and 1.
+
+		The wrap is the manual's own behaviour, not arithmetic tidiness.
+		"""
+		part = self.make("parts: {voice: {channel_offset: 0, count: 3}}").parts["voice"]
+
+		assert [part.channel_for(15, instance) for instance in (0, 1, 2)] == [15, 16, 1]
+
+	def test_a_part_says_which_messages_reach_it (self) -> None:
+		"""The Voce's parts take notes and program change; its effects are global to all three.
+
+		No single flag can say that, which is why this is a list.
+		"""
+		part = self.make("parts: {voice: {channel_offset: 0, receives: [notes, program_change]}}").parts["voice"]
+
+		assert part.takes("notes") is True
+		assert part.takes("program_change") is True
+		assert part.takes("controls") is False
+
+	def test_a_part_saying_nothing_about_messages_claims_nothing (self) -> None:
+		"""Silence is nobody having recorded it, not a checked absence."""
+		part = self.make("parts: {solo: {channel_offset: 1}}").parts["solo"]
+
+		assert part.receives == ()
+		assert part.takes("notes") is False
+
+	def test_controls_are_collected_by_the_part_they_name (self) -> None:
+		"""A control naming no part is on the base channel, which is a real case.
+
+		The Streichfett's balance, effects and performance controls are all of
+		that kind: its manual prints one generic control change and ties none of
+		them to a channel.
+		"""
+		definition = self.make(
+			"parts: {synth: {channel: assigned}, fx: {channel: assigned}}\n"
+			"controls:\n"
+			"  cutoff: {cc: 23, part: synth}\n"
+			"  reverb_amount: {cc: 91, part: fx}\n"
+			"  balance: {cc: 82}\n"
+		)
+		by_part = definition.controls_by_part()
+
+		assert [control.name for control in by_part["synth"]] == ["cutoff"]
+		assert [control.name for control in by_part["fx"]] == ["reverb_amount"]
+		assert [control.name for control in by_part[""]] == ["balance"]
+
+	def test_the_same_number_means_different_things_in_different_parts (self) -> None:
+		"""A Digitone's CC 70 is filter attack on a track and chorus high-pass on the FX channel.
+
+		This is the whole reason parts exist, so it is worth a test of its own.
+		"""
+		definition = self.make(
+			"parts: {synth: {channel: assigned}, fx: {channel: assigned}}\n"
+			"controls:\n"
+			"  filter_attack: {cc: 70, part: synth}\n"
+			"  chorus_high_pass: {cc: 70, part: fx}\n"
+		)
+
+		assert definition.controls["filter_attack"].part == "synth"
+		assert definition.controls["chorus_high_pass"].part == "fx"
+
+	def test_a_control_naming_a_part_that_does_not_exist_is_refused (self) -> None:
+		"""It would be addressed on a channel nothing declares, which fails silently on the wire."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {synth: {channel: assigned}}\ncontrols: {cutoff: {cc: 23, part: fx}}")
+
+		assert "controls.cutoff.part" in str(raised.value)
+
+	def test_a_part_cannot_both_be_given_a_channel_and_derive_one (self) -> None:
+		"""A reader could not tell which to believe."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {synth: {channel: assigned, channel_offset: 1}}")
+
+		assert "parts.synth" in str(raised.value)
+
+	def test_a_part_nothing_can_address_warns (self) -> None:
+		"""Declared, but with no way to reach it — the same shape as a control with no cc or nrpn."""
+		definition = self.make("parts: {ghost: {label: Ghost}}")
+
+		assert any("nothing can address it" in warning for warning in definition.warnings)
+
+	def test_a_message_kind_nobody_knows_is_refused (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {synth: {channel: assigned, receives: [notes, aftertouch]}}")
+
+		assert "parts.synth.receives" in str(raised.value)
+
+	def test_a_repeated_message_kind_is_refused (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {synth: {channel: assigned, receives: [notes, notes]}}")
+
+		assert "twice" in str(raised.value)
+
+	def test_a_part_addresses_notes_the_way_the_instrument_does (self) -> None:
+		"""`addressing` reuses the vocabulary `voice` already has, and is refused otherwise."""
+		assert self.make("parts: {p: {channel_offset: 0, addressing: voices}}").parts["p"].addressing == "voices"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {p: {channel_offset: 0, addressing: sideways}}")
+
+		assert "parts.p.addressing" in str(raised.value)
+
+	def test_a_part_name_must_be_addressable (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {'Synth Track': {channel: assigned}}")
+
+		assert "is not a name" in str(raised.value)
+
+	def test_no_parts_section_is_no_error (self) -> None:
+		"""Fourteen definitions rely on this, and an instrument with no parts has one."""
+		definition = pymidiinstrumentdefs.parse("definition: 1\nmodel: {name: X}", source = "x.yaml")
+
+		assert definition.parts == {}
+
+
 class TestSearchPath:
 
 	def test_the_nearest_definition_wins (self, tmp_path: pathlib.Path) -> None:

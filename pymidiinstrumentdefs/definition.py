@@ -99,6 +99,7 @@ class Control:
 	step: int = 1
 	unit: str | None = None
 	group: str | None = None
+	part: str | None = None
 	panel_only: bool = False
 	direction: str = BOTH
 	kind_override: str | None = None
@@ -337,6 +338,92 @@ class Midi:
 		return self.control_change == "learned"
 
 
+# ── Parts ────────────────────────────────────────────────────────────────────
+# Some instruments are several separately addressable things at once: a Digitone
+# is four synth tracks, four MIDI tracks and an effects unit, each on its own
+# channel, and a Streichfett's solo section answers one channel above its
+# strings.  Most instruments are not, and a definition naming no parts has one.
+
+# A part given a channel of its own, rather than deriving one from a base.
+ASSIGNED: typing.Final[str] = "assigned"
+
+# What a part answers to on its channel.  Not to be confused with a control's
+# `direction`, which says which way one control travels.
+NOTES: typing.Final[str] = "notes"
+CONTROLS: typing.Final[str] = "controls"
+PROGRAM_CHANGE: typing.Final[str] = "program_change"
+
+RECEIVABLE: typing.Final[frozenset[str]] = frozenset({NOTES, CONTROLS, PROGRAM_CHANGE})
+
+
+@dataclasses.dataclass(frozen=True)
+class Part:
+
+	"""One separately addressable channel of an instrument.
+
+	``channel`` is ``assigned`` where the part is given a channel of its own, as
+	each of the Digitone's tracks and its effects unit is.  ``channel_offset`` is
+	the other shape, where a part's channel is derived from the instrument's base
+	channel and cannot be set on its own: a Streichfett's solo section answers one
+	channel above its strings section, and a Voce plays three parts on three
+	adjacent channels.
+
+	``count`` is how many identical instances there are, so four synth tracks are
+	described once rather than four times.  Where a part derives its channel, its
+	instances run consecutively from the offset.
+
+	``receives`` is what a consumer reads to know what a part is *for*: which kinds
+	of message reach it at all.  It is a list rather than a flag because the cases
+	need one — the Voce's three parts each take notes and their own program change
+	while its effect controls are global to all three.  ``addressing`` says how
+	notes are read **when** the part takes them, and means nothing when it does not.
+	"""
+
+	label: str | None = None
+	channel: str | None = None
+	channel_offset: int | None = None
+	count: int = 1
+	receives: tuple[str, ...] = ()
+	addressing: str | None = None
+
+
+	@property
+	def is_assigned (self) -> bool:
+
+		"""True when this part is given a channel rather than deriving one."""
+
+		return self.channel_offset is None
+
+
+	def takes (self, message: str) -> bool:
+
+		"""Whether this part answers to a kind of message — notes, controls, program change.
+
+		A part that says nothing about what it receives answers ``False`` to
+		everything, which is honest: nobody recorded it.
+		"""
+
+		return message in self.receives
+
+
+	def channel_for (self, base: int, instance: int = 0) -> int | None:
+
+		"""Which MIDI channel one instance of this part sits on, given a base channel.
+
+		``None`` where the part is assigned a channel instead, so a caller asking
+		is told the question does not apply rather than handed a number.
+
+		Channels wrap at 16, which is documented behaviour rather than arithmetic
+		convenience: a Voce on a base channel of 15 plays its three parts on 15,
+		16 and 1.
+		"""
+
+		if self.channel_offset is None:
+			return None
+
+		return (base - 1 + self.channel_offset + instance) % 16 + 1
+
+
 # ── Where the facts came from ────────────────────────────────────────────────
 
 @dataclasses.dataclass(frozen=True)
@@ -405,6 +492,7 @@ class Definition:
 	sources: dict[str, Source] = dataclasses.field(default_factory=dict)
 	midi: Midi = dataclasses.field(default_factory=Midi)
 	voice: Voice = dataclasses.field(default_factory=Voice)
+	parts: dict[str, Part] = dataclasses.field(default_factory=dict)
 	controls: dict[str, Control] = dataclasses.field(default_factory=dict)
 	path: pathlib.Path | None = None
 	warnings: tuple[str, ...] = ()
@@ -438,6 +526,26 @@ class Definition:
 			groups.setdefault(control.group or "", []).append(control)
 
 		return groups
+
+
+	def controls_by_part (self) -> dict[str, list[Control]]:
+
+		"""The controls collected by the part they belong to, in file order.
+
+		Controls naming no part are collected under the empty string, and that
+		means **the instrument's base channel**: where a definition names parts
+		there is no single part for them to fall back on.  It is a real case
+		rather than a tidy default — a Streichfett's balance, effects and
+		performance controls are all of that kind, because its manual prints one
+		generic control change and ties none of them to a channel.
+		"""
+
+		parts: dict[str, list[Control]] = {}
+
+		for control in self.controls.values():
+			parts.setdefault(control.part or "", []).append(control)
+
+		return parts
 
 
 	def panel_first (self) -> list[Control]:

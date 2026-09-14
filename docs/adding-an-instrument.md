@@ -59,13 +59,20 @@ the difference between a definition that holds up and one that does not.
 - The maker's MIDI implementation document or chart.
 - The maker's user manual.
 - The maker's firmware addenda and release notes.
+- The maker's own published specifications, such as the specification list on a
+  product page — for the facts they state, and only once you have saved a copy of
+  what you read (see below).
 
 **Can confirm a fact, but should not be the only source**
 
 - The maker's support articles and knowledge base.
 - The parameter list inside the maker's own editor or librarian software.
-- A measurement you took yourself from the instrument with a MIDI monitor — which is
-  a fact about *your* unit and its firmware, so say so.
+- A measurement you took yourself from the instrument — which is a fact about *your*
+  unit and its firmware, so say so. It can stand alone for **a single fact the
+  maker's documents leave open**, in a definition otherwise traced to them, provided
+  the file says plainly that it was measured, on what firmware, and when. Measure it
+  so the instrument reports the answer, not your ear: a value read back from its own
+  SysEx dump can be checked by someone else, and an impression of a sound cannot.
 
 **Can only tell you where to look, or that something is worth re-reading**
 
@@ -75,6 +82,19 @@ the difference between a definition that holds up and one that does not.
   copy left, and it is still not the maker's: check it against anything else you can
   find, and say in your citation that it is a third-party copy.
 - Forum posts and videos.
+
+**A web page changes without warning, so save what you read.** A product page is
+the maker's word, but unlike a PDF it serves different bytes to everyone and can be
+edited overnight. Save a copy — its visible text is enough to cite, and keep the page
+as fetched beside it — record the SHA-256 of the copy you cite, and say when you read
+it. No later fetch will match that hash, and it is not meant to: it proves what the
+page said on the day.
+
+The worked case is a string machine whose manual never states its polyphony. Its
+maker's hardware page does — *"128 voice fully polyphonic Strings section"* and
+*"Eight voice polyphonic Solo section"* — and an automated summary of the maker's site
+attributed the first figure to the software version instead. **Read the page itself
+whenever a fact depends on which product it describes.**
 
 **Why community databases sit in the third tier, even when they are right.** They are
 transcriptions of the same manuals you are reading, made by people who were not asked
@@ -214,6 +234,62 @@ are not your instrument's parameters, and the validator will refuse them. Facts 
 *your* rig — the channel you happen to use — are not properties of the model.
 `channels` is the range the instrument can be set to. Anything the format cannot yet
 express goes in a comment, never in an invented field.
+
+**Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
+tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
+section answers one channel above its strings. A Voce plays three parts across three
+adjacent channels. Where that is so, say it with `parts`, and let each control name the
+part it belongs to:
+
+```yaml
+parts:
+  synth:
+    label: Synth Track
+    count: 4                  # four identical tracks, described once
+    channel: assigned         # the player gives each one a channel
+    receives: [notes, controls]
+    addressing: pitches
+  fx:
+    label: FX
+    channel: assigned
+    receives: [controls]      # it takes no notes
+
+controls:
+  filter_attack:    {label: Attack Time, cc: 70, part: synth, group: filter}
+  chorus_high_pass: {label: High-pass,   cc: 70, part: fx,    group: chorus}
+```
+
+**The same controller number can mean different things in different parts, and on a
+multi-track instrument it usually does.** Those two rows are both CC 70 and are not the
+same parameter — one reaches a synth track, the other the effects channel. Naming the part
+is what tells them apart. On one such instrument, 33 of its 71 controller numbers carry
+more than one meaning.
+
+Where a part cannot be given a channel of its own but derives one from the instrument's
+base channel, say that instead:
+
+```yaml
+parts:
+  strings: {channel_offset: 0, receives: [notes, controls, program_change], addressing: pitches}
+  solo:    {channel_offset: 1, receives: [notes], addressing: pitches}
+```
+
+Three rules worth holding on to:
+
+- **A control naming no part is on the base channel.** In a file that declares parts there
+  is no single part to fall back on, so that is what leaving `part` off means. It is a real
+  case rather than a tidy default: a Streichfett's balance, effects and performance controls
+  are all of that kind.
+- **`receives` is a list because one flag is not enough.** A Voce's three parts each take
+  notes *and their own program change*, while its effect controls are global to all three.
+  No single true-or-false can say that.
+- **Claim only what the document says.** A Streichfett's manual says its solo section can be
+  *triggered* on the next channel up. It never says a control change reaches it there — so
+  that part receives `notes`, and nothing more is claimed. A control sent to a channel an
+  instrument ignores does nothing, and says nothing about why.
+
+A part is not a panel. It says where a control is addressed, not how anything should be
+drawn — that stays the consuming page's business, as with everything else here.
 
 **Give it a test.** One test of the fact the file exists for: the thing a consumer
 would get wrong without it.

@@ -7,9 +7,14 @@ model:
 source: >-
   Reference manual, 31 pages: the MIDI Controller Numbers table at p. 21, which
   gives a value range for every controller; the MIDI Implementation at p. 22;
-  MIDI channel setting at p. 18; and the technical data and factory settings
-  at p. 20. NOT RECORDED: polyphony, aftertouch and clock, which those pages do
-  not cover.
+  MIDI channel setting, and the second channel the Solo section can be played on,
+  at p. 18; the technical data and factory settings at p. 20; and what Balance
+  does at p. 14, with its sound parameter at p. 26. Polyphony, which the manual
+  does not state, is from Waldorf's hardware product page as saved on 2026-09-14,
+  and is recorded against each part. One fact is measured rather than read, and
+  says so where it is used: that the Solo section's channel takes notes but not
+  control changes, measured on one unit running OS 1.14. NOT RECORDED: aftertouch
+  and clock, which neither source covers.
 
 sources:
   manual:
@@ -20,6 +25,20 @@ sources:
     url: "https://downloads.waldorfmusic.com/cloud/index.php/s/BppCqf8X5knMwyC/download"
     sha256: 0d7291d42c7203ad1e35e4b04266394506f2c328e7d206d7d2b8e0ca909b2bec
     retrieved: 2026-09-13
+  product_page:
+    kind: product_page
+    title: "Streichfett EN – Waldorf Music"
+    landing: "https://waldorfmusic.com/streichfett-en/"
+    url: "https://waldorfmusic.com/streichfett-en/"
+    sha256: 306b11a23e571b91176458c10e812acf192444fe5f15260037662bc55bc48293
+    retrieved: 2026-09-14
+    paginated: false
+    # Cited only for polyphony, which the manual does not state. A web page can
+    # change overnight and serves different bytes to everyone, so what was read is
+    # pinned by saving it: the sha256 above is of the page's visible text as
+    # rendered on 2026-09-14 at 08:31 UTC. The page itself, as served, hashes to
+    # c39577d1648fc2572f2155f15d78c1c392a4d3fe47e885d03a0c2fa89c65211f. No later
+    # fetch will match either.
 
 midi:
   # Set by holding all four Memory buttons and playing a note on the channel
@@ -31,12 +50,46 @@ midi:
     receives: true
     presets: 12              # "Program number (0 - 11)", where pp = preset + 4 x bank (p. 22)
 
-# When the channel is 1-14, the Solo section can also be played on the next
-# channel up, independently of the Strings, with the split ignored (p. 18). The
-# format has no field for a second part, so this file describes one.
+parts:
+  # Two sections, and every control below is deliberately unparted -- that is, on
+  # the base channel. The manual prints one *generic* control change (p. 22,
+  # "Bc cc vv", "c : MIDI channel (0 - 15)") over a single flat list of 70-94,
+  # and never ties a controller number to a section or to a channel.
+  strings:
+    label: Strings
+    channel_offset: 0
+    addressing: pitches
+    # 128 voices: "128 voice fully polyphonic Strings section", from Waldorf's
+    # hardware product page. Recorded here and not in voice.polyphony -- see there.
+    receives: [notes, controls, program_change]
+  solo:
+    label: Solo
+    channel_offset: 1
+    addressing: pitches
+    # Notes only. p. 18 documents that the Solo section "can be triggered
+    # independently of the Strings section on the next channel, with split
+    # settings being ignored", and p. 22 ties no control change to any channel --
+    # so the manual settles the notes and leaves the controls open.
+    #
+    # MEASURED, not stated by the maker: on one unit running OS 1.14, over USB MIDI,
+    # with the base channel set to 2, on 2026-09-14. CC 76, 70 and 77 sent on the
+    # channel above left the instrument's own dumped sound parameters unmoved,
+    # while CC 76 and 70 moved them on the base channel both before and after, and
+    # notes sent there sounded the Solo section. A fact about that unit and that
+    # firmware.
+    #
+    # Only when the base channel is 1-14.
+    #
+    # Eight voices: "Eight voice polyphonic Solo section", from Waldorf's hardware
+    # product page.
+    receives: [notes]
 
 voice:
   addressing: pitches
+  # No polyphony here, deliberately. Waldorf gives two -- 128 voices for the Strings
+  # section and eight for the Solo section, two engines that do not share -- and this
+  # field holds one number for the whole instrument, which would be wrong for one
+  # section or the other. Both are recorded against their part above.
   velocity:
     # Note On carries key velocity and Note Off release velocity (p. 22).
     note_on: received
@@ -124,7 +177,11 @@ controls:
   balance:
     label: Balance
     cc: 82
-    group: solo
+    # Not a Solo control, though the table prints it among them: it "Mixes the
+    # signals of the Strings and Solo section" (p. 14), and sound parameter 13
+    # gives it as "0: Strings.. 64: Strings+Solo 127: Solo" (p. 26). It acts on
+    # the whole instrument, so it is grouped apart from either section.
+    group: mix
 
   # ── Effects ───────────────────────────────────────────────────────────────
 

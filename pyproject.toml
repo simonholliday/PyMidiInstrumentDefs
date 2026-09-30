@@ -45,6 +45,15 @@ dev = [
 	"pytest",
 	"mypy",
 	"types-PyYAML",
+	# tools/check_citations.py reads the manuals a definition cites, to check that
+	# every number it records is on the page it names. The manuals themselves are
+	# copyrighted and are never committed, so the tool is not a test and CI never
+	# runs it -- but whoever documents an instrument has to be able to.
+	#
+	# The crypto extra is not optional in practice: several makers publish a PDF
+	# with AES encryption and an empty password, which pypdf opens only with it,
+	# and one of the fourteen already needs it.
+	"pypdf[crypto]",
 ]
 
 [project.urls]

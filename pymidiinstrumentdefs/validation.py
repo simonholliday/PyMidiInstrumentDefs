@@ -205,9 +205,30 @@ class _Reader:
 		return pymidiinstrumentdefs.definition.Model(
 			name         = self.text(section["name"], "model.name"),
 			manufacturer = self.optional_text(section, "manufacturer", "model"),
-			firmware     = self.optional_text(section, "firmware", "model"),
+			firmware     = self.firmware(section),
 			revision     = self.optional_text(section, "revision", "model"),
 		)
+
+
+	def firmware (self, section: dict[str, typing.Any]) -> str | None:
+
+		"""Read ``model.firmware`` -- which firmware this definition describes.
+
+		A version written without quotes is the trap here, and it is silent: YAML
+		reads ``1.10`` as a number, which is 1.1, and a maker who ships both 1.1 and
+		1.10 then has one of them recorded as the other.
+		"""
+
+		found = section.get("firmware")
+
+		if isinstance(found, (int, float)) and not isinstance(found, bool):
+			self.refuse(
+				"model.firmware",
+				f"found the number {found}, not text -- a firmware version is text, and "
+				f"YAML reads 1.10 as 1.1, which is a different release. Quote it.",
+			)
+
+		return self.optional_text(section, "firmware", "model")
 
 
 	def optional_text (self, section: dict[str, typing.Any], field: str, where: str) -> str | None:

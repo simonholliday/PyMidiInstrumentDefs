@@ -127,8 +127,38 @@ it was written ahead of the release.
 3. If they are there, the document covers that firmware. If they are not, you have
    found a gap, and the definition should say which firmware it describes.
 
-The format has no field for firmware, so **say it in the source line** when it
-matters.
+**Then record it in the file, in the two places that answer two different
+questions.**
+
+- **`model.firmware` is the firmware this definition describes**, spelled as the maker
+  spells it. **Quote it.** YAML reads `1.10` as the number 1.1, which is a different
+  release, and a maker who ships both would have one recorded as the other. The
+  validator refuses an unquoted version for exactly that reason.
+- **A release-notes source says what was current when you looked.** Its `edition` is the
+  newest firmware the maker had published, and `retrieved` is the day you read the page.
+  A definition whose `model.firmware` is behind that edition is one to revisit.
+
+```yaml
+model:
+  name: Digitone
+  firmware: "1.43"              # the firmware this file describes
+
+sources:
+  release_notes:
+    kind: release_notes
+    title: Digitone OS release notes
+    edition: OS 1.43            # the newest published when this was checked
+    landing: "https://www.elektron.se/support-downloads/digitone"
+    retrieved: 2026-09-14
+```
+
+**Where the instrument has no firmware at all, write `firmware: none`.** That is a
+checked absence, as `midi: none` is, and it is not the same as leaving the field out,
+which says only that nobody looked. A hardware revision the maker sells as its own
+thing is `revision` instead, as a Vermona DRM1 MkIV is not a MkIII.
+
+**No history is kept**: the version this file describes, and the date somebody last
+asked what the newest one was.
 
 ## 4. Read the document without losing half of it
 

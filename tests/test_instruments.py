@@ -1301,6 +1301,55 @@ class TestSearchPath:
 		assert "moog/matriarch" in str(raised.value)
 
 
+class TestFirmware:
+
+	def make (self, body: str) -> pymidiinstrumentdefs.Definition:
+		"""Parse a fragment whose model says something about firmware."""
+		return pymidiinstrumentdefs.parse(f"definition: 1\nsource: hand\n{body}", source = "x.yaml")
+
+	def test_a_definition_says_which_firmware_it_describes (self) -> None:
+		"""What an instrument answers to changes when it is updated, so the version is a fact.
+
+		A Minitaur before 2.1 ignores a note above its top octave; from 2.1 it
+		sounds the equivalent pitch.
+		"""
+		minitaur = pymidiinstrumentdefs.load("moog/minitaur", [CORPUS])
+
+		assert minitaur.model.firmware == "2.1"
+		assert minitaur.model.states_no_firmware is False
+
+	def test_an_instrument_with_no_firmware_can_say_so (self) -> None:
+		"""An analogue instrument has none, which is established rather than assumed."""
+		model = self.make("model: {name: X, firmware: none}").model
+
+		assert model.states_no_firmware is True
+
+	def test_saying_nothing_about_firmware_claims_nothing (self) -> None:
+		"""Silence is nobody having looked, which is not the same as having none."""
+		model = self.make("model: {name: X}").model
+
+		assert model.firmware is None
+		assert model.states_no_firmware is False
+
+	def test_a_version_written_without_quotes_is_refused (self) -> None:
+		"""YAML reads 1.10 as 1.1, and a maker shipping both would have one recorded as the other."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("model: {name: X, firmware: 1.10}")
+
+		assert "model.firmware" in str(raised.value)
+		assert "Quote it" in str(raised.value)
+
+	def test_a_version_in_quotes_keeps_every_digit (self) -> None:
+		assert self.make('model: {name: X, firmware: "1.10"}').model.firmware == "1.10"
+
+	def test_a_hardware_revision_is_not_firmware (self) -> None:
+		"""A Vermona DRM1 MkIV is not a MkIII, and that is a different kind of fact."""
+		drm1 = pymidiinstrumentdefs.load("vermona/drm1_mkiv", [CORPUS])
+
+		assert drm1.model.revision == "MkIV"
+		assert drm1.model.firmware is None
+
+
 class TestPublicSurface:
 
 	def test_every_type_a_definition_hands_out_is_importable_from_the_package (self) -> None:

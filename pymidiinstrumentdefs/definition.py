@@ -47,12 +47,35 @@ DIRECTIONS: typing.Final[frozenset[str]] = frozenset({BOTH, TRANSMITS, RECEIVES}
 @dataclasses.dataclass(frozen=True)
 class Model:
 
-	"""Which instrument this is.  Only the name is required."""
+	"""Which instrument this is.  Only the name is required.
+
+	``firmware`` is **the firmware this definition describes**, spelled as the maker
+	spells it, because what an instrument answers to changes when it is updated: a
+	Minitaur before 2.1 ignores a note above its top octave, and from 2.1 sounds the
+	equivalent pitch instead.  A definition that does not say is quietly describing
+	two different instruments.  ``none`` says the model has no firmware at all, which
+	is established rather than assumed, and absent means nobody recorded it.
+
+	``revision`` is a **hardware** revision, where the maker sells one as a distinct
+	thing: a Vermona DRM1 MkIV is not a MkIII, and the facts differ.
+	"""
 
 	name: str
 	manufacturer: str | None = None
 	firmware: str | None = None
 	revision: str | None = None
+
+
+	@property
+	def states_no_firmware (self) -> bool:
+
+		"""True when somebody established that this model has no firmware at all.
+
+		Distinct from silence, which only means nobody looked -- the same
+		distinction ``midi: none`` keeps.
+		"""
+
+		return self.firmware == "none"
 
 
 	def __str__ (self) -> str:

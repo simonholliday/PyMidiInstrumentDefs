@@ -29,16 +29,16 @@ page it came from, and one imported automatically stays marked `unverified`
 until a person has checked it. [Sources](#sources), below, says where each of
 the bundled ones came from and gives that Minitaur disagreement in full.
 
-**Rig facts are not here and never will be.** Which channel *your* Minitaur is
-on, which port it is plugged into, which notes you have chosen to play -- those
-belong to your own project, not to a definition shared by everyone who owns the
-same box.
+**Rig facts are not here and never will be.** Which MIDI channel *your*
+Minitaur is on, which port it is plugged into, which notes you have chosen to
+play -- those belong to your own project, not to a definition shared by
+everyone who owns the same box.
 
-**And specification facts stay in PyMidiDefs.** The channel mode messages, CC
-120 to 127 -- All Sound Off, Local Control and the rest -- mean the same on every
-instrument that has them, so a definition does not list them as controls even
-where a manufacturer's chart prints them. The validator refuses one, and names
-the PyMidiDefs constant it would have duplicated.
+**And specification facts stay in PyMidiDefs.** The MIDI channel mode messages,
+CC 120 to 127 -- All Sound Off, Local Control and the rest -- mean the same on
+every instrument that has them, so a definition does not list them as controls
+even where a manufacturer's chart prints them. The validator refuses one, and
+names the PyMidiDefs constant it would have duplicated.
 
 ## Installation
 
@@ -76,17 +76,17 @@ pymidiinstrumentdefs.available()         # what is on the search path
 
 Some instruments are several instruments at once, each answering on its own
 MIDI channel. A definition says so with `parts`, and a control names the part
-it belongs to — so the same controller number can mean two different things
+it belongs to - so the same controller number can mean two different things
 and still be unambiguous:
 
 ```python
 streichfett = pymidiinstrumentdefs.load("waldorf/streichfett")
 
-streichfett.parts["solo"].channel_for(1)   # 2 — one channel above the strings
+streichfett.parts["solo"].channel_for(1)   # 2 - one channel above the strings
 streichfett.parts["solo"].takes("notes")   # True
-streichfett.parts["solo"].polyphony        # 8 — its own voices, not the strings'
+streichfett.parts["solo"].polyphony        # 8 - its own voices, not the strings'
 streichfett.controls_by_part()[""]         # the controls on the base channel
-streichfett.controls_reaching("strings")   # all 19 — the strings sit on the base channel
+streichfett.controls_reaching("strings")   # all 19 - the strings sit on the base channel
 ```
 
 ### Names, and where the files go

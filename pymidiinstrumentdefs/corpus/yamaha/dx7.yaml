@@ -1,0 +1,154 @@
+definition: 1
+
+model:
+  manufacturer: Yamaha
+  name: DX7
+  # NOT RECORDED. The manual never states a firmware or ROM version for the instrument
+  # itself: searched for "version", "revision", "update" and "ROM" across the whole of
+  # Yamaha's text edition, where the only hits are ROM voice cartridges and one use of
+  # the word "version" about a keyboard-scaling feature. Yamaha's manual library lists
+  # documents for this instrument and no firmware at all (checked 2026-10-01).
+  # This definition covers the original DX7. The DX7II and the DX7s are different
+  # instruments with their own manuals and, per the survey behind this corpus, an
+  # extended MIDI implementation; neither is described here.
+
+source: >-
+  Operating manual (34pp scanned), pp. 21-22, 27, 30-32. The controller numbers are the
+  two tables in the MIDI DATA FORMAT appendix, pp. 30 and 32, whose columns are
+  C | Parameter | V - one table for what the instrument transmits and a second, longer
+  one for what it receives.
+  This instrument is transcribed from a scan. Yamaha publishes the same manual as a
+  text edition, and that edition omits this appendix entirely: its specifications
+  chapter ends "(MIDI Data Format is not available.)" and its contents says "Some
+  lists, the score, and the index are not available". So every controller number here
+  was read by eye from the scanned page, twice and independently, because no machine
+  on this side can read it: the scan has no text layer, and `tools/check_citations.py`
+  reports that it checked none of these numbers rather than that it failed to find them.
+  The text edition is not cited for anything, because where the two disagree it is the
+  one that is wrong: it prints the external ROM memory as "(54 Memory)" where the scan
+  says 64.
+  What the instrument transmits and what it receives are different sets, so each control
+  says which. Received but never transmitted: portamento time and volume. The received
+  table also lists controllers 125, 126 and 127 as OMNI, MONO and POLY all key off,
+  which are channel mode messages and belong to the MIDI specification rather than to a
+  definition; they are excluded for that reason and not because they were missed.
+  Aftertouch is the other asymmetry: the instrument transmits channel aftertouch (p. 30)
+  and the received list does not mention aftertouch at all.
+  NOT RECORDED, and marked in place: which kind of aftertouch it answers to, since it
+  answers to none; the pitch bend range as a number, since the bend range is a front
+  panel setting of 0 to 12 and the instrument ignores the fine half of a bend it
+  receives; and any firmware version, which the manual never states.
+  Also not carried, because the format has no field for it: the 156 voice parameters and
+  14 function parameters of p. 31, which are addressable over MIDI by system exclusive
+  parameter change rather than by any controller number or NRPN. That is the whole of
+  this instrument's deep editing, and the appendix prints every parameter number for it.
+
+sources:
+  manual:
+    kind: manual
+    title: DX7 Operating Manual (Image)
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=DX7"
+    url: "https://usa.yamaha.com/files/download/other_assets/9/333979/DX7E1.pdf"
+    sha256: a3bb18bafbb6d2ec03268b814ac495bb5dfdabbda53b52a46f510ebbc2ed9a42
+    retrieved: 2026-10-01
+    page_offset: 1
+    # A photographic scan: 34 pages, every one of which extracts zero characters. The
+    # appendix pages 30-32 are stored at nearly twice the resolution of the rest, which
+    # is what makes them legible. The manual states no date for itself; Yamaha's library
+    # page gives none either, so no `dated` is recorded rather than one being inferred.
+
+midi:
+  # The receiving channel is set in FUNCTION mode and the specifications list MIDI
+  # CHANNEL 1 to 16 (p. 27). Transmission is a different matter: every transmitted
+  # message on p. 30 is given as "n=0; ch1", and p. 22 says plainly "the transmit
+  # channel number of the DX7 is 1". So it listens where you tell it and answers on
+  # channel 1 whatever you tell it.
+  channels: [1, 16]
+  program_change:
+    receives: true
+    sends: true          # "(UNAVAIL の時、送信)" - transmitted when system information is unavailable
+    presets: 64          # p=0:INT1 to p=31:INT32, then p=32:CRT1 to p=63:CRT32
+  sysex: true
+  # NOT MENTIONED ANYWHERE, in an appendix that enumerates both directions message by
+  # message: timing clock, start, stop, continue and song position. This instrument has
+  # no sequencer or arpeggiator to synchronise, so there is nothing for a clock to drive.
+  # One heading in the appendix says otherwise and does not mean what it says. The
+  # transmitted side (p. 30) is headed MIDI active sensing and gives its status byte,
+  # 11111110, sent every 80 msec except while a bulk dump is in progress. The received
+  # side (p. 32) is headed MIDI active *clock*, prints no status byte at all, and
+  # describes active sensing behaviour: received on any channel, and if it stops for
+  # 666 msec or more outside a bulk transfer, the instrument treats the sender as
+  # powered off or the cable as broken and silences what is sounding. Two readings of
+  # these pages, made independently, both read it that way. The format has no field for
+  # active sensing, so it is recorded here rather than left out.
+
+voice:
+  addressing: pitches
+  # The keyboard is 61 keys, C1 to C6 (p. 27), but the instrument answers to the whole
+  # range over MIDI: received key numbers run k=0 to k=127 (p. 32). The transmitted
+  # range is the keyboard's own, k=36 to k=96, which is also what fixes this manual's
+  # note naming: C1 is 36 and C6 is 96.
+  note_range: [0, 127]
+  # "Simultaneous Output Notes: POLY mode: 16 notes, MONO mode: 1 note" (p. 27), and
+  # MONO/POLY is a function parameter, so it is switchable rather than fixed.
+  polyphony: 16
+  voicing_modes: [1, 16]
+  velocity:
+    note_on: received    # v=1; ppp to v=127; fff, and v=0 on a note on means note off
+    note_off: false      # the received key-off velocity is marked ignored (p. 32)
+  # NOT RECORDED, aftertouch. The instrument transmits it - "1101nnnn After touch &
+  # Channel number", which is channel aftertouch by its status byte, with a touch value
+  # of 0 to 127 (p. 30) - and the received list does not mention aftertouch at all. The
+  # field says which kind is answered to and has no way to say "sent but not received",
+  # so writing "channel" here would claim something the manual denies.
+  # NOT RECORDED, pitch_bend. It is received (p. 32) and transmitted (p. 30), but the
+  # range is a front panel function parameter of 0 to 12 semitones with a step of 0 to
+  # 12 (p. 27), not one number this file could state, and nothing sets it over MIDI
+  # except a system exclusive parameter change. On receive the instrument ignores the
+  # LS byte, so a bend reaching it is 7-bit however it was sent.
+
+controls:
+
+  # The MIDI DATA FORMAT appendix, pp. 30 and 32, in the order and the words the tables
+  # print. Ten controllers in all: eight appear in both tables, and two are received
+  # only. Every value column is reproduced as the table gives it, including the two
+  # that take one value and nothing else.
+
+  modulation_wheel:       {label: Modulation wheel, cc: 1, group: controllers}
+  breath_controller:      {label: Breath controller, cc: 2, group: controllers}
+  foot_controller:        {label: Foot controller, cc: 4, group: controllers}
+
+  # Received only: neither appears in the transmitted table on p. 30.
+  portamento_time:        {label: Portamento time, cc: 5, direction: receives, group: portamento}
+
+  # The received table qualifies this one as "(MASTER TUNE only)", where the transmitted
+  # table calls it the data entry knob without qualification. So what it sends and what
+  # it does on arrival are not the same thing, and the file follows the maker's words.
+  data_entry:             {label: Data entry knob, cc: 6, group: data_entry}
+
+  # Received only, and the table notes that its lower four bits are ignored.
+  volume:                 {label: Volume, cc: 7, direction: receives, group: performance}
+
+  sustain_foot_switch:
+    label: Sustain foot switch
+    cc: 64
+    group: pedals
+    choices: {"off": 0, "on": 127}   # "0 ; OFF, 127 ; ON" - two exact values, not bands
+  portamento_foot_switch:
+    label: Portamento foot switch
+    cc: 65
+    group: portamento
+    choices: {"off": 0, "on": 127}
+
+  # "127 ; ON only". One value and no other, which is what the table says and all it says:
+  # there is no off value printed for either of them.
+  data_entry_increment:
+    label: Data entry +1
+    cc: 96
+    group: data_entry
+    choices: {"on": 127}
+  data_entry_decrement:
+    label: Data entry -1
+    cc: 97
+    group: data_entry
+    choices: {"on": 127}

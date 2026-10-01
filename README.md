@@ -131,6 +131,7 @@ self-contained YAML file, and you share it by sending it.
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV -- a drum machine that ignores controller data |
 | `voce/electric_piano` | Voce ELECTRIC PIANO -- 16 or 32 voices, depending on the chorus |
 | `waldorf/streichfett` | Waldorf Streichfett -- controls whose values are exact numbers, not bands |
+| `yamaha/dx7` | Yamaha DX7 -- sends one set of controllers and answers to another, out of a 1983 manual that only exists as a scan |
 
 The set is a starting point rather than a catalogue. `moog/dfam` is five lines,
 because the DFAM has no MIDI at all and saying so is worth more than saying

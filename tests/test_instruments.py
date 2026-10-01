@@ -67,6 +67,7 @@ class TestBundledCorpus:
 			"vermona/drm1_mkiv",
 			"voce/electric_piano",
 			"waldorf/streichfett",
+			"yamaha/dx7",
 		]
 
 	def test_nothing_bundled_sits_outside_a_makers_folder (self) -> None:

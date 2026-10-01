@@ -235,6 +235,14 @@ voice:
   polyphony: 1
 ```
 
+**An NRPN printed as two columns is recorded as one number.** Many makers print an
+NRPN's parameter number whole, and it goes in `nrpn` as printed. Others print an MSB
+column and an LSB column, as Elektron does: record `nrpn` as **MSB x 128 + LSB**, which
+is the number that goes on the wire, and say so in a comment. The citation check knows
+both forms -- it looks for the number, and then for the two halves -- and it reports how
+many it could only find as halves, because small numbers are easy to find on a page full
+of them.
+
 **Stepped controls: bands and exact values are different things.**
 
 - `values` holds where each **band** starts, for a document printing `0-42 = Off`.

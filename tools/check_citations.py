@@ -192,6 +192,24 @@ def wanted_numbers (
 	return wanted
 
 
+def halves_on (nrpn: int, printed: set[int]) -> bool:
+
+	"""Whether a page prints an NRPN as the two halves it is addressed with.
+
+	A definition holds an NRPN as one parameter number, which is what goes on the
+	wire: the MSB times 128 plus the LSB.  Plenty of makers print it that way too,
+	and the number is then found on the page like any other.  Elektron prints the
+	two halves in their own columns and never the sum, so a definition's 229 is on
+	the page as a 1 beside a 101.
+
+	Finding both halves is a **weaker** check than finding the number: the halves
+	are small and such pages are full of small numbers.  It is reported separately
+	for that reason, rather than counted as found.
+	"""
+
+	return nrpn // 128 in printed and nrpn % 128 in printed
+
+
 def as_ranges (numbers: typing.Iterable[int]) -> str:
 
 	"""A run of numbers written the way a person cites them: ``21-24, 30``."""
@@ -270,6 +288,7 @@ class Result:
 	unreachable: set[int] = dataclasses.field(default_factory=set)
 	wanted: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	missing: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+	as_halves: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 
 
 	@property
@@ -343,7 +362,18 @@ def follow (
 		)
 
 	printed_numbers = numbers_on(" ".join(document.text for document in result.documents))
-	result.missing = [entry for entry in result.wanted if entry[2] not in printed_numbers]
+
+	for entry in result.wanted:
+		name, kind, number = entry
+
+		if number in printed_numbers:
+			continue
+
+		if kind == "nrpn" and halves_on(number, printed_numbers):
+			result.as_halves.append(entry)
+			continue
+
+		result.missing.append(entry)
 
 	return result
 
@@ -372,12 +402,18 @@ def render (result: Result, verbose: bool) -> None:
 	if result.unreachable:
 		print(f"    ⚠ cited but in no document read: printed {as_ranges(result.unreachable)}")
 
-	found = len(result.wanted) - len(result.missing)
+	found = len(result.wanted) - len(result.missing) - len(result.as_halves)
 
 	if not result.wanted:
 		print("    no numbers to check")
 	else:
 		print(f"    {found} of {len(result.wanted)} numbers found")
+
+	if result.as_halves:
+		print(
+			f"        {len(result.as_halves)} NRPNs found only as the two halves the maker prints, "
+			f"which is a weaker check"
+		)
 
 	for name, kind, number in result.missing:
 		print(f"        not on any cited page: {name}.{kind} = {number}")

@@ -110,6 +110,26 @@ class TestReadingNumbersOffAPage:
 		assert 12 not in tool.numbers_on("1\n2")
 
 
+class TestFindingAnNrpnThatIsPrintedAsTwoHalves:
+
+	def test_the_sum_is_found_when_the_page_prints_the_halves (self) -> None:
+		"""A Digitone's NRPN 1/101 is 229 on the wire, and the page prints a 1 and a 101.
+
+		A definition holds the one number that is addressed; the maker prints the two
+		columns it is built from. Neither is wrong, so the check has to know both.
+		"""
+		assert tool.halves_on(229, {1, 101, 94}) is True
+
+	def test_a_missing_half_is_not_found (self) -> None:
+		assert tool.halves_on(229, {1, 100}) is False
+		assert tool.halves_on(229, {101}) is False
+
+	def test_an_nrpn_in_the_first_bank_needs_a_zero_msb_on_the_page (self) -> None:
+		"""A Take 5 prints its NRPNs whole, so this path is not what finds them."""
+		assert tool.halves_on(36, {0, 36}) is True
+		assert tool.halves_on(36, {36}) is False
+
+
 class TestWritingPagesBack:
 
 	def test_a_run_of_pages_prints_as_a_range (self) -> None:

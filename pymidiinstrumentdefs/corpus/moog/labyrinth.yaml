@@ -3,13 +3,17 @@ definition: 1
 model:
   manufacturer: Moog Music
   name: Labyrinth
-  # NOT RECORDED. Moog publishes no firmware version anywhere that can be read: its
-  # downloads page builds its list in the browser and serves nothing about a version,
-  # and the release-note files it used to serve now redirect to a page that is gone
-  # (checked 2026-09-30). Its support pages explain how to read the installed version
-  # off the instrument, which is a fact about one unit rather than about the model.
-  # The manual never mentions firmware or a version in 62 pages. As with the DFAM, that
-  # is not enough to write `none`: nobody has established that there is none.
+  # NOT RECORDED, and better evidenced than it was. Moog publishes no firmware version on any
+  # page it serves: its downloads list is built in the browser, and the release-note files it
+  # used to serve redirect to a page that is gone (checked 2026-09-30). It does publish a
+  # version inside each firmware package - that is where the Matriarch's, the Minitaur's, the
+  # Subharmonicon's and the Grandmother's come from - and **the data behind that downloads list
+  # offers no firmware package for this instrument at all** (checked 2026-10-01 at
+  # page-data/sq/d/1410304437.json, which lists every download Moog publishes). So there is
+  # nothing of the maker's to read a version from, which is a checked absence of a document
+  # rather than a failed search.
+  # The manual never mentions firmware or a version in 62 pages. As with the DFAM, that is
+  # still not enough to write `none`: nobody has established that there is none.
 
 source: >-
   User manual, 62 pages: MIDI OPERATIONS at p. 47, the MIDI input on the patch
@@ -27,6 +31,23 @@ sources:
     url: "https://cdn.inmusicbrands.com/Moog/Labyrinth/LABYRINTH-MANUAL%201.pdf"
     sha256: 1423b1662890c216016149b5b9516c51975f918d795d38b6175e3043ad366b3c
     retrieved: 2026-09-13
+
+  downloads_list:
+    kind: web_page
+    title: Moog downloads
+    dated: 2026-10-01
+    landing: "https://www.moogmusic.com/downloads/"
+    url: "https://www.moogmusic.com/page-data/sq/d/1410304437.json"
+    sha256: 2b12c3d24177c87c55f47550f16333f1228b33d740b8dd7fd4067a88605c0349
+    retrieved: 2026-10-01
+    paginated: false
+    # Cited for an absence, which is the only thing it can settle: Moog lists no firmware
+    # package for this instrument. Moog's downloads page renders in the browser and serves
+    # nothing about a file, so this is the data behind it - 119 entries across 27 products, of
+    # which 27 are firmware packages, and none of them this instrument's. The sha256 is of the
+    # entries rendered as a table, which is the copy a reader can search; the JSON as served
+    # hashes to 2a1a063c65fe6962f2dac1d762973a11e13dae9cda0ad957a70635bd095e1bfb. Moog revises
+    # this list with every release, so no later fetch will match either hash.
 
 midi:
   # "MIDI responds to Clock, Note On, and Start/Stop/Continue messages" (p. 45),

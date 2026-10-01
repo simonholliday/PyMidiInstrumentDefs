@@ -157,10 +157,15 @@ class TestBundledCorpus:
 		assert dfam.controls == {}
 
 	def test_matriarch_control_surface (self) -> None:
-		"""The Matriarch's own manual table, read back."""
+		"""The Matriarch's own manual table, read back, plus the one its release notes add.
+
+		36 come from the manual's MMA chart and the 37th, CC 106, from Moog's
+		firmware v1.3.0 notes, which are the only place it is published.
+		"""
 		matriarch = pymidiinstrumentdefs.load("moog/matriarch", [CORPUS])
 
-		assert len(matriarch.controls) == 36
+		assert len(matriarch.controls) == 37
+		assert matriarch.controls["arp_seq_gate_length"].cc == 106
 		assert sum(control.is_14_bit for control in matriarch.controls.values()) == 12
 		assert matriarch.controls["osc_2_frequency"].range == (0, 16383)
 
@@ -1374,7 +1379,7 @@ class TestGrouping:
 		groups = matriarch.grouped_controls()
 
 		assert groups["oscillator"][0].name == "osc_2_frequency"
-		assert len(groups["arpeggiator"]) == 8
+		assert len(groups["arpeggiator"]) == 9
 
 	def test_panel_first_is_opt_in_and_stable (self) -> None:
 		"""Nothing ranks by default: the flag is a strong hint and a poor rule."""

@@ -125,9 +125,9 @@ self-contained YAML file, and you share it by sending it.
 | `moog/dfam` | Moog DFAM -- no MIDI at all, and the file says so |
 | `moog/grandmother` | Moog Grandmother -- one voice, five controls in 14-bit pairs, and a value table of 24 clock divisions |
 | `moog/labyrinth` | Moog Labyrinth -- answers to notes, clock and transport, and nothing else |
-| `moog/matriarch` | Moog Matriarch -- 36 controls, and a voice count you can switch over MIDI |
+| `moog/matriarch` | Moog Matriarch -- 37 controls, one of which only its firmware notes mention, and a voice count you can switch over MIDI |
 | `moog/minitaur` | Moog Minitaur -- plays notes 0-72, with the firmware v2.1 corrections |
-| `moog/subharmonicon` | Moog Subharmonicon -- reads a note as an offset from C4, not as a pitch |
+| `moog/subharmonicon` | Moog Subharmonicon -- reads a note as an offset from C4, not as a pitch, and answers to one controller its manual does not list |
 | `pwm/malevolent` | PWM Malevolent -- from its quick-start guide alone, and says so |
 | `roland/tr8s` | Roland TR-8S -- eleven voices of four controls, and two it only sends |
 | `sequential/take_5` | Sequential Take 5 -- 170 controls, most reachable by CC and by finer NRPN |

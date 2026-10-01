@@ -3,22 +3,35 @@ definition: 1
 model:
   manufacturer: Moog Music
   name: Subharmonicon
-  # NOT RECORDED. Moog publishes no firmware version anywhere that can be read: its
-  # downloads page builds its list in the browser and serves nothing about a version,
-  # and the release-note files it used to serve now redirect to a page that is gone
-  # (checked 2026-09-30). Its support pages explain how to read the installed version
-  # off the instrument, which is a fact about one unit rather than about the model.
-  # This instrument does take firmware: the manual points at the maker's site for updates
-  # (p. 57), and images for 1.1.0 and 1.1.1 were published. The manual's own colophon says
-  # "User Manual Version 1", which is the document's version and not the firmware's.
+  # Moog publishes no firmware version on any page it serves - its downloads list is built
+  # in the browser - but it publishes one inside every firmware package, and the package for
+  # this instrument has been held here all along. Its update document names v1.1.1, dated
+  # March 2022, and carries v1.1.0's release notes as its own last two pages. 1.1.1 is the
+  # newest Moog publishes (checked 2026-10-01).
+  # This definition describes 1.1.1 because it is the manual's table plus what 1.1.0 added,
+  # and nothing in either document changes a number the manual gives. **The manual's table
+  # describes a firmware older than 1.1.0**: it does not list CC 91, and the v1.1.0 notes say
+  # of CC 91 that "Previously, MIDI CC 91 had no effect". So the two sources are read together
+  # and the source line says which number came from which.
+  # The manual's own colophon says "User Manual Version 1", which is the document's version
+  # and not the firmware's.
+  firmware: "1.1.1"
 
 source: >-
-  User manual, 58 pages: MIDI OPERATIONS at pp. 42-44, which is the complete
-  control-change table; tempo and MIDI clock at p. 25; and the specifications
-  at p. 57. Every band and every default below is quoted from that table. NOT
-  RECORDED: polyphony and velocity, which the manual does not state, and the
-  contents of the SysEx files that set channel and transport, which Moog
-  publishes separately.
+  User manual, 58 pages: MIDI OPERATIONS at pp. 42-44, which is the manual's complete
+  control-change table; tempo and MIDI clock at p. 25; and the specifications at p. 57. Every
+  band and every default from that table is quoted as it prints them.
+  AND THE FIRMWARE v1.1.1 UPDATE DOCUMENT, five pages, published inside the firmware package
+  rather than beside it, which carries v1.1.0's release notes as its last two pages. One
+  control here comes from it and from nowhere else: CC 91, keyboard note priority, with its
+  own three-band table, on the notes' own p. 4. The manual's table does not list CC 91, and that document says why:
+  "Previously, MIDI CC 91 had no effect."
+  It also records three things the manual cannot, each marked where it belongs below: that
+  this instrument answers to pitch bend at all, which it did not before v1.1.0; that MIDI
+  notes received while a sequence runs now transpose the sequence rather than playing over it;
+  and that the highest pitch it will play unquantized became a C where it had been a C sharp.
+  NOT RECORDED: polyphony and velocity, which neither document states, and the contents of the
+  SysEx files that set channel and transport, which Moog publishes separately.
 
 sources:
   manual:
@@ -29,6 +42,26 @@ sources:
     sha256: c79ffe2d4fbcb48a5763ad2e937f7ea7bc712f33c2a6e7173377ab6576bf4a65
     retrieved: 2026-09-13
     page_offset: -1
+  release_notes:
+    kind: release_notes
+    title: Moog Subharmonicon Firmware Update v1.1.1
+    edition: "v1.1.1, carrying v1.1.0's notes"
+    dated: "2022-03"
+    landing: "https://www.moogmusic.com/downloads/?product=Subharmonicon&type=Firmware%20Update"
+    url: "https://cdn.inmusicbrands.com/Moog/Subharmonicon/Subharmonicon_Firmware_v1_1_1.zip"
+    sha256: bcfdccc4cd754718045d1aeb2d810a1736939373a9a9aa8d8823e3ba69c3da9c
+    retrieved: 2026-10-01
+    page_offset: 0
+    # The sha256 is of the update document itself, which is a member of the zip at the url
+    # above rather than a file Moog serves on its own:
+    # "Subharmonicon_Firmware_v1_1_1/Subharmonicon_Firmware_Update_1.1.1.pdf". The zip hashes
+    # to dfe838f31dc06edfed9386e117ae83880a9647dbcff1af2c3b2142ab93bc04a6 and
+    # re-extracting that member reproduces the cited bytes, which was asserted rather than
+    # assumed.
+    # Its date is the "March 2022" the document prints for itself. It gives no day, so none is
+    # recorded: `dated` keeps whatever text it is given, and a month is what this one states.
+    # Five pages printing no numbers: cited by its own headings, and CC 91's table is on the
+    # file's p. 4.
 
 midi:
   # 1-16 or All, factory 1, and set only by a SysEx file from moogmusic.com
@@ -50,6 +83,20 @@ voice:
   # showing absolute pitches would misdraw it.
   addressing: relative
   reference_note: 60
+  # Three facts from the firmware v1.1.1 document that the format has no field for, recorded
+  # here rather than left out:
+  # IT ANSWERS TO PITCH BEND, and did not before firmware 1.1.0: "Subharmonicon now changes
+  # pitch in response to MIDI Pitch Bend messages. Previously, Subharmonicon did not respond to
+  # MIDI Pitch Bend." How far it bends is stated nowhere, so `pitch_bend` is left empty: the
+  # field holds a range and a programmable flag, and neither document gives either.
+  # NOTES RECEIVED WHILE A SEQUENCE RUNS TRANSPOSE IT, from the same release: "MIDI Notes sent
+  # to Subharmonicon via the MIDI jack will now transpose the pitch of the sequence while the
+  # sequence is running ... Previously, MIDI notes received while a sequence was running would
+  # play directly over the notes in the sequence." So what an incoming note does depends on
+  # whether the sequencer is running, which `addressing: relative` cannot say.
+  # THE TOP OF ITS RANGE MOVED: "The highest pitch Subharmonicon will play in unquantized mode
+  # is now a C. Previously, the highest note in unquantized mode was C#." Neither document gives
+  # a MIDI note number for either, so `note_range` stays unrecorded.
 
 # Every control below carries the same remark in the table: the CC replaces the
 # knob setting, and moving the knob overrides the CC. The instrument does not
@@ -132,6 +179,31 @@ controls:
     range: [0, 16383]
     default: 0
     group: envelopes
+
+  # ── Sequencer ─────────────────────────────────────────────────────────────
+
+  # ── Keyboard ──────────────────────────────────────────────────────────────
+  # Not in the manual's table at all. From the firmware v1.1.0 release notes, carried in the
+  # v1.1.1 document, which give it a three-band table of its own and say "Previously, MIDI CC
+  # 91 had no effect." One message sets it, and the setting is remembered when the instrument
+  # is powered off.
+
+  note_priority:
+    label: Keyboard Note Priority
+    cc: 91
+    # "Low Note Priority 0-42, High Note Priority 43-85, Last Note Priority (default) 86-127",
+    # printed as value ranges, so these are band starts. The three ranges are contiguous and
+    # cover 0 to 127 with no gap and no overlap. The default band is the last one, which is why
+    # the default below is its first value rather than zero.
+    # THE DOCUMENT CONTRADICTS ITSELF HERE, and the table is followed: the sentence above it
+    # offers two states where the table lists three - "You can now use MIDI CC 91 to set Low
+    # Note or Last Note priority on Subharmonicon" - and High Note Priority, which the prose
+    # leaves out, is the one that owns 43-85. Both readings were found by two independent
+    # extractions, and the v1.1.1 document reproduces the page a release later with the error
+    # intact.
+    values: {low_note: 0, high_note: 43, last_note: 86}
+    default: 86
+    group: keyboard
 
   # ── Sequencer ─────────────────────────────────────────────────────────────
 

@@ -4,14 +4,33 @@ model:
   manufacturer: Moog Music
   name: Minitaur
   firmware: "2.1"
+  # What this definition describes, from the addendum bound into its manual. Moog ships **2.2.1**
+  # (checked 2026-10-01; its downloads data offers v2.2.0 and v2.2.1 packages, each holding
+  # release notes, which the library now holds with provenance). What the notes say changed after
+  # 2.1, read with their columns resolved by coordinates because their change log is one wide
+  # artwork drawn three times rather than three pages of text:
+  # v2.2.0 added RPN 2 coarse tuning over -64 to +63 semitones, and a system exclusive message
+  # for the CV start note, "F0 04 08 23 18 00 nn F7, where nn = start note in hex", moving that
+  # start note's default from 20 to 0. v2.2.1's two entries are a MIDI-sync LFO trigger fault and
+  # an envelope-release fault, and whether they are faults it fixed or faults still open is not
+  # settled by the document: they sit under a bare version heading in a change log, which says
+  # fixed, and are phrased as present-tense symptoms where every other entry says "Fixed".
+  # NO CONTROLLER NUMBER CHANGED between 2.1 and 2.2.1, so every number below still describes a
+  # current instrument. The notes name no CC at all, and no NRPN, no bank select, no MIDI channel
+  # and no velocity anywhere in either of them.
 
 source: >-
-  User manual (c)2012 pp. 21-24, and the firmware v2.1 addendum. Two band
-  boundaries below are the addendum's corrections and differ from the manual:
-  trigger mode's third band starts at 86 rather than 85, and key priority's at
-  86 rather than 87. The manual leaves 85-86 unassigned for key priority, which
-  is the printing error the addendum fixes -- and the widely shared
-  Moog_Minitaur.midnam has it as 85, which is wrong.
+  User manual (c)2012 pp. 21-24 for the control-change chart, and THE FIRMWARE v2.1 ADDENDUM AT
+  pp. 31-34 OF THE SAME FILE. The addendum is not a separate document and never was: pages 31 to
+  34 of this manual are headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM", and its corrections are
+  the section headed CORRECTIONS TO THE MANUAL on pp. 33-34. That was established on 2026-10-01;
+  before then this file cited the addendum without knowing where it was.
+  Two band boundaries below are those corrections and differ from the chart, and the addendum
+  quotes the error it is fixing: "TRIGGER MODE - CC 73 (values) 0-42 (LEGATO ON), 43-85 (LEGATO
+  OFF) 86-127 (EG RESET) [was incorrectly given as 85-127 in manual]", and "KEY PRIORITY - CC 91
+  (values) 0-42 (LOW) 43-85 (HIGH) 86-127 (LAST) [was incorrectly given as 87-127 in manual]".
+  So the chart leaves 85-86 unassigned for key priority, which is the printing error the addendum
+  fixes -- and the widely shared Moog_Minitaur.midnam has it as 85, which is wrong.
   NOT RECORDED, and marked in place: the 22 bands of the LFO clock division and
   the 8 bands of bend up/down, for which the source gives only the first and
   last. The LSB of EG amount and filter KB tracking are deliberately omitted --
@@ -27,6 +46,29 @@ sources:
     retrieved: 2026-09-13
     page_offset: 2
     pages_per_sheet: 2
+  release_notes:
+    kind: release_notes
+    title: Moog Minitaur Firmware v2.2.1 Release Notes
+    edition: "v2.2.1, a change log back to v1.0.3"
+    landing: "https://www.moogmusic.com/downloads/?product=Minitaur&type=Firmware%20Update"
+    url: "https://cdn.inmusicbrands.com/Moog/Minitaur/Minitaur%20Firmware%20v2.2.1.zip"
+    sha256: 81ce4cb2445a30c8b230bdeb8d36357f3d5aca6e3d98573277f60dd6416999b2
+    retrieved: 2026-10-01
+    page_offset: 0
+    # Cited for the firmware Moog ships and for what changed around the one this definition
+    # describes - no controller number among it. The sha256 is of the release notes PDF, which is
+    # a member of the zip at the url above rather than a file Moog serves on its own:
+    # "Minitaur Firmware v2.2.1/Minitaur Firmware v2.2.1 Release Notes.pdf". The zip hashes to
+    # 462f8d3b153529822d27f05be575c2d04f837bd8b9e428168af5406f6e00d5d0 and re-extracting that
+    # member reproduces the cited bytes, which was asserted rather than assumed.
+    # NOT RECORDED, dated: the document prints no date of its own.
+    # READ IT BY COORDINATES. Its change log is a single artwork about 1880 points wide, drawn on
+    # each of three pages with a translation and a clip, so every page's content stream holds the
+    # whole log and a plain reading returns it three times with the columns interleaved. Which
+    # version a line belongs to is the x position of the heading above it, not reading order.
+    # It defers to a document of its own for the firmware this definition describes: "See
+    # separate v2_1 new-features documentation for complete details", in its v2.1.0 column. That
+    # document is the addendum at pp. 31-34 of the manual above.
 
 midi:
   channels: [1, 16]
@@ -38,9 +80,16 @@ midi:
 
 voice:
   addressing: pitches
-  # C-1 to C5. On the original firmware anything above is ignored; from v2.1 a
-  # higher note sounds the equivalent pitch in the top octave. Either way,
-  # transposing a part up here goes silent or wrong rather than sounding.
+  # C-1 to C5, and the range this records is the PITCH range, which is the one a panel needs:
+  # note 72 is as high as the oscillators go, "which is a hardware limitation" in the maker's
+  # words. THE INSTRUMENT HAS TWO CEILINGS, and one field cannot hold both. From firmware 1.0.6,
+  # "VCA Gate responds to MIDI notes above note 72 (VCO pitch still limited to note 72, which is
+  # a hardware limitation)" (release notes, column 3 under the v1.0.6 heading) - so a note above
+  # 72 is answered to, and sounds at 72 rather than not at all. From v2.1 the addendum's WRAP TOP
+  # OCTAVE setting makes "a note which is above C5 ... play the equivalent pitch (C, D, E etc.)
+  # in its top octave, instead of always playing the highest C for all notes above C5" (p. 33).
+  # So on the firmware this describes, transposing a part above 72 sounds, and sounds wrong
+  # rather than silent, which is the opposite way round from what this file said before 2026-10-01.
   note_range: [0, 72]
   polyphony: 1
   velocity:

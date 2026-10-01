@@ -3,6 +3,11 @@ definition: 1
 model:
   manufacturer: Sequential
   name: Take 5
+  # OS 2.0, which the addendum below is written for -- "OS version 2.0 for the Take 5
+  # adds expanded program storage (eight new banks), looping envelopes, a new Lo-Fi
+  # effect" (addendum p. 1) -- and which the User's Guide describes. Sequential ships
+  # 2.1.0.2 now; see the release_notes source for what that does and does not tell us.
+  firmware: "2.0"
 
 source: >-
   MIDI Implementation V2, 17 pages: the global MIDI settings at p. 1, received
@@ -13,7 +18,8 @@ source: >-
   (2 pages) the features the tables do not carry. NOT RECORDED: which number
   means which named state, because the implementation gives only ranges and in
   three places the guide lists a different number of states from the range
-  (see the comments); the NRPN form of the two oscillator fine tunes, printed
+  (see the comments); what changed in the OS releases after 2.0, which Sequential
+  does not publish notes for; the NRPN form of the two oscillator fine tunes, printed
   as -700 to 700 with no encoding given; and any address for Envelope Repeat,
   Osc 2 Filter Bypass or LFO Slew, which appear in neither table.
 
@@ -48,6 +54,25 @@ sources:
     url: "https://sequential.com/wp-content/uploads/2023/04/Take-5-OS-2.0-Addendum_v2.pdf"
     sha256: 94003889a4948fd3acc8a4b74557e2c23a542ab37f72012fe111b0a14b01f9b5
     retrieved: 2026-09-13
+  release_notes:
+    kind: release_notes
+    title: "Take 5 Operating System - Sequential"
+    edition: Main OS 2.1.0.2, Panel OS 1.1.2
+    landing: "https://sequential.com/support/download/take-5-operating-system/"
+    url: "https://sequential.com/support/download/take-5-operating-system/"
+    sha256: d25b3d6412b2ff4677a0b739c169f1bf97835495ae74078b1e228cd7fe213346
+    retrieved: 2026-09-30
+    paginated: false
+    # Cited only for which firmware was newest when this was checked: "The newest version
+    # of the Take 5 Main OS is Take5_Main_2.1.0.2" and "the Take 5 Panel OS is
+    # Take5_Panel_1.1.2", as saved on 2026-09-30. The sha256 is of the page's visible text;
+    # the page as served hashes to
+    # 2d5f27f607fcedefee260515ab441214ec80b9a23c58aded7f3c9545b5da106a.
+    #
+    # So this file describes an older OS than Sequential ships. What changed between them is
+    # NOT RECORDED: Sequential publishes no release notes for its dot releases, and says only
+    # that most "fix only minor bugs", which says nothing about MIDI. Nothing here is known to
+    # be stale; nothing here is known to be current either.
 
 midi:
   # 1-16, or All to receive on every channel (p. 1). Which one yours is on

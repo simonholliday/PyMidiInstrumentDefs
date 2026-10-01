@@ -3,13 +3,24 @@ definition: 1
 model:
   manufacturer: Roland
   name: TR-8S
+  # The chart names no firmware, and Roland's own update history settles which ones it
+  # covers: across all fourteen releases, from Ver.1.02 (Mar 2018) to Ver.3.00 (Sep 2023),
+  # the word MIDI appears once -- "MIDI sometimes becomes unsynchronized when a pattern is
+  # changed", a fix in Ver.2.01. No release adds, removes or renumbers a controller. So
+  # every row below holds for the current system program, which is what this records. (The
+  # chart's own version, 1.10 dated October 2018, sits between system program 1.10 of
+  # August 2018 and 1.11 of December 2018; Roland does not say the two numbering schemes
+  # are the same thing, so nothing here rests on that.)
+  firmware: "3.00"
 
 source: >-
   MIDI Implementation Chart, Version 1.10, dated 4 October 2018: a single page
   (p. 1), and every row of it is below. Its 55 control numbers and 11 note
   numbers agree exactly with a working Subsequence map of the same machine,
   whose names these follow. NOT RECORDED: values, bands and defaults for any
-  control, none of which the chart gives.
+  control, none of which the chart gives. The firmware this covers is not in the chart
+  either: it comes from Roland's update history, saved the same way, which shows no
+  release changing the MIDI implementation.
 
 sources:
   midi_impl:
@@ -21,6 +32,21 @@ sources:
     url: "https://static.roland.com/assets/media/pdf/TR-8S_MIDIImpleChart_eng03_W.pdf"
     sha256: 518360070cfde572ae3cf9454877821d60f21edbbb9fc8a455243e9d8e7851a2
     retrieved: 2026-09-13
+  release_notes:
+    kind: release_notes
+    title: "Roland - Support - TR-8S - Updates & Drivers"
+    edition: Ver.3.00
+    dated: 2023-09
+    landing: "https://www.roland.com/global/support/by_product/tr-8s/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/tr-8s/updates_drivers/84163b50-a2c5-4c3e-be2a-6ccee610d6ff/"
+    sha256: 397280c1ebe0fde5a5d03b5b7c72582ba624d13fd81791d6792997757be880e5
+    retrieved: 2026-09-30
+    paginated: false
+    # Cited for which firmware is current and for the whole update history, which is what
+    # establishes that no release changes the chart above. The sha256 is of the page's
+    # visible text as saved on 2026-09-30; the page as served hashes to
+    # 9a3de4111f65cb3c8929fa7748c2b2c7772f01993c0c8d51769c5e1ace66ff87. Roland adds
+    # releases to this page, so no later fetch will match either.
 
 midi:
   # Default 10, memorised; settable to 1-16 or OFF. Which one yours is on

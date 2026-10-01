@@ -3,6 +3,10 @@ definition: 1
 model:
   manufacturer: Modal Electronics
   name: CARBON8M
+  # NOT RECORDED. The manual names no firmware, though the instrument has a Firmware
+  # Version screen (p. 9) and updates through MODALapp (p. 35). Modal ships v1.1 -- see
+  # the release_notes source -- and says nothing about what it changed or which firmware
+  # this manual describes, so which of them these facts hold for is unestablished.
 
 source: >-
   User manual v1 (warranty update), printed two pages to a sheet: the MIDI CC
@@ -17,6 +21,20 @@ source: >-
   NOT RECORDED: note range, velocity response and pitch-bend range.
 
 sources:
+  release_notes:
+    kind: release_notes
+    title: "CARBON8M - Modal Electronics"
+    edition: Firmware v1.1
+    landing: "https://modalelectronics.com/carbon8m/"
+    url: "https://modalelectronics.com/carbon8m/"
+    sha256: bc6b8a14d6a11b1f5cca71cefba331db1f9fbce11b6d4d15c0b85f133f92a2c2
+    retrieved: 2026-09-30
+    paginated: false
+    # Cited only for the firmware Modal ships: "Firmware v1.1 - update via MODALapp",
+    # under Downloads, as saved on 2026-09-30. The sha256 is of the page's visible text;
+    # the page as served hashes to
+    # efa5b80263fb9a2d5d740b372e8e5cc80a76571be617fa89239698bc97ec64ca. Modal's shop
+    # refuses a plain user-agent, so it was fetched with a browser's headers.
   manual:
     kind: manual
     title: CARBON8M User Manual - English - V1

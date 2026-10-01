@@ -76,6 +76,24 @@ class TestBundledCorpus:
 		assert tr8s.groups["bd"] == "BD"
 		assert list(tr8s.grouped_controls())[0] == "global"
 
+	def test_no_published_paragraph_prints_a_dash_the_site_will_not (self) -> None:
+		"""Read as the loader returns it, because that is what a page prints.
+
+		A folded paragraph joins its lines with a space, so a file ending a line
+		with "--" shows a reader " -- " that no search of the file can find. Four
+		definitions were doing exactly that, and one of them was released.
+		"""
+		printing = {}
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			paragraph = pymidiinstrumentdefs.load(name, [CORPUS]).source or ""
+			found = [dash for dash in ("\u2014", " -- ") if dash in paragraph]
+
+			if found:
+				printing[name] = found
+
+		assert printing == {}
+
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [

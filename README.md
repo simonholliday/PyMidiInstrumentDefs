@@ -160,7 +160,7 @@ control changes, and the file records that it looked.
 
 ### Starting from a MIDNAM file
 
-If your instrument has a `.midnam` file - Ardour bundles several hundred --
+If your instrument has a `.midnam` file - Ardour bundles several hundred -
 `pymidiinstrumentdefs.midnam` will start a definition from it:
 
 ```python

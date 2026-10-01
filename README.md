@@ -116,6 +116,7 @@ self-contained YAML file, and you share it by sending it.
 | Name | Instrument |
 |------|------------|
 | `arturia/microfreak` | Arturia MicroFreak -- four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
+| `arturia/minifreak` | Arturia MiniFreak -- six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |
 | `behringer/model_d` | Behringer MODEL D -- no control changes at all; its remote surface is SysEx |
 | `elektron/digitakt` | Elektron Digitakt -- eight audio tracks and eight that only send, with thirty controller numbers meaning more than one thing |
 | `elektron/digitone` | Elektron Digitone -- nine parts on nine channels, where one CC means three things |
@@ -185,7 +186,9 @@ from. Usually that is the user manual. For the TR-8S and the Take 5 it is the
 maker's MIDI implementation document, and for the Malevolent a quick-start
 guide, because that is all there is, and its file keeps to what the guide says. Two were checked against a second source as well: the
 Minitaur against Moog's firmware v2.1 addendum, and the DRM1's note map against
-a working implementation of the same machine.
+a working implementation of the same machine. The MiniFreak's second source is the
+maker's own firmware release notes, which carry one control -- CC 7, volume -- that
+its manual never mentions, and the file says so where it records it.
 
 **None of them was imported from a `.midnam` file, and none ever will be.** The
 importer is a tool for starting a definition of *your* instrument; it is not

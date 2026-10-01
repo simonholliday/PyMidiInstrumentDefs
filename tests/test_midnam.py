@@ -108,7 +108,7 @@ class TestReading:
 		"""A real file counts a clock divider downwards, and a definition may not.
 
 		A band is defined by its number, not by where it sits in the file, so
-		sorting loses nothing -- and without it the import produces a definition
+		sorting loses nothing - and without it the import produces a definition
 		this package would refuse to load.
 		"""
 		document = (
@@ -141,8 +141,8 @@ class TestReading:
 	def test_a_pair_whose_numbers_disagree_is_left_apart (self) -> None:
 		"""Names pairing is not enough: the fine number must be the coarse one plus 32.
 
-		This is a real disagreement in the real file -- KB Track is printed as
-		20 and 54 -- and one of the two numbers is wrong. Guessing which would be
+		This is a real disagreement in the real file - KB Track is printed as
+		20 and 54 - and one of the two numbers is wrong. Guessing which would be
 		inventing a number, so both halves stay and the conflict is reported.
 		"""
 		definition = pymidiinstrumentdefs.midnam.read(MINITAUR, source = "x.midnam")

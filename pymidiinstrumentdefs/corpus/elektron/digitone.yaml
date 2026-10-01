@@ -1,15 +1,15 @@
 # The Digitone is nine separately addressable things at once: four synth tracks, four
 # MIDI tracks that drive external gear rather than sounding, and an effects and master
 # section. Each is given a MIDI channel of its own by the player (14.5.3, pp. 73-74), so
-# every control below names the part it belongs to -- and it has to, because 33 of the 71
+# every control below names the part it belongs to - and it has to, because 33 of the 71
 # controller numbers in this manual mean more than one thing depending on which channel
 # they arrive on. CC 70 is the filter's Attack Time on a synth track, the chorus's
 # High-pass on the effects channel, and the first of the eight values a MIDI track sends.
 #
 # NRPN is written as one number, the way the format holds it: the manual's NRPN MSB and
 # LSB combine as MSB * 128 + LSB, so its 1/20 is 148 here. Elektron uses the MSB as a
-# bank -- 1 for a synth track's parameters, 2 for the effects and master, 3 for the trig
-# parameters -- which is why the NRPN addresses never collide where the CCs do.
+# bank - 1 for a synth track's parameters, 2 for the effects and master, 3 for the trig
+# parameters - which is why the NRPN addresses never collide where the CCs do.
 #
 # The appendix gives addresses and nothing else: no value, no band, no default, no unit.
 # That absence is the manual's, not an omission here.
@@ -21,7 +21,7 @@ model:
   name: Digitone
   # The manual says so itself (p. 11): "This manual for Digitone OS version 1.43 was last
   # updated September 9, 2026." Elektron ships 1.43, and its release notes show no release
-  # from 1.30B to 1.43 changing the implementation -- MIDI appears there only in fixes, for
+  # from 1.30B to 1.43 changing the implementation - MIDI appears there only in fixes, for
   # messages dropped at very low tempos, a missed first trig under external clock, and
   # corrupted SysEx dumps. Later releases do add parameters, which is why this is
   # transcribed from the 1.43 manual and not an earlier one.
@@ -253,7 +253,7 @@ controls:
   sustain:                {label: Sustain, cc: 64, part: synth, group: misc}
   sostenuto:              {label: Sostenuto, cc: 66, part: synth, group: misc}
 
-  # B.7 MIDI TRACK PARAMETERS -- the eight values a MIDI track sends ────────
+  # B.7 MIDI TRACK PARAMETERS - the eight values a MIDI track sends ────────
   cc_val1:                {label: CC Val1, cc: 70, part: midi, group: cc_value}
   cc_val2:                {label: CC Val2, cc: 71, part: midi, group: cc_value}
   cc_val3:                {label: CC Val3, cc: 72, part: midi, group: cc_value}

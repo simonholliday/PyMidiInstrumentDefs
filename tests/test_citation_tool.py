@@ -199,7 +199,7 @@ class TestACitedDocumentThatIsAScan:
 
 	The Yamaha DX7's manual is the case: its controller numbers are printed only in
 	an appendix that Yamaha's own text edition leaves out, and the scan it does
-	publish has no text layer at all -- 0 characters on every one of its 34 pages.
+	publish has no text layer at all - 0 characters on every one of its 34 pages.
 	Reported as ordinary misses, that definition would look like 23 wrong citations.
 	"""
 

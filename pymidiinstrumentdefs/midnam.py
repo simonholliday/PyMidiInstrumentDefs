@@ -1,14 +1,14 @@
 """Importing a MIDNAM file into an instrument definition.
 
 MIDNAM is the one machine-readable description of an instrument that already
-exists in quantity -- Ardour alone bundles several hundred -- so it is the
+exists in quantity - Ardour alone bundles several hundred - so it is the
 cheapest way to get a definition started.  It is not a way to get one finished.
 
 **An import is an on-ramp, never an authority.**  MIDNAM carries the control
 map and nothing else: no polyphony, no note range, no velocity response, no
 aftertouch.  Everything in the ``midi`` and ``voice`` sections has to be added
 by a person reading the manual.  And the control map itself can simply be
-wrong -- the widely shared Moog Minitaur file gives a key-priority band the
+wrong - the widely shared Moog Minitaur file gives a key-priority band the
 manufacturer's own firmware addendum contradicts.
 
 So an import is marked ``unverified`` in its own ``source`` line, the validator
@@ -62,7 +62,7 @@ def _slug (text: str, prefix: str) -> str:
 	"""Turn a human label into an addressable name.
 
 	Names must start with a letter, so anything beginning with a digit takes the
-	given prefix rather than being dropped -- "16' Octave" is a real control and
+	given prefix rather than being dropped - "16' Octave" is a real control and
 	losing it would be worse than renaming it.
 	"""
 
@@ -99,7 +99,7 @@ def _values_of (element: xml.etree.ElementTree.Element) -> dict[str, int]:
 	"""The named bands a ``ValueNameList`` element holds.
 
 	A ``Value``'s ``Number`` is the lowest of its band, running to the next entry
-	minus one -- the same convention a definition file uses, so nothing has to be
+	minus one - the same convention a definition file uses, so nothing has to be
 	converted here.
 	"""
 
@@ -119,7 +119,7 @@ def _values_of (element: xml.etree.ElementTree.Element) -> dict[str, int]:
 		key = _unique(_slug(value.get("Name") or "", "value") or f"value_{low}", values)
 		values[key] = low
 
-	# Real files do not always list bands low to high -- one measured MIDNAM
+	# Real files do not always list bands low to high - one measured MIDNAM
 	# counts a clock divider downwards. A band is defined by its number and not
 	# by its position in the file, so sorting loses nothing and is what makes the
 	# result a definition this package will actually load.
@@ -242,7 +242,7 @@ def _join_wide_pairs (
 	halves of one parameter, so files that carry 14-bit controls at all say it in
 	the names: Moog writes "(Coarse)" and "(Fine)", Waldorf an "MSB"/"LSB"
 	suffix. **A pair is joined only when the arithmetic agrees as well as the
-	name** -- the fine number must be the coarse one plus 32, which is the rule
+	name** - the fine number must be the coarse one plus 32, which is the rule
 	MIDI itself sets. Where the names pair and the numbers do not, both halves
 	are kept apart and the disagreement is reported, because guessing which of
 	the two is the typo would be inventing a number.
@@ -317,7 +317,7 @@ def read (
 	"""Read a MIDNAM document into a definition, marked unverified.
 
 	Raises ``DefinitionError`` if the document is not parseable XML, or carries
-	no model name -- without one there is nothing to file the result under.
+	no model name - without one there is nothing to file the result under.
 	"""
 
 	try:
@@ -336,7 +336,7 @@ def read (
 	shared = _shared_value_lists(root)
 	controls = _join_wide_pairs(_raw_controls(root, shared, warnings, source), warnings, source)
 
-	# A drum machine carries one note list per kit -- fifty of them, in one file
+	# A drum machine carries one note list per kit - fifty of them, in one file
 	# measured. A definition has room for one voice map, so the first is taken
 	# and the rest are named rather than silently flattened together.
 	note_lists = _find_all(root, "NoteNameList")

@@ -71,7 +71,7 @@ class Model:
 
 		"""True when somebody established that this model has no firmware at all.
 
-		Distinct from silence, which only means nobody looked -- the same
+		Distinct from silence, which only means nobody looked - the same
 		distinction ``midi: none`` keeps.
 		"""
 
@@ -499,8 +499,8 @@ class Source:
 	``page_offset`` is what to add to a printed page number to reach the page of
 	the file.  It is data rather than a rule because there is no rule: across the
 	manuals here it has been -9, +1, 0, and one that prints two pages to a sheet.
-	A document with no pages at all -- a plain-text implementation chart runs to
-	numbered sections instead -- says so with ``paginated: false``.
+	A document with no pages at all - a plain-text implementation chart runs to
+	numbered sections instead - says so with ``paginated: false``.
 	"""
 
 	kind: str | None = None

@@ -1,7 +1,7 @@
 # PyMidiInstrumentDefs
 
-What a particular model of MIDI instrument answers to -- its controls, its
-voicing, its note range -- read from definitions transcribed from the
+What a particular model of MIDI instrument answers to - its controls, its
+voicing, its note range - read from definitions transcribed from the
 manufacturers' own manuals.
 
 It is the companion to [PyMidiDefs](https://github.com/simonholliday/PyMidiDefs),
@@ -22,7 +22,7 @@ firmware.
 
 The difference matters when you are deciding how much to trust a number. **A
 model fact is a report, and reports are wrong in the wild.** For one parameter
-on one common synth -- the Minitaur's key priority -- the manual, the firmware
+on one common synth - the Minitaur's key priority - the manual, the firmware
 addendum, and the `.midnam` file everybody shares give three different answers.
 So every instrument definition carries a `source` saying which manual and which
 page it came from, and one imported automatically stays marked `unverified`
@@ -31,11 +31,11 @@ the bundled ones came from and gives that Minitaur disagreement in full.
 
 **Rig facts are not here and never will be.** Which MIDI channel *your*
 Minitaur is on, which port it is plugged into, which notes you have chosen to
-play -- those belong to your own project, not to a definition shared by
+play - those belong to your own project, not to a definition shared by
 everyone who owns the same box.
 
 **And specification facts stay in PyMidiDefs.** The MIDI channel mode messages,
-CC 120 to 127 -- All Sound Off, Local Control and the rest -- mean the same on
+CC 120 to 127 - All Sound Off, Local Control and the rest - mean the same on
 every instrument that has them, so a definition does not list them as controls
 even where a manufacturer's chart prints them. The validator refuses one, and
 names the PyMidiDefs constant it would have duplicated.
@@ -115,37 +115,37 @@ self-contained YAML file, and you share it by sending it.
 
 | Name | Instrument |
 |------|------------|
-| `arturia/microfreak` | Arturia MicroFreak -- four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
-| `arturia/minifreak` | Arturia MiniFreak -- six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |
-| `behringer/model_d` | Behringer MODEL D -- no control changes at all; its remote surface is SysEx |
-| `elektron/digitakt` | Elektron Digitakt -- eight audio tracks and eight that only send, with thirty controller numbers meaning more than one thing |
-| `elektron/digitone` | Elektron Digitone -- nine parts on nine channels, where one CC means three things |
-| `korg/minilogue_xd` | Korg minilogue xd -- 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
-| `modal/carbon8m` | Modal CARBON8M -- 106 controls, and a voice count set per patch |
-| `moog/dfam` | Moog DFAM -- no MIDI at all, and the file says so |
-| `moog/grandmother` | Moog Grandmother -- one voice, five controls in 14-bit pairs, and a value table of 24 clock divisions |
-| `moog/labyrinth` | Moog Labyrinth -- answers to notes, clock and transport, and nothing else |
-| `moog/matriarch` | Moog Matriarch -- 37 controls, one of which only its firmware notes mention, and a voice count you can switch over MIDI |
-| `moog/minitaur` | Moog Minitaur -- plays notes 0-72, with the firmware v2.1 corrections |
-| `moog/subharmonicon` | Moog Subharmonicon -- reads a note as an offset from C4, not as a pitch, and answers to one controller its manual does not list |
-| `pwm/malevolent` | PWM Malevolent -- from its quick-start guide alone, and says so |
-| `roland/tr8s` | Roland TR-8S -- eleven voices of four controls, and two it only sends |
-| `sequential/take_5` | Sequential Take 5 -- 170 controls, most reachable by CC and by finer NRPN |
-| `soma/pulsar_23` | Soma Pulsar-23 -- every note and controller assigned by MIDI learn |
-| `vermona/drm1_mkiv` | Vermona DRM1 MkIV -- a drum machine that ignores controller data |
-| `voce/electric_piano` | Voce ELECTRIC PIANO -- 16 or 32 voices, depending on the chorus |
-| `waldorf/streichfett` | Waldorf Streichfett -- controls whose values are exact numbers, not bands |
-| `yamaha/dx7` | Yamaha DX7 -- sends one set of controllers and answers to another, out of a 1983 manual that only exists as a scan |
+| `arturia/microfreak` | Arturia MicroFreak: four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
+| `arturia/minifreak` | Arturia MiniFreak: six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |
+| `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
+| `elektron/digitakt` | Elektron Digitakt: eight audio tracks and eight that only send, with thirty controller numbers meaning more than one thing |
+| `elektron/digitone` | Elektron Digitone: nine parts on nine MIDI channels, where one CC means three things |
+| `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
+| `modal/carbon8m` | Modal CARBON8M: 106 controls, and a voice count set per patch |
+| `moog/dfam` | Moog DFAM: no MIDI at all, and the file says so |
+| `moog/grandmother` | Moog Grandmother: one voice, five controls in 14-bit pairs, and a value table of 24 clock divisions |
+| `moog/labyrinth` | Moog Labyrinth: answers to notes, clock and transport, and nothing else |
+| `moog/matriarch` | Moog Matriarch: 37 controls, one of which only its firmware notes mention, and a voice count you can switch over MIDI |
+| `moog/minitaur` | Moog Minitaur: plays notes 0-72, with the firmware v2.1 corrections |
+| `moog/subharmonicon` | Moog Subharmonicon: reads a note as an offset from C4, not as a pitch, and answers to one controller its manual does not list |
+| `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
+| `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
+| `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
+| `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |
+| `vermona/drm1_mkiv` | Vermona DRM1 MkIV: a drum machine that ignores controller data |
+| `voce/electric_piano` | Voce ELECTRIC PIANO: 16 or 32 voices, depending on the chorus |
+| `waldorf/streichfett` | Waldorf Streichfett: controls whose values are exact numbers, not bands |
+| `yamaha/dx7` | Yamaha DX7: sends one set of controllers and answers to another, out of a 1983 manual that only exists as a scan |
 
 The set is a starting point rather than a catalogue. `moog/dfam` is five lines,
 because the DFAM has no MIDI at all and saying so is worth more than saying
-nothing. Three others -- the Labyrinth, the MODEL D and the DRM1 -- are nearly
+nothing. Three others - the Labyrinth, the MODEL D and the DRM1 - are nearly
 as short for the same reason: somebody read the whole manual and found no
 control changes, and the file records that it looked.
 
 ### Starting from a MIDNAM file
 
-If your instrument has a `.midnam` file -- Ardour bundles several hundred --
+If your instrument has a `.midnam` file - Ardour bundles several hundred --
 `pymidiinstrumentdefs.midnam` will start a definition from it:
 
 ```python
@@ -158,8 +158,8 @@ print(pymidiinstrumentdefs.midnam.to_yaml(draft))
 ```
 
 What that lands is a **draft**, and it says so in its own first line. MIDNAM
-carries a control map and nothing else -- no polyphony, no note range, no
-velocity response -- and the numbers it does carry are worth checking against
+carries a control map and nothing else - no polyphony, no note range, no
+velocity response - and the numbers it does carry are worth checking against
 the manual. It stays marked `unverified` until you replace the `source` line
 with what you checked it against.
 
@@ -170,7 +170,7 @@ can be trusted, on the one instrument where both can be compared.
 ## Sources
 
 **A definition is only as good as its `source` line, and that line is the
-authority -- not this README.**
+authority - not this README.**
 
 ```python
 matriarch = pymidiinstrumentdefs.load("moog/matriarch")
@@ -188,7 +188,7 @@ maker's MIDI implementation document, and for the Malevolent a quick-start
 guide, because that is all there is, and its file keeps to what the guide says. Two were checked against a second source as well: the
 Minitaur against Moog's firmware v2.1 addendum, and the DRM1's note map against
 a working implementation of the same machine. The MiniFreak's second source is the
-maker's own firmware release notes, which carry one control -- CC 7, volume -- that
+maker's own firmware release notes, which carry one control - CC 7, volume - that
 its manual never mentions, and the file says so where it records it.
 
 **None of them was imported from a `.midnam` file, and none ever will be.** The
@@ -201,8 +201,8 @@ document and cite pages, one refuses anything still marked `unverified`, and one
 refuses anything the importer wrote.
 
 The Minitaur is the worked example of why that second source matters. Its
-manual prints the key-priority bands as `0-42`, `43-84`, `87-127` -- leaving 85
-and 86 assigned to nothing -- and the firmware addendum corrects the third band
+manual prints the key-priority bands as `0-42`, `43-84`, `87-127` - leaving 85
+and 86 assigned to nothing - and the firmware addendum corrects the third band
 to **86**. This package carries 86, and the file says why it differs from the
 printed table. That is the level of care every bundled definition is held to,
 and it is why a `source` line records pages rather than saying "the manual".
@@ -212,7 +212,7 @@ and it is why a `source` line records pages rather than saying "the manual".
 what it lands says `imported from <file>, unverified` in its own source line,
 keeps saying it, and is reported by the validator until a person replaces it.
 
-That is not a reason to avoid importing -- it is a good way to start and a poor
+That is not a reason to avoid importing - it is a good way to start and a poor
 place to stop, and it is worth being precise about which. Comparing the widely
 shared `Moog_Minitaur.midnam` against the same instrument's manual and firmware
 addendum, on the one instrument where this package holds both:
@@ -250,7 +250,7 @@ commit `4abf367`.
 
 ## License
 
-MIT -- you are free to use, copy, modify, merge, publish, distribute,
+MIT - you are free to use, copy, modify, merge, publish, distribute,
 sublicense, and sell copies of this software in any project, including
 commercial and closed-source applications. The only requirement is that you
 include the LICENSE file when redistributing the software. See

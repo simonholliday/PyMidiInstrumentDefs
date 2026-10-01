@@ -271,7 +271,7 @@ def unreachable_pages (cited: set[int], documents: "list[Followed]") -> set[int]
 
 	**Only a paginated document can have a page**, so only those can answer.  An
 	earlier version excused every page citation in a definition as soon as any of
-	its sources had no pages -- which meant citing a plain-text chart or a saved web
+	its sources had no pages - which meant citing a plain-text chart or a saved web
 	page beside a manual silently switched off this check for the manual too.  A
 	citation of a page is a claim about a document that has pages, whatever else
 	the definition also cites.

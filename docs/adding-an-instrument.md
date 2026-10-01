@@ -224,7 +224,7 @@ model:
   name: DFAM
 
 source: >-
-  User manual, 44 pages, in which the word "MIDI" does not appear — verified
+  User manual, 44 pages, in which the word "MIDI" does not appear - verified
   across every page. The instrument is driven by clock and trigger at the
   patchbay and by its own 8-step analogue sequencer.
 
@@ -239,7 +239,7 @@ voice:
 NRPN's parameter number whole, and it goes in `nrpn` as printed. Others print an MSB
 column and an LSB column, as Elektron does: record `nrpn` as **MSB x 128 + LSB**, which
 is the number that goes on the wire, and say so in a comment. The citation check knows
-both forms -- it looks for the number, and then for the two halves -- and it reports how
+both forms - it looks for the number, and then for the two halves - and it reports how
 many it could only find as halves, because small numbers are easy to find on a page full
 of them.
 

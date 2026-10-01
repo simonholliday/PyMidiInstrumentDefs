@@ -212,7 +212,7 @@ class _Reader:
 
 	def firmware (self, section: dict[str, typing.Any]) -> str | None:
 
-		"""Read ``model.firmware`` -- which firmware this definition describes.
+		"""Read ``model.firmware`` - which firmware this definition describes.
 
 		A version written without quotes is the trap here, and it is silent: YAML
 		reads ``1.10`` as a number, which is 1.1, and a maker who ships both 1.1 and
@@ -224,7 +224,7 @@ class _Reader:
 		if isinstance(found, (int, float)) and not isinstance(found, bool):
 			self.refuse(
 				"model.firmware",
-				f"found the number {found}, not text -- a firmware version is text, and "
+				f"found the number {found}, not text - a firmware version is text, and "
 				f"YAML reads 1.10 as 1.1, which is a different release. Quote it.",
 			)
 

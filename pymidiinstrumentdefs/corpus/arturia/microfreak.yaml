@@ -8,12 +8,24 @@ model:
   # page and serves a separate, earlier 4.0.1 file (146pp, revised 26 October 2021) whose
   # front matter also says 4.0.1, so the version in the name and the version in the document
   # disagree and the document is quoted.
-  # Arturia publishes firmware 5.0.0.2084 as current (30 May 2023) and lists an EN manual
-  # 5.0.1 for it, but every 5.x manual address on Arturia's own CDN answers 404 NoSuchKey
-  # while 4.0.3 and all earlier editions serve (checked 2026-10-01, both hashes recorded in
-  # the resources-page source below). So this definition describes a firmware behind the one
-  # Arturia ships, and is one to revisit when that manual can be read.
-  firmware: "4.0.1"
+  # THE FIRMWARE 5 MANUAL HAS BEEN READ, and this definition describes firmware 5 because
+  # of what it says rather than because its file name says 5. Arturia names that file
+  # microfreak_Manual_5_0_1_EN.pdf and its front matter says "Product version: 5.0.0",
+  # revision date 6 July 2023, which is the same disagreement between name and document
+  # that the 4.0.3 file has. The document is quoted, as before.
+  # IT WAS MISSING AND THEN IT WAS NOT, which is worth recording because this file said so
+  # for a while: on 2026-10-01 every 5.x manual address on Arturia's CDN answered 404
+  # NoSuchKey, checked while the resources page below was being saved. Arturia uploaded the
+  # English one at 08:50 GMT that same morning, which its server reports as the object's
+  # last-modified time, and it has served normally since. The other four language editions
+  # were not rechecked.
+  # The two editions carry the same control-change map: Appendix D's 21 rows were read from
+  # the firmware 5 manual and compared with this file's, and every name and every number is
+  # identical. The MIDI chapter is word for word the same in both, including the two
+  # contradictions recorded below, and so is Appendix A. What firmware 5 changed is not in
+  # any of them: four new engines, a snappier envelope option, a new key/arp modulation
+  # option, and preset slots "increased from 384 to 512" (fw 5 manual, printed p. 11).
+  firmware: "5.0.0"
 
 source: >-
   User manual (137pp), the edition Arturia names 4.0.3: pp. 10, 18, 35, 43, 58, 61,
@@ -48,6 +60,13 @@ source: >-
   describes moving presets to and from a computer with the MIDI Control Center (p. 88)
   without ever calling that SysEx, so what it leaves out is not thereby absent from the
   instrument.
+  THE FIRMWARE 5 MANUAL AGREES WITH ALL OF IT. Its Appendix D, printed pp. 141-142 of a
+  151-page edition whose front matter says product version 5.0.0, holds the same 21 rows
+  with the same names and the same numbers, compared row by row rather than by eye. Its
+  MIDI chapter is word for word what is quoted above, contradictions included, and its
+  Appendix A is the same. So the numbers below describe both editions, and the page
+  citations here are the 4.0.3 edition's throughout, because that is the file they were
+  read from.
   Also not recorded, because the format has no way to say it: Appendix A, pp. 113-115,
   gives value bands for CC 10, CC 12 and CC 13 that hold only while the Speech
   oscillator is the selected type - the same three controllers mean something different
@@ -67,6 +86,21 @@ sources:
     # Arturia's own file name says 4.0.3 and the document says 4.0.1; see model.firmware.
     # Printed page 1 is the file's page 6, and the seven pages before the numbering starts
     # carry the cover, the credits and the front matter.
+  manual_firmware_5:
+    kind: manual
+    title: MicroFreak EN Manual
+    edition: Product version 5.0.0
+    dated: 2023-07-06
+    landing: "https://www.arturia.com/products/hardware-synths/microfreak/resources"
+    url: "https://dl.arturia.net/products/microfreak/manual/microfreak_Manual_5_0_1_EN.pdf"
+    sha256: e2d41791cc32f2e4425fb82cdcd3a42f08b9b5f1a54aeed7eb0cb4805760724f
+    retrieved: 2026-10-01
+    page_offset: 5
+    # 151 pages, where the cited edition has 137, so nothing in this file's page citations
+    # refers to this document: its Appendix D is printed pp. 141-142 where the other's is
+    # pp. 128-129. It is cited for the firmware this definition describes, and for the
+    # comparison that lets it say so: the two editions' control-change maps are identical.
+    # Arturia's own file name says 5.0.1 and the document says 5.0.0; see model.firmware.
   resources_page:
     kind: product_page
     title: Arturia - MicroFreak - Resources

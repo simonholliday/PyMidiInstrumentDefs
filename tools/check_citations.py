@@ -210,6 +210,45 @@ def halves_on (nrpn: int, printed: set[int]) -> bool:
 	return nrpn // 128 in printed and nrpn % 128 in printed
 
 
+# A range wide enough to cover most of the controller space says nothing useful:
+# "0-127" would answer for every number a definition could hold. A group of
+# controls is small, so only a short run counts as naming its members.
+
+RANGE_SPAN: typing.Final[int] = 32
+
+_PRINTED_RANGE: typing.Final[re.Pattern[str]] = re.compile(
+	r"(\d{1,3})\s*(?:[-\u2013\u2014\u2026]|\.\.\.)\s*(\d{1,3})")
+
+
+def inside_a_range (number: int, text: str) -> bool:
+
+	"""Whether a page names a number only by printing the range it falls in.
+
+	Korg's wavestate is the case: its MIDI CC Assign table gives "Layer A Mod
+	Knobs 1...8" as "80...87" and never prints 81 to 86, so a definition that
+	holds eight controls asks for six numbers the page does not carry.  The page
+	does name them, in the only way a table of ranges can.
+
+	This is a **weaker** check than finding the number, for two reasons: the page
+	never shows the number itself, and a range is matched wherever it appears
+	rather than against the row that means it.  It is reported separately for that
+	reason, and never counted as found.
+
+	Only the inside of a range counts, because an endpoint is already found by
+	looking for the number itself, and only a short range counts at all: a manual
+	that prints "0-127" for its note numbers would otherwise answer for every
+	controller number in the file.
+	"""
+
+	for found in _PRINTED_RANGE.finditer(text):
+		low, high = int(found.group(1)), int(found.group(2))
+
+		if low < number < high and high - low <= RANGE_SPAN:
+			return True
+
+	return False
+
+
 def as_ranges (numbers: typing.Iterable[int]) -> str:
 
 	"""A run of numbers written the way a person cites them: ``21-24, 30``."""
@@ -295,6 +334,7 @@ class Result:
 	wanted: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	missing: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	as_halves: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+	in_a_range: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	unverifiable: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 
 
@@ -375,7 +415,8 @@ def follow (
 			whole = "".join(page.extract_text() or "" for page in opened.pages)
 			document.scanned = not whole.strip()
 
-	printed_numbers = numbers_on(" ".join(document.text for document in result.documents))
+	printed_text = " ".join(document.text for document in result.documents)
+	printed_numbers = numbers_on(printed_text)
 
 	unreadable = any(document.scanned for document in result.documents)
 
@@ -387,6 +428,10 @@ def follow (
 
 		if kind == "nrpn" and halves_on(number, printed_numbers):
 			result.as_halves.append(entry)
+			continue
+
+		if kind == "cc" and inside_a_range(number, printed_text):
+			result.in_a_range.append(entry)
 			continue
 
 		# A number absent from the text of a definition that also cites a scan may
@@ -430,7 +475,7 @@ def render (result: Result, verbose: bool) -> None:
 	if result.unreachable:
 		print(f"    ⚠ cited but in no document read: printed {as_ranges(result.unreachable)}")
 
-	found = (len(result.wanted) - len(result.missing) - len(result.as_halves)
+	found = (len(result.wanted) - len(result.missing) - len(result.as_halves) - len(result.in_a_range)
 		- len(result.unverifiable))
 
 	if not result.wanted:
@@ -442,6 +487,12 @@ def render (result: Result, verbose: bool) -> None:
 		print(
 			f"        {len(result.as_halves)} NRPNs found only as the two halves the maker prints, "
 			f"which is a weaker check"
+		)
+
+	if result.in_a_range:
+		print(
+			f"        {len(result.in_a_range)} controller numbers found only inside a range the maker "
+			f"prints, which is a weaker check"
 		)
 
 	if result.unverifiable:

@@ -130,6 +130,43 @@ class TestFindingAnNrpnThatIsPrintedAsTwoHalves:
 		assert tool.halves_on(36, {36}) is False
 
 
+class TestFindingANumberThatIsOnlyInsideAPrintedRange:
+
+	def test_a_short_range_names_the_numbers_inside_it (self) -> None:
+		"""Korg's wavestate prints "80...87" for eight knobs and never prints 81 to 86."""
+		page = "Layer A Mod Knobs 1...8 80...87"
+
+		assert tool.inside_a_range(83, page)
+		assert tool.inside_a_range(86, page)
+
+	def test_an_endpoint_is_not_this_rule_s_business (self) -> None:
+		"""It is on the page as itself, and is found by looking for it."""
+		assert not tool.inside_a_range(80, "80...87")
+		assert not tool.inside_a_range(87, "80...87")
+
+	def test_a_wide_range_names_nothing (self) -> None:
+		"""A note row reading 0-127 would otherwise answer for every controller in the file."""
+		assert not tool.inside_a_range(74, "Note Number 0-127 0-127")
+		assert not tool.inside_a_range(99, "0 - 127")
+
+	def test_the_dashes_a_maker_actually_uses (self) -> None:
+		"""One Korg page prints an ellipsis, a hyphen and an en dash on the same sheet."""
+		for printed in ("102...109", "102-109", "102\u2013109", "102 \u2026 109"):
+			assert tool.inside_a_range(105, printed), printed
+
+	def test_it_is_reported_as_weaker_and_never_counted_as_found (self, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The whole point: a page that names a range has not printed the number."""
+		result = tool.Result(name = "korg/wavestate", documents = [])
+		result.wanted = [("layer_a_mod_4", "cc", 83)]
+		result.in_a_range = list(result.wanted)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "0 of 1 numbers found" in printed
+		assert "1 controller numbers found only inside a range the maker prints" in printed
+
+
 class TestWritingPagesBack:
 
 	def test_a_run_of_pages_prints_as_a_range (self) -> None:

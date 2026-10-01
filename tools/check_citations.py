@@ -102,6 +102,21 @@ def reader_for (path: pathlib.Path) -> typing.Any:
 	return opened
 
 
+def whole_text (path: pathlib.Path) -> str:
+
+	"""Every word of a document that has no page to turn to.
+
+	A PDF reaches this when its source says ``paginated: false``, which is how the
+	format describes a document the maker did not number - so its pages are read and
+	joined rather than its bytes being read as text, which would yield nothing.
+	"""
+
+	if path.suffix.lower() == ".pdf":
+		return "\n".join(page.extract_text() or "" for page in reader_for(path).pages)
+
+	return path.read_text(encoding = "utf-8", errors = "replace")
+
+
 def library_index (root: pathlib.Path) -> dict[str, pathlib.Path]:
 
 	"""Every document under ``root``, keyed by the SHA-256 of its bytes.
@@ -377,11 +392,15 @@ def follow (
 		document.path = index.get(source.sha256) if source.sha256 else None
 
 		if document.path is not None:
-			if document.path.suffix.lower() == ".pdf":
+			# A document with no page to turn to is read whole, whatever it is made of.
+			# A plain-text implementation chart runs to numbered sections rather than
+			# pages; so does a document bound into the back of a manual whose own pages
+			# the maker left unnumbered, and that one is a PDF.  Deciding this from the
+			# file's extension alone read nothing at all from such a PDF, and said
+			# nothing about having read nothing.
+			if document.path.suffix.lower() == ".pdf" and source.paginated:
 				document.extent = len(reader_for(document.path).pages)
 			else:
-				# A plain-text implementation chart runs to numbered sections, so
-				# there is no page to turn to and the whole of it is read.
 				document.extent = None
 
 		result.documents.append(document)
@@ -393,7 +412,7 @@ def follow (
 			continue
 
 		if document.extent is None:
-			document.text = document.path.read_text(encoding = "utf-8", errors = "replace")
+			document.text = whole_text(document.path)
 			continue
 
 		document.pages = sorted({

@@ -20,11 +20,18 @@ model:
   # and no velocity anywhere in either of them.
 
 source: >-
-  User manual (c)2012 pp. 21-24 for the control-change chart, and THE FIRMWARE v2.1 ADDENDUM AT
-  pp. 31-34 OF THE SAME FILE. The addendum is not a separate document and never was: pages 31 to
-  34 of this manual are headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM", and its corrections are
-  the section headed CORRECTIONS TO THE MANUAL on pp. 33-34. That was established on 2026-10-01;
-  before then this file cited the addendum without knowing where it was.
+  User manual (c)2012 pp. 21-24 for the control-change chart, and THE FIRMWARE v2.1 ADDENDUM
+  BOUND INTO THE SAME FILE, after its last numbered page. The addendum is not a separate document
+  and never was: two pages headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM" follow the manual, and
+  its corrections are the section headed CORRECTIONS TO THE MANUAL on the second of them.
+  THE ADDENDUM'S PAGES PRINT NO NUMBER, so it is cited by its own section headings rather than by
+  page, the way a document with no pagination is cited anywhere here. The manual's own folios stop
+  at 30. This file used to cite the addendum as four numbered pages, 31 to 34, which was a count
+  rather than a reading: the manual proper is printed two pages to a sheet, and continuing that arithmetic past
+  the end of the numbering turned its two unnumbered pages into four numbered ones. Established on
+  2026-10-01 and corrected the same day, from the sheets themselves: the manual's sixteen sheets
+  are landscape and carry two numbered pages each, up to 29 and 30 on the sixteenth, and the two
+  addendum sheets after them are portrait, carry one page each, and are headed but not numbered.
   Two band boundaries below are those corrections and differ from the chart, and the addendum
   quotes the error it is fixing: "TRIGGER MODE - CC 73 (values) 0-42 (LEGATO ON), 43-85 (LEGATO
   OFF) 86-127 (EG RESET) [was incorrectly given as 85-127 in manual]", and "KEY PRIORITY - CC 91
@@ -46,6 +53,21 @@ sources:
     retrieved: 2026-09-13
     page_offset: 2
     pages_per_sheet: 2
+  addendum:
+    kind: manual
+    title: MOOG MINITAUR FIRMWARE v2.1 ADDENDUM
+    landing: "https://www.moogmusic.com/downloads/?product=Minitaur&type=User+Manual"
+    url: "https://cdn.inmusicbrands.com/Moog/Minitaur/Minitaur_Manual.pdf"
+    sha256: 794eb65a62de6fadc6785ae8cfd28b222813ca1fbef9600b1c3cba394fbcc566
+    retrieved: 2026-09-13
+    paginated: false
+    # THE SAME FILE AS THE MANUAL ABOVE, and the same hash, which is why it is a second
+    # source rather than a second document: the addendum is two pages bound into the back
+    # of the manual, headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM", and they print no page
+    # number where every page of the manual proper does. It is recorded apart from the
+    # manual because it cannot be cited the same way. The manual's pages are reached by a
+    # printed number, two to a sheet; the addendum's are reached by its own headings, and
+    # `paginated: false` is how this format says a document has no page to turn to.
   release_notes:
     kind: release_notes
     title: Moog Minitaur Firmware v2.2.1 Release Notes
@@ -54,7 +76,10 @@ sources:
     url: "https://cdn.inmusicbrands.com/Moog/Minitaur/Minitaur%20Firmware%20v2.2.1.zip"
     sha256: 81ce4cb2445a30c8b230bdeb8d36357f3d5aca6e3d98573277f60dd6416999b2
     retrieved: 2026-10-01
-    page_offset: 0
+    # NO PAGE TO TURN TO: its four pages print no number, and this file cites it the way it
+    # numbers itself, by change-log heading and by column. So nothing here is reached by a
+    # printed page, and `paginated: false` is what says that.
+    paginated: false
     # Cited for the firmware Moog ships and for what changed around the one this definition
     # describes - no controller number among it. The sha256 is of the release notes PDF, which is
     # a member of the zip at the url above rather than a file Moog serves on its own:
@@ -68,7 +93,7 @@ sources:
     # version a line belongs to is the x position of the heading above it, not reading order.
     # It defers to a document of its own for the firmware this definition describes: "See
     # separate v2_1 new-features documentation for complete details", in its v2.1.0 column. That
-    # document is the addendum at pp. 31-34 of the manual above.
+    # document is the addendum bound into the manual above, after its last numbered page.
 
 midi:
   channels: [1, 16]
@@ -87,7 +112,8 @@ voice:
   # a hardware limitation)" (release notes, column 3 under the v1.0.6 heading) - so a note above
   # 72 is answered to, and sounds at 72 rather than not at all. From v2.1 the addendum's WRAP TOP
   # OCTAVE setting makes "a note which is above C5 ... play the equivalent pitch (C, D, E etc.)
-  # in its top octave, instead of always playing the highest C for all notes above C5" (p. 33).
+  # in its top octave, instead of always playing the highest C for all notes above C5"
+  # (addendum, under the heading WRAP TOP OCTAVE BEHAVIOR on its first page).
   # So on the firmware this describes, transposing a part above 72 sounds, and sounds wrong
   # rather than silent, which is the opposite way round from what this file said before 2026-10-01.
   note_range: [0, 72]
@@ -120,7 +146,8 @@ groups:
   volume: Volume (VCA)
   # Neither of these two is a panel section, because neither has a panel control: the chart
   # marks every row in both "(M)", its own mark for a parameter reachable only over MIDI.
-  # KEYBOARD PRIORITY is the v2.1 addendum's name for that global setting, p. 33, where the
+  # KEYBOARD PRIORITY is the v2.1 addendum's name for that global setting, under GLOBAL
+  # SETTINGS on its second page, where the
   # chart's row is KEY PRIORITY. And the chart's own description column calls each of the other
   # three a performance control: "Modulation performance control", "Pitch Wheel 'UP' performance
   # control".

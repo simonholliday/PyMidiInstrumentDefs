@@ -15,6 +15,7 @@ import importlib.util
 import pathlib
 import typing
 
+import pypdf
 import pytest
 
 import pymidiinstrumentdefs
@@ -128,6 +129,47 @@ class TestFindingAnNrpnThatIsPrintedAsTwoHalves:
 		"""A Take 5 prints its NRPNs whole, so this path is not what finds them."""
 		assert tool.halves_on(36, {0, 36}) is True
 		assert tool.halves_on(36, {36}) is False
+
+
+class TestADocumentWithNoPageToTurnTo:
+
+	"""A source saying ``paginated: false`` is read whole, whatever it is made of.
+
+	This was wrong in a way nothing reported: the choice was made from the file's
+	extension, so a PDF whose maker left its pages unnumbered had **no** text read from
+	it, and the tool still listed it as a document it had followed. The Minitaur's v2.1
+	addendum is the real case - two unnumbered pages bound into the back of a manual
+	whose other pages are all numbered.
+	"""
+
+	def test_an_unnumbered_pdf_is_read_rather_than_skipped (self, tmp_path: pathlib.Path) -> None:
+		"""Its pages are extracted and joined, where reading its bytes would give nothing."""
+		made = tmp_path / "unnumbered.pdf"
+		writer = pypdf.PdfWriter()
+		writer.add_blank_page(width = 200, height = 200)
+		writer.write(made)
+
+		text = tool.whole_text(made)
+
+		# A blank page extracts to an empty string rather than raising, which is the
+		# thing that matters: the PDF was opened as a PDF.
+		assert text == ""
+
+	def test_a_text_document_is_read_as_text (self, tmp_path: pathlib.Path) -> None:
+		"""The other half of the same decision, which was never broken and is pinned here."""
+		made = tmp_path / "chart.txt"
+		made.write_text("CC 74 Filter Cutoff\n", encoding = "utf-8")
+
+		assert "Filter Cutoff" in tool.whole_text(made)
+
+	def test_the_bytes_of_a_pdf_are_never_read_as_text (self, tmp_path: pathlib.Path) -> None:
+		"""Which is what used to happen, and yielded a page of binary with no words in it."""
+		made = tmp_path / "unnumbered.pdf"
+		writer = pypdf.PdfWriter()
+		writer.add_blank_page(width = 200, height = 200)
+		writer.write(made)
+
+		assert "%PDF" not in tool.whole_text(made)
 
 
 class TestFindingANumberThatIsOnlyInsideAPrintedRange:

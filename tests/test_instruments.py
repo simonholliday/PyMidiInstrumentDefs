@@ -53,6 +53,7 @@ class TestBundledCorpus:
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
 			"arturia/microfreak",
 			"behringer/model_d",
+			"elektron/digitakt",
 			"elektron/digitone",
 			"korg/minilogue_xd",
 			"modal/carbon8m",

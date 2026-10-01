@@ -59,6 +59,7 @@ class TestBundledCorpus:
 			"korg/minilogue_xd",
 			"modal/carbon8m",
 			"moog/dfam",
+			"moog/grandmother",
 			"moog/labyrinth",
 			"moog/matriarch",
 			"moog/minitaur",

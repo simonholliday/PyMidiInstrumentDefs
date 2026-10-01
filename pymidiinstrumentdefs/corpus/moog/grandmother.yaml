@@ -1,0 +1,499 @@
+definition: 1
+
+model:
+  manufacturer: Moog
+  name: Grandmother
+  # This instrument is the first Moog in the corpus whose firmware version can be read at
+  # all, and it is read from the firmware package rather than from any page: Moog's downloads
+  # data offers "Grandmother Firmware v1.1.3 package", and the zip holds release notes that
+  # name the version on every page. 1.1.3 is the newest Moog publishes (checked 2026-10-01).
+  # What rests on it: everything cited to the release notes below, which is program change,
+  # system exclusive and the global parameters.
+  # NOT ESTABLISHED, and the source line says so: which firmware the control-change chart
+  # describes. The user guide states no version of itself and no firmware version anywhere -
+  # Moog's file name calls it "Version 2" and the document does not - and its PDF was made in
+  # July 2019, where firmware 1.1.3 was published in June 2025. The only cross-check
+  # available is that the release notes' own parameters agree with the guide where they
+  # overlap: parameter 34 gives the same pitch bend default of 2 semitones as p. 38, and
+  # parameter 37's three glide types are CC 85's three bands in the same order.
+  # AND THE RELEASE NOTES CALL THEMSELVES 1.1.0 ONCE, which is why "1.1.3" is recorded with
+  # this paragraph beside it rather than plainly. Their running head reads "V1.1.3 RELEASE
+  # NOTES" on all ten pages and Moog's package is named v1.1.3, but the worked example under
+  # Show Firmware Version says "Example: this version, v1.1.0: PLAY button blinks one time,
+  # then HOLD button blinks one time, then TAP button blinks zero times (does not light at
+  # all)" - and on 1.1.3 the TAP button would blink three times. So the body is 1.1.0's text
+  # under a 1.1.3 head, and what the version named here describes exactly is the package
+  # Moog ships as 1.1.3 rather than a document written for it.
+  firmware: "1.1.3"
+  # One definition covers the Grandmother and the Grandmother Dark. Moog publishes a separate
+  # user guide for the Dark edition, and its MIDI documentation is the same table: all 22
+  # controller numbers, all the value columns, and the same six additional functions, read
+  # from it independently and compared row by row. It is typeset in title case on one page
+  # where the standard guide uses two, and it prints "Pitch Wheel -- --" where the standard
+  # guide leaves that row's number blank.
+
+source: >-
+  User guide (56pp), pp. 8, 36-38, 43-44, 54, and the firmware v1.1.3 release notes
+  (10pp), which are published inside the firmware package rather than beside it.
+  The release notes print no page numbers, so they are cited the way they number themselves:
+  by global setting, as 0.5 or 1.8, and by system exclusive parameter ID. The one controller
+  number that comes from them sits on the file's own fifth page, cited here as p. 5 so that
+  it can be checked, since a page of this document needs no offset to reach.
+  The control-change map is the guide's MIDI DOCUMENTATION section, pp. 43-44, whose columns
+  are FUNCTION | CC # | values. It holds 22 numbered rows and every one of them is here, with
+  its value column quoted. Three tables printed with it carry the value lists the chart
+  refers to: the Grandmother Clock Divisions for CC 90 (24 named divisions), table 2 for the
+  two pitch bend amounts (25 rows, 0 OFF to 24 TWO OCTAVES), and table 3 for the keyboard
+  transpose (25 rows, -12 to +12). All three are reproduced in full below, as band starts,
+  because that is what the maker's own numbers are: 24 divisions over 0-127 do not divide
+  into exact values.
+  A twenty-third row is listed under ADDITIONAL MIDI FUNCTIONS rather than in the chart, and
+  is a control: SUSTAIN PEDAL, CC 64.
+  AND A TWENTY-FOURTH CONTROL IS IN NEITHER, and is marked in place: CC 95, Multi Trig. One
+  sentence of the release notes carries it - "Multi Trig can also be turned on/off via MIDI
+  CC 95", under global setting 1.8 - and the guide's chart steps from CC 94 straight to CC
+  103 with no mention of it anywhere in 56 pages. The release notes give no values for it,
+  only the panel's own Off and On, so none are claimed here.
+  FIVE CONTROLS ARE 14-BIT PAIRS, and the chart gives both halves: CC 1 & 33, 3 & 35, 5 & 37,
+  8 & 40, 12 & 44, each printed as "0-127 (or 0-16383 using CC n & CC n+32)". That is the
+  MMA's own pairing, so `lsb` carries it. Whether the instrument sends both halves is a
+  setting, not a fact about the model: the release notes' parameter 15, "Output 14-bit MIDI
+  CCs", defaults to Off.
+  EXCLUDED, and not missed: three numbers the same ADDITIONAL MIDI FUNCTIONS block lists.
+  CC 122 is Local Control On/Off and CC 120 with CC 123 are All Sounds Off and All Notes Off:
+  channel mode messages, which belong to the MIDI specification rather than to a definition,
+  and which the validator refuses as controls. The guide also says the instrument sends All
+  Notes Off itself, when all three Left-Hand Controller buttons are held for about a second
+  (p. 36).
+  ALSO NOT CARRIED, because the format has no field for it: RPN 0, 1 and 2, which the same
+  block gives as Pitch Bend Amount, Fine Tuning and Coarse Tuning - registered parameter
+  numbers are the MMA's, not this instrument's - and the 48 global parameters of the release
+  notes' own table, pages 8 to 10, addressable by system exclusive as
+  "F0 04 16 23 [Parameter ID], [value MSB], [value LSB], 00 00 00 00 00 00 00 00 [Unit ID] F7"
+  with a matching request message at 3E. That table is where this instrument keeps its MIDI
+  settings, and it is the only place several of the facts below are stated at all.
+  NOT RECORDED, and marked in place: the note range, since neither document gives a MIDI note
+  number for anything; what the instrument does with velocity that arrives over MIDI;
+  aftertouch, which neither document mentions; and how many presets a program change selects,
+  since the release notes say program change is sent and received and never say what it
+  selects.
+  The two documents disagree five times and the file records both readings each time: how
+  many MIDI channel settings there are, how far the pitch bend range reaches, whether local
+  control is one switch or three, what the clock's pulses-per-quarter-note default is, and
+  whether the three CV output jacks still carry the keyboard when local control is off.
+  The release notes are also where the guide's own loose end leads. Page 37 says "For
+  information on advanced Global Settings visit www.moogmusic.com/grandmother", and what that
+  points at is in these notes: 25 global settings in four groups, reached by keyboard
+  commands, of which the guide documents only the first ten. Four of the fifteen it does not
+  mention gate what the instrument transmits - MIDI OUT filters for the panel knobs, the
+  wheels and the keys, and the separate MIDI OUT channel - so a reader of the guide alone
+  cannot tell why a Grandmother might send nothing at all.
+
+sources:
+  manual:
+    kind: manual
+    title: Grandmother User Guide English
+    landing: "https://www.moogmusic.com/downloads/?product=Grandmother&type=User%20Manual"
+    url: "https://cdn.inmusicbrands.com/Moog/Grandmother/Grandmother_Manual_Version_2.pdf"
+    sha256: 07e5e0b0582759b3e0f8976e595a917ab813f773ffd258b38ece5a428f5e368a
+    retrieved: 2026-10-01
+    page_offset: 0
+    # NOT RECORDED, edition and date: the document states neither. Moog's file name says
+    # "Version 2" and nothing inside says any version; its PDF metadata carries only a
+    # creation date of 12 July 2019 and Adobe PDF Library 15.0, which is a fact about the
+    # file rather than a date the maker states. Moog's downloads page builds its list in the
+    # browser and offers no dates either, so the landing page here is the address a reader
+    # can follow rather than a page that can be hashed.
+  release_notes:
+    kind: release_notes
+    title: Grandmother v1.1.3 Release Notes
+    edition: "V 1.1.3"
+    landing: "https://www.moogmusic.com/downloads/?product=Grandmother&type=Firmware%20Update"
+    url: "https://cdn.inmusicbrands.com/Moog/Grandmother/Grandmother%20Firmware%20v1.1.3.zip"
+    sha256: 2938ca934c8d214f3b96177182180f89fc449a2677304b71ff26132c17145b33
+    retrieved: 2026-10-01
+    page_offset: 0
+    # Ten pages that print no numbers at all, only the running head "V1.1.3 RELEASE NOTES",
+    # so a page of this document is the file's own page and nothing has to be added to it.
+    # The sha256 is of the release notes PDF itself, which is a member of the zip at the url
+    # above rather than a file Moog serves on its own: "Grandmother Firmware v1.1.3/
+    # Grandmother_v1.1.3_Release_Notes.pdf". The zip hashes to
+    # 0f4e9e21ddef6e223c833bb8450f0315fbd4a999d32885ae6951e91619d57947, and re-extracting
+    # that member reproduces the cited bytes exactly. Its ten pages print "V 1.1.3 RELEASE
+    # NOTES" as a running head and carry no page numbers, so it is cited whole.
+    # It is not a change list. It describes the instrument's global settings and the system
+    # exclusive messages that reach them, which is why a definition cites it at all.
+
+midi:
+  # "Grandmother can send and receive data on any MIDI channel ... select the corresponding
+  # MIDI channel (1-16). The Default is MIDI Channel 1" (p. 37). The release notes give that
+  # as two settings rather than one - parameter 10 "MIDI Channel IN" and parameter 11 "MIDI
+  # Channel OUT", each 0-15 meaning channels 1-16, each defaulting to channel 1 - so the two
+  # documents disagree about how many channel settings exist. Either way 1 to 16 is what it
+  # can be set to, and which one yours is on belongs to your composition, not here.
+  channels: [1, 16]
+  # Both ways, with three choices each. In: "Grandmother's Sequencer and Arpeggiator can be
+  # set to follow MIDI Clock, and can respond to Start and Stop commands received via MIDI",
+  # offering follow clock and transport, follow clock only, or ignore both (p. 37). Out: the
+  # same three for sending (p. 37). The release notes' parameters 29 and 30 are the same two
+  # settings, and give the out default as "Don't output" where the guide names no default.
+  # The pulses per quarter note are settable in both directions, 1 to 12 then 24 and 48
+  # (p. 38), and the two documents disagree about the default: the guide says "The Default is
+  # 2PPQN" and the release notes say "The Default is 4 PPQN (sixteenth note clock)" for both
+  # input and output, which their own parameters 32 and 33 give as index 3. A default is not
+  # a fact this format records, so nothing here rests on it.
+  clock: both
+  # Start and Stop, both ways, named as messages on p. 37 and in release-notes parameters 29
+  # and 30. Continue is never mentioned in either document. Song position is received and the
+  # format has no field for it: release-notes parameter 31, "Follow Song Position Pointer
+  # 0 = Off, 1 = On (Default: 1 / On)".
+  transport: both
+  program_change:
+    receives: true      # release notes, parameter 5: "Receive Program Change 0 = Off,
+                        # 1 = On (Default: 1 / On)"
+    sends: true         # release notes, parameter 4: "Transmit Program Change 0 = Off,
+                        # 1 = On (Default: 0 / Off)"
+    # NOT RECORDED, presets. Neither document says what a program change selects on this
+    # instrument. The user guide never mentions program change at all: "program" appears four
+    # times in 56 pages and every one is about programming or a programmable feature.
+  sysex: true
+  # "You can edit the global and some panel parameters using MIDI System Exclusive (SysEx)
+  # messages", with both message templates, a Unit ID scheme, and a table of 48 parameters
+  # numbered 0 to 47 (release notes, pp. 8-10 of 10). The user guide never mentions system
+  # exclusive: neither "SysEx" nor "exclusive" appears on any of its 56 pages.
+  # NOT RECORDED, nrpn. Neither document mentions NRPNs. The guide documents RPN 0, 1 and 2,
+  # which are registered parameter numbers and the specification's rather than this
+  # instrument's.
+
+voice:
+  addressing: pitches
+  # "POLYPHONY: Monophonic" (p. 54), and the note-priority setting calls it "Grandmother's
+  # monophonic keyboard" (p. 38). Which note wins is a setting: LOW, HIGH or LAST, default
+  # LAST (p. 38), and release-notes parameter 3 says the same.
+  polyphony: 1
+  # NOT RECORDED, note_range. "NUMBER OF KEYS: 32 Full-Size Keys" (p. 54), and the keyboard
+  # is labelled F0 to C3 in the global-settings diagram (p. 37), but neither document gives a
+  # MIDI note number for anything: searched both for "note number", "note range", "C-2",
+  # "G8" and "middle C", and the only "Middle C" is in the release notes' Sequence Transpose
+  # Mode. Two of the controls here shift what a given note sounds - KEYBOARD OCTAVE by two
+  # octaves either way, KB TRANSPOSE by twelve semitones either way - so what the instrument
+  # plays for an incoming note is not fixed in any case. This is a documentation-only
+  # instrument, so it cannot be settled by playing one.
+  # NOT RECORDED, velocity. The keyboard senses it and sends it: "Grandmother is equipped
+  # with a 32-note velocity-sensitive keyboard" (p. 8) and "TYPE OF KEYS: Velocity-sensing
+  # (Velocity signal is not hard-wired - available via MIDI and KBD VEL OUT jack)" (p. 54).
+  # What the sound engine does with velocity is nothing, by design: "There is no internal
+  # routing for keyboard velocity, but a connection can easily be made from" the KB VEL OUT
+  # jack (p. 8). That is said of the keyboard's own velocity; whether velocity arriving over
+  # MIDI reaches that jack or anything else is not stated, so the field is left empty rather
+  # than filled in by inference. The two documents also contradict each other about that jack
+  # with local control off: the guide says the keyboard, pitch wheel and arpeggiator "are
+  # only transmitted through the KB OUT, GATE OUT, KB VELOCITY OUT jacks, and MIDI" (p. 38),
+  # and the release notes say the same three jacks "are disengaged (because these output
+  # jacks are also hard-wired to the internal sound engine)" (setting 0.10).
+  # NOT RECORDED, aftertouch. The word appears nowhere in either document, and the
+  # specifications list the other controllers as "Pitch Bend, Mod Wheel, Variable Glide"
+  # (p. 54). That the keyboard does not generate it is a fair reading; that the instrument
+  # ignores it when it arrives is not stated, and the field says which kind is answered to.
+  pitch_bend:
+    semitones: 2         # "The Default is 2 semitones" (p. 38), and the release notes'
+                         # parameter 34 says "Pitch Bend Range 0-12 Semitones (Default: 2
+                         # Semitones)". The default is the one thing all three statements of
+                         # this agree on.
+    programmable: true   # Three ways, and they do not agree about the extent. The guide's
+                         # global setting is "anywhere from 1 to 12 semitones" (p. 38);
+                         # release-notes parameter 34 says 0-12; and the chart's own CC 107
+                         # and CC 108 reach 24 semitones through table 2, separately for up
+                         # and for down. RPN 0, Pitch Bend Amount, is listed as a third way
+                         # to set it (p. 43).
+
+controls:
+
+  # The MIDI DOCUMENTATION section, pp. 43-44, in the order and the words the chart prints,
+  # then the one control from the ADDITIONAL MIDI FUNCTIONS block beside it. Every value
+  # column is reproduced; where the chart points at a table, that table is reproduced in
+  # full. PITCH WHEEL is the chart's own first row and is not here: it is printed with an
+  # empty controller-number cell, because the pitch wheel sends pitch bend rather than a
+  # control change. The Dark edition's guide prints that row as "Pitch Wheel -- --".
+
+  # ── Five 14-bit pairs, each printed with both halves ────────────────────────
+  # The second number is the first plus 32, which is the MMA's own pairing, so a sender that
+  # does not know this instrument still gets it right. Release-notes parameter 15 defaults
+  # this off, so an instrument out of the box answers to the MSB alone.
+
+  mod_wheel:
+    label: Mod Wheel
+    cc: 1
+    lsb: 33
+    range: [0, 16383]
+    group: modulation
+  modulation_rate:
+    label: Modulation Rate
+    cc: 3
+    lsb: 35
+    range: [0, 16383]
+    group: modulation
+  glide_time:
+    label: Glide Time
+    cc: 5
+    lsb: 37
+    range: [0, 16383]
+    group: glide
+  arp_seq_rate:
+    label: Arp/Seq Rate
+    cc: 8
+    lsb: 40
+    range: [0, 16383]
+    group: arp_seq
+  osc_2_frequency:
+    label: Oscillator 2 Frequency
+    cc: 12
+    lsb: 44
+    range: [0, 16383]
+    group: oscillator
+
+  # ── Switches, each printed "0 = Off, 64 = On" ───────────────────────────────
+  # Two numbers for a two-state switch, which is the same wording the Matriarch's and the
+  # Minitaur's tables use, so they are read the same way here: band starts, not exact values.
+
+  sustain_pedal:
+    label: Sustain Pedal
+    cc: 64
+    values: {"off": 0, "on": 64}
+    group: keyboard
+    # From ADDITIONAL MIDI FUNCTIONS rather than the chart, which gives it as "SUSTAIN PEDAL
+    # MIDI CC 64" and no values. The values are the block's own convention for a switch.
+  glide_on:
+    label: Glide On/Off
+    cc: 65
+    values: {"off": 0, "on": 64}
+    group: glide
+  arp_seq_hold:
+    label: Arp/Seq Hold
+    cc: 69
+    values: {"off": 0, "on": 64}
+    group: arp_seq
+  arp_seq_play:
+    label: Arp/Seq Play
+    cc: 73
+    values: {"off": 0, "on": 64}
+    group: arp_seq
+  osc_2_sync:
+    label: Oscillator 2 Sync
+    cc: 77
+    values: {"off": 0, "on": 64}
+    group: oscillator
+  legato_glide:
+    label: Legato Glide
+    cc: 94
+    values: {"off": 0, "on": 64}
+    group: glide
+  gated_glide:
+    label: Gated Glide
+    cc: 103
+    values: {"off": 0, "on": 64}
+    group: glide
+
+  # ── Choices with quoted bands ──────────────────────────────────────────────
+
+  osc_1_octave:
+    label: Oscillator 1 Octave
+    cc: 74
+    # "0 = 32', 32 = 16', 64 = 8', 96 = 4'" - this instrument's oscillators reach an octave
+    # lower than the Matriarch's, whose same table reads 16', 8', 4', 2'.
+    values: {thirty_two_foot: 0, sixteen_foot: 32, eight_foot: 64, four_foot: 96}
+    group: oscillator
+  osc_2_octave:
+    label: Oscillator 2 Octave
+    cc: 75
+    values: {thirty_two_foot: 0, sixteen_foot: 32, eight_foot: 64, four_foot: 96}
+    group: oscillator
+
+  glide_type:
+    label: Glide Type
+    cc: 85
+    # "0 = LCR, 43 = LCT, 85 = Exponential". The release notes spell the same three out, at
+    # parameter 37: Linear Constant Rate, Linear Constant Time, Exponential, default LCR.
+    values: {lcr: 0, lct: 43, exponential: 85}
+    group: glide
+
+  keyboard_octave:
+    label: Keyboard Octave
+    cc: 89
+    # "0 = -2, 26 = -1, 51 = 0, 77 = +1, 102 = +2", the same five boundaries the Matriarch's
+    # KB Octave uses. Release-notes parameter 35 is the same setting, 0-4 for -2 to +2.
+    values: {minus_2: 0, minus_1: 26, zero: 51, plus_1: 77, plus_2: 102}
+    group: keyboard
+
+  arp_seq_mode:
+    label: Arp/Seq Mode
+    cc: 91
+    values: {arp: 0, seq: 43, rec: 85}
+    group: arp_seq
+  arp_seq_pattern:
+    label: Arp/Seq Pattern
+    cc: 92
+    values: {ordr: 0, fwd_bkwd: 43, rndm: 85}
+    group: arp_seq
+  arp_range_seq_number:
+    label: Arp Range/Seq Number
+    cc: 93
+    # "0 = 1, 43 = 2, 85 = 3" - one number doing two jobs, since the same control sets how
+    # many octaves the arpeggiator spans and which of the three sequences is selected.
+    values: {one: 0, two: 43, three: 85}
+    group: arp_seq
+
+  arp_seq_clock_division:
+    label: Arp/Seq Clock Division
+    cc: 90
+    # The chart says "(See Grandmother Clock Divisions table)", printed beside it on p. 43 in
+    # two columns of 8 and 16 rows. All 24 are here, in the printed order, with the names as
+    # printed: the labels read "4 WHOLE NOTES" down to "64TH NOTE TRIPLET", and the values
+    # rise 0, 5, 11, 16 ... 123. Each label was matched to the value on its own baseline in
+    # the page's own coordinates, because the two columns interleave in the text.
+    values:
+      four_whole_notes: 0
+      three_whole_notes: 5
+      two_whole_notes: 11
+      dotted_whole_note: 16
+      whole_note: 21
+      dotted_half_note: 27
+      whole_note_triplet: 32
+      half_note: 37
+      dotted_quarter_note: 43
+      half_note_triplet: 48
+      quarter_note: 53
+      dotted_eighth_note: 59
+      quarter_note_triplet: 64
+      eighth_note: 69
+      dotted_sixteenth_note: 75
+      eighth_note_triplet: 80
+      sixteenth_note: 85
+      dotted_thirty_second_note: 91
+      sixteenth_note_triplet: 96
+      thirty_second_note: 101
+      dotted_sixty_fourth_note: 107
+      thirty_second_note_triplet: 112
+      sixty_fourth_note: 117
+      sixty_fourth_note_triplet: 123
+    group: arp_seq
+
+  # ── The two bend amounts and the transpose, from tables 2 and 3 ─────────────
+  # Both tables print 25 rows and the same 25 values, 0, 5, 10, 15, 20, 26, 31 ... 123. The
+  # names differ: table 2 counts semitones of bend from "0 (OFF)" to "24 (TWO OCTAVES)",
+  # table 3 counts transposition from -12 to +12 with "0 (OFF)" in the middle at 61.
+
+  pitch_bend_up_amount:
+    label: Pitch Bend Up Amt
+    cc: 107
+    # Table 2. "12 (ONE OCTAVE)" is 61 and "24 (TWO OCTAVES)" is 123, which is the maker's
+    # own wording for two of these rows.
+    values:
+      "off": 0
+      semitones_1: 5
+      semitones_2: 10
+      semitones_3: 15
+      semitones_4: 20
+      semitones_5: 26
+      semitones_6: 31
+      semitones_7: 36
+      semitones_8: 41
+      semitones_9: 46
+      semitones_10: 51
+      semitones_11: 56
+      semitones_12: 61
+      semitones_13: 67
+      semitones_14: 72
+      semitones_15: 77
+      semitones_16: 82
+      semitones_17: 87
+      semitones_18: 92
+      semitones_19: 97
+      semitones_20: 102
+      semitones_21: 108
+      semitones_22: 113
+      semitones_23: 118
+      semitones_24: 123
+    group: pitch_bend
+  pitch_bend_down_amount:
+    label: Pitch Bend Down Amt
+    cc: 108
+    # Table 2 again: the chart sends both rows to the same table, so up and down are set
+    # separately and over the same extent.
+    values:
+      "off": 0
+      semitones_1: 5
+      semitones_2: 10
+      semitones_3: 15
+      semitones_4: 20
+      semitones_5: 26
+      semitones_6: 31
+      semitones_7: 36
+      semitones_8: 41
+      semitones_9: 46
+      semitones_10: 51
+      semitones_11: 56
+      semitones_12: 61
+      semitones_13: 67
+      semitones_14: 72
+      semitones_15: 77
+      semitones_16: 82
+      semitones_17: 87
+      semitones_18: 92
+      semitones_19: 97
+      semitones_20: 102
+      semitones_21: 108
+      semitones_22: 113
+      semitones_23: 118
+      semitones_24: 123
+    group: pitch_bend
+
+  kb_transpose:
+    label: KB Transpose (Semitones)
+    cc: 119
+    # Table 3. "0 (OFF)" is 61, in the middle, so a transpose of nothing is not value 0.
+    values:
+      minus_12: 0
+      minus_11: 5
+      minus_10: 10
+      minus_9: 15
+      minus_8: 20
+      minus_7: 26
+      minus_6: 31
+      minus_5: 36
+      minus_4: 41
+      minus_3: 46
+      minus_2: 51
+      minus_1: 56
+      zero: 61
+      plus_1: 67
+      plus_2: 72
+      plus_3: 77
+      plus_4: 82
+      plus_5: 87
+      plus_6: 92
+      plus_7: 97
+      plus_8: 102
+      plus_9: 108
+      plus_10: 113
+      plus_11: 118
+      plus_12: 123
+    group: keyboard
+
+  # ── The one control neither the chart nor the guide carries ────────────────
+
+  multi_trig:
+    label: Multi Trig
+    cc: 95
+    direction: receives
+    group: keyboard
+    # Release notes, global setting 1.8: "Multi Trig can also be turned on/off via MIDI CC
+    # 95." The guide never mentions CC 95 and its chart steps from 94 to 103. Recorded as
+    # received because that one sentence is about being turned on and off from outside, and
+    # because this is a setting reached in Global Edit mode rather than a panel control -
+    # the release notes' MIDI OUT filters, which say what the instrument transmits, cover
+    # the panel knobs, the wheels and the keys, and nothing else.
+    # NOT RECORDED, its values. The notes give the panel's own two states, "(F0) = OFF
+    # (Default), (G0) = ON", and no controller values at all, so none are claimed. What it
+    # does: "When MULTI TRIG is Off, the Envelope Generators will not retrigger until all
+    # keys on the keyboard are released, and a new key is played."

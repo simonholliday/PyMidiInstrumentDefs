@@ -80,6 +80,47 @@ voice:
   # aftertouch (pp. 44, 65).
   aftertouch: channel
 
+groups:
+  # The MIDI CC Implemention Chart is a flat list of CC | Function in four columns, so these
+  # are the manual's own section headings, which walk the synthesis engine: Oscillators
+  # pp. 21-24, XCore p. 25, Filter pp. 26-28, Envelopes pp. 29-30, LFOs p. 31, Arpeggiator
+  # p. 32, Sequencer pp. 33-37, FX pp. 38-42, Modulation pp. 43-46, Voice pp. 47-48, Joystick
+  # and Audio In pp. 49-50, Audio Output + Gain p. 50, Settings pp. 51-52.
+  # The order is the order the chart lists the controls, which is the order they appear below.
+  # NOT THE MAKER'S WORD, either of these two: the chart's one bank change is where a program
+  # is chosen from, and the mod wheel, expression pedal and sustain pedal are a player's rather
+  # than a section of the instrument. The manual heads nothing with a word for either.
+  program: Program
+  performance: Performance
+  voice: Voice
+  oscillator: Oscillators
+  filter: Filter
+  # Modal's own three, named in the introduction as "three dedicated flexible envelope
+  # generators for AMP, MOD and FILTER that can be accessed independently or all three
+  # simultaneously" (p. 4). The chart writes them AEG, MEG, FEG and All EG.
+  filter_envelope: Filter Envelope
+  amp_envelope: Amp Envelope
+  mod_envelope: Mod Envelope
+  all_envelopes: All Envelopes
+  lfo: LFOs
+  arpeggiator: Arpeggiator
+  sequencer: Sequencer
+  fx: FX
+  # The manual's Modulation section calls them mod slots (p. 44); the chart compresses that to
+  # "ModSlot 1 Source" for want of room in a four-column table.
+  modslot_1: Mod Slot 1
+  modslot_2: Mod Slot 2
+  modslot_3: Mod Slot 3
+  modslot_4: Mod Slot 4
+  modslot_5: Mod Slot 5
+  modslot_6: Mod Slot 6
+  modslot_7: Mod Slot 7
+  modslot_8: Mod Slot 8
+  joystick: Joystick
+  # The audio input is in the manual's Joystick + Audio In section rather than this one, and is
+  # here because what the chart gives it is a level.
+  output: Audio Output + Gain
+
 controls:
 
   # ── Program and performance ───────────────────────────────────────────────

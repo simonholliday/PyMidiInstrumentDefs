@@ -119,6 +119,60 @@ voice:
 # CC 6 and 38 (Data Entry) are how NRPN values travel, not parameters, so they
 # are not listed; nor is NRPN 30, FilterFreqMSB, printed "n/a".
 
+groups:
+  # The implementation's control-change table is a flat list of CC# | Param | Range, so these
+  # are the User's Guide's own section names, from Chapter 2, "Take 5 Controls": Global
+  # Settings p. 10, Oscillators p. 16 with Mixer Parameters p. 20 under it, Filter p. 21,
+  # Envelopes p. 23, Low Frequency Oscillators p. 30, Modulation p. 34, Unison p. 38, Effects
+  # p. 40, Arpeggiator p. 43, Sequencer p. 48, Glide p. 51. Where the panel prints a shorter
+  # name the panel wins, because that is what a player is looking at: "lfo 1", "env 1", "mod 3".
+  # The order is the order the control-change table lists them, which is the order below.
+  # Two of these are not the maker's name for a section, because the maker has none that holds
+  # what the group holds, and both are marked where they fall.
+  performance: Performance
+  oscillators: Oscillators
+  glide: Glide
+  filter: Filter
+  # One control, the env routing button, which is the Envelopes section's own: it says which
+  # of the two envelopes reaches the filter, the amplifier, both, or an auxiliary destination.
+  envelopes: Envelopes
+  # Which envelope is which is the guide's, not an inference: "turn the amount knob of Env 1
+  # (which is routed to the Filter by default)" (p. 25), "In the env 1 (Filter) section" and
+  # "env 2 (Amp)" (p. 62). Env 1 is also the one that can be made the auxiliary envelope
+  # (p. 29), which is why it alone carries an Aux Dest.
+  envelope_1: Env 1 (Filter)
+  envelope_2: Env 2 (Amp)
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  fx: Effects
+  reverb: Reverb
+  unison: Unison
+  arpeggiator: Arpeggiator
+  # NOT THE MAKER'S WORD. The guide reaches these in three places and heads none of them with
+  # anything that covers all five: Transpose p. 50 for the two octave buttons, Using Low Split
+  # p. 8 for the split note, and the pitch bend range among the program parameters.
+  keyboard: Keyboard
+  sequencer: Sequencer
+  # The guide's section is Modulation (p. 34); the display numbers each slot the way the panel
+  # shows it, "MOD 3  Env 1  +5  Osc2Fine", above the words "Indicates mod slot number" (p. 61).
+  mod_1: Mod 1
+  mod_2: Mod 2
+  mod_3: Mod 3
+  mod_4: Mod 4
+  mod_5: Mod 5
+  mod_6: Mod 6
+  mod_7: Mod 7
+  mod_8: Mod 8
+  mod_9: Mod 9
+  mod_10: Mod 10
+  mod_11: Mod 11
+  mod_12: Mod 12
+  mod_13: Mod 13
+  mod_14: Mod 14
+  mod_15: Mod 15
+  mod_16: Mod 16
+  global: Global Settings
+
 controls:
 
   # ── Performance ───────────────────────────────────────────────────────────

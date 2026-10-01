@@ -537,6 +537,12 @@ class Definition:
 
 	"""One instrument definition, read and checked.
 
+	``groups`` is what to call each group of controls, as the instrument's own
+	document names that section of its panel.  It holds only the labels a file
+	states.  A group given none is shown by its identifier, which is honest,
+	where a label guessed from ``bd`` would read as the maker's word for it and
+	would be wrong.
+
 	``warnings`` carries what the validator thought worth saying but not worth
 	refusing the file over — most often that provenance is missing, or that an
 	import has not yet been checked by a person.
@@ -549,6 +555,7 @@ class Definition:
 	midi: Midi = dataclasses.field(default_factory=Midi)
 	voice: Voice = dataclasses.field(default_factory=Voice)
 	parts: dict[str, Part] = dataclasses.field(default_factory=dict)
+	groups: dict[str, str] = dataclasses.field(default_factory=dict)
 	controls: dict[str, Control] = dataclasses.field(default_factory=dict)
 	path: pathlib.Path | None = None
 	warnings: tuple[str, ...] = ()
@@ -569,19 +576,35 @@ class Definition:
 
 	def grouped_controls (self) -> dict[str, list[Control]]:
 
-		"""The controls collected by their group, in file order.
+		"""The controls collected by their group, in the order to show them.
 
-		Controls naming no group are collected under the empty string.  A page
-		that does not care about groups can ignore this and read ``controls``,
-		which is the flat list it would have had anyway.
+		``groups`` sets that order where a file names one: a labelled group comes
+		first, in the order the labels are written.  That is what lets a file
+		follow the maker's panel while its controls stay in the order the
+		document prints their numbers, which is the order they were read in.  Any
+		group no label names follows, in file order, and controls naming no group
+		are collected under the empty string.  A page that does not care about
+		groups can ignore this and read ``controls``, which is the flat list it
+		would have had anyway.
 		"""
 
-		groups: dict[str, list[Control]] = {}
+		collected: dict[str, list[Control]] = {}
 
 		for control in self.controls.values():
-			groups.setdefault(control.group or "", []).append(control)
+			collected.setdefault(control.group or "", []).append(control)
 
-		return groups
+		# A labelled group no control joined is left out rather than shown empty:
+		# the label is a heading, and a heading over nothing is worse than none.
+
+		ordered: dict[str, list[Control]] = {}
+
+		for name in self.groups:
+			if name in collected:
+				ordered[name] = collected.pop(name)
+
+		ordered.update(collected)
+
+		return ordered
 
 
 	def controls_by_part (self) -> dict[str, list[Control]]:

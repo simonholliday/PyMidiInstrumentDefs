@@ -48,6 +48,34 @@ class TestBundledCorpus:
 		for path in files:
 			pymidiinstrumentdefs.load_file(path)
 
+	def test_every_group_a_bundled_definition_uses_has_a_label (self) -> None:
+		"""A page heads each table with one, and an identifier is not a thing to show a reader.
+
+		`mod_1` and `bd` are what the TR-8S and the Take 5 made this necessary for.
+		"""
+		unlabelled = {}
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			definition = pymidiinstrumentdefs.load(name, [CORPUS])
+			missing = [group for group in definition.grouped_controls() if group and group not in definition.groups]
+
+			if missing:
+				unlabelled[name] = missing
+
+		assert unlabelled == {}
+
+	def test_a_label_can_differ_from_the_name_it_labels (self) -> None:
+		"""Which is the whole point of having both, and two bundled files rest on it."""
+		minifreak = pymidiinstrumentdefs.load("arturia/minifreak", [CORPUS])
+		tr8s = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS])
+
+		# the chart's section word is MIDI, which would be a useless group name here
+		assert minifreak.groups["controllers"] == "MIDI"
+
+		# Roland expands none of its eleven, so the label is the maker's two letters
+		assert tr8s.groups["bd"] == "BD"
+		assert list(tr8s.grouped_controls())[0] == "global"
+
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
@@ -1394,3 +1422,90 @@ class TestGrouping:
 
 		assert list(definition.controls) == ["a", "b", "c"]
 		assert [control.name for control in definition.panel_first()] == ["b", "a", "c"]
+
+	def test_a_label_says_what_to_head_the_table_with (self) -> None:
+		"""A group is an identifier, and `mod_1` is not what the maker calls it."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"groups:\n"
+			"  mod_1: Mod Slot 1\n"
+			"controls:\n"
+			"  mod_1_source: {cc: 1, group: mod_1}\n"
+		)
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.groups == {"mod_1": "Mod Slot 1"}
+		assert definition.groups["mod_1"] == "Mod Slot 1"
+
+	def test_labels_set_the_order_the_groups_are_shown_in (self) -> None:
+		"""A maker's panel does not always run in the order its controller numbers do."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"groups:\n"
+			"  oscillator: Oscillators\n"
+			"  filter: Filter\n"
+			"controls:\n"
+			"  cutoff: {cc: 74, group: filter}\n"
+			"  tune:   {cc: 70, group: oscillator}\n"
+		)
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert list(definition.controls) == ["cutoff", "tune"]
+		assert list(definition.grouped_controls()) == ["oscillator", "filter"]
+
+	def test_an_unlabelled_group_follows_the_labelled_ones_in_file_order (self) -> None:
+		"""Labelling some groups and not others is a file part way through, not an error."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"groups:\n"
+			"  envelope: Envelope\n"
+			"controls:\n"
+			"  cutoff: {cc: 74, group: filter}\n"
+			"  attack: {cc: 73, group: envelope}\n"
+			"  tune:   {cc: 70, group: oscillator}\n"
+		)
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert list(definition.grouped_controls()) == ["envelope", "filter", "oscillator"]
+		assert definition.warnings == ()
+
+	def test_a_label_no_control_joined_warns_and_is_not_shown (self) -> None:
+		"""A heading that never appears is a mistyped group name, or a section not yet read."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"groups:\n"
+			"  filter: Filter\n"
+			"  revreb: Reverb\n"
+			"controls:\n"
+			"  cutoff: {cc: 74, group: filter}\n"
+		)
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert any("groups.revreb" in warning for warning in definition.warnings)
+		assert list(definition.grouped_controls()) == ["filter"]
+
+	def test_an_empty_label_is_refused (self) -> None:
+		"""Nothing at all is worse than the group's own name, which is at least true."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"groups: {filter: ' '}\n"
+			"controls: {cutoff: {cc: 74, group: filter}}\n"
+		)
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError, match = "groups.filter"):
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+	def test_a_label_is_prose_and_the_group_is_a_name (self) -> None:
+		"""The label is for a reader, so it takes the maker's spelling, spaces and all."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"groups: {arp_seq: 'ARP / SEQ'}\n"
+			"controls: {rate: {cc: 1, group: arp_seq}}\n"
+		)
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.groups["arp_seq"] == "ARP / SEQ"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError, match = "is not a name"):
+			pymidiinstrumentdefs.parse(
+				body.replace("arp_seq: 'ARP / SEQ'", "'Arp Seq': 'ARP / SEQ'"), source = "x.yaml")

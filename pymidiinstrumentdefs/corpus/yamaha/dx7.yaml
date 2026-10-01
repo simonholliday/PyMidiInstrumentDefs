@@ -107,6 +107,27 @@ voice:
   # except a system exclusive parameter change. On receive the instrument ignores the
   # LS byte, so a bend reaching it is 7-bit however it was sent.
 
+groups:
+  # Yamaha prints no section heading over any row: both MIDI DATA FORMAT tables are flat lists
+  # of C | Parameter | V. So these are the maker's names for the same controls elsewhere in the
+  # manual, each said where it is read: the SPECIFICATIONS at printed p. 27 list under Controls
+  # "VOLUME, DATA ENTRY [lever, switch: YES (ON)/NO (OFF)], PITCH WHEEL, MODULATION WHEEL", and
+  # under Control Terminal "FOOT SWITCH (SUSTAIN, PORTAMENTO), FOOT CONTROL (VOLUME,
+  # MODULATION), BREATH CONTROL"; the Function Parameters beside them head PORTAMENTO MODE,
+  # MODULATION WHEEL, FOOT CONTROL and BREATH CONTROL; and the MIDI chapter at printed p. 21
+  # says a channel "can be carried out using the DATA ENTRY controls".
+  # The order is the order the transmitted table lists the controls, which is the order below.
+  # Yamaha's own word for the three in this group is the one its chart rows use: two of them
+  # are "Breath controller" and "Foot controller", beside "Modulation wheel".
+  controllers: Controllers
+  portamento: Portamento
+  data_entry: Data Entry
+  performance: Volume
+  # The one control here is the sustain foot switch. Yamaha's Control Terminal row names both
+  # switches together, FOOT SWITCH (SUSTAIN, PORTAMENTO), and the portamento one is filed under
+  # Portamento above, with the portamento time it belongs with.
+  pedals: Foot Switch
+
 controls:
 
   # The MIDI DATA FORMAT appendix, pp. 30 and 32, in the order and the words the tables

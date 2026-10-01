@@ -89,6 +89,21 @@ streichfett.controls_by_part()[""]         # the controls on the base channel
 streichfett.controls_reaching("strings")   # all 19 - the strings sit on the base channel
 ```
 
+A definition also says what its maker calls each group of controls, which is
+what a page can head a table with. The groups are what the maker's own document
+groups them into, in the order to show them:
+
+```python
+take_5 = pymidiinstrumentdefs.load("sequential/take_5")
+
+take_5.groups["mod_1"]                   # 'Mod 1' - the mod matrix slot, as the panel numbers it
+take_5.groups["envelope_1"]              # 'Env 1 (Filter)' - the guide's own words for which is which
+list(take_5.grouped_controls())[:3]      # ['performance', 'oscillators', 'glide']
+```
+
+A group with no label is shown by its own name, which is honest: a label is
+only ever there because a document says it.
+
 ### Names, and where the files go
 
 A definition is named for its maker and its model, and the name is also where

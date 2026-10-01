@@ -102,6 +102,26 @@ voice:
 # knob setting, and moving the knob overrides the CC. The instrument does not
 # report that override, so a panel's idea of a value can be wrong at any moment.
 
+groups:
+  # Moog's own section names, from PANEL CONTROLS & FUNCTIONS, which walks the panel: THE
+  # OSCILLATORS p. 18, with OSCILLATOR 1 PARAMETERS p. 18 and OSCILLATOR 2 PARAMETERS p. 19
+  # under it; THE MIXER p. 21; THE FILTER and THE AMPLIFIER (VCA) p. 23; THE ENVELOPE
+  # GENERATORS (EG) p. 24; THE SEQUENCERS p. 26; THE POLYRHYTHM SECTION p. 30. The capitals
+  # are the document's own styling and are not reproduced, a leading "THE" is dropped, and a
+  # parenthetical is kept where it names the thing rather than abbreviating the same word.
+  # The order is the order the chart lists the controls, which is the order they appear below.
+  vco_1: Oscillator 1 Parameters
+  vco_2: Oscillator 2 Parameters
+  envelopes: Envelope Generators (EG)
+  # Not a panel section, and not in the manual at all: the one control here comes from the
+  # firmware notes, whose value table for it is headed "Keyboard Priority" (notes' p. 4).
+  keyboard: Keyboard Priority
+  # The one control here is the Rhythm Generator Logic, and the rhythm generators are what the
+  # panel walk heads THE POLYRHYTHM SECTION. What it sets is whether the sequencer advances,
+  # which is why the group it is in is named for the sequencer: "OR logic advances the
+  # sequencer every time a clock is received from one or both Rhythm Generators" (p. 44).
+  sequencer: Polyrhythm Section
+
 controls:
 
   # ── Oscillators ───────────────────────────────────────────────────────────

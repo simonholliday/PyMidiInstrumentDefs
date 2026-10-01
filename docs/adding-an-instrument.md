@@ -351,6 +351,39 @@ Four rules worth holding on to:
 A part is not a panel. It says where a control is addressed, not how anything should be
 drawn — that stays the consuming page's business, as with everything else here.
 
+### Say what the maker calls each group
+
+`group` on a control is a name for a machine. `groups` is what to call that group where a
+person will read it, and it is the maker's word rather than yours:
+
+```yaml
+groups:
+  osc_1: OSC 1
+  analog_filter: Analog Filter
+  cycling_env: Cycling Env
+```
+
+**Take the label from the document, the same way you take a number from it.** Some makers
+print it for you: a MiniFreak's implementation chart has a Section column, and an Elektron
+appendix heads a table per section. Where the chart is a flat list, the manual's own
+section headings are the next place to look, and they are usually its walk around the
+panel. Say in a comment where each set came from, as you would for anything else here.
+
+Four rules, each of which a bundled definition needed:
+
+- **The label is free text and the group is a name.** `arp_seq: Arp / Seq` is legal and
+  `Arp Seq: ...` is not, because the group is addressed and the label is read.
+- **The order you write them is the order to show them.** A group you do not name follows
+  the ones you do, in file order, so labelling some and not others is a file part way
+  through rather than an error.
+- **A label may differ from the group's name, and sometimes must.** A MiniFreak's chart
+  heads its mod wheel row "MIDI", which is a useless group name in a file that is entirely
+  about MIDI and exactly right as a heading over the row it is printed above.
+- **Where the maker gives no name, say so rather than inventing one.** Roland's documents
+  never expand BD, SD or RC anywhere, in either manual, so `roland/tr8s` labels them BD, SD
+  and RC, and its comment records where the expansions were looked for. A label nobody
+  printed is a fact nobody checked.
+
 **Give it a test.** One test of the fact the file exists for: the thing a consumer
 would get wrong without it.
 

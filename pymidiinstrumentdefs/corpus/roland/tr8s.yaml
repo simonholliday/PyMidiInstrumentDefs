@@ -21,6 +21,16 @@ source: >-
   control, none of which the chart gives. The firmware this covers is not in the chart
   either: it comes from Roland's update history, saved the same way, which shows no
   release changing the MIDI implementation.
+  THE GROUP LABELS ARE THE CHART'S OWN WORDS. Its note table heads the eleven drum voices
+  INST and names each of them by two letters, BD to RC, and Roland expands none of them
+  anywhere: its reference manual (56pp) and its owner's manual (24pp) were both searched for
+  Bass Drum, Snare Drum, Low Tom, Rim Shot, Hand Clap, Closed Hi, Crash Cymbal and Ride
+  Cymbal, and neither document contains one of them. So the two-letter names are what the
+  maker calls these, and the expansions everybody knows are nobody's to add here.
+  THE REFERENCE MANUAL IS CITED FOR ONE THING, and nothing below depends on it: that the
+  eleven controls which belong to no drum voice are kit and pattern parameters rather than
+  the instrument's own, which is where that group's label comes from. Its KIT: MASTER FX is
+  at p. 26 and its KIT: EXT IN at p. 29, and the shuffle is a pattern setting at p. 17.
 
 sources:
   midi_impl:
@@ -32,6 +42,16 @@ sources:
     url: "https://static.roland.com/assets/media/pdf/TR-8S_MIDIImpleChart_eng03_W.pdf"
     sha256: 518360070cfde572ae3cf9454877821d60f21edbbb9fc8a455243e9d8e7851a2
     retrieved: 2026-09-13
+  reference_manual:
+    kind: manual
+    title: TR-8S Reference Manual
+    edition: eng05
+    landing: "https://www.roland.com/global/support/by_product/tr-8s/owners_manuals/"
+    sha256: f58df8e53ef31a7dcd806c737026b39695901b1180c817e156d013f1dfd7ca77
+    # No url and no retrieval date, because neither was written down: this file was held
+    # before the library kept provenance records, and what is known of it was established
+    # from its own bytes on 2026-09-30. The landing page above is where Roland offers the
+    # document; which file on it these bytes are has not been checked, so it is not claimed.
   release_notes:
     kind: release_notes
     title: "Roland - Support - TR-8S - Updates & Drivers"
@@ -88,6 +108,27 @@ voice:
     oh: 46
     cc: 49
     rc: 51
+
+groups:
+  # Roland's own names, and there are no longer ones to be had: the chart's note table heads
+  # these eleven INST and calls each of them by two letters. Both held Roland documents were
+  # searched for an expansion and neither has one, so BD stays BD here.
+  # The order is the order the chart lists the controls, which is the order they appear below.
+  # The first group is every control that belongs to no one drum voice. Roland heads nothing
+  # over them in the chart, and the reference manual files them as kit parameters, KIT: MASTER
+  # FX at p. 26 and KIT: EXT IN at p. 29, and as pattern settings, the shuffle at p. 17.
+  global: Kit and Pattern
+  bd: BD
+  sd: SD
+  lt: LT
+  mt: MT
+  ht: HT
+  rs: RS
+  hc: HC
+  ch: CH
+  oh: OH
+  cc: CC
+  rc: RC
 
 controls:
 

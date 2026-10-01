@@ -345,6 +345,35 @@ class _Reader:
 		return found
 
 
+	def groups (self, value: object) -> dict[str, str]:
+
+		"""Read what to call each group of controls, as the maker names the section.
+
+		A label is free text for a reader, like a control's own: what the
+		document calls that part of the instrument, rather than a name anything
+		is addressed by.  The order the labels are written is kept, because it is
+		the order a page shows the groups in, and a maker's panel does not always
+		run in the order its controller numbers do.
+		"""
+
+		found = {}
+
+		for name, label in self.mapping(value, "groups").items():
+			where = f"groups.{name}"
+			group = self.name(name, "groups")
+			heading = self.text(label, where)
+
+			# An empty label would head the table with nothing at all, where
+			# leaving the group out heads it with the group's own name.
+
+			if not heading.strip():
+				self.refuse(where, "is empty: give the group a label a page can print, or leave it out")
+
+			found[group] = heading
+
+		return found
+
+
 	def midi (self, value: object) -> pymidiinstrumentdefs.definition.Midi:
 
 		"""Read ``midi``, the rows of the implementation chart.
@@ -768,6 +797,7 @@ def build (
 	provenance = reader.optional_text(raw, "source", "file")
 	documents = reader.sources(raw.get("sources"))
 	parts = reader.parts(raw.get("parts"))
+	groups = reader.groups(raw.get("groups"))
 	controls = reader.controls(raw.get("controls"))
 	voice = reader.voice(raw.get("voice"))
 
@@ -819,6 +849,17 @@ def build (
 				f"either the control is on another channel or the part's receives is incomplete",
 			)
 
+	# A label on a group no control joined is a heading that will never appear:
+	# a mistyped group name, or a section whose controls were never transcribed.
+	# Said out loud rather than refused, because a file being written section by
+	# section is briefly in exactly that state.
+
+	joined = {control.group for control in controls.values() if control.group}
+
+	for group in groups:
+		if group not in joined:
+			reader.warn(f"groups.{group}", "labels a group no control is in, so no page will show it")
+
 	return pymidiinstrumentdefs.definition.Definition(
 		version  = version,
 		model    = model,
@@ -827,6 +868,7 @@ def build (
 		midi     = reader.midi(raw.get("midi")),
 		voice    = voice,
 		parts    = parts,
+		groups   = groups,
 		controls = controls,
 		path     = path,
 		warnings = tuple(reader.warnings),

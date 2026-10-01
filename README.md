@@ -115,6 +115,7 @@ self-contained YAML file, and you share it by sending it.
 
 | Name | Instrument |
 |------|------------|
+| `arturia/microfreak` | Arturia MicroFreak -- four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
 | `behringer/model_d` | Behringer MODEL D -- no control changes at all; its remote surface is SysEx |
 | `elektron/digitone` | Elektron Digitone -- nine parts on nine channels, where one CC means three things |
 | `modal/carbon8m` | Modal CARBON8M -- 106 controls, and a voice count set per patch |

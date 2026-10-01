@@ -51,6 +51,7 @@ class TestBundledCorpus:
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
+			"arturia/microfreak",
 			"behringer/model_d",
 			"elektron/digitone",
 			"modal/carbon8m",

@@ -102,6 +102,7 @@ class TestBundledCorpus:
 			"behringer/model_d",
 			"elektron/digitakt",
 			"elektron/digitone",
+			"elektron/syntakt",
 			"korg/minilogue_xd",
 			"modal/carbon8m",
 			"moog/dfam",
@@ -493,6 +494,43 @@ class TestPulsar23:
 
 		assert list(pulsar.controls) == ["portamento"]
 		assert pulsar.controls["portamento"].cc == 5
+
+
+class TestSyntakt:
+
+	def test_the_same_controller_number_means_two_things_on_two_parts (self) -> None:
+		"""28 of its 71 controller numbers do, and only the channel tells them apart."""
+		syntakt = pymidiinstrumentdefs.load("elektron/syntakt", [CORPUS])
+
+		on_a_track = syntakt.controls["filter_attack_time"]
+		on_the_fx_track = syntakt.controls["fx_filter_frequency"]
+
+		assert on_a_track.cc == on_the_fx_track.cc == 70
+		assert on_a_track.part == "track"
+		assert on_the_fx_track.part == "fx"
+
+		reused = [cc for cc in {control.cc for control in syntakt.controls.values()}
+			if sum(1 for control in syntakt.controls.values() if control.cc == cc) > 1]
+
+		assert len(reused) == 28
+
+	def test_the_nrpn_does_not_resolve_what_the_cc_leaves_open (self) -> None:
+		"""On other instruments it would, which is why this is pinned rather than assumed."""
+		syntakt = pymidiinstrumentdefs.load("elektron/syntakt", [CORPUS])
+
+		# the two filter tables share NRPN 1/20 for parameters their CCs number differently
+		assert syntakt.controls["filter_frequency"].nrpn == 148
+		assert syntakt.controls["fx_filter_frequency"].nrpn == 148
+		assert syntakt.controls["filter_frequency"].cc != syntakt.controls["fx_filter_frequency"].cc
+
+	def test_twelve_tracks_are_one_part_because_each_can_be_either_kind (self) -> None:
+		"""A Digitakt has eight audio and eight MIDI tracks; this has twelve of either."""
+		syntakt = pymidiinstrumentdefs.load("elektron/syntakt", [CORPUS])
+
+		assert syntakt.parts["track"].count == 12
+		assert syntakt.parts["track"].polyphony == 1
+		assert syntakt.voice.polyphony_shared is False
+		assert sorted(syntakt.parts) == ["fx", "track"]
 
 
 class TestChoices:

@@ -1,0 +1,375 @@
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Syntakt
+  firmware: "1.42"
+  # The manual says so itself, on p. 11: "This manual for Syntakt OS version 1.42 was last
+  # updated September 24, 2026." Three dates describe this one file and none of them agree:
+  # that one, the 260930 in Elektron's file name, and the 2026-10-01 its server sent as
+  # last-modified. The document's own is what the source line records.
+  # The version is checked as well as quoted, because a file name is not evidence. Elektron's
+  # release notes say what each OS changed, and four of those changes are about the numbers
+  # below: OS 1.01 fixed that "The parameters on the SYN page had incorrect MIDI mapping";
+  # OS 1.20 "Added support for Sustain pedal (Sustain and Sostenuto) over MIDI", which are
+  # the two in MISC; OS 1.30B fixed that "The machines added in OS 1.30 had wrong CC and NRPN
+  # mappings"; and OS 1.40A fixed that "The FX track's FPAN parameter was not assigned a MIDI
+  # CC value", which is the FX track's Filter Pan at CC 93. So this appendix describes 1.42
+  # and several of its numbers were wrong or absent in earlier firmware.
+  # #2506 recorded the English manual as OS 1.41 dated 2026-09-09. Elektron replaced it with
+  # this one before it was ever fetched, which is why a definition cites bytes it holds.
+
+source: >-
+  User manual (126pp), OS 1.42: pp. 11, 17, 20-21, 24, 27, 30-32, 52-53, 62, 71, 75-77,
+  91, 98, 108, and the CC and NRPN tables of APPENDIX B: MIDI at pp. 115-118, which is
+  where every number here comes from.
+  The appendix prints 107 rows in ten numbered sections, and all 107 are below. It gives
+  names and numbers only, no values, bands, ranges or defaults, so every control here is
+  continuous by derivation.
+  TEN SECTIONS, WHERE THIS MAKER'S OTHER TWO INSTRUMENTS HAVE NINE, and the tenth is why
+  this instrument needs parts more than either: B.10 FX TRACK PARAMETERS gives the FX
+  track its own SYN, FILTER and AMP tables, and they reuse the audio tracks' controller
+  numbers for different parameters. CC 70 is the filter's attack time on a track and the
+  filter frequency on the FX track; CC 73 is its release time on a track and its envelope
+  depth on the FX track. 28 of the 71 controller numbers used here carry more than one
+  meaning, and nothing in the appendix warns of it: only the channel tells them apart.
+  THE NRPNs DO NOT RESOLVE IT EITHER, which is worth knowing because on other instruments
+  they do. The two FILTER tables share NRPN 1/20, 1/21 and 1/22 outright, for parameters
+  the CC side numbers differently; and the two AMP tables are not one table addressed on
+  two channels, because their NRPN runs differ. So a sender needs the part either way.
+  THE SYN PAGE IS NOT A FIXED SET OF PARAMETERS, and the maker says so rather than leaving
+  it to be discovered: "The parameters on the SYN parameter page vary depending on which
+  machine is selected. The CC/NRPN value for a specific parameter is instead based on its
+  position in the UI and is denoted here by which data entry knob controls that parameter"
+  (p. 115). So the eight rows in the Source group are knobs A to H, not parameters, and
+  what each one reaches depends on the machine the track is set to. That is the same gap
+  the Arturia MicroFreak has, answered the other way round: Arturia documents one mode's
+  meanings and leaves the rest, Elektron documents the position and leaves every meaning.
+  THE APPENDIX UNDER-DESCRIBES ITS OWN TABLE ONCE: "Note that the LFO 1/2 depth are
+  high-resolution parameters, with CC LSB values" (p. 116), where four rows carry a CC LSB
+  rather than two. Both LFOs' Speed is paired as well as both LFOs' Depth, and the four
+  pairs are recorded as printed. Elektron does not use the MMA's LSB = MSB + 32 here: the
+  fine halves are 60 to 63 for coarse numbers 102, 109, 112 and 119.
+  NOT RECORDED: what any machine puts on each of the eight SYN knobs, which APPENDIX A
+  describes for every machine in words and never as a number; and values, bands and
+  defaults for anything, which this appendix does not give.
+
+sources:
+  manual:
+    kind: manual
+    title: Syntakt User Manual
+    edition: OS 1.42
+    dated: 2026-09-24
+    landing: "https://www.elektron.se/support-downloads/syntakt"
+    url: "https://www.elektron.se/wp-content/uploads/2026/10/Syntakt-User-Manual_ENG_OS1.42_260930.pdf"
+    sha256: 75fab084524afc99cec6e5957c3bf970f23a1b3a88e8d94a417eb595f01571c2
+    retrieved: 2026-10-01
+    page_offset: 0
+    # 126 pages, and the offset is checked rather than assumed: 118 of them print their own
+    # file page number and not one prints a different one. `file` claims 222 pages, which is
+    # wrong by three quarters, as it is on every manual in this library.
+    # Its last page prints Elektron's document code, DOC10030enK.
+  release_notes:
+    kind: release_notes
+    title: Syntakt OS Release Notes
+    edition: "through OS 1.42"
+    dated: 2026-10-01
+    landing: "https://www.elektron.se/support-downloads/syntakt"
+    url: "https://www.elektron.se/release_notes/syntakt-os-release-notes"
+    sha256: b6d544b2220bfc8f871a6677ea985cf78f39db207d6234e0ea09f4e0d06f0002
+    retrieved: 2026-10-01
+    paginated: false
+    # Cited for which OS this manual describes and for which numbers below did not work in
+    # earlier firmware. The sha256 is of the page's visible text as saved on 2026-10-01; the
+    # page as served hashes to
+    # 72973c4bec0e616537778d40e3f39e53ca1098fd9b52106c812e18110d95d68f. Elektron adds a release
+    # to the top of this page each time it ships one, so no later fetch will match either.
+
+midi:
+  # A channel is set per track, for the FX track, and for the auto channel, each from 1 to 16
+  # or OFF (p. 77). The twelve tracks default to channels 1 to 12 (p. 27), but which channel
+  # yours are on belongs to your project rather than here.
+  channels: [1, 16]
+  # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
+  # SEND (p. 75), so both travel both ways and either can be switched off.
+  clock: both
+  transport: both
+  program_change:
+    receives: true
+    sends: true
+    presets: 128
+    # "MIDI program change messages 0-127 will select pattern 1-128 (A01-H16)" (p. 27), with
+    # PRG CH RECEIVE and PRG CH SEND switching each direction on (p. 76) and PROGRAM CHG IN CH
+    # and OUT CH choosing the channel, either of which may instead follow the auto channel
+    # (p. 77).
+  sysex: true              # project, pattern and sound data, over MIDI OUT or USB (p. 77)
+
+voice:
+  addressing: pitches
+  # Twelve voices, one for each track, and the maker counts them in three groups rather than
+  # one: "The Syntakt has eight Digital voices (available on tracks 1-8)" (p. 91), "three
+  # Analog Drum voices (available on tracks 9-11)" (p. 98), and "one ANALOG CYMBAL voice
+  # (available on track 12)" (p. 108). So a track is a voice, and the figure that means
+  # something is the one on the part rather than any single number for the instrument.
+  polyphony_shared: false
+  # Two bands of notes do something, and the manual gives both at 7.12 MIDI NOTES (p. 27).
+  # "Note numbers 0-11 correspond to notes C0 through to B0 ... These notes will trigger the
+  # sound of track 1 through track 12, respectively (provided they are set to their default
+  # channels 1-12). These notes values map to each of the 12 tracks, regardless of which track
+  # is active." And "MIDI note numbers 12-84, that corresponds to notes C1-C7 (C5, MIDI note
+  # 60, being middle C) will trigger the sound of the active track in its 73 note variations".
+  # Nothing above 84 is documented, so the range is the outer bound of what the manual states.
+  # THE MANUAL DISAGREES WITH ITSELF ABOUT HOW MANY PITCHES A TRACK HAS, and both readings are
+  # left standing. 7.12 gives 73 note variations, which is notes 12 to 84 inclusive, a little
+  # over six octaves. 7.9 KEYBOARD MODE (p. 24) says "The full range you can trig for audio
+  # track with Digital voice types spans 10 octaves: middle, 4 up and 5 down", and eight
+  # octaves for the Analog Drum and Analog Cymbal voice types. Those are the [TRIG] keys with
+  # their own transpose, which is not the same question as what an incoming note number
+  # reaches, and the manual never reconciles them.
+  note_range: [0, 84]
+  velocity:
+    note_on: received
+    # "VELOCITY TO VOL Selects how MIDI velocity affects volume when playing the sound from a
+    # MIDI keyboard", whose settings include OFF, LOG and LIN, and "OFF means velocity does not
+    # affect the volume of the sound" (pp. 30-31). And VELOCITY MOD assigns up to four
+    # parameter-page parameters to velocity, where "Both the VEL parameter on the TRIG menu and
+    # the velocity of incoming MIDI notes sent to the Syntakt affects the assigned parameters"
+    # (p. 32).
+    # So velocity always arrives, and what it reaches is a pair of menu settings rather than a
+    # controller. `gated_by` names controls, and neither of these has a controller number, so
+    # it stays empty and the fact is here instead.
+
+parts:
+  # Every part is given a channel by the player, in SETTINGS > MIDI CONFIG > CHANNELS
+  # (p. 77), so neither derives one: there is no base channel on this instrument.
+  track:
+    label: Track
+    count: 12
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    polyphony: 1
+    # "TRACK 1-12 selects the dedicated MIDI channel that is used to receive or send (by
+    # turning the knobs) parameter data to or from a specific audio/MIDI track", and
+    # RECEIVE NOTES "make[s] it possible to play Syntakt using an external MIDI keyboard"
+    # (p. 77). The twelve default to channels 1 to 12 (p. 27), and which channel yours are
+    # on belongs to your project rather than here.
+    # ONE PART OF TWELVE, NOT TWO PARTS, and that is this instrument rather than a
+    # simplification: "The Syntakt sequencer has twelve tracks that can be either an audio
+    # track or a MIDI track" (p. 20). A Digitakt has eight audio tracks and eight MIDI
+    # tracks, which are different track slots; here the same twelve slots are one or the
+    # other depending on the machine assigned, so a count of 12 is the whole instrument
+    # and which of them sounds is a setting.
+    # One voice each, which the maker counts in three groups rather than one: "The Syntakt
+    # has eight Digital voices (available on tracks 1-8)" (p. 91), "three Analog Drum
+    # voices (available on tracks 9-11)" (p. 98), and "one ANALOG CYMBAL voice (available
+    # on track 12)" (p. 108). Twelve voices across twelve tracks is one each.
+    # NOT THE SAME TRACK TO TRACK, and the definition cannot say which is which: tracks
+    # 1-8 take the Digital machines and 9-12 the analogue ones, and two of the Filter
+    # group's controls below are Digital-only. "BASE Sets the base frequency of the
+    # filter. This parameter is only available if you have selected a track with a Digital
+    # voice type (Track 1-8)" (p. 53), and the same of Width. A control that reaches eight
+    # of the twelve has no field here, so it is said once, here.
+  fx:
+    label: FX Track
+    channel: assigned
+    receives: [controls]
+    # "FX CONTROL CH selects the dedicated MIDI channel that is used to receive or send (by
+    # turning the knobs) parameter data to or from the FX track and the DELAY and REVERB
+    # parameter pages" (p. 77). It takes no notes: nothing in the manual plays it, and it
+    # is "a separate track (the FX track) for the Analog FX block and the Delay/Reverb send
+    # effects" (p. 20) rather than a voice.
+
+groups:
+  # Elektron's own names, from the headings over the tables these numbers were read from:
+  # APPENDIX B: MIDI, pp. 115-118, which prints a numbered section per group, B.1 TRACK
+  # PARAMETERS to B.10 FX TRACK PARAMETERS, and a heading over each table inside it. The
+  # table heading is what a group is named here and what it is labelled, as on both other
+  # Elektrons. The capitals are the appendix's styling throughout and are not reproduced,
+  # except where the heading is an abbreviation the panel prints that way; the word
+  # PARAMETERS is dropped where a heading carries it.
+  # The order is the appendix's order, which is also the order below.
+  track: Track
+  trig: Trig
+  source: Source
+  filter: Filter
+  amp: Amp
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  delay: Delay
+  reverb: Reverb
+  external_in: External In Mixer
+  cc_val: CC Val
+  misc: Misc
+  # B.10's three tables are headed SYN, FILTER and AMP, and two of those headings are
+  # already used by B.4 and B.5. The section they are in is what tells a reader which is
+  # which, so the labels say it: a page that printed two tables both headed Filter, on one
+  # instrument, with different numbers under each, would be worse than no heading at all.
+  fx_syn: SYN
+  fx_filter: Filter (FX Track)
+  fx_amp: Amp (FX Track)
+
+controls:
+
+  track_mute:                  {label: Mute, cc: 94, nrpn: 229, part: track, group: track}
+  track_level:                 {label: Track level, cc: 95, nrpn: 228, part: track, group: track}
+
+  trig_note:                   {label: Note, cc: 3, nrpn: 384, part: track, group: trig}
+  trig_velocity:               {label: Velocity, cc: 4, nrpn: 385, part: track, group: trig}
+  trig_length:                 {label: Length, cc: 5, nrpn: 386, part: track, group: trig}
+  trig_filter_trig:            {label: Filter Trig, cc: 13, part: track, group: trig}
+  trig_lfo_trig:               {label: LFO Trig, cc: 14, part: track, group: trig}
+  trig_portamento_time:        {label: Portamento Time, cc: 9, nrpn: 391, part: track, group: trig}
+  trig_portamento_on_off:      {label: Portamento On/Off, cc: 65, nrpn: 392, part: track, group: trig}
+
+  # B.3 SYN PARAMETERS, and the eight rows below are knobs rather than parameters: "The
+  # parameters on the SYN parameter page vary depending on which machine is selected. The
+  # CC/NRPN value for a specific parameter is instead based on its position in the UI and
+  # is denoted here by which data entry knob controls that parameter." A panel can show
+  # these eight and name none of them, which is what the maker itself does.
+  source_data_entry_knob_a:    {label: Data entry knob A, cc: 17, nrpn: 129, part: track, group: source}
+  source_data_entry_knob_b:    {label: Data entry knob B, cc: 18, nrpn: 130, part: track, group: source}
+  source_data_entry_knob_c:    {label: Data entry knob C, cc: 19, nrpn: 131, part: track, group: source}
+  source_data_entry_knob_d:    {label: Data entry knob D, cc: 20, nrpn: 132, part: track, group: source}
+  source_data_entry_knob_e:    {label: Data entry knob E, cc: 21, nrpn: 133, part: track, group: source}
+  source_data_entry_knob_f:    {label: Data entry knob F, cc: 22, nrpn: 134, part: track, group: source}
+  source_data_entry_knob_g:    {label: Data entry knob G, cc: 23, nrpn: 135, part: track, group: source}
+  source_data_entry_knob_h:    {label: Data entry knob H, cc: 24, nrpn: 136, part: track, group: source}
+
+  filter_frequency:            {label: Filter Frequency, cc: 74, nrpn: 148, part: track, group: filter}
+  filter_resonance:            {label: Resonance, cc: 75, nrpn: 149, part: track, group: filter}
+  filter_type:                 {label: Filter Type, cc: 76, nrpn: 150, part: track, group: filter}
+  filter_attack_time:          {label: Attack Time, cc: 70, nrpn: 144, part: track, group: filter}
+  filter_decay_time:           {label: Decay Time, cc: 71, nrpn: 145, part: track, group: filter}
+  filter_sustain_level:        {label: Sustain Level, cc: 72, nrpn: 146, part: track, group: filter}
+  filter_release_time:         {label: Release Time, cc: 73, nrpn: 147, part: track, group: filter}
+  filter_env_depth:            {label: Env. Depth, cc: 77, nrpn: 151, part: track, group: filter}
+  filter_env_delay:            {label: Env. Delay, cc: 78, nrpn: 180, part: track, group: filter}
+  filter_base:                 {label: Base, cc: 26, nrpn: 178, part: track, group: filter}
+  filter_width:                {label: Width, cc: 27, nrpn: 179, part: track, group: filter}
+
+  amp_attack_time:             {label: Attack Time, cc: 79, nrpn: 176, part: track, group: amp}
+  amp_hold_time:               {label: Hold Time, cc: 80, nrpn: 153, part: track, group: amp}
+  amp_decay_time:              {label: Decay Time, cc: 81, nrpn: 154, part: track, group: amp}
+  amp_sustain_level:           {label: Sustain Level, cc: 82, nrpn: 177, part: track, group: amp}
+  amp_release_time:            {label: Release Time, cc: 83, nrpn: 152, part: track, group: amp}
+  amp_delay_send:              {label: Delay Send, cc: 84, nrpn: 156, part: track, group: amp}
+  amp_reverb_send:             {label: Reverb Send, cc: 85, nrpn: 157, part: track, group: amp}
+  amp_pan:                     {label: Pan, cc: 10, nrpn: 158, part: track, group: amp}
+  amp_volume:                  {label: Volume, cc: 7, nrpn: 159, part: track, group: amp}
+
+  # B.6 LFO PARAMETERS. The appendix says "Note that the LFO 1/2 depth are high-resolution
+  # parameters, with CC LSB values", and then prints a CC LSB on four rows, not two: both
+  # Speeds as well as both Depths. The table is followed.
+  lfo_1_speed:                 {label: Speed, cc: 102, lsb: 60, range: [0, 16383], nrpn: 160, part: track, group: lfo_1}
+  lfo_1_multiplier:            {label: Multiplier, cc: 103, nrpn: 161, part: track, group: lfo_1}
+  lfo_1_fade_in_out:           {label: Fade In/Out, cc: 104, nrpn: 162, part: track, group: lfo_1}
+  lfo_1_destination:           {label: Destination, cc: 105, nrpn: 163, part: track, group: lfo_1}
+  lfo_1_waveform:              {label: Waveform, cc: 106, nrpn: 164, part: track, group: lfo_1}
+  lfo_1_start_phase:           {label: Start Phase, cc: 107, nrpn: 165, part: track, group: lfo_1}
+  lfo_1_trig_mode:             {label: Trig Mode, cc: 108, nrpn: 166, part: track, group: lfo_1}
+  lfo_1_depth:                 {label: Depth, cc: 109, lsb: 61, range: [0, 16383], nrpn: 167, part: track, group: lfo_1}
+
+  lfo_2_speed:                 {label: Speed, cc: 112, lsb: 62, range: [0, 16383], nrpn: 168, part: track, group: lfo_2}
+  lfo_2_multiplier:            {label: Multiplier, cc: 113, nrpn: 169, part: track, group: lfo_2}
+  lfo_2_fade_in_out:           {label: Fade In/Out, cc: 114, nrpn: 170, part: track, group: lfo_2}
+  lfo_2_destination:           {label: Destination, cc: 115, nrpn: 171, part: track, group: lfo_2}
+  lfo_2_waveform:              {label: Waveform, cc: 116, nrpn: 172, part: track, group: lfo_2}
+  lfo_2_start_phase:           {label: Start Phase, cc: 117, nrpn: 173, part: track, group: lfo_2}
+  lfo_2_trig_mode:             {label: Trig Mode, cc: 118, nrpn: 174, part: track, group: lfo_2}
+  lfo_2_depth:                 {label: Depth, cc: 119, lsb: 63, range: [0, 16383], nrpn: 175, part: track, group: lfo_2}
+
+  # B.7 FX PARAMETERS, which the FX track's own channel carries: "FX CONTROL CH selects
+  # the dedicated MIDI channel that is used to receive or send ... parameter data to or
+  # from the FX track and the DELAY and REVERB parameter pages" (p. 77).
+  delay_time:                  {label: Delay Time, cc: 21, nrpn: 256, part: fx, group: delay}
+  delay_pingpong:              {label: Pingpong, cc: 22, nrpn: 257, part: fx, group: delay}
+  delay_stereo_width:          {label: Stereo Width, cc: 23, nrpn: 258, part: fx, group: delay}
+  delay_feedback:              {label: Feedback, cc: 24, nrpn: 259, part: fx, group: delay}
+  delay_highpass_filter:       {label: Highpass Filter, cc: 25, nrpn: 260, part: fx, group: delay}
+  delay_lowpass_filter:        {label: Lowpass Filter, cc: 26, nrpn: 261, part: fx, group: delay}
+  delay_reverb_send:           {label: Reverb Send, cc: 27, nrpn: 262, part: fx, group: delay}
+  delay_mix_volume:            {label: Mix Volume, cc: 28, nrpn: 263, part: fx, group: delay}
+
+  reverb_predelay:             {label: Predelay, cc: 29, nrpn: 264, part: fx, group: reverb}
+  reverb_decay_time:           {label: Decay Time, cc: 30, nrpn: 265, part: fx, group: reverb}
+  reverb_shelving_freq:        {label: Shelving Freq, cc: 31, nrpn: 266, part: fx, group: reverb}
+  reverb_shelving_gain:        {label: Shelving Gain, cc: 89, nrpn: 267, part: fx, group: reverb}
+  reverb_highpass_filter:      {label: Highpass Filter, cc: 90, nrpn: 268, part: fx, group: reverb}
+  reverb_lowpass_filter:       {label: Lowpass Filter, cc: 91, nrpn: 269, part: fx, group: reverb}
+  reverb_mix_volume:           {label: Mix Volume, cc: 92, nrpn: 271, part: fx, group: reverb}
+
+  # THE ONE PART ASSIGNMENT HERE THAT IS AN INFERENCE, and it is marked rather than
+  # buried. The appendix prints these five under B.7 FX PARAMETERS with the delay and the
+  # reverb, so they are filed on the FX track's channel with them. But p. 77 names only
+  # "the FX track and the DELAY and REVERB parameter pages" for that channel, and the
+  # mixer page these belong to (13.6 MIXER PAGE 3, p. 71) is in a chapter of its own. No
+  # page of this manual says outright which channel they answer on.
+  external_in_input_lr:        {label: Input LR, cc: 16, nrpn: 286, part: fx, group: external_in}
+  external_in_input_balance:   {label: Input Balance, cc: 17, nrpn: 288, part: fx, group: external_in}
+  external_in_input_delay_send: {label: Input Delay Send, cc: 18, nrpn: 289, part: fx, group: external_in}
+  external_in_input_reverb_send: {label: Input Reverb Send, cc: 19, nrpn: 291, part: fx, group: external_in}
+  external_in_input_fx_routing: {label: Input FX Routing, cc: 20, nrpn: 294, part: fx, group: external_in}
+
+  # B.8 VAL PARAMETERS: "These are the CC VAL parameters on the [FLTR] page for MIDI
+  # tracks." A track is a MIDI track when a MIDI machine is assigned to it (p. 21), so
+  # these eight reach a track only in that state, and reach nothing in any other.
+  val1:                        {label: VAL1, cc: 70, part: track, group: cc_val}
+  val2:                        {label: VAL2, cc: 71, part: track, group: cc_val}
+  val3:                        {label: VAL3, cc: 72, part: track, group: cc_val}
+  val4:                        {label: VAL4, cc: 73, part: track, group: cc_val}
+  val5:                        {label: VAL5, cc: 74, part: track, group: cc_val}
+  val6:                        {label: VAL6, cc: 75, part: track, group: cc_val}
+  val7:                        {label: VAL7, cc: 76, part: track, group: cc_val}
+  val8:                        {label: VAL8, cc: 77, part: track, group: cc_val}
+
+  # B.9 MISC PARAMETERS. The standard pedal pair is split across the appendix and it is
+  # worth knowing where the third went: Sustain is 64 and Sostenuto is 66 here, while 65,
+  # Portamento On/Off, is three sections earlier under TRIG and carries an NRPN where
+  # these two do not. A reader scanning this table alone would think 65 unassigned.
+  # Sustain and Sostenuto arrived in firmware: OS 1.20 "Added support for Sustain pedal
+  # (Sustain and Sostenuto) over MIDI". Which channel they act on is not stated.
+  pattern_mute:                {label: Pattern Mute, cc: 110, nrpn: 232, part: track, group: misc}
+  sustain:                     {label: Sustain, cc: 64, part: track, group: misc}
+  sostenuto:                   {label: Sostenuto, cc: 66, part: track, group: misc}
+
+  # B.10 FX TRACK PARAMETERS: "These are the parameters for the parameter on the [SYN],
+  # [FLTR], and [AMP] pages on the FX track" - the maker's own sentence, printed with that
+  # stumble in it. EVERY NUMBER BELOW COLLIDES WITH ONE ABOVE and means something else:
+  # the FX track's filter frequency is CC 70 where a track's filter attack time is CC 70,
+  # and so on through the table. The part is what tells them apart.
+  fx_syn_drive:                {label: Drive, cc: 15, nrpn: 157, part: fx, group: fx_syn}
+
+  # Three of these ten carry the same NRPN as the audio tracks' filter rows, 1/20, 1/21
+  # and 1/22, for parameters the CC side numbers differently. The other seven carry no
+  # NRPN at all, which is printed rather than missing: the three that have one are the
+  # three the audio tracks also have.
+  fx_filter_frequency:         {label: Filter Frequency, cc: 70, nrpn: 148, part: fx, group: fx_filter}
+  fx_filter_resonance:         {label: Resonance, cc: 71, nrpn: 149, part: fx, group: fx_filter}
+  fx_filter_type:              {label: Filter Type, cc: 72, nrpn: 150, part: fx, group: fx_filter}
+  fx_filter_attack_time:       {label: Attack Time, cc: 75, part: fx, group: fx_filter}
+  fx_filter_decay_time:        {label: Decay Time, cc: 76, part: fx, group: fx_filter}
+  fx_filter_sustain_level:     {label: Sustain Level, cc: 77, part: fx, group: fx_filter}
+  fx_filter_release_time:      {label: Release Time, cc: 78, part: fx, group: fx_filter}
+  fx_filter_env_depth:         {label: Env. Depth, cc: 73, part: fx, group: fx_filter}
+  fx_filter_env_delay:         {label: Env. Delay, cc: 74, part: fx, group: fx_filter}
+  # This one did not work before firmware 1.40A, whose notes say "The FX track's FPAN
+  # parameter was not assigned a MIDI CC value".
+  fx_filter_pan:               {label: Filter Pan, cc: 93, part: fx, group: fx_filter}
+
+  # The FX track's AMP is not the audio tracks' AMP on another channel: it carries three
+  # rows they do not (Env. Depth, Mode, Env. Reset) and its NRPN run is different, 1/24 to
+  # 1/36 against their 1/24, 1/25, 1/26, 1/27, 1/28, 1/30, 1/31, 1/32, 1/33. Five of the
+  # nine rows the two tables share sit at different NRPNs.
+  fx_amp_attack_time:          {label: Attack Time, cc: 79, nrpn: 152, part: fx, group: fx_amp}
+  fx_amp_hold_time:            {label: Hold Time, cc: 80, nrpn: 153, part: fx, group: fx_amp}
+  fx_amp_decay_time:           {label: Decay Time, cc: 81, nrpn: 154, part: fx, group: fx_amp}
+  fx_amp_sustain_level:        {label: Sustain Level, cc: 82, nrpn: 155, part: fx, group: fx_amp}
+  fx_amp_release_time:         {label: Release Time, cc: 83, nrpn: 156, part: fx, group: fx_amp}
+  fx_amp_delay_send:           {label: Delay Send, cc: 84, nrpn: 158, part: fx, group: fx_amp}
+  fx_amp_reverb_send:          {label: Reverb Send, cc: 85, nrpn: 159, part: fx, group: fx_amp}
+  fx_amp_pan:                  {label: Pan, cc: 10, nrpn: 160, part: fx, group: fx_amp}
+  fx_amp_volume:               {label: Volume, cc: 7, nrpn: 161, part: fx, group: fx_amp}
+  fx_amp_env_depth:            {label: Env. Depth, cc: 86, nrpn: 162, part: fx, group: fx_amp}
+  fx_amp_mode:                 {label: Mode, cc: 87, nrpn: 163, part: fx, group: fx_amp}
+  fx_amp_env_reset:            {label: Env. Reset, cc: 88, nrpn: 164, part: fx, group: fx_amp}

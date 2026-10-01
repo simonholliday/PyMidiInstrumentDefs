@@ -112,6 +112,7 @@ class TestBundledCorpus:
 			"moog/matriarch",
 			"moog/minitaur",
 			"moog/subharmonicon",
+			"moog/subsequent_37",
 			"pwm/malevolent",
 			"roland/tr8s",
 			"sequential/take_5",
@@ -146,6 +147,27 @@ class TestBundledCorpus:
 			definition = pymidiinstrumentdefs.load_file(path)
 
 			assert definition.warnings == (), f"{path.parent.name}/{path.name}: {definition.warnings}"
+
+	def test_every_maker_is_named_one_way_in_its_folder (self) -> None:
+		"""One maker, one name, or a reader meets it twice under two headings.
+
+		The Grandmother said "Moog" where the other six Moogs said "Moog Music", so a
+		page listing the corpus by maker counted fifteen makers where there were
+		fourteen, and called one model "Moog Grandmother" beside "Moog Music Minitaur".
+		"""
+		named: dict[str, dict[str, list[str]]] = {}
+
+		for path in bundled():
+			definition = pymidiinstrumentdefs.load_file(path)
+			maker = definition.model.manufacturer or ""
+
+			named.setdefault(path.parent.name, {}).setdefault(maker, []).append(path.name)
+
+		for folder, makers in sorted(named.items()):
+			assert len(makers) == 1, (
+				f"{folder}/ names its maker {len(makers)} ways: "
+				+ ", ".join(f"{maker!r} in {sorted(files)}" for maker, files in sorted(makers.items()))
+			)
 
 	def test_every_bundled_definition_states_its_provenance (self) -> None:
 		"""A definition without a source is a rumour, so ours all have one."""
@@ -567,6 +589,102 @@ class TestWavestate:
 		for part in wavestate.parts.values():
 			assert part.channel_offset == 0
 			assert part.takes("notes")
+
+
+class TestSubsequent37:
+
+	def test_41_of_its_controls_can_be_reached_by_nrpn_alone (self) -> None:
+		"""The maker says why: it has more parameters than there are controller numbers."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		nrpn_only = [control for control in moog.controls.values()
+			if control.cc is None and control.nrpn is not None]
+
+		assert len(nrpn_only) == 41
+		assert all(control.nrpn is not None for control in moog.controls.values()
+			if control.cc is None), "a control that can be addressed by nothing"
+
+		# the arpeggiator's rate is the plainest case: a panel knob with no controller number
+		assert moog.controls["arp_rate"].cc is None
+		assert moog.controls["arp_rate"].nrpn == 403
+
+	def test_57_controls_carry_both_numbers_for_one_parameter (self) -> None:
+		"""The two charts name them differently and p. 51 is what joins the two names."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		both = [control for control in moog.controls.values()
+			if control.cc is not None and control.nrpn is not None]
+
+		assert len(both) == 57
+
+		# "FILTER EG ATTACK TIME" on one page, "F EG ATTACK" on the next
+		assert moog.controls["filter_eg_attack_time"].cc == 23
+		assert moog.controls["filter_eg_attack_time"].nrpn == 505
+
+	def test_the_amplifier_envelope_has_no_nrpn_at_all (self) -> None:
+		"""Ten controller numbers and not one NRPN: the published chart stops before it."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		amp = [control for control in moog.controls.values() if control.group == "amp_envelope"]
+
+		assert len(amp) == 10
+		assert all(control.cc is not None for control in amp)
+		assert all(control.nrpn is None for control in amp)
+
+	def test_the_six_contradicted_value_counts_carry_no_nrpn_range (self) -> None:
+		"""A count the same manual contradicts is not a range, so none is derived from it."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		contradicted = {486, 487, 488, 489, 490, 518}
+		found = {control.nrpn: control for control in moog.controls.values()
+			if control.nrpn in contradicted}
+
+		assert set(found) == contradicted
+
+		for control in found.values():
+			assert control.nrpn_range is None, f"{control.name} claims a range from a bad count"
+
+	def test_filter_resonance_is_the_one_named_row_with_no_value_range (self) -> None:
+		"""Its neighbours both print 16384 and its own cell is empty on the page."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		assert moog.controls["filter_resonance"].nrpn == 500
+		assert moog.controls["filter_resonance"].nrpn_range is None
+
+		# the two either side of it in the chart do carry one
+		assert moog.controls["filter_cutoff"].nrpn == 499
+		assert moog.controls["filter_multidrive"].nrpn == 501
+
+	def test_every_14_bit_pair_puts_its_fine_half_32_above (self) -> None:
+		"""Which is the MMA's own pairing, so a sender that does not know this model gets it right."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		paired = [control for control in moog.controls.values() if control.is_14_bit]
+
+		assert len(paired) == 28
+
+		for control in paired:
+			assert control.lsb == (control.cc or 0) + 32
+			assert control.range == (0, 16383)
+
+	def test_it_is_two_voice_only_when_duo_mode_is_on (self) -> None:
+		"""So polyphony is unstated and the mode is a control, as on the Matriarch."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		assert moog.voice.polyphony is None
+		assert moog.voice.paraphonic is True
+		assert moog.voice.voicing_modes == (1, 2)
+		assert moog.controls["osc_duo_mode_on_off"].cc == 110
+
+	def test_it_carries_no_channel_mode_message_as_a_control (self) -> None:
+		"""The chart prints two and both belong to the specification rather than here."""
+		moog = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		numbers = {control.cc for control in moog.controls.values()}
+
+		assert 122 not in numbers, "local control is a channel mode message"
+		assert 123 not in numbers, "all notes off is a channel mode message"
+		assert 0 not in numbers and 32 not in numbers, "bank select is the MMA's"
 
 
 class TestChoices:

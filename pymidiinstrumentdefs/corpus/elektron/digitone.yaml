@@ -1,0 +1,319 @@
+# The Digitone is nine separately addressable things at once: four synth tracks, four
+# MIDI tracks that drive external gear rather than sounding, and an effects and master
+# section. Each is given a MIDI channel of its own by the player (14.5.3, pp. 73-74), so
+# every control below names the part it belongs to -- and it has to, because 33 of the 71
+# controller numbers in this manual mean more than one thing depending on which channel
+# they arrive on. CC 70 is the filter's Attack Time on a synth track, the chorus's
+# High-pass on the effects channel, and the first of the eight values a MIDI track sends.
+#
+# NRPN is written as one number, the way the format holds it: the manual's NRPN MSB and
+# LSB combine as MSB * 128 + LSB, so its 1/20 is 148 here. Elektron uses the MSB as a
+# bank -- 1 for a synth track's parameters, 2 for the effects and master, 3 for the trig
+# parameters -- which is why the NRPN addresses never collide where the CCs do.
+#
+# The appendix gives addresses and nothing else: no value, no band, no default, no unit.
+# That absence is the manual's, not an omission here.
+
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Digitone
+  # The manual says so itself (p. 11): "This manual for Digitone OS version 1.43 was last
+  # updated September 9, 2026." Elektron ships 1.43, and its release notes show no release
+  # from 1.30B to 1.43 changing the implementation -- MIDI appears there only in fixes, for
+  # messages dropped at very low tempos, a missed first trig under external clock, and
+  # corrupted SysEx dumps. Later releases do add parameters, which is why this is
+  # transcribed from the 1.43 manual and not an earlier one.
+  firmware: "1.43"
+
+source: >-
+  User manual for OS 1.43, 106 pages: APPENDIX B: MIDI IMPLEMENTATION at pp. 96-99, whose
+  124 rows are every control below; the channel architecture at pp. 73-74, where each
+  synth track, each MIDI track and the effects section is given its own channel; eight
+  voice polyphony at pp. 15 and 37, stolen across the whole instrument rather than per
+  track; notes 0-127 at p. 24, with Elektron's own naming putting C0 at note 0; program
+  change selecting patterns 1-128 at p. 24, sent and received separately and each on its
+  own channel (p. 72); velocity, pitch bend, the mod wheel on CC 1 and the breath
+  controller on CC 2 at pp. 30-31, each assignable to up to four parameters; and SysEx
+  for projects, patterns and sounds at pp. 74-75. Receiving notes and receiving control
+  change can each be switched off entirely (p. 73). Every number was read twice, by two
+  methods that agreed on all 124 rows. NOT RECORDED: values, bands, defaults and units
+  for every control, which the appendix does not give; which kind of aftertouch is
+  received, since p. 31 names the aftertouch command without saying channel or poly;
+  what a MIDI track does with notes arriving on its own channel, which p. 74 does not
+  settle; and which channels the tracks default to, of which only the AUTO channel's 10
+  is stated.
+
+sources:
+  manual:
+    kind: manual
+    title: Digitone User Manual
+    edition: OS version 1.43
+    dated: 2026-09-09
+    landing: "https://www.elektron.se/support-downloads/digitone"
+    url: "https://www.elektron.se/wp-content/uploads/2026/09/Digitone-User-Manual_ENG_OS1.43_260909.pdf"
+    sha256: 12683387b0fc77ada09fddc254437be64c8fc13bfa1cb57a3049f4aba3e75c23
+    retrieved: 2026-09-13
+    page_offset: 0
+    # Elektron reissues this manual under the same title for each OS, so the hash is the
+    # only thing that pins which edition was read. It covers the desktop Digitone alone:
+    # the Digitone Keys and the Digitone II each have their own manual, and the Keys shares
+    # this instrument's firmware but not its documentation.
+  release_notes:
+    kind: release_notes
+    title: "Digitone / Digitone Keys OS release notes"
+    edition: OS 1.43
+    dated: 2026-09-09
+    landing: "https://www.elektron.se/support-downloads/digitone"
+    url: "https://www.elektron.se/release-notes/digitone-digitone-keys-os-release-notes"
+    sha256: 9f30453cb4200be7e2fd2e8fb10fa67e6e07eb8822e36c9cb8233e5996b812cd
+    retrieved: 2026-10-01
+    paginated: false
+    # Cited for which OS is current and for what each release changed. The sha256 is of the
+    # page's visible text as saved; the page as served hashes to
+    # 55e997a3148d24f98377a10b7c1b4d8f97ab94412290a6661329d22a9c8f7c87. Elektron adds a
+    # change list with every release, so no later fetch will match either.
+
+midi:
+  # 1-16 for every one of the nine channels this instrument answers on. Which channel each
+  # part is set to belongs to your project, not here. The AUTO channel, 10 from the
+  # factory, addresses whichever track is active, which no field here expresses.
+  channels: [1, 16]
+  clock: both
+  transport: both
+  sysex: true
+  program_change:
+    receives: true
+    sends: true
+    presets: 128             # "Program change messages 0-127 selects pattern 1-128" (p. 24)
+
+parts:
+  # Each part is given a channel by the player, so none of them derives one: there is no
+  # base channel on this instrument to derive from.
+  synth:
+    label: Synth Track
+    count: 4
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+  midi:
+    label: MIDI Track
+    count: 4
+    channel: assigned
+    receives: [controls]
+    # These do not sound: a MIDI track plays external gear. What it does with notes
+    # arriving on its own channel is not stated, so nothing is claimed about notes here --
+    # the eight CC values below are what the manual gives for it.
+  fx:
+    label: FX and Master
+    channel: assigned
+    receives: [controls]
+    # Takes no notes: it is the chorus, delay, reverb, master overdrive and the external
+    # input mixer.
+
+voice:
+  addressing: pitches
+  note_range: [0, 127]
+  # Eight voices for the whole instrument, not eight per track: "The Digitone has eight
+  # voice polyphony" (p. 37), with voice stealing across tracks and LOCKED VOICES able to
+  # reserve some for one track. How a player divides them is a pattern setting, so it is
+  # not here.
+  polyphony: 8
+  polyphony_shared: true
+  velocity:
+    # Received, with VELOCITY TO VOL choosing OFF, LOG, LIN or EXP (p. 30), so how much it
+    # reaches the volume is a setting and one of its positions is off.
+    note_on: received
+  pitch_bend:
+    # PITCH BEND DEPTH "sets how much the pitch bend data from external MIDI devices
+    # affects the Digitone" (p. 30), and PITCH BEND assigns up to four parameters to it.
+    # The manual gives no range in semitones.
+    programmable: true
+
+controls:
+
+  # Performance, from the Sound Setup menu rather than the appendix ─────────
+
+  # "the MIDI mod wheel command (CC #1)", assignable to up to four parameters (p. 30). Not
+  # in the appendix.
+  mod_wheel:              {label: Mod Wheel, cc: 1, part: synth, group: performance}
+
+  # "the MIDI breath controller command (CC #2)", the same way (p. 31). Not in the appendix.
+  breath:                 {label: Breath Controller, cc: 2, part: synth, group: performance}
+
+  # B.1 TRACK ───────────────────────────────────────────────────────────────
+  track_mute:             {label: Mute, cc: 94, nrpn: 229, part: synth, group: track}
+  track_level:            {label: Track level, cc: 95, nrpn: 228, part: synth, group: track}
+
+  # B.2 TRIG PARAMETERS ─────────────────────────────────────────────────────
+  trig_root:              {label: Root, cc: 3, nrpn: 384, part: synth, group: trig}
+  trig_velocity:          {label: Velocity, cc: 4, nrpn: 385, part: synth, group: trig}
+  trig_length:            {label: Length, cc: 5, nrpn: 386, part: synth, group: trig}
+
+  # CC 13 is also AMP Delay Send, on the same channel. The appendix states no rule for
+  # telling them apart.
+  trig_filter_trig:       {label: Filter Trig, cc: 13, nrpn: 389, part: synth, group: trig}
+
+  # CC 14 is also AMP Reverb Send, on the same channel.
+  trig_lfo_trig:          {label: LFO Trig, cc: 14, nrpn: 390, part: synth, group: trig}
+  trig_portamento_time:   {label: Portamento Time, cc: 15, nrpn: 391, part: synth, group: trig}
+
+  # CC 16 is also SYN1 Ratio B, on the same channel.
+  trig_portamento_on:     {label: Portamento On, cc: 16, nrpn: 392, part: synth, group: trig}
+
+  # B.3 FM PARAMETERS, SYN1 ─────────────────────────────────────────────────
+  syn1_algorithm:         {label: Algorithm, cc: 90, nrpn: 200, part: synth, group: syn1}
+  syn1_ratio_c:           {label: Ratio C, cc: 91, nrpn: 201, part: synth, group: syn1}
+  syn1_ratio_a:           {label: Ratio A, cc: 92, nrpn: 202, part: synth, group: syn1}
+
+  # CC 16 is also TRIG Portamento On, on the same channel.
+  syn1_ratio_b:           {label: Ratio B, cc: 16, lsb: 48, nrpn: 203, part: synth, group: syn1}
+  syn1_harmonics:         {label: Harmonics, cc: 17, lsb: 49, nrpn: 204, part: synth, group: syn1}
+  syn1_detune:            {label: Detune, cc: 18, lsb: 50, nrpn: 205, part: synth, group: syn1}
+  syn1_feedback:          {label: Feedback, cc: 19, lsb: 51, nrpn: 206, part: synth, group: syn1}
+  syn1_mix:               {label: Mix, cc: 20, lsb: 52, nrpn: 207, part: synth, group: syn1}
+  syn1_ratio_c_offset:    {label: Ratio C Offset, nrpn: 223, part: synth, group: syn1}
+  syn1_ratio_a_offset:    {label: Ratio A Offset, nrpn: 224, part: synth, group: syn1}
+  syn1_ratio_b1_offset:   {label: Ratio B1 Offset, nrpn: 225, part: synth, group: syn1}
+  syn1_ratio_b2_offset:   {label: Ratio B2 Offset, nrpn: 226, part: synth, group: syn1}
+
+  # B.3 FM PARAMETERS, SYN2 ─────────────────────────────────────────────────
+  syn2_a_env_attack:      {label: A Env Attack, cc: 75, nrpn: 208, part: synth, group: syn2}
+  syn2_a_env_decay:       {label: A Env Decay, cc: 76, nrpn: 209, part: synth, group: syn2}
+  syn2_a_env_end:         {label: A Env End, cc: 77, nrpn: 210, part: synth, group: syn2}
+  syn2_a_level:           {label: A Level, cc: 78, nrpn: 211, part: synth, group: syn2}
+  syn2_b_env_attack:      {label: B Env Attack, cc: 79, nrpn: 212, part: synth, group: syn2}
+  syn2_b_env_decay:       {label: B Env Decay, cc: 80, nrpn: 213, part: synth, group: syn2}
+  syn2_b_env_end:         {label: B Env End, cc: 81, nrpn: 214, part: synth, group: syn2}
+  syn2_b_level:           {label: B Level, cc: 82, nrpn: 215, part: synth, group: syn2}
+  syn2_a_delay:           {label: A Delay, cc: 83, nrpn: 216, part: synth, group: syn2}
+  syn2_a_trig:            {label: A Trig, cc: 84, nrpn: 217, part: synth, group: syn2}
+  syn2_a_env_reset:       {label: A Env Reset, cc: 85, nrpn: 218, part: synth, group: syn2}
+  syn2_b_delay:           {label: B Delay, cc: 86, nrpn: 219, part: synth, group: syn2}
+  syn2_b_trig:            {label: B Trig, cc: 87, nrpn: 220, part: synth, group: syn2}
+  syn2_b_env_reset:       {label: B Env Reset, cc: 88, nrpn: 221, part: synth, group: syn2}
+  syn2_phase_reset:       {label: Phase Reset, cc: 89, nrpn: 222, part: synth, group: syn2}
+
+  # B.4 FILTER PARAMETERS ───────────────────────────────────────────────────
+  filter_frequency:       {label: Filter Frequency, cc: 23, lsb: 55, nrpn: 148, part: synth, group: filter}
+  filter_resonance:       {label: Resonance, cc: 24, lsb: 56, nrpn: 149, part: synth, group: filter}
+  filter_type:            {label: Filter Type, cc: 74, nrpn: 150, part: synth, group: filter}
+  filter_attack_time:     {label: Attack Time, cc: 70, nrpn: 144, part: synth, group: filter}
+  filter_decay_time:      {label: Decay Time, cc: 71, nrpn: 145, part: synth, group: filter}
+  filter_sustain_level:   {label: Sustain Level, cc: 72, nrpn: 146, part: synth, group: filter}
+  filter_release_time:    {label: Release Time, cc: 73, nrpn: 147, part: synth, group: filter}
+  filter_env_depth:       {label: Env. Depth, cc: 25, lsb: 57, nrpn: 151, part: synth, group: filter}
+  filter_env_delay:       {label: Env. Delay, cc: 43, nrpn: 194, part: synth, group: filter}
+  filter_base:            {label: Base, cc: 26, lsb: 58, nrpn: 152, part: synth, group: filter}
+  filter_width:           {label: Width, cc: 27, lsb: 59, nrpn: 153, part: synth, group: filter}
+
+  # B.5 AMP PARAMETERS ──────────────────────────────────────────────────────
+  amp_attack_time:        {label: Attack Time, cc: 104, nrpn: 160, part: synth, group: amp}
+  amp_decay_time:         {label: Decay Time, cc: 105, nrpn: 161, part: synth, group: amp}
+  amp_sustain_level:      {label: Sustain Level, cc: 106, nrpn: 162, part: synth, group: amp}
+  amp_release_time:       {label: Release Time, cc: 107, nrpn: 163, part: synth, group: amp}
+  amp_drive:              {label: Drive, cc: 9, lsb: 41, nrpn: 164, part: synth, group: amp}
+  amp_pan:                {label: Pan, cc: 10, lsb: 42, nrpn: 165, part: synth, group: amp}
+  amp_volume:             {label: Volume, cc: 7, lsb: 39, nrpn: 166, part: synth, group: amp}
+  amp_chorus_send:        {label: Chorus Send, cc: 12, lsb: 44, nrpn: 169, part: synth, group: amp}
+
+  # CC 13 is also TRIG Filter Trig, on the same channel.
+  amp_delay_send:         {label: Delay Send, cc: 13, lsb: 45, nrpn: 168, part: synth, group: amp}
+
+  # CC 14 is also TRIG LFO Trig, on the same channel.
+  amp_reverb_send:        {label: Reverb Send, cc: 14, lsb: 46, nrpn: 167, part: synth, group: amp}
+  amp_env_reset:          {label: Amp Env Reset, cc: 102, nrpn: 170, part: synth, group: amp}
+
+  # B.6 LFO PARAMETERS ──────────────────────────────────────────────────────
+  lfo1_speed:             {label: Speed LFO1, cc: 28, lsb: 60, nrpn: 176, part: synth, group: lfo}
+  lfo1_multiplier:        {label: Multiplier LFO1, cc: 108, nrpn: 177, part: synth, group: lfo}
+  lfo1_fade_in_out:       {label: Fade In/Out LFO1, cc: 109, nrpn: 178, part: synth, group: lfo}
+  lfo1_destination:       {label: Destination LFO1, cc: 110, nrpn: 179, part: synth, group: lfo}
+  lfo1_waveform:          {label: Waveform LFO1, cc: 111, nrpn: 180, part: synth, group: lfo}
+  lfo1_start_phase:       {label: Start Phase LFO1, cc: 112, nrpn: 181, part: synth, group: lfo}
+  lfo1_trig_mode:         {label: Trig Mode LFO1, cc: 113, nrpn: 182, part: synth, group: lfo}
+  lfo1_depth:             {label: Depth LFO1, cc: 29, lsb: 61, nrpn: 183, part: synth, group: lfo}
+  lfo2_speed:             {label: Speed LFO2, cc: 30, lsb: 62, nrpn: 185, part: synth, group: lfo}
+  lfo2_multiplier:        {label: Multiplier LFO2, cc: 114, nrpn: 186, part: synth, group: lfo}
+  lfo2_fade_in_out:       {label: Fade In/Out LFO2, cc: 115, nrpn: 187, part: synth, group: lfo}
+  lfo2_destination:       {label: Destination LFO2, cc: 116, nrpn: 188, part: synth, group: lfo}
+  lfo2_waveform:          {label: Waveform LFO2, cc: 117, nrpn: 189, part: synth, group: lfo}
+  lfo2_start_phase:       {label: Start Phase LFO2, cc: 118, nrpn: 190, part: synth, group: lfo}
+  lfo2_trig_mode:         {label: Trig Mode LFO2, cc: 119, nrpn: 191, part: synth, group: lfo}
+  lfo2_depth:             {label: Depth LFO2, cc: 31, lsb: 63, nrpn: 192, part: synth, group: lfo}
+
+  # B.9 MISC PARAMETERS ─────────────────────────────────────────────────────
+
+  # NRPN 1/104, in the track bank rather than the effects bank its neighbours use.
+  pattern_mute:           {label: Pattern Mute, nrpn: 232, part: synth, group: misc}
+
+  # The appendix gives no channel for this or Sostenuto, so which part receives them is not
+  # established; they are placed with the voice because that is what they hold.
+  sustain:                {label: Sustain, cc: 64, part: synth, group: misc}
+  sostenuto:              {label: Sostenuto, cc: 66, part: synth, group: misc}
+
+  # B.7 MIDI TRACK PARAMETERS -- the eight values a MIDI track sends ────────
+  cc_val1:                {label: CC Val1, cc: 70, part: midi, group: cc_value}
+  cc_val2:                {label: CC Val2, cc: 71, part: midi, group: cc_value}
+  cc_val3:                {label: CC Val3, cc: 72, part: midi, group: cc_value}
+  cc_val4:                {label: CC Val4, cc: 73, part: midi, group: cc_value}
+  cc_val5:                {label: CC Val5, cc: 74, part: midi, group: cc_value}
+  cc_val6:                {label: CC Val6, cc: 75, part: midi, group: cc_value}
+  cc_val7:                {label: CC Val7, cc: 76, part: midi, group: cc_value}
+  cc_val8:                {label: CC Val8, cc: 77, part: midi, group: cc_value}
+
+  # B.8 FX PARAMETERS, CHORUS ───────────────────────────────────────────────
+  chorus_depth:           {label: Depth, cc: 3, lsb: 35, nrpn: 256, part: fx, group: chorus}
+  chorus_speed:           {label: Speed, cc: 9, lsb: 41, nrpn: 257, part: fx, group: chorus}
+  chorus_high_pass:       {label: High-pass, cc: 70, nrpn: 258, part: fx, group: chorus}
+  chorus_width:           {label: Width, cc: 71, nrpn: 259, part: fx, group: chorus}
+  chorus_delay_send:      {label: Delay Send, cc: 12, lsb: 44, nrpn: 260, part: fx, group: chorus}
+  chorus_reverb_send:     {label: Reverb Send, cc: 13, lsb: 45, nrpn: 261, part: fx, group: chorus}
+  chorus_mix_volume:      {label: Mix Volume, cc: 14, nrpn: 262, part: fx, group: chorus}
+
+  # B.8 FX PARAMETERS, DELAY ────────────────────────────────────────────────
+  delay_time:             {label: Delay Time, cc: 15, lsb: 47, nrpn: 266, part: fx, group: delay}
+  delay_pingpong:         {label: Pingpong, cc: 16, lsb: 48, nrpn: 267, part: fx, group: delay}
+  delay_stereo_width:     {label: Stereo Width, cc: 17, lsb: 49, nrpn: 268, part: fx, group: delay}
+  delay_feedback:         {label: Feedback, cc: 18, lsb: 50, nrpn: 269, part: fx, group: delay}
+  delay_highpass_filter:  {label: Highpass Filter, cc: 72, nrpn: 270, part: fx, group: delay}
+  delay_lowpass_filter:   {label: Lowpass Filter, cc: 73, nrpn: 271, part: fx, group: delay}
+  delay_reverb_send:      {label: Reverb Send, cc: 19, lsb: 51, nrpn: 272, part: fx, group: delay}
+  delay_mix_volume:       {label: Mix Volume, cc: 20, nrpn: 273, part: fx, group: delay}
+
+  # B.8 FX PARAMETERS, REVERB ───────────────────────────────────────────────
+  reverb_predelay:        {label: Predelay, cc: 21, lsb: 53, nrpn: 276, part: fx, group: reverb}
+  reverb_decay_time:      {label: Decay Time, cc: 74, nrpn: 277, part: fx, group: reverb}
+  reverb_shelving_freq:   {label: Shelving Freq, cc: 75, nrpn: 278, part: fx, group: reverb}
+  reverb_shelving_gain:   {label: Shelving Gain, cc: 22, lsb: 54, nrpn: 279, part: fx, group: reverb}
+  reverb_highpass_filter: {label: Highpass Filter, cc: 76, nrpn: 280, part: fx, group: reverb}
+  reverb_lowpass_filter:  {label: Lowpass Filter, cc: 77, nrpn: 281, part: fx, group: reverb}
+  reverb_mix_volume:      {label: Mix Volume, cc: 23, nrpn: 282, part: fx, group: reverb}
+
+  # B.8 FX PARAMETERS, MASTER ───────────────────────────────────────────────
+
+  # Printed twice in the table, first row and sixteenth, identically.
+  master_overdrive:       {label: Master Overdrive, cc: 29, lsb: 61, nrpn: 293, part: fx, group: master}
+  master_dual_mono:       {label: Dual Mono, cc: 83, nrpn: 361, part: fx, group: master}
+  master_input_l_volume:  {label: Input L Volume, cc: 24, lsb: 56, nrpn: 286, part: fx, group: master}
+  master_input_r_volume:  {label: Input R Volume, cc: 25, lsb: 57, nrpn: 288, part: fx, group: master}
+  master_pan_l:           {label: Pan L, cc: 78, nrpn: 287, part: fx, group: master}
+  master_pan_r:           {label: Pan R, cc: 79, nrpn: 289, part: fx, group: master}
+
+  # The table prints Chorus Send L/R at this same CC and NRPN, so the linked control shares
+  # this address.
+  master_chorus_send_l:   {label: Chorus Send L, cc: 26, lsb: 58, nrpn: 290, part: fx, group: master}
+  master_chorus_send_r:   {label: Chorus Send R, cc: 30, lsb: 62, nrpn: 358, part: fx, group: master}
+
+  # The table prints Delay Send L/R at this same CC and NRPN.
+  master_delay_send_l:    {label: Delay Send L, cc: 27, lsb: 59, nrpn: 291, part: fx, group: master}
+  master_delay_send_r:    {label: Delay Send R, cc: 31, lsb: 63, nrpn: 359, part: fx, group: master}
+
+  # The table prints Reverb Send L/R at this same CC and NRPN.
+  master_reverb_send_l:   {label: Reverb Send L, cc: 28, lsb: 60, nrpn: 292, part: fx, group: master}
+
+  # Printed CC MSB 82, CC LSB 32. Every other pair here is MSB + 32, and its neighbours run
+  # 30/62 and 31/63, so the series would continue 32/64. Recorded as printed.
+  master_reverb_send_r:   {label: Reverb Send R, cc: 82, lsb: 32, nrpn: 360, part: fx, group: master}
+  master_pattern_volume:  {label: Pattern Volume, cc: 95, nrpn: 294, part: fx, group: master}

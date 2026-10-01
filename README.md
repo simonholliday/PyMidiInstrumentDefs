@@ -116,6 +116,7 @@ self-contained YAML file, and you share it by sending it.
 | Name | Instrument |
 |------|------------|
 | `behringer/model_d` | Behringer MODEL D -- no control changes at all; its remote surface is SysEx |
+| `elektron/digitone` | Elektron Digitone -- nine parts on nine channels, where one CC means three things |
 | `modal/carbon8m` | Modal CARBON8M -- 106 controls, and a voice count set per patch |
 | `moog/dfam` | Moog DFAM -- no MIDI at all, and the file says so |
 | `moog/labyrinth` | Moog Labyrinth -- answers to notes, clock and transport, and nothing else |

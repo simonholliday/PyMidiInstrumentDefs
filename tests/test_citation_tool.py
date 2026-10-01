@@ -191,3 +191,58 @@ class TestFollowingAPageIntoAFile:
 		document.path = None
 
 		assert document.covers(1) is False
+
+
+class TestACitedDocumentThatIsAScan:
+
+	"""A scan has pages and no text, so it answers one question and not the other.
+
+	The Yamaha DX7's manual is the case: its controller numbers are printed only in
+	an appendix that Yamaha's own text edition leaves out, and the scan it does
+	publish has no text layer at all -- 0 characters on every one of its 34 pages.
+	Reported as ordinary misses, that definition would look like 23 wrong citations.
+	"""
+
+	def document (self, scanned: bool) -> typing.Any:
+		"""One cited document, found in the library, readable or not."""
+		source = pymidiinstrumentdefs.parse(
+			"definition: 1\nmodel: {name: X}\nsources: {m: {page_offset: 0}}",
+			source = "x.yaml",
+		).sources["m"]
+
+		return tool.Followed(
+			key = "m", source = source, path = pathlib.Path("m.pdf"), extent = 34, scanned = scanned,
+		)
+
+	def test_a_scan_still_answers_whether_it_has_the_page (self) -> None:
+		"""Turning to a cited page is checkable even when reading it is not."""
+		scan = self.document(scanned = True)
+
+		assert tool.unreachable_pages({30, 32}, [scan]) == set()
+		assert tool.unreachable_pages({35}, [scan]) == {35}
+
+	def test_numbers_nobody_could_look_for_are_not_called_missing (self) -> None:
+		""""Not on the page you cited" accuses the definition; this does not."""
+		result = tool.Result(name = "yamaha/dx7", documents = [self.document(scanned = True)])
+		result.unverifiable = [("volume", "cc", 7)]
+
+		assert result.missing == []
+		assert result.sound is True
+
+	def test_what_could_not_be_checked_is_said_out_loud (self, capsys: typing.Any) -> None:
+		"""A pass that checked nothing must not read like a pass that checked everything."""
+		result = tool.Result(name = "yamaha/dx7", documents = [self.document(scanned = True)])
+		result.wanted = [("volume", "cc", 7)]
+		result.unverifiable = list(result.wanted)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "a scan: it has pages, but no text in them to search" in printed
+		assert "1 NOT CHECKED AT ALL" in printed
+
+		# The count above those lines is the one a reader takes in first, and it said
+		# "1 of 1 numbers found" until this test was written: a number nobody could look
+		# for had been counted as a number found on the page.
+		assert "0 of 1 numbers found" in printed
+		assert "1 of 1 numbers found" not in printed

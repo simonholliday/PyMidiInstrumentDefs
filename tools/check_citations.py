@@ -242,6 +242,12 @@ class Followed:
 	pages: list[int] = dataclasses.field(default_factory=list)
 	text: str = ""
 
+	# A scan of a printed manual is a PDF of pictures: it has pages, and turning to
+	# one is still worth checking, but there is no text in it to search.  Saying so
+	# is not the same as saying the numbers are absent, and the two must not be
+	# reported alike.
+	scanned: bool = False
+
 
 	def covers (self, printed: int) -> bool:
 
@@ -289,6 +295,7 @@ class Result:
 	wanted: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	missing: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	as_halves: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+	unverifiable: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 
 
 	@property
@@ -361,7 +368,16 @@ def follow (
 			opened.pages[page - 1].extract_text() or "" for page in document.pages
 		)
 
+		# Nothing on the cited pages is either a scan or a run of blank pages, and
+		# those need different answers, so ask the whole document before deciding.
+
+		if not document.text.strip():
+			whole = "".join(page.extract_text() or "" for page in opened.pages)
+			document.scanned = not whole.strip()
+
 	printed_numbers = numbers_on(" ".join(document.text for document in result.documents))
+
+	unreadable = any(document.scanned for document in result.documents)
 
 	for entry in result.wanted:
 		name, kind, number = entry
@@ -371,6 +387,15 @@ def follow (
 
 		if kind == "nrpn" and halves_on(number, printed_numbers):
 			result.as_halves.append(entry)
+			continue
+
+		# A number absent from the text of a definition that also cites a scan may
+		# be printed on the scan's own pages, where nothing can look for it.  That
+		# is an unanswered question rather than a wrong citation, and calling it
+		# missing would accuse a definition of a fault nobody has established.
+
+		if unreadable:
+			result.unverifiable.append(entry)
 			continue
 
 		result.missing.append(entry)
@@ -394,6 +419,9 @@ def render (result: Result, verbose: bool) -> None:
 		extent = f"{document.extent} pages" if document.extent else "no pages"
 		print(f"    {document.key}: {document.path.name}  [{extent}]")
 
+		if document.scanned:
+			print("        a scan: it has pages, but no text in them to search")
+
 		if document.pages:
 			print(f"        printed {as_ranges(result.cited)} → file {as_ranges(document.pages)}")
 		elif document.extent is None:
@@ -402,7 +430,8 @@ def render (result: Result, verbose: bool) -> None:
 	if result.unreachable:
 		print(f"    ⚠ cited but in no document read: printed {as_ranges(result.unreachable)}")
 
-	found = len(result.wanted) - len(result.missing) - len(result.as_halves)
+	found = (len(result.wanted) - len(result.missing) - len(result.as_halves)
+		- len(result.unverifiable))
 
 	if not result.wanted:
 		print("    no numbers to check")
@@ -413,6 +442,12 @@ def render (result: Result, verbose: bool) -> None:
 		print(
 			f"        {len(result.as_halves)} NRPNs found only as the two halves the maker prints, "
 			f"which is a weaker check"
+		)
+
+	if result.unverifiable:
+		print(
+			f"        {len(result.unverifiable)} NOT CHECKED AT ALL: a cited document is a scan, "
+			f"so no machine here can look for them"
 		)
 
 	for name, kind, number in result.missing:

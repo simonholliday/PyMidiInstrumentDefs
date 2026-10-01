@@ -54,6 +54,7 @@ class TestBundledCorpus:
 			"arturia/microfreak",
 			"behringer/model_d",
 			"elektron/digitone",
+			"korg/minilogue_xd",
 			"modal/carbon8m",
 			"moog/dfam",
 			"moog/labyrinth",

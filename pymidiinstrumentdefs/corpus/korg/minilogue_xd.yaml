@@ -1,0 +1,274 @@
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: minilogue xd
+  # Korg's System Updater for this instrument is version 2.10, dated 2020.03.10, and that
+  # is the newest firmware Korg publishes (checked 2026-10-01). The MIDI implementation
+  # below is dated the same day on Korg's download page while stating "Revision 1.01
+  # (2020.2.10)" in its own first line, a month earlier: the document was written ahead of
+  # the release it describes, which is why neither date can be reasoned from on its own.
+  # The document's own internal evidence agrees that it describes the 2.x firmware: it
+  # explains what happens when data saved with firmware Ver1.xx is loaded.
+  firmware: "2.10"
+  # One definition covers two boxes. The owner's manual says it "refers to both the
+  # minilogue xd and the minilogue xd module collectively as the minilogue xd", and uses
+  # "xd" and "xd-m" where they differ. Nothing in the MIDI implementation distinguishes
+  # them; the keyboard belongs to the xd alone and is recorded as such below.
+
+source: >-
+  MIDI implementation (plain text, no pages at all), sections 1-1 and 2-1 for the
+  channel messages, 1-2 and 2-3 for the real-time messages, and the Non Registered
+  Parameter Number table under footnote *3; and the owner's manual (68pp) at pp. 45 and
+  66 for the MIDI channel setting and the specifications.
+  The instrument transmits 64 control changes and recognises 67. The three it recognises
+  and never sends are All Sound Off, Local Sw and All Note Off, which are channel mode
+  messages belonging to the MIDI specification rather than to any instrument, and are
+  excluded for that reason rather than missed. Six more are the machinery of other
+  messages rather than controls of their own, and are excluded too: Bank Select MSB and
+  LSB, Data Entry MSB, NRPN MSB and LSB, and the LSB VALUE register described below.
+  What a value means is taken from the receive side throughout, because a definition's
+  named values answer what to send in order to put a control into a state. That matters
+  here, because the two sides disagree.
+  SYNC and RING are printed with opposite polarity in the two sections. Transmitting,
+  "SYNC:OFF, ON = vv:0,127"; receiving, "vv:0~63,64~127 = SYNC:ON, OFF". So a value of 0
+  is sent to mean OFF and is received to mean ON, and the same for RING. This file
+  records the receive reading, which is what reaches the instrument, and the contradiction
+  is recorded here rather than resolved.
+  Three further faults in the document, all left as the maker printed them.
+  First, the row for REVERB SUB TYPE cites footnote *6-14, and no such footnote exists in
+  the document; the footnote numbered *5-14 is defined, is cited by nothing, and carries
+  exactly this control's eighteen names. Its bands are used, and this note is why.
+  Second, MOD FX TYPE's receive bands are printed "0~25,26~51,52~76,77~102,102~127", in
+  which 102 both ends one band and begins the next. The band starts recorded here make
+  102 the first value of USER, which is one reading of an overlap the document does not
+  resolve.
+  Third, the transmitted value list for MOD FX SUB TYPE under USER ends "112,128", and
+  128 is not a value a 7-bit control change can carry; every sibling list in the document
+  ends 127. Nothing here depends on it, since the receive side governs.
+  NOT RECORDED, and marked in place: the range of notes it answers to, which neither
+  document states; whether it acts on note-off velocity; and the value bands for the two
+  controls whose meaning depends on another control's setting, which the format cannot
+  express - MOD FX SUB TYPE depends on MOD FX TYPE, and MULTI SUB TYPE SELECT on MULTI
+  TYPE, each with a different set of bands under each.
+  One further thing the format cannot carry, and the file does not pretend to: this
+  maker sends many controls at 10-bit resolution by first sending the low three bits as
+  CC 63, then the upper seven as the control's own number. That is not the MMA's
+  14-bit pairing of a coarse and a fine controller, so no control here declares a fine
+  half, and every range below is the 7-bit one the control change itself carries.
+
+sources:
+  midi_impl:
+    kind: midi_implementation
+    title: minilogue xd/MIDI Implimentation
+    edition: Revision 1.01
+    dated: 2020-02-10
+    landing: "https://www.korg.com/us/support/download/product/0/811/"
+    url: "https://cdn.korg.com/us/support/download/files/5227b0b2f7c1da5acd0911ac3e8c4f38.txt?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27minilogue_xd__MIDIImp.txt&response-content-type=application%2Foctet-stream%3B"
+    sha256: f34014c103b0127f5150aa8984db1f890feb9ee4046089e2ed320fadcecaddb5
+    retrieved: 2026-09-13
+    paginated: false
+    # The title is Korg's own spelling. The document numbers its own sections and has no
+    # pages, so a citation names a section. Re-fetched 2026-10-01 and byte-identical.
+  manual:
+    kind: manual
+    title: minilogue xd/Owner's Manual (English)
+    dated: 2025-07-17
+    landing: "https://www.korg.com/us/support/download/product/0/811/"
+    url: "https://cdn.korg.com/us/support/download/files/efbf7ff0140570942060130b28f96ae6.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27minilogue_xd_xdMod_OM_E9.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: d6015298945466978e083bd452531bb7103f135250274f0a9145fefa62f6c062
+    retrieved: 2026-09-13
+    page_offset: 0
+    # Covers the minilogue xd and the minilogue xd module together. Re-fetched 2026-10-01
+    # and byte-identical.
+
+midi:
+  # "MIDI Ch [1...16] Specifies the MIDI channel of the minilogue xd. This MIDI channel is
+  # used to transmit and receive note messages, as well as control change messages"
+  # (manual p. 45): one channel, both ways.
+  channels: [1, 16]
+  # Timing Clock travels both ways (sections 1-2 and 2-3). Receiving it depends on the
+  # instrument's own Clock setting being Auto(USB) or Auto(MIDI).
+  clock: both
+  # Start and Stop both ways; Continue is recognised and never transmitted. The format has
+  # one field, so the asymmetry is recorded here.
+  transport: both
+  program_change:
+    receives: true
+    sends: true
+    presets: 100           # "Program Change (pp=0~99)"
+    # The instrument holds 500 programs, 200 preset and 300 user (manual p. 66), reached as
+    # five banks of a hundred: Bank Select LSB takes vv=0~4 and a program change carries
+    # 0 to 99 within the chosen bank.
+  nrpn: supported          # 61 parameters, listed below; see the note on the MSB column
+  sysex: true
+  # The format has no field for Active Sensing, which this instrument both sends and
+  # recognises (sections 1-2 and 2-3).
+
+voice:
+  addressing: pitches
+  polyphony: 4             # "Maximum polyphony 4 voices" (manual p. 66)
+  velocity:
+    note_on: received      # "Note On vv=1~127", and a note on with vv=0 is read as a note off
+    # NOT RECORDED whether it acts on note-off velocity. The received Note Off row prints
+    # vv=0~127, which says the byte is carried, not what the instrument does with it. What
+    # it transmits is a fixed 64.
+  aftertouch: channel      # "Channel Pressure (as After Touch)", recognised and never sent
+  # NOT RECORDED, note_range. Neither document states which notes it answers to over MIDI.
+  # The keyboard of the minilogue xd is 37 slim keys (manual p. 66) and the module has
+  # none, but what either answers to from outside is not written down anywhere here.
+
+controls:
+
+  # ── Control changes, section 2-1, in the order the document prints them ─────
+  # Every one is also transmitted, section 1-1: the two sections list the same
+  # controls, and differ only in what they say the values mean.
+
+  modulation1:               {label: Modulation1 (Joystick +Y, vv=0~127), cc: 1}
+  modulation2:               {label: Modulation2 (Joystick -Y, vv=0~127), cc: 2}
+  portamento:                {label: PORTAMENTO, cc: 5}
+  amp_eg_attack:             {label: AMP EG ATTACK, cc: 16}
+  amp_eg_decay:              {label: AMP EG DECAY, cc: 17}
+  amp_eg_sustain:            {label: AMP EG SUSTAIN, cc: 18}
+  amp_eg_release:            {label: AMP EG RELEASE, cc: 19}
+  eg_attack:                 {label: EG ATTACK, cc: 20}
+  eg_decay:                  {label: EG DECAY, cc: 21}
+  eg_int:                    {label: EG INT, cc: 22}
+  eg_target:                 {label: EG TARGET, cc: 23, values: {"cutoff": 0, "pitch2": 43, "pitch": 86}}
+  lfo_rate:                  {label: LFO RATE, cc: 24}
+  lfo_int:                   {label: LFO INT, cc: 26}
+  voice_mode_depth:          {label: VOICE MODE DEPTH, cc: 27}
+  mod_fx_time:               {label: MOD FX TIME, cc: 28}
+  mod_fx_depth:              {label: MOD FX DEPTH, cc: 29}
+  multi_level:               {label: MULTI LEVEL, cc: 33}
+  vco_1_pitch:               {label: VCO 1 PITCH, cc: 34}
+  vco_2_pitch:               {label: VCO 2 PITCH, cc: 35}
+  vco_1_shape:               {label: VCO 1 SHAPE, cc: 36}
+  vco_2_shape:               {label: VCO 2 SHAPE, cc: 37}
+  vco_1_level:               {label: VCO 1 LEVEL, cc: 39}
+  vco_2_level:               {label: VCO 2 LEVEL, cc: 40}
+  cross_mod_depth:           {label: CROSS MOD DEPTH, cc: 41}
+  cutoff:                    {label: CUTOFF, cc: 43}
+  resonance:                 {label: RESONANCE, cc: 44}
+  vco_1_octave:              {label: VCO 1 OCTAVE, cc: 48, values: {"ft_16": 0, "ft_8": 32, "ft_4": 64, "ft_2": 96}}
+  vco_2_octave:              {label: VCO 2 OCTAVE, cc: 49, values: {"ft_16": 0, "ft_8": 32, "ft_4": 64, "ft_2": 96}}
+  vco_1_wave:                {label: VCO 1 WAVE, cc: 50, values: {"sqr": 0, "tri": 43, "saw": 86}}
+  vco_2_wave:                {label: VCO 2 WAVE, cc: 51, values: {"sqr": 0, "tri": 43, "saw": 86}}
+  multi_type:                {label: MULTI TYPE, cc: 53, values: {"noise": 0, "vpm": 43, "usr": 86}}
+  multi_shape:               {label: MULTI SHAPE, cc: 54}
+  lfo_target:                {label: LFO TARGET, cc: 56, values: {"cutoff": 0, "shape": 43, "pitch": 86}}
+  lfo_wave:                  {label: LFO WAVE, cc: 57, values: {"sqr": 0, "tri": 43, "saw": 86}}
+  lfo_mode:                  {label: LFO MODE, cc: 58, values: {"one_shot": 0, "normal": 43, "bpm": 86}}
+  voice_mode_depth_no_display: {label: VOICE MODE DEPTH no display, cc: 59}
+  # Transmitting, this is "Hold1 (vv=0,127)"; receiving, it is "DAMPER (vv=0~127)". A
+  # different name and a different domain, and no footnote on either side says where
+  # DAMPER's switch point lies, so no values are recorded for it.
+  damper:                    {label: DAMPER, cc: 64}
+  sync:                      {label: SYNC, cc: 80, values: {"on": 0, "off": 64}}
+  ring:                      {label: RING, cc: 81, values: {"on": 0, "off": 64}}
+  cutoff_keytrack:           {label: CUTOFF KEYTRACK, cc: 83, values: {"pct_0": 0, "pct_50": 43, "pct_100": 86}}
+  cutoff_drive:              {label: CUTOFF DRIVE, cc: 84, values: {"pct_0": 0, "pct_50": 43, "pct_100": 86}}
+  mod_fx_type:               {label: MOD FX TYPE, cc: 88, values: {"chorus": 0, "ensemble": 26, "phaser": 52, "flanger": 77, "user": 102}}
+  delay_sub_type:            {label: DELAY SUB TYPE, cc: 89, values: {"stereo": 0, "mono": 7, "ping_pong": 13, "hipass": 20, "tape": 26, "one_tap": 32, "stereo_bpm": 39, "mono_bpm": 45, "ping_bpm": 52, "hipass_bpm": 58, "tape_bpm": 64, "doubling": 71, "user1": 77, "user2": 84, "user3": 90, "user4": 96, "user5": 103, "user6": 109, "user7": 116, "user8": 122}}
+  reverb_sub_type:           {label: REVERB SUB TYPE, cc: 90}
+  mod_fx_on_off:             {label: MOD FX ON-OFF, cc: 92, values: {"off": 0, "on": 64}}
+  delay_on_off:              {label: DELAY ON-OFF, cc: 93, values: {"off": 0, "on": 64}}
+  reverb_on_off:             {label: REVERB ON-OFF, cc: 94, values: {"off": 0, "on": 64}}
+  mod_fx_sub_type:           {label: MOD FX SUB TYPE, cc: 96}
+  # No values recorded, for two reasons. Its bands depend on MULTI TYPE, which the
+  # format cannot express; and the footnote for the NOISE case prints four names
+  # against eight bands, which cannot be read in order or any other way.
+  multi_sub_type_select:     {label: MULTI SUB TYPE SELECT, cc: 103}
+  multi_shift_shape:         {label: MULTI SHIFT SHAPE, cc: 104}
+  delay_time:                {label: DELAY TIME, cc: 105}
+  delay_depth:               {label: DELAY DEPTH, cc: 106}
+  delay_dry_wet:             {label: DELAY DRY WET, cc: 107}
+  reverb_time:               {label: REVERB TIME, cc: 108}
+  reverb_depth:              {label: REVERB DEPTH, cc: 109}
+  reverb_dry_wet:            {label: REVERB DRY WET, cc: 110}
+  cv_in1:                    {label: CV IN1, cc: 118}
+  cv_in2:                    {label: CV IN2, cc: 119}
+
+  # ── Non Registered Parameter Numbers, the table under footnote *3 ──────────
+  # Korg prints the MSB column of every row as "--" and never says what it should
+  # contain, so each number below is the printed LSB with a zero MSB. That is an
+  # assumption, and it is marked as one. It is not, however, a free choice: the "--"
+  # cannot mean the byte is absent, which is what the same mark means elsewhere in the
+  # document, because CC 99 NRPN (MSB) is itself listed as both transmitted and
+  # recognised. So the byte is sent, the maker does not say what to put in it, and
+  # anybody addressing these parameters has to choose. Zero is that choice here.
+  # The LSB column is hexadecimal - the header marks it [H], sixteen of the values
+  # contain letters, and the numbering falls into sixteen-wide blocks - so these
+  # decimal numbers are converted from it.
+
+  program_name_1:              {label: PROGRAM NAME 1, nrpn: 1}
+  program_name_2:              {label: PROGRAM NAME 2, nrpn: 2}
+  program_name_3:              {label: PROGRAM NAME 3, nrpn: 3}
+  program_name_4:              {label: PROGRAM NAME 4, nrpn: 4}
+  program_name_5:              {label: PROGRAM NAME 5, nrpn: 5}
+  program_name_6:              {label: PROGRAM NAME 6, nrpn: 6}
+  program_name_7:              {label: PROGRAM NAME 7, nrpn: 7}
+  program_name_8:              {label: PROGRAM NAME 8, nrpn: 8}
+  program_name_9:              {label: PROGRAM NAME 9, nrpn: 9}
+  program_name_10:             {label: PROGRAM NAME 10, nrpn: 10}
+  program_name_11:             {label: PROGRAM NAME 11, nrpn: 11}
+  program_name_12:             {label: PROGRAM NAME 12, nrpn: 12}
+  # Three accounts of this parameter's values and no way to choose between them: the
+  # footnote the NRPN row cites gives 0:ARP LATCH, 1:ARP, 2:CHORD, 3:UNISON, 4:POLY;
+  # another note in the same document gives 1:ARP, 2:CHORD, 2:UNISON, 3:POLY, which
+  # uses 2 twice and omits 4 against its own stated range; and the owner's manual says
+  # there are four voice modes, ARP/LATCH, CHORD, UNISON and POLY. So the range is
+  # recorded and the names are not.
+  voice_mode_type:             {label: VOICE MODE TYPE, nrpn: 16, nrpn_range: [0, 4]}
+  multi_select_noise:          {label: MULTI SELECT NOISE, nrpn: 17, nrpn_range: [0, 3]}
+  multi_select_vpm:            {label: MULTI SELECT VPM, nrpn: 18, nrpn_range: [0, 15]}
+  multi_select_user:           {label: MULTI SELECT USER, nrpn: 19, nrpn_range: [0, 15]}
+  multi_shape_noise:           {label: MULTI SHAPE NOISE, nrpn: 20, nrpn_range: [0, 1023]}
+  multi_shape_vpm:             {label: MULTI SHAPE VPM, nrpn: 21, nrpn_range: [0, 1023]}
+  multi_shape_user:            {label: MULTI SHAPE USER, nrpn: 22, nrpn_range: [0, 1023]}
+  multi_shift_shape_noise:     {label: MULTI SHIFT SHAPE NOISE, nrpn: 23, nrpn_range: [0, 1023]}
+  multi_shift_shape_vpm:       {label: MULTI SHIFT SHAPE VPM, nrpn: 24, nrpn_range: [0, 1023]}
+  multi_shift_shape_user:      {label: MULTI SHIFT SHAPE USER, nrpn: 25, nrpn_range: [0, 1023]}
+  bend_range_plus:             {label: BEND RANGE (+), nrpn: 32, nrpn_range: [0, 12]}   # Off,1Note~12Note
+  bend_range_minus:            {label: BEND RANGE (-), nrpn: 33, nrpn_range: [0, 12]}   # Off,1Note~12Note
+  joystick_assign_plus:        {label: JOYSTICK ASSIGN (+), nrpn: 34, nrpn_range: [0, 28]}
+  joystick_range_plus:         {label: JOYSTICK RANGE (+), nrpn: 35, nrpn_range: [0, 200]}   # -100%~+100%
+  joystick_assign_minus:       {label: JOYSTICK ASSIGN (-), nrpn: 36, nrpn_range: [0, 28]}
+  joystick_range_minus:        {label: JOYSTICK RANGE (-), nrpn: 37, nrpn_range: [0, 200]}   # -100%~+100%
+  cv_in_mode:                  {label: CV IN MODE, nrpn: 40, nrpn_range: [0, 2]}
+  cv_in_1_assign:              {label: CV IN 1 ASSIGN, nrpn: 41, nrpn_range: [0, 28]}
+  cv_in_1_range:               {label: CV IN 1 RANGE, nrpn: 42, nrpn_range: [0, 200]}   # -100%~+100%
+  cv_in_2_assign:              {label: CV IN 2 ASSIGN, nrpn: 43, nrpn_range: [0, 28]}
+  cv_in_2_range:               {label: CV IN 2 RANGE, nrpn: 44, nrpn_range: [0, 200]}   # -100%~+100%
+  # The row declares 0~127, and the footnote defining the names covers 0 to 22 and then
+  # 112 to 123, leaving 23 to 111 and 124 to 127 undefined. A second note elsewhere in
+  # the document puts the same user scales and octaves at 128 to 139, which no
+  # data-entry byte can carry. Neither is followed; the range is what is recorded.
+  micro_tuning:                {label: MICRO TUNING, nrpn: 48, nrpn_range: [0, 127]}
+  scale_key:                   {label: SCALE KEY, nrpn: 49, nrpn_range: [0, 24]}   # -12Note~+12Note
+  program_tuning:              {label: PROGRAM TUNING, nrpn: 50, nrpn_range: [0, 100]}   # -50Cent~+50Cent
+  lfo_key_sync:                {label: LFO KEY SYNC, nrpn: 52, nrpn_range: [0, 1], choices: {"off": 0, "on": 1}}
+  lfo_voice_sync:              {label: LFO VOICE SYNC, nrpn: 53, nrpn_range: [0, 1], choices: {"off": 0, "on": 1}}
+  lfo_target_osc:              {label: LFO TARGET OSC, nrpn: 54, nrpn_range: [0, 3]}
+  eg_velocity:                 {label: EG VELOCITY, nrpn: 56, nrpn_range: [0, 127]}
+  amp_velocity:                {label: AMP VELOCITY, nrpn: 57, nrpn_range: [0, 127]}
+  multi_octave:                {label: MULTI OCTAVE, nrpn: 58, nrpn_range: [0, 3]}   # 16',8',4',2'
+  multi_routing:               {label: MULTI ROUTING, nrpn: 59}   # Pre VCF, Post VCF
+  eg_legato:                   {label: EG LEGATO, nrpn: 60, nrpn_range: [0, 1], choices: {"off": 0, "on": 1}}
+  portamento_mode:             {label: PORTAMENTO MODE, nrpn: 61, nrpn_range: [0, 1], choices: {"auto": 0, "on": 1}}
+  portamento_bpm_sync:         {label: PORTAMENTO BPM SYNC, nrpn: 62, nrpn_range: [0, 1], choices: {"off": 0, "on": 1}}
+  program_level:               {label: PROGRAM LEVEL, nrpn: 63, nrpn_range: [0, 120]}   # -18dB~+6dB
+  vpm_param_1:                 {label: VPM PARAM 1 (Feedback), nrpn: 64, nrpn_range: [0, 200]}   # -100%~+100%
+  vpm_param_2:                 {label: VPM PARAM 2 (Noise Depth), nrpn: 65, nrpn_range: [0, 200]}   # -100%~+100%
+  vpm_param_3:                 {label: VPM PARAM 3 (Shape Mod Int), nrpn: 66, nrpn_range: [0, 200]}   # -100%~+100%
+  vpm_param_4:                 {label: VPM PARAM 4 (Mod Attack), nrpn: 67, nrpn_range: [0, 200]}   # -100%~+100%
+  vpm_param_5:                 {label: VPM PARAM 5 (Mod Decay), nrpn: 68, nrpn_range: [0, 200]}   # -100%~+100%
+  vpm_param_6:                 {label: VPM PARAM 6 (Mod Key Track), nrpn: 69, nrpn_range: [0, 200]}   # -100%~+100%
+  user_param_1:                {label: USER PARAM 1, nrpn: 72}
+  user_param_2:                {label: USER PARAM 2, nrpn: 73}
+  user_param_3:                {label: USER PARAM 3, nrpn: 74}
+  user_param_4:                {label: USER PARAM 4, nrpn: 75}
+  user_param_5:                {label: USER PARAM 5, nrpn: 76}
+  user_param_6:                {label: USER PARAM 6, nrpn: 77}
+  program_transpose:           {label: Program Transpose, nrpn: 80, nrpn_range: [1, 25]}   # -12Note~+12Note
+  master_volume:               {label: MASTER VOLUME, nrpn: 127, nrpn_range: [0, 16383]}

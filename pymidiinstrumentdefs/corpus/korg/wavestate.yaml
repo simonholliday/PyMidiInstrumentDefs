@@ -1,0 +1,265 @@
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: wavestate
+  # NOT RECORDED, and the search is worth writing down because the usual places all fail.
+  # The manual states no OS version for itself: its colophon reads "(c) 2020 KORG INC.
+  # Published 03/2024" and nothing else. Its MIDI implementation chart is marked "Version:
+  # 2.00" dated October 20, 2021, and that is the chart's own version rather than the
+  # instrument's, the way the Subharmonicon's manual prints "User Manual Version 1".
+  # Korg's download page for this instrument offers no OS file and no release notes: the OS
+  # reaches the instrument through the Korg System Updater, a separate tool, and the only
+  # document about any release is "New in wavestate 2.0", dated 2022-03-01. Korg's product
+  # page mentions "wavestate system version 2.1.0 or later" in passing, so a later OS exists
+  # and nothing Korg publishes says what it changed. Checked 2026-10-01.
+  # THIS MANUAL DESCRIBES FOUR INSTRUMENTS, and this definition is for the first: its
+  # specifications give "wavestate: 64 stereo voices", "wavestate mkII: 96 stereo voices",
+  # "wavestate SE and wavestate module: 120 stereo voices" (printed p. 93), and the MIDI
+  # chart's aftertouch remark names the SE alone. The mkII is a separate model with its own
+  # support page and is not described here.
+
+source: >-
+  Owner's Manual (100pp, the edition Korg names E3, published 03/2024): printed pp. 3, 13,
+  15, 56, 60, 84, 88, 93, 94.
+  KORG PUBLISHES NO CONTROL-CHANGE CHART FOR THIS INSTRUMENT, which is the first thing to
+  know about it. The file on its download page called "wavestate/Property Exchange MIDI
+  Implementation" is a MIDI-CI document: Discovery, Property Exchange Capabilities, Get
+  Property Data, Subscription, and the system exclusive byte layout that carries them. It
+  holds no controller number at all. The same maker's file of that name for the minilogue xd
+  is a control-change map, so the title means two different things on two of its own pages.
+  So the numbers below come from two pages of the manual, and they are of two kinds.
+  FORTY-ONE OF THEM ARE DEFAULTS RATHER THAN FACTS ABOUT THE MODEL. "MIDI CC Assign",
+  printed p. 88, is a two-column table headed Function and "Default CC assignment", giving
+  Scale Select 9, Performance Mod Knobs 1-8 as 24-31, and four layers of eight Mod Knobs as
+  80-87, 88-95, 102-109 and 110-117. The player can reassign any of them, and the page says
+  which cannot be used: "Some dedicated CCs cannot be assigned (CCs 1, 7, etc.)". They are
+  recorded because a factory default is a fact about the instrument, and marked as defaults
+  so that nothing reads them as fixed.
+  NINE ARE FIXED, from the MIDI implementation chart at printed p. 94: modulation at CC 1,
+  volume at 7, pan at 10, expression at 11, the vector joystick's two axes at 16 and 17, and
+  the damper, sostenuto and soft pedals at 64, 66 and 67. The chart also marks
+  "2-6, 8-9, 12-31, 32-63, 65, 67-95, 102-119" as "Assignable for controllers and
+  modulation", which is 107 of the 128 numbers; every one of the defaults above falls inside
+  it, so the two pages agree.
+  THE CHART CONTRADICTS ITSELF ABOUT CC 67, and the file follows the dedicated row. Its own
+  row gives 67 to the soft pedal, received and not sent, while the assignable range printed
+  directly below it begins at 67 and is marked both ways. One of the two is wrong and the
+  document does not say which; 68 would make the range consistent, and that is a guess rather
+  than a reading, so it is not made here.
+  READING THAT CHART NEEDS CARE, and this is recorded for whoever checks it next. Its two
+  mark columns are drawn in a single text run whose characters read "RecognizedTransmitted",
+  which is the reverse of their order on the page: the stream draws "Recognized" first and
+  then jumps backwards to draw "Transmitted". Taking the text at face value inverts every
+  direction in the file. The columns were settled from the page's own geometry, by the three
+  vertical rules at x 215.0, 302.7 and 387.5 and by where each heading's glyphs fall between
+  them, and the reading agrees with the marks themselves: the instrument does not transmit
+  volume, polyphonic aftertouch or All Notes Off, and does transmit the aftertouch its remark
+  limits to the SE model. Pitch bend is drawn as one string, "OO", with the spacing that puts
+  one mark in each column; every extractor tried reports it in the left column alone.
+  NOT RECORDED: values, bands, ranges and defaults for any control, which neither page gives;
+  what any Mod Knob is assigned to, which belongs to the Program rather than to the model;
+  and NRPN, which the chart does not mention.
+
+sources:
+  manual:
+    kind: manual
+    title: wavestate Owner's Manual (English)
+    edition: E3
+    dated: 2024-03
+    landing: "https://www.korg.com/us/support/download/product/0/840/"
+    url: "https://cdn.korg.com/us/support/download/files/a6b8a755cab87e6ee27e3d4335ef0e2b.pdf"
+    sha256: 047b7caa4ec2a5d7e5c1accd8cd97c0c4217834ccb22ce858d4e6e2124a4d675
+    retrieved: 2026-10-01
+    page_offset: 5
+    # The offset is checked rather than assumed: 93 of the 100 pages print their own number
+    # at it and none prints a different one.
+    # Korg serves this from behind a licence page rather than directly, and the address above
+    # is the one that page carries. The file name on the CDN is a hash; the real name,
+    # wavestate_OM_E3.pdf, arrives in a content-disposition parameter. Fetching the link on
+    # the download page saves Korg's licence text instead of the manual, which `file` catches
+    # and a hash alone would not.
+  pe_midi_implementation:
+    kind: midi_implementation
+    title: wavestate Property Exchange MIDI Implementation
+    edition: "Version 1.1 (2025/9/3)"
+    dated: 2025-09-18
+    landing: "https://www.korg.com/us/support/download/product/0/840/"
+    url: "https://cdn.korg.com/us/support/download/files/a84254e994e513301e5871cc39fcbff3.txt"
+    sha256: 26b8a3b888fcbae90ad1c9dd12df69679eade8d7b6418e2d4e692f4005c03894
+    retrieved: 2026-10-01
+    paginated: false
+    # Cited for what it does not contain, which is the point: this is the only file Korg
+    # publishes for this instrument under the name MIDI Implementation, and it is MIDI-CI
+    # Property Exchange with no controller number in it. A reader who fetched it expecting
+    # the usual thing would conclude the instrument answers to nothing.
+  os_2_0_notes:
+    kind: release_notes
+    title: New in wavestate 2.0
+    edition: E1
+    dated: 2022-03-01
+    landing: "https://www.korg.com/us/support/download/product/0/840/"
+    url: "https://cdn.korg.com/us/support/download/files/ad4f2c720cc9f8f1e92316dc751f50a8.pdf"
+    sha256: 16e5ea0e2bd5035aeb4640acd004f860ae7bbb570dde67e02b00dffb15a491e1
+    retrieved: 2026-10-01
+    # Cited for the firmware question in model above: it is the only document Korg publishes
+    # about any release of this instrument's OS, and it covers one.
+
+midi:
+  # Global Channel 1-16, and each Layer may be taken off it onto one of its own (pp. 15, 84).
+  channels: [1, 16]
+  # "System Real Time: Clock" is marked both ways on the chart.
+  clock: both
+  # A CHECKED ABSENCE, not an omission: the chart's "System Real Time: Commands" row is
+  # marked X in both columns, so this instrument neither sends nor acts on start, stop or
+  # continue. `none` is the word this format already uses for a checked absence of control
+  # change, and it means the same here.
+  transport: none
+  program_change:
+    receives: true
+    sends: true
+    presets: 64
+    # "Program Change O 1-64" both ways, with the remark "Selects Slots in the current Set
+    # List", and a True Number row of 0-63. So the 64 are the slots of whichever Set List is
+    # loaded rather than a fixed bank of sounds.
+  sysex: true
+  # "*2: Supports universal system exclusive messages device inquiry, master volume, master
+  # fine tuning, and master coarse tuning" - so what it answers to is the universal set
+  # rather than a maker's own, which the format has no way to distinguish.
+
+voice:
+  addressing: pitches
+  # "Maximum Polyphony: wavestate: 64 stereo voices" (printed p. 93).
+  polyphony: 64
+  # One pool: the figure above is for the instrument, and each Layer has its own "Max # of
+  # Notes" setting that caps what it may take from it (printed p. 13).
+  polyphony_shared: true
+  # "Note Number 0-127" both ways, with the chart's own caveat as its remark: "Some sounds
+  # will not play across the entire note range". So the range is what the instrument accepts
+  # rather than what any one sound will answer with.
+  note_range: [0, 127]
+  velocity:
+    note_on: received
+    note_off: true
+    # Note On is marked "O 9n, V=1-127" in both columns. Note Off is marked "O 8n, V=1-64"
+    # transmitted and "O 8n, V=0-127" recognized, with the remark "Received Note Off Velocity
+    # values are clipped at 64" - so the full range arrives and is then clipped, which is not
+    # the same as refusing half of it.
+  # NOT RECORDED: aftertouch. The chart marks channel aftertouch received, and polyphonic
+  # aftertouch received, but its remark says "Aftertouch transmit: wavestate SE only", which
+  # qualifies a mark rather than the row, and this manual describes four models at once. What
+  # a plain wavestate does with aftertouch arriving over MIDI is not separable here.
+
+parts:
+  # Four Layers, A to D, which is what this instrument is: "The wavestate plays one
+  # Performance at a time. A Performance has four Layers, A...D, a Vector Envelope, and a
+  # master reverb and EQ. Each Layer contains an Arpeggiator, a Program, and other settings
+  # such as MIDI channel, key and velocity zones" (printed p. 3).
+  # EACH IS ON THE GLOBAL CHANNEL UNTIL THE PLAYER MOVES IT, which is why every one of them
+  # carries channel_offset 0 rather than a channel of its own. "Use Global MIDI Channel [Off,
+  # On]. On: This is the default. The Layer will play from the built-in keyboard, and receive
+  # on the Global Channel. Off: The Layer will receive on the channel specified below, and
+  # will not play from the built-in keyboard" (printed p. 15). So a Layer becomes separately
+  # addressable only when somebody turns that off, and which channel it then takes belongs to
+  # their project rather than here.
+  layer_a: {label: Layer A, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+  layer_b: {label: Layer B, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+  layer_c: {label: Layer C, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+  layer_d: {label: Layer D, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+
+groups:
+  # The first six are the Function column of the MIDI CC Assign table, printed p. 88, word for
+  # word, less the "1...8" each carries. The last two are not the maker's words: the
+  # implementation chart heads nothing over its control-change rows, so the eight fixed
+  # controllers are grouped by what they are.
+  scale_select: Scale Select
+  performance_mod: Performance Mod Knobs
+  layer_a_mod: Layer A Mod Knobs
+  layer_b_mod: Layer B Mod Knobs
+  layer_c_mod: Layer C Mod Knobs
+  layer_d_mod: Layer D Mod Knobs
+  controllers: Controllers
+  pedals: Pedals
+
+controls:
+
+  # From MIDI CC Assign, printed p. 88. EVERY NUMBER IN THIS SECTION IS A DEFAULT, not a
+  # property of the model: the table's own column is headed "Default CC assignment", and
+  # the player can reassign any of them. They are here because a default is a fact about
+  # the instrument as it leaves the factory, and a panel that offers them will be right
+  # until somebody changes one.
+
+  scale_select:              {label: Scale Select, cc: 9, group: scale_select}
+
+  # "Performance Mod Knobs 1...8", CC 24 to 31. The manual's screenshot of this page names
+  # the first five - Perf Master Mod, Perf Timing Mod, Perf Sample Mod, Perf Pitch Mod,
+  # Perf Shape Mod - but those names are in an image rather than in the text, and only five
+  # of the eight are shown, so the table's own numbering is what the labels follow.
+  perf_mod_1:               {label: Performance Mod Knob 1, cc: 24, group: performance_mod}
+  perf_mod_2:               {label: Performance Mod Knob 2, cc: 25, group: performance_mod}
+  perf_mod_3:               {label: Performance Mod Knob 3, cc: 26, group: performance_mod}
+  perf_mod_4:               {label: Performance Mod Knob 4, cc: 27, group: performance_mod}
+  perf_mod_5:               {label: Performance Mod Knob 5, cc: 28, group: performance_mod}
+  perf_mod_6:               {label: Performance Mod Knob 6, cc: 29, group: performance_mod}
+  perf_mod_7:               {label: Performance Mod Knob 7, cc: 30, group: performance_mod}
+  perf_mod_8:               {label: Performance Mod Knob 8, cc: 31, group: performance_mod}
+
+  # "Layer A Mod Knobs 1...8", CC 80 to 87.
+  layer_a_mod_1:            {label: Layer A Mod Knob 1, cc: 80, part: layer_a, group: layer_a_mod}
+  layer_a_mod_2:            {label: Layer A Mod Knob 2, cc: 81, part: layer_a, group: layer_a_mod}
+  layer_a_mod_3:            {label: Layer A Mod Knob 3, cc: 82, part: layer_a, group: layer_a_mod}
+  layer_a_mod_4:            {label: Layer A Mod Knob 4, cc: 83, part: layer_a, group: layer_a_mod}
+  layer_a_mod_5:            {label: Layer A Mod Knob 5, cc: 84, part: layer_a, group: layer_a_mod}
+  layer_a_mod_6:            {label: Layer A Mod Knob 6, cc: 85, part: layer_a, group: layer_a_mod}
+  layer_a_mod_7:            {label: Layer A Mod Knob 7, cc: 86, part: layer_a, group: layer_a_mod}
+  layer_a_mod_8:            {label: Layer A Mod Knob 8, cc: 87, part: layer_a, group: layer_a_mod}
+
+  # "Layer B Mod Knobs 1...8", CC 88 to 95.
+  layer_b_mod_1:            {label: Layer B Mod Knob 1, cc: 88, part: layer_b, group: layer_b_mod}
+  layer_b_mod_2:            {label: Layer B Mod Knob 2, cc: 89, part: layer_b, group: layer_b_mod}
+  layer_b_mod_3:            {label: Layer B Mod Knob 3, cc: 90, part: layer_b, group: layer_b_mod}
+  layer_b_mod_4:            {label: Layer B Mod Knob 4, cc: 91, part: layer_b, group: layer_b_mod}
+  layer_b_mod_5:            {label: Layer B Mod Knob 5, cc: 92, part: layer_b, group: layer_b_mod}
+  layer_b_mod_6:            {label: Layer B Mod Knob 6, cc: 93, part: layer_b, group: layer_b_mod}
+  layer_b_mod_7:            {label: Layer B Mod Knob 7, cc: 94, part: layer_b, group: layer_b_mod}
+  layer_b_mod_8:            {label: Layer B Mod Knob 8, cc: 95, part: layer_b, group: layer_b_mod}
+
+  # "Layer C Mod Knobs 1...8", CC 102 to 109.
+  layer_c_mod_1:            {label: Layer C Mod Knob 1, cc: 102, part: layer_c, group: layer_c_mod}
+  layer_c_mod_2:            {label: Layer C Mod Knob 2, cc: 103, part: layer_c, group: layer_c_mod}
+  layer_c_mod_3:            {label: Layer C Mod Knob 3, cc: 104, part: layer_c, group: layer_c_mod}
+  layer_c_mod_4:            {label: Layer C Mod Knob 4, cc: 105, part: layer_c, group: layer_c_mod}
+  layer_c_mod_5:            {label: Layer C Mod Knob 5, cc: 106, part: layer_c, group: layer_c_mod}
+  layer_c_mod_6:            {label: Layer C Mod Knob 6, cc: 107, part: layer_c, group: layer_c_mod}
+  layer_c_mod_7:            {label: Layer C Mod Knob 7, cc: 108, part: layer_c, group: layer_c_mod}
+  layer_c_mod_8:            {label: Layer C Mod Knob 8, cc: 109, part: layer_c, group: layer_c_mod}
+
+  # "Layer D Mod Knobs 1...8", CC 110 to 117.
+  layer_d_mod_1:            {label: Layer D Mod Knob 1, cc: 110, part: layer_d, group: layer_d_mod}
+  layer_d_mod_2:            {label: Layer D Mod Knob 2, cc: 111, part: layer_d, group: layer_d_mod}
+  layer_d_mod_3:            {label: Layer D Mod Knob 3, cc: 112, part: layer_d, group: layer_d_mod}
+  layer_d_mod_4:            {label: Layer D Mod Knob 4, cc: 113, part: layer_d, group: layer_d_mod}
+  layer_d_mod_5:            {label: Layer D Mod Knob 5, cc: 114, part: layer_d, group: layer_d_mod}
+  layer_d_mod_6:            {label: Layer D Mod Knob 6, cc: 115, part: layer_d, group: layer_d_mod}
+  layer_d_mod_7:            {label: Layer D Mod Knob 7, cc: 116, part: layer_d, group: layer_d_mod}
+  layer_d_mod_8:            {label: Layer D Mod Knob 8, cc: 117, part: layer_d, group: layer_d_mod}
+
+  # From the MIDI implementation chart, printed p. 94, which is where the fixed controllers
+  # are. Direction follows its two columns, read by their position on the page rather than by
+  # the order their headings extract in: the left column is Transmitted and the right is
+  # Recognized.
+
+  modulation:                {label: Modulation, cc: 1, group: controllers}
+  volume:                    {label: Volume, cc: 7, direction: receives, group: controllers}
+  pan:                       {label: Pan, cc: 10, direction: receives, group: controllers}
+  expression:                {label: Expression, cc: 11, direction: receives, group: controllers}
+  # "Vector JSX, Y" in one cell, printed with no space after JS. The vector joystick's two
+  # axes, which the manual calls Vector Joystick X and Y elsewhere.
+  vector_joystick_x:         {label: Vector Joystick X, cc: 16, group: controllers}
+  vector_joystick_y:         {label: Vector Joystick Y, cc: 17, group: controllers}
+
+  damper:                    {label: Damper, cc: 64, group: pedals}
+  sostenuto:                 {label: Sostenuto, cc: 66, direction: receives, group: pedals}
+  # The chart gives 67 to this row and then begins its assignable range at 67 as well. The
+  # dedicated row is followed; see the source line.
+  soft:                      {label: Soft, cc: 67, direction: receives, group: pedals}

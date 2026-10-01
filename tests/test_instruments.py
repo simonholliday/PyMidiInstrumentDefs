@@ -104,6 +104,7 @@ class TestBundledCorpus:
 			"elektron/digitone",
 			"elektron/syntakt",
 			"korg/minilogue_xd",
+			"korg/wavestate",
 			"modal/carbon8m",
 			"moog/dfam",
 			"moog/grandmother",
@@ -531,6 +532,41 @@ class TestSyntakt:
 		assert syntakt.parts["track"].polyphony == 1
 		assert syntakt.voice.polyphony_shared is False
 		assert sorted(syntakt.parts) == ["fx", "track"]
+
+
+class TestWavestate:
+
+	def test_its_controller_numbers_are_defaults_a_player_can_move (self) -> None:
+		"""41 of its 50 are, and a panel that calls them fixed will be wrong on any changed unit."""
+		wavestate = pymidiinstrumentdefs.load("korg/wavestate", [CORPUS])
+
+		assignable = {control.cc for control in wavestate.controls.values()
+			if control.group and control.group.endswith("_mod") or control.group == "scale_select"}
+
+		assert len(assignable) == 41
+		assert wavestate.controls["layer_a_mod_1"].cc == 80
+		assert wavestate.controls["perf_mod_1"].cc == 24
+
+		# and the nine the chart fixes, which a player cannot reassign
+		assert wavestate.controls["modulation"].cc == 1
+		assert wavestate.controls["soft"].cc == 67
+
+	def test_it_neither_sends_nor_follows_transport (self) -> None:
+		"""Checked rather than unread: the chart marks Start, Stop and Continue X both ways."""
+		wavestate = pymidiinstrumentdefs.load("korg/wavestate", [CORPUS])
+
+		assert wavestate.midi.transport == "none"
+		assert wavestate.midi.clock == "both"
+
+	def test_four_layers_sit_on_the_global_channel_until_moved (self) -> None:
+		"""Which is why each carries an offset of zero rather than a channel of its own."""
+		wavestate = pymidiinstrumentdefs.load("korg/wavestate", [CORPUS])
+
+		assert sorted(wavestate.parts) == ["layer_a", "layer_b", "layer_c", "layer_d"]
+
+		for part in wavestate.parts.values():
+			assert part.channel_offset == 0
+			assert part.takes("notes")
 
 
 class TestChoices:

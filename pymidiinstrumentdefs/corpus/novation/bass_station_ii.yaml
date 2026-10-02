@@ -1,0 +1,271 @@
+# ONE NUMBER IN THIS FILE IS ALMOST CERTAINLY THE MAKER'S MISTAKE, AND IS CARRIED ANYWAY.
+# The guide gives the modulation wheel as `cc 0` (p. 73). CC 0 is Bank Select MSB in the MIDI
+# specification and the modulation wheel is CC 1, so 0 is very hard to believe. But it is what
+# the only document says: the cell was rendered at 900 dpi and read character by character, by
+# two readers working separately, and it reads 0. There is no second edition to compare - the
+# Bass Station II, the AFX Station and the Swifty Edition are all served this one guide - and
+# this instrument is not one the bundled definitions were measured against, so it cannot be
+# tried. The number is recorded as printed and doubted in writing, which is this corpus's rule:
+# a definition says what the maker published, and says where that looks wrong.
+#
+# A SECOND SLIP IS SMALLER AND IS CERTAIN. The mixer's coarse and fine pairs are printed
+# 20:52, 21:53, 22:54 and 24:56, and `noise level` alone is printed `23.55`, with a full stop
+# where the others have a colon. It is carried as 23 and 55, because that is the only thing
+# the sequence leaves it to be.
+#
+# TWO NRPNS ARE PUBLISHED TWICE, 87 and 91, under different names in different sections of the
+# same table. Both rows are kept and each names the other, because the guide prints both.
+#
+# THE PARAMETER NAMES ARE THE GUIDE'S OWN, VERBATIM, including its inconsistent capitals -
+# "osc 1 fine" beside "Mod Env attack" beside "Bend Amount". Where a maker styles a table
+# uniformly this corpus normalises it; there is no uniform styling here to normalise.
+
+definition: 1
+
+model:
+  manufacturer: Novation
+  name: Bass Station II
+  # NOT RECORDED. The guide states a version for itself - "Version 5.0" on its title page - and
+  # no firmware version for the instrument anywhere in its 82 pages. Novation's downloads page
+  # offers a Librarian and Firmware Updater 1.2 "only for users not using newer firmware",
+  # whose own notes say it upgrades "from r540 to r554"; the current firmware is delivered
+  # through Novation Components, which serves nothing a fetch here can read. So the newest
+  # firmware is not stated on any page this was read from. Checked 2026-10-02.
+
+source: >-
+  Bass Station II user guide, version 5.0, 82 pages, dated 2025-08-15 by its own metadata. Its
+  "MIDI parameters list" (pp. 71-74) is the whole of this instrument's published map: 98 rows
+  of panel section, parameter, whether it is addressed by control change, NRPN or a message of
+  its own, the number, and the range, run over four pages.
+  THE TABLE RUNS BOTH WAYS, which the guide states rather than leaving to be inferred: "Bass
+  Station II has a high degree of MIDI implementation, and almost every control and synth
+  parameter transmits MIDI data to external equipment, and similarly, the synth can be
+  controlled in almost every respect by incoming MIDI data from a DAW or sequencer" (p. 19).
+  FOUR OF THE 98 ROWS ARE NOT CONTROLS and are not below: patch inc and patch dec, which are
+  program changes, pitch, which is a pitch bend, and after touch. For those the message is the
+  address, and each is recorded in its own field instead.
+  SIXTEEN CONTROL CHANGES CARRY A FINE HALF, written in the guide as `MSB:LSB` and always as n
+  and n+32. THE SAME NOTATION MEANS SOMETHING ELSE ON AN NRPN ROW, where it is the two halves
+  of one parameter number: `0:72` is 72, not a pair. Conflating the two was caught by a check
+  that every control change pair is n and n+32, which no NRPN row satisfies.
+  THE GUIDE WRITES ITS NRPNS TWO WAYS in the one table: 28 give both halves as `0:nn` and three
+  give the low half alone. Every pair it writes out has a high half of zero, so the three bare
+  ones mean the same thing - checked rather than assumed, because the whole NRPN column rests
+  on it.
+  THREE PRODUCTS, ONE GUIDE, AND THE GUIDE SAYS SO ITSELF: "This user guide applies to all
+  editions of the Bass Station II. We've used the original Bass Station II for graphics
+  throughout. If you're using the AFX Station or Bass Station II Swifty Edition you'll have
+  more information on the top panel relevant to the various firmware upgrades we've added over
+  the years" (p. 4). Novation's download pages agree from the other side: the three products
+  are offered this same file and no other. So this definition describes all three where MIDI
+  is concerned, and the guide has a section of its own for the AFX Station's overlays and the
+  system exclusive that manages them.
+  TWO DIN SOCKETS AND NO THRU: "MIDI IN and OUT - standard 5-pin DIN MIDI sockets for
+  connecting Bass Station II to other MIDI-equipped hardware" (p. 13), with a class-compliant
+  USB port beside them that also carries MIDI. The guide rules out the obvious next thought:
+  "Bass Station II is not a computer MIDI interface. MIDI can be transmitted between the synth
+  and computer via the USB connection, but MIDI cannot be transferred between the computer and
+  external equipment via Bass Station II's MIDI DIN ports" (p. 14).
+  NOT RECORDED: the note range, which the guide never states for what the instrument receives -
+  its keyboard is "25-note (two octaves) velocity-sensitive" with octave shift keys, and that is
+  the panel rather than the span it answers to. Whether it transmits MIDI clock, since the guide
+  describes only the other direction. Transport, which no sentence in the guide mentions at all -
+  not start, not stop, not continue, not song position. And whether program change is received:
+  the only thing in 82 pages that bears on it is the table's own two rows, patch inc and patch
+  dec, which name the message and say nothing about direction.
+  ONE MORE TYPOGRAPHICAL SLIP, CARRIED AS PRINTED: the envelope section has an "amp env fixed
+  sustatin duration" where its neighbour four rows down is spelled "Mod Env fixed sustain
+  duration". The label below is the guide's, misspelling and all.
+
+sources:
+  guide:
+    kind: manual
+    title: Bass Station II user guide
+    edition: Version 5.0
+    dated: 2025-08-15
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/bass-station-ii"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/downloads/bass_station_ii_user_guide_v5_en.pdf"
+    sha256: 3a1555cb0f234c1a8956018d0583e01e36958344b5c31a5b1ab676b99197487e
+    retrieved: 2026-10-02
+    # Every page prints its own number and it is the file's own page index, so nothing is added.
+    # 82 pages, counted with two readers that agree. `FILE REPORTS IT AS 2`, which is the second
+    # maker in two instruments to defeat that tool's page count and on a different toolchain -
+    # Novation's PDF is produced by Antenna House out of Paligo, Korg's by Adobe PageMaker. It
+    # is a property of nested page trees, not of one publisher. `file` establishes what a
+    # download is; a page count is worth taking from something that walks the tree.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: Bass Station II downloads
+    landing: "https://downloads.novationmusic.com/"
+    url: "https://downloads.novationmusic.com/novation/synthesisers/bass-station-ii"
+    sha256: 5ad23b57073deafd071fa265cabe9f43033218edb21473ad0bc5eff1c9a0708e
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for what Novation publishes for this instrument, which is the guide in twenty-odd
+    # languages and a Librarian for older setups, and for nothing else: no programmer's
+    # reference and no separate MIDI implementation, unlike this maker's Circuit.
+
+midi:
+  # "Global: MIDI Channel (upper G#) Range: 1 to 16" (p. 63), and the factory default is 1:
+  # the display shows "the current MIDI channel number (1 if it has not been changed from the
+  # factory default)" (p. 64).
+  channels: [1, 16]
+  # RECEIVES, AND ONLY THAT IS ESTABLISHED. "If Bass Station II is being synchronsied to an
+  # external MIDI clock, it will automatically detect the incoming clock and disable the Tempo
+  # control" (p. 51) - the maker's own spelling of synchronised is kept. Nothing in 82 pages
+  # says it sends clock, so `both` would be claiming the half that was not established.
+  clock: receives
+  program_change:
+    # "Pre-loaded with 64 brand new Killer Patches" and "Memory for 64 additional User
+    # Patches" (p. 4), which the panel reaches as "one of the 64 Factory or 64 User Patches"
+    # (p. 8).
+    presets: 128
+  # NUMBERS PER CONTROL, below, 29 distinct ones across 31 published rows.
+  nrpn: supported
+  # Patches, overlays and tuning tables all travel this way, and the guide gives the byte
+  # layouts: "Via SysEx messages it's possible to export, import, copy, move and save the
+  # overlays" (p. 74), and a section on importing patches by system exclusive.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # MONOPHONIC, AND THE MAKER SAYS SO IN THOSE WORDS: "The Bass Station II is at its core a
+  # monophonic synthesiser. However, enabling paraphonic mode gives you different playing
+  # possibilities" (p. 37). In that mode the two oscillators track separate keys and still
+  # "share the same amplifier and filter", which is what paraphonic means and why it is a flag
+  # of its own rather than a polyphony of two.
+  polyphony: 1
+  paraphonic: true
+  velocity:
+    # "25-note (two octaves) velocity-sensitive keyboard with aftertouch" (p. 8). Velocity has
+    # two destinations of its own in the table below, the amplitude and modulation envelopes.
+    note_on: received
+  # NOT RECORDED: AFTERTOUCH, although the keyboard has it - "25-note (two octaves)
+  # velocity-sensitive keyboard with aftertouch" (p. 8) - and it reaches three destinations of
+  # its own, which are three of the NRPNs below. The guide never says whether it is channel
+  # pressure or polyphonic key pressure, and those are the only two things this field can say.
+  # The one indirect sign is the table's own row, a single value of 0 to 127 with no note
+  # number, which is what channel pressure looks like and is not a statement that it is.
+  pitch_bend:
+    # SETTABLE, AND THE GUIDE GIVES THREE DIFFERENT ANSWERS FOR HOW FAR, so no number is
+    # written. Page 17 says "The maximum range of operation is 12 semitones up or down, but
+    # this may be adjusted using On-Key function Oscillator: Pitch Bend Range". Page 61 gives
+    # that function as "Range: -24 to +24" and says "A maximum of two octaves can be
+    # selected". The MIDI parameters list gives Bend Amount as cc 107 with the range "1 to
+    # 12". Twelve, twenty-four and twelve, in one document. The init patch table (p. 70)
+    # gives the default as "12 (oct up and down)", which settles the default and not the span.
+    programmable: true
+groups:
+  master: Master
+  oscillator: Oscillator
+  mixer: Mixer
+  filter: Filter
+  portamento: Portamento
+  lfos: LFOs
+  envelope: Envelope
+  effects: Effects
+  arpeggiator: Arpeggiator
+  other: Other
+  mod_wh: Mod Wh
+  aftertouch: Aftertouch
+  lfo: LFO
+  velocity: Velocity
+  vca: VCA
+  arp: Arp
+
+controls:
+  master_patch_volume:                      {label: patch volume, cc: 7, group: master}
+  oscillator_osc_1_fine:                    {label: osc 1 fine, cc: 26, lsb: 58, group: oscillator}
+  oscillator_osc_1_range:                   {label: osc 1 range, cc: 70, group: oscillator}
+  oscillator_osc_1_coarse:                  {label: osc 1 coarse, cc: 27, lsb: 59, group: oscillator}
+  oscillator_osc_1_waveform:                {label: osc 1 waveform, nrpn: 72, group: oscillator}
+  oscillator_osc_1_mod_env_depth:           {label: osc 1 Mod Env depth, cc: 71, group: oscillator}
+  oscillator_osc_1_lfo_1_depth:             {label: osc 1 LFO 1 depth, cc: 28, lsb: 60, group: oscillator}
+  oscillator_osc_1_mod_env_pw_mod_amount:   {label: osc 1 Mod Env PW mod amount, cc: 72, group: oscillator}
+  oscillator_osc_1_lfo_2_pw_mod_amount:     {label: osc 1 LFO 2 PW mod amount, cc: 73, group: oscillator}
+  oscillator_osc_1_manual_pw_amount:        {label: osc 1 manual PW amount, cc: 74, group: oscillator}
+  oscillator_osc_2_fine:                    {label: osc 2 fine, cc: 29, lsb: 61, group: oscillator}
+  oscillator_osc_2_range:                   {label: osc 2 range, cc: 75, group: oscillator}
+  oscillator_osc_2_coarse:                  {label: osc 2 coarse, cc: 30, lsb: 62, group: oscillator}
+  oscillator_osc_2_waveform:                {label: osc 2 waveform, nrpn: 82, group: oscillator}
+  oscillator_osc_2_mod_env_depth:           {label: osc 2 Mod Env depth, cc: 76, group: oscillator}
+  oscillator_osc_2_lfo_1_depth:             {label: osc 2 LFO 1 depth, cc: 31, lsb: 63, group: oscillator}
+  oscillator_osc_2_env_2_pw_mod_amount:     {label: osc 2 env 2 PW mod amount, cc: 77, group: oscillator}
+  oscillator_osc_2_lfo_2_pw_mod_amount:     {label: osc 2 LFO 2 PW mod amount, cc: 78, group: oscillator}
+  oscillator_osc_2_manual_pw_amount:        {label: osc 2 manual PW amount, cc: 79, group: oscillator}
+  oscillator_sub_osc_oct:                   {label: sub osc oct, cc: 81, group: oscillator}
+  oscillator_sub_osc_wave:                  {label: sub osc wave, cc: 80, group: oscillator}
+  oscillator_osc_tuning_error:              {label: osc tuning error, nrpn: 111, group: oscillator}
+  oscillator_paraphonic_mode:               {label: paraphonic mode, nrpn: 107, group: oscillator}
+  oscillator_osc_glide_divergence:          {label: osc glide divergence, nrpn: 113, group: oscillator}
+  oscillator_sub_osc_coarse:                {label: sub-osc coarse, nrpn: 84, group: oscillator}
+  oscillator_sub_osc_fine:                  {label: sub-osc fine, nrpn: 77, group: oscillator}
+  mixer_osc_1_level:                        {label: osc 1 level, cc: 20, lsb: 52, group: mixer}
+  mixer_osc_2_level:                        {label: osc 2 level, cc: 21, lsb: 53, group: mixer}
+  mixer_sub_osc_level:                      {label: sub osc level, cc: 22, lsb: 54, group: mixer}
+  mixer_noise_level:                        {label: noise level, cc: 23, lsb: 55, group: mixer}
+  mixer_ring_mod_level:                     {label: ring mod level, cc: 24, lsb: 56, group: mixer}
+  mixer_external_signal_level:              {label: external signal level, cc: 25, lsb: 57, group: mixer}
+  filter_type:                              {label: Type, cc: 83, group: filter}
+  filter_slope:                             {label: slope, cc: 106, group: filter}
+  filter_shape:                             {label: shape, cc: 84, group: filter}
+  filter_frequency:                         {label: frequency, cc: 16, lsb: 48, group: filter}
+  filter_resonance:                         {label: resonance, cc: 82, group: filter}
+  filter_mod_env_depth:                     {label: Mod Env depth, cc: 85, group: filter}
+  filter_lfo_2_depth:                       {label: LFO 2 depth, cc: 17, lsb: 49, group: filter}
+  filter_overdrive:                         {label: overdrive, cc: 114, group: filter}
+  filter_filter_tracking:                   {label: filter tracking, nrpn: 108, group: filter}
+  portamento_portamento_time:               {label: portamento time, cc: 5, group: portamento}
+  lfos_lfo_1_speed:                         {label: LFO 1 speed, cc: 18, lsb: 50, group: lfos}
+  lfos_lfo_1_delay:                         {label: LFO 1 delay, cc: 86, group: lfos}
+  lfos_lfo_2_speed:                         {label: LFO 2 speed, cc: 19, lsb: 51, group: lfos}
+  lfos_lfo_2_delay:                         {label: LFO 2 delay, cc: 87, group: lfos}
+  lfos_lfo_1_wave:                          {label: LFO 1 wave, cc: 88, group: lfos}
+  lfos_lfo_2_wave:                          {label: LFO 2 wave, cc: 89, group: lfos}
+  lfos_lfo_1_sync_value:                    {label: LFO 1 Sync value, nrpn: 87, group: lfos}  # the guide gives this NRPN twice, also as Speed/Sync LFO 1
+  lfos_lfo_2_sync_value:                    {label: LFO 2 Sync value, nrpn: 91, group: lfos}  # the guide gives this NRPN twice, also as Speed/Sync LFO 2
+  envelope_amp_env_attack:                  {label: amp env attack, cc: 90, group: envelope}
+  envelope_amp_env_decay:                   {label: amp env decay, cc: 91, group: envelope}
+  envelope_amp_env_sustain:                 {label: amp env sustain, cc: 92, group: envelope}
+  envelope_amp_env_release:                 {label: amp env release, cc: 93, group: envelope}
+  envelope_amp_env_triggering:              {label: amp env triggering, nrpn: 73, group: envelope}
+  envelope_amp_env_retrigger:               {label: amp env retrigger, nrpn: 109, group: envelope}
+  envelope_amp_env_fixed_sustatin_duration: {label: amp env fixed sustatin duration, nrpn: 114, group: envelope}
+  envelope_amp_env_retrigger_count:         {label: amp env retrigger count, nrpn: 117, group: envelope}
+  envelope_mod_env_attack:                  {label: Mod Env attack, cc: 102, group: envelope}
+  envelope_mod_env_decay:                   {label: Mod Env decay, cc: 103, group: envelope}
+  envelope_mod_env_sustain:                 {label: Mod Env sustain, cc: 104, group: envelope}
+  envelope_mod_env_release:                 {label: Mod Env release, cc: 105, group: envelope}
+  envelope_mod_env_triggering:              {label: Mod Env triggering, nrpn: 105, group: envelope}
+  envelope_mod_env_retrigger:               {label: Mod Env retrigger, nrpn: 110, group: envelope}
+  envelope_mod_env_fixed_sustain_duration:  {label: Mod Env fixed sustain duration, nrpn: 115, group: envelope}
+  envelope_mod_env_retrigger_count:         {label: Mod Env retrigger count, nrpn: 118, group: envelope}
+  effects_distortion:                       {label: Distortion, cc: 94, group: effects}
+  effects_osc_filter_mod:                   {label: Osc Filter Mod, cc: 115, group: effects}
+  arpeggiator_on:                           {label: "on", cc: 108, group: arpeggiator}
+  arpeggiator_latch:                        {label: latch, cc: 109, group: arpeggiator}
+  arpeggiator_rhythm:                       {label: rhythm, cc: 119, group: arpeggiator}
+  arpeggiator_note_mode:                    {label: note mode, cc: 118, group: arpeggiator}
+  arpeggiator_octaves:                      {label: octaves, cc: 111, group: arpeggiator}
+  other_mod:                                {label: mod, cc: 0, group: other}
+  other_sustain:                            {label: sustain, cc: 64, group: other}
+  mod_wh_lfo_2_filter_freq:                 {label: LFO 2 Filter Freq, nrpn: 71, group: mod_wh}
+  mod_wh_lfo_1_osc_pitch:                   {label: LFO 1 Osc Pitch, nrpn: 70, group: mod_wh}
+  mod_wh_osc_2_pitch:                       {label: Osc 2 Pitch, nrpn: 78, group: mod_wh}
+  aftertouch_filter_freq:                   {label: Filter Freq, nrpn: 74, group: aftertouch}
+  aftertouch_lfo_1_to_osc_pitch:            {label: LFO 1 to Osc Pitch, nrpn: 75, group: aftertouch}
+  aftertouch_lfo_2_speed:                   {label: LFO 2 Speed, nrpn: 76, group: aftertouch}
+  lfo_key_sync_lfo_1:                       {label: Key Sync LFO 1, nrpn: 89, group: lfo}
+  lfo_key_sync_lfo_2:                       {label: Key Sync LFO 2, nrpn: 93, group: lfo}
+  lfo_speed_sync_lfo_1:                     {label: Speed/Sync LFO 1, nrpn: 87, group: lfo}  # the guide gives this NRPN twice, also as LFO 1 Sync value
+  lfo_speed_sync_lfo_2:                     {label: Speed/Sync LFO 2, nrpn: 91, group: lfo}  # the guide gives this NRPN twice, also as LFO 2 Sync value
+  lfo_slew_lfo_1:                           {label: Slew LFO 1, nrpn: 86, group: lfo}
+  lfo_slew_lfo_2:                           {label: Slew LFO 2, nrpn: 90, group: lfo}
+  oscillator_bend_amount:                   {label: Bend Amount, cc: 107, group: oscillator}
+  oscillator_osc_1_2_sync:                  {label: Osc 1-2 Sync, cc: 110, group: oscillator}
+  velocity_amp_env:                         {label: Amp Env, cc: 112, group: velocity}
+  velocity_mod_env:                         {label: Mod Env, cc: 113, group: velocity}
+  vca_limit:                                {label: Limit, cc: 95, group: vca}
+  arp_arp_swing:                            {label: Arp Swing, cc: 116, group: arp}
+  arp_seq_retrig:                           {label: Seq Retrig, nrpn: 106, group: arp}

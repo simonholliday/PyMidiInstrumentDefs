@@ -117,6 +117,7 @@ class TestBundledCorpus:
 			"moog/sub_37",
 			"moog/subharmonicon",
 			"moog/subsequent_37",
+			"novation/bass_station_ii",
 			"pwm/malevolent",
 			"roland/juno_106",
 			"roland/tr8s",
@@ -2142,6 +2143,98 @@ class TestOpXy:
 		assert op_xy.model.firmware == "1.1.15"
 		assert op_xy.sources["guide"].edition == "1.1.15"
 		assert op_xy.sources["os_updates"].edition == "1.1.33"
+
+
+class TestBassStationII:
+
+	"""One guide for three products, and a number its own maker probably mistyped."""
+
+	def test_the_mod_wheel_carries_the_number_the_guide_prints (self) -> None:
+		"""Which is 0, where the specification puts the modulation wheel at 1.
+
+		CC 0 is Bank Select MSB everywhere else in MIDI, so this is very hard to believe -
+		and it is what the only document says, read at 900 dpi by two readers. The rule is
+		that a definition carries what the maker published and doubts it in writing.
+		"""
+		synth = pymidiinstrumentdefs.load("novation/bass_station_ii", [CORPUS])
+
+		assert synth.controls["other_mod"].cc == 0
+		assert synth.controls["other_sustain"].cc == 64
+
+	def test_the_mixer_pair_the_guide_mistyped_is_carried_as_the_sequence_requires (self) -> None:
+		"""Printed `23.55` where its four neighbours are printed with a colon.
+
+		20:52, 21:53, 22:54 and 24:56 leave `noise level` nothing else to be.
+		"""
+		synth = pymidiinstrumentdefs.load("novation/bass_station_ii", [CORPUS])
+		mixer = synth.controls["mixer_noise_level"]
+
+		assert (mixer.cc, mixer.lsb) == (23, 55)
+		assert mixer.is_14_bit
+
+		# Every pair in the guide is n and n+32, which is what makes 23 and 55 the only reading.
+		paired = [control for control in synth.controls.values() if control.is_14_bit]
+
+		assert len(paired) == 16
+		assert all(control.lsb == control.cc + 32 for control in paired
+			if control.cc is not None and control.lsb is not None)
+
+	def test_the_two_nrpns_the_guide_publishes_twice (self) -> None:
+		"""Under different names in different sections of the one table, so both are kept."""
+		synth = pymidiinstrumentdefs.load("novation/bass_station_ii", [CORPUS])
+
+		assert synth.controls["lfos_lfo_1_sync_value"].nrpn == 87
+		assert synth.controls["lfo_speed_sync_lfo_1"].nrpn == 87
+		assert synth.controls["lfos_lfo_2_sync_value"].nrpn == 91
+		assert synth.controls["lfo_speed_sync_lfo_2"].nrpn == 91
+
+		numbers = [control.nrpn for control in synth.controls.values() if control.nrpn is not None]
+
+		assert len(numbers) == 31
+		assert len(set(numbers)) == 29
+
+	def test_it_is_monophonic_and_paraphonic_is_a_flag_not_a_count (self) -> None:
+		"""Two oscillators on two keys still share one amplifier and one filter."""
+		synth = pymidiinstrumentdefs.load("novation/bass_station_ii", [CORPUS])
+
+		assert synth.voice.polyphony == 1
+		assert synth.voice.paraphonic is True
+		assert synth.voice.note_range is None
+
+		# The guide gives three different pitch bend ranges, so no number is written.
+		assert synth.voice.pitch_bend is not None
+		assert synth.voice.pitch_bend.programmable is True
+		assert synth.voice.pitch_bend.semitones is None
+
+		# The keyboard has aftertouch and the guide never says which kind.
+		assert synth.voice.aftertouch is None
+
+	def test_what_the_guide_establishes_and_what_it_leaves_alone (self) -> None:
+		"""Clock only one way, and transport not at all."""
+		synth = pymidiinstrumentdefs.load("novation/bass_station_ii", [CORPUS])
+
+		assert synth.midi.clock == "receives"
+		assert synth.midi.transport is None
+		assert synth.midi.sysex is True
+		assert synth.midi.nrpn == "supported"
+		assert synth.midi.channels == (1, 16)
+
+		assert synth.midi.program_change is not None
+		assert synth.midi.program_change.presets == 128
+
+	def test_its_guide_needs_no_page_turning (self) -> None:
+		"""Every page prints its own number and it is the file's own page index."""
+		synth = pymidiinstrumentdefs.load("novation/bass_station_ii", [CORPUS])
+		guide = synth.sources["guide"]
+
+		assert guide.page_offset == 0
+		assert guide.file_page(71) == 71
+		assert len(synth.controls) == 94
+
+		# Sixteen panel sections, one of them labelled a page before the rows it covers.
+		assert len(synth.groups) == 16
+		assert synth.groups["effects"] == "Effects"
+		assert synth.controls["effects_distortion"].group == "effects"
 
 
 class TestMicroKorg:

@@ -1,0 +1,325 @@
+# ROLAND PUBLISHES A REAL MIDI IMPLEMENTATION CHART FOR THIS INSTRUMENT, which is rarer in this
+# corpus than it ought to be: one page, sixty-six control changes with a remark naming what each
+# reaches, and a table of note numbers for eleven instruments.
+#
+# AND THE CHART IS NINE RELEASES BEHIND THE INSTRUMENT. It is marked "Version 1.11" and dated
+# October 1, 2025; the reference manual beside it is marked "Version 1.20 and later"; and the
+# system program Roland offers is Ver.1.22 of September 2026. **Version 1.20 added a MIDI mode
+# this chart cannot describe** - "We've added a MIDI MODE that allows you to assign each track to
+# its own MIDI channel. SLICE can be triggered via MIDI" - and both the release note and the
+# manual say to see the MIDI Implementation Chart for the detail. The chart predates the feature.
+#
+# SO EVERYTHING BELOW IS THE DEFAULT MODE, Single Channel, where the whole machine answers on one
+# channel. What the other mode does is in the source account in words, because the only document
+# that would carry it has not been written.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TR-1000
+  # The reference manual states it: "Version 1.20 and later", on its first page. The two releases
+  # since say nothing changed - Ver.1.21 and Ver.1.22 each read "The version number has been
+  # updated due to management-related circumstances. Product specifications are unaffected" - so
+  # 1.20 is the newest firmware any document describes, and 1.22 is the newest that exists.
+  # THE CHART IS OLDER THAN THAT, and the control map below is the chart's. See the head of this
+  # file. Checked 2026-10-02.
+  firmware: "1.20"
+
+source: >-
+  MIDI Implementation Chart, one page, Version 1.11 dated October 1 2025: p. 1, which is the
+  whole of the control map and the note table. Reference Manual, 75 pages, the edition Roland
+  names 03 and marks "Version 1.20 and later": the tracks on printed p. 14, the step velocity on
+  pp. 23 and 28, the MIDI settings on p. 47, the step shortcut on p. 74 and the specifications
+  on p. 75. And Roland's own system program page, for the version history.
+  SIXTY-SIX CONTROL CHANGES, EVERY ONE MARKED BOTH WAYS. Fifty-two of them belong to the ten
+  instruments the chart names - BD, SD, LT, HT, RS, HC, CH, OH, CC and RC - and fourteen to the
+  machine as a whole. The four with seven parameters each, tune, decay, mix, three controls and
+  level, are the ones the manual calls layer tracks; the six with four, tune, decay, one control
+  and level, are the single tracks. "The TR-1000 features four layer tracks (BD, SD, LT, HT) and
+  six single tracks (RS, HC, CH, OH, CC, RC). Layer tracks use two sets (A, B) of sound
+  generator, filter and amp sections. Single tracks use one set" (p. 14), which is why only four
+  of them have a mix control.
+  THE MARKS ARE PLAINER THAN THE INSTRUMENT. Every one of those sixty-six rows reads `o` in both
+  columns, and the manual gates all of them behind two settings that are not in the chart at all:
+  "Tx Edit Data OFF, ON. Specifies whether CC messages are transmitted (ON) or are not", and the
+  same for "Rx Edit Data" (p. 47). Notes, program change and the real-time messages each have
+  their own pair as well.
+  CC 46 TO 63 ARE THE LSB PARTNERS OF CC 14 TO 31 IN THE SPECIFICATION, and this chart gives
+  them parameters of their own - the same trap the Digitakt II sets. It avoided it once and not
+  twice: the run 32 to 45, which would collide with 0 to 13, is left empty, and then 46 to 63 is
+  used in full. CC 88 is the one number missing from the otherwise solid run 80 to 91, and the
+  chart does not say why.
+  THE LABELS ARE THE CHART'S OWN WORDS, in its own capitals, because the remark column is all it
+  gives: "BD TUNE", "SD CTRL1", "MASTER FX CTRL3". The manual names none of these numbers, so
+  there is nothing to reconcile them against.
+  ELEVEN INSTRUMENTS HAVE NOTE NUMBERS AND THEY ARE DEFAULTS. The chart's note table gives three
+  columns - Note Number, Note Number (Layer A only), and Note Number (Layer B and Alt.) - and
+  footnotes all of them: "These note numbers are configurable on MENU>SYSTEM>MIDI>Inst Note",
+  which the manual confirms under its own Inst Note setting: "Specify the MIDI note number for
+  each track's instrument, instrument alternate sound, and TRIGGER OUT" (p. 47). `voices` below holds
+  the first column. The other two are recorded here because the format has one map and this
+  instrument has three:
+  Layer A only - BD 35, SD 40, LT 41, HT 48, and a dash for every other instrument.
+  Layer B and Alt. - BD 99, SD 104, LT 105, HT 112, RS 56, HC 54, CH 44, OH 58, CC 61, RC 63, and
+  a dash for TRG.
+  THAT SECOND HEADING IS WRONG FOR SIX OF ITS OWN ROWS. Only the four layer tracks have a Layer
+  B; the six single tracks have one set of sections and no second layer, so for them the column
+  can only mean the alternate sound. And for the four that do have a Layer B, the chart puts the
+  layer and the alternate sound in one column, so nothing says whether they are the same note or
+  two the chart has run together.
+  TWO CHANNELS, NOT ONE, and this format holds one range for both. "Pattern Ch. 1-16 ... the MIDI
+  transmit/receive channel of the pattern sequencer", default 10, and "Kit Ch. 1-16 ... the MIDI
+  transmit/receive channel for program change messages that switch kits", default 1 (chart,
+  p. 47). So the controls and the notes arrive on one channel and the kit changes on another, and
+  `midi.channels` records the span each may take.
+  THE SECOND MIDI MODE IS UNPUBLISHED. "MIDI Mode ... Single Ch. (Single Channel): Uses the MIDI
+  channel specified in the Pattern Ch. parameter. Each Track Ch. (Each Track Channel): Splits
+  each track into its own MIDI channel. See MIDI Implementation Chart for detail (Roland
+  website)" (p. 47). The chart it names is the one above, which is nine releases older than the
+  mode and says nothing about it. So which channel each track takes in that mode is not
+  published, and nothing here claims it.
+  THE CHART AND THE MANUAL DISAGREE ABOUT VELOCITY, and both readings are left standing. The
+  chart's Velocity row gives "o 9nH v=80" transmitted against a bare "o" recognised, which reads
+  as a machine that sends one fixed velocity and accepts any - the TR-8S's chart says the same of
+  it. The manual describes the opposite: a velocity per step, "The velocity range is 1-127"
+  (p. 23), a "Curve" of -64 to +64 for it (p. 28), and a shortcut to adjust the velocity of a
+  step (p. 74). `note_on: received` is what both agree on; what this instrument transmits is not
+  recorded, because the two documents cannot both be right.
+  CHECKED AND ABSENT: system exclusive, both aftertouches and pitch bend, each marked x in both
+  columns. **Every Aux message is x in both columns as well** - All Sound Off, Reset All
+  Controllers, Local On/Off, All Notes Off, the four mode messages, Active Sensing and System
+  Reset - so a note left sounding by this instrument cannot be stopped over MIDI by any standard
+  means.
+  THE CHART'S HEADER CALLS IT A RHYTHM PERFORMER AND THE MANUAL'S COVER CALLS IT A RHYTHM
+  CREATOR. Neither document mentions the other's name for it. And the chart carries the usual
+  four-mode legend at its foot while having no Mode block at all: Roland replaced the basic
+  channel and mode pair with Pattern Channel and Kit Channel, and left one "Altered" row inside
+  the second of them.
+  NOT RECORDED: NRPN, which the chart has no row for and the manual never mentions - silence
+  rather than a checked absence. And the four jacks that are not MIDI: this instrument has
+  trigger and CV connectors and a DIN SYNC output, and no field here holds them.
+
+sources:
+  chart:
+    kind: midi_implementation
+    title: TR-1000 MIDI Implementation Chart
+    edition: Version 1.11
+    dated: 2025-10-01
+    landing: "https://www.roland.com/global/support/by_product/tr-1000/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/TR-1000_MIDI_ImpleChart_eng01_W.pdf"
+    sha256: 49beccc639457e9df4e6259b7bc1368e52cf37dfd84995ddd869dc9597831c68
+    retrieved: 2026-10-02
+    # One page, cited as p. 1. Encrypted with an empty user password, like the manual beside it.
+    # THE SURVEY THAT RANKED THIS INSTRUMENT FOUND NO CHART, and it is here: Roland's support
+    # page builds its list in the browser, so the file was found by searching the maker's own
+    # domain. Its name has an underscore where the TR-8S's has none -
+    # `TR-1000_MIDI_ImpleChart` against `TR-8S_MIDIImpleChart` - which is why guessing by the
+    # older instrument's pattern returns 403.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: TR-1000 Reference Manual
+    edition: "03"
+    dated: 2026-05-19
+    landing: "https://www.roland.com/global/support/by_product/tr-1000/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/TR-1000_reference_eng03_W.pdf"
+    sha256: 02f478e83c591fb41ddf7521b663fdf8fbf4295922fe3ccb8a7db5da3f88da7c
+    retrieved: 2026-10-02
+    # 75 pages, printed page = file page. Its first page reads "Reference Manual (c) 2025 Roland
+    # Corporation 03 Version 1.20 and later"; the date above is the server's last-modified,
+    # because the document states none. Two older editions are served from the same path, eng01
+    # and eng02, at 51 and 74 pages.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: "Roland - Support - TR-1000 - Updates & Drivers"
+    edition: Ver.1.22
+    dated: 2026-09
+    landing: "https://www.roland.com/global/support/by_product/tr-1000/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/tr-1000/updates_drivers/1c5d302a-98c4-49b4-beb6-6d788f4b91fe/"
+    sha256: a0af8ff99b4a1d11f2e238e4dd2189cc6e52c534109b5f7336f241c9b4a160ab
+    retrieved: 2026-10-02
+    paginated: false
+    # The visible text of the page, cited for which firmware is current and for the whole update
+    # history - which is what establishes that the chart predates the MIDI mode the manual points
+    # at it for. Roland adds releases to this page, so no later fetch will match.
+
+midi:
+  # Two settings, one range: "Pattern Ch. 1-16" and "Kit Ch. 1-16" (p. 47), whose chart defaults
+  # are 10 and 1, both remarked "Memorized".
+  channels: [1, 16]
+  # "System Real Time: Clock" is marked o in both columns.
+  clock: both
+  # Start, Continue and Stop are each marked o in both columns, and Song Position too, remarked
+  # "When selected Song Mode". "Rx Start Stop Cont OFF, ON ... Specifies whether real-time
+  # messages are received" is the setting behind one direction (p. 47).
+  transport: both
+  program_change:
+    # Marked o in both columns with "True Number 0-127", and the settings are separate: "Tx
+    # Program Change OFF, ON" and "RX Program Change OFF, ON" (p. 47).
+    receives: true
+    sends: true
+    # "User Drum Kits 2,048 (128 kits x 16 projects)" (p. 75), and the kit channel is "the MIDI
+    # transmit/receive channel for program change messages that switch kits" (p. 47). So a
+    # program change reaches the 128 kits of a project.
+    presets: 128
+  # A checked absence: System Exclusive is marked x in both columns.
+  sysex: false
+  # NOT RECORDED: NRPN. The chart has no NRPN row and the manual never uses the word, which is
+  # silence rather than a checked absence.
+
+voice:
+  # Notes address instruments rather than pitches, which is what a rhythm machine is.
+  addressing: voices
+  # The chart's note table, first column. EVERY ONE IS A FACTORY DEFAULT: "These note numbers are
+  # configurable on MENU>SYSTEM>MIDI>Inst Note", and the manual gives the range each may take,
+  # "OFF, C-1(0)-G9(127)" (p. 47). The other two columns of that table are in the source account.
+  voices:
+    bd: 36
+    sd: 38
+    lt: 43
+    ht: 50
+    rs: 37
+    hc: 39
+    ch: 42
+    oh: 46
+    cc: 49
+    rc: 51
+    # Not an instrument: the trigger output, which the specification calls "1 exclusive part for
+    # trigger out" (p. 75) and which the note table gives a number like the rest.
+    trg: 84
+  velocity:
+    # "o 9nH v=80" transmitted against a bare "o" recognised: it accepts any velocity and sends
+    # a fixed 80.
+    note_on: received
+  # A checked absence, from the chart's own rows: Key's aftertouch x in both columns, Channel's
+  # aftertouch x in both columns.
+  aftertouch: none
+  # NOT RECORDED: pitch bend, because there is none. The chart marks it x in both columns, so
+  # there is no range to state.
+
+groups:
+  # The chart heads nothing over its rows, so these are this file's own - but every name in them
+  # is the chart's, taken from the remarks themselves. The ten instrument groups are the ten
+  # names the chart prefixes its per-instrument rows with.
+  performance: Performance
+  external_in: External In
+  analog_fx: Analog FX
+  master_fx: Master FX
+  delay: Delay
+  reverb: Reverb
+  bd: BD
+  sd: SD
+  lt: LT
+  ht: HT
+  rs: RS
+  hc: HC
+  ch: CH
+  oh: OH
+  cc: CC
+  rc: RC
+
+controls:
+
+  # Generated from the chart by `Notes/4220_write_controls.py`, which reproduces this block.
+  # Every row is marked o in both columns, so no control carries a `direction`.
+
+  # PERFORMANCE ─────────────────────────────────────────────────────────
+  morph:                  {label: MORPH, cc: 89, group: performance}
+
+  # EXTERNAL IN ─────────────────────────────────────────────────────────
+  external_in:            {label: EXT IN, cc: 9, group: external_in}
+
+  # ANALOG FX ───────────────────────────────────────────────────────────
+  analog_fx_on:           {label: ANALOG FX ON, cc: 19, group: analog_fx}
+  analog_fx_filter:       {label: FILTER, cc: 20, group: analog_fx}
+  analog_fx_drive:        {label: DRIVE, cc: 21, group: analog_fx}
+
+  # MASTER FX ───────────────────────────────────────────────────────────
+  master_fx_on:           {label: MASTER FX ON, cc: 15, group: master_fx}
+  master_fx_ctrl_1:       {label: MASTER FX CTRL1, cc: 16, group: master_fx}
+  master_fx_ctrl_2:       {label: MASTER FX CTRL2, cc: 17, group: master_fx}
+  master_fx_ctrl_3:       {label: MASTER FX CTRL3, cc: 18, group: master_fx}
+
+  # DELAY ───────────────────────────────────────────────────────────────
+  delay_level:            {label: DELAY LEVEL, cc: 12, group: delay}
+  delay_time:             {label: DELAY TIME, cc: 13, group: delay}
+  delay_feedback:         {label: DELAY FEEDBACK, cc: 14, group: delay}
+
+  # REVERB ──────────────────────────────────────────────────────────────
+  reverb_time:            {label: REVERB TIME, cc: 90, group: reverb}
+  reverb_level:           {label: REVERB LEVEL, cc: 91, group: reverb}
+
+  # BD ──────────────────────────────────────────────────────────────────
+  bd_tune:                {label: BD TUNE, cc: 22, group: bd}
+  bd_decay:               {label: BD DECAY, cc: 23, group: bd}
+  bd_mix:                 {label: BD MIX, cc: 24, group: bd}
+  bd_ctrl_1:              {label: BD CTRL1, cc: 25, group: bd}
+  bd_ctrl_2:              {label: BD CTRL2, cc: 26, group: bd}
+  bd_ctrl_3:              {label: BD CTRL3, cc: 27, group: bd}
+  bd_level:               {label: BD LEVEL, cc: 28, group: bd}
+
+  # SD ──────────────────────────────────────────────────────────────────
+  sd_tune:                {label: SD TUNE, cc: 29, group: sd}
+  sd_decay:               {label: SD DECAY, cc: 30, group: sd}
+  sd_mix:                 {label: SD MIX, cc: 31, group: sd}
+  sd_ctrl_1:              {label: SD CTRL1, cc: 46, group: sd}
+  sd_ctrl_2:              {label: SD CTRL2, cc: 47, group: sd}
+  sd_ctrl_3:              {label: SD CTRL3, cc: 48, group: sd}
+  sd_level:               {label: SD LEVEL, cc: 49, group: sd}
+
+  # LT ──────────────────────────────────────────────────────────────────
+  lt_tune:                {label: LT TUNE, cc: 50, group: lt}
+  lt_decay:               {label: LT DECAY, cc: 51, group: lt}
+  lt_mix:                 {label: LT MIX, cc: 52, group: lt}
+  lt_ctrl_1:              {label: LT CTRL1, cc: 53, group: lt}
+  lt_ctrl_2:              {label: LT CTRL2, cc: 54, group: lt}
+  lt_ctrl_3:              {label: LT CTRL3, cc: 55, group: lt}
+  lt_level:               {label: LT LEVEL, cc: 56, group: lt}
+
+  # HT ──────────────────────────────────────────────────────────────────
+  ht_tune:                {label: HT TUNE, cc: 57, group: ht}
+  ht_decay:               {label: HT DECAY, cc: 58, group: ht}
+  ht_mix:                 {label: HT MIX, cc: 59, group: ht}
+  ht_ctrl_1:              {label: HT CTRL1, cc: 60, group: ht}
+  ht_ctrl_2:              {label: HT CTRL2, cc: 61, group: ht}
+  ht_ctrl_3:              {label: HT CTRL3, cc: 62, group: ht}
+  ht_level:               {label: HT LEVEL, cc: 63, group: ht}
+
+  # RS ──────────────────────────────────────────────────────────────────
+  rs_tune:                {label: RS TUNE, cc: 80, group: rs}
+  rs_decay:               {label: RS DECAY, cc: 81, group: rs}
+  rs_ctrl:                {label: RS CTRL, cc: 82, group: rs}
+  rs_level:               {label: RS LEVEL, cc: 83, group: rs}
+
+  # HC ──────────────────────────────────────────────────────────────────
+  hc_tune:                {label: HC TUNE, cc: 84, group: hc}
+  hc_decay:               {label: HC DECAY, cc: 85, group: hc}
+  hc_ctrl:                {label: HC CTRL, cc: 86, group: hc}
+  hc_level:               {label: HC LEVEL, cc: 87, group: hc}
+
+  # CH ──────────────────────────────────────────────────────────────────
+  ch_tune:                {label: CH TUNE, cc: 102, group: ch}
+  ch_decay:               {label: CH DECAY, cc: 103, group: ch}
+  ch_ctrl:                {label: CH CTRL, cc: 104, group: ch}
+  ch_level:               {label: CH LEVEL, cc: 105, group: ch}
+
+  # OH ──────────────────────────────────────────────────────────────────
+  oh_tune:                {label: OH TUNE, cc: 106, group: oh}
+  oh_decay:               {label: OH DECAY, cc: 107, group: oh}
+  oh_ctrl:                {label: OH CTRL, cc: 108, group: oh}
+  oh_level:               {label: OH LEVEL, cc: 109, group: oh}
+
+  # CC ──────────────────────────────────────────────────────────────────
+  cc_tune:                {label: CC TUNE, cc: 110, group: cc}
+  cc_decay:               {label: CC DECAY, cc: 111, group: cc}
+  cc_ctrl:                {label: CC CTRL, cc: 112, group: cc}
+  cc_level:               {label: CC LEVEL, cc: 113, group: cc}
+
+  # RC ──────────────────────────────────────────────────────────────────
+  rc_tune:                {label: RC TUNE, cc: 114, group: rc}
+  rc_decay:               {label: RC DECAY, cc: 115, group: rc}
+  rc_ctrl:                {label: RC CTRL, cc: 116, group: rc}
+  rc_level:               {label: RC LEVEL, cc: 117, group: rc}
+

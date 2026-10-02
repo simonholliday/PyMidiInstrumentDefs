@@ -156,6 +156,7 @@ class TestBundledCorpus:
 			"pwm/malevolent",
 			"roland/juno_106",
 			"roland/tr8s",
+			"roland/tr_1000",
 			"sequential/take_5",
 			"soma/pulsar_23",
 			"teenage_engineering/op_1",
@@ -3159,3 +3160,80 @@ class TestMpcSample:
 		assert mpc.model.firmware == "1.3.0"
 		assert mpc.model.manufacturer == "Akai Professional"
 		assert set(mpc.sources) == {"guide", "release_notes"}
+
+
+class TestTr1000:
+
+	"""A real chart, nine firmware releases behind the instrument it describes."""
+
+	def test_fifty_two_controls_belong_to_ten_instruments (self) -> None:
+		"""Four large instruments have seven parameters and six small ones have four."""
+		tr = pymidiinstrumentdefs.load("roland/tr_1000", [CORPUS])
+
+		assert len(tr.controls) == 66
+
+		counted = {name: sum(1 for control in tr.controls.values() if control.group == name)
+			for name in ("bd", "sd", "lt", "ht", "rs", "hc", "ch", "oh", "cc", "rc")}
+
+		assert counted == {"bd": 7, "sd": 7, "lt": 7, "ht": 7,
+			"rs": 4, "hc": 4, "ch": 4, "oh": 4, "cc": 4, "rc": 4}
+
+		assert sum(counted.values()) == 52
+
+	def test_every_row_travels_both_ways (self) -> None:
+		"""Sixty-six rows and not one direction among them."""
+		tr = pymidiinstrumentdefs.load("roland/tr_1000", [CORPUS])
+
+		assert all(control.direction == "both" for control in tr.controls.values())
+
+		numbers = sorted(control.cc for control in tr.controls.values() if control.cc is not None)
+
+		assert len(numbers) == 66
+		assert len(set(numbers)) == 66
+		assert numbers[0] == 9 and numbers[-1] == 117
+
+	def test_eleven_instruments_have_notes_and_they_are_defaults (self) -> None:
+		"""The chart's first note column, which the player can change in a menu."""
+		tr = pymidiinstrumentdefs.load("roland/tr_1000", [CORPUS])
+
+		assert tr.voice.addressing == "voices"
+		assert tr.voice.voices == {
+			"bd": 36, "sd": 38, "lt": 43, "ht": 50, "rs": 37, "hc": 39,
+			"ch": 42, "oh": 46, "cc": 49, "rc": 51, "trg": 84}
+
+		# TRG is the trigger output rather than an instrument, and it has no controls.
+		assert not any(control.group == "trg" for control in tr.controls.values())
+
+	def test_what_was_checked_and_found_absent (self) -> None:
+		"""Three absences the chart states, and one silence it does not."""
+		tr = pymidiinstrumentdefs.load("roland/tr_1000", [CORPUS])
+
+		assert tr.midi.sysex is False
+		assert tr.voice.aftertouch == "none"
+		assert tr.voice.pitch_bend is None
+
+		# The chart has no NRPN row at all, which is silence rather than an absence.
+		assert tr.midi.nrpn is None
+
+	def test_the_chart_is_older_than_the_firmware_it_is_cited_beside (self) -> None:
+		"""Version 1.11 against a manual marked 1.20 and later, and a system program at 1.22."""
+		tr = pymidiinstrumentdefs.load("roland/tr_1000", [CORPUS])
+
+		assert tr.model.firmware == "1.20"
+		assert tr.sources["chart"].edition == "Version 1.11"
+		assert tr.sources["manual"].edition == "03"
+		assert tr.sources["release_notes"].edition == "Ver.1.22"
+
+	def test_it_sends_a_fixed_velocity_and_accepts_any (self) -> None:
+		"""Which the TR-8S does too, and which the chart states in one row."""
+		tr = pymidiinstrumentdefs.load("roland/tr_1000", [CORPUS])
+
+		assert tr.voice.velocity is not None
+		assert tr.voice.velocity.note_on == "received"
+
+		assert tr.midi.clock == "both"
+		assert tr.midi.transport == "both"
+		assert tr.midi.channels == (1, 16)
+
+		assert tr.midi.program_change is not None
+		assert tr.midi.program_change.presets == 128

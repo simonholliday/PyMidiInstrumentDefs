@@ -94,6 +94,20 @@ class TestBundledCorpus:
 
 		assert printing == {}
 
+	def test_the_readme_lists_every_bundled_definition (self) -> None:
+		"""Its table says "The bundled definitions", so a missing row makes it untrue.
+
+		Two were missing when this was written - both Moog 37s, added at v0.1.5 and never
+		given a row - which nothing would have caught, because the table is prose to every
+		other check here.
+		"""
+		readme = (pathlib.Path(__file__).parent.parent / "README.md").read_text(encoding = "utf-8")
+
+		missing = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			if f"`{name}`" not in readme]
+
+		assert missing == []
+
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [

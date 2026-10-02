@@ -136,6 +136,7 @@ class TestBundledCorpus:
 			"expressive_e/osmose",
 			"korg/microkorg",
 			"korg/minilogue_xd",
+			"korg/multi_poly",
 			"korg/opsix",
 			"korg/volca_drum",
 			"korg/wavestate",
@@ -2907,3 +2908,93 @@ class TestDigitaktII:
 		# Aftertouch is received and never characterised, and the bend has no stated range.
 		assert digitakt.voice.aftertouch is None
 		assert digitakt.voice.pitch_bend is None
+
+
+class TestMultiPoly:
+
+	"""Two kinds of number on one instrument, and a chart page partly written in cipher."""
+
+	def test_nine_numbers_are_fixed_and_twelve_are_defaults (self) -> None:
+		"""The chart's rows are properties of the model; the CC Assign table's are not."""
+		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
+
+		assert len(multi.controls) == 22
+
+		fixed = sorted(control.cc for name, control in multi.controls.items()
+			if control.group in ("controllers", "pedals")
+			or name in ("kaoss_pad_x", "kaoss_pad_y", "kaoss_button")
+			if control.cc is not None)
+
+		assert fixed == [1, 7, 10, 11, 12, 18, 19, 64, 66, 67]
+
+		defaults = sorted(control.cc for name, control in multi.controls.items()
+			if control.cc not in fixed and control.cc is not None)
+
+		assert defaults == [9, 20, 24, 25, 26, 27, 105, 106, 107, 108, 109, 110]
+
+		# CC 12 is named with its number in the body and nowhere in the chart, which folds it
+		# anonymously into its assignable run.
+		assert multi.controls["kaoss_button"].cc == 12
+
+	def test_every_default_falls_inside_the_assignable_range (self) -> None:
+		"""The chart and the settings page agree, which is worth asserting rather than assuming."""
+		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
+
+		# "2-6, 8-9, 12-31, 32-63, 65, 67-95, 102-119", as the chart prints it.
+		assignable = (set(range(2, 7)) | {8, 9} | set(range(12, 64)) | {65}
+			| set(range(67, 96)) | set(range(102, 120)))
+
+		defaults = [control.cc for name, control in multi.controls.items()
+			if control.group in ("scale_select", "mod_knobs")
+			or name.startswith(("kaoss_finger", "kaoss_throw"))]
+
+		assert defaults and all(number in assignable for number in defaults if number is not None)
+
+	def test_five_controls_are_recognised_and_never_sent (self) -> None:
+		"""Which is what the chart's two mark columns say, read by their position on the page."""
+		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
+
+		receives = sorted(name for name, control in multi.controls.items()
+			if control.direction == "receives")
+
+		assert receives == ["expression", "pan", "soft", "sostenuto", "volume"]
+
+		# `receives` means it answers and never sends, so a panel may still offer it.
+		assert all(control.is_sendable for control in multi.controls.values())
+
+	def test_four_layers_wait_on_the_global_channel (self) -> None:
+		"""The wavestate's arrangement exactly, down to the setting that moves one."""
+		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
+
+		assert sorted(multi.parts) == ["layer_a", "layer_b", "layer_c", "layer_d"]
+		assert all(part.channel_offset == 0 for part in multi.parts.values())
+		assert all(not part.is_assigned for part in multi.parts.values())
+
+		# Sixty voices for the instrument, drawn on by whichever Layer plays next.
+		assert multi.voice.polyphony == 60
+		assert multi.voice.polyphony_shared is True
+
+	def test_what_was_checked_and_found_absent (self) -> None:
+		"""NRPN and transport are absences the documents state, not pages nobody read."""
+		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
+
+		assert multi.midi.nrpn == "none"
+		assert multi.midi.transport == "none"
+		assert multi.midi.clock == "both"
+		assert multi.midi.sysex is True
+
+		assert multi.midi.program_change is not None
+		assert multi.midi.program_change.presets == 64
+
+		# Both kinds of aftertouch are received and a four-way setting picks between them, so
+		# no one word is true; the bend has no stated range.
+		assert multi.voice.aftertouch is None
+		assert multi.voice.pitch_bend is None
+
+	def test_the_chart_is_a_page_of_the_manual_and_the_offset_says_so (self) -> None:
+		"""Korg publishes no chart of its own for this instrument, and one source is cited for that."""
+		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
+
+		assert multi.sources["manual"].page_offset == 5
+		assert not multi.sources["property_exchange"].paginated
+		assert multi.model.firmware is None

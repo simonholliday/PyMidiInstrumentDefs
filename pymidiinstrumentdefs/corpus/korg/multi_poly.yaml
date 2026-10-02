@@ -1,0 +1,286 @@
+# KORG CALLS A FILE ON THIS INSTRUMENT'S DOWNLOAD PAGE A MIDI IMPLEMENTATION AND IT HOLDS NO
+# CONTROLLER NUMBER. "multi/poly/Property Exchange MIDI Implementation" is a MIDI-CI document -
+# Discovery, Property Exchange Capabilities, Get Property Data, Subscription - and the phrase
+# "control change" does not appear in it once. **The whole published map is one page of the
+# owner's manual**, printed page 127. This is the third Korg instrument it has been true of,
+# after the wavestate and the opsix, and the same maker's file of that name for the minilogue xd
+# is a control-change map.
+#
+# THIS MANUAL DESCRIBES TWO INSTRUMENTS AND SO DOES THE CHART, which names "multi/poly" and
+# "multi/poly module" on the same line. The specifications keep them apart in three places and
+# none of them is MIDI: the keyboard, the dimensions and the weight. **Korg's own release notes
+# say their firmware differs** - its System Updater history records fixing a version that
+# "mistakenly allowed multi/poly module to be updated with the firmware for the 37 key
+# multi/poly" - so the two are one instrument to this manual and two to that tool. Everything
+# below is what the chart gives for both.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: multi/poly
+  # NOT RECORDED. The chart's header reads "Version: 1.00", dated March 26, 2024, which is the
+  # chart's own version in the way the wavestate's is: the manual states no system version for
+  # itself anywhere, and its colophon reads only "Published 01/2025" and "(c) 2024 KORG INC."
+  # KORG PUBLISHES NO OS FILE AND NO RELEASE NOTES FOR THIS INSTRUMENT. The system reaches it
+  # through the Korg System Updater, which is a separate tool with a version of its own - 1.1.0,
+  # dated 2026.04.10 - and which serves the wavestate, modwave, opsix, Grandstage-X and
+  # multi/poly families alike. That version is the tool's and not this instrument's, and the
+  # trap is worth naming because the volca drum's updater page carried the firmware itself.
+  # Checked 2026-10-02.
+
+source: >-
+  Owner's Manual, 133 pages, the edition Korg names E 2, published 01/2025: the MIDI
+  implementation chart on printed p. 127, MIDI CC Assign on pp. 121-122, the specifications on
+  p. 126, the structure on p. 3, the Layer's MIDI settings on p. 13, the modulation sources on
+  p. 64, the Utility MIDI settings on pp. 118-120, and the aftertouch source on p. 120.
+  THE NUMBERS BELOW ARE OF TWO KINDS AND THE FILE KEEPS THEM APART. Nine are fixed, from the
+  chart: modulation at CC 1, volume at 7, pan at 10, expression at 11, the Kaoss pad's two axes
+  at 18 and 19, and the damper, sostenuto and soft pedals at 64, 66 and 67. Twelve are **factory
+  defaults a player can reassign**, from MIDI CC Assign: "You can control Scale Select and each
+  Mod Knob directly from MIDI CCs" (p. 121), and its table gives Scale Select 9, Mod Knobs 1 to 4
+  as 24 to 27, and Kaoss Physics "18-20, 105-110". They are recorded because a factory default is
+  a fact about the instrument as it leaves the factory, and marked as defaults so that nothing
+  reads them as fixed.
+  THE TWO PAGES AGREE WITH EACH OTHER. The chart marks "2-6, 8-9, 12-31, 32-63, 65, 67-95,
+  102-119" as "Assignable for controllers and modulation", which is 107 of the 128 numbers, and
+  every default above falls inside it. Only CC 0 and CC 96 to 101 appear nowhere in that block at
+  all.
+  THAT RANGE IS WHERE FOURTEEN THINGS MAY BE PUT, NOT A HUNDRED CONTROLLERS, and reading its two
+  O marks without its footnote is the mistake this instrument invites. Footnote *1 narrows it:
+  "Sent and received by Mod Knobs and Scale Select when assigned in UTILITY > MIDI CC Assign;
+  also received as programmable modulation sources". The settings page offers exactly fourteen
+  assignable slots - nine for Kaoss Physics, one for Scale Select, four for the Mod Knobs - and
+  they are the fourteen numbers below that are not fixed.
+  AND THE CHART CONTRADICTS ITSELF ABOUT CC 67, exactly as the wavestate's does. Its own row
+  gives 67 to the soft pedal, recognised and not sent, while the assignable range printed
+  directly below it begins at 67 and is marked both ways. **The same template, the same
+  contradiction, on a second instrument** - which makes it the chart's rather than the
+  instrument's, though neither document says so. The dedicated row is followed here, as it is
+  there, and 68 would make the range consistent; that is a guess rather than a reading, so it is
+  not made.
+  READING THAT CHART NEEDS CARE AND THE REASON IS NOT THE ONE THE wavestate HAD. Three of its
+  spans come back **29 below the characters they draw** - the heading "Recognized" as
+  `5HFRJQL]HG`, and the two lines of the model block - which is the opsix's cipher on a page
+  where nothing else needs it. Testing for odd bytes would decode the model line and leave the
+  heading, because `5HFRJQL]HG` is printable throughout; the font is what tells them apart. The
+  columns here were settled from the page's own geometry, by the three vertical rules at x 215.0,
+  302.7 and 387.5 and by which of them each heading falls between, and the two mark columns are
+  in the order they read - Transmitted left, Recognized right.
+  THE PAGE ALSO CARRIES A HEADING THAT IS NOT PRINTED ON IT. A span reading "MIDI Implementation
+  Chart" sits above the visible "[Analog Modeling Synthesizer]" and renders as nothing at all, so
+  an extractor reports a title the page does not show.
+  AND THE CHART CALLS THE X-Y PAD SOMETHING THE INSTRUMENT IS NOT. Its row for 18 and 19 reads
+  "Kaoss Pad X, Y", where the front panel, the settings page and the chapter on it all say Kaoss
+  Physics; Kaoss Pad is this maker's name for a different product line. The labels below follow
+  the chart for those two numbers and the manual for the rest.
+  THE INSTRUMENT SENDS LESS THAN IT RECEIVES, which is what `direction` is for: volume, pan,
+  expression, sostenuto and soft are recognised and never sent. Modulation, the two Kaoss pad
+  axes and the damper travel both ways, and so does every default, which footnote *1 puts
+  plainly: "Sent and received by Mod Knobs and Scale Select when assigned in UTILITY > MIDI CC
+  Assign; also received as programmable modulation sources".
+  WHICH LAYER A MOD KNOB REACHES IS DECIDED BY THE CHANNEL AND NOT BY THE NUMBER. There are four
+  Layers and one set of four Mod Knob numbers: "MIDI CCs received by and sent from the Program
+  Mod Knobs, for any Layer with Use Global MIDI Channel enabled" (p. 118). So a Layer given a
+  channel of its own answers to 24 to 27 on that channel. The format has no way to say "whichever
+  part received it", so those four name no part and this says so instead.
+  NOT RECORDED: WHICH KIND OF AFTERTOUCH, and not because nobody looked. The chart marks both
+  Polyphonic (Key) and Channel aftertouch as recognised and neither as transmitted, and a setting
+  chooses which reaches the sound: "AT Source ... Off: All aftertouch will be ignored. Channel:
+  The mod source "Aftertouch" receives Channel Aftertouch ... Poly: The mod source "Aftertouch"
+  receives Poly Aftertouch ... Chan+Poly: The mod source "Aftertouch" receives both Channel and
+  Poly Aftertouch" (p. 120). This field holds one of channel, poly or none, and no one of them is
+  true here. The keyboard itself has none: "Note: Aftertouch is supported via MIDI only" (p. 119).
+  NOT RECORDED: THE PITCH BEND RANGE. The chart marks pitch bend as travelling both ways and
+  gives no span, and the words "bend range" appear on no page of the manual.
+  CHECKED AND ABSENT: NRPN and RPN. Neither word appears anywhere in the 133 pages, and the
+  Property Exchange files hold no controller number at all. Transport likewise: the chart marks
+  Song Position, Song Select, Tune Request and the real-time Commands X in both columns, so start
+  and stop neither arrive nor leave, where the clock does both.
+
+sources:
+  manual:
+    kind: manual
+    title: multi/poly, multi/poly module Owner's Manual
+    edition: E 2
+    dated: 2025-01-16
+    landing: "https://www.korg.com/us/support/download/product/0/976/"
+    url: "https://cdn.korg.com/us/support/download/files/4c699f9371bafe7e1c66f46415663f87.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27multi-poly_multipoly-module_OM_E2.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: aa40edc7e2208bdb1c29db41babb7d590ab55f8b81ef2551f31982ece212ec9c
+    retrieved: 2026-10-02
+    # 133 pages, and printed page + 5 = file page, checked at three places - and **the chart's
+    # own page prints no number at all**, its footer carrying "Consult your local Korg
+    # distributor..." where every other page carries a figure. So "p. 127" for the chart follows
+    # from the offset rather than from the page, which is worth saying because every other
+    # citation here is read off the paper. THE CHART CARRIES A
+    # VERSION OF ITS OWN, "Version: 1.00" dated March 26, 2024, which is recorded here so a later
+    # chart can be told from this one. Encrypted with an empty user password, like every Korg
+    # PDF in this library.
+    page_offset: 5
+  property_exchange:
+    kind: midi_implementation
+    title: multipoly Property Exchange MIDI Implementation
+    edition: Version 1.1
+    dated: 2025-09-18
+    landing: "https://www.korg.com/us/support/download/product/0/976/"
+    url: "https://cdn.korg.com/us/support/download/files/13e0c7ced0d374bd282ef47c53266742.txt?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27multipoly_PE_MIDIimp%255B1%255D.txt&response-content-type=application%2Foctet-stream%3B"
+    sha256: fe0d953a6d573fffe3b821cb6a8bc258652c6622d3041949ddb915fa6e43f1ab
+    retrieved: 2026-10-02
+    paginated: false
+    # CITED FOR WHAT IT IS NOT. Korg calls this a MIDI implementation; it is the MIDI-CI Property
+    # Exchange layer and holds no controller number at all, which is why the chart in the manual
+    # is the source for every number below. A companion Property Exchange Resource List sits
+    # beside it in the library and is not cited.
+  download_page:
+    kind: download_page
+    title: multi/poly downloads
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/0/976/"
+    sha256: f5a67f9b7496bcb90d96167fc494d661d70ea6a8273564efc2d4253d46831b25
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for what Korg publishes and does not: four languages of the manual, a quick start
+    # guide, a voice name list, the Editor/Librarian and System Updater manuals, the two Property
+    # Exchange files - and no MIDI implementation chart and no OS file.
+
+midi:
+  # "Global Channel ... This is the basic MIDI channel for the multi/poly" (p. 118), where the
+  # range printed under that heading is 1 to 16; and the chart gives Basic Channel as 1-16 both
+  # ways, remarked "Memorized".
+  channels: [1, 16]
+  # The chart's recognised Mode default, 3, which is omni off and poly. Mode messages are marked
+  # X in both columns.
+  mode: 3
+  # "System Real Time: Clock" is marked O in both columns, and the Utility page gives the setting
+  # behind it: "Clock [Internal, External, Auto]" (p. 118).
+  clock: both
+  # A checked absence rather than silence: the chart marks System Common's Song Position, Song
+  # Select and Tune Request, and System Real Time's Commands, X in both columns. So the start,
+  # stop and continue messages neither arrive nor leave, on an instrument whose clock does both.
+  transport: none
+  program_change:
+    # "O 1-64" in both columns, remarked "Selects Slots in the current Set List", with True
+    # Number recognised as 0-63.
+    receives: true
+    sends: true
+    # "A Set List has 64 Slots" (p. 5), which is what the chart's 1-64 counts.
+    presets: 64
+  # Marked O in both columns, with footnote *2: "Also supports universal system exclusive
+  # messages device inquiry, master volume, master fine tuning, and master coarse tuning". Its
+  # remark names what else travels that way: "Kaoss Physics".
+  sysex: true
+  # CHECKED AND ABSENT. Neither NRPN nor RPN appears anywhere in the manual's 133 pages, and the
+  # file Korg calls a MIDI implementation holds no controller number at all.
+  nrpn: none
+
+parts:
+  # Four Layers, A to D, which is what a Performance is: "The multi/poly plays one Performance at
+  # a time. A Performance has four Layers (A...D), Kaoss Physics, an Arpeggiator, and a master
+  # reverb and EQ. Each Layer contains a Program, and other settings such as MIDI channel, key
+  # and velocity zones, etc." (p. 3).
+  # EACH IS ON THE GLOBAL CHANNEL UNTIL THE PLAYER MOVES IT, which is why every one of them
+  # carries channel_offset 0 rather than a channel of its own: "Use Global MIDI Channel ... the
+  # default. The Layer will play from the built-in keyboard, and receive on the Global Channel",
+  # and "This is shown only if Use Global MIDI Channel is Off. It sets the channel on which the
+  # Layer will receive MIDI" (p. 13). So a Layer becomes separately addressable only
+  # when somebody turns that off, and which channel it then takes belongs to their project.
+  # This is the wavestate's arrangement exactly, down to the wording.
+  layer_a: {label: Layer A, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+  layer_b: {label: Layer B, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+  layer_c: {label: Layer C, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+  layer_d: {label: Layer D, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+
+voice:
+  addressing: pitches
+  # "Note Number 0-127" transmitted and recognised, and "True Voice 0-127" recognised, remarked
+  # "Some sounds will not play across the entire note range" - the chart saying it will accept
+  # every note and not promising that every sound answers to all of them.
+  note_range: [0, 127]
+  # "Maximum Polyphony: 60 voices" (p. 126), given once for both models and once for the whole
+  # instrument, so the four Layers draw on one pool. "Max # of Notes ... 1-8 limits the number of
+  # notes played by the Program. Voices will be allocated dynamically up to this maximum"
+  # (p. 11), which is a Program's share of that pool and a setting rather than a fact about the
+  # model. A SECOND SETTING MOVES THE FIGURE ITSELF: "Oversampling [Standard, Extreme] ...
+  # Standard yields higher polyphony" and "Extreme cuts polyphony in half (or more)" (pp. 10-11).
+  # So 60 is the maximum the specification states, not a count that holds whatever the player
+  # does, and the specification is what is recorded.
+  polyphony: 60
+  polyphony_shared: true
+  velocity:
+    # "Note On O 9n, V=1-127" in both columns. Note Off is "O 8n, V=1-64" transmitted against
+    # "O 8n, V=0-127" recognised, remarked "Received Note Off Velocity values are clipped at 64",
+    # so release velocity travels both ways; the specification calls the keyboard "velocity and
+    # release-velocity sensitive" (p. 126).
+    note_on: received
+    note_off: true
+  # NOT RECORDED: AFTERTOUCH, and not because nobody looked. Both kinds are recognised, neither
+  # is sent, and a four-way setting chooses which reaches the sound. See the source account.
+  # NOT RECORDED: THE PITCH BEND RANGE, which the chart marks both ways and never quantifies.
+
+groups:
+  # The first three are the Function column of the MIDI CC Assign table, printed p. 121 and 122,
+  # word for word, less the "1...4" the Mod Knobs row carries. The last two are not the maker's
+  # words: the chart heads nothing over its control-change rows, so the nine fixed controllers
+  # are grouped by what they are.
+  scale_select: Scale Select
+  mod_knobs: Mod Knobs
+  kaoss_physics: Kaoss Physics
+  controllers: Controllers
+  pedals: Pedals
+
+controls:
+
+  # FROM MIDI CC ASSIGN, printed pp. 121-122. EVERY NUMBER IN THIS SECTION IS A DEFAULT, not a
+  # property of the model: the table's own column is headed "Default CC assignment", and the
+  # player can reassign any of them. The page also says which cannot be used: "Some dedicated CCs
+  # cannot be assigned (CCs 1, 7, etc.)".
+
+  scale_select:              {label: Scale Select, cc: 9, group: scale_select}
+
+  # "Mod Knobs 1...4", CC 24 to 27. Which Layer one reaches is decided by the channel it arrives
+  # on rather than by the number; see the source account.
+  mod_knob_1:                {label: Mod Knob 1, cc: 24, group: mod_knobs}
+  mod_knob_2:                {label: Mod Knob 2, cc: 25, group: mod_knobs}
+  mod_knob_3:                {label: Mod Knob 3, cc: 26, group: mod_knobs}
+  mod_knob_4:                {label: Mod Knob 4, cc: 27, group: mod_knobs}
+
+  # "Kaoss Physics 18-20, 105-110", and the page says what the nine carry: "For Kaoss Physics,
+  # the first three CCs correspond to x/y position and finger on/finger off, and the last six CCs
+  # contain the "throw" information of release position, direction, and velocity" (p. 122).
+  # SO 18 AND 19 ARE IN THE CHART AS WELL, as the Kaoss pad's two axes, and they are recorded
+  # there rather than twice. 20 is the third of the first three, and the six below are the throw.
+  # WHICH OF THE SIX CARRIES WHICH IS NOT STATED. The manual names three things and gives six
+  # numbers, and never says which is which, so they are numbered in the order it prints them and
+  # the sentence above is what a reader has to go on.
+  kaoss_finger:              {label: Kaoss Physics Finger On/Off, cc: 20, group: kaoss_physics}
+  kaoss_throw_1:             {label: Kaoss Physics Throw 1, cc: 105, group: kaoss_physics}
+  kaoss_throw_2:             {label: Kaoss Physics Throw 2, cc: 106, group: kaoss_physics}
+  kaoss_throw_3:             {label: Kaoss Physics Throw 3, cc: 107, group: kaoss_physics}
+  kaoss_throw_4:             {label: Kaoss Physics Throw 4, cc: 108, group: kaoss_physics}
+  kaoss_throw_5:             {label: Kaoss Physics Throw 5, cc: 109, group: kaoss_physics}
+  kaoss_throw_6:             {label: Kaoss Physics Throw 6, cc: 110, group: kaoss_physics}
+
+  # FROM THE MIDI IMPLEMENTATION CHART, printed p. 127, which is where the fixed controllers are.
+  # Direction follows its two mark columns, read by their position between the page's own
+  # vertical rules rather than by the order their headings extract in.
+
+  modulation:                {label: Modulation, cc: 1, group: controllers}
+  # NOT IN THE CHART, AND NAMED IN THE BODY WITH ITS NUMBER: "Kaoss Btn CC 12 ... This is the
+  # front-panel KAOSS button (unipolar MIDI CC#12)" (p. 64), in the list of modulation sources
+  # beside "Damper CC 64". The chart folds 12 anonymously into its assignable run and gives
+  # named rows to 1, 7, 10, 11, 64, 66 and 67, so a reader with only the chart would take 12 for
+  # one assignable number among a hundred.
+  kaoss_button:              {label: Kaoss Button, cc: 12, group: kaoss_physics}
+  volume:                    {label: Volume, cc: 7, direction: receives, group: controllers}
+  pan:                       {label: Pan, cc: 10, direction: receives, group: controllers}
+  expression:                {label: Expression, cc: 11, direction: receives, group: controllers}
+  # "Kaoss Pad X, Y" in one cell against "18, 19", which the CC Assign table's first three
+  # confirm: x and y are the first two of the nine Kaoss Physics numbers.
+  kaoss_pad_x:               {label: Kaoss Pad X, cc: 18, group: kaoss_physics}
+  kaoss_pad_y:               {label: Kaoss Pad Y, cc: 19, group: kaoss_physics}
+
+  damper:                    {label: Damper, cc: 64, group: pedals}
+  sostenuto:                 {label: Sostenuto, cc: 66, direction: receives, group: pedals}
+  # The chart gives 67 to this row and then begins its assignable range at 67 as well. The
+  # dedicated row is followed; see the source account.
+  soft:                      {label: Soft, cc: 67, direction: receives, group: pedals}

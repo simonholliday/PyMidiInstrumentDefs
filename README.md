@@ -148,6 +148,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/labyrinth` | Moog Labyrinth: answers to notes, clock and transport, and nothing else |
 | `moog/matriarch` | Moog Matriarch: 37 controls, one of which only its firmware notes mention, and a voice count you can switch over MIDI |
 | `moog/minitaur` | Moog Minitaur: plays notes 0-72, with the firmware v2.1 corrections |
+| `moog/mother_32` | Moog Mother-32: seven controllers, four of which reach no sound at all but a voltage at a jack the player patches |
 | `moog/subharmonicon` | Moog Subharmonicon: reads a note as an offset from C4, not as a pitch, and answers to one controller its manual does not list |
 | `novation/bass_station_ii` | Novation Bass Station II: 94 controls across three products that share one guide, and one controller number the guide prints that the MIDI specification says is something else |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |

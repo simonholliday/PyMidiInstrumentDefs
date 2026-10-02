@@ -1,0 +1,183 @@
+# THIS INSTRUMENT ANSWERS TO SEVEN CONTROLLERS AND FOUR OF THEM DO NOT CHANGE A SOUND.
+# CC 1, 2, 4 and 7 are received only to be turned into a voltage at the ASSIGNABLE output jack,
+# which the player patches wherever they like: "CC 1,2,4,7: Used to generate CVs at the
+# ASSIGNABLE OUTPUT" (p. 57). The jack carries one of sixteen things at a time, chosen in Setup
+# mode, and five of the sixteen are MIDI - velocity, channel pressure, pitch bend, and those
+# four control changes two at a time is not possible. So a control below may reach nothing at
+# all, depending on a setting, and that is the instrument rather than a gap in the reading.
+#
+# IT IS A MIDI INPUT AND NOT A MIDI INSTRUMENT IN THE USUAL SENSE. Everything it receives is
+# converted to control voltage and gate: "MIDI Note values received are converted into a
+# 1V/Octave Keyboard CV, and then routed to the VCO and KB CV output jack" (p. 56). There is one
+# MIDI socket and it is an input, which the specifications give in four words - "MIDI INPUT:
+# Din Jack" with "DATA: Note, Clock, CC, etc." beside it (p. 70). No output, no thru, no USB.
+
+definition: 1
+
+model:
+  # Every Moog in this corpus names its maker this way, which a test holds to.
+  manufacturer: Moog Music
+  name: Mother-32
+  # THE NEWEST FIRMWARE MOOG PUBLISHES, AND IT NAMES IT IN A FILE NAME AND NOWHERE ELSE - the
+  # pattern established across every Moog in this corpus. The package holds
+  # `Mother-32_Firmware_v2_0_1.syx` and its own release notes, which head themselves "FIRMWARE
+  # UPDATE v2.0.1  April 2021".
+  # NOTHING IN 2.0.1 TOUCHES MIDI, which was checked rather than assumed: it "restores the
+  # following legacy behavior that was found in firmware v1.0, but not in v2.0", and the
+  # behaviour is an analogue one - a clock or trigger at the RUN/STOP input advancing the
+  # sequencer. So what is below is firmware 2.0's MIDI, which is what the manual describes.
+  firmware: "2.0.1"
+
+source: >-
+  Users Manual, 73 pages, and the Firmware Update v2.0 addendum, 13 pages: printed manual pages
+  56, 57 and 59.
+  THE MANUAL ALREADY DESCRIBES FIRMWARE 2.0, which matters because the addendum beside it is
+  dated April 2020 and the manual was made in July 2020: its Setup mode chapter lists the eight
+  pages the addendum introduced, including the four that are new in 2.0. So the two agree and
+  the addendum is cited for one thing the manual words differently.
+  MOOG PUBLISHES NO MIDI IMPLEMENTATION FOR THIS INSTRUMENT, and the manual's MIDI chapter is
+  two pages of prose rather than a table. Everything below is read from those two pages and
+  from the Setup mode list that follows them.
+  SEVEN CONTROLLERS, AND THE MAKER NAMES THEM IN ONE SENTENCE EACH: "The following MIDI CC
+  messages are received by Mother-32: CC 5: Portamento Time, CC 65: Portamento On/Off, CC 64:
+  Sustain, CC 1,2,4,7: Used to generate CVs at the ASSIGNABLE OUTPUT" (p. 57). There is no
+  other controller number anywhere in either document.
+  WHAT IT DOES WITH A NOTE IS WORTH KNOWING BEFORE SENDING ONE. "MIDI Note 0 corresponds to
+  -5V, and MIDI Note 120 corresponds to +5V. MIDI Note values 121 to 127 will generate the same
+  output as MIDI Note values 109 to 115" (p. 56). So the top seven notes are not silent and are
+  not themselves either: they fold back an octave. The note range below is the full 0 to 127
+  because every one of them does something, and the folding is recorded here because no field
+  can hold it.
+  PROGRAM CHANGE DOES TWO JOBS. "MIDI Program changes 1 to 64 select the current sequencer
+  pattern location. MIDI Program changes 71 to 86 select one of the 16 Assignable output modes"
+  (p. 57). The sixty-four pattern locations are what `presets` records; the sixteen output modes
+  are a second use of the same message that the format has nowhere to put.
+  THE PITCH BEND RANGE IS SET BY A REGISTERED PARAMETER NUMBER, which no other instrument here
+  does: "The Mother-32 default Pitch Bend amount is +/-1 Octave ... MIDI Pitch Bend amount can
+  be set from +/-0 to +/-12 semitones using MIDI Pitch Bend Depth RPN (CC101 value 0, CC100
+  value 0, CC6 values 0 to 12)" (p. 57). That is the standard RPN rather than anything of
+  Moog's, so it is recorded in `voice.pitch_bend` and not as a control.
+  NOT RECORDED: SYSTEM EXCLUSIVE. Neither document describes a system exclusive implementation.
+  Both describe updating the firmware by sending a `.syx` file to the instrument in boot-loader
+  mode, which is system exclusive arriving and being acted on - but it is the boot loader doing
+  it, not the instrument answering, and nothing says the running instrument implements anything.
+  NOT RECORDED: NRPN, which appears in neither document.
+  ONE SENTENCE OF MOOG'S CONTRADICTS THE PANEL, recorded rather than resolved: the Setup page
+  for the channel says it sets "the MIDI Channel your Mother-32 will use to send and receive
+  MIDI data" (p. 59), and this instrument has no MIDI output to send on - the manual's own
+  connection instructions say to "connect the MIDI OUT of your MIDI controller to the MIDI IN on
+  Mother-32" (p. 8), and the panel has one MIDI socket.
+
+sources:
+  manual:
+    kind: manual
+    title: Mother 32 Users Guide
+    # The guide's own back page calls itself "Mother-32 User Manual Version 2", which is a
+    # printing of the document and not a firmware: see the model block above for that.
+    edition: User Manual Version 2
+    landing: "https://www.moogmusic.com/downloads/?type=User%20Manual"
+    url: "https://cdn.inmusicbrands.com/Moog/Mother32/Mother_32_Users_Manual.pdf"
+    sha256: db88af2502af3889bd19b76a9010018d5ce6a3ebcc4d96820208f0ed5a1c4df1
+    retrieved: 2026-10-02
+    # 73 pages, and printed page + 1 = file page. The guide states no version of its own, which
+    # is why it sits in the library's `unknown/` folder - every Moog guide here does. Its PDF
+    # was made 2020-07-14, three months after the v2.0 addendum, and its Setup chapter lists
+    # the pages that addendum introduced, which is how it is known to describe firmware 2.0.
+    page_offset: 1
+  firmware_notes:
+    kind: release_notes
+    title: Mother-32 Manual Addendum, Firmware Update v2.0
+    edition: V2.0
+    dated: 2020-04
+    landing: "https://www.moogmusic.com/downloads/?type=Firmware%20Update"
+    url: "https://cdn.inmusicbrands.com/Moog/Mother32/Mother-32_Firmware_Update_V2.0.pdf"
+    sha256: 630429e91b2215487dd1c3b7226ca5b4117fbe8cf1197a2270b5cd18be87660d
+    retrieved: 2026-10-02
+    # 13 pages, numbered from 1 of their own, so this is cited by its own page numbers. Held
+    # chiefly as the record of what firmware 2.0 changed; the manual says the same things.
+    page_offset: 1
+  downloads:
+    kind: download_page
+    title: Moog downloads
+    landing: "https://www.moogmusic.com/downloads"
+    url: "https://www.moogmusic.com/api/downloads"
+    sha256: 2b12c3d24177c87c55f47550f16333f1228b33d740b8dd7fd4067a88605c0349
+    retrieved: 2026-10-02
+    paginated: false
+    # Moog serves no page listing its downloads: the list is data the browser fetches, and
+    # `Notes/4087_render_moog_downloads.py` is what reads it. 119 entries on the day this was
+    # read, of which five are this instrument's. It is the only evidence of what Moog publishes
+    # for an instrument and of what it does not.
+
+midi:
+  # The Setup mode page for the channel lists all sixteen by name, "MIDI Channel 1" to "MIDI
+  # Channel 16" (p. 59), and the chapter gives the default: "The Default MIDI Channel is 1"
+  # (p. 56).
+  channels: [1, 16]
+  # RECEIVES, AND NOTHING SAYS IT SENDS. "When Mother-32 detects a MIDI Clock signal, the Tempo
+  # LED blinks green at the detected tempo and the panel TEMPO knob becomes a clock divider"
+  # (p. 57), and Setup page 8 carries a "Follow MIDI Clock" switch, on by default. The clock
+  # this instrument puts out is a voltage at a jack, not a MIDI message.
+  clock: receives
+  # RECEIVES, ALL THREE, each with a sentence of its own: "MIDI START: A MIDI Start message runs
+  # the pattern from Step 1. MIDI STOP: A MIDI Stop message stops the pattern on the last active
+  # step. MIDI CONTINUE: A MIDI Continue message will start the pattern on the next active step"
+  # (p. 57). Setup page 8 carries a "Follow MIDI Start / Stop" switch, on by default, and
+  # nothing is transmitted - there is no MIDI output to transmit on.
+  # SONG POSITION POINTER IS IMPLIED AND NOT STATED, which is worth the distinction. No
+  # sentence in either document says it is received; the only mention is an aside in the
+  # addendum's known issues, about using it "to begin playback later than the beginning of a
+  # pattern" (firmware_notes, p. 12). That reads as a message the instrument honours, and it
+  # is not a statement that it does, so nothing here rests on it.
+  transport: receives
+  program_change:
+    receives: true
+    # The sequencer's pattern locations, which program changes 1 to 64 select. Program changes
+    # 71 to 86 do something else entirely - see the source paragraph.
+    presets: 64
+
+voice:
+  addressing: pitches
+  # MONOPHONIC, which the instrument is by construction: one VCO, one gate, one keyboard CV.
+  polyphony: 1
+  # EVERY NOTE DOES SOMETHING, which is why this is the full range rather than 0 to 120: notes
+  # 121 to 127 are neither silent nor themselves but repeat 109 to 115. The source paragraph
+  # quotes the sentence.
+  note_range: [0, 127]
+  velocity:
+    # RECEIVED, AND WHAT IT REACHES IS A SETTING: "MIDI Note On Velocity values from 0 to 127
+    # can be output from the Assignable output as a -5V to +5V CV signal" (p. 57). It also
+    # does one fixed thing: in the sequencer's record and step-edit functions, "MIDI Note On
+    # Velocity values 96 or greater or will turn Accent ON for the currently edited step" -
+    # the maker's own doubled word is left as printed.
+    note_on: received
+  # CHANNEL, AND THE MAKER SAYS WHICH IN TWO PLACES: "MIDI Channel Aftertouch can be output as
+  # a -5V to +5V signal on the assignable output" (p. 57), and the assignable output's own list
+  # of sixteen settings names it "MIDI Channel Pressure" (p. 59). Polyphonic key pressure is
+  # named nowhere, which for a monophonic instrument is what one would expect.
+  aftertouch: channel
+  pitch_bend:
+    # TWELVE SEMITONES BY DEFAULT AND SETTABLE DOWN TO NONE, by the standard registered
+    # parameter rather than anything of Moog's - see the source paragraph for the sentence and
+    # the three controllers it names.
+    semitones: 12
+    programmable: true
+
+groups:
+  portamento: Portamento
+  assignable: Assignable Output
+
+controls:
+  # ALL SEVEN COME FROM ONE SENTENCE on printed page 57, and there is no other controller number
+  # in either document.
+  portamento_time:    {label: Portamento Time, cc: 5, group: portamento}
+  portamento_on_off:  {label: Portamento On/Off, cc: 65, group: portamento}
+  sustain:            {label: Sustain, cc: 64}
+  # THESE FOUR REACH NO SOUND PARAMETER. Each becomes a voltage at the ASSIGNABLE output jack,
+  # and only when that jack is set to it: the jack carries one of sixteen things at a time, and
+  # the Setup list names these four as "MIDI CC 1", "MIDI CC 2", "MIDI CC 4" and "MIDI CC 7"
+  # (p. 59). Their labels here are the maker's. What any of them does is the player's patch.
+  cc_1_to_assignable: {label: CC 1, cc: 1, group: assignable}
+  cc_2_to_assignable: {label: CC 2, cc: 2, group: assignable}
+  cc_4_to_assignable: {label: CC 4, cc: 4, group: assignable}
+  cc_7_to_assignable: {label: CC 7, cc: 7, group: assignable}

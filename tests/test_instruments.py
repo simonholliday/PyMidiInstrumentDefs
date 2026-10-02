@@ -115,6 +115,7 @@ class TestBundledCorpus:
 			"moog/labyrinth",
 			"moog/matriarch",
 			"moog/minitaur",
+			"moog/mother_32",
 			"moog/sub_37",
 			"moog/subharmonicon",
 			"moog/subsequent_37",
@@ -2144,6 +2145,73 @@ class TestOpXy:
 		assert op_xy.model.firmware == "1.1.15"
 		assert op_xy.sources["guide"].edition == "1.1.15"
 		assert op_xy.sources["os_updates"].edition == "1.1.33"
+
+
+class TestMother32:
+
+	"""Seven controllers, four of which reach a patch cable rather than a parameter."""
+
+	def test_the_four_controllers_that_reach_no_parameter (self) -> None:
+		"""CC 1, 2, 4 and 7 become a voltage at a jack, and only one at a time.
+
+		They are controls because the instrument answers to them, and the file says what
+		answering amounts to.
+		"""
+		mother = pymidiinstrumentdefs.load("moog/mother_32", [CORPUS])
+
+		assignable = sorted(control.cc for control in mother.controls.values()
+			if control.group == "assignable" and control.cc is not None)
+
+		assert assignable == [1, 2, 4, 7]
+		assert len(mother.controls) == 7
+
+		# The three that do reach something: portamento twice and sustain.
+		assert mother.controls["portamento_time"].cc == 5
+		assert mother.controls["portamento_on_off"].cc == 65
+		assert mother.controls["sustain"].cc == 64
+
+	def test_every_note_does_something_so_the_range_is_the_whole_span (self) -> None:
+		"""Notes 121 to 127 fold back onto 109 to 115 rather than falling silent."""
+		mother = pymidiinstrumentdefs.load("moog/mother_32", [CORPUS])
+
+		assert mother.voice.note_range == (0, 127)
+		assert mother.voice.plays_note(127)
+		assert mother.voice.polyphony == 1
+
+	def test_aftertouch_is_channel_and_the_maker_says_so (self) -> None:
+		"""Twice over, which is rarer in this corpus than it ought to be."""
+		mother = pymidiinstrumentdefs.load("moog/mother_32", [CORPUS])
+
+		assert mother.voice.aftertouch == "channel"
+
+		assert mother.voice.pitch_bend is not None
+		assert mother.voice.pitch_bend.semitones == 12
+		assert mother.voice.pitch_bend.programmable is True
+
+	def test_it_receives_and_does_not_send (self) -> None:
+		"""One MIDI socket, and it is an input."""
+		mother = pymidiinstrumentdefs.load("moog/mother_32", [CORPUS])
+
+		assert mother.midi.clock == "receives"
+		assert mother.midi.transport == "receives"
+		assert mother.midi.channels == (1, 16)
+
+		assert mother.midi.program_change is not None
+		assert mother.midi.program_change.receives is True
+		assert mother.midi.program_change.sends is None
+		assert mother.midi.program_change.presets == 64
+
+		# Neither system exclusive nor NRPN is described, so neither is claimed.
+		assert mother.midi.sysex is None
+		assert mother.midi.nrpn is None
+
+	def test_its_firmware_comes_from_a_package_name (self) -> None:
+		"""Which is the only place Moog ever states one."""
+		mother = pymidiinstrumentdefs.load("moog/mother_32", [CORPUS])
+
+		assert mother.model.firmware == "2.0.1"
+		assert mother.sources["manual"].page_offset == 1
+		assert not mother.sources["downloads"].paginated
 
 
 class TestOpsix:

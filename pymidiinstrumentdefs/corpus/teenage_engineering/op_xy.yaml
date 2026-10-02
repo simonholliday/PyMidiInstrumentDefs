@@ -1,0 +1,337 @@
+# BEFORE CHANGING A NUMBER IN THIS FILE, READ THIS.
+# teenage engineering publishes this instrument's guide TWICE - as a 135-page printable PDF
+# and as a website of 25 sections - both of them labelled v.1.1.15, and the two do not say
+# the same thing. Their MIDI CC reference tables differ in one controller number and one
+# parameter name, and the website's section 10 carries two facts the printable guide does
+# not contain at all. Both editions are cited below, each for what it states, and every
+# place they disagree is written down rather than resolved. Neither is treated as the
+# corrected version of the other, because nothing here establishes which came first.
+#
+# THE ROW THEY DISAGREE ON IS THE BIGGEST ROW IN THE TABLE, and that is why this file has
+# no control for it. The printable guide gives the track's parameters as CC `12-47`, a
+# range of 36 numbers; the website gives the same row as CC `46`, one number, which falls
+# inside the other's range. The format holds one `cc` per control and there is no honest
+# value to put in it, so the eleven rows the two editions agree on are below and the
+# twelfth is recorded here and nowhere else. It is not resolvable by trying it: this
+# instrument is not one the bundled definitions were measured against.
+#
+# WHAT EACH OF THE 36 NUMBERS ADDRESSES IS NOT PUBLISHED ANYWHERE. The guide names the row
+# "track parameters" and stops. There is no second table, in either edition: section 23 is
+# the only table of controller numbers in all 135 pages.
+
+definition: 1
+
+model:
+  # The maker writes its own name in lower case throughout, as Korg does with the minilogue
+  # xd and as this maker's own OP-1 does.
+  manufacturer: teenage engineering
+  # SPELLED WITH A HYPHEN, WHICH IS NOT HOW THE MAKER SPELLS IT. Counted across the eight
+  # documents cited below, "OP-XY" with an en dash appears 174 times and with a hyphen
+  # twice - the reverse of the OP-1, where the hyphen won 89 to 1. The hyphen is kept here
+  # anyway, deliberately: it is the spelling a reader types and the one this definition's
+  # own name, `op_xy`, already uses. The maker's spelling is recorded in this comment so
+  # that nothing is lost by the choice.
+  name: OP-XY
+  # THE GUIDE IS NUMBERED TO A FIRMWARE VERSION, which is this maker's practice here and
+  # not at the OP-1, whose releases are numbered `#246` with a hash and no dots. The
+  # printable guide's cover says 1.1.15; the OS updates page lists firmware 1.1.15 dated
+  # 2026.07.01; and the guide file's own last-modified header is 2026-07-01. Three
+  # independent agreements, so this is the firmware the guide describes.
+  # IT IS NOT THE CURRENT FIRMWARE. The maker publishes 1.1.33, eighteen releases later,
+  # and no guide covers it. Every release note between the two was read for anything that
+  # changes what is below, and none does - the nearest are "don't apply sustain pedal to
+  # arpeggio notes" (1.1.17) and "use normal note off with release when stopping hold
+  # player" (1.1.25), neither of which touches the control map.
+  firmware: "1.1.15"
+
+source: >-
+  The full guide v.1.1.15, in both the editions the maker publishes: the printable PDF of 135
+  pages, cited by page, and the website of 25 sections, cited by the section number each page
+  prints for itself. The release notes and the product page carry facts neither guide edition
+  does.
+  EVERY CONTROLLER NUMBER BELOW COMES FROM ONE PAGE, section 23 on printed page 122, which
+  introduces itself as the whole of the published map: "sometimes you want to control OP-XY
+  with an external controller. OP-XY has almost all of its controls pre-mapped as midi CCs"
+  (p. 122). It is the only table of controller numbers in all 135 pages, and the website's
+  edition of that same section is the only other place any of them is printed.
+  THE TWO EDITIONS OF ONE GUIDE DISAGREE IN FOUR PLACES, and only the first changes a number.
+  Section 23's fourth row reads "track parameters" at CC "12-47" in the printable guide and at
+  CC "46" on the website, so no control for it is written. Its seventh row is "delay scene" in
+  the printable guide and "scene (delayed switch)" on the website, both at CC 82; the release
+  notes settle what it does - "add midi command for setting delayed scene" (os_updates, 1.1.0)
+  - so the printable guide's shorter name is used below and the other is recorded here. The
+  printable guide's specifications say "midi over bluetooth le" where the website says
+  "bluetooth LE midi", and its section 1 says "midi over bluetooth ble", contradicting itself.
+  And the website's section 10 states the voice pool and the per-track channel outright where
+  the printable guide states neither anywhere in its 135 pages.
+  THE PRINTABLE GUIDE NUMBERS ITS PAGES IN TWO RUNS, which anybody adding a citation needs to
+  know. What to add to a printed page number to reach the page of the file is 4 up to printed
+  page 52 and 5 from printed page 53 on, because file page 57 is an unnumbered overflow of
+  section 14.6. This source records the second offset and CITES NOTHING BELOW PRINTED PAGE 53;
+  the facts that live only in the earlier run are cited from the website sections and the
+  product page instead, which have no pages at all. The guide's own index is no help: it is
+  right through section 14 and then falls behind the pages themselves by one, two, three and
+  finally five, putting section 23 on page 117 where that page prints 122.
+  THE PRINTABLE GUIDE ALSO CARRIES AN INVISIBLE SECOND TEXT LAYER, added by the maker's PDF
+  tooling, which extracts alongside the real text and misreads it - "Ito" for "lfo", "ep1ano"
+  for "epiano", "84" for "8.4". Everything read from that document was taken from the visible
+  layer alone and read again from the rendered page as an image, by two readers working
+  separately and by different methods, who agreed on all twelve rows of the table and on every
+  dash in it.
+  SIXTEEN TRACKS, EACH ON A CHANNEL THE PLAYER SETS: "the midi settings page in project
+  settings allows you to set the midi channel on each of the 16 tracks" (project), which the
+  product page states as "midi channels selectable per track" and the table's own channel
+  column shows as 1-16. Eight of the sixteen are instrument tracks and eight are auxiliary -
+  "8 individually sequenceable instrument tracks" (product_page) - and the four track controls
+  below reach any of them, so they are one part rather than two.
+  THREE WAYS IN, which is why no transport is called the MIDI one: "3.5 mm midi in", "usb
+  type-c audio/midi host & device" and "bluetooth LE midi" (hardware_overview). The multi-out
+  jack is the way out, and only when set to it - "you can choose between: midi cv/gate sync8
+  sync16 sync24 audio" (p. 87). A DIN synthesiser needs "a type a trs to midi cable" (p. 111),
+  which is the only statement of the wiring anywhere.
+  NOT RECORDED, each for its own reason. SYSTEM EXCLUSIVE and NRPN: neither word appears on
+  any of the 135 pages or on any section page, searched for as "sysex", "system exclusive",
+  "exclusive", "NRPN" and "RPN". The only mention in any document here is a release note,
+  "avoid crash on certain sysex messages" (os_updates, 1.0.29), which says the messages arrive
+  and are parsed, not that any of them is implemented - and that is the difference from the
+  OP-1, whose release notes describe an identity reply that actually answers. THE NOTE RANGE:
+  never stated. The built-in keyboard is "a two octave keyboard" with octave buttons, which is
+  the panel and not what arrives. RECEIVING A PROGRAM CHANGE: the words never appear; what is
+  described is this instrument sending one. AFTERTOUCH: received and routable, quoted against
+  voice below, but the guide never says whether it is channel or polyphonic, and there is no
+  third value to write. THE BEND RANGE IN SEMITONES: settable, but no range and no default is
+  printed. THE PRESET COUNT: there are preset folders and "thousands of projects", and no
+  count addressable by program change.
+  WHERE THE SEARCH DOES NOT REACH, said plainly. It covers both editions of the guide, the OS
+  updates page and the product page. It does not cover the maker's support site, which this
+  maker's OP-1 established answers 403 to anything fetched here, so if a MIDI note is published
+  there it has not been read.
+
+sources:
+  guide:
+    kind: manual
+    title: OP-XY full guide
+    edition: "1.1.15"
+    dated: 2026-07-01
+    landing: "https://teenage.engineering/guides/op-xy"
+    url: "https://assets.teenage.engineering/_img/6a452a3b31b95d1c6dbb44bb_original.pdf"
+    sha256: 8aad30661dda05ba01baf5bd0e260f9e28bfc771fb37ab5ad9b8ff66577c2d39
+    retrieved: 2026-10-02
+    # PRINTED PAGE + 5 = FILE PAGE, AND ONLY FROM PRINTED PAGE 53 ON. Below that it is + 4,
+    # because file page 57 is an overflow of section 14.6 that prints no number of its own.
+    # Six pages print none: the cover, three index pages, that overflow, and the back cover.
+    # The other 129 print 1 to 129 with no gap and no repeat. Nothing below printed page 53
+    # is cited from this document, deliberately - see the source paragraph.
+    page_offset: 5
+    # The version beside the link to this file is not this file's version: the maker's page
+    # wraps the link in an element marked v.1.1.0 while the text beside it reads v.1.1.15,
+    # and the document's own cover says 1.1.15. Identified from its contents, which on this
+    # maker's site is the rule the OP-1 paid for - a quick start guide linked from the
+    # downloads page turned out on being opened to be the OP-Z's.
+  guide_contents:
+    kind: manual
+    title: OP-XY portable sequencer user guide
+    edition: v.1.1.15
+    landing: "https://teenage.engineering/guides"
+    url: "https://teenage.engineering/guides/op-xy"
+    sha256: dff314369a4efd0b1155bec06630b70a7eccf35374c91fd1b4ec8728e9f8c4cb
+    retrieved: 2026-10-02
+    paginated: false
+    # The guide's own front page, cited for what the guide calls itself and which version it
+    # is. Its index pairs numbers to titles in a way that extracts misaligned, so no section
+    # number here came from it: they were read from each page's own heading.
+  hardware_overview:
+    kind: manual
+    title: "OP-XY guide, section 1: hardware overview"
+    edition: v.1.1.15
+    landing: "https://teenage.engineering/guides/op-xy"
+    url: "https://teenage.engineering/guides/op-xy/hardware-overview"
+    sha256: 99a9b8b61162594a135084424a314173ee175b19a3df9dc8b28aa2c9bf8aade6
+    retrieved: 2026-10-02
+    paginated: false
+  project:
+    kind: manual
+    title: "OP-XY guide, section 10: project"
+    edition: v.1.1.15
+    landing: "https://teenage.engineering/guides/op-xy"
+    url: "https://teenage.engineering/guides/op-xy/project"
+    sha256: 8c82b6f9334d1007974b130b57aee6279ce3b0fd9863d6cab0ac13677bd55906
+    retrieved: 2026-10-02
+    paginated: false
+    # The section that states the voice pool and the per-track channel. BOTH ARE ABSENT FROM
+    # THE PRINTABLE EDITION of the same guide, which is why this page is cited rather than a
+    # page number: the strings "24 voices", "voices of polyphony" and "midi channel on each"
+    # appear nowhere in its 135 pages.
+  instrument:
+    kind: manual
+    title: "OP-XY guide, section 14: instrument"
+    edition: v.1.1.15
+    landing: "https://teenage.engineering/guides/op-xy"
+    url: "https://teenage.engineering/guides/op-xy/instrument"
+    sha256: 68e395f6e1a782e41ee18998dd8cd35eaa83d716871a2a67d863b4019ada058f
+    retrieved: 2026-10-02
+    paginated: false
+    # 14.2 for the bend range being a setting and for the three play modes, 14.5 for what an
+    # incoming controller can be routed to. The same material is printed on pages 43 and 51
+    # of the printable guide, which is its other numbering run, so it is cited from here.
+  midi_cc_table:
+    kind: manual
+    title: "OP-XY guide, section 23: midi cc reference table"
+    edition: v.1.1.15
+    landing: "https://teenage.engineering/guides/op-xy"
+    url: "https://teenage.engineering/guides/op-xy/midi-references"
+    sha256: 984022b3a8b8f982f2d97944314cd971efc4b91aa891b869c5434436ed43916b
+    retrieved: 2026-10-02
+    paginated: false
+    # The website's edition of the table the controls below come from, cited only for the two
+    # cells where it differs from the printable guide. Kept and cited rather than described,
+    # because a disagreement nobody kept both halves of is just an assertion.
+  os_updates:
+    kind: release_notes
+    title: OP-XY OS updates
+    edition: "1.1.33"
+    dated: 2026.09.02
+    landing: "https://teenage.engineering/downloads"
+    url: "https://teenage.engineering/downloads/op-xy"
+    sha256: 9117d1e0021e8d6c9b4dcf1162061c2df5df028ac0c9ca885e9a33fa029fa452
+    retrieved: 2026-10-02
+    paginated: false
+    # Twenty-two releases from 1.0.9 to 1.1.33, each with its own notes, and the only document
+    # here that says anything about transport, system exclusive or Bluetooth clock. Read with
+    # care: each release prints its version and then its date, and both have the same shape -
+    # 1.1.33 and 2026.09.02 - so a reading that keys on the shape attributes every note to a
+    # date.
+  product_page:
+    kind: product_page
+    title: OP-XY
+    landing: "https://teenage.engineering/products"
+    url: "https://teenage.engineering/products/op-xy"
+    sha256: f432bbdfa80ad8b4bd34c47b3aa3b1cc606caa8e620c082b933d1fe1da452fff
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for the three specifications that in the printable guide are printed only in a
+    # highlights panel on its first page, which is its other numbering run.
+
+midi:
+  # FROM THE TABLE'S OWN CHANNEL COLUMN, which gives 1-16 for the four track rows, 1-4 for
+  # the EQ and "any" for the seven global ones. No sentence in either edition states a span,
+  # so this is the table's figure rather than the standard assumed.
+  channels: [1, 16]
+  # BOTH, OVER EVERY TRANSPORT. "the midi settings page in system settings allows you to set
+  # how midi clock, notes and other midi messages are sent and received" (p. 88), and over
+  # Bluetooth the connection is "sending and receiving notes and clock" (p. 87). The release
+  # notes add that this was built: "support incoming & outgoing midi clock over BLE"
+  # (os_updates, 1.0.29). Per connected device it is a setting, with clock separately
+  # switchable (p. 90).
+  clock: both
+  # RECEIVES, AND THE EVIDENCE IS ONE SENTENCE, in a release note rather than in either
+  # edition of the guide: "relay incoming transport to other connected midi devices"
+  # (os_updates, 1.0.29). That settles that transport arrives. It does not settle that
+  # pressing play sends one - relaying what came in is not originating it - and no document
+  # here says otherwise, so `both` would be claiming the half that was not established.
+  # The multi-out's sync8, sync16 and sync24 settings are not this: those are analogue sync
+  # pulses, and the guide describes them carrying "clock, start, stop and reset" over a DIN
+  # sync cable (p. 113), which is a different wire and a different standard.
+  transport: receives
+  program_change:
+    # SENDS, VIA THE EXTERNAL MIDI TRACK, which is the only direction either edition
+    # describes: "in the external midi track you can control which midi channel, bank and
+    # program you want to control" (p. 56), with "rotate the light gray knob to select a
+    # program". The release notes treat it as a sequencer parameter too - "fix: midi program
+    # change param locks not working" (os_updates, 1.1.15).
+    # WHAT IT DOES ON RECEIVING ONE IS NOT RECORDED. The words "program change" appear in
+    # neither edition, and loading a project over MIDI is a control change here, not a
+    # program change: CC 86 below.
+    sends: true
+
+parts:
+  # One part and not two, although the maker divides the sixteen tracks into eight instrument
+  # and eight auxiliary: the four track controls below reach a track by its channel over the
+  # whole 1-16, and no document distinguishes what an auxiliary track answers to from what an
+  # instrument track does.
+  track:
+    label: Track
+    count: 16
+    # Each is given a channel by the player, so none derives one: "the midi settings page in
+    # project settings allows you to set the midi channel on each of the 16 tracks" (project),
+    # and "midi channels selectable per track" (product_page). There is no base channel on
+    # this instrument to derive from.
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # No polyphony is stated against a part, because a track does not have voices of its own:
+    # see voice.polyphony_shared, and the sentence that gives twenty-four voices to sixteen
+    # tracks.
+    # There is also a channel that reaches whichever track is selected rather than a fixed
+    # one - system settings offer "selecting the active track channel (the active track is the
+    # one currently selected)" (p. 88) - which is a second way in that the format has nowhere
+    # to put, and which a player sets for themselves.
+
+controls:
+  # ALL ELEVEN COME FROM ONE TABLE, section 23 of the guide, printed page 122, which is the
+  # only table of controller numbers in either edition. The twelfth row of that table is not
+  # here: see the warning at the head of this file.
+  # The maker sets every name in lower case; they are capitalised here as the other
+  # definitions in this corpus capitalise a maker's styling.
+  # THE FOUR THAT NAME A TRACK are the rows whose channel column reads 1-16; the seven that
+  # do not are the rows whose channel column reads "any", except the EQ, which reads 1-4.
+  track_volume:    {label: Track Volume, cc: 7, part: track}
+  track_mute:      {label: Track Mute, cc: 9, part: track}
+  track_pan:       {label: Track Pan, cc: 10, part: track}
+  tempo:           {label: Tempo, cc: 80}
+  groove:          {label: Groove, cc: 81}
+  # "delay scene" in the printable guide and "scene (delayed switch)" on the website. What it
+  # does is in the release notes: "add midi command for setting delayed scene" (os_updates,
+  # 1.1.0), and the guide describes the gesture it automates - "by default, when switching
+  # scenes this change will happen immediately, to delay this change and queue up the next
+  # selected scene hold shift, tap play and then select a scene" (p. 67).
+  delay_scene:     {label: Delay Scene, cc: 82}
+  previous_scene:  {label: Previous Scene, cc: 83}
+  next_scene:      {label: Next Scene, cc: 84}
+  # The arrangement holds "99 distinct scenes" (p. 67) and this control's range is the
+  # table's 0-127, so no named values are written: the guide gives no mapping from a value to
+  # a scene, and 128 values over 99 scenes is not one anybody should guess.
+  scene:           {label: Scene, cc: 85}
+  # Loading a project over MIDI, which the release notes confirm is real: "fix crash caused by
+  # repeated project load requests via MIDI CC" (os_updates, 1.0.40).
+  project:         {label: Project, cc: 86}
+  # THE ONE ROW WHOSE CHANNEL IS NEITHER 1-16 NOR "any": the table gives this one 1-4. The
+  # master EQ has four parameters - low, mid, high and blend (p. 71) - so four channels for
+  # one controller number is the obvious reading, and it stays a reading: NEITHER EDITION SAYS
+  # WHICH CHANNEL SELECTS WHICH, so no part is written for it and no mapping is claimed.
+  eq:              {label: EQ, cc: 90}
+
+voice:
+  addressing: pitches
+  # TWENTY-FOUR, AND SHARED ACROSS THE SIXTEEN TRACKS, in the maker's own sentence: "the
+  # voices settings page in project settings allows you to assign voices to specific tracks,
+  # OP-XY has 24 voices of polyphony and by default automatically assigns voices" (project).
+  # The product page says the same of the sound - "24-voice multitimbral synthesis" - and the
+  # printable guide shows the pool running out rather than describing it, with an indicator
+  # that is "only visible when 17 or more voices are in use".
+  polyphony: 24
+  polyphony_shared: true
+  # THREE PLAY MODES AND NO COUNT FOR ANY OF THEM: "rotate the dark gray knob to select
+  # between poly, mono and legato. this changes both how the notes play and how many you can
+  # play at the same time" (instrument). `voicing_modes` holds counts, and this guide
+  # publishes names, so it is left empty rather than filled with guesses.
+  velocity:
+    # RECEIVED, and routable to something of the player's choosing: "if you wish to assign the
+    # modwheel, aftertouch, pitchbend and velocity to modulate the synth parameters you can do
+    # so by opening the preset settings" (p. 116). It can also be switched off for a connected
+    # device, since the per-device settings include "whether timestamp and velocity are sent
+    # or not" (p. 90).
+    # The guide's other velocity setting is not this one: "off", "soft (for gentler playing)"
+    # and "hard (for more vigorous playing)" (p. 110) set what the built-in keyboard sends.
+    note_on: received
+    # Note-off velocity is never mentioned in either edition.
+  # NOT RECORDED: AFTERTOUCH. It is received and can be routed - "in the mod settings you can
+  # change the routing of the modwheel, aftertouch, pitchbend and velocity to control various
+  # synth parameters" (instrument) - but neither edition says whether it is channel or
+  # polyphonic, and those are the only two things this field can say. Recording either would
+  # be a guess, and recording nothing loses the fact, so the fact is here in the comment.
+  pitch_bend:
+    # THE RANGE IS A SETTING: "rotate the light grey knob to adjust the bend range, this is
+    # the pitch range of the pitch bend" (instrument). How far it reaches is not printed, in
+    # either edition, so `semitones` is left unrecorded rather than read off an illustration.
+    programmable: true

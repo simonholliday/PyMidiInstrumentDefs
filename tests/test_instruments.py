@@ -122,6 +122,7 @@ class TestBundledCorpus:
 			"sequential/take_5",
 			"soma/pulsar_23",
 			"teenage_engineering/op_1",
+			"teenage_engineering/op_xy",
 			"vermona/drm1_mkiv",
 			"voce/electric_piano",
 			"waldorf/streichfett",
@@ -2012,6 +2013,134 @@ class TestOP1:
 		assert op1.voice.polyphony is None
 		assert op1.voice.note_range is None
 		assert op1.voice.velocity is None
+
+
+class TestOpXy:
+
+	"""The first definition whose maker publishes one guide twice and disagrees with itself."""
+
+	def test_it_carries_eleven_of_the_twelve_rows_its_table_prints (self) -> None:
+		"""The twelfth row is the one the maker's two editions give different numbers for.
+
+		One prints the track's parameters as CC 12-47 and the other as CC 46, so there is
+		no honest value for a field that holds one number, and no control is written.
+		"""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+
+		numbers = [control.cc for control in op_xy.controls.values() if control.cc is not None]
+
+		assert len(op_xy.controls) == 11
+		assert sorted(numbers) == [7, 9, 10, 80, 81, 82, 83, 84, 85, 86, 90]
+
+		# Neither of the two disputed numbers is anywhere in the file, and 46 in
+		# particular must not creep in: it is one edition's reading of a range.
+		assert 46 not in numbers
+
+	def test_both_editions_of_the_guide_are_cited (self) -> None:
+		"""A disagreement nobody kept both halves of is just an assertion.
+
+		Seven of the eight sources have no pages, and one does: the printable guide,
+		which is the only paginated document this maker has ever published here.
+		"""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+
+		paginated = [name for name, source in op_xy.sources.items() if source.paginated]
+
+		assert len(op_xy.sources) == 8
+		assert paginated == ["guide"]
+		assert "midi_cc_table" in op_xy.sources
+
+	def test_the_printable_guide_turns_its_pages_by_five (self) -> None:
+		"""And is cited nowhere below printed page 53, where that stops being true.
+
+		An unnumbered overflow page sits between printed 52 and 53, so the offset is 4
+		before it and 5 after. The source records the run it is cited in.
+		"""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+		guide = op_xy.sources["guide"]
+
+		assert guide.page_offset == 5
+		assert guide.file_page(122) == 127
+		assert guide.file_page(53) == 58
+
+	def test_its_sixteen_tracks_are_one_part_on_channels_the_player_sets (self) -> None:
+		"""Eight instrument tracks and eight auxiliary, and the table reaches all of them."""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+		track = op_xy.parts["track"]
+
+		assert len(op_xy.parts) == 1
+		assert track.count == 16
+		assert track.is_assigned
+		assert track.takes("notes") and track.takes("controls")
+
+		# Assigned, so there is no base channel to derive one from, and asking is told so.
+		assert track.channel_for(1) is None
+
+		# The four controls that name a track are the rows whose channel column reads 1-16.
+		named = {name for name, control in op_xy.controls.items() if control.part == "track"}
+
+		assert named == {"track_volume", "track_mute", "track_pan"}
+
+	def test_twenty_four_voices_shared_across_those_tracks (self) -> None:
+		"""A ceiling for all sixteen together, not a figure each track can count on."""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+
+		assert op_xy.voice.polyphony == 24
+		assert op_xy.voice.polyphony_shared is True
+
+		# Three play modes are named - poly, mono and legato - and no count is given for
+		# any of them, so the field that holds counts stays empty.
+		assert op_xy.voice.voicing_modes == ()
+
+	def test_what_the_guide_never_says_is_left_unrecorded (self) -> None:
+		"""Including two things it mentions without ever specifying them.
+
+		Aftertouch is received and routable, but neither edition says whether it is
+		channel or polyphonic; the bend range is a setting, but how far it reaches is
+		never printed.
+		"""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+
+		assert op_xy.voice.aftertouch is None
+		assert op_xy.voice.note_range is None
+		assert op_xy.midi.nrpn is None
+		assert op_xy.midi.sysex is None
+
+		assert op_xy.voice.pitch_bend is not None
+		assert op_xy.voice.pitch_bend.programmable is True
+		assert op_xy.voice.pitch_bend.semitones is None
+
+	def test_transport_is_received_and_not_claimed_both_ways (self) -> None:
+		"""One release note says incoming transport is relayed, and nothing says it sends.
+
+		Clock is different: both editions describe it travelling each way, and over
+		Bluetooth as well.
+		"""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+
+		assert op_xy.midi.transport == "receives"
+		assert op_xy.midi.clock == "both"
+
+	def test_it_sends_a_program_change_and_says_nothing_about_receiving_one (self) -> None:
+		"""The external MIDI track selects a bank and a program on something else."""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+
+		assert op_xy.midi.program_change is not None
+		assert op_xy.midi.program_change.sends is True
+		assert op_xy.midi.program_change.receives is None
+		assert op_xy.midi.program_change.presets is None
+
+	def test_its_firmware_is_the_one_its_guide_describes (self) -> None:
+		"""Dotted, unlike the OP-1's hash, because this guide is numbered to a release.
+
+		The maker publishes a later firmware than the guide covers, which is recorded in
+		the file rather than quietly rounded up to the newest.
+		"""
+		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
+
+		assert op_xy.model.firmware == "1.1.15"
+		assert op_xy.sources["guide"].edition == "1.1.15"
+		assert op_xy.sources["os_updates"].edition == "1.1.33"
 
 
 class TestJuno106:

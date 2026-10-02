@@ -1,0 +1,229 @@
+# This instrument's controllers are the player's, not the maker's: up to four incoming
+# control changes are routed to chosen destinations per sound, and the maker publishes no
+# number for any of them anywhere. `control_change: learned` says so, which is neither a
+# checked absence nor an unread page. What is fixed, and so true of every OP-1, is below.
+#
+# BEFORE ADDING A CONTROLLER NUMBER TO THIS FILE, READ THIS.
+# There is a full MIDI chart on teenage engineering's site under an address that looks like
+# this instrument's, and it is a different instrument's. The OP-1 field's guide, at
+# /guides/op-1 where this one is at /guides/op-1/original, publishes incoming note on with
+# velocity 1-127, pitch bend 0-16383, program change loading synth and drum slots, clock,
+# start, continue, stop and song position, all on channels 1-16, and a control change table
+# of dozens of numbers: 7 mixer volume, 9 mixer mute, 10 mixer pan, 46-49 synth parameters,
+# 50-53 the envelope, 54-57 patch effects, 58-61 patch LFO, 64 sustain pedal, 70-77 master
+# effects and compressor, 78-88 tape and transport, 90 upward the master EQ. **None of that
+# is this instrument.** The field is a later product with its own definition name in the
+# survey's list, and the original's guide carries no such table anywhere in its 18 sections.
+# Anything claiming a CC number for the OP-1 came either from the field or from a community
+# database, and the guide beside this corpus forbids lifting a value from one of those.
+
+definition: 1
+
+model:
+  # The maker writes its own name in lower case throughout, as Korg does with the minilogue
+  # xd, so it is kept that way.
+  manufacturer: teenage engineering
+  # SPELLED WITH A HYPHEN BECAUSE THE MAKER SPELLS IT THAT WAY, which was counted rather
+  # than chosen: across the eight documents cited below, "OP-1" appears 89 times and "OP-1"
+  # with an en dash once, on a downloads page heading. Its marketing pages prefer the en
+  # dash and its user guide does not.
+  name: OP-1
+  # THE MAKER NUMBERS THIS FIRMWARE WITH A HASH AND NO DOTS, and #246 is the newest it
+  # publishes, dated 2022.12.13 (os_updates). Two of the facts below rest on it: the system
+  # exclusive reply, which #243 fixed from returning zeros, and nothing else - the guide
+  # describes no feature that any release note changed.
+  # ESTABLISHED ON A PAGE ABOUT THIS INSTRUMENT ALONE, which matters: the maker's
+  # /downloads/op-1 lists both this and the OP-1 field, whose OS is 1.7.3, so reading a
+  # version off that page would have been a coin toss. Confirmed again from the file the
+  # page offers, which names the version itself and belongs to no other product:
+  # /_software/op-1/op1_246.op1, fetched for its headers alone and not kept.
+  firmware: "#246"
+
+source: >-
+  User guide v.2.2, the maker's online manual in 18 numbered sections, of which 1, 5, 10, 13,
+  14 and 15 are cited, with the OS updates page for the firmware. The guide has no pages,
+  so every source here cites the section number the guide prints for itself.
+  NO CONTROLLER NUMBER IS PUBLISHED ANYWHERE, which is this instrument's whole story and was
+  established by searching all 19 of the guide's fetched pages, not inferred from the two
+  that discuss MIDI. Searched for: control change, CC, CC#, continuous controller, program
+  change, pitch bend, aftertouch, velocity, sysex, system exclusive, NRPN, MMC, song
+  position, implementation, modulation wheel, mod wheel, and any digit following a
+  controller word. Five hits in 18 sections, and not one of them a number. Section 15.6 is
+  the MIDI LFO, where "you may route up to four incoming channels of MIDI CC, and target
+  them to your preferred destinations"; section 5 lists that LFO as "MIDI - route external
+  MIDI CC to the OP-1". The other three are not about what this instrument answers to:
+  "pitch bend" twice in section 14.4, naming what shift and the arrow keys do on the panel,
+  and "mod wheel" once in 13.10, describing what an encoder does to somebody else's
+  software. The words aftertouch, velocity, program change, NRPN, system exclusive and
+  implementation appear in the guide not at all.
+  SO THERE ARE NO CONTROLS BELOW, and no groups either. Sections 13.8 to 13.10 do print two
+  tables of assignments, and neither is this instrument's: one is a control surface script
+  the maker asks you to download for Ableton Live, the other is remote support built into
+  Propellerhead Reason. Both map keys to functions and name no controller number.
+  MIDI TRAVELS OVER USB ALONE, and that is the maker's own enumeration rather than silence:
+  "OP-1 has three ports located on the right hand side of the unit", those being audio in,
+  audio out, and a "usb port for charging, streaming audio, file transfers and midi"
+  (section 1.3). There is no DIN and no TRS.
+  NOT RECORDED: the channel range, since the guide gives a default and no span; velocity,
+  aftertouch, program change and NRPN, searched for as above and absent, which is not the
+  same as checked; the note range, though section 3.2 has an octave shift; the polyphony,
+  for the reason below; and whether transport messages travel, for the reason below.
+  WHERE THE SEARCH DOES NOT REACH, said plainly rather than left to be assumed. It covers
+  the guide, the OS updates and the quick start guide. It does not cover
+  support.teenage.engineering, which the guide links as its support site and which answers
+  403 to anything fetched here, so if a MIDI note is published there it has not been read.
+  TWO OTHER DOCUMENTS OF THIS INSTRUMENT ARE NOT CITED. A Japanese manual, 34 pages, whose
+  own title is "OP-1 Manual 1.0" and whose PDF was made in June 2011, describes a materially
+  older instrument than this English v.2.2 - 17 sections against 18, and four LFO modes
+  against ten - so it is not a second witness to anything here. And an accessories page sits
+  at the guide's own address without being linked from its contents, so a reader reaches it
+  only by looking for it; it names pitch bend in the same panel sense section 14.4 does.
+
+sources:
+  guide_contents:
+    kind: manual
+    title: OP-1 portable synthesizer user guide
+    edition: v.2.2
+    landing: "https://teenage.engineering/guides"
+    url: "https://teenage.engineering/guides/op-1/original"
+    sha256: e79da56d81c65387ce8691e79a76ac271580f4fb952d7433998db23c9c1d6c3b
+    retrieved: 2026-10-02
+    paginated: false
+    # The guide's own contents page, cited for what it calls itself and which version it is,
+    # and the page that links its 18 sections. The index at the landing page agrees: "OP-1
+    # user guide en v.2.2".
+    # THE MAKER HAS REUSED THIS INSTRUMENT'S ADDRESSES FOR A LATER ONE. /guides/op-1 now
+    # serves the OP-1 field, a different product; this instrument's guide is the /original
+    # path. Which is which was established from the pages, not the addresses: the field's is
+    # titled "OP-1 field guide" and this one "OP-1 guide". In the index's text the two are
+    # indistinguishable, because "field" is drawn as a private-use glyph in the maker's icon
+    # font, so only the address and the version separate them.
+    # The sha256 is of the page's visible text as saved on 2026-10-02; the page as served
+    # hashes to a69e7cd331d79acca93a32a9fa8613bb67307e5f0a53a868c20fb7d6b3411b1b. No later
+    # fetch will match either, which is what saving it is for.
+  hardware_overview:
+    kind: manual
+    title: "OP-1 user guide, section 1: hardware overview"
+    edition: v.2.2
+    landing: "https://teenage.engineering/guides/op-1/original"
+    url: "https://teenage.engineering/guides/op-1/original/hardware-overview"
+    sha256: c5dfc58510de4d9a9491b5f279c3f54db21b520097a2afa9b41b59b8227c8331
+    retrieved: 2026-10-02
+    paginated: false
+  synthesizer_mode:
+    kind: manual
+    title: "OP-1 user guide, section 5: synthesizer mode"
+    edition: v.2.2
+    landing: "https://teenage.engineering/guides/op-1/original"
+    url: "https://teenage.engineering/guides/op-1/original/synthesizer-mode"
+    sha256: fef8032061517644b12d5bed6a9e2944b461a531b383bb25925a4b70e22ee592
+    retrieved: 2026-10-02
+    paginated: false
+  tempo:
+    kind: manual
+    title: "OP-1 user guide, section 10: tempo"
+    edition: v.2.2
+    landing: "https://teenage.engineering/guides/op-1/original"
+    url: "https://teenage.engineering/guides/op-1/original/tempo"
+    sha256: dfb07daa7e4138165e582bddc76fb788cbeb6fa7578c785cde78511ca35180cf
+    retrieved: 2026-10-02
+    paginated: false
+  connectivity:
+    kind: manual
+    title: "OP-1 user guide, section 13: song rendering and connectivity"
+    edition: v.2.2
+    landing: "https://teenage.engineering/guides/op-1/original"
+    url: "https://teenage.engineering/guides/op-1/original/song-rendering-and-connectivity"
+    sha256: f207e1421b829fa9789089671dc393afb0723f6bf1638db5df7d96cd0e667ca3
+    retrieved: 2026-10-02
+    paginated: false
+  shift_key:
+    kind: manual
+    title: "OP-1 user guide, section 14: shift key"
+    edition: v.2.2
+    landing: "https://teenage.engineering/guides/op-1/original"
+    url: "https://teenage.engineering/guides/op-1/original/shift-key"
+    sha256: c5eb418fe15e1ef6b617a26b41a8ddb376f19aaf39ce9f80bb8dc6ab99ec93d7
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited only to account for the guide's two uses of "pitch bend", which name a panel
+    # function rather than a MIDI message. Recorded so a reader knows the phrase was found
+    # and set aside rather than missed.
+  lfo_reference:
+    kind: manual
+    title: "OP-1 user guide, section 15: LFO reference"
+    edition: v.2.2
+    landing: "https://teenage.engineering/guides/op-1/original"
+    url: "https://teenage.engineering/guides/op-1/original/lfo"
+    sha256: 4b6a476952e45bde0b8110590094829adef0bca4ee2c2f2c6bf26c26962d1d10
+    retrieved: 2026-10-02
+    paginated: false
+    # The section the whole definition turns on, 15.6. Its own page title calls it "LFO
+    # preference" where its heading says "LFO reference"; the heading is used here.
+  os_updates:
+    kind: release_notes
+    title: OP-1 OS updates
+    edition: "#246"
+    dated: 2022.12.13
+    landing: "https://teenage.engineering/downloads"
+    url: "https://teenage.engineering/downloads/op-1/original"
+    sha256: b3ef1d6a28581ab054b83afe7b213e60b37e19f2659c123fb4542fb33dd50a67
+    retrieved: 2026-10-02
+    paginated: false
+    # Four releases with their own notes: #246 (2022.12.13), #245 (2022.09.09), #243
+    # (2021.07.14) and #242 (2020.05.11). It carries MIDI facts the 18-section guide does
+    # not, which is the Grandmother's lesson over again - a maker's release notes are a
+    # source and not a changelog to skim.
+
+midi:
+  # THE PLAYER DECIDES WHICH CONTROLLER REACHES WHAT, four at a time, per sound: "another
+  # type of LFO is the MIDI LFO, which lets you receive external MIDI control change (MIDI
+  # CC) from other hardware, or from your computer's music software. in this LFO mode, the
+  # MIDI CC becomes the LFO" (15.6), and "using the encoders in MIDI LFO, you may route up
+  # to four incoming channels of MIDI CC, and target them to your preferred destinations"
+  # (15.6). Sending is the player's too: in controller mode "use shift + the encoders to set
+  # the behavior of the encoders and arrow keys" (13.4). So there is no factory map, by
+  # design, and nothing to publish.
+  control_change: learned
+  # BOTH, AND WHICH IT DOES IS A SETTING with three states (section 10). Free mode: "no sync
+  # is transmitted from OP-1 and any incoming external sync is ignored" (10.4). Beat match:
+  # "in beat match OP-1 acts as the master clock source, sending MIDI sync over usb, that
+  # can be used to synchronize external gear" (10.5). Sync mode: "sync mode means OP-1 is
+  # listening to external MIDI clock, received over usb" (10.6). Which one yours is in
+  # belongs to your project, not here.
+  # ONE CONFUSION IN THE MAKER'S OWN PARAGRAPH, recorded rather than resolved: 10.6 also
+  # says the mode locks the unit "to MIDI time code (MTC) sent from external sequencers or
+  # workstations", while the sentences around it say MIDI clock twice, including a nudge
+  # that adds or subtracts "1 MIDI clock per key press". Clock and MIDI Time Code are
+  # different messages; the weight of the paragraph is on clock, and MTC is not recorded.
+  clock: both
+  # FROM THE RELEASE NOTES, WHICH THE GUIDE NEVER MENTIONS: "updated: OP-1 sysex identity
+  # reply now reflects product family, model and firmware with actual version numbers.
+  # previously these values were zero" (os_updates, #243). So it answers an identity
+  # request, and on anything older than #243 it answers with zeros - which is why the
+  # firmware above is part of this claim rather than beside it. No layout is published, and
+  # the word sysex appears nowhere else in any document here.
+  sysex: true
+  # NOT RECORDED, deliberately, and each for its own reason:
+  # CHANNELS. A default and no span: "the OP-1 listens to and transmits MIDI-notes on MIDI
+  # channel 1 by default. this can be changed by using shift + blue encoder" (13.3), and in
+  # controller mode "you may also switch MIDI channels by using shift + green encoder"
+  # (13.4). Nothing states 1-16, so nothing is written rather than assuming the standard.
+  # Those two sentences name different encoders for the same job, blue in 13.3 and green in
+  # 13.4. They describe different modes, so it may be deliberate; the guide never says.
+  # TRANSPORT. One sentence bears on it and will not settle it: "when tape is armed and OP-1
+  # receives a play command, recording now starts" (os_updates, #243). Whether a play command
+  # is an incoming MIDI start or the unit's own play key is not said, and the bullet above it
+  # is about external tempo sync. Left open rather than read either way.
+  # NRPN and PROGRAM CHANGE. Neither term appears in any document here, searched as the
+  # source paragraph lists. That is silence, not a checked absence, so neither is written.
+
+voice:
+  addressing: pitches
+  # NOT ESTABLISHED, and the question was asked. Section 5.4 names four play modes - "in play
+  # mode, you can select if you want your sound to be polyphonic, monophonic, legato or
+  # unison" - and no count for any of them, so there is nothing to put in voicing_modes
+  # either. The only number of voices the release notes imply is that there are enough to
+  # steal: "fixed: stolen notes would sometimes play at incorrect volume when using external
+  # keyboard" (os_updates, #243).
+  polyphony: null

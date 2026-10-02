@@ -150,6 +150,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |
+| `teenage_engineering/op_1` | teenage engineering OP-1: publishes no controller number at all - four incoming control changes are routed by the player, per sound |
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV: a drum machine that ignores controller data |
 | `voce/electric_piano` | Voce ELECTRIC PIANO: 16 or 32 voices, depending on the chorus |
 | `waldorf/streichfett` | Waldorf Streichfett: controls whose values are exact numbers, not bands |

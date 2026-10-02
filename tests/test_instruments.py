@@ -119,6 +119,7 @@ class TestBundledCorpus:
 			"roland/tr8s",
 			"sequential/take_5",
 			"soma/pulsar_23",
+			"teenage_engineering/op_1",
 			"vermona/drm1_mkiv",
 			"voce/electric_piano",
 			"waldorf/streichfett",
@@ -179,9 +180,14 @@ class TestBundledCorpus:
 		about somebody's workshop instead of about their instrument. One tracker number had
 		reached `elektron/syntakt` and nothing here caught it.
 
-		Two and three-digit forms are left alone: `CC #39` is a controller, not an item.
+		**Four digits or more**, because that is what this workspace's numbers are and
+		because a maker's own numbering reaches three. `CC #39` is a controller, and
+		teenage engineering spells the OP-1's firmware `#246` on its own downloads page,
+		which is the maker's word and belongs in a shipped file. The cost of the wider
+		pattern was a false positive on a real instrument; the cost of this one is that a
+		three-digit item number would not be caught, which has never happened.
 		"""
-		internal = re.compile(r"#[0-9]{3,}|\bSimon\b|\bSubroutine\b|/mnt/|/home/", re.IGNORECASE)
+		internal = re.compile(r"#[0-9]{4,}|\bSimon\b|\bSubroutine\b|/mnt/|/home/", re.IGNORECASE)
 
 		shipped = list(bundled()) + sorted((CORPUS.parent.parent / "docs").glob("*.md"))
 		found: dict[str, list[str]] = {}
@@ -219,23 +225,35 @@ class TestBundledCorpus:
 			# disagrees, which is the opposite of having been derived from it.
 			assert "imported from" not in source, f"{path.name} is an import: {source[:60]!r}"
 
-	def test_every_bundled_definition_cites_pages (self) -> None:
-		"""The README promises each one names its document and its pages.
+	def test_every_bundled_definition_cites_a_locator (self) -> None:
+		"""The README promises each one names its document and where in it to look.
 
 		"The manual" cannot be checked by anybody; "p.13" can. This keeps that
 		promise true as the corpus grows, since a source line is the one part of
 		a definition nothing else can verify for you. The document is usually a
 		user manual, and for one instrument a quick-start guide is all there is.
+
+		**A page is not the only kind of locator**, because not every maker
+		publishes pages. The OP-1's guide is a website of numbered sections and
+		nothing else, so every one of its sources is `paginated: false` and it
+		cites sections. A definition in that position is held to naming sections
+		as firmly as the rest are held to naming pages.
 		"""
 		document = re.compile(r"\b(manual|guide|chart|addendum)\b", re.I)
-		cites = re.compile(r"\bpp?\.\s*\d|\b\d+\s*pages?\b|\bevery page\b", re.I)
+		pages = re.compile(r"\bpp?\.\s*\d|\b\d+\s*pages?\b|\bevery page\b", re.I)
+		sections = re.compile(r"\bsections?\b[^.]{0,40}?\d|\b\d+\s+numbered sections?\b", re.I)
 
 		for path in bundled():
 			definition = pymidiinstrumentdefs.load_file(path)
 			source = definition.source or ""
 
 			assert document.search(source), f"{path.name} does not name a document"
-			assert cites.search(source), f"{path.name} names no page: {source[:80]!r}"
+
+			paginated = [name for name, held in definition.sources.items() if held.paginated]
+			wanted = pages if paginated else sections
+
+			assert wanted.search(source), (
+				f"{path.name} names no {'page' if paginated else 'section'}: {source[:80]!r}")
 
 	def test_dfam_is_the_minimum_case (self) -> None:
 		"""An instrument with no MIDI at all is a real definition, not an empty one.
@@ -1922,3 +1940,73 @@ class TestOsmose:
 		assert osmose.midi.program_change.presets == 609
 		assert osmose.midi.program_change.receives is True
 		assert osmose.midi.program_change.sends is False
+
+
+class TestOP1:
+
+	"""The first definition with no paginated source and no controller number to carry."""
+
+	def test_its_controllers_are_the_players_and_it_has_no_controls (self) -> None:
+		"""Four incoming control changes, routed per sound, and no factory map to publish."""
+		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
+
+		assert op1.midi.learns_control_change
+		assert op1.controls == {}
+		assert op1.groups == {}
+
+		# Which is not the same as answering to no controller at all, where somebody
+		# checked and found none: that is the MODEL D, and it reads differently.
+		assert not op1.midi.refuses_control_change
+
+	def test_every_one_of_its_sources_has_no_pages (self) -> None:
+		"""Its maker publishes a website, so the definition cites sections instead.
+
+		This is the first definition in the corpus where that is true of every source,
+		and `test_every_bundled_definition_cites_a_locator` holds it to naming sections
+		as firmly as it holds the others to naming pages.
+		"""
+		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
+
+		assert len(op1.sources) == 8
+		assert all(not source.paginated for source in op1.sources.values())
+		assert all(source.file_page(1) is None for source in op1.sources.values())
+
+	def test_its_firmware_is_spelled_the_way_its_maker_spells_it (self) -> None:
+		"""A hash and no dots, which is teenage engineering's own numbering."""
+		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
+
+		assert op1.model.firmware == "#246"
+		assert not op1.model.states_no_firmware
+
+	def test_it_sends_and_receives_clock_by_a_setting (self) -> None:
+		"""Three named modes: one sends, one receives, and one does neither."""
+		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
+
+		assert op1.midi.clock == "both"
+
+		# Transport is left unrecorded, because the one sentence bearing on it will not
+		# say whether a "play command" is a MIDI start or the unit's own key.
+		assert op1.midi.transport is None
+
+	def test_system_exclusive_comes_from_the_release_notes_alone (self) -> None:
+		"""The guide never mentions it; a firmware note says the identity reply was fixed.
+
+		Which is why the firmware above is part of that claim: before #243 the instrument
+		answered an identity request with zeros.
+		"""
+		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
+
+		assert op1.midi.sysex is True
+		assert "os_updates" in op1.sources
+		assert op1.sources["os_updates"].kind == "release_notes"
+
+	def test_what_is_left_unrecorded_is_left_out_rather_than_guessed (self) -> None:
+		"""A default channel with no stated range is not a range, and 1-16 is not implied."""
+		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
+
+		assert op1.midi.channels is None
+		assert op1.midi.nrpn is None
+		assert op1.midi.program_change is None
+		assert op1.voice.polyphony is None
+		assert op1.voice.note_range is None
+		assert op1.voice.velocity is None

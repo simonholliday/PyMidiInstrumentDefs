@@ -192,3 +192,44 @@ class TestAQuotationThatNamesItsSourceInsteadOfAPage:
 		assert paged == ["something on a page"]
 		assert len(named) == 2
 		assert not set(paged) & set(named), "a quotation was counted by both checks"
+
+
+class TestWhichDocumentsAPageCitationCouldBeFoundIn:
+
+	"""The JUNO-106 is the first definition to hold a scan and a saved web page at once.
+
+	Its manual is a photograph and the checker drops it, which is right; what was left was
+	an unpaginated web page, and every "p. 34" in the file was then judged against a
+	document with no pages and reported as being on the wrong page. Seven of a maker's own
+	sentences came back as mistakes. The DX7 never showed it because a scan is its only
+	source, so nothing readable was left and the tool said so.
+	"""
+
+	def paged (self, paginated: bool) -> typing.Any:
+		"""A source with nothing in it but the one field this question turns on."""
+		return tool.Document(
+			name = "manual" if paginated else "product_page",
+			path = pathlib.Path("/nowhere"),
+			source = type("Source", (), {"paginated": paginated, "page_offset": 0, "pages_per_sheet": 1})(),
+			pages = ["some text"],
+		)
+
+	def test_a_document_with_pages_is_somewhere_to_look (self) -> None:
+		"""Which is the ordinary case, and the one every other definition is in."""
+		held = [self.paged(True)]
+
+		assert tool.with_pages(held) == held
+
+	def test_a_document_with_no_pages_is_not (self) -> None:
+		"""`paginated: false` means there is no page to turn to, so a page citation cannot be in it."""
+		assert tool.with_pages([self.paged(False)]) == []
+
+	def test_the_paged_one_is_kept_when_a_definition_holds_both (self) -> None:
+		"""A page citation is still checkable, and is still checked, against the one that has pages."""
+		paged, unpaged = self.paged(True), self.paged(False)
+
+		assert tool.with_pages([unpaged, paged]) == [paged]
+
+	def test_nothing_to_look_in_is_not_the_same_as_looking_and_failing (self) -> None:
+		"""The whole point: with no paged document, the answer is unchecked rather than wrong."""
+		assert tool.with_pages([self.paged(False)]) == []

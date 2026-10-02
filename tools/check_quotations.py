@@ -261,6 +261,21 @@ def named_quotations (text: str, keys: typing.Iterable[str]) -> list[tuple[str, 
 	return [(quotation, where) for quotation, where in BY_SOURCE.findall(flowed) if where in known]
 
 
+def with_pages (held: list[Document]) -> list[Document]:
+
+	"""The documents a page citation could be found in at all.
+
+	A definition may cite both kinds at once: a scanned manual nobody here can search, and
+	a saved web page anybody can.  Judging "p. 27" against the web page finds it absent
+	every time, because an unpaginated document has no page to turn to - so a quotation
+	whose definition has no searchable paginated source is **unchecked** rather than wrong.
+	That is the distinction the citation tool already keeps, and reporting a maker's own
+	words as a mistake is the one failure that stops this tool's output being read.
+	"""
+
+	return [document for document in held if document.source.paginated]
+
+
 def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tuple[int, int, int]:
 
 	"""Check one definition, printing what it found.  Returns found, missing, unquoted."""
@@ -289,6 +304,13 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 		+ (f", {d.source.pages_per_sheet} printed pages to a sheet]" if d.source.pages_per_sheet != 1 else "]")
 		for d in held))
 
+	turnable = with_pages(held)
+	unchecked = 0
+
+	if found and not turnable:
+		print(f"    {len(found)} quotations cite a page, and no document with pages could be read")
+		unchecked, found = len(found), []
+
 	missing: list[tuple[str, list[int]]] = []
 	partly: list[tuple[str, list[int]]] = []
 	passed = 0
@@ -297,7 +319,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 		parts = pieces(quotation)
 		where = None
 
-		for document in held:
+		for document in turnable:
 			for number in cited:
 				page = document.printed(number)
 
@@ -320,7 +342,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 
 			split = clauses and any(
 				all(clause in squash(page) for clause in clauses)
-				for document in held
+				for document in turnable
 				for number in cited
 				if (page := document.printed(number)) is not None
 			)
@@ -344,7 +366,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 		print(f"\n      NOT ON p. {', '.join(str(n) for n in cited)}: {quotation[:120]}")
 
 		parts = pieces(quotation)
-		elsewhere = [f"{d.name} printed p. {number}" for d in held for number in d.where(parts)]
+		elsewhere = [f"{d.name} printed p. {number}" for d in turnable for number in d.where(parts)]
 
 		print(f"          it is on: {', '.join(elsewhere) if elsewhere else 'no page of any document held'}")
 
@@ -379,7 +401,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 	for quotation, key in elsewhere_missing:
 		print(f"\n      NOT IN {key}: {quotation[:120]}")
 
-	return passed + named_passed, len(missing) + len(elsewhere_missing), 0
+	return passed + named_passed, len(missing) + len(elsewhere_missing), unchecked
 
 
 def main (argv: list[str]) -> int:

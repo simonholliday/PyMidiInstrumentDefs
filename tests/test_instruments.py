@@ -154,6 +154,7 @@ class TestBundledCorpus:
 			"moog/subsequent_37",
 			"novation/bass_station_ii",
 			"pwm/malevolent",
+			"roland/d_50",
 			"roland/juno_106",
 			"roland/tr8s",
 			"roland/tr_1000",
@@ -3237,3 +3238,83 @@ class TestTr1000:
 
 		assert tr.midi.program_change is not None
 		assert tr.midi.program_change.presets == 128
+
+
+class TestD50:
+
+	"""A 1987 instrument whose manual points at a chart that is not in it."""
+
+	def test_it_carries_no_controls_because_the_player_chooses_them (self) -> None:
+		"""Two pedals, each settable to any number in a range, and no factory map at all."""
+		d50 = pymidiinstrumentdefs.load("roland/d_50", [CORPUS])
+
+		assert d50.controls == {}
+		assert d50.groups == {}
+
+		# Not silence: the manual says what the mechanism is, so the field is answered.
+		assert d50.midi.control_change == "learned"
+		assert d50.midi.stated_none is False
+
+	def test_two_tones_answer_on_two_channels (self) -> None:
+		"""In one key mode the lower tone follows the basic channel and the upper its own."""
+		d50 = pymidiinstrumentdefs.load("roland/d_50", [CORPUS])
+
+		assert set(d50.parts) == {"lower", "upper"}
+
+		assert d50.parts["lower"].channel_offset == 0
+		assert d50.parts["lower"].channel is None
+
+		assert d50.parts["upper"].channel == "assigned"
+		assert d50.parts["upper"].channel_offset is None
+
+		for part in d50.parts.values():
+			assert part.addressing == "pitches"
+			assert part.receives == ("notes",)
+
+	def test_what_the_midi_chapter_does_state (self) -> None:
+		"""Three things, each of them in words on a page rather than inferred."""
+		d50 = pymidiinstrumentdefs.load("roland/d_50", [CORPUS])
+
+		assert d50.midi.channels == (1, 16)
+		assert d50.midi.sysex is True
+
+		assert d50.midi.program_change is not None
+		assert d50.midi.program_change.receives is True
+		assert d50.midi.program_change.sends is True
+		assert d50.midi.program_change.presets == 128
+
+	def test_polyphony_is_not_recorded_although_the_manual_draws_it (self) -> None:
+		"""There is no specifications page: the voice count appears only as rows of circles."""
+		d50 = pymidiinstrumentdefs.load("roland/d_50", [CORPUS])
+
+		assert d50.voice.polyphony is None
+		assert d50.voice.note_range is None
+		assert d50.voice.aftertouch is None
+		assert d50.voice.velocity is None
+
+		# What is recorded is how notes reach it, which the manual does say.
+		assert d50.voice.addressing == "pitches"
+
+	def test_clock_and_transport_are_silences_rather_than_absences (self) -> None:
+		"""The MIDI chapter never mentions either, and nothing here says the instrument ignores
+		them."""
+		d50 = pymidiinstrumentdefs.load("roland/d_50", [CORPUS])
+
+		assert d50.midi.clock is None
+		assert d50.midi.transport is None
+		assert d50.midi.nrpn is None
+
+	def test_the_sources_are_a_scan_and_a_page_that_serves_nothing (self) -> None:
+		"""One of the two is cited for what it does not contain."""
+		d50 = pymidiinstrumentdefs.load("roland/d_50", [CORPUS])
+
+		assert set(d50.sources) == {"manual", "support_page"}
+		assert d50.sources["manual"].edition == "Advanced Course"
+		assert d50.sources["manual"].page_offset == 0
+
+		assert d50.sources["support_page"].kind == "download_page"
+		assert d50.sources["support_page"].paginated is False
+
+		# No firmware, because a 1987 manual names none and Roland publishes no history.
+		assert d50.model.firmware is None
+		assert d50.model.manufacturer == "Roland"

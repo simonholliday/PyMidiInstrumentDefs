@@ -159,6 +159,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/subsequent_37` | Moog Subsequent 37: 114 controls in CC and NRPN pairs, out of a chart whose empty cells were proved empty rather than unread |
 | `novation/bass_station_ii` | Novation Bass Station II: 94 controls across three products that share one guide, and one controller number the guide prints that the MIDI specification says is something else |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
+| `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |

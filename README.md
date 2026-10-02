@@ -147,6 +147,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/minitaur` | Moog Minitaur: plays notes 0-72, with the firmware v2.1 corrections |
 | `moog/subharmonicon` | Moog Subharmonicon: reads a note as an offset from C4, not as a pitch, and answers to one controller its manual does not list |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
+| `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |

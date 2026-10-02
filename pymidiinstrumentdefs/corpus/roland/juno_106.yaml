@@ -1,0 +1,212 @@
+# Two controller numbers, and that is the whole of this instrument's control change. Not
+# an absence, like the MODEL D's, and not a player's own routing, like the OP-1's: Roland
+# published a complete implementation in 1984 and it has two numbers in it. Everything else
+# this synthesizer can be told is system exclusive, which is why the famous way to automate
+# a JUNO-106 is a parameter change and not a CC.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: JUNO-106
+  # NOT RECORDED. The manual states no version, revision or date for itself or for the
+  # instrument: its only number is the part number RUS10003 on the back cover. Roland's
+  # Manual Archive, the one page that offers this document, lists no firmware, no update
+  # and no second document for this model (checked 2026-10-02, 457 documents). So nobody
+  # has established a firmware here, which is not the same as establishing it has none.
+  # This definition covers the JUNO-106 alone. Three other things carry the name and none
+  # shares this document: the Roland Cloud software JUNO-106, whose pages are `rc_juno-106`
+  # and whose manual is PG-JU106_Manual_eng06_W.pdf; the Boutique JU-06 and JU-06A, which
+  # are separate hardware with their own pages; and the JUNO-106 model expansion. The HS-60,
+  # which the survey behind this corpus calls the home-keyboard version of this synth, is
+  # not described here either: Roland publishes no HS-60 document at all, so there is
+  # nothing to read, and a definition may not cover an instrument nobody has a manual for.
+
+source: >-
+  Owner's manual, 36 pages, read at pp. 23, 25 to 29, 32 and 34 to 35. The MIDI
+  implementation is two sheets at the back which print no page number of their own; they
+  are cited as pp. 34 and 35, the positions they occupy after printed page 33, and
+  everything before them is numbered and matches the file page for page.
+  THIS INSTRUMENT IS TRANSCRIBED FROM A SCAN, as the DX7 is. The manual is photographic:
+  all 36 pages extract zero characters, there is no text layer at all, and so
+  `tools/check_citations.py` reports that it checked none of these numbers rather than
+  that it failed to find them. Every number here was read by eye from rendered pages,
+  twice and independently, by two readers who did not see each other's result.
+  ONE DOCUMENT EXISTS AND THESE ARE THE SEARCHES BEHIND THAT. Roland keeps a support page
+  for this product and serves nothing on it: the element that holds a document list is
+  empty, where the TR-8S's holds thirteen links and the JUPITER-X's more. The manual is
+  offered instead from Roland's Manual Archive, which lists 457 documents for discontinued
+  products. One line of it is this instrument's. Of those 457 titles, 39 name a MIDI
+  implementation document, from the D-50's to the VM-3100's, and none is a JUNO-106: this
+  instrument's MIDI material is the appendix inside its own manual. Roland's five older
+  legacy indexes were searched too and none mentions it.
+  THE MIDI FUNCTION SWITCH IS WHY THE CHART HAS THREE COLUMNS A SIDE. A three-position
+  switch beside the MIDI jacks decides what travels, and the chart's Transmitted and
+  Recognized columns are headed 1, 2 and 3 for it. Position I is "communication of only
+  Keyboard and Hold information"; II is "the Keyboard, Hold, Bender on/off control, and
+  Patch Selection information"; III is "the information of II plus tone color parameter
+  information by means of System Exclusive message" (p. 27). So both controls below exist
+  only in the positions their comments give, and the implementation at p. 35 says the same
+  thing a second way, section by section. Which position a player leaves the switch in is
+  a rig setting and is not recorded here.
+  EVERY ROW OF THE CHART IS ACCOUNTED FOR. Twelve function blocks, twenty-six rows in all,
+  and a Notes row.
+  Carried as fields: Basic Channel, Note Number, Velocity, After Touch, Prog Change,
+  System Exclusive, and System Real Time, whose Clock and Commands are both crosses both
+  ways. Carried as controls: the two Control Change rows, 1 and 64. Left out with reason:
+  Mode, which is below; Pitch Bender, which is below; System Common, whose Song Pos, Song
+  Sel and Tune are crosses both ways and which the format has no field for; and the Aux
+  Messages, whose Local ON/OFF, Active Sense and Reset are crosses and whose All Notes OFF
+  is CC 123, a channel mode message that the format refuses as a control and the public
+  guide forbids. The same goes for the 124, 125, 126 and 127 in the implementation's own
+  received list: they are channel mode messages, excluded by category rather than missed.
+  NOT RECORDED, MODE. The chart gives two different defaults - 3 transmitted, 1 recognized
+  - and `midi.mode` holds one number. The implementation says which is which: "When power
+  is first applied, receiver's mode is OMNI ON, POLY mode" (p. 35, mode 1), while the
+  chart's own Notes row says "When power up. OMNI OFF, POLY ON are sent in channel 1"
+  (mode 3). Writing either number alone would deny the other, so neither is written, the
+  way the DX7's aftertouch is left out for the same reason.
+  NOT RECORDED, PITCH BEND. It is received and transmitted in positions II and III, and
+  how far it bends is two front-panel knobs rather than a number: DCO Bend Sens sets "the
+  variable range of the DCO's pitch, when it is controlled by the Bender", to a maximum of
+  plus or minus one octave, and VCF Bend Sens sets its maximum effect on the filter
+  (p. 23). Nothing over
+  MIDI sets either, so `programmable` would be false in a sense no other definition here
+  uses it in, and `semitones` would be a number the manual never states. What the
+  instrument does with a bend that arrives is recorded in the controls' comments instead:
+  it ignores the low six bits, so a bend reaching it is coarse however it was sent.
+  ALSO NOT CARRIED, because the format has no field for it: the sixteen potentiometers and
+  two switch bytes that system exclusive addresses as parameter numbers 0 to 17 (p. 35).
+  That list is the whole of this instrument's remote editing - LFO rate and delay, DCO LFO
+  and PWM, noise level, VCF cutoff, resonance, ENV, LFO and KYBD, VCA level, the four
+  envelope times, sub level, and two bytes of switches for chorus, waveform, range, the
+  high-pass filter, the VCA source, envelope polarity and PWM mode - and not one of them
+  has a controller number or an NRPN. It is the same shape as the DX7's 156 voice
+  parameters: real, published, and nothing a `controls` block can hold.
+  ONE PLACE WHERE THE DOCUMENT CONTRADICTS ITSELF, recorded rather than resolved and
+  touching nothing above. The third exclusive layout, the one that carries a parameter
+  change, prints its function type as the binary 0011 0001 against the hex $32 (p. 35).
+  Those are different bytes: 0011 0001 is $31, which is what the layout above it prints
+  for its own function type. The hex is the one the page's own worked example sends, and
+  $30, $31, $32 for the three layouts is the pattern; the binary digit is the odd one out.
+  The second reading found this and the first had not recorded that column at all.
+
+sources:
+  manual:
+    kind: manual
+    title: JUNO-106 Owner's Manual
+    # No edition and no date: the document states neither, anywhere. Its only number is
+    # the part number RUS10003 printed beside the barcode on the back cover.
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "http://cdn.roland.com/assets/media/pdf/JUNO-106_OM.pdf"
+    sha256: e9315efe58f26236ad26d1cd6d0359aab284741186ed31cf0bbadb1d08902efe
+    retrieved: 2026-10-02
+    # Roland's own link is plain HTTP. The same bytes are served over HTTPS from
+    # https://static.roland.com/assets/media/pdf/JUNO-106_OM.pdf, which was fetched and
+    # compared byte for byte; the URL above is the one Roland's page actually carries.
+    # page_offset 0 and one page to a sheet hold for every page cited here, which is 23 to
+    # 35. They would not hold for printed pages 3 and 4, which share one landscape sheet
+    # followed by a blank, and nothing cites those.
+  archive:
+    kind: web_page
+    title: "Roland - Support - Manual Archive"
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "https://www.roland.com/us/support/manual_archive/"
+    sha256: aa08cc61d2b474998265e8e0c893154f7145dfdb48d2726e8478c90e2558b499
+    retrieved: 2026-10-02
+    paginated: false
+    # The visible text of the page, saved because it is the only place Roland offers this
+    # manual and because the absences above are searches of it. There is no /global/ copy:
+    # that address returns 404, so this is cited from the US site.
+
+midi:
+  # "Pressing the MIDI Channel Button will cause the Display Window to show the MIDI
+  # Channel number currently set (1 to 16)", and one channel serves both directions:
+  # "changing the channel to '2' will turn both recieve and transmit to Channel '2'"
+  # (p. 25, Roland's spelling). The chart says the same as Tx = Rx. It powers up on
+  # channel 1.
+  channels: [1, 16]
+  # Both crosses both ways on the chart, so this instrument neither follows a clock nor
+  # answers to start, stop or continue. For a 1984 synthesizer with no sequencer in it,
+  # that is what you would expect, and it is recorded because it was read rather than
+  # expected.
+  clock: none
+  transport: none
+  # The implementation lists every control change this instrument sends and recognises,
+  # and they are 1, 64 and the channel mode messages 123 to 127. NRPN needs 98, 99, 6 and
+  # 38, none of which appears in either list, and the format itself postdates this
+  # instrument by years. So this is a checked absence and not an assumed one.
+  nrpn: none
+  # Position III only, and this is the whole reason anyone automates a JUNO-106: three
+  # message types at p. 35, all with Roland's ID $41 - $30 when a group, bank or patch
+  # number changes, $31 when the Manual button is pressed, and $32 when any one of the
+  # eighteen parameters moves. It is "available only when the MIDI Function Switch is set
+  # to III" (p. 28, in a sentence that spells it "Exclussive Message").
+  sysex: true
+  program_change:
+    # Received in positions II and III, and sent in II alone: "Regarding Patch Selection
+    # information, it can be received by the Juno-106, but is not transmitted from it" in
+    # III (p. 27), which is what the chart's crossed third column means and what the
+    # implementation says a third time by listing Program Change under FUNCTION 2 and not
+    # under FUNCTION 3.
+    receives: true
+    sends: true
+    presets: 128
+  # Two patch tables at p. 27 print the whole mapping: Group A is banks 1 to 8 by patches
+  # 1 to 8, program 0 to 63, and Group B is the same again, 64 to 127. Roland writes a
+  # patch as its bank and patch digits, so the range reads "Group A-11 to Group B-88".
+
+voice:
+  addressing: pitches
+  # The chart recognises note numbers 0 to 127 and gives its true voice as 24 to 108,
+  # which is the five-octave keyboard. A note outside the true voice is not silent here:
+  # "If the data sent exceeds this range, it will be automatically transposed up or down
+  # to fit in the range. Also, the key Transpose function does not work on the information
+  # sent through the MIDI In" (p. 29). So the range recorded is what the instrument
+  # accepts, as the DX7's is, and the sounding range is in this comment rather than in a
+  # field that would make an out-of-range note look dropped.
+  note_range: [0, 127]
+  # "6 Voice programmable Polyphonic Synthesizer", says the specifications (p. 32). The two
+  # assign modes, Poly 1 and Poly 2, are both six voices and differ in how they retrigger,
+  # so they are not voicing modes.
+  polyphony: 6
+  velocity:
+    # "velocity ignored", twice over, in the received note on and note off rows (p. 35) -
+    # Roland's own word, and the same one the Osmose's definition uses. Its keyboard is
+    # not velocity sensitive either way: the chart crosses both rows on both sides, and
+    # what it sends is "9n v=64 fixed" for a note on and "9n v=0" for a note off.
+    note_on: ignored
+    note_off: false
+  # Crossed in all six columns of the chart, so neither kind of aftertouch, neither
+  # direction, in any position of the function switch.
+  aftertouch: none
+
+controls:
+
+  # Two, and the chart's own Remarks name them. Both exist only in the positions of the
+  # MIDI Function switch their comments give, which no field can say; both travel in both
+  # directions in those positions.
+
+  lfo_modulation:
+    label: LFO Modulation
+    cc: 1
+    # Positions II and III. The name is the implementation's, which heads all three of its
+    # rows "LFO Modulation"; the chart's Remarks column shortens it to "Modulation".
+    # What it is on the instrument is the bender lever pushed away from you: "If the
+    # Bender Lever is being pushed back, LFO output controls the DCO (vibrato effect)"
+    # (p. 23), and the MIDI Bus list calls it "Modulation by Bender" (p. 25).
+    # Continuous rather than a switch, because that is what it accepts: "LFO Modulation
+    # v = 0 ( min ) --> 127 ( max )" (p. 35). What it *sends* is only ever 0 or 127, since
+    # the lever is a switch - "Modulation value is 0 or 127", says the chart - so a
+    # recorded performance from this instrument has two values in it and the instrument
+    # will answer to all 128.
+  hold:
+    label: Hold
+    cc: 64
+    # Every position of the switch, including I, which carries nothing else but notes.
+    # Sent from the pedal: "Hold on from rear panel jack" (p. 35), and the MIDI Bus list
+    # has "Hold (when a Pedal Switch is used)" (p. 25).
+    values: {"off": 0, "on": 1}
+    # On at 1 rather than at the usual 64, because that is what Roland states: "hold ON
+    # vvvvvvv = 1 - 127" against "hold OFF" with a third byte of 0 (p. 35). What it sends
+    # is 127 for on and 0 for off.

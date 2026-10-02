@@ -116,6 +116,7 @@ class TestBundledCorpus:
 			"moog/subharmonicon",
 			"moog/subsequent_37",
 			"pwm/malevolent",
+			"roland/juno_106",
 			"roland/tr8s",
 			"sequential/take_5",
 			"soma/pulsar_23",
@@ -2010,3 +2011,85 @@ class TestOP1:
 		assert op1.voice.polyphony is None
 		assert op1.voice.note_range is None
 		assert op1.voice.velocity is None
+
+
+class TestJuno106:
+
+	"""Two controller numbers in the whole instrument, read by eye from a 1984 scan."""
+
+	def test_its_control_change_is_two_numbers_and_both_travel_both_ways (self) -> None:
+		"""Not an absence and not a player's routing: a published map with two rows in it."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+
+		assert sorted(control.cc for control in juno.controls.values() if control.cc) == [1, 64]
+		assert all(control.direction == "both" for control in juno.controls.values())
+
+		# Which is neither of the two shapes that also produce a short file: somebody
+		# checked and found none, and a map the player writes with MIDI learn.
+		assert not juno.midi.refuses_control_change
+		assert not juno.midi.learns_control_change
+
+	def test_hold_turns_on_at_one_because_that_is_what_the_maker_states (self) -> None:
+		"""Everywhere else in this corpus a switch is off below 64; here the manual says 1."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+		hold = juno.controls["hold"]
+
+		assert hold.kind == "switch"
+		assert hold.band("off") == (0, 0)
+		assert hold.band("on") == (1, 127)
+
+	def test_modulation_is_continuous_although_it_only_ever_sends_two_values (self) -> None:
+		"""It answers to all 128; its own bender lever is a switch, so it sends 0 or 127."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+		modulation = juno.controls["lfo_modulation"]
+
+		assert modulation.kind == "continuous"
+		assert modulation.range == (0, 127)
+		assert modulation.states == []
+
+	def test_the_mode_is_left_out_because_the_chart_gives_two (self) -> None:
+		"""Default 3 transmitted and 1 recognized, and the field holds one number (#4179)."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+
+		assert juno.midi.mode is None
+
+	def test_its_note_range_is_what_it_accepts_not_what_it_sounds (self) -> None:
+		"""A note outside the keyboard is transposed into it rather than dropped, so 0-127."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+
+		assert juno.voice.note_range == (0, 127)
+		assert juno.voice.plays_note(0) and juno.voice.plays_note(127)
+		assert juno.voice.polyphony == 6
+
+	def test_it_holds_a_scan_and_a_readable_page_at_once (self) -> None:
+		"""The first definition to do so, which is what the quotation checker had to learn."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+
+		assert juno.sources["manual"].paginated
+		assert juno.sources["manual"].file_page(34) == 34
+		assert not juno.sources["archive"].paginated
+		assert juno.sources["archive"].file_page(34) is None
+
+	def test_what_it_answers_to_with_no_sequencer_in_it (self) -> None:
+		"""Crossed both ways on the chart, so neither clock nor transport, and no aftertouch."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+
+		assert juno.midi.clock == "none"
+		assert juno.midi.transport == "none"
+		assert juno.midi.nrpn == "none"
+		assert juno.voice.aftertouch == "none"
+
+		assert juno.voice.velocity is not None
+		assert juno.voice.velocity.note_on == "ignored"
+		assert juno.voice.velocity.note_off is False
+
+	def test_the_whole_of_its_remote_editing_is_system_exclusive (self) -> None:
+		"""Eighteen parameters with no controller number, which no `controls` block can hold."""
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+
+		assert juno.midi.sysex is True
+
+		assert juno.midi.program_change is not None
+		assert juno.midi.program_change.presets == 128
+		assert juno.midi.program_change.receives is True
+		assert juno.midi.program_change.sends is True

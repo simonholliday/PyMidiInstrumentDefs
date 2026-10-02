@@ -1,0 +1,282 @@
+# THIS IS THE MODEL:SAMPLES' MANUAL WITH A DIFFERENT INSTRUMENT IN IT, and knowing that is worth
+# more than anything else here. The two were built from one file on 2024-10-30 twenty minutes
+# apart, both carry OS 1.13, and Elektron dates both OS releases to May 26, 2021. Their
+# appendices are laid out identically - four tables two abreast, each headed "CC MSB" - and
+# `elektron/model_samples` in this corpus is the one to read beside this.
+#
+# SO THE SAME PROMISE IS MADE AND KEPT ONCE. The column says MSB, which means every parameter
+# has a less significant half, and exactly one row gives it: the LFO's depth, "109 (LSB: 110)".
+# Twenty-nine of the thirty are left with one number each.
+#
+# AND THE SAME SILENCE ABOUT NRPN. "RCV CC will when active make it possible to control
+# Model:Cycles parameters from an external MIDI device sending CC/NRPN data" (p. 45) is the only
+# mention in fifty-six pages, and no NRPN number is printed anywhere. (The sibling's manual words
+# that sentence differently - "RCV CC ON makes it possible" - which is the kind of small drift
+# that shows the two were edited by hand from one another.)
+#
+# WHAT IS GENUINELY DIFFERENT IS WHERE FOUR CONTROLLER NUMBERS POINT. The sampler spends 16, 17,
+# 18 and 19 on Pitch, Loop, Reverse and Sample Start; this synth spends them on **Color, Shape,
+# Sweep and Contour**, and puts Pitch on 65. It also has two numbers the sampler has not: 65 for
+# pitch and **70 for choosing the machine**. A host that treats the two instruments as one would
+# sweep a filter on one and a chord inversion on the other.
+#
+# AND FOUR OF THESE THIRTY CONTROLS MEAN SOMETHING DIFFERENT ON EVERY MACHINE. "The four
+# parameters, COLOR, SHAPE, SWEEP, and CONTOUR, affects the sound in different ways depending on
+# what machine you have selected" (p. 37). There are six machines and nothing in this format can
+# say that of a control, so the labels below stay the appendix's and this is where it is said.
+
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Model:Cycles
+  # The manual says so itself, in its colophon rather than on its cover: "This manual for
+  # Model:Cycles OS version 1.13 was last updated October 30, 2024" (p. 9).
+  # **THE FIRMWARE HAS STOOD STILL AND THE DOCUMENT HAS NOT**, as for the sibling: Elektron's
+  # downloads page dates OS 1.13 to May 26, 2021 and this manual to Oct 31, 2024. The release
+  # notes for 1.13 move no controller number, so the appendix is current rather than stale.
+  firmware: "1.13"
+
+source: >-
+  User Manual, OS 1.13, 56 pages: the foreword on p. 9, the sound architecture and the
+  channel-sharing rule on p. 16, external MIDI and the note map on p. 19, program change on
+  p. 20, the machines on pp. 35-37, the MIDI menus on pp. 43-45, the technical information on
+  p. 51, APPENDIX A: MIDI SPECIFICATIONS on p. 52, and APPENDIX B and APPENDIX C on p. 53. The
+  downloads page is cited for which OS is current and the release notes for what it changed,
+  because the manual says neither.
+  THIRTY CONTROL CHANGES, IN THE APPENDIX'S OWN FOUR GROUPS: sixteen track parameters, two
+  playback parameters, eight LFO parameters and four effect parameters. Every number is distinct
+  and inside 0 to 127, and the generator that wrote the block below checks both.
+  WHICH PART A CONTROL ANSWERS ON COMES FROM THE CHANNEL MENUS AND NOT THE APPENDIX, and the
+  manual draws the line in one sentence each way: "T1-6 IN selects the dedicated MIDI channel
+  that is used to receive parameter data to a specific track" and "FX IN selects the dedicated
+  MIDI channel for the DELAY and REVERB parameters" (p. 44). So twenty-six of the thirty answer
+  on a track's own channel and four on the effects' channel. Delay Send and Reverb Send stay
+  with the track, because they are a track's amount of an effect rather than the effect.
+  THERE IS NO BASE CHANNEL AND SEVERAL TRACKS MAY SHARE ONE. "Any MIDI channel can be assigned
+  to a track and several tracks can share the same channel. If several tracks are assigned to
+  the same MIDI channel the track with the lowest number has priority regarding parameter
+  conflicts" (p. 16). That last rule is this instrument's own and no field here holds it.
+  SIX MACHINES, NAMED ONCE AND NUMBERED NOWHERE. The foreword says what they are - "six
+  different machines: Kick, Snare, Metal, Perc, Tone, and Chord" (p. 9) - and "Any machine can
+  be assigned to any track and can be parameter locked" (p. 35). **CC 70 selects one of them and
+  the manual gives no number for any machine**, so `machine_selection` below has six states and
+  no mapping. The order above is the order pp. 35-36 print them in, and the manual nowhere says
+  that is the order the menu uses.
+  AND THE PAGE THAT WOULD ANSWER "WHAT DOES CC 16 DO" IS NOT IN THE TEXT LAYER. The table on
+  p. 36 sets the six machines against their four macro controls, and only the Chord machine's
+  row can be extracted - that row is moreover left in the file invisibly on two other pages,
+  which is what a reader of the raw text sees instead of the other five. Read by eye off the
+  rendered page, the four controls mean: for KICK, soft square-like modulation, triangle-like
+  modulation and feedback, pitch sweep depth and time, modulation envelope depth; for SNARE,
+  inharmonicity amount, modulation amount and feedback, pitch sweep depth and time, modulation
+  envelope depth; for METAL, tune offset A, modulation amount and feedback, tune offset B,
+  modulation envelope depth; for PERC, inharmonicity amount, modulation amount, pitch sweep,
+  modulation envelope depth; for TONE, modulator ratio, modulation amount, feedback amount,
+  modulation envelope depth; and for CHORD, "Chord: Interval mix and osc balance. Unison:
+  Detune", unison or chord, wavetable sweep, filter cutoff envelope depth. **Those twenty-four
+  readings are the one thing in this file that a second method could not corroborate**, because
+  no text engine can see five of the six rows.
+  THE INDEX STILL CARRIES THE SAMPLER'S PARAMETERS, which is the plainest evidence of where this
+  document came from. It lists "SAMPLE LOCKS" and, on the previous page, "LOOP" and "REVERSE" -
+  and LOOP and REVERSE appear nowhere else in these fifty-six pages, because this instrument has
+  neither. The Model:Samples has both, at CC 17 and 18, where this one has Shape and Sweep. The
+  body slips the same way once: p. 18 offers to "backup up your projects and samples", on an
+  instrument whose own foreword asks "how do we accomplish that without using samples?".
+  AND FOUR CONTROLS CHANGE MEANING WITH THE MACHINE, which is the thing that most distinguishes
+  this instrument from its sibling. "The four parameters, COLOR, SHAPE, SWEEP, and CONTOUR,
+  affects the sound in different ways depending on what machine you have selected" (p. 37) - so
+  CC 16 is six different parameters depending on CC 70. The Analog Rytm in this corpus has the
+  same shape and more of it; there is nothing in this format to express it, and the labels below
+  are the appendix's.
+  NOT RECORDED: WHAT SHAPE DOES UNDER THE CHORD MACHINE, although the manual lists it. APPENDIX
+  C names thirty-eight settings in order - unison spreads and then chords from "minor" to
+  "Fifths" - and **gives no number against any of them**, so they cannot become `choices`.
+  A THIRD CHANNEL IS AN ALIAS RATHER THAN A PART. "AUTO IN selects the MIDI channel for the AUTO
+  channel that gives access to the currently active track" (p. 44), so it addresses no fixed
+  part. A fourth, PCH, carries program change alone.
+  AND ONE DIRECTION HAS NO AUTO CHANNEL, as on the sibling. The input menu has nine entries, six
+  tracks and FX and AUTO and PCH; the output menu has eight, six tracks and FX and PCH. So the
+  AUTO channel receives and does not send.
+  TWO MODULATION DESTINATIONS HAVE NO CONTROLLER AT ALL. APPENDIX B names Fine Tune and LFO Trig
+  Mode among the things the LFO and velocity can reach, and neither has a row in APPENDIX A - so
+  they can be modulated from inside the instrument and not set from outside it.
+  NOT RECORDED: aftertouch, pitch bend and system exclusive. The manual mentions none of the
+  three anywhere, in either direction, so all three are silences rather than checked absences.
+  NOT RECORDED: any `range`, and the reason is the sibling's. The appendix has two columns,
+  Parameter and CC MSB, and nothing else. The parameter chapters do give ranges, but in the
+  instrument's own units: Pitch is "(-24-+24, equivalent to four octaves.)" and bipolar (p. 37),
+  and both sends are "(OFF, 1-127)" (p. 37), whose bottom is a word. **And two of them a single
+  controller could not carry**: Delay Feedback is "(0-198)" and Delay Time "(1.00-128.00)",
+  "relative to the current BPM and measured in 128th notes" (p. 41), each with one number in the
+  appendix and no LSB - exactly as on the sibling, whose own Delay Feedback is the same 0 to 198.
+  Nothing says how any of those becomes a controller value, so every control below keeps the
+  format's default of 0 to 127.
+  NOT RECORDED: the kind of MIDI socket. The specification gives "3.5 mm dual polarity TRS MIDI
+  In, Out/Thru jacks" (p. 51) and the output's polarity is a setting; there is no field for a
+  connector, so it is here.
+
+sources:
+  manual:
+    kind: manual
+    title: Model:Cycles User Manual
+    edition: OS 1.13
+    dated: 2024-10-30
+    landing: "https://www.elektron.se/support-downloads/modelcycles"
+    url: "https://www.elektron.se/wp-content/uploads/2024/10/Model-Cycles-User-Manual_ENG_OS1.13_241030.pdf"
+    sha256: 2a6bdd8843d84743206ff980b63f38f6b67b5bb52ba6aa97afd28e6a33664f50
+    retrieved: 2026-10-02
+    # The printed page number is the file page. The printing code on the back cover is
+    # `4261ENG-E`, against the Model:Samples' `4216ENG-G` - the same four digits transposed.
+    # `file(1)` gives **no page count at all** for this document, where it gave a wrong one for
+    # the sibling - 174 against a real 58. Two libraries agree this one has 56.
+    # READ IT WITH PyMuPDF RATHER THAN pypdf, as with the sibling: pypdf splits glyphs on this
+    # maker's pages, so the appendix's own title comes out as "SPECIFICA TIONS".
+    page_offset: 0
+  downloads:
+    kind: download_page
+    title: "Elektron Model:Cycles support and downloads"
+    landing: "https://www.elektron.se/support-downloads/modelcycles"
+    url: "https://www.elektron.se/support-downloads/modelcycles"
+    sha256: 6370c5177ad6e934c966500f27c4796c4a042b17efe43fb1affec0c114349296
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for the one thing the manual does not say: "Model:Cycles OS 1.13" dated "May 26,
+    # 2021", against "Model:Cycles User Manual - EN" dated "Oct 31, 2024" - the same two dates
+    # as the Model:Samples', to the day.
+  release_notes:
+    kind: release_notes
+    title: "Model:Cycles OS release notes"
+    landing: "https://www.elektron.se/support-downloads/modelcycles"
+    url: "https://www.elektron.se/release_notes/modelcycles-os-release-notes"
+    sha256: 60d8ac7c3d13f0d97d7daf63ad938350f1944c16aa825e77c2003cd862e476b5
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited because it is what makes the appendix current rather than merely old: nothing in
+    # 1.13 adds or moves a controller number.
+
+midi:
+  # ANY OF THE SIXTEEN, AND THE MANUAL NEVER PRINTS THAT RANGE. What it says is that a channel
+  # is selected - "T1-6 IN selects the dedicated MIDI channel" (p. 44), with OFF as a setting -
+  # and that "Any MIDI channel can be assigned to a track" (p. 16). Sixteen is the protocol's
+  # number rather than this maker's statement; the only channel numbers printed anywhere are the
+  # six tracks' defaults, "their default channels 1-6" (p. 19).
+  channels: [1, 16]
+  # "CLK IN will, when set to ON, make Model:Cycles respond to MIDI clock and MIDI transport
+  # messages sent from external devices. CLK OUT will, when set to ON, make Model:Cycles
+  # transmit MIDI clock and MIDI transport messages" (p. 43). One switch each, covering clock
+  # and transport together, so both go both ways.
+  clock: both
+  transport: both
+  program_change:
+    # "PCH IN will, when set to ON, make Model:Cycles respond to incoming program change
+    # messages, which is useful when wanting to select patterns externally" (p. 43), and PCH OUT
+    # sends one when the pattern changes.
+    receives: true
+    sends: true
+    # "MIDI program change messages 0-95 selects pattern 1-96 (A01-F16) on the Model:Cycles"
+    # (p. 20). A program change picks a pattern here rather than a sound.
+    presets: 96
+  # IT ANSWERS TO NRPN AND NO NRPN NUMBER IS PUBLISHED. "RCV CC will when active make it
+  # possible to control Model:Cycles parameters from an external MIDI device sending CC/NRPN
+  # data" (p. 45) - the only mention of NRPN in fifty-six pages, and the appendix gives none.
+  # `supported` rather than `preferred`, because nothing here calls it the better way in.
+  nrpn: supported
+  # NOT RECORDED: system exclusive. No page mentions it, in either direction.
+
+parts:
+  track:
+    label: Track
+    count: 6
+    # Assigned, not derived: there is no base channel, and "Any MIDI channel can be assigned to
+    # a track and several tracks can share the same channel" (p. 16).
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # One voice each: "its six audio voices and two send effects" (p. 16) across six tracks.
+    polyphony: 1
+    # Notes reach a track two ways, and the words are the sibling's with "preset" for "sample".
+    # "Note numbers 0-5 correspond to notes C0 through to F0 ... These notes trigger the preset
+    # of track 1 through track 6, respectively (provided they are set to their default channels
+    # 1-6). These note values map to each of the six tracks, regardless of which track is
+    # active." And "MIDI note numbers 12-60 ... trigger the preset of the active track in any of
+    # its 49 chromatic variations" (p. 19), which is the active track only.
+  fx:
+    label: Delay and Reverb
+    channel: assigned
+    receives: [controls]
+    # Takes no notes: the two send effects and nothing else. "FX IN selects the dedicated MIDI
+    # channel for the DELAY and REVERB parameters" (p. 44). Each track's amount of each effect
+    # is a track parameter instead.
+
+voice:
+  addressing: pitches
+  # Six voices across six tracks is one each, so the figure that means something is on the part.
+  polyphony_shared: false
+  # The outer bound of the two bands on p. 19: 0 to 5 trigger the six tracks and 12 to 60 play
+  # the active track chromatically. Notes 6 to 11 are named in neither band and nothing above 60
+  # is documented. Twelve to sixty inclusive is 49 notes, which is the figure the manual gives.
+  note_range: [0, 60]
+  velocity:
+    note_on: received
+    # "The responsive pads are made of sturdy synthetic rubber and are velocity sensitive"
+    # (p. 19), and a fixed velocity may be set instead. What velocity reaches is a volume depth
+    # and a destination chosen from APPENDIX B, so it is a menu rather than a controller - and
+    # there is no velocity row in the appendix at all.
+  # NOT RECORDED: aftertouch and pitch bend. Neither is mentioned anywhere in the manual.
+
+groups:
+  track: Track parameters
+  playback: Playback
+  lfo: LFO
+  fx: Delay and reverb
+
+controls:
+
+  # Generated from the appendix by `Notes/4227_write_controls.py`, which reproduces this block.
+  # No control carries an `nrpn` because Elektron publishes none; see `midi.nrpn` above. None
+  # carries a `range` either; see the source account for why the parameter chapters' ranges are
+  # not it.
+  #
+  # COLOR, SHAPE, SWEEP AND CONTOUR BELOW ARE SIX PARAMETERS EACH, one per machine, and the
+  # labels are the appendix's names for the knobs rather than for what they do. CC 70 is what
+  # decides which.
+
+  # TRACK -----------------------------------------------------------------
+  note:                     {label: Note, cc: 3, part: track, group: track}
+  mute:                     {label: Mute, cc: 94, part: track, group: track}
+  track_level:              {label: Track level, cc: 95, part: track, group: track}
+  pan:                      {label: Pan, cc: 10, part: track, group: track}
+  pitch:                    {label: Pitch, cc: 65, part: track, group: track}
+  decay_time:               {label: Decay Time, cc: 80, part: track, group: track}
+  color:                    {label: Color, cc: 16, part: track, group: track}
+  shape:                    {label: Shape, cc: 17, part: track, group: track}
+  sweep:                    {label: Sweep, cc: 18, part: track, group: track}
+  contour:                  {label: Contour, cc: 19, part: track, group: track}
+  delay_send:               {label: Delay Send, cc: 12, part: track, group: track}
+  reverb_send:              {label: Reverb Send, cc: 13, part: track, group: track}
+  volume_and_distortion:    {label: Volume + Dist, cc: 7, part: track, group: track}
+  swing:                    {label: Swing, cc: 15, part: track, group: track}
+  chance:                   {label: Chance, cc: 14, part: track, group: track}
+  machine_selection:        {label: Machine Selection, cc: 70, part: track, group: track}
+
+  # PLAYBACK --------------------------------------------------------------
+  playback_punch:           {label: Punch, cc: 66, part: track, group: playback}
+  playback_gate:            {label: Gate, cc: 67, part: track, group: playback}
+
+  # LFO -------------------------------------------------------------------
+  lfo_speed:                {label: Speed, cc: 102, part: track, group: lfo}
+  lfo_multiplier:           {label: Multiplier, cc: 103, part: track, group: lfo}
+  lfo_fade:                 {label: Fade In/Out, cc: 104, part: track, group: lfo}
+  lfo_destination:          {label: Destination, cc: 105, part: track, group: lfo}
+  lfo_waveform:             {label: Waveform, cc: 106, part: track, group: lfo}
+  lfo_start_phase:          {label: Start Phase, cc: 107, part: track, group: lfo}
+  lfo_reset:                {label: Reset, cc: 108, part: track, group: lfo}
+  lfo_depth:                {label: Depth, cc: 109, lsb: 110, part: track, group: lfo}
+
+  # FX --------------------------------------------------------------------
+  delay_time:               {label: Delay Time, cc: 85, part: fx, group: fx}
+  delay_feedback:           {label: Delay Feedback, cc: 86, part: fx, group: fx}
+  reverb_size:              {label: Reverb Size, cc: 87, part: fx, group: fx}
+  reverb_tone:              {label: Reverb Tone, cc: 88, part: fx, group: fx}
+

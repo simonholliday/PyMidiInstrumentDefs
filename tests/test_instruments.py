@@ -133,6 +133,7 @@ class TestBundledCorpus:
 			"elektron/digitakt",
 			"elektron/digitakt_ii",
 			"elektron/digitone",
+			"elektron/model_cycles",
 			"elektron/model_samples",
 			"elektron/syntakt",
 			"expressive_e/osmose",
@@ -3534,3 +3535,105 @@ class TestModelSamples:
 		assert ms.model.name == "Model:Samples"
 		assert set(ms.sources) == {"manual", "downloads", "release_notes"}
 		assert ms.sources["manual"].edition == "OS 1.13"
+
+
+class TestModelCycles:
+
+	"""The Model:Samples' manual with a synth in it, and four controls that change meaning."""
+
+	def test_it_is_the_sibling_with_four_numbers_spent_differently (self) -> None:
+		"""Which is what a host treating the two as one instrument would get wrong."""
+		cycles = pymidiinstrumentdefs.load("elektron/model_cycles", [CORPUS])
+		samples = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		assert len(cycles.controls) == 30
+		assert len(samples.controls) == 29
+
+		here = {c.cc: c.label for c in cycles.controls.values()}
+		there = {c.cc: c.label for c in samples.controls.values()}
+
+		# The four the two spend differently.
+		for number, synth, sampler in (
+				(16, "Color", "Pitch"), (17, "Shape", "Loop"),
+				(18, "Sweep", "Reverse"), (19, "Contour", "Sample Start")):
+			assert here[number] == synth, f"CC {number} is {here[number]!r} here"
+			assert there[number] == sampler, f"CC {number} is {there[number]!r} on the sampler"
+
+		# And the two this one has that the sampler has not.
+		assert here[65] == "Pitch" and 65 not in there
+		assert here[70] == "Machine Selection" and 70 not in there
+
+	def test_the_two_appendices_agree_about_everything_else (self) -> None:
+		"""Twenty-four numbers mean the same thing on both, which is why the four matter."""
+		cycles = pymidiinstrumentdefs.load("elektron/model_cycles", [CORPUS])
+		samples = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		here = {c.cc: c.label for c in cycles.controls.values()}
+		there = {c.cc: c.label for c in samples.controls.values()}
+
+		shared = set(here) & set(there)
+		differing = {number for number in shared if here[number] != there[number]}
+
+		assert differing == {16, 17, 18, 19}
+
+		# Both keep the same single LSB in the same place.
+		assert cycles.controls["lfo_depth"].cc == 109
+		assert cycles.controls["lfo_depth"].lsb == 110
+		assert samples.controls["lfo_depth"].lsb == 110
+
+	def test_the_machine_chooses_what_four_controls_do (self) -> None:
+		"""Six machines, named once in the foreword and numbered nowhere."""
+		cycles = pymidiinstrumentdefs.load("elektron/model_cycles", [CORPUS])
+
+		machine = cycles.controls["machine_selection"]
+
+		assert machine.cc == 70
+		assert machine.part == "track"
+		# No `choices`, because the manual gives no number for any machine.
+		assert machine.choices == {}
+		assert machine.values == {}
+
+		for name in ("color", "shape", "sweep", "contour"):
+			assert cycles.controls[name].part == "track"
+			assert cycles.controls[name].group == "track"
+
+	def test_it_answers_to_nrpn_and_no_number_is_published (self) -> None:
+		"""As with the sibling, and the manual words the sentence slightly differently."""
+		cycles = pymidiinstrumentdefs.load("elektron/model_cycles", [CORPUS])
+
+		assert cycles.midi.nrpn == "supported"
+		assert all(c.nrpn is None for c in cycles.controls.values())
+
+		# And no range, for the reason the source account gives.
+		assert all(c.range == (0, 127) for c in cycles.controls.values())
+
+	def test_six_tracks_and_the_two_effects_as_on_the_sibling (self) -> None:
+		"""Same parts, same assigned channels, and the sends still belong to a track."""
+		cycles = pymidiinstrumentdefs.load("elektron/model_cycles", [CORPUS])
+
+		assert set(cycles.parts) == {"track", "fx"}
+		assert cycles.parts["track"].count == 6
+		assert cycles.parts["track"].channel == "assigned"
+		assert cycles.parts["track"].polyphony == 1
+		assert cycles.parts["fx"].receives == ("controls",)
+
+		on_fx = {name for name, c in cycles.controls.items() if c.part == "fx"}
+
+		assert on_fx == {"delay_time", "delay_feedback", "reverb_size", "reverb_tone"}
+		assert cycles.controls["delay_send"].part == "track"
+
+	def test_what_it_shares_with_the_sibling_and_what_it_does_not_state (self) -> None:
+		"""The same note bands, the same pattern count, the same three silences."""
+		cycles = pymidiinstrumentdefs.load("elektron/model_cycles", [CORPUS])
+
+		assert cycles.voice.note_range == (0, 60)
+		assert cycles.voice.polyphony_shared is False
+		assert cycles.midi.program_change is not None
+		assert cycles.midi.program_change.presets == 96
+
+		assert cycles.voice.aftertouch is None
+		assert cycles.voice.pitch_bend is None
+		assert cycles.midi.sysex is None
+
+		assert cycles.model.firmware == "1.13"
+		assert set(cycles.sources) == {"manual", "downloads", "release_notes"}

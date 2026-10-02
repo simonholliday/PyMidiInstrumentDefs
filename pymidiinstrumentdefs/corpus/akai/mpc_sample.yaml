@@ -1,0 +1,134 @@
+# THIS DEFINITION CARRIES NO CONTROLS, AND THAT IS THE FINDING. Akai publishes a 67-page user
+# guide and two pages of release notes for this instrument, and between them they contain no
+# control change number, no NRPN, no RPN, no note map, no system exclusive layout and no
+# implementation chart. There is nothing to transcribe, and a definition that invented one would
+# be worse than this one.
+#
+# THE ABSENCE IS PROVED RATHER THAN ASSERTED. Seventeen terms a control map would be written in
+# were searched for across both documents and none of them appears - and eleven phrases that are
+# certainly there were searched for as well, because a PDF whose text layer is broken answers
+# every search with the same silence a real absence does. Each term was searched twice, as
+# printed and with the whitespace taken out, because this maker's text layer breaks words in the
+# middle: "dete rmines", "settin g".
+#
+# SO WHAT IS BELOW IS WHAT THE GUIDE DOES SAY: nine settings in one menu, two ports, and a
+# specification. Everything else about this instrument's MIDI is unpublished rather than absent,
+# and the difference is kept.
+
+definition: 1
+
+model:
+  manufacturer: Akai Professional
+  name: MPC Sample
+  # The guide's own file name says v1.3.0, which is the guide's version. What ties it to the
+  # instrument's firmware is that the guide carries both features the 1.3.0 release notes
+  # attribute to that release: Normalize Sample (p. 24) and the Knob Takeover modes (p. 61),
+  # which those notes place "in the MIDI Config menu, by holding down SHIFT and pressing Pad 8".
+  # Akai publishes no later edition: the same path serves v1.0 and v1.0 (RevB), and v1.3.1,
+  # v1.4.0 and v2.0 are not there.
+  # AND THE ONE PLACE THIS INSTRUMENT'S OWN VERSION IS LEGIBLE SAYS 1.2.0. The screenshot of the
+  # MIDI Configuration menu on p. 60 shows the screen's own header reading "v1.2.0", so a guide
+  # published as v1.3.0 illustrates itself with a screen from the release before. That is in a
+  # bitmap and invisible to any search of the text; it was read by rendering the page.
+  # Checked 2026-10-02.
+  firmware: "1.3.0"
+
+source: >-
+  MPC Sample User Guide, 67 pages, the edition Akai names v1.3.0 (RevA): the MIDI Configuration
+  menu on pp. 60-61, the rear panel on p. 15, the pads on p. 20, and the technical specifications
+  on pp. 64-65. MPC Sample 1.3.0 Release Notes, 2 pages, for which firmware the guide describes.
+  AKAI PUBLISHES NO CONTROLLER NUMBER FOR THIS INSTRUMENT, which is why this file has no
+  controls block. The words control change, CC, NRPN, RPN, system exclusive, note number, pitch
+  bend, MPE and implementation chart appear nowhere in either document. That is an absence of
+  publication and not a checked absence of behaviour: nothing here says the instrument ignores
+  control change, only that nobody is told what it would do with one.
+  NEITHER DOES ITS OWN WEBSITE. The guide is published as HTML as well, and its four top-level
+  chapters together hold 13 KB of text and not one occurrence of the word MIDI; Akai's downloads
+  page and its MPC Manuals page build their lists in the browser, so a fetch of either returns no
+  link to any file at all. The PDF was found by a search restricted to the maker's own domains.
+  WHAT THE GUIDE DOES PUBLISH IS ONE MENU, and it is where everything below comes from. "The MIDI
+  Configuration menu allows you to adjust how MPC Sample sends and receives MIDI and CV data"
+  (p. 60), and its nine settings are the port, the in and out channels, whether MIDI input
+  triggers the pads and whether the pads send, sync in and out, Thru, and program change.
+  TWO OF THOSE SETTINGS SAY SOMETHING THE FIELDS BELOW CANNOT HOLD. Sync in and sync out each
+  offer "Off, Midi Clock, MTC", so this instrument answers to MIDI Time Code as well as to clock,
+  and `midi.clock` has no room for the second of those. And "MIDI Thru ... When set to ON, MIDI
+  data received by the MIDI IN port is also forwarded through the MIDI OUT port" - a soft thru on
+  a two-socket instrument, which no field here records.
+  NOT RECORDED: ANYTHING ABOUT NOTES. The pads are "16 velocity-sensitive pads with
+  poly-aftertouch" (p. 20) and "Pad MIDI In ... determines whether MIDI Input can be used to
+  trigger the pads" (p. 60) - so notes arrive and reach the pads, and which note reaches which
+  pad is not published, nor whether the velocity or the aftertouch of an incoming note is used at
+  all. The pads produce poly aftertouch; nothing says the instrument receives any. So the voice
+  block records none of it rather than reading the pads' own behaviour backwards.
+  THE PADS HAVE AFTERTOUCH AND NOTHING IN THE GUIDE USES IT. "These 16 velocity-sensitive pads
+  with poly-aftertouch" (p. 20), and the specification drops the qualifier - "16 RGB-lit
+  velocity-sensitive MPC Pads with aftertouch" (p. 64). No mode, menu, parameter or effect
+  anywhere in 67 pages responds to aftertouch, and nothing says it is sent or received. So a
+  reader cannot learn what the feature does, and this file does not say.
+  TWO MORE GAPS IN THE ONE MENU THAT IS PUBLISHED. "Pad MIDI Out" takes three values, "Never,
+  Always, Empty", and its description explains the first two and never says what Empty means. And
+  the three Takeover settings are rows of this same menu - the release notes place them "in the
+  MIDI Config menu, by holding down SHIFT and pressing Pad 8" - yet they appear in neither of the
+  guide's two tables of it, only as prose beneath them with no values column.
+  NOT RECORDED: system exclusive, NRPN, transport, and whether the instrument sends program
+  change. None of the four is mentioned in either document, which is silence rather than a
+  checked absence.
+
+sources:
+  guide:
+    kind: manual
+    title: MPC Sample User Guide
+    edition: v1.3.0 (RevA)
+    dated: 2026-03-09
+    landing: "https://www.akaipro.com/guides/mpc-sample/"
+    url: "https://cdn.inmusicbrands.com/akai/sample/MPC%20Sample%20-%20User%20Guide%20-%20v1.3.0%20(RevA).pdf"
+    sha256: 3b36f5057665677af978e728d6f3118ab1b4be30f5e100e3d6fd8ede918c0e93
+    retrieved: 2026-10-02
+    # 67 pages, printed page = file page. Akai's own pages link no file: both the downloads page
+    # and the MPC Manuals page build their lists in the browser. This was found by a search
+    # restricted to the maker's and its parent's domains.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: MPC Sample 1.3.0 Release Notes
+    edition: "1.3.0"
+    landing: "https://www.akaipro.com/guides/mpc-sample/"
+    url: "https://cdn.inmusicbrands.com/akai/sample/MPC%20Sample%201.3%20Release%20Notes.pdf"
+    sha256: 2c4b33217ce42d3346956b3b369bb81a0ebbd9bd6b8ddc211f50caacf58c3c91
+    retrieved: 2026-10-02
+    # Two pages. Cited for dating the guide, and for the fact that nothing in this release
+    # touches a controller number or a channel.
+    page_offset: 0
+
+midi:
+  # "MIDI In Channel ... Select All to receive MIDI input data from all channels, or select a
+  # specific channel. All, 1-16", and "MIDI Out Channel ... 1-16" (p. 60). Two settings and one
+  # field: this records the span each of them may take, and the input's extra All is in the
+  # prose above rather than in a number.
+  channels: [1, 16]
+  # "MIDI Sync In ... Off, Midi Clock, MTC" and "MIDI Sync Out ... Off, Midi Clock, MTC"
+  # (p. 60), so clock travels both ways and either direction can be switched off. MIDI Time
+  # Code is the other half of each setting and this field has no room for it.
+  clock: both
+  program_change:
+    # "Receive Program Change ... When enabled, these messages can be used to trigger sequences.
+    # Off, Sequence" (p. 60).
+    receives: true
+    # THE TWO FACTS THAT MAKE THIS NUMBER ARE NEVER JOINED BY THE GUIDE. It holds "16 sequences
+    # x 8 banks, per project" (p. 65), which is 128, and it says a received program change
+    # triggers a sequence (p. 60). It never says that program change 0 to 127 selects sequence 1
+    # to 128, the way Elektron's manuals do. The count is recorded because it is what a program
+    # change reaches; the mapping is not claimed.
+    presets: 128
+    # NOT RECORDED: whether it sends program change. The menu has a receive setting and no
+    # matching send setting, and nothing else in either document mentions one.
+
+voice:
+  # "Polyphony 32 stereo voices" (p. 65), with "Disk Streaming Fast onboard disk streaming (up to
+  # 32 voices)" beside it.
+  polyphony: 32
+  # EVERYTHING ELSE HERE IS UNRECORDED AND THE SOURCE ACCOUNT SAYS WHY. Notes reach the pads and
+  # which note reaches which pad is not published; the pads produce poly aftertouch and nothing
+  # says the instrument receives any, nor what aftertouch does at all; and no page states a note
+  # range or a velocity response.

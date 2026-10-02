@@ -130,6 +130,7 @@ self-contained YAML file, and you share it by sending it.
 
 | Name | Instrument |
 |------|------------|
+| `akai/mpc_sample` | Akai Professional MPC Sample: no controls at all, because its maker publishes no controller number and the absence is proved rather than assumed |
 | `arturia/microfreak` | Arturia MicroFreak: four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
 | `arturia/minifreak` | Arturia MiniFreak: six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |
 | `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |

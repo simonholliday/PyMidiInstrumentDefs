@@ -125,6 +125,7 @@ class TestBundledCorpus:
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
+			"akai/mpc_sample",
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"behringer/model_d",
@@ -3098,3 +3099,63 @@ class TestMessenger:
 			if control.group == "pedals")
 
 		assert pedals == ["expression_pedal", "hold", "sustain_pedal"]
+
+
+class TestMpcSample:
+
+	"""A definition with no controls, because its maker publishes no controller number."""
+
+	def test_it_carries_no_controls_and_no_groups (self) -> None:
+		"""Which is the finding, not an omission: there is nothing published to transcribe."""
+		mpc = pymidiinstrumentdefs.load("akai/mpc_sample", [CORPUS])
+
+		assert mpc.controls == {}
+		assert mpc.groups == {}
+		assert mpc.parts == {}
+
+		# And `midi` is not `none` either: this instrument has MIDI and plenty of it.
+		assert mpc.midi.stated_none is False
+
+	def test_what_the_one_menu_does_say (self) -> None:
+		"""Nine settings, and three of them reach a field this format has."""
+		mpc = pymidiinstrumentdefs.load("akai/mpc_sample", [CORPUS])
+
+		assert mpc.midi.channels == (1, 16)
+		assert mpc.midi.clock == "both"
+
+		assert mpc.midi.program_change is not None
+		assert mpc.midi.program_change.receives is True
+		assert mpc.midi.program_change.presets == 128
+
+	def test_silence_is_not_a_checked_absence (self) -> None:
+		"""Nothing says the instrument ignores these, only that nobody is told."""
+		mpc = pymidiinstrumentdefs.load("akai/mpc_sample", [CORPUS])
+
+		assert mpc.midi.control_change is None
+		assert mpc.midi.nrpn is None
+		assert mpc.midi.sysex is None
+		assert mpc.midi.transport is None
+
+		assert mpc.midi.program_change is not None
+		assert mpc.midi.program_change.sends is None
+
+	def test_the_voice_block_is_empty_on_purpose (self) -> None:
+		"""Notes reach the pads and which note reaches which pad is not published."""
+		mpc = pymidiinstrumentdefs.load("akai/mpc_sample", [CORPUS])
+
+		assert mpc.voice.addressing is None
+		assert mpc.voice.note_range is None
+		assert mpc.voice.velocity is None
+		assert mpc.voice.aftertouch is None
+		assert mpc.voice.voices == {}
+
+		# The one thing the specification does state, which the blind reading found.
+		assert mpc.voice.polyphony == 32
+
+	def test_the_firmware_is_established_from_the_release_notes (self) -> None:
+		"""The guide's version is its own; two of its features are what date it."""
+		mpc = pymidiinstrumentdefs.load("akai/mpc_sample", [CORPUS])
+
+		assert mpc.model.firmware == "1.3.0"
+		assert mpc.model.manufacturer == "Akai Professional"
+		assert set(mpc.sources) == {"guide", "release_notes"}

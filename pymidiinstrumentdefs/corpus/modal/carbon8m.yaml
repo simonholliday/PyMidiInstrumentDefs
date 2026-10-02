@@ -54,6 +54,10 @@ midi:
   # Source to 'Master'" (p. 59). The DIN output passes everything but clock by
   # default (p. 61).
   clock: both
+  # MPE: the voices are spread across channels, one note to a channel, rather than
+  # sounding on one. Everything else about it is below, because a boolean cannot
+  # carry any of it.
+  per_voice_channels: true
   program_change:
     receives: true
     # "Sending a bank change (0-4) followed by a program change (0-99) ... will
@@ -64,8 +68,9 @@ midi:
 # MPE is supported (pp. 64-65), with a settable master channel and member
 # count: X is pitch bend, Y is CC 74 (which is why the chart leaves 74 blank),
 # and Z is channel aftertouch. It is not available in Polychain mode, cannot be
-# recorded into the sequencer, and does not support MPE's MIDI Mode 4. The
-# format has no MPE field yet, so none of this is below.
+# recorded into the sequencer, and does not support MPE's MIDI Mode 4. The flag
+# for it is `midi.per_voice_channels` above; none of the rest fits in a boolean,
+# so it stays here.
 
 voice:
   addressing: pitches

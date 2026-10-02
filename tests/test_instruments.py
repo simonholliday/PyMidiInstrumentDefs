@@ -103,6 +103,7 @@ class TestBundledCorpus:
 			"elektron/digitakt",
 			"elektron/digitone",
 			"elektron/syntakt",
+			"expressive_e/osmose",
 			"korg/minilogue_xd",
 			"korg/wavestate",
 			"modal/carbon8m",
@@ -1806,3 +1807,118 @@ class TestGrouping:
 		with pytest.raises(pymidiinstrumentdefs.DefinitionError, match = "is not a name"):
 			pymidiinstrumentdefs.parse(
 				body.replace("arp_seq: 'ARP / SEQ'", "'Arp Seq': 'ARP / SEQ'"), source = "x.yaml")
+
+
+class TestOsmose:
+
+	"""The first MPE instrument the format says is one, rather than only describing in prose."""
+
+	def test_its_voices_take_a_channel_each_and_the_field_says_so (self) -> None:
+		"""Grepping a comment is not a way to find out, so the flag answers it."""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		assert osmose.midi.per_voice_channels is True
+
+		# Channel 1 is the master and 15 and 16 are the Haken Editor's, so the chart's
+		# range stops at 14 rather than at 16.
+		assert osmose.midi.channels == (1, 14)
+
+	def test_both_mpe_instruments_are_found_by_the_field_alone (self) -> None:
+		"""The Carbon8M was corrected with the Osmose so the corpus answers one way.
+
+		A consumer asking which instruments spread their voices across channels has to
+		get both or neither; one flagged and one not is worse than none, because it
+		reads as a settled answer and is wrong about the one it misses.
+		"""
+		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
+			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
+
+		assert flagged == ["expressive_e/osmose", "modal/carbon8m"]
+
+	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
+		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		assert osmose.voice.velocity is not None
+		assert osmose.voice.velocity.note_on == "ignored"
+		assert osmose.voice.velocity.note_off is False
+
+	def test_it_takes_clock_and_sends_none_though_its_chart_claims_both (self) -> None:
+		"""Two first-tier documents disagreed and the manual's plain sentence won.
+
+		The chart marks clock, song position, start, continue and stop as transmitted;
+		the manual says the instrument "is not capable of sending its own internal
+		clock", and nothing in its settings offers a way to.
+		"""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		assert osmose.midi.clock == "receives"
+		assert osmose.midi.transport == "receives"
+
+	def test_the_eq_has_two_numbers_and_neither_is_a_control (self) -> None:
+		"""Its chart prints a range for both and marks both as answering to nothing.
+
+		Making them controls would assert what no document states, so the file records
+		the contradiction instead and declares no group for the eq at all.
+		"""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		numbered = {control.cc for control in osmose.controls.values()}
+
+		assert 83 not in numbered and 84 not in numbered
+		assert "eq" not in osmose.groups
+
+	def test_the_sustain_pedal_is_continuous_where_cc_64_is_usually_a_switch (self) -> None:
+		"""On this instrument sustain fades and swells, so 0-127 is the point of it."""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		pedal = osmose.controls["pedal_1"]
+
+		assert pedal.cc == 64
+		assert pedal.range == (0, 127)
+		assert pedal.kind == pymidiinstrumentdefs.CONTINUOUS
+
+	def test_bank_select_is_the_one_control_it_only_receives (self) -> None:
+		"""Every other control travels both ways, which is what its chart gives."""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		receives_only = [control.name for control in osmose.controls.values()
+			if control.direction == "receives"]
+
+		assert receives_only == ["bank_select"]
+		assert osmose.controls["bank_select"].cc == 0
+
+	def test_its_17_controls_are_the_chart_rows_that_answer_to_anything (self) -> None:
+		"""126 rows, 34 named, and these are the ones marked Yes in either direction.
+
+		The other 17 named rows are excluded for stated reasons: seven channel mode
+		messages, four NRPN and RPN number controllers, two data entry rows, aftertouch,
+		the two the eq test covers, and the controller that carries a pressure value's
+		low seven bits rather than a parameter.
+		"""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		assert len(osmose.controls) == 17
+		assert {control.cc for control in osmose.controls.values()} == {
+			0, 1, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 26, 64, 93}
+
+		# None of the excluded numbers crept in: 74 and 87 are the two that name something
+		# real and are still not parameters.
+		for number in (6, 38, 74, 83, 84, 87, 98, 99, 100, 101, 120, 126):
+			assert number not in {control.cc for control in osmose.controls.values()}
+
+	def test_it_answers_to_no_nrpn_and_no_system_exclusive (self) -> None:
+		"""Checked absences from the chart, not pages nobody read."""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		assert osmose.midi.nrpn == "none"
+		assert osmose.midi.sysex is False
+
+	def test_its_presets_are_counted_from_the_makers_own_list (self) -> None:
+		"""529 factory and 80 expansion, where the product page says 580 and means neither."""
+		osmose = pymidiinstrumentdefs.load("expressive_e/osmose", [CORPUS])
+
+		assert osmose.midi.program_change is not None
+		assert osmose.midi.program_change.presets == 609
+		assert osmose.midi.program_change.receives is True
+		assert osmose.midi.program_change.sends is False

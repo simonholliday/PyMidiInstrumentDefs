@@ -136,6 +136,7 @@ self-contained YAML file, and you share it by sending it.
 | `elektron/digitakt` | Elektron Digitakt: eight audio tracks and eight that only send, with thirty controller numbers meaning more than one thing |
 | `elektron/digitone` | Elektron Digitone: nine parts on nine MIDI channels, where one CC means three things |
 | `elektron/syntakt` | Elektron Syntakt: twelve tracks and an FX track, where 28 controller numbers mean one thing on a track and another on the FX track |
+| `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |
 | `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
 | `korg/wavestate` | Korg wavestate: 41 of its 50 controller numbers are defaults a player can reassign, and its maker publishes no control-change chart |
 | `modal/carbon8m` | Modal CARBON8M: 106 controls, and a voice count set per patch |

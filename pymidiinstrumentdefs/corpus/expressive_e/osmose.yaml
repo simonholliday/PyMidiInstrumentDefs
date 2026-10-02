@@ -1,0 +1,419 @@
+definition: 1
+
+model:
+  manufacturer: Expressive E
+  name: Osmose
+  # ONE DEFINITION COVERS BOTH KEYBED SIZES, which is the maker's own arrangement rather
+  # than a decision taken here: "This manual revision 2.3 describes the feature set of
+  # Osmose 49 and Osmose 61 with operating system version 2.3 or higher" (p. 10), and the
+  # chart names the model "Osmose" with no size. The two differ in keys, dimensions and
+  # weight and in nothing below. The compliance page calls the unit a "Polyphonic
+  # Synthesizer" (p. 7).
+  # THE OSMOSE CE IS A DIFFERENT PRODUCT and is not described here. Expressive E's own
+  # comparison of the two says the synth "Includes its own built-in sound engine" where the
+  # CE is "Designed to control software and hardware"; the CE's manual has four sections
+  # where this one has six, and the two it lacks are Sound Engine Mode and Advanced Users.
+  # THE MAKER SPELLS THE FIRMWARE THREE WAYS for one release, and 2.3 is what they agree
+  # on: the cover says "rev. 2.3 for osmose 49/61 synth - firmware 2.3", p. 2 says
+  # "published September 24th, 2026 for firmware versions 2.3.12+", and the chart says
+  # "Version: 2.3.x rev. A" with a stamp on every page reading "valid for firmware 2.3".
+  firmware: "2.3"
+
+source: >-
+  MIDI implementation chart v2.3.x rev. A (3pp), and the user manual rev. 2.3 (92pp),
+  pp. 10, 14-15, 29-36, 45, 87-88 and 92, with three pages of the maker's own online manual
+  for the Advanced Users material the printed manual does not carry. The chart is where
+  every control number below comes from; the manual is where the groups, the descriptions
+  and the behaviour come from.
+  THE MANUAL CARRIES NO CHART AND SAYS SO, which is why there are two documents: "For
+  advanced use cases like establishing a connection with the Haken Editor, triggering
+  Osmose's sound engine from an external source, switching sounds with Program Change
+  messages, and remote-controlling parameters with MIDI CC messages, please refer to our
+  online knowledge base" (p. 92). The words "master channel", "member channel", "program
+  change" and "bend range" appear nowhere in its 92 pages, and it states the sound engine's
+  polyphony nowhere.
+  THE CHART DESCRIBES ONE OF FIVE PORTS, and nothing in the definition holds beyond it:
+  "All information refers to USB MIDI Port 2, the 'sound engine' mode" (chart_article).
+  Port 1 sends what the player configures in External MIDI Mode, port 3 is a DIN
+  interface, port 4 carries DAW control, and port 5 is the Haken Editor's (p. 15).
+  EVERY ROW OF THE CHART IS ACCOUNTED FOR. It prints 126 rows, which is 0-126 without 63,
+  and 34 of them name a function. 17 are controls here. The other 17 are excluded and each
+  for a stated reason: 7 channel mode messages, CC 120-126, which a control list may not
+  carry; 4 rows that name the NRPN and RPN number controllers, CC 98-101, all four marked
+  as answering to nothing; 2 data entry rows, CC 6 and 38, the same; CC 74, which is
+  aftertouch and is recorded under voice rather than as a parameter; CC 87, which carries
+  the low 7 bits of a pressure value rather than a parameter anybody sets; and CC 83 and
+  84, which the chart marks as neither sent nor received - see the comment on the eq.
+  The remaining 92 rows name no function and are marked No in both directions, so the
+  numbers missing below are checked absences and not unread rows.
+  THE CHART PRINTS NO ROW AT ALL FOR CC 63 OR CC 127, which was established from the
+  page's geometry rather than from the order its text layer draws: pages 2 and 3 each draw
+  an unbroken ladder of 63 rows at a uniform spacing, 0-62 and 64-126, with no gap where a
+  dropped row would show and no number drawn twice. Both extractions agreed. CC 127 would
+  have been Poly Mode On, so the chart's channel mode block stops one row short.
+  NOT RECORDED: the note range, which neither document gives for either keybed; the pitch
+  bend range in semitones, which is a per-preset setting the manual describes without a
+  number; and whether anything answers on the DIN input beyond what the din mode routes.
+
+sources:
+  manual:
+    kind: manual
+    title: "osmose - user manual"
+    edition: rev. 2.3, for osmose 49/61 synth, firmware 2.3
+    dated: 2026-09-24
+    landing: "https://expressivee.happyfox.com/kb/section/65/"
+    url: "https://expressive-e.s3.us-east-1.amazonaws.com/CLA-Osmose/Osmose_UserManualFW2.3_EN.pdf"
+    sha256: 11efff564bfe2ab5af8184279742256deb37a31224dc7374ecfda8d43c2ee019
+    retrieved: 2026-10-02
+    page_offset: 0
+    # NO PAGE OF EXPRESSIVE E'S LINKS THIS FILE. Its manual is published as the help centre
+    # given above as the landing page, which holds the same manual as about forty articles;
+    # the only PDFs linked anywhere in it are the chart below and the firmware 1.x edition
+    # of this manual, offered to anybody who stays on old firmware. This address was derived
+    # from that one by putting in the version the help centre tells every owner to upgrade
+    # to, and the file's own PDF title is "Osmose_UserManualFW2.3_EN", so the name is the
+    # maker's. The two are the same manual in two forms, which was checked and not assumed:
+    # seven distinctive clauses of printed p. 15 appear word for word in the article "osmose
+    # usb midi ports", the differences being layout and one warning glyph.
+    # Sheet 1 is an unnumbered cover and each of sheets 2-92 prints its own number, checked
+    # on all 92. The contents list sends two sections to a p. 93 that does not exist.
+  midi_impl:
+    kind: midi_implementation
+    title: MIDI Implementation Chart v.2.0
+    edition: 2.3.x rev. A
+    dated: 2026-07
+    landing: "https://expressivee.happyfox.com/kb/article/259-osmose-sound-engine-midi-implementation-chart/"
+    url: "https://expressive-e.s3.us-east-1.amazonaws.com/CLA-Osmose/Osmose_MIDIImplementationChart_v2.3.x_A.pdf"
+    sha256: 8057940ceb9ea9c04134b22e68a0972d543fd3745444bd9d798a5bdfa96f3997
+    retrieved: 2026-10-02
+    page_offset: 0
+    # The title is the chart form's version published by the MIDI Association, not this
+    # instrument's: every page heads itself "MIDI Implementation Chart v.2.0" and names the
+    # instrument beneath, "Model: Osmose Version: 2.3.x rev. A Date: 2026-07".
+    # EACH PAGE CARRIES A STAMP THAT NO TEXT EXTRACTION RETURNS, because it is a PDF
+    # annotation rather than page content: "valid for firmware 2.3 - all information refers
+    # to USB MIDI Port 2, the 'sound engine' port", added 2026-09-24. So the chart states
+    # its own firmware and its own scope, and a tool reading the text layer sees neither.
+    # Nothing is quoted from it here for that reason; the same scope is quoted from
+    # chart_article, which a reader can check.
+  chart_article:
+    kind: support_article
+    title: Osmose sound engine MIDI Implementation Chart
+    dated: 2026-09-24
+    landing: "https://expressivee.happyfox.com/kb/article/259-osmose-sound-engine-midi-implementation-chart/"
+    url: "https://expressivee.happyfox.com/kb/article/259-osmose-sound-engine-midi-implementation-chart/"
+    sha256: 41ddea893f6db6847320e22bf8bd7b5a4c3f9a90deef5162e1b559cfbed38338
+    retrieved: 2026-10-02
+    paginated: false
+    # The page that links the chart, cited for the one sentence that scopes it. The sha256
+    # is of the page's visible text, as saved on 2026-10-02; the page as served hashes to
+    # 6971dd1a8231c8b3192448d95522adc996043df9e0fa1f360c2e4c3913416b31. It carries a view
+    # counter, so its bytes change on their own and no later fetch can match this hash.
+  sound_engine_input:
+    kind: support_article
+    title: Triggering Osmose's sound engine (the EaganMatrix) from an external device
+    landing: "https://expressivee.happyfox.com/kb/article/262-triggering-osmose-s-sound-engine-the-eaganmatrix-from-an-external-device/"
+    url: "https://expressivee.happyfox.com/kb/article/262-triggering-osmose-s-sound-engine-the-eaganmatrix-from-an-external-device/"
+    sha256: e36c5f75b7b54c24223d238179701e21a224f373916cdabb530336c5fdd359ec
+    retrieved: 2026-10-02
+    paginated: false
+    # Where the channel layout and the two input paths come from. Part of the maker's online
+    # manual, under its Advanced Users section, which p. 92 of the printed manual sends the
+    # reader to for exactly this material.
+  preset_changes:
+    kind: support_article
+    title: "Changing Osmose's sound presets from an external device with Bank Select and Program Change messages"
+    landing: "https://expressivee.happyfox.com/kb/article/301-changing-osmose-s-sound-presets-from-an-external-device-with-bank-select-and-program-change-messages/"
+    url: "https://expressivee.happyfox.com/kb/article/301-changing-osmose-s-sound-presets-from-an-external-device-with-bank-select-and-program-change-messages/"
+    sha256: 9a249bf3ebc1fd9b2f728c1741d12d418322c1384e3d92650201a0e8656959f6
+    retrieved: 2026-10-02
+    paginated: false
+    # Also Advanced Users. It carries the maker's own list of every factory and expansion
+    # preset with the bank and program number that recalls it, which is what the preset
+    # count below is counted from.
+  product_page:
+    kind: product_page
+    title: "Osmose - Expressive MPE Polyphonic Synthesizer"
+    landing: "https://www.expressivee.com/2-osmose"
+    url: "https://www.expressivee.com/2-osmose"
+    sha256: a8a8e934414344eb9ecdcfc649d5f75e3e487ea6c33963ead069ac48943dab56
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited only for the polyphony, which the manual states nowhere. The sha256 is of the
+    # page's visible text as saved on 2026-10-02; the page as served hashes to
+    # 72532189a18fa31b9f4ded54a70c8960f0f58c44bf04cbc08e64bfbbe2a13086. No later fetch will
+    # match either, which is the point of saving it.
+
+midi:
+  # "MIDI channels 1-14" in each direction, with the remark "MPE channel master 1" (chart,
+  # p. 1). The other two are spoken for: "Individual notes must be sent on MIDI channels #2
+  # to #14 (#2 to #12 for some presets). The Master Channel, according to the MPE standard,
+  # is #1. MIDI channels #15 & #16 are used for communication with the Haken Editor
+  # exclusively, so make sure to not send note data on these channels" (sound_engine_input).
+  channels: [1, 14]
+  # MPE: the voices are spread across channels, one note to a channel, rather than sounding
+  # on one. Everything else about it is in the comment below voice, because a boolean cannot
+  # carry any of it.
+  per_voice_channels: true
+  # RECEIVES ONLY, AND THE MAKER'S TWO DOCUMENTS DISAGREE ABOUT IT. The chart marks MIDI
+  # Clock, Song Position Pointer, Start, Continue and Stop as both transmitted and
+  # recognised. The manual says the opposite in as many words: "Attention: Osmose is not
+  # capable of sending its own internal clock" (p. 45). The manual is followed here, for
+  # three reasons recorded rather than re-argued: its statement is about this exact question; the midi i/o tab offers three ports to take clock *from* and
+  # no way to send any (p. 87); and this chart's transmit column is demonstrably unreliable,
+  # since it marks CC 83 and 84 as answering to nothing while printing a range for both.
+  # DAW Control Mode does drive a DAW's "Play, Stop, Record, and Metronome" (p. 72), over
+  # port 4 by a DAW protocol, which the manual nowhere calls MIDI transport.
+  clock: receives
+  transport: receives
+  program_change:
+    # "Osmose expects MIDI Bank Select (CC#0) and Program Change (PC) messages on its USB
+    # MIDI Port 2 input (the sound engine port)" (preset_changes), or on the DIN input with
+    # din mode set to dsp in, dsp in/out or cvc. The chart agrees on its CC 0 row and
+    # contradicts itself on p. 1, where "Bank Select response?" is answered No - with the
+    # transmit cell left blank, where every other row of that section is filled.
+    receives: true
+    # Not sent: the chart marks program change as recognised and not transmitted, and no
+    # setting anywhere in the manual sends one.
+    sends: false
+    # COUNTED FROM THE MAKER'S OWN TWO LISTS, read as table rows because the page renders
+    # each preset as four cells and a line-by-line reading interleaves them: 529 under
+    # "Factory sounds (firmware 1.0 and higher)" across bank select 30 to 34, and 80 under
+    # "Expansion 01 sounds (firmware 2.1 and higher)" on bank 34, which continues from the
+    # first list at program 17. This is what the maker names and numbers, not a ceiling:
+    # the product page says "up to 2048 preset slots", user presets are addressable too,
+    # and that same page says "580 factory presets", which is neither 529 nor 609.
+    presets: 609
+  # "NRPNs (Yes/No) No No", and RPN 00 to 05 the same (chart, p. 1). The two NRPN and two
+  # RPN controller numbers are printed in the control table and marked No both ways as well,
+  # which is the same answer twice over.
+  nrpn: none
+  # Every system exclusive row of the chart is No in both directions, the whole Universal
+  # block and "Manufacturer or Non-Commercial System Exclusive" with it. Worth knowing that
+  # the Haken Editor nonetheless talks to the sound engine over MIDI channels 15 and 16
+  # (sound_engine_input), on a port the chart does not describe, so this is an answer about
+  # port 2 and not about the instrument's every socket.
+  sysex: false
+
+# MPE, WHICH THE FORMAT HOLDS AS A FLAG AND NOT MUCH MORE. The engine is Haken
+# Audio's and takes Haken's extension of the standard: "MPE+ is what Haken Audio calls their
+# optimized extension to the MPE standard (MIDI Polyphonic Expression)" (sound_engine_input).
+# The master channel is 1 and member channels are 2-14, narrowing to 2-12 on some presets.
+# CC 87 carries "LSB value of Aftertouch or Pressure (see MPE+)" (chart), which is the extra
+# resolution MPE+ adds. Pressure is required rather than optional: "To produce a sound in the
+# first place, you are always required to send Channel Pressure messages (sometimes called
+# "mono aftertouch") alongside your Note On messages", because "a constant flow of Channel
+# Pressure messages is used to describe a sound's envelope, specifically its attack
+# trajectory" (sound_engine_input). None of that fits in a boolean, so it is here.
+
+voice:
+  addressing: pitches
+  # "polyphony up to 24 voices" (product_page). The manual never states it, in 92 pages:
+  # its only voice counts are of other instruments the Osmose is driving. The hedge is the
+  # maker's, and 24 is recorded as the number they publish.
+  polyphony: 24
+  # THE KEYBED IS THE INSTRUMENT'S WHOLE POINT, and the manual puts it in three axes:
+  # "extended polyphonic pressure", "hi-resolution polyphonic aftertouch" and "polyphonic
+  # pitch bending" (p. 14). They reach the engine as MPE+ on member channels, which is why
+  # the chart answers No to poly key aftertouch while the keyboard is polyphonic throughout.
+  aftertouch: channel
+  velocity:
+    # IGNORED ON THE PATH THE INSTRUMENT IS BUILT FOR, AND NOT ON THE OTHER, which one field
+    # cannot say. The chart marks note-on and note-off velocity No in both directions and
+    # remarks "MPE+" against each; the article says why: "MIDI Velocity ("MPE Strike") is
+    # ignored entirely by the EaganMatrix's when it comes to the MPE implementation" - the
+    # stray apostrophe is theirs. Driven instead by legacy mono-channel MIDI on channel 1,
+    # "MIDI Velocity will be interpreted as a first Pressure (Z) data value for the
+    # respective note to start with", and on that path it is channel pressure that is
+    # "ignored completely" while "Polyphonic Key Pressure (Polyphonic Aftertouch) messages
+    # can be used to modulate Pressure (Z) on a per-note basis over time"
+    # (sound_engine_input). So aftertouch above and velocity here both record the MPE path,
+    # which is the chart's scope, and the legacy path is the reverse of both.
+    note_on: ignored
+    note_off: false
+  pitch_bend:
+    # "Pitch Bend (Yes/No) Yes Yes" (chart, p. 1). The range is per preset and the manual
+    # gives no number: the voice tab "features only one parameter: the pitch bend range of
+    # the pitch slider" (p. 35), which bends every sounding note together, where the keys
+    # bend one note each.
+    programmable: true
+
+groups:
+  # THE MANUAL'S OWN TAB NAMES, which are its headings for the parts of the sound these
+  # controls reach, printed in lower case as every heading in this manual is: "macros tab",
+  # "global fx tab", "eq tab", "comp & drive tab", "voice tab", "mod/pedal tab" (p. 29 lists
+  # all six, pp. 29-36 describe them). The word "tab" names the screen a group is on rather
+  # than the group, so it is left off.
+  # NOT THE MAKER'S WORD: "Program", for the one bank select row. The manual heads nothing
+  # with a word for choosing a sound from outside, because the manual does not cover it.
+  # NO GROUP FOR THE EQ, because no control below is in one: the chart gives CC 83 and 84
+  # for the eq tab's tilt and frequency and marks both as neither sent nor received, so
+  # there is nothing to put in it. See the comment at the end.
+  program: Program
+  macros: macros
+  global_fx: global fx
+  comp_drive: comp & drive
+  mod_pedal: mod/pedal
+
+controls:
+
+  # ── Choosing a sound ──────────────────────────────────────────────────────────
+
+  bank_select:
+    label: Bank Select (MSB)
+    cc: 0
+    # The only row in the chart recognised but not transmitted, and the only remarked row
+    # whose remark is the bare "range: [0-127]" without the master channel prefix.
+    direction: receives
+    group: program
+
+  # ── The six macros, which are the sound ───────────────────────────────────────
+  # "up to 6 sound macros that are predefined by the sound designers during preset
+  # creation. A single macro can modulate multiple parameters in Osmose's modular sound
+  # engine at once" (p. 29). So what each one does is a fact about a preset, not about the
+  # instrument, and there is nothing here to name beyond the maker's own numbering. The
+  # manual's examples of what they often reach are timbre, fmAmt, fmRatio, cutoff, envAmt,
+  # envTime, modulation, structure, body and resonance (p. 30).
+
+  macro_1:
+    label: Macro 1
+    cc: 12
+    group: macros
+
+  macro_2:
+    label: Macro 2
+    cc: 13
+    group: macros
+
+  macro_3:
+    label: Macro 3
+    cc: 14
+    group: macros
+
+  macro_4:
+    label: Macro 4
+    cc: 15
+    group: macros
+
+  macro_5:
+    label: Macro 5
+    cc: 16
+    group: macros
+
+  macro_6:
+    label: Macro 6
+    cc: 17
+    group: macros
+
+  # ── The global effect ─────────────────────────────────────────────────────────
+  # "The 'global fx' tab allows creating of a sense of space by adding a global time-based
+  # effect to the sound. The first parameter selects one of seven reverb/delay/echo
+  # algorithms. The FX parameters will vary depending on the effect chosen" (p. 31). THE
+  # ALGORITHM ITSELF HAS NO CONTROLLER NUMBER: the chart gives four numbered parameters and
+  # a mix, and nothing for the choice of effect. Which four parameters they are therefore
+  # depends on the algorithm - predelay, diffuse, LPF, HPF, damping and decay for the two
+  # reverbs; depth, rate, feedback and time for the modulated delays; noise, offset,
+  # feedback and time for the analog echo (pp. 31-32). The maker calls the section
+  # "Recirculator" in the Haken Editor (p. 32).
+
+  global_fx_parameter_1:
+    label: Global FX Parameter 1
+    cc: 20
+    group: global_fx
+
+  global_fx_parameter_2:
+    label: Global FX Parameter 2
+    cc: 21
+    group: global_fx
+
+  global_fx_parameter_3:
+    label: Global FX Parameter 3
+    cc: 22
+    group: global_fx
+
+  global_fx_parameter_4:
+    label: Global FX Parameter 4
+    cc: 23
+    group: global_fx
+
+  global_fx_mix:
+    label: Global FX Mix
+    cc: 24
+    # "One parameter is always available: mix controls the dry/wet of the FX, the amount of
+    # sound that passes through the FX" (p. 31).
+    group: global_fx
+
+  # ── The output stage ──────────────────────────────────────────────────────────
+  # "The comp & drive tab lets you choose between two different output stages to round off a
+  # sound" (p. 33), compressor or drive. Both have a pregain, an amount, a mix and a
+  # postgain; the chart numbers the two gains and the compressor's mix, and neither amount.
+  # "pregain sets the level that enters the compressor", and at high settings "an aggressive
+  # distortion to the audio that is reminiscent of a wave folding effect"; "postgain changes
+  # the overall volume of the sound" (p. 34).
+
+  pre_gain:
+    label: Pre Gain
+    cc: 26
+    group: comp_drive
+
+  post_gain:
+    label: Post Gain
+    cc: 18
+    group: comp_drive
+
+  compressor_mix:
+    label: Compressor Mix
+    cc: 93
+    # "comp. mix allows mixing the wet and dry signal of the compressor to achieve parallel
+    # compression" (p. 34). The drive stage's own mix has no controller number.
+    group: comp_drive
+
+  # ── What a player's hands and feet reach ──────────────────────────────────────
+  # "The 'mod/pedal' tab lets you choose the parameters that you control from the modulation
+  # slider and the two pedal inputs. These are always global parameters that will influence
+  # the sound as a whole, not on a per-note basis" (p. 35). What each reaches is a per-preset
+  # assignment, so these two controls are the sources rather than destinations: "Pedal 1 is
+  # assigned to Sustain by default. Pedal 2 and the Mod Slider will always control the same
+  # parameter and are assigned to one of the sound macros by default" (p. 35), which is why
+  # the chart names CC 1 for both the slider and pedal 2 and gives pedal 1 a number of its
+  # own.
+
+  mod_wheel_pedal_2:
+    label: Modulation Wheel / Pedal 2
+    cc: 1
+    group: mod_pedal
+
+  pedal_1:
+    label: Pedal 1
+    cc: 64
+    # CONTINUOUS, THOUGH CC 64 IS CONVENTIONALLY A SWITCH, and the maker means it: the chart
+    # gives it "range: [0-127]" like every other control here, the specification calls them
+    # "2 continuous pedal inputs, assignable to sustain or synth parameters"
+    # (product_page), and the manual explains what that is for. "The sustain and sostenuto
+    # functions in Osmose work differently compared with regular keyboard instruments.
+    # Usually, sustain takes the current pressure/position of the notes played and keeps
+    # them in that state. On Osmose, Sustain, and Sostenuto are continuous controls that
+    # allow fading and swelling sustained notes when moving the expression pedal" (p. 36).
+    group: mod_pedal
+
+# THE EQ'S TWO NUMBERS, RECORDED HERE RATHER THAN AS CONTROLS, because the chart will not
+# have them: CC 83 "EQ tilt value" and CC 84 "EQ frequency" are marked No in both
+# directions, yet carry the same "Master Channel (channel 1) range: [0-127]" remark as the
+# eighteen rows that do answer, and the manual describes both as adjustable - "tilt:
+# Positive values will lead to more highs and fewer lows" and "frequency: choice of the
+# central frequency that defines the threshold between lows and highs" (p. 33). A number and
+# a range are printed for two controls the chart says answer to nothing. Making them
+# controls would assert what no document states, so they are not below, and the
+# contradiction is recorded instead of resolved. The eq tab's third parameter, mix, has no
+# controller number at all.
+#
+# TWO MORE PLACES THE CHART ARGUES WITH ITSELF, neither of them changing anything above.
+# CC 74 "Aftertouch" is marked No both ways with the remark "Aftertouch values send on
+# member channel" - the maker's "send" for "sent" - which says where aftertouch does go
+# rather than that it goes nowhere, and agrees with p. 1 marking channel aftertouch Yes both
+# ways. And note-on and note-off velocity are marked No in both directions for a keyboard
+# whose every key is velocity-sensitive, with "MPE+" as the whole explanation; the article
+# quoted under voice is what makes sense of it.
+#
+# THE MAKER'S OWN SPELLING, KEPT: the chart prints CC 87 as "MPE+ LSB Aftertouch / Presure",
+# one s, while the same row's remark spells Pressure correctly.

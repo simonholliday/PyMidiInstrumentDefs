@@ -138,6 +138,7 @@ self-contained YAML file, and you share it by sending it.
 | `elektron/digitakt` | Elektron Digitakt: eight audio tracks and eight that only send, with thirty controller numbers meaning more than one thing |
 | `elektron/digitakt_ii` | Elektron Digitakt II: 144 controls off an appendix that numbers two of its own sections twice, and gives four pairs of parameters the same NRPN |
 | `elektron/digitone` | Elektron Digitone: nine parts on nine MIDI channels, where one CC means three things |
+| `elektron/model_samples` | Elektron Model:Samples: 29 controls off a one-page appendix headed CC MSB that gives an LSB for exactly one of them |
 | `elektron/syntakt` | Elektron Syntakt: twelve tracks and an FX track, where 28 controller numbers mean one thing on a track and another on the FX track |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |
 | `korg/microkorg` | Korg microKORG: 41 controller numbers that are the factory assignment and not fixed, each meaning one thing in a synth program and another in a vocoder one |

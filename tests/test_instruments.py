@@ -133,6 +133,7 @@ class TestBundledCorpus:
 			"elektron/digitakt",
 			"elektron/digitakt_ii",
 			"elektron/digitone",
+			"elektron/model_samples",
 			"elektron/syntakt",
 			"expressive_e/osmose",
 			"korg/microkorg",
@@ -3439,3 +3440,97 @@ class TestTeo5:
 
 		assert teo.sources["midi_impl"].edition == "v2"
 		assert teo.sources["guide"].edition == "Version 2.0"
+
+
+class TestModelSamples:
+
+	"""An appendix headed CC MSB that gives an LSB for one parameter out of twenty-nine."""
+
+	def test_the_appendix_fits_on_one_page_and_this_is_all_of_it (self) -> None:
+		"""Four tables, and the groups are the appendix's own headings."""
+		ms = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		assert len(ms.controls) == 29
+		assert set(ms.groups) == {"track", "playback", "lfo", "fx"}
+
+		numbers = [c.cc for c in ms.controls.values()]
+
+		assert all(number is not None and 0 <= number <= 127 for number in numbers)
+		assert len(numbers) == len(set(numbers))
+
+	def test_one_control_carries_an_lsb_and_the_rest_do_not (self) -> None:
+		"""The column says MSB for all twenty-nine and Elektron prints the other half for one."""
+		ms = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		with_lsb = {name: c.lsb for name, c in ms.controls.items() if c.lsb is not None}
+
+		assert with_lsb == {"lfo_depth": 110}
+		assert ms.controls["lfo_depth"].cc == 109
+
+	def test_it_answers_to_nrpn_and_no_number_is_published (self) -> None:
+		"""Which is the distinction three other Elektron definitions had to be corrected for."""
+		ms = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		assert ms.midi.nrpn == "supported"
+		assert all(c.nrpn is None for c in ms.controls.values())
+
+	def test_six_tracks_and_the_two_effects_answer_on_their_own_channels (self) -> None:
+		"""And no base channel, because every channel here is assigned."""
+		ms = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		assert set(ms.parts) == {"track", "fx"}
+
+		track = ms.parts["track"]
+
+		assert track.count == 6
+		assert track.channel == "assigned"
+		assert track.channel_offset is None
+		assert track.polyphony == 1
+		assert track.receives == ("notes", "controls")
+
+		fx = ms.parts["fx"]
+
+		assert fx.count == 1
+		assert fx.channel == "assigned"
+		assert fx.receives == ("controls",)
+
+		# The four effect parameters answer on the FX channel; the two sends stay with a track,
+		# because they are a track's amount of an effect rather than the effect.
+		on_fx = {name for name, c in ms.controls.items() if c.part == "fx"}
+
+		assert on_fx == {"delay_time", "delay_feedback", "reverb_size", "reverb_tone"}
+		assert ms.controls["delay_send"].part == "track"
+		assert ms.controls["reverb_send"].part == "track"
+
+	def test_a_program_change_picks_a_pattern_here (self) -> None:
+		"""Six banks of sixteen, not a sound."""
+		ms = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		assert ms.midi.program_change is not None
+		assert ms.midi.program_change.presets == 96
+		assert ms.midi.program_change.receives is True
+		assert ms.midi.program_change.sends is True
+
+	def test_the_note_range_and_what_is_left_unsaid (self) -> None:
+		"""Two bands of notes, and three things the manual never mentions at all."""
+		ms = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		assert ms.voice.note_range == (0, 60)
+		assert ms.voice.polyphony_shared is False
+
+		assert ms.voice.velocity is not None
+		assert ms.voice.velocity.note_on == "received"
+
+		# Silences rather than checked absences: no page says either way.
+		assert ms.voice.aftertouch is None
+		assert ms.voice.pitch_bend is None
+		assert ms.midi.sysex is None
+
+	def test_the_manual_is_newer_than_the_firmware_it_describes (self) -> None:
+		"""OS 1.13 is of May 2021 and this manual of October 2024."""
+		ms = pymidiinstrumentdefs.load("elektron/model_samples", [CORPUS])
+
+		assert ms.model.firmware == "1.13"
+		assert ms.model.name == "Model:Samples"
+		assert set(ms.sources) == {"manual", "downloads", "release_notes"}
+		assert ms.sources["manual"].edition == "OS 1.13"

@@ -111,6 +111,7 @@ class TestBundledCorpus:
 			"moog/labyrinth",
 			"moog/matriarch",
 			"moog/minitaur",
+			"moog/sub_37",
 			"moog/subharmonicon",
 			"moog/subsequent_37",
 			"pwm/malevolent",
@@ -168,6 +169,29 @@ class TestBundledCorpus:
 				f"{folder}/ names its maker {len(makers)} ways: "
 				+ ", ".join(f"{maker!r} in {sorted(files)}" for maker, files in sorted(makers.items()))
 			)
+
+	def test_nothing_shipped_names_anything_internal (self) -> None:
+		"""A definition and the guide beside it are read by strangers, so they name no tracker.
+
+		These files go to PyPI and are rendered on a public site, where an item number, a
+		colleague's name or a path on one machine means nothing to the reader and tells them
+		about somebody's workshop instead of about their instrument. One tracker number had
+		reached `elektron/syntakt` and nothing here caught it.
+
+		Two and three-digit forms are left alone: `CC #39` is a controller, not an item.
+		"""
+		internal = re.compile(r"#[0-9]{3,}|\bSimon\b|\bSubroutine\b|/mnt/|/home/", re.IGNORECASE)
+
+		shipped = list(bundled()) + sorted((CORPUS.parent.parent / "docs").glob("*.md"))
+		found: dict[str, list[str]] = {}
+
+		for path in shipped:
+			for number, line in enumerate(path.read_text(encoding = "utf-8").splitlines(), start = 1):
+				if internal.search(line):
+					found.setdefault(f"{path.parent.name}/{path.name}", []).append(
+						f"line {number}: {line.strip()[:70]}")
+
+		assert found == {}, f"something internal reached a shipped file: {found}"
 
 	def test_every_bundled_definition_states_its_provenance (self) -> None:
 		"""A definition without a source is a rumour, so ours all have one."""
@@ -685,6 +709,69 @@ class TestSubsequent37:
 		assert 122 not in numbers, "local control is a channel mode message"
 		assert 123 not in numbers, "all notes off is a channel mode message"
 		assert 0 not in numbers and 32 not in numbers, "bank select is the MMA's"
+
+
+class TestTheTwoMoog37s:
+
+	"""The Sub 37 and the Subsequent 37 are one MIDI implementation, established not assumed.
+
+	Moog ships them one firmware image, byte for byte; their manuals' MIDI pages are
+	identical character for character with the model name set aside; and their NRPN charts
+	agree in all 123 rows. The only row that differs is a channel mode message, which is a
+	control in neither.
+
+	So the two definitions carry the same controls, and these tests are here to say so out
+	loud: if somebody corrects one of them, the failure is the reminder to look at the other.
+	**A real difference found in a document is a reason to change these tests**, not a reason
+	to doubt them - but it should be a document that changes them.
+	"""
+
+	def test_they_carry_the_same_controls (self) -> None:
+		"""Every name, number, band, range and group of all 114."""
+		sub = pymidiinstrumentdefs.load("moog/sub_37", [CORPUS])
+		subsequent = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		def surface (definition: pymidiinstrumentdefs.definition.Definition) -> dict[str, object]:
+			return {
+				name: (control.label, control.cc, control.lsb, control.nrpn,
+					tuple(control.values.items()), control.range, control.nrpn_range,
+					control.unit, control.direction, control.group)
+				for name, control in definition.controls.items()
+			}
+
+		assert surface(sub) == surface(subsequent)
+		assert len(sub.controls) == 114
+
+	def test_they_describe_the_same_firmware (self) -> None:
+		"""One image, which Moog names for the older instrument in both packages."""
+		sub = pymidiinstrumentdefs.load("moog/sub_37", [CORPUS])
+		subsequent = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		assert sub.model.firmware == "1.2.0"
+		assert subsequent.model.firmware == "1.2.0"
+
+	def test_they_agree_on_what_the_instrument_is (self) -> None:
+		"""Their specifications pages are identical, so the definitions' facts are too."""
+		sub = pymidiinstrumentdefs.load("moog/sub_37", [CORPUS])
+		subsequent = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		for field in ("addressing", "paraphonic", "voicing_modes", "polyphony", "aftertouch"):
+			assert getattr(sub.voice, field) == getattr(subsequent.voice, field), field
+
+		assert sub.midi.channels == subsequent.midi.channels
+		assert sub.midi.clock == subsequent.midi.clock
+		assert sub.midi.transport == subsequent.midi.transport
+		assert sub.midi.nrpn == subsequent.midi.nrpn
+		assert sub.groups == subsequent.groups
+
+	def test_each_is_named_as_its_own_manual_names_it (self) -> None:
+		"""Moog calls the older one three things; its manual calls it one, in 62 pages."""
+		sub = pymidiinstrumentdefs.load("moog/sub_37", [CORPUS])
+		subsequent = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
+
+		assert sub.model.name == "Sub 37"
+		assert subsequent.model.name == "Subsequent 37"
+		assert sub.model.manufacturer == subsequent.model.manufacturer == "Moog Music"
 
 
 class TestChoices:

@@ -105,6 +105,7 @@ class TestBundledCorpus:
 			"elektron/digitone",
 			"elektron/syntakt",
 			"expressive_e/osmose",
+			"korg/microkorg",
 			"korg/minilogue_xd",
 			"korg/wavestate",
 			"modal/carbon8m",
@@ -2141,6 +2142,104 @@ class TestOpXy:
 		assert op_xy.model.firmware == "1.1.15"
 		assert op_xy.sources["guide"].edition == "1.1.15"
 		assert op_xy.sources["os_updates"].edition == "1.1.33"
+
+
+class TestMicroKorg:
+
+	"""Numbers that are a factory assignment rather than a fact, out of two documents."""
+
+	def test_its_control_map_is_split_across_two_documents (self) -> None:
+		"""The implementation gives the NRPNs and no controller number; the manual gives those.
+
+		Neither half is in the other, which is why this is the first definition to cite a
+		maker's implementation and its manual for different parts of one map.
+		"""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+
+		changes = [control for control in microkorg.controls.values() if control.cc is not None]
+		numbers = [control for control in microkorg.controls.values() if control.nrpn is not None]
+
+		assert len(microkorg.controls) == 71
+		assert len(changes) == 42
+		assert len(numbers) == 29
+
+		# No control carries both, because the two documents address different parameters.
+		assert not [control for control in microkorg.controls.values()
+			if control.cc is not None and control.nrpn is not None]
+
+	def test_every_assignable_number_is_within_the_span_the_maker_states (self) -> None:
+		"""The implementation allows CC 0 to 95, and the manual's defaults all fall inside it.
+
+		CC 1 is the exception and is deliberate: it is fixed rather than assignable, and it
+		comes from the implementation's receive table instead of the manual's.
+		"""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+
+		assigned = [control.cc for control in microkorg.controls.values()
+			if control.cc is not None and control.name != "pitch_modulation_depth"]
+
+		assert len(assigned) == 41
+		assert all(0 <= number <= 95 for number in assigned)
+		assert len(set(assigned)) == 41
+
+		assert microkorg.controls["pitch_modulation_depth"].cc == 1
+
+	def test_it_has_no_parts_because_it_has_only_one_channel (self) -> None:
+		"""Two timbres when layered, and the manual says outright they cannot be split."""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+
+		assert microkorg.parts == {}
+		assert microkorg.midi.channels == (1, 16)
+
+		# Which timbre a control reaches is a control change, not a channel.
+		assert microkorg.controls["midi_timbre_select"].cc == 95
+
+	def test_aftertouch_is_a_checked_absence_rather_than_silence (self) -> None:
+		"""The keyboard has none and the recognised messages do not include it either."""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+
+		assert microkorg.voice.aftertouch == "none"
+
+		assert microkorg.voice.velocity is not None
+		assert microkorg.voice.velocity.note_on == "received"
+		assert microkorg.voice.velocity.note_off is False
+
+	def test_four_voices_and_a_settable_bend (self) -> None:
+		"""Stated the same for synth programs and for vocoder programs."""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+
+		assert microkorg.voice.polyphony == 4
+		assert microkorg.voice.note_range is None
+
+		assert microkorg.voice.pitch_bend is not None
+		assert microkorg.voice.pitch_bend.semitones == 12
+		assert microkorg.voice.pitch_bend.programmable is True
+
+	def test_its_manual_turns_its_pages_by_six (self) -> None:
+		"""Eighty pages, whatever `file` says about it."""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+		manual = microkorg.sources["manual"]
+
+		assert manual.paginated
+		assert manual.file_page(56) == 62
+
+		# The implementation is plain text and the download page is a page: neither has any.
+		assert not microkorg.sources["implementation"].paginated
+		assert not microkorg.sources["download_page"].paginated
+
+	def test_program_change_both_ways_over_one_bank (self) -> None:
+		"""128 programs and no bank select, which is what separates it from the microKORG S."""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+
+		assert microkorg.midi.program_change is not None
+		assert microkorg.midi.program_change.receives is True
+		assert microkorg.midi.program_change.sends is True
+		assert microkorg.midi.program_change.presets == 128
+
+		assert microkorg.midi.clock == "both"
+		assert microkorg.midi.transport == "receives"
+		assert microkorg.midi.sysex is True
+		assert microkorg.midi.nrpn == "supported"
 
 
 class TestJuno106:

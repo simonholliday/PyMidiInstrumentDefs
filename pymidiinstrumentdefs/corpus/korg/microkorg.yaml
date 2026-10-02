@@ -1,0 +1,277 @@
+# THE CONTROLLER NUMBERS BELOW ARE THIS INSTRUMENT'S FACTORY ASSIGNMENT, NOT FIXED FACTS.
+# Korg lets the player assign a control change to each front panel knob and key, and the
+# column the numbers come from is headed "Initial". The manual says so plainly: "Control
+# changes can be assigned to each front panel knob/key of the microKORG so that the changes
+# in sound as controlled by knob/key operations can be transmitted as performance data"
+# (p. 56). So a microKORG somebody has reassigned does not answer to the table below, and a
+# panel offering these numbers should say they are defaults. This is the same shape as
+# `voice.note_map: learned`, which says the voices given are factory defaults rather than
+# fixed facts; the format has no such flag for control changes, and that is recorded here
+# rather than worked around.
+#
+# EACH NUMBER MEANS TWO THINGS, AND WHICH ONE DEPENDS ON THE PROGRAM, not on the channel.
+# This instrument runs synth programs and vocoder programs, and the same knob is a different
+# parameter in each: CC 18 is Semitone or HPF Level, CC 83 is Filter Type or Formant Shift,
+# CC 85 is KBD Track or E.F.Sense. The label below is the synth meaning and a comment carries
+# the vocoder one. Rows marked "synth programs only" have no vocoder meaning at all, and the
+# sixteen vocoder band controls have no synth meaning.
+#
+# TWO DOCUMENTS, AND NEITHER CONTAINS THE OTHER'S HALF. Korg's plain-text MIDI implementation
+# gives the NRPNs and names the panel's control changes without a single number; the owner's
+# manual gives those numbers and no NRPNs. Both are cited below.
+#
+# THE microKORG CRYSTAL IS THIS INSTRUMENT where MIDI is concerned - Korg's download page for
+# the Crystal links the very same file, by the same id, so there was nothing to compare.
+# THE microKORG S IS NOT: it has an implementation of its own, revision 1.01 of 2026, which
+# adds Bank Select MSB and LSB that this one does not have at all. The microKORG XL, XL+ and
+# microKORG2 are different instruments again.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: microKORG
+  # NOT RECORDED, and the search is worth writing down. Korg publishes no OS file, no release
+  # notes and no system version for this instrument: its download page offers manuals, a sound
+  # editor and templates, and nothing that names a firmware. The MIDI implementation's
+  # "Revision 1.4 (2002.06.27)" is the document's own revision, the way the wavestate's chart
+  # carries a version that is the chart's and not the instrument's. The manual states none
+  # either. Checked 2026-10-02.
+
+source: >-
+  Two documents, because this instrument's control map is split across both and neither half
+  is in the other. The MIDI Implementation, revision 1.4, is a plain text file with no pages,
+  cited by its own section numbers; the Owner's Manual E 2 has 80 pages and is cited by page.
+  THE IMPLEMENTATION GIVES NO CONTROLLER NUMBER FOR ANY PANEL PARAMETER, which is this
+  instrument's first surprise. Its channel message rows say only "Control Change cc=00~95",
+  and its panel table is headed "Panel Knob & Switch Control (assignable)" - forty-odd
+  parameters in two columns and not one number against them. That is not an omission. The
+  numbers are the player's to set, and Korg prints the factory assignment in the manual
+  instead, in a table whose column is headed "Initial" (p. 56). Both facts are at the head of
+  this file because that is where somebody about to rely on a number is looking.
+  THE IMPLEMENTATION GIVES THE NRPNS, all 29, and prints them twice over - once for what the
+  instrument transmits and once for what it recognises. The two copies are identical, which
+  was checked rather than assumed. They address what the panel does not: the arpeggiator, the
+  four modulation patches, and the vocoder's eight bands.
+  ONE CONTROL CHANGE IS NOT ASSIGNABLE and so is in neither table: CC 1, which the
+  implementation's receive table fixes as pitch modulation depth and its transmit table names
+  as the modulation wheel.
+  ONE CHANNEL, STATED AS A LIMIT RATHER THAN INFERRED: "The microKORG uses only one MIDI
+  channel to transmit and receive. You cannot use two MIDI channels to play the two timbres
+  independently" (p. 66). So there are no parts here, although the instrument is two timbres
+  deep when layered. Which timbre a control change reaches is CC 95 below, a setting rather
+  than a channel.
+  THE TWO DOCUMENTS DO NOT NAME THE SAME 41 CONTROLS, which is worth knowing before anybody
+  tries to reconcile them. The implementation's map of assignable slots includes an "EG2/Gate
+  Sw" and a "SEQ Off/On Sw" that the manual's table has no row for, while the manual's table
+  has Timbre Select and Sync Ctrl, which the implementation keeps as two global bytes of their
+  own rather than as slots in that map. The numbers below are the manual's, because the
+  implementation gives none; the overlap is recorded rather than resolved.
+  NO BANK SELECT, said outright: "The microKORG does not transmit or receive bank select
+  messages" (p. 52). That is the difference the microKORG S's own implementation adds, and it
+  is why one definition cannot cover both.
+  NO USB. The specifications list the connectors and name only MIDI in, out and thru, and the
+  word USB appears twice in 80 pages, both times about somebody else's interface box: "Some
+  USB-MIDI interface devices may not be able to transmit/receive the microKORG's MIDI
+  exclusive messages" (p. 49). Every byte this instrument sends or receives goes down a DIN
+  cable.
+  WHAT IT WILL NOT ANSWER TO, established from the table that enumerates what it does. The
+  recognised channel messages are note off, note on, CC 1, data entry, the NRPN pair, the
+  channel mode messages, generic control data, program change and pitch bend - and nothing
+  else. AFTERTOUCH IS ABSENT FROM THAT LIST in both forms, which agrees with the keyboard the
+  specifications describe: "37 notes (mini keyboard, velocity sensitive, no aftertouch)"
+  (p. 67). So aftertouch is a checked absence rather than an unread page.
+  NOT RECORDED: the note range, which neither document states for what the instrument
+  receives - the implementation gives kk = 0 ~ 127 for what the 37-key keyboard transmits
+  with octave and transpose applied, and that is the panel rather than the span it answers to.
+  THE SIBLING MODELS WERE SETTLED, NOT ASSUMED. The microKORG Crystal's download page offers
+  the same MIDI Implementation under the same manual id, resolving to the same file, so this
+  definition describes the Crystal by construction. The microKORG S's own implementation was
+  fetched and compared: it is a different document, revision 1.01 (2026.06.22), and it adds
+  Bank Select MSB and LSB that this instrument has not got. It is held in the library beside
+  this one and is not described here.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: micro KORG MIDI Implementation
+    edition: Revision 1.4
+    dated: 2002.06.27
+    landing: "https://www.korg.com/us/support/download/product/0/104/"
+    url: "https://cdn.korg.com/us/support/download/files/afc9888d9019a536f3f141a0519af858.txt?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27microKORG_MIDIimp.TXT&response-content-type=application%2Foctet-stream%3B"
+    sha256: a006bb0f7c66dbff89c4c83c75ca0e1760b9957a0436a420e276cd562c2d77f2
+    retrieved: 2026-10-02
+    paginated: false
+    # The maker's own spacing in the title - "micro KORG" - is reproduced rather than tidied.
+    # The download page dates this file 2016.01.08, which is when Korg last posted it; the
+    # document dates itself 2002.06.27, and that is what is recorded here.
+  manual:
+    kind: manual
+    title: microKORG Owner's Manual
+    edition: E 2
+    landing: "https://www.korg.com/us/support/download/product/0/104/"
+    url: "https://cdn.korg.com/us/support/download/files/8f226053113b3be59753dcce14e74cca.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27microKORG_OM_E2.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: cd033d4378c130bd31732a4706cceb65b3521cfeb49d1438f7c4bbb6742322b8
+    retrieved: 2026-10-02
+    page_offset: 6
+    # 80 pages, counted with two readers that agree. `file` reports 19, because this PDF's
+    # page tree is nested and `file` reports the first /Count it meets rather than the root's.
+    # So the rule that every download is checked with `file` holds for what a file IS, and a
+    # page count is worth taking from something that walks the tree.
+  download_page:
+    kind: download_page
+    title: microKORG (2002) downloads
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/0/104/"
+    sha256: 0aa6f7e1bd2d50abd00efe48d0b0321ae37938d42c703cdabe396e5df20a3ace
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for what Korg calls this instrument and for the absence of any firmware.
+    # It also holds a trap worth knowing on this maker's site: the entry it labels
+    # "Owner's Manual (Spanish)" is served as a file named microKORG_S.pdf. The S is Spanish.
+    # Anything matching a file to a model by its name would file that as the microKORG S's.
+
+midi:
+  # "MIDI CH [1...16] Specifies the MIDI channel" (p. 51), and one channel is all there is:
+  # see the source paragraph and the sentence quoted there from p. 67.
+  channels: [1, 16]
+  # BOTH, AND WHICH IT DOES IS A SETTING with three states, "CLOCK [Internal, External, Auto]"
+  # (p. 51). The implementation agrees from each side: it transmits F8 "when the Clock is set
+  # to Internal", and recognises F8 "when the Clock is set to External or Auto".
+  clock: both
+  # RECEIVES ONLY, and this is a checked absence rather than silence. The recognised realtime
+  # messages are timing clock, start, stop and active sensing; the transmitted realtime
+  # messages are timing clock and active sensing, and no more. So it will follow an incoming
+  # start and stop - the arpeggiator does - and sends neither.
+  transport: receives
+  program_change:
+    receives: true
+    sends: true
+    # "Programs: total 128 programs (A/B side x 8 banks x 8 programs)" (p. 67). There is no
+    # bank select on this model, which is one of the two things the microKORG S adds.
+    presets: 128
+  # NUMBERS PER CONTROL, below, 29 of them.
+  nrpn: supported
+  # It answers a device inquiry with an identity reply naming Korg, the MS2000 series family
+  # and member ID 11 for this model, and has system exclusive sections of its own in both
+  # directions - current program dump, program write request and the rest. Of the universal
+  # messages it supports master volume and master fine tuning (p. 55). Its own model ID is
+  # "58: microKORG model ID (same as MS2000/MS2000R)" (p. 55), and the manual says the data
+  # it will exchange with those is only "parameters that it shares" with them.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "Maximum polyphony: 4 voices" (p. 67), stated separately for synth programs and for
+  # vocoder programs and the same for both. Two timbres can be layered and they draw on those
+  # same four voices, which the manual shows as a table of what each voice assign mode leaves
+  # the other timbre; it is one instrument on one channel, so there are no parts to share
+  # between and `polyphony_shared` says nothing here.
+  velocity:
+    # "37 notes (mini keyboard, velocity sensitive, no aftertouch)" (p. 67), and the
+    # recognised note on row is "Note On vv=1~127".
+    note_on: received
+    # "The note-off velocity is transmitted at a fixed 64, but is not received" (p. 52), which
+    # is both halves of the question in one sentence.
+    note_off: false
+  polyphony: 4
+  # NONE, AND CHECKED: the recognised channel messages enumerate what this instrument answers
+  # to, and neither channel pressure nor polyphonic key pressure is among them. The
+  # specifications say the same of the keyboard, "no aftertouch", so neither side of it exists.
+  aftertouch: none
+  pitch_bend:
+    # "BEND RANGE [-12...12] Specifies the amount of pitch change in semitones that will occur
+    # when the pitch wheel is operated" (p. 17). Twelve is as far as it will go; the negative
+    # half of the setting makes the wheel bend the other way rather than reaching further.
+    semitones: 12
+    programmable: true
+groups:
+  pitch: Pitch
+  osc1: Oscillator 1
+  osc2: Oscillator 2 and Audio In 1
+  mixer: Mixer
+  filter: Filter
+  filter_eg: Filter Envelope
+  amp: Amp
+  amp_eg: Amp Envelope
+  lfo1: LFO 1
+  lfo2: LFO 2
+  patch: Modulation Patches
+  mod_fx: Modulation Effect
+  delay: Delay
+  midi: MIDI
+  arpeggiator: Arpeggiator
+  vocoder: Vocoder
+
+controls:
+  pitch_modulation_depth: {label: Pitch Modulation Depth, cc: 1, group: pitch}
+  pitch_portamento:       {label: Portamento, cc: 5, group: pitch}
+  osc1_wave:              {label: Wave, cc: 77, group: osc1}
+  osc1_control1:          {label: Control1, cc: 14, group: osc1}
+  osc1_control2:          {label: Control2, cc: 15, group: osc1}
+  osc2_wave:              {label: Wave, cc: 78, group: osc2}  # synth programs only
+  osc2_osc_mod:           {label: OSC Mod, cc: 82, group: osc2}  # synth programs only
+  osc2_semitone:          {label: Semitone, cc: 18, group: osc2}  # in a vocoder program this is HPF Level
+  osc2_tune:              {label: Tune, cc: 19, group: osc2}  # in a vocoder program this is Threshold
+  mixer_osc_1_level:      {label: OSC 1 Level, cc: 20, group: mixer}
+  mixer_osc_2_level:      {label: OSC 2 Level, cc: 21, group: mixer}  # in a vocoder program this is Inst Level
+  mixer_noise_level:      {label: Noise Level, cc: 22, group: mixer}
+  filter_type:            {label: Type, cc: 83, group: filter}  # in a vocoder program this is Formant Shift
+  filter_cutoff:          {label: Cutoff, cc: 74, group: filter}
+  filter_resonance:       {label: Resonance, cc: 71, group: filter}
+  filter_eg_int:          {label: Filter EG Int, cc: 79, group: filter}  # in a vocoder program this is Mod Int
+  filter_kbd_track:       {label: KBD Track, cc: 85, group: filter}  # in a vocoder program this is E.F.Sense
+  filter_eg_attack:       {label: Attack, cc: 23, group: filter_eg}  # synth programs only
+  filter_eg_decay:        {label: Decay, cc: 24, group: filter_eg}  # synth programs only
+  filter_eg_sustain:      {label: Sustain, cc: 25, group: filter_eg}  # synth programs only
+  filter_eg_release:      {label: Release, cc: 26, group: filter_eg}  # synth programs only
+  amp_level:              {label: Level, cc: 7, group: amp}
+  amp_panpot:             {label: Panpot, cc: 10, group: amp}  # in a vocoder program this is Direct Level
+  amp_distortion:         {label: Distortion, cc: 92, group: amp}
+  amp_eg_attack:          {label: Attack, cc: 73, group: amp_eg}
+  amp_eg_decay:           {label: Decay, cc: 75, group: amp_eg}
+  amp_eg_sustain:         {label: Sustain, cc: 70, group: amp_eg}
+  amp_eg_release:         {label: Release, cc: 72, group: amp_eg}
+  lfo1_wave:              {label: Wave, cc: 87, group: lfo1}
+  lfo1_frequency:         {label: Frequency, cc: 27, group: lfo1}
+  lfo2_wave:              {label: Wave, cc: 88, group: lfo2}
+  lfo2_frequency:         {label: Frequency, cc: 76, group: lfo2}
+  patch_1_intensity:      {label: Intensity, cc: 28, group: patch}  # synth programs only
+  patch_2_intensity:      {label: Intensity, cc: 29, group: patch}  # synth programs only
+  patch_3_intensity:      {label: Intensity, cc: 30, group: patch}  # synth programs only
+  patch_4_intensity:      {label: Intensity, cc: 31, group: patch}  # synth programs only
+  mod_fx_lfo_speed:       {label: LFO Speed, cc: 12, group: mod_fx}
+  mod_fx_depth:           {label: Depth, cc: 93, group: mod_fx}
+  delay_time:             {label: Delay Time, cc: 13, group: delay}
+  delay_depth:            {label: Depth, cc: 94, group: delay}
+  midi_timbre_select:     {label: Timbre Select, cc: 95, group: midi}  # synth programs only
+  midi_sync_ctrl:         {label: Sync Ctrl, cc: 90, group: midi}
+  arpeggio_on_off:        {label: Arpeggio On/Off, nrpn: 2, group: arpeggiator}
+  arpeggio_octaves:       {label: Arpeggio Octaves, nrpn: 3, group: arpeggiator}
+  arpeggio_latch_on_off:  {label: Arpeggio Latch On/Off, nrpn: 4, group: arpeggiator}
+  arpeggio_type:          {label: Arpeggio Type, nrpn: 7, group: arpeggiator}
+  arpeggio_gate:          {label: Arpeggio Gate, nrpn: 10, group: arpeggiator}
+  patch1_source:          {label: Patch1 Source, nrpn: 512, group: patch}  # in a vocoder program this is Fc Mod Source
+  patch2_source:          {label: Patch2 Source, nrpn: 513, group: patch}
+  patch3_source:          {label: Patch3 Source, nrpn: 514, group: patch}
+  patch4_source:          {label: Patch4 Source, nrpn: 515, group: patch}
+  patch1_destination:     {label: Patch1 Destination, nrpn: 520, group: patch}
+  patch2_destination:     {label: Patch2 Destination, nrpn: 521, group: patch}
+  patch3_destination:     {label: Patch3 Destination, nrpn: 522, group: patch}
+  patch4_destination:     {label: Patch4 Destination, nrpn: 523, group: patch}
+  vocoder_band1_level:    {label: Band 1 Level, nrpn: 528, group: vocoder}  # vocoder programs only
+  vocoder_band2_level:    {label: Band 2 Level, nrpn: 530, group: vocoder}  # vocoder programs only
+  vocoder_band3_level:    {label: Band 3 Level, nrpn: 532, group: vocoder}  # vocoder programs only
+  vocoder_band4_level:    {label: Band 4 Level, nrpn: 534, group: vocoder}  # vocoder programs only
+  vocoder_band5_level:    {label: Band 5 Level, nrpn: 536, group: vocoder}  # vocoder programs only
+  vocoder_band6_level:    {label: Band 6 Level, nrpn: 538, group: vocoder}  # vocoder programs only
+  vocoder_band7_level:    {label: Band 7 Level, nrpn: 540, group: vocoder}  # vocoder programs only
+  vocoder_band8_level:    {label: Band 8 Level, nrpn: 542, group: vocoder}  # vocoder programs only
+  vocoder_band1_pan:      {label: Band 1 Pan, nrpn: 544, group: vocoder}  # vocoder programs only
+  vocoder_band2_pan:      {label: Band 2 Pan, nrpn: 546, group: vocoder}  # vocoder programs only
+  vocoder_band3_pan:      {label: Band 3 Pan, nrpn: 548, group: vocoder}  # vocoder programs only
+  vocoder_band4_pan:      {label: Band 4 Pan, nrpn: 550, group: vocoder}  # vocoder programs only
+  vocoder_band5_pan:      {label: Band 5 Pan, nrpn: 552, group: vocoder}  # vocoder programs only
+  vocoder_band6_pan:      {label: Band 6 Pan, nrpn: 554, group: vocoder}  # vocoder programs only
+  vocoder_band7_pan:      {label: Band 7 Pan, nrpn: 556, group: vocoder}  # vocoder programs only
+  vocoder_band8_pan:      {label: Band 8 Pan, nrpn: 558, group: vocoder}  # vocoder programs only

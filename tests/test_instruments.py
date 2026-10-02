@@ -100,6 +100,7 @@ class TestBundledCorpus:
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"behringer/model_d",
+			"elektron/analog_rytm_mkii",
 			"elektron/digitakt",
 			"elektron/digitone",
 			"elektron/syntakt",
@@ -2093,3 +2094,98 @@ class TestJuno106:
 		assert juno.midi.program_change.presets == 128
 		assert juno.midi.program_change.receives is True
 		assert juno.midi.program_change.sends is True
+
+
+class TestAnalogRytmMkii:
+
+	"""Ninety-nine of the 319 rows its appendix prints, and the reason is the other 220."""
+
+	def test_the_machine_parameters_are_not_carried_and_the_slots_are (self) -> None:
+		"""Eight generic slots stand for what 32 machines call the same eight numbers."""
+		rytm = pymidiinstrumentdefs.load("elektron/analog_rytm_mkii", [CORPUS])
+
+		assert len(rytm.controls) == 99
+
+		slots = [name for name in rytm.controls if name.startswith("synth_parameter_")]
+
+		assert len(slots) == 8
+		assert [rytm.controls[name].cc for name in sorted(slots)] == [16, 17, 18, 19, 20, 21, 22, 23]
+
+		# Nothing named for a machine reached the file. BD CLASSIC, SD FM and the rest would
+		# each have claimed CC 16 again, with nothing in the format to choose between them.
+		assert not [name for name in rytm.controls if name.startswith(("bd_", "sd_", "hh_", "cy_"))]
+
+	def test_a_controller_number_means_different_things_on_different_parts (self) -> None:
+		"""26 of them do, which is why every control names the part it belongs to."""
+		rytm = pymidiinstrumentdefs.load("elektron/analog_rytm_mkii", [CORPUS])
+
+		parts_using: dict[int, set[str | None]] = {}
+
+		for control in rytm.controls.values():
+			assert control.cc is not None
+			parts_using.setdefault(control.cc, set()).add(control.part)
+
+		shared = {cc for cc, parts in parts_using.items() if len(parts) > 1}
+
+		assert len(shared) == 26
+		assert rytm.controls["synth_parameter_1"].cc == rytm.controls["delay_time"].cc == 16
+		assert rytm.controls["synth_parameter_1"].part == "track"
+		assert rytm.controls["delay_time"].part == "fx"
+
+	def test_the_nrpns_resolve_what_the_controller_numbers_do_not (self) -> None:
+		"""Each bank is a part: 0 performance, 1 track, 2 FX, 3 trig. So an NRPN is unique."""
+		rytm = pymidiinstrumentdefs.load("elektron/analog_rytm_mkii", [CORPUS])
+
+		numbers = [control.nrpn for control in rytm.controls.values()]
+
+		assert None not in numbers
+		assert len(set(numbers)) == len(numbers) == 99
+
+		# The manual prints an NRPN as a bank and a number; the format stores one integer.
+		assert rytm.controls["synth_parameter_1"].nrpn == 1 * 128 + 0
+		assert rytm.controls["delay_time"].nrpn == 2 * 128 + 0
+		assert rytm.controls["trig_note"].nrpn == 3 * 128 + 0
+		assert rytm.controls["performance_parameter_1"].nrpn == 0
+
+	def test_one_control_in_the_whole_appendix_is_fourteen_bit (self) -> None:
+		"""And the appendix says so itself, which its maker's other manual does not."""
+		rytm = pymidiinstrumentdefs.load("elektron/analog_rytm_mkii", [CORPUS])
+
+		fine = [name for name, control in rytm.controls.items() if control.is_14_bit]
+
+		assert fine == ["lfo_depth"]
+		assert rytm.controls["lfo_depth"].cc == 109
+		assert rytm.controls["lfo_depth"].lsb == 118   # not 109 + 32, which the MMA would give
+
+	def test_eight_voices_are_shared_across_twelve_tracks (self) -> None:
+		"""Four tracks have a voice each and the other eight are paired two to a voice."""
+		rytm = pymidiinstrumentdefs.load("elektron/analog_rytm_mkii", [CORPUS])
+
+		assert rytm.voice.polyphony == 8
+		assert rytm.voice.polyphony_shared is True
+		assert rytm.parts["track"].count == 12
+		assert rytm.parts["track"].polyphony is None
+
+	def test_what_it_answers_to_beyond_its_controls (self) -> None:
+		"""Clock and transport both ways, program change selecting a pattern, SysEx dumps."""
+		rytm = pymidiinstrumentdefs.load("elektron/analog_rytm_mkii", [CORPUS])
+
+		assert rytm.midi.clock == "both"
+		assert rytm.midi.transport == "both"
+		assert rytm.midi.nrpn == "supported"
+		assert rytm.midi.sysex is True
+
+		assert rytm.midi.program_change is not None
+		assert rytm.midi.program_change.presets == 128
+
+		# Notes 0-11 reach the twelve tracks and 12-59 the active one chromatically; above
+		# that the manual says nothing, so nothing is claimed.
+		assert rytm.voice.note_range == (0, 59)
+
+	def test_the_part_that_only_sends_claims_nothing_about_receiving (self) -> None:
+		"""One sentence names the performance channel and it names one direction only."""
+		rytm = pymidiinstrumentdefs.load("elektron/analog_rytm_mkii", [CORPUS])
+
+		assert rytm.parts["performance"].receives is None
+		assert rytm.parts["fx"].receives == ("controls",)
+		assert rytm.parts["track"].receives == ("notes", "controls")

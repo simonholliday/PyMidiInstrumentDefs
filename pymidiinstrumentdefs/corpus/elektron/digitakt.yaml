@@ -128,8 +128,12 @@ parts:
     # Takes no notes: the delay, the reverb, the compressor and the external input mixer.
 
 midi:
-  # A channel is set per track, per the FX section, and for the auto channel, each from
-  # 1 to 16 or OFF (p. 71).
+  # A channel is set per track, per the FX section, and for the auto channel, each selected or
+  # set to OFF (p. 71), and "Any MIDI channel can be assigned to a MIDI track and several tracks
+  # can share the same channel" (p. 17).
+  # SIXTEEN IS THE PROTOCOL'S NUMBER, NOT THIS MAKER'S STATEMENT. **No page of this manual
+  # prints the range a channel setting takes.** The highest it names is 8, as the eight tracks'
+  # defaults (p. 24); "any MIDI channel" is what carries `[1, 16]`.
   channels: [1, 16]
   # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and
   # TRANSPORT SEND (p. 69), so both travel both ways and either can be switched off.

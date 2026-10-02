@@ -143,7 +143,12 @@ sources:
 
 midi:
   # A channel is set per track, for the effects, for the auto channel and for program change in
-  # each direction, each from 1 to 16 or OFF (p. 79).
+  # each direction, each selected or set to OFF (p. 79), and "Any MIDI channel can be assigned
+  # to a MIDI track and several tracks can share the same channel" (p. 17).
+  # SIXTEEN IS THE PROTOCOL'S NUMBER AND HERE IT IS ALSO THE MAKER'S. **No page prints the range
+  # a channel setting takes** - but this instrument's sixteen tracks default to "their default
+  # channels 1-16" (p. 25), so all sixteen are in use as shipped. That makes `[1, 16]` better
+  # founded here than on the smaller instruments in this family.
   channels: [1, 16]
   # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
   # SEND (p. 77), so both travel both ways and either can be switched off.

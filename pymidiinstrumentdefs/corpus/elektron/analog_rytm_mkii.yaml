@@ -107,9 +107,13 @@ sources:
 
 midi:
   # A channel is set per track, for the FX track, for performance, for the auto channel and
-  # for program change in and out, each from 1 to 16 or OFF (p. 63). The twelve tracks default
-  # to channels 1 to 12 (p. 22), but which channel yours are on belongs to your project rather
-  # than here.
+  # for program change in and out, each selected or set to OFF (p. 63). The twelve tracks
+  # default to "their default channels 1-12" (p. 22), but which channel yours are on belongs to
+  # your project rather than here.
+  # SIXTEEN IS THE PROTOCOL'S NUMBER, NOT THIS MAKER'S STATEMENT. **No page of this manual
+  # prints the range a channel setting takes.** The highest channel it names anywhere is 12, as
+  # the tracks' defaults; `[1, 16]` is what a MIDI device has and what "selects the MIDI
+  # channel" must mean, and it is recorded here rather than attributed to a page.
   channels: [1, 16]
   # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
   # SEND, the latter covering "play, stop, continue and song position pointer" (p. 61). So

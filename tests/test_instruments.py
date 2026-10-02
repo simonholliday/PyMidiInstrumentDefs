@@ -108,6 +108,20 @@ class TestBundledCorpus:
 
 		assert missing == []
 
+	def test_a_definition_with_nrpn_controls_says_so_about_the_instrument (self) -> None:
+		"""An unset `midi.nrpn` means nobody looked, which is untrue of a file full of NRPNs.
+
+		Three Elektron definitions carried NRPN numbers on most of their controls and left
+		the field unset, which told a reader that the question had never been asked. Their
+		manuals all answer it in the same sentence, about what the DATA ENTRY knobs send.
+		"""
+		silent = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn is None
+			and any(control.nrpn is not None
+				for control in pymidiinstrumentdefs.load(name, [CORPUS]).controls.values())]
+
+		assert silent == []
+
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [

@@ -83,6 +83,11 @@ midi:
   clock: both
   transport: both
   sysex: true
+  # Most of the controls below carry one, and which form the knobs send is the player's choice:
+  # "PARAM OUTPUT selects what type of MIDI messages the DATA ENTRY knobs send ... NRPN sends
+  # NRPN MIDI messages ... CC sends CC MIDI messages" (p. 73). RECEIVE CC/NRPN governs the other
+  # direction and names both together.
+  nrpn: supported
   program_change:
     receives: true
     sends: true

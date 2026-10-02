@@ -142,6 +142,11 @@ midi:
     # Which channel carries them is its own setting, PROGRAM CHG IN CH and OUT CH, each
     # of which may instead follow the auto channel (p. 71).
   sysex: true              # project, pattern and Sound data, over MIDI OUT or USB (p. 71)
+  # Most of the controls below carry one, and which form the knobs send is the player's choice:
+  # "PARAM OUTPUT selects what type of MIDI messages the DATA ENTRY knobs will send ... NRPN
+  # will make the knobs send out NRPN MIDI messages ... CC will make the knobs send out CC MIDI
+  # messages" (p. 70). RECEIVE CC/NRPN governs the other direction and names both together.
+  nrpn: supported
 
 voice:
   addressing: pitches

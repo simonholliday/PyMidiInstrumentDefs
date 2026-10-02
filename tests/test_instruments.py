@@ -107,6 +107,7 @@ class TestBundledCorpus:
 			"expressive_e/osmose",
 			"korg/microkorg",
 			"korg/minilogue_xd",
+			"korg/opsix",
 			"korg/wavestate",
 			"modal/carbon8m",
 			"moog/dfam",
@@ -2143,6 +2144,93 @@ class TestOpXy:
 		assert op_xy.model.firmware == "1.1.15"
 		assert op_xy.sources["guide"].edition == "1.1.15"
 		assert op_xy.sources["os_updates"].edition == "1.1.33"
+
+
+class TestOpsix:
+
+	"""A control map on one page whose text is enciphered, and a manual covering three models."""
+
+	def test_the_five_controls_it_recognises_and_never_sends (self) -> None:
+		"""The chart has two columns, and where they differ the control says so."""
+		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
+
+		receives = sorted(name for name, control in opsix.controls.items()
+			if control.direction == "receives")
+
+		assert receives == ["expression", "pan", "soft", "sostenuto", "volume"]
+
+		# `receives` means the instrument answers to it and never sends it, so a panel may
+		# still offer it: these are sendable, and nothing in this definition is not.
+		assert all(control.is_sendable for control in opsix.controls.values())
+
+		# Everything else travels both ways, which is the default and is not written out.
+		assert len(opsix.controls) == 30
+		assert sum(1 for control in opsix.controls.values() if control.direction == "both") == 25
+
+	def test_the_two_runs_of_six_became_twelve_controls (self) -> None:
+		"""The chart gives 102-107 and 108-113 as two entries naming six operators each."""
+		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
+
+		levels = [opsix.controls[f"op{n}_level"].cc for n in range(1, 7)]
+		ratios = [opsix.controls[f"op{n}_ratio"].cc for n in range(1, 7)]
+
+		assert levels == [102, 103, 104, 105, 106, 107]
+		assert ratios == [108, 109, 110, 111, 112, 113]
+
+		# The channel mode pair the chart also lists is not a control and must never become one.
+		assert not {120, 121} & {control.cc for control in opsix.controls.values()}
+
+	def test_the_chart_is_cited_through_a_rendering_of_itself (self) -> None:
+		"""Its page cannot be searched, so the definition cites a decoded copy.
+
+		Four sources, of which only the manual has pages: the chart's rendering, Korg's
+		Property Exchange file and the download page have none.
+		"""
+		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
+
+		paginated = [name for name, source in opsix.sources.items() if source.paginated]
+
+		assert len(opsix.sources) == 4
+		assert paginated == ["manual"]
+		assert opsix.sources["manual"].page_offset == 0
+		assert opsix.sources["chart"].sha256 != opsix.sources["manual"].sha256
+
+	def test_it_is_the_opsix_and_not_the_two_models_beside_it (self) -> None:
+		"""One manual, three instruments, and the voice counts are not the same."""
+		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
+
+		assert opsix.model.name == "opsix"
+		assert opsix.voice.polyphony == 32
+
+		# The chart's version is the instrument's, which the manual's own body settles by
+		# naming the same number as a system version.
+		assert opsix.model.firmware == "3.1.0"
+
+	def test_release_velocity_both_ways_and_no_aftertouch_recorded (self) -> None:
+		"""It answers to both kinds of aftertouch, which this field cannot say."""
+		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
+
+		assert opsix.voice.velocity is not None
+		assert opsix.voice.velocity.note_on == "received"
+		assert opsix.voice.velocity.note_off is True
+
+		assert opsix.voice.aftertouch is None
+		assert opsix.voice.note_range == (0, 127)
+
+	def test_what_its_chart_marks_in_both_directions (self) -> None:
+		"""Clock, transport, program change and system exclusive all travel each way."""
+		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
+
+		assert opsix.midi.clock == "both"
+		assert opsix.midi.transport == "both"
+		assert opsix.midi.sysex is True
+		assert opsix.midi.mode == 3
+		assert opsix.midi.nrpn is None
+
+		assert opsix.midi.program_change is not None
+		assert opsix.midi.program_change.receives is True
+		assert opsix.midi.program_change.sends is True
+		assert opsix.midi.program_change.presets == 100
 
 
 class TestBassStationII:

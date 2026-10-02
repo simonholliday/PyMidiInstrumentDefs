@@ -116,6 +116,7 @@ class TestBundledCorpus:
 			"behringer/model_d",
 			"elektron/analog_rytm_mkii",
 			"elektron/digitakt",
+			"elektron/digitakt_ii",
 			"elektron/digitone",
 			"elektron/syntakt",
 			"expressive_e/osmose",
@@ -2781,3 +2782,114 @@ class TestVolcaDrum:
 
 		# Nobody established which system the charts describe, and the release notes say why.
 		assert volca.model.firmware is None
+
+
+class TestDigitaktII:
+
+	"""Sixteen tracks that are each one thing or the other, and an appendix that miscounts itself."""
+
+	def test_sixteen_tracks_are_one_part_and_not_two (self) -> None:
+		"""A track is an audio track or a MIDI track, so the same channel reaches two maps."""
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		assert set(digitakt.parts) == {"track", "fx"}
+		assert digitakt.parts["track"].count == 16
+		assert digitakt.parts["track"].is_assigned
+		assert digitakt.parts["track"].polyphony == 1
+		assert digitakt.voice.polyphony_shared is False
+
+		# The effects answer on a channel of their own and take no notes.
+		assert digitakt.parts["fx"].receives == ("controls",)
+		assert digitakt.parts["fx"].count == 1
+
+	def test_the_same_number_means_two_things_on_one_track (self) -> None:
+		"""CC 70 is the filter's attack on an audio track and VAL1 on a MIDI track."""
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		assert digitakt.controls["filter_attack_time"].cc == 70
+		assert digitakt.controls["cc_val_val1"].cc == 70
+
+		# Both are on the same part, because they are the same sixteen tracks.
+		assert digitakt.controls["filter_attack_time"].part == "track"
+		assert digitakt.controls["cc_val_val1"].part == "track"
+
+		# Sixteen assignable CC values, which is what a MIDI track offers.
+		assert sum(1 for control in digitakt.controls.values()
+			if control.group == "cc_val") == 16
+
+	def test_the_four_nrpns_the_appendix_gives_to_two_parameters_each (self) -> None:
+		"""Carried as printed, because this maker has twice shipped a release to fix such a pair."""
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		# 1 * 128 + 23, the filter's envelope depth and its envelope delay.
+		assert digitakt.controls["filter_env_depth"].nrpn == 151
+		assert digitakt.controls["filter_env_delay"].nrpn == 151
+
+		# 1:51 and 1:52, the filter's base and width against LFO 2.
+		assert digitakt.controls["filter_base"].nrpn == 179
+		assert digitakt.controls["lfo_2_multiplier"].nrpn == 179
+		assert digitakt.controls["filter_width"].nrpn == 180
+		assert digitakt.controls["lfo_2_fade_in_out"].nrpn == 180
+
+		# 3:8, portamento against the Euclidean sequencer.
+		assert digitakt.controls["trig_portamento_on_off"].nrpn == 392
+		assert digitakt.controls["euclidean_pulse_generator_1"].nrpn == 392
+
+	def test_the_external_inputs_are_printed_twice_because_a_setting_decides (self) -> None:
+		"""DUAL MONO chooses whether CC 72 is one input's level or the pair's."""
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		assert digitakt.controls["external_in_dual_mono"].cc == 82
+		assert digitakt.controls["external_in_input_l_level"].cc == 72
+		assert digitakt.controls["external_in_input_l_r_level"].cc == 72
+		assert digitakt.controls["external_in_input_l_pan"].cc == 74
+		assert digitakt.controls["external_in_input_l_r_balance"].cc == 74
+
+	def test_two_controls_come_from_the_body_and_not_the_appendix (self) -> None:
+		"""A reader with only the appendix would take CC 1 and CC 2 for unassigned."""
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		assert digitakt.controls["modulation_wheel"].cc == 1
+		assert digitakt.controls["breath_controller"].cc == 2
+
+		# Neither carries an NRPN, because the appendix is where the NRPNs are.
+		assert digitakt.controls["modulation_wheel"].nrpn is None
+		assert digitakt.controls["breath_controller"].nrpn is None
+
+		assert len(digitakt.controls) == 144
+
+	def test_the_three_lfo_speeds_and_depths_are_fourteen_bit (self) -> None:
+		"""The only six controls in the file with a CC LSB, and the appendix says so in words."""
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		paired = sorted(name for name, control in digitakt.controls.items()
+			if control.lsb is not None)
+
+		assert paired == [
+			"lfo_1_depth", "lfo_1_speed",
+			"lfo_2_depth", "lfo_2_speed",
+			"lfo_3_depth", "lfo_3_speed",
+		]
+		assert digitakt.controls["lfo_1_speed"].cc == 102
+		assert digitakt.controls["lfo_1_speed"].lsb == 58
+
+	def test_what_it_answers_to_beyond_its_controls (self) -> None:
+		"""Clock and transport both ways, program change selecting a pattern, SysEx dumps."""
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		assert digitakt.midi.clock == "both"
+		assert digitakt.midi.transport == "both"
+		assert digitakt.midi.nrpn == "supported"
+		assert digitakt.midi.sysex is True
+		assert digitakt.midi.channels == (1, 16)
+
+		assert digitakt.midi.program_change is not None
+		assert digitakt.midi.program_change.presets == 128
+
+		# Notes 0-15 reach the sixteen tracks and 16-84 play the active one chromatically;
+		# above that the manual says nothing, so nothing is claimed.
+		assert digitakt.voice.note_range == (0, 84)
+
+		# Aftertouch is received and never characterised, and the bend has no stated range.
+		assert digitakt.voice.aftertouch is None
+		assert digitakt.voice.pitch_bend is None

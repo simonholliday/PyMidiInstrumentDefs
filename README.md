@@ -135,6 +135,7 @@ self-contained YAML file, and you share it by sending it.
 | `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
 | `elektron/analog_rytm_mkii` | Elektron Analog Rytm MKII: 99 controls of the 319 its appendix prints, because the other 220 are 32 machines' names for the same eight numbers |
 | `elektron/digitakt` | Elektron Digitakt: eight audio tracks and eight that only send, with thirty controller numbers meaning more than one thing |
+| `elektron/digitakt_ii` | Elektron Digitakt II: 144 controls off an appendix that numbers two of its own sections twice, and gives four pairs of parameters the same NRPN |
 | `elektron/digitone` | Elektron Digitone: nine parts on nine MIDI channels, where one CC means three things |
 | `elektron/syntakt` | Elektron Syntakt: twelve tracks and an FX track, where 28 controller numbers mean one thing on a track and another on the FX track |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |

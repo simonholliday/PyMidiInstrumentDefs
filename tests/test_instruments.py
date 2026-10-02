@@ -122,6 +122,7 @@ class TestBundledCorpus:
 			"korg/microkorg",
 			"korg/minilogue_xd",
 			"korg/opsix",
+			"korg/volca_drum",
 			"korg/wavestate",
 			"modal/carbon8m",
 			"moog/dfam",
@@ -2680,3 +2681,103 @@ class TestAnalogRytmMkii:
 		assert rytm.parts["performance"].receives is None
 		assert rytm.parts["fx"].receives == ("controls",)
 		assert rytm.parts["track"].receives == ("notes", "controls")
+
+
+class TestVolcaDrum:
+
+	"""An instrument whose maker publishes two maps, and a definition that follows one of them."""
+
+	def test_the_six_parts_sit_on_six_channels_with_nothing_to_set (self) -> None:
+		"""The chart's whole addressing scheme is "Channel 1-6 = Parts 1-6"."""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		part = volca.parts["part"]
+
+		assert part.count == 6
+		assert part.channel_offset == 0
+		assert part.is_assigned is False
+
+		# There is no basic channel to choose, so the six channels follow from the one base.
+		assert volca.midi.channels == (1, 1)
+		assert [part.channel_for(1, instance) for instance in range(6)] == [1, 2, 3, 4, 5, 6]
+
+	def test_a_note_reaches_a_part_and_says_nothing_else (self) -> None:
+		"""It answers to every note number, and the number picks nothing."""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert volca.voice.addressing == "none"
+		assert volca.parts["part"].addressing == "none"
+		assert volca.parts["part"].takes("notes")
+
+		assert volca.voice.note_range == (0, 127)
+		assert volca.voice.plays_note(0)
+		assert volca.voice.plays_note(127)
+
+		# Nothing in either document says how many notes one part holds.
+		assert volca.voice.polyphony is None
+
+	def test_the_layer_suffix_is_a_third_control_and_not_a_range (self) -> None:
+		"""SELECT1, SELECT2, SELECT1-2 against 14, 15, 16: three controls, not two."""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert volca.controls["select_1"].cc == 14
+		assert volca.controls["select_2"].cc == 15
+		assert volca.controls["select_both"].cc == 16
+
+		both = [name for name in volca.controls if name.endswith("_both")]
+
+		assert len(both) == 7
+		assert len(volca.controls) == 31
+
+	def test_the_resonator_is_shared_so_four_controls_have_no_part (self) -> None:
+		"""Its send belongs to a part and its own four do not."""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		unparted = sorted(name for name, control in volca.controls.items() if control.part is None)
+
+		assert unparted == [
+			"waveguide_body", "waveguide_decay", "waveguide_model", "waveguide_tune"]
+		assert volca.controls["waveguide_send"].part == "part"
+
+	def test_it_answers_and_never_speaks (self) -> None:
+		"""One MIDI socket, an input, so every row of the chart is received only."""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert all(control.direction == "receives" for control in volca.controls.values())
+
+		assert volca.midi.clock == "receives"
+		assert volca.midi.transport == "receives"
+		assert volca.midi.mode == 3
+
+		assert volca.midi.program_change is not None
+		assert volca.midi.program_change.receives is True
+		assert volca.midi.program_change.sends is False
+		assert volca.midi.program_change.presets is None
+
+	def test_what_was_checked_and_found_absent (self) -> None:
+		"""Three absences the documents state, kept apart from what nobody looked for."""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert volca.midi.nrpn == "none"
+		assert volca.midi.sysex is False
+		assert volca.voice.aftertouch == "none"
+		assert volca.voice.pitch_bend is None
+
+		assert volca.voice.velocity is not None
+		assert volca.voice.velocity.note_on == "received"
+		assert volca.voice.velocity.note_off is False
+
+	def test_the_other_chart_is_cited_and_nothing_is_taken_from_it (self) -> None:
+		"""Both implementations are named, and the file describes the factory default."""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert set(volca.sources) == {
+			"chart", "manual", "alternate_chart", "download_page", "release_notes"}
+
+		assert volca.sources["chart"].title == \
+			"volca drum MIDI Implementation Chart (Split channel)"
+		assert volca.sources["alternate_chart"].title == \
+			"volca drum MIDI Implementation Chart (Single channel)"
+
+		# Nobody established which system the charts describe, and the release notes say why.
+		assert volca.model.firmware is None

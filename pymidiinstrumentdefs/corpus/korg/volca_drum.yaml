@@ -1,0 +1,304 @@
+# THIS INSTRUMENT HAS TWO MIDI IMPLEMENTATIONS AND KORG PUBLISHES A CHART FOR EACH. They are not
+# one map re-channelled: twenty-one numbers appear on both charts naming different parameters,
+# and four parameters can be reached in one implementation and not in the other. The two are
+# "MIDI Implementation Chart (Split channel)" and "MIDI Implementation Chart (Single channel)",
+# both dated 2019.03.29, both on the same download page.
+#
+# EVERYTHING BELOW IS THE SPLIT-CHANNEL IMPLEMENTATION, which is the one the instrument has out
+# of the box. Three documents say so. The split-channel chart: "This is the factory default
+# implementation." The single-channel chart: "This is an alternate implementation which can be
+# selected by setting a specific MIDI channel. The factory default implementation, split
+# channels, can be reverted to by deselecting the MIDI channel." And the owner's manual, from
+# the player's side: "Tapping the step for the selected channel (LED lit up) cancels the
+# selection and reverts to part 1-6 assigned to channels 1-6. (factory default)" (p. 3).
+#
+# THE FORMAT CANNOT HOLD BOTH, and that is a gap rather than an oversight. A control's number is
+# a fact about the instrument here, not a fact about the instrument in a mode, so there is
+# nowhere to put a second map that replaces this one when somebody picks a channel. What the
+# other implementation does is written into the source account below, in words, so that nobody
+# reading this file is surprised by a volca drum that answers differently.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: volca drum
+  # NOT RECORDED, and this one can be shown rather than merely asserted. Both charts print
+  # "Date: 2019.2.20" and "Version: 1.00", which is the chart's own version in the way the
+  # wavestate's is - and Korg has published two systems since. The System Updater page gives
+  # 1.11, "Fixes to MIDI CC assignments. Minor bug fix in program chaining", and then 1.14 of
+  # 2019.09.10, whose notes begin "Support for external clock synced delay. Added a new edit
+  # parameter to enable pitch quantization. Fixed single channel MIDI handling of note events.
+  # Fixed MIDI Song Position Pointer."
+  # SO THE CHARTS DESCRIBE THIS INSTRUMENT BEFORE TWO CHANGES TO THE THINGS THEY CHART, and
+  # Korg has not republished them. The owner's manual is newer and shows it: 1.14 added pitch
+  # quantization and the 2024 manual lists "QPI: enable pitch quantization (semitone)" among the
+  # part parameters (p. 3). Writing 1.14 here would claim the map below matches it, which the
+  # release notes themselves put in doubt. Checked 2026-10-02.
+
+source: >-
+  MIDI Implementation Chart (Split channel), one page, which is the whole of the map below:
+  p. 1. Owner's Manual, the edition Korg names EFGSCJ 4, eight sheets of six languages: printed
+  p. 3, the English one. MIDI Implementation Chart (Single channel), p. 1, for what the other
+  implementation does. And two pages of Korg's own site, saved as text and cited for what Korg
+  publishes and for the system versions.
+  THE SPLIT-CHANNEL CHART IS THE FACTORY DEFAULT and is what everything below describes. Its
+  Mode row is remarked "Channel 1-6 = Parts 1-6" and its Velocity row "n=0-5 (Channel 1-6 =
+  Parts 1-6)", so the six parts are separately addressable with nothing set and nothing learned.
+  THE OTHER CHART IS A DIFFERENT MAP, NOT THE SAME MAP MOVED. Setting a MIDI channel switches
+  the instrument to the single-channel implementation, where all six parts answer on that one
+  channel and each gets a block of nine numbers of its own - part 1 on 14 to 20 with 103 and
+  109, part 2 on 23 to 29 with 104 and 110, part 3 on 46 to 52 with 105 and 111, part 4 on 55 to
+  61 with 106 and 112, part 5 on 80 to 86 with 107 and 113, part 6 on 89, 90, 96 to 100 with 108
+  and 114, and the resonator still on 116 to 119. Twenty-one numbers mean different things in
+  the two implementations: CC 14 is layer 1's Select below and part 1's both-layer Select there.
+  FOUR PARAMETERS EXIST IN ONE IMPLEMENTATION AND NOT THE OTHER. Bit reduction, wave folder,
+  drive and dry gain are CC 49 to 52 below, and in the single-channel map those four numbers
+  belong to part 3, which leaves that implementation with no way to reach them at all. It also
+  has no CC 10: each part's pan has a number of its own there.
+  EACH ROW PAIRS ITS NUMBERS TO ITS NAMES BY ORDER ALONE, which is the trap in reading either
+  chart. A row reads "14, 15, 16" against "SELECT1, SELECT2, SELECT1-2", and SELECT1-2 is not a
+  range covering two numbers: it is a third control that moves both layers at once, which is
+  what the panel's LAYER 1/2 button does - "The button will light up when both layers are
+  selected at once" (p. 3). Read as a range, this chart's ten rows give sixteen controls where
+  they give thirty-one. Every row here was checked to have exactly as many names as numbers.
+  THE INSTRUMENT SENDS NOTHING. Every row of both charts is marked X transmitted, and the
+  specification lists one connector - "MIDI IN connector" (p. 3) - with no OUT and no THRU. So
+  every control below is marked `receives`, and `clock` and `transport` likewise.
+  TWO GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, and both ship on. Footnote *1,
+  carried by every control-change row and by the note row, reads "Received when global parameter
+  MIDI RX ShortMessage is set to ON", and the manual's table of global parameters marks On as
+  the factory default for it (p. 3). Footnote *2, on song position, clock and commands, reads
+  "Not received when global parameter MIDI Clock src is set to Internal; received when set to
+  Auto", and Auto is that parameter's factory default (p. 3).
+  THAT FOOTNOTE IS APPLIED UNEVENLY, which is worth knowing before anyone relies on it. It
+  marks the Note Number row, making note reception depend on MIDI RX ShortMessage too, and it
+  does not mark the Velocity row directly below - which is where the chart actually states that
+  note on is received. One of those two rows is marked wrongly and the chart does not say which.
+  CC 46 TO 52 ARE THE LSB PARTNERS OF CC 14 TO 20 IN THE SPECIFICATION, and this chart gives
+  them parameters of their own. Anything sending 14-bit controller pairs will move a part's mod
+  rate while it means to refine its select, and neither chart warns about it. That is a caution
+  for a consumer rather than a fault in the file: the numbers below are what the maker published.
+  NOTES REACH A PART WITHOUT NAMING ONE. The chart recognises note numbers 0 to 127 and remarks
+  "Each sound does not correspond to a note number", so the channel says which part sounds and
+  the note number says nothing at all. That is why `addressing` is `none` on a part that
+  nevertheless receives notes.
+  NOT RECORDED: which channel carries the four resonator controls. The resonator is shared -
+  "each part has two identical layers and the waveguide resonator is shared for all parts"
+  (p. 3) - so those four are not a part's, and the chart does not say whether they answer on all
+  six channels or on one.
+  NOT RECORDED: polyphony, which neither chart nor manual states for a part or for the
+  instrument; the pitch bend range, there being no pitch bend; and how many presets a program
+  change reaches. The manual's program memory is sixteen locations loaded with FUNC + LOAD PRG.
+  (p. 3) and nothing connects a program change to them, so the number is not written here.
+  CHECKED AND ABSENT: NRPN and RPN. Neither word, nor "Registered", nor "Parameter Number",
+  appears anywhere on either chart or on printed page 3 of the manual. System exclusive is
+  marked X in both columns of both charts.
+
+sources:
+  chart:
+    kind: midi_implementation
+    title: volca drum MIDI Implementation Chart (Split channel)
+    edition: E 1
+    dated: 2019-03-29
+    landing: "https://www.korg.com/us/support/download/product/0/809/"
+    url: "https://cdn.korg.com/us/support/download/files/aa0a404eb2b0fa59873677d825cc272e.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27volca_drum_split_ch_MIDI_Chart_E1.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: ad743abcff4f085ce14998afdbe3a2afd89c9f19257d17694e6562bbe3bec223
+    retrieved: 2026-10-02
+    # One page, cited as p. 1. The page prints its own date, 2019.2.20, which is a month before
+    # the date the download page gives the file. Encrypted with an empty password, like every
+    # PDF Korg serves for this instrument.
+    # NEITHER CHART PRINTS WHICH OF THE TWO IT IS. Both pages are headed "MIDI Implementation
+    # Chart" over "Model: volca drum", with the same date and the same "Version: 1.00", and
+    # nothing else outside the table. The title above is the file's own `/Title` field, which
+    # does carry the parenthetical; the page does not. Told apart from each other, the two are
+    # distinguishable only by the Notes paragraph at the foot - and the only page that prints
+    # the words "split channels" is the single-channel one, in the note that sends you here.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: volca drum Owner's Manual
+    edition: EFGSCJ 4
+    dated: 2024-11-07
+    landing: "https://www.korg.com/us/support/download/product/0/809/"
+    url: "https://cdn.korg.com/us/support/download/files/c65c033ee08932b5bd69303ebf7f31b0.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27volca_drum_OM_EFGSCJ4.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 6b1b078459469ee867e4949ee453b57c70e71aee1f856dc11aa53f93ae59e81a
+    retrieved: 2026-10-02
+    # Eight sheets, each one printed page, each 14.33 by 10.12 inches and set in many columns -
+    # which is how six languages fit into eight pages. Printed page 3 is the English one and is
+    # the only page cited here. Printed page = file page.
+    page_offset: 0
+  alternate_chart:
+    kind: midi_implementation
+    title: volca drum MIDI Implementation Chart (Single channel)
+    edition: E 1
+    dated: 2019-03-29
+    landing: "https://www.korg.com/us/support/download/product/0/809/"
+    url: "https://cdn.korg.com/us/support/download/files/68ae4f439b41bcb2cdc8350874a84cec.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27volca_drum_single_ch_MIDI_Chart_E1.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 06cb9f9a4d8c3d0bc274f283e0742030908a3b23285383cb0c6f9af9c1904138
+    retrieved: 2026-10-02
+    # Cited for the implementation this file does not describe. Nothing below comes from it; it
+    # is here because a reader who finds it on Korg's page needs to know which of the two they
+    # are holding, and because the source account above says what it changes.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: volca drum downloads
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/0/809/"
+    sha256: ffeb5d27ea2eb642b7865878680f4f91a0ae56854fdb0fec01f671592b074a7b
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for what Korg publishes for this instrument and does not: the owner's manual, the
+    # two charts, a Chinese RoHS declaration, and the System Updater. No other MIDI document.
+  release_notes:
+    kind: release_notes
+    title: volca drum System Updater
+    edition: "1.14"
+    dated: 2019-09-10
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/software/0/809/4244/"
+    sha256: f323a9eb3db78d66bebf070faa833892b13785d2877224b540c534c023007c87
+    retrieved: 2026-10-02
+    paginated: false
+    # The only version history Korg publishes for this instrument, and the reason `firmware` is
+    # not recorded above: 1.11 fixed MIDI CC assignments and 1.14 fixed single-channel MIDI
+    # handling of note events, both after the charts were written.
+
+midi:
+  # THE SIX PARTS ARE ON CHANNELS 1 TO 6 AND NOTHING SETS A BASE. The split-channel chart marks
+  # Basic Channel as X in the Received column, which is this chart saying there is no basic
+  # channel to set: its Mode row remarks "Channel 1-6 = Parts 1-6" instead. So the base is 1 and
+  # cannot be anything else, and the part below, six instances from an offset of 0, is what puts
+  # them on 1 to 6. Setting a channel at all is what switches the instrument to the other
+  # implementation.
+  # THE CHART CONTRADICTS ITSELF HERE AND BOTH READINGS ARE RECORDED. An X against Basic Channel
+  # says the instrument answers to no basic channel at all, and three cells of the same chart
+  # say otherwise: the recognised mode is 3, which is omni off, and the Mode and Velocity rows
+  # both spell out that channels 1 to 6 are parts 1 to 6. A device that is omni off and answers
+  # on six channels has a basic channel. The single-channel chart gives 1-16 and "Memorized" for
+  # the same row. This file follows the X - as "the player cannot change it" rather than "there
+  # is none" - because that is the reading the two remarks agree with.
+  channels: [1, 1]
+  # The chart's recognised Mode default, 3, which is omni off and poly. Mode messages are marked
+  # X in both columns.
+  mode: 3
+  # "System Real Time: Clock" is X transmitted and O received, with footnote *2. The instrument
+  # has no MIDI OUT, so nothing it does travels outward; SYNC OUT is a 3.5 mm pulse jack and not
+  # MIDI.
+  clock: receives
+  # "System Real Time: Commands" and "System Common: Song Position" are both X transmitted and
+  # O received, with footnote *2. Song Select and Tune Request are X in both columns.
+  transport: receives
+  program_change:
+    # O received, X transmitted, with "True Number" blank in both columns, so the chart says it
+    # answers to program change and does not say what range.
+    receives: true
+    sends: false
+    # NOT RECORDED: how many presets. See the source account.
+  # System Exclusive is X in both columns of both charts: a checked absence rather than silence.
+  sysex: false
+  # CHECKED AND ABSENT. The words NRPN, RPN, Registered and Parameter Number appear nowhere on
+  # either chart or on printed page 3 of the manual.
+  nrpn: none
+
+parts:
+  # SIX PARTS ON SIX CHANNELS, with nothing to set: "Channel 1-6 = Parts 1-6" (chart) and, from
+  # the player's side, "reverts to part 1-6 assigned to channels 1-6. (factory default)" (p. 3).
+  # They are one part with six instances rather than six parts, because the chart gives them one
+  # map between them and the channel is the only thing that tells them apart.
+  part:
+    label: Part
+    count: 6
+    channel_offset: 0
+    # A note reaches the part whose channel carried it and the note number means nothing: the
+    # chart recognises 0 to 127 and remarks "Each sound does not correspond to a note number".
+    # So this is a part that takes notes and has no note map, which is what `none` says here.
+    addressing: none
+    receives: [notes, controls]
+
+voice:
+  addressing: none
+  # "Note Number 0-127" recognised, transmitted nothing (chart).
+  note_range: [0, 127]
+  # NOT RECORDED: polyphony, for a part or for the instrument. The specification counts the
+  # parts - "6 digital parts (each with 2 osc. with pitch mod. and amp. e.g.), and a
+  # waveguide-based resonator effect" (p. 3) - and never says how many notes one part will hold.
+  velocity:
+    # "Note On O 9n, V=1-127" received, X transmitted; "Note Off X" in both columns (chart).
+    note_on: received
+    note_off: false
+  # A checked absence, from the chart's own rows: Key's aftertouch X in both columns, Channel
+  # aftertouch X in both columns.
+  aftertouch: none
+  # NOT RECORDED: pitch bend, because there is none. The chart marks Pitch Bend X in both
+  # columns, so there is no range to state and no `pitch_bend` block to state it in.
+
+groups:
+  # These three headings are the owner's manual's own, and they are the order it introduces
+  # them in. The chart heads nothing over its rows.
+  # "Sound Controls: These knobs and buttons control the sound of the currently selected drum
+  # part and waveguide resonator effect" (p. 3).
+  sound_controls: Sound Controls
+  # "When EDIT/STEP is lit, this encoder functions as the PARAM knob, cycling through the
+  # following additional part parameters: BIT: bit reduction amount, FLD: wave folder amount,
+  # DRV: overdrive gain, PAN: left-right pan, GAN: pre-mix gain adjustment, QPI: enable pitch
+  # quantization (semitone)" (p. 3). Five of those six have a controller number; QPI has none
+  # on either chart.
+  part_parameters: Part Parameters
+  # "WAVEGUIDE" heads the SEND, DECAY, BODY and TUNE knobs (p. 3).
+  waveguide: Waveguide
+
+controls:
+
+  # Every one of these is received and never sent, and every one is marked with footnote *1,
+  # which the source account gives in full. Generated from the chart by
+  # `Notes/4204_write_controls.py`, which reproduces this block.
+  #
+  # THE LAYER SUFFIX IS NOT A RANGE. The chart writes SELECT1, SELECT2, SELECT1-2 against 14,
+  # 15, 16: three controls, the third moving both of a part's layers at once.
+
+  # Sound Controls ────────────────────────────────────────────────────────
+  select_1:            {label: "Select, layer 1", cc: 14, direction: receives, part: part, group: sound_controls}
+  select_2:            {label: "Select, layer 2", cc: 15, direction: receives, part: part, group: sound_controls}
+  select_both:         {label: "Select, both layers", cc: 16, direction: receives, part: part, group: sound_controls}
+  level_1:             {label: "Level, layer 1", cc: 17, direction: receives, part: part, group: sound_controls}
+  level_2:             {label: "Level, layer 2", cc: 18, direction: receives, part: part, group: sound_controls}
+  level_both:          {label: "Level, both layers", cc: 19, direction: receives, part: part, group: sound_controls}
+  eg_attack_1:         {label: "EG Attack, layer 1", cc: 20, direction: receives, part: part, group: sound_controls}
+  eg_attack_2:         {label: "EG Attack, layer 2", cc: 21, direction: receives, part: part, group: sound_controls}
+  eg_attack_both:      {label: "EG Attack, both layers", cc: 22, direction: receives, part: part, group: sound_controls}
+  eg_release_1:        {label: "EG Release, layer 1", cc: 23, direction: receives, part: part, group: sound_controls}
+  eg_release_2:        {label: "EG Release, layer 2", cc: 24, direction: receives, part: part, group: sound_controls}
+  eg_release_both:     {label: "EG Release, both layers", cc: 25, direction: receives, part: part, group: sound_controls}
+  pitch_1:             {label: "Pitch, layer 1", cc: 26, direction: receives, part: part, group: sound_controls}
+  pitch_2:             {label: "Pitch, layer 2", cc: 27, direction: receives, part: part, group: sound_controls}
+  pitch_both:          {label: "Pitch, both layers", cc: 28, direction: receives, part: part, group: sound_controls}
+  mod_amount_1:        {label: "Mod Amount, layer 1", cc: 29, direction: receives, part: part, group: sound_controls}
+  mod_amount_2:        {label: "Mod Amount, layer 2", cc: 30, direction: receives, part: part, group: sound_controls}
+  mod_amount_both:     {label: "Mod Amount, both layers", cc: 31, direction: receives, part: part, group: sound_controls}
+  mod_rate_1:          {label: "Mod Rate, layer 1", cc: 46, direction: receives, part: part, group: sound_controls}
+  mod_rate_2:          {label: "Mod Rate, layer 2", cc: 47, direction: receives, part: part, group: sound_controls}
+  mod_rate_both:       {label: "Mod Rate, both layers", cc: 48, direction: receives, part: part, group: sound_controls}
+
+  # Part Parameters ───────────────────────────────────────────────────────
+  # THE CHART AND THE MANUAL NAME THESE DIFFERENTLY, and the labels follow the chart, because
+  # the chart is where the numbers are. The manual's own list of the same parameters reads
+  # "BIT: bit reduction amount, FLD: wave folder amount, DRV: overdrive gain, PAN: left-right
+  # pan, GAN: pre-mix gain adjustment" (p. 3), so a player looking for Dry Gain on the display
+  # will find GAN.
+  pan:                 {label: Pan, cc: 10, direction: receives, part: part, group: part_parameters}
+  bit_reduction:       {label: Bit Reduction, cc: 49, direction: receives, part: part, group: part_parameters}
+  wave_folder:         {label: Wave Folder, cc: 50, direction: receives, part: part, group: part_parameters}
+  drive:               {label: Drive, cc: 51, direction: receives, part: part, group: part_parameters}
+  dry_gain:            {label: Dry Gain, cc: 52, direction: receives, part: part, group: part_parameters}
+
+  # Waveguide ─────────────────────────────────────────────────────────────
+  # The first of these belongs to a part and the other four do not: "the waveguide resonator is
+  # shared for all parts" (p. 3), and "SEND knob: Set the waveguide resonator send amount for
+  # the selected part" (p. 3).
+  waveguide_send:      {label: Waveguide Send, cc: 103, direction: receives, part: part, group: waveguide}
+  waveguide_model:     {label: Waveguide Model, cc: 116, direction: receives, group: waveguide}
+  waveguide_decay:     {label: Waveguide Decay, cc: 117, direction: receives, group: waveguide}
+  waveguide_body:      {label: Waveguide Body, cc: 118, direction: receives, group: waveguide}
+  waveguide_tune:      {label: Waveguide Tune, cc: 119, direction: receives, group: waveguide}

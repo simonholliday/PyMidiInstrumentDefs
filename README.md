@@ -141,6 +141,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/microkorg` | Korg microKORG: 41 controller numbers that are the factory assignment and not fixed, each meaning one thing in a synth program and another in a vocoder one |
 | `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
+| `korg/volca_drum` | Korg volca drum: six parts on six channels, and the one of its maker's two charts that the instrument answers to out of the box |
 | `korg/wavestate` | Korg wavestate: 41 of its 50 controller numbers are defaults a player can reassign, and its maker publishes no control-change chart |
 | `modal/carbon8m` | Modal CARBON8M: 106 controls, and a voice count set per patch |
 | `moog/dfam` | Moog DFAM: no MIDI at all, and the file says so |

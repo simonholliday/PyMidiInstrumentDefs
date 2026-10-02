@@ -135,3 +135,60 @@ class TestFindingTheQuotationsInADefinition:
 		assert len(found) == 1
 		assert found[0][1] == [12]
 		assert "runs over two lines" in found[0][0]
+
+
+class TestAQuotationThatNamesItsSourceInsteadOfAPage:
+
+	"""A document with no pages has no page to cite, so a definition names it instead.
+
+	Nine quotations in the corpus were in that shape and the checker counted none of
+	them - not as failures, which would have been noticed, but as nothing at all, so
+	its summary read as though the file had been checked in full.
+	"""
+
+	BODY = (
+		"definition: 1\n"
+		"model: {name: X}\n"
+		"source: >-\n"
+		'  A page says "the engine has four voices" (product_page), and the manual\n'
+		'  says "something on a page" (p. 4).\n'
+		"controls:\n"
+		"  one:\n"
+		'    # "a note in a comment" (release_notes).\n'
+		"    cc: 70\n"
+	)
+
+	KEYS = ("product_page", "release_notes", "manual")
+
+	def test_a_quotation_naming_a_source_is_found (self) -> None:
+		"""Including one in a comment, and with the comment markers folded away."""
+		found = tool.named_quotations(self.BODY, self.KEYS)
+
+		assert found == [
+			("the engine has four voices", "product_page"),
+			("a note in a comment", "release_notes"),
+		]
+
+	def test_a_page_citation_is_left_to_the_paged_check (self) -> None:
+		"""The page is the more precise locator, so it is not also matched here."""
+		assert "something on a page" not in [q for q, _ in tool.named_quotations(self.BODY, self.KEYS)]
+
+	def test_a_parenthesis_that_is_not_a_source_key_is_not_a_locator (self) -> None:
+		"""Otherwise any aside after a quotation would be read as naming a document."""
+		body = 'source: >-\n  It says "a long enough phrase here" (our own words).\n'
+
+		assert tool.named_quotations(body, self.KEYS) == []
+
+		# And a key-shaped word this definition has no source for is not one either.
+		body = 'source: >-\n  It says "a long enough phrase here" (midi_impl).\n'
+
+		assert tool.named_quotations(body, self.KEYS) == []
+
+	def test_both_shapes_of_locator_are_found_in_one_file (self) -> None:
+		"""A definition citing an unpaginated source usually cites a paged one too."""
+		paged = [q for q, _ in tool.quotations(self.BODY)]
+		named = [q for q, _ in tool.named_quotations(self.BODY, self.KEYS)]
+
+		assert paged == ["something on a page"]
+		assert len(named) == 2
+		assert not set(paged) & set(named), "a quotation was counted by both checks"

@@ -80,6 +80,12 @@ READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt"})
 # half the manual.
 QUOTED = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\(p{1,2}\.\s*([\d,\s-]+)\)")
 
+# The other shape a locator takes, for a document with no pages to cite: the source's own
+# key, as in `"polyphony up to 24 voices" (product_page)`.  A key followed by a page, as in
+# `(chart, p. 1)`, is the paged form above and deliberately does not match here - the page
+# is the more precise locator and is the one worth checking.
+BY_SOURCE = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\(([a-z][a-z0-9_]*)\)")
+
 # A quotation is retyped with the keyboard's punctuation and the page prints the
 # typesetter's, so the two never match on the character.
 FOLDED: typing.Final[dict[str, str]] = {
@@ -240,26 +246,43 @@ def quotations (text: str) -> list[tuple[str, list[int]]]:
 		for quotation, cited in QUOTED.findall(flowed)]
 
 
+def named_quotations (text: str, keys: typing.Iterable[str]) -> list[tuple[str, str]]:
+
+	"""Every quoted passage whose locator is one of these source keys.
+
+	A document with no pages has no page to cite, so a definition quoting one names the
+	document instead.  Only the definition's own source keys count, so an ordinary
+	parenthesis after a quotation is not mistaken for a locator.
+	"""
+
+	flowed = re.sub(r"\n\s*#?\s*", " ", text)
+	known = set(keys)
+
+	return [(quotation, where) for quotation, where in BY_SOURCE.findall(flowed) if where in known]
+
+
 def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tuple[int, int, int]:
 
 	"""Check one definition, printing what it found.  Returns found, missing, unquoted."""
 
 	definition = pymidiinstrumentdefs.load_file(path)
 	held, absent = documents(definition, index)
-	found = quotations(path.read_text(encoding = "utf-8"))
+	body = path.read_text(encoding = "utf-8")
+	found = quotations(body)
+	named = named_quotations(body, (definition.sources or {}))
 
 	print(f"\n{name}")
 
 	for line in absent:
 		print(f"    {line}")
 
-	if not found:
-		print(f"    no quotation in it cites a page, so there is nothing to check")
+	if not found and not named:
+		print(f"    no quotation in it cites a page or a source, so there is nothing to check")
 		return 0, 0, 1
 
 	if not held:
-		print(f"    {len(found)} quotations cite a page and no document could be read")
-		return 0, 0, len(found)
+		print(f"    {len(found) + len(named)} quotations cite a source and none could be read")
+		return 0, 0, len(found) + len(named)
 
 	print(f"    {len(held)} document(s): " + ", ".join(
 		f"{d.name} [{len(d.pages)} sheets, offset {d.source.page_offset:+d}"
@@ -307,7 +330,8 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 
 		passed += 1
 
-	print(f"    {passed} of {len(found)} quotations are on the page they cite")
+	if found:
+		print(f"    {passed} of {len(found)} quotations are on the page they cite")
 
 	if partly:
 		print(f"    {len(partly)} more have every clause on the cited page, but its text layer "
@@ -324,7 +348,38 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 
 		print(f"          it is on: {', '.join(elsewhere) if elsewhere else 'no page of any document held'}")
 
-	return passed, len(missing), 0
+	# A quotation that names a source rather than a page is looked for in the whole of that
+	# document, which is what `paginated: false` means: there is no page to turn to.
+	by_name = {document.name: document for document in held}
+	elsewhere_missing: list[tuple[str, str]] = []
+	named_passed = 0
+
+	for quotation, key in named:
+		named_document = by_name.get(key)
+
+		if named_document is None:
+			elsewhere_missing.append((quotation, key))
+			continue
+
+		whole = squash("\n".join(named_document.pages))
+
+		# An empty document makes every quotation look absent, so it is this tool's fault
+		# before it is a finding.  `documents()` has already dropped a scan, so reaching
+		# here with nothing to search means something else is wrong.
+		assert whole, f"{key} read as empty, which is a bug in this tool and not a finding"
+
+		if all(part in whole for part in pieces(quotation)):
+			named_passed += 1
+		else:
+			elsewhere_missing.append((quotation, key))
+
+	if named:
+		print(f"    {named_passed} of {len(named)} quotations that name a source are in it")
+
+	for quotation, key in elsewhere_missing:
+		print(f"\n      NOT IN {key}: {quotation[:120]}")
+
+	return passed + named_passed, len(missing) + len(elsewhere_missing), 0
 
 
 def main (argv: list[str]) -> int:

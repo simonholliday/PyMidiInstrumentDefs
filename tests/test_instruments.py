@@ -145,6 +145,7 @@ class TestBundledCorpus:
 			"moog/grandmother",
 			"moog/labyrinth",
 			"moog/matriarch",
+			"moog/messenger",
 			"moog/minitaur",
 			"moog/mother_32",
 			"moog/sub_37",
@@ -2998,3 +2999,102 @@ class TestMultiPoly:
 		assert multi.sources["manual"].page_offset == 5
 		assert not multi.sources["property_exchange"].paginated
 		assert multi.model.firmware is None
+
+
+class TestMessenger:
+
+	"""The best-formed appendix here: two numbers and a value account for every row."""
+
+	def test_every_fourteen_bit_pair_is_the_standard_one (self) -> None:
+		"""Thirty of them here, and the fine half is always the coarse half plus 32.
+
+		Worth asserting rather than assuming: the Digitakt II's are not, and a consumer
+		applying the specification's rule to that instrument moves the wrong parameter.
+		"""
+		messenger = pymidiinstrumentdefs.load("moog/messenger", [CORPUS])
+
+		paired = [control for control in messenger.controls.values() if control.lsb is not None]
+
+		# The appendix has 31 and this file has 30: Data Entry on CC 6 with LSB 38 is the
+		# specification's own pair and is excluded.
+		assert len(paired) == 30
+		assert all(control.lsb == control.cc + 32 for control in paired
+			if control.cc is not None and control.lsb is not None)
+
+		# And all of them run over the whole 14-bit range.
+		assert all(control.range == (0, 16383) for control in paired)
+
+		assert len(messenger.controls) == 56
+
+	def test_no_number_is_used_twice_in_either_column (self) -> None:
+		"""Eighty-six numbers across two columns, every one its own."""
+		messenger = pymidiinstrumentdefs.load("moog/messenger", [CORPUS])
+
+		every = [control.cc for control in messenger.controls.values()] + \
+			[control.lsb for control in messenger.controls.values() if control.lsb is not None]
+
+		assert len(every) == 86
+		assert len(set(every)) == 86
+
+	def test_the_bands_the_maker_names (self) -> None:
+		"""Twenty-one stepped controls, and one more that gives exact values rather than bands."""
+		messenger = pymidiinstrumentdefs.load("moog/messenger", [CORPUS])
+
+		stepped = [control for control in messenger.controls.values() if control.values]
+		exact = [control for control in messenger.controls.values() if control.choices]
+
+		assert len(stepped) == 21
+		assert len(exact) == 1
+
+		# A band is recorded by its lowest value, which is how the manual prints it.
+		assert messenger.controls["filter_mode"].values == {
+			"four_p_lp": 0, "two_p_lp": 32, "bp": 64, "hp": 96}
+		assert messenger.controls["lfo_1_destination"].choices == {
+			"cutoff": 0, "osc_2_freq": 32, "osc_wave": 64, "sub_wave": 96}
+
+		# Five octave bands, and the signs are what keep them five.
+		assert messenger.controls["kb_octave"].values == {
+			"minus_2_octaves": 0, "minus_1_octave": 26, "zero_octave": 51,
+			"plus_1_octave": 76, "plus_2_octaves": 101}
+
+	def test_it_answers_to_rpn_and_not_to_nrpn (self) -> None:
+		"""A checked absence, and rare enough in this corpus to be worth a test."""
+		messenger = pymidiinstrumentdefs.load("moog/messenger", [CORPUS])
+
+		assert messenger.midi.nrpn == "none"
+		assert messenger.midi.sysex is True
+		assert messenger.midi.clock == "both"
+		assert messenger.midi.transport == "both"
+
+		assert messenger.midi.program_change is not None
+		assert messenger.midi.program_change.presets == 256
+
+	def test_a_monophonic_synthesizer_that_states_its_aftertouch (self) -> None:
+		"""One direction each, which three instruments in a row could not manage."""
+		messenger = pymidiinstrumentdefs.load("moog/messenger", [CORPUS])
+
+		assert messenger.voice.polyphony == 1
+		assert messenger.voice.aftertouch == "channel"
+
+		assert messenger.voice.velocity is not None
+		assert messenger.voice.velocity.note_on == "received"
+		assert messenger.voice.velocity.note_off is False
+
+		# The bend range is stated in the panel chapter and settable four ways.
+		assert messenger.voice.pitch_bend is not None
+		assert messenger.voice.pitch_bend.semitones == 7
+		assert messenger.voice.pitch_bend.programmable is True
+
+	def test_the_two_pedals_and_the_two_that_are_semitones (self) -> None:
+		"""The only controls here carrying a unit, and the only two pedal inputs."""
+		messenger = pymidiinstrumentdefs.load("moog/messenger", [CORPUS])
+
+		assert messenger.controls["pitch_bend_up_amount"].cc == 107
+		assert messenger.controls["pitch_bend_down_amount"].cc == 108
+		assert messenger.controls["pitch_bend_up_amount"].range == (0, 24)
+		assert messenger.controls["pitch_bend_up_amount"].unit == "semitones"
+
+		pedals = sorted(name for name, control in messenger.controls.items()
+			if control.group == "pedals")
+
+		assert pedals == ["expression_pedal", "hold", "sustain_pedal"]

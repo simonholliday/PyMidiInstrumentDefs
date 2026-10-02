@@ -150,6 +150,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/grandmother` | Moog Grandmother: one voice, five controls in 14-bit pairs, and a value table of 24 clock divisions |
 | `moog/labyrinth` | Moog Labyrinth: answers to notes, clock and transport, and nothing else |
 | `moog/matriarch` | Moog Matriarch: 37 controls, one of which only its firmware notes mention, and a voice count you can switch over MIDI |
+| `moog/messenger` | Moog Messenger: 56 controls, 31 of them 14-bit pairs the specification's own way round, with every band named |
 | `moog/minitaur` | Moog Minitaur: plays notes 0-72, with the firmware v2.1 corrections |
 | `moog/mother_32` | Moog Mother-32: seven controllers, four of which reach no sound at all but a voltage at a jack the player patches |
 | `moog/sub_37` | Moog Sub 37: 114 controls, every one of them the same as the Subsequent 37's, established by reading both charts rather than assumed |

@@ -1,0 +1,280 @@
+# THE BEST-FORMED APPENDIX IN THIS CORPUS, and the first here to give a value account for every
+# row. Moog publishes no MIDI implementation document of its own, so APPENDIX A: MIDI is the
+# whole published map - and it answers what most charts leave out: what each controller's numbers
+# mean, which rows are bipolar and where their zero is, and what every band is called.
+#
+# EVERY PAIR IS THE SPECIFICATION'S OWN. Thirty-one parameters are 14-bit, and in all thirty-one
+# the fine half is the coarse half plus 32, which is what the standard says and what the Digitakt
+# II's appendix does not do. A consumer may apply the rule here without checking it; the
+# extraction asserts it rather than assuming it.
+#
+# AND 14-BIT CAN BE SWITCHED OFF, which no page of the manual says. Firmware 1.0.8's release
+# notes add "MIDI 14-bit Enable (CONFIG Menu Page 3, Item 5)", and "Disabling 14-bit MIDI will
+# only send a traditional 7-bit MIDI message on the CC corresponding to the MSB for each control
+# (Mod Wheel will only send on CC1 and will not send any information on CC33)". So every `lsb`
+# below is what the instrument does as it leaves the factory and not what it always does.
+
+definition: 1
+
+model:
+  manufacturer: Moog Music
+  name: Messenger
+  # NOT RECORDED, and here is what can be shown instead of a version. The manual names none
+  # anywhere. Its control table already carries the two numbers firmware 1.0.7 moved - the 1.0.8
+  # release notes record "Add Expression MIDI CC. Expression Input now sends/receives on CC11.
+  # SUB WAVE now sends/receives on CC71", and this table gives Expression Pedal 11 with LSB 43
+  # and Sub OSC Waveshape 71 - so it describes 1.0.7 or later.
+  # 1.0.8 CHANGED NO NUMBER: it added the switch for turning 14-bit CCs off. AND 1.1.0 HAS NO
+  # PUBLISHED NOTES AT ALL - Moog's downloads list offers its updater for Windows and Mac and no
+  # guide - so whether anything moved after 1.0.8 is not established.
+  # IT ALSO DESCRIBES THE INSTRUMENT BEFORE 1.0.8, which can be shown from the manual itself: it
+  # states 14-bit as a fact about the instrument, "Messenger utilizes 14-bit MIDI" (p. 35), and
+  # nowhere mentions the switch that release added. So the manual is 1.0.7's. Checked 2026-10-02.
+
+source: >-
+  User Manual, 38 pages, dated 18 June 2025 and naming no edition: APPENDIX A: MIDI on
+  pp. 34-37, the keyboard and the wheels on pp. 6-7, the rear panel on p. 14, LFO 1 on p. 21,
+  the MIDI channel on p. 29, the CONFIG settings on pp. 30-31, and the firmware and
+  specification pages on p. 32. Firmware 1.0.8's release notes, 4 pages, for the 14-bit switch
+  and for what 1.0.7 moved.
+  FIFTY-SEVEN ROWS AND FIFTY-SIX CONTROLS. The one that is not here is Data Entry on CC 6 with
+  LSB 38, which is the MIDI specification's own pair rather than a parameter of this instrument;
+  the guide beside this corpus says so in as many words.
+  THIRTY-ONE OF THEM ARE 14-BIT, and the fine half is always the coarse half plus 32, which is
+  the specification's own pairing. The manual states the arrangement rather than leaving it to be
+  inferred: "Messenger utilizes 14-bit MIDI which uses two different CCs to increase resolution
+  from 127 to 16383, providing for much finer control over each parameter. For example, Mod Wheel
+  sends information on both CC1 and CC33 - the former containing the MSB information and latter
+  LSB. Parameters from Sustain Pedal (CC64) on do not require fine resolution and as such are
+  traditional 7-bit MIDI messages sending a value from 0-127 over a single CC" (p. 35).
+  THE VALUES COLUMN IS WHY THIS FILE CARRIES BANDS AT ALL. Twenty-one controls are stepped and
+  the manual names every band - "0-31 = TRIANGLE; 32-63 = SAW; 64-95 = RAMP; 96-127 = SQUARE" -
+  and one is a list of exact values rather than bands, which is why LFO1 Destination carries
+  `choices` where the rest carry `values`. Five more are bipolar over the 14-bit range with 8192
+  as zero, which the format has no field for and which is noted beside each of them.
+  TWO OF THE MAKER'S BAND LISTS DO NOT COVER THEIR RANGE, and both are left as printed. OSC Mod
+  Destination gives "32-64" and then "64-95", so 64 is in two bands at once; Filter KB Tracking
+  gives "0-42 = 0; 43-84 = 2/3; 85-126 = 1:1", which stops at 126 and says nothing about 127.
+  Bands are recorded by their lowest value, so neither changes what this file sends, and neither
+  is guessed at.
+  THE MESSENGER ANSWERS TO RPN AND NOT TO NRPN, which is rare enough to be worth saying plainly.
+  "NRPNs No No" in both directions. RPN 00 Pitch Bend Sensitivity, 01 Channel Fine Tune, 02
+  Channel Coarse Tune and 03 Tuning Program Select are each marked received and not transmitted,
+  and 04 Tuning Bank Select and 05 Modulation Depth Range are marked neither. A seventh is named
+  nowhere in that list and appears in the control table instead: CC 74 is "MPE 3rd Dimension of
+  Control", "On/Off via MPE Activation message RPN 6".
+  THAT IS THE WHOLE OF WHAT THE MANUAL SAYS ABOUT MPE. One row of one table, on a synthesizer its
+  own specification calls monophonic. Nothing says whether the instrument allocates a channel per
+  voice, so `midi.per_voice_channels` is left unrecorded rather than claimed from a single
+  mention.
+  THE BEND RANGE IS SEVEN SEMITONES AND SETTABLE FOUR WAYS. "Default pitch bend range is +/- 7
+  semitones (can be changed in CONFIG menu)" (p. 7), and the ways to change it are RPN 00, CC 107
+  and CC 108 below for up and down separately, and CONFIG items 1.1 and 1.2.
+  THOSE TWO CONFIG LISTS DISAGREE WITH EACH OTHER AND ONE OF THEM WITH ITSELF, which is recorded
+  rather than resolved because nothing below rests on it. The up list offers +14, +17, +19 and
+  +24 semitones and names each correctly; the down list offers -17, -19, -22 and -24, and labels
+  -17 "5th below octave" and -19 "4th below octave", which is the pair the other way round.
+  THREE PLACES IN THE MANUAL DISAGREE WITH THE APPENDIX, and the appendix is followed in all
+  three because the panel agrees with it. The body says the oscillator octave offers "16', 8', 4'
+  and 2'" (p. 14) where the panel illustration on that page and on p. 6, and CC 75 and CC 76
+  below, give 4', 8', 16' and 32'. The appendix names CC 85's third destination "OSC WAVE" where
+  the panel legend and the body say the waveshape of oscillator 1 - "either the filter CUTOFF,
+  the FREQuency of OSC 2, the WAVEshape of OSC 1" (p. 21) - which matters because CC 72's bands
+  three rows above say "OSC 2 WAVE". And the chart gives transmitted note numbers as 0 to 127 on
+  an instrument with 32 keys and two octaves of transposition either way, which is the protocol's
+  range rather than the keyboard's.
+  BANK SELECT IS CLAIMED AND NEVER MAPPED. "Bank Select Response Yes Yes" (p. 34) and 256 patches
+  in sixteen banks (p. 32), and neither CC 0 nor CC 32 appears anywhere in the control table. So
+  how to reach the second half of the presets is not published.
+  AND ALL FOUR MODES ARE MARKED SUPPORTED ON A MONOPHONIC SYNTHESIZER. Mode 1 and Mode 3 are
+  Omni-On Poly and Omni-Off Poly, both Yes in both directions (p. 34), against "POLYPHONY
+  Monophonic" (p. 32). That is what the maker printed; `midi.mode` is left unset because the
+  chart states no default and because what Poly could mean here is not said.
+
+sources:
+  manual:
+    kind: manual
+    title: Messenger User Manual
+    dated: 2025-06-18
+    landing: "https://www.moogmusic.com/downloads/"
+    url: "https://cdn.inmusicbrands.com/Moog/Messenger/Messenger_Manual_20250618.pdf"
+    sha256: fea7f422bccda3f3fb34de66ce1c18a2738ac15c0cd261bc42ca29f370b921cf
+    retrieved: 2026-10-02
+    # 38 pages, printed page = file page. The PDF carries no title and no edition; the name and
+    # the date are Moog's own downloads list and the file name, which agree with the PDF's
+    # creation date. `file` reports it as 0 pages, which is a fourth way for that tool to be
+    # wrong about a page count in this corpus.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: Messenger Firmware 1.0.8 Release Notes
+    edition: "1.0.8"
+    dated: 2025-07-29
+    landing: "https://www.moogmusic.com/downloads/"
+    url: "https://cdn.inmusicbrands.com/Moog/Messenger/Messenger-1.0.8.pdf"
+    sha256: b129ccf9610106fa9ba0b507fd077692f89294065b70aee4215a7d08229f95fa
+    retrieved: 2026-10-02
+    # Four pages, and the only version history Moog publishes for this instrument. Its own first
+    # page is headed "LABYRINTH" above "MESSENGER", which is the maker's doing and is left as
+    # found. Cited for the 14-bit switch and for the two numbers 1.0.7 moved.
+    page_offset: 0
+
+midi:
+  # "MIDI Channels 1-16" in both directions (p. 34). It is set from the front panel and not from
+  # the CONFIG menu, and the input and the output channel need not be the same: "MIDI CHANNEL -
+  # Selects MIDI input and output channels ... To select independent input/output channels, first
+  # select a MIDI input channel with PGM buttons 1-16, and then press and hold a different PGM
+  # button for 2 seconds to select that channel as MIDI output" (p. 29). This field holds one
+  # range, which is the range each of the two may take.
+  channels: [1, 16]
+  # "MIDI Clock Yes Yes" (p. 35), and 1.0.7 "MIDI Clock Output fully implemented" with a setting
+  # to turn transmission off (3.3 MIDI Clock Settings, p. 31).
+  clock: both
+  # Song Position Pointer, Start and Stop are each marked both ways; Continue is received and not
+  # sent; Song Select is neither (p. 35). So transport travels in both directions with one
+  # message missing from one of them.
+  transport: both
+  program_change:
+    # "Program Change 1-128" both ways (p. 34), with "3.2 Program Change ... Send On (lit) Off
+    # (unlit) ... Receive On (lit) Off (unlit)" (p. 31).
+    receives: true
+    sends: true
+    # "PRESETS 256 patches - 16 banks, 16 patches per bank" (p. 32). Program change alone reaches
+    # 128 of them and "Bank Select Response Yes Yes" (p. 34) reaches the rest; the manual never
+    # says which bank select number selects which of its sixteen banks.
+    presets: 256
+  # "Manufacturer or Non-Commercial System Exclusive Yes Yes", footnoted "*No documentation for
+  # manufacturer sysex at this time (factory calibration, etc.)" (p. 34). Patches travel that way:
+  # "Patches can be exported from Messenger via SysEx" (p. 32).
+  sysex: true
+  # A CHECKED ABSENCE AND NOT A SILENCE: "NRPNs No No" (p. 34), where the same table marks four
+  # RPNs as received. See the source account.
+  nrpn: none
+
+voice:
+  addressing: pitches
+  # "Note Numbers 0-127" in both directions (p. 34), on a keyboard of 32 keys with an octave
+  # control that moves it two octaves either way.
+  note_range: [0, 127]
+  # "TYPE: Monophonic Analog Synthesizer" and "POLYPHONY Monophonic" (p. 32).
+  polyphony: 1
+  velocity:
+    # "Note-On Velocity Yes Yes" against "Note-Off Velocity No No" (p. 34), so release velocity
+    # neither arrives nor leaves. "TYPE OF KEYS Semi-Weighted with Velocity and Aftertouch"
+    # (p. 32), and two controls below switch what velocity reaches - F ENV VELocity and A ENV
+    # VELocity.
+    note_on: received
+    note_off: false
+  # "Channel Aftertouch Yes Yes" against "Poly (Key) Aftertouch No No" (p. 34). Stated, in one
+  # direction each, which three instruments in this corpus could not manage between them.
+  aftertouch: channel
+  pitch_bend:
+    # "Default pitch bend range is +/- 7 semitones (can be changed in CONFIG menu)" (p. 7).
+    semitones: 7
+    # Four ways to change it: "RPN 00 (Pitch Bend Sensitivity)" received (p. 34), CC 107 and
+    # CC 108 below for up and down separately, and CONFIG items 1.1 and 1.2 (p. 30).
+    programmable: true
+
+groups:
+  # The section names are the maker's own, from the manual's contents page, which lists the front
+  # panel as OSCILLATORS, MIXER, FILTER, ENVELOPES, OUTPUT, LFO 1 and SEQ/ARP, and the left-hand
+  # section as KEYBOARD AND LEFT-HAND CONTROLLER. **Which parameter belongs to which is this
+  # file's**, because the appendix heads nothing over its rows. Three groups are not panel
+  # sections: LFO 2 has no section of its own in the contents, the pedals are rear-panel inputs,
+  # and the last holds the one row that is about MIDI rather than about the sound.
+  keyboard: Keyboard and Left-hand Controller
+  oscillators: Oscillators
+  mixer: Mixer
+  filter: Filter
+  envelopes: Envelopes
+  output: Output
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  seq_arp: Seq/Arp
+  pedals: Pedals
+  midi: MIDI
+
+controls:
+
+  # Generated from the appendix by `Notes/4215_write_controls.py`, which reproduces this block.
+  # A `range` of 0 to 16383 is a 14-bit pair; `lsb` is its fine half, and switching 14-bit MIDI
+  # off in CONFIG leaves the coarse half working alone.
+
+  # Keyboard ──────────────────────────────────────────────────────────────
+  mod_wheel:                  {label: Mod Wheel, cc: 1, lsb: 33, range: [0, 16383], group: keyboard}
+  glide_rate:                 {label: Glide Rate, cc: 5, lsb: 37, range: [0, 16383], group: keyboard}
+  kb_octave:                  {label: KB Octave Up & Down, cc: 89, values: {"minus_2_octaves": 0, "minus_1_octave": 26, "zero_octave": 51, "plus_1_octave": 76, "plus_2_octaves": 101}, group: keyboard}
+  pitch_bend_up_amount:       {label: Pitch Bend Up Amount, cc: 107, range: [0, 24], unit: semitones, group: keyboard}
+  pitch_bend_down_amount:     {label: Pitch Bend Down Amount, cc: 108, range: [0, 24], unit: semitones, group: keyboard}
+
+  # Oscillators ───────────────────────────────────────────────────────────
+  osc_1_waveshape:            {label: OSC 1 Waveshape, cc: 9, lsb: 41, range: [0, 16383], group: oscillators}
+  osc_tune:                   {label: OSC Tune, cc: 10, lsb: 42, range: [0, 16383], group: oscillators}   # bipolar; 8192 is zero
+  osc_2_freq:                 {label: OSC 2 Freq, cc: 12, lsb: 44, range: [0, 16383], group: oscillators}   # bipolar; 8192 is zero
+  osc_mod_amount:             {label: OSC Mod Amount, cc: 13, lsb: 45, range: [0, 16383], group: oscillators}   # bipolar; 8192 is zero
+  osc_2_waveshape:            {label: OSC 2 Waveshape, cc: 14, lsb: 46, range: [0, 16383], group: oscillators}
+  sub_osc_waveshape:          {label: Sub OSC Waveshape, cc: 71, group: oscillators}
+  osc_mod_destination:        {label: OSC Mod Destination, cc: 72, values: {"one_to_two_fm": 0, "f_env_to_osc_2_freq": 32, "f_env_to_osc_2_wave": 64, "f_env_to_sub_wave": 96}, group: oscillators}
+  osc_1_octave:               {label: OSC 1 Octave, cc: 75, values: {"four_foot": 0, "eight_foot": 32, "sixteen_foot": 64, "thirty_two_foot": 96}, group: oscillators}
+  osc_2_octave:               {label: OSC 2 Octave, cc: 76, values: {"four_foot": 0, "eight_foot": 32, "sixteen_foot": 64, "thirty_two_foot": 96}, group: oscillators}
+  sync_2_1:                   {label: SYNC 2-1, cc: 77, values: {"off": 0, "on": 64}, group: oscillators}
+
+  # Mixer ─────────────────────────────────────────────────────────────────
+  noise_level:                {label: Noise Level, cc: 8, lsb: 40, range: [0, 16383], group: mixer}
+  osc_1_level:                {label: OSC 1 Level, cc: 15, lsb: 47, range: [0, 16383], group: mixer}
+  osc_2_level:                {label: OSC 2 Level, cc: 16, lsb: 48, range: [0, 16383], group: mixer}
+  sub_osc_level:              {label: Sub OSC Level, cc: 17, lsb: 49, range: [0, 16383], group: mixer}
+  feedback_external_level:    {label: FB/Ext In Level, cc: 18, lsb: 50, range: [0, 16383], group: mixer}
+
+  # Filter ────────────────────────────────────────────────────────────────
+  filter_cutoff:              {label: Filter Cutoff, cc: 19, lsb: 51, range: [0, 16383], group: filter}
+  osc_2_cutoff_amount:        {label: OSC 2 - Cutoff Amount, cc: 20, lsb: 52, range: [0, 16383], group: filter}
+  filter_resonance:           {label: Filter Resonance, cc: 21, lsb: 53, range: [0, 16383], group: filter}
+  filter_kb_tracking:         {label: Filter KB Tracking, cc: 78, values: {"zero": 0, "two_three": 43, "one_one": 85}, group: filter}
+  filter_res_bass:            {label: Filter Res Bass, cc: 79, values: {"off": 0, "on": 64}, group: filter}
+  filter_mode:                {label: Filter Mode, cc: 109, values: {"four_p_lp": 0, "two_p_lp": 32, "bp": 64, "hp": 96}, group: filter}
+
+  # Envelopes ─────────────────────────────────────────────────────────────
+  filter_eg_amount:           {label: Filter EG Amount, cc: 22, lsb: 54, range: [0, 16383], group: envelopes}   # bipolar; 8192 is zero
+  filter_eg_attack:           {label: Filter EG Attack, cc: 23, lsb: 55, range: [0, 16383], group: envelopes}
+  filter_eg_decay:            {label: Filter EG Decay, cc: 24, lsb: 56, range: [0, 16383], group: envelopes}
+  filter_eg_sustain:          {label: Filter EG Sustain, cc: 25, lsb: 57, range: [0, 16383], group: envelopes}
+  filter_eg_release:          {label: Filter EG Release, cc: 26, lsb: 58, range: [0, 16383], group: envelopes}
+  amp_eg_attack:              {label: Amp EG Attack, cc: 28, lsb: 60, range: [0, 16383], group: envelopes}
+  amp_eg_decay:               {label: Amp EG Decay, cc: 29, lsb: 61, range: [0, 16383], group: envelopes}
+  amp_eg_sustain:             {label: Amp EG Sustain, cc: 30, lsb: 62, range: [0, 16383], group: envelopes}
+  amp_eg_release:             {label: Amp EG Release, cc: 31, lsb: 63, range: [0, 16383], group: envelopes}
+  f_env_velocity:             {label: F ENV VELocity, cc: 80, values: {"off": 0, "on": 64}, group: envelopes}
+  a_env_velocity:             {label: A ENV VELocity, cc: 81, values: {"off": 0, "on": 64}, group: envelopes}
+  f_env_loop:                 {label: F ENV LOOP, cc: 112, values: {"off": 0, "on": 64}, group: envelopes}
+  a_env_loop:                 {label: A ENV LOOP, cc: 113, values: {"off": 0, "on": 64}, group: envelopes}
+  multitrig:                  {label: Multitrig, cc: 114, values: {"single_trig": 0, "multitrig": 64}, group: envelopes}
+
+  # Output ────────────────────────────────────────────────────────────────
+  master_volume:              {label: Master Volume, cc: 7, lsb: 39, range: [0, 16383], group: output}
+
+  # Lfo 1 ─────────────────────────────────────────────────────────────────
+  lfo_1_rate:                 {label: LFO 1 Rate, cc: 3, lsb: 35, range: [0, 16383], group: lfo_1}
+  lfo_1_depth:                {label: LFO 1 Depth, cc: 4, lsb: 36, range: [0, 16383], group: lfo_1}   # bipolar; 8192 is zero
+  lfo_1_waveshape:            {label: LFO 1 Waveshape, cc: 83, values: {"triangle": 0, "saw": 32, "ramp": 64, "square": 96}, group: lfo_1}
+  lfo_1_destination:          {label: LFO1 Destination, cc: 85, choices: {"cutoff": 0, "osc_2_freq": 32, "osc_wave": 64, "sub_wave": 96}, group: lfo_1}
+  lfo_kb_reset:               {label: LFO KB Reset, cc: 93, values: {"off": 0, "on": 64}, group: lfo_1}
+  lfo_sync:                   {label: LFO SYNC, cc: 102, values: {"off": 0, "on": 64}, group: lfo_1}
+
+  # Lfo 2 ─────────────────────────────────────────────────────────────────
+  lfo_2_rate:                 {label: LFO 2 Rate, cc: 27, lsb: 59, range: [0, 16383], group: lfo_2}
+  lfo_2_pitch:                {label: LFO 2 - Pitch, cc: 116, values: {"off": 0, "on": 64}, group: lfo_2}
+  lfo_2_cutoff:               {label: LFO 2 - Cutoff, cc: 117, values: {"off": 0, "on": 64}, group: lfo_2}
+  lfo_2_amp:                  {label: LFO 2 - Amp, cc: 118, values: {"off": 0, "on": 64}, group: lfo_2}
+
+  # Seq Arp ───────────────────────────────────────────────────────────────
+  tempo:                      {label: Tempo, cc: 2, lsb: 34, range: [0, 16383], group: seq_arp}
+
+  # Pedals ────────────────────────────────────────────────────────────────
+  expression_pedal:           {label: Expression Pedal, cc: 11, lsb: 43, range: [0, 16383], group: pedals}
+  sustain_pedal:              {label: Sustain Pedal, cc: 64, values: {"off": 0, "on": 64}, group: pedals}
+  hold:                       {label: Hold, cc: 73, values: {"off": 0, "on": 64}, group: pedals}
+
+  # Midi ──────────────────────────────────────────────────────────────────
+  mpe_third_dimension:        {label: MPE 3rd Dimension of Control, cc: 74, group: midi}
+

@@ -1,0 +1,565 @@
+# OBERHEIM'S OWN IMPLEMENTATION DOCUMENT SAYS THIS CONTROL MAP BELONGS TO ANOTHER SYNTHESIZER.
+# "The following table details how MIDI Continuous Controllers (CCs) are mapped to Pro 3
+# controls" (p. 5). The Pro 3 is a Sequential instrument. The names in the table under that
+# sentence are the TEO-5's, so what is wrong is the sentence - but it is the maker calling its
+# own control map another product's, and nothing in these sixteen pages corrects it.
+#
+# THE USER'S GUIDE HAS THE SAME FAULT MORE VISIBLY. Nineteen of its pages carry the Sequential
+# Take 5's running headers: ten read "Take 5 User's Guide" and nine read "Sequential", and one
+# of those nine sits above a section headed "Using Low Split (TEO-5 Keyboard only)". Oberheim
+# and Sequential are sister brands and these documents were built from that instrument's.
+#
+# SO THE TAKE 5 IS WORTH READING BESIDE THIS, and `sequential/take_5` is in this corpus. The two
+# number their global parameters identically from 4096, which is how the same document family
+# shows through - and where the two disagree, this file says so rather than choosing.
+#
+# WHAT IS GOOD HERE IS THAT THE DOCUMENT IS COMPLETE. It prints every control change from 0 to
+# 127 with none missing, a program NRPN for most of them and for sixty more besides, all
+# twenty-seven globals **with their named states spelled out**, and the system exclusive
+# messages. That is more than most makers in this corpus publish, and it is why this definition
+# is the largest one here.
+
+definition: 1
+
+model:
+  manufacturer: Oberheim
+  name: TEO-5
+  # NOT RECORDED, and not for want of looking: **neither document names an OS version
+  # anywhere**. The user's guide is "Version 2.0, June, 2025" and that is the document's own
+  # version, not the instrument's; the implementation document carries no version and no date in
+  # its pages at all, only `_v2` in its file name.
+  # WHAT OBERHEIM'S PAGE SAYS, for anyone who needs to know how current this is: "Latest TEO-5
+  # OS - v1.1.0.4", uploaded the same month as these documents, and "TEO-5 Poly Chain OS BETA -
+  # v1.2.0.15", uploaded four months later and still offered as a beta when this was fetched
+  # eleven months after that. Poly chaining is a feature these tables cannot describe.
+  # ONE DEFINITION COVERS TWO PRODUCTS, the keyboard and the module, which share the page and
+  # both documents. The guide names the two differences and neither touches MIDI: Low Split is
+  # "TEO-5 Keyboard only" (guide p. 17) and the module has a selector the keyboard does not,
+  # "LFO (Module only): 1, 2 - Found on the module version of the TEO-5" (guide p. 42).
+
+source: >-
+  MIDI Implementation Document v2, 16 pages: the global settings that govern MIDI response on
+  pp. 1-2, received and transmitted messages on pp. 3-4, the control change table on pp. 5-6,
+  how an NRPN travels on p. 7, the program parameter NRPNs on pp. 8-10, the global parameter
+  NRPNs on p. 11, the one control NRPN and the system exclusive messages on pp. 12-15. The
+  User's Guide Version 2.0 (116 pages) states what the instrument is and names the states some
+  parameters step through; its pages are cited as file pages, because its front matter is
+  unnumbered.
+  NRPN IS THE MAKER'S PREFERRED WAY IN, AND WHICH ONE IT USES IS A SETTING. "MIDI Param Send:
+  Off, CC, NRPN" and "MIDI Param Receive: Off, CC, NRPN - Sets the method by which parameter
+  changes are received via MIDI. As with transmission, NRPNs are the preferred method"
+  (pp. 1-2). So a control below with both numbers is one parameter reachable either way, and
+  which way depends on how the instrument is set.
+  SIXTEEN PARAMETERS GET A DIFFERENT RANGE IN EACH TABLE, and `nrpn_range` carries the NRPN's.
+  Thirteen of those are NRPN being finer, which is the maker's own reason for preferring it -
+  the two filter figures at 0-1024 and 0-512, and ten envelope and LFO figures at 0-256, where
+  the control change gives 0-127. **Three are not finer and are worth knowing about before
+  trusting either number**: Noise Type is a switch at 0-1 by control change and a value at 0-127
+  by NRPN; Scale is 0-65 by control change and 0-64 by NRPN, so the NRPN is the *narrower* of
+  the two; and BPM is 15-127 by control change against 30-250 by NRPN, which do not even
+  overlap at the top, so the control change cannot reach the tempos the NRPN can.
+  AND READ EVERY ONE OF THOSE WIDE RANGES AS A COUNT RATHER THAN A TOP, which is the one thing
+  that makes them make sense. 0-256, 0-512 and 0-1024 all name one value more than the bit width
+  they imply, while the forty-eight modulation amounts in the same table are 0-255, which is
+  right. So the maker appears to have written the number of values where the highest value
+  belongs, in some rows and not others. Both readings found this and neither corrected it: the
+  figures below are the document's.
+  ONE RANGE IS THEN ALMOST CERTAINLY A TYPO, recorded as printed for the same reason. Filter Res
+  is given 0-265 (p. 9) where every other wide parameter is 256, 512 or 1024. 265 falls out of
+  no bit width and is one digit away from 255.
+  THE TWO TABLES ARE NOT SYMMETRICAL, and three absences are the maker's rather than this
+  file's: there is a control change for Osc 2 Detune and none for Osc 1 Detune, though the NRPN
+  table has both; there is an NRPN for Env 1 Dest and none for Env 2; and the whole modulation
+  matrix - sixteen slots of source, amount and destination, forty-eight parameters - is
+  reachable by NRPN only.
+  EXPRESSION IS CLAIMED AT TWO DIFFERENT NUMBERS IN THIS ONE DOCUMENT, which is the sharpest
+  thing here for anybody building a controller. The control change table gives "11 Expression
+  0-127" (p. 5) and the global table agrees, naming the pedal assignment "2 = Exp CC11"
+  (p. 11) - but the transmitted controller table sends Expression on 0000 1101, which is **13**
+  (p. 4). `expression` below is CC 11, because two of the three statements say so and because 11
+  is where the MIDI specification puts expression. **A host that listens on 11 alone may still
+  miss what this instrument sends.**
+  AND THE PERFORMANCE CONTROLLERS DO NOT GO BOTH WAYS. Breath Controller and Expression are in
+  the transmitted table and not the received one; All Notes Off and Reset All Controllers are in
+  the received table and not the transmitted one (pp. 3-4). `direction` is not set on any control
+  below, because the control change table on pp. 5-6 - which is where the numbers come from -
+  says nothing about direction at all, and the two message tables are about a different and
+  shorter list. Volume appears **twice** in the transmitted table, once as the pedal assignment
+  and once as "Volume knob", both on CC 7.
+  THE DOCUMENT CANNOT AGREE WITH ITSELF ABOUT BANKS AND PROGRAMS, in five places. Received
+  program change is "0-127 for Programs 1-127 within current Bank" and transmitted is "0-127 for
+  Programs 00-128 within current Bank" (pp. 3-4) - one is 127 programs for 128 numbers and the
+  other is 129. Received bank select is "1 - 4 select user banks 1 - 4; 5 - 8 select factory
+  banks 1 - 4; 9 - 12 select add-on banks 1 - 4 others ignored" and transmitted bank select is
+  "0 - 9" (pp. 3-4). The dump request takes "Bank Number, 0 - 15" and "Program Number, 0 - 127"
+  while the dump itself carries "Bank Number: 0 - 9" and "Program Number: 0 - 99" (pp. 13-14).
+  `presets` below is the guide's plain count of the instrument instead: "The TEO-5 contains 512
+  programs. These are divided into two sets of 256 programs - a Factory set and a User set"
+  (guide p. 13), which the four user and four factory banks of the received bank select agree
+  with at sixty-four programs a bank.
+  THE GLOBAL TABLE CONTRADICTS THE PROSE TWO PAGES EARLIER, twice. MIDI Clock Mode is given six
+  settings in words - "Off", "Out", "Out No S/S", "In", "In/Thru", "In No S/S" (p. 1) - and four
+  in the table, 0-3 as Off, Out, In and In Thru (p. 11), so the two that suppress start and stop
+  have no number. MIDI Out Select is "Off, MIDI, USB, All" in words (p. 2) and 0-2 as MIDI, USB
+  and All in the table, so Off has none.
+  THE SISTER DOCUMENT AGREES WITH THE PROSE BOTH TIMES, which is as close to an answer as
+  anything here gets. The Take 5's implementation document, numbering its globals identically,
+  gives MIDI Clock Mode 0-5 at 4099 and MIDI Out Select 0-3 at 4107 - six settings and four,
+  exactly the counts this document's own prose gives. So this table is very likely the stale
+  one. **It is still a deduction rather than a statement**, so `choices` below carries the four
+  and the three the table prints, and this paragraph is where the doubt lives.
+  ONE GLOBAL'S DESCRIPTION IS ANOTHER'S, copied and not corrected: "MIDI Sysex On: Off, On -
+  When set to On, the synth will respond to MIDI controllers, including pitch wheel, mod wheel,
+  pedal, and volume" (p. 2), which is word for word what the line above says about MIDI Control.
+  What MIDI SysEx On does is said instead by the table, which calls 4105 "MIDI SysEx Enable".
+  AND THE TWO SISTER DOCUMENTS SWAP TWO RANGES. Here Master Coarse Tune is 0-100 and Master Fine
+  Tune is 0-24 (p. 11); the Take 5's document, at those same two numbers, gives 0-24 and 0-100.
+  Twenty-four semitones of coarse tuning and a hundred steps of fine is the reading that makes
+  musical sense, so this document is probably the one with them the wrong way round - but it is
+  the document for this instrument, so its figures are what is below. The sibling is not the
+  better document either: it spells the parameter "Master Course Tune".
+  THIS DOCUMENT IS AN EXTRACT FROM THE GUIDE, WHICH IS WHY ITS HEADERS ARE RIGHT AND ITS BODY IS
+  NOT. Its own running footer reads "TEO-5 User's Guide" on every page. So the furniture was
+  updated when Oberheim made it from Sequential's and the sentences inside were not, which is
+  the same fault as the guide's nineteen Take 5 headers seen from the other side.
+  FIVE MORE THINGS IN IT DO NOT ADD UP, and none changes a number below. The program table is
+  introduced as "TEO-5 program parameters 0-352" and then runs 1 to 187 in 159 rows with no
+  parameter 0 and nothing above 187 (p. 8). The page describing how an NRPN travels says "the
+  parameter number can be found in the two tables below" where there are three, and says the
+  number's high byte "will be zero or one, and never more than two" where every global is 4096
+  or above and so has a high byte of 32 (p. 7). MIDI Param Send and MIDI Param Receive carry an
+  asterisk and a dagger in the global table and **no footnote exists anywhere in the sixteen
+  pages** for either. The system real-time table lists MIDI Timing Clock and has no row for
+  Start or Stop (p. 3), although the clock settings two pages earlier send and receive both -
+  which is why `transport` below is `both` on the strength of the prose rather than the table.
+  The dump request's bank byte is written 0000 00vv, which holds two bits and four values, under
+  a stated range of 0 to 15 (p. 13).
+  THE GLOBAL TABLE'S OWN SPACING IS ERRATIC and the `choices` below do not reproduce it. The
+  states are printed "1= MIDI", "0 =All Off", "1 =Passthru", "2= Off" and so on, with the space
+  on either side of the equals or on neither. Both readings found the same unevenness, so it is
+  the document's rather than a tool's; the names below are keys and carry none of it.
+  AND THE GLOBALS ARE NAMED TWICE, differently. The panel names on pp. 1-2 and the table names
+  on p. 11 do not match for four of them: MIDI Control becomes MIDI Control Enable, MIDI Sysex
+  On becomes MIDI SysEx Enable, MIDI Out Select becomes MIDI Cable Out, and MIDI Prog
+  Send/Receive become MIDI Program Send/Recv. The labels below are the table's, because the
+  table is what carries the numbers.
+  NOT RECORDED: which number means which named state for any *program* parameter. The
+  implementation document gives those as bare ranges, and the guide names the states in words
+  without numbering them - "Shape: Triangle, Sawtooth, Reverse Sawtooth, Square, S&H" against a
+  range of 0-4 (guide p. 33) tells you there are five and not which is which. The globals are
+  different, and `choices` below carries their states because that table does number them.
+  NOT RECORDED: the note range and the key numbers. The guide gives the keyboard as "its
+  44-note keyboard" (p. 17) and names no note number for either end of it; the implementation
+  document says only "Note number 0 - 127" for what it receives.
+  NOT RECORDED: any system exclusive layout. The messages are published - device inquiry, three
+  dump requests, three dumps, and the packed-data format - but a program dump is "4096 bytes
+  expanded to 4690 MIDI bytes in "packed MS bit" format" (p. 14) with no map of what those bytes
+  mean. **4690 does not follow from the packing the same document describes**: seven bytes to
+  eight makes 4096 into 4682, which both readings worked out separately. Three more details in
+  that section are worth a reader's attention: the instrument's own identity byte is written
+  `0b1011010` where every other byte in the document is two binary nibbles; the manufacturer
+  byte labelled "Oberheim ID" is 0000 0010, the same byte as the "Inquiry Reply" label directly
+  above it in the same table; and the global dump says it carries "50 nibbles (LS then MS) for
+  25 Global parameters" (p. 15) where the table on the page before lists twenty-seven.
+  NOT RECORDED, DELIBERATELY: `parts`. The instrument splits its keyboard and stays one
+  instrument while it does - "The program is the same for both key ranges" (guide p. 17) - so
+  Key Split, Key Split 2 and Key Split Note are controls below and not parts.
+
+sources:
+  midi_impl:
+    kind: midi_implementation
+    title: TEO-5 MIDI Implementation Document
+    edition: v2
+    landing: "https://oberheim.com/products/teo-5/"
+    url: "https://oberheim.com/wp-content/uploads/2025/07/TEO-5-MIDI-Implementation-Document_v2.pdf"
+    sha256: c04ca96ecfbd4ff9dd87160f944c1ba6fa33d5b3fd2e600bd652e61915ecec49
+    retrieved: 2026-10-02
+    # The edition is the file name's; the document's pages carry no version and no date. The
+    # number printed on each page is its file page. No later edition is served: `_v3` and `_v4`
+    # were tried under five upload folders and none answers.
+    page_offset: 0
+  guide:
+    kind: manual
+    title: TEO-5 User's Guide
+    edition: Version 2.0
+    dated: 2025-06
+    landing: "https://oberheim.com/products/teo-5/"
+    url: "https://oberheim.com/wp-content/uploads/2025/07/TEO-5-User-Manual_v2.pdf"
+    sha256: 8c93b7f56efe827713be213d1d78b992c83e920bed4db50cc758d43ac1493715
+    retrieved: 2026-10-02
+    # CITED BY FILE PAGE, which is what `page_offset: 0` means here: the front matter is
+    # unnumbered, so the printed number runs behind the file page by a varying amount and the
+    # file page is the only one a reader can turn to.
+    page_offset: 0
+  product_page:
+    kind: product_page
+    title: "Oberheim TEO-5"
+    landing: "https://oberheim.com/products/teo-5/"
+    url: "https://oberheim.com/products/teo-5/"
+    sha256: f7fff1f68b3f5553b0688f2d869aed02a1529f0c4ef6b0f26f225ee0ff278ca1
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for the two things that are on it and in neither PDF: the OS versions, and the
+    # connections - "5-pin DIN MIDI In, Out, Thru" and "USB MIDI". Its document links are in
+    # the markup as served, so nothing had to be guessed to find the PDFs above.
+
+midi:
+  # "MIDI Channel: All, 1...16 - Selects which MIDI channel to send and receive data, 1 to 16.
+  # All receives on all 16 channels" (p. 1), and the global table gives 4098 as 0-16 with
+  # "0 = All".
+  channels: [1, 16]
+  # Six clock settings, three of which receive and three of which send; two of the six suppress
+  # start and stop while still carrying clock (p. 1). So both go both ways, and which depends on
+  # a global setting.
+  clock: both
+  transport: both
+  program_change:
+    # One switch each: "MIDI Prog Send: Off, On" and "MIDI Prog Receive: Off, On" (p. 2).
+    receives: true
+    sends: true
+    # The guide's count of the instrument. See the source account for the five figures in the
+    # implementation document that cannot all be right.
+    presets: 512
+  # "NRPNs are the preferred method" (p. 2), which is the maker's word for it, and most of the
+  # controls below carry both numbers.
+  nrpn: preferred
+  # Device inquiry, three dump requests, three dumps and a packed-data format (pp. 12-15), all
+  # behind a global switch. No layout is published.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "five voices, classic analog warmth" and "a five-voice architecture with genuine analog VCOs
+  # and VCFs" (guide p. 6). There is no specifications page in the guide, so this is the prose.
+  polyphony: 5
+  velocity:
+    note_on: received
+    # "Note Off. Velocity is ignored" (p. 3). Its own keyboard has seven velocity curves to
+    # choose between, "Velocity Curve: Curve 1... Curve 7" (guide p. 22) - which is seven names
+    # against the global table's range of 0-7, one of the many places this maker is out by one.
+    note_off: false
+  # BOTH KINDS COME IN AND ONLY ONE GOES OUT. Polyphonic Key Pressure and Channel Pressure are
+  # both in the received table (p. 3); the transmitted table has Channel Pressure and no
+  # polyphonic row (p. 4). Whether either travels at all is one global switch: "Aftertouch On:
+  # On, Off - Selects whether aftertouch (key pressure) is enabled or disabled. If disabled, the
+  # TEO-5 will neither respond to nor transmit aftertouch/key pressure data" (guide p. 21).
+  aftertouch: poly
+  pitch_bend:
+    # Up and down are set separately and by different amounts - 0-12 semitones up and 0-24 down
+    # (CC 85 and 86, NRPN 32 and 33) - so no single number is the range.
+    programmable: true
+
+# How to read the controls below. A control with both `cc` and `nrpn` is one parameter reachable
+# two ways, and `nrpn_range` appears where the two tables print different ranges for it; the
+# source account above says which three of those sixteen are a contradiction rather than NRPN
+# being finer. A control with only `nrpn` has no control change at all, which is true of the
+# whole modulation matrix and of every global. `choices` appears only on the globals, because
+# only that table numbers its states - and it keeps the maker's spelling, including the
+# arpeggiator hold that is printed "Apr".
+#
+# Twenty of the 128 control changes are not parameters and are not here: Data Entry at 6 and 38,
+# which is how an NRPN's value travels, the increment and decrement at 96 and 97, the NRPN and
+# RPN selectors at 98 to 101, the two the document itself calls Unassigned at 118 and 119, and
+# the eight channel mode messages at 120 to 127.
+
+controls:
+
+  # PERFORMANCE -------------------------------------------------------
+  bank_select_msb:          {label: Bank Select MSB, cc: 0, range: [0, 15], group: performance}
+  mod_wheel:                {label: Mod Wheel, cc: 1, range: [0, 127], group: performance}
+  breath_controller:        {label: Breath Controller, cc: 2, range: [0, 127], group: performance}
+  foot_controller:          {label: Foot Controller, cc: 4, range: [0, 127], group: performance}
+  master_volume:            {label: Master Volume, cc: 7, range: [0, 127], group: performance}
+  expression:               {label: Expression, cc: 11, range: [0, 127], group: performance}
+  voice_volume:             {label: Voice Volume, cc: 12, nrpn: 93, range: [0, 127], group: performance}
+  bank_select_lsb:          {label: Bank Select LSB, cc: 32, group: performance}
+  sustain_pedal:            {label: Sustain Pedal, cc: 64, range: [0, 127], group: performance}
+  brightness:               {label: Brightness, cc: 74, range: [0, 127], group: performance}
+  pan:                      {label: Pan, cc: 113, range: [0, 127], group: performance}
+
+  # OSCILLATORS -------------------------------------------------------
+  osc_1_freq:               {label: Osc 1 Freq, cc: 8, nrpn: 1, range: [0, 63], group: oscillators}
+  osc_1_on:                 {label: Osc 1 On, cc: 9, nrpn: 13, range: [0, 1], group: oscillators}
+  osc_2_on:                 {label: Osc 2 On, cc: 10, nrpn: 14, range: [0, 1], group: oscillators}
+  osc_2_freq:               {label: Osc 2 Freq, cc: 13, nrpn: 2, range: [0, 63], group: oscillators}
+  sub_on:                   {label: Sub On, cc: 14, nrpn: 17, range: [0, 1], group: oscillators}
+  noise_on:                 {label: Noise On, cc: 15, nrpn: 19, range: [0, 1], group: oscillators}
+  osc_1_sync:               {label: Osc 1 Sync, cc: 39, nrpn: 27, range: [0, 1], group: oscillators}
+  osc_1_level:              {label: Osc 1 Level, cc: 40, nrpn: 15, range: [0, 127], group: oscillators}
+  osc_2_level:              {label: Osc 2 Level, cc: 41, nrpn: 16, range: [0, 127], group: oscillators}
+  sub_level:                {label: Sub Level, cc: 42, nrpn: 18, range: [0, 127], group: oscillators}
+  noise_level:              {label: Noise Level, cc: 43, nrpn: 21, range: [0, 127], group: oscillators}
+  x_mod_amount:             {label: X-Mod Amt, cc: 44, nrpn: 26, range: [0, 127], group: oscillators}
+  osc_1_glide:              {label: Osc 1 Glide, cc: 65, nrpn: 22, range: [0, 127], group: oscillators}
+  osc_2_glide:              {label: Osc 2 Glide, cc: 66, nrpn: 23, range: [0, 127], group: oscillators}
+  osc_1_key_on:             {label: Osc 1 Key On, cc: 87, nrpn: 24, range: [0, 1], group: oscillators}
+  osc_2_key_on:             {label: Osc 2 Key On, cc: 88, nrpn: 25, range: [0, 1], group: oscillators}
+  osc_1_pw:                 {label: Osc 1 PW, cc: 94, nrpn: 5, range: [0, 127], group: oscillators}
+  osc_2_pw:                 {label: Osc 2 PW, cc: 95, nrpn: 6, range: [0, 127], group: oscillators}
+  osc_1_tri:                {label: Osc 1 Tri, cc: 102, nrpn: 7, range: [0, 1], group: oscillators}
+  osc_2_tri:                {label: Osc 2 Tri, cc: 103, nrpn: 8, range: [0, 1], group: oscillators}
+  osc_1_saw:                {label: Osc 1 Saw, cc: 104, nrpn: 9, range: [0, 1], group: oscillators}
+  osc_2_saw:                {label: Osc 2 Saw, cc: 105, nrpn: 10, range: [0, 1], group: oscillators}
+  osc_1_pulse:              {label: Osc 1 Pulse, cc: 106, nrpn: 11, range: [0, 1], group: oscillators}
+  osc_2_pulse:              {label: Osc 2 Pulse, cc: 107, nrpn: 12, range: [0, 1], group: oscillators}
+  noise_type:               {label: Noise Type, cc: 108, nrpn: 20, range: [0, 1], nrpn_range: [0, 127], group: oscillators}
+  osc_2_detune:             {label: Osc 2 Detune, cc: 109, nrpn: 4, range: [0, 63], group: oscillators}
+  osc_2_filter_bypass:      {label: Osc 2 Filter Bypass, cc: 117, nrpn: 28, range: [0, 1], group: oscillators}
+  osc_1_detune:             {label: Osc 1 Detune, nrpn: 3, range: [0, 63], group: oscillators}
+
+  # GLIDE -------------------------------------------------------------
+  glide_mode:               {label: Glide Mode (Portamento Time), cc: 5, nrpn: 30, range: [0, 3], group: glide}
+  glide_on:                 {label: Glide On, cc: 68, nrpn: 31, range: [0, 1], group: glide}
+
+  # FILTER ------------------------------------------------------------
+  filter_cutoff:            {label: Filter Cutoff, cc: 33, nrpn: 34, range: [0, 127], nrpn_range: [0, 1024], group: filter}
+  filter_resonance:         {label: Filter Resonance, cc: 34, nrpn: 36, range: [0, 127], nrpn_range: [0, 265], group: filter}
+  filter_state:             {label: Filter State, cc: 35, nrpn: 38, range: [0, 127], nrpn_range: [0, 512], group: filter}
+  filter_key_amt:           {label: Filter Key Amt, cc: 36, nrpn: 40, range: [0, 127], group: filter}
+  filter_bandpass:          {label: Filter Bandpass, cc: 110, nrpn: 37, range: [0, 1], group: filter}
+  filter_cutoff_msb:        {label: Filter Cutoff MSB, nrpn: 35, range: [0, 7], group: filter}
+  filter_state_msb:         {label: Filter State MSB, nrpn: 39, range: [0, 127], group: filter}
+
+  # ENVELOPES ---------------------------------------------------------
+  env_routes:               {label: Env Rout, cc: 69, nrpn: 89, range: [0, 2], group: envelopes}
+  env_retrig:               {label: Env Retrig, cc: 73, nrpn: 154, range: [0, 1], group: envelopes}
+  env_repeat:               {label: Env Repeat, cc: 116, nrpn: 91, range: [0, 3], group: envelopes}
+
+  # ENVELOPE 1 --------------------------------------------------------
+  env_1_delay:              {label: Env 1 Delay, cc: 45, nrpn: 79, range: [0, 127], group: envelope_1}
+  env_1_attack:             {label: Env 1 Attack, cc: 46, nrpn: 81, range: [0, 127], nrpn_range: [0, 256], group: envelope_1}
+  env_1_decay:              {label: Env 1 Decay, cc: 47, nrpn: 83, range: [0, 127], nrpn_range: [0, 256], group: envelope_1}
+  env_1_sustain:            {label: Env 1 Sustain, cc: 48, nrpn: 85, range: [0, 127], group: envelope_1}
+  env_1_release:            {label: Env 1 Release, cc: 49, nrpn: 87, range: [0, 127], nrpn_range: [0, 256], group: envelope_1}
+  env_1_amount:             {label: Env 1 Amount, cc: 50, nrpn: 75, range: [0, 127], nrpn_range: [0, 256], group: envelope_1}
+  env_1_vel_on:             {label: Env 1 Vel On, cc: 51, nrpn: 77, range: [0, 1], group: envelope_1}
+  env_1_dest:               {label: Env 1 Dest, nrpn: 90, range: [0, 61], group: envelope_1}
+
+  # ENVELOPE 2 --------------------------------------------------------
+  env_2_delay:              {label: Env 2 Delay, cc: 52, nrpn: 80, range: [0, 127], group: envelope_2}
+  env_2_attack:             {label: Env 2 Attack, cc: 53, nrpn: 82, range: [0, 127], nrpn_range: [0, 256], group: envelope_2}
+  env_2_decay:              {label: Env 2 Decay, cc: 54, nrpn: 84, range: [0, 127], nrpn_range: [0, 256], group: envelope_2}
+  env_2_sustain:            {label: Env 2 Sustain, cc: 55, nrpn: 86, range: [0, 127], group: envelope_2}
+  env_2_release:            {label: Env 2 Release, cc: 56, nrpn: 88, range: [0, 127], nrpn_range: [0, 256], group: envelope_2}
+  env_2_amount:             {label: Env 2 Amount, cc: 57, nrpn: 76, range: [0, 127], nrpn_range: [0, 256], group: envelope_2}
+  env_2_vel_on:             {label: Env 2 Vel On, cc: 58, nrpn: 78, range: [0, 1], group: envelope_2}
+
+  # LFO 1 -------------------------------------------------------------
+  lfo_1_freq:               {label: LFO 1 Freq, cc: 75, nrpn: 58, range: [0, 127], group: lfo_1}
+  lfo_1_amt:                {label: LFO 1 Amt, cc: 76, nrpn: 60, range: [0, 127], nrpn_range: [0, 256], group: lfo_1}
+  lfo_1_shape:              {label: LFO 1 Shape, cc: 77, nrpn: 62, range: [0, 4], group: lfo_1}
+  lfo_1_sync:               {label: LFO 1 Sync, cc: 78, nrpn: 64, range: [0, 1], group: lfo_1}
+  lfo_1_note_reset:         {label: LFO 1 Note Reset, cc: 79, nrpn: 70, range: [0, 1], group: lfo_1}
+  lfo_1_slew:               {label: LFO 1 Slew, cc: 92, nrpn: 72, range: [0, 127], group: lfo_1}
+  lfo_1_freq_sync:          {label: LFO 1 Freq Sync, cc: 111, nrpn: 68, range: [0, 15], group: lfo_1}
+  lfo_1_dest:               {label: LFO 1 Dest, nrpn: 66, range: [0, 61], group: lfo_1}
+
+  # LFO 2 -------------------------------------------------------------
+  lfo_2_freq:               {label: LFO 2 Freq, cc: 80, nrpn: 59, range: [0, 127], group: lfo_2}
+  lfo_2_amt:                {label: LFO 2 Amt, cc: 81, nrpn: 61, range: [0, 127], nrpn_range: [0, 256], group: lfo_2}
+  lfo_2_shape:              {label: LFO 2 Shape, cc: 82, nrpn: 63, range: [0, 4], group: lfo_2}
+  lfo_2_sync:               {label: LFO 2 Sync, cc: 83, nrpn: 65, range: [0, 1], group: lfo_2}
+  lfo_2_note_reset:         {label: LFO 2 Note Reset, cc: 84, nrpn: 71, range: [0, 1], group: lfo_2}
+  lfo_2_slew:               {label: LFO 2 Slew, cc: 93, nrpn: 73, range: [0, 127], group: lfo_2}
+  lfo_2_freq_sync:          {label: LFO 2 Freq Sync, cc: 112, nrpn: 69, range: [0, 15], group: lfo_2}
+  lfo_2_dest:               {label: LFO 2 Dest, nrpn: 67, range: [0, 61], group: lfo_2}
+
+  # FX ----------------------------------------------------------------
+  fx_on:                    {label: FX On/Off, cc: 16, nrpn: 42, range: [0, 1], group: fx}
+  fx_select:                {label: FX Select, cc: 17, nrpn: 43, range: [0, 12], group: fx}
+  fx_time:                  {label: FX Time, cc: 18, nrpn: 45, range: [0, 127], group: fx}
+  fx_mix:                   {label: FX Mix, cc: 19, nrpn: 44, range: [0, 127], group: fx}
+  fx_misc:                  {label: FX Misc, cc: 20, nrpn: 46, range: [0, 127], group: fx}
+  fx_sync:                  {label: FX Sync On/Off, cc: 21, nrpn: 47, range: [0, 1], group: fx}
+  fx_sync_rate:             {label: FX Sync Rate, cc: 22, nrpn: 48, range: [0, 10], group: fx}
+  vintage:                  {label: Vintage Amt, cc: 37, nrpn: 96, range: [0, 127], group: fx}
+  distortion:               {label: Distortion, cc: 67, nrpn: 95, range: [0, 127], group: fx}
+
+  # REVERB ------------------------------------------------------------
+  reverb_on:                {label: Reverb On, cc: 23, nrpn: 50, range: [0, 1], group: reverb}
+  reverb_mix:               {label: Reverb Mix, cc: 24, nrpn: 52, range: [0, 127], group: reverb}
+  reverb_size:              {label: Reverb Size, cc: 25, nrpn: 53, range: [0, 127], group: reverb}
+  reverb_predelay:          {label: Reverb PreDelay, cc: 26, nrpn: 54, range: [0, 127], group: reverb}
+  reverb_decay:             {label: Reverb Decay, cc: 27, nrpn: 55, range: [0, 127], group: reverb}
+  reverb_tone:              {label: Reverb Tone, cc: 28, nrpn: 56, range: [0, 127], group: reverb}
+
+  # UNISON ------------------------------------------------------------
+  unison_on:                {label: Unison On, cc: 31, nrpn: 97, range: [0, 1], group: unison}
+  unison_voices:            {label: Unison Voices, cc: 70, nrpn: 98, range: [0, 5], group: unison}
+  unison_detune:            {label: Unison Detune, cc: 71, nrpn: 99, range: [0, 7], group: unison}
+  unison_note_1:            {label: Unison Note 1, nrpn: 100, range: [0, 43], group: unison}
+  unison_note_2:            {label: Unison Note 2, nrpn: 101, range: [0, 43], group: unison}
+  unison_note_3:            {label: Unison Note 3, nrpn: 102, range: [0, 43], group: unison}
+  unison_note_4:            {label: Unison Note 4, nrpn: 103, range: [0, 43], group: unison}
+  unison_note_5:            {label: Unison Note 5, nrpn: 104, range: [0, 43], group: unison}
+
+  # ARPEGGIATOR -------------------------------------------------------
+  arp_on:                   {label: Arp. On, cc: 59, nrpn: 183, range: [0, 1], group: arpeggiator}
+  arp_mode:                 {label: Arp. Mode, cc: 60, nrpn: 184, range: [0, 4], group: arpeggiator}
+  arp_range:                {label: Arp. Range, cc: 61, nrpn: 185, range: [0, 2], group: arpeggiator}
+  arp_repeat:               {label: Arp Repeat, cc: 62, nrpn: 186, range: [0, 3], group: arpeggiator}
+  arp_relatch:              {label: Arp Relatch, nrpn: 187, range: [0, 1], group: arpeggiator}
+
+  # KEYBOARD ----------------------------------------------------------
+  key_split:                {label: Key Split, cc: 29, nrpn: 180, range: [0, 1], group: keyboard}
+  key_split_2:              {label: Key Split 2, cc: 30, nrpn: 181, range: [0, 1], group: keyboard}
+  key_mode:                 {label: Key Mode, cc: 72, nrpn: 153, range: [0, 2], group: keyboard}
+  pitch_bend_range_up:      {label: PBend Range Up, cc: 85, nrpn: 32, range: [0, 12], group: keyboard}
+  pitch_bend_range_down:    {label: PBend Range Dn, cc: 86, nrpn: 33, range: [0, 24], group: keyboard}
+  keysplit_note:            {label: KeySplit Note, cc: 89, nrpn: 182, range: [0, 43], group: keyboard}
+  scale:                    {label: Scale Select, cc: 114, nrpn: 155, range: [0, 65], nrpn_range: [0, 64], group: keyboard}
+  transpose:                {label: Transpose, cc: 115, nrpn: 156, range: [0, 4], group: keyboard}
+
+  # SEQUENCER ---------------------------------------------------------
+  seq_on:                   {label: Seq On/Off, cc: 90, range: [0, 1], group: sequencer}
+  seq_rec_arm:              {label: Seq Rec Arm, cc: 91, range: [0, 1], group: sequencer}
+  seq_play_stop:            {label: Seq Play/Stop, nrpn: 4188, range: [0, 1], group: sequencer}
+
+  # CLOCK -------------------------------------------------------------
+  clock_bpm:                {label: BPM, cc: 3, nrpn: 157, range: [15, 127], nrpn_range: [30, 250], group: clock}
+  clock_divide:             {label: Clock Divide, cc: 63, nrpn: 158, range: [0, 7], group: clock}
+
+  # MOD 1 -------------------------------------------------------------
+  mod_1_source:             {label: Mod 1 Source, nrpn: 105, range: [0, 19], group: mod_1}
+  mod_1_amt:                {label: Mod 1 Amt, nrpn: 121, range: [0, 255], group: mod_1}
+  mod_1_dest:               {label: Mod 1 Dest, nrpn: 137, range: [0, 64], group: mod_1}
+
+  # MOD 2 -------------------------------------------------------------
+  mod_2_source:             {label: Mod 2 Source, nrpn: 106, range: [0, 19], group: mod_2}
+  mod_2_amt:                {label: Mod 2 Amt, nrpn: 122, range: [0, 255], group: mod_2}
+  mod_2_dest:               {label: Mod 2 Dest, nrpn: 138, range: [0, 64], group: mod_2}
+
+  # MOD 3 -------------------------------------------------------------
+  mod_3_source:             {label: Mod 3 Source, nrpn: 107, range: [0, 19], group: mod_3}
+  mod_3_amt:                {label: Mod 3 Amt, nrpn: 123, range: [0, 255], group: mod_3}
+  mod_3_dest:               {label: Mod 3 Dest, nrpn: 139, range: [0, 64], group: mod_3}
+
+  # MOD 4 -------------------------------------------------------------
+  mod_4_source:             {label: Mod 4 Source, nrpn: 108, range: [0, 19], group: mod_4}
+  mod_4_amt:                {label: Mod 4 Amt, nrpn: 124, range: [0, 255], group: mod_4}
+  mod_4_dest:               {label: Mod 4 Dest, nrpn: 140, range: [0, 64], group: mod_4}
+
+  # MOD 5 -------------------------------------------------------------
+  mod_5_source:             {label: Mod 5 Source, nrpn: 109, range: [0, 19], group: mod_5}
+  mod_5_amt:                {label: Mod 5 Amt, nrpn: 125, range: [0, 255], group: mod_5}
+  mod_5_dest:               {label: Mod 5 Dest, nrpn: 141, range: [0, 64], group: mod_5}
+
+  # MOD 6 -------------------------------------------------------------
+  mod_6_source:             {label: Mod 6 Source, nrpn: 110, range: [0, 19], group: mod_6}
+  mod_6_amt:                {label: Mod 6 Amt, nrpn: 126, range: [0, 255], group: mod_6}
+  mod_6_dest:               {label: Mod 6 Dest, nrpn: 142, range: [0, 64], group: mod_6}
+
+  # MOD 7 -------------------------------------------------------------
+  mod_7_source:             {label: Mod 7 Source, nrpn: 111, range: [0, 19], group: mod_7}
+  mod_7_amt:                {label: Mod 7 Amt, nrpn: 127, range: [0, 255], group: mod_7}
+  mod_7_dest:               {label: Mod 7 Dest, nrpn: 143, range: [0, 64], group: mod_7}
+
+  # MOD 8 -------------------------------------------------------------
+  mod_8_source:             {label: Mod 8 Source, nrpn: 112, range: [0, 19], group: mod_8}
+  mod_8_amt:                {label: Mod 8 Amt, nrpn: 128, range: [0, 255], group: mod_8}
+  mod_8_dest:               {label: Mod 8 Dest, nrpn: 144, range: [0, 64], group: mod_8}
+
+  # MOD 9 -------------------------------------------------------------
+  mod_9_source:             {label: Mod 9 Source, nrpn: 113, range: [0, 19], group: mod_9}
+  mod_9_amt:                {label: Mod 9 Amt, nrpn: 129, range: [0, 255], group: mod_9}
+  mod_9_dest:               {label: Mod 9 Dest, nrpn: 145, range: [0, 64], group: mod_9}
+
+  # MOD 10 ------------------------------------------------------------
+  mod_10_source:            {label: Mod 10 Source, nrpn: 114, range: [0, 19], group: mod_10}
+  mod_10_amt:               {label: Mod 10 Amt, nrpn: 130, range: [0, 255], group: mod_10}
+  mod_10_dest:              {label: Mod 10 Dest, nrpn: 146, range: [0, 64], group: mod_10}
+
+  # MOD 11 ------------------------------------------------------------
+  mod_11_source:            {label: Mod 11 Source, nrpn: 115, range: [0, 19], group: mod_11}
+  mod_11_amt:               {label: Mod 11 Amt, nrpn: 131, range: [0, 255], group: mod_11}
+  mod_11_dest:              {label: Mod 11 Dest, nrpn: 147, range: [0, 64], group: mod_11}
+
+  # MOD 12 ------------------------------------------------------------
+  mod_12_source:            {label: Mod 12 Source, nrpn: 116, range: [0, 19], group: mod_12}
+  mod_12_amt:               {label: Mod 12 Amt, nrpn: 132, range: [0, 255], group: mod_12}
+  mod_12_dest:              {label: Mod 12 Dest, nrpn: 148, range: [0, 64], group: mod_12}
+
+  # MOD 13 ------------------------------------------------------------
+  mod_13_source:            {label: Mod 13 Source, nrpn: 117, range: [0, 19], group: mod_13}
+  mod_13_amt:               {label: Mod 13 Amt, nrpn: 133, range: [0, 255], group: mod_13}
+  mod_13_dest:              {label: Mod 13 Dest, nrpn: 149, range: [0, 64], group: mod_13}
+
+  # MOD 14 ------------------------------------------------------------
+  mod_14_source:            {label: Mod 14 Source, nrpn: 118, range: [0, 19], group: mod_14}
+  mod_14_amt:               {label: Mod 14 Amt, nrpn: 134, range: [0, 255], group: mod_14}
+  mod_14_dest:              {label: Mod 14 Dest, nrpn: 150, range: [0, 64], group: mod_14}
+
+  # MOD 15 ------------------------------------------------------------
+  mod_15_source:            {label: Mod 15 Source, nrpn: 119, range: [0, 19], group: mod_15}
+  mod_15_amt:               {label: Mod 15 Amt, nrpn: 135, range: [0, 255], group: mod_15}
+  mod_15_dest:              {label: Mod 15 Dest, nrpn: 151, range: [0, 64], group: mod_15}
+
+  # MOD 16 ------------------------------------------------------------
+  mod_16_source:            {label: Mod 16 Source, nrpn: 120, range: [0, 19], group: mod_16}
+  mod_16_amt:               {label: Mod 16 Amt, nrpn: 136, range: [0, 255], group: mod_16}
+  mod_16_dest:              {label: Mod 16 Dest, nrpn: 152, range: [0, 64], group: mod_16}
+
+  # GLOBAL ------------------------------------------------------------
+  master_coarse_tune:       {label: Master Coarse Tune, nrpn: 4096, range: [0, 100], group: global}
+  master_fine_tune:         {label: Master Fine Tune, nrpn: 4097, range: [0, 24], group: global}
+  midi_channel:             {label: MIDI Channel, nrpn: 4098, range: [0, 16], choices: {"all": 0}, group: global}
+  midi_clock_mode:          {label: MIDI Clock Mode, nrpn: 4099, range: [0, 3], choices: {"off": 0, "out": 1, "in": 2, "in_thru": 3}, group: global}
+  midi_clock_cable_in:      {label: MIDI Clock Cable In, nrpn: 4100, range: [0, 1], choices: {"midi_port": 0, "usb": 1}, group: global}
+  midi_clock_cable_out:     {label: MIDI Clock Cable Out, nrpn: 4101, range: [0, 3], choices: {"none": 0, "midi": 1, "usb": 2, "all": 3}, group: global}
+  midi_param_send:          {label: MIDI Param Send*, nrpn: 4102, range: [0, 2], choices: {"nrpn": 0, "cc": 1, "off": 2}, group: global}
+  midi_param_receive:       {label: MIDI Param Receive†, nrpn: 4103, range: [0, 2], choices: {"nrpn": 0, "cc": 1, "off": 2}, group: global}
+  midi_control_enable:      {label: MIDI Control Enable, nrpn: 4104, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  midi_sysex_enable:        {label: MIDI SysEx Enable, nrpn: 4105, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  midi_sysex_cable:         {label: MIDI SysEx Cable, nrpn: 4106, range: [0, 1], choices: {"midi": 0, "usb": 1}, group: global}
+  midi_cable_out:           {label: MIDI Cable Out, nrpn: 4107, range: [0, 2], choices: {"midi": 0, "usb": 1, "all": 2}, group: global}
+  midi_program_send:        {label: MIDI Program Send, nrpn: 4108, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  midi_program_recv:        {label: MIDI Program Recv, nrpn: 4109, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  midi_arp_notes:           {label: MIDI Arp Notes, nrpn: 4110, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  local_control:            {label: Local Control, nrpn: 4111, range: [0, 2], choices: {"all_off": 0, "key_wheels_off": 1, "on": 2}, group: global}
+  mono_stereo:              {label: Mono/Stereo, nrpn: 4112, range: [0, 1], choices: {"mono": 0, "stereo": 1}, group: global}
+  pot_mode:                 {label: Pot Mode, nrpn: 4113, range: [0, 2], choices: {"relative": 0, "passthru": 1, "jump": 2}, group: global}
+  foot_pedal_assign:        {label: Foot Pedal Assign, nrpn: 4114, range: [0, 4], choices: {"breath_cc2": 0, "foot_cc4": 1, "exp_cc11": 2, "lpf_full": 3, "lpf_half": 4}, group: global}
+  sustain_pedal_polarity:   {label: Sustain Pedal Polarity, nrpn: 4115, range: [0, 1], choices: {"normal": 0, "reversed": 1}, group: global}
+  sustain_mode:             {label: Sustain Mode, nrpn: 4116, range: [0, 3], choices: {"sustain": 0, "arp_hold": 1, "apr_hold_moment": 2, "seq_start_stop": 3}, group: global}
+  global_scale:             {label: Global Scale, nrpn: 4117, range: [0, 64], group: global}
+  pressure_enable:          {label: Pressure Enable, nrpn: 4118, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  pressure_curve:           {label: Pressure Curve, nrpn: 4119, range: [0, 7], group: global}
+  velocity_curve:           {label: Velocity Curve, nrpn: 4120, range: [0, 7], group: global}
+  oled_screensaver:         {label: OLED Screensaver, nrpn: 4121, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  arp_beat_sync:            {label: Arp Beat Sync, nrpn: 4122, range: [0, 1], choices: {"off": 0, "quantize": 1}, group: global}
+
+
+groups:
+  performance: Performance
+  oscillators: Oscillators
+  glide: Glide
+  filter: Filter
+  envelopes: Envelopes
+  envelope_1: Envelope 1
+  envelope_2: Envelope 2
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  fx: Effects
+  reverb: Reverb
+  unison: Unison
+  arpeggiator: Arpeggiator
+  keyboard: Keyboard
+  sequencer: Sequencer
+  clock: Clock
+  mod_1: Mod slot 1
+  mod_2: Mod slot 2
+  mod_3: Mod slot 3
+  mod_4: Mod slot 4
+  mod_5: Mod slot 5
+  mod_6: Mod slot 6
+  mod_7: Mod slot 7
+  mod_8: Mod slot 8
+  mod_9: Mod slot 9
+  mod_10: Mod slot 10
+  mod_11: Mod slot 11
+  mod_12: Mod slot 12
+  mod_13: Mod slot 13
+  mod_14: Mod slot 14
+  mod_15: Mod slot 15
+  mod_16: Mod slot 16
+  global: Global settings

@@ -153,6 +153,7 @@ class TestBundledCorpus:
 			"moog/subharmonicon",
 			"moog/subsequent_37",
 			"novation/bass_station_ii",
+			"oberheim/teo_5",
 			"pwm/malevolent",
 			"roland/d_50",
 			"roland/juno_106",
@@ -3318,3 +3319,123 @@ class TestD50:
 		# No firmware, because a 1987 manual names none and Roland publishes no history.
 		assert d50.model.firmware is None
 		assert d50.model.manufacturer == "Roland"
+
+
+class TestTeo5:
+
+	"""The largest definition here, off a document that names another synth as its subject."""
+
+	def test_the_control_map_reaches_both_ways (self) -> None:
+		"""Most parameters carry a controller number and an NRPN, which is one control each."""
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		assert len(teo.controls) == 198
+		assert len(teo.groups) == 33
+
+		both = [c for c in teo.controls.values() if c.cc is not None and c.nrpn is not None]
+		nrpn_alone = [c for c in teo.controls.values() if c.cc is None and c.nrpn is not None]
+
+		assert len(both) == 98
+		assert len(nrpn_alone) == 88
+
+		assert teo.midi.nrpn == "preferred"
+
+	def test_no_control_sits_on_a_channel_mode_message (self) -> None:
+		"""The document lists CC 120 to 127, and those are MIDI's own, not this instrument's."""
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		numbers = {c.cc for c in teo.controls.values() if c.cc is not None}
+
+		assert not numbers & set(range(120, 128))
+
+		# Nor on the machinery that carries an NRPN's value and selects its number.
+		assert not numbers & {6, 38, 96, 97, 98, 99, 100, 101}
+
+	def test_the_modulation_matrix_is_reachable_by_nrpn_only (self) -> None:
+		"""Sixteen slots of source, amount and destination, and no controller number for any."""
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		slots = [f"mod_{number}" for number in range(1, 17)]
+
+		for slot in slots:
+			assert slot in teo.groups
+
+			inside = [c for c in teo.controls.values() if c.group == slot]
+
+			assert len(inside) == 3, f"{slot} has {len(inside)} controls"
+			assert all(c.cc is None and c.nrpn is not None for c in inside)
+
+	def test_the_ranges_the_two_tables_disagree_about (self) -> None:
+		"""Sixteen parameters, and three of them are a contradiction rather than finer NRPN."""
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		differing = {name: control for name, control in teo.controls.items()
+			if control.nrpn_range is not None}
+
+		assert len(differing) == 16
+
+		# Thirteen are NRPN being finer, which is the maker's reason for preferring it.
+		assert differing["filter_cutoff"].range == (0, 127)
+		assert differing["filter_cutoff"].nrpn_range == (0, 1024)
+
+		# And three are not: a switch against a value, a narrower NRPN, and two tempo ranges
+		# that do not reach the same top.
+		assert differing["noise_type"].range == (0, 1)
+		assert differing["noise_type"].nrpn_range == (0, 127)
+
+		assert differing["scale"].range == (0, 65)
+		assert differing["scale"].nrpn_range == (0, 64)
+
+		assert differing["clock_bpm"].range == (15, 127)
+		assert differing["clock_bpm"].nrpn_range == (30, 250)
+
+	def test_the_globals_name_their_states (self) -> None:
+		"""Which the sibling Take 5's document does not, so this records them where it cannot."""
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		globals_here = [c for c in teo.controls.values() if c.group == "global"]
+
+		assert len(globals_here) == 27
+		assert all(c.nrpn is not None and 4096 <= c.nrpn <= 4122 for c in globals_here)
+
+		clock = teo.controls["midi_clock_mode"]
+
+		# Four states in the table, against six the prose two pages earlier names.
+		assert clock.choices == {"off": 0, "out": 1, "in": 2, "in_thru": 3}
+
+		# The maker's own spelling is kept, misprint and all.
+		assert "apr_hold_moment" in teo.controls["sustain_mode"].choices
+
+	def test_what_it_does_and_does_not_state_about_the_voice (self) -> None:
+		"""Five voices and both kinds of pressure in, one kind out, and no note range at all."""
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		assert teo.voice.polyphony == 5
+		assert teo.voice.aftertouch == "poly"
+		assert teo.voice.addressing == "pitches"
+
+		assert teo.voice.velocity is not None
+		assert teo.voice.velocity.note_on == "received"
+		assert teo.voice.velocity.note_off is False
+
+		assert teo.voice.pitch_bend is not None
+		assert teo.voice.pitch_bend.programmable is True
+		assert teo.voice.pitch_bend.semitones is None
+
+		# No note range: the guide gives 44 keys in words and no number for either end.
+		assert teo.voice.note_range is None
+
+		# And no parts, although the keyboard splits: "The program is the same for both key
+		# ranges", so a split is a control rather than a part.
+		assert teo.parts == {}
+
+	def test_the_firmware_is_not_recorded_because_nothing_states_one (self) -> None:
+		"""Two documents, three sources, and no OS version named in any of them."""
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		assert teo.model.firmware is None
+		assert teo.model.manufacturer == "Oberheim"
+		assert set(teo.sources) == {"midi_impl", "guide", "product_page"}
+
+		assert teo.sources["midi_impl"].edition == "v2"
+		assert teo.sources["guide"].edition == "Version 2.0"

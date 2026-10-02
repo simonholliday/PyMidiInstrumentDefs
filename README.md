@@ -158,6 +158,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/subharmonicon` | Moog Subharmonicon: reads a note as an offset from C4, not as a pitch, and answers to one controller its manual does not list |
 | `moog/subsequent_37` | Moog Subsequent 37: 114 controls in CC and NRPN pairs, out of a chart whose empty cells were proved empty rather than unread |
 | `novation/bass_station_ii` | Novation Bass Station II: 94 controls across three products that share one guide, and one controller number the guide prints that the MIDI specification says is something else |
+| `oberheim/teo_5` | Oberheim TEO-5: 198 controls, the most here, off an implementation document that says in its own words the map belongs to a Sequential synth |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |

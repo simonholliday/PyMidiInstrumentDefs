@@ -233,3 +233,33 @@ class TestWhichDocumentsAPageCitationCouldBeFoundIn:
 	def test_nothing_to_look_in_is_not_the_same_as_looking_and_failing (self) -> None:
 		"""The whole point: with no paged document, the answer is unchecked rather than wrong."""
 		assert tool.with_pages([self.paged(False)]) == []
+
+
+class TestAWordBrokenAtTheEndOfALine:
+
+	"""A typesetter's hyphen is not part of the word, and the text layer keeps it.
+
+	The Analog Rytm MKII's page 21 prints "can be voiced simultaneously with the eight
+	physical voices" and breaks the long word across the line, so the text layer gives back
+	`simulta-\nneously`. A definition quoting the word the page prints was reported as citing
+	the wrong page, which is the one failure that stops this tool's output being read.
+	"""
+
+	def test_a_word_broken_across_a_line_is_the_word (self) -> None:
+		"""The case that found this, from the page it was found on."""
+		page = "can be voiced simulta-\nneously with the eight physical voices"
+
+		assert tool.squash("can be voiced simultaneously") in tool.squash(page)
+
+	def test_a_hyphen_the_maker_meant_still_matches (self) -> None:
+		"""Dropping the break on one side only would have broken this, so both sides drop it."""
+		assert tool.squash("built-in") in tool.squash("the built-in reverb")
+		assert tool.squash("built-in") in tool.squash("the built-\nin reverb")
+
+	def test_a_spaced_hyphen_in_a_sentence_is_not_a_word_boundary (self) -> None:
+		"""This corpus writes its own dashes as a spaced hyphen, and quotes manuals that do too."""
+		assert tool.squash("one thing - and another") == tool.squash("one thing and another")
+
+	def test_two_different_sentences_are_still_different (self) -> None:
+		"""The point of folding anything is to find a quotation, not to find any quotation."""
+		assert tool.squash("the instrument sends clock") != tool.squash("the instrument sends start")

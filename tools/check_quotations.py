@@ -113,6 +113,14 @@ def squash (text: str) -> str:
 	"FILTER" are the same word on the page and differ as strings. **The case goes too**:
 	a manual sets a table heading in capitals and a definition quotes it in a sentence,
 	which is ordinary practice here and is not what this check is looking for.
+
+	**And the hyphens go**, for the reason the spaces do. A typesetter breaks a word at the
+	end of a line and the text layer keeps the break: the Analog Rytm MKII's page 21 reads
+	"can be voiced simulta-neously with the eight physical voices", and a definition quoting
+	the word the page *prints* is right rather than wrong. Dropping the hyphen on one side
+	only would then break a real one - "built-in" broken as "built-\nin" matched before this
+	and must still - so it is dropped on both, which costs only the ability to tell
+	"pre-delay" from "predelay", a difference no reader of a citation is misled by.
 	"""
 
 	for printed, typed in FOLDED.items():
@@ -120,7 +128,7 @@ def squash (text: str) -> str:
 
 	text = CROSS_REFERENCE.sub("", text)
 
-	return re.sub(r"\s+", "", text).lower()
+	return re.sub(r"[\s-]+", "", text).lower()
 
 
 def pieces (quotation: str) -> list[str]:

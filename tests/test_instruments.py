@@ -137,6 +137,7 @@ class TestBundledCorpus:
 			"elektron/model_samples",
 			"elektron/syntakt",
 			"expressive_e/osmose",
+			"korg/electribe",
 			"korg/microkorg",
 			"korg/minilogue_xd",
 			"korg/multi_poly",
@@ -3637,3 +3638,97 @@ class TestModelCycles:
 
 		assert cycles.model.firmware == "1.13"
 		assert set(cycles.sources) == {"manual", "downloads", "release_notes"}
+
+
+class TestElectribe:
+
+	"""Sixteen parts on one MIDI channel, out of the one plain text source in this corpus."""
+
+	def test_eighteen_controls_and_every_one_goes_both_ways (self) -> None:
+		"""Korg's two tables name the same numbers, so none carries a direction."""
+		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
+
+		assert len(et.controls) == 18
+		assert len(et.groups) == 7
+
+		assert {c.cc for c in et.controls.values()} == {
+			7, 10, 71, 72, 73, 74, 80, 81, 82, 83, 85, 86, 87, 102, 103, 104, 105, 106}
+
+		assert all(c.direction == pymidiinstrumentdefs.definition.BOTH
+			for c in et.controls.values())
+
+	def test_a_switch_is_sent_as_nought_or_127_not_nought_or_one (self) -> None:
+		"""The footnote gives "00,7F : Off,On", so a host sending 1 would be guessing."""
+		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
+
+		switches = {name: c.choices for name, c in et.controls.items() if c.choices}
+
+		assert switches == {
+			"insert_fx_on": {"off": 0, "on": 127},
+			"mfx_send_on": {"off": 0, "on": 127},
+			"master_fx_on": {"off": 0, "on": 127},
+		}
+
+		# Two named values make a switch rather than a choice, which the format derives.
+		for name in switches:
+			assert et.controls[name].kind == pymidiinstrumentdefs.SWITCH
+
+	def test_a_bipolar_parameter_still_carries_the_wire_range (self) -> None:
+		"""It reads -63 to +63 on the display and is sent as 0 to 127."""
+		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
+
+		for name in ("osc_pitch", "filter_eg_int", "amp_pan"):
+			assert et.controls[name].range == (0, 127), f"{name} carries a display range"
+
+	def test_sixteen_parts_and_no_part_is_addressable (self) -> None:
+		"""One global channel, no per-part channel anywhere, and no stated note map."""
+		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
+
+		assert et.parts == {}
+		assert et.midi.channels == (1, 16)
+
+		# So no control belongs to a part either.
+		assert all(c.part is None for c in et.controls.values())
+
+	def test_aftertouch_is_a_checked_absence_and_pitch_bend_has_no_field (self) -> None:
+		"""Both tables list every status byte, and there are four of them."""
+		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
+
+		assert et.voice.aftertouch == "none"
+		assert et.voice.pitch_bend is None
+
+		assert et.voice.velocity is not None
+		assert et.voice.velocity.note_on == "both"
+		assert et.voice.velocity.note_off is False
+
+	def test_a_program_change_picks_one_of_250_patterns (self) -> None:
+		"""And see the source account for why the published mapping reaches only 248."""
+		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
+
+		assert et.midi.program_change is not None
+		assert et.midi.program_change.presets == 250
+		assert et.midi.program_change.receives is True
+		assert et.midi.program_change.sends is True
+
+		assert et.voice.polyphony == 24
+		assert et.voice.note_range == (0, 127)
+
+	def test_the_implementation_has_no_pages_and_the_other_two_do (self) -> None:
+		"""It is a text file, which is why nothing cites a page of it."""
+		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
+
+		assert set(et.sources) == {"midi_impl", "guide", "manual", "downloads"}
+		assert et.sources["midi_impl"].paginated is False
+		assert et.sources["midi_impl"].edition == "Revision 1.00"
+		assert et.sources["downloads"].paginated is False
+
+		# NOT RECORDED, because no document says which firmware it describes: the
+		# implementation's "Revision 1.00" is the document's own, the chart's "Version: 1.02"
+		# is the chart's, and Korg's two updaters are 2.02 and 1.19.
+		assert et.model.firmware is None
+
+		assert et.midi.sysex is True
+		assert et.midi.nrpn is None
+
+		# Only the owner's manual's chart gives a mode, and the implementation never does.
+		assert et.midi.mode == 3

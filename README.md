@@ -142,6 +142,7 @@ self-contained YAML file, and you share it by sending it.
 | `elektron/model_samples` | Elektron Model:Samples: 29 controls off a one-page appendix headed CC MSB that gives an LSB for exactly one of them |
 | `elektron/syntakt` | Elektron Syntakt: twelve tracks and an FX track, where 28 controller numbers mean one thing on a track and another on the FX track |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |
+| `korg/electribe` | Korg electribe: 18 controls out of a plain text file that prints every number twice, with sixteen parts on one MIDI channel and no way given of choosing one |
 | `korg/microkorg` | Korg microKORG: 41 controller numbers that are the factory assignment and not fixed, each meaning one thing in a synth program and another in a vocoder one |
 | `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |

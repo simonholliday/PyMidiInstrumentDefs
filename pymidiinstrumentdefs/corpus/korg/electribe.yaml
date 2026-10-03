@@ -1,0 +1,309 @@
+# KORG PUBLISHES THIS ONE AS A PLAIN TEXT FILE, which makes it the easiest source in this corpus
+# and the only one with nothing to read around. Eight hundred and fifty-two lines of ASCII
+# tables: what the instrument transmits, what it recognises, the system exclusive layout
+# parameter by parameter, and a footnote for every range. No page to render, no column to
+# settle, no glyph split in two.
+#
+# AND IT PRINTS EVERY NUMBER TWICE, in hex and in decimal - "47  (71)" - which is a checksum the
+# maker has handed over. `Notes/4231_extract_electribe_implementation.py` checks all of them.
+#
+# EIGHTEEN CONTROL CHANGES, EVERY ONE OF THEM BOTH WAYS. The transmitted and recognised tables
+# name the same eighteen numbers with the same names, so no control below carries a `direction`;
+# the received table adds the three channel mode messages and nothing else.
+#
+# SIXTEEN PARTS AND ONE MIDI CHANNEL, WHICH IS THE THING TO KNOW. "A single pattern consists of
+# 16 parts and a master effect" (manual p. 8), and "GLOBAL MIDI CH ... [01...16] Specifies the
+# MIDI channel of the electribe" - singular, for the whole instrument. **There is no per-part
+# channel anywhere in 852 lines**, and no document says which part a received note or controller
+# reaches. So there is no `parts` block below, and that absence is the maker's.
+#
+# THIS IS THE 2014 INSTRUMENT KORG WRITES IN LOWER CASE. Its downloads are product 367. **The
+# electribe sampler is product 368**, a different instrument with its own MIDI implementation,
+# and the EA-1, ER-1, EMX-1 and ESX-1 electribes are different again. The owner's manual is
+# shared between this and the sampler; the control map is not.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: electribe
+  # NOT RECORDED, and the reason is worth a paragraph because a figure was available and is
+  # wrong. Korg's downloads page offers **two system updaters, 2.02 and 1.19**, both dated
+  # 2016.07.21, with nothing saying which an owner should want - but **no document here says
+  # which firmware it describes.** The implementation's first line reads "KORG electribe MIDI
+  # Implementation     Revision 1.00 (Jan. 9 2015)", which is the document's revision and not
+  # the instrument's; the chart in the owner's manual is dated "January.  22. 2015" and says
+  # "Version: 1.02", which is a third number again and also the chart's own.
+  # SO THE CONTROL MAP BELOW IS REVISION 1.00's, written in January 2015 and never revised,
+  # while the instrument has had at least two system versions since. The Parameter Guide is
+  # plainly the later document - it footnotes one shortcut "* Supported in system ver.2.00 and
+  # later" - and four of the parameters it describes have no home in the implementation's
+  # exclusive layout at all. Writing 2.02 here would say the control map describes a firmware
+  # it predates.
+
+source: >-
+  MIDI Implementation, Revision 1.00, a plain text file of 852 lines and no pages: the
+  transmitted channel messages, the system real-time messages, the device inquiry reply, the
+  system exclusive function IDs and the search-device reply; then the recognised receive data in
+  the same five parts; then a complete system exclusive layout, with a table for a pattern, one
+  for each of the sixteen parts at its own offset, and one for the global data.
+  The Parameter Guide (English, 18 pages) names the states the global settings step through, and
+  the Owner's Manual (112 pages, six languages in one file) carries the specifications. Both are
+  cited by page; the implementation has none, so nothing cites a page of it.
+  AND THE OWNER'S MANUAL CARRIES A CHART OF ITS OWN, on p. 110 - past the English section, past
+  the French and German ones, among the back matter where a reader of the English pages would
+  never meet it. It is a second witness and it does not agree with the implementation
+  everywhere; what it settles and what it muddies are both below.
+  EIGHTEEN CONTROL CHANGES AND NOT ONE MORE. CC 7, 10, 71 to 74, 80 to 83, 85 to 87 and 102 to
+  106 - the amplifier's level and pan, the filter's three, the two envelope stages, the
+  oscillator's three, the modulation's two, and the two effects' six between them. A hundred and
+  two numbers between 0 and 119 are used by nothing, and the document says nothing about any of
+  them.
+  WHAT GATES THEM ALL IS ONE GLOBAL SETTING, and the implementation has a column for it that
+  most charts do not. Every parameter row is marked "S : Enabled When Global MIDI RECEIVE/SEND
+  FILTER is "Off"", and bank select and program change are marked "P : Enabled when Global MIDI
+  RECEIVE/SEND FILTER is "Off" or "Short"". The guide says what those mean from the player's
+  side: "MIDI RECEIVE FILTER ... OFF: All messages are received. Short: Short messages (Note
+  On/Off, Control Change) are not received. Short + Program: Short messages and program change
+  messages are not received" (guide p. 6), and a MIDI SEND FILTER does the same outward. **So a
+  single setting silences all eighteen**, and the three channel mode messages at 120, 121 and
+  123 are the only ones marked "A : Always Enabled".
+  SIXTEEN PARTS, AND NO WAY THE DOCUMENTS GIVE OF CHOOSING ONE. The system exclusive layout
+  carries a parameter table for each part at its own offset, so a part's whole state can be read
+  and written that way - but **the part parameter table has no MIDI channel field**, the only
+  channel in the document is the global one, and no page of any of the three documents says which
+  part a received note or control change acts on. On the panel the parts are chosen with the
+  "<Part, Part>" buttons and "You can change sound tone of the selected part by using the knob in
+  the edit section" (manual p. 9), and the implementation marks every parameter row as sent by
+  "P.C." - panel control. The reasonable reading is that a controller reaches whichever part is
+  selected, as the knobs do. **It is a reading and not a statement, so there is no `parts` block
+  below and this paragraph is where it is said.**
+  WHAT A PART WILL HOLD IS SET PER PART AND NOT PUBLISHED AS A NUMBER. "VOICE ASSIGN ... [Mono1,
+  Mono2, Poly1, Poly2] Specifies the polyphony of the selected part" (guide p. 4), and the
+  specification gives "The maximum number of sound (per part):    MAX, 4 voices" (manual p. 19),
+  printed with a comma after MAX and "number of sound" in the singular. The guide agrees from the
+  other side: "You can record up to four note numbers in each target step" (p. 5).
+  THREE PARAMETERS CHANGE MEANING WITH A TYPE THAT HAS NO CONTROLLER. Osc Edit (CC 82), Insert
+  Fx Edit (CC 87) and the modulation's two depend on which oscillator, insert effect and
+  modulation type the part is set to - and those types are reachable **only by system
+  exclusive**: the part table gives "Oscillator Type | 0~500", "Filter Type | 0~16" and
+  "Modulation Type | 0~71", with no control change for any of them. So a host can edit a sound
+  it cannot choose, and five hundred and one oscillator types are numbered in a table that names
+  none of them.
+  THE PATTERN MAP DOES NOT REACH THE LAST TWO PATTERNS. The instrument is "capable of creating
+  and storing up to 250 patterns" (manual p. 8), and the footnote both bank select rows point at
+  gives the mapping as "Pattern 001 - 127    mm,bb,pp  : 00,00,01~7F  /  00,00,001~127" and
+  "Pattern 128 - 250                00,01,01~79  /  00,01,001~121". The second line offers 121
+  numbers for 123 patterns, so 248 of the 250 can be chosen this way and the maker's arithmetic
+  does not close. Recorded rather than resolved.
+  THE CHART AND THE IMPLEMENTATION DISAGREE IN FIVE PLACES, and none of them changes a number
+  below. **The chart names three controls differently**: 102 and 103 are "Master Fx X" and
+  "Master Fx Y" in the implementation and "TouchPad X" and "TouchPad Y" in the chart, and 106 is
+  "Master Fx Off/On" against "TouchPad On/Off" - and the implementation's own motion-sequence
+  destination list calls that third one "MFX XY Pad On/Off", a third name. **The chart misspells
+  a fourth**: 72 is "EG Delay/Release" there and "EG Decay/Release" in the implementation, which
+  the part parameter table confirms. The labels below are the implementation's.
+  The chart also puts All Notes Off on "123-127" where the implementation recognises 120, 121
+  and 123 and never mentions 124 to 127; it says clock is transmitted when the clock mode is
+  "Int / Ext.Sync" where the implementation's footnote says "Internal"; and it claims the
+  instrument "also supports inquiry messages and master volume" where the implementation's
+  section for universal real-time exclusive messages reads "Not applicable" - and master volume
+  is a universal real-time message, so those two cannot both be true.
+  ONE THING THE CHART SETTLES THAT NOTHING ELSE COULD. Its Mode row reads X transmitted and
+  **3** received, which is what `midi.mode` below records: the instrument answers as Omni Off,
+  Poly. Nothing in the implementation says so.
+  A SWITCH IS SENT NARROWER THAN IT IS HEARD. The transmitted footnote for the three on/off
+  controls is "00,7F : Off,On" and the received one is "00,01~7F : Off,On" - so the instrument
+  sends 0 or 127 and accepts **anything from 1 upward** as On. `choices` below carries 0 and
+  127, which is what it sends and therefore what is safest to send it; a host that sent 1 would
+  also be understood, and one that read 1 back would never see it.
+  NOT RECORDED: aftertouch and pitch bend, and both are checked absences rather than silences.
+  The two tables list every status byte this instrument answers to and sends, and there are four
+  of them - 8n, 9n, Bn and Cn. Neither An nor Dn is among them, so no kind of pressure arrives;
+  nor is En, so pitch bend does not either. `aftertouch: none` says the first; there is no field
+  that says the second, so it is here.
+  NOT RECORDED: which number means which named state, for any parameter. The implementation
+  gives ranges and the guide gives the states in words for the global settings only. The
+  oscillator, filter and modulation types are numbered in the exclusive layout and named
+  nowhere in it.
+  NOT RECORDED: the kind of MIDI socket, because there is no field for one. The specification
+  gives "MIDI OUT jack, MIDI IN jack, USB connector (micro USB B type)" and the included items
+  are "Owner's manual, AC adapter, MIDI conversion cable x 2" (manual p. 19) - so MIDI is on a
+  stereo mini jack and reaches a DIN socket through an adapter, as on the volca series.
+
+sources:
+  midi_impl:
+    kind: midi_implementation
+    title: KORG electribe MIDI Implementation
+    edition: Revision 1.00
+    dated: 2015-01-09
+    landing: "https://www.korg.com/us/support/download/product/0/367/"
+    url: "https://cdn.korg.com/us/support/download/files/fe2fec02ce6b008af176856211d80909.txt"
+    sha256: 503fea3563d106f9853ac1df11db9351f9539ce60b9e7737bea55a3a26c9bd6e
+    retrieved: 2026-10-02
+    paginated: false
+    # A text file, so there is no page to cite and `paginated: false` says so. The date is the
+    # document's own first line; Korg's page dates the file 2016.01.08.
+  guide:
+    kind: manual
+    title: electribe Parameter Guide
+    edition: E
+    dated: 2016-07-21
+    landing: "https://www.korg.com/us/support/download/product/0/367/"
+    url: "https://cdn.korg.com/us/support/download/files/b77b1482084a8677d7f5ba24efc6cd5e.pdf"
+    sha256: 8af932e8368fbe95d0a8f664bbdcefc33367606311e6bbbf715196d5df2ec5f0
+    retrieved: 2026-10-02
+    page_offset: 0
+    # Served in five languages all dated the same day; only the English one was fetched.
+  manual:
+    kind: manual
+    title: electribe / electribe sampler Owner's Manual
+    landing: "https://www.korg.com/us/support/download/product/0/367/"
+    url: "https://cdn.korg.com/us/support/download/files/0b4a3c5f3361280358cd6c9c7f9e8b6f.pdf"
+    sha256: 552ca0da3093a589cfce99c7a9a4327e534b36a8579afe75f3da490443e9230e
+    retrieved: 2026-10-02
+    page_offset: 0
+    # SIX LANGUAGES IN ONE FILE, and the English section is the first nineteen pages, which is
+    # what the page numbers here are. Printed number equals file page in that section.
+    # KORG OFFERS THIS DOCUMENT TWICE, dated 2017.10.03 and 2013.10.03, from two different
+    # paths - **and both download to the same bytes**, the same 5,926,295 and the same hash. So
+    # the page presents a choice of edition that is not one, and this is the later entry.
+  downloads:
+    kind: download_page
+    title: "Downloads | electribe | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/product/0/367/"
+    url: "https://www.korg.com/us/support/download/product/0/367/"
+    sha256: 554b67d2623bf67c4823f94b3a4880a034173f416c589936ac4b376dfd898d39
+    retrieved: 2026-10-02
+    paginated: false
+    # Cited for the two things no document states: which system updater is current, 2.02 against
+    # 1.19, and the dates Korg puts on the files - including the two Owner's Manual entries that
+    # are the same file.
+
+midi:
+  # "GLOBAL MIDI CH ... [01...16] Specifies the MIDI channel of the electribe" (guide p. 6), and
+  # the exclusive layout gives the same field as "Global Channel | 0~15=1~16". One channel for
+  # the whole instrument; see the source account for what that means for its sixteen parts.
+  channels: [1, 16]
+  # Five settings, three of which take clock from outside: "CLOCK MODE ... [Internal, Auto,
+  # External USB, External MIDI, External Sync]" (guide p. 6). Internal sends it - the
+  # implementation's real-time messages are footnoted "This message is transmitted when the
+  # Global "CLOCK MODE" is set to "Internal"" - and the external settings receive it.
+  clock: both
+  transport: both
+  # Only the chart says this, in its Mode row: X transmitted, 3 received (manual p. 110). Mode 3
+  # is Omni Off, Poly, which the chart's own legend spells out. The implementation never
+  # mentions a mode, and the instrument answers no mode message - the chart marks Mode Messages
+  # X in both columns.
+  mode: 3
+  program_change:
+    # Both tables carry Cn, and the global send and receive filters each have a setting that
+    # stops program change alone.
+    receives: true
+    sends: true
+    # "capable of creating and storing up to 250 patterns" (manual p. 8). A program change picks
+    # a pattern here rather than a sound, and see the source account for why the published
+    # mapping reaches only 248 of them.
+    presets: 250
+  # A full layout, parameter by parameter: a pattern, each of the sixteen parts, and the global
+  # data, with eight function IDs for the dumps and the errors. This is the most complete
+  # exclusive documentation in this corpus.
+  sysex: true
+  # NOT RECORDED: NRPN. Neither table mentions it and no page does, so nobody was told either
+  # way - which is a silence rather than the checked absence that aftertouch gets below.
+
+voice:
+  addressing: pitches
+  # Footnote *1 on note off gives "kk =  0 ~ 127", the guide's step editor offers
+  # "NOTE ... [---, C-1...G 09]" (p. 5), which is the same 128 notes under Korg's naming, and the
+  # chart's Note Number row reads 0-127 in both columns (manual p. 110).
+  # BUT THE CHART'S TRUE VOICE ROW READS 0-108 RECEIVED, so it takes all 128 and sounds the
+  # bottom 109 of them. `note_range` is what it answers to, which is the wider figure; the
+  # narrower one is here because a host that sends note 120 will be heard and not played.
+  note_range: [0, 127]
+  # "The maximum number of sounds (entire pattern):    MAX. 24 voices (The number of
+  # simultaneous sounds in entire pattern depends on the type of Oscillator, Filter or Insert
+  # Fx.)" (manual p. 19), against "The maximum number of sound (per part):    MAX, 4 voices" on
+  # the same page.
+  # SO TWENTY-FOUR IS A CEILING SHARED BETWEEN THE SIXTEEN PARTS, not four each - sixteen parts
+  # of four would be sixty-four - and the parenthesis says even the twenty-four depends on which
+  # oscillator, filter and insert effect the parts are set to. **`polyphony_shared` would be the
+  # field for that and this file cannot use it**, because it says whether *parts* share their
+  # voices and there is no `parts` block here; see the source account for why there is not.
+  polyphony: 24
+  velocity:
+    # "Note On  vv=1~127" in both tables, and the trigger pads have four response curves to
+    # choose between - "VELOCITY CURVE ... [Heavy, Normal, Light, Const96]", where "Const96: The
+    # velocity value will always be 96" (guide p. 6).
+    note_on: both
+    # Note off is "8n | kk  (kk) | 40    (64)" in both tables, a fixed 64, so there is no
+    # velocity in it - and the chart agrees, marking the note-off velocity "X 8n, V=64"
+    # transmitted and "X" received (manual p. 110).
+    note_off: false
+  # A CHECKED ABSENCE TWICE OVER. The implementation's two tables list every status byte this
+  # instrument transmits and recognises, and there are four - 8n, 9n, Bn and Cn - so neither An
+  # nor Dn appears. And the chart says it outright: its After Touch rows, Key's and Channel, are
+  # marked X in both the Transmitted and the Received column (manual p. 110).
+  aftertouch: none
+  # NOT RECORDED: pitch bend, because there is none to record and no field that says so. En is
+  # absent from both of the implementation's tables, and the chart's Pitch Bend row is X in both
+  # columns (manual p. 110).
+
+groups:
+  oscillator: Oscillator
+  filter: Filter
+  modulation: Modulation
+  envelope: EG
+  amp: Amp
+  insert_fx: Insert effect
+  master_fx: Master effect
+
+controls:
+
+  # Generated from the implementation by `Notes/4231_write_controls.py`, which reproduces this
+  # block. Every one is both transmitted and received, so none carries a `direction`; the
+  # extraction script asserts that the two tables agree.
+  #
+  # EVERY ONE OF THESE IS 7-BIT ON THE WIRE, which the footnotes say and which is easy to read
+  # the wrong way. A bipolar parameter is still sent as 0 to 127 and only *reads* as a signed
+  # number on the display - "00,01~40~7F : L63,L63~Center~R63" for the pan, "00,01~7F :
+  # -63,-63~+63" for the two pitch figures - so none of them carries a negative `range`, because
+  # that field is the value on the wire. The three switches are sent as **0x00 or 0x7F** rather
+  # than 0 or 1, which is why they carry `choices` of 0 and 127: a host that sent 1 for "on"
+  # would be following a guess rather than this document.
+  # The groups are the parameter guide's own panel sections, because the tables are a flat list
+  # in numerical order and give no grouping at all.
+
+  # OSCILLATOR --------------------------------------------------------
+
+  # OSCILLATOR --------------------------------------------------------
+  osc_pitch:              {label: Osc Pitch, cc: 80, group: oscillator}
+  osc_glide:              {label: Osc Glide, cc: 81, group: oscillator}
+  osc_edit:               {label: Osc Edit, cc: 82, group: oscillator}
+
+  # FILTER ------------------------------------------------------------
+  filter_resonance:       {label: Filter Resonance, cc: 71, group: filter}
+  filter_cutoff:          {label: Filter Cutoff, cc: 74, group: filter}
+  filter_eg_int:          {label: Filter EG Int., cc: 83, group: filter}
+
+  # MODULATION --------------------------------------------------------
+  modulation_depth:       {label: Modulation Depth, cc: 85, group: modulation}
+  modulation_speed:       {label: Modulation Speed, cc: 86, group: modulation}
+
+  # ENVELOPE ----------------------------------------------------------
+  eg_decay_release:       {label: EG Decay/Release, cc: 72, group: envelope}
+  eg_attack:              {label: EG Attack, cc: 73, group: envelope}
+
+  # AMP ---------------------------------------------------------------
+  amp_level:              {label: Amp Level, cc: 7, group: amp}
+  amp_pan:                {label: Amp Pan, cc: 10, group: amp}
+
+  # INSERT FX ---------------------------------------------------------
+  insert_fx_edit:         {label: Insert Fx Edit, cc: 87, group: insert_fx}
+  insert_fx_on:           {label: Insert Fx Off/On, cc: 104, choices: {"off": 0, "on": 127}, group: insert_fx}
+
+  # MASTER FX ---------------------------------------------------------
+  master_fx_x:            {label: Master Fx X, cc: 102, group: master_fx}
+  master_fx_y:            {label: Master Fx Y, cc: 103, group: master_fx}
+  mfx_send_on:            {label: MFX Send Off/On, cc: 105, choices: {"off": 0, "on": 127}, group: master_fx}
+  master_fx_on:           {label: Master Fx Off/On, cc: 106, choices: {"off": 0, "on": 127}, group: master_fx}

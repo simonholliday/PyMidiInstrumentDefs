@@ -27,6 +27,7 @@ source: >-
   User guide (62pp), the edition Moog's file name calls v1.1: pp. 9, 12, 14-15, 21-23, 25,
   27-32, 34-44, 47-48, 50-59, 61, and the change log printed inside the firmware v1.2.0
   package.
+
   THIS INSTRUMENT AND THE SUBSEQUENT 37 ARE ONE MIDI IMPLEMENTATION, and that is the first
   thing to know about this file, because it is why the two definitions carry the same 114
   controls. It was established from the documents rather than assumed from the family name:
@@ -36,10 +37,12 @@ source: >-
   instrument's package are in the Subsequent 37's, byte for byte, including the image
   sub37_1.2.0.mfw and the four system exclusive files that install it by hand. That package
   adds seven files and all seven are the C6 system exclusive utility.
+
   THE MIDI PAGES ARE THE SAME PAGES. Printed pp. 35, 36 and 37, which is the whole of the
   MIDI menu, and p. 52, which is the MIDI operations page and the clock division table,
   were compared character for character with the model name set aside: they are identical,
   and so is the specifications page at p. 61.
+
   THE CHARTS AGREE IN EVERY ROW THIS ONE HAS. Both NRPN charts hold 123 rows numbered
   consecutively 402 to 524, and every row matches in name and in value count. The CC charts
   agree on all 86 rows here; the Subsequent 37's prints one more, ALL NOTES OFF at CC 123,
@@ -48,17 +51,20 @@ source: >-
   1 fonts where the newer manual uses a subset CID font, so an extractor infers word gaps
   differently and reads "AR PEGG IATOR L ATCH" for a string that is identical in both. The
   raw show-string operands were read in both files to confirm the words are the same.
+
   AND MOOG NAMES NO MIDI DIFFERENCE BETWEEN THEM. Every change its notice claims is sonic:
   "The SUBSEQUENT 37 is a (2-note) paraphonic analog synthesizer with double the mixer
   headroom of the Sub 37 ... the gain-staging of the Ladder filter has been reshaped to
   boost harmonic saturation and analog compression ... a re-tuned Multidrive circuit that
   extends well beyond the grit and growl of the original Sub 37", and "Each enhancement
   maintains the magic and character of its predecessor" (product page).
+
   WHAT IS STILL NOT SETTLED, and is marked here rather than resolved: whether an instrument
   of this model answers to CC 123, which the newer manual documents and this one does not
   mention in 62 pages. The two ship one firmware image, so the likely reading is that it is
   a difference between the documents; that cannot be established from documents, and there
   is no Sub 37 here to ask.
+
   TWO TABLES CARRY THE CONTROLS, and they overlap without saying so. The CC chart, pp.
   53-55, has 86 rows; the NRPN chart, pp. 56-59, has 123. Every row of both is accounted
   for below: 73 of the 86 controller numbers are controls here, 10 are rows the maker marks
@@ -77,15 +83,18 @@ source: >-
   sound, it is not possible to assign a standard MIDI CC to every parameter. For complete
   MIDI output from every panel knob and button, you will need to set the KNB NRPN/CC
   parameter to NRPN mode" (p. 56).
+
   THE AMPLIFIER ENVELOPE IS THE OTHER WAY ROUND: ten controller numbers below and no NRPN
   at all. The NRPN chart stops four rows into reserved space at 524, having given the filter
   envelope twelve rows and the amplifier envelope none, while p. 51 lists twelve amplifier
   envelope parameters by name.
+
   THE NRPN CHART'S VALUE RANGE COLUMN IS A COUNT, not a range, and the ranges below are one
   less. The reading is the maker's own five times over: the column's 21 is the 21 clock
   divisions printed on p. 52, its 4 is CC 109's four filter slopes, its 3 is CC 85's three
   glide types, its 6 is CC 71's six modulation sources, and its 7 is CC 91's seven
   destinations.
+
   SIX ROWS OF THAT COLUMN CONTRADICT THE MANUAL ITSELF, and they are marked in place rather
   than corrected. Five are consecutive: NRPN 486 to 490 print 16384, 3, 2, 2 and 21 for
   OSC 2 DUO MODE, OSC 2 FREQUENCY, OSC 2 BEAT, OSC 1 LEVEL and OSC 1 ON, where p. 51 gives
@@ -93,18 +102,21 @@ source: >-
   either side of that block are right. The sixth is NRPN 518, F EG CLK DIV, which prints 2
   where p. 41 sends the same parameter to the 21 clock divisions of p. 52 in words, and
   where the chart's three other clock divisions all print 21.
+
   ONE NAMED ROW HAS NO VALUE RANGE PRINTED AT ALL: NRPN 500, FILTER RESONANCE. That is the
   page rather than the reading, and the Subsequent 37's manual prints the row the same way.
   28 CONTROLS ARE 14-BIT PAIRS, printed as "0-127 [MSB], 0-16383[MSB,LSB]" with the fine
   half 32 above the coarse one, which is the MMA's own pairing. Three further rows are pairs
   and are reserved. Whether the instrument sends both halves is a setting: CC FORMAT offers
   7-BIT and 14-BIT and "use 7-bit (default)" (p. 37).
+
   THE ONE VALUE TABLE THE MANUAL PRINTS FOR A CONTROLLER BELONGS TO A CONTROLLER THE CHART
   NAMES DIFFERENTLY, which is why its 21 divisions are quoted beside LFO 1 Rate rather than
   carried as its values. See the comment there.
   EXCLUDED, and not missed: CC 0 and CC 32, which are bank select, with what this instrument
   puts in them recorded under program_change below; and CC 122 LOCAL CONTROL ON/OFF, a
   channel mode message, which the validator refuses as a control.
+
   NOT RECORDED, and marked in place: the note range, since the manual never says which MIDI
   note numbers the instrument answers to; what the 89 programmable modulation destinations
   are numbered as; the MIDI mode; and a default for any control, since neither chart has a

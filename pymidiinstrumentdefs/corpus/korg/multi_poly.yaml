@@ -34,6 +34,7 @@ source: >-
   implementation chart on printed p. 127, MIDI CC Assign on pp. 121-122, the specifications on
   p. 126, the structure on p. 3, the Layer's MIDI settings on p. 13, the modulation sources on
   p. 64, the Utility MIDI settings on pp. 118-120, and the aftertouch source on p. 120.
+
   THE NUMBERS BELOW ARE OF TWO KINDS AND THE FILE KEEPS THEM APART. Nine are fixed, from the
   chart: modulation at CC 1, volume at 7, pan at 10, expression at 11, the Kaoss pad's two axes
   at 18 and 19, and the damper, sostenuto and soft pedals at 64, 66 and 67. Twelve are **factory
@@ -42,16 +43,19 @@ source: >-
   as 24 to 27, and Kaoss Physics "18-20, 105-110". They are recorded because a factory default is
   a fact about the instrument as it leaves the factory, and marked as defaults so that nothing
   reads them as fixed.
+
   THE TWO PAGES AGREE WITH EACH OTHER. The chart marks "2-6, 8-9, 12-31, 32-63, 65, 67-95,
   102-119" as "Assignable for controllers and modulation", which is 107 of the 128 numbers, and
   every default above falls inside it. Only CC 0 and CC 96 to 101 appear nowhere in that block at
   all.
+
   THAT RANGE IS WHERE FOURTEEN THINGS MAY BE PUT, NOT A HUNDRED CONTROLLERS, and reading its two
   O marks without its footnote is the mistake this instrument invites. Footnote *1 narrows it:
   "Sent and received by Mod Knobs and Scale Select when assigned in UTILITY > MIDI CC Assign;
   also received as programmable modulation sources". The settings page offers exactly fourteen
   assignable slots - nine for Kaoss Physics, one for Scale Select, four for the Mod Knobs - and
   they are the fourteen numbers below that are not fixed.
+
   AND THE CHART CONTRADICTS ITSELF ABOUT CC 67, exactly as the wavestate's does. Its own row
   gives 67 to the soft pedal, recognised and not sent, while the assignable range printed
   directly below it begins at 67 and is marked both ways. **The same template, the same
@@ -59,6 +63,7 @@ source: >-
   instrument's, though neither document says so. The dedicated row is followed here, as it is
   there, and 68 would make the range consistent; that is a guess rather than a reading, so it is
   not made.
+
   READING THAT CHART NEEDS CARE AND THE REASON IS NOT THE ONE THE wavestate HAD. Three of its
   spans come back **29 below the characters they draw** - the heading "Recognized" as
   `5HFRJQL]HG`, and the two lines of the model block - which is the opsix's cipher on a page
@@ -67,23 +72,28 @@ source: >-
   columns here were settled from the page's own geometry, by the three vertical rules at x 215.0,
   302.7 and 387.5 and by which of them each heading falls between, and the two mark columns are
   in the order they read - "Transmitted" left, "Recognized" right.
+
   THE PAGE ALSO CARRIES A HEADING THAT IS NOT PRINTED ON IT. A span reading "MIDI Implementation
   Chart" sits above the visible "[Analog Modeling Synthesizer]" and renders as nothing at all, so
   an extractor reports a title the page does not show.
+
   AND THE CHART CALLS THE X-Y PAD SOMETHING THE INSTRUMENT IS NOT. Its row for 18 and 19 reads
   "Kaoss Pad X, Y", where the front panel, the settings page and the chapter on it all say Kaoss
   Physics; Kaoss Pad is this maker's name for a different product line. The labels below follow
   the chart for those two numbers and the manual for the rest.
+
   THE INSTRUMENT SENDS LESS THAN IT RECEIVES, which is what `direction` is for: volume, pan,
   expression, sostenuto and soft are recognised and never sent. Modulation, the two Kaoss pad
   axes and the damper travel both ways, and so does every default, which footnote *1 puts
   plainly: "Sent and received by Mod Knobs and Scale Select when assigned in UTILITY > MIDI CC
   Assign; also received as programmable modulation sources".
+
   WHICH LAYER A MOD KNOB REACHES IS DECIDED BY THE CHANNEL AND NOT BY THE NUMBER. There are four
   Layers and one set of four Mod Knob numbers: "MIDI CCs received by and sent from the Program
   Mod Knobs, for any Layer with Use Global MIDI Channel enabled" (p. 118). So a Layer given a
   channel of its own answers to 24 to 27 on that channel. The format has no way to say "whichever
   part received it", so those four name no part and this says so instead.
+
   NOT RECORDED: WHICH KIND OF AFTERTOUCH, and not because nobody looked. The chart marks both
   Polyphonic (Key) and Channel aftertouch as recognised and neither as transmitted, and a setting
   chooses which reaches the sound: "AT Source ... Off: All aftertouch will be ignored. Channel:
@@ -91,8 +101,10 @@ source: >-
   receives Poly Aftertouch ... Chan+Poly: The mod source "Aftertouch" receives both Channel and
   Poly Aftertouch" (p. 120). This field holds one of channel, poly or none, and no one of them is
   true here. The keyboard itself has none: "Note: Aftertouch is supported via MIDI only" (p. 119).
+
   NOT RECORDED: THE PITCH BEND RANGE. The chart marks pitch bend as travelling both ways and
   gives no span, and the words "bend range" appear on no page of the manual.
+
   CHECKED AND ABSENT: NRPN and RPN. Neither word appears anywhere in the 133 pages, and the
   Property Exchange files hold no controller number at all. Transport likewise: the chart marks
   Song Position, Song Select, Tune Request and the real-time Commands X in both columns, so start

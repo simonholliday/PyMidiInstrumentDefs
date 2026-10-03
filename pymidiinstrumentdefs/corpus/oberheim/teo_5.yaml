@@ -45,11 +45,13 @@ source: >-
   User's Guide Version 2.0 (116 pages) states what the instrument is and names the states some
   parameters step through; its pages are cited as file pages, because its front matter is
   unnumbered.
+
   NRPN IS THE MAKER'S PREFERRED WAY IN, AND WHICH ONE IT USES IS A SETTING. "MIDI Param Send:
   Off, CC, NRPN" and "MIDI Param Receive: Off, CC, NRPN - Sets the method by which parameter
   changes are received via MIDI. As with transmission, NRPNs are the preferred method"
   (pp. 1-2). So a control below with both numbers is one parameter reachable either way, and
   which way depends on how the instrument is set.
+
   SIXTEEN PARAMETERS GET A DIFFERENT RANGE IN EACH TABLE, and `nrpn_range` carries the NRPN's.
   Thirteen of those are NRPN being finer, which is the maker's own reason for preferring it -
   the two filter figures at 0-1024 and 0-512, and ten envelope and LFO figures at 0-256, where
@@ -58,20 +60,24 @@ source: >-
   by NRPN; Scale is 0-65 by control change and 0-64 by NRPN, so the NRPN is the *narrower* of
   the two; and BPM is 15-127 by control change against 30-250 by NRPN, which do not even
   overlap at the top, so the control change cannot reach the tempos the NRPN can.
+
   AND READ EVERY ONE OF THOSE WIDE RANGES AS A COUNT RATHER THAN A TOP, which is the one thing
   that makes them make sense. 0-256, 0-512 and 0-1024 all name one value more than the bit width
   they imply, while the forty-eight modulation amounts in the same table are 0-255, which is
   right. So the maker appears to have written the number of values where the highest value
   belongs, in some rows and not others. Both readings found this and neither corrected it: the
   figures below are the document's.
+
   ONE RANGE IS THEN ALMOST CERTAINLY A TYPO, recorded as printed for the same reason. Filter Res
   is given 0-265 (p. 9) where every other wide parameter is 256, 512 or 1024. 265 falls out of
   no bit width and is one digit away from 255.
+
   THE TWO TABLES ARE NOT SYMMETRICAL, and three absences are the maker's rather than this
   file's: there is a control change for Osc 2 Detune and none for Osc 1 Detune, though the NRPN
   table has both; there is an NRPN for Env 1 Dest and none for Env 2; and the whole modulation
   matrix - sixteen slots of source, amount and destination, forty-eight parameters - is
   reachable by NRPN only.
+
   EXPRESSION IS CLAIMED AT TWO DIFFERENT NUMBERS IN THIS ONE DOCUMENT, which is the sharpest
   thing here for anybody building a controller. The control change table gives "11 Expression
   0-127" (p. 5) and the global table agrees, naming the pedal assignment "2 = Exp CC11"
@@ -86,6 +92,7 @@ source: >-
   says nothing about direction at all, and the two message tables are about a different and
   shorter list. Volume appears **twice** in the transmitted table, once as the pedal assignment
   and once as "Volume knob", both on CC 7.
+
   THE DOCUMENT CANNOT AGREE WITH ITSELF ABOUT BANKS AND PROGRAMS, in five places. Received
   program change is "0-127 for Programs 1-127 within current Bank" and transmitted is "0-127 for
   Programs 00-128 within current Bank" (pp. 3-4) - one is 127 programs for 128 numbers and the
@@ -97,31 +104,37 @@ source: >-
   programs. These are divided into two sets of 256 programs - a Factory set and a User set"
   (guide p. 13), which the four user and four factory banks of the received bank select agree
   with at sixty-four programs a bank.
+
   THE GLOBAL TABLE CONTRADICTS THE PROSE TWO PAGES EARLIER, twice. MIDI Clock Mode is given six
   settings in words - "Off", "Out", "Out No S/S", "In", "In/Thru", "In No S/S" (p. 1) - and four
   in the table, 0-3 as Off, Out, In and In Thru (p. 11), so the two that suppress start and stop
   have no number. MIDI Out Select is "Off, MIDI, USB, All" in words (p. 2) and 0-2 as MIDI, USB
   and All in the table, so Off has none.
+
   THE SISTER DOCUMENT AGREES WITH THE PROSE BOTH TIMES, which is as close to an answer as
   anything here gets. The Take 5's implementation document, numbering its globals identically,
   gives MIDI Clock Mode 0-5 at 4099 and MIDI Out Select 0-3 at 4107 - six settings and four,
   exactly the counts this document's own prose gives. So this table is very likely the stale
   one. **It is still a deduction rather than a statement**, so `choices` below carries the four
   and the three the table prints, and this paragraph is where the doubt lives.
+
   ONE GLOBAL'S DESCRIPTION IS ANOTHER'S, copied and not corrected: "MIDI Sysex On: Off, On -
   When set to On, the synth will respond to MIDI controllers, including pitch wheel, mod wheel,
   pedal, and volume" (p. 2), which is word for word what the line above says about MIDI Control.
   What MIDI SysEx On does is said instead by the table, which calls 4105 "MIDI SysEx Enable".
+
   AND THE TWO SISTER DOCUMENTS SWAP TWO RANGES. Here Master Coarse Tune is 0-100 and Master Fine
   Tune is 0-24 (p. 11); the Take 5's document, at those same two numbers, gives 0-24 and 0-100.
   Twenty-four semitones of coarse tuning and a hundred steps of fine is the reading that makes
   musical sense, so this document is probably the one with them the wrong way round - but it is
   the document for this instrument, so its figures are what is below. The sibling is not the
   better document either: it spells the parameter "Master Course Tune".
+
   THIS DOCUMENT IS AN EXTRACT FROM THE GUIDE, WHICH IS WHY ITS HEADERS ARE RIGHT AND ITS BODY IS
   NOT. Its own running footer reads "TEO-5 User's Guide" on every page. So the furniture was
   updated when Oberheim made it from Sequential's and the sentences inside were not, which is
   the same fault as the guide's nineteen Take 5 headers seen from the other side.
+
   FIVE MORE THINGS IN IT DO NOT ADD UP, and none changes a number below. The program table is
   introduced as "TEO-5 program parameters 0-352" and then runs 1 to 187 in 159 rows with no
   parameter 0 and nothing above 187 (p. 8). The page describing how an NRPN travels says "the
@@ -134,23 +147,28 @@ source: >-
   which is why `transport` below is `both` on the strength of the prose rather than the table.
   The dump request's bank byte is written 0000 00vv, which holds two bits and four values, under
   a stated range of 0 to 15 (p. 13).
+
   THE GLOBAL TABLE'S OWN SPACING IS ERRATIC and the `choices` below do not reproduce it. The
   states are printed "1= MIDI", "0 =All Off", "1 =Passthru", "2= Off" and so on, with the space
   on either side of the equals or on neither. Both readings found the same unevenness, so it is
   the document's rather than a tool's; the names below are keys and carry none of it.
+
   AND THE GLOBALS ARE NAMED TWICE, differently. The panel names on pp. 1-2 and the table names
   on p. 11 do not match for four of them: MIDI Control becomes MIDI Control Enable, MIDI Sysex
   On becomes MIDI SysEx Enable, MIDI Out Select becomes MIDI Cable Out, and MIDI Prog
   Send/Receive become MIDI Program Send/Recv. The labels below are the table's, because the
   table is what carries the numbers.
+
   NOT RECORDED: which number means which named state for any *program* parameter. The
   implementation document gives those as bare ranges, and the guide names the states in words
   without numbering them - "Shape: Triangle, Sawtooth, Reverse Sawtooth, Square, S&H" against a
   range of 0-4 (guide p. 33) tells you there are five and not which is which. The globals are
   different, and `choices` below carries their states because that table does number them.
+
   NOT RECORDED: the note range and the key numbers. The guide gives the keyboard as "its
   44-note keyboard" (p. 17) and names no note number for either end of it; the implementation
   document says only "Note number 0 - 127" for what it receives.
+
   NOT RECORDED: any system exclusive layout. The messages are published - device inquiry, three
   dump requests, three dumps, and the packed-data format - but a program dump is "4096 bytes
   expanded to 4690 MIDI bytes in "packed MS bit" format" (p. 14) with no map of what those bytes
@@ -161,6 +179,7 @@ source: >-
   byte labelled "Oberheim ID" is 0000 0010, the same byte as the "Inquiry Reply" label directly
   above it in the same table; and the global dump says it carries "50 nibbles (LS then MS) for
   25 Global parameters" (p. 15) where the table on the page before lists twenty-seven.
+
   NOT RECORDED, DELIBERATELY: `parts`. The instrument splits its keyboard and stays one
   instrument while it does - "The program is the same for both key ranges" (guide p. 17) - so
   Key Split, Key Split 2 and Key Split Note are controls below and not parts.

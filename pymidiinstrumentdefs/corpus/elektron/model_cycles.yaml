@@ -44,25 +44,30 @@ source: >-
   p. 51, APPENDIX A: MIDI SPECIFICATIONS on p. 52, and APPENDIX B and APPENDIX C on p. 53. The
   downloads page is cited for which OS is current and the release notes for what it changed,
   because the manual says neither.
+
   THIRTY CONTROL CHANGES, IN THE APPENDIX'S OWN FOUR GROUPS: sixteen track parameters, two
   playback parameters, eight LFO parameters and four effect parameters. Every number is distinct
   and inside 0 to 127, and the generator that wrote the block below checks both.
+
   WHICH PART A CONTROL ANSWERS ON COMES FROM THE CHANNEL MENUS AND NOT THE APPENDIX, and the
   manual draws the line in one sentence each way: "T1-6 IN selects the dedicated MIDI channel
   that is used to receive parameter data to a specific track" and "FX IN selects the dedicated
   MIDI channel for the DELAY and REVERB parameters" (p. 44). So twenty-six of the thirty answer
   on a track's own channel and four on the effects' channel. Delay Send and Reverb Send stay
   with the track, because they are a track's amount of an effect rather than the effect.
+
   THERE IS NO BASE CHANNEL AND SEVERAL TRACKS MAY SHARE ONE. "Any MIDI channel can be assigned
   to a track and several tracks can share the same channel. If several tracks are assigned to
   the same MIDI channel the track with the lowest number has priority regarding parameter
   conflicts" (p. 16). That last rule is this instrument's own and no field here holds it.
+
   SIX MACHINES, NAMED ONCE AND NUMBERED NOWHERE. The foreword says what they are - "six
   different machines: Kick, Snare, Metal, Perc, Tone, and Chord" (p. 9) - and "Any machine can
   be assigned to any track and can be parameter locked" (p. 35). **CC 70 selects one of them and
   the manual gives no number for any machine**, so `machine_selection` below has six states and
   no mapping. The order above is the order pp. 35-36 print them in, and the manual nowhere says
   that is the order the menu uses.
+
   AND THE PAGE THAT WOULD ANSWER "WHAT DOES CC 16 DO" IS NOT IN THE TEXT LAYER. The table on
   p. 36 sets the six machines against their four macro controls, and only the Chord machine's
   row can be extracted - that row is moreover left in the file invisibly on two other pages,
@@ -77,32 +82,44 @@ source: >-
   Detune", unison or chord, wavetable sweep, filter cutoff envelope depth. **Those twenty-four
   readings are the one thing in this file that a second method could not corroborate**, because
   no text engine can see five of the six rows.
+
   THE INDEX STILL CARRIES THE SAMPLER'S PARAMETERS, which is the plainest evidence of where this
   document came from. It lists "SAMPLE LOCKS" and, on the previous page, "LOOP" and "REVERSE" -
   and LOOP and REVERSE appear nowhere else in these fifty-six pages, because this instrument has
   neither. The Model:Samples has both, at CC 17 and 18, where this one has Shape and Sweep. The
   body slips the same way once: p. 18 offers to "backup up your projects and samples", on an
   instrument whose own foreword asks "how do we accomplish that without using samples?".
+
   AND FOUR CONTROLS CHANGE MEANING WITH THE MACHINE, which is the thing that most distinguishes
   this instrument from its sibling. "The four parameters, COLOR, SHAPE, SWEEP, and CONTOUR,
   affects the sound in different ways depending on what machine you have selected" (p. 37) - so
   CC 16 is six different parameters depending on CC 70. The Analog Rytm in this corpus has the
   same shape and more of it; there is nothing in this format to express it, and the labels below
   are the appendix's.
-  NOT RECORDED: WHAT SHAPE DOES UNDER THE CHORD MACHINE, although the manual lists it. APPENDIX
+
+  NOT RECORDED: WHAT SHAPE DOES UNDER THE CHORD MACHINE, although the manual lists it.
+
+  APPENDIX
   C names thirty-eight settings in order - unison spreads and then chords from "minor" to
   "Fifths" - and **gives no number against any of them**, so they cannot become `choices`.
+
   A THIRD CHANNEL IS AN ALIAS RATHER THAN A PART. "AUTO IN selects the MIDI channel for the AUTO
   channel that gives access to the currently active track" (p. 44), so it addresses no fixed
   part. A fourth, PCH, carries program change alone.
+
   AND ONE DIRECTION HAS NO AUTO CHANNEL, as on the sibling. The input menu has nine entries, six
   tracks and FX and AUTO and PCH; the output menu has eight, six tracks and FX and PCH. So the
   AUTO channel receives and does not send.
-  TWO MODULATION DESTINATIONS HAVE NO CONTROLLER AT ALL. APPENDIX B names Fine Tune and LFO Trig
+
+  TWO MODULATION DESTINATIONS HAVE NO CONTROLLER AT ALL.
+
+  APPENDIX B names Fine Tune and LFO Trig
   Mode among the things the LFO and velocity can reach, and neither has a row in APPENDIX A - so
   they can be modulated from inside the instrument and not set from outside it.
+
   NOT RECORDED: aftertouch, pitch bend and system exclusive. The manual mentions none of the
   three anywhere, in either direction, so all three are silences rather than checked absences.
+
   NOT RECORDED: any `range`, and the reason is the sibling's. The appendix has two columns,
   Parameter and CC MSB, and nothing else. The parameter chapters do give ranges, but in the
   instrument's own units: Pitch is "(-24-+24, equivalent to four octaves.)" and bipolar (p. 37),
@@ -112,6 +129,7 @@ source: >-
   appendix and no LSB - exactly as on the sibling, whose own Delay Feedback is the same 0 to 198.
   Nothing says how any of those becomes a controller value, so every control below keeps the
   format's default of 0 to 127.
+
   NOT RECORDED: the kind of MIDI socket. The specification gives "3.5 mm dual polarity TRS MIDI
   In, Out/Thru jacks" (p. 51) and the output's polarity is a setting; there is no field for a
   connector, so it is here.

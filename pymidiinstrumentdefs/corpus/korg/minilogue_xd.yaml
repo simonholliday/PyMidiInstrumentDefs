@@ -21,36 +21,45 @@ source: >-
   channel messages, 1-2 and 2-3 for the real-time messages, and the Non Registered
   Parameter Number table under footnote *3; and the owner's manual (68pp) at pp. 45 and
   66 for the MIDI channel setting and the specifications.
+
   The instrument transmits 64 control changes and recognises 67. The three it recognises
   and never sends are All Sound Off, Local Sw and All Note Off, which are channel mode
   messages belonging to the MIDI specification rather than to any instrument, and are
   excluded for that reason rather than missed. Six more are the machinery of other
   messages rather than controls of their own, and are excluded too: Bank Select MSB and
   LSB, Data Entry MSB, NRPN MSB and LSB, and the LSB VALUE register described below.
+
   What a value means is taken from the receive side throughout, because a definition's
   named values answer what to send in order to put a control into a state. That matters
   here, because the two sides disagree.
+
   SYNC and RING are printed with opposite polarity in the two sections. Transmitting,
   "SYNC:OFF, ON = vv:0,127"; receiving, "vv:0~63,64~127 = SYNC:ON, OFF". So a value of 0
   is sent to mean OFF and is received to mean ON, and the same for RING. This file
   records the receive reading, which is what reaches the instrument, and the contradiction
   is recorded here rather than resolved.
+
   Three further faults in the document, all left as the maker printed them.
+
   First, the row for REVERB SUB TYPE cites footnote *6-14, and no such footnote exists in
   the document; the footnote numbered *5-14 is defined, is cited by nothing, and carries
   exactly this control's eighteen names. Its bands are used, and this note is why.
+
   Second, MOD FX TYPE's receive bands are printed "0~25,26~51,52~76,77~102,102~127", in
   which 102 both ends one band and begins the next. The band starts recorded here make
   102 the first value of USER, which is one reading of an overlap the document does not
   resolve.
+
   Third, the transmitted value list for MOD FX SUB TYPE under USER ends "112,128", and
   128 is not a value a 7-bit control change can carry; every sibling list in the document
   ends 127. Nothing here depends on it, since the receive side governs.
+
   NOT RECORDED, and marked in place: the range of notes it answers to, which neither
   document states; whether it acts on note-off velocity; and the value bands for the two
   controls whose meaning depends on another control's setting, which the format cannot
   express - MOD FX SUB TYPE depends on MOD FX TYPE, and MULTI SUB TYPE SELECT on MULTI
   TYPE, each with a different set of bands under each.
+
   One further thing the format cannot carry, and the file does not pretend to: this
   maker sends many controls at 10-bit resolution by first sending the low three bits as
   CC 63, then the upper seven as the control's own number. That is not the MMA's

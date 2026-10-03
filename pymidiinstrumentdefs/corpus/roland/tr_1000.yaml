@@ -32,6 +32,7 @@ source: >-
   names 03 and marks "Version 1.20 and later": the tracks on printed p. 14, the step velocity on
   pp. 23 and 28, the MIDI settings on p. 47, the step shortcut on p. 74 and the specifications
   on p. 75. And Roland's own system program page, for the version history.
+
   SIXTY-SIX CONTROL CHANGES, EVERY ONE MARKED BOTH WAYS. Fifty-two of them belong to the ten
   instruments the chart names - BD, SD, LT, HT, RS, HC, CH, OH, CC and RC - and fourteen to the
   machine as a whole. The four with seven parameters each, tune, decay, mix, three controls and
@@ -40,19 +41,23 @@ source: >-
   six single tracks (RS, HC, CH, OH, CC, RC). Layer tracks use two sets (A, B) of sound
   generator, filter and amp sections. Single tracks use one set" (p. 14), which is why only four
   of them have a mix control.
+
   THE MARKS ARE PLAINER THAN THE INSTRUMENT. Every one of those sixty-six rows reads `o` in both
   columns, and the manual gates all of them behind two settings that are not in the chart at all:
   "Tx Edit Data OFF, ON. Specifies whether CC messages are transmitted (ON) or are not", and the
   same for "Rx Edit Data" (p. 47). Notes, program change and the real-time messages each have
   their own pair as well.
+
   CC 46 TO 63 ARE THE LSB PARTNERS OF CC 14 TO 31 IN THE SPECIFICATION, and this chart gives
   them parameters of their own - the same trap the Digitakt II sets. It avoided it once and not
   twice: the run 32 to 45, which would collide with 0 to 13, is left empty, and then 46 to 63 is
   used in full. CC 88 is the one number missing from the otherwise solid run 80 to 91, and the
   chart does not say why.
+
   THE LABELS ARE THE CHART'S OWN WORDS, in its own capitals, because the remark column is all it
   gives: "BD TUNE", "SD CTRL1", "MASTER FX CTRL3". The manual names none of these numbers, so
   there is nothing to reconcile them against.
+
   ELEVEN INSTRUMENTS HAVE NOTE NUMBERS AND THEY ARE DEFAULTS. The chart's note table gives three
   columns - Note Number, Note Number (Layer A only), and Note Number (Layer B and Alt.) - and
   footnotes all of them: "These note numbers are configurable on MENU>SYSTEM>MIDI>Inst Note",
@@ -63,22 +68,26 @@ source: >-
   Layer A only - BD 35, SD 40, LT 41, HT 48, and a dash for every other instrument.
   Layer B and Alt. - BD 99, SD 104, LT 105, HT 112, RS 56, HC 54, CH 44, OH 58, CC 61, RC 63, and
   a dash for TRG.
+
   THAT SECOND HEADING IS WRONG FOR SIX OF ITS OWN ROWS. Only the four layer tracks have a Layer
   B; the six single tracks have one set of sections and no second layer, so for them the column
   can only mean the alternate sound. And for the four that do have a Layer B, the chart puts the
   layer and the alternate sound in one column, so nothing says whether they are the same note or
   two the chart has run together.
+
   TWO CHANNELS, NOT ONE, and this format holds one range for both. "Pattern Ch. 1-16 ... the MIDI
   transmit/receive channel of the pattern sequencer", default 10, and "Kit Ch. 1-16 ... the MIDI
   transmit/receive channel for program change messages that switch kits", default 1 (chart,
   p. 47). So the controls and the notes arrive on one channel and the kit changes on another, and
   `midi.channels` records the span each may take.
+
   THE SECOND MIDI MODE IS UNPUBLISHED. "MIDI Mode ... Single Ch. (Single Channel): Uses the MIDI
   channel specified in the Pattern Ch. parameter. Each Track Ch. (Each Track Channel): Splits
   each track into its own MIDI channel. See MIDI Implementation Chart for detail (Roland
   website)" (p. 47). The chart it names is the one above, which is nine releases older than the
   mode and says nothing about it. So which channel each track takes in that mode is not
   published, and nothing here claims it.
+
   THE CHART AND THE MANUAL DISAGREE ABOUT VELOCITY, and both readings are left standing. The
   chart's Velocity row gives "o 9nH v=80" transmitted against a bare "o" recognised, which reads
   as a machine that sends one fixed velocity and accepts any - the TR-8S's chart says the same of
@@ -86,16 +95,19 @@ source: >-
   (p. 23), a "Curve" of -64 to +64 for it (p. 28), and a shortcut to adjust the velocity of a
   step (p. 74). `note_on: received` is what both agree on; what this instrument transmits is not
   recorded, because the two documents cannot both be right.
+
   CHECKED AND ABSENT: system exclusive, both aftertouches and pitch bend, each marked x in both
   columns. **Every Aux message is x in both columns as well** - All Sound Off, Reset All
   Controllers, Local On/Off, All Notes Off, the four mode messages, Active Sensing and System
   Reset - so a note left sounding by this instrument cannot be stopped over MIDI by any standard
   means.
+
   THE CHART'S HEADER CALLS IT A RHYTHM PERFORMER AND THE MANUAL'S COVER CALLS IT A RHYTHM
   CREATOR. Neither document mentions the other's name for it. And the chart carries the usual
   four-mode legend at its foot while having no Mode block at all: Roland replaced the basic
   channel and mode pair with Pattern Channel and Kit Channel, and left one "Altered" row inside
   the second of them.
+
   NOT RECORDED: NRPN, which the chart has no row for and the manual never mentions - silence
   rather than a checked absence. And the four jacks that are not MIDI: this instrument has
   trigger and CV connectors and a DIN SYNC output, and no field here holds them.

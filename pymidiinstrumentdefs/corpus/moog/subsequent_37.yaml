@@ -22,6 +22,7 @@ source: >-
   User manual (63pp), pp. 9, 12, 14-15, 21-23, 25, 27-32, 34-44, 47-48, 50-59, 61, and the change log
   printed inside the firmware v1.2.0 package, which is where Moog keeps release notes for
   every instrument in this corpus.
+
   TWO TABLES CARRY ALL OF IT, and they overlap without saying so. The CC chart, pp. 53-55,
   has 87 rows; the NRPN chart, pp. 56-59, has 123, numbered consecutively from 402 to 524.
   Every row of both is accounted for below: 73 of the 87 controller numbers are controls
@@ -43,17 +44,20 @@ source: >-
   Subsequent 37 has over 150 parameters saved with each sound, it is not possible to assign
   a standard MIDI CC to every parameter. For complete MIDI output from every panel knob and
   button, you will need to set the KNB NRPN/CC parameter to NRPN mode" (p. 56).
+
   THE AMPLIFIER ENVELOPE IS THE OTHER WAY ROUND, and it is the one gap worth naming: it has
   ten controller numbers below and no NRPN at all. The NRPN chart simply stops, four rows
   into reserved space at 524, having given the filter envelope twelve rows and the amplifier
   envelope none, while p. 51 lists twelve amplifier envelope parameters by name. So "over
   150 parameters" is not what the published chart reaches.
+
   THE NRPN CHART'S VALUE RANGE COLUMN IS A COUNT, not a range, and the ranges below are one
   less. The reading is the maker's own five times over: the column's 21 is the 21 clock
   divisions printed on p. 52, its 4 is CC 109's four filter slopes, its 3 is CC 85's three
   glide types, its 6 is CC 71's six modulation sources, and its 7 is CC 91's seven
   destinations. Where a parameter has both a controller number and an NRPN, nrpn_range is
   given only when it differs from what the controller takes.
+
   SIX ROWS OF THAT COLUMN CONTRADICT THE MANUAL ITSELF, and they are marked in place rather
   than corrected. Five are consecutive: NRPN 486 to 490 print 16384, 3, 2, 2 and 21 for OSC 2
   DUO MODE, OSC 2 FREQUENCY, OSC 2 BEAT, OSC 1 LEVEL and OSC 1 ON, where p. 51 gives those as
@@ -63,6 +67,7 @@ source: >-
   21 clock divisions of p. 52 in words, and where the chart's three other clock divisions all
   print 21. Each of the six carries its NRPN and no nrpn_range, because a count that cannot be
   right is not a range.
+
   ONE NAMED ROW HAS NO VALUE RANGE PRINTED AT ALL: NRPN 500, FILTER RESONANCE. That is the
   page rather than the reading, and it was established twice over, because a missing cell
   and an unread cell look the same in text. In this manual the row's numbers are drawn as a
@@ -76,6 +81,7 @@ source: >-
   the instrument sends both halves is a setting and not a fact about the model: CC FORMAT,
   in MIDI MENU 3, offers 7-BIT and 14-BIT and "use 7-bit (default)" (p. 37). So an
   instrument out of the box sends the coarse half alone, as the Grandmother does.
+
   THE ONE VALUE TABLE THE MANUAL PRINTS FOR A CONTROLLER BELONGS TO A CONTROLLER THE CHART
   NAMES DIFFERENTLY, and that is why its 21 divisions are quoted beside LFO 1 Rate rather
   than carried as its values. The table on p. 52 is headed "MIDI CC VALUES FOR THE LFO 1
@@ -86,10 +92,12 @@ source: >-
   (p. 23). One controller, two meanings, and which one applies depends on another parameter.
   The format has no field for that, so the table is printed in full where a reader will meet
   it. The same is true of the arpeggiator's RATE knob (p. 15).
+
   AND THAT TABLE CONTRADICTS ITSELF ONCE: it gives the whole note as "25-40" and the dotted
   half note directly below it as "31-36". The other 19 bands run consecutively from 0 to 127
   with no gap and no overlap, which leaves 25-30 as the only reading that fits, and 25-30 is
   not what the page prints. It is quoted as printed.
+
   THE MANUAL ALSO DISAGREES WITH ITSELF ABOUT DATA ENTRY. Page 44 says a tuning scale is
   selected by "RPN [Registered Parameter Number] MSB 0, LSB 3" and then "send Data Entry
   (CC #39) value 0-31", while the chart gives CC 39 as the fine half of CC 7 MASTER VOLUME
@@ -101,9 +109,12 @@ source: >-
   EXCLUDED, and not missed. CC 0 and CC 32 are bank select, which the MMA defines and every
   instrument that has banks uses the same way; what this instrument puts in them is recorded
   under program_change below, because the chart's own value column for CC 32 is the only
-  place the manual says how its 16 banks are addressed. CC 122 LOCAL CONTROL ON/OFF and CC
+  place the manual says how its 16 banks are addressed.
+
+  CC 122 LOCAL CONTROL ON/OFF and CC
   123 ALL NOTES OFF are channel mode messages, which belong to the MIDI specification and
   which the validator refuses as controls.
+
   NOT RECORDED, and marked in place: the note range, since the manual never says which MIDI
   note numbers the instrument answers to, only that its oscillators are calibrated over
   "22Hz-6.8kHz. Guaranteed note range at 8' of Note 18 to 116" (p. 61) and that the
@@ -113,6 +124,7 @@ source: >-
   modulation destinations are numbered as, since p. 51 names them and numbers none; the MIDI
   mode, which the manual never gives; and a default for any control, since neither chart has
   a default column and the manual gives defaults only for the menu settings.
+
   WHAT THE SUB 37 HAS TO DO WITH THIS, in full, because the two are nearly the same document
   and the difference is one row. Moog's own notice, on this instrument's product page, says
   "Aug. 28, 2017, Asheville, NC - In the spirit of continuous improvement, the award-winning

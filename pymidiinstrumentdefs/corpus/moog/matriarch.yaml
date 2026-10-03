@@ -21,6 +21,7 @@ source: >-
   implementation chart at pp. 70-74. The control-change map is the manual's own
   table at pp. 73-74, whose columns are Parameter | CC Number (MSB) | CC Number
   (LSB) | Values. Band boundaries below are quoted from that table.
+
   AND THE FIRMWARE v1.3.0 UPDATE DOCUMENT, five pages, published inside the firmware
   package rather than beside it, cited for the firmware this definition describes and for two
   numbers the manual does not settle:
@@ -29,9 +30,11 @@ source: >-
   V1.2.0 on the notes' own p. 3, where the manual's chart gives Arp Gate Length as CC 15 with a fine half at CC 47.
   Two of the maker's own documents give two numbers for what reads as one parameter, and both
   are recorded, each saying what the other says.
+
   CC 73 IS RECEIVED AND NOT SENT, which the chart does not distinguish: "Arp/Seq PLAY button
   does not output MIDI CC 73 (can still respond to it if necessary)", under the same section,
   with the reason "Improves compatibility with other Grandmother/Matriarchs".
+
   READ THOSE NOTES' HEADINGS CAREFULLY. Every change list in them is headed by the version it
   is changes SINCE - "CHANGES SINCE V1.2.3", "CHANGES SINCE V1.2.0" - and never by the version
   it shipped in, and the document names no v1.2.1 at all. So only two things in it can be
@@ -43,14 +46,17 @@ source: >-
   changed to off; and the instrument "no longer outputs unexpected streams of MIDI CC/NRPN
   data", which is a fault in firmware before this one rather than a feature of it. That line is
   also the only place either document mentions NRPN, and it gives no NRPN number.
+
   ONE PROMISE THOSE NOTES DO NOT KEEP: "Can now edit global settings via MIDI SysEx messages
   (documented below)", and nothing below documents one. Their remaining pages describe reaching
   the global settings from the keyboard, and no system exclusive message, byte or template
   appears anywhere in them. So `sysex: true` below still rests on the manual, as it always did,
   and this instrument's SysEx interface is documented somewhere Moog has not published here.
+
   AND ONE KNOWN ISSUE WORTH A READER'S TIME: the notes' KNOWN OUTSTANDING ISSUES AS OF V1.3.0
   include "Send Program Change - Seems to have no effect". This definition records program
   change as received and says nothing about sending, which agrees with that.
+
   NOT RECORDED, and marked in place: the power-on default for the voice mode
   switch.
 

@@ -235,6 +235,15 @@ voice:
   polyphony: 1
 ```
 
+**Put a blank line between the topics of your `source` account.** It is a folded
+scalar, so a single line break becomes a space and the whole account arrives as one
+string — but a *blank* line survives as a real line break, and that is where a reader's
+page starts a new paragraph. An account of any length that has none reads as one slab.
+Open a topic in capitals where that suits it, as most accounts here do — `NOT RECORDED,
+and marked in place:` and the like — and put a blank line before it either way, so the
+breaks do not depend on anyone recognising a lead-in. Nothing about this changes what an
+account says, only where it breaks.
+
 **An NRPN printed as two columns is recorded as one number.** Many makers print an
 NRPN's parameter number whole, and it goes in `nrpn` as printed. Others print an MSB
 column and an LSB column, as Elektron does: record `nrpn` as **MSB x 128 + LSB**, which

@@ -27,11 +27,13 @@ source: >-
   implementation is two sheets at the back which print no page number of their own; they
   are cited as pp. 34 and 35, the positions they occupy after printed page 33, and
   everything before them is numbered and matches the file page for page.
+
   THIS INSTRUMENT IS TRANSCRIBED FROM A SCAN, as the DX7 is. The manual is photographic:
   all 36 pages extract zero characters, there is no text layer at all, and so
   `tools/check_citations.py` reports that it checked none of these numbers rather than
   that it failed to find them. Every number here was read by eye from rendered pages,
   twice and independently, by two readers who did not see each other's result.
+
   ONE DOCUMENT EXISTS AND THESE ARE THE SEARCHES BEHIND THAT. Roland keeps a support page
   for this product and serves nothing on it: the element that holds a document list is
   empty, where the TR-8S's holds thirteen links and the JUPITER-X's more. The manual is
@@ -40,6 +42,7 @@ source: >-
   implementation document, from the D-50's to the VM-3100's, and none is a JUNO-106: this
   instrument's MIDI material is the appendix inside its own manual. Roland's five older
   legacy indexes were searched too and none mentions it.
+
   THE MIDI FUNCTION SWITCH IS WHY THE CHART HAS THREE COLUMNS A SIDE. A three-position
   switch beside the MIDI jacks decides what travels, and the chart's "Transmitted" and
   "Recognized" columns are headed 1, 2 and 3 for it. Position I is "communication of only
@@ -49,6 +52,7 @@ source: >-
   only in the positions their comments give, and the implementation at p. 35 says the same
   thing a second way, section by section. Which position a player leaves the switch in is
   a rig setting and is not recorded here.
+
   EVERY ROW OF THE CHART IS ACCOUNTED FOR. Twelve function blocks, twenty-six rows in all,
   and a Notes row.
   Carried as fields: Basic Channel, Note Number, Velocity, After Touch, Prog Change,
@@ -60,12 +64,16 @@ source: >-
   is CC 123, a channel mode message that the format refuses as a control and the public
   guide forbids. The same goes for the 124, 125, 126 and 127 in the implementation's own
   received list: they are channel mode messages, excluded by category rather than missed.
+
   NOT RECORDED, MODE. The chart gives two different defaults - 3 transmitted, 1 recognised
   - and `midi.mode` holds one number. The implementation says which is which: "When power
   is first applied, receiver's mode is OMNI ON, POLY mode" (p. 35, mode 1), while the
-  chart's own Notes row says "When power up. OMNI OFF, POLY ON are sent in channel 1"
+  chart's own Notes row says "When power up.
+
+  OMNI OFF, POLY ON are sent in channel 1"
   (mode 3). Writing either number alone would deny the other, so neither is written, the
   way the DX7's aftertouch is left out for the same reason.
+
   NOT RECORDED, PITCH BEND. It is received and transmitted in positions II and III, and
   how far it bends is two front-panel knobs rather than a number: DCO Bend Sens sets "the
   variable range of the DCO's pitch, when it is controlled by the Bender", to a maximum of
@@ -75,6 +83,7 @@ source: >-
   uses it in, and `semitones` would be a number the manual never states. What the
   instrument does with a bend that arrives is recorded in the controls' comments instead:
   it ignores the low six bits, so a bend reaching it is coarse however it was sent.
+
   ALSO NOT CARRIED, because the format has no field for it: the sixteen potentiometers and
   two switch bytes that system exclusive addresses as parameter numbers 0 to 17 (p. 35).
   That list is the whole of this instrument's remote editing - LFO rate and delay, DCO LFO
@@ -83,6 +92,7 @@ source: >-
   high-pass filter, the VCA source, envelope polarity and PWM mode - and not one of them
   has a controller number or an NRPN. It is the same shape as the DX7's 156 voice
   parameters: real, published, and nothing a `controls` block can hold.
+
   ONE PLACE WHERE THE DOCUMENT CONTRADICTS ITSELF, recorded rather than resolved and
   touching nothing above. The third exclusive layout, the one that carries a parameter
   change, prints its function type as the binary 0011 0001 against the hex $32 (p. 35).

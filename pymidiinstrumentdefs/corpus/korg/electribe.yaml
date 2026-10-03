@@ -50,15 +50,20 @@ source: >-
   The Parameter Guide (English, 18 pages) names the states the global settings step through, and
   the Owner's Manual (112 pages, six languages in one file) carries the specifications. Both are
   cited by page; the implementation has none, so nothing cites a page of it.
+
   AND THE OWNER'S MANUAL CARRIES A CHART OF ITS OWN, on p. 110 - past the English section, past
   the French and German ones, among the back matter where a reader of the English pages would
   never meet it. It is a second witness and it does not agree with the implementation
   everywhere; what it settles and what it muddies are both below.
-  EIGHTEEN CONTROL CHANGES AND NOT ONE MORE. CC 7, 10, 71 to 74, 80 to 83, 85 to 87 and 102 to
+
+  EIGHTEEN CONTROL CHANGES AND NOT ONE MORE.
+
+  CC 7, 10, 71 to 74, 80 to 83, 85 to 87 and 102 to
   106 - the amplifier's level and pan, the filter's three, the two envelope stages, the
   oscillator's three, the modulation's two, and the two effects' six between them. A hundred and
   two numbers between 0 and 119 are used by nothing, and the document says nothing about any of
   them.
+
   WHAT GATES THEM ALL IS ONE GLOBAL SETTING, and the implementation has a column for it that
   most charts do not. Every parameter row is marked "S : Enabled When Global MIDI RECEIVE/SEND
   FILTER is "Off"", and bank select and program change are marked "P : Enabled when Global MIDI
@@ -68,6 +73,7 @@ source: >-
   messages are not received" (guide p. 6), and a MIDI SEND FILTER does the same outward. **So a
   single setting silences all eighteen**, and the three channel mode messages at 120, 121 and
   123 are the only ones marked "A : Always Enabled".
+
   SIXTEEN PARTS, AND NO WAY THE DOCUMENTS GIVE OF CHOOSING ONE. The system exclusive layout
   carries a parameter table for each part at its own offset, so a part's whole state can be read
   and written that way - but **the part parameter table has no MIDI channel field**, the only
@@ -83,6 +89,7 @@ source: >-
   specification gives "The maximum number of sound (per part):    MAX, 4 voices" (manual p. 19),
   printed with a comma after MAX and "number of sound" in the singular. The guide agrees from the
   other side: "You can record up to four note numbers in each target step" (p. 5).
+
   THREE PARAMETERS CHANGE MEANING WITH A TYPE THAT HAS NO CONTROLLER. Osc Edit (CC 82), Insert
   Fx Edit (CC 87) and the modulation's two depend on which oscillator, insert effect and
   modulation type the part is set to - and those types are reachable **only by system
@@ -90,12 +97,14 @@ source: >-
   "Modulation Type | 0~71", with no control change for any of them. So a host can edit a sound
   it cannot choose, and five hundred and one oscillator types are numbered in a table that names
   none of them.
+
   THE PATTERN MAP DOES NOT REACH THE LAST TWO PATTERNS. The instrument is "capable of creating
   and storing up to 250 patterns" (manual p. 8), and the footnote both bank select rows point at
   gives the mapping as "Pattern 001 - 127    mm,bb,pp  : 00,00,01~7F  /  00,00,001~127" and
   "Pattern 128 - 250                00,01,01~79  /  00,01,001~121". The second line offers 121
   numbers for 123 patterns, so 248 of the 250 can be chosen this way and the maker's arithmetic
   does not close. Recorded rather than resolved.
+
   THE CHART AND THE IMPLEMENTATION DISAGREE IN FIVE PLACES, and none of them changes a number
   below. **The chart names three controls differently**: 102 and 103 are "Master Fx X" and
   "Master Fx Y" in the implementation and "TouchPad X" and "TouchPad Y" in the chart, and 106 is
@@ -109,23 +118,28 @@ source: >-
   instrument "also supports inquiry messages and master volume" where the implementation's
   section for universal real-time exclusive messages reads "Not applicable" - and master volume
   is a universal real-time message, so those two cannot both be true.
+
   ONE THING THE CHART SETTLES THAT NOTHING ELSE COULD. Its Mode row reads X transmitted and
   **3** received, which is what `midi.mode` below records: the instrument answers as Omni Off,
   Poly. Nothing in the implementation says so.
+
   A SWITCH IS SENT NARROWER THAN IT IS HEARD. The transmitted footnote for the three on/off
   controls is "00,7F : Off,On" and the received one is "00,01~7F : Off,On" - so the instrument
   sends 0 or 127 and accepts **anything from 1 upward** as On. `choices` below carries 0 and
   127, which is what it sends and therefore what is safest to send it; a host that sent 1 would
   also be understood, and one that read 1 back would never see it.
+
   NOT RECORDED: aftertouch and pitch bend, and both are checked absences rather than silences.
   The two tables list every status byte this instrument answers to and sends, and there are four
   of them - 8n, 9n, Bn and Cn. Neither An nor Dn is among them, so no kind of pressure arrives;
   nor is En, so pitch bend does not either. `aftertouch: none` says the first; there is no field
   that says the second, so it is here.
+
   NOT RECORDED: which number means which named state, for any parameter. The implementation
   gives ranges and the guide gives the states in words for the global settings only. The
   oscillator, filter and modulation types are numbered in the exclusive layout and named
   nowhere in it.
+
   NOT RECORDED: the kind of MIDI socket, because there is no field for one. The specification
   gives "MIDI OUT jack, MIDI IN jack, USB connector (micro USB B type)" and the included items
   are "Owner's manual, AC adapter, MIDI conversion cable x 2" (manual p. 19) - so MIDI is on a

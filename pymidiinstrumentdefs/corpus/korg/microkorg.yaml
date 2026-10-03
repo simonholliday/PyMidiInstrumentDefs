@@ -42,6 +42,7 @@ source: >-
   Two documents, because this instrument's control map is split across both and neither half
   is in the other. The MIDI Implementation, revision 1.4, is a plain text file with no pages,
   cited by its own section numbers; the Owner's Manual E 2 has 80 pages and is cited by page.
+
   THE IMPLEMENTATION GIVES NO CONTROLLER NUMBER FOR ANY PANEL PARAMETER, which is this
   instrument's first surprise. Its channel message rows say only "Control Change cc=00~95",
   and its panel table is headed "Panel Knob & Switch Control (assignable)" - forty-odd
@@ -49,24 +50,29 @@ source: >-
   numbers are the player's to set, and Korg prints the factory assignment in the manual
   instead, in a table whose column is headed "Initial" (p. 56). Both facts are at the head of
   this file because that is where somebody about to rely on a number is looking.
+
   THE IMPLEMENTATION GIVES THE NRPNS, all 29, and prints them twice over - once for what the
   instrument transmits and once for what it recognises. The two copies are identical, which
   was checked rather than assumed. They address what the panel does not: the arpeggiator, the
   four modulation patches, and the vocoder's eight bands.
+
   ONE CONTROL CHANGE IS NOT ASSIGNABLE and so is in neither table: CC 1, which the
   implementation's receive table fixes as pitch modulation depth and its transmit table names
   as the modulation wheel.
+
   ONE CHANNEL, STATED AS A LIMIT RATHER THAN INFERRED: "The microKORG uses only one MIDI
   channel to transmit and receive. You cannot use two MIDI channels to play the two timbres
   independently" (p. 66). So there are no parts here, although the instrument is two timbres
   deep when layered. Which timbre a control change reaches is CC 95 below, a setting rather
   than a channel.
+
   THE TWO DOCUMENTS DO NOT NAME THE SAME 41 CONTROLS, which is worth knowing before anybody
   tries to reconcile them. The implementation's map of assignable slots includes an "EG2/Gate
   Sw" and a "SEQ Off/On Sw" that the manual's table has no row for, while the manual's table
   has Timbre Select and Sync Ctrl, which the implementation keeps as two global bytes of their
   own rather than as slots in that map. The numbers below are the manual's, because the
   implementation gives none; the overlap is recorded rather than resolved.
+
   NO BANK SELECT, said outright: "The microKORG does not transmit or receive bank select
   messages" (p. 52). That is the difference the microKORG S's own implementation adds, and it
   is why one definition cannot cover both.
@@ -75,15 +81,20 @@ source: >-
   USB-MIDI interface devices may not be able to transmit/receive the microKORG's MIDI
   exclusive messages" (p. 49). Every byte this instrument sends or receives goes down a DIN
   cable.
+
   WHAT IT WILL NOT ANSWER TO, established from the table that enumerates what it does. The
   recognised channel messages are note off, note on, CC 1, data entry, the NRPN pair, the
   channel mode messages, generic control data, program change and pitch bend - and nothing
-  else. AFTERTOUCH IS ABSENT FROM THAT LIST in both forms, which agrees with the keyboard the
+  else.
+
+  AFTERTOUCH IS ABSENT FROM THAT LIST in both forms, which agrees with the keyboard the
   specifications describe: "37 notes (mini keyboard, velocity sensitive, no aftertouch)"
   (p. 67). So aftertouch is a checked absence rather than an unread page.
+
   NOT RECORDED: the note range, which neither document states for what the instrument
   receives - the implementation gives kk = 0 ~ 127 for what the 37-key keyboard transmits
   with octave and transpose applied, and that is the panel rather than the span it answers to.
+
   THE SIBLING MODELS WERE SETTLED, NOT ASSUMED. The microKORG Crystal's download page offers
   the same MIDI Implementation under the same manual id, resolving to the same file, so this
   definition describes the Crystal by construction. The microKORG S's own implementation was

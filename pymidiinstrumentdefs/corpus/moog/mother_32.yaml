@@ -31,37 +31,46 @@ model:
 source: >-
   Users Manual, 73 pages, and the Firmware Update v2.0 addendum, 13 pages: printed manual pages
   56, 57 and 59.
+
   THE MANUAL ALREADY DESCRIBES FIRMWARE 2.0, which matters because the addendum beside it is
   dated April 2020 and the manual was made in July 2020: its Setup mode chapter lists the eight
   pages the addendum introduced, including the four that are new in 2.0. So the two agree and
   the addendum is cited for one thing the manual words differently.
+
   MOOG PUBLISHES NO MIDI IMPLEMENTATION FOR THIS INSTRUMENT, and the manual's MIDI chapter is
   two pages of prose rather than a table. Everything below is read from those two pages and
   from the Setup mode list that follows them.
+
   SEVEN CONTROLLERS, AND THE MAKER NAMES THEM IN ONE SENTENCE EACH: "The following MIDI CC
   messages are received by Mother-32: CC 5: Portamento Time, CC 65: Portamento On/Off, CC 64:
   Sustain, CC 1,2,4,7: Used to generate CVs at the ASSIGNABLE OUTPUT" (p. 57). There is no
   other controller number anywhere in either document.
+
   WHAT IT DOES WITH A NOTE IS WORTH KNOWING BEFORE SENDING ONE. "MIDI Note 0 corresponds to
   -5V, and MIDI Note 120 corresponds to +5V. MIDI Note values 121 to 127 will generate the same
   output as MIDI Note values 109 to 115" (p. 56). So the top seven notes are not silent and are
   not themselves either: they fold back an octave. The note range below is the full 0 to 127
   because every one of them does something, and the folding is recorded here because no field
   can hold it.
+
   PROGRAM CHANGE DOES TWO JOBS. "MIDI Program changes 1 to 64 select the current sequencer
   pattern location. MIDI Program changes 71 to 86 select one of the 16 Assignable output modes"
   (p. 57). The sixty-four pattern locations are what `presets` records; the sixteen output modes
   are a second use of the same message that the format has nowhere to put.
+
   THE PITCH BEND RANGE IS SET BY A REGISTERED PARAMETER NUMBER, which no other instrument here
   does: "The Mother-32 default Pitch Bend amount is +/-1 Octave ... MIDI Pitch Bend amount can
   be set from +/-0 to +/-12 semitones using MIDI Pitch Bend Depth RPN (CC101 value 0, CC100
   value 0, CC6 values 0 to 12)" (p. 57). That is the standard RPN rather than anything of
   Moog's, so it is recorded in `voice.pitch_bend` and not as a control.
+
   NOT RECORDED: SYSTEM EXCLUSIVE. Neither document describes a system exclusive implementation.
   Both describe updating the firmware by sending a `.syx` file to the instrument in boot-loader
   mode, which is system exclusive arriving and being acted on - but it is the boot loader doing
   it, not the instrument answering, and nothing says the running instrument implements anything.
+
   NOT RECORDED: NRPN, which appears in neither document.
+
   ONE SENTENCE OF MOOG'S CONTRADICTS THE PANEL, recorded rather than resolved: the Setup page
   for the channel says it sets "the MIDI Channel your Mother-32 will use to send and receive
   MIDI data" (p. 59), and this instrument has no MIDI output to send on - the manual's own

@@ -37,40 +37,48 @@ source: >-
   MPC Sample User Guide, 67 pages, the edition Akai names v1.3.0 (RevA): the MIDI Configuration
   menu on pp. 60-61, the rear panel on p. 15, the pads on p. 20, and the technical specifications
   on pp. 64-65. MPC Sample 1.3.0 Release Notes, 2 pages, for which firmware the guide describes.
+
   AKAI PUBLISHES NO CONTROLLER NUMBER FOR THIS INSTRUMENT, which is why this file has no
   controls block. The words control change, CC, NRPN, RPN, system exclusive, note number, pitch
   bend, MPE and implementation chart appear nowhere in either document. That is an absence of
   publication and not a checked absence of behaviour: nothing here says the instrument ignores
   control change, only that nobody is told what it would do with one.
+
   NEITHER DOES ITS OWN WEBSITE. The guide is published as HTML as well, and its four top-level
   chapters together hold 13 KB of text and not one occurrence of the word MIDI; Akai's downloads
   page and its MPC Manuals page build their lists in the browser, so a fetch of either returns no
   link to any file at all. The PDF was found by a search restricted to the maker's own domains.
+
   WHAT THE GUIDE DOES PUBLISH IS ONE MENU, and it is where everything below comes from. "The MIDI
   Configuration menu allows you to adjust how MPC Sample sends and receives MIDI and CV data"
   (p. 60), and its nine settings are the port, the in and out channels, whether MIDI input
   triggers the pads and whether the pads send, sync in and out, Thru, and program change.
+
   TWO OF THOSE SETTINGS SAY SOMETHING THE FIELDS BELOW CANNOT HOLD. Sync in and sync out each
   offer "Off, Midi Clock, MTC", so this instrument answers to MIDI Time Code as well as to clock,
   and `midi.clock` has no room for the second of those. And "MIDI Thru ... When set to ON, MIDI
   data received by the MIDI IN port is also forwarded through the MIDI OUT port" - a soft thru on
   a two-socket instrument, which no field here records.
+
   NOT RECORDED: ANYTHING ABOUT NOTES. The pads are "16 velocity-sensitive pads with
   poly-aftertouch" (p. 20) and "Pad MIDI In ... determines whether MIDI Input can be used to
   trigger the pads" (p. 60) - so notes arrive and reach the pads, and which note reaches which
   pad is not published, nor whether the velocity or the aftertouch of an incoming note is used at
   all. The pads produce poly aftertouch; nothing says the instrument receives any. So the voice
   block records none of it rather than reading the pads' own behaviour backwards.
+
   THE PADS HAVE AFTERTOUCH AND NOTHING IN THE GUIDE USES IT. "These 16 velocity-sensitive pads
   with poly-aftertouch" (p. 20), and the specification drops the qualifier - "16 RGB-lit
   velocity-sensitive MPC Pads with aftertouch" (p. 64). No mode, menu, parameter or effect
   anywhere in 67 pages responds to aftertouch, and nothing says it is sent or received. So a
   reader cannot learn what the feature does, and this file does not say.
+
   TWO MORE GAPS IN THE ONE MENU THAT IS PUBLISHED. "Pad MIDI Out" takes three values, "Never,
   Always, Empty", and its description explains the first two and never says what Empty means. And
   the three Takeover settings are rows of this same menu - the release notes place them "in the
   MIDI Config menu, by holding down SHIFT and pressing Pad 8" - yet they appear in neither of the
   guide's two tables of it, only as prose beneath them with no values column.
+
   NOT RECORDED: system exclusive, NRPN, transport, and whether the instrument sends program
   change. None of the four is mentioned in either document, which is silence rather than a
   checked absence.

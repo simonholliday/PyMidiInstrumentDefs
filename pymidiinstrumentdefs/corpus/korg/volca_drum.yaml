@@ -42,9 +42,11 @@ source: >-
   p. 3, the English one. MIDI Implementation Chart (Single channel), p. 1, for what the other
   implementation does. And two pages of Korg's own site, saved as text and cited for what Korg
   publishes and for the system versions.
+
   THE SPLIT-CHANNEL CHART IS THE FACTORY DEFAULT and is what everything below describes. Its
   Mode row is remarked "Channel 1-6 = Parts 1-6" and its Velocity row "n=0-5 (Channel 1-6 =
   Parts 1-6)", so the six parts are separately addressable with nothing set and nothing learned.
+
   THE OTHER CHART IS A DIFFERENT MAP, NOT THE SAME MAP MOVED. Setting a MIDI channel switches
   the instrument to the single-channel implementation, where all six parts answer on that one
   channel and each gets a block of nine numbers of its own - part 1 on 14 to 20 with 103 and
@@ -52,45 +54,55 @@ source: >-
   61 with 106 and 112, part 5 on 80 to 86 with 107 and 113, part 6 on 89, 90, 96 to 100 with 108
   and 114, and the resonator still on 116 to 119. Twenty-one numbers mean different things in
   the two implementations: CC 14 is layer 1's Select below and part 1's both-layer Select there.
+
   FOUR PARAMETERS EXIST IN ONE IMPLEMENTATION AND NOT THE OTHER. Bit reduction, wave folder,
   drive and dry gain are CC 49 to 52 below, and in the single-channel map those four numbers
   belong to part 3, which leaves that implementation with no way to reach them at all. It also
   has no CC 10: each part's pan has a number of its own there.
+
   EACH ROW PAIRS ITS NUMBERS TO ITS NAMES BY ORDER ALONE, which is the trap in reading either
   chart. A row reads "14, 15, 16" against "SELECT1, SELECT2, SELECT1-2", and SELECT1-2 is not a
   range covering two numbers: it is a third control that moves both layers at once, which is
   what the panel's LAYER 1/2 button does - "The button will light up when both layers are
   selected at once" (p. 3). Read as a range, this chart's ten rows give sixteen controls where
   they give thirty-one. Every row here was checked to have exactly as many names as numbers.
+
   THE INSTRUMENT SENDS NOTHING. Every row of both charts is marked X transmitted, and the
   specification lists one connector - "MIDI IN connector" (p. 3) - with no OUT and no THRU. So
   every control below is marked `receives`, and `clock` and `transport` likewise.
+
   TWO GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, and both ship on. Footnote *1,
   carried by every control-change row and by the note row, reads "Received when global parameter
   MIDI RX ShortMessage is set to ON", and the manual's table of global parameters marks On as
   the factory default for it (p. 3). Footnote *2, on song position, clock and commands, reads
   "Not received when global parameter MIDI Clock src is set to Internal; received when set to
   Auto", and Auto is that parameter's factory default (p. 3).
+
   THAT FOOTNOTE IS APPLIED UNEVENLY, which is worth knowing before anyone relies on it. It
   marks the Note Number row, making note reception depend on MIDI RX ShortMessage too, and it
   does not mark the Velocity row directly below - which is where the chart actually states that
   note on is received. One of those two rows is marked wrongly and the chart does not say which.
+
   CC 46 TO 52 ARE THE LSB PARTNERS OF CC 14 TO 20 IN THE SPECIFICATION, and this chart gives
   them parameters of their own. Anything sending 14-bit controller pairs will move a part's mod
   rate while it means to refine its select, and neither chart warns about it. That is a caution
   for a consumer rather than a fault in the file: the numbers below are what the maker published.
+
   NOTES REACH A PART WITHOUT NAMING ONE. The chart recognises note numbers 0 to 127 and remarks
   "Each sound does not correspond to a note number", so the channel says which part sounds and
   the note number says nothing at all. That is why `addressing` is `none` on a part that
   nevertheless receives notes.
+
   NOT RECORDED: which channel carries the four resonator controls. The resonator is shared -
   "each part has two identical layers and the waveguide resonator is shared for all parts"
   (p. 3) - so those four are not a part's, and the chart does not say whether they answer on all
   six channels or on one.
+
   NOT RECORDED: polyphony, which neither chart nor manual states for a part or for the
   instrument; the pitch bend range, there being no pitch bend; and how many presets a program
   change reaches. The manual's program memory is sixteen locations loaded with FUNC + LOAD PRG.
   (p. 3) and nothing connects a program change to them, so the number is not written here.
+
   CHECKED AND ABSENT: NRPN and RPN. Neither word, nor "Registered", nor "Parameter Number",
   appears anywhere on either chart or on printed page 3 of the manual. System exclusive is
   marked X in both columns of both charts.

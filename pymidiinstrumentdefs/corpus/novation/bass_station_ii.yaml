@@ -37,21 +37,28 @@ source: >-
   "MIDI parameters list" (pp. 71-74) is the whole of this instrument's published map: 98 rows
   of panel section, parameter, whether it is addressed by control change, NRPN or a message of
   its own, the number, and the range, run over four pages.
+
   THE TABLE RUNS BOTH WAYS, which the guide states rather than leaving to be inferred: "Bass
   Station II has a high degree of MIDI implementation, and almost every control and synth
   parameter transmits MIDI data to external equipment, and similarly, the synth can be
   controlled in almost every respect by incoming MIDI data from a DAW or sequencer" (p. 19).
+
   FOUR OF THE 98 ROWS ARE NOT CONTROLS and are not below: patch inc and patch dec, which are
   program changes, pitch, which is a pitch bend, and after touch. For those the message is the
   address, and each is recorded in its own field instead.
+
   SIXTEEN CONTROL CHANGES CARRY A FINE HALF, written in the guide as `MSB:LSB` and always as n
-  and n+32. THE SAME NOTATION MEANS SOMETHING ELSE ON AN NRPN ROW, where it is the two halves
+  and n+32.
+
+  THE SAME NOTATION MEANS SOMETHING ELSE ON AN NRPN ROW, where it is the two halves
   of one parameter number: `0:72` is 72, not a pair. Conflating the two was caught by a check
   that every control change pair is n and n+32, which no NRPN row satisfies.
+
   THE GUIDE WRITES ITS NRPNS TWO WAYS in the one table: 28 give both halves as `0:nn` and three
   give the low half alone. Every pair it writes out has a high half of zero, so the three bare
   ones mean the same thing - checked rather than assumed, because the whole NRPN column rests
   on it.
+
   THREE PRODUCTS, ONE GUIDE, AND THE GUIDE SAYS SO ITSELF: "This user guide applies to all
   editions of the Bass Station II. We've used the original Bass Station II for graphics
   throughout. If you're using the AFX Station or Bass Station II Swifty Edition you'll have
@@ -60,12 +67,14 @@ source: >-
   are offered this same file and no other. So this definition describes all three where MIDI
   is concerned, and the guide has a section of its own for the AFX Station's overlays and the
   system exclusive that manages them.
+
   TWO DIN SOCKETS AND NO THRU: "MIDI IN and OUT - standard 5-pin DIN MIDI sockets for
   connecting Bass Station II to other MIDI-equipped hardware" (p. 13), with a class-compliant
   USB port beside them that also carries MIDI. The guide rules out the obvious next thought:
   "Bass Station II is not a computer MIDI interface. MIDI can be transmitted between the synth
   and computer via the USB connection, but MIDI cannot be transferred between the computer and
   external equipment via Bass Station II's MIDI DIN ports" (p. 14).
+
   NOT RECORDED: the note range, which the guide never states for what the instrument receives -
   its keyboard is "25-note (two octaves) velocity-sensitive" with octave shift keys, and that is
   the panel rather than the span it answers to. Whether it transmits MIDI clock, since the guide
@@ -73,6 +82,7 @@ source: >-
   not start, not stop, not continue, not song position. And whether program change is received:
   the only thing in 82 pages that bears on it is the table's own two rows, patch inc and patch
   dec, which name the message and say nothing about direction.
+
   ONE MORE TYPOGRAPHICAL SLIP, CARRIED AS PRINTED: the envelope section has an "amp env fixed
   sustatin duration" where its neighbour four rows down is spelled "Mod Env fixed sustain
   duration". The label below is the guide's, misspelling and all.

@@ -39,47 +39,59 @@ source: >-
   APPENDIX A: MIDI SPECIFICATIONS on p. 51 and APPENDIX B: MODULATION DESTINATIONS on p. 52.
   The downloads page is cited for which OS is current and the release notes for what it changed,
   because the manual says neither.
+
   TWENTY-NINE CONTROL CHANGES, IN THE APPENDIX'S OWN FOUR GROUPS: fifteen track parameters, two
   playback parameters, eight LFO parameters and four effect parameters. Every number is distinct
   and inside 0 to 127, and the generator that wrote the block below checks both.
+
   WHICH PART A CONTROL ANSWERS ON COMES FROM THE CHANNEL MENUS AND NOT THE APPENDIX, and the
   manual draws the line in one sentence each way: "T1-6 IN selects the dedicated MIDI channel
   that is used to receive parameter data to a specific track" and "FX IN selects the dedicated
   MIDI channel for the DELAY and REVERB parameters" (p. 39). So twenty-five of the twenty-nine
   answer on a track's own channel and four on the effects' channel. Delay Send and Reverb Send
   stay with the track, because they are a track's amount of an effect rather than the effect.
+
   THERE IS NO BASE CHANNEL AND SEVERAL TRACKS MAY SHARE ONE. "Any MIDI channel can be assigned
   to a track and several tracks can share the same channel. If several tracks are assigned to
   the same MIDI channel the track with the lowest number has priority regarding parameter
   conflicts" (p. 16). That last rule is this instrument's own and no field here holds it.
+
   A THIRD CHANNEL IS AN ALIAS RATHER THAN A PART, which is why it is not below. "AUTO IN selects
   the MIDI channel for the AUTO channel that gives access to the currently active track. If an
   external MIDI keyboard connected to Model:Samples sends MIDI data on this channel, the
   keyboard controls the active track" (p. 39). Whichever track is active answers on it, so it
   addresses no fixed part. A fourth, PCH, carries program change alone and may be set to AUTO.
+
   WHAT THE PADS AND THE VELOCITY DO. "The responsive pads are made of sturdy synthetic rubber
   and are velocity sensitive" (p. 19), velocity reaches the volume through a depth setting, and
   it may be routed to one of twenty destinations which APPENDIX B names in words and gives no
   number for. So velocity arrives and what it reaches is a menu rather than a controller.
+
   NOT RECORDED: aftertouch, pitch bend and system exclusive. The manual mentions none of the
   three anywhere - no page says the instrument answers to them and no page says it does not -
   so all three are silences rather than checked absences. This is a six-pad sampler with no
   keyboard, so none of them is surprising; what matters is that nobody was told.
+
   NOT RECORDED: which number means which named state for any stepped parameter. The appendix
   gives controller numbers and no ranges at all, and APPENDIX B names the LFO's and velocity's
   destinations as words in a list. So a reader knows that CC 105 selects an LFO destination and
   that there are thirteen of them, and not which number picks which.
+
   THE MANUAL SENDS YOU FOUR TIMES TO A MENU IT DOES NOT HAVE, which matters only to a reader
   trying to follow it on the instrument. Its MIDI chapter contains IN CHAN and OUT CHAN and
   nothing called CHANNELS - yet p. 20 says to set the AUTO channel in "SETTINGS > MIDI >
   CHANNELS", p. 23 says the track's channel is "set in the CHANNELS menu", and pp. 38 twice says
   "the MIDI CHANNELS menu". Each of the four carries the right numbered cross-reference straight
   after the wrong name, so no reader is actually lost. The menu's own name is unsettled too: the
-  chapter is "11. CONFIG MENU", the screen reads "Config Menu", and the index files it as
+  chapter is "11.
+
+  CONFIG MENU", the screen reads "Config Menu", and the index files it as
   "SETTINGS MENU".
+
   AND ONE DIRECTION HAS NO AUTO CHANNEL. The input menu has nine entries, six tracks and FX and
   AUTO and PCH; the output menu has eight, six tracks and FX and PCH. So the AUTO channel
   receives and does not send.
+
   NOT RECORDED: the kind of MIDI socket, which is worth a line because it is not a DIN. The
   specification gives "3.5 mm dual polarity TRS MIDI In, Out/Thru jacks" (p. 50), the output's
   polarity is a setting - "STD Standard ("Type A" ...)" and "INV Inverted ("Type B" ...)"

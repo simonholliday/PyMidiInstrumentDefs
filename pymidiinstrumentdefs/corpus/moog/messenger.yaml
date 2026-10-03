@@ -37,9 +37,11 @@ source: >-
   the MIDI channel on p. 29, the CONFIG settings on pp. 30-31, and the firmware and
   specification pages on p. 32. Firmware 1.0.8's release notes, 4 pages, for the 14-bit switch
   and for what 1.0.7 moved.
+
   FIFTY-SEVEN ROWS AND FIFTY-SIX CONTROLS. The one that is not here is Data Entry on CC 6 with
   LSB 38, which is the MIDI specification's own pair rather than a parameter of this instrument;
   the guide beside this corpus says so in as many words.
+
   THIRTY-ONE OF THEM ARE 14-BIT, and the fine half is always the coarse half plus 32, which is
   the specification's own pairing. The manual states the arrangement rather than leaving it to be
   inferred: "Messenger utilizes 14-bit MIDI which uses two different CCs to increase resolution
@@ -47,33 +49,40 @@ source: >-
   sends information on both CC1 and CC33 - the former containing the MSB information and latter
   LSB. Parameters from Sustain Pedal (CC64) on do not require fine resolution and as such are
   traditional 7-bit MIDI messages sending a value from 0-127 over a single CC" (p. 35).
+
   THE VALUES COLUMN IS WHY THIS FILE CARRIES BANDS AT ALL. Twenty-one controls are stepped and
   the manual names every band - "0-31 = TRIANGLE; 32-63 = SAW; 64-95 = RAMP; 96-127 = SQUARE" -
   and one is a list of exact values rather than bands, which is why LFO1 Destination carries
   `choices` where the rest carry `values`. Five more are bipolar over the 14-bit range with 8192
   as zero, which the format has no field for and which is noted beside each of them.
+
   TWO OF THE MAKER'S BAND LISTS DO NOT COVER THEIR RANGE, and both are left as printed. OSC Mod
   Destination gives "32-64" and then "64-95", so 64 is in two bands at once; Filter KB Tracking
   gives "0-42 = 0; 43-84 = 2/3; 85-126 = 1:1", which stops at 126 and says nothing about 127.
   Bands are recorded by their lowest value, so neither changes what this file sends, and neither
   is guessed at.
+
   THE MESSENGER ANSWERS TO RPN AND NOT TO NRPN, which is rare enough to be worth saying plainly.
   "NRPNs No No" in both directions. RPN 00 Pitch Bend Sensitivity, 01 Channel Fine Tune, 02
   Channel Coarse Tune and 03 Tuning Program Select are each marked received and not transmitted,
   and 04 Tuning Bank Select and 05 Modulation Depth Range are marked neither. A seventh is named
   nowhere in that list and appears in the control table instead: CC 74 is "MPE 3rd Dimension of
   Control", "On/Off via MPE Activation message RPN 6".
+
   THAT IS THE WHOLE OF WHAT THE MANUAL SAYS ABOUT MPE. One row of one table, on a synthesizer its
   own specification calls monophonic. Nothing says whether the instrument allocates a channel per
   voice, so `midi.per_voice_channels` is left unrecorded rather than claimed from a single
   mention.
+
   THE BEND RANGE IS SEVEN SEMITONES AND SETTABLE FOUR WAYS. "Default pitch bend range is +/- 7
   semitones (can be changed in CONFIG menu)" (p. 7), and the ways to change it are RPN 00, CC 107
   and CC 108 below for up and down separately, and CONFIG items 1.1 and 1.2.
+
   THOSE TWO CONFIG LISTS DISAGREE WITH EACH OTHER AND ONE OF THEM WITH ITSELF, which is recorded
   rather than resolved because nothing below rests on it. The up list offers +14, +17, +19 and
   +24 semitones and names each correctly; the down list offers -17, -19, -22 and -24, and labels
   -17 "5th below octave" and -19 "4th below octave", which is the pair the other way round.
+
   THREE PLACES IN THE MANUAL DISAGREE WITH THE APPENDIX, and the appendix is followed in all
   three because the panel agrees with it. The body says the oscillator octave offers "16', 8', 4'
   and 2'" (p. 14) where the panel illustration on that page and on p. 6, and CC 75 and CC 76
@@ -83,9 +92,11 @@ source: >-
   three rows above say "OSC 2 WAVE". And the chart gives transmitted note numbers as 0 to 127 on
   an instrument with 32 keys and two octaves of transposition either way, which is the protocol's
   range rather than the keyboard's.
+
   BANK SELECT IS CLAIMED AND NEVER MAPPED. "Bank Select Response Yes Yes" (p. 34) and 256 patches
   in sixteen banks (p. 32), and neither CC 0 nor CC 32 appears anywhere in the control table. So
   how to reach the second half of the presets is not published.
+
   AND ALL FOUR MODES ARE MARKED SUPPORTED ON A MONOPHONIC SYNTHESIZER. Mode 1 and Mode 3 are
   Omni-On Poly and Omni-Off Poly, both Yes in both directions (p. 34), against "POLYPHONY
   Monophonic" (p. 32). That is what the maker printed; `midi.mode` is left unset because the

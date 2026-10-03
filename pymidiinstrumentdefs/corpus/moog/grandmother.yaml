@@ -49,11 +49,13 @@ source: >-
   into exact values.
   A twenty-third row is listed under ADDITIONAL MIDI FUNCTIONS rather than in the chart, and
   is a control: SUSTAIN PEDAL, CC 64.
+
   AND A TWENTY-FOURTH CONTROL IS IN NEITHER, and is marked in place: CC 95, Multi Trig. One
   sentence of the release notes carries it - "Multi Trig can also be turned on/off via MIDI
   CC 95", under global setting 1.8 - and the guide's chart steps from CC 94 straight to CC
   103 with no mention of it anywhere in 56 pages. The release notes give no values for it,
   only the panel's own Off and On, so none are claimed here.
+
   FIVE CONTROLS ARE 14-BIT PAIRS, and the chart gives both halves: CC 1 & 33, 3 & 35, 5 & 37,
   8 & 40, 12 & 44, each printed as "0-127 (or 0-16383 using CC n & CC n+32)". That is the
   MMA's own pairing, so `lsb` carries it. Whether the instrument sends both halves is a
@@ -65,6 +67,7 @@ source: >-
   and which the validator refuses as controls. The guide also says the instrument sends All
   Notes Off itself, when all three Left-Hand Controller buttons are held for about a second
   (p. 36).
+
   ALSO NOT CARRIED, because the format has no field for it: RPN 0, 1 and 2, which the same
   block gives as Pitch Bend Amount, Fine Tuning and Coarse Tuning - registered parameter
   numbers are the MMA's, not this instrument's - and the 48 global parameters of the release
@@ -72,6 +75,7 @@ source: >-
   "F0 04 16 23 [Parameter ID], [value MSB], [value LSB], 00 00 00 00 00 00 00 00 [Unit ID] F7"
   with a matching request message at 3E. That table is where this instrument keeps its MIDI
   settings, and it is the only place several of the facts below are stated at all.
+
   NOT RECORDED, and marked in place: the note range, since neither document gives a MIDI note
   number for anything; what the instrument does with velocity that arrives over MIDI;
   aftertouch, which neither document mentions; and how many presets a program change selects,

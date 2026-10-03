@@ -43,21 +43,25 @@ model:
 source: >-
   Owner's Manual, the edition Korg names E 6, 117 pages, published 10/2023: printed pages 105 and 78, the MIDI settings on p. 41, and the chart on p. 116 through a
   decoded rendering of it, for the reason given against that source.
+
   THE MIDI IMPLEMENTATION CHART IS THE WHOLE OF THE PUBLISHED MAP, and it is a chart rather
   than a table of parameters: it gives 23 control change entries, each with a number or a run
   of numbers, a mark for what the instrument transmits, a mark for what it recognises, and a
   remark naming what the number reaches - "Algorithm" in the Home/Algorithm page, "Resonance"
   parameter in the Filter page, OP1-6 Level sliders, and so on. There is no second table
   anywhere in the manual, searched for and absent.
+
   THREE OF THOSE 23 ENTRIES ARE NOT CONTROLS AND ARE NOT BELOW. Two give a span rather than a
   controller - 1 to 119 "Assignable for Virtual Patch sources", which the instrument recognises
   and does not send, and 1 to 119 "Transmittable from Motion Sequencer", which it sends and does
   not recognise. So any controller in that span may be made to do something, and which one is
   the player's business. The third is 120 and 121, the channel mode pair, which is a fact about
   MIDI rather than about this instrument.
+
   THE CHART'S TWO COLUMNS DISAGREE ON FIVE OF THE THIRTY CONTROLS, which is what `direction`
   exists for: volume, pan, expression, sostenuto and soft are recognised and never sent, and
   are marked `receives` below. The other twenty-five travel both ways.
+
   AFTERTOUCH IS RECEIVED IN BOTH ITS FORMS AND SENT IN NEITHER, on this model. The chart marks
   both Key's and Channel aftertouch as recognised, and marks both as transmitted only with the
   footnote "Only the opsix SE can send aftertouch" - and the specifications agree, giving the
@@ -67,12 +71,14 @@ source: >-
   a fourth setting takes both at once - "Both: Both channel and polyphonic key pressure are
   applied" (p. 78). So `voice.aftertouch` is left unrecorded: it holds one of channel, poly or
   none, and this instrument answers to either or to both, and sends neither.
+
   THE PROGRAM CHANGE REACHES A HUNDRED OF FIVE HUNDRED. The chart gives program change as 0 to
   99 in both directions, and the instrument holds "500 programs (350 preset programs and 150
   user programs as the factory-set default)" (p. 6). Bank select is the other half of that, MSB
   and LSB, which the chart gives as controller 0 and 32 and the manual never mentions. Five
   banks of a hundred is the arithmetic and not the maker's word, so `presets` records the
   hundred the chart states.
+
   NOT RECORDED: the pitch bend range, which the chart marks as travelling both ways and never
   quantifies, and which no page of the manual states in semitones.
 

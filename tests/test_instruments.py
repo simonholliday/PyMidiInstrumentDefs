@@ -181,6 +181,34 @@ class TestBundledCorpus:
 			"yamaha/dx7",
 		]
 
+	def test_no_definition_writes_a_us_spelling_in_its_own_prose (self) -> None:
+		"""The site this corpus feeds is written in British English and will not publish one.
+
+		A quotation keeps its source's spelling, and so does a maker's own name for a thing -
+		a control's label, a document's title - so only a definition's own account is swept.
+		This exists because three definitions had to be corrected by hand before the site
+		could take its spelling exception off, and nothing would have caught the fourth.
+		"""
+		patterns = [
+			re.compile(r"\b[a-z]{3,}iz(e|es|ed|er|ers|ing|ation|ations)\b", re.IGNORECASE),
+			re.compile(r"\b[a-z]{3,}yz(e|es|ed|ing)\b", re.IGNORECASE),
+			re.compile(r"\b(favorite|favorites|color|colors|behavior|behaviors|honor|flavor)\b",
+				re.IGNORECASE),
+		]
+
+		found = []
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			account = pymidiinstrumentdefs.load(name, [CORPUS]).source or ""
+
+			# What is inside double quotation marks is somebody else's spelling to keep.
+			outside = re.sub(r'"[^"]*"', " ", account)
+
+			for pattern in patterns:
+				found += [(name, hit.group(0)) for hit in pattern.finditer(outside)]
+
+		assert found == []
+
 	def test_nothing_bundled_sits_outside_a_makers_folder (self) -> None:
 		"""A file directly in the corpus has no maker, so nothing could load it by name."""
 		assert sorted(CORPUS.glob("*.yaml")) == []

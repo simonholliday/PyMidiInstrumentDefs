@@ -173,6 +173,7 @@ class TestBundledCorpus:
 			"teenage_engineering/op_xy",
 			"vermona/drm1_mkiv",
 			"voce/electric_piano",
+			"waldorf/iridium",
 			"waldorf/streichfett",
 			"yamaha/dx7",
 		]
@@ -1902,7 +1903,7 @@ class TestOsmose:
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
-		assert flagged == ["expressive_e/osmose", "modal/carbon8m"]
+		assert flagged == ["expressive_e/osmose", "modal/carbon8m", "waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -4543,3 +4544,120 @@ class TestAstroLab:
 		# older, which is why its date is recorded.
 		assert astrolab.sources["cheatsheet"].edition == "1.6.0-cheatsheet"
 		assert astrolab.sources["cheatsheet"].dated == "2024-04-08"
+
+
+class TestIridium:
+
+	"""An instrument with no control map, and two product pages serving one file."""
+
+	def test_fifteen_numbers_the_maker_fixes_and_no_map (self) -> None:
+		"""MIDI Learn reaches everything else, so the other 118 are the player's."""
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		assert len(iridium.controls) == 15
+		assert len(iridium.groups) == 4
+
+		assert iridium.midi.control_change == "learned"
+
+		numbers = sorted(c.cc for c in iridium.controls.values() if c.cc is not None)
+
+		assert numbers == [1, 2, 11, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 64, 74]
+
+		# Every one is a modulation source, which is a thing received.
+		assert all(c.direction == pymidiinstrumentdefs.definition.RECEIVES
+			for c in iridium.controls.values())
+
+	def test_the_ten_in_a_range_are_a_named_source (self) -> None:
+		"""The maker prints one row for ten numbers, and they are fixed rather than assignable."""
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		block = sorted(c.cc for c in iridium.controls.values()
+			if c.group == "modulation" and c.cc is not None)
+
+		assert block == list(range(22, 32))
+
+		for number in block:
+			assert iridium.controls[f"cc_{number}"].label == f"CC {number}"
+
+		# The four the table names one at a time, and the one from the MPE section.
+		assert iridium.controls["wheel"].cc == 1
+		assert iridium.controls["breath_control"].cc == 2
+		assert iridium.controls["expression"].cc == 11
+		assert iridium.controls["pedal"].cc == 64
+		assert iridium.controls["mpe_y_axis"].cc == 74
+
+	def test_it_sends_nrpn_and_ignores_incoming_nrpn (self) -> None:
+		"""The only instrument here whose maker says so, and the field records the receiving half."""
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		assert iridium.midi.nrpn == "none"
+		assert all(c.nrpn is None for c in iridium.controls.values())
+
+		# That it transmits NRPN has no field; the source account carries it.
+		assert "send out MIDI NRPN data" in (iridium.source or "")
+
+	def test_mpe_with_two_layers_sharing_sixteen_voices (self) -> None:
+		"""Per-note channels, and a voice pool the two Layers divide between them."""
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		assert iridium.midi.per_voice_channels is True
+
+		assert iridium.voice.polyphony == 16
+		assert iridium.voice.polyphony_shared is True
+
+		assert set(iridium.parts) == {"layer"}
+
+		layer = iridium.parts["layer"]
+
+		assert layer.count == 2
+		assert layer.channel == "assigned"
+		assert layer.receives == ("notes", "controls")
+		assert layer.polyphony is None
+
+		assert iridium.voice.aftertouch == "poly"
+
+	def test_no_note_range_because_the_one_sentence_is_not_about_one (self) -> None:
+		"""The split-range limits bound a split point, and contradict the manual's own numbering."""
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		assert iridium.voice.note_range is None
+
+		# Pitch bend is set per oscillator and all three default to twelve semitones.
+		assert iridium.voice.pitch_bend is not None
+		assert iridium.voice.pitch_bend.semitones == 12
+		assert iridium.voice.pitch_bend.programmable is True
+
+	def test_what_is_left_unrecorded_and_why (self) -> None:
+		"""No chart, no channel range printed anywhere, and clock in one direction."""
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		# The manual says a channel is chosen per Layer and never says which are on offer.
+		assert iridium.midi.channels is None
+		assert iridium.midi.mode is None
+		assert iridium.midi.sysex is None
+		assert iridium.midi.transport is None
+
+		assert iridium.midi.clock == "receives"
+
+		# Program change is stated once, on the product page, under a title that denies it.
+		assert iridium.midi.program_change is not None
+		assert iridium.midi.program_change.receives is True
+
+		# A Macro button sends one on demand, which is the only sending the manual describes.
+		assert iridium.midi.program_change.sends is True
+		assert iridium.midi.program_change.presets is None
+
+	def test_one_manual_two_products_and_a_sibling_cited_twice (self) -> None:
+		"""Four sources: the shared manual, both product pages, and the MK2's for two sentences."""
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		assert set(iridium.sources) == {"manual", "mk2_manual", "product_page", "keyboard_page"}
+
+		assert iridium.sources["manual"].edition == "OS 3"
+		assert iridium.sources["manual"].page_offset == 0
+
+		# The two product pages are cited for the same file under two different share ids.
+		assert iridium.sources["product_page"].paginated is False
+		assert iridium.sources["keyboard_page"].paginated is False
+
+		assert iridium.model.firmware == "3"

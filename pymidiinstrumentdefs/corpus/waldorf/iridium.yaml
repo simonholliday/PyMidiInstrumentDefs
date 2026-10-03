@@ -1,0 +1,361 @@
+# TWO URLS, ONE SET OF BYTES: THE STRONGEST ONE-DOCUMENT-TWO-PRODUCTS CASE IN THIS CORPUS. Waldorf
+# has four Iridium product pages, and the Iridium's and the Iridium Keyboard's each offer a
+# "Manual" link under a different share id. **Both serve the same file**, 12,448,273 bytes,
+# SHA-256 `67e403e6...`, downloaded separately from each and hashed. The document says so itself:
+# its cover reads "User Manual For Keyboard & Desktop" (manual p. 1) and its file name is
+# `iridium_desk_kb`. So this definition is the Iridium Desktop's and the Iridium Keyboard's, and
+# the other two Iridiums - the MK2 and the Core - have manuals of their own and are not here.
+#
+# THERE IS NO CONTROL MAP, AND THAT IS THE INSTRUMENT RATHER THAN THE DOCUMENT. Waldorf publishes
+# no MIDI implementation document, and almost every parameter is reached by MIDI Learn instead:
+# "Set: opens a page allowing you to link a desired MIDI CC connection to any panel parameter
+# dial, potentiometer, or button" (manual p. 204), over a range given once as "CC01 to CC118 (or
+# Off)" (manual p. 187). A number a player assigns is not a property of the instrument, so none of
+# those 118 is below and `control_change: learned` says why - the same reading the OP-1's and the
+# Pulsar-23's got.
+#
+# FIFTEEN NUMBERS ARE THE INSTRUMENT'S OWN, AND FOURTEEN ARE IN A TABLE OF MODULATION SOURCES.
+# Printed page 234 lists 36 sources a patch can route, and five of its rows name controller
+# numbers: the modulation wheel at 1, breath control at 2, the expression pedal at 11, the sustain
+# pedal at 64, and a row reading "CC 22 - CC 31" against "MIDI CC #22 - #31". The fifteenth is in
+# the MPE section: "Front-back / Y-axis (sent as MIDI CC 74)" (manual p. 201).
+#
+# **THE TEN IN THAT RANGE ARE CONTROLS WHERE THE MODWAVE'S HUNDRED AND ONE WERE NOT**, which is a
+# distinction worth stating. The modwave's chart published a block of numbers "Assignable for
+# controllers and modulation" - a statement about what a player may do. This row is a **named
+# source in the mod matrix**: a patch selects "CC 24" the way it selects "LFO 2", and the number is
+# fixed. So each of the ten is addressable and does something definite.
+#
+# IT SENDS NRPN AND DOES NOT ANSWER TO IT, WHICH NOTHING ELSE HERE DOES. "Send NRPN: if set to On,
+# the physical panel elements send out MIDI NRPN data. For parameter automation please use MIDI CC
+# as before. Keep in mind, that the Iridium doesn´t react on incoming NRPN MIDI data" (manual
+# p. 202), the maker's own acute accent kept. Every other instrument in this corpus that mentions
+# NRPN either answers to it or says nothing.
+#
+# AND THE ONE STATEMENT ABOUT PROGRAM CHANGE IS ON A WEB PAGE, UNDER A TITLE THAT DENIES IT. The
+# manual's 246 pages mention program change once, in the glossary. The product page's FAQ is
+# titled "This device does not react to Program Change Messages!" and then explains how to make it
+# work - which is how every entry on that page is built, the title being the complaint and the
+# body the answer. See the source account.
+
+definition: 1
+
+model:
+  manufacturer: Waldorf
+  name: Iridium
+  # OS 3 IS THE MAKER'S OWN FILE NAME AND THE MANUAL NAMES NO VERSION INSIDE ITSELF - its running
+  # head is "Iridium Manual" throughout and its imprint reads "© 2023 Waldorf Music GmbH" while
+  # the file was created 2026-01-28. Waldorf serves operating-system updates from a `myWaldorf`
+  # account rather than a public page, so what the newest OS is cannot be read from anything
+  # fetched here. **This is the edition the maker offers for this instrument**, which is as far as
+  # the documents go. Checked 2026-10-03.
+  firmware: "3"
+
+source: >-
+  Iridium User Manual, 246 pages, the edition Waldorf's file name calls OS 3. **Waldorf publishes
+  no MIDI implementation document for this instrument and the manual contains no control map**,
+  because almost every parameter is reached by MIDI Learn instead: "Set: opens a page allowing you
+  to link a desired MIDI CC connection to any panel parameter dial, potentio- meter, or button"
+  (manual p. 204), the maker's own line break, with the range given as "The selectable CCs can are
+  CC01 to CC118 (or Off)" (manual p. 187) - the maker's own "can are". So `control_change:
+  learned`, and none of those 118 numbers is a control here.
+
+  ONE MANUAL FOR TWO PRODUCTS, PROVED BY HASH RATHER THAN BY INFERENCE. Waldorf has four Iridium
+  product pages. The Iridium's "Manual" link and the Iridium Keyboard's are different share ids,
+  and **both serve the same file**: 12,448,273 bytes, SHA-256 `67e403e6...`, fetched separately
+  from each. The cover says the same thing - "User Manual For Keyboard & Desktop" (manual p. 1) -
+  and the file is named `iridium_desk_kb`. The two pages also share two supplementary PDFs under
+  the same share ids, which is the file-id test that settled the modwave, available here alongside
+  the stronger one.
+
+  **The other two Iridiums are not in this definition.** The MK2's page serves an archive holding
+  a 236-page manual of its own, three months newer; the Core's serves a 223-page manual with 12
+  voices against this instrument's 16. Each needs its own reading.
+
+  FIFTEEN CONTROLLER NUMBERS ARE THE INSTRUMENT'S OWN. Fourteen come from the modulation-source
+  table on printed page 234, where five rows name a number: "Modulation wheel (CC #1)", "MIDI
+  Breath Controller (CC #2)", "MIDI Expression pedal (CC #11)", "MIDI Sustain pedal (CC #64)", and
+  one row covering ten, "MIDI CC #22 - #31" (manual p. 234). The fifteenth is in the MPE section: "Front-back /
+  Y-axis (sent as MIDI CC 74)" (manual p. 201), whose own row in the table is described as "Second
+  MPE parameter" with no number against it, so the two have to be joined by hand.
+
+  **That table is set two-up and Waldorf draws each rule as one segment per row**, at three x
+  positions a fraction of a point apart. A reader that clusters the rules but takes the first
+  table it finds gets 18 of the 36 rows and reports success - which is what the first attempt did
+  before the page's drawings were counted properly.
+
+  The ten that row covers are 22, 23, 24, 25, 26, 27, 28, 29, 30 and 31, written out here because
+  **the page never prints eight of them**: it gives the span and leaves the rest to arithmetic, so
+  a reader checking this definition against the manual would otherwise find no page saying 26.
+
+  THE TEN IN THE RANGE ARE RECORDED AND THE MODWAVE'S HUNDRED AND ONE WERE NOT. That chart gave a
+  block of numbers against "Assignable for controllers and modulation", which says what a player
+  may do. This gives a row in the list of things a patch can be modulated by, beside "LFO 2" and
+  "Velocity", and the numbers are fixed. A player cannot move CC 24; they can only choose whether
+  a patch listens to it.
+
+  EVERY ONE OF THE FIFTEEN IS RECORDED AS RECEIVED, WHICH IS THE DOCUMENTED HALF. All fifteen are
+  described as things the sound engine is modulated **by**. The manual's one statement about
+  sending controller data names something else entirely: "Send CC: here you can activate all
+  mapped MIDI Con- trol Change (MIDI CC) data being sent out for the panel pots, buttons, and
+  encoder" (manual p. 202) - the **mapped** CCs, which are the learned ones, from the panel
+  controls. Nothing says the wheels or the pedals transmit, so nothing here says they do.
+
+  IT SENDS NRPN AND IGNORES INCOMING NRPN, WHICH NO OTHER INSTRUMENT HERE DOES. "Send NRPN: if set
+  to On, the physical panel elements send out MIDI NRPN data. For parameter automation please use
+  MIDI CC as before. Keep in mind, that the Iridium doesn´t react on incoming NRPN MIDI data"
+  (manual p. 202), the maker's own acute accent in "doesn´t". The MK2's manual says the same of
+  itself, so it is the maker's settled position rather than a slip. `nrpn: none` records the
+  receiving half, which is what a consumer sending to this instrument needs; the sending half has
+  no field and is here instead.
+
+  MPE, WITH AN OPTIONAL SECOND ZONE. The three axes are given outright: "Left-right / X-axis (sent
+  as MIDI Pitch Bend)", "Front-back / Y-axis (sent as MIDI CC 74)" and "Pressure / Z-axis (sent as
+  MIDI Channel Aftertouch)" (manual p. 201). It configures itself when told to - "if a connected
+  MPE Controller sends MCM (MPE Configuration Messages), these will be detected and will
+  automatically put Iridium into MPE mode" (manual p. 201) - and "Iridium supports an optional
+  second MPE zone" (manual p. 201), which is why `parts` below has two.
+
+  PROGRAM CHANGE IS STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT. The manual never
+  mentions it except in the glossary that begins on printed page 239. The product page's FAQ is
+  titled "This device does not react to Program Change Messages!" and answers "You will have to
+  use the Favorites list in order to get the Prog CH working", then "This device uses only to the
+  entries in the Favorites lis when Prog CH messages are used. As soon as you have put the most
+  needed patches there, you can call them up by MIDI" (product_page) - the maker's own "uses only
+  to" and "lis". **Every entry on that page is titled as a user would phrase the complaint and
+  answered in the body**, so the instrument does answer to program change and what it selects is a
+  Favorites entry rather than a patch.
+
+  **No preset count is recorded**, because nothing says how far program change reaches. The
+  Favorites hold "20 sound programs per Set" over "up to six Sets, which means faster access to
+  120 sound programs with just two taps" (manual p. 173), and no document says whether program
+  change reaches one Set or all six.
+
+  A SENTENCE THAT IS WRONG IN TWO WAYS, AND IS NOT ABOUT WHAT IT FIRST LOOKS LIKE. The split
+  range is given as "The lowest setting is 0 (note C-2); the highest is 60 (note C8)" (manual
+  p. 171), and **it contradicts the same manual**: "Split points are interpreted from untransposed
+  keybed setting, i.e. the middle C3 is note number 60" (manual p. 200). In that convention 60 is
+  C3, so the number and the note name cannot both be right - and C8 is 120 rather than 127, so
+  even reading the note name as the true half does not give a full span. The MK2's manual, three
+  months newer, prints it differently again: "The lowest setting is note C-2; the highest is note
+  G8" (mk2_manual p. 164), dropping the numbers and raising the top. The Core's manual, checked
+  and not kept here, still prints the uncorrected one.
+
+  **It is also a parameter's limits rather than the engine's range** - the bounds of where a split
+  point may be put - so nothing in it says what notes this instrument plays, and no `note_range`
+  is recorded. It is written down because a reader meeting that sentence deserves to know it is
+  unreliable, not because anything here rests on it.
+
+  WHAT THE INSTRUMENT IS SAID TO SEND, WHICH IS WHY THE FIFTEEN BELOW ARE RECEIVED ONLY. "All
+  Panel parameter dials and pots are capable of sending MIDI Controller data via USB and MIDI Out"
+  (manual p. 29) - the panel, with the numbers a player has mapped to it. A Macro button can fire
+  one on demand: "Sned MIDI CC Sends a definable MIDI controller (from 0 to 127) with a definable
+  value (from 0 to127)" (manual p. 194), the maker's own "Sned" and missing space. And the panic
+  gesture sends one message by name: "Push the Semitone / Octave dials for Oscillator 1 and 2
+  simultaneously to send an All Notes Off message" (manual p. 24). **None of those is the wheel,
+  the pedals or the breath controller**, which is why none of the fifteen is recorded as
+  transmitted.
+
+  TWO SETS OF CONTROLLER NUMBERS IN THIS MANUAL ARE SOMEBODY'S EXAMPLE AND ARE NOT RECORDED. A
+  Modulation Matrix screenshot on printed page 147 shows a slot reading "CC 23", and the Global
+  MIDI Mappings screenshot on printed page 203 shows five rows mapping CC 3 to CC 7 onto named
+  parameters. **Both are pictures of a user-editable page with nothing beside them saying what
+  they are**, and the Mappings page is the MIDI Learn store itself - so they illustrate the
+  feature rather than publish a factory map. CC 3 to CC 7 and CC 23 are not among the modulation
+  sources the table names, which is the second reason for leaving them out. They are mentioned
+  here because they are invisible to text extraction, being raster images, and the next person to
+  search this manual will not find them.
+
+  ONE CONTROLLER NUMBER IS THE MK2'S AND IS NOT HERE. "Hint: Master Volume reacts on MIDI CC #7"
+  (mk2_manual p. 162). CC 7 appears nowhere in this instrument's 246 pages, so it is either
+  something the MK2 added or something Waldorf wrote down only once. **A number stated for one
+  product is not a number for another**, however alike they are - the call the Peak's addendum got
+  for the four figures that were the Summit's.
+
+  NOT RECORDED, EACH FOR A STATED REASON. **No MIDI channel range.** A channel is chosen per
+  Layer - "Layer 1/2 Input Channel: tap on the corresponding button to open a pop-up menu. Here
+  you can select the desired MIDI channel on which Layer 1 and Layer 2 reacts" (manual p. 200) -
+  and **the manual never says which channels are on offer**, so the obvious 1 to 16 would be an
+  assumption rather than a reading. **No mode**, because there is no implementation chart. **No
+  system exclusive**, because the only mention is the glossary's definition of the term. **No
+  transport**, because start, stop, continue and song position are named nowhere. And **no preset
+  count**, as above.
+
+sources:
+  manual:
+    kind: manual
+    title: Iridium User Manual
+    edition: OS 3
+    dated: 2026-01-28
+    landing: "https://waldorfmusic.com/iridium-en/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/egbiccS5iBns7wL/download"
+    sha256: 67e403e6dfb7496bb221bd730b75d9ca9ea66fc73adbf95a38147280f3bb06a7
+    retrieved: 2026-10-03
+    # 246 pages, counted with pypdf and with PyMuPDF, which agree - `file` gives no count. **NO
+    # OFFSET**: pages 2 to 245 print their own number among their first lines; page 1 is the cover
+    # and 246 the imprint. The same file is served from the Iridium Keyboard's page under a
+    # different share id, `eAn5dToRQ6b3xGi`, and the two downloads hash the same.
+    page_offset: 0
+  mk2_manual:
+    kind: manual
+    title: Iridium MK2 User Manual
+    dated: 2026-04-29
+    landing: "https://waldorfmusic.com/iridium-mk2/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/JMeXf5LECFMo38H/download"
+    sha256: dc4562fd0303bfe1e5d00cbd8f6535c91302bfc8ea8e05f74505fac15be578f3
+    retrieved: 2026-10-03
+    # ANOTHER PRODUCT'S MANUAL, CITED FOR TWO SENTENCES AND NOTHING ELSE: the corrected split
+    # range, and a controller number that is the MK2's alone and is therefore not in this
+    # definition. 236 pages, found inside `Manual.zip` along with two quickstarts - the only one
+    # of the four Iridium pages that serves an archive rather than a PDF. Created three months
+    # after the manual above.
+    page_offset: 0
+  product_page:
+    kind: download_page
+    title: Iridium - Waldorf Music
+    landing: "https://waldorfmusic.com/"
+    url: "https://waldorfmusic.com/iridium-en/"
+    sha256: db34ab2eda8e16dc328a169a607418347bbfa741bad67cdcca6b919e66a66c43
+    retrieved: 2026-10-03
+    paginated: false
+    # THE ONLY DOCUMENT ANYWHERE THAT SAYS WHAT THIS INSTRUMENT DOES WITH PROGRAM CHANGE, in an
+    # FAQ written by the maker's own support. Cited also for the specification, which the manual
+    # does not print as a list, and for a second account of MIDI Learn. The digest is of the text
+    # rendering; `Tools/save_page.py` rebuilds it from the saved HTML byte for byte.
+  keyboard_page:
+    kind: download_page
+    title: Iridium Keyboard - Waldorf Music
+    landing: "https://waldorfmusic.com/"
+    url: "https://waldorfmusic.com/iridium-keyboard-en/"
+    sha256: 9c3ecd787243193bdbcbbbfd5d77fb85a3e3d403d0a2368f6e32ec58d9aaf4ab
+    retrieved: 2026-10-03
+    paginated: false
+    # THE SIBLING'S PAGE, FETCHED TO PROVE THE TWO PRODUCTS ARE SERVED ONE MANUAL. Its "Manual"
+    # link is share id `eAn5dToRQ6b3xGi` against this product's `egbiccS5iBns7wL`, and the two
+    # downloads are the same bytes. It shares two supplementary PDFs with the Iridium's page under
+    # the same share ids as well.
+
+midi:
+  # NO CHANNEL RANGE IS RECORDED, AND THE ABSENCE IS CHECKED. A channel is chosen per Layer
+  # (manual p. 200) and on output as well - "Chan 1 / 2: here you can determine the MIDI channel
+  # for Layer 1 and 2, on which MIDI data is sent out" (manual p. 202) - but **no document says
+  # which channels are on offer**. 1 to 16 would be the obvious guess and this corpus does not
+  # guess.
+  #
+  # RECEIVED AND NOT SENT, and said in one sentence from the other side: "Internal means that
+  # Iridium doesn’t react to incoming MIDI Clock, nor does it send MIDI Clock" (manual p. 202) -
+  # the maker's own curly apostrophe - against "MIDI Clock means that Iridium automatically syncs
+  # to incoming MIDI Clock if it is sent by an external device" (manual p. 202). The three sync
+  # sources are Internal, MIDI Clock and CV Clock, and **none of them is a sending mode**, so the
+  # "nor does it send" describes Internal rather than implying some other setting does.
+  clock: receives
+  program_change:
+    # STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT - see the source account. "This
+    # device uses only to the entries in the Favorites lis when Prog CH messages are used"
+    # (product_page), the maker's own spelling.
+    receives: true
+    # AND IT SENDS ONE ON DEMAND, from a Macro button: "Send MIDI Prog Sends a definable MIDI
+    # program change from 0 to 127" (manual p. 194). That is a performer firing a chosen message
+    # rather than the instrument announcing a patch change, but it is sending program change and
+    # the field has no finer word.
+    sends: true
+  # LEARNED, WHICH IS NEITHER A MAP NOR AN ABSENCE. "Set: opens a page allowing you to link a
+  # desired MIDI CC connection to any panel parameter dial, potentio- meter, or button" (manual
+  # p. 204), over "CC01 to CC118 (or Off)" (manual p. 187). The fifteen controls below are the
+  # ones the maker fixes; the rest are the player's.
+  control_change: learned
+  # NONE **RECEIVED**, AND IT SENDS THEM: "Keep in mind, that the Iridium doesn´t react on
+  # incoming NRPN MIDI data" (manual p. 202), in the same bullet as "Send NRPN: if set to On, the
+  # physical panel elements send out MIDI NRPN data" (manual p. 202). This field records what the
+  # instrument answers to, which is nothing; that it transmits NRPN has no field and is in the
+  # source account.
+  nrpn: none
+  # MPE: the voices are spread across channels, one note to a channel, rather than sounding on
+  # one. Everything else about it is in the comments below, because a boolean cannot carry any of
+  # it - the three axes, the automatic configuration from MCM messages, and the second zone.
+  per_voice_channels: true
+
+voice:
+  addressing: pitches
+  # NO NOTE RANGE IS RECORDED, AND THE REASON IS WORTH THE SPACE. The sentence that looked like
+  # one is about a parameter's limits rather than the engine's: "Here you determine the keyboard
+  # range for the corresponding layer when in Split mode. The lowest setting is 0 (note C-2); the
+  # highest is 60 (note C8)" (manual p. 171) - the bounds of a **split point**, not of what the
+  # instrument plays. It is also misprinted; see the source account. **No document anywhere gives
+  # the span of notes this engine sounds**, and the keybed's 49 keys are a panel rather than a
+  # range.
+  # "Keep in mind that Iridium of- fers an overall polyphony of 16 voices" (manual p. 171), the
+  # maker's own line break.
+  polyphony: 16
+  # ONE POOL ACROSS THE TWO LAYERS, SAID TWICE: "Keep in mind that both sound layers will share
+  # the maximum polyphony of 16 voices" (manual p. 29), and the arithmetic to go with it - "If you
+  # set Layer 1 to 9 voices, Layer 2 automatically switches to 7 voices, and vice versa" (manual
+  # p. 171).
+  polyphony_shared: true
+  velocity:
+    # The keybed is velocity sensitive and velocity is in the modulation-source table; nothing
+    # says anything about release velocity, so `note_off` is left out.
+    note_on: both
+  # POLYPHONIC, AND THE MANUAL SPENDS A PAGE ON IT: the Keyboard has "49 light-weighted sensitive
+  # keys with polyphonic" aftertouch (manual p. 20), and the distinction is drawn explicitly -
+  # "Polyphonic aftertouch, that is transmitted individually" (manual p. 21) against monophonic
+  # channel aftertouch. The modulation-source table carries "After Touch" described as
+  # "Polyphonic Keyboard Pressure Data". **The MPE Z axis is channel aftertouch**, which is a
+  # different message from the keybed's own; both are answered to.
+  aftertouch: poly
+  pitch_bend:
+    # PER OSCILLATOR, WHICH IS UNUSUAL: "PB Range Osc 1, 2, or 3" (manual p. 38), "Determines the
+    # intensity of the pitch wheel in semitones for the selected oscillator from -24 to +24"
+    # (manual p. 38), with "Set Default: sets PB Range to its default value +12" (manual p. 38).
+    # Negative values invert the wheel. Twelve is the default of each of the three.
+    semitones: 12
+    programmable: true
+
+parts:
+  layer:
+    label: Layer
+    # The instrument is "duo-timbral" (product_page) and every page that mentions a Layer mentions
+    # two.
+    count: 2
+    # A CHANNEL EACH, CHOSEN BY THE PLAYER, IN BOTH DIRECTIONS: "Layer 1/2 Input Channel: tap on
+    # the corresponding button to open a pop-up menu. Here you can select the desired MIDI channel
+    # on which Layer 1 and Layer 2 reacts" (manual p. 200), and "Chan 1 / 2: here you can
+    # determine the MIDI channel for Layer 1 and 2, on which MIDI data is sent out" (manual
+    # p. 202). Neither derives from the other, so there is no offset.
+    channel: assigned
+    addressing: pitches
+    # NOTES AND CONTROLLERS. A Layer is what a channel addresses and what the mod matrix's MIDI
+    # sources feed. **Program change is not a Layer's**: what it selects is a Favorites entry,
+    # which is a whole patch.
+    receives: [notes, controls]
+
+groups:
+  controllers: Controllers
+  pedals: Pedals
+  modulation: Modulation Sources
+  mpe: MPE
+
+controls:
+
+  # CONTROLLERS ---------------------------------------------
+  wheel:                 {label: Wheel, cc: 1, direction: receives, group: controllers}
+  breath_control:        {label: Breath Control, cc: 2, direction: receives, group: controllers}
+
+  # PEDALS --------------------------------------------------
+  expression:            {label: Expression, cc: 11, direction: receives, group: pedals}
+  pedal:                 {label: Pedal, cc: 64, direction: receives, group: pedals}
+
+  # MODULATION SOURCES --------------------------------------
+  cc_22:                 {label: CC 22, cc: 22, direction: receives, group: modulation}
+  cc_23:                 {label: CC 23, cc: 23, direction: receives, group: modulation}
+  cc_24:                 {label: CC 24, cc: 24, direction: receives, group: modulation}
+  cc_25:                 {label: CC 25, cc: 25, direction: receives, group: modulation}
+  cc_26:                 {label: CC 26, cc: 26, direction: receives, group: modulation}
+  cc_27:                 {label: CC 27, cc: 27, direction: receives, group: modulation}
+  cc_28:                 {label: CC 28, cc: 28, direction: receives, group: modulation}
+  cc_29:                 {label: CC 29, cc: 29, direction: receives, group: modulation}
+  cc_30:                 {label: CC 30, cc: 30, direction: receives, group: modulation}
+  cc_31:                 {label: CC 31, cc: 31, direction: receives, group: modulation}
+
+  # MPE -----------------------------------------------------
+  mpe_y_axis:            {label: MPE Y Axis, cc: 74, direction: receives, group: mpe}

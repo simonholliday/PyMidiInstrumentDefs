@@ -231,8 +231,12 @@ def halves_on (nrpn: int, printed: set[int]) -> bool:
 
 RANGE_SPAN: typing.Final[int] = 32
 
+# A number may be written with a hash in front of it, and a maker who does that usually does it
+# on both ends of a range: Waldorf's modulation-source table prints "MIDI CC #22 - #31", which a
+# pattern expecting bare digits around the dash does not see at all.  The hash is optional on
+# each end rather than required, so "22-31" still matches.
 _PRINTED_RANGE: typing.Final[re.Pattern[str]] = re.compile(
-	r"(\d{1,3})\s*(?:[-\u2013\u2014\u2026]|\.\.\.)\s*(\d{1,3})")
+	r"#?\s*(\d{1,3})\s*(?:[-\u2013\u2014\u2026]|\.\.\.)\s*#?\s*(\d{1,3})")
 
 
 def inside_a_range (number: int, text: str) -> bool:

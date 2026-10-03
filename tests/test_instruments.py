@@ -132,6 +132,7 @@ class TestBundledCorpus:
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"behringer/model_d",
+			"behringer/td_3",
 			"dreadbox/typhon",
 			"elektron/analog_four",
 			"elektron/analog_rytm_mkii",
@@ -446,6 +447,54 @@ class TestAbsences:
 		assert malevolent.midi.control_change is None
 		assert malevolent.voice.polyphony == 1
 		assert "guide" in (malevolent.source or "").lower()
+
+	def test_the_td_3_does_claim_an_absence_and_says_what_earns_it (self) -> None:
+		"""The same shape of document as the Malevolent's, and the opposite answer.
+
+		Both have nothing but a quick start guide and neither guide lists a
+		controller.  The difference is that this one carries a table of MIDI
+		messages, and that the same table in the sibling guide does carry a
+		controller - so the absence here is informative rather than merely silent.
+		The file has to say which, because the two instruments look alike.
+		"""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+		malevolent = pymidiinstrumentdefs.load("pwm/malevolent", [CORPUS])
+
+		assert td3.midi.refuses_control_change
+		assert not malevolent.midi.refuses_control_change
+		assert td3.controls == malevolent.controls == {}
+
+		account = " ".join((td3.source or "").split())
+
+		assert "A QUICK START GUIDE THAT LISTS NO CONTROLLER IS" in account
+		assert "Two documents are what turn a silence into a statement" in account
+
+	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
+		"""Eleven definitions carry no controls, for four different reasons.
+
+		Pinned here because the count has gone stale in notes twice: a twelfth
+		cannot be added without saying which kind it is.
+		"""
+		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
+			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
+
+		assert len(empty) == 11
+
+		kinds: dict[str | None, set[str]] = {}
+
+		for name in empty:
+			definition = pymidiinstrumentdefs.load(name, [CORPUS])
+			key = "stated_none" if definition.midi.stated_none else definition.midi.control_change
+			kinds.setdefault(key, set()).add(name)
+
+		assert kinds["none"] == {"behringer/model_d", "behringer/td_3",
+			"moog/labyrinth", "vermona/drm1_mkiv"}
+		assert kinds["learned"] == {"arturia/drumbrute_impact", "roland/d_50",
+			"synthstrom_audible/deluge", "teenage_engineering/op_1"}
+		assert kinds["stated_none"] == {"moog/dfam"}
+
+		# And the two that claim nothing, because nobody has established anything.
+		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent"}
 
 
 class TestCarbon8M:
@@ -5965,6 +6014,135 @@ class TestTyphon:
 
 		assert "The Artemis's list must never be attributed to this instrument" in flowed
 		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed
+
+
+class TestTD3:
+
+	"""A TB-303 recreation whose maker publishes a complete message table with no controller in it."""
+
+	def test_no_controls_and_the_absence_is_a_checked_one (self) -> None:
+		"""The distinction the whole format turns on, in its plainest form.
+
+		Eleven knobs and twenty-eight switches, none of them addressable - and the
+		file says so rather than saying nothing, because the maker's own MIDI message
+		table enumerates what the instrument answers to and no controller is in it.
+		"""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert len(td3.controls) == 0
+		assert td3.midi.control_change == "none"
+		assert td3.midi.refuses_control_change is True
+		assert td3.midi.learns_control_change is False
+
+		# And not the other kind of empty: this instrument has MIDI, unlike the DFAM.
+		assert td3.midi.stated_none is False
+
+	def test_everything_absent_rests_on_one_table_and_the_file_says_so (self) -> None:
+		"""Three negatives from one reading, argued once instead of three times.
+
+		The table lists `8n`, `9n`, `Bn 7B` and `En` under Channel Message, so program
+		change and both kinds of aftertouch are missing from an enumeration that is
+		otherwise complete.  A reader who disagrees with that reading knows from the
+		file exactly which three conclusions to revisit.
+		"""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert td3.midi.control_change == "none"
+		assert td3.midi.program_change is not None
+		assert td3.midi.program_change.receives is False
+		assert td3.voice is not None
+		assert td3.voice.aftertouch == "none"
+
+		assert td3.source is not None
+
+		account = " ".join(td3.source.split())
+
+		assert "Everything recorded below as absent rests on that one" in account
+
+	def test_clock_and_transport_are_received_and_not_claimed_to_be_sent (self) -> None:
+		"""Because the specifications give the DIN socket as In and Thru only."""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert td3.midi.clock == "receives"
+		assert td3.midi.transport == "receives"
+
+	def test_monophonic_and_the_sixteen_voices_are_a_rig_not_an_instrument (self) -> None:
+		"""Poly Chain combines units, which is a fact about several TD-3s and not about one."""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert td3.voice is not None
+		assert td3.voice.polyphony == 1
+		assert td3.voice.polyphony_shared is None
+
+	def test_the_guide_prints_two_pages_to_a_sheet (self) -> None:
+		"""So a citation to a printed page is half of a page of the file.
+
+		Both guides are laid out this way, and getting it wrong would put every
+		quotation on the wrong page - which is why the quotation gate is the check
+		that matters here and this one only pins the arithmetic.
+		"""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		guide = td3.sources["guide"]
+
+		assert guide.pages_per_sheet == 2
+		assert guide.page_offset == 1
+		assert guide.file_page(94) == 48
+		assert guide.file_page(95) == 48
+		assert guide.file_page(103) == 52
+		assert guide.file_page(1) == 1
+
+		assert td3.sources["mo_guide"].pages_per_sheet == 2
+
+	def test_the_firmware_is_not_recorded_and_the_file_says_why (self) -> None:
+		"""An application's version is not an instrument's, and three pages give three."""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert td3.model.firmware is None
+
+		# The guide's own V 5.0 is the document's edition, which is recorded where it
+		# belongs rather than being mistaken for the instrument's.
+		assert td3.sources["guide"].edition == "V 5.0"
+		assert td3.sources["mo_guide"].edition == "V 3.0"
+
+	def test_the_file_says_the_modded_out_sibling_is_not_this_instrument (self) -> None:
+		"""One extra row in the same table, so one definition cannot serve both."""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert "mo_guide" in td3.sources
+
+		assert td3.source is not None
+
+		account = " ".join(td3.source.split())
+
+		assert "THE TD-3-MO IS NOT THIS INSTRUMENT" in account
+		assert "`Bn 4A xx` Filter Cutoff" in account
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "behringer" / "td_3.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "ITS SIBLING IS A DIFFERENT INSTRUMENT AND DIFFERS BY EXACTLY ONE ROW" in flowed
+
+	def test_nothing_is_claimed_about_what_leaves_the_din_socket (self) -> None:
+		"""One document, two statements, and they contradict each other - so record neither."""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert td3.source is not None
+
+		account = " ".join(td3.source.split())
+
+		assert "ONE THING THIS DOCUMENT SAYS TWICE AND CONTRADICTS ITSELF ABOUT" in account
+		assert "nothing below claims anything about what leaves the DIN socket" in account
+
+	def test_sysex_is_unrecorded_rather_than_denied (self) -> None:
+		"""The maker's own application configures it, so `false` would be the wrong answer."""
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert td3.midi.sysex is None
+
+		# And the channel, for a different reason the file gives in full.
+		assert td3.midi.channels is None
 
 
 class TestAnalogFour:

@@ -1,0 +1,237 @@
+# The eleventh definition here with no controls at all and the fourth to say
+# `control_change: none`, and what is new about it is the *kind* of evidence rather than the
+# conclusion. The DRM1 MKIV's manual says the thing outright, that controller data will not
+# be processed, which is the strongest form there is. The Model D's rests on a search of 44 pages
+# finding the phrase nowhere but a glossary. This one rests on an **enumeration**: the maker
+# publishes a table of the status bytes the instrument answers to, and no controller is among
+# them. A TB-303 recreation whose eleven knobs are not addressable, established from that table
+# rather than inferred from a silence.
+#
+# ITS SIBLING IS A DIFFERENT INSTRUMENT AND DIFFERS BY EXACTLY ONE ROW. The TD-3-MO answers to
+# one controller, Filter Cutoff, which this one does not. Behringer says so on its own cover.
+# See the source account: the TD-3-MO needs a definition of its own and must never be described
+# by this file.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: TD-3
+  # NOT RECORDED, and Behringer publishes nothing that would establish it. The quick start
+  # guide carries its own edition on its cover, V 5.0, which is the document's version and not
+  # the instrument's; it says firmware updates exist - "The firmware file can be downloaded and
+  # stored on your computer, and then used to update the TD-3" (p. 38) - and names no version.
+  # The Synthtribe application has versions of its own, and three of this instrument's product
+  # pages advertise three different ones: 2.9.1 for Windows and 2.9.0 for Mac on the TD-3-RD's
+  # page, 3.2.4 on the TD-3-BK's. Those are the application's numbers, not the instrument's.
+  # This is the Model D's situation exactly, from the same maker.
+
+source: >-
+  Quick Start Guide (55 sheets, 107 printed pages, V 5.0), in every language Behringer
+  publishes: the hook-up diagrams at pp. 14-17, the rear-panel connectors and the USB port at
+  pp. 20-21, the clock-source setting at pp. 38-39, the Poly Chain system mode at pp. 92-93,
+  the MIDI message table at p. 94, and the specifications at p. 103.
+
+  Two pages are printed to a sheet, so `pages_per_sheet: 2` with an offset of one, and a
+  citation to p. 94 is the left half of the 48th page of the file.
+
+  THERE IS NO FULL MANUAL. This maker publishes one for its Model D and does not for this
+  instrument, which was established by reading what each of three product pages offers rather
+  than by failing to find one: the TD-3-RD's page serves this guide in all languages plus
+  Japanese and Chinese editions, the TD-3-BK's serves only a Japanese and a Chinese one under
+  different file names and no English at all, and the TD-3-MO's serves its own. So the one
+  English-bearing document for this instrument sits on one colour variant's page, filed under
+  a second variant's product code, and is absent from a third variant's page.
+
+  THE MAKER'S OWN MIDI MESSAGE TABLE IS THE WHOLE OF ITS IMPLEMENTATION, AND THAT IS WHY THIS
+  FILE SAYS `none` RATHER THAN SAYING NOTHING. The table at p. 94 is headed "MIDI message" (p. 94),
+  gives five columns - Status, Second, Third, Parameter, Description - and groups its rows as
+  Channel Message and SysRT. The channel messages are `8n` Note Off, `9n` Note On, `Bn 7B` All
+  Notes Off and `En` Pitch Bend; the real-time messages are `F8` Timing Clock, `FA` Start,
+  `FB` Continue and `FC` Stop. That is every row.
+
+  So the table enumerates the status bytes this instrument answers to, and three are missing
+  from an enumeration that is otherwise complete: `Bn` with anything but 7B, `Cn` program
+  change, and `An` or `Dn` aftertouch. **Everything recorded below as absent rests on that one
+  reading of that one table**, stated here once rather than argued three times. The only `Bn`
+  the table gives is All Notes Off, which is a channel mode message belonging to the MIDI
+  specification rather than a controller this instrument publishes, so there is no control to
+  carry and `control_change: none` is a checked absence.
+
+  THE TABLE WAS READ THREE TIMES AND THE THREE AGREE ON EVERY CELL. Once by cutting lines at
+  their column positions; once independently, without sight of the first, by taking the table's
+  **ruled grid out of the page's vector drawings** - the stroked verticals through the dark
+  header bar giving the column dividers, the horizontals giving the row boundaries - and
+  dropping each word into the cell its own bounding box centres in, then checking the result
+  against the page rendered at four times size and read by eye; and a third time by comparing
+  the English copy against the **nine language copies** the guide prints of the same table,
+  which agree with it row for row and cell for cell on Status, Second, Third and Parameter, only
+  the Description differing.
+
+  THAT THIRD CHECK HAS A TRAP IN IT WORTH PASSING ON: the Dutch copy's section heading is
+  printed in English, identical to the real English one, and the Italian and Swedish copies
+  leave their column headers in English while the Italian and Dutch leave the group label as
+  "Channel Message". So a nine-language document cannot be navigated by searching for its
+  headings, and the English block has to be found by position.
+
+  TWO THINGS ABOUT HOW THE TABLE IS PRINTED, RECORDED BECAUSE THEY LOOK LIKE EXTRACTION FAULTS
+  AND ARE NOT. Within the SysRT group, `F8` and `FA` fill their Second, Third and Parameter
+  cells with em dashes while `FB` and `FC` **leave them genuinely empty** - true in both
+  documents and in all nine language copies, so it is the artwork and not a slip, and no reason
+  for it is given. And All Notes Off is printed as two bytes, `Bn 7B` with Third dashed, where a
+  control change carries three; the missing value is not inferred here.
+
+  AND THAT READING HAS TO EARN ITSELF, BECAUSE A QUICK START GUIDE THAT LISTS NO CONTROLLER IS
+  NOT THE SAME AS AN INSTRUMENT THAT HAS NONE. The PWM Malevolent in this corpus is the case
+  that settles the general rule the other way: its only document is a quick start guide, it
+  lists no controllers, and its definition deliberately does **not** say `none`, because silence
+  in a short document means only that it is not in the guide.
+
+  What makes this instrument different is not that the guide is longer - it is that **the guide
+  carries a table of MIDI messages at all**, and that the same table in the sibling document
+  **does** carry a controller. The TD-3-MO's copy prints one extra row, `Bn 4A xx` Filter
+  Cutoff (mo_guide p. 62), in the same table of the same guide by the same maker. So this is
+  demonstrably the place where Behringer lists a controller when the instrument has one, and its
+  absence here is therefore informative rather than merely silent. **Two documents are what turn
+  a silence into a statement**, and without the MO's copy this file would say nothing instead of
+  `none`.
+
+  One caution about that evidence, since everything above leans on it: the MO prints its MIDI
+  section **once, in English only**, where this guide prints nine translated copies of its own.
+  So the extra row exists in exactly one place in the two documents, and was read there three
+  times by three methods rather than corroborated by a translation.
+
+  THE TD-3-MO IS NOT THIS INSTRUMENT. Its own quick start guide (V 3.0) prints the same table
+  with **one extra row**, `Bn 4A xx` Filter Cutoff (mo_guide p. 62), and nothing else differs in
+  it. The maker names the difference on the MO's cover as well, which describes an "Analog Bass
+  Line Synthesizer with VCO, MIDI-Controllable VCF and Sub-Harmonics Oscillator" (mo_guide p. 1)
+  where this instrument's cover says VCO, VCF and a sequencer. Its product page's feature list
+  carries a line about the filter frequency being controllable over MIDI CC which this
+  instrument's does not - described rather than quoted, for the reason the channel note below
+  gives. So the TD-3-MO has one control, and this definition must never be read as describing
+  it.
+
+  THE COLOUR VARIANTS ARE FINISHES. The TD-3-BK's and TD-3-RD's product pages carry the same
+  nine feature lines, word for word apart from one missing space, and the same specifications.
+  Nothing distinguishes them in MIDI, and the guide that covers them is named after a third,
+  the TD-3-SR.
+
+  ONE THING THIS DOCUMENT SAYS TWICE AND CONTRADICTS ITSELF ABOUT, so neither statement is
+  recorded. The controls section calls the rear jack MIDI OUT/THRU and says it is "used to
+  output MIDI OUT data, and pass through MIDI data received at the MIDI INPUT" (pp. 20-21); the
+  specifications call the same jack MIDI In/Thru and name "MIDI In and MIDI Thru, 5-pin DIN"
+  (p. 103), with no output at all. One of them is wrong and the document does not say which, so
+  nothing below claims anything about what leaves the DIN socket. The USB port is not in doubt:
+  "The TD-3 will show up as a class-compliant USB MIDI device, capable of supporting MIDI in
+  and out" (pp. 20-21), with "USB MIDI OUT - sends MIDI data to an application" (pp. 20-21) - which says that it
+  sends, and never says what.
+
+  NOT RECORDED: the MIDI channel, because no document cited here prints a range or names a
+  setting for it. The table's worked examples end "Note: 1, MIDI input channel 1" (p. 94),
+  which is an example and not a statement that 1 is the only one.
+
+  THE MAKER DOES CLAIM A CHANNEL SETTING AND IT IS NOT CITABLE, WHICH IS WORTH KNOWING ABOUT
+  THIS SITE AND NOT ONLY THIS INSTRUMENT. Every one of these product pages carries a list of
+  feature lines, and one of them claims a MIDI and USB implementation with MIDI channel and
+  Voice Priority selection. **That list is delivered inside the page's script payload rather
+  than its markup**, so the visible-text copy a citation here rests on does not contain it -
+  and stripping scripts is the right rule for rendering a page, not a defect to work around.
+  The same goes for the feature line about the TD-3-MO's filter above. Both are described and
+  neither is quoted, and the channel stays unrecorded rather than resting on a sentence that
+  cannot be looked up in the saved file.
+
+  ALSO NOT RECORDED: velocity, since the note-on row carries a `vv` byte in `[0, 7F]` and no
+  page says the instrument does anything with it; the note range; and how far pitch bend bends,
+  which the table gives as a 14-bit value in `[0, 3FFF]` without naming a depth in semitones or
+  saying whether one can be set.
+
+  THE FORMAT CANNOT YET SAY THAT PITCH BEND IS RECEIVED WHILE NOBODY HAS ESTABLISHED ITS RANGE,
+  which is the one fact this instrument publishes that nothing below holds. `voice.pitch_bend`
+  carries a depth and whether the depth is settable, and both are unknown here while reception
+  is printed in the maker's own table. It is recorded in this sentence instead.
+
+sources:
+  guide:
+    kind: manual
+    title: Quick Start Guide TD-3
+    edition: V 5.0
+    landing: "https://www.behringer.com/en/products/0718-AAQ"
+    url: "https://cdn-media.empowertribe.com/4330a8e8ce43439d868b86f8b658c653/QSG_BE_0718-AAN_TD-3-SR_WW.pdf"
+    sha256: a690b25fab48491cc0c177917f969b7dcb50fa6c8860d47f0e1be21401a657ef
+    retrieved: 2026-10-03
+    page_offset: 1
+    pages_per_sheet: 2
+    # 55 sheets carrying 107 printed pages, two to a sheet. The landing page is the TD-3-RD's,
+    # which is where this file is served from; the file name carries the TD-3-SR's product code.
+  mo_guide:
+    kind: manual
+    title: Quick Start Guide TD-3-MO
+    edition: V 3.0
+    landing: "https://www.behringer.com/en/products/0718-ABX"
+    url: "https://cdn-media.empowertribe.com/0bb5115060fa46eabc939cefcac50001/QSG_BE_0718-ABX_TD-3-MO_WW.pdf"
+    sha256: 1f9607424ca8bbfad831cbebe650bc23be0353e2437123ddfc13f05430752a3d
+    retrieved: 2026-10-03
+    page_offset: 1
+    pages_per_sheet: 2
+    # 37 sheets, 71 printed pages. Cited for one thing only: that the TD-3-MO answers to a
+    # controller this instrument does not, so that no later reader takes this file for its
+    # description. No fact below is read from here.
+  product_page:
+    kind: product_page
+    title: "TD-3-RD - Behringer"
+    landing: "https://www.behringer.com/en/products/0718-AAQ"
+    url: "https://www.behringer.com/en/products/0718-AAQ"
+    sha256: 7f244484a401a6920537907bbc17e902f988db94a6937d59c61ee2df1e332525
+    retrieved: 2026-10-03
+    paginated: false
+    # The visible text of the page, which is the copy cited. It is where the maker states the
+    # instrument monophonic in the same breath as its sixteen-voice chaining, and where the
+    # list of downloads was read from. The feature lines quoted in the source account are in
+    # the page's script payload rather than its visible text, and are described rather than
+    # quoted for that reason.
+
+midi:
+  # NOT RECORDED, the channel range: no document cited here prints one. See the source account,
+  # which also says where the maker does claim a channel setting and why that is not citable.
+  # CLOCK AND TRANSPORT ARE RECEIVED AND NOTHING SAYS THEY ARE SENT. The table gives F8 Timing
+  # Clock, FA Start, FB Continue and FC Stop (p. 94), and the clock source is a front-panel
+  # setting with four states: "Selector switches 1, 2, 3, or 4 represent clock source INT, MIDI,
+  # USB, or TRIG respectively" (pp. 38-39), with the caution that it "must always be INT (internal) if you
+  # are not using an external clock" (pp. 38-39). So MIDI and USB are each a clock this
+  # instrument follows. Nothing published says it sends either, the specifications give the DIN
+  # socket as In and Thru only, and the one sentence that says the USB port sends does not say
+  # what - so `both` would be a guess and `receives` is what the documents support.
+  clock: receives
+  transport: receives
+  program_change:
+    # The table's channel messages are 8n, 9n, Bn and En. `Cn` is not among them, and the table
+    # is this instrument's whole published implementation: see the source account.
+    receives: false
+  # A CHECKED ABSENCE, not an unread page. The only Bn row the table gives is `Bn 7B`, All Notes
+  # Off, which is a channel mode message of the MIDI specification rather than a controller this
+  # maker publishes - the same ruling that keeps CC 120, 122 and 123 out of every other
+  # definition here. Eleven knobs and twenty-eight switches, and not one of them is addressable.
+  # The TD-3-MO, which is a different instrument, answers to one: see the source account.
+  control_change: none
+  # NOT RECORDED, system exclusive. The guide never uses the word, so there is no byte layout
+  # and no statement to cite - and `false` would be the wrong answer rather than a cautious one,
+  # because the maker's own application configures this instrument over USB and the Model D's
+  # manual, from the same maker, publishes a System Exclusive command table that does exactly
+  # that job. What the Synthtribe application sends is undocumented, not absent.
+
+voice:
+  addressing: pitches
+  # "Number of voices Monophonic" (p. 103). Several units make one polyphonic instrument through
+  # the Poly Chain, and the maker is careful about the distinction: "While it is a monophonic
+  # instrument (one note at a time), TD-3-RD's 16-note Poly Chain function lets you combine
+  # multiple synthesizers for up to 16-voice polyphony" (product_page). That is a fact about a
+  # rig of TD-3s rather than about one, so it is not here.
+  # THE GUIDE ITSELF NEVER RECONCILES THE TWO, which is worth saying because its own cover
+  # advertises a "16-Voice Poly Chain" four lines above the title and its specifications say
+  # Monophonic ninety pages later, with nothing in between to explain how both are true. The
+  # product page is where the maker joins them up, and that is the only reason this field can be
+  # filled in from a document rather than from knowing what a TB-303 is.
+  polyphony: 1
+  # The table's channel messages are 8n, 9n, Bn and En, so neither `An` nor `Dn` is among them
+  # and no pressure message reaches this instrument: see the source account.
+  aftertouch: none

@@ -136,6 +136,7 @@ self-contained YAML file, and you share it by sending it.
 | `arturia/microfreak` | Arturia MicroFreak: four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
 | `arturia/minifreak` | Arturia MiniFreak: six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |
 | `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
+| `behringer/td_3` | Behringer TD-3: no control changes either, established from the maker's own complete MIDI message table - its "Modded Out" sibling adds exactly one and needs a definition of its own |
 | `dreadbox/typhon` | Dreadbox Typhon: 98 controllers out of a three-column list on two pages of the manual, which is the only place its maker publishes them - the standalone CC chart on the same download page belongs to a different instrument |
 | `elektron/analog_four` | Elektron Analog Four: 229 controls off an appendix whose maker publishes it three times over, in which 157 parameters can be reached by NRPN and by nothing else |
 | `elektron/analog_rytm_mkii` | Elektron Analog Rytm MKII: 99 controls of the 319 its appendix prints, because the other 220 are 32 machines' names for the same eight numbers |

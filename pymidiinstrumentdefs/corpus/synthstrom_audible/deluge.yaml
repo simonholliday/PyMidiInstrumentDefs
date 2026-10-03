@@ -1,0 +1,435 @@
+definition: 1
+
+# THIS INSTRUMENT PUBLISHES NO CONTROLLER NUMBER AND NO NOTE NUMBER, BY DESIGN. Its chart answers
+# the control-change row "Yes" in both columns and then says how: "Numbers assigned by user" going
+# out and "Parameter must be 'learned' by user" coming in (guidebook_oled p. 241). So there is no
+# `controls` block and no `voices` map below, and both absences are the fact rather than an
+# omission - the reading the OP-1's four routed controllers and the DrumBrute Impact's whole panel
+# got.
+#
+# AND ITS MAKER HAS BOUND SOMEBODY ELSE'S DOCUMENT INTO ITS OWN. The official guidebook's last
+# chapter is headed "COMMUNITY GUIDE", and it is not a chapter about the community: pages 3 to 23
+# of the separately published, user-written "Deluge Community Guide" are reprinted inside it, one
+# page to one page, in order. What the reprint leaves out is that guide's own page 2, which names
+# the six people who wrote it. The measurement is in the source note below. **Nothing in this file
+# rests on that chapter**, and `docs/adding-an-instrument.md` is why; the point of saying so here
+# is that a reader working from the official guidebook alone cannot see where the maker's own
+# writing stops, because the cover and the running head are the same on every page of it.
+
+model:
+  manufacturer: Synthstrom Audible
+  name: Deluge
+  # THE GUIDEBOOK IS FOUR RELEASES BEHIND THE FIRMWARE AND NO DOCUMENT COVERS THE GAP. This
+  # describes OS 4.1.0, which is what the guidebook's own cover says and what the printed
+  # edition's page says independently of it: "Up to date as of firmware version 4.1.0"
+  # (manual_page). The firmware offered for download is **V4.1.4 of 19 December 2023**
+  # (product_page), three releases later, and Synthstrom publishes notes for none of them -
+  # V4.1.4, V4.1.3 and V4.0.1 are bare `.bin` files with a date, the news listing carries no
+  # firmware post at all, and the only release this maker links notes for is V3.1.5, on its
+  # forum. So whether anything between 4.1.0 and 4.1.4 changed a MIDI answer **cannot be
+  # established from the maker's documents**, and this file does not pretend otherwise. The one
+  # set of notes that does exist is a bug-fix list naming no MIDI change (release_notes), which
+  # is a single sample from a different major version and is evidence of habit rather than of
+  # this gap.
+  firmware: "4.1.0"
+
+source: >-
+  Deluge Official Guidebook, 338 pages, **read in both of the editions Synthstrom
+  publishes**: the OLED edition whose cover says `OS 4.1.0`, and the numeric-display
+  edition whose cover says `OS 4.0`. The MIDI chapter is chapter 12 at printed pages
+  235-264, and everything numeric in this file comes from four of its pages and one
+  page of chapter 14: the MIDI Implementation Chart at p. 241, the MIDI settings
+  table at p. 240, the program change and bank select ranges at p. 253, the output
+  channel range at p. 254, the controller range it can be set to send at p. 255, and
+  the system settings table at p. 276 for the pitch bend range and the default
+  velocity. MPE is pp. 258-263. Plus the product page, the printed manual's own
+  page, the open-source page, the news listing and one forum thread, each named
+  below for what it settles.
+
+  THE TWO EDITIONS AGREE ON EVERY MIDI NUMBER, WHICH IS A MEASUREMENT AND NOT AN
+  ASSUMPTION. A maker that publishes two editions can print two different numbers
+  for the same row, which is what the OP-XY's did. So both guidebooks were read by
+  the same scripted method and compared: the implementation chart comes out
+  **identical, row for row, all 24 rows in all 9 groups**, and the whole MIDI chapter
+  differs only in how the display is quoted - the OLED edition writes a menu as
+  `TEMPO MAGNITUDE MATCHING` where the numeric one writes `MAGN`, forty-odd times
+  over. Two differences are not about spelling and neither touches a number: the
+  OLED edition's MIDI sound editor has a `PLAY / DIRECTION` row the numeric one does
+  not list, and the worked example on p. 257 uses channel 1 and note 0 where the
+  numeric one uses channel 10 and note 4 - **with both printing the same ranges**,
+  1-16 and 0-127, which is two independent printings of the ranges this file records.
+
+  THE CHART'S TWO COLUMNS DISAGREE ON SEVEN OF ITS ROWS, SO IT WAS READ BY POSITION.
+  Its columns are `Transmitted` and `Recognised`, and they differ wherever the
+  instrument is a sequencer rather than a synth: program change and both bank select
+  rows go out and are not answered, polyphonic aftertouch is answered and not sent,
+  All notes off is answered and not sent. A reading that took the words in the order
+  the file stores them would have been right about the seventeen rows where the two
+  columns agree and silently wrong about exactly the seven that carry information.
+  So each cell was placed by its horizontal position between the table's own ruled
+  column edges, and **the group column was checked by arithmetic**: a merged label
+  like `System real time` is drawn once, centred on the rows it covers, so matching
+  the nine labels to nine consecutive blocks of rows is a sum that can be repeated
+  rather than a judgement about which label looks nearest.
+
+  THE SECOND READING FOUND A CELL THE FIRST HAD WRONG, WHICH IS WHAT IT IS FOR. A
+  second reader was given the document, the table's heading and the two warnings
+  above, was not shown the first reading, and was required to use a different
+  library. It reached the same 24 rows, the same nine group labels with the same
+  spans - 2, 2, 1, 1, 2, 1, 4, 5, 6 - the same column order and the same page, by a
+  different route: it recovered the grid from the ruled lines in the content stream,
+  where a full-width rule cuts through the group column and a short one divides rows
+  **inside** a merged group cell, and reported the centring relation separately as a
+  confirmation rather than as its method. **And it disagreed about one cell.** The
+  footnote under the chart, "*Only if MIDI Clock output is enabled" (guidebook_oled
+  p. 241), wraps onto a second line, and the first reading skipped lines beginning with an asterisk - so it
+  skipped the first line of that footnote and attached the second to the chart's last
+  cell, which came out as `System real time / Reset` transmitting `No output is
+  enabled`. That is corrected and the script now stops a column at its first
+  asterisk. Nothing in this file ever depended on that cell, which is luck rather
+  than diligence.
+
+  TWO THINGS THE SECOND READER ESTABLISHED THAT THE FIRST HAD NOT. **This PDF
+  contains no space glyphs at all**: a word space is a kerning adjustment inside the
+  text-showing operator, so what any extractor hands back depends on whether it
+  rebuilds spaces and at what threshold - the plain reading of one row is
+  `MIDItimecodequarterframe`. The two readings used different thresholds and agree on
+  every cell's spacing anyway, which is why the comparison measures letters and
+  digits first and reports spacing separately. And **the chart arguably has 25 rows
+  rather than 24**: the footnote sits inside a ruled band of its own between the last
+  row and the table's bottom frame, so a reading that counts ruled bands gets 25. It
+  is a footnote - no group label, no sub-label, no cell in the other column, and it
+  opens with the asterisk four cells above it carry - but that is a judgement and is
+  recorded as one.
+
+  THE PRINTED PAGE IS SIX LESS THAN THE PAGE OF THE FILE, CHECKED ON EVERY PAGE THAT
+  HAS ONE. 338 pages by pypdf and by PyMuPDF, which agree; `file` offers no count
+  for either edition. **312 of them print a folio and all 312 are out by exactly
+  six**, in both editions - so the offset is measured rather than sampled, which is
+  what the Muse's table of contents taught. The 26 without one are the front matter
+  and the chapter dividers. That 312 is also the maker's own figure for the book -
+  "A5 size, full colour, 312 pages" (manual_page) - while the product page calls
+  both editions "This 300 page, full colour, step-by-step manual" (product_page), so
+  the round number is the one to disbelieve.
+
+  THE OFFICIAL GUIDEBOOK'S LAST CHAPTER IS THE USER-WRITTEN COMMUNITY GUIDE,
+  REPRINTED. Chapter 15 is headed `COMMUNITY GUIDE` and runs from printed p. 295. Set
+  beside the separately published "Deluge Community Guide" - which the product page
+  links in the same list as the two guidebooks, described as "A quick reference guide
+  to the Deluge, adapted from contributions from our users" (product_page) - its
+  pages 3 to 23 map **one to one, in order, onto the chapter's 21 pages, at 91% to
+  98% of their words in common**, the remainder being the folio and running head the
+  guidebook adds. The three pages the chapter does not reprint are that guide's cover,
+  its pages 24-28, and **its page 2, which begins "The Following people have
+  contributed to the making of this community guide" (community_guide) and names six
+  of them**. So the one page that says who wrote it is the one page that did not
+  survive into the official document.
+
+  THAT CHAPTER ALSO CONTRADICTS THE OFFICIAL CHAPTER BY ONE, WHICH IS WHY IT IS
+  CITED AND NEVER READ FROM. The system settings table says of the default velocity
+  "Sets the default velocity for newly entered notes between 1-127. Default is 64"
+  (guidebook_oled p. 276); the community chapter says of the same setting "Default is
+  64, Range is 0-127" (guidebook_oled p. 299). Velocity 0 is a note off, so the
+  official chapter is right and the reprinted one is wrong - and the disagreement is
+  inside one document, between two chapters with one cover. **No number in this file
+  comes from printed pages 295 to 322.** The only MIDI figure in that chapter, "Select
+  MIDI Channel 1-16" (guidebook_oled p. 313), is one chapter 12 states anyway, so
+  nothing was lost by refusing it.
+
+  NO DOCUMENT STATES WHAT NOTES THIS INSTRUMENT SOUNDS, so there is no `note_range`.
+  The guidebook prints `0-127` twice and neither printing is about the engine: p. 255
+  gives it as the value range of a controller the gold knobs send, and p. 257 as the
+  note number a kit row can be set to **send** to an external device. That is the
+  Iridium's and the Blofeld's trap in a third document - a range that bounds where
+  something may be put, read as what the instrument answers to - and it was searched
+  for properly before being given up: `octave`, `transpose`, `note number`, `lowest`,
+  `highest`, `C-2`, `C-1`, `G8` and `G9` across all 338 pages of both editions.
+
+  NEITHER IS POLYPHONY A NUMBER HERE, AND THE MAKER PUBLISHES TWO CEILINGS. The
+  guidebook says "Deluge's maximum voice count relies on the CPU loading and
+  processing power available, but around 64 is the limit for most basic synth sounds"
+  (guidebook_oled p. 99), and the product page claims "Up to 64 synth voices may play
+  simultaneously" in one line and "Upto 90 unaffected sample voices may play
+  simultaneously" in another (product_page). Two engines, two CPU-bound ceilings, and
+  one field that holds one count: recording either would turn a limit that depends on
+  the patch into a figure a consumer could draw a voice meter from. So `polyphony` is
+  absent. The polyphony menu's own options - POLYPHONY, MONOPHONIC, AUTO, LEGATO,
+  CHOKE (p. 99) - are modes rather than counts, so `voicing_modes` does not fit them
+  either. Unison is a separate setting, "Number of voices from the maximum of 8"
+  (p. 100), and is not polyphony.
+
+  THE FIRMWARE IS OPEN SOURCE AND THE COMMUNITY BUILD IS NOT WHAT THIS DESCRIBES.
+  "The firmware for the Deluge is now open-source", says the maker's own page, with
+  "Community version 1.0.0 (Amadeus) is live now!" (open_source_page). Nothing here
+  was read from that build or from its documentation, and a community release may add
+  a MIDI answer this file does not carry; `model.firmware` says which firmware this
+  is, which is the only honest way to hold that open.
+
+  WHAT THE CHART SAYS NO TO, recorded here because a no is a reading too: no system
+  exclusive in either direction, no MIDI time code quarter frame, no song select, no
+  tune request, no active sensing, no reset, and of the channel mode messages only
+  All notes off, which is recognised and not sent. The word `SysEx` and the phrase
+  `System Exclusive` appear nowhere in either guidebook outside that one chart row.
+  **The chart prints no Basic Channel row and no Mode row**, which a full
+  implementation chart would, so `mode` is absent rather than guessed at; and it has
+  no NRPN or RPN row either. NRPN is named once in 338 pages and about other
+  people's instruments - "Some synths and devices may use the bank or sub bank to
+  change the bank, They also may be set for NRPN instead of CC messages"
+  (guidebook_oled p. 253) - so `nrpn` is absent as well. An abridged chart's silence
+  is not a statement of absence.
+
+sources:
+  guidebook_oled:
+    kind: manual
+    title: Deluge Official Guidebook - for firmware V4.1 (OLED Edition)
+    edition: "4.1.0"
+    dated: 2022-09-09
+    landing: "https://synthstrom.com/product/deluge/"
+    url: "https://synthstrom-audible-deluge.s3.us-east-2.amazonaws.com/Deluge-Guidebook-4p1-OLED.pdf"
+    sha256: 436a5d208f2b274fa06ffaa922008fc7d010b13083ea6412e6ea038b93996e2c
+    retrieved: 2026-10-03
+    # 338 pages by pypdf and by PyMuPDF; `file` gives no count. The edition is the cover's own
+    # word, `OS 4.1.0`, and the date is the file's own creation stamp, which matches the
+    # Last-Modified the bucket served. Titled "Deluge Official Manual" in its metadata and
+    # authored there by **Synthdawg**, the collaborator the product page credits - so the
+    # guidebook is written for Synthstrom rather than by it, which is a different arrangement
+    # from the community chapter inside it and is disclosed on the maker's own page.
+    # **OFFSET +6**, and not sampled: every one of the 312 pages that prints a folio is out by
+    # exactly six.
+    page_offset: 6
+  guidebook_numeric:
+    kind: manual
+    title: Deluge Official Guidebook - for firmware V4.0 (Numeric 'old' display)
+    edition: "4.0"
+    dated: 2022-04-28
+    landing: "https://synthstrom.com/product/deluge/"
+    url: "https://synthstrom-audible-deluge.s3.us-east-2.amazonaws.com/Deluge-Guidebook-4p0.pdf"
+    sha256: 87604429a70f2f74bb2c2ccacfe5fa003d072acb6cc6cec6d79ed46f76cbdf39
+    retrieved: 2026-10-03
+    # THE SECOND PRINTING, AND ITS JOB HERE IS TO BE COMPARED. Same 338 pages, same offset of
+    # six, same author, four months older, and the same instrument with a different display -
+    # Synthstrom still sells firmware for both, V4.1.4 numeric beside V4.1.4 OLED, so neither
+    # edition is superseded even though the numeric guidebook stopped at 4.0. Within 1,775 bytes
+    # of the other in size, which is near enough to make a reader wonder whether the two files
+    # are the same document; they are not, and the comparison in the source note above is what
+    # settles it. Nothing in this file is cited to this edition alone.
+    page_offset: 6
+  community_guide:
+    kind: web_page
+    title: Deluge Community Guide
+    edition: "3.2"
+    dated: 2022-04-26
+    landing: "https://synthstrom.com/product/deluge/"
+    url: "https://synthstrom-audible-deluge.s3.us-east-2.amazonaws.com/Deluge-Community-Guide-4p0.pdf"
+    sha256: 5e0b7e7dba29c41fbc068c02d16cf4aa9b4bcefb5d6d7e8e5df1e6d8507e0430
+    retrieved: 2026-10-03
+    paginated: false
+    # CITED TO ESTABLISH WHAT CHAPTER 15 OF THE OFFICIAL GUIDEBOOK IS, AND FOR NOTHING ELSE. 28
+    # pages, authored in its metadata by a named person rather than by the company, titled
+    # "Deluge Community Doc Portrait", and its last page calls itself "The Community Quick
+    # Reference Version 3.2" while its cover says `OS 4.0` - two version numbers for one
+    # document, which is the kind of thing a maker's document does not usually do. **No value in
+    # this definition comes from it**; `docs/adding-an-instrument.md` forbids that, and the
+    # reason it is in the library at all is that the official guidebook reprints it without
+    # saying so, which could not be shown without having both.
+  product_page:
+    kind: product_page
+    title: Deluge - Synthstrom Audible
+    landing: "https://synthstrom.com/"
+    url: "https://synthstrom.com/product/deluge/"
+    sha256: 1ffe615dbb542d61a4a4402eca60ebedf9fecda8742ce1fe8f4533b7f54ca831
+    retrieved: 2026-10-03
+    paginated: false
+    # The digest is of the **visible text**, and deliberately: this page's HTML is not
+    # byte-stable, and two fetches a minute apart gave two different HTML digests and the same
+    # text to the byte. So a citation that named the markup would stop matching for a reason that
+    # has nothing to do with what the page says. It is the only published list of what exists for
+    # this instrument: five firmware builds, two factory card archives, the two guidebooks and
+    # the community guide, with **a notes link on exactly one of the five builds**.
+  manual_page:
+    kind: product_page
+    title: Official Manual (OLED Edition) - Synthstrom Audible
+    landing: "https://synthstrom.com/"
+    url: "https://synthstrom.com/product/official-manual-oled-edition/"
+    sha256: e6b7aadea3b7cbd34becd87a18e1f11ba86b5e0232c4742c3175086f32c66a32
+    retrieved: 2026-10-03
+    paginated: false
+    # The printed edition's shop page, and worth a source of its own because it states the
+    # guidebook's firmware and its length in a second place, independently of the cover: "Up to
+    # date as of firmware version 4.1.0" and "A5 size, full colour, 312 pages". The second of
+    # those is the figure the folio count confirms exactly, against the product page's "300
+    # page". Marked "Out of stock".
+  open_source_page:
+    kind: web_page
+    title: Open-Source - Synthstrom Audible
+    landing: "https://synthstrom.com/"
+    url: "https://synthstrom.com/open-source/"
+    sha256: f03c0364e4c02f867c8f2d59041222fcf69da4e4de36b6b62557d6f3dd0bb89e
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for one sentence - that the firmware is open source and a community build exists -
+    # because it is the maker saying so rather than a third party reporting it, and it is why
+    # this definition names a firmware version at all.
+  news_page:
+    kind: web_page
+    title: News - Synthstrom Audible
+    landing: "https://synthstrom.com/"
+    url: "https://synthstrom.com/category/news/"
+    sha256: 13128a1b23ca61c1bbd8d5e67bf205f05f3ad1af18ce287bb015be22fd9c5885
+    retrieved: 2026-10-03
+    paginated: false
+    # CITED FOR AN ABSENCE. The maker's own news listing is the last place release notes for
+    # V4.0.1, V4.1.3 or V4.1.4 could be, and there is no firmware post on it at all - its most
+    # recent entries are about the open-source project. It is here so that "no notes are
+    # published for the three releases after the guidebook" is evidenced rather than asserted.
+    # `https://synthstrom.com/news/` is a 404; the listing lives under `/category/news/`, which
+    # is where the site's own navigation points.
+  release_notes:
+    kind: release_notes
+    title: Deluge Firmware V3.1.5 Released
+    edition: "3.1.5"
+    dated: 2021-02-16
+    landing: "https://synthstrom.com/product/deluge/"
+    url: "https://forums.synthstrom.com/discussion/3385/deluge-firmware-v3-1-5-released/"
+    sha256: 1eb55f5aa479f5d54c04a00bd285dad86615897c5a4fce8f587fd4ae7eb7b429
+    retrieved: 2026-10-03
+    paginated: false
+    # THE ONLY RELEASE NOTES THIS MAKER LINKS, for a firmware three major-version steps older
+    # than the one this file describes, and they are a forum thread rather than a document. Only
+    # the first post is Synthstrom's; everything after it is other people's, and the MIDI words
+    # in this file's copy are all in those comments. The notes themselves list eight bug fixes
+    # and name no MIDI change, which is one sample of what a Deluge point release does and is
+    # cited as that and no more. Served over http from the product page and redirecting to
+    # https; the digest is of what https served.
+
+midi:
+  # ALL SIXTEEN, AND THE INSTRUMENT WILL TAKE MORE THAN SIXTEEN AT ONCE. "MIDI devices have 16
+  # available MIDI channels all of which can be used to communicate with Deluge by USB or the
+  # MIDI DIN port" (guidebook_oled p. 237), and going out, "Range is 1-16 channels"
+  # (guidebook_oled p. 254). What the field cannot hold is that the channels are not the whole
+  # address here: hosted USB devices, a USB host connection and the DIN port each carry their own
+  # sixteen, "which would mean more than 16 channels are present simultaneously in the network"
+  # (p. 237), and a setting called DIFFERENTIATE INPUTS decides whether the instrument tells
+  # them apart. So two controllers can both send on channel 1 to different destinations.
+  channels: [1, 16]
+  # BOTH, THOUGH SENDING IS A SETTING. Clock is `Yes*` transmitted and `Yes` recognised, the
+  # asterisk reading "*Only if MIDI Clock output is enabled" (guidebook_oled p. 241), and the
+  # settings menu carries that switch as CLOCK IN and CLOCK OUT (p. 240). Following takes
+  # precedence over leading: "Playing as a follower takes precedence. Beat clock outputs will be
+  # sent out only when set up with beat clock outputs on and when not playing as a follower"
+  # (p. 242).
+  clock: both
+  # BOTH. Start, Continue and Stop are each `Yes*` transmitted and `Yes` recognised
+  # (guidebook_oled p. 241), and the prose says what that is like to use: "Control commands such
+  # as play and stop will be triggered by the external device but can be triggered from Deluge
+  # when the external controls are not triggered" (p. 242). Song position pointer is `Yes` both
+  # ways, which the format has no field for.
+  transport: both
+  # EVERY CONTROLLER NUMBER BELONGS TO THE PLAYER, IN BOTH DIRECTIONS. The chart answers `Yes`
+  # in both columns and qualifies each: "Numbers assigned by user" transmitted, "Parameter must
+  # be 'learned' by user" recognised (guidebook_oled p. 241). Going out, sixteen numbers can be
+  # set per clip - "In total 16 parameters (8 upper, 8 lower) can be set for MIDI controls" - and
+  # the range they may be chosen from is published: "CC messages range from CC0 - CC119, bend and
+  # aftertouch. CC1 is typically mod wheel" (p. 255). Coming in, a control is pointed at a
+  # parameter by holding LEARN and moving it, and the display answers `LEARNED` (p. 245).
+  control_change: learned
+  # NO, IN EITHER DIRECTION: `No` transmitted and `No` recognised (guidebook_oled p. 241). The
+  # words `SysEx` and `System Exclusive` appear nowhere else in either edition, so this is a
+  # checked absence and not an unread appendix - which matters for an instrument whose presets
+  # are files on an SD card rather than slots to be dumped.
+  sysex: false
+  # MPE, IN AND OUT, AND THE BOOLEAN IS THE LEAST OF IT. Everything that cannot fit in it is in
+  # the comment below `voice`. The flag is true because the instrument reads a zone of channels
+  # as one instrument with per-note expression, rather than reading each channel as a part:
+  # "With MPE a series of channels are set up, known as zones, to communicate not only multiple
+  # notes but also MIDI information for each individual note" (guidebook_oled p. 258).
+  per_voice_channels: true
+  program_change:
+    # IT SENDS AND DOES NOT ANSWER - the one row where this machine is plainly a sequencer rather
+    # than an instrument. PGM change is `Yes` transmitted and `No` recognised, and both bank
+    # select rows are the same way round, `CC 0` and `CC 32 (LSB)` each `Yes` and `No`
+    # (guidebook_oled p. 241). What it sends is set per MIDI clip: "PGM Program ... None, 1-128.
+    # Program change message", "BANK Select ... None, 1-128 CC0 Bank select message" and
+    # "SUB-BANK ... None, 1-128 CC32 - LSB Sub bank message" (p. 253). `presets` is deliberately
+    # absent: 1-128 is the range of numbers it can be told to send at somebody else's synth, not
+    # a count of its own presets, which are files on an SD card and are not addressed by number.
+    receives: false
+    sends: true
+
+voice:
+  # PITCHES, AND NOTHING IS WIRED TO A NOTE UNTIL SOMEBODY WIRES IT. A synth clip is played by
+  # pitch across the grid, and the way a controller reaches it is by learning: "Press & hold
+  # [LEARN / INPUT] + [AUDITION] pad of a note / pad to map", after which "The MIDI channel plus
+  # the external keyboard notes will now be mapped to the Deluge" (guidebook_oled p. 244). A kit
+  # is the other shape - one sound to a row, each row learned to its own note - but there is no
+  # factory note map for either, so there are no `voices` below and the `learned` note map is
+  # the whole answer. The maker publishes no default assignment anywhere in 338 pages.
+  addressing: pitches
+  note_map: learned
+  velocity:
+    # RECEIVED AND SENT, THOUGH ITS OWN PADS GENERATE NONE. The chart's note on row is `Yes` in
+    # both columns (guidebook_oled p. 241) and the prose confirms the receiving: "Velocity is
+    # recorded with MIDI inputs" (p. 244). What it sends is the sequencer's stored value rather
+    # than a touch, because "Deluge pads are not velocity sensitive. The default velocity is 64
+    # but this default level can be changed in the settings options under the defaults menu"
+    # (p. 45) - and that default is a settable one, "Sets the default velocity for newly entered
+    # notes between 1-127. Default is 64" (p. 276), on a page that calls its own values defaults.
+    note_on: both
+    # NOTE OFF VELOCITY IS LEFT UNRECORDED BECAUSE THE DOCUMENT SAYS BOTH THINGS. The chart's
+    # note off row is `No` in both columns (guidebook_oled p. 241). Thirty-six printed pages
+    # earlier the same chapter says "Also note-off velocity, if delivered by an external
+    # controller will be recorded" (p. 246). A reader could reconcile those - recording a value
+    # into a clip is not the same as an engine acting on one - but **that distinction is the
+    # reader's and not the document's**, so neither is recorded: where one document states a
+    # thing twice and the two disagree, this corpus carries neither. Both editions print both
+    # statements identically, so this is not an edition's slip.
+  # BOTH KINDS ARE ANSWERED, AND ONE OF THEM IS SENT WHERE THE CHART SAYS IT IS NOT. Recognised:
+  # `Polyphonic` is `Yes` and `Channel` is `Yes` (guidebook_oled p. 241), so `poly` as the
+  # stronger of the two, which is the reading the MC-707's two After Touch rows got. Sending is
+  # where the document argues with itself: the chart marks polyphonic aftertouch `No`
+  # transmitted, while the MPE chapter says "Kits cannot output MPE MIDI and default, however
+  # aftertouch that has been recorded to the row will be output as polyphonic aftertouch for the
+  # rows note" (p. 259). This field records reception, so the contradiction does not change its
+  # value - but it is written down rather than quietly resolved, and anybody who adds a field for
+  # what an instrument transmits will find two answers waiting here.
+  aftertouch: poly
+  pitch_bend:
+    # TWELVE SEMITONES BY DEFAULT AND SETTABLE TO ANYTHING FROM NONE TO EIGHT OCTAVES. The
+    # setting is called BEND RANGE and its own cell reads "Global pitch bend range in semitones.
+    # Range is 0-96 semitones (default 12)" (guidebook_oled p. 276). The page is headed `System
+    # Settings` and calls these values
+    # defaults in its own words, which is the test the DrumBrute Impact's five screenshots
+    # failed. Zero is a real setting rather than off, and the MPE chapter says what it is for:
+    # "Setting the pitch bend range to zero will negate the hard coded patching if required"
+    # (p. 259), the hard-coded patching being MPE's X axis.
+    #
+    # THERE ARE THREE BEND RANGES ON THIS INSTRUMENT AND THIS FIELD HOLDS ONE. The 12 above is
+    # the global default. A synth or CV clip then carries two of its own, on a page the second
+    # reader found and the first had not: a `NORMAL` range, "Normal pitch bend range in
+    # semitones for the Synth or CV clip. Typically this is the pitch bend wheel of a
+    # controller" (guidebook_oled p. 86), **for which no number is printed at all**, and an MPE
+    # range, "MPE pitch bend
+    # range in semitones for the Synth or CV clip. Typically this using two finger MPE
+    # expression. Default 48" (guidebook_oled p. 86). So a player bending with a wheel gets 12
+    # semitones until they change it and a player bending with a finger on an MPE controller
+    # gets 48, and a consumer that draws one bend range will be wrong about one of them. Both
+    # editions print both statements identically.
+    semitones: 12
+    programmable: true
+
+# MPE IS SUPPORTED IN BOTH DIRECTIONS AND NONE OF WHAT FOLLOWS FITS IN THE BOOLEAN ABOVE.
+# Zones are MIDI's own: "The master channels are fixed as 1 for lower and at 16 for upper zones"
+# (guidebook_oled p. 258), and each zone's member count is set per connected device to OFF or 1
+# to 15, in or out, with the master channel excluded from the count (p. 261). The three
+# dimensions are patched like any modulation source rather than fixed: X is pitch bend by default
+# and may be repatched, Y is free, and "Aftertouch is the pressure applied to a notes key after
+# it is initially pressed ... This is patched in Deluge using the 'Aftertouch' parameter and can
+# be patched elsewhere" (p. 259). So **Y is not CC 74 here**, which is what MPE's own
+# specification expects and what the Carbon8m and the Messenger both record; the guidebook names
+# no controller number for it at all, and inventing 74 would be exactly the lift this corpus
+# forbids. Zones can be learned from the controller instead of typed - hold LEARN and an
+# AUDITION pad and play five or more notes at once (p. 261) - and the instrument sends MCM
+# messages when its output zone changes or at power-up (p. 263). Kit rows take all three
+# dimensions per row but cannot send MPE. The configuration is stored on the SD card as
+# `MIDIDevices.xml` (p. 261), which is a fact about a file rather than about MIDI and is noted
+# because it is the only place a reader could go to see what a given machine has learned.

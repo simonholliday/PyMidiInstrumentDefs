@@ -177,6 +177,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |
+| `synthstrom_audible/deluge` | Synthstrom Audible Deluge: no fixed controller or note map at all, read from both of the guidebooks its maker publishes - one per display edition - whose last chapter turns out to be a reprint of a user-written guide |
 | `teenage_engineering/ep_133_ko_ii` | teenage engineering EP–133 K.O. II: four controllers and 48 pads, out of a web guide whose implementation chart says yes with a picture and no with a letter |
 | `teenage_engineering/op_1` | teenage engineering OP-1: publishes no controller number at all - four incoming control changes are routed by the player, per sound |
 | `teenage_engineering/op_xy` | teenage engineering OP-XY: its maker publishes one guide twice, and the two editions give different numbers for the same row |

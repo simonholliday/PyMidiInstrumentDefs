@@ -173,6 +173,7 @@ class TestBundledCorpus:
 			"roland/tr_1000",
 			"sequential/take_5",
 			"soma/pulsar_23",
+			"synthstrom_audible/deluge",
 			"teenage_engineering/ep_133_ko_ii",
 			"teenage_engineering/op_1",
 			"teenage_engineering/op_xy",
@@ -1927,17 +1928,20 @@ class TestOsmose:
 		# range stops at 14 rather than at 16.
 		assert osmose.midi.channels == (1, 14)
 
-	def test_both_mpe_instruments_are_found_by_the_field_alone (self) -> None:
+	def test_every_mpe_instrument_is_found_by_the_field_alone (self) -> None:
 		"""The Carbon8M was corrected with the Osmose so the corpus answers one way.
 
 		A consumer asking which instruments spread their voices across channels has to
-		get both or neither; one flagged and one not is worse than none, because it
-		reads as a settled answer and is wrong about the one it misses.
+		get all of them or none; one flagged and one not is worse than none, because it
+		reads as a settled answer and is wrong about the one it misses. There are four
+		now, and the Deluge is the first that is a sequencer as much as a synthesizer -
+		it reads a zone of channels as one instrument and writes one out too.
 		"""
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
-		assert flagged == ["expressive_e/osmose", "modal/carbon8m", "waldorf/iridium"]
+		assert flagged == ["expressive_e/osmose", "modal/carbon8m",
+			"synthstrom_audible/deluge", "waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -5588,3 +5592,175 @@ class TestEP133KOII:
 		# The guide names no operating system; only the downloads page does.
 		assert ep.model.firmware == "2.5"
 		assert ep.sources["downloads_page"].kind == "download_page"
+
+
+class TestDeluge:
+
+	"""A Synthstrom whose maker reprinted somebody else's guide as its own last chapter."""
+
+	def test_it_publishes_no_controller_and_no_note_number (self) -> None:
+		"""Both directions are the player's to assign, which the chart says in as many words."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.controls == {}
+		assert deluge.midi.control_change == "learned"
+		assert deluge.voice.note_map == "learned"
+		assert deluge.voice.voices == {}
+
+		# Pitches rather than voices: a synth clip is played across the grid by pitch, and a
+		# kit's rows are learned one at a time rather than mapped from the factory.
+		assert deluge.voice.addressing == "pitches"
+
+	def test_it_sends_program_change_and_does_not_answer_one (self) -> None:
+		"""The one row where this machine is plainly a sequencer rather than an instrument.
+
+		Both bank select rows are the same way round, and a reading that took the chart's
+		words in stream order would have had this backwards.
+		"""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.midi.program_change is not None
+		assert deluge.midi.program_change.sends is True
+		assert deluge.midi.program_change.receives is False
+
+		# 1-128 is the range of numbers it can be told to send at somebody else's synth, not a
+		# count of its own presets, which are files on a card and are not addressed by number.
+		assert deluge.midi.program_change.presets is None
+
+	def test_release_velocity_is_left_unrecorded_because_the_guidebook_says_both (self) -> None:
+		"""The chart says no and the chapter around it says yes, so neither is recorded.
+
+		This is the field most likely to be filled in later by somebody who read only one of
+		the two pages, so the absence is held in place by a test.
+		"""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.voice.velocity is not None
+		assert deluge.voice.velocity.note_on == "both"
+		assert deluge.voice.velocity.note_off is None
+
+	def test_the_chart_row_about_note_off_is_about_velocity (self) -> None:
+		"""It is not a claim that the instrument fails to send note offs.
+
+		A MIDI implementation chart's `Note off` row under a `Velocity` group is about release
+		velocity, and the format agrees: `note_off` is a field of `Velocity` and not of
+		`Voice`. Reading it the other way would make a sequencer that drives sixteen channels
+		look like one that leaves every note hanging.
+		"""
+		velocity = pymidiinstrumentdefs.definition.Velocity
+
+		assert "note_off" in velocity.__dataclass_fields__
+		assert not hasattr(pymidiinstrumentdefs.definition.Voice, "note_off")
+
+	def test_what_notes_it_sounds_is_not_recorded (self) -> None:
+		"""Two printings of `0-127` are in the guidebook and neither is about the engine.
+
+		One is a controller's value range and the other is the note number a kit row can be
+		set to send. That is the Blofeld's trap in a third document.
+		"""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.voice.note_range is None
+
+	def test_polyphony_is_not_recorded_because_two_ceilings_are_published (self) -> None:
+		"""64 synth voices and 90 sample voices, both CPU-bound, and one field."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.voice.polyphony is None
+		assert deluge.voice.voicing_modes == ()
+
+	def test_it_takes_both_kinds_of_pressure_and_expression_per_channel (self) -> None:
+		"""MPE in and out, with the zones MIDI's own and the dimensions patched rather than
+		fixed."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.voice.aftertouch == "poly"
+		assert deluge.midi.per_voice_channels is True
+
+		# Y is not CC 74 here: the guidebook patches it like any modulation source and names no
+		# controller number for it, so none is invented.
+		assert deluge.controls == {}
+
+	def test_the_bend_range_recorded_is_the_global_default (self) -> None:
+		"""Three bend ranges exist and this field holds the one a wheel gets."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.voice.pitch_bend is not None
+		assert deluge.voice.pitch_bend.semitones == 12
+		assert deluge.voice.pitch_bend.programmable is True
+
+	def test_the_abridged_chart_s_silences_are_not_recorded_as_noes (self) -> None:
+		"""It prints no Basic Channel row, no Mode row and no NRPN row, so none is guessed at.
+
+		System exclusive is different: the chart does print that row, and says no in both
+		columns, so `false` is a reading rather than a silence.
+		"""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.midi.mode is None
+		assert deluge.midi.nrpn is None
+		assert deluge.midi.sysex is False
+
+	def test_it_answers_on_all_sixteen_and_follows_or_leads (self) -> None:
+		"""Stated going both ways, unlike the DrumBrute Impact's unstated channel range."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.midi.channels == (1, 16)
+		assert deluge.midi.clock == "both"
+		assert deluge.midi.transport == "both"
+
+	def test_both_guidebooks_are_sources_and_the_community_guide_is_cited_not_read (self) -> None:
+		"""The maker publishes one guidebook per display, and both were read and compared."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert set(deluge.sources) == {
+			"guidebook_oled", "guidebook_numeric", "community_guide",
+			"product_page", "manual_page", "open_source_page", "news_page", "release_notes"}
+
+		# Two editions of one book, same length, same offset, four months apart.
+		for name in ("guidebook_oled", "guidebook_numeric"):
+			assert deluge.sources[name].kind == "manual", name
+			assert deluge.sources[name].page_offset == 6, name
+
+		assert deluge.sources["guidebook_oled"].edition == "4.1.0"
+		assert deluge.sources["guidebook_numeric"].edition == "4.0"
+
+		# The firmware named is the guidebook's, not the newest build, because no document
+		# covers the three releases in between.
+		assert deluge.model.firmware == "4.1.0"
+
+	def test_the_source_records_what_chapter_fifteen_turned_out_to_be (self) -> None:
+		"""The finding that makes this instrument worth its space, held in place by a test."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.source is not None
+
+		account = " ".join(deluge.source.split())
+
+		assert "THE OFFICIAL GUIDEBOOK'S LAST CHAPTER IS THE USER-WRITTEN COMMUNITY GUIDE" \
+			in account
+		assert "the one page that says who wrote it is the one page that did not survive" \
+			in account
+
+		# And that no number was taken from it.
+		assert "No number in this file comes from printed pages 295 to 322" in account
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "synthstrom_audible" / "deluge.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "THIS INSTRUMENT PUBLISHES NO CONTROLLER NUMBER AND NO NOTE NUMBER, BY DESIGN" \
+			in flowed
+		assert "ITS MAKER HAS BOUND SOMEBODY ELSE'S DOCUMENT INTO ITS OWN" in flowed
+
+	def test_the_source_records_that_the_two_editions_were_compared (self) -> None:
+		"""Agreement between editions is a measurement, so it is written down as one."""
+		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
+
+		assert deluge.source is not None
+
+		account = " ".join(deluge.source.split())
+
+		assert "identical, row for row, all 24 rows in all 9 groups" in account
+		assert "THE SECOND READING FOUND A CELL THE FIRST HAD WRONG" in account
+		assert "312 of them print a folio and all 312 are out by exactly six" in account

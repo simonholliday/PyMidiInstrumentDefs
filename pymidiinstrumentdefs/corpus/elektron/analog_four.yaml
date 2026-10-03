@@ -1,0 +1,606 @@
+# The seventh Elektron here, and the first whose maker publishes the same appendix three times
+# over. One OS, 1.56, serves the Analog Four, the Analog Four MKII and the Analog Keys; the Four
+# and the Keys run the same binary and the MKII its own; and all three manuals carry the same
+# version stamp and the same file date. The MKI's and MKII's MIDI appendices are identical in
+# every number. The Keys' is an older typesetting of the same tables and disagrees about exactly
+# one of them. All three readings are described in the source account below, because the one
+# thing they establish together is worth more than this instrument: a version number on a cover
+# is not evidence that two documents were produced together.
+
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Analog Four
+  firmware: "1.56"
+  # The manual states it of itself, on p. 11: "This manual for Analog Four OS version 1.56, was
+  # last updated September 24, 2026."
+  # The version is checked and not only quoted. The release notes cover five releases, OS 1.51
+  # to 1.56, and exactly one entry in all of them mentions MIDI, a bug fix: "MIDI messages were
+  # sometimes not sent if the device tempo was set to very low BPMs" (1.55D). No release adds,
+  # removes or renumbers a controller. The page does not go back beyond 1.51, so nothing is
+  # claimed about earlier firmware.
+  # WHAT IS BELOW IS TRUE OF THE ANALOG FOUR MKII AS WELL, established rather than assumed.
+  # Elektron supports it at the same OS 1.56 with its own manual at its own address, and its
+  # APPENDIX D was read on its own: 12,250 characters against this one's 12,248, and the whole
+  # appendix differs in exactly three ways, none of them a number - the page folios, 101-109
+  # against 98-106; one cross-reference; and one table caption, where the first table's second
+  # heading reads TRACK in the MKII and PERFORMANCE here, with identical rows under both. The
+  # MKII is a different instrument all the same - different panel, pads, screen and outputs -
+  # and is not described here, the way `moog/sub_37` and `moog/subsequent_37` share a control
+  # map and ship as two files.
+  # THE ANALOG KEYS IS NOT COVERED BY THIS FILE and differs in one number: see the source.
+
+source: >-
+  User manual (112pp), OS 1.56: pp. 11, 16, 28-29, 35-36, 38, 58-61, 64, 82, and the CC and
+  NRPN tables of APPENDIX D: MIDI at pp. 98-106, which is where every number here comes from.
+
+  THE MIDI APPENDIX IS D ON THIS INSTRUMENT. On this maker's Digitone, Digitakt and Syntakt it
+  is APPENDIX B and on the Analog Rytm MKII it is C; here A is the synth track's parameters, B
+  the FX track's, C the CV track's and D is MIDI. The letter is worth saying because a pattern
+  that matches nothing reports success.
+
+  THE APPENDIX PRINTS 255 ROWS IN 28 TABLES AND 229 ARE BELOW. It has no numbered sections -
+  no counterpart to the Rytm's C.1 to C.8 - but two levels of heading instead, a flush-left
+  section and a centred caption over each table, and a table that runs over a page break
+  repeats its caption and its header row. Six sections and 28 tables; every table holds ten
+  rows, one for each of the ten DATA ENTRY knobs, except the four on the first page.
+
+  THE 26 ROWS NOT CARRIED ARE ROWS THE APPENDIX DOES NOT NAME, AND ONE IT PRINTS TWICE.
+  Twenty-five rows have an empty parameter cell: the knob exists and the appendix publishes
+  nothing to call what it reaches. Twenty-one of them carry an NRPN MSB and nothing else, so
+  there is no address to carry. The other four carry a full NRPN address with no name at all -
+  the DELAY's knob C at NRPN 2/52, and the REVERB's E, H and I at 2/64, 2/67 and 2/68. Those
+  four are numbers this format cannot hold, because a control without a name is not something
+  a panel can offer a player, and they are recorded here rather than invented. The
+  twenty-sixth is Track Level, which the appendix prints in two different tables, CC 95 with
+  NRPN 1/100 in both. The two agree, so one control carries it.
+
+  EVERY NUMBER WAS READ TWICE, BY TWO METHODS, AND THE TWO AGREE ON ALL 255 ROWS. One reading
+  cut each line at the column offsets its own header row gave; the other clustered glyph spans
+  into rows by their top edge, assigned each to a column by its left edge, and decided what
+  kind of line it was looking at from the type size and colour rather than from the words.
+  Neither saw the other's output. They agree on every field of every row with one exception,
+  and the exception is the maker's text layer rather than its page: the AMP page's `Pan` comes
+  out of the first method as `Pa n`. The second reads one span 14 points wide, and the Keys'
+  manual - a different typesetting of the same table - prints `Pan`. This maker's text layer
+  splits characters on every manual here, so `Pan` is what is shipped.
+
+  NRPN REACHES FAR MORE OF THIS INSTRUMENT THAN CONTROL CHANGE DOES, which is unlike the
+  Rytm, where every control has both numbers. Of the 229 below, 225 have a complete NRPN
+  address and 72 have a controller number, so 68 have both: 157 parameters can be reached by
+  NRPN and by nothing else, and four by control change and by nothing else. The appendix does
+  not say to prefer either, so `midi.nrpn` records that both are supported and the asymmetry
+  is stated here instead.
+
+  THE FOUR WITH NO NRPN ARE TWO DIFFERENT FACTS, and the appendix distinguishes them by
+  leaving a cell empty in one case and printing a dash in the other. Modwheel and Breath
+  Controller carry a dash in both NRPN columns: the maker is saying there is no such number,
+  which fits parameters that are MIDI's own CC 1 and CC 2 before they are this instrument's.
+  The two oscillators' PWM Speed carry a dash in neither - their NRPN MSB says 1 and their
+  NRPN LSB cell is simply blank, where the run of numbers around them would give 8 and 28.
+  That is the maker not filling a cell in, which is different from the maker saying there is
+  nothing to fill in, and the two are not run together here. Both readings preserved the
+  distinction independently.
+
+  THE NRPN BANK IS THE PART, which is how this instrument avoids the ambiguity the Rytm has.
+  Bank 0 is the performance macros, 1 the synth tracks, 2 the FX track and 3 the CV track.
+  Exactly one controller number carries two meanings in the whole appendix and it is the
+  duplicated Track Level, the same meaning twice - so, unlike the Rytm's 26 and the Syntakt's
+  28, a sender using control change here needs no part to know what a number does.
+
+  THE HIGH-RESOLUTION PARAMETERS ARE THE ONES WITH A CC LSB, and there are fourteen: the two
+  oscillators' Pitch, the two filters' Frequency, the four envelope and LFO Depths, and
+  Modwheel and Breath Controller. Elektron does use the MMA's LSB = MSB + 32 for all fourteen
+  here - 16/48, 17/49, 1/33 - which it does not on the Rytm, where the fine half of 109 is 118.
+  The appendix marks them a second way, by printing "(0-127)" after the NRPN LSB value on
+  exactly those rows and leaving it off the others.
+
+  THE MAKER'S OWN SLIPS, REPRODUCED AND NOT TIDIED. The first table's caption reads
+  PERFORMANCE under the section TRACK PARAMETERS, where the MKII's and the Keys' manuals both
+  read TRACK; the group below is named after the section, which two of the three editions
+  agree on. The COMMON table has no section heading of its own and falls under MODULATION
+  PARAMETERS, which is plainly not what Track Level is about; it is the duplicate, so nothing
+  below depends on where it sits. One parameter is printed `CV A Note Slide time` where its
+  nine neighbours capitalise every word. The synth track's filter envelope is captioned ENVF
+  and the CV track's, at the same block of NRPN numbers, ENV1. The synth LFOs' rows read
+  Destination A and Depth A where the FX and CV LFOs' read Destination 1 and Depth 1.
+
+  SEVERAL RUNS OF NRPN NUMBERS SKIP VALUES, every one of them against an unnamed knob except
+  two. OSC 1 runs 0, -, 2 to 7, -, 9 and OSC 2 runs 20, -, 22 to 27, -, 29, so 1, 8, 21 and 28
+  are never printed; the gaps at 1 and 21 are the unnamed knob B, and the gaps at 8 and 28 are
+  PWM Speed, which is named, has a controller number, and has no NRPN LSB cell filled in. The
+  NOISE table prints three of ten. Each CV table runs seven consecutive values and then three
+  dashes. Between tables, the FX track uses 0-9 and then jumps to 40, and ends at 69 before
+  its LFOs start at 80. None of that is repaired here: an absence is recorded as an absence.
+
+  NOT RECORDED: values, bands and defaults, which this appendix does not give, so every
+  control below is continuous by derivation; what note range the instrument answers to, which
+  no page states - the panel's [KEYBOARD] keys "span one octave and one note" over selectable
+  octaves -5 to 5 (p. 36) and the multi map covers "the 128 keys of the entire MIDI keyboard
+  range" (p. 60), neither of which is a statement about what sounds; which kind of aftertouch
+  is answered to, since the manual says only that parameters may be assigned "to the MIDI
+  after touch command" (p. 35); and how far pitch bend bends, which is not a fixed amount on
+  this instrument but whatever the bend menu's assignments make it.
+
+sources:
+  manual:
+    kind: manual
+    title: Analog Four User Manual
+    edition: OS 1.56
+    dated: 2026-09-24
+    landing: "https://www.elektron.se/support-downloads/analog-four-mki"
+    url: "https://www.elektron.se/wp-content/uploads/2026/10/Analog-Four-User-Manual_ENG_OS1.56_260930.pdf"
+    sha256: f2d48fb7f3a558eea2e7a9c472536e9c5ad5e8a72a96c1d1badce4ce0ef25798
+    retrieved: 2026-10-03
+    # PDF page = printed page throughout, so no offset and one page to a sheet. The landing
+    # page is given as it resolves: `/support-downloads/analog-four` answers 301 to this.
+  release_notes:
+    kind: release_notes
+    title: "Analog Four/Keys OS Release Notes - Elektron"
+    edition: OS 1.56
+    landing: "https://www.elektron.se/support-downloads/analog-four-mki"
+    url: "https://www.elektron.se/release_notes/analog-four-keys-os-release-notes"
+    sha256: adb3a7bce218237e1db2b58e2c2000fe82be31a358586bad63464fd519bf709b
+    retrieved: 2026-10-03
+    paginated: false
+    # The visible text of the page, cited for the firmware question alone: which OS the manual
+    # describes, and whether any release changed what its appendix says. One page serves the
+    # Analog Four and the Analog Keys together, and marks the entries that are the MKII's only.
+  mkii_manual:
+    kind: manual
+    title: Analog Four MKII User Manual
+    edition: OS 1.56
+    dated: 2026-09-24
+    landing: "https://www.elektron.se/support-downloads/analog-four-mkii"
+    url: "https://www.elektron.se/wp-content/uploads/2026/10/Analog-Four-MKII-User-Manual_ENG_OS1.56_260930.pdf"
+    sha256: 9af3f52c16fd8ec2e2a4aa4160af1bacd7482ef06d3e6365d46645a90cd5cf17
+    retrieved: 2026-10-03
+    # 114pp. Cited for one thing only: that its APPENDIX D, at pp. 101-109, gives the same
+    # numbers as this instrument's, which is what lets one file serve both. No number below is
+    # read from here.
+  keys_manual:
+    kind: manual
+    title: Analog Keys User Manual
+    edition: OS 1.56
+    dated: 2026-09-24
+    landing: "https://www.elektron.se/support-downloads/analog-keys"
+    url: "https://www.elektron.se/wp-content/uploads/2026/10/Analog-Keys-User-Manual_ENG_OS1.56_260930.pdf"
+    sha256: 73ce9e97c46d416f3eb2b6ea93cd2785211cefcdf96a477f8ddc53386a68d1d8
+    retrieved: 2026-10-03
+    # 134pp, and the appendix is its own numbering, D-1 to D-14 at pp. 113-126. Cited for the
+    # comparison in the source account and for nothing else: the Keys is a different product
+    # and has no definition here.
+
+midi:
+  # A channel is set per synth track, for the FX track, for the CV track, for performance, for
+  # the auto channel and for program change in and out, each selected or set to OFF (pp. 59-60).
+  # SIXTEEN IS THE PROTOCOL'S NUMBER, NOT THIS MAKER'S STATEMENT. No page of this manual prints
+  # the range a channel setting takes. `[1, 16]` is what a MIDI device has and what "selects the
+  # MIDI channel" must mean, and it is recorded here rather than attributed to a page.
+  channels: [1, 16]
+  # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
+  # SEND, the latter covering "system realtime messages like play, stop, continue and song
+  # position pointer" (p. 58). So both travel both ways and either can be switched off.
+  clock: both
+  transport: both
+  program_change:
+    receives: true
+    sends: true
+    # "PRG CH RECEIVE will when active make the Analog Four respond to incoming program change
+    # messages, which is useful when wanting to select patterns externally", and "PRG CH SEND
+    # will when active send program change messages when patterns are changed" (p. 58). So a
+    # preset here is a pattern: "For each of the 8 banks, 16 patterns are available, which means
+    # 128 patterns are always available" (p. 16).
+    presets: 128
+  # Every control below carries an NRPN address and 72 of them a controller number as well, and
+  # which one the knobs send is a setting: "PARAM OUTPUT selects what type of MIDI messages the
+  # DATA ENTRY knobs will send ... NRPN will make the knobs send out NRPN MIDI messages ... CC
+  # will make the knobs send out CC MIDI messages" (p. 59), while RECEIVE CC/NRPN takes both
+  # coming in. The appendix does not say to prefer either, so this is `supported` and not
+  # `preferred` - see the source for the coverage asymmetry, which is a fact about the tables
+  # rather than a statement by the maker.
+  nrpn: supported
+  # "In the SYSEX DUMP menu, kits, Sounds, patterns, songs and global slots can be sent and
+  # received" over the MIDI ports or USB (p. 64). No byte layout is published.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # Four voices for four synth tracks, allocated as the player plays rather than owned by a
+  # track: "Four voice polyphony can be configured by selecting POLY CONFIG in the KIT menu. The
+  # Analog Four is capable of four voice multitimbral polyphony (or unison) ... allow completely
+  # dynamic voice allocation ... Any track can play up to four notes using its track sound.
+  # Notes are distributed to the synth voices according to the selected allocation method" (p.
+  # 28). A voice can also be taken out of the pool: "Any of the synth voices can also be
+  # poly-disabled, allowing tracks to have their dedicated, monophonic synth voice available at
+  # all times" (p. 28). So four is a ceiling across the four tracks together and not a figure
+  # each track can count on, and which voices are shared belongs to the player's kit.
+  polyphony: 4
+  polyphony_shared: true
+  velocity:
+    note_on: received
+    # "The synth voices are also possible to play with an external MIDI keyboard connected to
+    # the Analog Four" (p. 36), and what velocity reaches is two menu settings rather than a
+    # controller: VELOCITY TO VOL, whose "OFF means velocity will not affect the volume of the
+    # Sound", and VELOCITY MOD, where "up to 5 PARAMETER page parameters can be assigned to the
+    # velocity parameter. Both the VEL parameter of the NOTE menu and the velocity of incoming
+    # MIDI notes sent to the Analog Four from external devices will affect the assigned
+    # parameters" (p. 35). `gated_by` names controls and neither of those has a controller
+    # number, so it stays empty and the fact is here instead.
+  pitch_bend:
+    programmable: true
+    # Not a bend depth but an assignment: "Gives access to a menu where up to 5 PARAMETER page
+    # parameters can be assigned to the MIDI pitch bend command. If MIDI pitch bend messages are
+    # sent to the Analog Four from an external device, these messages will affect the parameters
+    # assigned in this menu" (p. 35). So bend is received and what it does is the player's to
+    # set; `semitones` is left unrecorded because no page states one, and on an instrument whose
+    # bend is an assignment there may be none to state.
+  # NOT RECORDED, aftertouch. "Gives access to a menu where up to 5 PARAMETER page parameters
+  # can be assigned to the MIDI after touch command" (p. 35) says that aftertouch is received
+  # and does not say which kind, and this field names the kind. The appendix lists no aftertouch
+  # row either way, and the MKII's pressure-sensitive pads are a different product's panel.
+
+parts:
+  # Every part is given a channel by the player, in GLOBAL MENU > MIDI CONFIG > CHANNELS (p. 60),
+  # so none derives one: there is no base channel on this instrument. "TRACK 1-4, FX, CV selects
+  # dedicated MIDI tracks that will control the synth, FX, and CV tracks. An OFF setting will
+  # make the track disregard any incoming MIDI messages" (p. 60).
+  # The auto channel is not a part. "AUTO CHANNEL selects the MIDI channel that will give access
+  # to the currently active track" (p. 60), so it is another way to reach the track part rather
+  # than a seventh thing to address, and which track it reaches is whatever is active.
+  track:
+    label: Synth Track
+    count: 4
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # Notes as well as controls, and both are switched on globally: RECEIVE NOTES "will when
+    # active make it possible to play the Analog Four using an external MIDI keyboard" and
+    # RECEIVE CC/NRPN "will when active make it possible to control Analog Four parameters from
+    # an external MIDI device sending CC/NRPN data" (p. 59).
+    # No polyphony is stated against a part, because a track does not own voices: see
+    # voice.polyphony_shared and the four voices the four tracks share.
+  fx:
+    label: FX Track
+    channel: assigned
+    receives: [controls]
+    # The external inputs and the three send effects, with two LFOs of its own, on a channel of
+    # its own in the same menu: "The FX track controls the Analog Four internal send effects"
+    # and its five parameter pages are EXT IN, CHORUS, DELAY, REVERB and LFO (p. 36). It has no
+    # sound generator, so nothing here plays a note.
+  cv:
+    label: CV Track
+    channel: assigned
+    receives: [controls]
+    # "The CV track is used for controlling external equipment capable of receiving CV/Gate
+    # signals" (p. 37), with four CV pairs and two envelopes and two LFOs of its own.
+    # Notes are deliberately not claimed. What trigs its gates is a setting rather than its
+    # channel - "CV (GATE) SRC (Source Track) sets the track to use for sending gate signals"
+    # (p. 95) - while the multi map will send a keyboard range to CV TRK (p. 61). Those two do
+    # not add up to a statement that a note on this channel sounds anything, so `receives` names
+    # controls alone.
+  performance:
+    label: Performance
+    channel: assigned
+    # `receives` IS LEFT UNRECORDED, WHICH IS NOT THE SAME AS EMPTY. Two things are known about
+    # this channel and neither settles the question the field asks. "PERF CHANNEL selects the
+    # MIDI channel the knobs will send MIDI data on when PERFORMANCE mode is active" (p. 60)
+    # names one direction only. The multi map names notes going the other way - "To use your
+    # custom multi map, remember to set the external MIDI keyboard to the assigned PERF CHANNEL"
+    # (p. 60), the map being where "At most, one unique function may be mapped for each of the
+    # 128 keys of the entire MIDI keyboard range" (p. 60) - but what a mapped key reaches is
+    # whichever track the entry names, not this part. And whether the ten macros below can be
+    # driven as well as sent is said of the instrument rather than of this channel: RECEIVE
+    # CC/NRPN "make[s] it possible to control Analog Four parameters from an external MIDI
+    # device sending CC/NRPN data" (p. 59), and the macros are Analog Four parameters. So naming
+    # either notes or controls here would claim more than any sentence does, and naming one
+    # without the other would deny the one left out.
+
+groups:
+  # Elektron's own names, from the captions over the tables these numbers were read from:
+  # APPENDIX D: MIDI, pp. 98-106, which prints a flush-left section heading and a centred
+  # caption over each table inside it. The caption is what a group is named here and what it is
+  # labelled. The capitals are the appendix's styling throughout and are not reproduced, except
+  # where the caption is an abbreviation the panel prints that way. Three captions - LFO1, LFO2
+  # and ENV2 - appear under more than one section, so those carry their part in the key and say
+  # which in the label. The first table is the one exception to naming a group after its
+  # caption: see the source account. The order is the appendix's order, which is also the order
+  # of the controls below.
+  track: Track
+  performance: Performance
+  modulation: Modulation
+  osc1: OSC 1
+  noise: Noise
+  osc2: OSC 2
+  osc_common: OSC Common
+  filters: Filters
+  amp: Amp
+  envf: ENVF
+  env2: ENV2
+  lfo1: LFO1
+  lfo2: LFO2
+  ext_in: EXT IN
+  chorus: Chorus
+  delay: Delay
+  reverb: Reverb
+  fx_lfo1: LFO1 (FX)
+  fx_lfo2: LFO2 (FX)
+  cv_a: CV A
+  cv_b: CV B
+  cv_c: CV C
+  cv_d: CV D
+  cv_env1: ENV1 (CV)
+  cv_env2: ENV2 (CV)
+  cv_lfo1: LFO1 (CV)
+  cv_lfo2: LFO2 (CV)
+
+controls:
+
+  # ── TRACK PARAMETERS ──────────────────────────────────────
+  # PERFORMANCE ─────────────────────────────────────────────
+  mute:                          {label: Mute, cc: 94, nrpn: 229, part: track, group: track}
+  track_level:                   {label: Track Level, cc: 95, nrpn: 228, part: track, group: track}
+
+  # ── PERFORMANCE PARAMETERS ────────────────────────────────
+  # PERFORMANCE ─────────────────────────────────────────────
+  performance_parameter_a:       {label: Performance Parameter A, cc: 3, nrpn: 0, part: performance, group: performance}
+  performance_parameter_b:       {label: Performance Parameter B, cc: 4, nrpn: 1, part: performance, group: performance}
+  performance_parameter_c:       {label: Performance Parameter C, cc: 8, nrpn: 2, part: performance, group: performance}
+  performance_parameter_d:       {label: Performance Parameter D, cc: 9, nrpn: 3, part: performance, group: performance}
+  performance_parameter_e:       {label: Performance Parameter E, cc: 11, nrpn: 4, part: performance, group: performance}
+  performance_parameter_f:       {label: Performance Parameter F, cc: 64, nrpn: 5, part: performance, group: performance}
+  performance_parameter_g:       {label: Performance Parameter G, cc: 65, nrpn: 6, part: performance, group: performance}
+  performance_parameter_h:       {label: Performance Parameter H, cc: 66, nrpn: 7, part: performance, group: performance}
+  performance_parameter_i:       {label: Performance Parameter I, cc: 67, nrpn: 8, part: performance, group: performance}
+  performance_parameter_j:       {label: Performance Parameter J, cc: 68, nrpn: 9, part: performance, group: performance}
+
+  # ── MODULATION PARAMETERS ─────────────────────────────────
+  # MODULATION ──────────────────────────────────────────────
+  modwheel:                      {label: Modwheel, cc: 1, lsb: 33, part: track, group: modulation}
+  breath_controller:             {label: Breath Controller, cc: 2, lsb: 34, part: track, group: modulation}
+
+  # ── SYNTH TRACK PARAMETERS ────────────────────────────────
+  # OSC 1 ───────────────────────────────────────────────────
+  osc1_pitch:                    {label: Pitch, cc: 16, lsb: 48, nrpn: 128, part: track, group: osc1}
+  osc1_detune:                   {label: Detune, nrpn: 130, part: track, group: osc1}
+  osc1_keytracking:              {label: Keytracking, nrpn: 131, part: track, group: osc1}
+  osc1_level:                    {label: Level, cc: 69, nrpn: 132, part: track, group: osc1}
+  osc1_waveform:                 {label: Waveform, cc: 70, nrpn: 133, part: track, group: osc1}
+  osc1_sub_oscillator:           {label: Sub Oscillator, cc: 71, nrpn: 134, part: track, group: osc1}
+  osc1_pulsewidth:               {label: Pulsewidth, cc: 72, nrpn: 135, part: track, group: osc1}
+  osc1_pwm_speed:                {label: PWM Speed, cc: 73, part: track, group: osc1}
+  osc1_pwm_depth:                {label: PWM Depth, cc: 74, nrpn: 137, part: track, group: osc1}
+  # NOISE ───────────────────────────────────────────────────
+  noise_s_h:                     {label: Noise S&H, cc: 75, nrpn: 138, part: track, group: noise}
+  noise_fade:                    {label: Noise Fade, cc: 76, nrpn: 140, part: track, group: noise}
+  noise_level:                   {label: Noise Level, cc: 77, nrpn: 142, part: track, group: noise}
+  # OSC 2 ───────────────────────────────────────────────────
+  osc2_pitch:                    {label: Pitch, cc: 17, lsb: 49, nrpn: 148, part: track, group: osc2}
+  osc2_detune:                   {label: Detune, nrpn: 150, part: track, group: osc2}
+  osc2_keytracking:              {label: Keytracking, nrpn: 151, part: track, group: osc2}
+  osc2_level:                    {label: Level, cc: 78, nrpn: 152, part: track, group: osc2}
+  osc2_waveform:                 {label: Waveform, cc: 79, nrpn: 153, part: track, group: osc2}
+  osc2_sub_oscillator:           {label: Sub Oscillator, cc: 80, nrpn: 154, part: track, group: osc2}
+  osc2_pulsewidth:               {label: Pulsewidth, cc: 81, nrpn: 155, part: track, group: osc2}
+  osc2_pwm_speed:                {label: PWM Speed, cc: 82, part: track, group: osc2}
+  osc2_pwm_depth:                {label: PWM Depth, cc: 83, nrpn: 157, part: track, group: osc2}
+  # OSC COMMON ──────────────────────────────────────────────
+  osc1_am:                       {label: OSC1 AM, nrpn: 158, part: track, group: osc_common}
+  sync_mode:                     {label: Sync Mode, nrpn: 159, part: track, group: osc_common}
+  sync_amount:                   {label: Sync Amount, cc: 84, nrpn: 160, part: track, group: osc_common}
+  bend_amount:                   {label: Bend Amount, cc: 85, nrpn: 161, part: track, group: osc_common}
+  slide_time:                    {label: Slide Time, cc: 5, nrpn: 162, part: track, group: osc_common}
+  osc2_am:                       {label: OSC2 AM, nrpn: 163, part: track, group: osc_common}
+  note_sync:                     {label: Note Sync, nrpn: 164, part: track, group: osc_common}
+  vibrato_fade:                  {label: Vibrato Fade, nrpn: 165, part: track, group: osc_common}
+  vibrato_speed:                 {label: Vibrato Speed, cc: 87, nrpn: 166, part: track, group: osc_common}
+  vibrato_depth:                 {label: Vibrato Depth, cc: 88, nrpn: 167, part: track, group: osc_common}
+  # FILTERS ─────────────────────────────────────────────────
+  filter1_frequency:             {label: Filter1 Frequency, cc: 18, lsb: 50, nrpn: 168, part: track, group: filters}
+  filter1_resonance:             {label: Filter1 Resonance, cc: 89, nrpn: 169, part: track, group: filters}
+  filter_overdrive:              {label: Filter Overdrive, cc: 86, nrpn: 170, part: track, group: filters}
+  filter1_keytracking:           {label: Filter1 Keytracking, nrpn: 171, part: track, group: filters}
+  filter1_envelope_amount:       {label: Filter1 Envelope Amount, cc: 102, nrpn: 172, part: track, group: filters}
+  filter2_frequency:             {label: Filter2 Frequency, cc: 19, lsb: 51, nrpn: 173, part: track, group: filters}
+  filter2_resonance:             {label: Filter2 Resonance, cc: 90, nrpn: 174, part: track, group: filters}
+  filter2_type:                  {label: Filter2 Type, nrpn: 175, part: track, group: filters}
+  filter2_keytracking:           {label: Filter2 Keytracking, nrpn: 176, part: track, group: filters}
+  filter2_envelope_amount:       {label: Filter2 Envelope Amount, cc: 103, nrpn: 177, part: track, group: filters}
+  # AMP ─────────────────────────────────────────────────────
+  enva_attack_time:              {label: EnvA Attack Time, cc: 104, nrpn: 178, part: track, group: amp}
+  enva_decay_time:               {label: EnvA Decay Time, cc: 105, nrpn: 179, part: track, group: amp}
+  enva_sustain_level:            {label: EnvA Sustain Level, cc: 106, nrpn: 180, part: track, group: amp}
+  enva_release_time:             {label: EnvA Release Time, cc: 107, nrpn: 181, part: track, group: amp}
+  enva_env_shape:                {label: EnvA Env Shape, nrpn: 182, part: track, group: amp}
+  chorus_send_level:             {label: Chorus Send Level, cc: 91, nrpn: 183, part: track, group: amp}
+  delay_send_level:              {label: Delay Send Level, cc: 92, nrpn: 184, part: track, group: amp}
+  reverb_send_level:             {label: Reverb Send Level, cc: 93, nrpn: 185, part: track, group: amp}
+  pan:                           {label: Pan, cc: 10, nrpn: 186, part: track, group: amp}
+  volume:                        {label: Volume, cc: 7, nrpn: 187, part: track, group: amp}
+  # ENVF ────────────────────────────────────────────────────
+  envf_attack_time:              {label: EnvF Attack Time, cc: 108, nrpn: 188, part: track, group: envf}
+  envf_decay_time:               {label: EnvF Decay Time, cc: 109, nrpn: 189, part: track, group: envf}
+  envf_sustain_level:            {label: EnvF Sustain Level, cc: 110, nrpn: 190, part: track, group: envf}
+  envf_release_time:             {label: EnvF Release Time, cc: 111, nrpn: 191, part: track, group: envf}
+  envf_env_shape:                {label: EnvF Env Shape, nrpn: 192, part: track, group: envf}
+  envf_gate_length:              {label: EnvF Gate Length, nrpn: 193, part: track, group: envf}
+  envf_destination_a:            {label: EnvF Destination A, nrpn: 194, part: track, group: envf}
+  envf_depth_a:                  {label: EnvF Depth A, cc: 20, lsb: 52, nrpn: 195, part: track, group: envf}
+  envf_destination_b:            {label: EnvF Destination B, nrpn: 196, part: track, group: envf}
+  envf_depth_b:                  {label: EnvF Depth B, cc: 21, lsb: 53, nrpn: 197, part: track, group: envf}
+  # ENV2 ────────────────────────────────────────────────────
+  env2_attack_time:              {label: Env2 Attack Time, cc: 112, nrpn: 198, part: track, group: env2}
+  env2_decay_time:               {label: Env2 Decay Time, cc: 113, nrpn: 199, part: track, group: env2}
+  env2_sustain_level:            {label: Env2 Sustain Level, cc: 114, nrpn: 200, part: track, group: env2}
+  env2_release_time:             {label: Env2 Release Time, cc: 115, nrpn: 201, part: track, group: env2}
+  env2_env_shape:                {label: Env2 Env Shape, nrpn: 202, part: track, group: env2}
+  env2_gate_length:              {label: Env2 Gate Length, nrpn: 203, part: track, group: env2}
+  env2_destination_a:            {label: Env2 Destination A, nrpn: 204, part: track, group: env2}
+  env2_depth_a:                  {label: Env2 Depth A, cc: 22, lsb: 54, nrpn: 205, part: track, group: env2}
+  env2_destination_b:            {label: Env2 Destination B, nrpn: 206, part: track, group: env2}
+  env2_depth_b:                  {label: Env2 Depth B, cc: 23, lsb: 55, nrpn: 207, part: track, group: env2}
+  # LFO1 ────────────────────────────────────────────────────
+  lfo1_speed:                    {label: LFO1 Speed, cc: 116, nrpn: 208, part: track, group: lfo1}
+  lfo1_speed_multiplier:         {label: LFO1 Speed Multiplier, cc: 117, nrpn: 209, part: track, group: lfo1}
+  lfo1_fade:                     {label: LFO1 Fade, nrpn: 210, part: track, group: lfo1}
+  lfo1_start_phase:              {label: LFO1 Start Phase, nrpn: 211, part: track, group: lfo1}
+  lfo1_mode:                     {label: LFO1 Mode, nrpn: 212, part: track, group: lfo1}
+  lfo1_waveform:                 {label: LFO1 Waveform, nrpn: 213, part: track, group: lfo1}
+  lfo1_destination_a:            {label: LFO1 Destination A, nrpn: 214, part: track, group: lfo1}
+  lfo1_depth_a:                  {label: LFO1 Depth A, cc: 24, lsb: 56, nrpn: 215, part: track, group: lfo1}
+  lfo1_destination_b:            {label: LFO1 Destination B, nrpn: 216, part: track, group: lfo1}
+  lfo1_depth_b:                  {label: LFO1 Depth B, cc: 25, lsb: 57, nrpn: 217, part: track, group: lfo1}
+  # LFO2 ────────────────────────────────────────────────────
+  lfo2_speed:                    {label: LFO2 Speed, cc: 118, nrpn: 218, part: track, group: lfo2}
+  lfo2_speed_multiplier:         {label: LFO2 Speed Multiplier, cc: 119, nrpn: 219, part: track, group: lfo2}
+  lfo2_fade:                     {label: LFO2 Fade, nrpn: 220, part: track, group: lfo2}
+  lfo2_start_phase:              {label: LFO2 Start Phase, nrpn: 221, part: track, group: lfo2}
+  lfo2_mode:                     {label: LFO2 Mode, nrpn: 222, part: track, group: lfo2}
+  lfo2_waveform:                 {label: LFO2 Waveform, nrpn: 223, part: track, group: lfo2}
+  lfo2_destination_a:            {label: LFO2 Destination A, nrpn: 224, part: track, group: lfo2}
+  lfo2_depth_a:                  {label: LFO2 Depth A, cc: 26, lsb: 58, nrpn: 225, part: track, group: lfo2}
+  lfo2_destination_b:            {label: LFO2 Destination B, nrpn: 226, part: track, group: lfo2}
+  lfo2_depth_b:                  {label: LFO2 Depth B, cc: 27, lsb: 59, nrpn: 227, part: track, group: lfo2}
+
+  # ── FX TRACK PARAMETERS ───────────────────────────────────
+  # EXT IN ──────────────────────────────────────────────────
+  fx_ch1_chorus_send:            {label: Ch1 Chorus Send, nrpn: 256, part: fx, group: ext_in}
+  fx_ch1_delay_send:             {label: Ch1 Delay Send, nrpn: 257, part: fx, group: ext_in}
+  fx_ch1_reverb_send:            {label: Ch1 Reverb Send, nrpn: 258, part: fx, group: ext_in}
+  fx_ch1_pan:                    {label: Ch1 Pan, nrpn: 259, part: fx, group: ext_in}
+  fx_ch1_level:                  {label: Ch1 Level, nrpn: 260, part: fx, group: ext_in}
+  fx_ch2_chorus_send:            {label: Ch2 Chorus Send, nrpn: 261, part: fx, group: ext_in}
+  fx_ch2_delay_send:             {label: Ch2 Delay Send, nrpn: 262, part: fx, group: ext_in}
+  fx_ch2_reverb_send:            {label: Ch2 Reverb Send, nrpn: 263, part: fx, group: ext_in}
+  fx_ch2_pan:                    {label: Ch2 Pan, nrpn: 264, part: fx, group: ext_in}
+  fx_ch2_level:                  {label: Ch2 Level, nrpn: 265, part: fx, group: ext_in}
+  # CHORUS ──────────────────────────────────────────────────
+  fx_chorus_predelay:            {label: Predelay, nrpn: 296, part: fx, group: chorus}
+  fx_speed:                      {label: Speed, nrpn: 297, part: fx, group: chorus}
+  fx_depth:                      {label: Depth, nrpn: 298, part: fx, group: chorus}
+  fx_chorus_width:               {label: Width, nrpn: 299, part: fx, group: chorus}
+  fx_chorus_feedback:            {label: Feedback, nrpn: 300, part: fx, group: chorus}
+  fx_chorus_hp_filter:           {label: HP Filter, nrpn: 301, part: fx, group: chorus}
+  fx_chorus_lp_filter:           {label: LP Filter, nrpn: 302, part: fx, group: chorus}
+  fx_delay_send:                 {label: Delay Send, nrpn: 303, part: fx, group: chorus}
+  fx_chorus_reverb_send:         {label: Reverb Send, nrpn: 304, part: fx, group: chorus}
+  fx_chorus_send_level:          {label: Send Level, nrpn: 305, part: fx, group: chorus}
+  # DELAY ───────────────────────────────────────────────────
+  fx_time:                       {label: Time, nrpn: 306, part: fx, group: delay}
+  fx_mode:                       {label: Mode, nrpn: 307, part: fx, group: delay}
+  fx_delay_width:                {label: Width, nrpn: 309, part: fx, group: delay}
+  fx_delay_feedback:             {label: Feedback, nrpn: 310, part: fx, group: delay}
+  fx_delay_hp_filter:            {label: HP Filter, nrpn: 311, part: fx, group: delay}
+  fx_delay_lp_filter:            {label: LP Filter, nrpn: 312, part: fx, group: delay}
+  fx_overdrive:                  {label: Overdrive, nrpn: 313, part: fx, group: delay}
+  fx_delay_reverb_send:          {label: Reverb Send, nrpn: 314, part: fx, group: delay}
+  fx_delay_send_level:           {label: Send Level, nrpn: 315, part: fx, group: delay}
+  # REVERB ──────────────────────────────────────────────────
+  fx_reverb_predelay:            {label: Predelay, nrpn: 316, part: fx, group: reverb}
+  fx_decay_time:                 {label: Decay Time, nrpn: 317, part: fx, group: reverb}
+  fx_shelving_freq:              {label: Shelving Freq, nrpn: 318, part: fx, group: reverb}
+  fx_shelving_gain:              {label: Shelving Gain, nrpn: 319, part: fx, group: reverb}
+  fx_reverb_hp_filter:           {label: HP Filter, nrpn: 321, part: fx, group: reverb}
+  fx_reverb_lp_filter:           {label: LP Filter, nrpn: 322, part: fx, group: reverb}
+  fx_reverb_send_level:          {label: Send Level, nrpn: 325, part: fx, group: reverb}
+  # LFO1 ────────────────────────────────────────────────────
+  fx_lfo1_speed:                 {label: LFO1 Speed, nrpn: 336, part: fx, group: fx_lfo1}
+  fx_lfo1_speed_multiplier:      {label: LFO1 Speed Multiplier, nrpn: 337, part: fx, group: fx_lfo1}
+  fx_lfo1_fade:                  {label: LFO1 Fade, nrpn: 338, part: fx, group: fx_lfo1}
+  fx_lfo1_start_phase:           {label: LFO1 Start Phase, nrpn: 339, part: fx, group: fx_lfo1}
+  fx_lfo1_mode:                  {label: LFO1 Mode, nrpn: 340, part: fx, group: fx_lfo1}
+  fx_lfo1_waveform:              {label: LFO1 Waveform, nrpn: 341, part: fx, group: fx_lfo1}
+  fx_lfo1_destination_1:         {label: LFO1 Destination 1, nrpn: 342, part: fx, group: fx_lfo1}
+  fx_lfo1_depth_1:               {label: LFO1 Depth 1, nrpn: 343, part: fx, group: fx_lfo1}
+  fx_lfo1_destination_2:         {label: LFO1 Destination 2, nrpn: 344, part: fx, group: fx_lfo1}
+  fx_lfo1_depth_2:               {label: LFO1 Depth 2, nrpn: 345, part: fx, group: fx_lfo1}
+  # LFO2 ────────────────────────────────────────────────────
+  fx_lfo2_speed:                 {label: LFO2 Speed, nrpn: 346, part: fx, group: fx_lfo2}
+  fx_lfo2_speed_multiplier:      {label: LFO2 Speed Multiplier, nrpn: 347, part: fx, group: fx_lfo2}
+  fx_lfo2_fade:                  {label: LFO2 Fade, nrpn: 348, part: fx, group: fx_lfo2}
+  fx_lfo2_start_phase:           {label: LFO2 Start Phase, nrpn: 349, part: fx, group: fx_lfo2}
+  fx_lfo2_mode:                  {label: LFO2 Mode, nrpn: 350, part: fx, group: fx_lfo2}
+  fx_lfo2_waveform:              {label: LFO2 Waveform, nrpn: 351, part: fx, group: fx_lfo2}
+  fx_lfo2_destination_1:         {label: LFO2 Destination 1, nrpn: 352, part: fx, group: fx_lfo2}
+  fx_lfo2_depth_1:               {label: LFO2 Depth 1, nrpn: 353, part: fx, group: fx_lfo2}
+  fx_lfo2_destination_2:         {label: LFO2 Destination 2, nrpn: 354, part: fx, group: fx_lfo2}
+  fx_lfo2_depth_2:               {label: LFO2 Depth 2, nrpn: 355, part: fx, group: fx_lfo2}
+
+  # ── CV TRACK PARAMETERS ───────────────────────────────────
+  # CV A ────────────────────────────────────────────────────
+  cv_a_coarse_tune:              {label: CV A Coarse Tune, nrpn: 384, part: cv, group: cv_a}
+  cv_a_fine_tune:                {label: CV A Fine Tune, nrpn: 385, part: cv, group: cv_a}
+  cv_a_value:                    {label: CV A Value, nrpn: 386, part: cv, group: cv_a}
+  cv_a_clock:                    {label: CV A Clock, nrpn: 387, part: cv, group: cv_a}
+  cv_a_source:                   {label: CV A Source, nrpn: 388, part: cv, group: cv_a}
+  cv_a_bend_depth:               {label: CV A Bend Depth, nrpn: 389, part: cv, group: cv_a}
+  cv_a_note_slide_time:          {label: CV A Note Slide time, nrpn: 390, part: cv, group: cv_a}
+  # CV B ────────────────────────────────────────────────────
+  cv_b_coarse_tune:              {label: CV B Coarse Tune, nrpn: 404, part: cv, group: cv_b}
+  cv_b_fine_tune:                {label: CV B Fine Tune, nrpn: 405, part: cv, group: cv_b}
+  cv_b_value:                    {label: CV B Value, nrpn: 406, part: cv, group: cv_b}
+  cv_b_clock:                    {label: CV B Clock, nrpn: 407, part: cv, group: cv_b}
+  cv_b_source:                   {label: CV B Source, nrpn: 408, part: cv, group: cv_b}
+  cv_b_bend_depth:               {label: CV B Bend Depth, nrpn: 409, part: cv, group: cv_b}
+  cv_b_note_slide_time:          {label: CV B Note Slide time, nrpn: 410, part: cv, group: cv_b}
+  # CV C ────────────────────────────────────────────────────
+  cv_c_coarse_tune:              {label: CV C Coarse Tune, nrpn: 424, part: cv, group: cv_c}
+  cv_c_fine_tune:                {label: CV C Fine Tune, nrpn: 425, part: cv, group: cv_c}
+  cv_c_value:                    {label: CV C Value, nrpn: 426, part: cv, group: cv_c}
+  cv_c_clock:                    {label: CV C Clock, nrpn: 427, part: cv, group: cv_c}
+  cv_c_source:                   {label: CV C Source, nrpn: 428, part: cv, group: cv_c}
+  cv_c_bend_depth:               {label: CV C Bend Depth, nrpn: 429, part: cv, group: cv_c}
+  cv_c_note_slide_time:          {label: CV C Note Slide time, nrpn: 430, part: cv, group: cv_c}
+  # CV D ────────────────────────────────────────────────────
+  cv_d_coarse_tune:              {label: CV D Coarse Tune, nrpn: 434, part: cv, group: cv_d}
+  cv_d_fine_tune:                {label: CV D Fine Tune, nrpn: 435, part: cv, group: cv_d}
+  cv_d_value:                    {label: CV D Value, nrpn: 436, part: cv, group: cv_d}
+  cv_d_clock:                    {label: CV D Clock, nrpn: 437, part: cv, group: cv_d}
+  cv_d_source:                   {label: CV D Source, nrpn: 438, part: cv, group: cv_d}
+  cv_d_bend_depth:               {label: CV D Bend Depth, nrpn: 439, part: cv, group: cv_d}
+  cv_d_note_slide_time:          {label: CV D Note Slide time, nrpn: 440, part: cv, group: cv_d}
+  # ENV1 ────────────────────────────────────────────────────
+  cv_env1_attack_time:           {label: Env1 Attack Time, nrpn: 444, part: cv, group: cv_env1}
+  cv_env1_decay_time:            {label: Env1 Decay Time, nrpn: 445, part: cv, group: cv_env1}
+  cv_env1_sustain_level:         {label: Env1 Sustain Level, nrpn: 446, part: cv, group: cv_env1}
+  cv_env1_release_time:          {label: Env1 Release Time, nrpn: 447, part: cv, group: cv_env1}
+  cv_env1_env_shape:             {label: Env1 Env Shape, nrpn: 448, part: cv, group: cv_env1}
+  cv_env1_gate_length:           {label: Env1 Gate Length, nrpn: 449, part: cv, group: cv_env1}
+  cv_env1_destination_1:         {label: Env1 Destination 1, nrpn: 450, part: cv, group: cv_env1}
+  cv_env1_depth_1:               {label: Env1 Depth 1, nrpn: 451, part: cv, group: cv_env1}
+  cv_env1_destination_2:         {label: Env1 Destination 2, nrpn: 452, part: cv, group: cv_env1}
+  cv_env1_depth_2:               {label: Env1 Depth 2, nrpn: 453, part: cv, group: cv_env1}
+  # ENV2 ────────────────────────────────────────────────────
+  cv_env2_attack_time:           {label: Env2 Attack Time, nrpn: 454, part: cv, group: cv_env2}
+  cv_env2_decay_time:            {label: Env2 Decay Time, nrpn: 455, part: cv, group: cv_env2}
+  cv_env2_sustain_level:         {label: Env2 Sustain Level, nrpn: 456, part: cv, group: cv_env2}
+  cv_env2_release_time:          {label: Env2 Release Time, nrpn: 457, part: cv, group: cv_env2}
+  cv_env2_env_shape:             {label: Env2 Env Shape, nrpn: 458, part: cv, group: cv_env2}
+  cv_env2_gate_length:           {label: Env2 Gate Length, nrpn: 459, part: cv, group: cv_env2}
+  cv_env2_destination_1:         {label: Env2 Destination 1, nrpn: 460, part: cv, group: cv_env2}
+  cv_env2_depth_1:               {label: Env2 Depth 1, nrpn: 461, part: cv, group: cv_env2}
+  cv_env2_destination_2:         {label: Env2 Destination 2, nrpn: 462, part: cv, group: cv_env2}
+  cv_env2_depth_2:               {label: Env2 Depth 2, nrpn: 463, part: cv, group: cv_env2}
+  # LFO1 ────────────────────────────────────────────────────
+  cv_lfo1_speed:                 {label: LFO1 Speed, nrpn: 464, part: cv, group: cv_lfo1}
+  cv_lfo1_speed_multiplier:      {label: LFO1 Speed Multiplier, nrpn: 465, part: cv, group: cv_lfo1}
+  cv_lfo1_fade:                  {label: LFO1 Fade, nrpn: 466, part: cv, group: cv_lfo1}
+  cv_lfo1_start_phase:           {label: LFO1 Start Phase, nrpn: 467, part: cv, group: cv_lfo1}
+  cv_lfo1_mode:                  {label: LFO1 Mode, nrpn: 468, part: cv, group: cv_lfo1}
+  cv_lfo1_waveform:              {label: LFO1 Waveform, nrpn: 469, part: cv, group: cv_lfo1}
+  cv_lfo1_destination_1:         {label: LFO1 Destination 1, nrpn: 470, part: cv, group: cv_lfo1}
+  cv_lfo1_depth_1:               {label: LFO1 Depth 1, nrpn: 471, part: cv, group: cv_lfo1}
+  cv_lfo1_destination_2:         {label: LFO1 Destination 2, nrpn: 472, part: cv, group: cv_lfo1}
+  cv_lfo1_depth_2:               {label: LFO1 Depth 2, nrpn: 473, part: cv, group: cv_lfo1}
+  # LFO2 ────────────────────────────────────────────────────
+  cv_lfo2_speed:                 {label: LFO2 Speed, nrpn: 474, part: cv, group: cv_lfo2}
+  cv_lfo2_speed_multiplier:      {label: LFO2 Speed Multiplier, nrpn: 475, part: cv, group: cv_lfo2}
+  cv_lfo2_fade:                  {label: LFO2 Fade, nrpn: 476, part: cv, group: cv_lfo2}
+  cv_lfo2_start_phase:           {label: LFO2 Start Phase, nrpn: 477, part: cv, group: cv_lfo2}
+  cv_lfo2_mode:                  {label: LFO2 Mode, nrpn: 478, part: cv, group: cv_lfo2}
+  cv_lfo2_waveform:              {label: LFO2 Waveform, nrpn: 479, part: cv, group: cv_lfo2}
+  cv_lfo2_destination_1:         {label: LFO2 Destination 1, nrpn: 480, part: cv, group: cv_lfo2}
+  cv_lfo2_depth_1:               {label: LFO2 Depth 1, nrpn: 481, part: cv, group: cv_lfo2}
+  cv_lfo2_destination_2:         {label: LFO2 Destination 2, nrpn: 482, part: cv, group: cv_lfo2}
+  cv_lfo2_depth_2:               {label: LFO2 Depth 2, nrpn: 483, part: cv, group: cv_lfo2}

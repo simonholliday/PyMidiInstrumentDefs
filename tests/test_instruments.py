@@ -133,6 +133,7 @@ class TestBundledCorpus:
 			"arturia/minifreak",
 			"behringer/model_d",
 			"dreadbox/typhon",
+			"elektron/analog_four",
 			"elektron/analog_rytm_mkii",
 			"elektron/digitakt",
 			"elektron/digitakt_ii",
@@ -5964,6 +5965,178 @@ class TestTyphon:
 
 		assert "The Artemis's list must never be attributed to this instrument" in flowed
 		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed
+
+
+class TestAnalogFour:
+
+	"""An Elektron whose maker publishes the same appendix three times, in two typesettings."""
+
+	def test_two_hundred_and_twenty_nine_controls_in_twenty_seven_groups (self) -> None:
+		"""Every named row of a 255-row appendix, in one group per table that named it."""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		assert len(four.controls) == 229
+		assert len(four.groups) == 27
+
+		groups = {control.group for control in four.controls.values() if control.group}
+
+		assert groups == set(four.groups)
+
+	def test_every_control_is_addressable_one_way_or_the_other (self) -> None:
+		"""The point of carrying a row at all, and the shape of this instrument's asymmetry.
+
+		157 parameters have an NRPN address and no controller number and four have a
+		controller number and no NRPN, so neither field alone would reach the
+		instrument, and a reading that lost one column would leave controls with
+		nothing behind them.
+
+		The four divide two ways, which the appendix says by printing a dash in one
+		case and leaving the cell empty in the other: Modwheel and Breath Controller
+		have no NRPN, and the two PWM Speeds have an NRPN bank with no number under it.
+		"""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		for name, control in four.controls.items():
+			assert control.cc is not None or control.nrpn is not None, name
+
+		with_cc = {name for name, control in four.controls.items() if control.cc is not None}
+		with_nrpn = {name for name, control in four.controls.items() if control.nrpn is not None}
+
+		assert len(with_cc) == 72
+		assert len(with_nrpn) == 225
+		assert len(with_cc & with_nrpn) == 68
+		assert len(with_nrpn - with_cc) == 157
+		assert with_cc - with_nrpn == {
+			"modwheel", "breath_controller", "osc1_pwm_speed", "osc2_pwm_speed"}
+
+	def test_the_nrpn_bank_is_the_part (self) -> None:
+		"""The relation that makes this instrument unambiguous where its siblings are not.
+
+		The appendix puts each section in a bank of its own - 0 for the performance
+		macros, 1 for the synth tracks, 2 for the FX track, 3 for the CV track - so a
+		sender using NRPN needs no part to know what a number does.  A row filed under
+		the wrong table would show up here as a bank that does not match its part.
+		"""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		banks = {"performance": 0, "track": 1, "fx": 2, "cv": 3}
+
+		for name, control in four.controls.items():
+
+			if control.nrpn is None:
+				continue
+
+			assert control.part is not None, name
+			assert control.nrpn // 128 == banks[control.part], name
+
+	def test_only_one_controller_number_is_printed_twice_and_it_agrees_with_itself (self) -> None:
+		"""Unlike the Rytm's 26 and the Syntakt's 28, nothing here needs a part to disambiguate.
+
+		The appendix prints Track Level in two tables with the same numbers, so the
+		duplicate is dropped and every controller number below means one thing.
+		"""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		numbers = [control.cc for control in four.controls.values() if control.cc is not None]
+
+		assert len(numbers) == len(set(numbers))
+
+		# And the row that was printed twice is carried once, with the numbers both
+		# printings gave it: CC 95, NRPN 1/100.
+		assert four.controls["track_level"].cc == 95
+		assert four.controls["track_level"].nrpn == 1 * 128 + 100
+
+	def test_the_fourteen_fine_pairs_use_the_mma_offset (self) -> None:
+		"""Which this maker does not do on the Rytm, where the fine half of 109 is 118."""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		fine = {name: (control.cc, control.lsb) for name, control in four.controls.items()
+			if control.lsb is not None}
+
+		assert len(fine) == 14
+
+		for name, (coarse, lsb) in fine.items():
+			assert coarse is not None, name
+			assert lsb == coarse + 32, name
+
+	def test_pan_is_spelt_without_the_space_its_text_layer_puts_in_it (self) -> None:
+		"""The one thing the two readings disagreed about, and the maker's page settled it."""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		assert four.controls["pan"].label == "Pan"
+
+		labels = [control.label for control in four.controls.values() if control.label]
+
+		for label in labels:
+			assert not any(len(word) == 1 and word.isalpha() and word.islower()
+				for word in label.split()), label
+
+	def test_four_voices_shared_by_four_tracks (self) -> None:
+		"""A ceiling across the tracks together, not a figure each track can count on."""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		assert four.voice is not None
+		assert four.voice.polyphony == 4
+		assert four.voice.polyphony_shared is True
+		assert four.parts["track"].count == 4
+
+		# No part claims voices of its own, because none owns any.
+		for part in four.parts.values():
+			assert part.polyphony is None
+
+	def test_the_performance_channel_says_nothing_about_what_it_receives (self) -> None:
+		"""Unrecorded is not empty, and this is the instrument that shows the difference.
+
+		The manual names the performance channel's sending and names notes arriving on
+		it for the multi map, and never says whether the ten macros can be driven on it.
+		So the field is absent: naming either notes or controls would claim more than any
+		sentence does, and naming one would deny the other.
+		"""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		assert four.parts["performance"].receives is None
+		assert four.parts["track"].receives == ("notes", "controls")
+		assert four.parts["fx"].receives == ("controls",)
+		assert four.parts["cv"].receives == ("controls",)
+
+	def test_three_manuals_are_cited_and_one_of_them_is_a_different_product (self) -> None:
+		"""The comparison this definition rests on is in the file, not only in a note."""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		assert set(four.sources) == {"manual", "release_notes", "mkii_manual", "keys_manual"}
+
+		assert four.sources["manual"].sha256 != four.sources["mkii_manual"].sha256
+		assert four.sources["manual"].edition == four.sources["keys_manual"].edition
+		assert four.sources["manual"].dated == four.sources["keys_manual"].dated
+
+		# One page of release notes serves both products, so it is not paginated and the
+		# whole of it was read.
+		assert four.sources["release_notes"].paginated is False
+
+	def test_the_source_account_records_what_was_not_carried (self) -> None:
+		"""26 rows left out, and the reason for each, because an absence has to be evidenced."""
+		four = pymidiinstrumentdefs.load("elektron/analog_four", [CORPUS])
+
+		assert four.source is not None
+
+		account = " ".join(four.source.split())
+
+		assert "THE APPENDIX PRINTS 255 ROWS IN 28 TABLES AND 229 ARE BELOW" in account
+		assert "THE 26 ROWS NOT CARRIED ARE ROWS THE APPENDIX DOES NOT NAME" in account
+		assert "the DELAY's knob C at NRPN 2/52" in account
+		assert "EVERY NUMBER WAS READ TWICE, BY TWO METHODS" in account
+		assert "SEVERAL RUNS OF NRPN NUMBERS SKIP VALUES" in account
+		assert "THE FOUR WITH NO NRPN ARE TWO DIFFERENT FACTS" in account
+
+	def test_the_file_says_the_keys_is_not_covered_by_it (self) -> None:
+		"""A cover that names three products is not a definition for three products."""
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "elektron" / "analog_four.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "THE ANALOG KEYS IS NOT COVERED BY THIS FILE" in flowed
+		assert "a version number on a cover is not evidence that two documents were" in flowed
+		assert "WHAT IS BELOW IS TRUE OF THE ANALOG FOUR MKII AS WELL" in flowed
 
 
 class TestDeclaringAPicturedPage:

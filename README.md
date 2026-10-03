@@ -156,6 +156,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
 | `korg/volca_drum` | Korg volca drum: six parts on six channels, and the one of its maker's two charts that the instrument answers to out of the box |
 | `korg/wavestate` | Korg wavestate: 41 of its 50 controller numbers are defaults a player can reassign, and its maker publishes no control-change chart |
+| `make_noise/zero_coast` | Make Noise 0-COAST: 19 controllers off a list whose maker says most of them are ignored unless the instrument is in a particular mode - and one row of which is not text at all but a drawing |
 | `modal/carbon8m` | Modal CARBON8M: 106 controls, and a voice count set per patch |
 | `moog/dfam` | Moog DFAM: no MIDI at all, and the file says so |
 | `moog/grandmother` | Moog Grandmother: one voice, five controls in 14-bit pairs, and a value table of 24 clock divisions |

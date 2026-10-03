@@ -152,6 +152,7 @@ class TestBundledCorpus:
 			"korg/opsix",
 			"korg/volca_drum",
 			"korg/wavestate",
+			"make_noise/zero_coast",
 			"modal/carbon8m",
 			"moog/dfam",
 			"moog/grandmother",
@@ -6014,6 +6015,142 @@ class TestTyphon:
 
 		assert "The Artemis's list must never be attributed to this instrument" in flowed
 		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed
+
+
+class TestZeroCoast:
+
+	"""A Make Noise whose maker publishes a control map and conditions most of it away."""
+
+	def test_nineteen_controllers_in_the_order_the_manual_prints_them (self) -> None:
+		"""Not ascending, which is the manual's own doing and is kept.
+
+		Its table runs 117, 119, 118 and then 102 upward, so the two arpeggiator rows
+		are split by the legato one.  Sorting them would be tidier and would stop a
+		reader checking this file against the page it came from.
+		"""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		assert len(coast.controls) == 19
+
+		# Every one of them has a controller number, which is also what makes the list
+		# below a complete reading of the page rather than a selection from it.
+		printed = [control.cc for control in coast.controls.values() if control.cc is not None]
+
+		assert len(printed) == 19
+		assert printed == [5, 65, 117, 119, 118, 102, 103, 104, 105, 106, 107,
+			108, 109, 110, 111, 112, 113, 114, 116]
+		assert printed != sorted(printed)
+
+	def test_one_hundred_and_fifteen_is_missing_and_is_not_filled_in (self) -> None:
+		"""The block runs 102 to 119 with one hole, and the manual says nothing about it."""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		block = {control.cc for control in coast.controls.values()
+			if control.cc is not None and control.cc >= 102}
+
+		assert set(range(102, 120)) - block == {115}
+
+	def test_nothing_is_sent_because_there_is_nothing_to_send_it_on (self) -> None:
+		"""Sixty-one panel features and not one of them is a MIDI output."""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		for name, control in coast.controls.items():
+			assert control.direction == "receives", name
+
+		assert coast.midi.clock == "receives"
+
+	def test_the_two_circuits_are_two_parts_and_only_one_sounds (self) -> None:
+		"""MIDI B is a CV and gate pair for driving something else, on a channel of its own."""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		assert set(coast.parts) == {"midi_a", "midi_b"}
+
+		for part in coast.parts.values():
+			assert part.channel == "assigned"
+			assert part.receives == ("notes", "controls")
+
+		# Six controls belong to each, and seven to neither - the maker's own CH. A and
+		# CH. B pairs, and the global settings that have no channel in their names.
+		by_part: dict[str | None, int] = {}
+
+		for control in coast.controls.values():
+			by_part[control.part] = by_part.get(control.part, 0) + 1
+
+		assert by_part == {None: 7, "midi_a": 6, "midi_b": 6}
+
+	def test_one_voice_shared_rather_than_one_each (self) -> None:
+		"""Using both parts at once gets you no more notes than using one."""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		assert coast.voice.polyphony == 1
+		assert coast.voice.polyphony_shared is True
+
+	def test_the_controls_with_no_program_page_are_marked (self) -> None:
+		"""Nine of the nineteen can be reached by MIDI and by nothing else.
+
+		The seven Program Pages offer a CV source and a gate source for MIDI B only, so
+		the same two settings for MIDI A have no panel route at all, and neither have
+		the six the maker calls additional nor the tempo divisor.
+		"""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		only_over_midi = {control.cc for control in coast.controls.values()
+			if control.panel_only}
+
+		assert only_over_midi == {104, 106, 108, 109, 110, 111, 112, 113, 116}
+
+	def test_pitch_bend_is_settable_and_aftertouch_is_unrecorded (self) -> None:
+		"""Two fields, the same silence, and only one of them can hold it.
+
+		CC 108 and 109 set the bend in semitones, which is what `programmable` says.
+		CC 110 and 111 scale aftertouch in semitones, which says aftertouch arrives and
+		not which kind - and the field names the kind, so it stays empty and the fact
+		is in the source account.
+		"""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		assert coast.voice.pitch_bend is not None
+		assert coast.voice.pitch_bend.programmable is True
+		assert coast.voice.pitch_bend.semitones is None
+		assert coast.voice.aftertouch is None
+
+		assert coast.voice.velocity is not None
+		assert coast.voice.velocity.note_on == "received"
+
+	def test_sysex_is_unrecorded_because_the_promised_section_is_empty (self) -> None:
+		"""The manual names Sysex programming once and sends the reader to a page without any."""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		assert coast.midi.sysex is None
+
+		account = " ".join((coast.source or "").split())
+
+		assert "That section is p. 36 and it holds no system exclusive at all" in account
+
+	def test_the_source_account_carries_the_condition_and_its_three_doubts (self) -> None:
+		"""The whole difficulty of this instrument, which no field can hold."""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		account = " ".join((coast.source or "").split())
+
+		assert "The 0-COAST will ignore these CC messages at all other times" in account
+		assert "AND THE CONDITION CANNOT BE READ LITERALLY" in account
+		assert "instructs a player to send a message it elsewhere says will be ignored" in account
+
+	def test_the_row_that_is_not_text_is_recorded_as_such (self) -> None:
+		"""Found only because the second reading rendered the page and looked at it."""
+		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
+
+		account = " ".join((coast.source or "").split())
+
+		assert "not in the text layer at all" in account
+		assert "a maker's PDF can carry part of a table as artwork" in account
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "make_noise" / "zero_coast.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "NEITHER THAT DESCRIPTION NOR THOSE VALUES ARE IN THE DOCUMENT'S TEXT LAYER" in flowed
 
 
 class TestTD3:

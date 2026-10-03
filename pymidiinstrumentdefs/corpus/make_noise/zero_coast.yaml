@@ -1,0 +1,348 @@
+# The first instrument here whose maker publishes a control map and then says, in the same
+# breath, that most of it is ignored unless the instrument is in a particular mode. All nineteen
+# numbers are below, because they are published, named and unambiguous - and the condition is
+# recorded in the source account and in the groups, because it is the difference between a
+# control that works and one that appears to do nothing.
+#
+# The key is `zero_coast` because a definition name cannot begin with a digit. The maker writes
+# it **0-COAST**, which is what `model.name` says.
+
+definition: 1
+
+model:
+  manufacturer: Make Noise
+  name: 0-COAST
+  # ESTABLISHED FROM A PROCEDURE, NOT FROM A VERSION STRING, because the manual carries no
+  # firmware version at all - and the one version string in the file is not even visible.
+  # `5.19.16 REV 7` is in the cover page's text layer, 27.7pt bold at x 241-408, y 531-566, and
+  # it is drawn **underneath the full-bleed photograph of the panel**: rendered at 300 dpi, that
+  # rectangle shows only the photograph. So no reader of this document, on screen or in print,
+  # can see it. The file's own metadata says it was created in September 2017 and modified in
+  # September 2019, which sits oddly with a string reading as 19 May 2016.
+  # What settles it: the firmware 1.6.8 updater's notes say its calibration procedure changed -
+  # "You no longer set Fine Tune so MIDI A Activity Window stops flashing.
+  # Instead just set Fine Tune on 0-COAST to 10:00" (firmware) - and this manual prints the new procedure, "then
+  # adjust the Fine frequency to 10:00" (p. 14), and never the old one. So the manual postdates
+  # 1.6.8, which is the newest firmware this maker publishes.
+  firmware: "1.6.8"
+
+source: >-
+  User manual (44pp), the only document that publishes a controller number for this instrument:
+  the single voice at p. 5, the connections and the default channel at p. 11, the seven Program
+  Pages at pp. 12-14, **the controller list at p. 15**, the MIDI input and the Local-versus-Sysex
+  sentence at p. 16, and the MIDI A and B normalisations and the arpeggiator at p. 17.
+
+  NEVER TAKE A LOCATOR FROM THIS MANUAL'S TABLE OF CONTENTS. It is short by one through its
+  whole middle: the controller list is listed at 14 and printed at 15, "MIDI and CV/Gate
+  Controllers" at 10 and printed at 11, the arpeggiator at 16 and printed at 17. Every page
+  cited here was taken from the page itself.
+
+  THERE IS NO MIDI IMPLEMENTATION CHART AND NO SPECIFICATIONS SECTION. Forty-four pages, and the
+  nineteen controller numbers are published once, as a list at the end of a section about
+  programming the front panel from a sequencer.
+
+  THE CONDITION, WHICH IS THE WHOLE OF WHAT IS DIFFICULT ABOUT THIS INSTRUMENT. The list is
+  introduced like this: "While the 0-COAST is in the PGM Pages it is also possible to program the
+  0-COAST PGM Pages using MIDI CC messages. NOTE: these parameters can only be edited by CC
+  while the 0-Coast is in the Program Pages. The 0-COAST will ignore these CC messages at all
+  other times." (p. 15)
+
+  So most of these controls do nothing unless a player has put the instrument into its Program
+  Pages by holding a front-panel button. **There is no field in this format for a condition like
+  that**, and the alternative to carrying them is losing nineteen published, named, unambiguous
+  numbers, so they are all here and the condition is said instead - once, here, and again in the
+  label of every group it applies to.
+
+  AND THE MAKER IS AMBIGUOUS ABOUT HOW FAR THE CONDITION REACHES, so three tiers are recorded
+  rather than one. The sentence above is about "these parameters", meaning the Program Page
+  parameters. It is then followed by: "There are also some additional parameters tha may be
+  edited by MIDI CC. These are Pitch Bend, AfterTouch and Velocity Scale and TEMPO IN Divisor."
+  (p. 15, the maker's own typing). Those seven - CC 108 to 113 and 116 - are introduced *after*
+  the restriction and are called additional, which may mean they are exempt from it or may mean
+  nothing of the sort. **The document does not say, and neither does this file.**
+
+  The third tier is the portamento pair, CC 5 and CC 65, which the same page documents under a
+  heading of its own with no condition mentioned anywhere near it, as a performance feature:
+  "Using MIDI CC 5 and 65, analog, fully programmable, clock-synchronized PORTAMENTO is
+  possible." (p. 15). Even those two are not wholly clear, because the page's own heading -
+  "ACCESSING PROGRAM PAGE FUNCTIONS VIA MIDI CC:" - sits above everything on it, including that
+  box.
+
+  AND THE CONDITION CANNOT BE READ LITERALLY, WHICH IS WHY ALL NINETEEN ARE CARRIED RATHER THAN
+  TWO. It is phrased as applying to Program Page parameters, and **three of the numbers under it
+  have no Program Page at all**: the seven pages at pp. 12-14 offer a CV source and a gate source
+  for MIDI B only, so CC 104 and CC 106 - the same two settings for MIDI A - can be reached by no
+  other route, and CC 117 switches an arpeggiator that is turned on from the performance page
+  rather than from a program page. Read literally, those three could never be received at all,
+  which cannot be what the maker means.
+
+  **And one place where the manual instructs a player to send a message it elsewhere says will
+  be ignored.** The portamento box says: "For sync to MIDI Clock, MIDI Clock must be set to ON
+  at 0-COAST. (MIDI Clk=114, 0-OFF, 1- ON)." (p. 15) CC 114 is in the restricted table. So the
+  document tells a player to send CC 114 to turn clock sync on, and says a few inches lower that
+  it is ignored unless the instrument is in its Program Pages. Recorded, not resolved.
+
+  NOTHING IS TRANSMITTED, AND THAT IS WHY EVERY CONTROL IS `receives`. The figure at p. 8
+  numbers all **61** features of the panel and names the third of them the MIDI Input Jack; no
+  output and no thru is among the sixty-one. The word "MIDI OUT" appears in this manual only
+  about the controller at the other end of the cable, "the cable should be attached to the MIDI
+  OUT on the controller and MIDI INput on the 0-COAST" (p. 11), and the word "thru" does not
+  occur at all. The input is a mini-jack: "The MIDI Input uses a Mini-Jack connector as opposed
+  to the more traditional and cumbersome DIN connector" (p. 16), with an adapter in the box, and
+  the pin-out at p. 44 is that adapter's. The jacks called MIDI A Gate Output and MIDI B CV
+  Output throughout are **analogue** outputs named after the circuits that drive them.
+
+  EVERY NUMBER WAS READ TWICE, AND THE SECOND READING FOUND SOMETHING NO EXTRACTION CAN SEE.
+  The first reading cut the page's text at its column positions; the second, made without sight
+  of it, read the same page's words by their coordinates and then **rendered it and read it by
+  eye**. They agree on all nineteen numbers, all nineteen names and every value the first could
+  see - and the second found that **the description and the value column of the CC 116 row are
+  not in the text layer at all**. They are vector outlines, drawn by the program that made this
+  PDF, and they print and render perfectly while returning nothing from any text extraction. So
+  a reading of this manual by text alone shows CC 116 with no description and no values, and
+  there is no sign that anything is missing. The row is transcribed in the controls below from
+  the rendered page, and was read there by two pairs of eyes.
+
+  **That is worth more than this instrument: a maker's PDF can carry part of a table as artwork,
+  and no amount of care with the text layer will find it.** The second reading swept the whole
+  document for other such runs and found seven, five of them elsewhere; none of those five
+  carries a controller number.
+
+  THE NUMBERS ARE ALSO CORROBORATED BY THE MAKER'S OWN PROGRAMMER, which is why this list is not read
+  once from one page. Make Noise publishes a Max for Live device for programming the instrument,
+  and it holds eighteen `append` objects feeding a single control-change output: 5, 102 to 114,
+  116 to 119, with the same gap at 115. **The one number it does not send is CC 65**, portamento
+  on/off - which fits a device that programs pages rather than performances. It confirms the set
+  of numbers and the kinds of parameter, in the maker's own annotations, and not the pairing of
+  each number to each name: its dials are named `live.dial[1]` upwards. The pairings rest on the
+  manual, read twice.
+
+  115 IS MISSING AND THE MANUAL DOES NOT SAY WHY. The published numbers run 102 to 119 with one
+  hole in them, and the maker's own programmer has the same hole. Recorded as an absence rather
+  than filled in.
+
+  WHAT THE NUMBERS SAY ABOUT WHAT ELSE IS RECEIVED, since the manual has no chart to say it
+  plainly. CC 108 and 109 set the "Amount of bend in semitones", so pitch bend is received and
+  its depth is settable; no factory depth is printed, so `semitones` is unrecorded. CC 112 and
+  113 set a minimum velocity, and velocity can be a CV source or open a gate above half, so
+  velocity is received. **CC 110 and 111 are "Aftertouch in semitones", so aftertouch is
+  received too - and no page says which kind.** `voice.aftertouch` names the kind, so it is left
+  unset rather than guessed, and this sentence is the record of the fact.
+
+  TWO PLACES WHERE THE DOCUMENT DISAGREES WITH ITSELF, recorded and not resolved. The Program
+  Page at p. 14 gives four sources for the MIDI B CV output - note number, velocity, mod wheel
+  and an LFO - and CC 105's own value list agrees, "0-Note; 1-velocity; 2-mod; 3 to 127 LFO"
+  (p. 15). **The prose at p. 17 says the output "can be assigned to velocity, note number, mod
+  wheel, or aftertouch"**, naming aftertouch where the other two name an LFO. The value names
+  below follow the two that agree, and the third is recorded here.
+
+  And at p. 16 the manual promises a section it does not contain. It says there are two ways to
+  modify the MIDI settings, Local Programming and Sysex programming, and sends the reader on:
+  "For more information, see the section titled: "Using the 0-Coast with Other Devices" in the
+  second half of this manual." **That section is p. 36 and it holds no system exclusive at all**
+  - signal levels and two CV and gate figures. The word appears nowhere else in 44 pages, and no
+  message, manufacturer identifier, format or parameter map is published anywhere. So either
+  system exclusive exists and is undocumented, or the maker wrote Sysex where it meant
+  programming over MIDI. **`midi.sysex` is unrecorded for that reason** - `true` would rest on a
+  sentence that may be a slip, and `false` would deny a stated capability.
+
+  THE PRODUCT PAGE MAKES ONE CLAIM THE FIRMWARE'S OWN NOTES DO NOT SUPPORT. The page says, of
+  firmware 1.6.8, that it "adds Portamento and other MIDI features" (product_page). The
+  updater's own release note lists three changes and the only MIDI one is a fix: "1. Fixed MIDI
+  B CV output range for Velocity and Mod Wheel" (firmware). Portamento is real - it is CC 5 and
+  65 above - but nothing supports 1.6.8 having added it. Both are recorded and neither is
+  resolved; a plausible reading is that the page describes a run of updates rather than this
+  one, and the page does not say so.
+
+  A QUICK REFERENCE IS PRINTED ON THE UNDERSIDE OF THE INSTRUMENT AND IS NOT REPRODUCED HERE.
+  The manual points at it twice - "there is a quick reference on the underside of the 0-Coast
+  that de/f_ines all of these settings and how to make them" (p. 17) - so there may be numbers
+  on the hardware that no document publishes. Nothing is claimed about it either way; it is
+  named so that a later reader with the instrument in front of them knows where to look.
+
+  THE MAKER'S OWN SLIPS, REPRODUCED AND NOT TIDIED. The condition sentence reads "additional
+  parameters tha may be edited". One value cell prints "> 50%" and the next "> %50". The CC 116
+  cell runs the name and the range together as "TEMPO IN Div.=116 0 to 127", so a careless parse
+  reads three numbers in it. CC 114 is the only switch on the page whose values stop at 1 where
+  its neighbours all say "1 to 127"; what 2 to 127 do is not stated. And the last paragraph of
+  p. 13 breaks off mid-sentence - "While on this page, the MIDI_A Activity Window" is followed
+  straight by "learn both at once" - which is the page's own doing and not an extraction fault.
+
+  NOT RECORDED: transport, which no page mentions; program change, likewise; the note range,
+  which no page states - the nearest is that the oscillator "can be expected to track reasonably
+  well over a 4-octave range" (p. 8), which is a fact about tracking and not about which notes
+  are answered to; and the MIDI mode, since receiving on all channels by default plus a single
+  voice is what the protocol calls Omni On/Mono and the maker never says so.
+
+sources:
+  manual:
+    kind: manual
+    title: 0-COAST Manual
+    edition: 5.19.16 REV 7
+    landing: "https://www.makenoisemusic.com/synthesizers-and-controllers/0-coast/"
+    url: "https://www.makenoise-manuals.com/0-coast/0-coast-manual.pdf"
+    sha256: c0806ad55d135d8ebe7f8e85188c2e10c8cfcd16e8dc2a0bf50f410552b6b313
+    retrieved: 2026-10-03
+    # PDF page = printed page throughout, so no offset and one page to a sheet. The edition is
+    # the string on the cover and is not a firmware version: see the `model` comment. Note the
+    # documents are on a different host from the page that links them.
+  firmware:
+    kind: release_notes
+    title: 0-COAST firmware 1.6.8 updater instructions
+    edition: "1.6.8"
+    landing: "https://www.makenoisemusic.com/synthesizers-and-controllers/0-coast/"
+    url: "https://www.makenoise-manuals.com/0-coast/0coast_168update.zip"
+    sha256: 066d3915e2506876dfc348a164eb3687cc58bd7569dd7b32db5eeb8a009a0d58
+    retrieved: 2026-10-03
+    paginated: false
+    # The text rendered out of the `instructions.rtf` the updater ships, which is the only
+    # release note this maker publishes for the instrument. The firmware itself is an audio
+    # file, played into the TEMPO input. The digest is the rendered text's; the archive's is in
+    # its provenance record, with the rule that produced one from the other.
+    # The address the instrument ranking recorded for this file, on makenoisemusic.com, now
+    # answers 404; this one is what the product page links.
+  product_page:
+    kind: product_page
+    title: "0-COAST - Make Noise"
+    landing: "https://www.makenoisemusic.com/synthesizers-and-controllers/0-coast/"
+    url: "https://www.makenoisemusic.com/synthesizers-and-controllers/0-coast/"
+    sha256: 2a209c5cc25064114f9822d4f341abb1f83d0391d3747b0f52f91e39669527df
+    retrieved: 2026-10-03
+    paginated: false
+    # The visible text of the page. Cited for the firmware claim the source account sets against
+    # the updater's own notes, and for the feature lines the manual bears out. Unlike some
+    # makers' pages, this one puts its feature list in its markup, so it is citable at all.
+
+midi:
+  # "Value of 0-15 sets a channel; 16-127 is MIDI CH. ALL" for each of CC 102 and 103 (p. 15),
+  # which is sixteen channels said by the maker rather than assumed from the protocol.
+  channels: [1, 16]
+  # "Tempo follows the rate of the incoming MIDI clock" when Program Page 6 is on, which is off
+  # by default (p. 14), and CC 114 switches it. Nothing is sent, so this cannot be `both`.
+  clock: receives
+  # NOT RECORDED, system exclusive: the manual names "Sysex programming" once and documents none.
+  # NOT RECORDED, transport and program change: no page mentions either.
+  # `control_change` is left unset because a map is published - see the controls below.
+
+voice:
+  addressing: pitches
+  # "The 0-COAST is a single voice patchable synthesizer" (p. 5), and MIDI A's CV and gate are
+  # wired to the oscillator's pitch and the contour's gate: "This wired connection between the
+  # MIDI A circuit and the Oscillator circuit allows for playing the Pitch of the 0-COAST from a
+  # MIDI controller" (p. 16).
+  polyphony: 1
+  # `true` BECAUSE ONE IS A CEILING FOR THE INSTRUMENT AND NOT A FIGURE PER PART, which is the
+  # thing this field decides for a reader. Two parts are declared below and only one of them
+  # sounds - MIDI B is a CV and gate pair for driving something else - so neither value is a
+  # comfortable fit: nothing is literally shared, because MIDI B has no voice to share. But
+  # `false` says each part has voices of its own and would read as two, and there is one. The
+  # consequence `true` carries is the correct one: using both parts at once gets you no more
+  # notes than using one.
+  polyphony_shared: true
+  velocity:
+    note_on: received
+    # Three ways over: CC 112 and 113 set a minimum velocity (p. 15); the MIDI B CV output can be
+    # assigned to velocity, so that notes get brighter the harder they are played (p. 14); and
+    # the MIDI B gate can be set to open "when Velocity > 50%" (p. 14).
+  pitch_bend:
+    # "PitchBendScale CH. A=108 Amount of bend in semitones, centered on active pitch (so 1/2up,
+    # 1/2 down)" and the same for channel B at 109 (p. 15). So bend is received and the depth is
+    # settable per part; no factory depth is printed, so `semitones` stays unrecorded.
+    programmable: true
+  # NOT RECORDED, aftertouch, and it is received. "AfterScale CH. A=110 Aftertouch in semitones"
+  # (p. 15) says so, and p. 17 says the MIDI B CV output can be assigned to it. Neither says
+  # whether it is channel or polyphonic pressure, and this field names the kind. See the source.
+
+parts:
+  # The two "Channels of MIDI to CV and MIDI to Gate" the product page advertises. Each is given
+  # a channel by the player and neither derives one: the {MIDI Learn} page exists so that MIDI A
+  # and MIDI B can receive on separate channels (p. 13), set either by playing into that page or
+  # by CC 102 and 103.  (The manual's own sentence is not quoted here because its text layer
+  # spells "different" with an ff ligature, which no quotation should have to carry.)
+  # THE DEFAULT IS BOTH ON EVERY CHANNEL: "The 0-COAST defaults to receiving MIDI on ALL
+  # Channels" (p. 11), and "The Default Behavior is for both MIDI_A and MIDI_B channels to
+  # receive on ALL channels" (p. 13). So out of the box the two are not separable, and which
+  # channel yours are on belongs to your rig rather than here.
+  midi_a:
+    label: MIDI A
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # This is the one that sounds. Its CV and gate are wired to the oscillator and the contour:
+    # "MIDI A CV and Gate are always connected to Oscillator Pitch, and Contour Gate (the latter
+    # connection can be overridden by patching)" (p. 17).
+  midi_b:
+    label: MIDI B
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # This one does not sound. It is a CV and a gate jack for driving something else, and what
+    # each carries is a setting: "MIDI B has a CV and Gate output ... unlike other outputs, they
+    # can be con/f_igured to react in various ways to MIDI data" (p. 17). It takes notes all the
+    # same - note number is one of the things its CV can carry, and its gate can open on note-on
+    # - so `notes` is recorded, and nothing here sounds them.
+    # With no MIDI channels to spare it becomes a second modulation source instead: "If you do
+    # not require additional MIDI Channels, MIDI B CV may be set as an additional Triangle LFO
+    # and MIDI B Gate may be set as an additional Square LFO" (p. 17).
+
+groups:
+  # This file's groups, not the maker's: the controller list at p. 15 is a flat list of nineteen
+  # rows with no headings over it. They are named after the maker's own words for the parameters
+  # in them, and **the label says where the condition at p. 15 applies**, because a panel that
+  # offers one of these without saying so offers a control that appears to be broken.
+  portamento: Portamento
+  channel: MIDI channel (in the Program Pages)
+  cv_source: CV source (in the Program Pages)
+  gate_source: Gate source (in the Program Pages)
+  arpeggiator: Arpeggiator (in the Program Pages)
+  legato: Legato (in the Program Pages)
+  clock: Clock (in the Program Pages)
+  scaling: Pitch Bend, Aftertouch and Velocity Scale
+
+controls:
+
+  # Nineteen rows, with the maker's own names and its own spellings - `MIDI A Channel` beside
+  # `MIDI CH. A CV`, `MIDIClk` run together, `ArpON/OFF` and `TEMPO IN Div.` as punctuated.
+  # Every one is `receives`: this instrument has no MIDI output.
+  # THE ORDER IS THE MANUAL'S AND IT IS NOT ASCENDING. Its table runs 117, 119, 118, then 102
+  # upward - so the two arpeggiator rows are split by the legato one, and 119 comes before 118.
+  # Kept as printed, the way the Analog Rytm MKII's Euclidean rows are.
+
+  # Portamento ───────────── the two the manual documents under their own heading
+  portamento_time:       {label: Portamento TIME, cc: 5, values: {"off": 0, interval: 1}, direction: receives, group: portamento}
+  portamento_on_off:     {label: Portamento ON/OFF, cc: 65, values: {"off": 0, "on": 1}, direction: receives, group: portamento}
+
+  # And then the maker's own table, in its own order ──────
+  arp_on_off:            {label: ArpON/OFF, cc: 117, values: {"off": 0, "on": 1}, direction: receives, group: arpeggiator}
+  arp_type:              {label: ArpType, cc: 119, values: {traditional: 0, latch_and_shift: 1}, direction: receives, group: arpeggiator}
+  legato_control:        {label: LegatoControl, cc: 118, values: {"off": 0, "on": 1}, direction: receives, group: legato}
+  # "Value of 0-15 sets a channel; 16-127 is MIDI CH. ALL" - and WHICH value is which channel is
+  # never printed, so the two bands below are the whole of what the maker states. The page's own
+  # screenshot of its Max for Live device shows "MIDI A Channel: 1" against a control that takes
+  # 0 to 15, so whether the value is the channel less one is exactly what is not established.
+  midi_a_channel:        {label: MIDI A Channel, cc: 102, values: {channel: 0, all: 16}, direction: receives, part: midi_a, group: channel}
+  midi_b_channel:        {label: MIDI B Channel, cc: 103, values: {channel: 0, all: 16}, direction: receives, part: midi_b, group: channel}
+  # The A rows of these two pairs have no Program Page at all - pages 4 and 5 are MIDI B only -
+  # so CC is the only way to reach them, which is what `panel_only` records.
+  midi_a_cv:             {label: MIDI CH. A CV, cc: 104, values: {note: 0, velocity: 1, mod: 2, lfo: 3}, direction: receives, part: midi_a, group: cv_source, panel_only: true}
+  midi_b_cv:             {label: MIDI CH. B CV, cc: 105, values: {note: 0, velocity: 1, mod: 2, lfo: 3}, direction: receives, part: midi_b, group: cv_source}
+  midi_a_gate:           {label: MIDI CH. A Gate, cc: 106, values: {note_on: 0, velocity_over_half: 1, mod_wheel_over_half: 2, lfo: 3}, direction: receives, part: midi_a, group: gate_source, panel_only: true}
+  midi_b_gate:           {label: MIDI CH. B Gate, cc: 107, values: {note_on: 0, velocity_over_half: 1, mod_wheel_over_half: 2, lfo: 3}, direction: receives, part: midi_b, group: gate_source}
+  # The six the maker calls additional, each printed with a description and no value column at
+  # all. None has a Program Page either, so all six are reachable only over MIDI.
+  pitch_bend_scale_a:    {label: PitchBendScale CH. A, cc: 108, unit: semitones, direction: receives, part: midi_a, group: scaling, panel_only: true}
+  pitch_bend_scale_b:    {label: PitchBendScale CH. B, cc: 109, unit: semitones, direction: receives, part: midi_b, group: scaling, panel_only: true}
+  after_scale_a:         {label: AfterScale CH. A, cc: 110, unit: semitones, direction: receives, part: midi_a, group: scaling, panel_only: true}
+  after_scale_b:         {label: AfterScale CH. B, cc: 111, unit: semitones, direction: receives, part: midi_b, group: scaling, panel_only: true}
+  vel_scale_a:           {label: VelScale CH. A, cc: 112, direction: receives, part: midi_a, group: scaling, panel_only: true}
+  vel_scale_b:           {label: VelScale CH. B, cc: 113, direction: receives, part: midi_b, group: scaling, panel_only: true}
+  # This one's value column stops at 1, where every other switch on the page says "1 to 127".
+  # What 2 to 127 do is not stated and is not guessed at.
+  midi_clock:            {label: MIDIClk, cc: 114, values: {"off": 0, "on": 1}, direction: receives, group: clock}
+  # "Divisions of the TEMPO IN as reflected at the CLOCK OUT", and "0 and 1= 1/1; 2 = 1/2; 3 =
+  # 1/3; 4 = 1/4; etc. Does not affect tap tempo or MIDI Clock." Left continuous rather than
+  # banded, because that is a series with an "etc." on the end rather than a table: four named
+  # bands would say that everything from 4 upwards is a quarter, and the maker says it is not.
+  # NEITHER THAT DESCRIPTION NOR THOSE VALUES ARE IN THE DOCUMENT'S TEXT LAYER. They are vector
+  # outlines, invisible to every text extraction, and were read off the rendered page by eye.
+  tempo_in_divisor:      {label: TEMPO IN Div., cc: 116, direction: receives, group: clock, panel_only: true}

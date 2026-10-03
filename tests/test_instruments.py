@@ -153,6 +153,7 @@ class TestBundledCorpus:
 			"moog/messenger",
 			"moog/minitaur",
 			"moog/mother_32",
+			"moog/muse",
 			"moog/sub_37",
 			"moog/subharmonicon",
 			"moog/subsequent_37",
@@ -4236,3 +4237,165 @@ class TestMC707:
 		assert mc.voice.pitch_bend is not None
 		assert mc.voice.pitch_bend.programmable is True
 		assert mc.voice.pitch_bend.semitones is None
+
+
+class TestMuse:
+
+	"""One appendix printed four times, wrong twice, and two timbres on two channels."""
+
+	def test_a_hundred_and_two_rows_in_seventeen_panel_modules (self) -> None:
+		"""Every row of the appendix is here, grouped by the module its name belongs to."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		assert len(muse.controls) == 102
+		assert len(muse.groups) == 17
+
+		numbers = sorted(c.cc for c in muse.controls.values() if c.cc is not None)
+
+		assert len(numbers) == 102
+		assert numbers[0] == 1
+		assert numbers[-1] == 116
+
+		# What the table leaves alone, which is why no NRPN is recorded: the data entry pair,
+		# bank select LSB, and the whole of 96 to 101.
+		missing = sorted(set(range(1, 117)) - set(numbers))
+
+		assert missing == [2, 4, 6, 32, 38, 63, 74, 84, 96, 97, 98, 99, 100, 101]
+
+		# Every row carries a group, and no row is left over.
+		assert all(c.group in muse.groups for c in muse.controls.values())
+
+	def test_the_two_misprints_are_corrected (self) -> None:
+		"""`5-99` becomes 75 by arithmetic, and `ODR` becomes `ord` by the manual's own prose."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		# The modulation oscillator's bands are 25 apart, so the printed 5 can only be 75.
+		waveform = muse.controls["modulation_oscillator_waveform"]
+
+		assert waveform.cc == 28
+		assert waveform.values == {"sine": 0, "sawtooth": 25, "ramp": 50, "square": 75,
+			"noise": 100}
+
+		# The arpeggiator's DIRECTION switch is ORD in two other places in the same manual.
+		direction = muse.controls["arpeggiator_direction"]
+
+		assert direction.cc == 114
+		assert direction.values == {"ord": 0, "ptn": 43, "rnd": 85}
+
+	def test_the_bands_a_name_cannot_hold_as_printed (self) -> None:
+		"""Organ stops and a bare count, which the page prints as `16’` and as `1`."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		for name in ("oscillator_1_octave", "oscillator_2_octave"):
+			assert muse.controls[name].values == {"ft_16": 0, "ft_8": 32, "ft_4": 64, "ft_2": 96}
+
+		assert muse.controls["arpeggiator_octave_range"].values == \
+			{"one": 0, "two": 32, "three": 64, "four": 96}
+
+		# Twenty-seven of the rows are a plain switch, written `0-63 off/ 64-127 on`.
+		switches = [c for c in muse.controls.values() if c.values == {"off": 0, "on": 64}]
+
+		assert len(switches) == 27
+
+		# And ten are a list of named bands, which with the switches is 37 of the 102.
+		banded = [c for c in muse.controls.values() if c.values]
+
+		assert len(banded) == 37
+
+	def test_eighty_nine_rows_are_a_timbre_s_and_thirteen_are_not (self) -> None:
+		"""The panel edits one timbre; the output, delay, sequencer and clock are global."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		assert set(muse.parts) == {"timbre"}
+
+		timbre = muse.parts["timbre"]
+
+		assert timbre.count == 2
+		assert timbre.channel == "assigned"
+		assert timbre.receives == ("notes", "controls")
+
+		assert len([c for c in muse.controls.values() if c.part == "timbre"]) == 89
+
+		global_groups = {"output", "delay", "sequencer", "clock"}
+		elsewhere = [c for c in muse.controls.values() if c.part is None]
+
+		assert len(elsewhere) == 13
+		assert {c.group for c in elsewhere} == global_groups
+
+		# The arpeggiator is per timbre where the sequencer is not, which the specification says.
+		assert muse.controls["arpeggiator_clock_div"].part == "timbre"
+		assert muse.controls["sequencer_clock_div"].part is None
+
+	def test_eight_voices_shared_between_the_two_timbres (self) -> None:
+		"""One pool of eight that the two voice counts always sum to."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		assert muse.voice.polyphony == 8
+		assert muse.voice.polyphony_shared is True
+		assert muse.voice.voicing_modes == (1, 8)
+
+		# A shared pool and a part with voices of its own cannot both be true.
+		assert muse.parts["timbre"].polyphony is None
+
+		assert muse.voice.aftertouch == "channel"
+		assert muse.voice.pitch_bend is not None
+		assert muse.voice.pitch_bend.semitones == 7
+		assert muse.voice.pitch_bend.programmable is True
+
+		assert muse.voice.velocity is not None
+		assert muse.voice.velocity.note_on == "both"
+		assert muse.voice.velocity.note_off is None
+
+		# The keybed is 61 keys, which is a panel and not a span of note numbers.
+		assert muse.voice.note_range is None
+
+	def test_what_the_settings_pages_settle (self) -> None:
+		"""Clock and transport both ways, 256 patches, and no chart to give a mode."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		assert muse.midi.channels == (1, 16)
+		assert muse.midi.clock == "both"
+		assert muse.midi.transport == "both"
+
+		assert muse.midi.program_change is not None
+		assert muse.midi.program_change.receives is True
+		assert muse.midi.program_change.sends is True
+		assert muse.midi.program_change.presets == 256
+
+		# Moog publishes no implementation chart for this instrument, so there is no mode row.
+		assert muse.midi.mode is None
+
+		# NRPN is a checked absence; system exclusive is a silence and is left unrecorded.
+		assert muse.midi.nrpn == "none"
+		assert muse.midi.sysex is None
+
+		assert all(c.nrpn is None for c in muse.controls.values())
+
+	def test_the_appendix_is_printed_in_four_documents (self) -> None:
+		"""The manual and all three sets of release notes, which is why nothing rests on one."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		assert set(muse.sources) == {"manual", "release_notes", "release_notes_1_3_0",
+			"release_notes_1_2_0", "quickstart"}
+
+		assert muse.model.firmware == "1.4.0"
+		assert muse.sources["manual"].edition == "1.4.0"
+
+		for name in ("release_notes", "release_notes_1_3_0", "release_notes_1_2_0"):
+			assert muse.sources[name].kind == "release_notes"
+
+		# Every page of this manual prints its own number and it is the file's page index.
+		assert all(source.page_offset == 0 for source in muse.sources.values())
+
+	def test_the_whole_map_is_sent_and_none_of_it_answered_as_shipped (self) -> None:
+		"""Both directions, which is what the instrument does rather than how it is set."""
+		muse = pymidiinstrumentdefs.load("moog/muse", [CORPUS])
+
+		# SEND CC defaults on and RECIEVE CC defaults off, but both are switches a player moves,
+		# so no control carries a direction of its own.
+		assert all(c.direction == pymidiinstrumentdefs.definition.BOTH
+			for c in muse.controls.values())
+
+		# The two rows whose direction prose states outright, for both pedals.
+		assert muse.controls["sustain_pedal"].cc == 64
+		assert muse.controls["expression"].cc == 11

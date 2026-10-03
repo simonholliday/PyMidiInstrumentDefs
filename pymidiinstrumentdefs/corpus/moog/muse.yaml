@@ -1,0 +1,492 @@
+# ONE TABLE, PRINTED FOUR TIMES, AND ALL FOUR AGREE CELL FOR CELL. Moog publishes no MIDI
+# implementation document for this instrument, so "APPENDIX A: MIDI CC" (manual pp. 120-122) is
+# the whole of its published control map - and the same appendix appears at the back of all
+# three sets of release notes as well, every one of which was found inside a firmware package
+# rather than on the downloads page. `Notes/4253_compare_editions.py` reads the table out of all
+# four by the page's own vector rules and diffs them: **102 rows, identical in every cell, in
+# every edition since 1.2.0.** So nothing here rests on one rendering of one page.
+#
+# THE APPENDIX IS WRONG TWICE, AND BOTH SLIPS ARE THE MAKER'S. `cc 28`'s fourth band is printed
+# `5-99` where its neighbours are 25 apart and `5-99` overlaps every band before it, so 75 is the
+# only thing the sequence leaves it to be - and it reads `5-99` in all four documents, which is
+# what makes carrying 75 a correction of the page rather than a guess about it. `cc 114`'s first
+# band is named `ODR` where the arpeggiator's own DIRECTION switch is `ORD` twice over, at
+# "the order the notes were played (ORD)" (manual p. 23) and in the module's own list (manual
+# p. 69). **The second is the better kind of misprint to find: the same manual contradicts it,
+# so no arithmetic is needed.** Both corrections are made in `Notes/4253_write_controls.py`,
+# which asserts the page still says what it says and so breaks rather than passes silently if a
+# later edition fixes either.
+#
+# TWO TIMBRES, EACH ON ITS OWN CHANNEL, AND THAT IS THE FACTORY SETTING. "MULTI MODE (OFF/ON.
+# DEFAULT: ON)" (manual p. 110) - on, out of the box - "allowing Muse's two timbres to be
+# controlled independently via external MIDI control" (manual p. 110). So 89 of the 102 rows
+# below address whichever timbre the channel maps to, and the 13 that do not are the four modules
+# the manual calls global: the output section, the Diffusion Delay, the sequencer and the clock.
+#
+# AND THE INSTRUMENT IGNORES EVERY ONE OF THEM UNTIL SOMEBODY TURNS THEM ON. "RECIEVE CC
+# (ON/OFF. DEFAULT: OFF)" (manual p. 111), the maker's own spelling, against "SEND CC (ON/OFF.
+# DEFAULT: ON)" (manual p. 111). **A Muse as it leaves the factory transmits this whole map and
+# answers to none of it**, which is the opposite way round from most instruments here and is a
+# setting rather than a limit. Program change is the same: send on, receive off.
+#
+# THE MANUAL'S OWN TABLE OF CONTENTS POINTS AT THE WRONG PAGES. It lists "117 APPENDIX A: MIDI
+# CC" (manual p. 6) for a table printed on 120, and it is short by two to four pages for every
+# heading in the last third of the book - MIDI settings listed at 107 and printed at 110,
+# specifications at 112 and printed at 116. Worth knowing because a reader who takes a locator
+# from the contents page cites a page that does not hold the thing cited.
+
+definition: 1
+
+model:
+  manufacturer: Moog Music
+  name: Muse
+  # PROVEN FROM THE PAGE AND NOT FROM THE FILE NAME, which is the carry-forward this maker earns:
+  # "This manual reflects Muse as of firmware Version 1.4.0" (manual p. 5). The downloads list
+  # offers three firmware packages and 1.4.0 is the newest, and its release notes' own title
+  # agrees. Checked 2026-10-03.
+  firmware: "1.4.0"
+
+source: >-
+  Muse User Guide, 124 pages, the edition for firmware 1.4.0 - "This manual reflects Muse as of
+  firmware Version 1.4.0" (manual p. 5). **Moog publishes no separate MIDI implementation
+  document for this instrument**, so the manual's own "APPENDIX A: MIDI CC" (manual pp. 120-122)
+  is the whole published control map: three columns headed MIDI CC, MUSE CONTROL and RANGE, and
+  102 controller numbers from 1 to 116.
+
+  ONE APPENDIX, FOUR DOCUMENTS, NO DISAGREEMENT. The same table is printed at the back of the
+  1.2.0, 1.3.0 and 1.4.0 release notes as well as the manual, and `Notes/4253_compare_editions.py`
+  reads all four off their own vector rules and diffs them: 102 rows, identical in every cell.
+  The appendix arrived with firmware 1.1.0 - "MIDI CC map implemented - see APPENDIX A at the end
+  of this document" (release notes 1.4.0 p. 8), under the heading "CHANGES IN V1.1.0" (release
+  notes 1.4.0 p. 8) - and has not been revised since. Every controller number below is therefore
+  four times attested, and a second reader who had not seen the first extraction and was told not
+  to use its method read all 102 rows again and agreed on each one, name and range alike
+  (`Notes/4253_compare_readings.py`).
+
+  THE TWO MISPRINTS. `cc 28`, the modulation oscillator's waveform, is printed
+  "0-24: SINE 25-49: SAWTOOTH 50-74: RAMP 5-99: SQUARE 100-127: NOISE" (manual p. 120). Its
+  neighbours are 25 apart and `5-99` overlaps every band before it, so the definition carries 75.
+  The cell was rendered at 600 dpi and read by eye, and it reads the same in all four documents,
+  so this is the maker's slip standing unfixed since 1.2.0 and not a rendering accident. The same
+  call the Bass Station II's `23.55` got.
+
+  `cc 114`, the arpeggiator's direction, names its first band "ODR" (manual p. 120) where the
+  arpeggiator's own DIRECTION switch is "ORD" - "the order the notes were played (ORD)" (manual
+  p. 23), and "Arpeggiated notes will play in the same order they were originally played on the
+  keyboard" under the heading ORD (manual p. 69). **A transposition the same manual disproves
+  twice**, which is a better position than `cc 28`'s: no arithmetic is needed, only the two other
+  places the word is printed. The definition carries `ord`.
+
+  BI-TIMBRAL, AND THE TWO TIMBRES ARE SEPARATELY ADDRESSABLE BY DEFAULT. "Muse is a bi-timbral
+  synthesizer, meaning that at any time it can play two completely different sounds, both of
+  which can be stored in a single patch" (manual p. 22), and "MULTI MODE (OFF/ON. DEFAULT: ON)"
+  (manual p. 110) is on as shipped: "Engages MULTI MODE, allowing Muse's two timbres to be
+  controlled independently via external MIDI control" (manual p. 110). Which channel reaches
+  which is stated outright - "messages at MIDI CHANNEL IN will control TIMBRE A of Muse while
+  TIMBRE B will be in- dependently controlled via messages at MULTI IN B CHANNEL" (manual p. 110),
+  the line break the manual's own - with "MIDI IN CHANNEL (OMNI, 1-16. DEFAULT: 1)" (manual
+  p. 110) and "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)" (manual p. 110).
+
+  **Both default to 1, which is a collision, and the maker noticed.** Firmware 1.4.0 lists
+  "Prevent collisions between MIDI IN channel numbers" (release notes 1.4.0 p. 6) among its
+  improvements. The two defaults are recorded as printed because that is what the manual for this
+  firmware says; what the instrument does when they are equal is not published.
+
+  WHICH ROWS ARE A TIMBRE'S. The panel edits one timbre at a time - "TIMBRE A/B Selects either
+  TIMBRE A or B for editing via the main panel controls" (manual p. 104) - and MULTI MODE puts a
+  MIDI channel where those two buttons are. So a panel row addresses whichever timbre the channel
+  maps to, and the exceptions are the modules the manual itself calls global: "The OUTPUT section
+  controls the final output signal from Muse" (manual p. 50), "As the Diffusion Delay is a global
+  signal processor" (release notes 1.4.0 p. 2), "the SEQUENCER allows you to create global
+  sequences that can be used with any patch in Muse" (manual p. 24) and "The CLOCK section
+  establishes the global tempo for Muse" (manual p. 65). Thirteen rows fall in those four and
+  carry no part; the other 89 carry `part: timbre`.
+
+  The arpeggiator is in the other camp and the specification says so: "ARPEGGIATOR Per-timbre
+  with Clock Division, Octave range, Pattern, Direction, Gate time" (manual p. 117). So its five
+  rows are a timbre's where the sequencer's one row is not.
+
+  TRANSMITTED ON TWO CHANNELS, NEITHER OF THEM A TIMBRE'S. On the way out the instrument splits
+  its own controls between two settings rather than between its timbres: "KEYBOARD MIDI OUT
+  CHANNEL (ALL, 1-16. DEFAULT: 1)" carries "MIDI NOTE, NOTE ON/ OFF, VELOCITY, AFTERTOUCH, and
+  MIDI CCs messages" (manual p. 110), and "LHC MIDI OUT CHANNEL (ALL, 1-16. DEFAULT: 1)" (manual
+  p. 110) carries "PITCH WHEEL and MOD WHEEL" (manual p. 110) alone. So `cc 1` below goes out on
+  a different channel from every other row, and `part` describes what a received message reaches
+  rather than what a transmitted one leaves on.
+
+  SENT BY DEFAULT AND NOT ANSWERED BY DEFAULT. "SEND CC (ON/OFF. DEFAULT: ON)" with "Sets whether
+  Muse sends CC messages via the MIDI OUT and USB outputs" (manual p. 111), against "RECIEVE CC
+  (ON/OFF. DEFAULT: OFF)" with "Sets whether Muse receives CC messages via the MIDI IN and USB
+  inputs" (manual p. 111) - the maker's own spelling of "recieve", kept. Program change the same
+  way round: "SEND PGM CHNG (ON, OFF. DEFAULT: ON)" and "RECIEVE PGM CHNG (ON, OFF. DEFAULT:
+  OFF)" (manual p. 111). Every control below is `both` because the instrument does both; the
+  factory position of two switches is not a direction.
+
+  TWO CONTROLLER NUMBERS ARE STATED A SECOND TIME, IN BOTH DIRECTIONS, AND THEY ARE THE PEDALS.
+  The v1.1.0 change list gives each as a pair of sentences: "Sustain pedal will output on MIDI
+  CC64" and "Muse will now respond to incoming sustain pedal messages on MIDI CC64" (release
+  notes 1.4.0 p. 8); "Expression pedal connected to EXPRESSION IN will output on MIDI CC11" and
+  "Muse will now respond to incoming expression pedal messages on CC11" (release notes 1.4.0
+  p. 8). So for two of the 102 the appendix's silence about direction is filled in by prose.
+
+  THE OLDEST RELEASE NOTES CARRY THE FULLEST ACCOUNT OF THE CHANGE THAT MATTERS. The v1.1.0 list
+  appears in all three sets, and 1.2.0's is the longest: it alone carries "If SUSTAIN PEDAL
+  POLARITY in CV menu set to "CV", MIDI CC will not be output on CC64" (release notes 1.2.0 p. 6)
+  and the whole of how AUTO picks a clock, including "If an external MIDI START signal is received
+  at either the DIN or USB ports, MIDI clock will automatically be chosen for the user" (release
+  notes 1.2.0 p. 6). The 1.3.0 and 1.4.0 editions abridge both away. **So the newest document is
+  not always the fullest, even when it is the same list.**
+
+  PROGRAM CHANGE IS A BANK AND A NUMBER, AND THERE ARE TWO SEPARATE MAPS OF THEM. For patches:
+  "MSB is 0, LSB is 1-16 (selecting a BANK), PC is 1-16 (selecting a PATCH within that BANK)"
+  (manual p. 111), which is "Each of the 16 banks contains 16 patches (for a total of 256
+  available patches)" (manual p. 95). For sequences there is a channel of its own - "SEQ PGM CHNG
+  CHANNEL (1-16. DEFAULT: 16)" (manual p. 110) with "MSB is 0, LSB is 1-16 (selects SEQ BANK), PC
+  1-16" (manual p. 110) - and "Muse contains 16 banks of 16 presets and its SEQUENCER contains 16
+  banks of 16 sequences" (release notes 1.2.0 p. 2). Both arrived in 1.4.0: "MIDI program change
+  control over patches and sequences" (release notes 1.4.0 p. 5).
+
+  EIGHT VOICES ACROSS THE PAIR, NOT EACH. "POLYPHONY 8 Voices" (manual p. 116) for an instrument
+  that always holds two timbres, and the arithmetic is stated: "The Voice Count settings for
+  TIMBRE A and B will move with respect to each other and always sum to eight" (manual p. 106).
+  Stacking costs what sharing implies - "Engaging STACK also reduces available polyphony by half
+  (or more) depending on the UNISON settings of either TIMBRE" (manual p. 105) - and a timbre may
+  take the other's voices if allowed: "DYNAMIC VOICE ALLOCATION (OFF, ON. DEFAULT: OFF)" (manual
+  p. 106), "allowing a TIMBRE to steal voices from the other TIMBRE if its voice count is
+  exceeded" (manual p. 106).
+
+  CLOCK AND TRANSPORT BOTH WAYS, AND BOTH ARE OFF ON THE WAY OUT. "CLOCK SOURCE (AUTO, INTERNAL,
+  ANALOG, MIDI IN, USB. DEFAULT: AUTO)" (manual p. 66) takes a clock in; "MIDI CLOCK OUT (OFF,
+  SEQ, ON. DEFAULT: OFF)" (manual p. 66) sends one. "MIDI START/STOP OUT (ON, OFF. DEFAULT: OFF)"
+  (manual p. 66) against "SEQ START/STOP IN (ON, IGNORE. DEFAULT: ON)" and "ARP START/STOP IN
+  (ON, IGNORE. DEFAULT: ON)" (manual p. 66). All of it arrived at once: "MIDI CLOCK IN/OUT and
+  START/STOP functionality fully implemented" (release notes 1.4.0 p. 5), so a Muse on an earlier
+  firmware is a different instrument in this respect.
+
+  NOT RECORDED, AND EACH FOR A STATED REASON. **No system exclusive**, because the words "system
+  exclusive" and "sysex" appear in none of the five documents - a silence over 161 pages rather
+  than a denial, so the field is left out instead of being set to false. **No NRPN**, and that one
+  is checked: the appendix's gaps are 2, 4, 6, 32, 38, 63, 74, 84 and 96 to 101, which is the
+  whole of the MIDI specification's data-entry and NRPN and RPN block left alone, and the words
+  NRPN and RPN appear nowhere either. **No mode**, because Moog publishes no implementation chart
+  and the only statement near it is that OMNI is one of the choices for the receive channel
+  (manual p. 110). **No note range**, because the keybed is given as "61 full-size semi-weighted
+  Fatar keybed with Velocity and channel Aftertouch" (manual p. 116) and a key count is not a
+  span of note numbers; "KB OCTAVE Shifts the octave of the keyboard down" (manual p. 13) moves
+  it and the manual never says how far. **No note-off velocity.** And nothing from the Quickstart
+  Guide, which carries no controller number and no MIDI setting.
+
+sources:
+  manual:
+    kind: manual
+    title: Muse User Guide
+    edition: 1.4.0
+    dated: 2025-05-22
+    landing: "https://www.moogmusic.com/downloads/?type=User%20Manual"
+    url: "https://cdn.inmusicbrands.com/Moog/Muse/Muse_Manual-1.4.0.pdf"
+    sha256: f8f67529295b1523d7d918f4025cbcf6fbb18bc798841d35da2411d8b0ba629e
+    retrieved: 2026-10-03
+    # 124 pages, counted with pypdf and with PyMuPDF, which agree - `file` gives no count at all.
+    # **NO OFFSET**: every page from 7 to 123 prints its own number and it is the file's page
+    # index, so a printed number needs nothing adding to it. The front matter and the back cover
+    # are unnumbered, which is why the firmware statement on page 5 is cited by its file page.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: Muse Firmware 1.4.0 Release Notes
+    edition: 1.4.0
+    dated: 2025-05-24
+    landing: "https://www.moogmusic.com/downloads/?type=Firmware%20Update"
+    url: "https://cdn.inmusicbrands.com/Moog/Muse/Muse%20Firmware%20V1.4.zip"
+    sha256: 198ac8da36f00c60b533216df5f2923310cde24716f3fde8e45b314ada36b79c
+    retrieved: 2026-10-03
+    # FOUND INSIDE THE FIRMWARE PACKAGE AND NOT ON THE DOWNLOADS PAGE, which is this maker's
+    # habit - the Matriarch's CC 106 and CC 73 and the Subharmonicon's CC 91 exist in this corpus
+    # only because somebody opened a document like this one. The url is the package's; the digest
+    # is the document's, extracted from it. 13 pages, by pypdf and PyMuPDF, which agree while
+    # `file` says 0. Its own appendix is pages 10 to 12.
+    page_offset: 0
+  release_notes_1_3_0:
+    kind: release_notes
+    title: Muse Firmware 1.3.0 Release Notes
+    edition: 1.3.0
+    dated: 2024-12-16
+    landing: "https://www.moogmusic.com/downloads/?type=Firmware%20Update"
+    url: "https://cdn.inmusicbrands.com/Moog/Muse/Moog%20Muse%20Firmware%201.3.0.zip"
+    sha256: 648a98a03b6ffb58ba36403dfac3310cef74ada95099237337e150a0f378cba3
+    retrieved: 2026-10-03
+    # 11 pages, its appendix on 8 to 10. Cited for the third printing of that appendix and for
+    # the preset count.
+    page_offset: 0
+  release_notes_1_2_0:
+    kind: release_notes
+    title: Muse Firmware 1.2.0 Release Notes
+    edition: 1.2.0
+    dated: 2024-08-29
+    landing: "https://www.moogmusic.com/downloads/?type=Firmware%20Update"
+    url: "https://cdn.inmusicbrands.com/Moog/Muse/Moog%20Muse%20Firmware%20v1.2.0.zip"
+    sha256: 2634d6f931f0bfa50225c007ad045754776738f05d30b6b41693919fc2102549
+    retrieved: 2026-10-03
+    # THE OLDEST RELEASE NOTES MOOG STILL SERVES, AND THE FULLEST ON THE CHANGE THAT MATTERS -
+    # see the source account. Its v1.1.0 list carries two statements the 1.3.0 and 1.4.0 editions
+    # abridge away. 11 pages, its appendix on 8 to 10. **There are no notes for 1.0 or 1.1**: the
+    # downloads list offers three firmware packages and no more, which is a checked absence
+    # because that list was fetched as data and every entry read.
+    page_offset: 0
+  quickstart:
+    kind: manual
+    title: Muse Quickstart Guide
+    dated: 2024-02-02
+    landing: "https://www.moogmusic.com/downloads/?type=User%20Manual"
+    url: "https://cdn.inmusicbrands.com/Moog/Muse/MUSE-quickstart_Eng.pdf"
+    sha256: f0c1d91ffe828567d387d43954ad3b8fce33fd2e2b409756675b3e0076ef4378
+    retrieved: 2026-10-03
+    # TWO PAGES, CITED FOR AN ABSENCE AND NOTHING ELSE: it carries no controller number and no
+    # MIDI setting, and it sends the reader to the manual for both. Eight and a half megabytes,
+    # which is a panel photograph at print resolution. Neither page prints a number, so a
+    # locator here means the file's page.
+    page_offset: 0
+
+midi:
+  # "MIDI IN CHANNEL (OMNI, 1-16. DEFAULT: 1)" (manual p. 110), and the same range on the other
+  # three channel settings - the keyboard's and the LHC's outputs, which also take ALL, and
+  # "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)".
+  channels: [1, 16]
+  # BOTH, AND NEITHER IS A DEFAULT. In: "CLOCK SOURCE (AUTO, INTERNAL, ANALOG, MIDI IN, USB.
+  # DEFAULT: AUTO)" (manual p. 66). Out: "MIDI CLOCK OUT (OFF, SEQ, ON. DEFAULT: OFF)" (manual
+  # p. 66), so sending is off until somebody turns it on.
+  clock: both
+  # BOTH. Out: "MIDI START/STOP OUT (ON, OFF. DEFAULT: OFF)" (manual p. 66). In, twice over, once
+  # per sequencer: "SEQ START/STOP IN (ON, IGNORE. DEFAULT: ON)" and "ARP START/STOP IN (ON,
+  # IGNORE. DEFAULT: ON)" (manual p. 66). Song position and song select are named nowhere.
+  transport: both
+  program_change:
+    # "RECIEVE PGM CHNG (ON, OFF. DEFAULT: OFF)" (manual p. 111) - the maker's spelling. It
+    # answers; the factory position of the switch is off.
+    receives: true
+    # "SEND PGM CHNG (ON, OFF. DEFAULT: ON)" (manual p. 111), and 1.4.0 added "Output MIDI
+    # program change when patches are loaded via PATCH select buttons or sequence".
+    sends: true
+    # "Each of the 16 banks contains 16 patches (for a total of 256 available patches)" (manual
+    # p. 95). Addressed as "MSB is 0, LSB is 1-16 (selecting a BANK), PC is 1-16 (selecting a
+    # PATCH within that BANK)" (manual p. 111) - so bank select LSB numbers the bank and both are
+    # counted from one on the wire, not from zero. There are 256 sequences as well, on a channel
+    # of their own, and this field holds the patches.
+    presets: 256
+  # NONE, AND CHECKED RATHER THAN UNREAD. The appendix leaves 96 to 101 alone - the whole of data
+  # increment and decrement and the NRPN and RPN parameter selects - along with 6 and 38, the data
+  # entry pair, and 32, bank select LSB, which program change uses instead. The words NRPN and RPN
+  # appear in none of the five documents. The same reading as the modwave's.
+  nrpn: none
+
+voice:
+  addressing: pitches
+  # "POLYPHONY 8 Voices" (manual p. 116), for a "Polyphonic, Bi-timbral Analog Synthesizer"
+  # (manual p. 116).
+  polyphony: 8
+  # ONE POOL ACROSS THE TWO TIMBRES, AND THE MANUAL DOES THE ARITHMETIC: "The Voice Count settings
+  # for TIMBRE A and B will move with respect to each other and always sum to eight to avoid voice
+  # stealing conflicts" (manual p. 106), with "Engaging STACK also reduces available polyphony by
+  # half (or more) depending on the UNISON settings of either TIMBRE" (manual p. 105).
+  polyphony_shared: true
+  # ONE OR EIGHT, per timbre. "Enables mono mode on the currently selected timbre, which will
+  # restrict the timbre to operating in a monophonic mode" (manual p. 105) and "Only one voice
+  # will be used at a time and polyphonic playing will be disabled" (manual p. 105). Unison is
+  # not a third count: it "will stack any currently unused voices on top of the active ones"
+  # (manual p. 105), so how many it takes depends on what is already sounding.
+  voicing_modes: [1, 8]
+  velocity:
+    # Transmitted with the keyboard - the keyboard channel carries "MIDI NOTE, NOTE ON/ OFF,
+    # VELOCITY, AFTERTOUCH, and MIDI CCs messages" (manual p. 110) - and answered to, since
+    # velocity is a modulation source and two of the rows below switch it per envelope.
+    note_on: both
+  # CHANNEL, AND NOT POLY. "61 full-size semi-weighted Fatar keybed with Velocity and channel
+  # Aftertouch" (manual p. 116), transmitted on the keyboard channel (manual p. 110), and 1.4.0
+  # added "Slew/filtering applied to aftertouch MIDI output, matching filtering applied to panel
+  # knobs" (release notes 1.4.0 p. 6). Polyphonic aftertouch is named nowhere in any document.
+  aftertouch: channel
+  pitch_bend:
+    # "Pitch bend defaults to +/- 7 Semitones" (manual p. 14), which the setting confirms from the
+    # other side: "PITCH WHEEL RANGE (0-12. DEFAULT: 7)" (manual p. 64), "Selects the range in
+    # semitones for the pitch bend wheel" (manual p. 64).
+    semitones: 7
+    # Per timbre, which is unusual enough that the manual says so twice - the parameter lives in
+    # the ASSIGNABLE CONTROLLERS MORE menu and 0 "effectively turning off the pitch wheel for the
+    # selected TIMBRE" (manual p. 64).
+    programmable: true
+
+parts:
+  timbre:
+    label: Timbre
+    # "Each patch contains two separate timbres and all VOICE CONTROL settings are saved on a
+    # per-patch basis" (manual p. 95).
+    count: 2
+    # A CHANNEL EACH, SET BY THE PLAYER, SO NEITHER DERIVES FROM THE OTHER. "MIDI IN CHANNEL
+    # (OMNI, 1-16. DEFAULT: 1)" for timbre A and "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)"
+    # for timbre B (manual p. 110) - both default to 1, which is why 1.4.0 lists "Prevent
+    # collisions between MIDI IN channel numbers" (release notes 1.4.0 p. 6).
+    channel: assigned
+    addressing: pitches
+    # NOTES AND CONTROLLERS. Notes reach a timbre by channel, and a 1.4.0 bug fix shows how
+    # precisely: "Fix bug where, with MULTI MODE enabled, a MIDI note off sent to one timbre was
+    # incorrectly also sent to the other timbre if both timbres had a note with that pitch"
+    # (release notes 1.4.0 p. 6). **Program change does not**: it loads a whole patch, which holds
+    # both timbres, and sequences have a channel of their own rather than a timbre's.
+    receives: [notes, controls]
+
+groups:
+  controllers: Controllers
+  glide: Glide
+  lfos: LFO 1+2
+  pitch_lfo: Pitch LFO
+  mod_oscillator: Modulation Oscillator
+  oscillators: Oscillators
+  mixer: Mixer
+  filters: Filters
+  filter_envelope: Filter Envelope
+  vca_envelope: VCA Envelope
+  vca: VCA
+  voice_control: Voice Control
+  output: Output
+  delay: Diffusion Delay
+  sequencer: Sequencer
+  arpeggiator: Arpeggiator
+  clock: Clock
+
+controls:
+
+  # CONTROLLERS ---------------------------------------------------
+  mod_wheel:                           {label: Mod Wheel, cc: 1, part: timbre, group: controllers}
+  expression:                          {label: Expression, cc: 11, part: timbre, group: controllers}
+  sustain_pedal:                       {label: Sustain Pedal, cc: 64, values: {"off": 0, "on": 64}, part: timbre, group: controllers}
+  hold:                                {label: Hold, cc: 71, values: {"off": 0, "on": 64}, part: timbre, group: controllers}
+
+  # GLIDE ---------------------------------------------------------
+  glide_time:                          {label: Glide Time, cc: 5, part: timbre, group: glide}
+
+  # LFO 1+2 -------------------------------------------------------
+  lfo_1_rate:                          {label: LFO 1 Rate, cc: 12, part: timbre, group: lfos}
+  lfo_1_amount:                        {label: LFO 1 Amount, cc: 13, part: timbre, group: lfos}
+  lfo_1_waveform:                      {label: LFO 1 Waveform, cc: 14, values: {triangle: 0, saw: 25, square: 50, random: 75, user_wave: 100}, part: timbre, group: lfos}
+  lfo_2_rate:                          {label: LFO 2 Rate, cc: 15, part: timbre, group: lfos}
+  lfo_2_amount:                        {label: LFO 2 Amount, cc: 16, part: timbre, group: lfos}
+  lfo_2_waveform:                      {label: LFO 2 Waveform, cc: 17, values: {triangle: 0, saw: 25, square: 50, random: 75, user_wave: 100}, part: timbre, group: lfos}
+
+  # PITCH LFO -----------------------------------------------------
+  pitch_lfo_rate:                      {label: Pitch LFO Rate, cc: 18, part: timbre, group: pitch_lfo}
+  pitch_lfo_shape:                     {label: Pitch LFO Shape, cc: 19, part: timbre, group: pitch_lfo}
+  pitch_lfo_amount:                    {label: Pitch LFO Amount, cc: 20, part: timbre, group: pitch_lfo}
+  pitch_lfo_osc_1:                     {label: Pitch LFO OSC 1, cc: 21, values: {"off": 0, "on": 64}, part: timbre, group: pitch_lfo}
+  pitch_lfo_osc_2:                     {label: Pitch LFO OSC 2, cc: 22, values: {"off": 0, "on": 64}, part: timbre, group: pitch_lfo}
+  pitch_lfo_mod_osc:                   {label: Pitch LFO Mod Osc, cc: 23, values: {"off": 0, "on": 64}, part: timbre, group: pitch_lfo}
+  pitch_lfo_detune:                    {label: Pitch LFO Detune, cc: 24, values: {"off": 0, "on": 64}, part: timbre, group: pitch_lfo}
+
+  # MODULATION OSCILLATOR -----------------------------------------
+  modulation_oscillator_frequency:     {label: Modulation Oscillator Frequency, cc: 25, part: timbre, group: mod_oscillator}
+  modulation_oscillator_audio:         {label: Modulation Oscillator Audio, cc: 26, values: {"off": 0, "on": 64}, part: timbre, group: mod_oscillator}
+  modulation_oscillator_kb_track:      {label: Modulation Oscillator KB Track, cc: 27, values: {"off": 0, "on": 64}, part: timbre, group: mod_oscillator}
+  modulation_oscillator_waveform:      {label: Modulation Oscillator Waveform, cc: 28, values: {sine: 0, sawtooth: 25, ramp: 50, square: 75, noise: 100}, part: timbre, group: mod_oscillator}
+  modulation_oscillator_kb_reset:      {label: Modulation Oscillator KB Reset, cc: 29, values: {"off": 0, "on": 64}, part: timbre, group: mod_oscillator}
+  modulation_oscillator_unipolar:      {label: Modulation Oscillator Unipolar, cc: 30, values: {"off": 0, "on": 64}, part: timbre, group: mod_oscillator}
+  modulation_oscillator_pitch_amount:  {label: Modulation Oscillator Pitch Amount, cc: 31, part: timbre, group: mod_oscillator}
+  modulation_oscillator_pitch_osc_1:   {label: Modulation Oscillator Pitch OSC 1, cc: 33, part: timbre, group: mod_oscillator}
+  modulation_oscillator_pitch_osc_2:   {label: Modulation Oscillator Pitch OSC 2, cc: 34, part: timbre, group: mod_oscillator}
+  modulation_oscillator_pwm_amount:    {label: Modulation Oscillator PWM Amount, cc: 35, part: timbre, group: mod_oscillator}
+  modulation_oscillator_pwm_osc_1:     {label: Modulation Oscillator PWM OSC 1, cc: 36, part: timbre, group: mod_oscillator}
+  modulation_oscillator_pwm_osc_2:     {label: Modulation Oscillator PWM OSC 2, cc: 37, part: timbre, group: mod_oscillator}
+  modulation_oscillator_filter_amount: {label: Modulation Oscillator Filter Amount, cc: 39, part: timbre, group: mod_oscillator}
+  modulation_oscillator_filter_1:      {label: Modulation Oscillator Filter 1, cc: 40, part: timbre, group: mod_oscillator}
+  modulation_oscillator_filter_2:      {label: Modulation Oscillator Filter 2, cc: 41, part: timbre, group: mod_oscillator}
+  modulation_oscillator_vca_amount:    {label: Modulation Oscillator VCA Amount, cc: 42, part: timbre, group: mod_oscillator}
+  modulation_oscillator_vca_pan:       {label: Modulation Oscillator VCA PAN, cc: 43, part: timbre, group: mod_oscillator}
+
+  # OSCILLATORS ---------------------------------------------------
+  oscillator_1_octave:                 {label: Oscillator 1 Octave, cc: 44, values: {ft_16: 0, ft_8: 32, ft_4: 64, ft_2: 96}, part: timbre, group: oscillators}
+  oscillator_1_frequency:              {label: Oscillator 1 Frequency, cc: 45, part: timbre, group: oscillators}
+  oscillator_1_tri_saw_mix:            {label: Oscillator 1 Tri/Saw Mix, cc: 46, part: timbre, group: oscillators}
+  oscillator_1_pw:                     {label: Oscillator 1 PW, cc: 47, part: timbre, group: oscillators}
+  oscillator_1_wave_mix:               {label: Oscillator 1 Wave Mix, cc: 48, part: timbre, group: oscillators}
+  oscillator_2_octave:                 {label: Oscillator 2 Octave, cc: 49, values: {ft_16: 0, ft_8: 32, ft_4: 64, ft_2: 96}, part: timbre, group: oscillators}
+  oscillator_2_frequency:              {label: Oscillator 2 Frequency, cc: 50, part: timbre, group: oscillators}
+  oscillator_2_tri_saw_mix:            {label: Oscillator 2 Tri/Saw Mix, cc: 51, part: timbre, group: oscillators}
+  oscillator_2_pw:                     {label: Oscillator 2 PW, cc: 52, part: timbre, group: oscillators}
+  oscillator_2_wave_mix:               {label: Oscillator 2 Wave Mix, cc: 53, part: timbre, group: oscillators}
+  oscillator_2_to_1_sync:              {label: Oscillator 2>1 SYNC, cc: 54, values: {"off": 0, "on": 64}, part: timbre, group: oscillators}
+  oscillator_2_to_1_fm:                {label: Oscillator 2>1 FM, cc: 55, values: {"off": 0, "on": 64}, part: timbre, group: oscillators}
+  oscillator_1_to_2_fm:                {label: Oscillator 1>2 FM, cc: 56, values: {"off": 0, "on": 64}, part: timbre, group: oscillators}
+  fm_amount:                           {label: FM Amount, cc: 57, part: timbre, group: oscillators}
+
+  # MIXER ---------------------------------------------------------
+  oscillator_1_level:                  {label: Oscillator 1 Level, cc: 58, part: timbre, group: mixer}
+  oscillator_2_level:                  {label: Oscillator 2 Level, cc: 59, part: timbre, group: mixer}
+  ring_mod_level:                      {label: Ring Mod Level, cc: 60, part: timbre, group: mixer}
+  modulation_oscillator_level:         {label: Modulation Oscillator Level, cc: 61, part: timbre, group: mixer}
+  noise_level:                         {label: Noise Level, cc: 62, part: timbre, group: mixer}
+  clipping_level:                      {label: Clipping Level, cc: 65, part: timbre, group: mixer}
+
+  # FILTERS -------------------------------------------------------
+  filter_1_high_pass:                  {label: Filter 1 High Pass, cc: 66, part: timbre, group: filters}
+  filter_1_cutoff:                     {label: Filter 1 Cutoff, cc: 67, part: timbre, group: filters}
+  filter_1_resonance:                  {label: Filter 1 Resonance, cc: 68, part: timbre, group: filters}
+  filter_1_envelope_amount:            {label: Filter 1 Envelope Amount, cc: 69, part: timbre, group: filters}
+  filter_1_kb_tracking:                {label: Filter 1 KB Tracking, cc: 70, values: {"off": 0, half: 43, full: 85}, part: timbre, group: filters}
+  filter_2_frequency:                  {label: Filter 2 Frequency, cc: 72, part: timbre, group: filters}
+  filter_2_resonance:                  {label: Filter 2 Resonance, cc: 73, part: timbre, group: filters}
+  filter_2_envelope_amount:            {label: Filter 2 Envelope Amount, cc: 75, part: timbre, group: filters}
+  filter_2_kb_tracking:                {label: Filter 2 KB Tracking, cc: 76, values: {"off": 0, half: 43, full: 85}, part: timbre, group: filters}
+  link_filters:                        {label: Link Filters, cc: 77, values: {"off": 0, "on": 64}, part: timbre, group: filters}
+  filters_order:                       {label: Filters Order, cc: 78, values: {ser: 0, str: 43, par: 85}, part: timbre, group: filters}
+
+  # FILTER ENVELOPE -----------------------------------------------
+  filter_env_attack:                   {label: Filter Env Attack, cc: 79, part: timbre, group: filter_envelope}
+  filter_env_decay:                    {label: Filter Env Decay, cc: 80, part: timbre, group: filter_envelope}
+  filter_env_sustain:                  {label: Filter Env Sustain, cc: 81, part: timbre, group: filter_envelope}
+  filter_env_release:                  {label: Filter Env Release, cc: 82, part: timbre, group: filter_envelope}
+  filter_env_loop:                     {label: Filter Env Loop, cc: 83, values: {"off": 0, "on": 64}, part: timbre, group: filter_envelope}
+  filter_env_velocity:                 {label: Filter Env Velocity, cc: 85, values: {"off": 0, "on": 64}, part: timbre, group: filter_envelope}
+
+  # VCA ENVELOPE --------------------------------------------------
+  vca_env_attack:                      {label: VCA Env Attack, cc: 86, part: timbre, group: vca_envelope}
+  vca_env_decay:                       {label: VCA Env Decay, cc: 87, part: timbre, group: vca_envelope}
+  vca_env_sustain:                     {label: VCA Env Sustain, cc: 88, part: timbre, group: vca_envelope}
+  vca_env_release:                     {label: VCA Env Release, cc: 89, part: timbre, group: vca_envelope}
+  vca_env_loop:                        {label: VCA Env Loop, cc: 90, values: {"off": 0, "on": 64}, part: timbre, group: vca_envelope}
+  vca_env_velocity:                    {label: VCA Env Velocity, cc: 91, values: {"off": 0, "on": 64}, part: timbre, group: vca_envelope}
+
+  # VCA -----------------------------------------------------------
+  timbre_volume:                       {label: Timbre Volume, cc: 7, part: timbre, group: vca}
+  pan_spread:                          {label: Pan Spread, cc: 9, part: timbre, group: vca}
+  pan:                                 {label: Pan, cc: 10, part: timbre, group: vca}
+
+  # VOICE CONTROL -------------------------------------------------
+  voice_detune:                        {label: Voice Detune, cc: 92, part: timbre, group: voice_control}
+  voice_unison:                        {label: Voice Unison, cc: 108, values: {"off": 0, "on": 64}, part: timbre, group: voice_control}
+  voice_mono:                          {label: Voice Mono, cc: 109, values: {"off": 0, "on": 64}, part: timbre, group: voice_control}
+
+  # OUTPUT --------------------------------------------------------
+  mute:                                {label: Mute, cc: 3, values: {"off": 0, "on": 64}, group: output}
+  low_cut:                             {label: Low Cut, cc: 8, group: output}
+
+  # DIFFUSION DELAY -----------------------------------------------
+  delay_time_left:                     {label: Delay Time Left, cc: 93, group: delay}
+  delay_time_right:                    {label: Delay Time Right, cc: 94, group: delay}
+  link_delays:                         {label: Link Delays, cc: 95, values: {"off": 0, "on": 64}, group: delay}
+  delay_clock_sync:                    {label: Delay Clock Sync, cc: 102, values: {"off": 0, "on": 64}, group: delay}
+  delay_feedback:                      {label: Delay Feedback, cc: 103, group: delay}
+  delay_character:                     {label: Delay Character, cc: 104, group: delay}
+  delay_mix:                           {label: Delay Mix, cc: 105, group: delay}
+  delay_timbre_a:                      {label: Delay Timbre A, cc: 106, values: {"off": 0, "on": 64}, group: delay}
+  delay_timbre_b:                      {label: Delay Timbre B, cc: 107, values: {"off": 0, "on": 64}, group: delay}
+
+  # SEQUENCER -----------------------------------------------------
+  sequencer_clock_div:                 {label: Sequencer Clock Div, cc: 110, group: sequencer}
+
+  # ARPEGGIATOR ---------------------------------------------------
+  arpeggiator_clock_div:               {label: Arpeggiator Clock Div, cc: 111, part: timbre, group: arpeggiator}
+  arpeggiator_on_off:                  {label: Arpeggiator On/Off, cc: 112, values: {"off": 0, "on": 64}, part: timbre, group: arpeggiator}
+  arpeggiator_fw_bk:                   {label: Arpeggiator FW/BK, cc: 113, values: {"off": 0, "on": 64}, part: timbre, group: arpeggiator}
+  arpeggiator_direction:               {label: Arpeggiator Direction, cc: 114, values: {ord: 0, ptn: 43, rnd: 85}, part: timbre, group: arpeggiator}
+  arpeggiator_octave_range:            {label: Arpeggiator Octave Range, cc: 115, values: {one: 0, two: 32, three: 64, four: 96}, part: timbre, group: arpeggiator}
+
+  # CLOCK ---------------------------------------------------------
+  clock_tempo:                         {label: Clock Tempo, cc: 116, group: clock}

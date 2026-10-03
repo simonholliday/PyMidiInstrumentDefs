@@ -1,0 +1,779 @@
+# THE TABLE THE CONTENTS PAGE CALLS A VALUE TABLE IS A CONTROL TABLE, AND EIGHT OF THE CONTROLS
+# BELOW APPEAR NOWHERE ELSE IN EITHER DOCUMENT. The "Audio Table" is listed among the value tables,
+# is printed in the middle of a page of them, and has their heading style - and its columns are
+# Parameter, CC/NRPN, Control No., Range and Default Value, which is a control table. It gives the
+# level, reverb send, delay send and pan of the two audio inputs, CC 13, 15 and 31 to 36. A reader
+# who trusts the contents loses all eight.
+#
+# IT IS ALSO THE ONE CONTROL TABLE IN EITHER DOCUMENT THAT DOES NOT NAME A CHANNEL. Every other one
+# says: "Send messages on MIDI Channel 1 for Synth 1" (guide p. 3), "Messages on MIDI Channel 10"
+# (guide p. 11), "Send messages on MIDI Channel 16." (guide p. 12). The Audio Table says nothing,
+# so those eight controls carry no `part` - and the thing that looks like a clue is not one. The
+# project's own Mixer gives synth 1 level CC 12 and synth 2 level CC 14, and the Audio Table gives
+# audio 1 level CC 13 and audio 2 level CC 15, so the four interleave as though they were one
+# table split in two. That is suggestive and it is not a statement, and nothing here rests on it.
+#
+# EIGHT CONTROLS COME OUT OF THE USER GUIDE AND NOT THE REFERENCE GUIDE, which is the opposite of
+# what two documents from one maker usually do. The MIDI tracks' Macro knobs send control changes
+# to whatever is plugged into them, and the numbers they send with the factory templates - CC 1, 2,
+# 5, 11, 12, 13, 71 and 74 - are printed only in the User Guide (user guide p. 58). They are the
+# only controls here that travel outward, so they carry `direction: transmits`.
+#
+# TWO NUMBERS BREAK THEIR OWN BLOCK'S PATTERN AND BOTH SHIP AS PRINTED. The sidechain's `synth 2
+# depth` is given as NRPN `1:69` where every other sidechain parameter is in the `2:xx` block:
+# synth 1 runs 2:55 to 2:59, and synth 2 runs 2:65, 2:66, 2:67, 2:68 and then 1:69. And the
+# modulation matrix's twelfth slot is the only one of twelve whose depth and destination do not sit
+# three and four numbers above its first source: eleven slots run +0, +1, +3, +4, and slot 12 runs
+# +0, +1, +2, +3. Nothing in either document settles either one, so both are recorded as printed
+# with the doubt written beside them.
+#
+# FIVE CONTROLS CARRY NO DEFAULT, BECAUSE THE GUIDE STATES EACH OF THEM TWICE AND THE TWO DISAGREE.
+# Every synth parameter's default is printed in the control map and again in the Synth Patch
+# Format's own Default column, and of the 162 rows the two tables share, these five differ: both
+# oscillators' wave interpolate (0 against 127) and pulse width index (127 against 64), and the
+# chorus rate (84 against 20). **Neither figure is recorded for those five** and each control says
+# what both halves of the document claimed. The pulse width is the pair that matters: one half says
+# the default is the extreme and the other says it is the centre.
+#
+# EIGHT ROWS SHARE ONE NRPN AND ARE TOLD APART BY VALUE. NRPN `0:122` is one controller carrying
+# eight switches, each with a two-value band of its own: lfo 1 one shot at 12 and 13, key sync at
+# 14 and 15, common sync at 16 and 17, delay trigger at 18 and 19, and the same four for lfo 2 at
+# 22 to 29. Each is a control in its own right, with its own range and its own off and on.
+#
+# THE CONTENTS PAGE IS WRONG FOR NINETEEN OF ITS TWENTY-TWO ENTRIES, each by one page: every
+# heading from "Macro Knobs" to "Format of a Synth Patch (Bank) Sysex File" is printed one page
+# earlier than the contents claims. Only the first two and the last are right. Nothing below takes
+# a locator from it, and every heading's real page was asserted before it was read.
+
+definition: 1
+
+model:
+  manufacturer: Novation
+  name: Circuit Tracks
+  # NOT RECORDED, AND THE "V3" ON BOTH DOCUMENTS IS NOT IT. Each one prints "Version 3" on its own
+  # first page, which numbers the document: the reference guide's V3 was made on 2022-10-19 and the
+  # user guide's on 2022-08-25, two months apart, so they are two editions and not one firmware.
+  # Neither document names a firmware version for the instrument anywhere. The downloads page
+  # offers no firmware file either - Novation delivers it through Novation Components, which serves
+  # nothing a fetch can read, exactly as for this maker's Peak. Checked 2026-10-03.
+
+source: >-
+  Circuit Tracks Programmer's Reference Guide V3 - EN, 22 pages, created 2022-10-19 by its own
+  metadata, and the Circuit Tracks User Guide V3 English, 109 pages, created 2022-08-25. Both come
+  off one downloads page, which is saved here as well. The reference guide is the control map; the
+  user guide carries the channels, the tracks, the polyphony, the patch count and one control
+  table the reference guide does not have.
+
+  THE CONTROL MAP IS SEVEN COLUMNS AND IS ONE OF THE BETTER ONES IN THIS CORPUS: Section,
+  Parameter, CC / NRPN, Control No., Range, Default Value and Notes, over pp. 3-8 for a synth
+  track and p. 12 for the project. So every row carries its own range and its own factory default,
+  and 62 of them carry their states as well. 314 rows come off those pages, 28 more off the drum
+  table on p. 11, eight off the Audio Table on p. 9 and eight out of the user guide, which is 358
+  controls - and makes this the largest definition here.
+
+  THE SECTIONS ARE DRAWN AS FULL-WIDTH BANNER ROWS and are the groups below, so nothing had to be
+  inferred from a sparse label column. Two of them are both called Mixer, which is why one of them
+  is `project_mixer` here: the synth's holds six oscillator and effect levels, and the project's
+  holds the two synth levels and pans.
+
+  THE PROJECT TABLE'S PARAMETER NAMES ARE RELATIVE TO THEIR SECTION, so each takes its section as a
+  name prefix while the synth's keep theirs as printed. Nine would otherwise collide - two rows
+  called `type`, two called `frequency`, two called `resonance`, and six send levels printed once
+  under Reverb and again under Delay. The labels are left exactly as printed, including the maker's
+  own inconsistent capitals: `lfo 1 one shot` beside `Lfo 1 common sync`, and `mod matrix 12 Source
+  2` beside eleven lower-case ones.
+
+  AN NRPN IS PRINTED AS MSB:LSB AND IS RECORDED AS MSB x 128 + LSB, the number that goes on the
+  wire, and this guide proves that reading twice over from the inside. The modulation matrix is
+  twelve slots of four parameters at five-number intervals - slot 1 at `1:83` and slot 12 at `2:10`
+  - and in the combined number those are 211 and 266, which is 55 apart, or eleven steps of five
+  across the MSB boundary exactly where the arithmetic puts it. And the macro knobs occupy `3:0` to
+  `3:127` with nothing left over: eight knobs of sixteen parameters is 128 numbers, which is one
+  full MSB page.
+
+  EACH MATRIX SLOT IS FIVE NUMBERS AND ONLY FOUR ARE PUBLISHED. Slot 1 gives source 1 at `1:83`,
+  source 2 at `1:84`, depth at `1:86` and destination at `1:87`, and `1:85` is named nowhere; the
+  same gap sits in all twelve slots, so twelve numbers in that block do something the guide does
+  not say.
+
+  RANGES ARE PRINTED TWICE OVER WHERE A CONTROL IS SIGNED - `0 - 127 (-64 - 63)` with a default of
+  `64 (0)` - and the first of each pair is the wire value. That is what `range` and `default` hold;
+  the bracketed half is what the instrument's own display shows and is not something to send. Two
+  rows print a unit instead of a second range, `-12 to +18 dB` (guide p. 3) against a wire range of
+  52 to 82, and two more give a span in degrees for a wire range of 0 to 119.
+
+  FOUR VALUE TABLES ARE PRINTED ON pp. 9-10 AND TWO OF THEM HOLD TWO LISTS UNDER ONE HEADING,
+  both restarting at 0. The Filter Table gives "Drive Type" 0 to 6 and then "Type" 0 to 5; the Mod
+  Matrix Table gives "Source" and then "Destination". Reading either as one list produces a value
+  map with the same number in it twice, so each row takes the sub-list its own name and range
+  point at: `drive type` over 0-6 takes Drive Type, a matrix `source` row over 0-12 takes Source,
+  and a `destination` row over 0-17 takes Destination.
+
+  THE AUDIO TABLE'S CHANNEL HAS THREE CANDIDATES AND NO STATEMENT, which is why those eight
+  controls carry no part. Its own numbers rule out the channels the rest of the document uses: CC
+  13 is `Keyboard Octave` and 31, 33, 35 and 36 are oscillator 2 parameters on a synth channel, and
+  CC 15 is `drum 1 decay` on channel 10. What is left is the project's channel 16, which the
+  interleaving of 12, 13, 14 and 15 argues for, or the MIDI tracks' 3 and 4, which the user guide
+  argues for instead: "on the MIDI tracks, these act on the analogue audio signal applied at the
+  two audio Inputs" (user guide p. 57), those tracks defaulting to channels 3 and 4 (guide p. 15).
+  Two readings of the document arrived at those two answers independently, which is the clearest
+  evidence that it does not say.
+
+  THE REFERENCE GUIDE HAS A PAGE ITS CONTENTS DOES NOT LIST, and it is the page that states the
+  channel defaults: p. 15, "Setup View", which gives "Default MIDI channel for Synth 1 is Channel
+  1", the same for Synth 2 on 2 and "Drums 1-4 is Channel 10", and "MIDI 1 and MIDI 2 are set to
+  use their default MIDI channels - 3 and 4 respectively" (guide p. 15). It also labels the channel
+  pads "MIDI channels 1 -16" while saying on the same page that "MIDI Channel 16 is reserved for
+  the Project" (guide p. 15), which is the one place the two documents together leave it unclear
+  whether a track may be put on 16 at all. Nothing here rests on that; `channels` records the span.
+
+  FOUR RANGES BELOW SELECT FROM LISTS THAT ARE PRINTED NOWHERE, which is this guide's largest hole.
+  Every `macro knob n destination` runs 0 to 70 and no table names any of those 71 destinations -
+  32 controls. Every sync division runs 0 to 35 and no table names the 36: both LFOs' delay sync
+  and rate sync, the chorus rate sync and the project delay's time sync. Each `drum n patch select`
+  runs 0 to 63 and no document names a sample. And the eight switches packed into NRPN `0:122`
+  leave values 0 to 11 and 20 to 21 unaccounted for, where the Synth Patch Format shows the same
+  byte is a bit field - "LFO1_OneShot (bit 0), LFO1_KeySync (bit 1)" and so on (guide p. 17).
+
+  THE PATCH FORMAT REACHES FURTHER THAN THE CONTROL MAP IN ONE PLACE. It names modulation matrix
+  slots 1 to 20 where the control map stops at 12, so slots 13 to 20 exist inside a patch and no
+  control change or NRPN reaches them. Nothing here is recorded for them: a byte in a file is not
+  something a consumer can send.
+
+  THE MOD MATRIX'S SOURCE LIST IS NOT CONTIGUOUS, which is why it is `choices` and not `values`. It
+  names ten sources against a stated range of 0 to 12 - direct at 0, then velocity at 4 and on up
+  to env 3 at 12 - and 1, 2 and 3 are named nowhere in either document. A reader who assumed the
+  list filled its range would mis-address seven of the ten.
+
+  ONE ATTACHMENT IS AN INFERENCE AND IS THE ONLY ONE HERE. The filter's `type`, CC 68 over 0 to 5,
+  carries no pointer at all, where its neighbour `drive type` says "See Filter Table" (guide p. 3).
+  The Filter Table's second list is headed "Type" and has exactly six entries over 0 to 5, so that
+  list is recorded against it. Nothing says so in words; it rests on the heading, the range and the
+  name agreeing.
+
+  THE DRUM TRACKS ARE FOUR THINGS ON ONE CHANNEL, which is the one place this instrument's shape
+  does not fit a part each. "Messages on MIDI Channel 10" (guide p. 11) heads a table of 28
+  controls, seven for each of four drums, and the user guide confirms that "all four drum tracks
+  use the same MIDI channel" (user guide p. 103). So the four are one addressable part here, and
+  which drum a note sounds is the Drum Notes Table on p. 11: 60, 62, 64 and 65.
+
+  128 PATCHES AGAINST A PUBLISHED PROGRAM CHANGE RANGE OF 0 TO 63, and both numbers are stated
+  plainly. "Each of the two synth tracks can use any one of 128 pre-loaded Patches" (user guide p.
+  33), arranged as four pages of 32, while the reference guide's Patch and Project Select table
+  gives program change `0 - 63` for synth 1 on channel 1 and the same for synth 2 on channel 2
+  (guide p. 10). Nothing in either document says how the other 64 are reached, or whether a bank
+  select exists. `presets` records what the instrument holds and this paragraph records the half
+  the published range can address.
+
+  ONE NUMBER IS ALMOST CERTAINLY A MISPRINT AND IS RECORDED AS PRINTED. The sidechain's `synth 2
+  depth` is given as NRPN `1:69` where every other sidechain parameter is in the `2:xx` block:
+  synth 1's five run 2:55 to 2:59, and synth 2's run 2:65, 2:66, 2:67, 2:68 and then 1:69. Nothing
+  in either document settles it, so the printed number is what is here, with the doubt written
+  beside the control. `1:69` is 197 where `2:69` would be 325, so a consumer that reaches for the
+  one the pattern implies would be addressing something else entirely.
+
+  THE GUIDE'S FIRST SENTENCE ABOUT THE SYNTHS IS MISTYPED, and it is worth knowing because it is
+  the sentence that assigns the channels: "Send messages on MIDI Channel 1 for Synth 1 and Channel
+  2 for Synth" (guide p. 3), and then a full stop. The missing 2 is a typo rather than an
+  ambiguity - the user guide's own table gives Synth 1 on channel 1 and Synth 2 on channel 2 (user
+  guide p. 103). The full stop is left outside the quotation because it does not survive both PDF
+  readers used here: this guide's text layer loses two of them and the whole of its contents page's
+  leader dots to one reader and not the other, which is 2,172 characters.
+
+  NOT RECORDED, EACH FOR A REASON. Aftertouch, because the word appears nowhere in either
+  document - 131 pages between them and not one mention. Pitch bend, because the only place it
+  appears is as two engine parameters, `osc 1 pitchbend` and `osc 2 pitchbend`, each setting how
+  far that oscillator bends; the one page that lists what messages the instrument answers to names
+  "MIDI Note On/Note Off, Program Change (PGM) and Continuous Controller (CC)" (user guide p. 107)
+  and does not name pitch bend, so recording a bend range would claim a response nothing states.
+  The note range of the synth tracks, which no page gives: the grid is "a set of 32 illuminated,
+  velocity-sensitive pads" (user guide p. 5) whose notes depend on the scale and root note chosen,
+  and nothing says what an incoming note number outside that selection does. And the MIDI mode,
+  there being no implementation chart in either document.
+
+  THE ENGLISH USER GUIDE IS THE ONLY ONE AT V3. The downloads page offers the user guide in 27
+  languages, and the other 26 are "Version 2"; there is one Programmer's Reference Guide and it is
+  English only. So a reader working from a translation is working from an earlier edition of the
+  document this definition cites, and no translation was compared against it.
+
+sources:
+  guide:
+    kind: reference
+    title: Circuit Tracks Programmer's Reference Guide V3 - EN
+    edition: Version 3
+    dated: 2022-10-19
+    landing: "https://downloads.novationmusic.com/novation/circuit/circuit-tracks"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/downloads/circuit_tracks_programmer_s_reference_guide_v3.pdf"
+    sha256: 2d2c8e12d5f987b021b17c19efed0faaa77ad651b061ff019740a8e85d117e5e
+    retrieved: 2026-10-03
+    # 22 pages, counted with PyMuPDF and with pypdf, which agree, and `file` agrees too for this
+    # one. EVERY PAGE PRINTS ITS NUMBER TWICE, at the top and again at the bottom right, and both
+    # are the file's page index, so nothing is added. The second folio is worth recording because
+    # the bottom one falls inside the last row of the table above it: the last Notes cell on p. 4
+    # comes out of a grid reader as "See Mod Matrix Table 4".
+    page_offset: 0
+  user_guide:
+    kind: manual
+    title: Circuit Tracks User Guide V3 English
+    edition: Version 3
+    dated: 2022-08-25
+    landing: "https://downloads.novationmusic.com/novation/circuit/circuit-tracks"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/downloads/circuit_tracks_user_guide_v3_en.pdf"
+    sha256: b69e16330363c0596ed98f150f1b7cfd96188e4fc0ca2f8c38653755b3452cc3
+    retrieved: 2026-10-03
+    # 109 pages, counted with PyMuPDF and with pypdf, which agree. `FILE SAYS 126`, and it is
+    # wrong: the eleventh document that tool has miscounted in this corpus. Every page prints its
+    # own number and it is the file's page index.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: Circuit Tracks Downloads
+    landing: "https://downloads.novationmusic.com/"
+    url: "https://downloads.novationmusic.com/novation/circuit/circuit-tracks"
+    sha256: 1db7859c6e0b63e7e3188069f6b04be8515474c884d244531b4ed808012e78af
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for what Novation publishes for this instrument and for what it does not. It offers
+    # the user guide in 27 languages, one Programmer's Reference Guide in English, two Windows USB
+    # drivers and a battery safety sheet - and NO FIRMWARE FILE, which is why no firmware is
+    # recorded above. The saved copy is the visible text of the page; the HTML it was rendered
+    # from is beside it in the library.
+
+midi:
+  # Sixteen, and the sixteenth is not a track. "Each track - Synth 1, Synth 2, MIDI 1, MIDI 2 and
+  # Drum 1 - 4 can be set to any of MIDI channels 1-15. Channel 16 is reserved for the Project"
+  # (user guide p. 103), with the warning that "No two tracks can transmit on the same MIDI
+  # channel" (user guide p. 103).
+  channels: [1, 16]
+  # BOTH WAYS, AND EACH WAY CAN BE SWITCHED OFF ON ITS OWN. "When Clock Rx is ON, Circuit Tracks is
+  # in AUTO mode and the BPM will be set by an externally applied MIDI clock" (user guide p. 105),
+  # and "If Clock Tx is ON, Circuit Tracks is the clock master and its clock - whatever the source
+  # - will be available as MIDI Clock at the rear panel USB and MIDI Out connectors" (user guide p.
+  # 105). Both default to on.
+  clock: both
+  # RECEIVES, AND THAT IS THE HALF THE DOCUMENTS ESTABLISH. The reference guide lists start, stop,
+  # continue and timing clock under "Supported Realtime Messages" and song position pointer and
+  # song select under "Supported System Common Messages" (guide p. 10), in a document whose every
+  # other table says "Send messages on" - so these are messages the instrument answers to. Neither
+  # document says it sends start, stop or continue; only the clock is described going out.
+  transport: receives
+  program_change:
+    # Both ways, and both switchable: pads 29 and 30 in Setup View are "MIDI Program Change Rx
+    # on/off" and "MIDI Program Change Tx on/off" (user guide p. 104), and "By default, both MIDI
+    # Rx and MIDI Tx are ON (buttons brightly lit) for all data categories" (user guide p. 104).
+    receives: true
+    sends: true
+    # "Each of the two synth tracks can use any one of 128 pre-loaded Patches" (user guide p. 33).
+    # The published program change range reaches 64 of them - see the source account.
+    presets: 128
+  # 244 of the 358 controls below are addressed by NRPN and by nothing else, which is more than
+  # twice what the control changes reach. The maker never ranks the two: the Setup View switch that
+  # turns controllers on and off is a single "MIDI CC" category covering both (user guide p. 104),
+  # so `supported` is as far as the documents go.
+  nrpn: supported
+  # Patches travel this way and the byte layout is published in full. The message formats are on
+  # pp. 13-14 - replace current patch, a current patch dump request, replace patch, and how to make
+  # a bank of 64 - and the Synth Patch Format itself runs pp. 16-22, all 340 addresses of a patch
+  # with the minimum, maximum and default of each. "Although Circuit Tracks will receive SysEx
+  # messages via MIDI DIN, any response will be sent via USB only" (guide p. 13).
+  sysex: true
+
+parts:
+  # Every part is given its own channel and none derives one from a base, because there is no base
+  # channel here: eight tracks are each set to a channel of the player's choosing, and the project
+  # answers on a channel reserved for it.
+  synth:
+    label: Synth
+    count: 2
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # "Two synth tracks with 6-voice polyphony" (user guide p. 6), and the body says it again:
+    # "Circuit Tracks' six-note polyphony lets you play any six notes from each synth, and they
+    # don't have to be a conventional chord" (user guide p. 36). SIX EACH AND NOT SIX SHARED - the
+    # sentence says each synth, which is why the figure is here and not on the instrument.
+    polyphony: 6
+  drums:
+    label: Drums
+    channel: assigned
+    addressing: voices
+    receives: [notes, controls]
+    # FOUR DRUM TRACKS AND ONE PART, because they share a channel: "Note that all four drum tracks
+    # use the same MIDI channel" (user guide p. 103), and the control table is headed "Messages on
+    # MIDI Channel 10" (guide p. 11) for all 28 of its rows. Which drum a note sounds is the Drum
+    # Notes Table, recorded under `voice.voices`. No program change: the guide sends the reader to
+    # the drum table for patch selection instead, where it is CC 8, 18, 44 and 50.
+  midi_track:
+    label: MIDI track
+    count: 2
+    channel: assigned
+    # WHAT REACHES A MIDI TRACK IS NOT STATED, SO `receives` IS NOT GIVEN. What it sends is: "Note
+    # data is transmitted from the performance pads in Note View, and from the sequencer just like
+    # the synth tracks. CC data is also transmitted by the Macro knobs, depending on the selected
+    # MIDI template" (user guide p. 57), and those eight control changes are below. The tracks
+    # "do not control an internal synth engine but are intended to control external equipment or
+    # software via MIDI" (user guide p. 57), so there is no engine here for a message to reach.
+  project:
+    label: Project
+    channel: assigned
+    receives: [controls, program_change]
+    # Channel 16, and the one channel a player cannot move: "Channel 16 is reserved for the
+    # Project" (user guide p. 103), against the eight tracks that may take any of 1 to 15. It takes
+    # no notes - it is the two effects, the master filter, the sidechains and the mixer - and it
+    # takes a program change of its own, which selects a project rather than a patch: 0 to 63
+    # instant and 64 to 127 queued (guide p. 10).
+
+voice:
+  # NOT GIVEN FOR THE INSTRUMENT, because its parts do not agree and each says its own: a synth
+  # track reads a note as a pitch and the drum tracks read one as a choice of four drums.
+  # Each synth has six voices of its own rather than drawing on a shared pool - see `parts.synth`.
+  polyphony_shared: false
+  velocity:
+    # The engine is modulated by it: "velocity" is one of the ten named sources in the modulation
+    # matrix (guide p. 9), and a synth track is played by incoming notes - "You can also create a
+    # synth pattern in Circuit Tracks by sending it MIDI note data from an external keyboard"
+    # (user guide p. 38). Nothing states what it does with a note-off velocity.
+    note_on: received
+  # The drum tracks' four notes, from the Drum Notes Table (guide p. 11). FIXED, AS FAR AS EITHER
+  # DOCUMENT GOES: neither says these may be changed, unlike the rhythm machines here that print a
+  # settable range beside the same table.
+  voices:
+    drum_1: 60
+    drum_2: 62
+    drum_3: 64
+    drum_4: 65
+
+groups:
+  voice:                 Voice
+  oscillator:            Oscillator
+  mixer:                 Mixer
+  filter:                Filter
+  envelope:              Envelope
+  lfo:                   LFO
+  effects_and_eq:        Effects and EQ
+  mod_matrix:            Mod Matrix
+  macro_knobs:           Macro Knobs
+  audio:                 Audio
+  drum:                  Drum Control
+  reverb:                Reverb
+  delay:                 Delay
+  master_filter:         Master Filter
+  sidechain:             Sidechain
+  project_mixer:         Project Mixer
+  additional_controls:   Additional Controls
+  midi_template:         MIDI Template
+
+controls:
+
+  # VOICE -------------------------------------------------------------------
+  polyphony_mode:                {label: Polyphony Mode, cc: 3, range: [0, 2], default: 2, choices: {mono: 0, mono_ag: 1, poly: 2}, part: synth, group: voice}
+  portamento_rate:               {label: Portamento Rate, cc: 5, default: 0, part: synth, group: voice}
+  pre_glide:                     {label: Pre-Glide, cc: 9, range: [52, 76], default: 64, part: synth, group: voice}
+  # The note names three of the twelve steps rather than mapping them: "60=-4 Octaves, 64=0 Octaves, 68=+4 Octaves" (guide p. 3).
+  keyboard_octave:               {label: Keyboard Octave, cc: 13, range: [58, 69], default: 64, part: synth, group: voice}
+
+  # OSCILLATOR --------------------------------------------------------------
+  osc_1_wave:                    {label: osc 1 wave, cc: 19, range: [0, 29], default: 2, choices: {sine: 0, triangle: 1, sawtooth: 2, saw_9_1_pw: 3, saw_8_2_pw: 4, saw_7_3_pw: 5, saw_6_4_pw: 6, saw_5_5_pw: 7, saw_4_6_pw: 8, saw_3_7_pw: 9, saw_2_8_pw: 10, saw_1_9_pw: 11, pulse_width: 12, square: 13, sine_table: 14, analogue_pulse: 15, analogue_sync: 16, triangle_saw_blend: 17, digital_nasty_1: 18, digital_nasty_2: 19, digital_saw_square: 20, digital_vocal_1: 21, digital_vocal_2: 22, digital_vocal_3: 23, digital_vocal_4: 24, digital_vocal_5: 25, digital_vocal_6: 26, random_collection_1: 27, random_collection_2: 28, random_collection_3: 29}, part: synth, group: oscillator}
+  # NO DEFAULT, because the guide states it twice and the two disagree: the control map gives 0 (guide p. 3) and the Synth Patch Format gives 127 at address 37 (guide p. 16).
+  osc_1_wave_interpolate:        {label: osc 1 wave interpolate, cc: 20, part: synth, group: oscillator}
+  # NO DEFAULT, because the guide states it twice and the two disagree: the control map gives 127 (guide p. 3) and the Synth Patch Format gives 64 at address 38 (guide p. 16).
+  osc_1_pulse_width_index:       {label: osc 1 pulse width index, cc: 21, part: synth, group: oscillator}
+  osc_1_virtual_sync_depth:      {label: osc 1 virtual sync depth, cc: 22, default: 0, part: synth, group: oscillator}
+  osc_1_density:                 {label: osc 1 density, cc: 24, default: 0, part: synth, group: oscillator}
+  osc_1_density_detune:          {label: osc 1 density detune, cc: 25, default: 0, part: synth, group: oscillator}
+  osc_1_semitones:               {label: osc 1 semitones, cc: 26, default: 64, part: synth, group: oscillator}
+  osc_1_cents:                   {label: osc 1 cents, cc: 27, default: 64, part: synth, group: oscillator}
+  osc_1_pitchbend:               {label: osc 1 pitchbend, cc: 28, range: [52, 76], default: 76, part: synth, group: oscillator}
+  osc_2_wave:                    {label: osc 2 wave, cc: 29, range: [0, 29], default: 2, choices: {sine: 0, triangle: 1, sawtooth: 2, saw_9_1_pw: 3, saw_8_2_pw: 4, saw_7_3_pw: 5, saw_6_4_pw: 6, saw_5_5_pw: 7, saw_4_6_pw: 8, saw_3_7_pw: 9, saw_2_8_pw: 10, saw_1_9_pw: 11, pulse_width: 12, square: 13, sine_table: 14, analogue_pulse: 15, analogue_sync: 16, triangle_saw_blend: 17, digital_nasty_1: 18, digital_nasty_2: 19, digital_saw_square: 20, digital_vocal_1: 21, digital_vocal_2: 22, digital_vocal_3: 23, digital_vocal_4: 24, digital_vocal_5: 25, digital_vocal_6: 26, random_collection_1: 27, random_collection_2: 28, random_collection_3: 29}, part: synth, group: oscillator}
+  # NO DEFAULT, because the guide states it twice and the two disagree: the control map gives 0 (guide p. 3) and the Synth Patch Format gives 127 at address 46 (guide p. 16).
+  osc_2_wave_interpolate:        {label: osc 2 wave interpolate, cc: 30, part: synth, group: oscillator}
+  # NO DEFAULT, because the guide states it twice and the two disagree: the control map gives 127 (guide p. 3) and the Synth Patch Format gives 64 at address 47 (guide p. 17).
+  osc_2_pulse_width_index:       {label: osc 2 pulse width index, cc: 31, part: synth, group: oscillator}
+  osc_2_virtual_sync_depth:      {label: osc 2 virtual sync depth, cc: 33, default: 0, part: synth, group: oscillator}
+  osc_2_density:                 {label: osc 2 density, cc: 35, default: 0, part: synth, group: oscillator}
+  osc_2_density_detune:          {label: osc 2 density detune, cc: 36, default: 0, part: synth, group: oscillator}
+  osc_2_semitones:               {label: osc 2 semitones, cc: 37, default: 64, part: synth, group: oscillator}
+  osc_2_cents:                   {label: osc 2 cents, cc: 39, default: 64, part: synth, group: oscillator}
+  osc_2_pitchbend:               {label: osc 2 pitchbend, cc: 40, range: [52, 76], default: 76, part: synth, group: oscillator}
+
+  # MIXER -------------------------------------------------------------------
+  osc_1_level:                   {label: osc 1 level, cc: 51, default: 127, part: synth, group: mixer}
+  osc_2_level:                   {label: osc 2 level, cc: 52, default: 0, part: synth, group: mixer}
+  ring_mod_level:                {label: ring mod level, cc: 54, default: 0, part: synth, group: mixer}
+  noise_level:                   {label: noise level, cc: 56, default: 0, part: synth, group: mixer}
+  # The display reads "-12 to +18 dB" (guide p. 3) over the wire range beside it.
+  pre_fx_level:                  {label: pre FX level, cc: 58, range: [52, 82], default: 64, part: synth, group: mixer}
+  # The display reads "-12 to +18 dB" (guide p. 3) over the wire range beside it.
+  post_fx_level:                 {label: post FX level, cc: 59, range: [52, 82], default: 64, part: synth, group: mixer}
+
+  # FILTER ------------------------------------------------------------------
+  routing:                       {label: routing, cc: 60, range: [0, 2], default: 0, choices: {normal: 0, osc_1_bypasses_the_filter: 1, osc_1_plus_osc_2_bypasses_the_filter: 2}, part: synth, group: filter}
+  drive:                         {label: drive, cc: 63, default: 0, part: synth, group: filter}
+  drive_type:                    {label: drive type, cc: 65, range: [0, 6], default: 0, choices: {diode: 0, valve: 1, clipper: 2, cross_over: 3, rectifier: 4, bit_reducer: 5, rate_reducer: 6}, part: synth, group: filter}
+  type:                          {label: type, cc: 68, range: [0, 5], default: 1, choices: {low_pass_12db: 0, low_pass_24db: 1, band_pass_6_6_db: 2, band_pass_12_12_db: 3, high_pass_12db: 4, high_pass_24db: 5}, part: synth, group: filter}
+  frequency:                     {label: frequency, cc: 74, default: 127, part: synth, group: filter}
+  tracking:                      {label: tracking, cc: 69, default: 127, part: synth, group: filter}
+  resonance:                     {label: resonance, cc: 71, default: 0, part: synth, group: filter}
+  q_normalize:                   {label: Q normalize, cc: 78, default: 64, part: synth, group: filter}
+  env_2_to_frequency:            {label: env 2 to frequency, cc: 79, default: 64, part: synth, group: filter}
+
+  # ENVELOPE ----------------------------------------------------------------
+  env_1_velocity:                {label: env 1 velocity, cc: 108, default: 64, part: synth, group: envelope}
+  env_1_attack:                  {label: env 1 attack, cc: 73, default: 2, part: synth, group: envelope}
+  env_1_decay:                   {label: env 1 decay, cc: 75, default: 90, part: synth, group: envelope}
+  env_1_sustain:                 {label: env 1 sustain, cc: 70, default: 127, part: synth, group: envelope}
+  env_1_release:                 {label: env 1 release, cc: 72, default: 40, part: synth, group: envelope}
+  env_2_velocity:                {label: env 2 velocity, nrpn: 0, default: 64, part: synth, group: envelope}
+  env_2_attack:                  {label: env 2 attack, nrpn: 1, default: 2, part: synth, group: envelope}
+  env_2_decay:                   {label: env 2 decay, nrpn: 2, default: 75, part: synth, group: envelope}
+  env_2_sustain:                 {label: env 2 sustain, nrpn: 3, default: 35, part: synth, group: envelope}
+  env_2_release:                 {label: env 2 release, nrpn: 4, default: 45, part: synth, group: envelope}
+  env_3_delay:                   {label: env 3 delay, nrpn: 14, default: 0, part: synth, group: envelope}
+  env_3_attack:                  {label: env 3 attack, nrpn: 15, default: 10, part: synth, group: envelope}
+  env_3_decay:                   {label: env 3 decay, nrpn: 16, default: 70, part: synth, group: envelope}
+  env_3_sustain:                 {label: env 3 sustain, nrpn: 17, default: 64, part: synth, group: envelope}
+  env_3_release:                 {label: env 3 release, nrpn: 18, default: 40, part: synth, group: envelope}
+
+  # LFO ---------------------------------------------------------------------
+  lfo_1_waveform:                {label: lfo 1 waveform, nrpn: 70, range: [0, 37], default: 0, choices: {sine: 0, triangle: 1, sawtooth: 2, square: 3, random_s_h: 4, time_s_h: 5, piano_envelope: 6, sequence_1: 7, sequence_2: 8, sequence_3: 9, sequence_4: 10, sequence_5: 11, sequence_6: 12, sequence_7: 13, alternative_1: 14, alternative_2: 15, alternative_3: 16, alternative_4: 17, alternative_5: 18, alternative_6: 19, alternative_7: 20, alternative_8: 21, chromatic: 22, chromatic_16: 23, major: 24, major_7: 25, minor_7: 26, min_arp_1: 27, min_arp_2: 28, diminished: 29, dec_minor: 30, minor_3rd: 31, pedal: 32, n4ths: 33, n4ths_x12: 34, n1625_maj: 35, n1625_min: 36, n2511: 37}, part: synth, group: lfo}
+  # 120 steps of three degrees, which the guide gives as a span of 0 to 357 (guide p. 4).
+  lfo_1_phase_offset:            {label: lfo 1 phase offset, nrpn: 71, range: [0, 119], default: 0, part: synth, group: lfo}
+  lfo_1_slew_rate:               {label: lfo 1 slew rate, nrpn: 72, default: 0, part: synth, group: lfo}
+  lfo_1_delay:                   {label: lfo 1 delay, nrpn: 74, default: 0, part: synth, group: lfo}
+  lfo_1_delay_sync:              {label: lfo 1 delay sync, nrpn: 75, range: [0, 35], default: 0, part: synth, group: lfo}
+  lfo_1_rate:                    {label: lfo 1 rate, nrpn: 76, default: 68, part: synth, group: lfo}
+  lfo_1_rate_sync:               {label: lfo 1 rate sync, nrpn: 77, range: [0, 35], default: 0, part: synth, group: lfo}
+  lfo_1_one_shot:                {label: lfo 1 one shot, nrpn: 122, range: [12, 13], default: 12, choices: {"off": 12, "on": 13}, part: synth, group: lfo}
+  lfo_1_key_sync:                {label: lfo 1 key sync, nrpn: 122, range: [14, 15], default: 14, choices: {"off": 14, "on": 15}, part: synth, group: lfo}
+  lfo_1_common_sync:             {label: Lfo 1 common sync, nrpn: 122, range: [16, 17], default: 16, choices: {"off": 16, "on": 17}, part: synth, group: lfo}
+  lfo_1_delay_trigger:           {label: Lfo 1 delay trigger, nrpn: 122, range: [18, 19], default: 18, choices: {"off": 18, "on": 19}, part: synth, group: lfo}
+  lfo_1_fade_mode:               {label: Lfo 1 fade mode, nrpn: 123, range: [0, 3], default: 0, choices: {fade_in: 0, fade_out: 1, gate_in: 2, gate_out: 3}, part: synth, group: lfo}
+  lfo_2_waveform:                {label: Lfo 2 waveform, nrpn: 79, range: [0, 37], default: 0, choices: {sine: 0, triangle: 1, sawtooth: 2, square: 3, random_s_h: 4, time_s_h: 5, piano_envelope: 6, sequence_1: 7, sequence_2: 8, sequence_3: 9, sequence_4: 10, sequence_5: 11, sequence_6: 12, sequence_7: 13, alternative_1: 14, alternative_2: 15, alternative_3: 16, alternative_4: 17, alternative_5: 18, alternative_6: 19, alternative_7: 20, alternative_8: 21, chromatic: 22, chromatic_16: 23, major: 24, major_7: 25, minor_7: 26, min_arp_1: 27, min_arp_2: 28, diminished: 29, dec_minor: 30, minor_3rd: 31, pedal: 32, n4ths: 33, n4ths_x12: 34, n1625_maj: 35, n1625_min: 36, n2511: 37}, part: synth, group: lfo}
+  # 120 steps of three degrees, which the guide gives as a span of 0 to 357 (guide p. 4).
+  lfo_2_phase_offset:            {label: Lfo 2 phase offset, nrpn: 80, range: [0, 119], default: 0, part: synth, group: lfo}
+  lfo_2_slew_rate:               {label: Lfo 2 slew rate, nrpn: 81, default: 0, part: synth, group: lfo}
+  lfo_2_delay:                   {label: Lfo 2 delay, nrpn: 83, default: 0, part: synth, group: lfo}
+  lfo_2_delay_sync:              {label: Lfo 2 delay sync, nrpn: 84, range: [0, 35], default: 0, part: synth, group: lfo}
+  lfo_2_rate:                    {label: Lfo 2 rate, nrpn: 85, default: 68, part: synth, group: lfo}
+  lfo_2_rate_sync:               {label: Lfo 2 rate sync, nrpn: 86, range: [0, 35], default: 0, part: synth, group: lfo}
+  lfo_2_one_shot:                {label: lfo 2 one shot, nrpn: 122, range: [22, 23], default: 22, choices: {"off": 22, "on": 23}, part: synth, group: lfo}
+  lfo_2_key_sync:                {label: lfo 2 key sync, nrpn: 122, range: [24, 25], default: 24, choices: {"off": 24, "on": 25}, part: synth, group: lfo}
+  lfo_2_common_sync:             {label: lfo 2 common sync, nrpn: 122, range: [26, 27], default: 26, choices: {"off": 26, "on": 27}, part: synth, group: lfo}
+  lfo_2_delay_trigger:           {label: lfo 2 delay trigger, nrpn: 122, range: [28, 29], default: 28, choices: {"off": 28, "on": 29}, part: synth, group: lfo}
+  lfo_2_fade_mode:               {label: lfo 2 fade mode, nrpn: 123, range: [4, 7], default: 4, choices: {fade_in: 4, fade_out: 5, gate_in: 6, gate_out: 7}, part: synth, group: lfo}
+
+  # EFFECTS AND EQ ----------------------------------------------------------
+  distortion_level:              {label: distortion level, cc: 91, default: 0, part: synth, group: effects_and_eq}
+  chorus_level:                  {label: chorus level, cc: 93, default: 0, part: synth, group: effects_and_eq}
+  eq_bass_frequency:             {label: EQ bass frequency, nrpn: 104, default: 64, part: synth, group: effects_and_eq}
+  eq_bass_level:                 {label: EQ bass level, nrpn: 105, default: 64, part: synth, group: effects_and_eq}
+  eq_mid_frequency:              {label: EQ mid frequency, nrpn: 106, default: 64, part: synth, group: effects_and_eq}
+  eq_mid_level:                  {label: EQ mid level, nrpn: 107, default: 64, part: synth, group: effects_and_eq}
+  eq_treble_frequency:           {label: EQ treble frequency, nrpn: 108, default: 125, part: synth, group: effects_and_eq}
+  eq_treble_level:               {label: EQ treble level, nrpn: 109, default: 64, part: synth, group: effects_and_eq}
+  distortion_type:               {label: distortion type, nrpn: 128, range: [0, 6], default: 0, choices: {diode: 0, valve: 1, clipper: 2, cross_over: 3, rectify: 4, bit_reducer: 5, rate_reducer: 6}, part: synth, group: effects_and_eq}
+  distortion_compensation:       {label: distortion compensation, nrpn: 129, default: 100, part: synth, group: effects_and_eq}
+  chorus_type:                   {label: chorus type, nrpn: 152, range: [0, 1], default: 1, choices: {phaser: 0, chorus: 1}, part: synth, group: effects_and_eq}
+  # NO DEFAULT, because the guide states it twice and the two disagree: the control map gives 84 (guide p. 4) and the Synth Patch Format gives 20 at address 119 (guide p. 18).
+  chorus_rate:                   {label: chorus rate, nrpn: 153, part: synth, group: effects_and_eq}
+  chorus_rate_sync:              {label: chorus rate sync, nrpn: 154, range: [0, 35], default: 0, part: synth, group: effects_and_eq}
+  chorus_feedback:               {label: chorus feedback, nrpn: 155, default: 74, part: synth, group: effects_and_eq}
+  chorus_mod_depth:              {label: chorus mod depth, nrpn: 156, default: 64, part: synth, group: effects_and_eq}
+  chorus_delay:                  {label: chorus delay, nrpn: 157, default: 64, part: synth, group: effects_and_eq}
+
+  # MOD MATRIX --------------------------------------------------------------
+  mod_matrix_1_source_1:         {label: Mod matrix 1 source 1, nrpn: 211, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_1_source_2:         {label: Mod matrix 1 source 2, nrpn: 212, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_1_depth:            {label: mod matrix 1 depth, nrpn: 214, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_1_destination:      {label: mod matrix 1 destination, nrpn: 215, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_2_source_1:         {label: mod matrix 2 source 1, nrpn: 216, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_2_source_2:         {label: mod matrix 2 source 2, nrpn: 217, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_2_depth:            {label: mod matrix 2 depth, nrpn: 219, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_2_destination:      {label: mod matrix 2 destination, nrpn: 220, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_3_source_1:         {label: mod matrix 3 source 1, nrpn: 221, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_3_source_2:         {label: mod matrix 3 source 2, nrpn: 222, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_3_depth:            {label: mod matrix 3 depth, nrpn: 224, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_3_destination:      {label: mod matrix 3 destination, nrpn: 225, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_4_source_1:         {label: mod matrix 4 source 1, nrpn: 226, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_4_source_2:         {label: mod matrix 4 source 2, nrpn: 227, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_4_depth:            {label: mod matrix 4 depth, nrpn: 229, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_4_destination:      {label: mod matrix 4 destination, nrpn: 230, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_5_source_1:         {label: mod matrix 5 source 1, nrpn: 231, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_5_source_2:         {label: mod matrix 5 source 2, nrpn: 232, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_5_depth:            {label: mod matrix 5 depth, nrpn: 234, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_5_destination:      {label: mod matrix 5 destination, nrpn: 235, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_6_source_1:         {label: mod matrix 6 source 1, nrpn: 236, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_6_source_2:         {label: mod matrix 6 source 2, nrpn: 237, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_6_depth:            {label: mod matrix 6 depth, nrpn: 239, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_6_destination:      {label: mod matrix 6 destination, nrpn: 240, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_7_source_1:         {label: mod matrix 7 source 1, nrpn: 241, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_7_source_2:         {label: mod matrix 7 source 2, nrpn: 242, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_7_depth:            {label: mod matrix 7 depth, nrpn: 244, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_7_destination:      {label: mod matrix 7 destination, nrpn: 245, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_8_source_1:         {label: mod matrix 8 source 1, nrpn: 246, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_8_source_2:         {label: mod matrix 8 source 2, nrpn: 247, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_8_depth:            {label: mod matrix 8 depth, nrpn: 249, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_8_destination:      {label: mod matrix 8 destination, nrpn: 250, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_9_source_1:         {label: mod matrix 9 source 1, nrpn: 251, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_9_source_2:         {label: mod matrix 9 source 2, nrpn: 252, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_9_depth:            {label: mod matrix 9 depth, nrpn: 254, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_9_destination:      {label: mod matrix 9 destination, nrpn: 255, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_10_source_1:        {label: mod matrix 10 source 1, nrpn: 256, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_10_source_2:        {label: mod matrix 10 source 2, nrpn: 257, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_10_depth:           {label: mod matrix 10 depth, nrpn: 259, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_10_destination:     {label: mod matrix 10 destination, nrpn: 260, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_11_source_1:        {label: mod matrix 11 source 1, nrpn: 261, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_11_source_2:        {label: mod matrix 11 source 2, nrpn: 262, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_11_depth:           {label: mod matrix 11 depth, nrpn: 264, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_11_destination:     {label: mod matrix 11 destination, nrpn: 265, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+  mod_matrix_12_source_1:        {label: mod matrix 12 source 1, nrpn: 266, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_12_source_2:        {label: mod matrix 12 Source 2, nrpn: 267, range: [0, 12], default: 0, choices: {direct: 0, velocity: 4, keyboard: 5, lfo_1_plus: 6, lfo_1_plus_minus: 7, lfo_2_plus: 8, lfo_2_plus_minus: 9, env_amp: 10, env_filter: 11, env_3: 12}, part: synth, group: mod_matrix}
+  mod_matrix_12_depth:           {label: mod matrix 12 depth, nrpn: 268, default: 64, part: synth, group: mod_matrix}
+  mod_matrix_12_destination:     {label: mod matrix 12 destination, nrpn: 269, range: [0, 17], default: 0, choices: {osc_1_and_2_pitch: 0, osc_1_pitch: 1, osc_2_pitch: 2, osc_1_v_sync: 3, osc_2_v_sync: 4, osc_1_pulse_width_index: 5, osc_2_pulse_width_index: 6, osc_1_level: 7, osc_2_level: 8, noise_level: 9, ring_modulation_1_2_level: 10, filter_drive_amount: 11, filter_frequency: 12, filter_resonance: 13, lfo_1_rate: 14, lfo_2_rate: 15, amp_envelope_decay: 16, filter_envelope_decay: 17}, part: synth, group: mod_matrix}
+
+  # MACRO KNOBS -------------------------------------------------------------
+  macro_knob_1_position:         {label: macro knob 1 position, cc: 80, default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_destination_a:    {label: macro knob 1 destination A, nrpn: 384, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_start_position_a: {label: macro knob 1 start position A, nrpn: 385, default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_end_position_a:   {label: macro knob 1 end position A, nrpn: 386, default: 127, part: synth, group: macro_knobs}
+  macro_knob_1_depth_a:          {label: macro knob 1 depth A, nrpn: 387, default: 64, part: synth, group: macro_knobs}
+  macro_knob_1_destination_b:    {label: macro knob 1 destination B, nrpn: 388, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_start_position_b: {label: macro knob 1 start position B, nrpn: 389, default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_end_position_b:   {label: macro knob 1 end position B, nrpn: 390, default: 127, part: synth, group: macro_knobs}
+  macro_knob_1_depth_b:          {label: macro knob 1 depth B, nrpn: 391, default: 64, part: synth, group: macro_knobs}
+  macro_knob_1_destination_c:    {label: macro knob 1 destination C, nrpn: 392, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_start_position_c: {label: macro knob 1 start position C, nrpn: 393, default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_end_position_c:   {label: macro knob 1 end position C, nrpn: 394, default: 127, part: synth, group: macro_knobs}
+  macro_knob_1_depth_c:          {label: macro knob 1 depth C, nrpn: 395, default: 64, part: synth, group: macro_knobs}
+  macro_knob_1_destination_d:    {label: macro knob 1 destination D, nrpn: 396, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_start_position_d: {label: macro knob 1 start position D, nrpn: 397, default: 0, part: synth, group: macro_knobs}
+  macro_knob_1_end_position_d:   {label: macro knob 1 end position D, nrpn: 398, default: 127, part: synth, group: macro_knobs}
+  macro_knob_1_depth_d:          {label: macro knob 1 depth D, nrpn: 399, default: 64, part: synth, group: macro_knobs}
+  macro_knob_2_position:         {label: macro knob 2 position, cc: 81, default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_destination_a:    {label: macro knob 2 destination A, nrpn: 400, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_start_position_a: {label: macro knob 2 start position A, nrpn: 401, default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_end_position_a:   {label: macro knob 2 end position A, nrpn: 402, default: 127, part: synth, group: macro_knobs}
+  macro_knob_2_depth_a:          {label: macro knob 2 depth A, nrpn: 403, default: 64, part: synth, group: macro_knobs}
+  macro_knob_2_destination_b:    {label: macro knob 2 destination B, nrpn: 404, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_start_position_b: {label: macro knob 2 start position B, nrpn: 405, default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_end_position_b:   {label: macro knob 2 end position B, nrpn: 406, default: 127, part: synth, group: macro_knobs}
+  macro_knob_2_depth_b:          {label: macro knob 2 depth B, nrpn: 407, default: 64, part: synth, group: macro_knobs}
+  macro_knob_2_destination_c:    {label: macro knob 2 destination C, nrpn: 408, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_start_position_c: {label: macro knob 2 start position C, nrpn: 409, default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_end_position_c:   {label: macro knob 2 end position C, nrpn: 410, default: 127, part: synth, group: macro_knobs}
+  macro_knob_2_depth_c:          {label: macro knob 2 depth C, nrpn: 411, default: 64, part: synth, group: macro_knobs}
+  macro_knob_2_destination_d:    {label: macro knob 2 destination D, nrpn: 412, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_start_position_d: {label: macro knob 2 start position D, nrpn: 413, default: 0, part: synth, group: macro_knobs}
+  macro_knob_2_end_position_d:   {label: macro knob 2 end position D, nrpn: 414, default: 127, part: synth, group: macro_knobs}
+  macro_knob_2_depth_d:          {label: macro knob 2 depth D, nrpn: 415, default: 64, part: synth, group: macro_knobs}
+  macro_knob_3_position:         {label: macro knob 3 position, cc: 82, default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_destination_a:    {label: macro knob 3 destination A, nrpn: 416, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_start_position_a: {label: macro knob 3 start position A, nrpn: 417, default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_end_position_a:   {label: macro knob 3 end position A, nrpn: 418, default: 127, part: synth, group: macro_knobs}
+  macro_knob_3_depth_a:          {label: macro knob 3 depth A, nrpn: 419, default: 64, part: synth, group: macro_knobs}
+  macro_knob_3_destination_b:    {label: macro knob 3 destination B, nrpn: 420, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_start_position_b: {label: macro knob 3 start position B, nrpn: 421, default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_end_position_b:   {label: macro knob 3 end position B, nrpn: 422, default: 127, part: synth, group: macro_knobs}
+  macro_knob_3_depth_b:          {label: macro knob 3 depth B, nrpn: 423, default: 64, part: synth, group: macro_knobs}
+  macro_knob_3_destination_c:    {label: macro knob 3 destination C, nrpn: 424, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_start_position_c: {label: macro knob 3 start position C, nrpn: 425, default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_end_position_c:   {label: macro knob 3 end position C, nrpn: 426, default: 127, part: synth, group: macro_knobs}
+  macro_knob_3_depth_c:          {label: macro knob 3 depth C, nrpn: 427, default: 64, part: synth, group: macro_knobs}
+  macro_knob_3_destination_d:    {label: macro knob 3 destination D, nrpn: 428, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_start_position_d: {label: macro knob 3 start position D, nrpn: 429, default: 0, part: synth, group: macro_knobs}
+  macro_knob_3_end_position_d:   {label: macro knob 3 end position D, nrpn: 430, default: 127, part: synth, group: macro_knobs}
+  macro_knob_3_depth_d:          {label: macro knob 3 depth D, nrpn: 431, default: 64, part: synth, group: macro_knobs}
+  macro_knob_4_position:         {label: macro knob 4 position, cc: 83, default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_destination_a:    {label: macro knob 4 destination A, nrpn: 432, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_start_position_a: {label: macro knob 4 start position A, nrpn: 433, default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_end_position_a:   {label: macro knob 4 end position A, nrpn: 434, default: 127, part: synth, group: macro_knobs}
+  macro_knob_4_depth_a:          {label: macro knob 4 depth A, nrpn: 435, default: 64, part: synth, group: macro_knobs}
+  macro_knob_4_destination_b:    {label: macro knob 4 destination B, nrpn: 436, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_start_position_b: {label: macro knob 4 start position B, nrpn: 437, default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_end_position_b:   {label: macro knob 4 end position B, nrpn: 438, default: 127, part: synth, group: macro_knobs}
+  macro_knob_4_depth_b:          {label: macro knob 4 depth B, nrpn: 439, default: 64, part: synth, group: macro_knobs}
+  macro_knob_4_destination_c:    {label: macro knob 4 destination C, nrpn: 440, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_start_position_c: {label: macro knob 4 start position C, nrpn: 441, default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_end_position_c:   {label: macro knob 4 end position C, nrpn: 442, default: 127, part: synth, group: macro_knobs}
+  macro_knob_4_depth_c:          {label: macro knob 4 depth C, nrpn: 443, default: 64, part: synth, group: macro_knobs}
+  macro_knob_4_destination_d:    {label: macro knob 4 destination D, nrpn: 444, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_start_position_d: {label: macro knob 4 start position D, nrpn: 445, default: 0, part: synth, group: macro_knobs}
+  macro_knob_4_end_position_d:   {label: macro knob 4 end position D, nrpn: 446, default: 127, part: synth, group: macro_knobs}
+  macro_knob_4_depth_d:          {label: macro knob 4 depth D, nrpn: 447, default: 64, part: synth, group: macro_knobs}
+  macro_knob_5_position:         {label: macro knob 5 position, cc: 84, default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_destination_a:    {label: macro knob 5 destination A, nrpn: 448, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_start_position_a: {label: macro knob 5 start position A, nrpn: 449, default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_end_position_a:   {label: macro knob 5 end position A, nrpn: 450, default: 127, part: synth, group: macro_knobs}
+  macro_knob_5_depth_a:          {label: macro knob 5 depth A, nrpn: 451, default: 64, part: synth, group: macro_knobs}
+  macro_knob_5_destination_b:    {label: macro knob 5 destination B, nrpn: 452, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_start_position_b: {label: macro knob 5 start position B, nrpn: 453, default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_end_position_b:   {label: macro knob 5 end position B, nrpn: 454, default: 127, part: synth, group: macro_knobs}
+  macro_knob_5_depth_b:          {label: macro knob 5 depth B, nrpn: 455, default: 64, part: synth, group: macro_knobs}
+  macro_knob_5_destination_c:    {label: macro knob 5 destination C, nrpn: 456, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_start_position_c: {label: macro knob 5 start position C, nrpn: 457, default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_end_position_c:   {label: macro knob 5 end position C, nrpn: 458, default: 127, part: synth, group: macro_knobs}
+  macro_knob_5_depth_c:          {label: macro knob 5 depth C, nrpn: 459, default: 64, part: synth, group: macro_knobs}
+  macro_knob_5_destination_d:    {label: macro knob 5 destination D, nrpn: 460, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_start_position_d: {label: macro knob 5 start position D, nrpn: 461, default: 0, part: synth, group: macro_knobs}
+  macro_knob_5_end_position_d:   {label: macro knob 5 end position D, nrpn: 462, default: 127, part: synth, group: macro_knobs}
+  macro_knob_5_depth_d:          {label: macro knob 5 depth D, nrpn: 463, default: 64, part: synth, group: macro_knobs}
+  macro_knob_6_position:         {label: macro knob 6 position, cc: 85, default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_destination_a:    {label: macro knob 6 destination A, nrpn: 464, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_start_position_a: {label: macro knob 6 start position A, nrpn: 465, default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_end_position_a:   {label: macro knob 6 end position A, nrpn: 466, default: 127, part: synth, group: macro_knobs}
+  macro_knob_6_depth_a:          {label: macro knob 6 depth A, nrpn: 467, default: 64, part: synth, group: macro_knobs}
+  macro_knob_6_destination_b:    {label: macro knob 6 destination B, nrpn: 468, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_start_position_b: {label: macro knob 6 start position B, nrpn: 469, default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_end_position_b:   {label: macro knob 6 end position B, nrpn: 470, default: 127, part: synth, group: macro_knobs}
+  macro_knob_6_depth_b:          {label: macro knob 6 depth B, nrpn: 471, default: 64, part: synth, group: macro_knobs}
+  macro_knob_6_destination_c:    {label: macro knob 6 destination C, nrpn: 472, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_start_position_c: {label: macro knob 6 start position C, nrpn: 473, default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_end_position_c:   {label: macro knob 6 end position C, nrpn: 474, default: 127, part: synth, group: macro_knobs}
+  macro_knob_6_depth_c:          {label: macro knob 6 depth C, nrpn: 475, default: 64, part: synth, group: macro_knobs}
+  macro_knob_6_destination_d:    {label: macro knob 6 destination D, nrpn: 476, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_start_position_d: {label: macro knob 6 start position D, nrpn: 477, default: 0, part: synth, group: macro_knobs}
+  macro_knob_6_end_position_d:   {label: macro knob 6 end position D, nrpn: 478, default: 127, part: synth, group: macro_knobs}
+  macro_knob_6_depth_d:          {label: macro knob 6 depth D, nrpn: 479, default: 64, part: synth, group: macro_knobs}
+  macro_knob_7_position:         {label: macro knob 7 position, cc: 86, default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_destination_a:    {label: macro knob 7 destination A, nrpn: 480, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_start_position_a: {label: macro knob 7 start position A, nrpn: 481, default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_end_position_a:   {label: macro knob 7 end position A, nrpn: 482, default: 127, part: synth, group: macro_knobs}
+  macro_knob_7_depth_a:          {label: macro knob 7 depth A, nrpn: 483, default: 64, part: synth, group: macro_knobs}
+  macro_knob_7_destination_b:    {label: macro knob 7 destination B, nrpn: 484, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_start_position_b: {label: macro knob 7 start position B, nrpn: 485, default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_end_position_b:   {label: macro knob 7 end position B, nrpn: 486, default: 127, part: synth, group: macro_knobs}
+  macro_knob_7_depth_b:          {label: macro knob 7 depth B, nrpn: 487, default: 64, part: synth, group: macro_knobs}
+  macro_knob_7_destination_c:    {label: macro knob 7 destination C, nrpn: 488, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_start_position_c: {label: macro knob 7 start position C, nrpn: 489, default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_end_position_c:   {label: macro knob 7 end position C, nrpn: 490, default: 127, part: synth, group: macro_knobs}
+  macro_knob_7_depth_c:          {label: macro knob 7 depth C, nrpn: 491, default: 64, part: synth, group: macro_knobs}
+  macro_knob_7_destination_d:    {label: macro knob 7 destination D, nrpn: 492, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_start_position_d: {label: macro knob 7 start position D, nrpn: 493, default: 0, part: synth, group: macro_knobs}
+  macro_knob_7_end_position_d:   {label: macro knob 7 end position D, nrpn: 494, default: 127, part: synth, group: macro_knobs}
+  macro_knob_7_depth_d:          {label: macro knob 7 depth D, nrpn: 495, default: 64, part: synth, group: macro_knobs}
+  macro_knob_8_position:         {label: macro knob 8 position, cc: 87, default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_destination_a:    {label: macro knob 8 destination A, nrpn: 496, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_start_position_a: {label: macro knob 8 start position A, nrpn: 497, default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_end_position_a:   {label: macro knob 8 end position A, nrpn: 498, default: 127, part: synth, group: macro_knobs}
+  macro_knob_8_depth_a:          {label: macro knob 8 depth A, nrpn: 499, default: 64, part: synth, group: macro_knobs}
+  macro_knob_8_destination_b:    {label: macro knob 8 destination B, nrpn: 500, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_start_position_b: {label: macro knob 8 start position B, nrpn: 501, default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_end_position_b:   {label: macro knob 8 end position B, nrpn: 502, default: 127, part: synth, group: macro_knobs}
+  macro_knob_8_depth_b:          {label: macro knob 8 depth B, nrpn: 503, default: 64, part: synth, group: macro_knobs}
+  macro_knob_8_destination_c:    {label: macro knob 8 destination C, nrpn: 504, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_start_position_c: {label: macro knob 8 start position C, nrpn: 505, default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_end_position_c:   {label: macro knob 8 end position C, nrpn: 506, default: 127, part: synth, group: macro_knobs}
+  macro_knob_8_depth_c:          {label: macro knob 8 depth C, nrpn: 507, default: 64, part: synth, group: macro_knobs}
+  macro_knob_8_destination_d:    {label: macro knob 8 destination D, nrpn: 508, range: [0, 70], default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_start_position_d: {label: macro knob 8 start position D, nrpn: 509, default: 0, part: synth, group: macro_knobs}
+  macro_knob_8_end_position_d:   {label: macro knob 8 end position D, nrpn: 510, default: 127, part: synth, group: macro_knobs}
+  macro_knob_8_depth_d:          {label: macro knob 8 depth D, nrpn: 511, default: 64, part: synth, group: macro_knobs}
+
+  # AUDIO -------------------------------------------------------------------
+  audio_1_level:                 {label: Audio 1 level, cc: 13, default: 100, group: audio}
+  audio_2_level:                 {label: Audio 2 level, cc: 15, default: 100, group: audio}
+  audio_1_reverb_level:          {label: Audio 1 reverb level, cc: 31, default: 0, group: audio}
+  audio_2_reverb_level:          {label: Audio 2 reverb level, cc: 32, default: 0, group: audio}
+  audio_1_delay_level:           {label: Audio 1 delay level, cc: 33, default: 0, group: audio}
+  audio_2_delay_level:           {label: Audio 2 delay level, cc: 34, default: 0, group: audio}
+  audio_1_pan:                   {label: Audio 1 Pan, cc: 35, default: 0, group: audio}
+  audio_2_pan:                   {label: Audio 2 Pan, cc: 36, default: 0, group: audio}
+
+  # DRUM CONTROL ------------------------------------------------------------
+  drum_1_patch_select:           {label: drum 1 patch select, cc: 8, range: [0, 63], default: 0, part: drums, group: drum}
+  drum_1_level:                  {label: drum 1 level, cc: 12, default: 0, part: drums, group: drum}
+  drum_1_pitch:                  {label: drum 1 pitch, cc: 14, default: 64, part: drums, group: drum}
+  drum_1_decay:                  {label: drum 1 decay, cc: 15, default: 0, part: drums, group: drum}
+  drum_1_distortion:             {label: drum 1 distortion, cc: 16, default: 0, part: drums, group: drum}
+  drum_1_eq:                     {label: drum 1 EQ, cc: 17, default: 64, part: drums, group: drum}
+  drum_1_pan:                    {label: drum 1 pan, cc: 77, default: 64, part: drums, group: drum}
+  drum_2_patch_select:           {label: drum 2 patch select, cc: 18, range: [0, 63], default: 0, part: drums, group: drum}
+  drum_2_level:                  {label: drum 2 level, cc: 23, default: 0, part: drums, group: drum}
+  drum_2_pitch:                  {label: drum 2 pitch, cc: 34, default: 64, part: drums, group: drum}
+  drum_2_decay:                  {label: drum 2 decay, cc: 40, default: 0, part: drums, group: drum}
+  drum_2_distortion:             {label: drum 2 distortion, cc: 42, default: 0, part: drums, group: drum}
+  drum_2_eq:                     {label: drum 2 EQ, cc: 43, default: 64, part: drums, group: drum}
+  drum_2_pan:                    {label: drum 2 pan, cc: 78, default: 64, part: drums, group: drum}
+  drum_3_patch_select:           {label: drum 3 patch select, cc: 44, range: [0, 63], default: 0, part: drums, group: drum}
+  drum_3_level:                  {label: drum 3 level, cc: 45, default: 0, part: drums, group: drum}
+  drum_3_pitch:                  {label: drum 3 pitch, cc: 46, default: 64, part: drums, group: drum}
+  drum_3_decay:                  {label: drum 3 decay, cc: 47, default: 0, part: drums, group: drum}
+  drum_3_distortion:             {label: drum 3 distortion, cc: 48, default: 0, part: drums, group: drum}
+  drum_3_eq:                     {label: drum 3 EQ, cc: 49, default: 64, part: drums, group: drum}
+  drum_3_pan:                    {label: drum 3 pan, cc: 79, default: 64, part: drums, group: drum}
+  drum_4_patch_select:           {label: drum 4 patch select, cc: 50, range: [0, 63], default: 0, part: drums, group: drum}
+  drum_4_level:                  {label: drum 4 level, cc: 53, default: 0, part: drums, group: drum}
+  drum_4_pitch:                  {label: drum 4 pitch, cc: 55, default: 64, part: drums, group: drum}
+  drum_4_decay:                  {label: drum 4 decay, cc: 57, default: 0, part: drums, group: drum}
+  drum_4_distortion:             {label: drum 4 distortion, cc: 61, default: 0, part: drums, group: drum}
+  drum_4_eq:                     {label: drum 4 EQ, cc: 76, default: 64, part: drums, group: drum}
+  drum_4_pan:                    {label: drum 4 pan, cc: 80, default: 64, part: drums, group: drum}
+
+  # REVERB ------------------------------------------------------------------
+  reverb_synth_1_send_level:     {label: synth 1 send level, cc: 88, default: 0, part: project, group: reverb}
+  reverb_synth_2_send_level:     {label: synth 2 send level, cc: 89, default: 0, part: project, group: reverb}
+  reverb_drum_1_send_level:      {label: drum 1 send level, cc: 90, default: 0, part: project, group: reverb}
+  reverb_drum_2_send_level:      {label: drum 2 send level, cc: 106, default: 0, part: project, group: reverb}
+  reverb_drum_3_send_level:      {label: drum 3 send level, cc: 109, default: 0, part: project, group: reverb}
+  reverb_drum_4_send_level:      {label: drum 4 send level, cc: 110, default: 0, part: project, group: reverb}
+  reverb_type:                   {label: type, nrpn: 146, range: [0, 5], default: 2, choices: {chamber: 0, small_room: 1, large_room: 2, small_hall: 3, large_hall: 4, great_hall: 5}, part: project, group: reverb}
+  reverb_decay:                  {label: decay, nrpn: 147, default: 64, part: project, group: reverb}
+  reverb_damping:                {label: damping, nrpn: 148, default: 64, part: project, group: reverb}
+
+  # DELAY -------------------------------------------------------------------
+  delay_synth_1_send_level:      {label: synth 1 send level, cc: 111, default: 0, part: project, group: delay}
+  delay_synth_2_send_level:      {label: synth 2 send level, cc: 112, default: 0, part: project, group: delay}
+  delay_drum_1_send_level:       {label: drum 1 send level, cc: 113, default: 0, part: project, group: delay}
+  delay_drum_2_send_level:       {label: drum 2 send level, cc: 114, default: 0, part: project, group: delay}
+  delay_drum_3_send_level:       {label: drum 3 send level, cc: 115, default: 0, part: project, group: delay}
+  delay_drum_4_send_level:       {label: drum 4 send level, cc: 116, default: 0, part: project, group: delay}
+  delay_time:                    {label: time, nrpn: 134, default: 64, part: project, group: delay}
+  delay_time_sync:               {label: time sync, nrpn: 135, range: [0, 35], default: 20, part: project, group: delay}
+  delay_feedback:                {label: feedback, nrpn: 136, default: 64, part: project, group: delay}
+  delay_width:                   {label: width, nrpn: 137, default: 127, part: project, group: delay}
+  delay_left_right_ratio:        {label: left-right ratio, nrpn: 138, range: [0, 12], default: 4, choices: {n1_1: 0, n4_3: 1, n3_4: 2, n3_2: 3, n2_3: 4, n2_1: 5, n1_2: 6, n3_1: 7, n1_3: 8, n4_1: 9, n1_4: 10, n1_off: 11, off_1: 12}, part: project, group: delay}
+  delay_slew_rate:               {label: slew rate, nrpn: 139, default: 5, part: project, group: delay}
+
+  # MASTER FILTER -----------------------------------------------------------
+  master_filter_frequency:       {label: frequency, cc: 74, default: 64, values: {low_pass: 0, "off": 64, high_pass: 65}, part: project, group: master_filter}
+  master_filter_resonance:       {label: resonance, cc: 71, default: 30, part: project, group: master_filter}
+
+  # SIDECHAIN ---------------------------------------------------------------
+  sidechain_synth_1_source:      {label: synth 1 source, nrpn: 311, range: [0, 4], default: 0, choices: {drum_1: 0, drum_2: 1, drum_3: 2, drum_4: 3, "off": 4}, part: project, group: sidechain}
+  sidechain_synth_1_attack:      {label: synth 1 attack, nrpn: 312, default: 0, part: project, group: sidechain}
+  sidechain_synth_1_hold:        {label: synth 1 hold, nrpn: 313, default: 50, part: project, group: sidechain}
+  sidechain_synth_1_decay:       {label: synth 1 decay, nrpn: 314, default: 70, part: project, group: sidechain}
+  sidechain_synth_1_depth:       {label: synth 1 depth, nrpn: 315, default: 0, part: project, group: sidechain}
+  sidechain_synth_2_source:      {label: synth 2 source, nrpn: 321, range: [0, 4], default: 0, choices: {drum_1: 0, drum_2: 1, drum_3: 2, drum_4: 3, "off": 4}, part: project, group: sidechain}
+  sidechain_synth_2_attack:      {label: synth 2 attack, nrpn: 322, default: 0, part: project, group: sidechain}
+  sidechain_synth_2_hold:        {label: synth 2 hold, nrpn: 323, default: 50, part: project, group: sidechain}
+  sidechain_synth_2_decay:       {label: synth 2 decay, nrpn: 324, default: 70, part: project, group: sidechain}
+  # PRINTED 1:69 WHERE THE PATTERN SAYS 2:69, and shipped as printed. Every other sidechain parameter is in the 2:xx block - the synth 1 group runs 2:55 to 2:59 and this group runs 2:65, 2:66, 2:67, 2:68 and then 1:69. Nothing in either document settles it.
+  sidechain_synth_2_depth:       {label: synth 2 depth, nrpn: 197, default: 0, part: project, group: sidechain}
+
+  # PROJECT MIXER -----------------------------------------------------------
+  project_mixer_synth_1_level:   {label: synth 1 level, cc: 12, default: 100, part: project, group: project_mixer}
+  project_mixer_synth_2_level:   {label: synth 2 level, cc: 14, default: 100, part: project, group: project_mixer}
+  project_mixer_synth_1_pan:     {label: synth 1 pan, cc: 117, default: 64, part: project, group: project_mixer}
+  project_mixer_synth_2_pan:     {label: synth 2 pan, cc: 118, default: 64, part: project, group: project_mixer}
+
+  # ADDITIONAL CONTROLS -----------------------------------------------------
+  fx_bypass:                     {label: FX Bypass, nrpn: 149, range: [0, 1], default: 0, choices: {off_fx_enabled: 0, on_fx_disabled: 1}, part: project, group: additional_controls}
+
+  # MIDI TEMPLATE -----------------------------------------------------------
+  # The maker's "Normal use" for this number is Modulation wheel (user guide p. 58).
+  midi_template_macro_1:         {label: Macro 1, cc: 1, direction: transmits, part: midi_track, group: midi_template}
+  # The maker's "Normal use" for this number is Breath control (user guide p. 58).
+  midi_template_macro_2:         {label: Macro 2, cc: 2, direction: transmits, part: midi_track, group: midi_template}
+  # The maker's "Normal use" for this number is Portamento time (user guide p. 58).
+  midi_template_macro_3:         {label: Macro 3, cc: 5, direction: transmits, part: midi_track, group: midi_template}
+  # The maker's "Normal use" for this number is Expression (user guide p. 58).
+  midi_template_macro_4:         {label: Macro 4, cc: 11, direction: transmits, part: midi_track, group: midi_template}
+  # The maker's "Normal use" for this number is Effect control 1 (user guide p. 58).
+  midi_template_macro_5:         {label: Macro 5, cc: 12, direction: transmits, part: midi_track, group: midi_template}
+  # The maker's "Normal use" for this number is Effect control 2 (user guide p. 58).
+  midi_template_macro_6:         {label: Macro 6, cc: 13, direction: transmits, part: midi_track, group: midi_template}
+  # The maker's "Normal use" for this number is Resonance (user guide p. 58).
+  midi_template_macro_7:         {label: Macro 7, cc: 71, direction: transmits, part: midi_track, group: midi_template}
+  # The maker's "Normal use" for this number is Filter frequency (user guide p. 58).
+  midi_template_macro_8:         {label: Macro 8, cc: 74, direction: transmits, part: midi_track, group: midi_template}

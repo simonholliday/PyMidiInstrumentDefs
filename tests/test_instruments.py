@@ -1,5 +1,6 @@
 """Tests for pymidiinstrumentdefs — reading what a particular model does."""
 
+import collections
 import pathlib
 import re
 
@@ -159,6 +160,7 @@ class TestBundledCorpus:
 			"moog/subharmonicon",
 			"moog/subsequent_37",
 			"novation/bass_station_ii",
+			"novation/circuit_tracks",
 			"novation/peak",
 			"oberheim/teo_5",
 			"pwm/malevolent",
@@ -4661,3 +4663,270 @@ class TestIridium:
 		assert iridium.sources["keyboard_page"].paginated is False
 
 		assert iridium.model.firmware == "3"
+
+
+class TestCircuitTracks:
+
+	"""The largest definition here, and a maker whose contents page misfiles a control table."""
+
+	def test_the_largest_definition_here_and_where_its_rows_come_from (self) -> None:
+		"""Four addressable things and a table the reference guide does not carry."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		assert len(tracks.controls) == 358
+		assert len(tracks.groups) == 18
+
+		# Bigger than the Peak, which held the record before it.
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert len(tracks.controls) > len(peak.controls)
+
+		counted = collections.Counter(control.part for control in tracks.controls.values())
+
+		assert counted["synth"] == 276
+		assert counted["project"] == 38
+		assert counted["drums"] == 28
+		assert counted["midi_track"] == 8
+
+		# The eight the guide gives no channel for carry no part at all.
+		assert counted[None] == 8
+
+	def test_the_audio_table_is_a_control_table_and_names_no_channel (self) -> None:
+		"""The contents page files it with the value tables, and it holds eight controls."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		audio = [control for control in tracks.controls.values() if control.group == "audio"]
+
+		assert len(audio) == 8
+		assert sorted(control.cc for control in audio
+			if control.cc is not None) == [13, 15, 31, 32, 33, 34, 35, 36]
+
+		# No part, because no document says which channel reaches them.
+		assert all(control.part is None for control in audio)
+
+		# Nothing else in the definition uses these eight numbers on this instrument's own
+		# channels without a part, so losing them would lose the audio inputs entirely.
+		assert tracks.controls["audio_1_level"].default == 100
+		assert tracks.controls["audio_2_pan"].cc == 36
+
+	def test_eight_controls_come_from_the_user_guide_and_only_travel_out (self) -> None:
+		"""A MIDI track drives external gear, so its Macro knobs send and nothing answers them."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		template = [control for control in tracks.controls.values()
+			if control.group == "midi_template"]
+
+		assert len(template) == 8
+		assert sorted(control.cc for control in template
+			if control.cc is not None) == [1, 2, 5, 11, 12, 13, 71, 74]
+
+		assert all(control.direction == pymidiinstrumentdefs.definition.TRANSMITS
+			for control in template)
+
+		# They are the only ones here that do not go both ways.
+		outward = [control.name for control in tracks.controls.values()
+			if control.direction != pymidiinstrumentdefs.definition.BOTH]
+
+		assert sorted(outward) == sorted(control.name for control in template)
+
+	def test_an_nrpn_is_msb_times_128_plus_lsb_and_the_guide_proves_it (self) -> None:
+		"""Two blocks of numbers come out as arithmetic sequences, which is the proof."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		# Twelve matrix slots at five-number intervals: 1:83 is 211 and 2:10 is 266.
+		slots = [tracks.controls[f"mod_matrix_{slot}_source_1"].nrpn for slot in range(1, 13)]
+
+		assert slots == list(range(211, 267, 5))
+
+		# Eight macro knobs of sixteen parameters fill one MSB page exactly, 3:0 to 3:127.
+		macros = sorted(control.nrpn for control in tracks.controls.values()
+			if control.group == "macro_knobs" and control.nrpn is not None)
+
+		assert macros == list(range(384, 512))
+
+	def test_five_defaults_the_guide_contradicts_itself_about_are_not_recorded (self) -> None:
+		"""The control map and the Synth Patch Format disagree, so neither figure is carried."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		contradicted = ["osc_1_wave_interpolate", "osc_1_pulse_width_index",
+			"osc_2_wave_interpolate", "osc_2_pulse_width_index", "chorus_rate"]
+
+		for name in contradicted:
+			assert tracks.controls[name].default is None, name
+
+		# Everything else that the guide gives a default for has one: only these five, and the
+		# eight template macros, which are controller assignments and never had one.
+		without = sorted(control.name for control in tracks.controls.values()
+			if control.default is None)
+
+		assert without == sorted(contradicted
+			+ [f"midi_template_macro_{number}" for number in range(1, 9)])
+
+		# The range is still recorded for all five - it is the default alone that is in doubt.
+		assert tracks.controls["osc_1_pulse_width_index"].range == (0, 127)
+
+	def test_the_twelfth_matrix_slot_breaks_the_stride_and_ships_as_printed (self) -> None:
+		"""Eleven slots put depth and destination three and four above the first source; one does not."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		odd = []
+
+		for slot in range(1, 13):
+			base = tracks.controls[f"mod_matrix_{slot}_source_1"].nrpn
+			offsets = [tracks.controls[f"mod_matrix_{slot}_{part}"].nrpn
+				for part in ("source_1", "source_2", "depth", "destination")]
+
+			assert base is not None
+
+			if [number - base for number in offsets if number is not None] != [0, 1, 3, 4]:
+				odd.append(slot)
+
+		assert odd == [12]
+
+		# As printed: 2:10, 2:11, 2:12, 2:13 where the stride says 2:13 and 2:14 for the last two.
+		assert tracks.controls["mod_matrix_12_depth"].nrpn == 268
+		assert tracks.controls["mod_matrix_12_destination"].nrpn == 269
+
+	def test_eight_switches_share_one_controller_and_differ_by_value (self) -> None:
+		"""NRPN 0:122 is one number carrying eight switches, each in a band of its own."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		shared = sorted(control.name for control in tracks.controls.values()
+			if control.nrpn == 122)
+
+		assert len(shared) == 8
+
+		assert tracks.controls["lfo_1_one_shot"].range == (12, 13)
+		assert tracks.controls["lfo_1_one_shot"].choices == {"off": 12, "on": 13}
+
+		assert tracks.controls["lfo_2_delay_trigger"].range == (28, 29)
+		assert tracks.controls["lfo_2_delay_trigger"].choices == {"off": 28, "on": 29}
+
+		# A two-state control is a switch, which is derived rather than declared.
+		assert tracks.controls["lfo_1_key_sync"].kind == pymidiinstrumentdefs.SWITCH
+
+	def test_two_value_lists_under_one_heading_stay_apart (self) -> None:
+		"""The Filter Table holds Drive Type and Type, both restarting at zero."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		drive = tracks.controls["drive_type"]
+		kind = tracks.controls["type"]
+
+		assert drive.range == (0, 6)
+		assert drive.choices["diode"] == 0
+		assert drive.choices["rate_reducer"] == 6
+
+		assert kind.range == (0, 5)
+		assert kind.choices["low_pass_12db"] == 0
+		assert kind.choices["high_pass_24db"] == 5
+
+		# Merged into one list, either would have had two entries numbered 0.
+		assert set(drive.choices) & set(kind.choices) == set()
+
+		# The sister table for the distortion differs from Drive Type by one word.
+		assert tracks.controls["distortion_type"].choices["rectify"] == 4
+		assert "rectifier" not in tracks.controls["distortion_type"].choices
+
+	def test_the_modulation_sources_do_not_fill_their_range (self) -> None:
+		"""Ten sources over a stated 0 to 12, with 1, 2 and 3 named nowhere."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		source = tracks.controls["mod_matrix_1_source_1"]
+
+		assert source.range == (0, 12)
+		assert len(source.choices) == 10
+
+		assert sorted(source.choices.values()) == [0, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+		# Which is why they are choices and not bands: a band would make 1, 2 and 3 "direct".
+		assert source.values == {}
+
+		# The destinations do fill theirs.
+		destination = tracks.controls["mod_matrix_1_destination"]
+
+		assert destination.range == (0, 17)
+		assert sorted(destination.choices.values()) == list(range(18))
+
+	def test_four_parts_and_six_voices_on_each_synth (self) -> None:
+		"""Six each rather than six shared, and four drums sharing one channel as one part."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		assert set(tracks.parts) == {"synth", "drums", "midi_track", "project"}
+
+		assert tracks.parts["synth"].count == 2
+		assert tracks.parts["synth"].polyphony == 6
+		assert tracks.parts["synth"].addressing == "pitches"
+
+		# Not shared, so the instrument carries no single figure.
+		assert tracks.voice.polyphony_shared is False
+		assert tracks.voice.polyphony is None
+
+		# Four drum tracks on one channel are one part, and a note chooses between them.
+		assert tracks.parts["drums"].count == 1
+		assert tracks.parts["drums"].addressing == "voices"
+		assert tracks.voice.voices == {"drum_1": 60, "drum_2": 62, "drum_3": 64, "drum_4": 65}
+
+		# What reaches a MIDI track is not stated, which is different from nothing reaching it.
+		assert tracks.parts["midi_track"].receives is None
+		assert tracks.parts["project"].receives == ("controls", "program_change")
+
+	def test_the_misprinted_number_ships_as_printed (self) -> None:
+		"""One sidechain parameter is in the wrong NRPN block and the doubt is in the file."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		# 1:69 as printed, where the block it sits in says 2:69 would be 325.
+		assert tracks.controls["sidechain_synth_2_depth"].nrpn == 197
+
+		# Its four neighbours are all in the 2:xx block.
+		assert tracks.controls["sidechain_synth_2_attack"].nrpn == 322
+		assert tracks.controls["sidechain_synth_2_decay"].nrpn == 324
+
+		assert "almost certainly a misprint" in (tracks.source or "").lower() \
+			or "ALMOST CERTAINLY A MISPRINT" in (tracks.source or "")
+
+	def test_what_is_left_unrecorded_and_why (self) -> None:
+		"""Three fields are absent because 131 pages do not mention what they hold."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		# The word aftertouch appears in neither document.
+		assert tracks.voice.aftertouch is None
+
+		# Two engine parameters set a bend depth; no page says a bend message is answered.
+		assert tracks.voice.pitch_bend is None
+		assert tracks.controls["osc_1_pitchbend"].range == (52, 76)
+		assert tracks.controls["osc_1_pitchbend"].default == 76
+
+		# The pads' notes follow the chosen scale, and nothing bounds what arrives.
+		assert tracks.voice.note_range is None
+
+		# No implementation chart in either document.
+		assert tracks.midi.mode is None
+
+		# "Version 3" numbers both documents and neither names a firmware.
+		assert tracks.model.firmware is None
+
+		assert tracks.midi.clock == "both"
+		assert tracks.midi.transport == "receives"
+		assert tracks.midi.sysex is True
+		assert tracks.midi.channels == (1, 16)
+
+	def test_three_sources_and_a_landing_page_that_is_not_the_file_host (self) -> None:
+		"""Novation serves its downloads from a different host than the page that lists them."""
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		assert set(tracks.sources) == {"guide", "user_guide", "download_page"}
+
+		for name in ("guide", "user_guide"):
+			source = tracks.sources[name]
+
+			assert source.landing is not None
+			assert "downloads.novationmusic.com" in source.landing
+			assert source.url is not None
+			assert "fael-downloads-prod.focusrite.com" in source.url
+			assert source.page_offset == 0
+
+		assert tracks.sources["download_page"].paginated is False
+
+		# Both documents call themselves Version 3 and were made two months apart.
+		assert tracks.sources["guide"].dated == "2022-10-19"
+		assert tracks.sources["user_guide"].dated == "2022-08-25"

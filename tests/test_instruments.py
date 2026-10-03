@@ -162,6 +162,7 @@ class TestBundledCorpus:
 			"pwm/malevolent",
 			"roland/d_50",
 			"roland/juno_106",
+			"roland/mc_707",
 			"roland/tr8s",
 			"roland/tr_1000",
 			"sequential/take_5",
@@ -4098,3 +4099,140 @@ class TestModwaveMkII:
 
 		# No factory channel is published - the chart's Default cell holds the whole range.
 		assert mw.midi.channels == (1, 16)
+
+
+class TestMC707:
+
+	"""Three editions of one chart, and an instrument two firmware releases ahead of it."""
+
+	def test_twenty_seven_controls_and_only_three_are_sent (self) -> None:
+		"""Every control change row is x transmitted but the three panel knobs."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		assert len(mc.controls) == 28
+		assert len(mc.groups) == 7
+
+		sending = sorted(c.cc for c in mc.controls.values()
+			if c.direction == pymidiinstrumentdefs.definition.BOTH and c.cc is not None)
+
+		assert sending == [80, 81, 82, 83]
+
+		for name in ("filter_knob", "mod_knob", "fx_knob", "sound_knob"):
+			assert mc.controls[name].direction == pymidiinstrumentdefs.definition.BOTH
+
+		# The other twenty-four are recognised and never sent.
+		assert len([c for c in mc.controls.values()
+			if c.direction == pymidiinstrumentdefs.definition.RECEIVES]) == 24
+
+	def test_the_footnoted_knob_is_kept (self) -> None:
+		"""CC 83 is footnoted "for MC-101 compatibility" and is still this chart's own row."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		# The chart is headed "Model: MC-707" and marks the row o in both columns, and Ver.1.60
+		# gave this instrument a virtual SOUND knob after all.
+		assert mc.controls["sound_knob"].cc == 83
+		assert mc.controls["sound_knob"].label == "SOUND Knob"
+
+		# Nothing is left out of the chart: all 25 of its numbers are here.
+		from_chart = {1, 5, 7, 10, 11, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78,
+			80, 81, 82, 83, 84, 91, 92}
+
+		assert from_chart <= {c.cc for c in mc.controls.values()}
+		assert len(from_chart) == 25
+
+	def test_three_numbers_come_from_the_update_notes (self) -> None:
+		"""The chart is Version 1.60 and the firmware is 1.80, which named three more."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		for name, number in (("breath_control", 2), ("foot_control", 4),
+				("delay_send", 93)):
+			assert mc.controls[name].cc == number
+			assert mc.controls[name].direction == pymidiinstrumentdefs.definition.RECEIVES
+
+		assert mc.model.firmware == "1.80"
+		assert mc.sources["chart"].edition == "Version 1.60"
+
+	def test_two_numbers_are_published_for_chorus_send (self) -> None:
+		"""The chart gives 92 and the Ver.1.80 notes give 93, and both are carried."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		assert mc.controls["chorus_send"].cc == 92
+		assert mc.controls["delay_send"].cc == 93
+
+		# Each under the name of the document that defines it as a parameter.
+		assert mc.controls["chorus_send"].label == "General Purpose Effect 3 (Chorus Send Level)"
+		assert mc.controls["delay_send"].label == "Delay Send Level"
+
+		# And reverb send, which both documents agree about, is 91.
+		assert mc.controls["reverb_send"].cc == 91
+
+	def test_all_three_chart_editions_are_kept (self) -> None:
+		"""What a maker added to a chart is evidence the current edition does not give."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		assert set(mc.sources) == {
+			"chart", "chart_1_00", "chart_1_20", "reference", "update", "support_page"}
+
+		assert mc.sources["chart_1_00"].edition == "Version 1.00"
+		assert mc.sources["chart_1_20"].edition == "Version 1.20"
+
+		# Each chart is one page and is cited as p. 1, so its quotations can be checked.
+		for which in ("chart", "chart_1_00", "chart_1_20"):
+			assert mc.sources[which].paginated is True
+			assert mc.sources[which].page_offset == 0
+
+	def test_eight_tracks_and_a_channel_that_makes_no_sound (self) -> None:
+		"""Program change means a clip on a track channel and a scene on the control one."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		assert set(mc.parts) == {"track", "control"}
+
+		track = mc.parts["track"]
+
+		assert track.count == 8
+		assert track.is_assigned is True
+		assert track.receives == ("notes", "controls", "program_change")
+
+		control = mc.parts["control"]
+
+		assert control.count == 1
+		assert control.is_assigned is True
+
+		# It takes a program change and the Scatter Pad's notes, and no control change.
+		assert control.receives == ("notes", "program_change")
+
+		# The scenes a program change reaches on that channel.
+		assert mc.midi.program_change is not None
+		assert mc.midi.program_change.presets == 128
+
+	def test_system_exclusive_is_not_recorded_because_the_documents_disagree (self) -> None:
+		"""The chart marks it x in both columns; the reference manual has a Device ID for it."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		assert mc.midi.sysex is None
+
+		# NRPN, by contrast, is a checked absence: the chart names its numbers one at a time.
+		assert mc.midi.nrpn == "none"
+		assert all(c.nrpn is None for c in mc.controls.values())
+
+	def test_what_the_chart_settles_about_the_voice (self) -> None:
+		"""Transport both ways with one asymmetry, and a voice count nobody publishes."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		assert mc.midi.channels == (1, 16)
+		assert mc.midi.mode == 3
+		assert mc.midi.clock == "both"
+		assert mc.midi.transport == "both"
+
+		# No document states a voice count; what is established is that the tracks share one.
+		assert mc.voice.polyphony is None
+		assert mc.voice.polyphony_shared is True
+
+		assert mc.voice.velocity is not None
+		assert mc.voice.velocity.note_on == "both"
+		assert mc.voice.velocity.note_off is True
+
+		assert mc.voice.aftertouch == "poly"
+		assert mc.voice.pitch_bend is not None
+		assert mc.voice.pitch_bend.programmable is True
+		assert mc.voice.pitch_bend.semitones is None

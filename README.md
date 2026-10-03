@@ -168,6 +168,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
+| `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |

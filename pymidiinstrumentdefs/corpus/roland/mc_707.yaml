@@ -1,0 +1,394 @@
+# ROLAND SERVES THREE EDITIONS OF THIS INSTRUMENT'S MIDI IMPLEMENTATION CHART FROM ONE PATH, and
+# nothing on its support page says the older two exist: `eng01`, `eng02` and `eng03` of
+# `MC-707_MIDIImpleChart_eng0N_W.pdf` are Version 1.00, Version 1.20 and Version 1.60. Only the
+# last is current and this definition rests on it. The other two are in the library because what
+# a maker *added* to a chart is evidence the current edition alone does not give. **The same 25
+# controller numbers stand unchanged through all three**, and what moved is program change, in
+# two steps: at Version 1.00 it was x in both columns with a True Number of `**********`; at
+# Version 1.20 it became o in both with a True Number of `0-15` and a footnote giving "Scene
+# change (0-7)"; at Version 1.60 the True Number reached `0-127` and the footnote's scene range
+# widened with it, and a third footnote put the Scatter Pad on the Note Number row.
+# `Notes/4249_extract_mc_707_charts.py` reads all three and prints every difference - seven of
+# them, leaving aside the header stamp.
+#
+# THE CHART IS STILL TWO FIRMWARE RELEASES BEHIND THE INSTRUMENT. It is Version 1.60 of
+# September 2020; the update notes document functions added in Ver.1.71 and Ver.1.80, and
+# **three controller numbers are named there and nowhere in the chart** - CC 2, CC 4 and CC 93.
+# They are below, on the update notes' authority.
+#
+# CC 83 IS FOOTNOTED "FOR MC-101 COMPATIBILITY" AND IS KEPT ANYWAY. It was nearly dropped: this
+# instrument has no physical SOUND knob - "[FILTER] knob, [MOD] knob, [FX] knob These knobs
+# adjust the assigned parameters" (reference p. 5), with [SOUND] a button - so the footnote
+# reads at first like a note that the row belongs to the smaller sibling. Two things decide it
+# the other way. **The chart is headed "Model: MC-707" and marks the row o in both columns**,
+# which is a statement about this instrument and not about another; and Ver.1.60 gave this
+# instrument the knob after all, as "A virtual knob (the SOUND knob) that can be used for
+# motions" (update p. 10). So the footnote explains why the number exists rather than excluding
+# it, and nothing is left out of this chart.
+#
+# THE THREE KNOB NUMBERS ARE WHAT THE KNOBS *SEND* BY DEFAULT AND NOT WHAT THEY ARE. Ver.1.30
+# made each settable: "Tx FILTER CC Number CC0, CC1, CC2...CC119 Specifies the CC number
+# transmitted by the [FILTER] knob" (update p. 13), and the same for MOD and FX. **Only the
+# transmitted number moves** - the parameter is a Tx one - so 80, 81 and 82 remain what the
+# instrument recognises and are a factory default for what it sends.
+#
+# AND TWO NUMBERS CARRY AN EFFECT SEND, 92 AND 93, UNDER THREE NAMES FROM THREE DOCUMENTS. The
+# chart gives 92 as "General Purpose Effect 3 (Chorus Send Level)" (chart p. 1). The reference
+# manual's track parameter list gives 93 as "Delay Send Level (CC#93)" (reference p. 48) and
+# gives no chorus send at all. The Ver.1.80 notes give 93 again, as a switch called "Receive
+# Chorus/Delay Send" (update p. 3). The MIDI specification puts Effects 3 Depth at 93, so the
+# chart's label disagrees with its own number. Both are below, each under the name of the
+# document that defines it as a parameter rather than as a switch.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: MC-707
+  # THE NEWEST FIRMWARE ANY DOCUMENT HERE DESCRIBES, from the update notes' own leading section,
+  # "Functions Added in Ver.1.80" (update p. 1). That file is cumulative and runs back through
+  # Ver.1.71, 1.60, 1.50, 1.30, 1.20 and 1.02 in sections of its own. **The reference manual
+  # states no version at all** in 121 pages, and the MIDI implementation chart states Version
+  # 1.60 - which is the chart's statement about the instrument, two releases earlier. Checked
+  # 2026-10-03.
+  firmware: "1.80"
+
+source: >-
+  MC-707 MIDI Implementation Chart, Version 1.60, dated Sep. 25, 2020 - one page, and the whole
+  of this instrument's published control map. Beside it: the MC-707 Reference Manual, 121 pages,
+  edition eng02, which carries the channel and system settings; and the MC-707 Update notes,
+  21 pages, edition eng09, which document every firmware release from Ver.1.02 to Ver.1.80 in
+  sections of their own and define two MIDI channels the reference manual does not mention.
+
+  THE CHART'S COLUMNS WERE SETTLED FROM THE PAGE RATHER THAN FROM READING ORDER. Roland draws it
+  as a grid, and each heading's own glyphs fall inside the column it labels, so Transmitted is
+  the left of the two. That is asserted for all three editions rather than assumed, because a
+  Korg chart in this corpus draws the same pair the other way round and a reader who trusts the
+  order inverts every direction without seeing anything wrong.
+
+  TWENTY-FIVE CONTROLLER NUMBERS, AND THE INSTRUMENT SENDS ONLY ITS KNOBS. Every control change
+  row is marked x in the Transmitted column except 80, 81, 82 and 83 - the FILTER, MOD and FX
+  knobs and a fourth that arrived later - which are o in both. So 24 of the 28 controls below
+  are recognised and never sent, and each says so.
+
+  WHAT THE KNOBS SEND IS A DEFAULT; WHAT THEY HEAR IS NOT. Ver.1.30 added a parameter per knob:
+  "Tx FILTER CC Number CC0, CC1, CC2...CC119 Specifies the CC number transmitted by the
+  [FILTER] knob" (update p. 13), and the same for MOD and FX. The parameter is a transmit one,
+  so 80, 81 and 82 stay the numbers the instrument answers to and become a factory assignment
+  for what it sends - the same shape as the microKORG's numbers, and worth knowing before
+  treating a knob's number as a property of the model.
+
+  NINETY-FOUR MORE NUMBERS ARE USABLE AND NONE OF THEM IS ASSIGNED TO ANYTHING. The reference
+  manual's Matrix Control and MFX Control source lists both offer "CC01-31 Controller number
+  1-31" and "CC33-95 Controller number 33-95" (reference p. 74), beside BEND, AFT and four
+  SYS-CTRL slots. **CC 32 is the one number the range steps over**, which is bank select LSB.
+  Nothing says what any of the 94 does, because that is a player's routing, so there is no
+  control below for any of them.
+
+  EIGHT TRACKS, EACH ON A CHANNEL OF ITS OWN: "Track Channel 1-8 CH1-CH16 Specifies the MIDI
+  channel of each track" (reference p. 54). The tracks share one pool of voices rather than
+  having their own, which the system settings show from the other side - a VOICE RESERVE tab
+  whose TRACK 1-8 parameter "Specifies how polyphony resources are allocated to each tone/drum
+  track" (reference p. 18).
+
+  AND A NINTH CHANNEL THAT MAKES NO SOUND. The chart's footnotes name a "control channel" twice
+  and the reference manual never mentions it; it is defined in the update notes, as "Control
+  Channel CH1, CH2, CH3... CH16" which "Specifies the MIDI channel that switches scenes" (update
+  p. 18). Two kinds of message reach it and nothing else does.
+
+  PROGRAM CHANGE MEANS TWO DIFFERENT THINGS ON THE TWO KINDS OF CHANNEL, which is the most
+  useful thing this chart publishes: "Scene change (0-127) on control channel, Clip change
+  (0-15) on track channel" (chart p. 1). Both halves check out against the reference manual - "You can assign
+  up to 16 clips to each track" (reference p. 9) for the sixteen, and the 128 scenes against the
+  update notes' own CALL SCENE setting, one of whose options is to "Use the SCENE buttons to
+  directly recall a scene from the bank that you already selected using the step buttons"
+  (update p. 11) - sixteen banks of eight - while the other divides the same 128 as eight banks
+  of sixteen.
+
+  **AND THE CHARTS RECORD THAT COUNT GROWING.** Version 1.20's footnote reads "Scene change
+  (0-7) on control channel, Clip change (0-15) on track channel" (chart_1_20 p. 1) and Version
+  1.60's widens the first half to 0-127, with a True Number that goes `0-15`, then `0-127`. The
+  reference manual still describes the eight the instrument shipped with, reachable from "a
+  SCENE [1]-[4] button" (reference p. 5), with shift for 5 to 8; the update notes record the
+  change from the other side, listing among the fixes in Ver.1.60 that being "unable to control
+  scenes 9-128 by receiving program change messages was fixed" (update p. 10). Four documents,
+  one history, and they agree.
+
+  THE SCATTER PAD IS SIXTEEN NOTE NUMBERS ON THAT SAME CONTROL CHANNEL, by the chart's third
+  footnote, "Scatter Pad (60-75) on control channel" (chart p. 1), which the update notes put
+  in words as
+  "Use note numbers 60-75 on the control channel" (update p. 9). Sixteen notes that work a
+  performance effect rather than sounding a pitch. **Nothing in this format can say that**, so
+  the control channel below receives notes and the span is recorded here.
+
+  THE TWO DOCUMENTS DISAGREE ABOUT SYSTEM EXCLUSIVE AND NEITHER ANSWER IS RECORDED. The chart
+  marks System Exclusive x in both columns - neither sent nor recognised. The reference manual
+  carries a "Device ID 17-32" (reference p. 54) parameter whose whole purpose is the other
+  answer: "When
+  transmitting and receiving system exclusive messages, the device ID numbers of both devices
+  must match" (reference p. 54). A setting that exists only for system exclusive is hard to
+  square with a chart that says there is none, and nothing published here chooses between them.
+
+  THREE CONTROLLER NUMBERS COME FROM OTHER DOCUMENTS THAN THE CHART, which is two releases
+  older than the firmware. The Ver.1.80 notes add a per-track switch for each of nine controller
+  numbers, and two of the nine are numbers the chart never mentions: "CC 2: You can select
+  whether to apply breath control to a track or record it to a clip" (update p. 3) and "CC 4:
+  You can select whether to apply foot control to a track or record it to a clip" (update p. 3).
+  Six of the other seven - 1, 7, 10, 11, 64 and 91 - the chart already had, under the same
+  names.
+
+  THE NINTH IS CC 93, AND THREE DOCUMENTS NAME IT THREE WAYS WHILE THE CHART GIVES ITS FUNCTION
+  TO 92. The chart has "General Purpose Effect 3 (Chorus Send Level)" (chart p. 1) against 92.
+  The reference manual's track parameter list has "Delay Send Level (CC#93)" (reference p. 48)
+  and no chorus send at all - it names only three controller numbers in that list, "Pan (CC#10)"
+  (reference p. 48), "Reverb Send Level (CC#91)" (reference p. 48) and that one. The Ver.1.80
+  notes have 93 again, in a switch called "Receive Chorus/Delay Send" (update p. 3). The MIDI
+  specification puts Effects 3 Depth at 93, so the chart's label disagrees with its own number.
+  Both numbers are carried below, each under the name of the document that defines it as a
+  parameter rather than as a switch, and neither is chosen over the other.
+
+  NO NRPN, AND IT IS CHECKED. The chart names its controller numbers one at a time rather than in
+  ranges, and 98 and 99 are not among the twenty-five; it has no NRPN row; and the words NRPN,
+  RPN, Registered Parameter, Data Entry and Bank Select appear **nowhere** in the chart, the
+  121-page reference manual, the 21-page update notes or the support page, which was checked by
+  counting occurrences in all four.
+
+  NOT RECORDED: the voice count, which no document here states - only that the eight tracks draw
+  on one pool and that a track may reserve up to ten. How far pitch bend reaches, because the
+  reference manual gives a "Bend Range Up 0-48 [semitone]" (reference p. 62) and a matching
+  Bend Range Down per tone, plus a per-clip "Bend Range 0-24, TONE" (reference p. 64), and
+  states no default for any of them. And a
+  factory MIDI channel, since the chart's Basic Channel Default is the whole range 1-16 with the
+  remark "Memorized".
+
+  THE SUPPORT PAGE WAS SAVED AND IS WORTH ONE WARNING. It renders a list of this product's
+  documents, which is more than the JUNO-106's and the D-50's did - those two serve a page
+  byte-identical to each other carrying nothing about either product. But **it names no file
+  URL**: every link is built in the browser, so the chart, the reference manual and the update
+  notes were all found by searching Roland's own domain. The chart's file name is
+  `MC-707_MIDIImpleChart_eng01_W.pdf`, with **no underscore** between MIDI and ImpleChart, where
+  the TR-1000's has one - so a probe built on the other product's pattern returns 403 either way
+  round.
+
+sources:
+  chart:
+    kind: midi_implementation
+    title: MC-707 MIDI Implementation Chart
+    edition: Version 1.60
+    dated: 2020-09-25
+    landing: "https://www.roland.com/global/support/by_product/mc-707/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/MC-707_MIDIImpleChart_eng03_W.pdf"
+    sha256: 9e2b15b507e63523b02d40fe4e6793cbb2525e36efbfa2627ef9dea0c58c9697
+    retrieved: 2026-10-03
+    # ONE PAGE, WHICH PRINTS NO NUMBER OF ITS OWN, and is cited as p. 1 because that is what it
+    # is. Calling it unpaginated would be truer to the page and would put every quotation from
+    # this instrument's primary source beyond checking, which is the worse trade.
+    page_offset: 0
+  chart_1_00:
+    kind: midi_implementation
+    title: MC-707 MIDI Implementation Chart
+    edition: Version 1.00
+    dated: 2019-09-01
+    landing: "https://www.roland.com/global/support/by_product/mc-707/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/MC-707_MIDIImpleChart_eng01_W.pdf"
+    sha256: 0133ce5499e43c0bd514809800c6d30befabc210f74ce2f926cba43abe353c8a
+    retrieved: 2026-10-03
+    page_offset: 0
+    # THE FIRST EDITION, KEPT TO SHOW WHAT THE CURRENT ONE GAINED. Its Program Change row is x
+    # in both columns with a True Number of `**********`, and its Note Number row carries no
+    # footnote - so at Version 1.00 this instrument answered to no program change and had no
+    # Scatter Pad over MIDI. The 25 controller numbers are already all there.
+  chart_1_20:
+    kind: midi_implementation
+    title: MC-707 MIDI Implementation Chart
+    edition: Version 1.20
+    dated: 2019-11-22
+    landing: "https://www.roland.com/global/support/by_product/mc-707/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/MC-707_MIDIImpleChart_eng02_W.pdf"
+    sha256: 53c399119f439d2d3d52995b7c2ff611970bf64cd85a46088f569f3d8285f0ab
+    retrieved: 2026-10-03
+    page_offset: 0
+    # The middle edition, kept so the sequence is complete and the progression checkable.
+  reference:
+    kind: manual
+    title: MC-707 Reference Manual
+    edition: eng02
+    dated: 2024-10-09
+    landing: "https://www.roland.com/global/support/by_product/mc-707/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/MC-707_Reference_eng02_W.pdf"
+    sha256: bfb1fc7783cc87ef04ba106895a36785a8bac887c71acad1d11e7d3c9c83edf7
+    retrieved: 2026-10-03
+    # 121 pages, counted with pypdf and with PyMuPDF, which agree. Every page prints its own
+    # number and it is the file's page index. **An earlier edition, eng01, is served from the
+    # same path** - 11,399,166 bytes against this one's 11,125,229, and dated 2022-07-22 - and
+    # an earlier survey of this maker's site named that one. This is the later.
+    page_offset: 0
+  update:
+    kind: release_notes
+    title: MC-707 Update
+    edition: eng09
+    dated: 2024-05-02
+    landing: "https://www.roland.com/global/support/by_product/mc-707/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/MC-707_update_eng09_W.pdf"
+    sha256: 71a240976fda5150e1c262f1bc464448dff23f9bf6d20772a10cf4da66c36a04
+    retrieved: 2026-10-03
+    # 21 pages, each printing its own number, which is the file's page index. Cumulative: one
+    # section per firmware release from Ver.1.80 back to Ver.1.02. **Three earlier editions are
+    # served from the same path** - eng05, eng07 and eng08, at 14, 16 and 20 pages - each a
+    # shorter cut of the same notes. This is the longest and newest, so it is the only one
+    # cited.
+    page_offset: 0
+  support_page:
+    kind: download_page
+    title: MC-707 Owner's Manuals
+    landing: "https://www.roland.com/global/support/"
+    url: "https://www.roland.com/global/support/by_product/mc-707/owners_manuals/"
+    sha256: c8081e66e26eb06934f2df52154ab4900eb226d8c2c50807ff1600986184981a
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for what Roland publishes for this instrument. It renders a document list but
+    # **names no file URL** - every link is built in the browser - so each document was found
+    # by searching the maker's own domain instead.
+
+midi:
+  # The chart's Basic Channel is 1-16 in both columns, Default and Changed alike, with the
+  # remark "Memorized" - so no factory channel is published.
+  channels: [1, 16]
+  # The chart's Mode row: nothing transmitted, Mode 3 recognized. Omni off, Poly.
+  mode: 3
+  # BOTH, AND THE SETTINGS SAY WHICH WAY EACH GOES. The chart marks Clock o in both columns, and
+  # the system settings have a MIDI Sync Out switch per port, which "Specifies whether clock,
+  # start, and stop messages are transmitted (ON) or are not transmitted (OFF) to the devices
+  # connected to the corresponding MIDI port" (reference p. 54), against a MIDI Sync parameter
+  # of AUTO, INT, MIDI or USB for the other direction.
+  clock: both
+  # BOTH, WITH ONE ASYMMETRY THE CHART IS EXPLICIT ABOUT: Start and Stop are o in both columns
+  # and **Continue is x transmitted, o recognized** - it answers to a continue and never sends
+  # one. Song Position and Song Select are x in both.
+  transport: both
+  program_change:
+    # o in both columns of the chart, where Version 1.00 had x in both - this was added by
+    # firmware. What it reaches depends on the channel; see the source account.
+    receives: true
+    sends: true
+    # THE SCENES, WHICH ARE WHAT A PROGRAM CHANGE ON THE CONTROL CHANNEL SELECTS: the chart's
+    # True Number row gives 0-127 both ways, and the update notes' CALL SCENE setting divides
+    # 128 of them into banks either way round (update p. 11). A program change on a *track*
+    # channel selects one of that track's 16 clips instead, which this field has no room for.
+    presets: 128
+  # NONE, CHECKED RATHER THAN UNREAD - see the source account. The chart lists its controller
+  # numbers individually and 98 and 99 are not among them, it has no NRPN row, and the words
+  # NRPN, RPN, Registered Parameter, Data Entry and Bank Select occur nowhere in any of this
+  # instrument's four documents.
+  nrpn: none
+  # NOT RECORDED, BECAUSE THE TWO DOCUMENTS CONTRADICT EACH OTHER. The chart marks System
+  # Exclusive x in both columns; the reference manual carries a Device ID "17-32" parameter for
+  # "transmitting and receiving system exclusive messages" (reference p. 54). Recording either
+  # would be choosing between them, and nothing published here does.
+
+voice:
+  addressing: pitches
+  # The chart gives Note Number 0-127 in both columns, and True Voice 0-127 recognized.
+  note_range: [0, 127]
+  # NOT RECORDED: no document here states a voice count. **What is established is that the
+  # eight tracks share one pool**, by a system setting that exists to divide it: the VOICE
+  # RESERVE tab's TRACK 1-8 parameter, 0-10, "Specifies how polyphony resources are allocated
+  # to each tone/drum track" (reference p. 18). A reserve is only meaningful against a shared
+  # ceiling.
+  polyphony_shared: true
+  velocity:
+    # The chart gives Note On o in both columns and Note Off o in both, so this instrument
+    # sends and answers to a note-off velocity as well as a note-on one.
+    note_on: both
+    note_off: true
+  # RECEIVED ONLY, AND BOTH KINDS. The chart has two After Touch rows, Key's and Channel's, and
+  # both are x transmitted and o recognized. `poly` is the stronger of the two and is published;
+  # channel pressure is answered to as well, and the Ver.1.80 notes give it a per-track switch
+  # of its own, "Receive Channel Pressure" (update p. 3).
+  aftertouch: poly
+  pitch_bend:
+    # RECEIVED AND NEVER SENT - the chart's Pitch Bend row is x transmitted, o recognized - and
+    # settable up and down separately, by a tone's "Bend Range Up 0-48 [semitone]" and "Bend
+    # Range Down 0-48 [semitone]" (reference p. 62), each with a fine adjustment in cents. A
+    # clip has a "Bend Range 0-24, TONE" (reference p. 64) of its own. No default is stated for any of them, so no
+    # figure is recorded.
+    programmable: true
+
+parts:
+  # Each track is given a channel by the player and the control channel likewise, so neither
+  # derives one: there is no base channel on this instrument to derive from.
+  track:
+    label: Track
+    count: 8
+    channel: assigned
+    addressing: pitches
+    # NOTES, CONTROLLERS AND A PROGRAM CHANGE OF ITS OWN, the last selecting one of the track's
+    # sixteen clips. The Ver.1.80 notes add a per-track switch for each of nine controller
+    # numbers, which is a second statement that controllers reach a track.
+    receives: [notes, controls, program_change]
+  control:
+    label: Control Channel
+    count: 1
+    channel: assigned
+    # A CHANNEL THAT MAKES NO SOUND AND IS NOT A TRACK. It takes a program change, which
+    # switches the scene, and note numbers 60 to 75, which work the Scatter Pad. **It takes no
+    # control change**: nothing in either document says a controller reaches it, and a control
+    # sent to a channel an instrument ignores does nothing and says nothing about why.
+    receives: [notes, program_change]
+
+groups:
+  # NONE OF THESE FIVE LABELS IS THE MAKER'S WORD, because the chart heads nothing over its
+  # control change rows - all twenty-five sit under the single heading "Control Change". The
+  # control *names* below are the chart's own, verbatim, including its lower-case "Attack time"
+  # and its two "General Purpose Effect" rows.
+  controllers: Controllers
+  portamento: Portamento
+  pedals: Pedals
+  tone: Tone
+  vibrato: Vibrato
+  knobs: Knobs
+  effects: Effects
+
+controls:
+  # CONTROLLERS ---------------------------------------------------
+  modulation:             {label: Modulation, cc: 1, direction: receives, group: controllers}
+  volume:                 {label: Volume, cc: 7, direction: receives, group: controllers}
+  panpot:                 {label: Panpot, cc: 10, direction: receives, group: controllers}
+  expression:             {label: Expression, cc: 11, direction: receives, group: controllers}
+  breath_control:         {label: Breath Control, cc: 2, direction: receives, group: controllers}
+  foot_control:           {label: Foot Control, cc: 4, direction: receives, group: controllers}
+
+  # PORTAMENTO ----------------------------------------------------
+  portamento_time:        {label: Portamento Time, cc: 5, direction: receives, group: portamento}
+  portamento_control:     {label: Portamento control, cc: 84, direction: receives, group: portamento}
+
+  # PEDALS --------------------------------------------------------
+  hold_1:                 {label: Hold 1, cc: 64, direction: receives, group: pedals}
+  portamento:             {label: Portamento, cc: 65, direction: receives, group: pedals}
+  sostenuto:              {label: Sostenuto, cc: 66, direction: receives, group: pedals}
+  soft:                   {label: Soft, cc: 67, direction: receives, group: pedals}
+  legato_foot_switch:     {label: Legato Foot Switch, cc: 68, direction: receives, group: pedals}
+
+  # TONE ----------------------------------------------------------
+  resonance:              {label: Resonance, cc: 71, direction: receives, group: tone}
+  release_time:           {label: Release Time, cc: 72, direction: receives, group: tone}
+  attack_time:            {label: Attack time, cc: 73, direction: receives, group: tone}
+  cutoff:                 {label: Cutoff, cc: 74, direction: receives, group: tone}
+  decay_time:             {label: Decay Time, cc: 75, direction: receives, group: tone}
+
+  # VIBRATO -------------------------------------------------------
+  vibrato_rate:           {label: Vibrato Rate, cc: 76, direction: receives, group: vibrato}
+  vibrato_depth:          {label: Vibrato Depth, cc: 77, direction: receives, group: vibrato}
+  vibrato_delay:          {label: Vibrato Delay, cc: 78, direction: receives, group: vibrato}
+
+  # KNOBS ---------------------------------------------------------
+  filter_knob:            {label: FILTER Knob, cc: 80, group: knobs}
+  mod_knob:               {label: MOD Knob, cc: 81, group: knobs}
+  fx_knob:                {label: FX Knob, cc: 82, group: knobs}
+  sound_knob:             {label: SOUND Knob, cc: 83, group: knobs}
+
+  # EFFECTS -------------------------------------------------------
+  reverb_send:            {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, group: effects}
+  chorus_send:            {label: General Purpose Effect 3 (Chorus Send Level), cc: 92, direction: receives, group: effects}
+  delay_send:             {label: Delay Send Level, cc: 93, direction: receives, group: effects}
+

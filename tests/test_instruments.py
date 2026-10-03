@@ -135,6 +135,7 @@ class TestBundledCorpus:
 			"elektron/digitakt",
 			"elektron/digitakt_ii",
 			"elektron/digitone",
+			"elektron/digitone_ii",
 			"elektron/model_cycles",
 			"elektron/model_samples",
 			"elektron/syntakt",
@@ -4930,3 +4931,177 @@ class TestCircuitTracks:
 		# Both documents call themselves Version 3 and were made two months apart.
 		assert tracks.sources["guide"].dated == "2022-10-19"
 		assert tracks.sources["user_guide"].dated == "2022-08-25"
+
+
+class TestDigitoneII:
+
+	"""An Elektron whose sixteen tracks share sixteen voices, where its sibling's do not."""
+
+	def test_sixteen_tracks_sharing_sixteen_voices (self) -> None:
+		"""The figure sits on the instrument, which is the opposite of the Digitakt II."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		assert len(digitone.controls) == 164
+		assert len(digitone.groups) == 20
+		assert set(digitone.parts) == {"track", "fx"}
+
+		assert digitone.parts["track"].count == 16
+		assert digitone.parts["track"].addressing == "pitches"
+
+		# A shared pool, so the instrument carries the figure and no part does.
+		assert digitone.voice.polyphony == 16
+		assert digitone.voice.polyphony_shared is True
+		assert digitone.parts["track"].polyphony is None
+
+		# Its sibling is the other way round, and the pair is worth keeping honest.
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		assert digitakt.voice.polyphony_shared is False
+		assert digitakt.parts["track"].polyphony == 1
+
+	def test_the_four_syn_pages_are_four_groups (self) -> None:
+		"""Each prints the same eight names, so only the caption tells the thirty-two apart."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		pages = [f"syn_page_{number}" for number in range(1, 5)]
+
+		for group in pages:
+			knobs = [control for control in digitone.controls.values() if control.group == group]
+
+			assert len(knobs) == 8, group
+
+			# The label is as printed, which is the same eight on every page.
+			assert sorted(control.label for control in knobs) == sorted(
+				f"Data entry knob {letter} (machine dependent)" for letter in "ABCDEFGH")
+
+		# Thirty-two distinct controls all the same, told apart by their group alone.
+		assert digitone.controls["syn_page_1_data_entry_knob_a"].cc == 40
+		assert digitone.controls["syn_page_4_data_entry_knob_h"].cc == 77
+
+	def test_eleven_nrpns_mean_two_things_and_both_are_recorded (self) -> None:
+		"""A track is an audio track or a MIDI track, so one number reaches two maps."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		# The filter's envelope on an audio track, VAL1 on a MIDI track, one NRPN.
+		assert digitone.controls["filter_attack_time"].nrpn == 144
+		assert digitone.controls["cc_val_val1"].nrpn == 144
+
+		assert digitone.controls["filter_attack_time"].group == "filter"
+		assert digitone.controls["cc_val_val1"].group == "cc_val"
+
+		# Both are on the track part, because both are reached on a track's own channel.
+		assert digitone.controls["filter_attack_time"].part == "track"
+		assert digitone.controls["cc_val_val1"].part == "track"
+
+		# Sixteen CC VAL controls, one per assignable controller on a MIDI track.
+		assert len([c for c in digitone.controls.values() if c.group == "cc_val"]) == 16
+
+	def test_the_euclidean_table_is_captioned_amp_and_grouped_by_its_section (self) -> None:
+		"""The caption is the table above it carried down, so the section is what was used."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		assert digitone.groups["euclidean"] == "Euclidean Sequencer"
+
+		euclidean = [c for c in digitone.controls.values() if c.group == "euclidean"]
+
+		assert len(euclidean) == 7
+
+		# Every one is reached by NRPN and by nothing else, which no other group here is.
+		assert all(c.cc is None and c.nrpn is not None for c in euclidean)
+		assert digitone.controls["euclidean_pulse_generator_1"].nrpn == 392
+
+	def test_the_amp_table_prints_one_controller_twice (self) -> None:
+		"""84, 85, 86, 86, 88 - and both rows carry 86, because nothing settles it."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		assert digitone.controls["amp_decay_time"].cc == 86
+		assert digitone.controls["amp_sustain_level"].cc == 86
+
+		# Their NRPNs are an unbroken run, which is what makes the CC look like the slip.
+		assert digitone.controls["amp_decay_time"].nrpn == 160
+		assert digitone.controls["amp_sustain_level"].nrpn == 161
+
+		# And 87 is reached by nothing on this instrument.
+		assert 87 not in [c.cc for c in digitone.controls.values()]
+
+	def test_the_external_mixer_keeps_one_name_per_message (self) -> None:
+		"""Five rows are a stereo-linked second name for a row already there."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		mixer = [c for c in digitone.controls.values() if c.group == "external_in"]
+
+		assert len(mixer) == 11
+
+		# The mono name is kept; the stereo name is not a control of its own.
+		assert digitone.controls["external_in_input_l_level"].cc == 72
+		assert "external_in_input_l_r_level" not in digitone.controls
+
+		# The account says why, so a reader meeting the manual is not surprised.
+		assert "Input L R Level" in (digitone.source or "")
+
+	def test_two_controls_come_from_the_body_not_the_appendix (self) -> None:
+		"""A reader with only the appendix would take CC 1 and CC 2 for unassigned."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		assert digitone.controls["modulation_wheel"].cc == 1
+		assert digitone.controls["breath_controller"].cc == 2
+
+		# Neither carries an NRPN, the body giving only a controller number for each.
+		assert digitone.controls["modulation_wheel"].nrpn is None
+		assert digitone.controls["breath_controller"].nrpn is None
+
+		# The appendix uses neither number for anything else.
+		assert [c.name for c in digitone.controls.values() if c.cc == 1] == ["modulation_wheel"]
+		assert [c.name for c in digitone.controls.values() if c.cc == 2] == ["breath_controller"]
+
+	def test_the_maker_prefers_nrpn_and_says_so (self) -> None:
+		"""Control change cannot reach the high-resolution parameters on this instrument."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		assert digitone.midi.nrpn == "preferred"
+
+		by_nrpn = [c for c in digitone.controls.values() if c.nrpn is not None]
+		by_cc = [c for c in digitone.controls.values() if c.cc is not None]
+
+		assert len(by_nrpn) == 160
+		assert len(by_cc) == 149
+
+		# Its sibling's appendix gives no such advice and records plain support.
+		digitakt = pymidiinstrumentdefs.load("elektron/digitakt_ii", [CORPUS])
+
+		assert digitakt.midi.nrpn == "supported"
+
+	def test_what_is_left_unrecorded_and_why (self) -> None:
+		"""Aftertouch reaches it and no page says which kind, so the field stays empty."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		assert digitone.voice.aftertouch is None
+		assert digitone.voice.pitch_bend is None
+
+		# What is established is recorded.
+		assert digitone.voice.note_range == (0, 84)
+		assert digitone.voice.velocity is not None
+		assert digitone.voice.velocity.note_on == "received"
+
+		assert digitone.midi.clock == "both"
+		assert digitone.midi.transport == "both"
+		assert digitone.midi.sysex is True
+		assert digitone.midi.channels == (1, 16)
+
+		assert digitone.midi.program_change is not None
+		assert digitone.midi.program_change.presets == 128
+
+	def test_three_sources_and_a_release_note_address_that_had_to_be_found (self) -> None:
+		"""The sibling's release-notes URL pattern 404s for this product."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+
+		assert set(digitone.sources) == {"manual", "support_page", "release_notes"}
+
+		assert digitone.sources["manual"].edition == "OS 1.12"
+		assert digitone.sources["manual"].page_offset == 0
+		assert digitone.model.firmware == "1.12"
+
+		notes = digitone.sources["release_notes"]
+
+		assert notes.url == "https://www.elektron.se/release-notes/digitone-ii"
+		assert notes.paginated is False

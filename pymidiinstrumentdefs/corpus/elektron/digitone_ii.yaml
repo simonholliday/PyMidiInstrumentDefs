@@ -1,0 +1,522 @@
+# SIXTEEN TRACKS, EACH OF WHICH IS AN AUDIO TRACK OR A MIDI TRACK, and that is one part of
+# sixteen rather than two parts: "The Digitone II sequencer has 16 tracks that can be either an
+# audio track or a MIDI track" (p. 16), and "Any of the 16 tracks can be used as a MIDI track"
+# (p. 17). The Digitakt II and the Syntakt are the same instrument in this respect and are written
+# the same way; the original Digitone is not, having four synth tracks and four MIDI tracks as
+# separate slots.
+#
+# THAT SETTING IS WHY ELEVEN NUMBERS BELOW LOOK LIKE CLASHES AND ARE NOT. NRPN 1:16 is the
+# filter's Attack Time on an audio track and VAL1 on a MIDI track; the sixteen CC VAL controls and
+# the audio-track parameters cannot both be live on one track at one time. The format has no way to
+# say that - a control's meaning depending on a setting rather than on a channel is a gap the
+# format has not closed - and until it does, the groups below are what tells them apart.
+#
+# SIXTEEN VOICES ARE SHARED ACROSS THE SIXTEEN TRACKS, which is where this instrument parts company
+# with the Digitakt II. "The Digitone II has 16 voice polyphony" (p. 47) against sixteen tracks, and
+# the voices are a pool rather than an allowance: "VOICE STEAL sets the rules for how voices are
+# stolen (which voice is taken when you play a new note) when you use more than 16 voices at the
+# same time" (p. 47), and a track may reserve some of them - "VOICES Sets the number of voices
+# (1-16) you want to lock to a specific track" (p. 47). So the figure sits on the instrument with
+# `polyphony_shared: true`, where the Digitakt II's sixteen voices are one per track and the figure
+# sits on the part.
+#
+# FIVE ROWS OF THE EXTERNAL INPUT MIXER ARE A SECOND NAME FOR A ROW ALREADY THERE, not controls of
+# their own, and they are not below. `Input L Level` and `Input L R Level` are both CC 72 and both
+# NRPN 2:30; the same holds for the pan against the balance and for the three sends. They are one
+# message whose meaning follows the Dual Mono setting, and keeping both would make a panel draw two
+# faders that move together. The mono name is kept and the stereo name is recorded beside it.
+#
+# TWO CONTROLS ARE NOT IN THE APPENDIX AT ALL, and the body names both with their numbers: the
+# modulation wheel on CC 1 and the breath controller on CC 2, each assignable to up to four of a
+# track's parameters (p. 39). A reader with only the appendix would take 1 and 2 for unassigned.
+#
+# AND ONE NUMBER IS PRINTED TWICE WITHIN ONE TABLE, which is a different thing from the clashes
+# above and is carried as printed. In the AMP table both `Decay Time` and `Sustain Level` are given
+# CC 86, and the column runs 84, 85, 86, 86, 88 - so 87 is used by nothing. Their NRPNs are 1:32
+# and 1:33, an unbroken run, which is what makes the control change look like the slip rather than
+# the NRPN. Nothing in the manual or the release notes settles it, so both rows carry 86.
+
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Digitone II
+  # The manual says so itself, on p. 11: "This manual for Digitone II OS version 1.12 was last
+  # updated September 24, 2026." That agrees with the OS1.12 in Elektron's file name and with the
+  # "Digitone II OS 1.12" the support page offers for download, which is three statements agreeing
+  # - where the Digitakt II had five dates for one file and no two of them agreed.
+  # The version is checked and not only quoted. 1.12 is the newest system Elektron publishes, and
+  # the release notes cover every release from 1.00. Four entries mention controllers and all of
+  # them are at 1.10 or earlier: "Some NRPN parameters regarding the Euclidean sequencer didn't
+  # work as intended", "Some NRPN parameters had incorrect values", "The MIDI machines SEL 1-8 and
+  # SEL 9-16 parameters now have unique default SEL CCs", and one about MIDI messages at very low
+  # tempos. Nothing since 1.10 adds, removes or renumbers a controller.
+  firmware: "1.12"
+
+source: >-
+  User Manual, 122 pages, the edition Elektron names OS 1.12: APPENDIX C: MIDI, printed pp. 112-117,
+  which is the whole of the control map; and from the body, pp. 11, 15, 16, 17, 24, 37, 39, 47, 74,
+  75, 76 and 112. Elektron publishes no separate MIDI implementation document for this instrument,
+  so the appendix is all there is. The support page and the OS release notes are saved here too.
+
+  THE APPENDIX HOLDS 167 ROWS IN 20 TABLES AND 162 OF THEM ARE BELOW, with two more from the body
+  for 164. The five that are not are the external input mixer's stereo-linked names, which are the
+  same five messages already recorded under their mono names: `Input L R Level` is `Input L Level`,
+  both CC 72 and NRPN 2:30; `Input L R Balance` is `Input L Pan`, both CC 74 and NRPN 2:32; and
+  `Input L R Chorus Send`, `Input L R Delay Send` and `Input L R Reverb Send` are the three mono
+  sends the same way. One message whose meaning follows the Dual Mono setting, so keeping both
+  names would make a panel draw two faders that move together.
+
+  IT IS SET AT TWO DIFFERENT LEFT MARGINS, which is worth knowing before reading it by machine:
+  thirteen of its tables put the Parameter column at x 92 and eleven put it at x 64, every column
+  shifted by the same 28 points. And the columns have to be found by position rather than by
+  counting, because a row may fill two of the four number columns or three: three numbers on a row
+  could be a controller with an NRPN pair, or a controller pair with an NRPN MSB, and those are
+  different messages.
+
+  THE CC LSB COLUMN IS PRINTED ON ALL 20 TABLES AND IS EMPTY IN ALL 167 ROWS, which is a negative
+  worth stating because the appendix's own introduction explains it: control change on this
+  instrument is seven bits and nothing more, and NRPN is the stated route to anything finer. So no
+  control here has a fine half, no row fills all four number columns, and three numbers always mean
+  a controller with an NRPN pair. Both readings of the appendix found the same, and the extraction
+  asserts it rather than assuming it.
+
+  FOUR GAPS AND ONE MISFILED ROW, each checked and each recorded as printed. The TRACK table gives
+  Mute NRPN 1:108 and Track level 1:110, and 1:109 turns up two pages later as MISC's Pattern Mute.
+  The REVERB table runs 2:8 to 2:13 and then puts its Mix Volume at 2:15, so 2:14 reaches nothing.
+  LFO 3 runs 1:58 to 1:62 and then jumps to 1:70, 1:71 and 1:72 - forced, because 1:63 to 1:67 are
+  VAL12 to VAL16 and 1:68 and 1:69 are the filter's Env. Reset and Key Tracking - where LFO 1 and
+  LFO 2 are clean runs of eight. And `Pattern Volume`, CC 119 and NRPN 2:24, is printed inside the
+  COMPRESSOR table between Makeup Gain and Ratio, outside that table's own runs of 111-118 and
+  2:16-2:23 on both axes. It is not a compressor parameter; it is kept in the group the manual
+  prints it in, because the section it sits under is the mixer and the panel page it belongs to is
+  the one the compressor is on.
+
+  LFO 3 IS REACHED BY NRPN AND BY NOTHING ELSE, all eight of its parameters, where LFO 1 takes CC
+  102 to 109 and LFO 2 takes CC 111 to 118. With the Euclidean sequencer's seven, that is fifteen
+  of the 164 controls below that no control change reaches.
+
+  THE MAKER PREFERS NRPN AND SAYS SO, which is why `nrpn` records a preference rather than mere
+  support: "due to the large number of controllable parameters and that the machines share the same
+  CC values, it is not possible to control high-resolution parameters using CC. Instead, you should
+  use NRPN messages for this purpose" (p. 112). The Digitakt II's appendix opens with one sentence
+  and no such advice, so this is this instrument's own statement and not a house form of words.
+  160 of the 164 controls below carry an NRPN and 149 carry a control change.
+
+  THE EUCLIDEAN SEQUENCER'S TABLE IS CAPTIONED `AMP`, which is the caption of the table above it
+  carried down, so its group is taken from the section heading - "C.6 EUCLIDEAN SEQUENCER
+  PARAMETERS" - rather than from the caption. The Digitakt II's manual does the same thing three
+  times over. **A reader or a tool should key a table on its section and never on its caption.**
+
+  THE SECTION NUMBERING, THOUGH, IS RIGHT, and that is worth recording because its sibling's is
+  not. This appendix runs C.1 to C.12 with no number used twice, and the contents page gives the
+  page of all twelve correctly. The Digitakt II's prints two sections numbered B.8 and two B.9, on
+  the page and on its contents page both.
+
+  THE FOUR SYN PAGES ARE FOUR GROUPS AND NOT ONE, because each prints the same eight parameter
+  names - "Data entry knob A (machine dependent)" to H - and only the caption tells the thirty-two
+  apart. What each knob does follows from the machine assigned to the track, which is why the maker
+  names none of them: Appendix A lists the machines over seventeen pages and none of its parameter
+  names is tied to a knob letter there.
+
+  SIXTEEN TRACKS ARE ONE PART AND NOT TWO, so the sixteen CC VAL controls and the audio-track
+  parameters below are two maps reached on the same sixteen channels, never both at once. That is
+  why NRPN 1:16 is here twice, as the filter's Attack Time and as VAL1, and why eleven of the CC
+  VAL rows repeat the filter's and LFO 3's NRPNs exactly.
+
+  THE EFFECTS AND THE MIXER ANSWER ON A CHANNEL OF THEIR OWN: "FX CONTROL CH selects the dedicated
+  MIDI channel that is associated with the parameters on the DELAY, REVERB, CHORUS, and COMPRESSOR
+  parameter pages together with the master overdrive, both for input and output" (p. 76). That
+  sentence is also why the MISC table's Master Overdrive is on the effects part while its Pattern
+  Mute is on a track.
+
+  **THAT SENTENCE NAMES FOUR PAGES AND THE MASTER OVERDRIVE, AND NOT THE INPUT MIXER**, so putting
+  the external input mixer and the pattern volume on the effects part is an inference rather than
+  something the manual states. It rests on their sitting in the same appendix section as the
+  compressor, C.10, and on the same panel page as it. Nothing else in either document places them,
+  and the appendix itself never mentions a channel at all - every channel here comes from the body.
+
+  THE APPENDIX NEVER MENTIONS A MIDI CHANNEL, which is why 23 controller numbers below appear
+  twice. The delay's CC 21 to 28 are also the filter's; the reverb's 89 to 92 are also the amp's;
+  the chorus's Speed is CC 9 and so is the trig page's Portamento Time; CC 17 is both the filter's
+  knob F and the master overdrive. On the instrument these are a track's channel against the
+  effects channel, and the body is the only place that says so.
+
+  ONE NOTE ON THE EFFECTS CHANNEL DOES SOMETHING, AND IT IS NOT RECORDED AS A CONTROL. The release
+  notes for OS 1.10 say "Added tap tempo via MIDI note, using G10 on FX CONTROL channel" - a note
+  number that works the panel rather than sounding a pitch. The effects part is recorded as taking
+  controls only, because a part marked as taking notes invites a consumer to draw a note grid for
+  it, and there is one note and it is a button. What the format should say about a note that works
+  a control surface is an open question in this corpus and the same shape as a Roland groovebox's
+  note-addressed pad.
+
+  THE NOTE RANGE IS THE OUTER BOUND OF WHAT THE MANUAL STATES, over two bands that do different
+  things. "Note numbers 0-15 correspond to notes C0 through to D#1, the leftmost octave. These
+  notes will trigger the preset of track 1 through track 16, respectively (provided they are set to
+  their default channels 1-16)" (p. 24), and "MIDI note numbers 16-84, that corresponds to notes
+  E2-C7 (C5, MIDI note 60, being middle C) will trigger the preset of the active track in it's
+  chromatic variations" (p. 24). Nothing above 84 is documented.
+
+  THE MANUAL'S OWN NOTE NAMES DO NOT FOLLOW FROM ITS OWN NUMBERS, and both are left standing. If
+  note 0 is C0 then note 16 is E1, and the same page calls notes 16-84 "E2-C7"; the page's own "C5,
+  MIDI note 60, being middle C" agrees with note 0 being C0. The manual warns that "there are
+  several different naming standards for note names and their corresponding MIDI note values. Here,
+  we use the same naming standard as the one used internally in Elektron devices" (p. 24), which
+  explains the offset from the common convention but not the disagreement with itself. The numbers
+  are what this definition records; the names are not.
+
+  NOT RECORDED: whether the aftertouch it answers to is channel pressure or per-note pressure. The
+  instrument does answer to it - "Opens a menu where you can assign up to four parameters to the
+  MIDI aftertouch command" (p. 39) - but no page in 122 says which kind, and the field exists to
+  say which. The same page assigns pitch bend and the mod wheel the same way, and the pitch bend
+  depth is a setting of its own: "PITCH BEND DEPTH Sets how much the pitch bend data from external
+  MIDI devices affects the Digitone II" (p. 37), with no range given for it in semitones.
+
+  ALSO NOT RECORDED: the default controller numbers the MIDI tracks' sixteen CC SEL parameters
+  carry. The release notes say "The MIDI machines SEL 1-8 and SEL 9-16 parameters now have unique
+  default SEL CCs", so those defaults exist and changed at OS 1.10, and the appendix lists the VAL
+  parameters that send the values but not the SEL parameters that choose which controller each one
+  sends on. A player sets them, so they are a project's business rather than the instrument's.
+
+sources:
+  manual:
+    kind: manual
+    title: Digitone II User Manual
+    edition: OS 1.12
+    dated: 2026-09-24
+    landing: "https://www.elektron.se/support-downloads/digitone-ii"
+    url: "https://www.elektron.se/wp-content/uploads/2026/10/Digitone-2-User-Manual_ENG_OS1.12_260930.pdf"
+    sha256: 53b4eec03935e4ab318449e474346712ec1ceffa2af0db91ec6b0404d024f9f3
+    retrieved: 2026-10-03
+    # 122 pages, counted with pypdf and with PyMuPDF, which agree. **`file` says 237**, and it is
+    # wrong: the twelfth document that tool has miscounted in this corpus. Every page prints its
+    # own number and it is the file's page index, checked at six pages through the manual.
+    page_offset: 0
+  support_page:
+    kind: download_page
+    title: Digitone II Support and Downloads
+    landing: "https://www.elektron.se/support-downloads"
+    url: "https://www.elektron.se/support-downloads/digitone-ii"
+    sha256: edf4b9eabf4406f5257c29bbf24206727c6a05d0e9e9c7c767014fec4493f8d4
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for what Elektron publishes for this instrument and for what it does not: the English
+    # user manual, a Japanese one at OS 1.00A, the OS 1.12 download dated Oct 1, 2026, Elektron
+    # Transfer, and **no separate MIDI implementation document**. The saved copy is the visible
+    # text of the page; the HTML it was rendered from is beside it in the library.
+  release_notes:
+    kind: release_notes
+    title: Digitone II OS release notes
+    landing: "https://www.elektron.se/support-downloads/digitone-ii"
+    url: "https://www.elektron.se/release-notes/digitone-ii"
+    sha256: 9501798151551313dab9a0f1d0e62a0994fee5d8b79bf88890109c66b12903dc
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for the firmware check above: nine releases from OS 1.00 to 1.12, with every entry
+    # that mentions a controller at 1.10 or earlier. **The address had to be found rather than
+    # guessed**: the pattern the Digitakt II's notes are served under,
+    # `/release-notes/digitakt-ii-os-release-notes`, answers "Page not found" for this product,
+    # whose notes are at `/release-notes/digitone-ii`. The 404 was fetched, recognised and
+    # deleted rather than kept as a document.
+
+midi:
+  # A channel is set per track, for the effects, for the auto channel and for program change in
+  # each direction, each selected or set to OFF (p. 76). SIXTEEN IS THE PROTOCOL'S NUMBER AND HERE
+  # IT IS ALSO THE MAKER'S: no page prints the range a channel setting takes, but this instrument's
+  # sixteen tracks default to "their default channels 1-16" (p. 24), so all sixteen are in use as
+  # shipped.
+  channels: [1, 16]
+  # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
+  # SEND (p. 74), so both travel both ways and either can be switched off on its own.
+  clock: both
+  transport: both
+  program_change:
+    receives: true         # PRG CH RECEIVE, "useful when wanting to select patterns externally"
+    sends: true            # PRG CH SEND, "send program change messages when patterns are changed"
+    # "MIDI program change messages 0-127 will select pattern 1-128 (A01-H16)" (p. 24), and "A
+    # project contains 128 patterns" in eight banks (p. 16).
+    presets: 128
+    # Which channel carries them is its own setting, PROGRAM CHG IN CH and OUT CH, either of which
+    # may instead follow the auto channel (p. 76).
+  # THE MAKER'S OWN PREFERENCE, stated in the appendix and quoted in the source account: control
+  # change cannot reach the high-resolution parameters because the machines share CC values, "you
+  # should use NRPN messages for this purpose" (p. 112).
+  nrpn: preferred
+  # "In the SYSEX DUMP menu, project, pattern, and preset data can be sent and received via the
+  # MIDI OUT or USB port" is the menu at 13.5 (p. 76). No byte layout is published.
+  sysex: true
+
+parts:
+  # Both parts are given a channel by the player, in SETTINGS > MIDI CONFIG > CHANNELS (p. 76), so
+  # neither derives one: there is no base channel on this instrument.
+  track:
+    label: Track
+    count: 16
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # "TRACK 1-16 selects the dedicated MIDI channel that is used to receive or send (by turning
+    # the knobs) parameter data to or from a specific audio track. If configured as OFF, parameter
+    # data are neither received nor sent via MIDI" (p. 76), and RECEIVE NOTES "will, when active,
+    # make it possible to play Digitone II using an external MIDI keyboard" (p. 75).
+    # NO POLYPHONY FIGURE HERE, because the sixteen voices are a shared pool rather than an
+    # allowance per track - see `voice`. A track may lock some of them to itself, which is a
+    # project's setting and not a property of the instrument.
+  fx:
+    label: FX and Mixer
+    channel: assigned
+    receives: [controls]
+    # Takes no notes to sound: the delay, the reverb, the chorus, the compressor, the external
+    # input mixer and the master overdrive. "FX CONTROL CH selects the dedicated MIDI channel that
+    # is associated with the parameters on the DELAY, REVERB, CHORUS, and COMPRESSOR parameter
+    # pages together with the master overdrive, both for input and output" (p. 76). One note does
+    # reach it and it is a button rather than a pitch - see the source account.
+
+voice:
+  addressing: pitches
+  # "The Digitone II has 16 voice polyphony" (p. 47), and the architecture pages describe "the
+  # Digitone II internal sound architecture for its 16 audio voices" (p. 15).
+  polyphony: 16
+  # SHARED, AND THE MANUAL SAYS SO IN THE SAME BREATH AS THE FIGURE: voices are stolen "when you
+  # use more than 16 voices at the same time" (p. 47) across the sixteen tracks, and a track can
+  # lock between one and sixteen of them to itself. So sixteen is a ceiling for the instrument
+  # rather than a figure any track can count on, which is the opposite of the Digitakt II.
+  polyphony_shared: true
+  # Two bands of notes do something and the manual gives both, at 8.4 MIDI NOTES (p. 24): 0-15
+  # trigger the sixteen tracks, and 16-84 play the active track chromatically. Nothing above 84 is
+  # documented, so the range is the outer bound of what the manual states. The manual's own note
+  # names do not follow from its own numbers - see the source account.
+  note_range: [0, 84]
+  velocity:
+    # "Both the VEL parameter on the TRIG menu and the velocity of incoming MIDI notes sent to the
+    # Digitone II from external devices affects the assigned parameters" (p. 39), which is the
+    # engine answering to velocity. Nothing states what it does with a note-off velocity.
+    note_on: received
+
+groups:
+  track:           Track
+  trig:            Trig
+  syn_page_1:      SYN Page 1
+  syn_page_2:      SYN Page 2
+  syn_page_3:      SYN Page 3
+  syn_page_4:      SYN Page 4
+  filter:          Filter
+  amp:             Amp
+  euclidean:       Euclidean Sequencer
+  track_fx:        FX
+  lfo_1:           LFO 1
+  lfo_2:           LFO 2
+  lfo_3:           LFO 3
+  delay:           Delay
+  reverb:          Reverb
+  chorus:          Chorus
+  compressor:      Compressor
+  external_in:     External In Mixer
+  cc_val:          CC Val
+  misc:            Misc
+
+controls:
+
+  # TRACK ---------------------------------------------------------
+  track_mute:                            {label: Mute, cc: 94, nrpn: 236, part: track, group: track}
+  track_track_level:                     {label: Track level, cc: 95, nrpn: 238, part: track, group: track}
+
+  # TRIG ----------------------------------------------------------
+  trig_note:                             {label: Note, cc: 3, nrpn: 384, part: track, group: trig}
+  trig_velocity:                         {label: Velocity, cc: 4, nrpn: 385, part: track, group: trig}
+  trig_length:                           {label: Length, cc: 5, nrpn: 386, part: track, group: trig}
+  trig_filter_trig:                      {label: Filter Trig, cc: 13, part: track, group: trig}
+  trig_lfo_trig:                         {label: LFO Trig, cc: 14, part: track, group: trig}
+  trig_portamento_time:                  {label: Portamento Time, cc: 9, nrpn: 390, part: track, group: trig}
+  trig_portamento_on_off:                {label: Portamento On/Off, cc: 65, nrpn: 391, part: track, group: trig}
+
+  # SYN PAGE 1 ----------------------------------------------------
+  syn_page_1_data_entry_knob_a:          {label: Data entry knob A (machine dependent), cc: 40, nrpn: 201, part: track, group: syn_page_1}
+  syn_page_1_data_entry_knob_b:          {label: Data entry knob B (machine dependent), cc: 41, nrpn: 202, part: track, group: syn_page_1}
+  syn_page_1_data_entry_knob_c:          {label: Data entry knob C (machine dependent), cc: 42, nrpn: 203, part: track, group: syn_page_1}
+  syn_page_1_data_entry_knob_d:          {label: Data entry knob D (machine dependent), cc: 43, nrpn: 204, part: track, group: syn_page_1}
+  syn_page_1_data_entry_knob_e:          {label: Data entry knob E (machine dependent), cc: 44, nrpn: 205, part: track, group: syn_page_1}
+  syn_page_1_data_entry_knob_f:          {label: Data entry knob F (machine dependent), cc: 45, nrpn: 206, part: track, group: syn_page_1}
+  syn_page_1_data_entry_knob_g:          {label: Data entry knob G (machine dependent), cc: 46, nrpn: 207, part: track, group: syn_page_1}
+  syn_page_1_data_entry_knob_h:          {label: Data entry knob H (machine dependent), cc: 47, nrpn: 208, part: track, group: syn_page_1}
+
+  # SYN PAGE 2 ----------------------------------------------------
+  syn_page_2_data_entry_knob_a:          {label: Data entry knob A (machine dependent), cc: 48, nrpn: 209, part: track, group: syn_page_2}
+  syn_page_2_data_entry_knob_b:          {label: Data entry knob B (machine dependent), cc: 49, nrpn: 210, part: track, group: syn_page_2}
+  syn_page_2_data_entry_knob_c:          {label: Data entry knob C (machine dependent), cc: 50, nrpn: 211, part: track, group: syn_page_2}
+  syn_page_2_data_entry_knob_d:          {label: Data entry knob D (machine dependent), cc: 51, nrpn: 212, part: track, group: syn_page_2}
+  syn_page_2_data_entry_knob_e:          {label: Data entry knob E (machine dependent), cc: 52, nrpn: 213, part: track, group: syn_page_2}
+  syn_page_2_data_entry_knob_f:          {label: Data entry knob F (machine dependent), cc: 53, nrpn: 214, part: track, group: syn_page_2}
+  syn_page_2_data_entry_knob_g:          {label: Data entry knob G (machine dependent), cc: 54, nrpn: 215, part: track, group: syn_page_2}
+  syn_page_2_data_entry_knob_h:          {label: Data entry knob H (machine dependent), cc: 55, nrpn: 216, part: track, group: syn_page_2}
+
+  # SYN PAGE 3 ----------------------------------------------------
+  syn_page_3_data_entry_knob_a:          {label: Data entry knob A (machine dependent), cc: 56, nrpn: 217, part: track, group: syn_page_3}
+  syn_page_3_data_entry_knob_b:          {label: Data entry knob B (machine dependent), cc: 57, nrpn: 218, part: track, group: syn_page_3}
+  syn_page_3_data_entry_knob_c:          {label: Data entry knob C (machine dependent), cc: 58, nrpn: 219, part: track, group: syn_page_3}
+  syn_page_3_data_entry_knob_d:          {label: Data entry knob D (machine dependent), cc: 59, nrpn: 220, part: track, group: syn_page_3}
+  syn_page_3_data_entry_knob_e:          {label: Data entry knob E (machine dependent), cc: 60, nrpn: 221, part: track, group: syn_page_3}
+  syn_page_3_data_entry_knob_f:          {label: Data entry knob F (machine dependent), cc: 61, nrpn: 222, part: track, group: syn_page_3}
+  syn_page_3_data_entry_knob_g:          {label: Data entry knob G (machine dependent), cc: 62, nrpn: 223, part: track, group: syn_page_3}
+  syn_page_3_data_entry_knob_h:          {label: Data entry knob H (machine dependent), cc: 63, nrpn: 224, part: track, group: syn_page_3}
+
+  # SYN PAGE 4 ----------------------------------------------------
+  syn_page_4_data_entry_knob_a:          {label: Data entry knob A (machine dependent), cc: 70, nrpn: 225, part: track, group: syn_page_4}
+  syn_page_4_data_entry_knob_b:          {label: Data entry knob B (machine dependent), cc: 71, nrpn: 226, part: track, group: syn_page_4}
+  syn_page_4_data_entry_knob_c:          {label: Data entry knob C (machine dependent), cc: 72, nrpn: 227, part: track, group: syn_page_4}
+  syn_page_4_data_entry_knob_d:          {label: Data entry knob D (machine dependent), cc: 73, nrpn: 228, part: track, group: syn_page_4}
+  syn_page_4_data_entry_knob_e:          {label: Data entry knob E (machine dependent), cc: 74, nrpn: 229, part: track, group: syn_page_4}
+  syn_page_4_data_entry_knob_f:          {label: Data entry knob F (machine dependent), cc: 75, nrpn: 230, part: track, group: syn_page_4}
+  syn_page_4_data_entry_knob_g:          {label: Data entry knob G (machine dependent), cc: 76, nrpn: 231, part: track, group: syn_page_4}
+  syn_page_4_data_entry_knob_h:          {label: Data entry knob H (machine dependent), cc: 77, nrpn: 232, part: track, group: syn_page_4}
+
+  # FILTER --------------------------------------------------------
+  filter_frequency:                      {label: Frequency, cc: 16, nrpn: 148, part: track, group: filter}
+  filter_data_entry_knob_f:              {label: Data entry knob F (machine dependent), cc: 17, nrpn: 149, part: track, group: filter}
+  filter_data_entry_knob_g:              {label: Data entry knob G (machine dependent), cc: 18, nrpn: 150, part: track, group: filter}
+  filter_env_depth:                      {label: Env. Depth, cc: 24, nrpn: 154, part: track, group: filter}
+  filter_attack_time:                    {label: Attack Time, cc: 20, nrpn: 144, part: track, group: filter}
+  filter_decay_time:                     {label: Decay Time, cc: 21, nrpn: 145, part: track, group: filter}
+  filter_sustain_level:                  {label: Sustain Level, cc: 22, nrpn: 146, part: track, group: filter}
+  filter_release_time:                   {label: Release Time, cc: 23, nrpn: 147, part: track, group: filter}
+  filter_env_delay:                      {label: Env. Delay, cc: 19, nrpn: 151, part: track, group: filter}
+  filter_key_tracking:                   {label: Key Tracking, cc: 26, nrpn: 197, part: track, group: filter}
+  filter_base:                           {label: Base, cc: 27, nrpn: 152, part: track, group: filter}
+  filter_width:                          {label: Width, cc: 28, nrpn: 153, part: track, group: filter}
+  filter_env_reset:                      {label: Env. Reset, cc: 25, nrpn: 196, part: track, group: filter}
+
+  # AMP -----------------------------------------------------------
+  amp_attack_time:                       {label: Attack Time, cc: 84, nrpn: 158, part: track, group: amp}
+  amp_hold_time:                         {label: Hold Time, cc: 85, nrpn: 159, part: track, group: amp}
+  amp_decay_time:                        {label: Decay Time, cc: 86, nrpn: 160, part: track, group: amp}
+  amp_sustain_level:                     {label: Sustain Level, cc: 86, nrpn: 161, part: track, group: amp}
+  amp_release_time:                      {label: Release Time, cc: 88, nrpn: 162, part: track, group: amp}
+  amp_env_reset:                         {label: Env. Reset, cc: 92, nrpn: 169, part: track, group: amp}
+  amp_mode:                              {label: Mode, cc: 91, nrpn: 168, part: track, group: amp}
+  amp_pan:                               {label: Pan, cc: 89, nrpn: 166, part: track, group: amp}
+  amp_volume:                            {label: Volume, cc: 90, nrpn: 167, part: track, group: amp}
+
+  # EUCLIDEAN SEQUENCER -------------------------------------------
+  euclidean_pulse_generator_1:           {label: Pulse Generator 1, nrpn: 392, part: track, group: euclidean}
+  euclidean_pulse_generator_2:           {label: Pulse Generator 2, nrpn: 393, part: track, group: euclidean}
+  euclidean_euclidean_mode_on_off:       {label: Euclidean Mode On/Off, nrpn: 398, part: track, group: euclidean}
+  euclidean_rotation_generator_1:        {label: Rotation Generator 1, nrpn: 395, part: track, group: euclidean}
+  euclidean_rotation_generator_2:        {label: Rotation Generator 2, nrpn: 396, part: track, group: euclidean}
+  euclidean_track_rotation:              {label: Track Rotation, nrpn: 397, part: track, group: euclidean}
+  euclidean_boolean_operator:            {label: Boolean Operator, nrpn: 394, part: track, group: euclidean}
+
+  # FX ------------------------------------------------------------
+  track_fx_bit_reduction:                {label: Bit Reduction, cc: 78, nrpn: 133, part: track, group: track_fx}
+  track_fx_overdrive:                    {label: Overdrive, cc: 81, nrpn: 136, part: track, group: track_fx}
+  track_fx_sample_rate_reduction:        {label: Sample Rate Reduction, cc: 79, nrpn: 134, part: track, group: track_fx}
+  track_fx_srr_routing:                  {label: SRR Routing, cc: 80, nrpn: 135, part: track, group: track_fx}
+  track_fx_overdrive_routing:            {label: Overdrive Routing, cc: 82, nrpn: 137, part: track, group: track_fx}
+  track_fx_delay_send:                   {label: Delay Send, cc: 30, nrpn: 164, part: track, group: track_fx}
+  track_fx_reverb_send:                  {label: Reverb Send, cc: 31, nrpn: 165, part: track, group: track_fx}
+  track_fx_chorus_send:                  {label: Chorus Send, cc: 29, nrpn: 163, part: track, group: track_fx}
+
+  # LFO 1 ---------------------------------------------------------
+  lfo_1_speed:                           {label: Speed, cc: 102, nrpn: 170, part: track, group: lfo_1}
+  lfo_1_multiplier:                      {label: Multiplier, cc: 103, nrpn: 171, part: track, group: lfo_1}
+  lfo_1_fade_in_out:                     {label: Fade In/Out, cc: 104, nrpn: 172, part: track, group: lfo_1}
+  lfo_1_destination:                     {label: Destination, cc: 105, nrpn: 173, part: track, group: lfo_1}
+  lfo_1_waveform:                        {label: Waveform, cc: 106, nrpn: 174, part: track, group: lfo_1}
+  lfo_1_start_phase_slew:                {label: Start Phase/Slew, cc: 107, nrpn: 175, part: track, group: lfo_1}
+  lfo_1_trig_mode:                       {label: Trig Mode, cc: 108, nrpn: 176, part: track, group: lfo_1}
+  lfo_1_depth:                           {label: Depth, cc: 109, nrpn: 177, part: track, group: lfo_1}
+
+  # LFO 2 ---------------------------------------------------------
+  lfo_2_speed:                           {label: Speed, cc: 111, nrpn: 178, part: track, group: lfo_2}
+  lfo_2_multiplier:                      {label: Multiplier, cc: 112, nrpn: 179, part: track, group: lfo_2}
+  lfo_2_fade_in_out:                     {label: Fade In/Out, cc: 113, nrpn: 180, part: track, group: lfo_2}
+  lfo_2_destination:                     {label: Destination, cc: 114, nrpn: 181, part: track, group: lfo_2}
+  lfo_2_waveform:                        {label: Waveform, cc: 115, nrpn: 182, part: track, group: lfo_2}
+  lfo_2_start_phase_slew:                {label: Start Phase/Slew, cc: 116, nrpn: 183, part: track, group: lfo_2}
+  lfo_2_trig_mode:                       {label: Trig Mode, cc: 117, nrpn: 184, part: track, group: lfo_2}
+  lfo_2_depth:                           {label: Depth, cc: 118, nrpn: 185, part: track, group: lfo_2}
+
+  # LFO 3 ---------------------------------------------------------
+  lfo_3_speed:                           {label: Speed, nrpn: 186, part: track, group: lfo_3}
+  lfo_3_multiplier:                      {label: Multiplier, nrpn: 187, part: track, group: lfo_3}
+  lfo_3_fade_in_out:                     {label: Fade In/Out, nrpn: 188, part: track, group: lfo_3}
+  lfo_3_destination:                     {label: Destination, nrpn: 189, part: track, group: lfo_3}
+  lfo_3_waveform:                        {label: Waveform, nrpn: 190, part: track, group: lfo_3}
+  lfo_3_start_phase_slew:                {label: Start Phase/Slew, nrpn: 198, part: track, group: lfo_3}
+  lfo_3_trig_mode:                       {label: Trig Mode, nrpn: 199, part: track, group: lfo_3}
+  lfo_3_depth:                           {label: Depth, nrpn: 200, part: track, group: lfo_3}
+
+  # DELAY ---------------------------------------------------------
+  delay_delay_time:                      {label: Delay Time, cc: 21, nrpn: 256, part: fx, group: delay}
+  delay_pingpong:                        {label: Pingpong, cc: 22, nrpn: 257, part: fx, group: delay}
+  delay_stereo_width:                    {label: Stereo Width, cc: 23, nrpn: 258, part: fx, group: delay}
+  delay_feedback:                        {label: Feedback, cc: 24, nrpn: 259, part: fx, group: delay}
+  delay_highpass_filter:                 {label: Highpass Filter, cc: 25, nrpn: 260, part: fx, group: delay}
+  delay_lowpass_filter:                  {label: Lowpass Filter, cc: 26, nrpn: 261, part: fx, group: delay}
+  delay_reverb_send:                     {label: Reverb Send, cc: 27, nrpn: 262, part: fx, group: delay}
+  delay_mix_volume:                      {label: Mix Volume, cc: 28, nrpn: 263, part: fx, group: delay}
+
+  # REVERB --------------------------------------------------------
+  reverb_predelay:                       {label: Predelay, cc: 29, nrpn: 264, part: fx, group: reverb}
+  reverb_decay_time:                     {label: Decay Time, cc: 30, nrpn: 265, part: fx, group: reverb}
+  reverb_shelving_freq:                  {label: Shelving Freq, cc: 31, nrpn: 266, part: fx, group: reverb}
+  reverb_shelving_gain:                  {label: Shelving Gain, cc: 89, nrpn: 267, part: fx, group: reverb}
+  reverb_highpass_filter:                {label: Highpass Filter, cc: 90, nrpn: 268, part: fx, group: reverb}
+  reverb_lowpass_filter:                 {label: Lowpass Filter, cc: 91, nrpn: 269, part: fx, group: reverb}
+  reverb_mix_volume:                     {label: Mix Volume, cc: 92, nrpn: 271, part: fx, group: reverb}
+
+  # CHORUS --------------------------------------------------------
+  chorus_depth:                          {label: Depth, cc: 16, nrpn: 297, part: fx, group: chorus}
+  chorus_speed:                          {label: Speed, cc: 9, nrpn: 298, part: fx, group: chorus}
+  chorus_high_pass_filter:               {label: High Pass Filter, cc: 70, nrpn: 299, part: fx, group: chorus}
+  chorus_width:                          {label: Width, cc: 71, nrpn: 300, part: fx, group: chorus}
+  chorus_delay_send:                     {label: Delay Send, cc: 12, nrpn: 301, part: fx, group: chorus}
+  chorus_reverb_send:                    {label: Reverb Send, cc: 13, nrpn: 302, part: fx, group: chorus}
+  chorus_mix_volume:                     {label: Mix Volume, cc: 14, nrpn: 303, part: fx, group: chorus}
+
+  # COMPRESSOR ----------------------------------------------------
+  compressor_threshold:                  {label: Threshold, cc: 111, nrpn: 272, part: fx, group: compressor}
+  compressor_attack_time:                {label: Attack Time, cc: 112, nrpn: 273, part: fx, group: compressor}
+  compressor_release_time:               {label: Release Time, cc: 113, nrpn: 274, part: fx, group: compressor}
+  compressor_makeup_gain:                {label: Makeup Gain, cc: 114, nrpn: 275, part: fx, group: compressor}
+  compressor_pattern_volume:             {label: Pattern Volume, cc: 119, nrpn: 280, part: fx, group: compressor}
+  compressor_ratio:                      {label: Ratio, cc: 115, nrpn: 276, part: fx, group: compressor}
+  compressor_sidechain_source:           {label: Sidechain Source, cc: 116, nrpn: 277, part: fx, group: compressor}
+  compressor_sidechain_filter:           {label: Sidechain Filter, cc: 117, nrpn: 278, part: fx, group: compressor}
+  compressor_dry_wet_mix:                {label: Dry/Wet Mix, cc: 118, nrpn: 279, part: fx, group: compressor}
+
+  # EXTERNAL IN MIXER ---------------------------------------------
+  external_in_dual_mono:                 {label: Dual Mono, cc: 82, nrpn: 296, part: fx, group: external_in}
+  external_in_input_l_level:             {label: Input L Level, cc: 72, nrpn: 286, part: fx, group: external_in}
+  external_in_input_l_pan:               {label: Input L Pan, cc: 74, nrpn: 288, part: fx, group: external_in}
+  external_in_input_r_level:             {label: Input R Level, cc: 73, nrpn: 287, part: fx, group: external_in}
+  external_in_input_r_pan:               {label: Input R Pan, cc: 75, nrpn: 289, part: fx, group: external_in}
+  external_in_input_l_delay_send:        {label: Input L Delay Send, cc: 78, nrpn: 292, part: fx, group: external_in}
+  external_in_input_r_delay_send:        {label: Input R Delay Send, cc: 79, nrpn: 293, part: fx, group: external_in}
+  external_in_input_l_reverb_send:       {label: Input L Reverb Send, cc: 80, nrpn: 294, part: fx, group: external_in}
+  external_in_input_r_reverb_send:       {label: Input R Reverb Send, cc: 81, nrpn: 295, part: fx, group: external_in}
+  external_in_input_l_chorus_send:       {label: Input L Chorus Send, cc: 76, nrpn: 290, part: fx, group: external_in}
+  external_in_input_r_chorus_send:       {label: Input R Chorus Send, cc: 77, nrpn: 291, part: fx, group: external_in}
+
+  # CC VAL --------------------------------------------------------
+  cc_val_val1:                           {label: VAL1, cc: 70, nrpn: 144, part: track, group: cc_val}
+  cc_val_val2:                           {label: VAL2, cc: 71, nrpn: 145, part: track, group: cc_val}
+  cc_val_val3:                           {label: VAL3, cc: 72, nrpn: 146, part: track, group: cc_val}
+  cc_val_val4:                           {label: VAL4, cc: 73, nrpn: 147, part: track, group: cc_val}
+  cc_val_val5:                           {label: VAL5, cc: 74, nrpn: 148, part: track, group: cc_val}
+  cc_val_val6:                           {label: VAL6, cc: 75, nrpn: 149, part: track, group: cc_val}
+  cc_val_val7:                           {label: VAL7, cc: 76, nrpn: 150, part: track, group: cc_val}
+  cc_val_val8:                           {label: VAL8, cc: 77, nrpn: 151, part: track, group: cc_val}
+  cc_val_val9:                           {label: VAL9, cc: 78, nrpn: 188, part: track, group: cc_val}
+  cc_val_val10:                          {label: VAL10, cc: 79, nrpn: 189, part: track, group: cc_val}
+  cc_val_val11:                          {label: VAL11, cc: 80, nrpn: 190, part: track, group: cc_val}
+  cc_val_val12:                          {label: VAL12, cc: 81, nrpn: 191, part: track, group: cc_val}
+  cc_val_val13:                          {label: VAL13, cc: 82, nrpn: 192, part: track, group: cc_val}
+  cc_val_val14:                          {label: VAL14, cc: 83, nrpn: 193, part: track, group: cc_val}
+  cc_val_val15:                          {label: VAL15, cc: 84, nrpn: 194, part: track, group: cc_val}
+  cc_val_val16:                          {label: VAL16, cc: 85, nrpn: 195, part: track, group: cc_val}
+
+  # MISC ----------------------------------------------------------
+  misc_pattern_mute:                     {label: Pattern Mute, cc: 110, nrpn: 237, part: track, group: misc}
+  misc_master_overdrive:                 {label: Master Overdrive, cc: 17, nrpn: 306, part: fx, group: misc}
+  modulation_wheel:                      {label: Modulation Wheel, cc: 1, part: track, group: misc}
+  breath_controller:                     {label: Breath Controller, cc: 2, part: track, group: misc}

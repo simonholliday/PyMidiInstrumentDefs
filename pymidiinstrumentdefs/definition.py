@@ -501,6 +501,15 @@ class Source:
 	manuals here it has been -9, +1, 0, and one that prints two pages to a sheet.
 	A document with no pages at all - a plain-text implementation chart runs to
 	numbered sections instead - says so with ``paginated: false``.
+
+	``pictured_pages`` names the printed pages of this document whose numbers are
+	published **only as an image**, so that a checker reading the text finds
+	nothing and knows why.  An Arturia DrumBrute Impact is the case: 107 pages of
+	ordinary text, and the one page that gives its drum map gives it as a
+	screenshot of the maker's editor.  Declaring the page is a claim about the
+	document a reader can turn to and check, and it is deliberately not inferred -
+	a checker that excused any number absent from a page carrying a photograph
+	would excuse an invented one on most pages of most manuals.
 	"""
 
 	kind: str | None = None
@@ -514,6 +523,7 @@ class Source:
 	page_offset: int = 0
 	pages_per_sheet: int = 1
 	paginated: bool = True
+	pictured_pages: tuple[int, ...] = ()
 
 
 	def file_page (self, printed: int) -> int | None:

@@ -269,6 +269,7 @@ class _Reader:
 				page_offset     = self.integer(fields["page_offset"], f"{where}.page_offset", -999, 999) if "page_offset" in fields else 0,
 				pages_per_sheet = self.integer(fields["pages_per_sheet"], f"{where}.pages_per_sheet", 1, 8) if "pages_per_sheet" in fields else 1,
 				paginated       = self.flag(fields["paginated"], f"{where}.paginated") if "paginated" in fields else True,
+				pictured_pages  = self.pictured_pages(fields, where),
 			)
 
 		return found
@@ -468,6 +469,44 @@ class _Reader:
 			pitch_bend   = self.pitch_bend(section.get("pitch_bend")),
 			voices       = voices,
 		)
+
+
+	def pictured_pages (self, fields: dict[str, object], where: str) -> tuple[int, ...]:
+
+		"""Read ``pictured_pages`` — the pages whose numbers are only in a picture.
+
+		Three things are refused rather than warned about, because each would make
+		the declaration mean less than it says.  **A page named twice** is a typo,
+		not an emphasis.  **A page on a document with no pages** cannot be turned
+		to at all, so the claim has no referent.  And the pages are sorted here, so
+		that two files declaring the same pages in different orders are the same
+		declaration.
+		"""
+
+		if "pictured_pages" not in fields:
+			return ()
+
+		pages = tuple(
+			self.integer(page, f"{where}.pictured_pages", 1, 9999)
+			for page in self.sequence(fields["pictured_pages"], f"{where}.pictured_pages")
+		)
+
+		if len(set(pages)) != len(pages):
+			repeated = sorted({page for page in pages if pages.count(page) > 1})
+
+			self.refuse(f"{where}.pictured_pages", f"names {repeated} more than once")
+
+		paginated = self.flag(fields["paginated"], f"{where}.paginated") \
+			if "paginated" in fields else True
+
+		if pages and not paginated:
+			self.refuse(
+				f"{where}.pictured_pages",
+				"names a page on a document that says it has none — a printed page "
+				"number is a claim about a document somebody can turn to",
+			)
+
+		return tuple(sorted(pages))
 
 
 	def polyphony (

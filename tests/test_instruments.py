@@ -5964,3 +5964,54 @@ class TestTyphon:
 
 		assert "The Artemis's list must never be attributed to this instrument" in flowed
 		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed
+
+
+class TestDeclaringAPicturedPage:
+
+	"""A source can say which of its pages publish their numbers only as an image."""
+
+	def test_only_the_drumbrute_impact_declares_one (self) -> None:
+		"""It is the only instrument here whose numbers are published as a picture.
+
+		Listed by name so that a second one has to be added here deliberately: the
+		declaration switches off the strongest check this corpus has, for the pages it
+		names, so it should never spread quietly.
+		"""
+		declared = {
+			name: {key: source.pictured_pages
+				for key, source in pymidiinstrumentdefs.load(name, [CORPUS]).sources.items()
+				if source.pictured_pages}
+			for name in pymidiinstrumentdefs.available([CORPUS])
+		}
+
+		assert {name: pages for name, pages in declared.items() if pages} == {
+			"arturia/drumbrute_impact": {"manual": (99,)},
+		}
+
+	def test_a_page_declared_twice_is_refused (self) -> None:
+		"""A page named twice is a typo rather than an emphasis."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(
+				"definition: 1\nmodel: {name: X}\n"
+				"sources: {m: {page_offset: 0, pictured_pages: [99, 99]}}",
+				source = "x.yaml",
+			)
+
+		assert "more than once" in str(raised.value)
+
+	def test_a_pictured_page_on_a_document_with_no_pages_is_refused (self) -> None:
+		"""A printed page number is a claim about a document somebody can turn to."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(
+				"definition: 1\nmodel: {name: X}\n"
+				"sources: {m: {paginated: false, pictured_pages: [99]}}",
+				source = "x.yaml",
+			)
+
+		assert "says it has none" in str(raised.value)
+
+	def test_declaring_nothing_is_the_default_and_changes_nothing (self) -> None:
+		"""Every other definition reads exactly as it did before the field existed."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert typhon.sources["manual"].pictured_pages == ()

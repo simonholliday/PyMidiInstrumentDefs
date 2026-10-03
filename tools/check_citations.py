@@ -306,6 +306,15 @@ class Followed:
 	# reported alike.
 	scanned: bool = False
 
+	# The pages this document's source declares as carrying their numbers only in a
+	# picture, narrowed to the ones the definition actually cites and the document
+	# actually has.  A declaration about a page nobody cites switches nothing off.
+	pictured: list[int] = dataclasses.field(default_factory=list)
+
+	# Declared pages that carry no image at all, which is a fault in the
+	# declaration rather than in the definition's numbers.
+	unpictured: list[int] = dataclasses.field(default_factory=list)
+
 
 	def covers (self, printed: int) -> bool:
 
@@ -366,11 +375,33 @@ class Result:
 
 
 	@property
+	def misdeclared (self) -> list[tuple[str, int]]:
+
+		"""Pages declared as pictured that carry no image at all.
+
+		**This is the half of the declaration that can be checked.** Nothing here
+		can tell whether a number is inside a picture, but it can tell that a page
+		said to hold one holds none - which catches a mistyped page number and a
+		declaration left behind after a maker revised the document.
+		"""
+
+		return [
+			(document.key, page)
+			for document in self.documents for page in document.unpictured
+		]
+
+
+	@property
 	def sound (self) -> bool:
 
-		"""True when every citation was followed and every number was on its page."""
+		"""True when every citation was followed and every number was on its page.
 
-		return not (self.missing or self.unreachable or self.lost)
+		A misdeclared pictured page counts against it: the declaration is what
+		excuses the numbers, so a declaration that is not true leaves them excused
+		by nothing.
+		"""
+
+		return not (self.missing or self.unreachable or self.lost or self.misdeclared)
 
 
 def follow (
@@ -431,6 +462,29 @@ def follow (
 			opened.pages[page - 1].extract_text() or "" for page in document.pages
 		)
 
+		# A declared pictured page counts only if the definition cites it and the
+		# document has it, and it is then checked for carrying an image at all.
+		for printed in document.source.pictured_pages:
+			if printed not in result.cited or not document.covers(printed):
+				continue
+
+			page = document.source.file_page(printed)
+
+			if page is None:
+				continue
+
+			document.pictured.append(printed)
+
+			try:
+				images = len(opened.pages[page - 1].images)
+			except Exception:
+				# A page whose images cannot be decoded is not a page with none, so
+				# the declaration is left standing rather than called a fault.
+				continue
+
+			if not images:
+				document.unpictured.append(printed)
+
 		# Nothing on the cited pages is either a scan or a run of blank pages, and
 		# those need different answers, so ask the whole document before deciding.
 
@@ -442,6 +496,13 @@ def follow (
 	printed_numbers = numbers_on(printed_text)
 
 	unreadable = any(document.scanned for document in result.documents)
+
+	# A definition that declares some of its cited pages as carrying their numbers
+	# only in a picture is in the same position as one citing a scan: the text was
+	# read and the numbers were never in it to find.  The declaration has to have
+	# been made in the file - nothing is inferred from a page merely having an
+	# image on it, because most pages of most manuals do.
+	pictured = any(document.pictured for document in result.documents)
 
 	for entry in result.wanted:
 		name, kind, number = entry
@@ -462,7 +523,7 @@ def follow (
 		# is an unanswered question rather than a wrong citation, and calling it
 		# missing would accuse a definition of a fault nobody has established.
 
-		if unreadable:
+		if unreadable or pictured:
 			result.unverifiable.append(entry)
 			continue
 
@@ -489,6 +550,13 @@ def render (result: Result, verbose: bool) -> None:
 
 		if document.scanned:
 			print("        a scan: it has pages, but no text in them to search")
+
+		if document.pictured:
+			print(f"        declares printed {as_ranges(set(document.pictured))} as carrying "
+				f"their numbers only in a picture")
+
+		for printed in document.unpictured:
+			print(f"        ⚠ DECLARES printed {printed} as pictured AND IT CARRIES NO IMAGE")
 
 		if document.pages:
 			print(f"        printed {as_ranges(result.cited)} → file {as_ranges(document.pages)}")
@@ -519,8 +587,12 @@ def render (result: Result, verbose: bool) -> None:
 		)
 
 	if result.unverifiable:
+		why = ("a cited page publishes its numbers only in a picture"
+			if any(document.pictured for document in result.documents)
+			else "a cited document is a scan")
+
 		print(
-			f"        {len(result.unverifiable)} NOT CHECKED AT ALL: a cited document is a scan, "
+			f"        {len(result.unverifiable)} NOT CHECKED AT ALL: {why}, "
 			f"so no machine here can look for them"
 		)
 

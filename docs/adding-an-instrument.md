@@ -461,6 +461,33 @@ cannot:
   no offset can express. One definition here cites pp. 62-63 of a 40-sheet file,
   and that is only not a contradiction once the sheet count is known.
 
+A fourth is for the case where the numbers are not text at all:
+
+- **`pictured_pages`** names the printed pages of this document whose numbers are
+  published **only as an image** — a screenshot, a photograph of a panel, a chart
+  drawn rather than set. The citation checker reads text, so it finds nothing on
+  such a page; declaring the page tells it that the silence is the document's and
+  not the definition's, and it reports those numbers as **unchecked** rather than
+  missing.
+
+  ```yaml
+  sources:
+    manual:
+      page_offset: 5
+      pictured_pages: [99]    # the drum map is a screenshot of the maker's editor
+  ```
+
+  **Declare it only where it is true, and say in a comment how you read the
+  picture.** This is the one field that switches off the strongest check here, so
+  it is deliberately not inferred: a checker that excused any number absent from a
+  page carrying an image would excuse an invented one on most pages of most
+  manuals. The checker does verify the half it can — that a page you call pictured
+  carries an image at all — and reports a page that does not as a fault, which
+  catches a mistyped number and a declaration left behind after a maker revised the
+  document. It cannot verify that your numbers are inside the picture. **Nothing
+  but reading it twice can**, so read it twice, by eye, from the image at its own
+  resolution, and look for an arithmetic relation the document itself explains.
+
 ## 7. When there is no document
 
 Some instruments — discontinued ones especially — have nothing published any more.

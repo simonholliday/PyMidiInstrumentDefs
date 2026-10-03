@@ -325,3 +325,85 @@ class TestACitedDocumentThatIsAScan:
 		# for had been counted as a number found on the page.
 		assert "0 of 1 numbers found" in printed
 		assert "1 of 1 numbers found" not in printed
+
+
+class TestAPageThatPublishesItsNumbersOnlyInAPicture:
+
+	"""A declared pictured page excuses a number the text cannot carry, and is checked.
+
+	The Arturia DrumBrute Impact is the case: 107 pages of ordinary text in which the
+	one page giving the drum map gives it as a screenshot of the maker's editor. This
+	is deliberately a declaration in the file rather than something inferred from a
+	page having an image on it - most pages of most manuals do, so inferring it would
+	excuse an invented number nearly everywhere.
+	"""
+
+	def document (self, declared: str, pictured: list[int], unpictured: list[int]) -> typing.Any:
+		"""One cited document, found in the library, with a declaration already checked."""
+		source = pymidiinstrumentdefs.parse(
+			f"definition: 1\nmodel: {{name: X}}\nsources: {{m: {{page_offset: 5, {declared}}}}}",
+			source = "x.yaml",
+		).sources["m"]
+
+		return tool.Followed(
+			key = "m", source = source, path = pathlib.Path("m.pdf"), extent = 107,
+			pictured = pictured, unpictured = unpictured,
+		)
+
+	def test_the_declaration_is_read_and_sorted (self) -> None:
+		"""Two files declaring the same pages in different orders declare the same thing."""
+		source = pymidiinstrumentdefs.parse(
+			"definition: 1\nmodel: {name: X}\n"
+			"sources: {m: {page_offset: 0, pictured_pages: [99, 12]}}",
+			source = "x.yaml",
+		).sources["m"]
+
+		assert source.pictured_pages == (12, 99)
+
+	def test_a_number_nobody_could_look_for_is_not_called_missing (self) -> None:
+		""""Not on the page you cited" accuses the definition; this does not."""
+		result = tool.Result(name = "arturia/drumbrute_impact",
+			documents = [self.document("pictured_pages: [99]", [99], [])])
+		result.unverifiable = [("kick", "note", 36)]
+
+		assert result.missing == []
+		assert result.sound is True
+
+	def test_a_declaration_about_a_page_with_no_image_is_a_fault (self) -> None:
+		"""The half of the claim a machine can check, and it must not pass quietly.
+
+		Nothing here can tell whether a number is inside a picture. It can tell that a
+		page said to hold one holds none, which catches a mistyped page number and a
+		declaration left behind after a maker revised the document.
+		"""
+		result = tool.Result(name = "arturia/drumbrute_impact",
+			documents = [self.document("pictured_pages: [99]", [99], [99])])
+
+		assert result.misdeclared == [("m", 99)]
+		assert result.sound is False
+
+	def test_the_reason_it_could_not_be_checked_names_the_picture (self, capsys: typing.Any) -> None:
+		"""A scan and a pictured page are different facts and must read differently."""
+		result = tool.Result(name = "arturia/drumbrute_impact",
+			documents = [self.document("pictured_pages: [99]", [99], [])])
+		result.wanted = [("kick", "note", 36)]
+		result.unverifiable = list(result.wanted)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "declares printed 99 as carrying their numbers only in a picture" in printed
+		assert "1 NOT CHECKED AT ALL: a cited page publishes its numbers only in a picture" \
+			in printed
+
+		# And the count above those lines must not read like a pass.
+		assert "0 of 1 numbers found" in printed
+
+	def test_a_misdeclaration_is_shouted_rather_than_mentioned (self, capsys: typing.Any) -> None:
+		"""It is the thing that would otherwise make the whole declaration worthless."""
+		result = tool.Result(name = "arturia/drumbrute_impact",
+			documents = [self.document("pictured_pages: [99]", [99], [99])])
+
+		tool.render(result, verbose = False)
+
+		assert "DECLARES printed 99 as pictured AND IT CARRIES NO IMAGE" in capsys.readouterr().out

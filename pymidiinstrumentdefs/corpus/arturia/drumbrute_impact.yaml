@@ -1,0 +1,254 @@
+definition: 1
+
+# EVERY MIDI NUMBER THIS INSTRUMENT PUBLISHES IS INSIDE A PICTURE. The manual's text names no
+# controller number and no note number anywhere - searched all 107 pages for CC, control change,
+# program change, sysex, System Exclusive, NRPN and RPN. What it does instead is describe the
+# MIDI Control Center editor's Device Settings in prose and show them as five screenshots, on
+# printed pages 93, 94, 97, 98 and 99. Each is a raster image, so no text extractor returns a
+# digit of any of them; they were read by eye, twice, from the images extracted at native size.
+#
+# AND ONLY ONE OF THE FIVE IS CALLED A DEFAULT BY ITS OWN PAGE. The drum map's says so in as
+# many words - "The settings shown below are the default MIDI note number values for each
+# instrument" (manual p. 99) - and the word `default` appears nowhere else in that whole chapter.
+# So the drum map below is a fact about the model, and the global channel, the touch strip's
+# controller number and the three transport assignments are **somebody's settings, photographed**.
+# None of those is in this file. That is the Iridium's trap in a new document: there, a screenshot
+# of the MIDI Learn store showed one person's assignments and was recorded as a refusal. Here it
+# is four pictures out of five, and one of them - a Rec CC of 0 with its knob at the minimum,
+# between a populated 51 and 54 - looks like a cleared field rather than any factory state.
+
+model:
+  manufacturer: Arturia
+  name: DrumBrute Impact
+  # THE MANUAL IS OLDER THAN THE FIRMWARE AND NOTHING IN BETWEEN CHANGED A NUMBER. The manual is
+  # version 1.0 of 2018-07-11, which the file states itself in its own keywords; the newest
+  # firmware is 1.0.9.381 of 2018-10-09. All three sets of release notes Arturia publishes were
+  # fetched and read - and here, unlike the Muse's maker, the newest is cumulative and contains
+  # the older two word for word. Between them they say four things: first release, touch strip
+  # behaviour, roller mode behaviour, touch strip detection. **No controller, no note number, no
+  # channel.** So the 2018 manual is still the map, and that is checked rather than hoped.
+  firmware: "1.0.9.381"
+
+source: >-
+  User Manual, 107 pages, version 1.0 of 2018-07-11: the Drum Map at p. 99, which
+  is the only set of numbers this instrument publishes; the instruments at pp. 28-29;
+  the rear panel at p. 17; All Notes Off at p. 27; synchronisation at pp. 68-69; and
+  the Device Settings chapter at pp. 93-99 for the channel, the clock formats, the
+  accent threshold and what the pads, the sequencer and the touch strip send. Plus
+  Arturia's release notes for all three firmware versions, and the MIDI Control
+  Center manual, which is cited for an absence and nothing else.
+
+  THERE IS NO MIDI IMPLEMENTATION CHART AND NO CONTROLLER MAP. Arturia publishes
+  neither for this instrument, and the manual's chapters run from its
+  "Synchronization" straight to MIDI Control Center and then to the licence
+  agreement, with nothing between them. So there is no
+  `controls` block below, and its absence is the fact rather than an omission.
+
+  TWO THINGS ON THIS MACHINE ANSWER TO CONTROL CHANGE, AND THE PLAYER CHOOSES BOTH
+  NUMBERS. The touch strip sends and receives one - "The Touch strip also will be
+  activated each time a matching MIDI CC message is received by the DrumBrute
+  Impact. You can change the MIDI CC number of the Touch strip" (p. 97) - and the
+  three transport commands each send one, on a channel of their own: "You can define
+  the MIDI channel and CC number for each of the three main Transport commands
+  independently" (p. 98). Nothing else is said to send or receive a controller at
+  all; the ten instruments' panel knobs are analogue and the manual claims no MIDI
+  for any of them. A number a player assigns is not a property of the model, so
+  `control_change: learned` says so - the reading the OP-1's four routed controllers
+  and the Pulsar-23's whole panel got.
+
+  ITS FIXED CONTROLLER VALUES ARE PUBLISHED AND THE FORMAT CANNOT HOLD THEM. The
+  touch strip's number is the player's but its values are not: "the MIDI CC values
+  sent and recognized by the Touch strip are fixed" (p. 97), over five regions. Off
+  sends 0 and answers to 0-24; 1/4 sends 25 and answers to 25-49; 1/8 sends 50 and
+  answers to 50-74; 1/16 sends 75 and answers to 75-99; 1/32 sends 100 and answers
+  to 100-127. So the send value is a single number and the receive window is wide,
+  which is unusual enough to be worth writing down even though no field here can
+  carry it: a control needs a number, and this one's number is not the maker's.
+
+  THE MANUAL NEVER STATES THE MIDI CHANNEL RANGE. Its whole prose on the subject is
+  "Use the pull-down menu to select the Global MIDI Channel for the DrumBrute
+  Impact" (p. 93), and the pull-down's contents are in the screenshot. Searched for
+  every form of a channel range across all 107 pages and found none, so `channels`
+  is left out rather than assumed to be 1 to 16. **More than one channel is in play
+  in any case**: the touch strip "sends and receives on the Global MIDI Channel"
+  (p. 97) while each transport command has its own, and no sentence anywhere says
+  which channel the drum notes themselves use.
+
+  WHAT THE INSTRUMENT SENDS CAN BE SWITCHED OFF, WHICH MATTERS BEFORE DIAGNOSING
+  SILENCE. The pads and the sequencer have independent four-state settings - "You
+  can choose whether the pads will send MIDI note data or not. The available options
+  are Off (no MIDI note data sent), USB&MIDI, USB and MIDI" (p. 95), and the same
+  again for the sequencer - and Local Control splits the machine in two: with it
+  off, "pressing a pad or playing a sequence will not produce a sound but will send
+  messages to the MIDI Out port" (p. 96). The clock is the exception and is not
+  defeatable: it "will always send MIDI Clock type messages (MIDI Real Time
+  messages) while playing" (p. 98).
+
+  NOT MENTIONED ON ANY PAGE OF ANY DOCUMENT HELD: program change, system exclusive,
+  NRPN, RPN, aftertouch, pitch bend and song position. Searched the manual, the
+  resources page and all three sets of release notes. Two of those absences are
+  worth a reader's attention rather than silence. **Program change is a real gap**:
+  the machine has four banks of sixteen patterns and sixteen songs, all selected
+  from the panel, and no document says whether MIDI can select any of them.
+  **Something very like system exclusive exists and is never named**: "Each time the
+  DrumBrute Impact is connected, the Device Settings are automatically sent from the
+  unit to the MIDI Control Center" (p. 93), which is a two-way settings protocol
+  over USB with no published message type. So `sysex` is left unset, because unset
+  means nobody established it and that is exactly the state of the evidence.
+
+  ONE PROSE AMBIGUITY THAT THE PICTURE SETTLES. The text says the two toms share
+  their "Color" effect and that "Technically the Color effect is applied to Tom Hi,
+  and that color information is shared with Tom Low" (p. 28), which leaves it open
+  whether Tom Low has a "Color" note of its own. The drum map shows that it does,
+  with a number of its own, and both readings of the picture agree. Recorded here
+  because the prose alone would not settle it. The maker's own spelling is kept
+  throughout, here and in the names below.
+
+midi:
+  # IT TAKES CLOCK AND SENDS IT. As master, "MIDI clock messages are sent to MIDI out, USB MIDI,
+  # and the Clock output" (p. 68); as slave it "functions as a slave to an external clock when one
+  # of the other three Sync LEDS are lit (USB, MIDI or CLK)" (p. 68). Four analogue rates as well,
+  # for the clock sockets rather than for MIDI: 1P, 2P, 24P and 48P, "The default rate is 24P"
+  # (p. 69).
+  clock: both
+  # SENDS TRANSPORT, AND NOTHING SAYS IT RECEIVES ANY. The buttons "control the DrumBrute Impact
+  # sequencer as well as external MIDI devices using standard MIDI messages or MIDI Machine
+  # Control (MMC)" (p. 7), and the clock note says it "will always remotely start a device (or a
+  # DAW) which is in Slave mode" (p. 98). **For receiving there is no sentence at all**, and one
+  # that points the other way: on the analogue input a stop is inferred rather than received,
+  # "because it is not possible to differentiate between a dropped clock signal and a stop"
+  # (p. 94). The manual says "receives" where it means it - it does so for the touch strip two
+  # pages earlier - and for transport it never does. Song position is not mentioned anywhere.
+  transport: sends
+  # The touch strip's controller and the three transport controllers are the player's to choose,
+  # and the maker publishes no number for any of them. See the account above.
+  control_change: learned
+  # A checked absence: neither word appears in the manual, the resources page or any of the three
+  # sets of release notes. The data entry controllers are not spoken for either way, because no
+  # controller on this instrument is.
+  nrpn: none
+
+voice:
+  # Ten instruments on ten note numbers, each a drum rather than a pitch.
+  addressing: voices
+  # THE NUMBERS BELOW ARE DEFAULTS AND THE PAGE SAYS SO: "The settings shown below are the default
+  # MIDI note number values for each instrument. Each instrument can be set to any note number
+  # between 0-127" (p. 99). They are changed in the editor over USB and there is no front-panel
+  # route to them, so a machine in front of you may answer to anything. This is the Vermona's
+  # arrangement, where the numbers are assigned by MIDI learn instead; the consequence for a
+  # reader is identical and the format has one flag for both.
+  note_map: learned
+  velocity:
+    # RECEIVED, AND IT WORKS AS A THRESHOLD RATHER THAN A CONTINUUM. The Accent Velocity
+    # Threshold "sets the MIDI velocity value for the Accents you add when editing a pattern.
+    # This also determines the accent level response when a MIDI note is received" (p. 95), and
+    # it "is the same for all instruments" (p. 29). So a note is accented or it is not, and
+    # crossing the line "increases the decay time and/or timbre slightly" (p. 29). Whether
+    # velocity leaves the instrument is nowhere stated, though its pads are velocity sensitive.
+    note_on: received
+  # NINETEEN NOTES FOR TEN INSTRUMENTS, because "The Normal and Color versions of each sound have
+  # independent MIDI note numbers" (p. 29) - except the Cowbell, which has neither a Color effect
+  # nor a Color note: "The Cowbell does not have a Color effect, so the MCC does not display a
+  # Colored Cowbell value field" (p. 99).
+  #
+  # EVERY COLOR NOTE IS TWELVE ABOVE ITS OWN, which is what checks a transcription made by eye:
+  # the plain notes run 36 to 45 unbroken, the Color notes run 48 to 57 with **54 missing**, and
+  # 54 is the Cowbell's. An arithmetic relation holding across nine instruments, with its one
+  # exception explained in words on the same page, is a stronger check than reading the digits
+  # twice - and both readings of the picture did also agree digit for digit.
+  #
+  # THE NAMES ARE THE EDITOR'S OWN, including its spelling of Colored, which is a maker's name for
+  # a thing rather than this file's prose.
+  voices:
+    kick: 36
+    snare1: 37
+    snare2: 38
+    tom_h: 39
+    tom_l: 40
+    cymbal: 41
+    cowbell: 42
+    cl_hat: 43
+    op_hat: 44
+    fm: 45
+    colored_kick: 48
+    colored_snare1: 49
+    colored_snare2: 50
+    colored_tom_h: 51
+    colored_tom_l: 52
+    colored_cymbal: 53
+    colored_cl_hat: 55
+    colored_op_hat: 56
+    colored_fm: 57
+  # NO POLYPHONY FIGURE, and the instrument is why rather than the document. Ten instruments do
+  # not mean ten voices: "The Closed Hat instrument and the Open Hat instrument are generated by
+  # the same analog circuitry, and so only one can be heard at a time" (p. 28), and the Closed Hat
+  # "will always cut off the Open Hat" (p. 28). Two more pairs share a pad and a panel channel -
+  # the toms, and the cymbal with the cowbell - though each of those keeps its own track and its
+  # own note. No page states how many can sound at once, so nothing is recorded.
+
+# NO CONTROLS BLOCK: see midi.control_change above. Its absence here is the fact, not an
+# omission - the same shape as the Vermona DRM1 MkIV's, whose manual refuses controller data
+# outright, except that this machine does answer to control change on numbers it does not publish.
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual DrumBrute Impact
+    edition: "1.0"
+    dated: 2018-07-11
+    landing: "https://www.arturia.com/products/hardware-synths/drumbrute-impact/resources"
+    url: "https://www.arturia.com/api/download/products/drumbrute-impact/manual/drumbrute-impact_Manual_1_0_EN.pdf"
+    sha256: 8dfa3a4efddc9ae7e3084f896aaf9e3f288f923a8044fe208835e8393c4e6d4a
+    retrieved: 2026-10-03
+    # 107 pages, counted with pypdf and with PyMuPDF, which agree. **`file` says 6.** The edition
+    # and date are the file's own: its keywords read `drumbrute-impact__1.0__20180711__en`.
+    # **OFFSET +5**, checked at three pages: printed 25 is file 30, printed 85 is file 90, printed
+    # 102 is file 107. Rendered from HTML by Prince, which is why its cross-references are printed
+    # as page links - "See the Device Settings [p.93] section" - rather than as prose.
+    page_offset: 5
+  release_notes:
+    kind: release_notes
+    title: DrumBrute Impact release notes
+    edition: 1.0.9.381
+    dated: 2018-10-09
+    landing: "https://www.arturia.com/products/hardware-synths/drumbrute-impact/resources"
+    url: "https://www.arturia.com/api/content/resources/release_notes?resource_id=4526"
+    sha256: e1ac43e5aa046bae2cb7862a5cc59114f5c7e7be088c60cf2db5710ab71f260b
+    retrieved: 2026-10-03
+    paginated: false
+    # Arturia serves release notes from an API rather than publishing a file, so this is the text
+    # rendered from the JSON by a written-down procedure anybody can repeat. **All three versions
+    # were fetched** - 1.0.9.381, 1.0.2.297 and 1.0.1.265 - and this newest one contains the other
+    # two word for word, which is the opposite of the Muse's maker, whose oldest note was the
+    # fullest. Four lines in all, naming the touch strip and the roller and no number.
+  mcc_manual:
+    kind: manual
+    title: MIDI Control Center Manual
+    edition: "1.0"
+    dated: 2017-06-21
+    landing: "https://www.arturia.com/products/hardware-synths/drumbrute-impact/resources"
+    url: "https://www.arturia.com/api/download/products/mcc/manual/MIDI_Control_Center_Manual_1_0_EN.pdf"
+    sha256: 32ab28633af162978205422d2ab1610773fe160ff42b15bd8ab778554ba94b44
+    retrieved: 2026-10-03
+    # CITED FOR AN ABSENCE. The editor's own manual is the last place Arturia could have stated
+    # the controller numbers and channel that only appear in screenshots, and it does not: it is a
+    # manual for the editor rather than for any product, says so itself, and names no number for
+    # this instrument on any of its 30 pages. It is here so that "no document states them" is
+    # evidenced rather than asserted. Dated a year before this instrument existed. 30 pages by
+    # PyMuPDF; **`file` says 4**.
+    page_offset: 0
+  resources_page:
+    kind: download_page
+    title: DrumBrute Impact Resources - Arturia
+    landing: "https://www.arturia.com/"
+    url: "https://www.arturia.com/products/hardware-synths/drumbrute-impact/resources"
+    sha256: 0e06f15e4822f54e2f505717a6727119a3d54c26f8fc9307f169ddd74c81e99e
+    retrieved: 2026-10-03
+    paginated: false
+    # The only published list of what exists for this instrument, and its contents are not in its
+    # links: the page is a Nuxt application carrying them in a flat array in which an object's
+    # values are indices into the same array. Reassembling it gives one manual per language at
+    # version 1.0, three firmware releases each with notes, and the editor. **No variant of this
+    # product appears on it** - the survey that chose this instrument mentioned a "DrumBrute
+    # Impact 1984", and that string occurs neither on this page nor on any of the manual's 107
+    # pages.

@@ -128,6 +128,7 @@ class TestBundledCorpus:
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
 			"akai/mpc_sample",
 			"arturia/astrolab",
+			"arturia/drumbrute_impact",
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"behringer/model_d",
@@ -5334,3 +5335,132 @@ class TestBlofeld:
 		# With no range recorded, the loader treats every note as playable rather than guessing.
 		assert blofeld.voice.plays_note(0) is True
 		assert blofeld.voice.plays_note(127) is True
+
+
+class TestDrumBruteImpact:
+
+	"""An Arturia whose every MIDI number is inside a picture, and only one picture is a
+	default."""
+
+	def test_nineteen_notes_for_ten_instruments (self) -> None:
+		"""Each has a plain note and a Color note, except the one with no Color effect."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert len(impact.voice.voices) == 19
+		assert impact.voice.addressing == "voices"
+
+		plain = [name for name in impact.voice.voices if not name.startswith("colored_")]
+		coloured = [name for name in impact.voice.voices if name.startswith("colored_")]
+
+		assert len(plain) == 10
+		assert len(coloured) == 9
+
+		# The ten run unbroken from 36.
+		assert sorted(impact.voice.voices[name] for name in plain) == list(range(36, 46))
+
+	def test_every_colour_note_is_twelve_above_its_own (self) -> None:
+		"""The relation is what checks a transcription made by eye, and 54 is the one gap."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		voices = impact.voice.voices
+
+		for name, note in voices.items():
+			if name.startswith("colored_"):
+				assert note == voices[name[len("colored_"):]] + 12, name
+
+		# The Cowbell has no Color effect, so the one number missing from 48-57 is its.
+		assert "colored_cowbell" not in voices
+		assert voices["cowbell"] + 12 == 54
+		assert 54 not in voices.values()
+
+		coloured = sorted(note for name, note in voices.items() if name.startswith("colored_"))
+
+		assert coloured == [48, 49, 50, 51, 52, 53, 55, 56, 57]
+
+	def test_the_numbers_are_defaults_rather_than_fixed_facts (self) -> None:
+		"""They are set in the maker's editor, so a machine in front of you may answer to
+		anything."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert impact.voice.note_map == "learned"
+
+	def test_it_publishes_no_controller_number_at_all (self) -> None:
+		"""Two things answer to control change and the player chooses both numbers."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert impact.controls == {}
+		assert impact.midi.control_change == "learned"
+		assert impact.midi.nrpn == "none"
+
+	def test_the_channel_range_is_not_recorded_because_it_is_never_stated (self) -> None:
+		"""It exists only in a screenshot, and a screenshot of an editor is not a statement.
+
+		This is the one that would be easiest to get wrong: 1 to 16 is what almost every
+		instrument takes, and this manual never says so.
+		"""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert impact.midi.channels is None
+
+	def test_it_sends_transport_and_nothing_says_it_receives_any (self) -> None:
+		"""The manual says 'receives' where it means it, and for transport it never does."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert impact.midi.clock == "both"
+		assert impact.midi.transport == "sends"
+
+	def test_what_is_left_unset_is_left_unset (self) -> None:
+		"""Program change and system exclusive are unestablished, which is not the same as
+		absent.
+
+		Something very like system exclusive exists - the editor reads the machine's settings
+		over USB - and no document names its message type, so `sysex` says nothing rather
+		than claiming false.
+		"""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert impact.midi.sysex is None
+		assert impact.midi.program_change is None
+
+		# Nor is there a voice count: ten instruments are not ten voices, because the two
+		# hats are one circuit.
+		assert impact.voice.polyphony is None
+		assert impact.voice.aftertouch is None
+		assert impact.voice.pitch_bend is None
+
+	def test_velocity_is_received_and_works_as_a_threshold (self) -> None:
+		"""A note is accented or it is not, by one figure shared across all ten instruments."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert impact.voice.velocity is not None
+		assert impact.voice.velocity.note_on == "received"
+
+		# Whether velocity leaves the instrument is nowhere stated.
+		assert impact.voice.velocity.note_off is None
+
+	def test_the_editors_manual_is_cited_for_an_absence (self) -> None:
+		"""So that 'no document states them' is evidenced rather than asserted."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert set(impact.sources) == {"manual", "release_notes", "mcc_manual", "resources_page"}
+
+		# The largest page offset in the bundled set, and the reason front matter fills it.
+		assert impact.sources["manual"].page_offset == 5
+		assert impact.sources["mcc_manual"].page_offset == 0
+
+		assert impact.sources["release_notes"].paginated is False
+		assert impact.sources["resources_page"].paginated is False
+
+	def test_the_account_records_the_values_the_format_cannot_hold (self) -> None:
+		"""The touch strip's number is the player's and its values are the maker's."""
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert impact.source is not None
+
+		account = " ".join(impact.source.split())
+
+		assert "the MIDI CC values sent and recognized by the Touch strip are fixed" in account
+		assert "1/32 sends 100 and answers to 100-127" in account
+
+		# And that there is no chart at all, which is the fact rather than an omission.
+		assert "THERE IS NO MIDI IMPLEMENTATION CHART AND NO CONTROLLER MAP" in account

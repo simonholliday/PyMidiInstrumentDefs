@@ -267,9 +267,15 @@ in. An on/off parameter printed as `0-1` stays `range: [0, 1]` unless the docume
 says which number is which.
 
 **Three kinds of fact, and only one of them belongs in your file.** Facts about the
-MIDI specification — channel mode messages, CC 120 to 127, Data Entry on CC 6 and 38 —
-are not your instrument's parameters, and the validator will refuse them. Facts about
-*your* rig — the channel you happen to use — are not properties of the model.
+MIDI specification are not your instrument's parameters. The channel mode messages,
+CC 120 to 127, are the clearest case and **the validator refuses them outright**.
+Data Entry on CC 6 and 38 is the next clearest and the validator does *not* refuse it,
+because it cannot: a maker may document that pair as a control of its own, and one in
+this corpus does — the DX7's transmitted table calls CC 6 "the data entry knob", a
+front-panel control, and the definition carries it. So leave 6 and 38 out when they are
+only how an NRPN's value travels, and say in a comment why they are there when they are
+not. Facts about *your* rig — the channel you happen to use — are not properties of the
+model.
 `channels` is the range the instrument can be set to. Anything the format cannot yet
 express goes in a comment, never in an invented field.
 

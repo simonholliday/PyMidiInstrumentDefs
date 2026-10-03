@@ -140,6 +140,7 @@ class TestBundledCorpus:
 			"korg/electribe",
 			"korg/microkorg",
 			"korg/minilogue_xd",
+			"korg/modwave_mk_ii",
 			"korg/multi_poly",
 			"korg/opsix",
 			"korg/volca_drum",
@@ -3975,3 +3976,125 @@ class TestPeak:
 		assert peak.midi.program_change.presets == 512
 		assert peak.midi.program_change.receives is True
 		assert peak.midi.program_change.sends is True
+
+
+class TestModwaveMkII:
+
+	"""One document set for three products, and a chart whose columns had to be proved."""
+
+	def test_fifteen_controls_off_three_tables (self) -> None:
+		"""Nine from the chart, five from MIDI CC Assign, and one the chart never names."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		assert len(mw.controls) == 15
+		assert len(mw.groups) == 5
+
+		# The chart's nine named controller numbers.
+		for number in (1, 7, 10, 11, 18, 19, 64, 66, 67):
+			assert number in {c.cc for c in mw.controls.values()}, f"cc {number} is missing"
+
+		# The five the "MIDI CC Assign" table gives a default assignment for.
+		assert mw.controls["scale_select"].cc == 9
+
+		for which in (1, 2, 3, 4):
+			assert mw.controls[f"mod_knob_{which}"].cc == 23 + which
+
+		# And the KAOSS button, which the chart mentions only by folding 12 into "12-31".
+		assert mw.controls["kaoss_button"].cc == 12
+
+	def test_five_controls_are_received_and_never_sent (self) -> None:
+		"""The chart marks them X transmitted and O recognized, and the prose agrees."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		receiving = sorted(name for name, c in mw.controls.items()
+			if c.direction == pymidiinstrumentdefs.definition.RECEIVES)
+
+		assert receiving == ["expression", "pan", "soft", "sostenuto", "volume"]
+
+		# Everything else goes both ways, including the Mod Knobs, which "send and receive".
+		for name in ("modulation", "damper", "kaoss_pad_x", "kaoss_pad_y", "mod_knob_1"):
+			assert mw.controls[name].direction == pymidiinstrumentdefs.definition.BOTH
+
+	def test_no_nrpn_and_it_is_a_checked_absence (self) -> None:
+		"""The chart's own numbers reach everything but 96 to 101, which is that block."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		assert mw.midi.nrpn == "none"
+
+		# No control carries one either, so the two statements cannot drift apart.
+		assert all(c.nrpn is None for c in mw.controls.values())
+
+	def test_transport_is_refused_rather_than_unstated (self) -> None:
+		"""Song Position, Song Select and the real-time Commands are all X in both columns."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		assert mw.midi.transport == "none"
+
+		# Clock is the one real-time message it does answer to, and in both directions.
+		assert mw.midi.clock == "both"
+		assert mw.midi.mode == 3
+
+	def test_two_layers_each_on_a_channel_of_its_own (self) -> None:
+		"""A Performance has two, and program change is global by way of the Set List."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		assert set(mw.parts) == {"layer"}
+
+		layer = mw.parts["layer"]
+
+		assert layer.count == 2
+		assert layer.is_assigned is True
+		assert layer.channel_offset is None
+
+		# Notes and controllers reach a Layer; program change does not.
+		assert layer.receives == ("notes", "controls")
+
+		# Sixty voices are a ceiling across the pair, not a figure each can count on.
+		assert mw.voice.polyphony == 60
+		assert mw.voice.polyphony_shared is True
+		assert mw.voice.voicing_modes == (1, 60)
+
+	def test_the_voice_count_is_the_only_thing_that_is_the_mk_ii_s (self) -> None:
+		"""One specification sentence covers three models and differs in one number."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		assert mw.model.name == "modwave mk II"
+		assert mw.model.firmware == "3.0"
+
+		# Five documents, including the sibling's download page, fetched to prove the two
+		# products are served one document set.
+		assert set(mw.sources) == {
+			"manual", "property_exchange", "about_mk_ii", "download_page",
+			"download_page_modwave"}
+
+		# The chart is printed five pages lower than its file page.
+		assert mw.sources["manual"].page_offset == 5
+		assert mw.sources["property_exchange"].paginated is False
+
+	def test_release_velocity_is_sent_narrower_than_it_is_heard (self) -> None:
+		"""O 8n V=1-64 transmitted against O 8n V=0-127 recognized."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		assert mw.voice.velocity is not None
+		assert mw.voice.velocity.note_on == "both"
+		assert mw.voice.velocity.note_off is True
+
+		# Received only, and both kinds, which the prose settles independently of the chart.
+		assert mw.voice.aftertouch == "poly"
+
+		# Settable in both directions with no published default.
+		assert mw.voice.pitch_bend is not None
+		assert mw.voice.pitch_bend.programmable is True
+		assert mw.voice.pitch_bend.semitones is None
+
+	def test_program_change_reaches_a_set_list_slot (self) -> None:
+		"""Sixty-four of them, numbered from zero on the wire and from one on the panel."""
+		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
+
+		assert mw.midi.program_change is not None
+		assert mw.midi.program_change.presets == 64
+		assert mw.midi.program_change.receives is True
+		assert mw.midi.program_change.sends is True
+
+		# No factory channel is published - the chart's Default cell holds the whole range.
+		assert mw.midi.channels == (1, 16)

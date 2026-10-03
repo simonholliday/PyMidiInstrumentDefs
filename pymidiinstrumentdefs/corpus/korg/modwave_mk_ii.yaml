@@ -1,0 +1,350 @@
+# ONE DOCUMENT SET DESCRIBES THREE PRODUCTS, AND THE MAKER SAYS SO IN ONE SENTENCE: these
+# manuals "apply to all modwave models with software version 3.0 or later, collectively
+# referred to as 'the modwave'" (manual p. 1). Korg's two download pages agree from the other
+# side - the modwave's and the modwave mk II's offer the same fifteen files under the same
+# fifteen file ids, with exactly one addition for the mk II. **So everything below is the
+# modwave's own published map, and the one thing that differs is the voice count.**
+#
+# THE MIDI IMPLEMENTATION CHART'S COLUMNS WERE SETTLED FROM THE PAGE AND NOT FROM READING
+# ORDER, which on a Korg chart is the whole job. The multi/poly's chart draws "Recognized"
+# before "Transmitted", so an extractor that trusts the order inverts every direction in the
+# file and nothing on the page announces it. This page draws three vertical rules, and each
+# heading's own glyphs fall between them: **on this chart Transmitted really is the left of the
+# two**, which is the opposite of the multi/poly's and had to be established rather than
+# assumed. `Notes/4247_extract_modwave_chart.py` asserts it and refuses if a re-issue moves
+# them.
+#
+# AND THE PROSE PROVES IT INDEPENDENTLY OF THE GEOMETRY, which is what makes the reading safe
+# rather than merely careful. Both aftertouch rows are marked X in the left column and O in the
+# right, and three separate sentences say exactly that: "the modwave and modwave mkII keyboards
+# themselves do not generate aftertouch" (manual p. 71), "All modwave models support aftertouch
+# via MIDI" (manual p. 99), and a specification listing "Aftertouch and Poly Aftertouch
+# (external MIDI only)" (manual p. 106). An instrument that does not generate aftertouch and
+# does answer to it can only be X transmitted and O recognized, so the left column is
+# Transmitted. Three more rows agree: this synth has no volume slider, and CC 7 reads X then O.
+#
+# THE CHART IS THREE YEARS OLDER THAN THE INSTRUMENT IT IS BOUND INTO. Its own header reads
+# "Date: October 10, 2020" (manual p. 107) and "Version: 1.00" (manual p. 107), and it is
+# headed "Model: modwave" (manual p. 107) with no mention of a mk II - inside a manual stamped
+# "Published 03/2024" (manual p. 108) that covers "all modwave models with software version 3.0
+# or later" (manual p. 1). The mk II was announced in 2023. Nothing in the chart was revised for it - and
+# "About the modwave mkII", the one document that is the mk II's alone, says the only change is
+# the voice count. So the chart stands for this instrument because the maker says the rest is
+# the same, not because the chart mentions it.
+#
+# FIVE OF THE FOURTEEN CONTROLS BELOW ARE A FACTORY ASSIGNMENT RATHER THAN A FACT. Scale Select
+# and the four Mod Knobs are listed under "MIDI CC Assign" as a "Default CC assignment" (manual
+# p. 101), and the chart's own footnote says they are "Sent and received by Mod Knobs and Scale
+# Select when assigned in UTILITY > MIDI CC Assign" (manual p. 107). All five numbers lie
+# inside the chart's assignable range, so a player can move them. The same reading as the
+# microKORG's, where the numbers are a factory assignment and not a property of the
+# instrument.
+#
+# AND 101 CONTROLLER NUMBERS ARE PUBLISHED AS ASSIGNABLE WITH NOTHING ASSIGNED TO THEM, so
+# there is no control here for any of them. The chart gives them as the range "2-6, 8-9, 12-31,
+# 32-63, 65, 67-95, 102-119" against the remark "Assignable for controllers and modulation"
+# (manual p. 107) - a statement about what a player may do and not about what the instrument
+# answers to out of the box.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: modwave mk II
+  # THE MANUAL STATES ITS OWN SCOPE RATHER THAN ITS OWN EDITION, which is unusual and useful:
+  # it applies "to all modwave models with software version 3.0 or later" (manual p. 1). So 3.0
+  # is the earliest software this describes and not necessarily the newest that exists - Korg
+  # delivers firmware through its System Updater, version 1.1.0 of 2026-04-10, which is the
+  # updater's own version and says nothing about the instrument's. No document reached here
+  # names a later instrument version. Checked 2026-10-03.
+  firmware: "3.0"
+
+source: >-
+  modwave Owner's Manual, edition E3, 113 pages, dated 2024-03-22 on Korg's download page and
+  created 2024-03-20 by its own metadata. Korg publishes no separate MIDI implementation
+  document for this instrument - what it offers under that name is a Property Exchange MIDI
+  Implementation, which is 310 lines of system exclusive and carries no controller number at
+  all. **So the manual's own MIDI Implementation Chart, on printed page 107, is the whole of
+  the published control map.**
+
+  ONE DOCUMENT SET, THREE PRODUCTS. "These manuals apply to all modwave models with software
+  version 3.0 or later, collectively referred to as 'the modwave'" (manual p. 1), and the
+  specification names the three: "modwave: 32 stereo voices; modwave mkII and modwave module:
+  60 stereo voices" (manual p. 106). Korg's download pages agree: the modwave's page and the
+  modwave mk II's offer the same sixteen files under the same file ids, and the mk II's has
+  exactly one addition - "About the modwave mkII", whose whole content is that one difference.
+  **The manual's own Title metadata names all three** where its cover names one. So the voice
+  count is the only thing in this definition that is the mk II's rather than the modwave's.
+
+  THE CHART IS THE STANDARD FOUR-COLUMN FORM and all twelve of its groups are present. Its
+  Control Change section names nine controller numbers and gives one assignable range, and
+  **the directions are not all the same**: Modulation, the two Kaoss Pad axes and Damper are
+  marked O in both columns, while Volume, Pan, Expression, Sostenuto and Soft are X transmitted
+  and O recognized. Those five carry a direction of their own below.
+
+  THREE CONTROLLER NUMBERS ARE PRINTED TWICE, on a named row and again inside an assignable
+  range, and the two statements disagree about direction. CC 67 is "Soft", X transmitted and O
+  recognized, and is also inside "67-95", which is O and O. CC 18 and CC 19 are "Kaoss Pad X,
+  Y", O and O, and are also inside "12-31". Each is recorded as its named row, because that row
+  says what the number is for where the range says only that a player may re-use it.
+
+  **This is not a misprint, although one number alone would look like one.** If 67 were the
+  only name falling inside a range, "67-95" would read as a slip for 68-95 - the other named
+  numbers sit just outside their neighbouring ranges, 1 before "2-6", 7 before "8-9", 64 before
+  "65". But 18 and 19 fall inside "12-31" the same way, so printing a name and then including
+  the number in a range is something this chart does three times and not once.
+
+  A THIRD LIST NAMES THE ONE CONTROLLER THE CHART DOES NOT. The modulation sources under
+  "Controllers" give three numbers with their own names: "Mod Wheel CC 1 This is the built-in
+  Mod Wheel (unipolar MIDI CC#1)" (manual p. 70) and "Damper CC 64 This is the damper or
+  sustain pedal (unipolar MIDI CC#64)" (manual p. 71) corroborate two of the chart's rows, and
+  "Kaoss Bttn CC 12 This is the front-panel KAOSS button (unipolar MIDI CC#12)" (manual p. 71)
+  gives a controller the chart mentions only by folding 12 into "12-31". It is below, because a
+  number with a name and a purpose is a control whichever table prints it.
+
+  THE KAOSS PAD'S TWO AXES ARE STATED TWICE AS WELL, which is worth having for a pair of
+  numbers no other instrument here uses: "When you move your finger on the x-y pad, the X and Y
+  positions are sent as MIDI CCs 18 and 19, respectively" (manual p. 47), against the chart's
+  own row for 18 and 19.
+
+  FIVE MORE NUMBERS COME FROM A SECOND TABLE, "MIDI CC Assign" (manual p. 101), which gives a
+  "Default CC assignment" of 9 for Scale Select and 24 to 27 for Mod Knobs 1 to 4. The chart's
+  footnote ties the two together: those controls are "Sent and received by Mod Knobs and Scale
+  Select when assigned in UTILITY > MIDI CC Assign; also received as programmable modulation
+  sources" (manual p. 107). All five lie inside the assignable range, so they are a factory
+  assignment a player can change. **The four Mod Knob numbers are stated twice**: Korg's
+  Property Exchange Resource List carries an X-ParameterList giving `"controlcc": 24` to 27, and
+  although it is marked "(e.g.)" and its parameter names belong to whichever Program it was
+  taken from, the numbers are the same four. The manual says the same thing in prose: "Each
+  knob sends and receives a MIDI CC" (manual p. 70), which is where their direction comes from.
+
+  THE ONE BLOCK OF CONTROLLER NUMBERS THE CHART ACCOUNTS FOR NOWHERE IS 96 TO 101, and that is
+  why no NRPN is recorded. Its Control Change section runs from 1 to 95 without a gap, between
+  the named rows and the ranges, and then gives 102 to 119 and 120, 121. Its Aux Messages
+  section adds 123 to 127 by number, on the All Notes Off row, and names 122 without its number
+  as "Local On/Off". Nought is bank select, which sixty-four program changes do not need. **So
+  what no part of the chart reaches is 96, 97, 98, 99, 100 and 101** - data increment and
+  decrement, and the NRPN and RPN parameter numbers. The chart has no NRPN row either, and the
+  words NRPN, RPN and Data Entry appear in none of this instrument's documents.
+
+  TWO LAYERS, EACH ADDRESSABLE ON A CHANNEL OF ITS OWN. "A Performance has two Layers (A and
+  B), Kaoss Physics, and a master reverb and EQ" (manual p. 3), and each Layer chooses:
+  "Use Global MIDI Channel ... On: This is the default. The Layer will play from the built-in
+  keyboard, and receive on the Global Channel. Off: The Layer will receive on the channel
+  specified below, and will not play from the built-in keyboard" (manual p. 13), with "MIDI
+  Channel [1...16]" beneath it.
+
+  WHAT A LAYER TAKES AND WHAT IT DOES NOT. Each one has an "Rx Other CCs" switch whose off
+  position tells you what the on position means: the Layer then "will ignore all MIDI CCs
+  (except for CC#64), as well as Aftertouch, Poly Aftertouch, and Pitch Bend" (manual p. 14).
+  So notes, controllers, both kinds of aftertouch and pitch bend all reach a Layer. **Program
+  change does not**: it is global, listed under the Global Channel as "Program Change (via Set
+  Lists)" (manual p. 98), so a Layer's `receives` stops at notes and controls.
+
+  PROGRAM CHANGE SELECTS A SET LIST SLOT AND THERE ARE 64 OF THEM. "A Set List has 64 Slots,
+  arranged into four banks A- D, corresponding to MIDI Program Change messages 1-64" (manual
+  p. 5) - the maker's own spacing - and the chart gives Program Change as 0-63 both ways
+  with the remark "Selects Slots in the current Set List" (manual p. 107). Sixty-four slots
+  numbered from zero on the wire and from one on the panel, which is the ordinary off-by-one
+  and not a disagreement.
+
+  NOT RECORDED: a single default MIDI channel, because the chart gives the Basic Channel's
+  Default as the whole range, "1-16" in both columns, with the remark "Memorized" (manual
+  p. 107) - so the instrument remembers whatever it was set to and the maker publishes no
+  factory value. How far pitch bend reaches, because the two parameters that set it, "Pitch
+  Bend Up" and "Pitch Bend Down", each run "-60...+60" semitones (manual p. 63) and no default
+  is given for either. And what any of the 101 assignable controller numbers does, since that
+  is a player's choice.
+
+sources:
+  manual:
+    kind: manual
+    title: modwave Owner's Manual
+    edition: E3
+    dated: 2024-03-22
+    landing: "https://www.korg.com/us/support/download/product/0/928/"
+    url: "https://cdn.korg.com/us/support/download/files/20997aa422e3177454cac847c7371468.pdf"
+    sha256: 85e9d145e0eb80f5b081ec52f97294e94e23a2f58ee192661ebd5163facbedea
+    retrieved: 2026-10-03
+    # 113 pages, counted with pypdf and with PyMuPDF, which agree. **THE PRINTED NUMBER IS
+    # FIVE LOWER THAN THE FILE'S PAGE**, because the cover and front matter are unnumbered, so
+    # the MIDI Implementation Chart is printed page 107 and file page 112, and five is what a
+    # printed number needs adding to it.
+    page_offset: 5
+  property_exchange:
+    kind: midi_implementation
+    title: modwave Property Exchange MIDI Implementation
+    edition: Version 1.1
+    dated: 2025-09-08
+    landing: "https://www.korg.com/us/support/download/product/0/928/"
+    url: "https://cdn.korg.com/us/support/download/files/6e8d7dd1048b17fce5a545e83140dd8d.txt"
+    sha256: 43c267193e3064bd4c09f6c0f6199d858bb3b4df11c0a46b51e9022d6979cf58
+    retrieved: 2026-10-03
+    paginated: false
+    # THE DOCUMENT KORG PUBLISHES UNDER THE NAME THIS CORPUS WANTS, AND IT IS NOT A CONTROL
+    # MAP. 310 lines describing the five Property Exchange system exclusive messages -
+    # Discovery, Capabilities, Get Property Data, Subscription and Shutdown - and no controller
+    # number anywhere in it. Cited for the device identity below and for that absence. The same
+    # shape as the opsix's and the multi/poly's.
+  about_mk_ii:
+    kind: release_notes
+    title: About the modwave mkII
+    edition: EFGSCJ 2
+    dated: 2023-12-14
+    landing: "https://www.korg.com/us/support/download/product/0/928/"
+    url: "https://cdn.korg.com/us/support/download/files/cbf5e2508c17e2ffd76ff6394dc5b67b.pdf"
+    sha256: f02b4b85b94b829696b140d6ff107ed1ab647d87105056b2744ef279a21c4b87
+    retrieved: 2026-10-03
+    page_offset: 0
+    # ONE PAGE IN SIX LANGUAGES, AND THE ONLY DOCUMENT THAT IS THE MK II'S ALONE. It says the
+    # instrument "is operated in the same way as the modwave", sends the reader to the
+    # modwave's own guide and manual, and lists the difference as a specification of two lines:
+    # 60 stereo voices against 32.
+  download_page:
+    kind: download_page
+    title: Downloads - modwave mk II
+    landing: "https://www.korg.com/us/support/"
+    url: "https://www.korg.com/us/support/download/product/0/928/"
+    sha256: dca03e7aa14e192291249fb0710a698c18d1c6b5dae5783f457971898b310c83
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for what Korg publishes for this product and for what it does not: sixteen
+    # documents and six software downloads, and **no separate MIDI implementation document**,
+    # which this maker does publish for most of its instruments.
+  download_page_modwave:
+    kind: download_page
+    title: Downloads - modwave
+    landing: "https://www.korg.com/us/support/"
+    url: "https://www.korg.com/us/support/download/product/0/880/"
+    sha256: 5827e27882ef9af2d469f712634f5e4b78d05848d52c8e391a83c40cf52cb3be
+    retrieved: 2026-10-03
+    paginated: false
+    # THE SIBLING'S PAGE, FETCHED TO PROVE THE TWO PRODUCTS ARE SERVED ONE DOCUMENT SET. It
+    # offers the same fourteen documents as the mk II's under the same file ids - 4780, 4781,
+    # 4782 and so on to 5697 - with the same dates and sizes. The mk II's page adds one, 5099,
+    # "About the modwave mkII". The original is marked "(sold out)".
+
+midi:
+  # "Global Channel [1...16] This is the basic MIDI channel for the modwave" (manual p. 98),
+  # and the chart gives the Basic Channel as 1-16 in both columns. **No factory default is
+  # published**: the chart's Default row gives the whole range and remarks "Memorized".
+  channels: [1, 16]
+  # The chart's Mode row: nothing transmitted, 3 recognized - Omni off, Poly.
+  mode: 3
+  # BOTH, AND THE CHART SAYS SO: Clock is O in both columns. The Utility's own setting gives the
+  # three cases - "Internal ... when you want the modwave to control the tempo of external MIDI
+  # devices", External, and Auto, where "If MIDI Clocks are being received, they control the
+  # tempo" (manual p. 98).
+  clock: both
+  # A CHECKED ABSENCE, which is rarer than a silence. The chart marks System Real Time Commands
+  # X in both columns, and Song Position and Song Select X in both. So start, stop, continue and
+  # song position are all published as not answered, in a document that answers for every other
+  # status byte.
+  transport: none
+  program_change:
+    # O 0-63 in both columns of the chart, with the remark "Selects Slots in the current Set
+    # List".
+    receives: true
+    sends: true
+    # "A Set List has 64 Slots, arranged into four banks A- D, corresponding to MIDI Program
+    # Change messages 1-64" (manual p. 5), the maker's own spacing kept.
+    presets: 64
+  # NONE, AND IT IS CHECKED RATHER THAN UNREAD - see the source account. The chart has no NRPN
+  # row, and the one block of controller numbers it accounts for nowhere is 96 to 101, which is
+  # the NRPN and RPN block itself.
+  nrpn: none
+  # The chart marks System Exclusive O in both columns, with the footnote that it "also
+  # supports universal system exclusive messages device inquiry, master volume, master fine
+  # tuning, and master coarse tuning" (manual p. 107). The Property Exchange document gives the
+  # layouts of five more messages and this instrument's own identity: a Device Family ID of
+  # "65 01" and a Device Family Model Number of "1D 00" for the modwave MkII, where the modwave
+  # is "01 00" and the modwave Module "14 00" - so the three products are distinguishable over
+  # MIDI even though they share a manual.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # The chart gives Note Number 0-127 in both columns, and True Voice 0-127 recognized with the
+  # remark "Some sounds will not play across the entire note range" (manual p. 107). The
+  # keyboard itself is 37 keys, which is the panel and not the span it answers to.
+  note_range: [0, 127]
+  # "Maximum Polyphony: modwave: 32 stereo voices; modwave mkII and modwave module: 60 stereo
+  # voices" (manual p. 106). This is the mk II.
+  polyphony: 60
+  # ONE POOL ACROSS BOTH LAYERS. The specification gives one figure for the instrument and a
+  # Performance always holds two Layers, so 60 is a ceiling across the pair rather than a
+  # figure each can count on. The engine's own modulation sources distinguish the two counts -
+  # "Program/Performance Note Count and Program/Performance Voice Count" (manual p. 73) - which
+  # is only a distinction worth having if the Layers draw on one pool.
+  polyphony_shared: true
+  # "(Voice Assign) Mode [Poly, Mono] This selects the basic voice allocation mode" (manual
+  # p. 11), so one voice or sixty, saved with the Program.
+  voicing_modes: [1, 60]
+  velocity:
+    # The chart gives Note On as O 9n, V=1-127 in both columns.
+    note_on: both
+    # RELEASE VELOCITY, WHICH FEW INSTRUMENTS HERE HAVE. The keyboard is "37 keys (velocity and
+    # release-velocity sensitive)" (manual p. 106), and the chart gives Note Off as O 8n,
+    # V=1-64 transmitted and O 8n, V=0-127 recognized - it sends a narrower range than it
+    # accepts, with the remark "Received Note Off Velocity values are clipped at 64".
+    note_off: true
+  # RECEIVED ONLY, AND BOTH KINDS, which this field has one word for. The chart has two rows
+  # under After Touch - Polyphonic (Key) and Channel - and both are X transmitted and O
+  # recognized, so the instrument answers to each and sends neither. A Layer's "Rx Other CCs"
+  # switch names them together: turning it off makes the Layer ignore "all MIDI CCs (except for
+  # CC#64), as well as Aftertouch, Poly Aftertouch, and Pitch Bend" (manual p. 14). `poly` is
+  # recorded as the stronger of the two.
+  aftertouch: poly
+  pitch_bend:
+    # SETTABLE IN BOTH DIRECTIONS SEPARATELY AND WITH NO PUBLISHED DEFAULT. "Pitch Bend Up
+    # [-60...+60] This sets the maximum amount of pitch bend, in semitones, when you move the
+    # wheel above the center point" and a matching "Pitch Bend Down" (manual p. 63). Sixty
+    # semitones is five octaves each way, and either may be negative, which inverts the wheel.
+    # No figure is recorded because neither parameter's default is stated anywhere.
+    programmable: true
+
+parts:
+  # Each Layer is given a channel by the player or follows the global one, so neither derives a
+  # channel from the other: there is no offset to record.
+  layer:
+    label: Layer
+    count: 2
+    channel: assigned
+    addressing: pitches
+    # NOTES AND CONTROLLERS, AND NOT PROGRAM CHANGE, which is global by way of the Set List.
+    receives: [notes, controls]
+
+groups:
+  controllers: Controllers
+  kaoss: Kaoss Physics
+  pedals: Pedals
+  scale: Scale
+  mod_knobs: Mod Knobs
+
+controls:
+
+  # CONTROLLERS ------------------------------------------------------
+  modulation:            {label: Modulation, cc: 1, group: controllers}
+  volume:                {label: Volume, cc: 7, direction: receives, group: controllers}
+  pan:                   {label: Pan, cc: 10, direction: receives, group: controllers}
+  expression:            {label: Expression, cc: 11, direction: receives, group: controllers}
+
+  # KAOSS PHYSICS ----------------------------------------------------
+  kaoss_pad_x:           {label: Kaoss Pad X, cc: 18, group: kaoss}
+  kaoss_pad_y:           {label: Kaoss Pad Y, cc: 19, group: kaoss}
+  # NAMED IN THE MODULATION SOURCES AND NOT IN THE CHART, which folds 12 into "12-31".
+  kaoss_button:          {label: Kaoss Bttn, cc: 12, group: kaoss}
+
+  # PEDALS -----------------------------------------------------------
+  damper:                {label: Damper, cc: 64, group: pedals}
+  sostenuto:             {label: Sostenuto, cc: 66, direction: receives, group: pedals}
+  soft:                  {label: Soft, cc: 67, direction: receives, group: pedals}
+
+  # SCALE ------------------------------------------------------------
+  scale_select:          {label: Scale Select, cc: 9, group: scale}
+
+  # MOD KNOBS --------------------------------------------------------
+  mod_knob_1:            {label: Mod Knob 1, cc: 24, group: mod_knobs}
+  mod_knob_2:            {label: Mod Knob 2, cc: 25, group: mod_knobs}
+  mod_knob_3:            {label: Mod Knob 3, cc: 26, group: mod_knobs}
+  mod_knob_4:            {label: Mod Knob 4, cc: 27, group: mod_knobs}

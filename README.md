@@ -145,6 +145,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/electribe` | Korg electribe: 18 controls out of a plain text file that prints every number twice, with sixteen parts on one MIDI channel and no way given of choosing one |
 | `korg/microkorg` | Korg microKORG: 41 controller numbers that are the factory assignment and not fixed, each meaning one thing in a synth program and another in a vocoder one |
 | `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
+| `korg/modwave_mk_ii` | Korg modwave mk II: one manual covers three models, and the only difference is the voice count - with a chart whose two direction columns had to be proved rather than read in order |
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
 | `korg/volca_drum` | Korg volca drum: six parts on six channels, and the one of its maker's two charts that the instrument answers to out of the box |

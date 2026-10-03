@@ -132,6 +132,7 @@ class TestBundledCorpus:
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"arturia/polybrute",
+			"asm/hydrasynth_explorer",
 			"behringer/model_d",
 			"behringer/td_3",
 			"dreadbox/typhon",
@@ -1987,15 +1988,18 @@ class TestOsmose:
 
 		A consumer asking which instruments spread their voices across channels has to
 		get all of them or none; one flagged and one not is worse than none, because it
-		reads as a settled answer and is wrong about the one it misses. There are four
-		now, and the Deluge is the first that is a sequencer as much as a synthesizer -
-		it reads a zone of channels as one instrument and writes one out too.
+		reads as a settled answer and is wrong about the one it misses. There are five
+		now. The Deluge is a sequencer as much as a synthesizer - it reads a zone of
+		channels as one instrument and writes one out too - and the Hydrasynth Explorer
+		is the one whose maker says plainest what the flag means, that its voices break
+		into individual channels so each note can have its own bend, timbre and
+		pressure.
 		"""
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
-		assert flagged == ["expressive_e/osmose", "modal/carbon8m",
-			"synthstrom_audible/deluge", "waldorf/iridium"]
+		assert flagged == ["asm/hydrasynth_explorer", "expressive_e/osmose",
+			"modal/carbon8m", "synthstrom_audible/deluge", "waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -6017,6 +6021,106 @@ class TestTyphon:
 
 		assert "The Artemis's list must never be attributed to this instrument" in flowed
 		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed
+
+
+class TestHydrasynthExplorer:
+
+	"""An ASM whose maker prints its chart twice, and puts four parameters where it should not."""
+
+	def test_one_hundred_and_ten_controls_in_twenty_nine_modules (self) -> None:
+		"""Of 117 rows the chart prints: seven are set aside and the file says why."""
+		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
+
+		assert len(explorer.controls) == 110
+		assert len(explorer.groups) == 29
+
+		numbers = [control.cc for control in explorer.controls.values() if control.cc is not None]
+
+		assert len(numbers) == 110
+		assert len(set(numbers)) == 110
+
+	def test_four_parameters_sit_on_the_channel_mode_block_and_cannot_ship (self) -> None:
+		"""The one real loss here, and the validator's own rule is what costs it.
+
+		ASM puts ARP Octave on 120, ARP Length on 122, ENV4 Release on 124 and ENV4
+		Sustain on 125 - All Sound Off, Local Control, Omni Off and Omni On.  The rule
+		that keeps those out says they "mean the same on every instrument that has
+		them", which this instrument makes untrue.
+		"""
+		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
+
+		numbers = {control.cc for control in explorer.controls.values()}
+
+		for reserved in (120, 122, 123, 124, 125):
+			assert reserved not in numbers, reserved
+
+		account = " ".join((explorer.source or "").split())
+
+		assert "FOUR PARAMETERS ARE PUT ON NUMBERS THE SPECIFICATION RESERVES" in account
+		assert "moves its fourth envelope's release" in account
+
+	def test_the_chart_is_printed_twice_and_that_is_what_checked_it (self) -> None:
+		"""Same facts in two orders, by the maker - a free verification."""
+		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
+
+		account = " ".join((explorer.source or "").split())
+
+		assert "THE CHART IS PRINTED TWICE AND THAT IS WHAT VERIFIED IT" in account
+		assert "AND THEY NAME NINETEEN PARAMETERS TWO WAYS" in account
+
+		# The fuller printing's names are the ones shipped, and the pair that is
+		# furthest apart is the one worth pinning.
+		by_number = {control.cc: control for control in explorer.controls.values()}
+
+		assert by_number[116].label == "Ring Mod FRate"
+		assert by_number[74].label == "Filter 1 Cutoff"
+		assert by_number[55].label == "Filter 2 Cutoff"
+
+	def test_the_makers_own_spellings_are_kept (self) -> None:
+		"""Including a label that ends in a full stop, which is the document's own."""
+		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
+
+		by_number = {control.cc: control for control in explorer.controls.values()}
+
+		assert by_number[1].label == "Modulation wheel."
+		assert by_number[5].label == "GlidTime"
+		assert by_number[117].label == "StWidth"
+
+	def test_its_voices_take_a_channel_each (self) -> None:
+		"""And this is the maker that says plainest what that means."""
+		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
+
+		assert explorer.midi.per_voice_channels is True
+		assert explorer.midi.channels == (1, 16)
+		assert explorer.voice.polyphony == 8
+		assert explorer.voice.aftertouch == "poly"
+
+	def test_the_sibling_models_are_distinguished_from_a_chart_of_the_makers_own (self) -> None:
+		"""Four Hydrasynths, three manuals, and one document that compares them."""
+		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
+
+		assert set(explorer.sources) == {"manual", "comparison_chart"}
+		assert explorer.sources["comparison_chart"].edition == "2.0.0"
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "asm" / "hydrasynth_explorer.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "ASM MAKES FOUR HYDRASYNTHS AND THIS FILE DESCRIBES ONE" in flowed
+		assert "MIDI In and Out where the other three have In, Out and Thru" in flowed
+
+	def test_nrpn_is_offered_and_never_published (self) -> None:
+		"""A setting makes it one of two formats, and no number is given for it."""
+		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
+
+		assert explorer.midi.nrpn == "supported"
+
+		for name, control in explorer.controls.items():
+			assert control.nrpn is None, name
+
+		account = " ".join((explorer.source or "").split())
+
+		assert "NRPN IS OFFERED AND NOT PUBLISHED" in account
 
 
 class TestFantom:

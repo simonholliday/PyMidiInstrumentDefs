@@ -1,0 +1,406 @@
+# The fifth instrument here whose voices take a channel each, and the first whose maker prints
+# its controller chart TWICE - once sorted by module and once by controller number. That second
+# printing is the best thing in the document: the same facts in a different order, by the maker,
+# so the reading could be checked against the document itself before any second reader saw it.
+# They agree on every module and every number, and name nineteen parameters two different ways.
+#
+# ASM MAKES FOUR HYDRASYNTHS AND THIS FILE DESCRIBES ONE. The Explorer has a manual of its own;
+# the Keyboard and the Desktop share a second; the Deluxe has a third. What separates them is in
+# the maker's own comparison chart, and two of its rows matter here: **the Explorer has MIDI In
+# and Out where the other three have In, Out and Thru**, and the Deluxe has sixteen voices where
+# the other three have eight. All four support MPE.
+
+definition: 1
+
+model:
+  manufacturer: ASM
+  name: Hydrasynth Explorer
+  # The manual's own version, which this maker ties to the firmware: the downloads page serves
+  # "Hydrasynth Explorer Owner's Manual 2.2.0" beside "Hydrasynth Explorer Firmware Pack 2.2.0",
+  # one pack per model and all four at 2.2.0 on the day this was read.
+  firmware: "2.2.0"
+
+source: >-
+  Owner's Manual (98pp, version 2.2.0): the MIDI settings at pp. 82-83, the keyboard's velocity
+  and aftertouch settings at p. 81, the program change settings at p. 83, the specifications at
+  p. 97, and **the MIDI CC Charts at pp. 94-96**, which is where every number here comes from.
+  The maker's comparison chart is cited for what separates the four Hydrasynths, and the
+  Keyboard and Desktop's manual for nothing at all - see below.
+
+  THE CHART IS PRINTED TWICE AND THAT IS WHAT VERIFIED IT. Pages 94-96 carry the same list under
+  two headings, "Sorted by Module" and "Sorted by CC Number". They are the same facts in two
+  orders, so the reading could be checked against the document before any second reader saw it:
+  **both printings hold the same 117 entries with the same module and the same controller number
+  every time.** A maker who publishes one list twice has given a reader a free verification, and
+  it is worth looking for.
+
+  AND THEY NAME NINETEEN PARAMETERS TWO WAYS. Same module, same number, two spellings: `Filter 1
+  Cutoff` against `Filter1 Cutoff` at 74, `Filter 2 Cutoff` against `Flt2 Cutoff` at 55, `OSC 1
+  Cent` against `OSC1 Cent` at 111, and - furthest apart of all - `Ring Mod FRate` against `RM12
+  FRate` at 116. Seven of Filter 1's rows, seven of Filter 2's, three oscillator Cents and two of
+  the Mixer's. **The module-sorted printing's names are the ones below**, because it is the
+  fuller of the two, and the other name is recorded here so that a reader meeting either can
+  find the control.
+
+  THE SECOND READING CONFIRMED ALL 117 ENTRIES AND ALL NINETEEN NAME DIFFERENCES, read by eye off
+  the pages rendered at up to 900 dots to the inch rather than from any text. It also settled
+  which way to read CC 116: **the same chart calls CC 43 `RM12 Depth` in both printings**, so
+  `RM12` and `Ring Mod` are this maker's two names for one circuit rather than a slip in one
+  place.
+
+  AND IT FOUND THAT THE CHART'S THIRD COLUMN HAS NO VISIBLE HEADING. `Module` and `Parameter` are
+  set in white on the black header bar and **`CC` is set in black on it**, so the word is in the
+  file and invisible on the page. A reader of the printed manual sees two labelled columns and a
+  third with nothing over it. Nothing rests on it - the numbers are unmistakable - and it is
+  recorded because a document that hides one of its own column headings may hide other things,
+  and because this is the second instrument in two days whose text layer holds something the page
+  does not show.
+
+  THE MAKER'S OWN INCONSISTENCIES, REPRODUCED AND NOT TIDIED. The module-sorted printing is not
+  even consistent with itself: `OSC 3 FRate` at 114 has a space where `OSC1 FRate` at 118 and
+  `OSC2 FRate` at 119, three rows below it, do not. `OSC1 wavscan` at 24 and `OSC2 WavScan` at 26
+  differ in a capital, in both printings. `POST-FX Param1` and `POST-FX Param2` keep their hyphen
+  where `POST FX Mix` drops it, while all three Pre-FX rows keep theirs.
+
+  AND ENV 4 IS NUMBERED UNLIKE EVERY OTHER ENVELOPE, which is worth seeing beside the paragraph
+  above about the reserved block. Envelopes 1, 2, 3 and 5 run Attack, Decay, Sustain, Release in
+  ascending controller order. **ENV 4 runs Attack 25, Decay 27, Release 124, Sustain 125** - a
+  skipped 26, and Release numbered below Sustain. So the two parameters this file cannot carry
+  are the two that were already the odd ones out.
+
+  ONE MORE THING SUGGESTS THIS MANUAL WAS NOT WRITTEN FROM SCRATCH FOR THIS MODEL. Its page 83
+  refers the reader to "MIDI page 4" for the transmit and receive channels, which this manual puts
+  on MIDI: Page 7; to "MIDI page 5" for a setting it calls `At TX`, a name this manual never uses
+  for the one it calls Aftertouch transmit on MIDI: Page 8; and to "MIDI page 6" for Overflow,
+  which is on MIDI: Page 11. **Three cross-references, none of them right for this document.**
+  Nothing below depends on them, and a reader following one will not find what it promises.
+
+  TWO THINGS HAD TO BE RIGHT BEFORE ANY OF IT COULD BE READ. Each page carries **two half-width
+  tables side by side**, and they are read **down, not across**: a row of the page holds one
+  entry from the left table and an unrelated one from the right, so page 94's left half runs Amp,
+  ARP, Delay, ENV while its right half picks up at Filter 2. Reading by row interleaves two
+  stretches of an alphabetical list and looks plausible. And **pypdf's layout mode cannot see the
+  rows at all** on these pages - it returns each column as its own vertical run, every Module then
+  every Parameter then every CC - so the words were taken with their coordinates instead.
+
+  SEVEN NUMBERS ARE NOT CARRIED, AND FOUR OF THEM ARE THE INTERESTING ONES. `Bank select MSB` (0)
+  and `Bank select LSB` (32) are how a bank is chosen rather than parameters, and their work is
+  recorded under `program_change`: "To change banks, both types of Bank Select messages and a
+  program change are needed, or else the Hydrasynth will only select patches within the current
+  bank" (p. 84). `All notes off` (123) is the specification's own message, correctly named, and
+  this format refuses it as a control because it means the same thing everywhere.
+
+  **AND FOUR PARAMETERS ARE PUT ON NUMBERS THE SPECIFICATION RESERVES FOR CHANNEL MODE.** The
+  chart assigns `ARP Octave` to **120**, `ARP Length` to **122**, `ENV4 Release` to **124** and
+  `ENV4 Sustain` to **125** - which the MIDI specification keeps for All Sound Off, Local Control
+  On/Off, Omni Mode Off and Omni Mode On. **So a sequencer sending Omni Mode Off to this
+  instrument moves its fourth envelope's release.** The maker says nothing about it, and the
+  chart has 123 beside them doing its standard job, so this is not a maker who has mistaken the
+  block for free space.
+
+  This format refuses all four, on the rule that a channel mode message "means the same on every
+  instrument that has them" - **which is exactly what this instrument makes untrue**. The four
+  are therefore published, named, numbered and absent from the controls below, which is a real
+  loss and the only one here. Recorded rather than worked around, and raised where the format's
+  questions are kept. That leaves **110 of the chart's 117 rows**.
+
+  THE GAPS ARE MOSTLY THE SPECIFICATION'S OWN. The chart uses 117 of the numbers between 0 and
+  125 and the nine it does not are 2 and 4 (breath and foot controller), 6 and 38 (data entry),
+  98 to 101 (the NRPN and RPN selects) and 121 (reset all controllers). **The manual accounts for
+  none of them** and none is inferred here.
+
+  THE MAKER'S OWN SPELLINGS ARE KEPT, INCLUDING ONE THAT LOOKS LIKE A SLIP. `Modulation wheel.`
+  carries a full stop no other label has, in both printings, so it is the document's and not an
+  extraction's. `GlidTime`, `StWidth`, `Flt2`, `LFO2amt` and `ENV1amt` are the maker's
+  abbreviations and are not expanded.
+
+  NRPN IS OFFERED AND NOT PUBLISHED. Two settings choose the format a parameter edit travels in -
+  "Knob 1 Param TX Off, NRPN, CC" and "Knob 2 Param RX Off, NRPN, CC" (p. 83) - and the manual
+  sends the reader to the CC charts for the one and publishes nothing at all for the other: no
+  NRPN number, no parameter list, no address. So `midi.nrpn` says `supported`, which is what the
+  setting establishes, and no NRPN appears on any control below because none is published.
+
+  NOT RECORDED: the note range, which no page states; the pitch bend depth, which the manual
+  does not give for the instrument itself; and system exclusive, which the manual never mentions
+  although the maker ships an ASM Manager application that must use something.
+
+sources:
+  manual:
+    kind: manual
+    title: Hydrasynth Explorer Owner's Manual
+    edition: "2.2.0"
+    landing: "https://www.ashunsoundmachines.com/downloads"
+    url: "https://www.mecldata.com/download/asm/Hydrasynth_Explorer_Owners_Manual_2.2.0.pdf"
+    sha256: 7201137caa5ee8e2f7d5b5475a21f3d12b290db8852e0986f92a6cb20a4aa712
+    retrieved: 2026-10-03
+    # 98 pages, printed page = page of the file. The documents are served from mecldata.com
+    # while the page listing them is on ashunsoundmachines.com.
+  comparison_chart:
+    kind: specification
+    title: Hydrasynth Comparison Chart
+    edition: "2.0.0"
+    landing: "https://www.ashunsoundmachines.com/downloads"
+    url: "https://www.mecldata.com/download/asm/Hydrasynth_Comparison_Chart_2.0.0"
+    sha256: 59098b8d833cddaa74f1fb409da5053ef21e5a253ccee9865cae5de8ad73cc9e
+    retrieved: 2026-10-03
+    # One page, four columns, one per model. Cited for the two rows that separate this
+    # instrument from its siblings: its voice count and its MIDI connectors. It is served from
+    # an address with no file extension on it.
+
+midi:
+  # "MIDI TX 1-16 Set MIDI transmission channel" and "MIDI RX Omni, 1-16 Set MIDI receive
+  # channel" (p. 82). So sixteen channels, and the receive side can be told to answer to all of
+  # them - which is a setting rather than a mode this format records.
+  channels: [1, 16]
+  # Four sources, and the instrument is one of them: "Clock Sync Internal, USB, MIDI In, Auto"
+  # (p. 82), where "Int run: selects Hydrasynth Explorer as the master tempo clock. Sync signals
+  # are sent to MIDI, USB, and the CV Clock output" and "MIDI in: slaves the Hydrasynth Explorer
+  # to incoming MIDI clock data".
+  clock: both
+  program_change:
+    # One setting per direction: "Pgm Chg TX Off, On" and "Pgm Chg RX Off, On Receive MIDI
+    # Program Change commands" (p. 83).
+    receives: true
+    sends: true
+    # Eight banks of 128, per the comparison chart, and both halves of bank select are needed to
+    # move between them - see the source account.
+    presets: 1024
+  # A SETTING SAYS SO AND NOTHING PUBLISHES A NUMBER: "Knob 1 Param TX Off, NRPN, CC" and "Knob 2
+  # Param RX Off, NRPN, CC" (p. 83) make NRPN one of two formats a parameter edit may travel in,
+  # and the manual publishes a chart for the other and nothing for this one. See the source.
+  nrpn: supported
+  # ITS VOICES TAKE A CHANNEL EACH WHEN MPE IS ON: "When active, the voices of your Hydrasynth
+  # Explorer break into individual channels so each note can have its own pitch bend, timbre and
+  # pressure control" (p. 82), switched by a setting whose own description is "Send / receive MPE data" (p. 82) - so
+  # it is received and transmitted. The comparison chart marks all four Hydrasynths "Supports MPE
+  # in / out: Yes".
+  per_voice_channels: true
+  # NOT RECORDED, system exclusive: the manual never uses the word, although the maker ships an
+  # ASM Manager application that must use something to talk to the instrument.
+
+voice:
+  addressing: pitches
+  # "8 voices", from the comparison chart's voice-count row - the Explorer, the Keyboard and the
+  # Desktop have eight and only the Deluxe has sixteen. The manual itself gives no figure, which
+  # is why the chart is cited.
+  polyphony: 8
+  velocity:
+    note_on: received
+    # The keyboard's own sensitivity is a setting with a fixed-value option - "Velocity On, Fix
+    # 60 / 80 / 100 / 110 / 127" with eight curves (p. 81) - and the manual is careful that this
+    # is about the keyboard and not about what arrives: "This only affects local response and
+    # outgoing MIDI; incoming velocity response is unaffected" (p. 81).
+  # POLYPHONIC, WHICH IS THE KEYBED'S OWN AND NOT ONLY MPE'S. The comparison chart calls it a
+  # "Polytouch® polyphonic aftertouch" keybed, and the transmit setting offers both kinds:
+  # "Aftertouch transmit Off, Mono, Poly ... Mono enables Channel aftertouch values to be sent
+  # (one value for all active voices); Poly allows polyphonic aftertouch values to be sent"
+  # (p. 82). The manual joins the two surfaces itself: "Hydrasynth Explorer already supports
+  # polyphonic aftertouch, so MPE pressure is mapped automatically to Poly aftertouch" (p. 83).
+  aftertouch: poly
+  # NOT RECORDED, the pitch bend depth: MPE gives each note its own bend and no page states the
+  # instrument's own range or whether it is settable.
+
+groups:
+  # ASM's own module names, from the left-hand column of its MIDI CC Charts, reproduced as
+  # printed - `ARP` and `ENV` in capitals because that is how the panel prints them, `Post-fx`
+  # and `Pre-fx` with the maker's own hyphen and case. The order is the chart's own, which is
+  # alphabetical by module and is also the order of the controls below.
+  amp: Amp
+  arp: ARP
+  delay: Delay
+  env_1: ENV 1
+  env_2: ENV 2
+  env_3: ENV 3
+  env_4: ENV 4
+  env_5: ENV 5
+  filter_1: Filter 1
+  filter_2: Filter 2
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  lfo_3: LFO 3
+  lfo_4: LFO 4
+  lfo_5: LFO 5
+  macros: Macros
+  mixer: Mixer
+  mutator_1: Mutator 1
+  mutator_2: Mutator 2
+  mutator_3: Mutator 3
+  mutator_4: Mutator 4
+  osc_1: OSC 1
+  osc_2: OSC 2
+  osc_3: OSC 3
+  post_fx: Post-fx
+  pre_fx: Pre-fx
+  reverb: Reverb
+  system: System
+  voice: Voice
+
+controls:
+
+  # Amp ───────────────────────────────────────────────────
+  amp_lfo2amt:                 {label: Amp LFO2amt, cc: 62, group: amp}
+
+  # ARP ───────────────────────────────────────────────────
+  arp_division:                {label: ARP Division, cc: 106, group: arp}
+  arp_gate:                    {label: ARP Gate, cc: 107, group: arp}
+  arp_mode:                    {label: ARP Mode, cc: 108, group: arp}
+  arp_ratchet:                 {label: ARP Ratchet, cc: 109, group: arp}
+  arp_chance:                  {label: ARP Chance, cc: 110, group: arp}
+
+  # Delay ─────────────────────────────────────────────────
+  delay_feedback:              {label: Delay Feedback, cc: 14, group: delay}
+  delay_time:                  {label: Delay Time, cc: 15, group: delay}
+  delay_wet_tone:              {label: Delay Wet tone, cc: 63, group: delay}
+  delay_dry_wet:               {label: Delay Dry/Wet, cc: 92, group: delay}
+
+  # ENV 1 ─────────────────────────────────────────────────
+  env1_attack:                 {label: ENV1 Attack, cc: 81, group: env_1}
+  env1_decay:                  {label: ENV1 Decay, cc: 82, group: env_1}
+  env1_sustain:                {label: ENV1 Sustain, cc: 83, group: env_1}
+  env1_release:                {label: ENV1 Release, cc: 84, group: env_1}
+
+  # ENV 2 ─────────────────────────────────────────────────
+  env2_attack:                 {label: ENV2 Attack, cc: 85, group: env_2}
+  env2_decay:                  {label: ENV2 Decay, cc: 86, group: env_2}
+  env2_sustain:                {label: ENV2 Sustain, cc: 87, group: env_2}
+  env2_release:                {label: ENV2 Release, cc: 88, group: env_2}
+
+  # ENV 3 ─────────────────────────────────────────────────
+  env3_attack:                 {label: ENV3 Attack, cc: 89, group: env_3}
+  env3_decay:                  {label: ENV3 Decay, cc: 90, group: env_3}
+  env3_sustain:                {label: ENV3 Sustain, cc: 96, group: env_3}
+  env3_release:                {label: ENV3 Release, cc: 97, group: env_3}
+
+  # ENV 4 ─────────────────────────────────────────────────
+  env4_attack:                 {label: ENV4 Attack, cc: 25, group: env_4}
+  env4_decay:                  {label: ENV4 Decay, cc: 27, group: env_4}
+
+  # ENV 5 ─────────────────────────────────────────────────
+  env5_attack:                 {label: ENV5 Attack, cc: 102, group: env_5}
+  env5_decay:                  {label: ENV5 Decay, cc: 103, group: env_5}
+  env5_sustain:                {label: ENV5 Sustain, cc: 104, group: env_5}
+  env5_release:                {label: ENV5 Release, cc: 105, group: env_5}
+
+  # Filter 1 ──────────────────────────────────────────────
+  filter_1_drive:              {label: Filter 1 Drive, cc: 50, group: filter_1}
+  filter_1_keytrack:           {label: Filter 1 Keytrack, cc: 51, group: filter_1}
+  filter_1_lfo1amt:            {label: Filter 1 LFO1amt, cc: 52, group: filter_1}
+  filter_1_vel_env:            {label: Filter 1 Vel Env, cc: 53, group: filter_1}
+  filter_1_env1amt:            {label: Filter 1 ENV1amt, cc: 54, group: filter_1}
+  filter_1_res:                {label: Filter 1 Res, cc: 71, group: filter_1}
+  filter_1_cutoff:             {label: Filter 1 Cutoff, cc: 74, group: filter_1}
+
+  # Filter 2 ──────────────────────────────────────────────
+  filter_2_cutoff:             {label: Filter 2 Cutoff, cc: 55, group: filter_2}
+  filter_2_res:                {label: Filter 2 Res, cc: 56, group: filter_2}
+  filter_2_type:               {label: Filter 2 Type, cc: 57, group: filter_2}
+  filter_2_keytrack:           {label: Filter 2 Keytrack, cc: 58, group: filter_2}
+  filter_2_lfo1amt:            {label: Filter 2 LFO1amt, cc: 59, group: filter_2}
+  filter_2_vel_env:            {label: Filter 2 Vel Env, cc: 60, group: filter_2}
+  filter_2_env1amt:            {label: Filter 2 ENV1amt, cc: 61, group: filter_2}
+
+  # LFO 1 ─────────────────────────────────────────────────
+  lfo1_gain:                   {label: LFO1 Gain, cc: 70, group: lfo_1}
+  lfo1_rate:                   {label: LFO1 Rate, cc: 72, group: lfo_1}
+
+  # LFO 2 ─────────────────────────────────────────────────
+  lfo2_gain:                   {label: LFO2 Gain, cc: 28, group: lfo_2}
+  lfo2_rate:                   {label: LFO2 Rate, cc: 73, group: lfo_2}
+
+  # LFO 3 ─────────────────────────────────────────────────
+  lfo3_gain:                   {label: LFO3 Gain, cc: 75, group: lfo_3}
+  lfo3_rate:                   {label: LFO3 Rate, cc: 76, group: lfo_3}
+
+  # LFO 4 ─────────────────────────────────────────────────
+  lfo4_gain:                   {label: LFO4 Gain, cc: 77, group: lfo_4}
+  lfo4_rate:                   {label: LFO4 Rate, cc: 78, group: lfo_4}
+
+  # LFO 5 ─────────────────────────────────────────────────
+  lfo5_gain:                   {label: LFO5 Gain, cc: 79, group: lfo_5}
+  lfo5_rate:                   {label: LFO5 Rate, cc: 80, group: lfo_5}
+
+  # Macros ────────────────────────────────────────────────
+  macro_1:                     {label: Macro 1, cc: 16, group: macros}
+  macro_2:                     {label: Macro 2, cc: 17, group: macros}
+  macro_3:                     {label: Macro 3, cc: 18, group: macros}
+  macro_4:                     {label: Macro 4, cc: 19, group: macros}
+  macro_5:                     {label: Macro 5, cc: 20, group: macros}
+  macro_6:                     {label: Macro 6, cc: 21, group: macros}
+  macro_7:                     {label: Macro 7, cc: 22, group: macros}
+  macro_8:                     {label: Macro 8, cc: 23, group: macros}
+
+  # Mixer ─────────────────────────────────────────────────
+  noise_vol:                   {label: Noise Vol, cc: 3, group: mixer}
+  noise_pan:                   {label: Noise Pan, cc: 8, group: mixer}
+  ring_mod_vol:                {label: Ring Mod Vol, cc: 9, group: mixer}
+  ring_mod_pan:                {label: Ring Mod Pan, cc: 10, group: mixer}
+  rm12_depth:                  {label: RM12 Depth, cc: 43, group: mixer}
+  osc1_vol:                    {label: OSC1 Vol, cc: 44, group: mixer}
+  osc1_pan:                    {label: OSC1 Pan, cc: 45, group: mixer}
+  osc2_vol:                    {label: OSC2 Vol, cc: 46, group: mixer}
+  osc2_pan:                    {label: OSC2 Pan, cc: 47, group: mixer}
+  osc3_vol:                    {label: OSC3 Vol, cc: 48, group: mixer}
+  osc3_pan:                    {label: OSC3 Pan, cc: 49, group: mixer}
+  osc_3_frate:                 {label: OSC 3 FRate, cc: 114, group: mixer}
+  noise_frate:                 {label: Noise FRate, cc: 115, group: mixer}
+  ring_mod_frate:              {label: Ring Mod FRate, cc: 116, group: mixer}
+  osc1_frate:                  {label: OSC1 FRate, cc: 118, group: mixer}
+  osc2_frate:                  {label: OSC2 FRate, cc: 119, group: mixer}
+
+  # Mutator 1 ─────────────────────────────────────────────
+  mutator1_ratio:              {label: Mutator1 Ratio, cc: 29, group: mutator_1}
+  mutator1_depth:              {label: Mutator1 Depth, cc: 30, group: mutator_1}
+  mutator1_dry_wet:            {label: Mutator1 Dry/Wet, cc: 31, group: mutator_1}
+
+  # Mutator 2 ─────────────────────────────────────────────
+  mutator2_ratio:              {label: Mutator2 Ratio, cc: 33, group: mutator_2}
+  mutator2_depth:              {label: Mutator2 Depth, cc: 34, group: mutator_2}
+  mutator2_dry_wet:            {label: Mutator2 Dry/Wet, cc: 35, group: mutator_2}
+
+  # Mutator 3 ─────────────────────────────────────────────
+  mutator3_ratio:              {label: Mutator3 Ratio, cc: 36, group: mutator_3}
+  mutator3_depth:              {label: Mutator3 Depth, cc: 37, group: mutator_3}
+  mutator3_dry_wet:            {label: Mutator3 Dry/Wet, cc: 39, group: mutator_3}
+
+  # Mutator 4 ─────────────────────────────────────────────
+  mutator4_ratio:              {label: Mutator4 Ratio, cc: 40, group: mutator_4}
+  mutator4_depth:              {label: Mutator4 Depth, cc: 41, group: mutator_4}
+  mutator4_dry_wet:            {label: Mutator4 Dry/Wet, cc: 42, group: mutator_4}
+
+  # OSC 1 ─────────────────────────────────────────────────
+  osc1_wavscan:                {label: OSC1 wavscan, cc: 24, group: osc_1}
+  osc_1_cent:                  {label: OSC 1 Cent, cc: 111, group: osc_1}
+
+  # OSC 2 ─────────────────────────────────────────────────
+  osc2_wavscan:                {label: OSC2 WavScan, cc: 26, group: osc_2}
+  osc_2_cent:                  {label: OSC 2 Cent, cc: 112, group: osc_2}
+
+  # OSC 3 ─────────────────────────────────────────────────
+  osc_3_cent:                  {label: OSC 3 Cent, cc: 113, group: osc_3}
+
+  # Post-fx ───────────────────────────────────────────────
+  post_fx_param1:              {label: POST-FX Param1, cc: 68, group: post_fx}
+  post_fx_param2:              {label: POST-FX Param2, cc: 69, group: post_fx}
+  post_fx_mix:                 {label: POST FX Mix, cc: 94, group: post_fx}
+
+  # Pre-fx ────────────────────────────────────────────────
+  pre_fx_param1:               {label: PRE-FX Param1, cc: 12, group: pre_fx}
+  pre_fx_param2:               {label: PRE-FX Param2, cc: 13, group: pre_fx}
+  pre_fx_mix:                  {label: PRE-FX Mix, cc: 93, group: pre_fx}
+
+  # Reverb ────────────────────────────────────────────────
+  reverb_time:                 {label: Reverb Time, cc: 65, group: reverb}
+  reverb_tone:                 {label: Reverb Tone, cc: 67, group: reverb}
+  reverb_dry_wet:              {label: Reverb Dry/Wet, cc: 91, group: reverb}
+
+  # System ────────────────────────────────────────────────
+  modulation_wheel:            {label: Modulation wheel., cc: 1, group: system}
+  master_volume:               {label: Master Volume, cc: 7, group: system}
+  expression_pedal:            {label: Expression pedal, cc: 11, group: system}
+  sustain_pedal:               {label: Sustain pedal, cc: 64, group: system}
+
+  # Voice ─────────────────────────────────────────────────
+  glidtime:                    {label: GlidTime, cc: 5, group: voice}
+  glide:                       {label: Glide, cc: 66, group: voice}
+  detune:                      {label: Detune, cc: 95, group: voice}
+  stwidth:                     {label: StWidth, cc: 117, group: voice}

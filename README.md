@@ -176,6 +176,7 @@ self-contained YAML file, and you share it by sending it.
 | `oberheim/teo_5` | Oberheim TEO-5: 198 controls off an implementation document that says in its own words the map belongs to a Sequential synth |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
+| `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |

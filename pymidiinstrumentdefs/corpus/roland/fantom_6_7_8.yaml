@@ -1,0 +1,276 @@
+# The sixth Roland here, and the first instrument in this corpus whose maker publishes a proper
+# MIDI implementation document AND a two-chart implementation summary AND seven firmware
+# supplements. All of it was read, and the whole of what it establishes is below.
+#
+# THE CONTROLLER MAP IS THE MIDI SPECIFICATION'S OWN. Every one of the 31 controls below is a
+# standard assignment under its standard name - modulation, breath, foot, portamento time,
+# volume, pan, expression, the five pedals, the eight sound controllers, the eight general
+# purpose controllers and two effect sends. Roland invents none of them. That is why the groups
+# are the specification's sections rather than a panel's layout: there is no panel layout to
+# follow, because the knobs and sliders are assignable to any controller rather than wired to one.
+#
+# THREE KEYBOARDS, ONE DEFINITION. The FANTOM-6, -7 and -8 differ in their keyboards alone - 61,
+# 76 and 88 keys, the last with a different action - and the implementation documents are headed
+# "FANTOM-6/7/8" for all three. "FANTOM EX" is a system upgrade for these same keyboards and is
+# covered. Roland's other Fantoms are not: the 2001 Fantom, the Fantom-S, -X and -G, and the
+# FANTOM-0 are different instruments that share a name.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: FANTOM-6/7/8
+  # THE NEWEST RELEASE, AND THE MAP IS CHECKED UNCHANGED ACROSS EVERY ONE BEFORE IT. No document
+  # here states which firmware it describes - the implementation document says only "Version：
+  # 1.00" of itself, and the only firmware-shaped data in 67 pages is an Identity Reply whose
+  # software revision distinguishes the three models rather than naming a version.
+  # What is checked: Roland publishes a supplementary manual for each release, and **all seven
+  # were fetched and read** - 1.10, 1.50, 1.60, 2.00, 2.10, 2.50 and 3.00. **Not one adds,
+  # removes or renumbers a controller.** Three of them print the same list of modulation sources,
+  # "CC01-31 Controller number 1-31, CC33-95 Controller number 33-95, BEND Pitch bend, AFT
+  # Aftertouch", which is the matrix's source list and not a change to the map. So the chart
+  # published at version 1.00 is not known to be superseded, and it holds at 3.00.
+  firmware: "3.00"
+
+source: >-
+  Four documents, all of them read: the MIDI Implementation (67pp, version 1.00 of 1 November
+  2020), which is where every number below comes from; the Reference Manual (132pp), for the two
+  implementation charts at pp. 128-129 and the settings at pp. 115-117; the Owner's Manual
+  (24pp), for the zones and the specifications; and the seven firmware supplements, for the
+  question of whether any release changed the map.
+
+  THE IMPLEMENTATION DOCUMENT PRINTS NO PAGE NUMBERS OF ITS OWN, so a citation to it is a page
+  of the file and `page_offset` is zero by default rather than by measurement. Both readings
+  confirmed that separately.
+
+  IT IS ORGANISED BY DIRECTION, WHICH IS WHY IT WAS READ THAT WAY. Section 1 is what the sound
+  source receives (pp. 1-8), section 2 what it transmits (pp. 8-12), sections 3 and 4 what the
+  sequencer records and plays (pp. 12-14), section 5 the Parameter Address Map (pp. 14-64) and
+  section 6 supplementary material. Sections 3 and 4 are deliberately not read for controls:
+  they say what the recorder does, not what the sound engine answers to. Section 5 holds system
+  exclusive addresses and no controller numbers.
+
+  SECTION 2 NAMES FIVE FEWER CONTROLLERS THAN SECTION 1, AND THE DOCUMENT SAYS WHY. Foot type
+  (4), Decay Time (75), Vibrato Rate (76), Vibrato Depth (77) and Vibrato Delay (78) have an
+  entry under reception and none under transmission. That looks like an asymmetry worth
+  recording and it is not, because section 2 opens with this: "By selecting a controller number
+  that corresponds to the setting of parameters of controllers, the FANTOM-6/7/8 can transmit
+  any control change message." (p. 8) It then prints one numberless entry, "General Controller",
+  whose second byte is "Controller number: 00H - 77H (0 - 31, 33 - 95)" (p. 10) - a range that
+  covers all five. The Reference Manual's chart says the same thing in its own way, marking the
+  row "1-31, 33-95" transmitted. So every control below is `both`, which is this format's
+  default and is why none of them says so.
+
+  AND THAT SENTENCE CONTRADICTS ITSELF IN ONE CHARACTER. "00H - 77H" is 0 to **119**, not 0 to
+  95; for the range the same line glosses, the hex would be 00H-1FH and 21H-5FH. The hex and the
+  decimal cannot both be right and the document does not say which it means. Recorded and not
+  resolved - it matters because that one line is the only thing in section 2 that accounts for
+  the five missing controllers.
+
+  THE TWO DOCUMENTS DISAGREE ABOUT ONE CONTROLLER'S EXISTENCE. The implementation document names
+  General Purpose Controller 2 at CC 17, in both of its sound-source sections. **The Reference
+  Manual's chart omits 17 entirely**, listing 16, 18 and 19 and skipping it. Nothing explains the
+  gap. It is carried here, because the document that exists to enumerate controllers names it
+  twice and the chart that summarises them names 16 and 18 either side of it.
+
+  SIX NUMBERS ARE NOT CARRIED, AND THE LINE IS DRAWN ONCE AND SAID OUT LOUD. Bank Select (0 and
+  32), Data Entry (6 and 38), the RPN selects (100 and 101) and the High Resolution Velocity
+  Prefix (88) are all named in the document and none is a parameter of this instrument: they are
+  how the MIDI specification addresses things and how it extends a note's resolution. Bank
+  Select's work is recorded under `program_change` instead. That is the same ruling that keeps
+  the channel mode messages out - 120, 121, 123, 124, 125, 126 and 127, which this document also
+  names - drawn one step wider.
+
+  EVERY NUMBER WAS READ TWICE AND THE TWO AGREE ON EVERY ONE. The second reading, made without
+  sight of the first, worked from glyph geometry rather than from extracted text and then
+  rendered pages 1-14 and read them by eye. It reports a trap worth passing on: **the controller
+  headings are marked with ○, U+25CB, while ● marks a message type**, so a pattern looking for
+  `●` and a controller number finds the channel mode messages and misses every control change.
+
+  NRPN IS A CHECKED ABSENCE, FROM BOTH DOCUMENTS AT ONCE. The implementation document names no
+  NRPN parameter anywhere in 67 pages and gives no heading for controllers 98 and 99, so there
+  is no way to select one; the Reference Manual's chart marks 98 and 99 "x" in both its
+  transmitted and recognised columns. NRPN appears only in passing, in Data Entry's gloss and in
+  the Reset All Controllers table. **RPN, by contrast, is received and the document lists exactly
+  four**: Pitch Bend Sensitivity, Channel Fine Tuning, Channel Coarse Tuning and RPN null.
+
+  NOT RECORDED: the polyphony, which no document here states - the Reference Manual mentions "the
+  maximum polyphony" three times and never gives a figure, and the specifications table names the
+  keyboards and not the voices. And the preset count: program change reaches "Program Number
+  1-128" per the chart and Bank Select chooses the bank, and no document here says how many banks
+  there are.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: "MIDI Implementation Model: FANTOM-6/7/8"
+    edition: "1.00"
+    dated: 2020-11-01
+    landing: "https://www.roland.com/global/support/by_product/fantom_6/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/FANTOM-6_7_8_MIDI_Imple_eng01_W.pdf"
+    sha256: 8b16ed3b916637e5255664171e4da9ad639cd7f4db2c9154b85854c9ffa2d6fd
+    retrieved: 2026-10-03
+    # 67 pages, and it prints no folios, so a page cited here is a page of the file. It is
+    # AES-128 encrypted with an owner password and opens freely; both readings opened it.
+  reference:
+    kind: manual
+    title: FANTOM-6/FANTOM-7/FANTOM-8 Reference Manual
+    edition: eng01
+    landing: "https://www.roland.com/global/support/by_product/fantom_6/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/FANTOM-6_7_8_reference_eng01_W.pdf"
+    sha256: 1b2c7e19654f8a20dc218755e684a429706ae46f538912c4cf4b8bac5acc604d
+    retrieved: 2026-10-03
+    # 132 pages. Carries the two MIDI implementation charts, one for the sound generator section
+    # and one for the sequencer, both dated 1 September 2019 at version 1.00 - a year older than
+    # the implementation document above.
+  parameter_guide:
+    kind: manual
+    title: FANTOM-6/FANTOM-7/FANTOM-8 Parameter Guide
+    edition: eng01
+    landing: "https://www.roland.com/global/support/by_product/fantom_6/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/FANTOM_ParameterGuide_eng01_W.pdf"
+    sha256: 80b8b5c99276192a67471fdac9d64e963555eb883b831c9406dd15b0fc3ac73d
+    retrieved: 2026-10-03
+    # 76 pages. Cited for the per-zone settings the other three documents only imply: which
+    # channel a zone receives on, and the switch that makes it ignore channel pressure.
+  owners_manual:
+    kind: manual
+    title: FANTOM-6/FANTOM-7/FANTOM-8 Owner's Manual
+    edition: eng02
+    landing: "https://www.roland.com/global/support/by_product/fantom_6/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/FANTOM-6_7_8_eng02_W.pdf"
+    sha256: bdeb60a09915534afbc176d7f6a025db3199aff205b5460ddafd3c60126d2380
+    retrieved: 2026-10-03
+    # 24 pages, a short guide rather than a full manual. Cited for the zones and for the
+    # specifications table that distinguishes the three keyboards.
+
+midi:
+  # Every channel message in the implementation document repeats "n = MIDI channel number: 0H -
+  # FH (ch.1 - 16)", and the chart's Basic Channel row gives 1-16 as both the default and what it
+  # can be changed to. Each zone is given one: "Receive Channel 1-16 Specifies the MIDI channel
+  # assigned to each zone" (parameter_guide p. 11).
+  channels: [1, 16]
+  # The chart's Mode row: "Default Mode 3" in both columns, and Mode 3 is Omni Off, Poly.
+  mode: 3
+  # BOTH, BUT NOT BY THE SAME SECTION. The sound generator receives clock and does not send it -
+  # the chart's System Realtime row is "x" transmitted and "o" recognised - while **the
+  # sequencer's chart marks Clock "o" both ways**, and the Reference Manual's Sync Mode setting
+  # offers MASTER, "The FANTOM will be the synchronization master" (reference p. 117),
+  # against SLAVE with a System Clock Source of MIDI or USB. So the instrument does both and which half of it does
+  # which is a fact about its sections rather than about its sockets.
+  clock: both
+  # Likewise: the sequencer's chart marks Commands "o" in both columns, where the sound
+  # generator's marks them "x". Start, stop and continue are the sequencer's business.
+  transport: both
+  program_change:
+    # "Receive Program Change OFF, ON Specifies whether program change messages will be received"
+    # (reference p. 115), and the sound generator's chart marks Program Change "o" in both
+    # columns with "Program Number 1-128" against its True Number row.
+    receives: true
+    sends: true
+    # NOT RECORDED, the preset count: 1-128 is what one bank holds and Bank Select chooses the
+    # bank, and no document here says how many banks there are.
+  # A CHECKED ABSENCE FROM TWO DOCUMENTS AT ONCE: no NRPN parameter is named in 67 pages, no
+  # heading exists for controllers 98 and 99, and the chart marks both "x" in both directions.
+  nrpn: none
+  # Section 5 of the implementation document is a Parameter Address Map running from p. 14 to
+  # p. 64, which is the bulk of it, and the charts mark System Exclusive "o" in both columns.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # The chart's Note Number row gives 0-127 transmitted and recognised, and its True Voice row
+  # 0-127 - which is the instrument saying it sounds every note it answers to.
+  note_range: [0, 127]
+  # NOT RECORDED, the polyphony. See the source account: the maximum is referred to three times
+  # and never given.
+  velocity:
+    note_on: received
+    # The chart marks Note On and Note Off "o" in both columns, so release velocity travels too.
+    note_off: true
+  # BOTH KINDS ARE RECEIVED AND THE FIELD HOLDS ONE WORD, so this follows the MC-707's precedent
+  # from the same maker and says `poly`, the stronger of the two. The chart's After Touch rows:
+  # Key's is "x" transmitted and "o" recognised, Channel's is "o" in both. So polyphonic pressure
+  # is answered to and never sent, channel pressure both ways - and a zone can be told to ignore
+  # the latter, "Receive Channel Pressure (CA) OFF, ON Specifies whether channel aftertouch is
+  # received (ON) or not received (OFF)" (parameter_guide p. 14).
+  aftertouch: poly
+  pitch_bend:
+    # Settable over RPN, which the implementation document lists first among the four it
+    # receives: RPN 00 00H is Pitch Bend Sensitivity, "mm: 00H - 18H (0 - 24 semitones)" with
+    # "Up to 2 octave can be specified in semitone steps" (p. 4). The factory depth is not
+    # stated, so `semitones` is unrecorded; what it can be set to is 0 to 24.
+    programmable: true
+
+parts:
+  zone:
+    label: Zone
+    count: 16
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # "There are 16 zones; by combining zones you can create sounds that consist of multiple
+    # tones" (owners_manual p. 11), each with a receive channel of its own. The address map
+    # bears it out from the other side, running Scene Zone 1 to Scene Zone 16 with a Receive
+    # Channel apiece.
+    # A ZONE NEED NOT SOUND ANYTHING, which is unusual enough to say: "You can also use specific
+    # zones to control an external sound module (EXT ZONE) instead of the internal sound engine"
+    # (owners_manual p. 11). So the same sixteen parts are the instrument's voices and its
+    # sixteen-channel MIDI output, switched one at a time, and nothing in the format distinguishes
+    # a zone doing one job from the same zone doing the other.
+
+groups:
+  # THE MIDI SPECIFICATION'S OWN SECTIONS, not a panel's layout and not this maker's headings -
+  # the implementation document prints one flat list in numerical order and gives it no grouping
+  # at all. These are used because the map itself is the standard assignment: every name below is
+  # the specification's name for that number. Grouping them any other way would suggest this
+  # instrument has a layout these numbers follow, and it does not: its knobs and sliders are
+  # assignable to any controller from 1 to 31 and 33 to 95.
+  continuous: Continuous controllers
+  general_purpose: General purpose controllers
+  switch: Switches and pedals
+  sound: Sound controllers
+  effects: Effect send levels
+
+controls:
+
+  # Continuous controllers ────────────────────────────────
+  modulation:                        {label: Modulation, cc: 1, group: continuous}
+  breath_type:                       {label: Breath type, cc: 2, group: continuous}
+  foot_type:                         {label: Foot type, cc: 4, group: continuous}
+  portamento_time:                   {label: Portamento Time, cc: 5, group: continuous}
+  volume:                            {label: Volume, cc: 7, group: continuous}
+  panpot:                            {label: Panpot, cc: 10, group: continuous}
+  expression:                        {label: Expression, cc: 11, group: continuous}
+
+  # General purpose controllers ───────────────────────────
+  general_purpose_controller_1:      {label: General Purpose Controller 1, cc: 16, group: general_purpose}
+  general_purpose_controller_2:      {label: General Purpose Controller 2, cc: 17, group: general_purpose}
+  general_purpose_controller_3:      {label: General Purpose Controller 3, cc: 18, group: general_purpose}
+  general_purpose_controller_4:      {label: General Purpose Controller 4, cc: 19, group: general_purpose}
+  general_purpose_controller_5:      {label: General Purpose Controller 5, cc: 80, group: general_purpose}
+  general_purpose_controller_6:      {label: General Purpose Controller 6, cc: 81, group: general_purpose}
+  general_purpose_controller_7:      {label: General Purpose Controller 7, cc: 82, group: general_purpose}
+  general_purpose_controller_8:      {label: General Purpose Controller 8, cc: 83, group: general_purpose}
+
+  # Switches and pedals ───────────────────────────────────
+  hold_1:                            {label: Hold 1, cc: 64, group: switch}
+  portamento:                        {label: Portamento, cc: 65, group: switch}
+  sostenuto:                         {label: Sostenuto, cc: 66, group: switch}
+  soft:                              {label: Soft, cc: 67, group: switch}
+  legato_foot_switch:                {label: Legato Foot Switch, cc: 68, group: switch}
+  portamento_control:                {label: Portamento control, cc: 84, group: switch}
+
+  # Sound controllers ─────────────────────────────────────
+  resonance:                         {label: Resonance, cc: 71, group: sound}
+  release_time:                      {label: Release Time, cc: 72, group: sound}
+  attack_time:                       {label: Attack time, cc: 73, group: sound}
+  cutoff:                            {label: Cutoff, cc: 74, group: sound}
+  decay_time:                        {label: Decay Time, cc: 75, group: sound}
+  vibrato_rate:                      {label: Vibrato Rate, cc: 76, group: sound}
+  vibrato_depth:                     {label: Vibrato Depth, cc: 77, group: sound}
+  vibrato_delay:                     {label: Vibrato Delay, cc: 78, group: sound}
+
+  # Effect send levels ────────────────────────────────────
+  general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, group: effects}
+  general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, group: effects}

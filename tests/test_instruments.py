@@ -172,6 +172,7 @@ class TestBundledCorpus:
 			"oberheim/teo_5",
 			"pwm/malevolent",
 			"roland/d_50",
+			"roland/fantom_6_7_8",
 			"roland/juno_106",
 			"roland/mc_707",
 			"roland/tr8s",
@@ -6016,6 +6017,159 @@ class TestTyphon:
 
 		assert "The Artemis's list must never be attributed to this instrument" in flowed
 		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed
+
+
+class TestFantom:
+
+	"""A Roland workstation whose controller map is the MIDI specification's own."""
+
+	def test_thirty_one_controls_and_every_one_a_standard_assignment (self) -> None:
+		"""Roland invents none of these numbers, which is why the groups are the standard's.
+
+		Modulation is 1, breath 2, foot 4, portamento time 5, volume 7, pan 10,
+		expression 11 - the specification's assignments under the specification's names.
+		"""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert len(fantom.controls) == 31
+		assert len(fantom.groups) == 5
+
+		by_number = {control.cc: control for control in fantom.controls.values()}
+
+		assert by_number[1].label == "Modulation"
+		assert by_number[7].label == "Volume"
+		assert by_number[10].label == "Panpot"
+		assert by_number[11].label == "Expression"
+		assert by_number[64].label == "Hold 1"
+		assert by_number[74].label == "Cutoff"
+
+	def test_the_addressing_mechanisms_are_not_carried_as_controls (self) -> None:
+		"""Bank select, data entry, the RPN selects and the velocity prefix address; they do not sound.
+
+		The line is one step wider than the validator's own refusal of the channel mode
+		messages, and the file draws it out loud rather than quietly.
+		"""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		numbers = {control.cc for control in fantom.controls.values()}
+
+		for mechanism in (0, 32, 6, 38, 88, 98, 99, 100, 101):
+			assert mechanism not in numbers, mechanism
+
+		for mode in range(120, 128):
+			assert mode not in numbers, mode
+
+		account = " ".join((fantom.source or "").split())
+
+		assert "SIX NUMBERS ARE NOT CARRIED" in account
+
+	def test_everything_travels_both_ways_and_the_document_says_why (self) -> None:
+		"""Five are named only under reception, and that is not an asymmetry.
+
+		Section 2 opens by saying the instrument can transmit any control change, and
+		prints one numberless entry covering the range - so the five are covered, and
+		nothing here is narrowed to `receives` on an omission.
+		"""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		for name, control in fantom.controls.items():
+			assert control.direction == "both", name
+
+		account = " ".join((fantom.source or "").split())
+
+		assert "can transmit any control change message" in account
+		assert "SECTION 2 NAMES FIVE FEWER CONTROLLERS THAN SECTION 1" in account
+
+	def test_the_one_line_that_contradicts_itself_is_recorded (self) -> None:
+		"""`00H - 77H (0 - 31, 33 - 95)` - the hex is 0 to 119 and the gloss is 0 to 95."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		account = " ".join((fantom.source or "").split())
+
+		assert "CONTRADICTS ITSELF IN ONE CHARACTER" in account
+		assert "is 0 to **119**, not 0 to" in account
+
+	def test_the_chart_omits_a_controller_the_implementation_names (self) -> None:
+		"""CC 17 is in the implementation twice and absent from the summary chart."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		by_number = {control.cc: control for control in fantom.controls.values()}
+
+		assert by_number[17].label == "General Purpose Controller 2"
+		assert 16 in by_number and 18 in by_number
+
+		account = " ".join((fantom.source or "").split())
+
+		assert "DISAGREE ABOUT ONE CONTROLLER'S EXISTENCE" in account
+
+	def test_sixteen_zones_each_of_which_may_sound_nothing (self) -> None:
+		"""The same sixteen parts are the voices and the sixteen-channel MIDI output."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert set(fantom.parts) == {"zone"}
+		assert fantom.parts["zone"].count == 16
+		assert fantom.parts["zone"].channel == "assigned"
+		assert fantom.parts["zone"].receives == ("notes", "controls")
+
+	def test_clock_and_transport_are_both_ways_by_two_different_sections (self) -> None:
+		"""The sound generator receives clock; the sequencer sends it. Two charts, one instrument."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert fantom.midi.clock == "both"
+		assert fantom.midi.transport == "both"
+		assert fantom.midi.mode == 3
+
+		account = " ".join((fantom.source or "").split())
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "roland" / "fantom_6_7_8.yaml").read_text().splitlines())
+
+		assert "BOTH, BUT NOT BY THE SAME SECTION" in " ".join(flowed.split())
+		assert account
+
+	def test_nrpn_is_a_checked_absence_from_two_documents (self) -> None:
+		"""No parameter named, no way to select one, and the chart marks 98 and 99 absent."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert fantom.midi.nrpn == "none"
+		assert fantom.midi.sysex is True
+
+		account = " ".join((fantom.source or "").split())
+
+		assert "NRPN IS A CHECKED ABSENCE, FROM BOTH DOCUMENTS AT ONCE" in account
+
+	def test_both_pressures_are_received_and_the_field_holds_one_word (self) -> None:
+		"""Poly is recorded, as the MC-707 does from the same maker, and channel is in the comment."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert fantom.voice.aftertouch == "poly"
+		assert fantom.voice.pitch_bend is not None
+		assert fantom.voice.pitch_bend.programmable is True
+		assert fantom.voice.pitch_bend.semitones is None
+		assert fantom.voice.velocity is not None
+		assert fantom.voice.velocity.note_off is True
+
+	def test_the_firmware_is_the_newest_and_the_map_is_checked_across_all_seven (self) -> None:
+		"""No document states a firmware, so seven supplements were read to establish it."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert fantom.model.firmware == "3.00"
+		assert fantom.sources["implementation"].edition == "1.00"
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "roland" / "fantom_6_7_8.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "all seven were fetched and read" in flowed.lower()
+		assert "Not one adds, removes or renumbers a controller" in flowed
+
+	def test_three_keyboards_one_definition_and_the_other_fantoms_are_not_it (self) -> None:
+		"""Several generations share this name and only one of them is here."""
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "roland" / "fantom_6_7_8.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "THREE KEYBOARDS, ONE DEFINITION" in flowed
+		assert "the 2001 Fantom, the Fantom-S, -X and -G, and the FANTOM-0 are different" in flowed
 
 
 class TestPolyBrute:

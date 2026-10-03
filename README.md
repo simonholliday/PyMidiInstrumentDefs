@@ -135,6 +135,7 @@ self-contained YAML file, and you share it by sending it.
 | `arturia/drumbrute_impact` | Arturia DrumBrute Impact: publishes no controller number at all - its drum map is the one set of numbers it states, and it states them inside a screenshot |
 | `arturia/microfreak` | Arturia MicroFreak: four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
 | `arturia/minifreak` | Arturia MiniFreak: six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |
+| `arturia/polybrute` | Arturia PolyBrute: 74 controls off a chart set as eighteen small tables three across, whose column positions shift from one block of rows to the next |
 | `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
 | `behringer/td_3` | Behringer TD-3: no control changes either, established from the maker's own complete MIDI message table - its "Modded Out" sibling adds exactly one and needs a definition of its own |
 | `dreadbox/typhon` | Dreadbox Typhon: 98 controllers out of a three-column list on two pages of the manual, which is the only place its maker publishes them - the standalone CC chart on the same download page belongs to a different instrument |

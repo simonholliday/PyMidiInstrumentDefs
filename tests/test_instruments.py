@@ -131,6 +131,7 @@ class TestBundledCorpus:
 			"arturia/drumbrute_impact",
 			"arturia/microfreak",
 			"arturia/minifreak",
+			"arturia/polybrute",
 			"behringer/model_d",
 			"behringer/td_3",
 			"dreadbox/typhon",
@@ -6015,6 +6016,190 @@ class TestTyphon:
 
 		assert "The Artemis's list must never be attributed to this instrument" in flowed
 		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed
+
+
+class TestPolyBrute:
+
+	"""An Arturia whose chart is eighteen tables three across, with columns that move."""
+
+	def test_seventy_four_controls_in_eighteen_groups (self) -> None:
+		"""One number per parameter, and every number distinct.
+
+		Worth asserting for an instrument whose two parts divide a keyboard rather
+		than a sound engine: nothing here needs a part to say what a number means,
+		unlike the Rytm's 26 ambiguous numbers or the Syntakt's 28.
+		"""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert len(poly.controls) == 74
+		assert len(poly.groups) == 18
+
+		numbers = [control.cc for control in poly.controls.values() if control.cc is not None]
+
+		assert len(numbers) == 74
+		assert len(set(numbers)) == 74
+
+		for control in poly.controls.values():
+			assert control.part is None
+
+	def test_the_unused_numbers_are_mostly_the_ones_midi_reserves (self) -> None:
+		"""Which is why a block of numbers that is not contiguous is worth asking about.
+
+		The run 32 to 63 is absent entire, and it is the block the specification
+		keeps for the fine halves of controllers 0 to 31 - so an instrument sending
+		seven-bit values has no use for it.  That is an explanation, not a repair:
+		the manual accounts for none of them and none is inferred.
+		"""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		used = {control.cc for control in poly.controls.values() if control.cc is not None}
+		missing = set(range(min(used), max(used) + 1)) - used
+
+		assert set(range(32, 64)) <= missing
+		assert missing - set(range(32, 64)) == {6, 20, 64, 74, 84, 88, 96, 97, 98, 99, 100, 101}
+
+		# 64 sits next to that block and is absent for its own reason - it is the damper
+		# pedal, and this instrument takes a sustain pedal on a jack rather than on a
+		# controller. So the unbroken absence is 32 to 64 and it is two facts, not one.
+		assert 64 in missing
+		assert 65 not in missing
+
+	def test_fourteen_names_need_their_table_to_tell_them_apart (self) -> None:
+		"""`Rate` names four different things, so a key built from the name would collide."""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		labels: dict[str, int] = {}
+
+		for control in poly.controls.values():
+
+			if control.label is not None:
+				labels[control.label] = labels.get(control.label, 0) + 1
+
+		shared = {label for label, count in labels.items() if count > 1}
+
+		assert len(shared) == 14
+		assert labels["Rate"] == 4
+
+		# And the four Rates are in four different groups, which is what makes them
+		# four parameters rather than one read four times.
+		rates = {control.group for control in poly.controls.values()
+			if control.label == "Rate"}
+
+		assert rates == {"lfo_1", "lfo_2", "lfo_3", "sequencer"}
+
+	def test_the_two_parts_divide_a_keyboard_and_share_six_voices (self) -> None:
+		"""They are parts because each has its own channels, not because the keyboard splits."""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert set(poly.parts) == {"upper", "lower"}
+
+		for part in poly.parts.values():
+			assert part.channel == "assigned"
+			assert part.receives == ("notes", "controls")
+
+		assert poly.voice.polyphony == 6
+		assert poly.voice.polyphony_shared is True
+		assert poly.voice.voicing_modes == (1, 6)
+
+	def test_the_aftertouch_is_channel_pressure_whatever_duophonic_sounds_like (self) -> None:
+		"""A setting that restricts which voices respond is not polyphonic pressure."""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert poly.voice.aftertouch == "channel"
+
+		account = " ".join((poly.source or "").split())
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "arturia" / "polybrute.yaml").read_text().splitlines())
+
+		assert "duophonic option is NOT polyphonic pressure" in " ".join(flowed.split())
+		assert account
+
+	def test_the_firmware_is_unrecorded_and_the_manual_is_behind_the_instrument (self) -> None:
+		"""The manual never says which firmware it covers, and a newer one is on offer."""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert poly.model.firmware is None
+		assert poly.sources["manual"].edition == "3.0.1"
+		assert poly.sources["manual"].dated == "2023-10-19"
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "arturia" / "polybrute.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "THE MANUAL IS DEMONSTRABLY BEHIND THE INSTRUMENT" in flowed
+		assert "ARTURIA SERVES DIFFERENT EDITIONS UNDER ONE HEADING" in flowed
+
+	def test_the_sibling_is_not_covered_and_the_file_says_so (self) -> None:
+		"""The PolyBrute 12 adds MPE per the survey, so one file cannot serve both."""
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "arturia" / "polybrute.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "THE POLYBRUTE 12 IS NOT THIS INSTRUMENT" in flowed
+		assert "The PolyBrute Noir is a finish and is covered" in flowed
+
+	def test_the_source_account_says_how_the_chart_was_read (self) -> None:
+		"""Because the next reader of a grid chart needs the trap, not the result."""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		account = " ".join((poly.source or "").split())
+
+		assert "THE CHART IS A GRID OF EIGHTEEN SMALL TABLES, THREE ACROSS" in account
+		assert "the column positions move from one block of rows to the next" in account
+		assert "READING ACROSS ALSO MEANS THE RESULT HAS TO BE GATHERED" in account
+
+	def test_four_numbers_mean_something_else_in_the_specification (self) -> None:
+		"""A player meets this as a fault, so a panel should be able to warn about it.
+
+		CC 7 is Channel Volume and here it is a filter level, so a sequencer sending a
+		routine volume message moves the Steiner's output.
+		"""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		by_number = {control.cc: control for control in poly.controls.values()}
+
+		assert by_number[7].label == "Level"
+		assert by_number[7].group == "steiner_filter"
+		assert by_number[8].label == "Level"
+		assert by_number[8].group == "ladder_filter"
+		assert by_number[2].label == "Reverb Level"
+		assert by_number[4].label == "Exp 2"
+
+		# And four that do follow the specification, which is what makes the four above
+		# look deliberate rather than careless.
+		assert by_number[1].label == "Mod Wheel"
+		assert by_number[5].label == "Glide"
+		assert by_number[10].label == "Stereo"
+		assert by_number[11].label == "Exp 1"
+
+		account = " ".join((poly.source or "").split())
+
+		assert "a sequencer sending a routine volume message will move a filter level" \
+			in account.lower()
+
+	def test_which_filter_is_vcf_one_is_settled_outside_the_chart (self) -> None:
+		"""The chart heads its tables one way and routes its rows another, and cannot reconcile them."""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		by_number = {control.cc: control for control in poly.controls.values()}
+
+		assert by_number[79].label == "VCO 2 > VCF 1"
+		assert by_number[80].label == "Noise > VCF 2"
+		assert by_number[79].group == by_number[80].group == "filter_fm"
+
+		account = " ".join((poly.source or "").split())
+
+		assert "THE CHART NAMES THE TWO FILTERS ONE WAY IN ITS HEADINGS" in account
+		assert "CC 79 routes oscillator 2 into the **Steiner**" in account
+
+	def test_the_survey_was_wrong_about_the_connectors_and_the_file_records_it (self) -> None:
+		"""It said the manual does not name them; it names them twice and they agree."""
+		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		account = " ".join((poly.source or "").split())
+
+		assert "names them twice" in account.lower()
+		assert "MIDI In/Out/Thru" in account
 
 
 class TestZeroCoast:

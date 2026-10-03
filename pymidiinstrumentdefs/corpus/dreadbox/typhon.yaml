@@ -1,0 +1,501 @@
+definition: 1
+
+# THE ONE PLACE THIS INSTRUMENT'S CONTROLLER NUMBERS EXIST IS TWO PAGES OF ITS MANUAL. Dreadbox
+# publishes a standalone CC list for the Artemis, `Artemis-CC-LIST.pdf`, and none for the Typhon:
+# its support page carries seven files for this instrument - two preset managers, four updaters
+# and one user manual - and no item anywhere on that page carries both "Typhon" and CC, MIDI,
+# implementation or chart. **The Artemis's list must never be attributed to this instrument**,
+# which is the OP-1's hazard in a new maker's clothing: a complete-looking chart on the maker's
+# own download page, for the product next to the one you want.
+#
+# AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT. What an extractor hands
+# back is `1. MOD WHEEL / ... / 63. M3 CUSTOM 2 LVL / 2. CC2 / 33. M2 PARAMETER 3 / 64. SUSTAIN
+# PEDAL` - three columns read across instead of down. Every number below was placed by the
+# horizontal position of the column it was printed in, and then checked by arithmetic. The check
+# is in the source note.
+
+model:
+  manufacturer: Dreadbox
+  name: Typhon
+  # THE MANUAL NAMES ITS OWN FIRMWARE AND THE ONE RELEASE SINCE CHANGED NO NUMBER. The manual
+  # says "Firmware version 4.2" against "April/2026" on its contents page, and the newest build
+  # Dreadbox offers is the **4.2.1 updater of July 2026**. Its notes were read, as
+  # `docs/adding-an-instrument.md` requires, and they are two bug fixes: a screensaver default
+  # that failed to load, and - the one that touches MIDI at all - "Fixed an issue where powering
+  # on a MIDI controller after the synth was already running could cause the synth to send
+  # errors to the MIDI port, resulting in a full unit crash" (release_notes). **A stability fix
+  # is not a map change**: no controller number, no channel, no message type. So the 4.2 manual
+  # is still the map at 4.2.1, and that is checked rather than hoped - which is the opposite of
+  # the position the Deluge left this corpus in a commit earlier.
+  firmware: "4.2"
+
+source: >-
+  User's Manual, 24 pages, firmware 4.2 of April 2026. **Section 11, "MIDI
+  implementation", at printed pages 23-24** is the whole of the controller map and
+  the list of messages the instrument accepts. The settings that are not controllers
+  are on printed p. 20, where the menu table gives the channel options, the master
+  clock, the program change switches and the pitch wheel range, and printed p. 22,
+  where the same settings are described in prose. The preset count is printed p. 9,
+  the note range printed p. 19, the sockets printed p. 24. Plus the product page, the
+  support page and the notes for the one firmware release since the manual, each named
+  below for what it settles.
+
+  THERE IS NO MIDI IMPLEMENTATION CHART IN THE CONVENTIONAL SENSE, and what stands in
+  its place is a list with a claim in it: "Typhon can accept the following MIDI
+  messages" (manual p. 23), followed by ten items - note on and off, note number,
+  aftertouch, velocity, modulation wheel, pitch bend, MIDI CC, program changes, clock
+  and transport messages. **It is a list of what is received and says nothing about
+  what is sent**, which has to be got from the settings menu instead, where CC OUT,
+  PC OUT and the master clock's Transmit are each a switch. `mode` is absent because
+  nothing resembling a Basic Channel or Mode row exists to read it from.
+
+  THE PRINTED PAGE IS THE PAGE OF THE FILE, CHECKED ON EVERY PAGE THAT HAS ONE. 24
+  pages by pypdf and by PyMuPDF, which agree; **`file` says 14**, the sixteenth
+  document in this library it has been wrong about. **22 of the 24 print their own
+  number and every one of the 22 matches the file's**, so the offset is zero and it was
+  measured rather than assumed. The two without are the cover and the contents.
+
+  THE COLUMNS WERE READ DOWN AND THEN CHECKED BY ARITHMETIC, WHICH IS WHAT MAKES THIS
+  MORE THAN A CAREFUL TRANSCRIPTION. Three things had to hold and all three do.
+  **First, the gaps are printed**: a number that is not open is not left out, its row
+  holds an ellipsis, so each column's printed numbers plus its ellipsis rows make one
+  unbroken run and a label against the wrong number breaks that sum at once. **Second,
+  the three modulators carry identical parameters, so each should own a block of the
+  same size** - and they do, 17 numbers each, M1 at 13-29 with no gap, M2 at 30-47
+  stepping over 32, M3 at 48-65 stepping over 64. **Third, those two gaps are numbers
+  MIDI had already claimed**: 32 is Bank Select LSB and 64 is the damper pedal, which
+  this instrument opens under its own name as SUSTAIN PEDAL. A reading with a label
+  one row out cannot produce three equal blocks whose gaps fall on exactly the numbers
+  the standard reserves.
+
+  NINE OF THE OPEN NUMBERS CARRY THE MEANING MIDI GIVES THEM, which is the same check
+  from the other direction: 1 is MOD WHEEL, 2 is CC2, 5 is GLIDE where MIDI has
+  portamento time, 7 is PRESET VOLUME where MIDI has channel volume, 64 is SUSTAIN
+  PEDAL, 71 is resonance, 72 and 73 are the amplifier's release and attack, and 74 is
+  the cutoff. Three of the four gaps below 103 are reserved switches - 32, and 66 and
+  69, which MIDI gives to sostenuto and hold 2. **The fourth gap, 3, is unexplained**:
+  MIDI leaves it undefined and so does this manual.
+
+  ONE LABEL LOOKS WRONG AND IS CARRIED AS PRINTED. CC 71 is listed as "VCO RESONANCE"
+  (manual p. 23), where 71 is MIDI's own resonance controller and this instrument's
+  panel calls the same thing a filter control: "Reson: Controls the amount of filter
+  feedback (Q or resonance)" (p. 8). So the number is where it belongs and the word
+  `VCO` is almost certainly a slip for the filter. It is recorded as the maker printed
+  it, and doubted here, because a reader comparing a panel with a definition needs to
+  find the maker's word in it.
+
+  THE LABELS KEEP THE LIST'S CAPITALS, AND THE CAPITALS ARE THE LIST'S AND NOT THE
+  MAKER'S. Dreadbox sets this list in capitals while writing the same panel controls
+  in mixed case in its prose - "Cutoff", "Reson", "Filter Time", "Amp Time" (p. 8). So
+  the capitals are typography. They are kept anyway, because normalising them means
+  choosing a capitalisation for 98 labels that no page of the document prints, and two
+  definitions already here keep their makers' capitals for the same reason.
+
+  WHAT THE INSTRUMENT SENDS IS A SHORTER LIST THAN WHAT IT ACCEPTS, and notes are not
+  on it. The menu offers "CC OUT Enable or Disable", "PC OUT Enable or Disable" and a
+  master clock whose "Transmit" is "Enable or Disable" (manual p. 20), and the output
+  channel setting is "Through or 1-16" (p. 20), where `Through` is MIDI thru rather
+  than a channel. **Nothing in 24 pages says the note sequencer sends its notes out**,
+  so velocity is recorded as received rather than as both, and `transport` as received
+  rather than both - the transport messages are in the accept list and no switch sends
+  them.
+
+  THE CC SWITCH ALSO GOVERNS PROGRAM CHANGE, WHICH IS WORTH KNOWING BEFORE DEBUGGING
+  ONE. "CC - ENABLED / DISABLED. This will also include the program change messeges.
+  Better to turn these off when not used, as some controllers send CC orders by
+  default" (manual p. 22). So a player who turned controllers off to stop a noisy
+  controller has turned program change off as well, and no page says so twice. The
+  misspelling is the manual's.
+
+  AND THE MENU IS DESCRIBED TWICE, WITH THE TWO DESCRIPTIONS DISAGREEING. The table on
+  printed p. 20 lists eleven items under "10. Global settings" - Midi channels, Master
+  clock, Port Configuration, MIDI CC, MIDI PC, Control Handling, Preset Preview,
+  Master Tune, Screensaver, Hardware check, Firmware version. The prose at "10.9
+  Global settings" on p. 22 lists six, renumbered, and leaves out Port Configuration,
+  MIDI CC, MIDI PC, Preset Preview and Master Tune - the first three of which are the
+  MIDI ones. The same pair disagrees about a word: the table's control handling offers
+  "Catch or Jump" and the prose offers "JUMP" or "GRAB". **Every MIDI value in this
+  file is taken from the table**, which is the fuller of the two, and the prose is
+  cited only where it says something the table does not.
+
+  WHAT NOTES IT SOUNDS IS STATED AND STILL NOT RECORDED, BECAUSE THE DOCUMENT USES TWO
+  OCTAVE CONVENTIONS. The range is given plainly - "the note range that the synth can
+  reproduce (A0 to C8)" (manual p. 19) - and that is the right kind of statement, about
+  the engine rather than about a key window, which is what the Blofeld's and the
+  Iridium's `note_range` turned on. **But a note name is not a number until the octave
+  numbering is settled, and this page settles it the other way.** Four lines above, the
+  same paragraph calls middle C "the middle C note found on a keyboard controller
+  (C3)", and middle C is MIDI note 60 - so C3 is 60, which puts A0 at 33 and C8 at 120.
+  Read as the scientific pitch notation that `A0 to C8` is the idiom of - it is exactly
+  an 88-key piano's compass - the same two names are 21 and 108. **The two readings are
+  twelve semitones apart and the document supports both**, so neither is recorded: a
+  consumer drawing a keyboard from the wrong one would grey out an octave that sounds.
+  Nothing else in the manual settles it; the sequencer's own "6-octave range of notes"
+  (p. 17) is its octave slider's span and not the engine's.
+
+  NEITHER IS POLYPHONY, WHICH IS NEVER STATED AT ALL. The words monophonic,
+  polyphonic, paraphonic and voice appear nowhere about this instrument in 24 pages -
+  the one "polyphonic" is an effect, "Ensemble (a polyphonic chorus)" (p. 15). Two
+  controls imply a single voice, GLIDE MODE and LEGATO, and the panel has one filter
+  and one amplifier envelope; **implication is not a statement**, so `polyphony` is
+  absent rather than set to 1.
+
+  NOR WHICH KIND OF AFTERTOUCH IT ANSWERS TO. The accept list says "Aftertouch" and
+  the menu routes it to destinations, so the instrument plainly answers to it, but
+  **MIDI has two aftertouch messages and no page of this manual says which** - the
+  nearest it comes is the generic "Aftertouch is controlled by the amount of pressure
+  applied to a key, and can be found on many synths" (p. 21), which is true of both.
+  The field takes `channel` or `poly` and has no value for "one of the two", so it is
+  left unset. Channel pressure is the overwhelmingly likely answer for an instrument
+  with one voice and one routing destination, and that is a reading rather than a
+  reading of the document.
+
+  SYSTEM EXCLUSIVE IS LEFT UNSET FOR THE DRUMBRUTE IMPACT'S REASON. Something very
+  like it exists - Dreadbox publishes a Preset Manager for both platforms and the
+  manual says to "Manage and exchange presets with the freely provided software"
+  (p. 3) - and **no document names the message type that software uses**. The accept
+  list does not mention system exclusive, but it is a list of ten things rather than a
+  claim to be exhaustive, so its silence is not a no. `nrpn` is absent on the same
+  footing: the word appears nowhere in the manual.
+
+  THE PRODUCT PAGE CLAIMS A FULL IMPLEMENTATION AND IS WORTH NOTHING AS EVIDENCE.
+  "Powered via USB with full MIDI and CC implementation through MIDI DIN5"
+  (product_page) - and the manual it links to shows no system exclusive, no NRPN, no
+  note output and an aftertouch whose kind is unstated. **A claim to completeness is a
+  claim like any other**, which is the EP-133's lesson about a chapter that called
+  itself a complete list and was short by two. The page also disagrees with the manual
+  about the socket: "MIDI Din IN and OUT" there against "MIDI Din5 IN and OUT"
+  (manual p. 24), which is the same fact written two ways rather than two facts.
+
+  ONE THING ABOUT GETTING THE DOCUMENTS AT ALL, because the next person will meet it.
+  **This maker's front end answers 403 to some requests and 200 to others, and the
+  pattern is not what it first looks like.** Every request was refused at first, under
+  every user agent and every set of browser headers; forcing HTTP/1.1 then appeared to
+  fix it and that was a coincidence, because minutes later the same URLs served over
+  both protocol versions. What survives testing is narrower: `/support/` refuses a user
+  agent containing this project's own identification and serves a bare `Mozilla/5.0`,
+  while the product page and the manual serve either. The site's `robots.txt` disallows
+  only its shop logs, its form uploads and `wp-admin`, and permits `/support/`
+  explicitly. So the refusals are an over-broad front-end rule plus a rate limit, not a
+  policy - and the thing to do with a 403 from a CDN is to wait and try once, rather
+  than vary the request until something works and then write down whatever was being
+  varied as the cause.
+
+  THE SECOND READING AGREED ON EVERY NUMBER AND FOUND TWO THINGS THE FIRST HAD NOT. A
+  second reader was given the document and the warnings above, was not shown the first
+  reading, and was required to use a different library. It reached the **same 100
+  numbered entries, the same 23 absences and the same one irregular column**, by a
+  different route - taking each cell's position from the text matrix of every
+  text-showing operator and rebuilding word spaces from measured gaps - and not one
+  label differed, not even in its spacing.
+
+  What it added: **the absences come in two kinds and only one is marked.** Seven cells
+  hold an ellipsis, which accounts for 3, 32, 66, 69, 103 and the two unnumberable
+  rows after 120; but **104 to 119 are not marked at all** - the second column of
+  printed p. 24 ends at 103, the third begins at 120, and sixteen numbers simply never
+  appear. So the ellipsis is not a complete account of what is closed, and a reader who
+  took it for one would conclude this instrument opens 119 controllers.
+
+  And it named a trap the first reading had cleared by luck: **a bare `4.2` sits inside
+  the table's horizontal span**, on the same line as the sentence introducing the list,
+  marking which firmware opened these controllers - five more are on printed p. 20.
+  The first reading's band cleared it by twelve points without meaning to. It would
+  have refused rather than mis-read, because `4.2` parses as neither an entry nor an
+  ellipsis, but a check that passes by accident is worth writing down. The running
+  folio is the same shape of hazard from the other end: `23` printed at the foot of
+  printed p. 23, in the third column's span, and a plausible-looking controller number.
+
+  ONE COLUMN OF THE LIST DOES NOT ADD UP, AND BOTH READINGS SAY SO. The last column
+  reads `120. ALL SOUNDS OFF`, an ellipsis, `123. ALL NOTES OFF`, an ellipsis. One
+  ellipsis to one number - which holds everywhere else in the list - would put 122
+  where 123 is printed. So either the first ellipsis stands for two numbers or the
+  printed 123 is an error. **Which cannot be told from the page**, and nothing here
+  rests on it: 120 and 123 are channel mode messages rather than controls, the corpus
+  refuses them as controls, and neither appears in the block below.
+
+sources:
+  manual:
+    kind: manual
+    title: Typhon User's Manual
+    edition: "4.2"
+    dated: 2026-04-02
+    landing: "https://dreadbox-fx.com/support/"
+    url: "https://dreadbox-fx.com/wp-content/uploads/2026/04/Typhon-Users-Manual_2026.pdf"
+    sha256: 23c4ab4715ff3bf9b008707f76cde7144caa39984df4e34ed0241c4fd6fabc1b
+    retrieved: 2026-10-03
+    # 24 pages by pypdf and by PyMuPDF, which agree; **`file` says 14**. The edition is the
+    # manual's own - "Firmware version 4.2" on its contents page - and the date is the file's
+    # creation stamp, which matches the `2026/04` the maker's own upload path puts it under. Set
+    # in Adobe InDesign 21.1. **OFFSET 0**, and not sampled: 22 of the 24 pages print their own
+    # number and every one matches the file's; the two without are the cover and the contents.
+    # The maker prints no version beside this file on its support page, unlike the Artemis's
+    # "User Manual v1.2.0", so the edition had to come from inside the document.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: Typhon Update v4.2.1
+    edition: "4.2.1"
+    dated: 2026-07-06
+    landing: "https://dreadbox-fx.com/typhon/"
+    url: "https://dreadbox-fx.com/typhon-update-v4-2-1/"
+    sha256: 763fee10ddd605399950f2c82c90b0c222e972cf249f844ac7027daa2f1a8748
+    retrieved: 2026-10-03
+    paginated: false
+    # THE ONE RELEASE SINCE THE MANUAL, AND IT CHANGES NO NUMBER. Published as a news post
+    # rather than as a document, which is why the digest is of a page. Two bug fixes: the
+    # screensaver's stored value failing to load, and a MIDI port stability fault where
+    # connecting a controller after power-on could crash the unit. **The one that touches MIDI
+    # touches the port and not the map** - no controller number, no channel, no message type -
+    # so the 4.2 manual is still the map at 4.2.1. This is what
+    # `docs/adding-an-instrument.md` asks for and it is the whole reason this source is here.
+  support_page:
+    kind: download_page
+    title: Support - Dreadbox Synthesizers
+    landing: "https://dreadbox-fx.com/"
+    url: "https://dreadbox-fx.com/support/"
+    sha256: f409d99302ca01fc9e7d277c68738599ce6b34529489c784b2d965b5a2186112
+    retrieved: 2026-10-03
+    paginated: false
+    # CITED FOR AN ABSENCE, AND FOR A DOCUMENT THAT BELONGS TO ANOTHER INSTRUMENT. It lists
+    # seven files for the Typhon - two preset managers, four updaters and the manual - and **no
+    # CC list and no MIDI implementation document**, which was established by reading its links
+    # rather than its prose: no URL or label anywhere on it carries both "Typhon" and CC, MIDI,
+    # implementation or chart. What it does carry is `Artemis-CC-LIST.pdf`, under a different
+    # product, and that is the thing to be careful of. **This page refuses this project's own
+    # user agent with a 403 and serves a bare `Mozilla/5.0`**, which is recorded in the source
+    # note; its `robots.txt` permits the path explicitly.
+  product_page:
+    kind: product_page
+    title: Typhon - Dreadbox Synthesizers
+    landing: "https://dreadbox-fx.com/"
+    url: "https://dreadbox-fx.com/typhon/"
+    sha256: ba1d364e1c88eb3f825d9cc4c7806f9c86035f65449a6ad72d7ddfa2d81c1757
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for the preset count, which it states as plainly as the manual does, and for the
+    # claim about MIDI that the manual does not bear out. It is also where the one release note
+    # is linked from; there is no link on it to the manual, only to the support index.
+
+midi:
+  # ALL SIXTEEN EACH WAY, AND AN ALL AND A THROUGH BESIDE THEM. The menu's first global setting
+  # is "1. Midi channels" with "Input 1-16 or All" and "Output Through or 1-16" (manual p. 20),
+  # and the prose says what the input one is for: "Here you can sellect at what channel your
+  # synth responds to" (p. 22, the misspelling the manual's). What the field cannot hold is the
+  # two settings that are not channels: **All** receives on every channel at once, and
+  # **Through** passes incoming MIDI to the output instead of choosing a channel to send on.
+  channels: [1, 16]
+  # BOTH, AND THE MENU IS THE ONLY PLACE THAT SAYS SO. "2. Master clock" offers "Receive
+  # Internal or External" and "Transmit Enable or Disable" (manual p. 20). The prose version of
+  # the same menu gives the receiving half only - "MASTER CLOCK - INTERNAL / EXTERNAL" (p. 22) -
+  # which is why the table is what this file reads and the prose is not.
+  clock: both
+  # RECEIVED, BECAUSE NOTHING SAYS IT SENDS THEM. "Transport messages" is the last of the ten
+  # items on the accept list (manual p. 23), and the settings menu has a switch for sending
+  # controllers, one for sending program change and one for transmitting clock - and **none for
+  # sending transport**. So this is the DrumBrute Impact's reading in reverse: there the manual
+  # said `sends` and never claimed to receive, here it says received and never claims to send.
+  transport: receives
+  program_change:
+    # BOTH WAYS, WITH A SWITCH EACH. "5. MIDI PC" offers "PC IN Enable or Disable" and "PC OUT
+    # Enable or Disable" (manual p. 20), and program changes are on the accept list (p. 23).
+    #
+    # **THE CONTROLLER SWITCH TURNS THIS OFF TOO, AND ONLY ONE PAGE SAYS SO**: "CC - ENABLED /
+    # DISABLED. This will also include the program change messeges" (p. 22). So a player who
+    # turned controllers off to quieten a chatty keyboard has turned program change off as
+    # well, and the menu that offers the two as separate items does not mention it.
+    receives: true
+    sends: true
+    # 256, STATED TWICE AND IN TWO DOCUMENTS. "The Typhon has a 256 preset storage, divided
+    # into 4 banks for easy access" (manual p. 9), "- 256 presets (Bank A and half the Bank B
+    # only contain factory presets)" (p. 3), and "256 preset memory" on the product page. The
+    # three agree, which is worth saying because this corpus has had a maker disagree with
+    # itself about a count twice in the last five instruments.
+    presets: 256
+
+voice:
+  # PITCHES, PLAYED FROM OUTSIDE OR FROM ITS OWN SEQUENCER. There is no keyboard and no pad
+  # grid: the accept list carries "Note ON/OFF" and "Note Number" (manual p. 23), and the
+  # instrument's own notes come from a 32-step sequencer whose steps are set with an octave
+  # slider and a note slider (p. 17).
+  addressing: pitches
+  velocity:
+    # GATED: IT ARRIVES AND DOES NOTHING UNTIL SOMEBODY ROUTES IT. "Velocity" is on the accept
+    # list (manual p. 23) and the menu has it, but
+    # the targets are what it does - the row reads "Velocity targets 0-100" (manual p. 20) -
+    # and there are none to begin with: "You must setup a Velocity target from the menu in order
+    # for this to work" (p. 17). **So a velocity lane can look
+    # dead on a correctly wired Typhon**, which is the Minitaur's case exactly and is what this
+    # value is for. `gated_by` is empty because it names controls and the gate here is a menu
+    # setting with no controller number of its own.
+    #
+    # **And it is not recorded as sent, because nothing says it is.** "Velocity orders can be
+    # sent either by an external midi controller, or by velocity values in the note sequencer"
+    # (p. 21) is about where a velocity comes from inside the instrument rather than about
+    # sending one out, and no switch anywhere in the menu sends notes.
+    note_on: gated
+  # WHICH KIND OF AFTERTOUCH IS NOT RECORDED, BECAUSE THE MANUAL NEVER SAYS. It plainly answers
+  # to it - "Aftertouch" is on the accept list (manual p. 23) and the menu's row reads
+  # "Aftertouch targets 0-100" (manual p. 20) - but MIDI has two aftertouch messages and no page
+  # of 24 says
+  # which this one is. The nearest is "Aftertouch is controlled by the amount of pressure
+  # applied to a key, and can be found on many synths" (p. 21), which is true of both. This
+  # field takes `channel` or `poly` and has no value for "one of the two", so it is left unset.
+  # Channel pressure is the overwhelmingly likely answer for an instrument with one voice and
+  # one routing destination - and that is a reading of the instrument rather than of the
+  # document, which is the distinction this corpus exists to keep.
+  pitch_bend:
+    # SETTABLE FROM ONE TO TWELVE SEMITONES, WITH NO DEFAULT PRINTED. The menu's row reads
+    # "Pitch wheel 1-12" (manual p. 20), and the prose describes the control without a figure:
+    # "Here you can choose the maximum number of semitones" (manual p. 21), the sentence
+    # finishing "the pitch will bend up or down" on the next page. So `semitones` is absent
+    # rather than guessed at - the range is a range of settings and none of them is marked as
+    # the one the instrument arrives with.
+    programmable: true
+
+# WHAT TO CALL EACH BLOCK TO A READER. The identifiers are the manual's own prefixes, which is
+# how the blocks group themselves; these are the same words in the case the manual uses in its
+# prose rather than in the list. `M1`, `M2` and `M3` are what the panel and the menu call the
+# three modulators, so the labels say both.
+groups:
+  controllers:       Controllers
+  oscillators:       Oscillators
+  filter:            Filter
+  filter_envelope:   Filter EG
+  amplifier:         Amplifier
+  amp_envelope:      VCA EG
+  playing:           Playing
+  modulator_1:       Modulator M1
+  modulator_2:       Modulator M2
+  modulator_3:       Modulator M3
+  fx_1:              FX1
+  fx_2:              FX2
+  fx_3:              FX3
+  sequencer:         Sequencer
+
+controls:
+
+  # CONTROLLERS ---------------------------------------------
+  mod_wheel:                  {label: MOD WHEEL, cc: 1, group: controllers}
+  cc2:                        {label: CC2, cc: 2, group: controllers}
+  sustain_pedal:              {label: SUSTAIN PEDAL, cc: 64, group: controllers}
+
+  # OSCILLATORS ---------------------------------------------
+  waveshape:                  {label: WAVESHAPE, cc: 70, group: oscillators}
+  vco_level:                  {label: VCO LEVEL, cc: 76, group: oscillators}
+  osc2_offset:                {label: OSC2 OFFSET, cc: 77, group: oscillators}
+
+  # FILTER --------------------------------------------------
+  filter_fm:                  {label: FILTER FM, cc: 4, group: filter}
+  vco_resonance:              {label: VCO RESONANCE, cc: 71, group: filter}
+  cutoff:                     {label: CUTOFF, cc: 74, group: filter}
+  filter_tracking:            {label: FILTER TRACKING, cc: 75, group: filter}
+
+  # FILTER ENVELOPE -----------------------------------------
+  filter_eg_level:            {label: FILTER EG LEVEL, cc: 6, group: filter_envelope}
+  filter_eg_attack:           {label: FILTER EG ATTACK, cc: 8, group: filter_envelope}
+  filter_eg_decay:            {label: FILTER EG DECAY, cc: 9, group: filter_envelope}
+  filter_eg_sustain:          {label: FILTER EG SUSTAIN, cc: 10, group: filter_envelope}
+  filter_eg_release:          {label: FILTER EG RELEASE, cc: 11, group: filter_envelope}
+  filter_eg_time:             {label: FILTER EG TIME, cc: 12, group: filter_envelope}
+
+  # AMPLIFIER -----------------------------------------------
+  preset_volume:              {label: PRESET VOLUME, cc: 7, group: amplifier}
+
+  # AMP ENVELOPE --------------------------------------------
+  vca_eg_release:             {label: VCA EG RELEASE, cc: 72, group: amp_envelope}
+  vca_eg_attack:              {label: VCA EG ATTACK, cc: 73, group: amp_envelope}
+  vca_eg_time:                {label: VCA EG TIME, cc: 78, group: amp_envelope}
+  vca_eg_sustain:             {label: VCA EG SUSTAIN, cc: 79, group: amp_envelope}
+  vca_eg_decay:               {label: VCA EG DECAY, cc: 80, group: amp_envelope}
+
+  # PLAYING -------------------------------------------------
+  glide:                      {label: GLIDE, cc: 5, group: playing}
+  glide_mode:                 {label: GLIDE MODE, cc: 67, group: playing}
+  legato:                     {label: LEGATO, cc: 68, group: playing}
+
+  # MODULATOR 1 ---------------------------------------------
+  m1_parameter_1:             {label: M1 PARAMETER 1, cc: 13, group: modulator_1}
+  m1_parameter_2:             {label: M1 PARAMETER 2, cc: 14, group: modulator_1}
+  m1_parameter_3:             {label: M1 PARAMETER 3, cc: 15, group: modulator_1}
+  m1_mode:                    {label: M1 MODE, cc: 16, group: modulator_1}
+  m1_cv_level:                {label: M1 CV LEVEL, cc: 17, group: modulator_1}
+  m1_cv1_level:               {label: M1 CV1 LEVEL, cc: 18, group: modulator_1}
+  m1_cv2_level:               {label: M1 CV2 LEVEL, cc: 19, group: modulator_1}
+  m1_wave_level:              {label: M1 WAVE LEVEL, cc: 20, group: modulator_1}
+  m1_cutoff_level:            {label: M1 CUTOFF LEVEL, cc: 21, group: modulator_1}
+  m1_vca_level:               {label: M1 VCA LEVEL, cc: 22, group: modulator_1}
+  m1_fx1_level:               {label: M1 FX1 LEVEL, cc: 23, group: modulator_1}
+  m1_ffm_level:               {label: M1 FFM LEVEL, cc: 24, group: modulator_1}
+  m1_fx2_level:               {label: M1 FX2 LEVEL, cc: 25, group: modulator_1}
+  m1_fx3_level:               {label: M1 FX3 LEVEL, cc: 26, group: modulator_1}
+  m1_custom_1_lvl:            {label: M1 CUSTOM 1 LVL, cc: 27, group: modulator_1}
+  m1_custom_2_lvl:            {label: M1 CUSTOM 2 LVL, cc: 28, group: modulator_1}
+  m1_custom_3_lvl:            {label: M1 CUSTOM 3 LVL, cc: 29, group: modulator_1}
+
+  # MODULATOR 2 ---------------------------------------------
+  m2_parameter_1:             {label: M2 PARAMETER 1, cc: 30, group: modulator_2}
+  m2_parameter_2:             {label: M2 PARAMETER 2, cc: 31, group: modulator_2}
+  m2_parameter_3:             {label: M2 PARAMETER 3, cc: 33, group: modulator_2}
+  m2_mode:                    {label: M2 MODE, cc: 34, group: modulator_2}
+  m2_cv_level:                {label: M2 CV LEVEL, cc: 35, group: modulator_2}
+  m2_cv1_level:               {label: M2 CV1 LEVEL, cc: 36, group: modulator_2}
+  m2_cv2_level:               {label: M2 CV2 LEVEL, cc: 37, group: modulator_2}
+  m2_wave_level:              {label: M2 WAVE LEVEL, cc: 38, group: modulator_2}
+  m2_cutoff_level:            {label: M2 CUTOFF LEVEL, cc: 39, group: modulator_2}
+  m2_vca_level:               {label: M2 VCA LEVEL, cc: 40, group: modulator_2}
+  m2_fx1_level:               {label: M2 FX1 LEVEL, cc: 41, group: modulator_2}
+  m2_ffm_level:               {label: M2 FFM LEVEL, cc: 42, group: modulator_2}
+  m2_fx2_level:               {label: M2 FX2 LEVEL, cc: 43, group: modulator_2}
+  m2_fx3_level:               {label: M2 FX3 LEVEL, cc: 44, group: modulator_2}
+  m2_custom_1_lvl:            {label: M2 CUSTOM 1 LVL, cc: 45, group: modulator_2}
+  m2_custom_2_lvl:            {label: M2 CUSTOM 2 LVL, cc: 46, group: modulator_2}
+  m2_custom_3_lvl:            {label: M2 CUSTOM 3 LVL, cc: 47, group: modulator_2}
+
+  # MODULATOR 3 ---------------------------------------------
+  m3_parameter_1:             {label: M3 PARAMETER 1, cc: 48, group: modulator_3}
+  m3_parameter_2:             {label: M3 PARAMETER 2, cc: 49, group: modulator_3}
+  m3_parameter_3:             {label: M3 PARAMETER 3, cc: 50, group: modulator_3}
+  m3_mode:                    {label: M3 MODE, cc: 51, group: modulator_3}
+  m3_cv_level:                {label: M3 CV LEVEL, cc: 52, group: modulator_3}
+  m3_cv1_level:               {label: M3 CV1 LEVEL, cc: 53, group: modulator_3}
+  m3_cv2_level:               {label: M3 CV2 LEVEL, cc: 54, group: modulator_3}
+  m3_wave_level:              {label: M3 WAVE LEVEL, cc: 55, group: modulator_3}
+  m3_cutoff_level:            {label: M3 CUTOFF LEVEL, cc: 56, group: modulator_3}
+  m3_vca_level:               {label: M3 VCA LEVEL, cc: 57, group: modulator_3}
+  m3_fx1_level:               {label: M3 FX1 LEVEL, cc: 58, group: modulator_3}
+  m3_ffm_level:               {label: M3 FFM LEVEL, cc: 59, group: modulator_3}
+  m3_fx2_level:               {label: M3 FX2 LEVEL, cc: 60, group: modulator_3}
+  m3_fx3_level:               {label: M3 FX3 LEVEL, cc: 61, group: modulator_3}
+  m3_custom_1_lvl:            {label: M3 CUSTOM 1 LVL, cc: 62, group: modulator_3}
+  m3_custom_2_lvl:            {label: M3 CUSTOM 2 LVL, cc: 63, group: modulator_3}
+  m3_custom_3_lvl:            {label: M3 CUSTOM 3 LVL, cc: 65, group: modulator_3}
+
+  # FX 1 ----------------------------------------------------
+  fx1_hp_cutoff:              {label: FX1 HP CUTOFF, cc: 81, group: fx_1}
+  fx1_hp_resonance:           {label: FX1 HP RESONANCE, cc: 82, group: fx_1}
+  fx1_parameter_1:            {label: FX1 PARAMETER 1, cc: 83, group: fx_1}
+  fx1_parameter_2:            {label: FX1 PARAMETER 2, cc: 84, group: fx_1}
+  fx1_mix:                    {label: FX1 MIX, cc: 85, group: fx_1}
+  fx1_type:                   {label: FX1 TYPE, cc: 86, group: fx_1}
+
+  # FX 2 ----------------------------------------------------
+  fx2_parameter_1:            {label: FX2 PARAMETER 1, cc: 87, group: fx_2}
+  fx2_parameter_2:            {label: FX2 PARAMETER 2, cc: 88, group: fx_2}
+  fx2_parameter_3:            {label: FX2 PARAMETER 3, cc: 89, group: fx_2}
+  fx2_feed:                   {label: FX2 FEED, cc: 90, group: fx_2}
+  fx2_mix:                    {label: FX2 MIX, cc: 91, group: fx_2}
+  fx2_type:                   {label: FX2 TYPE, cc: 92, group: fx_2}
+
+  # FX 3 ----------------------------------------------------
+  fx3_parameter_1:            {label: FX3 PARAMETER 1, cc: 93, group: fx_3}
+  fx3_parameter_2:            {label: FX3 PARAMETER 2, cc: 94, group: fx_3}
+  fx3_feed:                   {label: FX3 FEED, cc: 95, group: fx_3}
+  fx3_parameter_4:            {label: FX3 PARAMETER 4, cc: 96, group: fx_3}
+  fx3_mix:                    {label: FX3 MIX, cc: 97, group: fx_3}
+  fx3_type:                   {label: FX3 TYPE, cc: 98, group: fx_3}
+
+  # SEQUENCER -----------------------------------------------
+  seq_length:                 {label: SEQ LENGTH, cc: 99, group: sequencer}
+  seq_division:               {label: SEQ DIVISION, cc: 100, group: sequencer}
+  seq_probability:            {label: SEQ PROBABILITY, cc: 101, group: sequencer}
+  seq_swing:                  {label: SEQ SWING, cc: 102, group: sequencer}

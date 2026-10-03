@@ -132,6 +132,7 @@ class TestBundledCorpus:
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"behringer/model_d",
+			"dreadbox/typhon",
 			"elektron/analog_rytm_mkii",
 			"elektron/digitakt",
 			"elektron/digitakt_ii",
@@ -5764,3 +5765,202 @@ class TestDeluge:
 		assert "identical, row for row, all 24 rows in all 9 groups" in account
 		assert "THE SECOND READING FOUND A CELL THE FIRST HAD WRONG" in account
 		assert "312 of them print a folio and all 312 are out by exactly six" in account
+
+
+class TestTyphon:
+
+	"""A Dreadbox whose controller list is the only place its numbers exist, in three columns."""
+
+	def test_ninety_eight_controllers_in_fourteen_groups (self) -> None:
+		"""One list, two pages, and every number in it accounted for."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert len(typhon.controls) == 98
+
+		numbers = sorted(control.cc for control in typhon.controls.values()
+			if control.cc is not None)
+
+		assert len(numbers) == 98
+		assert numbers[0] == 1
+		assert numbers[-1] == 102
+
+		groups = {control.group for control in typhon.controls.values() if control.group}
+
+		assert len(groups) == 14
+
+	def test_the_three_modulator_blocks_are_the_same_size (self) -> None:
+		"""The relation that checks a three-column transcription better than a second look.
+
+		The modulators carry identical parameters, so each owns a block of the same length -
+		and a label sitting one row out cannot leave three equal blocks behind.
+		"""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		for name in ("M1", "M2", "M3"):
+			block = sorted(control.cc for control in typhon.controls.values()
+				if control.label is not None and control.label.startswith(f"{name} ")
+				and control.cc is not None)
+
+			assert len(block) == 17, name
+
+		# And each later block is pushed outwards by exactly the numbers MIDI had already
+		# claimed: 32 is Bank Select LSB and 64 is the damper pedal.
+		blocks = {}
+
+		for name in ("M1", "M2", "M3"):
+			block = sorted(control.cc for control in typhon.controls.values()
+				if control.label is not None and control.label.startswith(f"{name} ")
+				and control.cc is not None)
+			blocks[name] = set(range(block[0], block[-1] + 1)) - set(block)
+
+		assert blocks["M1"] == set()
+		assert blocks["M2"] == {32}
+		assert blocks["M3"] == {64}
+
+	def test_nine_numbers_carry_the_meaning_midi_gives_them (self) -> None:
+		"""The same check from the other direction, and a guard against a shifted reading."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		by_number = {control.cc: control.label for control in typhon.controls.values()}
+
+		assert by_number[1] == "MOD WHEEL"            # MIDI's modulation wheel
+		assert by_number[2] == "CC2"                  # MIDI's breath controller
+		assert by_number[5] == "GLIDE"                # MIDI's portamento time
+		assert by_number[7] == "PRESET VOLUME"        # MIDI's channel volume
+		assert by_number[64] == "SUSTAIN PEDAL"       # MIDI's damper pedal
+		assert by_number[72] == "VCA EG RELEASE"      # MIDI's release time
+		assert by_number[73] == "VCA EG ATTACK"       # MIDI's attack time
+		assert by_number[74] == "CUTOFF"              # MIDI's brightness
+
+		# And one the maker almost certainly mislabelled, carried as printed: 71 is MIDI's
+		# resonance and this instrument's panel calls the same thing a filter control.
+		assert by_number[71] == "VCO RESONANCE"
+
+	def test_the_gaps_in_the_list_are_what_the_manual_prints (self) -> None:
+		"""Three of the four below 103 are numbers MIDI reserves; the fourth is unexplained."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		numbers = {control.cc for control in typhon.controls.values()}
+		missing = sorted(set(range(1, 103)) - numbers)
+
+		# 32 is Bank Select LSB, 66 is sostenuto, 69 is hold 2. MIDI leaves 3 undefined and so
+		# does this manual.
+		assert missing == [3, 32, 66, 69]
+
+		# Nothing between 103 and 119 is in the list, and the manual does not mark those
+		# absences at all - it simply jumps from 103 to 120.
+		assert not numbers & set(range(103, 120))
+
+	def test_the_channel_mode_messages_the_list_prints_are_not_controls (self) -> None:
+		"""The list carries 120 and 123; the corpus refuses 120-127 as controls."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		numbers = {control.cc for control in typhon.controls.values()}
+
+		assert not numbers & set(range(120, 128))
+
+	def test_what_notes_it_sounds_is_not_recorded (self) -> None:
+		"""It is stated in note names, and the manual uses two octave conventions.
+
+		"A0 to C8" is the idiom for an 88-key piano's compass, which is notes 21 to 108; four
+		lines above, the same paragraph calls middle C "C3", which puts the same two names at
+		33 and 120. Twelve semitones apart, and the document supports both.
+		"""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert typhon.voice.note_range is None
+
+		# So every note is playable as far as this definition is concerned, which is the
+		# loader's honest default rather than a claim.
+		assert typhon.voice.plays_note(0)
+		assert typhon.voice.plays_note(127)
+
+	def test_three_more_fields_are_left_unset_and_each_for_its_own_reason (self) -> None:
+		"""Polyphony is never stated, the aftertouch kind is never stated, and the bend
+		default is never printed."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		# Two controls imply one voice - GLIDE MODE and LEGATO - and implication is not a
+		# statement.
+		assert typhon.voice.polyphony is None
+
+		# MIDI has two aftertouch messages and no page of 24 says which this one answers to.
+		assert typhon.voice.aftertouch is None
+
+		# Settable 1 to 12, with none of the twelve marked as the one it arrives with.
+		assert typhon.voice.pitch_bend is not None
+		assert typhon.voice.pitch_bend.programmable is True
+		assert typhon.voice.pitch_bend.semitones is None
+
+	def test_velocity_arrives_and_does_nothing_until_it_is_routed (self) -> None:
+		"""The Minitaur's case: a velocity lane can look dead on a correctly wired machine."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert typhon.voice.velocity is not None
+		assert typhon.voice.velocity.note_on == "gated"
+
+		# The gate is a menu setting rather than a control with a number, so there is nothing
+		# for `gated_by` to name.
+		assert typhon.voice.velocity.gated_by == ()
+
+	def test_it_receives_transport_and_is_not_said_to_send_it (self) -> None:
+		"""Clock has a Transmit switch in the menu and transport has none."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert typhon.midi.channels == (1, 16)
+		assert typhon.midi.clock == "both"
+		assert typhon.midi.transport == "receives"
+
+	def test_it_changes_preset_both_ways_across_two_hundred_and_fifty_six (self) -> None:
+		"""Stated three times, in two documents, and the three agree."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert typhon.midi.program_change is not None
+		assert typhon.midi.program_change.receives is True
+		assert typhon.midi.program_change.sends is True
+		assert typhon.midi.program_change.presets == 256
+
+	def test_a_published_map_leaves_control_change_unset (self) -> None:
+		"""`learned` and `none` are for instruments without a map; this one has one.
+
+		System exclusive is unset for the DrumBrute Impact's reason - a preset manager exists
+		and no document names the message type it uses - and NRPN because the word appears
+		nowhere in the manual.
+		"""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert typhon.midi.control_change is None
+		assert typhon.midi.sysex is None
+		assert typhon.midi.nrpn is None
+		assert typhon.midi.mode is None
+
+	def test_its_sources_are_the_manual_and_three_pages (self) -> None:
+		"""The manual is the whole of the map; the pages settle an absence and a firmware."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert set(typhon.sources) == {"manual", "release_notes", "support_page", "product_page"}
+		assert typhon.sources["manual"].page_offset == 0
+		assert typhon.sources["manual"].edition == "4.2"
+
+		# The firmware named is the manual's, and the one release since it changed no number.
+		assert typhon.model.firmware == "4.2"
+		assert typhon.sources["release_notes"].edition == "4.2.1"
+
+	def test_the_source_records_the_lookalike_chart_and_the_arithmetic (self) -> None:
+		"""Two things a later reading must not undo."""
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		assert typhon.source is not None
+
+		account = " ".join(typhon.source.split())
+
+		assert "THERE IS NO MIDI IMPLEMENTATION CHART IN THE CONVENTIONAL SENSE" in account
+		assert "17 numbers each" in account
+		assert "WHAT NOTES IT SOUNDS IS STATED AND STILL NOT RECORDED" in account
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "dreadbox" / "typhon.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "The Artemis's list must never be attributed to this instrument" in flowed
+		assert "AND THE LIST IS SET IN THREE COLUMNS, SO A TEXT READING INTERLEAVES IT" in flowed

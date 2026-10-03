@@ -75,15 +75,25 @@ import pymidiinstrumentdefs
 # reported rather than counted as a failure.
 READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt"})
 
-# A quotation and the page it is credited to: "...text..." (p. 42), or (pp. 42-43).
+# A quotation and the page it is credited to: "...text..." (p. 42), or (pp. 42-43), or -
+# where a definition cites more than one document - "...text..." (guide p. 6) and
+# "...text..." (manual, p. 110), which name the source the page belongs to.
 # Twelve characters is the shortest that is worth checking; below that a phrase matches
 # half the manual.
-QUOTED = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\(p{1,2}\.\s*([\d,\s-]+)\)")
+#
+# **THE NAMED FORMS WERE SILENTLY SKIPPED** until the comment below was read against this
+# pattern: it said a key followed by a page "is the paged form above", and this did not
+# match one.  Thirty-three quotations across eight definitions were therefore never
+# verified, and every one of them looked verified in the count.  Naming the source now
+# makes a quotation *more* strongly checked rather than not checked at all, because the
+# page is then looked for in that document alone.
+QUOTED = re.compile(
+	r"[“\"]([^”\"]{12,})[”\"]\s*\((?:([a-z][a-z0-9_]*),?\s+)?p{1,2}\.\s*([\d,\s-]+)\)")
 
 # The other shape a locator takes, for a document with no pages to cite: the source's own
-# key, as in `"polyphony up to 24 voices" (product_page)`.  A key followed by a page, as in
-# `(chart, p. 1)`, is the paged form above and deliberately does not match here - the page
-# is the more precise locator and is the one worth checking.
+# key, as in `"polyphony up to 24 voices" (product_page)`.  A key followed by a page is the
+# paged form above and deliberately does not match here - the page is the more precise
+# locator and is the one worth checking.
 BY_SOURCE = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\(([a-z][a-z0-9_]*)\)")
 
 # A quotation is retyped with the keyboard's punctuation and the page prints the
@@ -240,18 +250,23 @@ def documents (definition: typing.Any, index: dict[str, pathlib.Path]) -> tuple[
 	return found, absent
 
 
-def quotations (text: str) -> list[tuple[str, list[int]]]:
+def quotations (text: str) -> list[tuple[str, str | None, list[int]]]:
 
-	"""Every quoted passage in the file with a page citation, and the pages it names.
+	"""Every quoted passage in the file with a page citation, the source it names, and the pages.
 
 	A comment is folded over several lines, so the file's own line breaks and comment
 	markers are closed up before the quotations are found.
+
+	The source is whatever the locator put before the page - `(guide p. 6)` gives `guide` -
+	and is nothing where the citation is the bare `(p. 6)`.  A definition with one document
+	has no reason to name it; one with four has every reason, and naming it is what lets
+	the page be looked for in the right place.
 	"""
 
 	flowed = re.sub(r"\n\s*#?\s*", " ", text)
 
-	return [(quotation, [int(n) for n in re.findall(r"\d+", cited)])
-		for quotation, cited in QUOTED.findall(flowed)]
+	return [(quotation, source or None, [int(n) for n in re.findall(r"\d+", cited)])
+		for quotation, source, cited in QUOTED.findall(flowed)]
 
 
 def named_quotations (text: str, keys: typing.Iterable[str]) -> list[tuple[str, str]]:
@@ -321,13 +336,28 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 
 	missing: list[tuple[str, list[int]]] = []
 	partly: list[tuple[str, list[int]]] = []
+	misnamed: list[tuple[str, str]] = []
 	passed = 0
 
-	for quotation, cited in found:
+	for quotation, source, cited in found:
 		parts = pieces(quotation)
 		where = None
 
-		for document in turnable:
+		# A quotation that names its source is looked for in that document alone, which is
+		# the stronger check: a page number that happens to exist in one of the other three
+		# cannot pass it. A name that is not one of this definition's sources is a mistake
+		# in the file rather than a reason to fall back.
+		if source is not None and source not in (definition.sources or {}):
+			misnamed.append((quotation, source))
+			continue
+
+		looking = [d for d in turnable if d.name == source] if source else turnable
+
+		if source and not looking:
+			unchecked += 1
+			continue
+
+		for document in looking:
 			for number in cited:
 				page = document.printed(number)
 
@@ -350,7 +380,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 
 			split = clauses and any(
 				all(clause in squash(page) for clause in clauses)
-				for document in turnable
+				for document in looking
 				for number in cited
 				if (page := document.printed(number)) is not None
 			)

@@ -100,11 +100,11 @@ class TestFindingTheQuotationsInADefinition:
 		"""Including one inside a comment, which is where most of them are."""
 		found = tool.quotations(self.BODY)
 
-		assert [q for q, _ in found] == ["the first thing", "the second one here", "a third thing"]
+		assert [q for q, _, _ in found] == ["the first thing", "the second one here", "a third thing"]
 
 	def test_the_pages_are_read_off_each_one (self) -> None:
 		"""A range gives both of its ends, since a citation does not say which page."""
-		found = dict(tool.quotations(self.BODY))
+		found = {quotation: pages for quotation, _, pages in tool.quotations(self.BODY)}
 
 		assert found["the first thing"] == [4]
 		assert found["the second one here"] == [7, 8]
@@ -113,13 +113,13 @@ class TestFindingTheQuotationsInADefinition:
 	def test_a_phrase_too_short_to_identify_a_page_is_left_alone (self) -> None:
 		"""A few words match half a manual, so a short quotation proves nothing either way."""
 		body = 'source: >-\n  A manual: "the mode" (p. 4) and "a long enough phrase" (p. 5).\n'
-		found = [q for q, _ in tool.quotations(body)]
+		found = [q for q, _, _ in tool.quotations(body)]
 
 		assert found == ["a long enough phrase"]
 
 	def test_a_quotation_with_no_page_is_not_checked (self) -> None:
 		"""There is nothing to check it against, so it is left alone rather than failed."""
-		assert "no page for this one" not in [q for q, _ in tool.quotations(self.BODY)]
+		assert "no page for this one" not in [q for q, _, _ in tool.quotations(self.BODY)]
 
 	def test_a_comment_folded_over_lines_is_still_one_quotation (self) -> None:
 		"""Which is how a definition of any length writes them."""
@@ -133,7 +133,7 @@ class TestFindingTheQuotationsInADefinition:
 		found = tool.quotations(body)
 
 		assert len(found) == 1
-		assert found[0][1] == [12]
+		assert found[0][2] == [12]
 		assert "runs over two lines" in found[0][0]
 
 
@@ -186,7 +186,7 @@ class TestAQuotationThatNamesItsSourceInsteadOfAPage:
 
 	def test_both_shapes_of_locator_are_found_in_one_file (self) -> None:
 		"""A definition citing an unpaginated source usually cites a paged one too."""
-		paged = [q for q, _ in tool.quotations(self.BODY)]
+		paged = [q for q, _, _ in tool.quotations(self.BODY)]
 		named = [q for q, _ in tool.named_quotations(self.BODY, self.KEYS)]
 
 		assert paged == ["something on a page"]
@@ -263,3 +263,56 @@ class TestAWordBrokenAtTheEndOfALine:
 	def test_two_different_sentences_are_still_different (self) -> None:
 		"""The point of folding anything is to find a quotation, not to find any quotation."""
 		assert tool.squash("the instrument sends clock") != tool.squash("the instrument sends start")
+
+
+class TestAQuotationThatNamesTheDocumentAndThePage:
+
+	"""The locator a definition with several documents needs, and used to be ignored for."""
+
+	# Four documents, which is when naming one starts to matter: "p. 110" alone says
+	# nothing about which of them to turn to.
+	BODY = (
+		"definition: 1\n"
+		"source: >-\n"
+		'  "the plain form" (p. 4), "the named form" (manual p. 110),\n'
+		'  "the named form with a comma" (guide, p. 6), and "a range of them" (manual pp. 7-8).\n'
+	)
+
+	def test_a_named_page_is_found_where_it_used_to_be_skipped (self) -> None:
+		"""All four shapes are quotations with a page, and all four are checked."""
+		found = [quotation for quotation, _, _ in tool.quotations(self.BODY)]
+
+		assert found == [
+			"the plain form", "the named form",
+			"the named form with a comma", "a range of them"]
+
+	def test_the_document_it_names_comes_back_with_it (self) -> None:
+		"""Which is what lets the page be looked for in that document rather than any."""
+		found = {quotation: source for quotation, source, _ in tool.quotations(self.BODY)}
+
+		assert found["the plain form"] is None
+		assert found["the named form"] == "manual"
+		assert found["the named form with a comma"] == "guide"
+		assert found["a range of them"] == "manual"
+
+	def test_the_pages_are_read_the_same_either_way (self) -> None:
+		"""Naming a document changes where to look, not what to look for."""
+		found = {quotation: pages for quotation, _, pages in tool.quotations(self.BODY)}
+
+		assert found["the plain form"] == [4]
+		assert found["the named form"] == [110]
+		assert found["a range of them"] == [7, 8]
+
+	def test_a_name_alone_is_still_the_other_shape (self) -> None:
+		"""A document with no pages is cited by its key and nothing else, which is unchanged."""
+		body = 'source: >-\n  "no page to turn to here" (product_page).\n'
+
+		assert tool.quotations(body) == []
+		assert tool.named_quotations(body, ["product_page"]) == [
+			("no page to turn to here", "product_page")]
+
+	def test_an_ordinary_bracket_after_a_quotation_is_not_a_locator (self) -> None:
+		"""The page is what makes it one, so prose in brackets does not become a document."""
+		body = 'source: >-\n  "a thing the maker says" (and a remark about it).\n'
+
+		assert tool.quotations(body) == []

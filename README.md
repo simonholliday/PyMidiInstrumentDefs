@@ -178,6 +178,7 @@ self-contained YAML file, and you share it by sending it.
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |
 | `teenage_engineering/op_1` | teenage engineering OP-1: publishes no controller number at all - four incoming control changes are routed by the player, per sound |
 | `teenage_engineering/op_xy` | teenage engineering OP-XY: its maker publishes one guide twice, and the two editions give different numbers for the same row |
+| `waldorf/blofeld` | Waldorf Blofeld: a chart with a row for all 128 controller numbers, seventeen of which are not controls - and one manual covering a Desktop with no MIDI out and a Keyboard with one |
 | `waldorf/iridium` | Waldorf Iridium: no control map at all - almost every parameter is reached by MIDI learn, so what is here is the fifteen controller numbers the maker fixes, out of a manual two product pages serve as the same bytes |
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV: a drum machine that ignores controller data |
 | `voce/electric_piano` | Voce ELECTRIC PIANO: 16 or 32 voices, depending on the chorus |

@@ -176,6 +176,7 @@ class TestBundledCorpus:
 			"teenage_engineering/op_xy",
 			"vermona/drm1_mkiv",
 			"voce/electric_piano",
+			"waldorf/blofeld",
 			"waldorf/iridium",
 			"waldorf/streichfett",
 			"yamaha/dx7",
@@ -5133,3 +5134,203 @@ class TestDigitoneII:
 
 		assert notes.url == "https://www.elektron.se/release-notes/digitone-ii"
 		assert notes.paginated is False
+
+
+class TestBlofeld:
+
+	"""A Waldorf whose chart has a row for all 128 controller numbers, and seventeen are not
+	controls."""
+
+	def test_the_chart_runs_0_to_127_and_111_of_them_are_controls (self) -> None:
+		"""Every row is accounted for: each left out is left out for a reason."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert len(blofeld.controls) == 111
+		assert len(blofeld.groups) == 21
+
+		numbers = sorted(control.cc for control in blofeld.controls.values()
+			if control.cc is not None)
+
+		assert len(numbers) == 111, "every control here is reached by control change"
+
+		# The twelve the maker marks `- not used -`, the four channel mode messages, and bank
+		# select LSB. Nothing else is missing from 0 to 127.
+		unused = {0, 3, 6, 8, 9, 11, 63, 119, 124, 125, 126, 127}
+		mode = {120, 121, 122, 123}
+
+		assert set(numbers) == set(range(128)) - unused - mode - {32}
+
+	def test_no_channel_mode_message_is_a_control (self) -> None:
+		"""CC 120 to 127 belong to the MIDI specification, and the validator refuses them."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		for control in blofeld.controls.values():
+			assert control.cc is None or control.cc < 120, control.name
+
+	def test_bank_select_is_left_out_and_its_banks_are_recorded_instead (self) -> None:
+		"""The chart's value column for CC 32 is the only place the manual addresses them."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert all(control.cc != 32 for control in blofeld.controls.values())
+
+		# Eight banks of 128, which is what the 1024 counts.
+		assert blofeld.midi.program_change is not None
+		assert blofeld.midi.program_change.presets == 1024
+		assert blofeld.midi.program_change.receives is True
+
+		# Whether it sends one is nowhere recorded, which is not the same as it not doing so.
+		assert blofeld.midi.program_change.sends is None
+
+	def test_the_three_oscillator_octaves_step_in_twelves (self) -> None:
+		"""`16, 28, 40…112` is nine values and not ninety-seven, and the step is what says so."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		for number, name in ((27, "osc_1_octave"), (35, "osc_2_octave"), (42, "osc_3_octave")):
+			octave = blofeld.controls[name]
+
+			assert octave.cc == number
+			assert octave.range == (16, 112)
+			assert octave.step == 12
+
+			# 128' to 1/2', which is nine octaves.
+			assert len(range(octave.range[0], octave.range[1] + 1, octave.step)) == 9
+
+	def test_nrpn_is_impossible_because_its_controllers_are_sound_parameters (self) -> None:
+		"""Neither document mentions NRPN, and the chart gives away the numbers it would need."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert blofeld.midi.nrpn == "none"
+		assert all(control.nrpn is None for control in blofeld.controls.values())
+
+		# 98 and 99 are the NRPN pair and 100 and 101 the RPN pair, on every other instrument.
+		by_number = {control.cc: control for control in blofeld.controls.values()}
+
+		assert by_number[98].label == "FE Decay 2"
+		assert by_number[99].label == "FE Sustain 2"
+		assert by_number[100].label == "FE Release"
+		assert by_number[101].label == "AE Attack"
+
+		# And CC 38, the data entry LSB, is an oscillator's.
+		assert by_number[38].label == "Osc 2 FM"
+
+	def test_sixteen_parts_drawing_on_twenty_five_voices (self) -> None:
+		"""A ceiling the patch lowers, held once for the instrument rather than per part."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert set(blofeld.parts) == {"part"}
+		assert blofeld.parts["part"].count == 16
+		assert blofeld.parts["part"].channel == "assigned"
+		assert blofeld.parts["part"].receives == ("notes", "controls", "program_change")
+
+		assert blofeld.voice.polyphony == 25
+		assert blofeld.voice.polyphony_shared is True
+		assert blofeld.parts["part"].polyphony is None
+
+	def test_it_takes_clock_and_never_sends_it_and_has_no_transport (self) -> None:
+		"""Internal or Auto is the whole of the choice, and no page names a transport message."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert blofeld.midi.clock == "receives"
+		assert blofeld.midi.transport == "none"
+		assert blofeld.midi.channels == (1, 16)
+		assert blofeld.midi.sysex is True
+
+	def test_velocity_is_received_rather_than_both_because_one_product_has_no_keys (self) -> None:
+		"""The definition covers the Desktop and the Keyboard, and only one of them sends."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert blofeld.voice.velocity is not None
+		assert blofeld.voice.velocity.note_on == "received"
+
+		# Release velocity is a modulation source a patch can route, which is more than
+		# receiving it.
+		assert blofeld.voice.velocity.note_off is True
+
+		assert blofeld.voice.aftertouch == "poly"
+		assert blofeld.voice.pitch_bend is not None
+		assert blofeld.voice.pitch_bend.programmable is True
+
+		# Settable per oscillator, and no page says what any of the three starts at.
+		assert blofeld.voice.pitch_bend.semitones is None
+
+	def test_no_asterisk_reaches_a_label (self) -> None:
+		"""It is the chart's footnote marker, not a character in the name of anything."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		for control in blofeld.controls.values():
+			assert "*" not in control.label, control.name
+			assert "*" not in control.name, control.name
+
+		# The six marked ones that are controls here, by the chart's own spelling.
+		by_number = {control.cc: control for control in blofeld.controls.values()}
+		marked = {1: "Modulation Wheel", 2: "Breath Control", 4: "Foot Control",
+			7: "Channel Volume", 10: "Pan", 64: "Sustain Pedal"}
+
+		for number, label in marked.items():
+			assert by_number[number].label == label
+
+	def test_no_control_carries_a_default_or_a_state (self) -> None:
+		"""The chart gives no defaults, and never says which value selects which state."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		for control in blofeld.controls.values():
+			assert control.default is None, control.name
+			assert control.values == {}, control.name
+			assert control.choices == {}, control.name
+
+	def test_the_manual_is_shared_with_the_keyboard_under_one_link (self) -> None:
+		"""Where the Iridium needed two downloads to prove it, this pair needs none."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert set(blofeld.sources) == {"manual", "sysex", "product_page", "keyboard_page"}
+
+		manual = blofeld.sources["manual"]
+
+		assert manual.page_offset == 0
+		assert manual.landing == "https://waldorfmusic.com/blofeld-en/"
+
+		# The System Exclusive specification names no controller, so no number rests on it.
+		assert blofeld.sources["sysex"].kind == "midi_implementation"
+
+		# Both product pages are unpaginated text, cited by key rather than by page.
+		assert blofeld.sources["product_page"].paginated is False
+		assert blofeld.sources["keyboard_page"].paginated is False
+
+	def test_the_account_records_what_the_keyboards_own_page_gets_wrong (self) -> None:
+		"""A specification repeated between two product pages is one measurement, not two."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert blofeld.source is not None
+
+		account = " ".join(blofeld.source.split())
+
+		assert "111 of those 128 rows are controls" in account
+		assert "System Exclusive specification" in account
+
+		# The two products and the socket that tells them apart are in the file's own comments,
+		# which a package reader sees as the definition's header rather than in `source`.
+		text = (CORPUS / "waldorf" / "blofeld.yaml").read_text()
+
+		# A comment's own `#` is not part of the prose, and a sentence that runs over two lines
+		# would otherwise have one in the middle of it.
+		flowed = " ".join(line.lstrip().lstrip("#").strip()
+			for line in text.splitlines()).replace("  ", " ")
+		flowed = " ".join(flowed.split())
+
+		assert "The Desktop has a MIDI In jack and no MIDI Out (manual p. 8)" in flowed
+		assert "its English specification block is the Desktop's word for word" in flowed
+
+	def test_the_note_range_is_left_out_because_the_sentence_is_about_a_filter (self) -> None:
+		"""Low Key and High Key bound where a key window may be put, not what the engine sounds.
+
+		The Iridium made this mistake with a split point and a second reader caught it; the
+		same maker, the same shape, the same catch. It is recorded as a test so that a later
+		reading which puts a range back has to argue with this.
+		"""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+
+		assert blofeld.voice.note_range is None
+
+		# With no range recorded, the loader treats every note as playable rather than guessing.
+		assert blofeld.voice.plays_note(0) is True
+		assert blofeld.voice.plays_note(127) is True

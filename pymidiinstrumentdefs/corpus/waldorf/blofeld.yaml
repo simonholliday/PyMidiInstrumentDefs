@@ -1,0 +1,501 @@
+definition: 1
+
+# ONE MANUAL, TWO PRODUCTS, AND THE COVER IS WHERE IT SAYS SO. The Blofeld Desktop and the
+# Blofeld Keyboard share this definition because they share the manual: its cover reads User´s
+# Manual - Desktop & Keyboard and pictures both, and inside it gives each its own Front Panel and
+# Connections section (manual pp. 7-10). **That cover is a single raster image**, so no text
+# extractor returns a word of it and the page had to be rendered to be read - which is worth
+# knowing before concluding that a document never states its own scope.
+#
+# THE TWO DIFFER IN THEIR SOCKETS, AND ONLY THE MANUAL SAYS SO. The Desktop has a MIDI In jack
+# and no MIDI Out (manual p. 8); the Keyboard has both, and a pedal input (manual p. 10). Waldorf
+# built the second deliberately: "we added an elegant way to control external sound modules with
+# the Blofeld keyboard" (manual p. 16). **Waldorf's own Keyboard product page cannot tell you
+# this**: its English specification block is the Desktop's word for word, listing MIDI-In and no
+# MIDI out, and never mentioning a keyboard at all. Both pages were saved and compared. A
+# specification repeated between two product pages is one measurement, not two.
+#
+# NEITHER DIFFERENCE CHANGES WHAT THIS FILE SAYS, because the format describes what an instrument
+# answers to and not which cable it arrives on. What is affected is velocity, which is recorded
+# as received rather than both: the Keyboard sends what is played on it and the Desktop has no
+# keys, so only the receiving half is true of both.
+
+model:
+  manufacturer: Waldorf
+  name: Blofeld
+  # THE MANUAL STATES NO FIRMWARE AND NOTHING PUBLISHED SAYS WHAT 1.25 CHANGED. Its own revision
+  # is "Revision: 1.1, January 2009" (manual p. 3), and the facing note offers only "Maybe you can
+  # download a newer operating system for your Blofeld" (manual p. 3) - searched for operating
+  # system, OS, version, release and software on all 128 pages. Waldorf's page offers exactly one
+  # firmware, 1.25, so it is both the newest and the only, which is the Streichfett's arrangement.
+  # The caution this one earns is the gap: the firmware package holds a single MIDI file dated
+  # 2018, and no changelog, though the manual tells you to look for one - "always download this
+  # one, because it explains the latest changes" (manual p. 109). So **the chart below is a 2009
+  # reading of an instrument whose current firmware is from 2018**, and nothing published closes
+  # the distance.
+  firmware: "1.25"
+
+source: >-
+  User´s Manual, 128 pages, Revision 1.1 of January 2009: Controller Numbers at
+  pp. 113-117, which gives a row for every controller number from 0 to 127 under four
+  columns - Ctrl #, Controller Range, Controller name or Sound Parameter, Value Range.
+  111 of those 128 rows are controls here. Plus the connections at pp. 8 and 10, the
+  Keyboard's own controls at p. 16, Multi mode at pp. 24-28, the oscillator and filter
+  sections at pp. 42-52, the modulation sources at p. 60, the Global menu at pp. 82-86,
+  the appendix's modulation source table at p. 106 and the glossary at p. 122.
+  Waldorf does publish a second MIDI document for this instrument, a System Exclusive
+  specification of 35 pages, and it names no controller number anywhere: searched for
+  controller, control change and CC on every page of it. So the manual's chart is the
+  whole of the published controller map, and the specification is cited below only for
+  the parameter ranges it gives differently and for the device ID.
+
+  SEVENTEEN ROWS ARE NOT CONTROLS, each left out for a stated reason. Twelve read
+  "- not used -" in the maker's own hand: 0, 3, 6, 8, 9, 11, 63, 119 and 124 to 127.
+  Four are channel mode messages, which belong to the MIDI specification rather than to
+  this instrument and which the validator refuses - All Sound Off, Reset All Controllers,
+  Local Control and All Notes Off at 120 to 123. The last is bank select LSB at 32,
+  whose banks are recorded under program_change below instead.
+
+  TEN CONTROLS CARRY AN ASTERISK IN THE CHART, which is a footnote marker and not part
+  of a name, so it is not in their labels: "Controllers marked with * don’t change the
+  Sound program but can perform temporary modulations or other tasks" (p. 113). They are
+  the modulation wheel, breath control, foot control, channel volume, pan and the sustain
+  pedal, which are here; and bank select LSB and the three channel mode messages, which
+  are not. Nothing else in the file marks the distinction, because the format has no way
+  to say it.
+
+  THIS INSTRUMENT CANNOT DO NRPN OR RPN, AND THE CHART IS WHY. Neither the manual nor
+  Waldorf's System Exclusive specification mentions either, on any page of either. More
+  than that, the chart gives away the six controller numbers the mechanism needs: CC 6,
+  Data Entry, is marked "- not used -"; CC 38, its LSB, is Osc 2 FM; and 98, 99, 100 and
+  101 - the NRPN and RPN pairs - are the filter envelope's Decay 2, Sustain 2 and Release
+  and the amplifier envelope's Attack. A fine parameter change travels by system exclusive
+  here instead, which the Global menu offers as a choice: "Determines how Real-Time Sound
+  Parameter Changes are sent by the Blofeld over USB-MIDI" (p. 83), over off, Ctl, SysEx
+  and Ctl+SysEx.
+
+  FOUR ASSIGNABLE CONTROLLERS CAN DISABLE A CONTROL IN THIS FILE, which is worth knowing
+  before trusting one. Control W, X, Y and Z are modulation sources whose controller
+  numbers the player picks, over 0 to 120 - "The highest possible Controller number is 120
+  because all higher numbers are reserved for non-real-time purposes" (p. 84). Setting one
+  to a number the chart already uses takes that number away from the sound parameter:
+  "the Blofeld disables this Controller as Sound parameter Controller and uses it
+  exclusively for one of the Ctrl W…Ctrl Z" (p. 85). The four are not controls here,
+  because a number a player assigns is not a property of the model - the reading the
+  modwave's hundred assignable numbers got - but any of the 111 below can be switched off
+  by one. **And it breaks in one direction only**: "The Sound parameter is sent out as
+  Controller but can’t be received as long as you don’t change Ctrl W…Ctrl Z to other MIDI
+  Continuous Controller messages" (p. 85). So a panel that moves a knob, watches the
+  instrument send the right controller, and concludes the link works can still find that
+  sending the same controller back does nothing.
+
+  THE CHART IS NOT THE WHOLE PARAMETER SET, WHICH MATTERS BEFORE ANYBODY BUILDS ON IT. A
+  sound is 383 bytes over system exclusive against the 111 controllers here, and whole
+  sections of the instrument have no controller number at all: the sixteen modulation
+  matrix slots, the four modifiers, the arpeggiator's step data, the program name and
+  category, and every effect parameter but the two mix levels. The Global menu offers
+  system exclusive as the way to reach them - "If SysEx is selected, all Sound parameters
+  are sent as system exclusive messages" (p. 84) - so a reader wanting to drive this
+  instrument fully needs the specification beside this file, not this file alone.
+
+  WHERE THE SYSTEM EXCLUSIVE SPECIFICATION DISAGREES WITH THE CHART, BOTH ARE RECORDED
+  AND NEITHER IS RESOLVED. That document lists the same parameters with ranges of their
+  own, and four differ: it gives the filter type 0..11 and names twelve types where the
+  chart's controller range is 0…10; the glide mode 0..3 where the chart gives 0…9; the
+  oscillator shape 0..72 where the chart gives 0…5 and names six; and the filter keytrack
+  -200%..+196% where the chart prints +197%. The ranges below are the chart's, because its
+  column is headed Controller Range and is the only published statement of what a
+  controller accepts. The twelfth filter type is in the manual's own prose - "PPG LP
+  Lowpass is a resonance lowpass filter with a slope rate of 24dB per octave" (p. 49) -
+  which makes the chart's 0…10 look like the slip, and is still not enough to record one.
+
+  THE GLIDE MODE ROW DISAGREES WITH THE MANUAL'S OWN PAGE, WHICH IS A SHARPER PROBLEM
+  THAN THE ABOVE. The chart gives it a controller range of 0…9 and sends you elsewhere for
+  the meanings; the page it sends you to names four - "Mode Portamento / fingered P /
+  Glissando / fingered G" (p. 44) - and the System Exclusive specification gives the same
+  parameter 0..3. So one document says ten settings and the same document says four. Both
+  are recorded and neither is resolved: the control keeps the chart's range, because that
+  column states what the controller accepts rather than how many of its values do
+  something, and this paragraph is what says the two do not match.
+
+  NO CONTROL HAS A DEFAULT, because the chart gives none and nothing else states any.
+
+  AND NO CONTROL NAMES ITS STATES, though eighteen of them have states to name. The chart
+  prints a value range beside each - "off, on" for four, "serial/parallel" for the filter
+  routing, six waveform names for each LFO shape, six for each oscillator shape - but it
+  never says which controller value selects which state, and in every one of those rows
+  the controller range is wider than the list: four states against 0…3, two states against
+  0…127. Two rows show the gap plainly, Filter 1 and 2 FM, whose range is 0…127 and whose
+  values are "off, 1…127" - a reader is left to work out that 0 is the off. So every
+  control here is continuous and the states are not numbered, which is this corpus's rule
+  and is also the only honest reading of the page.
+
+  THREE THINGS PRINTED IN THE CHART THAT A READER SHOULD NOT BE SURPRISED BY. The glide
+  mode's value range is in German, reading siehe "Glide Mode" - see - which is the only
+  non-English string in the chart, and it points at a heading the manual does not have:
+  that page is headed Glide and calls the parameter Mode. Noise Colour at CC 62 writes
+  both its range cells with three full stops where every other row that prints a range uses
+  an ellipsis, so a reader matching the exact string misses exactly one row. And the chart
+  misnames controller 126 as Poly Mode On/Off, where the MIDI specification's 126 is Mono
+  Mode On; it is marked unused either way, so nothing here rests on it.
+
+  THE FOUR ENVELOPES ARE ABBREVIATED IN THE CHART AND EXPANDED SIX PAGES EARLIER. FE, AE,
+  E3 and E4 are nowhere explained where they are used, but the appendix's table of
+  modulation destinations gives them in full - "FE Attack Attack rate of Filter Envelope"
+  and "AE Attack Attack rate of Amp Envelope" (p. 107) - which is where the group names
+  below come from rather than from a guess at what the letters stand for.
+
+midi:
+  # "Sets the basic send and receive channel for the Blofeld" (p. 82), printed as
+  # "omni, 1...16" - so 1 to 16 are the channels it can be set to, and omni is a mode rather
+  # than a channel: "If omni is selected, the Blofeld sends on channel 1 and receives on all
+  # channels" (p. 82).
+  channels: [1, 16]
+  # IT TAKES CLOCK, AND NOTHING SAYS IT EVER SENDS ONE. The setting has two values and those
+  # two are the whole of the choice: "Internal means that the Blofeld doesn’t react on incoming
+  # MIDI Clock nor does it send MIDI Clock" (p. 83), against Auto, which "automatically syncs to
+  # incoming MIDI Clock if it is sent to it by an external device" (p. 83). **Read carefully, the
+  # pair leaves a gap**: the first denies sending under Internal and the second describes only
+  # receiving, so whether Auto sends is nowhere stated. Receiving is what is claimed, because it
+  # is what is written. Waldorf's System Exclusive specification prints the same two values in
+  # the opposite order from the manual, which anybody writing the setting rather than reading it
+  # should know.
+  clock: receives
+  # A CHECKED ABSENCE RATHER THAN SILENCE: searched all 128 pages for start, stop, continue and
+  # song position, and the manual names none of them as a MIDI message. What it does say is how
+  # to stop the arpeggiator without one - "by sending an All Notes Off message from your
+  # sequencer" (p. 73) - which is the opposite of a transport message doing it.
+  transport: none
+  program_change:
+    # "Program numbers 1 through 128 can be changed via program change messages" (p. 122), and
+    # a Multi part may be told to ignore them: "Determines if incoming program changes are
+    # received or ignored. If receive is enabled, program change messages alters the selected
+    # sound" (p. 28).
+    receives: true
+    # WHETHER IT SENDS THEM IS NOT RECORDED ANYWHERE. The per-part channel "is used to send MIDI
+    # messages and to receive MIDI messages for this Part" (p. 25) without saying which messages,
+    # and no page names a program change leaving the instrument.
+    # 1024 SOUNDS IN EIGHT BANKS, reached by program change within a bank and bank select LSB
+    # between them: "In addition to 1024 sound programs, Blofeld now offers 128 Multi sets"
+    # (p. 24), and a Multi part takes its sound from "Bank A...H" (p. 25). The chart's own value
+    # column for CC 32 reads "Bank A..." and its range "0…n", which is the only place the manual
+    # says how the banks are addressed - so bank select LSB is left out of the controls, as the
+    # Sub 37's is, and recorded here. The 128 Multi sets are selected with the panel dial; no
+    # page says a program change reaches them.
+    presets: 1024
+  # THE CHART IS COMPLETE AND NOTHING IS LEARNED, so this says nothing - unlike the Iridium,
+  # where MIDI Learn is the whole map.
+  nrpn: none
+  # "Defines the device identification number for system exclusive data transmission" (p. 82),
+  # 0 to 126 with 127 as broadcast, which Waldorf's specification gives as 00h to 7Eh and 7Fh.
+  # Dumps go both ways over USB and one way over the DIN socket: the dump functions "let you send
+  # and receive the contents of the Blofeld’s memory via MIDI (receiving only) or USB" (p. 86).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # NO NOTE RANGE IS RECORDED, AND THE SENTENCE THAT LOOKS LIKE ONE IS NOT ONE. A Multi part's
+  # Low Key and High Key run "C-2…G8" and the manual says to "Set this parameter to C-2 if you
+  # want to use the full keyboard range" (p. 27) - which bounds **where a key window may be put**,
+  # not what the tone generator will sound. That is the Iridium's mistake exactly, found there by
+  # a second reader and found here by another: getting a sentence right is not the same as being
+  # entitled to use it. On this instrument's own reckoning - "The reference pitch for the
+  # oscillator is generated at MIDI note A3 (note no. 69)" (p. 38) - that window does span 0 to
+  # 127, and no page turns the span of a filter into a statement about what sounds. The only
+  # other candidate is the glossary's "the note number, which lies between 0 and 127" (p. 121),
+  # which is a remark about MIDI and not about the Blofeld.
+  # TWENTY-FIVE IS A CEILING THE PATCH LOWERS, and the maker writes it that way: "up to 25
+  # Voices" (product_page), which is the only published voice count - the manual gives none, and
+  # its Technical Data page is power supply and dimensions only (p. 112). The manual says what
+  # moves it: "This saves DSP Power and therefore can contribute to increased polyphony" of an
+  # oscillator switched off (p. 37), and "The usage of effects requires DSP Power and can lead to
+  # decreased polyphony" (p. 64). So 25 is the maximum the specification states rather than a
+  # count that holds whatever the player does, which is the multi/poly's arrangement exactly.
+  polyphony: 25
+  # The sixteen parts draw on that one pool: nothing gives a part voices of its own, and the
+  # voice count is stated once for the instrument.
+  polyphony_shared: true
+  velocity:
+    # RECEIVED RATHER THAN BOTH, because this definition covers a product with no keyboard. The
+    # Desktop takes velocity and sends none; the Keyboard's own keys send it. "Low Vel allows you
+    # to limit the velocity range in which the instrument is played" (p. 26) and the Global menu
+    # shapes what arrives: "Velo Curve ... Determines the velocity performance of a connected
+    # MIDI keyboard" (p. 83).
+    note_on: received
+    # RELEASE VELOCITY IS A MODULATION SOURCE, which is a stronger statement than merely
+    # receiving it: a patch can route it. The appendix's table of sources gives "Rel. Velo" as
+    # "MIDI note release velocity" (p. 106), and the prose lists "Velocity, Release Velocity,
+    # Aftertouch (Pressure) and Polyphonic Pressure" among the unipolar sources (p. 60).
+    note_off: true
+  # BOTH KINDS OF PRESSURE, from the same table: "Pressure" is "MIDI channel pressure" and "Poly
+  # Prs." is "MIDI polyphonic pressure" (p. 106), each a modulation source a patch can select. A
+  # Multi part can be told to ignore them - "Pressure receive / ignore" (p. 27).
+  aftertouch: poly
+  pitch_bend:
+    # SETTABLE PER OSCILLATOR, WHICH IS UNUSUAL, and with no default stated: "Bend Range
+    # -24...+24 Determines the intensity of the pitchbend via MIDI Pitchbend messages in
+    # semitones for the selected oscillator" (p. 42). So three oscillators may bend by three
+    # different amounts, and no page says what any of them is set to in a new sound.
+    programmable: true
+
+parts:
+  # SIXTEEN PARTS IN MULTI MODE: "The Waldorf Blofeld offers a 16 part Multi mode" (p. 24) and
+  # "The Multi mode of the Blofeld offers 16 Parts that can be played at a time via MIDI"
+  # (p. 24). In Sound mode the instrument is one part on the channel in the Global menu; the
+  # parts are what Multi mode adds, and a definition that described only Sound mode would hide
+  # fifteen of them.
+  part:
+    label: Multi Part
+    count: 16
+    # "Channel sets the MIDI Channel for the selected Instrument. This MIDI channel is used to
+    # send MIDI messages and to receive MIDI messages for this Part when Status is set to play"
+    # (p. 25), over "global, omni, 1…16" - so a part is given a channel rather than deriving one.
+    channel: assigned
+    addressing: pitches
+    # Notes, controls and program change all reach a part, and each can be refused: the Receive
+    # pages offer MIDI, USB, Local, Pitch Bend, Mod Wheel, Pressure, Sustain, Edits and Prg
+    # Change, every one of them "receive / ignore" (pp. 27-28). Edits is the one that governs the
+    # controls below - parameter changes arriving from outside.
+    receives: [notes, controls, program_change]
+
+groups:
+  controllers:       Controllers
+  arpeggiator:       Arpeggiator
+  lfo_1:             LFO 1
+  lfo_2:             LFO 2
+  lfo_3:             LFO 3
+  osc_1:             Oscillator 1
+  osc_2:             Oscillator 2
+  osc_3:             Oscillator 3
+  osc_common:        Oscillator Common
+  glide:             Glide
+  ring_modulation:   Ring Modulation
+  noise:             Noise
+  filter_1:          Filter 1
+  filter_2:          Filter 2
+  filter_common:     Filter Common
+  amplifier:         Amplifier
+  effects:           Effects
+  filter_envelope:   Filter Envelope
+  amp_envelope:      Amp Envelope
+  envelope_3:        Envelope 3
+  envelope_4:        Envelope 4
+
+controls:
+
+  # CONTROLLERS -------------------------------------------------
+  modulation_wheel:          {label: Modulation Wheel, cc: 1, group: controllers}
+  breath_control:            {label: Breath Control, cc: 2, group: controllers}
+  foot_control:              {label: Foot Control, cc: 4, group: controllers}
+  channel_volume:            {label: Channel Volume, cc: 7, group: controllers}
+  pan:                       {label: Pan, cc: 10, group: controllers}
+  sustain_pedal:             {label: Sustain Pedal, cc: 64, group: controllers}
+  sostenuto:                 {label: Sostenuto, cc: 66, group: controllers}
+
+  # ARPEGGIATOR -------------------------------------------------
+  arp_range:                 {label: Arp Range, cc: 12, range: [0, 9], group: arpeggiator}
+  arp_length:                {label: Arp Length, cc: 13, range: [0, 15], group: arpeggiator}
+  arp_active:                {label: Arp Active, cc: 14, range: [0, 3], group: arpeggiator}
+
+  # LFO 1 -------------------------------------------------------
+  lfo_1_shape:               {label: LFO 1 Shape, cc: 15, range: [0, 5], group: lfo_1}
+  lfo_1_speed:               {label: LFO 1 Speed, cc: 16, group: lfo_1}
+  lfo_1_sync:                {label: LFO 1 Sync, cc: 17, range: [0, 1], group: lfo_1}
+  lfo_1_delay:               {label: LFO 1 Delay, cc: 18, group: lfo_1}
+
+  # LFO 2 -------------------------------------------------------
+  lfo_2_shape:               {label: LFO 2 Shape, cc: 19, range: [0, 5], group: lfo_2}
+  lfo_2_speed:               {label: LFO 2 Speed, cc: 20, group: lfo_2}
+  lfo_2_sync:                {label: LFO 2 Sync, cc: 21, range: [0, 1], group: lfo_2}
+  lfo_2_delay:               {label: LFO 2 Delay, cc: 22, group: lfo_2}
+
+  # LFO 3 -------------------------------------------------------
+  lfo_3_shape:               {label: LFO 3 Shape, cc: 23, range: [0, 5], group: lfo_3}
+  lfo_3_speed:               {label: LFO 3 Speed, cc: 24, group: lfo_3}
+  lfo_3_sync:                {label: LFO 3 Sync, cc: 25, range: [0, 1], group: lfo_3}
+  lfo_3_delay:               {label: LFO 3 Delay, cc: 26, group: lfo_3}
+
+  # OSCILLATOR 1 ------------------------------------------------
+  osc_1_octave:              {label: Osc 1 Octave, cc: 27, range: [16, 112], step: 12, group: osc_1}
+  osc_1_semitone:            {label: Osc 1 Semitone, cc: 28, range: [52, 76], group: osc_1}
+  osc_1_detune:              {label: Osc 1 Detune, cc: 29, group: osc_1}
+  osc_1_fm:                  {label: Osc 1 FM, cc: 30, group: osc_1}
+  osc_1_shape:               {label: Osc 1 Shape, cc: 31, range: [0, 5], group: osc_1}
+  osc_1_pw:                  {label: Osc 1 PW, cc: 33, group: osc_1}
+  osc_1_pwm:                 {label: Osc 1 PWM, cc: 34, group: osc_1}
+  osc_1_level:               {label: Osc 1 Level, cc: 52, group: osc_1}
+  osc_1_balance:             {label: Osc 1 Balance, cc: 53, group: osc_1}
+
+  # OSCILLATOR 2 ------------------------------------------------
+  osc_2_octave:              {label: Osc 2 Octave, cc: 35, range: [16, 112], step: 12, group: osc_2}
+  osc_2_semitone:            {label: Osc 2 Semitone, cc: 36, range: [52, 76], group: osc_2}
+  osc_2_detune:              {label: Osc 2 Detune, cc: 37, group: osc_2}
+  osc_2_fm:                  {label: Osc 2 FM, cc: 38, group: osc_2}
+  osc_2_shape:               {label: Osc 2 Shape, cc: 39, range: [0, 5], group: osc_2}
+  osc_2_pw:                  {label: Osc 2 PW, cc: 40, group: osc_2}
+  osc_2_pwm:                 {label: Osc 2 PWM, cc: 41, group: osc_2}
+  osc_2_sync:                {label: Sync, cc: 49, range: [0, 1], group: osc_2}
+  osc_2_level:               {label: Osc 2 Level, cc: 56, group: osc_2}
+  osc_2_balance:             {label: Osc 2 Balance, cc: 57, group: osc_2}
+
+  # OSCILLATOR 3 ------------------------------------------------
+  osc_3_octave:              {label: Osc 3 Octave, cc: 42, range: [16, 112], step: 12, group: osc_3}
+  osc_3_semitone:            {label: Osc 3 Semitone, cc: 43, range: [52, 76], group: osc_3}
+  osc_3_detune:              {label: Osc 3 Detune, cc: 44, group: osc_3}
+  osc_3_fm:                  {label: Osc 3 FM, cc: 45, group: osc_3}
+  osc_3_shape:               {label: Osc 3 Shape, cc: 46, range: [0, 5], group: osc_3}
+  osc_3_pw:                  {label: Osc 3 PW, cc: 47, group: osc_3}
+  osc_3_pwm:                 {label: Osc 3 PWM, cc: 48, group: osc_3}
+  osc_3_level:               {label: Osc 3 Level, cc: 58, group: osc_3}
+  osc_3_balance:             {label: Osc 3 Balance, cc: 59, group: osc_3}
+
+  # OSCILLATOR COMMON -------------------------------------------
+  osc_pitchmod:              {label: Pitchmod, cc: 50, group: osc_common}
+
+  # GLIDE -------------------------------------------------------
+  glide_rate:                {label: Glide Rate, cc: 5, group: glide}
+  glide_mode:                {label: Glide Mode, cc: 51, range: [0, 9], group: glide}
+  glide_active:              {label: Glide Active, cc: 65, group: glide}
+
+  # RING MODULATION ---------------------------------------------
+  ringmod_level:             {label: Ringmod Level, cc: 54, group: ring_modulation}
+  ringmod_balance:           {label: Ringmod Balance, cc: 55, group: ring_modulation}
+
+  # NOISE -------------------------------------------------------
+  noise_level:               {label: Noise Level, cc: 60, group: noise}
+  noise_balance:             {label: Noise Balance, cc: 61, group: noise}
+  noise_colour:              {label: Noise Colour, cc: 62, group: noise}
+
+  # FILTER 1 ----------------------------------------------------
+  filter_1_type:             {label: Filter 1 Type, cc: 68, range: [0, 10], group: filter_1}
+  filter_1_cutoff:           {label: Filter 1 Cutoff, cc: 69, group: filter_1}
+  filter_1_resonance:        {label: Filter 1 Resonance, cc: 70, group: filter_1}
+  filter_1_drive:            {label: Filter 1 Drive, cc: 71, group: filter_1}
+  filter_1_keytrack:         {label: Filter 1 Keytrack, cc: 72, group: filter_1}
+  filter_1_env_amount:       {label: Filter 1 Env. Amount, cc: 73, group: filter_1}
+  filter_1_env_velocity:     {label: Filter 1 Env. Velocity, cc: 74, group: filter_1}
+  filter_1_cutoffmod:        {label: Filter 1 CutoffMod, cc: 75, group: filter_1}
+  filter_1_fm:               {label: Filter 1 FM, cc: 76, group: filter_1}
+  filter_1_pan:              {label: Filter 1 Pan, cc: 77, group: filter_1}
+  filter_1_panmod:           {label: Filter 1 Panmod, cc: 78, group: filter_1}
+
+  # FILTER 2 ----------------------------------------------------
+  filter_2_type:             {label: Filter 2 Type, cc: 79, range: [0, 10], group: filter_2}
+  filter_2_cutoff:           {label: Filter 2 Cutoff, cc: 80, group: filter_2}
+  filter_2_resonance:        {label: Filter 2 Resonance, cc: 81, group: filter_2}
+  filter_2_drive:            {label: Filter 2 Drive, cc: 82, group: filter_2}
+  filter_2_keytrack:         {label: Filter 2 Keytrack, cc: 83, group: filter_2}
+  filter_2_env_amount:       {label: Filter 2 Env. Amount, cc: 84, group: filter_2}
+  filter_2_env_velocity:     {label: Filter 2 Env. Velocity, cc: 85, group: filter_2}
+  filter_2_cutoffmod:        {label: Filter 2 CutoffMod, cc: 86, group: filter_2}
+  filter_2_fm:               {label: Filter 2 FM, cc: 87, group: filter_2}
+  filter_2_pan:              {label: Filter 2 Pan, cc: 88, group: filter_2}
+  filter_2_panmod:           {label: Filter 2 Panmod, cc: 89, group: filter_2}
+
+  # FILTER COMMON -----------------------------------------------
+  filter_routing:            {label: Routing, cc: 67, group: filter_common}
+
+  # AMPLIFIER ---------------------------------------------------
+  amp_volume:                {label: Amp Volume, cc: 90, group: amplifier}
+  amp_velocity:              {label: Amp Velocity, cc: 91, group: amplifier}
+  amp_mod:                   {label: Amp Mod, cc: 92, group: amplifier}
+
+  # EFFECTS -----------------------------------------------------
+  fx_1_mix:                  {label: FX 1 Mix, cc: 93, group: effects}
+  fx_2_mix:                  {label: FX 2 Mix, cc: 94, group: effects}
+
+  # FILTER ENVELOPE ---------------------------------------------
+  fe_attack:                 {label: FE Attack, cc: 95, group: filter_envelope}
+  fe_decay:                  {label: FE Decay, cc: 96, group: filter_envelope}
+  fe_sustain:                {label: FE Sustain, cc: 97, group: filter_envelope}
+  fe_decay_2:                {label: FE Decay 2, cc: 98, group: filter_envelope}
+  fe_sustain_2:              {label: FE Sustain 2, cc: 99, group: filter_envelope}
+  fe_release:                {label: FE Release, cc: 100, group: filter_envelope}
+
+  # AMPLIFIER ENVELOPE ------------------------------------------
+  ae_attack:                 {label: AE Attack, cc: 101, group: amp_envelope}
+  ae_decay:                  {label: AE Decay, cc: 102, group: amp_envelope}
+  ae_sustain:                {label: AE Sustain, cc: 103, group: amp_envelope}
+  ae_decay_2:                {label: AE Decay 2, cc: 104, group: amp_envelope}
+  ae_sustain_2:              {label: AE Sustain 2, cc: 105, group: amp_envelope}
+  ae_release:                {label: AE Release, cc: 106, group: amp_envelope}
+
+  # ENVELOPE 3 --------------------------------------------------
+  e3_attack:                 {label: E3 Attack, cc: 107, group: envelope_3}
+  e3_decay:                  {label: E3 Decay, cc: 108, group: envelope_3}
+  e3_sustain:                {label: E3 Sustain, cc: 109, group: envelope_3}
+  e3_decay_2:                {label: E3 Decay 2, cc: 110, group: envelope_3}
+  e3_sustain_2:              {label: E3 Sustain 2, cc: 111, group: envelope_3}
+  e3_release:                {label: E3 Release, cc: 112, group: envelope_3}
+
+  # ENVELOPE 4 --------------------------------------------------
+  e4_attack:                 {label: E4 Attack, cc: 113, group: envelope_4}
+  e4_decay:                  {label: E4 Decay, cc: 114, group: envelope_4}
+  e4_sustain:                {label: E4 Sustain, cc: 115, group: envelope_4}
+  e4_decay_2:                {label: E4 Decay 2, cc: 116, group: envelope_4}
+  e4_sustain_2:              {label: E4 Sustain 2, cc: 117, group: envelope_4}
+  e4_release:                {label: E4 Release, cc: 118, group: envelope_4}
+
+sources:
+  manual:
+    kind: manual
+    title: Blofeld User´s Manual
+    edition: Revision 1.1
+    dated: "2009-01"
+    landing: "https://waldorfmusic.com/blofeld-en/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/32zdTsdYcRSX9eE/download"
+    sha256: 105bb2bae6639a2c9696a601f579f6acba48d7b4f56f2721d02682596896a702
+    retrieved: 2026-10-03
+    # 128 pages, counted with pypdf and with PyMuPDF, which agree - `file` gives no count. **NO
+    # OFFSET**: every page prints its own number and it is the file's page index, checked at nine
+    # pages spread through it. Every sheet is A4 **landscape** and set in **two text columns**,
+    # one printed page to a sheet, and the controller chart runs down one column and then the
+    # other - so a page may carry two blocks of it, at two different sets of column positions,
+    # and the positions shift by nine points between odd and even pages. **The same file is
+    # offered from the Keyboard's product page under the same share id**, so unlike the Iridium's
+    # there are not two links to compare: there is one.
+    page_offset: 0
+  sysex:
+    kind: midi_implementation
+    title: Blofeld System Exclusive Specifications
+    edition: Software release 1.04
+    landing: "https://waldorfmusic.com/blofeld-en/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/ybExJgT4TzqT8ir/download"
+    sha256: 6d3b6557b2a8ee377ff517460ec920a1dd8b576506f47d2bf40c553af82c80d5
+    retrieved: 2026-10-03
+    # **IT CARRIES NO CONTROLLER NUMBER ANYWHERE** - searched all 35 pages for controller, control
+    # change and CC, with no hit - so not one row of the chart rests on it. It is cited for the
+    # four ranges it gives differently, listed in the account above, and for the device ID range.
+    # 35 pages by pypdf and by PyMuPDF, which agree; **`file` says 8**, the thirteenth document
+    # that tool has been wrong about here and the sixth maker.
+    page_offset: 0
+  product_page:
+    kind: product_page
+    title: Blofeld - Waldorf Music
+    landing: "https://waldorfmusic.com/"
+    url: "https://waldorfmusic.com/blofeld-en/"
+    sha256: d0b9098fca1e5b286de4c3eb8509a3cdcf57f3186afdd13647dc396360e50597
+    retrieved: 2026-10-03
+    paginated: false
+    # THE ONLY PUBLISHED VOICE COUNT, which the manual does not give at all. Also the list that
+    # named the System Exclusive specification and the firmware package, neither of which was
+    # known before it was read. The digest is of the text taken from the page; the bytes as
+    # served are kept beside it and hashed in the same record.
+  keyboard_page:
+    kind: product_page
+    title: Blofeld Keyboard - Waldorf Music
+    landing: "https://waldorfmusic.com/"
+    url: "https://waldorfmusic.com/blofeld-keyboard-en/"
+    sha256: 1e58c82b10a304faac2b05006459828dd28e37f12b0d962f5ac54ad3e377d266
+    retrieved: 2026-10-03
+    paginated: false
+    # CITED FOR WHAT IT DOES NOT SAY. Its English specification block is the Desktop page's word
+    # for word - the same connectors, the same voice count, no mention of a keyboard - so it is
+    # the evidence that a maker's page for a second product may simply repeat the first's. **The
+    # page contradicts itself about it**: its own prose two paragraphs above the block says the
+    # keyboard is velocity sensitive, responds to aftertouch, has pitchbend and modulation wheels
+    # and takes a sustain pedal, none of which the block mentions. So the page knows what the
+    # product is and its specification does not. Its
+    # download list is the Desktop's too, share id for share id, but for one extra item: a
+    # Blofeld Keyboard Controller Firmware, which is the only published thing belonging to one of
+    # these two products and not the other.

@@ -1,0 +1,279 @@
+definition: 1
+
+# THE AFFIRMATIVE MARK IN THIS INSTRUMENT'S MIDI CHART IS A PICTURE, AND NOTHING SAYS SO. The
+# guide is a web site rather than a document, and its implementation chart does not use the
+# conventional `o`: a supported function is one small SVG, the same file eighteen times, with an
+# empty `alt` and no legend anywhere on the page. The cells that say *no* are the text `x`; the
+# cells that say *yes* are an image. **So a text reading of that chart loses every yes** and
+# concludes this sampler transmits no velocity, receives no control change and neither sends nor
+# receives clock - all three wrong. The file is saved beside the page in the library, because the
+# page references it and does not contain it, and the extraction records it as `TICK`.
+#
+# AND THE TABLES ARE NOT TABLES. There is no `<table>` element on the page. The chart is columns
+# of boxes whose row membership is carried in CSS heights, so a cell spanning three lines is three
+# times as tall and **the columns only line up if the heights are added up**; reading the text in
+# document order returns each column end to end and puts every value beside the wrong function.
+# The note map and the CC map on the same page are built the other way up, row by row, so **the
+# method has to be chosen per table** exactly as it does for a ruled PDF.
+
+model:
+  # The maker writes its own name in lower case throughout, as it does for the OP-1.
+  manufacturer: teenage engineering
+  # SPELLED THE WAY THE MAKER'S OWN CATALOGUE SPELLS IT, counted rather than chosen - the method
+  # the OP-1's name needed, and it comes out the other way here. Across the six saved chapters the
+  # model number is `EP-133` with an EN DASH every time it appears in prose or metadata, and the
+  # hyphen appears only inside URLs and on one variant's masthead. The nickname is written five
+  # ways: `K.O.II` 45 times in prose, `ko2` 9, `K.O. II` twice in prose and 9 times in the page
+  # metadata, `k.o.ii` once. **The spaced form is the maker's catalogue name**, which is what the
+  # store navigation embedded in every page carries, so it is the one used here.
+  name: EP–133 K.O. II
+  # THE GUIDE NAMES NO FIRMWARE AT ALL - searched all six saved chapters, where the only
+  # occurrence of the word is "update firmware" as an action. The maker's downloads page states
+  # one per product and gives this one **OS 2.5**, which is also the guide's own version.
+  # **Those two agreeing is this product's accident and not a rule**: the same page gives the
+  # EP-136 OS 1.0.3 against a guide at ver 1.0.0. So the OS is taken from the downloads page.
+  firmware: "2.5"
+
+source: >-
+  User guide ver 2.5, published as a web site of eighteen numbered chapters rather than
+  as a document, each chapter its own page: chapter 14 system carries all three MIDI
+  tables - 14.1 the implementation chart, 14.2 the note map and 14.5 the CC map - and
+  the numbered system settings behind them. Plus chapter 1 for the sockets, chapter 8
+  for the sound modes and the per-pad MIDI page, chapter 12 for driving it from a
+  keyboard and sequencing out of it, and chapter 16 for the specification. The maker's
+  downloads page gives the operating system version, which the guide does not.
+
+  FOUR CONTROLLERS, AND THE GUIDE SAYS THAT IS ALL OF THEM: "below is a list of all the
+  parameters that can be adjusted with midi control changes" (system). They are vibrato,
+  the two effect knobs and a sustain pedal. **The implementation chart adds two numbers
+  that list does not** - CC 0 and CC 32, bank select, ticked in both directions - and
+  those are recorded under program_change rather than as controls, which is the reading
+  the two Moog 37s' charts got. So neither table alone gives the instrument's controller
+  numbers, and 14.5's claim to be a complete list is false by two.
+
+  THE CC MAP GIVES EVERY RANGE AS 1-127 AND THAT IS WORTH DOUBTING RATHER THAN BELIEVING.
+  All four rows read the same, including the sustain pedal, which is conventionally a
+  switch at 0 and 127 - and the implementation chart writes program change's range as
+  "(0-127)" on the same page. A column with one value repeated four times, disagreeing
+  with the neighbouring table's convention, reads like a template rather than four
+  measurements. It is recorded as printed because that is what the document says, and
+  this paragraph is the doubt.
+
+  ONE CONTROLLER HAS TWO NAMES IN TWO TABLES. The chart's notes column calls CC 1 "mod
+  wheel" and the CC map calls it "vibrato". One controller, named twice; the CC map's
+  name is kept below, because that is the table whose job is to name them.
+
+  FORTY-EIGHT PADS ON FOUR GROUPS, TOLD APART BY NOTE AND NOT BY CHANNEL. The note map
+  gives twelve pads on each of groups a to d, over notes 36 to 83 unbroken, and the
+  chart's note rows agree range for range. **The pads are labelled as the numeric keypad
+  they are** - `.`, `0`, `enter`, then 1 to 9 - so the lowest note of a group is the `.`
+  pad and pad 1 is the fourth note, not the first. A reader who assumes note 36 is pad 1
+  is three semitones out for every pad on the instrument.
+
+  EACH PAD CAN ALSO BE GIVEN A MIDI CHANNEL OF ITS OWN, which the format cannot hold
+  beside a voice map and which matters to anybody driving this: "the (knobX) knob
+  controls the MIDI channel the pad receives and sends to. this allows you to connect a
+  series of external music devices and send note data to them all individually from
+  different pads!" (modes). There is a system setting for working that way throughout -
+  "only send midi if midi channel assigned in sound edit" (system). So the default
+  arrangement is one channel with notes telling the pads apart, and a player may instead
+  give pads their own channels. The guide never says what happens when a pad's channel
+  and the global one disagree.
+
+  NO VOICE COUNT IS PUBLISHED, and the chart declines to give one: its true voice row is
+  a dash in both columns. Two sentences show the pool is finite without numbering it - a
+  pad set to sound 000 "can hold midi without stealing any voices" (how_to), and the
+  sustain pedal is "for key and legato voices" (system) - and a sound's own play mode
+  decides whether it is polyphonic at all: "key is polyphonic, and allows you to play
+  multiples of the same sample at once" against oneshot and legato, which are not
+  (modes).
+
+  THE GUIDE HAS NO CHAPTER 13. Its chapters run 1 to 12 and then 14 to 18, the
+  chapter-to-chapter navigation steps straight across the gap, and no page carries a 13.x
+  section or a chapter 13 anywhere. The sibling EP-1320's guide skips 13 too, at a
+  different position. Recorded because a reader counting chapters to find the MIDI one
+  will be out by one, and because this guide carries other evidence of renumbering: the
+  MIDI chapter's own anchors still point at the numbers its sections had before the note
+  map existed.
+
+midi:
+  # "Receive all channels, send on MIDI channel 1" is one setting and sixteen more give a channel
+  # each (system), which is what the chart's basic channel row prints as default 1, changed 1-16.
+  channels: [1, 16]
+  # MODE 1 IS OMNI ON, WHICH LOOKS WRONG BESIDE A SETTABLE CHANNEL AND IS NOT. The chart prints
+  # its own legend - "Mode 1: OMNI ON, POLY" (system) - and gives the basic channel's default as
+  # 1. Those two together are exactly one of the settings printed a screen earlier: "Receive all
+  # channels, send on MIDI channel 1" (system). So the chart and the settings list describe the
+  # same state and nothing here is in tension; what the chart calls mode 1 with basic channel 1,
+  # the settings list calls code 110.
+  #
+  # **The first instrument in this corpus to record mode 1**, the other eight being omni off, so
+  # it was worth checking rather than assuming a slip. The note map's advice to "make sure that
+  # you are addressing the correct midi channel" (system) is advice for when omni is off, not a
+  # contradiction of it, and **no channel setting anywhere is marked as the factory default** -
+  # the settings list marks ten defaults and none of them is in the channel group.
+  mode: 1
+  # Ticked in both columns of the chart's clock row. **But it does one direction at a time and
+  # neither by default**: the three settings behind it are "MIDI Clock Off (default)", "MIDI Clock
+  # in (receive only)" and "MIDI Clock Out (send only)" (system). There is no both-at-once option,
+  # which `clock: both` cannot say - what it says is that each direction is implemented.
+  clock: both
+  # System realtime commands and song position are ticked in both columns. Song select and tune
+  # request are marked x in both, which is a stated absence rather than silence. The sync sockets
+  # carry start and stop on the ring as well, outside MIDI.
+  transport: both
+  program_change:
+    # Ticked both ways over "(0-127)", with the chart's own note beside it.
+    receives: true
+    sends: true
+    # 999 SOUNDS, AND PROGRAM CHANGE ALONE REACHES 128 OF THEM: "use bank select to reach all
+    # sounds 1-999" (system), which is why CC 0 and CC 32 are not controls below. "K.O.II can
+    # store up to 999 samples, or 128 MB, whichever comes first" (modes). **How a sound number
+    # maps to a bank and a program is stated nowhere**, which is the largest gap in this guide for
+    # anybody writing software to drive the instrument.
+    presets: 999
+  # A checked absence: neither NRPN nor RPN appears on any page of the guide, nor on the
+  # downloads page - searched all eight saved documents. The implementation chart has no row for
+  # either, which is ordinary for the form, so the search is what settles it rather than the chart.
+  nrpn: none
+  # Ticked both ways, remarked "identity request+reply, proprietary messages" (system).
+  sysex: true
+
+voice:
+  # Forty-eight pads rather than forty-eight pitches - until keys mode, for which see note_range.
+  addressing: voices
+  # 0 TO 127, FROM THE CHART'S OWN NOTE NUMBER ROW, which gives the four group ranges and then
+  # "keys mode: 0-127" in both columns. The note map says the same in prose: "if you are in keys
+  # mode, this will change to a chromatic keyboard" (system). So the pads below are what the
+  # instrument answers to ordinarily and the whole range is what it answers to in keys mode, one
+  # sound at a time. **The guide is not of one mind about how chromatic that is**: the how-to
+  # chapter says the pads "become a keyboard that have the chosen sample transposed across a
+  # scale", with knobs for the key and the scale, where the note map says chromatic. Both are
+  # recorded and neither is resolved; what both agree on is the range.
+  note_range: [0, 127]
+  velocity:
+    # Ticked in both columns of the chart's note on row, and marked x in both of its note off row.
+    note_on: both
+    note_off: false
+    # **PAD VELOCITY IS OFF UNTIL SOMEBODY TURNS IT ON**: "PAD VELOCITY OFF (DEFAULT)" (system),
+    # against two settings that turn it on for a soft or a vigorous touch. So the chart's note on
+    # velocity is implemented while the pads do not sense it out of the box, and **what value is
+    # transmitted with velocity off is nowhere stated**. A panel offering a velocity lane on a new
+    # machine would find it did nothing.
+  # A CHECKED ABSENCE, AND THE DOCUMENT STATES IT: the chart marks aftertouch x in both columns on
+  # both of its rows, keys and channels. Not silence - a printed no.
+  aftertouch: none
+  # PITCH BEND IS RECEIVED AND NOT SENT, and that is all the chart says: ticked under recognised,
+  # x under transmitted, with no range and nothing about whether a range can be set. The format's
+  # pitch bend field holds a depth in semitones and whether it is programmable, and no document
+  # gives either, so there is nothing here to write - the fact is in this comment rather than in
+  # an invented field.
+  #
+  # NO VOICE COUNT: see the account above. The chart's true voice row is a dash in both columns.
+  voices:
+    a_dot:        36
+    a_0:          37
+    a_enter:      38
+    a_1:          39
+    a_2:          40
+    a_3:          41
+    a_4:          42
+    a_5:          43
+    a_6:          44
+    a_7:          45
+    a_8:          46
+    a_9:          47
+    b_dot:        48
+    b_0:          49
+    b_enter:      50
+    b_1:          51
+    b_2:          52
+    b_3:          53
+    b_4:          54
+    b_5:          55
+    b_6:          56
+    b_7:          57
+    b_8:          58
+    b_9:          59
+    c_dot:        60
+    c_0:          61
+    c_enter:      62
+    c_1:          63
+    c_2:          64
+    c_3:          65
+    c_4:          66
+    c_5:          67
+    c_6:          68
+    c_7:          69
+    c_8:          70
+    c_9:          71
+    d_dot:        72
+    d_0:          73
+    d_enter:      74
+    d_1:          75
+    d_2:          76
+    d_3:          77
+    d_4:          78
+    d_5:          79
+    d_6:          80
+    d_7:          81
+    d_8:          82
+    d_9:          83
+
+groups:
+  controllers:       Controllers
+
+controls:
+  # THE WHOLE OF 14.5, WHICH THE GUIDE CALLS A COMPLETE LIST. The labels are the maker's own
+  # wording, in its own lower case. Every range is printed 1-127 - see the account for why that
+  # is recorded rather than believed.
+  vibrato:           {label: vibrato, cc: 1, range: [1, 127], group: controllers}
+  fx_parameter_x:    {label: fx parameter (knobx), cc: 12, range: [1, 127], group: controllers}
+  fx_parameter_y:    {label: fx parameter (knoby), cc: 13, range: [1, 127], group: controllers}
+  sustain_pedal:     {label: sustain pedal for key and legato voices, cc: 64, range: [1, 127], group: controllers}
+
+sources:
+  system:
+    kind: manual
+    title: EP–133 guide, 14. system
+    edition: ver 2.5
+    landing: "https://teenage.engineering/guides"
+    url: "https://teenage.engineering/guides/ep-133/system"
+    sha256: 218d40c232857dca0dc5d77344168b2afd9b4bf379a8c2affe95ba74ca4cbb5a
+    retrieved: 2026-10-03
+    paginated: false
+    # EVERY NUMBER IN THIS DEFINITION COMES FROM THIS ONE PAGE: the implementation chart, the note
+    # map, the CC map and the numbered system settings. The digest is of the text taken from the
+    # page; the bytes as served are kept beside it and hashed in the same record, as is the SVG
+    # the chart draws for yes - which the page references and does not contain.
+  modes:
+    kind: manual
+    title: EP–133 guide, 8. modes
+    edition: ver 2.5
+    landing: "https://teenage.engineering/guides"
+    url: "https://teenage.engineering/guides/ep-133/modes"
+    sha256: 2a861c920832b0c7f4a23b51ae3ad646822d7d8f441b71f18a57f0f2054f415c
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for the per-pad MIDI channel, the 999 sounds and the three play modes that decide
+    # whether a sound is polyphonic.
+  how_to:
+    kind: manual
+    title: EP–133 guide, 12. how to
+    edition: ver 2.5
+    landing: "https://teenage.engineering/guides"
+    url: "https://teenage.engineering/guides/ep-133/how-to"
+    sha256: 76be98393303d1f471a6ca6d796f4c7a3f69fcc2fef533a31e28d67e8ae144d4
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for keys mode and for the pad that holds MIDI without taking a voice.
+  downloads_page:
+    kind: download_page
+    title: downloads - teenage engineering
+    landing: "https://teenage.engineering/"
+    url: "https://teenage.engineering/downloads"
+    sha256: a25c7dca09cf5871fa893f2a58a27e77cca4ef6b14972c0f11f3bfa2ebc70119
+    retrieved: 2026-10-03
+    paginated: false
+    # THE ONLY DOCUMENT THAT STATES AN OPERATING SYSTEM VERSION for this instrument. The guide
+    # names none at all.

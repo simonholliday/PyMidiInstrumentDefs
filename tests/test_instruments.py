@@ -173,6 +173,7 @@ class TestBundledCorpus:
 			"roland/tr_1000",
 			"sequential/take_5",
 			"soma/pulsar_23",
+			"teenage_engineering/ep_133_ko_ii",
 			"teenage_engineering/op_1",
 			"teenage_engineering/op_xy",
 			"vermona/drm1_mkiv",
@@ -5464,3 +5465,126 @@ class TestDrumBruteImpact:
 
 		# And that there is no chart at all, which is the fact rather than an omission.
 		assert "THERE IS NO MIDI IMPLEMENTATION CHART AND NO CONTROLLER MAP" in account
+
+
+class TestEP133KOII:
+
+	"""A teenage engineering sampler whose chart says yes with a picture and no with a letter."""
+
+	def test_four_controllers_and_the_guide_says_that_is_all (self) -> None:
+		"""And the implementation chart adds two the list omits, which are not controls."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		assert len(ep.controls) == 4
+		assert sorted(control.cc for control in ep.controls.values()
+			if control.cc is not None) == [1, 12, 13, 64]
+
+		# Bank select is program change's business, not a control's - the Moog 37s' reading.
+		assert all(control.cc not in (0, 32) for control in ep.controls.values())
+
+		assert ep.midi.program_change is not None
+		assert ep.midi.program_change.presets == 999
+
+	def test_every_range_is_printed_one_to_127 (self) -> None:
+		"""Recorded as printed, and doubted in the account rather than corrected."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		for control in ep.controls.values():
+			assert control.range == (1, 127), control.name
+
+	def test_forty_eight_pads_on_four_groups_in_keypad_order (self) -> None:
+		"""The lowest note of a group is the dot pad, and pad 1 is the fourth note."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		voices = ep.voice.voices
+
+		assert len(voices) == 48
+		assert sorted(voices.values()) == list(range(36, 84))
+
+		for index, group in enumerate("abcd"):
+			pads = {name: note for name, note in voices.items() if name.startswith(f"{group}_")}
+
+			assert len(pads) == 12, group
+			assert sorted(pads.values()) == list(range(36 + index * 12, 48 + index * 12))
+
+		# The keypad's own order, which is the trap: note 36 is the dot, not pad 1.
+		assert voices["a_dot"] == 36
+		assert voices["a_0"] == 37
+		assert voices["a_enter"] == 38
+		assert voices["a_1"] == 39
+
+	def test_keys_mode_is_why_the_note_range_is_the_whole_of_it (self) -> None:
+		"""Forty-eight pads ordinarily, and 0 to 127 chromatically for one chosen sound."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		assert ep.voice.addressing == "voices"
+		assert ep.voice.note_range == (0, 127)
+
+		# Both of those are true at once, so a consumer must not read the voices as the limit.
+		assert ep.voice.plays_note(0) is True
+		assert ep.voice.plays_note(127) is True
+
+	def test_the_first_definition_here_to_record_omni_on (self) -> None:
+		"""Mode 1 with basic channel 1 is exactly the settings list's own code 110."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		assert ep.midi.mode == 1
+		assert ep.midi.channels == (1, 16)
+
+		# Every other definition that records a mode records omni off.
+		others = [pymidiinstrumentdefs.load(name, [CORPUS]).midi.mode
+			for name in pymidiinstrumentdefs.available([CORPUS])
+			if name != "teenage_engineering/ep_133_ko_ii"]
+
+		assert 1 not in [mode for mode in others if mode is not None]
+
+	def test_what_the_chart_marks_and_what_it_refuses_to (self) -> None:
+		"""Aftertouch is a printed no; the true voice row is a dash, so no voice count."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		assert ep.voice.aftertouch == "none"
+		assert ep.voice.polyphony is None
+
+		assert ep.midi.clock == "both"
+		assert ep.midi.transport == "both"
+		assert ep.midi.sysex is True
+		assert ep.midi.nrpn == "none"
+
+		assert ep.voice.velocity is not None
+		assert ep.voice.velocity.note_on == "both"
+		assert ep.voice.velocity.note_off is False
+
+		# Received and not sent, which the format's pitch bend field cannot say - so it says
+		# nothing rather than something wrong.
+		assert ep.voice.pitch_bend is None
+
+	def test_the_account_records_what_only_a_picture_says (self) -> None:
+		"""A text reading of this chart loses every yes, and the file says so."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
+			in (CORPUS / "teenage_engineering" / "ep_133_ko_ii.yaml").read_text().splitlines())
+		flowed = " ".join(flowed.split())
+
+		assert "THE AFFIRMATIVE MARK IN THIS INSTRUMENT'S MIDI CHART IS A PICTURE" in flowed
+		assert "AND THE TABLES ARE NOT TABLES" in flowed
+
+		assert ep.source is not None
+
+		account = " ".join(ep.source.split())
+
+		assert "14.5's claim to be a complete list is false by two" in account
+		assert "THE GUIDE HAS NO CHAPTER 13" in account
+
+	def test_its_sources_are_four_pages_of_one_web_guide (self) -> None:
+		"""Published as a site rather than a document, so every source is unpaginated."""
+		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
+
+		assert set(ep.sources) == {"system", "modes", "how_to", "downloads_page"}
+
+		for name, source in ep.sources.items():
+			assert source.paginated is False, name
+
+		# The guide names no operating system; only the downloads page does.
+		assert ep.model.firmware == "2.5"
+		assert ep.sources["downloads_page"].kind == "download_page"

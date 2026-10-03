@@ -1,0 +1,393 @@
+# A SECTION COLUMN THAT CANNOT BE READ AS A GROUPING, AND THE TABLE PROVES IT ITSELF. "11.3.
+# AstroLab MIDI Implementation" (manual pp. 96-97) prints five columns - "Section Parameter MIDI
+# CC Sending Receiving" (manual p. 96) - and six of its thirty-seven rows carry a Section label
+# while thirty-one leave that cell blank. **Carrying a label downward is wrong here**, because
+# the rows are in controller-number order and a section therefore cannot be contiguous. Carried
+# down, "Master" would own Expression, Aux 1 and Aux 2 - which are the three pedal inputs,
+# "Aux 1 / Aux 2: The two Aux sockets accept switching or continuous pedals" (manual p. 28) -
+# and "Pedals" would own Fader 1, Fader 4 and Timbre, which the manual gives as a Macro knob:
+# "The MIDI Continuous Controller (CC) messages sent by the Macro knobs are, left to right: 74,
+# 71, 76, and 77" (manual p. 40). So the groups below come from what the manual's body says each
+# control is, and `Notes/4254_extract_astrolab_table.py` records the Section cells exactly as
+# printed, blank where blank.
+#
+# FOUR WORDS FOR DIRECTION, WHICH IS MORE THAN MOST MAKERS PUBLISH. Every row has a Sending cell
+# and a Receiving cell, and between them they say `Always`, `Never`, `Not linked` or `n/a`. The
+# manual defines none of the four. Three are plain; **the fourth is settled by the MIDI Out
+# Filter**, whose Auto setting reads "When AstroLab and Analog Lab are Linked, the MIDI Out
+# Filter switches to Keyboard Only" (manual p. 28) and whose Keyboard Only setting means "Only
+# the notes played on the AstroLab keyboard are transmitted via MIDI Out" (manual p. 28). So
+# `Not linked` names the condition under which a control **is** sent, and those seven rows
+# travel both ways.
+#
+# ONE PUBLISHED ROW IS NEITHER SENT NOR RECEIVED AND IS THEREFORE NOT HERE. "Master Volume 7
+# Never Never" (manual p. 96) is the only row in the table whose Receiving cell is not Always.
+# The format has three directions and none of them is "neither", so recording it would tell a
+# consumer the control can be sent or answered to when the maker says it cannot. It is left out
+# and said so, which is the honest half of a gap the format has.
+#
+# NINE OF THE THIRTY-SEVEN NAME A CONTROL THE MANUAL MENTIONS NOWHERE ELSE. Fader 1 to Fader 9,
+# at CC 72, 73, 75 and 79 to 85, every one `n/a` sending and `Always` receiving - **and the word
+# "Fader" appears in these 115 pages only inside this table.** They are below because the maker
+# publishes them; what they are is not recorded, because the maker does not say.
+#
+# THE MAP IS TWO FIRMWARE RELEASES BEHIND THE INSTRUMENT, AND THAT IS CHECKED RATHER THAN
+# ASSUMED. The manual is 1.5.1 and the firmware is 1.7.0; the release notes for V 1.6.0 and
+# V 1.7.0 list a panic shortcut, "Integration of Pigments 7" (release notes 1.7.0), two delete
+# operations, five bug fixes and a stability improvement - **no controller number and nothing
+# about this table.** So a map published for 1.5.1 is still the map for 1.7.0, which is a thing
+# worth being able to say rather than hope.
+
+definition: 1
+
+model:
+  manufacturer: Arturia
+  name: AstroLab
+  # 1.7.0 IS WHAT THE MAKER'S OWN DOCUMENTS CALL CURRENT, AND ALL THREE MODELS ARE ON IT:
+  # "AstroLab 61 Firmware Version 1.7.0" (resources_page), released 2026-02-26, with the same
+  # version for the 37 and the 88. The release notes' newest heading is "V 1.7.0" (release notes
+  # 1.7.0). **The control map below is the 1.5.1 manual's** - see the head of this file for why
+  # that is still current. The manual's own copyright page, which is unnumbered front matter,
+  # gives its product version as 1.0.0 and its revision date as 4 December 2025, so three
+  # different numbers describe this one document. Checked 2026-10-03.
+  firmware: "1.7.0"
+
+source: >-
+  AstroLab User Manual, 115 pages, the edition Arturia's resources page calls 1.5.1 - "AstroLab
+  61 EN Manual Version en - 1.5.1" (resources_page), dated 2025-12-04. **Arturia publishes no
+  MIDI implementation document for this instrument**, so the manual's own "11.3. AstroLab MIDI
+  Implementation" (manual pp. 96-97) is the whole published control map: 37 rows under "Section
+  Parameter MIDI CC Sending Receiving" (manual p. 96), with controller numbers from 1 to 115.
+
+  THIS DEFINITION IS THE ASTROLAB 61'S AND THE ASTROLAB 88'S, AND THE MAKER'S OWN DATA SAYS SO.
+  Arturia sells three AstroLabs and the resources page carries a manual for each, but **the 88's
+  1.5.0 and 1.5.1 entries both point at the 61's own file**, under `products/astrolab-61/`; it
+  has no 1.5.x document of its own. The manual agrees from the inside: its specification table
+  is headed "AstroLab 61 AstroLab 88" (manual p. 96) and names the two keybeds separately -
+  "AstroLab 61 : 61-note semi-weighted keyboard with piano-size keys and aftertouch" and
+  "AstroLab 88: TP-40L hammer-action keybed with piano-size keys and aftertouch" (manual p. 11),
+  the maker's own spacing. The release notes agree from the third side: the 88's list begins
+  "First release of AstroLab 88" (release notes 88) at V 1.5.0, the firmware the 61 was already
+  running, and carries no MIDI change the 61's does not.
+
+  **THE ASTROLAB 37 IS NOT IN THIS DEFINITION.** It has a manual of its own, still at 1.0.0; the
+  words "AstroLab 37" appear nowhere in these 115 pages; and its own release notes start at a
+  version neither of the others has - "First release of AstroLab 37" (release notes 37) at
+  V 1.5.9 - and carry an entry theirs do not, "Reworked the ranges of some presets for better
+  playability on AstroLab 37" (release notes 37). It shares the 1.7.0 firmware and is very
+  likely the same map in a smaller box, but likely is not documented and nobody has read its
+  manual.
+
+  THE SECTION COLUMN IS A TRAP AND IS NOT USED FOR THE GROUPS. Six rows carry a label - MIDI,
+  Master, Pedals, Instrument, Effects, Functions - and thirty-one leave that cell blank. The rows
+  are in controller-number order, so sections cannot be contiguous, and carrying a label downward
+  files Expression, Aux 1 and Aux 2 under "Master" and Timbre, Fader 4 and Fader 1 under
+  "Pedals". Both are contradicted by the manual's own body. **The second reading confirmed the
+  shape rather than the meaning**: six labels and thirty-one blanks, each in a cell of its own
+  with a rule between every pair of rows and the zebra stripe running through, read off an
+  eight-times render. So the blanks are blanks and not merged cells, and the groups below are
+  the body's.
+
+  THE FOUR DIRECTION WORDS. `Always` and `Never` are plain. `n/a` appears only against the nine
+  Faders and marks a control with nothing on this panel to send it. `Not linked` is settled by
+  the MIDI Out Filter: "Auto When AstroLab and Analog Lab are Linked, the MIDI Out Filter
+  switches to Keyboard Only" (manual p. 28), where "Keyboard only Only the notes played on the
+  AstroLab keyboard are transmitted via MIDI Out" (manual p. 28). So a `Not linked` row is sent
+  whenever the instrument is not mirroring its software, and those seven are `both`. The counts:
+  13 both, 23 receives, and one row that is neither.
+
+  "MASTER VOLUME 7 NEVER NEVER" (manual p. 96) IS THE ROW THAT IS NEITHER, and the only one in
+  the table whose Receiving cell is not Always. It is not below, because the format's three
+  directions cannot express a control the maker publishes and then says travels in no direction.
+  Recorded here so the absence is a decision and not an oversight.
+
+  FOUR CONTROLLER NUMBERS ARE STATED TWICE, WHICH IS WORTH HAVING. The Macro knobs' row values -
+  Timbre 71, Brightness 74, Time 76, Movement 77 - are given again in prose and in a different
+  order: "The MIDI Continuous Controller (CC) messages sent by the Macro knobs are, left to
+  right: 74, 71, 76, and 77" (manual p. 40), against "The four Macro knobs are Brightness,
+  Timbre, Time, and Movement" (manual p. 40). The two agree, and they are what settles that
+  Timbre is a Macro rather than the pedal the Section column would make of it.
+
+  NINE ROWS NAME SOMETHING THE MANUAL NEVER EXPLAINS. Fader 1 to Fader 9 take CC 72, 73, 75, 79,
+  80, 81, 82, 83 and 85, each `n/a` sending and `Always` receiving, and **the word "Fader"
+  appears nowhere else in the manual.** Their numbering does not follow their controller numbers
+  either - Fader 4 is 72 and Fader 1 is 73 - and 78 and 84 are skipped between them. They are
+  below as published, ungrouped with anything else, and what they are is left unrecorded.
+
+  TWO PARTS, EACH ON A CHANNEL OF ITS OWN. "Part 1 Input Channel After clicking the Navigation
+  Wheel, you can set the MIDI receive channel by rotating the wheel" and "Part 2 Input Channel
+  Same as above, but for Part 2" (manual p. 27), with "The two Parts in AstroLab can conveniently
+  listen to separate channels" (manual p. 27) and "Selecting All makes AstroLab listen to all
+  MIDI channels" (manual p. 27). What a Part answers to is given from the other side: "There are
+  also switches that let you decide if Part 1 will be affected by Pitch Bend, Mod Wheel,
+  Aftertouch, Sustain and Expression Pedal or not" (manual p. 35).
+
+  **THE MANUAL CONTRADICTS ITSELF ABOUT THE TRANSMIT CHANNEL, SO NEITHER STATEMENT IS RECORDED.**
+  Page 27 says "The Main MIDI Channel is the channel used by the AstroLab keyboard to send data,
+  and it is fixed and cannot be changed" (manual p. 27). Page 28 says "Keyboard Channel Here you
+  can set the MIDI Output channel of the AstroLab" (manual p. 28), describing "what MIDI channel
+  your keyboard transmits notes and data on" (manual p. 28). Page 35 sides with the second: "Part
+  1: Here you can set the Low Note and High Note limits, MIDI input and output channels, and
+  Octave and Semitone Transpose" (manual p. 35). Two statements against one, one page apart, and
+  nothing here turns on it - `channels` below records the receive range, which all three agree
+  on.
+
+  POLYPHONY IS A PROPERTY OF THE LOADED ENGINE AND NO SINGLE NUMBER EXISTS. The manual publishes
+  a table of maximum voices per instrument running from 1 to 48 across some forty engines, under
+  "AstroLab manages polyphony to ensure that you will never hear audio dropouts" (manual p. 37).
+  **No figure is recorded**, because the format holds one number and this instrument has forty.
+  What is recorded is that the two Parts do not share: "These are voices per part, meaning that
+  if you load, for example, a Multi consisting of a Mini V and Prophet-5 V, you can play 16
+  voices on each part" (manual p. 38).
+
+  CLOCK AND TRANSPORT COME IN AND DO NOT GO OUT. "Internal: AstroLab uses its own master clock",
+  "USB: AstroLab syncs to incoming MIDI clock over USB" and "MIDI: AstroLab syncs to incoming
+  MIDI clock over the 5-pin MIDI input" (manual p. 62), with a precedence rule - "If multiple
+  clocks are detected, AstroLab chooses USB above 5-pin MIDI" (manual p. 62) - and transport in
+  the same list: "If a MIDI stop message or clock interruption is detected, the MIDI looper (if
+  playing) pauses" and "If a MIDI start message is detected, playback resumes synced to the
+  external clock" (manual p. 62). **No setting anywhere sends either**, and the MIDI Out Filter's
+  widest position is "All Notes Played notes, arpeggiated/sequenced notes, chords, and scale
+  quantized notes (processed MIDI) are transmitted" (manual p. 28), which is notes and nothing
+  else.
+
+  PROGRAM CHANGE IS IN THE RELEASE NOTES AND NOWHERE ELSE. The word "program" appears once in
+  the manual's 115 pages and not in that sense; the implementation table has no row for it. Both
+  directions come from the firmware history: "AstroLab can now send Program change to External
+  devices" under V 1.5.0, and "Program change no longer reacts to all MIDI channels" under
+  V 1.3.5 (release notes 1.7.0). **No preset count is recorded**: the manual says "Over 1,800
+  built-in sounds across all types of synths and keyboards" (manual p. 11), and "over" is not a
+  number of addressable locations.
+
+  NOT RECORDED, EACH FOR A STATED REASON. **No mode**, because Arturia publishes no
+  implementation chart and no document names a mode. **No system exclusive and no NRPN**, because
+  neither term appears in any document held here - the table is controller changes only, and it
+  leaves 0 and 32 alone along with 96 to 101. **No note range**, because this definition covers
+  two instruments with different keybeds and the manual gives neither as a span of note numbers.
+  **No pitch bend range**, because a Part may be switched to answer to pitch bend or not (manual
+  p. 35) and no document says how far it reaches. And nothing from the CheatSheet, which carries
+  no controller number, no channel and no MIDI setting at all.
+
+sources:
+  manual:
+    kind: manual
+    title: AstroLab User Manual
+    edition: "1.5.1"
+    dated: 2025-12-04
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/download/products/astrolab-61/manual/astrolab_Manual_1_5_1_EN.pdf"
+    sha256: d5cf5957005f0f8ac41a821f1666f5e9643c2229526b51c03a59bc9cb07d6009
+    retrieved: 2026-10-03
+    # 115 pages, counted with pypdf and with PyMuPDF, which agree - `file` gives no count at
+    # all. **THE PRINTED NUMBER IS SIX LOWER THAN THE FILE'S PAGE**: the front matter is
+    # unnumbered and the folio alternates sides, so it is only ever the last line on an odd
+    # file page - file 97 prints 91, file 103 prints 97. The implementation table is printed
+    # pages 96 and 97, and six is what a printed number needs adding to it.
+    page_offset: 6
+  release_notes:
+    kind: release_notes
+    title: AstroLab 61 firmware release notes, through 1.7.0
+    edition: "1.7.0"
+    dated: 2026-02-26
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/content/resources/release_notes?resource_id=27493"
+    sha256: 6a06e18e4b553fa892de71afa3416f583c448caca72c8f11b15e558998a18c53
+    retrieved: 2026-10-03
+    paginated: false
+    # NOT ON ANY PAGE: Arturia shows these only when the version number beside a firmware
+    # download is clicked, and serves them as JSON from its own API. The digest is of the text
+    # rendering, which `Notes/4073_render_release_notes.py` rebuilds from the saved JSON byte
+    # for byte. Cumulative from "First release of AstroLab" at V 1.0.2 to V 1.7.0, and the only
+    # document here that says anything about program change.
+  release_notes_88:
+    kind: release_notes
+    title: AstroLab 88 firmware release notes, through 1.7.0
+    edition: "1.7.0"
+    dated: 2026-02-26
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/content/resources/release_notes?resource_id=27490"
+    sha256: 35688e5d921647af367aa8c97a5579237c3de664dd4f680f68cbf42dc890f605
+    retrieved: 2026-10-03
+    paginated: false
+    # FETCHED TO PROVE THE TWO MODELS THIS COVERS ARE ON ONE FIRMWARE LINE, and they are: the
+    # 88's list begins at V 1.5.0, the firmware the 61 was already running, and its 1.6.0 and
+    # 1.7.0 entries are the 61's word for word.
+  release_notes_37:
+    kind: release_notes
+    title: AstroLab 37 firmware release notes, through 1.7.0
+    edition: "1.7.0"
+    dated: 2026-02-26
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/content/resources/release_notes?resource_id=27511"
+    sha256: aff40562e459de20a96e6edbc523832a30af73b55a7f30aadd62243c3ca9fd09
+    retrieved: 2026-10-03
+    paginated: false
+    # FETCHED FOR THE OPPOSITE REASON AND CITED FOR A SCOPE DECISION: whether the AstroLab 37
+    # belongs in this definition. It does not. Its list starts at V 1.5.9, a version neither of
+    # the others has, and carries an entry about its own preset ranges that theirs do not.
+  resources_page:
+    kind: download_page
+    title: Downloads - AstroLab
+    landing: "https://www.arturia.com/products/hardware-synths/"
+    url: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    sha256: f1cec8803b44c8dd4add3642bdc4138cd7eee181ada4f3334c686b4bbe74f22a
+    retrieved: 2026-10-03
+    paginated: false
+    # ONE PAGE FOR THREE PRODUCTS, and its own data carries far more than it shows: 41 download
+    # records with a product, a type, a version, a size, a date and a `has_release_notes` flag.
+    # That is where the firmware version comes from, where the 88 was found to be served the
+    # 61's manual, and where the release notes' ids were got. The digest is of the text
+    # rendering; `Tools/save_page.py` rebuilds it from the saved HTML byte for byte. Cited also
+    # for an absence: Arturia publishes no MIDI implementation document for this instrument.
+  cheatsheet:
+    kind: manual
+    title: AstroLab 61 CheatSheet
+    edition: 1.6.0-cheatsheet
+    dated: 2024-04-08
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/download/products/astrolab-61/manual/astrolab_Manual_1_6_0-cheatsheet_EN.pdf"
+    sha256: f9651f351ad21b91d65693c9b6ceaaaf2d21937347e3b4413c0945e7fef95c7b
+    retrieved: 2026-10-03
+    page_offset: 0
+    # **ITS VERSION STRING READS NEWER THAN THE MANUAL'S AND THE DOCUMENT IS TWENTY MONTHS
+    # OLDER.** Arturia dates it 2024-04-08 and the file was created 2024-04-05, the same week as
+    # the 1.0.0 manual and three days after firmware 1.1.6.0 - while firmware 1.6.0 did not
+    # exist until 2025-11-19. So the `1.6.0` in its name cannot be that firmware. One landscape
+    # page of panel shortcuts, **carrying no controller number, no channel and no MIDI setting
+    # at all**, which is the only thing it is cited for. It prints no page number, so a locator
+    # means the file's page.
+
+midi:
+  # "Part 1 Input Channel After clicking the Navigation Wheel, you can set the MIDI receive
+  # channel by rotating the wheel" (manual p. 27), with "Selecting All makes AstroLab listen to
+  # all MIDI channels" (manual p. 27). No factory default is published for either Part.
+  channels: [1, 16]
+  # RECEIVED AND NOT SENT. "USB: AstroLab syncs to incoming MIDI clock over USB" and "MIDI:
+  # AstroLab syncs to incoming MIDI clock over the 5-pin MIDI input" (manual p. 62). Nothing
+  # anywhere sends a clock, and the MIDI Out Filter's widest setting transmits notes only.
+  clock: receives
+  # RECEIVED AND NOT SENT, and stated as behaviour rather than as a chart row: "If a MIDI stop
+  # message or clock interruption is detected, the MIDI looper (if playing) pauses" and "If a
+  # MIDI start message is detected, playback resumes synced to the external clock" (manual
+  # p. 62).
+  transport: receives
+  program_change:
+    # THE MANUAL IS SILENT AND THE FIRMWARE HISTORY IS NOT - see the source account. "Program
+    # change no longer reacts to all MIDI channels" under V 1.3.5 (release notes 1.7.0).
+    receives: true
+    # "AstroLab can now send Program change to External devices" under V 1.5.0 (release notes
+    # 1.7.0), so a Muse-like asymmetry does not apply: this one gained sending later than
+    # receiving.
+    sends: true
+    # NO COUNT. The nearest figure is "Over 1,800 built-in sounds across all types of synths and
+    # keyboards" (manual p. 11), and "over" is not a number of addressable locations.
+
+voice:
+  addressing: pitches
+  # VOICES PER PART AND NOT ONE POOL: "These are voices per part, meaning that if you load, for
+  # example, a Multi consisting of a Mini V and Prophet-5 V, you can play 16 voices on each
+  # part" (manual p. 38). How many each Part gets is the loaded engine's, from 1 to 48 across
+  # some forty of them, so no `polyphony` is recorded - see the source account.
+  polyphony_shared: false
+  velocity:
+    # "Keyboard Velocity Here you can set the overall velocity sensitivity of AstroLab's
+    # keyboard from Light to Medium to Heavy" (manual p. 28), and the Looper "records all MIDI
+    # notes with velocity as well as Pitch Bend, Modwheel, and Aftertouch" (manual p. 63).
+    note_on: both
+  # THE WORD IS NEVER QUALIFIED, AND POLYPHONIC AFTERTOUCH IS NAMED NOWHERE in any document held
+  # here. "Semi-weighted keys with velocity and aftertouch" (manual p. 11), and the setting that
+  # shapes it speaks of one pressure: "The desired amount of pressure needed to trigger
+  # aftertouch is highly individual" (manual p. 28). `channel` is the ordinary reading of an
+  # unqualified word rather than a stated fact, and is recorded as such.
+  aftertouch: channel
+  pitch_bend:
+    # A PART ANSWERS TO IT OR DOES NOT, WHICH IS THE ONLY THING PUBLISHED: "There are also
+    # switches that let you decide if Part 1 will be affected by Pitch Bend, Mod Wheel,
+    # Aftertouch, Sustain and Expression Pedal or not" (manual p. 35). No range is given
+    # anywhere, so no figure is recorded.
+    programmable: true
+
+parts:
+  part:
+    label: Part
+    # "Instrument section with two selectable parts, allowing you to split or layer different
+    # instruments" (manual p. 11), with the default split at C3 (manual p. 36).
+    count: 2
+    # A CHANNEL EACH, SET BY THE PLAYER: "The two Parts in AstroLab can conveniently listen to
+    # separate channels" (manual p. 27), and each Part's own page sets "MIDI input and output
+    # channels" (manual p. 35). Neither derives from the other, so there is no offset.
+    channel: assigned
+    addressing: pitches
+    # NOTES AND CONTROLLERS. "There are also switches that let you decide if Part 1 will be
+    # affected by Pitch Bend, Mod Wheel, Aftertouch, Sustain and Expression Pedal or not"
+    # (manual p. 35) - all of which are notes and controllers. **Program change is not listed**
+    # among them, and the manual says nothing about it at all, so it is left out rather than
+    # guessed at.
+    receives: [notes, controls]
+
+groups:
+  controllers: Controllers
+  pedals: Pedals
+  effects: Effects
+  macros: Macros
+  faders: Faders
+  functions: Functions
+
+controls:
+
+  # CONTROLLERS -----------------------------------------------
+  # the wheel beside the keyboard, which the table itself heads "MIDI"
+  mod_wheel:                 {label: Mod Wheel, cc: 1, group: controllers}
+
+  # PEDALS ----------------------------------------------------
+  # "Sustain Polarity", "Expression Polarity" and "Aux 1 / Aux 2: The two Aux sockets accept
+  # switching or continuous pedals" (manual p. 28)
+  expression:                {label: Expression, cc: 11, group: pedals}
+  aux_1:                     {label: Aux 1, cc: 12, group: pedals}
+  aux_2:                     {label: Aux 2, cc: 13, group: pedals}
+  sustain:                   {label: Sustain, cc: 64, group: pedals}
+
+  # EFFECTS ---------------------------------------------------
+  # "Two insert effects with 12 effect choices each" and "Dedicated Delays and Reverbs on sends"
+  # (manual p. 11); FX A carries the table's own "Effects" label
+  reverb:                    {label: Reverb, cc: 16, group: effects}
+  fx_b:                      {label: FX B, cc: 18, group: effects}
+  delay:                     {label: Delay, cc: 19, group: effects}
+  fx_a:                      {label: FX A, cc: 93, group: effects}
+
+  # MACROS ----------------------------------------------------
+  # "The MIDI Continuous Controller (CC) messages sent by the Macro knobs are, left to right:
+  # 74, 71, 76, and 77" (manual p. 40)
+  timbre:                    {label: Timbre, cc: 71, group: macros}
+  brightness:                {label: Brightness, cc: 74, group: macros}
+  time:                      {label: Time, cc: 76, group: macros}
+  movement:                  {label: Movement, cc: 77, group: macros}
+
+  # FADERS ----------------------------------------------------
+  # named nowhere but in this table - see the source account
+  fader_4:                   {label: Fader 4, cc: 72, direction: receives, group: faders}
+  fader_1:                   {label: Fader 1, cc: 73, direction: receives, group: faders}
+  fader_2:                   {label: Fader 2, cc: 75, direction: receives, group: faders}
+  fader_3:                   {label: Fader 3, cc: 79, direction: receives, group: faders}
+  fader_5:                   {label: Fader 5, cc: 80, direction: receives, group: faders}
+  fader_6:                   {label: Fader 6, cc: 81, direction: receives, group: faders}
+  fader_7:                   {label: Fader 7, cc: 82, direction: receives, group: faders}
+  fader_8:                   {label: Fader 8, cc: 83, direction: receives, group: faders}
+  fader_9:                   {label: Fader 9, cc: 85, direction: receives, group: faders}
+
+  # FUNCTIONS -------------------------------------------------
+  # the table's own "Functions" label, which it prints against the first of them
+  previous_preset:           {label: Previous Preset, cc: 102, direction: receives, group: functions}
+  next_preset:               {label: Next Preset, cc: 103, direction: receives, group: functions}
+  previous_song:             {label: Previous Song, cc: 104, direction: receives, group: functions}
+  next_song:                 {label: Next Song, cc: 105, direction: receives, group: functions}
+  arp_on_off:                {label: Arp On/Off, cc: 106, direction: receives, group: functions}
+  arp_hold:                  {label: Arp Hold, cc: 107, direction: receives, group: functions}
+  start_record:              {label: Start Record, cc: 108, direction: receives, group: functions}
+  play_stop:                 {label: Play / Stop, cc: 109, direction: receives, group: functions}
+  tap_tempo:                 {label: Tap Tempo, cc: 110, direction: receives, group: functions}
+  rotary_fast_on_off:        {label: Rotary Fast On/Off, cc: 111, direction: receives, group: functions}
+  fx_a_on_off:               {label: FX A On/Off, cc: 112, direction: receives, group: functions}
+  fx_b_on_off:               {label: FX B On/Off, cc: 113, direction: receives, group: functions}
+  delay_on_off:              {label: Delay On/Off, cc: 114, direction: receives, group: functions}
+  reverb_on_off:             {label: Reverb On/Off, cc: 115, direction: receives, group: functions}

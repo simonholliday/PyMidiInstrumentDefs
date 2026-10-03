@@ -126,6 +126,7 @@ class TestBundledCorpus:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
 			"akai/mpc_sample",
+			"arturia/astrolab",
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"behringer/model_d",
@@ -4399,3 +4400,146 @@ class TestMuse:
 		# The two rows whose direction prose states outright, for both pedals.
 		assert muse.controls["sustain_pedal"].cc == 64
 		assert muse.controls["expression"].cc == 11
+
+
+class TestAstroLab:
+
+	"""A Section column that cannot be carried down, and a row published as neither direction."""
+
+	def test_thirty_six_of_thirty_seven_published_rows (self) -> None:
+		"""The table gives 37; one is neither sent nor received and so is not a control."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		assert len(astrolab.controls) == 36
+		assert len(astrolab.groups) == 6
+
+		numbers = sorted(c.cc for c in astrolab.controls.values() if c.cc is not None)
+
+		assert numbers[0] == 1
+		assert numbers[-1] == 115
+
+		# CC 7, Master Volume, is published "Never" sending and "Never" receiving, which none of
+		# the format's three directions can say.
+		assert 7 not in numbers
+
+		assert all(c.group in astrolab.groups for c in astrolab.controls.values())
+
+	def test_the_groups_are_not_the_section_column (self) -> None:
+		"""Carrying the table's Section label down would file Timbre under Pedals."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		# The manual gives the Macro knobs as 74, 71, 76 and 77, which is what settles Timbre.
+		macros = {c.cc for c in astrolab.controls.values() if c.group == "macros"}
+
+		assert macros == {71, 74, 76, 77}
+
+		# The three pedal inputs the Section column would put under "Master", and Sustain.
+		pedals = {c.cc for c in astrolab.controls.values() if c.group == "pedals"}
+
+		assert pedals == {11, 12, 13, 64}
+
+		# "Effects" labels one row in the table and four belong to it.
+		effects = {c.cc for c in astrolab.controls.values() if c.group == "effects"}
+
+		assert effects == {16, 18, 19, 93}
+
+	def test_the_four_direction_words_become_two (self) -> None:
+		"""Always and Not linked travel both ways; Never and n/a are received only."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		both = [c for c in astrolab.controls.values()
+			if c.direction == pymidiinstrumentdefs.definition.BOTH]
+		receives = [c for c in astrolab.controls.values()
+			if c.direction == pymidiinstrumentdefs.definition.RECEIVES]
+
+		assert len(both) == 13
+		assert len(receives) == 23
+
+		# Nothing is transmit-only: every row's Receiving cell but the excluded one says Always.
+		assert not [c for c in astrolab.controls.values()
+			if c.direction == pymidiinstrumentdefs.definition.TRANSMITS]
+
+		# The Macros are "Not linked" sending, so they do travel out.
+		for name in ("timbre", "brightness", "time", "movement"):
+			assert astrolab.controls[name].direction == pymidiinstrumentdefs.definition.BOTH
+
+		# The Faders are "n/a" sending - nothing on this panel sends them.
+		assert all(c.direction == pymidiinstrumentdefs.definition.RECEIVES
+			for c in astrolab.controls.values() if c.group == "faders")
+
+	def test_nine_faders_the_manual_never_explains (self) -> None:
+		"""Named only inside the table, and numbered out of step with their controllers."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		faders = {c.label: c.cc for c in astrolab.controls.values() if c.group == "faders"}
+
+		assert len(faders) == 9
+		assert faders["Fader 4"] == 72
+		assert faders["Fader 1"] == 73
+		assert faders["Fader 9"] == 85
+
+	def test_two_parts_that_do_not_share_their_voices (self) -> None:
+		"""Voices are per part, and how many is the loaded engine's rather than the box's."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		assert set(astrolab.parts) == {"part"}
+
+		part = astrolab.parts["part"]
+
+		assert part.count == 2
+		assert part.channel == "assigned"
+		assert part.receives == ("notes", "controls")
+
+		assert astrolab.voice.polyphony_shared is False
+
+		# No single figure exists: the manual prints a voice count per instrument engine.
+		assert astrolab.voice.polyphony is None
+		assert part.polyphony is None
+
+		assert astrolab.voice.aftertouch == "channel"
+		assert astrolab.voice.pitch_bend is not None
+		assert astrolab.voice.pitch_bend.programmable is True
+		assert astrolab.voice.pitch_bend.semitones is None
+
+	def test_clock_and_transport_come_in_and_do_not_go_out (self) -> None:
+		"""Sync is a received thing here; the MIDI Out Filter's widest setting is notes only."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		assert astrolab.midi.clock == "receives"
+		assert astrolab.midi.transport == "receives"
+		assert astrolab.midi.channels == (1, 16)
+
+		# No chart, so no mode; neither sysex nor NRPN is named in any document held.
+		assert astrolab.midi.mode is None
+		assert astrolab.midi.sysex is None
+		assert astrolab.midi.nrpn is None
+
+	def test_program_change_comes_from_the_release_notes (self) -> None:
+		"""The manual never mentions it; the firmware history gives both directions."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		assert astrolab.midi.program_change is not None
+		assert astrolab.midi.program_change.receives is True
+		assert astrolab.midi.program_change.sends is True
+
+		# "Over 1,800" is not a count of addressable locations.
+		assert astrolab.midi.program_change.presets is None
+
+	def test_the_documents_and_what_each_is_for (self) -> None:
+		"""One manual for two models, three sets of release notes, a page and a cheatsheet."""
+		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		assert set(astrolab.sources) == {"manual", "release_notes", "release_notes_88",
+			"release_notes_37", "resources_page", "cheatsheet"}
+
+		# The firmware is two releases ahead of the manual that carries the map.
+		assert astrolab.model.firmware == "1.7.0"
+		assert astrolab.sources["manual"].edition == "1.5.1"
+
+		# The folio is six lower than the file's page, which no other source here needs.
+		assert astrolab.sources["manual"].page_offset == 6
+
+		# The cheatsheet's version string reads newer than the manual's and is twenty months
+		# older, which is why its date is recorded.
+		assert astrolab.sources["cheatsheet"].edition == "1.6.0-cheatsheet"
+		assert astrolab.sources["cheatsheet"].dated == "2024-04-08"

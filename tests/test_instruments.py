@@ -156,6 +156,7 @@ class TestBundledCorpus:
 			"moog/subharmonicon",
 			"moog/subsequent_37",
 			"novation/bass_station_ii",
+			"novation/peak",
 			"oberheim/teo_5",
 			"pwm/malevolent",
 			"roland/d_50",
@@ -3732,3 +3733,245 @@ class TestElectribe:
 
 		# Only the owner's manual's chart gives a mode, and the implementation never does.
 		assert et.midi.mode == 3
+
+
+class TestPeak:
+
+	"""The largest definition here, built from two documents that describe two firmwares."""
+
+	def test_two_hundred_and_forty_six_controls_in_the_table_s_own_sections (self) -> None:
+		"""230 rows of the manual and 19 of the addendum, less the three that are not controls."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert len(peak.controls) == 246
+		assert len(peak.groups) == 10
+
+		# The manual's own section headings, in the order it prints them, plus the two the
+		# table gives no heading of its own.
+		assert list(peak.groups) == [
+			"voice", "oscillators", "mixer", "filter", "envelopes", "lfos", "effects",
+			"arp", "mod_matrix", "settings"]
+
+		# One setting governs the whole table, so no control carries a direction.
+		assert all(c.direction == pymidiinstrumentdefs.definition.BOTH
+			for c in peak.controls.values())
+
+	def test_nrpn_is_the_main_road_and_the_high_half_is_the_mod_matrix_slot (self) -> None:
+		"""`1:0` to `16:3` is sixteen slots of four, recorded as MSB x 128 + LSB."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		addressed = [c for c in peak.controls.values() if c.nrpn is not None and c.cc is None]
+
+		assert len(addressed) == 172
+		assert peak.midi.nrpn == "supported"
+
+		# Slot 1 and slot 16, by the two halves the manual prints.
+		assert peak.controls["mod_matrix_1_source1"].nrpn == 1 * 128 + 0
+		assert peak.controls["mod_matrix_16_destination"].nrpn == 16 * 128 + 3
+
+		slots = [c for c in peak.controls.values() if c.group == "mod_matrix"]
+
+		# Sixteen slots of four, and the one selector that chooses between them.
+		assert len(slots) == 16 * 4 + 1
+
+	def test_every_control_change_pair_is_n_and_n_plus_32 (self) -> None:
+		"""The check that separates a coarse-and-fine pair from an NRPN's two halves."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		pairs = [c for c in peak.controls.values() if c.lsb is not None]
+
+		assert len(pairs) == 18
+
+		# A pair always has both halves, which is what makes it a pair.
+		assert all(c.cc is not None and c.lsb == c.cc + 32 for c in pairs)
+
+		# And a fine half is never also a control change in its own right.
+		coarse = {c.cc for c in peak.controls.values() if c.cc is not None}
+
+		assert not coarse & {c.lsb for c in pairs}
+
+		# Each such parameter runs past 127, which is why it has a fine half at all.
+		assert all(c.range[1] > 127 for c in pairs)
+
+	def test_thirty_three_controls_carry_no_default_because_the_documents_disagree (self) -> None:
+		"""A default is recorded only where every statement the two documents make agrees."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		without = sorted(name for name, c in peak.controls.items() if c.default is None)
+
+		assert len(without) == 33
+
+		# Two are refused by the manual's own Init Patch table rather than by the arithmetic
+		# of the MIDI list's two halves: it gives 2 where the list gives 0, and 127 where the
+		# list gives 128.
+		assert "amp_envelope_attack" in without
+		assert "lfo_1_rate" in without
+
+		# `0 (255)` cannot be read as a wire value and its own display on a 0-255 range.
+		assert "filter_frequency" in without
+
+		# The one row that prints a word where a number belongs.
+		assert "arp_clock_sync_rate" in without
+
+		# And four refused by a range the body states that the MIDI row's own bracket does
+		# not: a pan that would start hard left, an arpeggiator that would start on two
+		# octaves, and two effects whose three presets the body numbers 1 to 3.
+		for name in ("pan_posn", "arp_clock_octave", "chorus_type", "reverb_type"):
+			assert name in without, f"{name} carries a default the documents contradict"
+
+		# The reverb is the one the manual disproves twice: its three presets set Reverb Size
+		# to 0, 64 or 127 "respectively", and Reverb Size's own default is 64 - preset 2,
+		# where a Reverb Type of 2 on a range of 0-2 would be preset 3.
+		assert peak.controls["reverb_size"].default == 64
+
+		# Where the documents do agree, the default stands: Arp/Clock Rhythm's 0 is Rhythm 1
+		# on the body's range of 1 to 33, which is what the Init Patch table says.
+		assert peak.controls["arp_clock_rhythm"].default == 0
+		assert peak.controls["arp_clock_swing"].default == 50
+
+	def test_the_summit_s_parameters_are_not_here (self) -> None:
+		"""The addendum covers both synths and marks which features belong to which."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		numbers = {c.nrpn for c in peak.controls.values() if c.nrpn is not None}
+
+		# `Atouch Scale`, NRPN 64:3, is in the shared MIDI parameters list and is under the
+		# heading "Update Features Exclusive to Summit".
+		assert 64 * 128 + 3 not in numbers
+
+		# The three FM NRPNs named only in a bug-fix list, beside fixes for voices 9-16.
+		assert not {25 * 128 + 13, 25 * 128 + 17, 25 * 128 + 21} & numbers
+
+		# What the addendum does bring to the Peak, from the same list.
+		assert peak.controls["patch_cue"].nrpn == 64 * 128 + 0
+		assert peak.controls["select_tuning_table"].nrpn == 25 * 128 + 6
+
+	def test_a_number_reserved_before_the_parameter_existed (self) -> None:
+		"""The manual prints the NRPN and an empty range; the addendum fills it in."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		hpf = peak.controls["osc_common_noise_hpf"]
+
+		assert hpf.nrpn == 12
+		assert hpf.range == (0, 127)
+
+		# Its sibling, which firmware 1.2 did have, for comparison.
+		assert peak.controls["osc_common_noise_lpf"].nrpn == 11
+		assert peak.controls["osc_common_noise_lpf"].default == 127
+
+	def test_one_parameter_is_renamed_rather_than_added (self) -> None:
+		"""NRPN 0:5 is Voice Unison Spread in the manual and Spread in the addendum."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert "voice_unison_spread" not in peak.controls
+		assert peak.controls["spread"].nrpn == 5
+		assert peak.controls["spread"].label == "Spread"
+
+		# Nothing answers to a number twice.
+		for field in ("cc", "nrpn"):
+			used = [getattr(c, field) for c in peak.controls.values()
+				if getattr(c, field) is not None]
+
+			assert len(used) == len(set(used)), f"two controls share a {field}"
+
+	def test_nothing_is_stepped_because_nothing_is_numbered (self) -> None:
+		"""The manual names the states of its selectors in prose and numbers none of them."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert not any(c.choices or c.values for c in peak.controls.values())
+
+		# The parameter that shows why: three settings over a range of 0-2, where the MIDI
+		# list's default and the Init Patch table's disagree about which is first.
+		assert peak.controls["lfo_1_range"].range == (0, 2)
+
+		# And the two LFOs the manual calls identical are not addressed alike.
+		assert peak.controls["lfo_1_range"].nrpn == 68
+		assert peak.controls["lfo_1_range"].cc is None
+		assert peak.controls["lfo_2_range"].cc == 83
+		assert peak.controls["lfo_2_range"].nrpn is None
+
+	def test_three_ranges_do_not_fit_the_lists_they_select_from (self) -> None:
+		"""Carried as printed, because the range is what the row gives and the list has none."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		# 17 values for a table of 23 sources, where the 37 destinations do fit 0-36.
+		for slot in (1, 8, 16):
+			assert peak.controls[f"mod_matrix_{slot}_source1"].range == (0, 16)
+			assert peak.controls[f"mod_matrix_{slot}_source2"].range == (0, 16)
+			assert peak.controls[f"mod_matrix_{slot}_destination"].range == (0, 36)
+
+		# 19 values for a table of 16 divisions - the arpeggiator's range, which has 19.
+		assert peak.controls["delay_sync_time"].range == (0, 18)
+		assert peak.controls["arp_clock_sync_rate"].range == (0, 18)
+
+	def test_the_fx_modulation_matrix_reaches_no_number_at_all (self) -> None:
+		"""Sixteen main matrix slots are numbered in full and the four FX slots are not."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert not [name for name in peak.controls if name.startswith("fx_mod")]
+
+		# Nor does anything in the Settings menu, bar the tuning table's selection.
+		for absent in ("midi_channel", "midichan", "local", "bank_patch", "transpose",
+				"velshape", "arp_clock_source", "arp_midi"):
+			assert absent not in peak.controls, f"{absent} is numbered nowhere in either document"
+
+		assert peak.controls["select_tuning_table"].range == (0, 16)
+
+	def test_the_tempo_is_the_one_row_no_message_reaches (self) -> None:
+		"""`Arp/Clock Rate` is printed with a control number of NA:NA."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert "arp_clock_rate" not in peak.controls
+
+		# Its neighbours in the same section are all addressable.
+		assert peak.controls["arp_clock_gate"].cc == 116
+		assert peak.controls["arp_clock_swing"].nrpn == 120
+
+	def test_eight_voices_and_a_bend_range_per_oscillator (self) -> None:
+		"""Three oscillators, three bend ranges, and no keyboard of its own."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert peak.voice.polyphony == 8
+		assert peak.voice.aftertouch == "poly"
+
+		# Voicing is a setting saved with the Patch: three mono modes and two poly ones.
+		assert peak.voice.voicing_modes == (1, 8)
+		assert peak.controls["voice_mode"].nrpn == 2
+		assert peak.controls["voice_mode"].range == (0, 4)
+
+		assert peak.voice.pitch_bend is not None
+		assert peak.voice.pitch_bend.semitones == 12
+		assert peak.voice.pitch_bend.programmable is True
+
+		for which in (1, 2, 3):
+			bend = peak.controls[f"oscillator_{which}_bend_range"]
+
+			assert bend.range == (40, 88), f"oscillator {which} bends over the wrong range"
+			assert bend.default == 76, f"oscillator {which} does not start at +12"
+
+		# It has no keyboard, so velocity and aftertouch are received and never sent.
+		assert peak.voice.velocity is not None
+		assert peak.voice.velocity.note_on == "received"
+		assert peak.voice.note_range is None
+
+	def test_two_documents_two_firmwares_and_the_later_one_is_recorded (self) -> None:
+		"""The manual is for v1.2 and the addendum for 2.0 and 2.1."""
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		assert peak.model.firmware == "2.1"
+		assert set(peak.sources) == {"manual", "addendum", "download_page"}
+
+		assert peak.sources["manual"].edition == "for firmware v1.2"
+		assert peak.sources["addendum"].edition == "V1, for firmware updates 2.0 and 2.1"
+		assert peak.sources["download_page"].paginated is False
+
+		assert peak.midi.channels == (1, 16)
+		assert peak.midi.clock == "receives"
+		assert peak.midi.transport is None
+		assert peak.midi.mode is None
+		assert peak.midi.sysex is True
+
+		assert peak.midi.program_change is not None
+		assert peak.midi.program_change.presets == 512
+		assert peak.midi.program_change.receives is True
+		assert peak.midi.program_change.sends is True

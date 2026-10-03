@@ -1,0 +1,561 @@
+# THE MAKER'S DEFAULT COLUMN DOES NOT AGREE WITH ITSELF, AND 33 OF THE 246 CONTROLS BELOW
+# CARRY NO DEFAULT BECAUSE OF IT. The MIDI parameters list prints up to two numbers per row -
+# `64 (0)` - and the second is the first as the display shows it, which the row's own Range
+# column gives the arithmetic for: a range of `0-127 (-64 to +63)` says the display is the wire
+# value less 64, so `64 (0)` checks out and `0 (60)` cannot. **Nothing in either document
+# explains either column**, and these are the four ways the rule found a row the manual does
+# not settle:
+#
+#   26 rows where the two halves cannot both be right, by the row's own range;
+#    2 where the manual's Init Patch table (pp. 38-39) gives a third number again;
+#    4 where the body states a range shifted from the MIDI one and the default then lands
+#      somewhere the document contradicts - a pan that would default to hard left where the
+#      screen beside it reads "+0", an arpeggiator that would start on two octaves where the
+#      Init Patch says one, and two effects whose three presets the body numbers 1 to 3;
+#    1 that prints no wire value at all, the Arp/Clock Sync Rate's "16th".
+#
+# A default is recorded only where every statement the two documents make about it agrees.
+# `Notes/4240_write_controls.py` applies that rule and names each of the 33 refusals with the
+# arithmetic that refused it. **THE REVERB IS THE ONE THE MANUAL DISPROVES TWICE**: its three
+# presets "set the RevSize parameter (see page 32) to values of 0, 64 or 127 respectively"
+# (manual p. 31), and `Reverb Size`'s own default is 64 - which is preset 2, where the Default
+# Value column's 2 on a range of 0-2 would be preset 3.
+#
+# THIS DEFINITION IS BUILT FROM TWO DOCUMENTS DESCRIBING TWO FIRMWARES, and it targets the
+# later. The manual is "applicable to Peak synthesisers with v1.2 firmware" (manual p. 4) and
+# the addendum is "For Firmware Updates 2.0 and 2.1" (addendum p. 1). So `1.2` in the manual's
+# file name is the instrument's firmware and not the manual's edition, which is worth saying
+# because the sibling Bass Station II's guide numbers itself and not the synth.
+#
+# THREE THINGS IN THE ADDENDUM ARE THE SUMMIT'S AND ARE NOT HERE. Its last pages cover both
+# synths and mark what belongs to which, under "Update Features Exclusive to Peak" (p. 12) and
+# "Update Features Exclusive to Summit" (p. 14). Aftertouch scaling is under the second
+# heading, so `Atouch Scale` - NRPN 64:3, printed in the shared MIDI parameters list on p. 18 -
+# is left out: the Peak has no keyboard to scale. And three FM NRPNs, 25:13, 25:17 and 25:21,
+# are named only in a bug-fix list beside fixes for "voices 9-16", which the Peak does not
+# have; they address an "FM ... Manual Amount" that appears nowhere in the Peak's own manual,
+# whose only FM is a modulation matrix destination. A number in a document two instruments
+# share is not this instrument's number until the document says so.
+#
+# NO CONTROL HERE HAS `choices`, ALTHOUGH DOZENS OF THEM ARE SELECTORS. The manual names the
+# states of its stepped parameters in prose and numbers none of them, and the one place the
+# order of a published list could be checked against something, it fails: the LFO Range button
+# "has three settings: High, Low and Sync" (manual p. 20) over a range of 0-2, which would put
+# High at 0 - but the MIDI list gives the default as 0 and the Init Patch table gives it as
+# Low. One of those is wrong and nothing says which. The three sync-rate tables (manual p. 37),
+# the wavetable list, and the modulation matrix's sources and destinations are all in the same
+# position: an ordered list with no number against any row.
+
+definition: 1
+
+model:
+  manufacturer: Novation
+  name: Peak
+  # The newest firmware any document here describes. The addendum is "For Firmware Updates 2.0
+  # and 2.1" (addendum p. 1), and its own MIDI parameters list adds or renames eighteen of this
+  # instrument's parameters, all of which are below. Novation delivers firmware through Novation
+  # Components, which serves nothing a fetch can read, so whether 2.1 is still the newest is not
+  # stated anywhere this reached. The
+  # instrument reports its own version in the Settings menu and the manual's example screen
+  # shows "Version 0221" (manual p. 34) - four digits whose format the manual never explains,
+  # and which cannot be the v1.2 its text claims. Checked 2026-10-03.
+  firmware: "2.1"
+
+source: >-
+  Peak user guide, 44 pages, for firmware v1.2, created 2019-08-07 by its own metadata, and the
+  "Summit and Peak User Guide Addendum Version 2.1", 18 pages, created 2022-07-27. Novation
+  publishes no programmer's reference and no separate MIDI implementation for this instrument,
+  unlike its Circuit, so these two documents are the whole of the published map.
+
+  BOTH END IN A MIDI PARAMETERS LIST and the two together are this definition: 230 rows over
+  the manual's pp. 40-43 and 19 more on the addendum's p. 18, each row giving the parameter,
+  whether it is addressed by control change, by a pair of control changes or by NRPN, the
+  number, the range and the default.
+
+  THE TABLE RUNS BOTH WAYS AND ONE SETTING GOVERNS THE WHOLE OF IT: "With the default CC/NRPN
+  setting of Rec+Trans, Peak's physical controls transmit their settings as MIDI CC or NRPN
+  data. The synth engine itself also responds to received MIDI CC/NRPN data with this setting"
+  (manual p. 35), the alternatives being Receive, Transmit and Disabled. So no control below
+  carries a direction of its own: they all go both ways or none of them does.
+
+  EIGHTEEN CONTROL CHANGES CARRY A FINE HALF, which the manual marks by writing "CC pair" in
+  the kind column and two numbers in the next, always n and n+32. Each such parameter runs 0 to
+  255 rather than 0 to 127, and none of the eighteen fine halves is also a control change in
+  its own right - both checked for every row, because this maker writes a two-number cell in
+  the same column for two different things.
+
+  THE SAME NOTATION MEANS SOMETHING ELSE ON AN NRPN ROW, where `0:14` and `25:6` are the two
+  halves of one parameter number rather than a pair of controllers. Each is recorded as MSB x
+  128 + LSB, the number that goes on the wire, so `0:14` is 14 and `25:6` is 3206. The two
+  meanings were separated by the check above: every control change pair is n and n+32, and no
+  NRPN row satisfies that.
+
+  THE MOD MATRIX IS SIXTEEN SLOTS OF FOUR PARAMETERS and uses the NRPN high half as the slot
+  number: slot 1 is `1:0` to `1:3` and slot 16 is `16:0` to `16:3`, which is 64 of the controls
+  below. The second, later-numbered block at `25:x` and `64:x` is the addendum's, and the gap
+  between 16 and 25 is not explained.
+
+  TWO ROWS ARE NOT CONTROLS AND ARE NOT BELOW. `Arp/Clock Rate` is the only row in either
+  document whose number reads `NA:NA`, so the tempo - "The range is 40 to 240 BPM" (manual p.
+  30) - is reachable by no message. And the addendum's `Atouch Scale` is the Summit's, by that
+  document's own heading.
+
+  ONE PARAMETER IS RENAMED RATHER THAN ADDED. NRPN 0:5 is "Voice Unison Spread" in the manual
+  and "Spread" in the addendum, which says so itself: "The Voice panning setting 'Spread'
+  (formerly known as 'UniSpread') has broken out into four unique Spread Modes" (addendum p.
+  3). It is one control under the later name.
+
+  AND ONE NUMBER WAS RESERVED BEFORE THE PARAMETER EXISTED. The manual gives `Osc Common Noise
+  HPF` the NRPN 0:12 and a range printed as `0-0 ( to+)`, with a default of `(0)` - the one row
+  in 249 whose range and default are not values at all, because firmware 1.2 had no high-pass
+  noise filter. The addendum adds the filter, under its own heading "Update Features Exclusive
+  to Peak" (addendum p. 12): Novation "added a High-pass noise filter to the Osc menu to match
+  Summit" (addendum p. 13) with a "Range of adjustment: 0 to 127" (addendum p. 13). That range
+  is what is recorded against the
+  manual's number - **and joining the two is an inference, because the addendum never gives
+  Noise HPF a number.** It rests on the name being the same and on 0:12 being the row the
+  manual blanked. Nothing else in either document connects them.
+
+  THE GROUPS ARE THE TABLE'S OWN SECTION HEADINGS - Oscillators, Mixer, Filter, Envelopes,
+  LFOs, Effects, ARP and Mod Matrix. The ten rows the manual prints before its first heading
+  have none, and are grouped as Voice, which is the menu the manual puts them in; the
+  addendum's table has no headings at all, and each of its rows is placed by the menu the
+  addendum says it lives in.
+
+  THREE RANGES DO NOT FIT THE LISTS THEY SELECT FROM, which is worth knowing before trusting
+  any of them. Every `Mod Matrix n Source1` and `Source2` row gives the range as 0-16, which is
+  17 values, and the table that "lists the sources of modulation available to Inputs A and B
+  of each Slot in the Modulation Matrix" (manual p. 39) lists 23 of them - the range looks to
+  predate the CV, LFO 3, LFO 4 and bend-wheel sources that table now carries. The
+  destinations do fit: 37 listed against a range of 0-36. And `Delay Sync Time` is given 0-18,
+  19 values, where the Delay Sync Rate table (manual p. 37) lists 16 divisions; the Arp/Clock
+  Sync Rate table lists 19, and the three divisions the delay table lacks are exactly the
+  arpeggiator's three longest, so 0:94's range reads as copied from 0:116's.
+
+  THE PATCH COUNT IS STATED TWICE AND SPLIT DIFFERENTLY EACH TIME. The feature list claims the
+  instrument is "Pre-loaded with 286 brand new Patches" (manual p. 4) with "Memory for 226
+  additional User Patches" (manual p. 4), while the chapter on loading them says "Banks A and B
+  are pre-loaded with 256 great factory Patches" (manual p. 11) and that "Banks C and D are for
+  storing your own Patches" (manual p. 11). Both readings total 512, and only the second is
+  consistent with four banks of 128, so `presets` rests on it.
+
+  THE TWO LFOS ARE DESCRIBED AS IDENTICAL AND ARE NOT ADDRESSED ALIKE. "The parameters of LFO 1
+  and LFO 2 are immediately user-adjustable via a full set of top panel controls" (manual p.
+  20) and their menu pages are the same, but LFO 1 Range is NRPN 0:68 where LFO 2 Range is cc
+  83. Every other pair of LFO parameters matches in kind.
+
+  A GREAT DEAL IS NAMED AND NUMBERED NOWHERE, so the 246 below are not everything the
+  instrument has. Nothing reaches LFO 3 and LFO 4's waveform, rate or sync rate - the addendum
+  numbers only the phase, slew and fade time it adds to them - nor LFO 1 and 2's Fade Sync and
+  MonoTrig, nor the envelopes' Hold Time and Repeats, nor the delay's L/R Ratio. **All four
+  parameters of every FX Modulation Matrix slot are unnumbered** (manual pp. 33 and 40), where
+  the sixteen main matrix slots are numbered in full. And so is every item in the Settings
+  menu, which is where the MIDI channel, Local, the CC/NRPN switch and the Bank/Patch switch
+  live: the one exception is the tuning table's selection, which the addendum numbers at 25:6.
+
+  TWO CONTROLS BELOW ARE NUMBERED AND DESCRIBED NOWHERE, which is the opposite case. `Voice
+  Keyboard Octave`, NRPN 0:6 over 61-67 for -3 to +3, matches no parameter in the Voice menu,
+  the Settings menu or the Init Patch table. `Patch Genre`, NRPN 0:1 over 0-9, likewise: the
+  manual has a patch Category on save and never a Genre. `Patch Category`'s own range of 0-14
+  implies fifteen categories and the manual lists none of them.
+
+  NOT RECORDED: the note range, which no page states - this is a desktop module with no
+  keyboard, played with "the MIDI controller of your choice" (manual p. 4). Transport, which
+  nothing in either document mentions: not start, not stop, not continue, not song position.
+  Whether MIDI clock is sent, since both documents describe only the receiving side. The MIDI
+  mode, there being no implementation chart in either document. And the clock source itself,
+  which is a five-way setting - "Auto, Internal, Ext-Auto, MIDI, USB" (manual p. 30) - that the
+  MIDI parameters list gives no number for.
+
+  ONE FURTHER DOCUMENT COULD NOT BE READ. The downloads page offers "an online version of this
+  user guide and translations" at userguides.novationmusic.com, which answers a fetch with a
+  Cloudflare challenge rather than the guide. Whether it is a later edition than the 1.2 manual
+  is therefore not established, and nothing here rests on it.
+
+sources:
+  manual:
+    kind: manual
+    title: Peak user guide
+    edition: for firmware v1.2
+    dated: 2019-08-07
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/peak"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Peak%201.2%20Manual%20-%20English.pdf"
+    sha256: 9a09dbe821f3a32a96aa4d8a007cc0de58cb732dff74ac6b272cd9d5e6f09353
+    retrieved: 2026-10-03
+    # 44 pages, counted with pypdf and with PyMuPDF, which agree. `FILE GIVES NO PAGE COUNT AT
+    # ALL` for this one and says "0 page(s)" for the addendum, which is the third Novation in
+    # two instruments to defeat that tool's count. Every page prints its own number and it is
+    # the file's page index, so nothing is added.
+    page_offset: 0
+  addendum:
+    kind: manual
+    title: Summit and Peak User Guide Addendum Version 2.1
+    edition: V1, for firmware updates 2.0 and 2.1
+    dated: 2022-07-27
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/peak"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/downloads/summit_peak_2.1_firmware_update_addendum_v1_english_en.pdf"
+    sha256: c57ee8ff062dc2cae21d149e57b69865e8c0b0a7c5be1def6102774515c4c5cd
+    retrieved: 2026-10-03
+    # 18 pages, counted twice and agreed. Covers the Peak and the Summit together and marks
+    # which features belong to which, which is why it can be read for one of them.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: Peak Downloads
+    landing: "https://downloads.novationmusic.com/"
+    url: "https://downloads.novationmusic.com/novation/synthesisers/peak"
+    sha256: c14516cd7f7915534f39943af0e4b2aed31b315f9ae71e7cffe4596821a1cb53
+    retrieved: 2026-10-03
+    paginated: false
+    # Cited for what Novation publishes for this instrument - the user guide in 25 language
+    # versions, the 2.1 addendum, and two Windows USB drivers - and for what it does not: no
+    # programmer's reference and no separate MIDI implementation, unlike this maker's Circuit.
+
+midi:
+  # "MIDI protocol provides for 16 channels of data" and the setting that chooses one is
+  # MidiChan, "Default value: 1 ... Range of adjustment: 1 to 16" (manual p. 35). The maker
+  # states both the span and the default: "MidiChan lets you set Peak to receive and transmit
+  # MIDI data on a particular channel" (manual p. 35).
+  channels: [1, 16]
+  # RECEIVES, AND ONLY THAT IS ESTABLISHED. The clock source setting chooses between the
+  # internal clock and an external one "provided by an external device able to transmit MIDI
+  # clock" (manual p. 30), and five pages describe what the Peak does with an incoming clock.
+  # Nothing in either document says it sends one, so `both` would claim the half that was not
+  # established.
+  clock: receives
+  program_change:
+    # "This setting controls how Peak handles MIDI Program Change and Bank Change messages",
+    # defaulting to Rec+Tran, which "allows Peak to send a Program/Bank Change message whenever
+    # a new Patch is loaded, and also lets you load a Patch from an external MIDI controller"
+    # (manual p. 35). Both directions, and both can be switched off independently of the
+    # controllers, which have a setting of their own.
+    receives: true
+    sends: true
+    # "Peak can store 512 Patches in memory, arranged in four Banks of 128" (manual p. 11).
+    presets: 512
+  # 172 OF THE 246 CONTROLS BELOW ARE ADDRESSED BY NRPN AND BY NOTHING ELSE, which is more than
+  # twice the number the control changes reach. The maker still does not prefer either in
+  # words: the Settings menu names them together as one switch, "CC/NRPN", with one value for
+  # both (manual p. 35), so `supported` is as far as the documents go.
+  nrpn: supported
+  # Patches travel this way, in Banks or singly: "It is also possible to import Patch data into
+  # Peak via MIDI SysEx messages using applications such as SysEx Librarian (Mac) or MIDI-OX
+  # (Windows)" (manual p. 37), and the Backup page sends the current Patch, any Bank, all four,
+  # the Settings, or everything (manual p. 36). No byte layout is published.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "Peak is an eight-voice synth, and each voice has three oscillators" (manual p. 19), and in
+  # Poly mode "up to eight voices can sound simultaneously" (manual p. 29).
+  polyphony: 8
+  # EIGHT IS THE DEFAULT AND NOT THE ONLY ANSWER, because voicing is a setting here: Voice Mode
+  # has a "Range of adjustment: Mono, MonoLG, Mono2, Poly, Poly2" (manual p. 29), of which
+  # "three of the possible modes are mono and two are polyphonic" (manual p. 29). One voice or
+  # eight, then, which is what these two numbers are. The setting is `voice_mode` below, NRPN
+  # 0:2, and is saved with the Patch - so what an instrument is doing depends on which Patch is
+  # loaded, the same reason the Moogs here record a list rather than a number.
+  voicing_modes: [1, 8]
+  velocity:
+    # RECEIVED, AND THAT IS ALL THIS INSTRUMENT COULD DO - it has no keyboard. Velocity shapes
+    # the envelopes through three parameters of its own below, and a global VelShape "modifies
+    # the synth's response to the velocity curve set on the controlling keyboard" (manual
+    # p. 34).
+    note_on: received
+  # POLY, AND CHANNEL PRESSURE AS WELL, WHICH THIS FIELD HAS NO ROOM TO SAY. The maker covers
+  # both in one sentence: the modulation matrix's "AftTouch source will accept either channel
+  # aftertouch, which is the most common type of aftertouch, or can be used with polyphonic
+  # aftertouch, as generated by some controllers such as the Novation LaunchPad Pro" (manual
+  # p. 27), and with polyphonic aftertouch "the pressure applied during a note event is
+  # interpreted as a modulation event for this one note only". `poly` is recorded because it is
+  # the stronger of the two and is published; channel pressure is answered to as well.
+  aftertouch: poly
+  pitch_bend:
+    # TWELVE BY DEFAULT AND SETTABLE PER OSCILLATOR, which is unusual enough to say plainly:
+    # there is no one bend range here but three, `Oscillator 1/2/3 Bend Range` below, each an
+    # NRPN over 40-88 for -24 to +24. The manual's own figure for the span agrees: "A keyboard
+    # pitch wheel can vary the oscillator pitch by up to two octaves, up or down" (manual
+    # p. 18). Twelve is where all three start, by the Init Patch table (manual p. 38) and by
+    # the MIDI list's default of 76, which is +12 on that range.
+    semitones: 12
+    programmable: true
+
+groups:
+  voice: Voice
+  oscillators: Oscillators
+  mixer: Mixer
+  filter: Filter
+  envelopes: Envelopes
+  lfos: LFOs
+  effects: Effects
+  arp: ARP
+  mod_matrix: Mod Matrix
+  settings: Settings
+
+controls:
+  # VOICE -----------------------------------------------------------
+  patch_category:                   {label: Patch Category, nrpn: 0, range: [0, 14], default: 0, group: voice}
+  patch_genre:                      {label: Patch Genre, nrpn: 1, range: [0, 9], default: 0, group: voice}
+  voice_mode:                       {label: Voice Mode, nrpn: 2, range: [0, 4], default: 3, group: voice}
+  voice_unison:                     {label: Voice Unison, nrpn: 3, range: [0, 4], default: 0, group: voice}
+  voice_unison_detune:              {label: Voice Unison Detune, nrpn: 4, default: 25, group: voice}
+  voice_keyboard_octave:            {label: Voice Keyboard Octave, nrpn: 6, range: [61, 67], default: 64, group: voice}
+  glide_time:                       {label: Glide Time, cc: 5, group: voice}
+  voice_pre_glide:                  {label: Voice Pre-Glide, nrpn: 7, range: [52, 76], default: 64, group: voice}
+  glide_on:                         {label: Glide On, cc: 35, range: [0, 1], default: 0, group: voice}
+  pan_posn:                         {label: Pan Posn, nrpn: 51, group: voice}
+  pan_type:                         {label: Pan Type, nrpn: 52, range: [0, 3], default: 0, group: voice}
+  spread:                           {label: Spread, nrpn: 5, default: 0, group: voice}
+
+  # OSCILLATORS -----------------------------------------------------
+  osc_common_divergence:            {label: Osc Common Divergence, nrpn: 9, default: 0, group: oscillators}
+  osc_common_drift:                 {label: Osc Common Drift, nrpn: 10, default: 0, group: oscillators}
+  osc_common_noise_lpf:             {label: Osc Common Noise LPF, nrpn: 11, default: 127, group: oscillators}
+  osc_common_noise_hpf:             {label: Osc Common Noise HPF, nrpn: 12, default: 0, group: oscillators}
+  oscillator_1_range:               {label: Oscillator 1 Range, cc: 3, range: [63, 66], default: 64, group: oscillators}
+  oscillator_1_coarse:              {label: Oscillator 1 Coarse, cc: 14, lsb: 46, range: [0, 255], default: 128, group: oscillators}
+  oscillator_1_fine:                {label: Oscillator 1 Fine, cc: 15, lsb: 47, range: [28, 228], default: 128, group: oscillators}
+  oscillator_1_modenv2_pitch:       {label: Oscillator 1 ModEnv2 > Pitch, cc: 9, range: [1, 127], default: 64, group: oscillators}
+  oscillator_1_lfo2_pitch:          {label: Oscillator 1 LFO2 > Pitch, cc: 16, lsb: 48, range: [1, 255], default: 128, group: oscillators}
+  oscillator_1_wave:                {label: Oscillator 1 Wave, nrpn: 14, range: [0, 4], group: oscillators}
+  oscillator_1_wave_more:           {label: Oscillator 1 Wave More, nrpn: 15, range: [4, 63], group: oscillators}
+  oscillator_1_shape_source:        {label: Oscillator 1 Shape Source, nrpn: 16, range: [0, 2], default: 0, group: oscillators}
+  oscillator_1_manual_shape:        {label: Oscillator 1 Manual Shape, cc: 12, default: 64, group: oscillators}
+  oscillator_1_modenv1_shape:       {label: Oscillator 1 ModEnv1 > Shape, cc: 119, default: 64, group: oscillators}
+  oscillator_1_lfo1_shape:          {label: Oscillator 1 LFO1 > Shape, cc: 33, default: 64, group: oscillators}
+  oscillator_1_vsync:               {label: Oscillator 1 Vsync, cc: 34, default: 0, group: oscillators}
+  oscillator_1_saw_density:         {label: Oscillator 1 Saw Density, nrpn: 17, default: 0, group: oscillators}
+  oscillator_1_saw_density_detune:  {label: Oscillator 1 Saw Density Detune, nrpn: 18, default: 0, group: oscillators}
+  oscillator_1_fixed_note:          {label: Oscillator 1 Fixed Note, nrpn: 19, range: [0, 88], default: 0, group: oscillators}
+  oscillator_1_bend_range:          {label: Oscillator 1 Bend Range, nrpn: 20, range: [40, 88], default: 76, group: oscillators}
+  oscillator_2_range:               {label: Oscillator 2 Range, cc: 37, range: [63, 66], default: 64, group: oscillators}
+  oscillator_2_coarse:              {label: Oscillator 2 Coarse, cc: 17, lsb: 49, range: [0, 255], default: 64, group: oscillators}
+  oscillator_2_fine:                {label: Oscillator 2 Fine, cc: 18, lsb: 50, range: [28, 228], default: 64, group: oscillators}
+  oscillator_2_modenv2_pitch:       {label: Oscillator 2 ModEnv2 > Pitch, cc: 38, range: [1, 127], default: 64, group: oscillators}
+  oscillator_2_lfo2_pitch:          {label: Oscillator 2 LFO2>Pitch, cc: 19, lsb: 51, range: [1, 255], default: 64, group: oscillators}
+  oscillator_2_wave:                {label: Oscillator 2 Wave, nrpn: 23, range: [0, 4], group: oscillators}
+  oscillator_2_wave_more:           {label: Oscillator 2 Wave More, nrpn: 24, range: [4, 63], default: 4, group: oscillators}
+  oscillator_2_shape_source:        {label: Oscillator 2 Shape Source, nrpn: 25, range: [0, 2], default: 0, group: oscillators}
+  oscillator_2_manual_shape:        {label: Oscillator 2 Manual Shape, cc: 39, group: oscillators}
+  oscillator_2_modenv1_shape:       {label: Oscillator 2 ModEnv1 > Shape, cc: 40, default: 64, group: oscillators}
+  oscillator_2_lfo1_shape:          {label: Oscillator 2 LFO1 > Shape, cc: 41, default: 64, group: oscillators}
+  oscillator_2_vsync:               {label: Oscillator 2 Vsync, cc: 42, default: 0, group: oscillators}
+  oscillator_2_saw_density:         {label: Oscillator 2 Saw Density, nrpn: 26, default: 0, group: oscillators}
+  oscillator_2_saw_density_detune:  {label: Oscillator 2 Saw Density Detune, nrpn: 27, group: oscillators}
+  oscillator_2_fixed_note:          {label: Oscillator 2 Fixed Note, nrpn: 28, range: [0, 88], default: 0, group: oscillators}
+  oscillator_2_bend_range:          {label: Oscillator 2 Bend Range, nrpn: 29, range: [40, 88], default: 76, group: oscillators}
+  oscillator_3_range:               {label: Oscillator 3 Range, cc: 65, range: [63, 66], group: oscillators}
+  oscillator_3_coarse:              {label: Oscillator 3 Coarse, cc: 20, lsb: 52, range: [0, 255], default: 128, group: oscillators}
+  oscillator_3_fine:                {label: Oscillator 3 Fine, cc: 21, lsb: 53, range: [28, 228], default: 128, group: oscillators}
+  oscillator_3_modenv2_pitch:       {label: Oscillator 3 ModEnv2 > Pitch, cc: 43, range: [1, 127], default: 64, group: oscillators}
+  oscillator_3_lfo2_pitch:          {label: Oscillator 3 LFO2 > Pitch, cc: 22, lsb: 54, range: [1, 255], default: 128, group: oscillators}
+  oscillator_3_wave:                {label: Oscillator 3 Wave, nrpn: 32, range: [0, 4], group: oscillators}
+  oscillator_3_wave_more:           {label: Oscillator 3 Wave More, nrpn: 33, range: [4, 63], group: oscillators}
+  oscillator_3_shape_source:        {label: Oscillator 3 Shape Source, nrpn: 34, range: [0, 2], default: 0, group: oscillators}
+  oscillator_3_manual_shape:        {label: Oscillator 3 Manual Shape, cc: 71, default: 64, group: oscillators}
+  oscillator_3_modenv1_shape:       {label: Oscillator 3 ModEnv1 > Shape, cc: 72, default: 64, group: oscillators}
+  oscillator_3_lfo1_shape:          {label: Oscillator 3 LFO1 > Shape, cc: 73, default: 64, group: oscillators}
+  oscillator_3_vsync:               {label: Oscillator 3 Vsync, cc: 44, default: 0, group: oscillators}
+  oscillator_3_saw_density:         {label: Oscillator 3 Saw Density, nrpn: 35, default: 0, group: oscillators}
+  oscillator_3_saw_density_detune:  {label: Oscillator 3 Saw Density Detune, nrpn: 36, group: oscillators}
+  oscillator_3_fixed_note:          {label: Oscillator 3 Fixed Note, nrpn: 37, range: [0, 88], default: 0, group: oscillators}
+  oscillator_3_bend_range:          {label: Oscillator 3 Bend Range, nrpn: 38, range: [40, 88], default: 76, group: oscillators}
+  select_tuning_table:              {label: Select Tuning Table, nrpn: 3206, range: [0, 16], default: 0, group: oscillators}
+
+  # MIXER -----------------------------------------------------------
+  mixer_osc1:                       {label: Mixer Osc1, cc: 23, lsb: 55, range: [0, 255], default: 255, group: mixer}
+  mixer_osc2:                       {label: Mixer Osc2, cc: 24, lsb: 56, range: [0, 255], default: 0, group: mixer}
+  mixer_osc3:                       {label: Mixer Osc3, cc: 25, lsb: 57, range: [0, 255], default: 0, group: mixer}
+  ring_1_2:                         {label: Ring 1*2, cc: 26, lsb: 58, range: [0, 255], default: 0, group: mixer}
+  noise_level:                      {label: Noise Level, cc: 27, lsb: 59, range: [0, 255], default: 0, group: mixer}
+  mixer_patch_level:                {label: Mixer Patch Level, nrpn: 41, default: 64, group: mixer}
+  mixer_vca_gain:                   {label: Mixer VCA Gain, nrpn: 42, default: 127, group: mixer}
+  mixer_dry_level:                  {label: Mixer Dry Level, nrpn: 43, default: 127, group: mixer}
+  mixer_wet_level:                  {label: Mixer Wet Level, nrpn: 44, default: 127, group: mixer}
+
+  # FILTER ----------------------------------------------------------
+  filter_overdrive:                 {label: Filter Overdrive, cc: 80, default: 0, group: filter}
+  filter_post_drive:                {label: Filter Post Drive, cc: 36, default: 0, group: filter}
+  filter_slope:                     {label: Filter Slope, nrpn: 45, range: [0, 1], default: 1, group: filter}
+  filter_shape:                     {label: Filter Shape, nrpn: 46, range: [0, 2], default: 0, group: filter}
+  filter_key_tracking:              {label: Filter Key Tracking, cc: 75, default: 127, group: filter}
+  filter_resonance:                 {label: Filter Resonance, cc: 79, default: 0, group: filter}
+  filter_frequency:                 {label: Filter Frequency, cc: 29, lsb: 61, range: [0, 255], group: filter}
+  filter_lfo1_filter:               {label: Filter LFO1 > Filter, cc: 28, lsb: 60, range: [1, 255], default: 128, group: filter}
+  filter_osc3_filter:               {label: Filter Osc3 > Filter, cc: 76, default: 0, group: filter}
+  filter_env_select:                {label: Filter Env Select, nrpn: 47, range: [0, 1], group: filter}
+  filter_ampenv_filter:             {label: Filter AmpEnv > Filter, cc: 77, range: [1, 127], default: 64, group: filter}
+  filter_modenv1_filter:            {label: Filter ModEnv1 > Filter, cc: 78, range: [1, 127], default: 64, group: filter}
+  filter_divergence:                {label: Filter Divergence, nrpn: 48, default: 0, group: filter}
+
+  # ENVELOPES -------------------------------------------------------
+  amp_envelope_attack:              {label: Amp Envelope Attack, cc: 86, group: envelopes}
+  amp_envelope_decay:               {label: Amp Envelope Decay, cc: 87, default: 90, group: envelopes}
+  amp_envelope_sustain:             {label: Amp Envelope Sustain, cc: 88, default: 127, group: envelopes}
+  amp_envelope_release:             {label: Amp Envelope Release, cc: 89, default: 40, group: envelopes}
+  amp_envelope_velocity:            {label: Amp Envelope Velocity, nrpn: 55, default: 64, group: envelopes}
+  amp_envelope_trigger:             {label: Amp Envelope Trigger, nrpn: 56, range: [0, 1], default: 0, group: envelopes}
+  mod_envelope_select:              {label: Mod Envelope Select, nrpn: 59, range: [0, 1], group: envelopes}
+  mod_envelope_1_attack:            {label: Mod Envelope 1 Attack, cc: 90, default: 0, group: envelopes}
+  mod_envelope_1_decay:             {label: Mod Envelope 1 Decay, cc: 91, default: 75, group: envelopes}
+  mod_envelope_1_sustain:           {label: Mod Envelope 1 Sustain, cc: 92, default: 35, group: envelopes}
+  mod_envelope_1_release:           {label: Mod Envelope 1 Release, cc: 93, default: 45, group: envelopes}
+  mod_envelope_1_velocity:          {label: Mod Envelope 1 Velocity, nrpn: 60, default: 64, group: envelopes}
+  mod_envelope_1_trigger:           {label: Mod Envelope 1 Trigger, nrpn: 61, range: [0, 1], group: envelopes}
+  mod_envelope_2_attack:            {label: Mod Envelope 2 Attack, cc: 94, default: 0, group: envelopes}
+  mod_envelope_2_decay:             {label: Mod Envelope 2 Decay, cc: 95, default: 75, group: envelopes}
+  mod_envelope_2_sustain:           {label: Mod Envelope 2 Sustain, cc: 117, default: 35, group: envelopes}
+  mod_envelope_2_release:           {label: Mod Envelope 2 Release, cc: 103, default: 45, group: envelopes}
+  mod_envelope_2_velocity:          {label: Mod Envelope 2 Velocity, nrpn: 64, default: 64, group: envelopes}
+  mod_envelope_2_trigger:           {label: Mod Envelope 2 Trigger, nrpn: 65, range: [0, 1], group: envelopes}
+  animate_1_att:                    {label: Animate 1 Att, nrpn: 3234, default: 0, group: envelopes}
+  animate_1_rel:                    {label: Animate 1 Rel, nrpn: 3235, default: 0, group: envelopes}
+  animate_2_att:                    {label: Animate 2 Att, nrpn: 3236, default: 0, group: envelopes}
+  animate_2_rel:                    {label: Animate 2 Rel, nrpn: 3237, default: 0, group: envelopes}
+
+  # LFOS ------------------------------------------------------------
+  lfo_1_range:                      {label: LFO 1 Range, nrpn: 68, range: [0, 2], default: 0, group: lfos}
+  lfo_1_rate:                       {label: LFO 1 Rate, cc: 30, lsb: 62, range: [0, 255], group: lfos}
+  lfo_1_sync_rate:                  {label: LFO 1 Sync Rate, cc: 81, range: [0, 34], default: 16, group: lfos}
+  lfo_1_wave:                       {label: LFO 1 Wave, nrpn: 69, range: [0, 3], default: 0, group: lfos}
+  lfo_1_phase:                      {label: LFO 1 Phase, nrpn: 70, range: [0, 120], default: 0, group: lfos}
+  lfo_1_slew:                       {label: LFO 1 Slew, nrpn: 71, default: 0, group: lfos}
+  lfo_1_fade_time:                  {label: LFO 1 Fade Time, cc: 82, default: 0, group: lfos}
+  lfo_1_fade_in_out:                {label: LFO 1 Fade In/Out, nrpn: 72, range: [0, 3], default: 0, group: lfos}
+  lfo_1_one_shot:                   {label: LFO 1 One Shot, nrpn: 75, range: [0, 1], default: 0, group: lfos}
+  lfo_1_common:                     {label: LFO 1 Common, nrpn: 76, range: [0, 1], default: 0, group: lfos}
+  lfo_2_range:                      {label: LFO 2 Range, cc: 83, range: [0, 2], default: 0, group: lfos}
+  lfo_2_rate:                       {label: LFO 2 Rate, cc: 31, lsb: 63, range: [0, 255], default: 128, group: lfos}
+  lfo_2_sync_rate:                  {label: LFO 2 Sync Rate, cc: 84, range: [0, 34], group: lfos}
+  lfo_2_wave:                       {label: LFO 2 Wave, nrpn: 78, range: [0, 3], default: 0, group: lfos}
+  lfo_2_phase:                      {label: LFO 2 Phase, nrpn: 79, range: [0, 120], default: 0, group: lfos}
+  lfo_2_slew:                       {label: LFO 2 Slew, nrpn: 80, default: 0, group: lfos}
+  lfo_2_fade_time:                  {label: LFO 2 Fade Time, cc: 85, default: 0, group: lfos}
+  lfo_2_fade_in_out:                {label: LFO 2 Fade In/Out, nrpn: 81, range: [0, 3], default: 0, group: lfos}
+  lfo_2_one_shot:                   {label: LFO 2 One Shot, nrpn: 84, range: [0, 1], default: 0, group: lfos}
+  lfo_2_common:                     {label: LFO 2 Common, nrpn: 85, range: [0, 1], default: 0, group: lfos}
+  lfo3phase:                        {label: LFO3Phase, nrpn: 3238, range: [0, 120], default: 0, group: lfos}
+  lfo3slew:                         {label: LFO3Slew, nrpn: 3239, default: 0, group: lfos}
+  lfo3fadetime:                     {label: LFO3FadeTime, nrpn: 3240, default: 0, group: lfos}
+  lfo4phase:                        {label: LFO4Phase, nrpn: 3241, range: [0, 120], default: 0, group: lfos}
+  lfo4slew:                         {label: LFO4Slew, nrpn: 3242, default: 0, group: lfos}
+  lfo4fadetime:                     {label: LFO4FadeTime, nrpn: 3243, default: 0, group: lfos}
+
+  # EFFECTS ---------------------------------------------------------
+  distortion_level:                 {label: Distortion Level, cc: 104, default: 0, group: effects}
+  effects_master_bypass:            {label: Effects Master Bypass, nrpn: 88, range: [0, 1], default: 0, group: effects}
+  effects_routing:                  {label: Effects Routing, nrpn: 89, range: [0, 6], default: 0, group: effects}
+  delay_level:                      {label: Delay Level, cc: 108, default: 0, group: effects}
+  delay_time:                       {label: Delay Time, cc: 109, group: effects}
+  delay_width:                      {label: Delay Width, nrpn: 92, group: effects}
+  delay_sync:                       {label: Delay Sync, nrpn: 93, range: [0, 1], default: 0, group: effects}
+  delay_sync_time:                  {label: Delay Sync Time, nrpn: 94, range: [0, 18], group: effects}
+  delay_feedback:                   {label: Delay Feedback, cc: 110, group: effects}
+  delay_lp_damp:                    {label: Delay LP Damp, nrpn: 95, default: 85, group: effects}
+  delay_hp_damp:                    {label: Delay HP Damp, nrpn: 96, default: 0, group: effects}
+  delay_slew_rate:                  {label: Delay Slew Rate, nrpn: 97, default: 32, group: effects}
+  reverb_level:                     {label: Reverb Level, cc: 112, default: 0, group: effects}
+  reverb_type:                      {label: Reverb Type, nrpn: 101, range: [0, 2], group: effects}
+  reverb_time:                      {label: Reverb Time, cc: 113, group: effects}
+  reverb_damping_lp:                {label: Reverb Damping LP, nrpn: 102, group: effects}
+  reverb_damping_hp:                {label: Reverb Damping HP, nrpn: 103, group: effects}
+  reverb_size:                      {label: Reverb Size, nrpn: 104, default: 64, group: effects}
+  reverb_mod:                       {label: Reverb Mod, nrpn: 105, default: 64, group: effects}
+  reverb_mod_rate:                  {label: Reverb Mod Rate, nrpn: 106, group: effects}
+  reverb_low_pass:                  {label: Reverb Low Pass, nrpn: 107, group: effects}
+  reverb_high_pass:                 {label: Reverb High Pass, nrpn: 108, default: 0, group: effects}
+  reverb_pre_delay:                 {label: Reverb Pre Delay, nrpn: 109, default: 40, group: effects}
+  chorus_level:                     {label: Chorus Level, cc: 105, default: 0, group: effects}
+  chorus_type:                      {label: Chorus Type, nrpn: 111, range: [0, 2], group: effects}
+  chorus_rate:                      {label: Chorus Rate, cc: 118, default: 20, group: effects}
+  chorus_mod_depth:                 {label: Chorus Mod Depth, nrpn: 112, group: effects}
+  chorus_feedback:                  {label: Chorus Feedback, cc: 107, default: 64, group: effects}
+  chorus_lp:                        {label: Chorus LP, nrpn: 113, default: 90, group: effects}
+  chorus_hp:                        {label: Chorus HP, nrpn: 114, default: 2, group: effects}
+  chorus_phaser_flanger:            {label: Chorus/Phaser/Flanger, nrpn: 115, range: [0, 2], default: 0, group: effects}
+  lo_fi_delay_time_mode:            {label: Lo-Fi Delay Time Mode, nrpn: 98, range: [0, 4], default: 0, group: effects}
+
+  # ARP -------------------------------------------------------------
+  arp_clock_sync_rate:              {label: Arp/Clock Sync Rate, nrpn: 116, range: [0, 18], group: arp}
+  arp_clock_type:                   {label: Arp/Clock Type, nrpn: 117, range: [0, 6], default: 0, group: arp}
+  arp_clock_rhythm:                 {label: Arp/Clock Rhythm, nrpn: 118, range: [0, 32], default: 0, group: arp}
+  arp_clock_octave:                 {label: Arp/Clock Octave, nrpn: 119, range: [0, 5], group: arp}
+  arp_clock_gate:                   {label: Arp/Clock Gate, cc: 116, default: 64, group: arp}
+  arp_clock_swing:                  {label: Arp/Clock Swing, nrpn: 120, range: [20, 80], default: 50, group: arp}
+  arp_clock_on:                     {label: Arp/Clock On, nrpn: 121, range: [0, 1], default: 0, group: arp}
+  arp_clock_key_latch:              {label: Arp/Clock Key Latch, nrpn: 122, range: [0, 1], default: 0, group: arp}
+  arp_clock_key_sync:               {label: Arp/Clock Key Sync, nrpn: 123, range: [0, 1], default: 0, group: arp}
+  animate_1_hold:                   {label: Animate 1 Hold, cc: 114, range: [0, 1], default: 0, group: arp}
+  animate_2_hold:                   {label: Animate 2 Hold, cc: 115, range: [0, 1], default: 0, group: arp}
+  arp_chance:                       {label: Arp Chance, nrpn: 3233, range: [1, 100], default: 100, group: arp}
+
+  # MOD MATRIX ------------------------------------------------------
+  mod_matrix_selection:             {label: Mod Matrix Selection, nrpn: 125, range: [0, 15], default: 0, group: mod_matrix}
+  mod_matrix_1_source1:             {label: Mod Matrix 1 Source1, nrpn: 128, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_1_source2:             {label: Mod Matrix 1 Source2, nrpn: 129, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_1_depth:               {label: Mod Matrix 1 Depth, nrpn: 130, default: 64, group: mod_matrix}
+  mod_matrix_1_destination:         {label: Mod Matrix 1 Destination, nrpn: 131, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_2_source1:             {label: Mod Matrix 2 Source1, nrpn: 256, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_2_source2:             {label: Mod Matrix 2 Source2, nrpn: 257, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_2_depth:               {label: Mod Matrix 2 Depth, nrpn: 258, default: 64, group: mod_matrix}
+  mod_matrix_2_destination:         {label: Mod Matrix 2 Destination, nrpn: 259, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_3_source1:             {label: Mod Matrix 3 Source1, nrpn: 384, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_3_source2:             {label: Mod Matrix 3 Source2, nrpn: 385, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_3_depth:               {label: Mod Matrix 3 Depth, nrpn: 386, default: 64, group: mod_matrix}
+  mod_matrix_3_destination:         {label: Mod Matrix 3 Destination, nrpn: 387, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_4_source1:             {label: Mod Matrix 4 Source1, nrpn: 512, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_4_source2:             {label: Mod Matrix 4 Source2, nrpn: 513, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_4_depth:               {label: Mod Matrix 4 Depth, nrpn: 514, default: 64, group: mod_matrix}
+  mod_matrix_4_destination:         {label: Mod Matrix 4 Destination, nrpn: 515, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_5_source1:             {label: Mod Matrix 5 Source1, nrpn: 640, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_5_source2:             {label: Mod Matrix 5 Source2, nrpn: 641, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_5_depth:               {label: Mod Matrix 5 Depth, nrpn: 642, default: 64, group: mod_matrix}
+  mod_matrix_5_destination:         {label: Mod Matrix 5 Destination, nrpn: 643, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_6_source1:             {label: Mod Matrix 6 Source1, nrpn: 768, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_6_source2:             {label: Mod Matrix 6 Source2, nrpn: 769, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_6_depth:               {label: Mod Matrix 6 Depth, nrpn: 770, default: 64, group: mod_matrix}
+  mod_matrix_6_destination:         {label: Mod Matrix 6 Destination, nrpn: 771, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_7_source1:             {label: Mod Matrix 7 Source1, nrpn: 896, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_7_source2:             {label: Mod Matrix 7 Source2, nrpn: 897, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_7_depth:               {label: Mod Matrix 7 Depth, nrpn: 898, default: 64, group: mod_matrix}
+  mod_matrix_7_destination:         {label: Mod Matrix 7 Destination, nrpn: 899, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_8_source1:             {label: Mod Matrix 8 Source1, nrpn: 1024, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_8_source2:             {label: Mod Matrix 8 Source2, nrpn: 1025, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_8_depth:               {label: Mod Matrix 8 Depth, nrpn: 1026, default: 64, group: mod_matrix}
+  mod_matrix_8_destination:         {label: Mod Matrix 8 Destination, nrpn: 1027, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_9_source1:             {label: Mod Matrix 9 Source1, nrpn: 1152, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_9_source2:             {label: Mod Matrix 9 Source2, nrpn: 1153, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_9_depth:               {label: Mod Matrix 9 Depth, nrpn: 1154, default: 64, group: mod_matrix}
+  mod_matrix_9_destination:         {label: Mod Matrix 9 Destination, nrpn: 1155, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_10_source1:            {label: Mod Matrix 10 Source1, nrpn: 1280, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_10_source2:            {label: Mod Matrix 10 Source2, nrpn: 1281, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_10_depth:              {label: Mod Matrix 10 Depth, nrpn: 1282, default: 64, group: mod_matrix}
+  mod_matrix_10_destination:        {label: Mod Matrix 10 Destination, nrpn: 1283, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_11_source1:            {label: Mod Matrix 11 Source1, nrpn: 1408, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_11_source2:            {label: Mod Matrix 11 Source2, nrpn: 1409, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_11_depth:              {label: Mod Matrix 11 Depth, nrpn: 1410, default: 64, group: mod_matrix}
+  mod_matrix_11_destination:        {label: Mod Matrix 11 Destination, nrpn: 1411, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_12_source1:            {label: Mod Matrix 12 Source1, nrpn: 1536, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_12_source2:            {label: Mod Matrix 12 Source2, nrpn: 1537, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_12_depth:              {label: Mod Matrix 12 Depth, nrpn: 1538, default: 64, group: mod_matrix}
+  mod_matrix_12_destination:        {label: Mod Matrix 12 Destination, nrpn: 1539, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_13_source1:            {label: Mod Matrix 13 Source1, nrpn: 1664, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_13_source2:            {label: Mod Matrix 13 Source2, nrpn: 1665, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_13_depth:              {label: Mod Matrix 13 Depth, nrpn: 1666, default: 64, group: mod_matrix}
+  mod_matrix_13_destination:        {label: Mod Matrix 13 Destination, nrpn: 1667, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_14_source1:            {label: Mod Matrix 14 Source1, nrpn: 1792, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_14_source2:            {label: Mod Matrix 14 Source2, nrpn: 1793, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_14_depth:              {label: Mod Matrix 14 Depth, nrpn: 1794, default: 64, group: mod_matrix}
+  mod_matrix_14_destination:        {label: Mod Matrix 14 Destination, nrpn: 1795, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_15_source1:            {label: Mod Matrix 15 Source1, nrpn: 1920, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_15_source2:            {label: Mod Matrix 15 Source2, nrpn: 1921, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_15_depth:              {label: Mod Matrix 15 Depth, nrpn: 1922, default: 64, group: mod_matrix}
+  mod_matrix_15_destination:        {label: Mod Matrix 15 Destination, nrpn: 1923, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_16_source1:            {label: Mod Matrix 16 Source1, nrpn: 2048, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_16_source2:            {label: Mod Matrix 16 Source2, nrpn: 2049, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_16_depth:              {label: Mod Matrix 16 Depth, nrpn: 2050, default: 64, group: mod_matrix}
+  mod_matrix_16_destination:        {label: Mod Matrix 16 Destination, nrpn: 2051, range: [0, 36], default: 0, group: mod_matrix}
+
+  # SETTINGS --------------------------------------------------------
+  patch_cue:                        {label: Patch Cue, nrpn: 8192, range: [0, 1], default: 0, group: settings}
+

@@ -144,6 +144,7 @@ class TestBundledCorpus:
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
+			"access/virus_ti",
 			"akai/mpc_live",
 			"akai/mpc_sample",
 			"arturia/astrolab",
@@ -11322,3 +11323,147 @@ class TestMachinedrum:
 		assert "THE DOWNLOAD PAGE DATES THIS OS TO 23 MAY 2016 AND THAT DATE IS NOT TO BE USED" \
 			in said
 		assert "A catalogue of unrelated files all dated 23 May is a site migration" in said
+
+
+class TestVirusTI:
+
+	"""Rank 73, and the definition whose finding is an absence the maker created.
+
+	**Access publishes no control change map for this instrument.** The 2006 manual says the
+	list of all parameters is on its website; that address now redirects to a site whose
+	downloads page never uses the word. The 2013 reference deletes even that sentence.
+	"""
+
+	def test_four_controls_and_they_are_not_the_control_map (self) -> None:
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+
+		assert len(virus.controls) == 4
+		assert sorted(c.cc for c in virus.controls.values() if c.cc is not None) == [7, 10, 11, 64]
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "THE MAKER PUBLISHES NO CONTROL CHANGE MAP FOR THIS INSTRUMENT" in said
+		assert "THIS IS NOT THE INSTRUMENT'S CONTROL MAP" in said
+		assert "Four is what is published, not what exists" in said
+
+	def test_the_pointer_still_resolves_and_what_it_pointed_at_is_gone (self) -> None:
+		"""The maker's sentence, the redirect, and the page it lands on, all three recorded."""
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "Further information, including a list of all parameters, is available at " \
+			"www.access-music.de" in said
+		assert "302 to `http://virus.info/`" in said
+		assert 'the words "parameter", "MIDI" and "SysEx" appear nowhere on it' in said
+
+		# And the later document removed the sentence.
+		assert "AND THE LATER DOCUMENT DELETED THE POINTER" in said
+
+	def test_the_manual_promises_a_chart_it_does_not_contain (self) -> None:
+		"""Which is the maker's own evidence that one was meant to exist."""
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "Appendices: Legal matters, charts, diagrams, glossary" in said
+		assert "There is no chart appendix and no diagram appendix" in said
+
+	def test_the_absence_was_checked_eight_ways_before_being_written_down (self) -> None:
+		"""Because "the maker publishes nothing" is the strongest claim a definition can make."""
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "CHECKED EIGHT WAYS BEFORE BEING WRITTEN DOWN" in said
+		assert "the second reader was asked to break it rather than confirm it" in said
+		assert "43 tables of which every one is a value-and-meaning table" in said
+
+	def test_the_traps_that_would_put_wrong_numbers_in_this_corpus (self) -> None:
+		"""A designer's initials, a third party's controller, and the specification's own list."""
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "one designer's initials are **CC**" in said
+		assert "128 false controller rows from one bank alone" in said
+		assert "a definition recording 70 as a cutoff would be describing somebody else's " \
+			"instrument" in said
+
+	def test_the_program_count_is_not_recorded_because_four_accounts_disagree (self) -> None:
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+
+		assert virus.midi.program_change is not None
+		assert virus.midi.program_change.receives is True
+		assert virus.midi.program_change.presets is None
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "THE PROGRAM COUNT IS STATED FOUR WAYS AND NO TWO AGREE" in said
+		assert "bank select is undocumented in both documents" in said
+
+	def test_polyphony_is_not_a_number_and_the_maker_says_why (self) -> None:
+		"""An average, a maximum and a caveat in one sentence."""
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+
+		assert virus.voice.polyphony is None
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "quoted at about 80, with a maximum of more than 100" in said
+		assert "is not a voice count" in said
+
+	def test_sixteen_parts_each_with_a_channel_the_player_sets (self) -> None:
+		"""And a second mode where the channel is fixed to the part number."""
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+
+		assert len(virus.parts) == 16
+		assert all(part.channel == "assigned" for part in virus.parts.values())
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "the MIDI channel is always equal to the PART number" in said
+
+	def test_what_is_absent_is_absent_for_stated_reasons (self) -> None:
+		"""Transport, NRPN and a bend range, each with the search behind it."""
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+
+		assert virus.midi.transport is None
+		assert virus.midi.nrpn is None
+		assert virus.voice.pitch_bend is not None
+		assert virus.voice.pitch_bend.semitones is None
+		assert virus.voice.pitch_bend.programmable is True
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "No page of either document mentions MIDI start, stop, continue or song position" \
+			in said
+		assert "only allows for a resolution of 128 values per parameter" in said
+		assert "there is no single number that is the bend range" in said
+
+	def test_three_machines_and_one_midi_difference_between_them (self) -> None:
+		"""The desktop has no Keyboard pages, so it chooses no transmit controller numbers."""
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "ACCESS VIRUS TI DESKTOP" in said
+		assert "The 'Keyboard' pages are only available in keyboard versions of the Virus" in said
+		assert "a desktop has no local control setting and chooses no transmit controller " \
+			"numbers" in said.replace("**", "")
+
+	def test_neither_document_contains_the_other (self) -> None:
+		"""The 2013 reference adds a later OS and drops whole categories of MIDI material."""
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+
+		assert set(virus.sources) == {"manual", "reference", "manuals_page", "downloads_page"}
+		assert virus.sources["manual"].edition == "Virus TI1 Series"
+		assert virus.sources["reference"].edition == "Virus TI2 Series"
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "THE TWO DOCUMENTS ARE NOT ONE SUPERSEDING THE OTHER" in said
+		assert "Neither contains the other" in said
+
+	def test_it_is_the_other_kind_of_empty_definition (self) -> None:
+		"""`behringer/model_d` has no controls by design; this one has them and no document."""
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+		model_d = pymidiinstrumentdefs.load("behringer/model_d", [CORPUS])
+
+		assert len(model_d.controls) == 0
+		assert len(virus.controls) == 4
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "IT IS AN INSTRUMENT WHOSE MAP IS NOT" in said
+		assert "A third-party map exists; it is not evidence and nothing from it is here" in said

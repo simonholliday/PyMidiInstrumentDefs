@@ -1,0 +1,302 @@
+# **THE MAKER PUBLISHES NO CONTROL CHANGE MAP FOR THIS INSTRUMENT, AND SAYS WHERE ONE IS.** The
+# manual's MIDI Control section reads: "Governs how Page A and Page B parameters are handled
+# during MIDI communication with e.g. a computer or MIDI controller unit. Note that system
+# exclusive data is always recognized, irrespective of the settings here. Further information,
+# including a list of all parameters, is available at www.access-music.de" (manual p. 157).
+#
+# **That address no longer serves a list.** It answers 302 to `http://virus.info/` and then 301 to
+# `https://www.virus.info/`, which is the site root. The maker's own downloads page offers
+# manuals, tutorials, videos, software installers, operating systems, sounds, brochures and press
+# packs, and **the words "parameter", "MIDI" and "SysEx" appear nowhere on it**. So the pointer
+# still resolves and what it pointed at is gone.
+#
+# CHECKED EIGHT WAYS BEFORE BEING WRITTEN DOWN, because "the maker publishes nothing" is the
+# strongest claim a definition can make, and the second reader was asked to break it rather than
+# confirm it. Between the two readings: every spelling of controller terminology was searched;
+# every integer 0 to 127 was bucketed by its position on the page to find a numeric column;
+# the later document's **tagged structure tree** was read, giving 43 tables of which every one is
+# a value-and-meaning table; both files were checked for optional content, forms, attachments and
+# raster images that might hide a chart; the landscape and fold-out pages were chased down; and
+# the manual's own index was read, whose MIDI entries are exactly five and name no chart.
+# **Neither document contains a controller table, and neither contains a MIDI implementation
+# chart.** The only controller numbers either document names are the four below and the settings
+# that choose what a pedal or a wheel sends.
+#
+# **AND THE LATER DOCUMENT DELETED THE POINTER.** The 2013 Reference carries the same MIDI Control
+# paragraph with the sentence about the parameter list removed, demoted from a heading to a
+# run-in line (reference p. 74). So the only document that ever said where the list lived is the
+# 2006 one, and the current one says nothing at all.
+#
+# **THE MANUAL ALSO PROMISES A CHART IT DOES NOT CONTAIN.** Describing its own structure it says
+# "Appendices: Legal matters, charts, diagrams, glossary" (manual p. 8). Its appendices are legal
+# declarations, a glossary, a patch-name list and an index. **There is no chart appendix and no
+# diagram appendix**, and its contents pages agree.
+#
+# **SO THIS IS NOT AN INSTRUMENT WITH A SMALL MAP. IT IS AN INSTRUMENT WHOSE MAP IS NOT
+# PUBLISHED.** Those are different states and this corpus has both: `behringer/model_d` has no
+# control changes at all, by its maker's design, where this one has a controller for every
+# parameter and no document saying which. A third-party map exists; it is not evidence and
+# nothing from it is here.
+#
+# AND WHETHER A CONTROL CHANGE DOES ANYTHING AT ALL IS A SETTING. "Page A > SysEx: Page A
+# parameters are transmitted/received as system exclusive packets. **Controller data reception is
+# disabled.**" and "> Controller Data: Page A parameters are transmitted/received in the form of
+# MIDI CC (see glossary) data" (manual p. 157). Page B has a third state the corpus has not met
+# before: "Poly Pressure: Page B parameters are transmitted and received in the form of
+# Poly-pressure (see glossary) data" (manual p. 158) - **polyphonic key pressure used as a
+# parameter transport rather than as aftertouch**.
+
+definition: 1
+
+model:
+  manufacturer: Access
+  name: Virus TI
+  # NOT RECORDED: firmware. Neither document names an operating system version for the
+  # instrument, and the maker publishes no update history that names one against these manuals.
+  # The two documents are dated by their own files - 2006 and 2013 - and the manuals page files
+  # them under "Virus TI1 Series" and "Virus TI2 Series", which is a hardware generation rather
+  # than a software version.
+
+source: >-
+  Two documents, and **neither carries a control change map**: the Virus TI manual (218 sheets,
+  2006), which the maker files under "Virus TI1 Series", and the Virus TI Reference (80 sheets,
+  2013), filed under "Virus TI2 Series" and headed "PARAMETER REFERENCE MANUAL" on its pages. The
+  manuals page and the downloads page are cited for what the maker offers and for the list that
+  is not among it.
+
+  WHAT IS HERE INSTEAD OF A MAP is the configuration reference - the manual's pp. 153 to 158 and
+  the Reference's config menu - which states how the instrument behaves over MIDI without ever
+  numbering a controller. Every field below comes from there.
+
+  THREE MACHINES, NAMED WHERE A DOCUMENT HAS TO BE EXACT. The manual's declaration of conformity
+  lists "ACCESS VIRUS TI DESKTOP", "ACCESS VIRUS TI KEYBOARD" and "ACCESS VIRUS TI POLAR"
+  (manual p. 174) - the maker spells the third **Pølar** in its body text and **Polar** in the
+  later document. The later document adds the TI2 and the Snow, and distinguishes them where the
+  panels differ. **The manual names no Virus A, B, C, Indigo or Rack anywhere.**
+
+  **AND ONE MIDI DIFFERENCE BETWEEN THEM IS STATED**: "Note: The 'Keyboard' pages are only
+  available in keyboard versions of the Virus" (manual p. 155). Those pages are local control, the
+  keyboard's MIDI mode, the transmit controller numbers for the wheel and the two pedals, and the
+  pressure and velocity curves. **So a desktop has no local control setting and chooses no
+  transmit controller numbers** - which is a difference in what it sends and in what can be
+  switched, not in what it answers to.
+
+  THE TWO DOCUMENTS ARE NOT ONE SUPERSEDING THE OTHER. The 2013 Reference adds the later
+  operating system's oscillators, envelopes, filters and effects, and **drops the whole keyboard
+  section, the whole of remote mode, and the sentence about the parameter list**. So the 2006
+  manual is the only source for local control, the transmit assignments and the curves, and the
+  2013 one the only source for what came after it. Neither contains the other.
+
+  **PAGES OF THE REFERENCE ARE CITED AS FILE PAGES.** It is laid out as two-up spreads, so its
+  printed folios run at roughly twice its sheet count and a printed page number would name the
+  wrong sheet. The manual's folios and sheets agree and are cited as printed.
+
+  FOUR CONTROLLER NUMBERS ARE NAMED AS THINGS THE INSTRUMENT ANSWERS TO, and that is the whole
+  of it. "Patch Volume reacts to MIDI CC#7 (Channel Volume) as well as CC#11 (Expression)"
+  (reference p. 48); "Reacts to MIDI CC#10 (Panorama)" (reference p. 48); and a part setting
+  reads "Disabled, Enabled: Specifies whether the Part will respond to MIDI CC#64 (usually a
+  Sustain Pedal)" (manual p. 169). Two of the four are switchable - "MIDI Volume > Disabled,
+  Enabled: Specifies whether MIDI CC#7 (volume) will be recognized" (manual p. 153), and the
+  part's own "Volume RX".
+
+  **OTHER NUMBERS APPEAR AND ARE NOT CONTROLS**, and each would be a different kind of mistake.
+  The wheel and the pedals choose what the instrument *sends*: "0 to 127: Specifies the MIDI CC
+  number (see glossary) transmitted by the modulation wheel. The standard value is 1 ('Mod
+  Wheel')" (manual p. 156), and the hold pedal's standard value is 64. **Controller 70 is a
+  third party's**: it appears in a worked example of writing a remote template for a plug-in
+  "which according to it's user manual, has MIDI number 70 assigned to it" (manual p. 73), and a
+  definition recording 70 as a cutoff would be describing somebody else's instrument. **And the
+  glossary's "Modulation wheel = CC 01, volume control = CC 07, hold/sustain pedal = CC 64" is
+  the MIDI specification** rather than this instrument.
+
+  **THE SHARPEST TRAP IS NOT A NUMBER AT ALL.** The patch-name appendix (manual pp. 192-208)
+  prints each sound's number beside its designer's initials, and one designer's initials are
+  **CC**. A reader keyed on "CC" beside a number would produce 128 false controller rows from one
+  bank alone.
+
+  NOT RECORDED: `polyphony`, **and the maker explains why rather than omitting it**. "The average
+  number of voices the TI series (with its two DSPs) can deliver is quoted at about 80, with a
+  maximum of more than 100. However, to reach such giddy heights, the TI makes very dynamic use of
+  resources i.e. using certain features can lower polyphony to well below these figures" (manual
+  p. 17). A figure that is an average with a maximum and a caveat is not a voice count.
+
+  NOT RECORDED: `nrpn`. **"NRPN", "RPN", "registered parameter" and "non-registered" appear
+  nowhere in either document**, and nor do "MSB" or "LSB". The nearest thing to a statement points
+  the same way and is worth knowing, because it is the maker explaining what it did instead: "The
+  internal resolution of the parameters in the Virus sound engine is 24-bit... The MIDI
+  specification, however, only allows for a resolution of 128 values per parameter" (reference
+  p. 30), after which it offers a constant offset in the modulation matrix as the way to reach a
+  value between two of the 128. A maker that answers seven-bit resolution with a matrix trick is
+  not using fourteen-bit controllers, but it never says so, so this stays a silence.
+
+  NOT RECORDED: `transport`. **No page of either document mentions MIDI start, stop, continue or
+  song position**, searched for by name. The clock is described and the transport is not, which is
+  a real absence in a document that describes the clock in three states.
+
+  NOT RECORDED: `mode`. There is no MIDI implementation chart in either document.
+
+  NOT RECORDED: a bend range in semitones. The instrument has two parameters rather than one, and
+  they are not symmetrical: "Bend Up > -64 to +63 semitones: How much pitch bend is applied to the
+  oscillators when the Pitch Bender (on a keyboard etc.) is at maximum" and "Bend Down > -64 to
+  +63 semitones: How much pitch bend is applied when the Pitch Bender is at minimum" (manual
+  p. 125, reference p. 29). So the two directions are set separately and each can be inverted, and
+  **there is no single number that is the bend range**. `programmable` records that it is the
+  player's; the figure is left out rather than halved or rounded.
+
+  THE PROGRAM COUNT IS STATED FOUR WAYS AND NO TWO AGREE, so `presets` is not recorded. "Your
+  Virus TI has 20 banks of memory (RAM-A to RAM-D, ROM-A to ROM-P), each containing 128 SINGLE
+  programs numbered from 0 to 127. A total of 2560 sounds" (manual p. 12); the patch-name appendix
+  runs **ROM-A through ROM-Q**, which is seventeen ROM banks and not sixteen; the Multi part's
+  bank setting offers "A to T" (manual p. 166), which is twenty letters; and the same setting in
+  the later document offers "A to Z" (reference p. 117), which is twenty-six. **Every account
+  agrees that a bank holds 128**, and nothing says how a bank is selected over MIDI - **bank
+  select is undocumented in both documents**, so a program change alone reaches one bank.
+
+  SIXTEEN PARTS, AND THE CHANNEL RULE DIFFERS BETWEEN TWO MODES. "Your Virus can play 16 different
+  sounds at the same time: MULTI programs contain 16 PARTS, each equivalent to a SINGLE program
+  plus a few additional parameters such as MIDI channel, fine tuning, key range etc." (manual
+  p. 14) - so in Multi mode the channel belongs to the part and is the player's. In Sequencer mode
+  it is not: "This gives simultaneous access to 16 Single programs. Similar to Multi Mode, but
+  there is only one Sequencer mode program and the MIDI channel is always equal to the PART
+  number" (manual p. 128). The parts below record the Multi arrangement, which is the one with a
+  setting in it, and this account records the other.
+
+sources:
+  manual:
+    kind: manual
+    title: Virus TI Manual
+    edition: Virus TI1 Series
+    dated: 2006-05-29
+    landing: "https://www.virus.info/support/manuals"
+    url: "https://www.virus.info/download/166"
+    sha256: f85f01b171e1be42d221a1e0eabcdbc80776476d42f041e789d506db09c9f07c
+    retrieved: 2026-10-04
+    # The maker serves it as `User_Manual_English.pdf` from a numbered download link, with no
+    # version in the file or on the page; "Virus TI1 Series" is the heading it sits under. The
+    # date is the PDF's own, and its `/Title` is "Virus TI Manual.book".
+    # **`file(1)` says this document has 10 pages. It has 218.**
+  reference:
+    kind: reference
+    title: Virus TI Reference
+    edition: Virus TI2 Series
+    dated: 2013-06-05
+    landing: "https://www.virus.info/support/manuals"
+    url: "https://www.virus.info/download/200"
+    sha256: 990e72e7922d99efe54f2f9dc747f035b115b57e247b02ff647d49c2b270071c
+    retrieved: 2026-10-04
+    # Served as `Virus TI Reference.pdf` and headed "PARAMETER REFERENCE MANUAL" on its pages.
+    # **`file(1)` says 120 pages. It has 80.**
+  manuals_page:
+    kind: web_page
+    title: "User Manuals | The Virus TI - Totally Integrated Synthesizers"
+    landing: "https://www.virus.info/support/manuals"
+    url: "https://www.virus.info/support/manuals"
+    sha256: 517ec6af31e6ec8c55bc86f1abf170d835e0f5770e66953bc8e94b26c6e03554
+    retrieved: 2026-10-04
+    paginated: false
+    # **THIS PAGE LISTS MORE THAN THE SURVEY RECORDED.** It groups manuals under "Virus TI2
+    # Series", "Virus TI1 Series", "Virus C Series", "Virus B Series" and "Virus A Series", plus
+    # Rack XL and Rack Classic and four tutorials. The Snow manuals are listed and **are behind a
+    # login**: the Snow Reference's link answers 302 to a login page. No account was created.
+  downloads_page:
+    kind: download_page
+    title: "Downloads"
+    landing: "https://www.virus.info/downloads"
+    url: "https://www.virus.info/downloads"
+    sha256: 556f6575ff4c368c66b90ad52293104cdae6f964065d2679fffb96f607a5a75e
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for the absence: this is where the maker's own pointer leads, and it names thirteen
+    # categories of file without naming a parameter list, a MIDI document or a sysex document.
+
+midi:
+  # "MIDI Global Channel > 1 to 16: Specifies a MIDI channel used for SINGLE mode, as well as
+  # for switching between MULTI mode programs via the MIDI message "Program Change"" (manual
+  # p. 153). In Multi mode each part has its own; see the parts below.
+  channels: [1, 16]
+  # NOT RECORDED: mode. No implementation chart in either document.
+  # BOTH, AND IT IS ONE SETTING WITH THREE STATES. "MIDI Clock > Internal Sync: Any received MIDI
+  # Clock will be ignored. An internally generated clock is used instead. > Sync to External:
+  # Received MIDI Clock will be recognized. This is the standard setting. > Send: Internally
+  # generated MIDI Clock is sent to the MIDI output" (manual p. 153). So it receives by default
+  # and sends on request, and never does both at once.
+  clock: both
+  # NOT RECORDED: transport. No page of either document names start, stop, continue or song
+  # position - see the source account.
+  program_change:
+    # "Program Change > Disabled, Enabled: Specifies whether the MIDI message 'Program Change'
+    # will switch Single programs. This applies to programs in Single mode as well as PARTs in
+    # Multi or sequencer mode" (manual p. 153).
+    receives: true
+    # NOT RECORDED: sends. The manual says sequencers and keyboards are "capable of transmitting
+    # Bank and Program change messages via MIDI" (manual p. 13), which is about them and not
+    # about this instrument, and no page says the Virus sends one.
+    # NOT RECORDED: presets. Four accounts of how many banks there are and no two agree - see
+    # the source account. Every account agrees a bank holds 128, and **bank select is
+    # undocumented in both documents**, so nothing here can say what a program change reaches
+    # beyond the bank it is already in.
+  # NOT RECORDED: nrpn. The word appears nowhere in either document.
+  # "MIDI Device ID > 1 to 16, Omni (17): Identification number for transmitting/ receiving
+  # System Exclusive data (see glossary). To allow SysEx communication between two devices, they
+  # must be set to the same device ID" (manual p. 153), and system exclusive is how the parameter
+  # pages travel by default.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # NOT RECORDED: polyphony. An average, a maximum and a caveat - see the source account.
+  velocity:
+    # "Velocity Curve > -64 to +63: Keyboard dynamics sensitivity" (manual p. 157), which is a
+    # curve applied to what arrives.
+    note_on: received
+  # CHANNEL. "Pressure Curve > -64 to +63: Channel aftertouch sensitivity. Adjust this parameter
+  # to suit your playing style" (manual p. 157), and the modulation matrix offers "Chan Pressure"
+  # as a source. **The curve is a keyboard-version setting and the response is not**: a desktop
+  # has no Keyboard pages at all, and still answers to a channel pressure that arrives.
+  # **AND POLYPHONIC KEY PRESSURE IS USED FOR SOMETHING ELSE ENTIRELY HERE**: it is one of the
+  # three ways the Page B parameters travel, not a way of playing. See the header comment.
+  aftertouch: channel
+  pitch_bend:
+    # NOT RECORDED: semitones. Two parameters, each -64 to +63, set separately - see the source
+    # account. `programmable` records that the player sets them.
+    programmable: true
+
+parts:
+  # SIXTEEN, EACH WITH ITS OWN CHANNEL IN MULTI MODE AND A FIXED ONE IN SEQUENCER MODE. The
+  # channel is "a few additional parameters such as MIDI channel" that a Multi part carries
+  # (manual p. 14), so it is the player's; in Sequencer mode "the MIDI channel is always equal to
+  # the PART number" (manual p. 128). `assigned` records the first, and the source account the
+  # second.
+  # NOT RECORDED: what a part receives. Neither document enumerates it, and program change is
+  # stated to reach a part while nothing says which other messages do.
+  part_1:  {label: Part 1,  channel: assigned}
+  part_2:  {label: Part 2,  channel: assigned}
+  part_3:  {label: Part 3,  channel: assigned}
+  part_4:  {label: Part 4,  channel: assigned}
+  part_5:  {label: Part 5,  channel: assigned}
+  part_6:  {label: Part 6,  channel: assigned}
+  part_7:  {label: Part 7,  channel: assigned}
+  part_8:  {label: Part 8,  channel: assigned}
+  part_9:  {label: Part 9,  channel: assigned}
+  part_10: {label: Part 10, channel: assigned}
+  part_11: {label: Part 11, channel: assigned}
+  part_12: {label: Part 12, channel: assigned}
+  part_13: {label: Part 13, channel: assigned}
+  part_14: {label: Part 14, channel: assigned}
+  part_15: {label: Part 15, channel: assigned}
+  part_16: {label: Part 16, channel: assigned}
+
+# FOUR CONTROLS, WHICH IS EVERY CONTROLLER NUMBER EITHER DOCUMENT SAYS THE INSTRUMENT ANSWERS TO.
+# Three reach a parameter the maker names - Patch Volume by two of them and Panorama by the third
+# - and the fourth is the sustain pedal a part can be told to ignore. **The labels are the maker's
+# words for the controllers, not for the parameters they reach**, which is why two of them carry
+# the same meaning: "Patch Volume reacts to MIDI CC#7 (Channel Volume) as well as CC#11
+# (Expression)" (reference p. 48).
+#
+# **THIS IS NOT THE INSTRUMENT'S CONTROL MAP.** The Virus has a controller for every parameter and
+# no document saying which; see the header comment. Four is what is published, not what exists.
+controls:
+  channel_volume: {label: Channel Volume, cc: 7}
+  panorama:       {label: Panorama, cc: 10}
+  expression:     {label: Expression, cc: 11}
+  hold_pedal:     {label: Hold Pedal, cc: 64}

@@ -201,6 +201,7 @@ class TestBundledCorpus:
 			"novation/circuit_tracks",
 			"novation/mininova",
 			"novation/peak",
+			"oberheim/ob_x8",
 			"oberheim/teo_5",
 			"polyend/tracker",
 			"pwm/malevolent",
@@ -2126,13 +2127,22 @@ class TestOsmose:
 		control voltages, so MPE mode runs at six voices where the synthesizer has
 		twelve. A consumer that read `polyphony` and this flag together would get that
 		wrong, and no field here can say it.
+
+		**The OB-X8 is the one where MPE is a value of the MIDI channel setting**, not a
+		mode beside it: "3. MIDI Channel... select MPE Enabled" is the whole of how it is
+		turned on, so this flag and `channels` are two states of one global rather than
+		two independent facts. It is also the one whose MPE changes the bend range out
+		from under the program - "+/-48 semitones by default, regardless of the program's
+		Bend Lever Amount setting" - where `voice.pitch_bend.semitones` says 12, which is
+		the program's own maximum. Two numbers, one field, and its file says which.
 		"""
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
-			"expressive_e/osmose", "modal/carbon8m", "sequential/prophet_6",
-			"synthstrom_audible/deluge", "udo_audio/super_6", "waldorf/iridium"]
+			"expressive_e/osmose", "modal/carbon8m", "oberheim/ob_x8",
+			"sequential/prophet_6", "synthstrom_audible/deluge", "udo_audio/super_6",
+			"waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -7276,7 +7286,10 @@ class TestProphet6:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert "sequential/prophet_6" in flagged
-		assert len(flagged) == 8
+
+		# The OB-X8 joined them at #4477: MPE is a value of its MIDI Channel global.
+		assert "oberheim/ob_x8" in flagged
+		assert len(flagged) == 9
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -7293,7 +7306,7 @@ class TestProphet6:
 		preferred = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
 
-		assert preferred == ["elektron/digitone_ii", "oberheim/teo_5",
+		assert preferred == ["elektron/digitone_ii", "oberheim/ob_x8", "oberheim/teo_5",
 			"sequential/prophet_5", "sequential/prophet_6", "sequential/take_5"]
 
 	def test_one_file_covers_the_keyboard_and_the_module (self) -> None:
@@ -10640,3 +10653,289 @@ class TestCircuitRhythm:
 		assert "there is no Drum Control table in these six sheets" in account
 		assert "which are the Circuit Tracks' eight tracks, not this machine's eight sample" \
 			in account
+
+
+class TestOBX8:
+
+	"""Rank 70, and the first instrument here whose implementation is inside its user manual.
+
+	**The headline is how much the document contradicts itself**, not the count: one page
+	number printed twice, one control change printed twice, one NRPN name printed twice, six
+	ranges that disagree between its own two tables, ten more that break a limit the same
+	document states, and six mutually exclusive accounts of how many programs there are.
+	Every one was found twice, by two readers working from different libraries.
+	"""
+
+	def test_the_whole_implementation_arrives (self) -> None:
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert len(ob_x8.controls) == 147
+		assert len(ob_x8.groups) == 24
+		assert set(ob_x8.parts) == {"lower", "upper"}
+
+		# 121 control change rows and 135 NRPN addresses, merged into 163 parameters, of which
+		# sixteen control changes are held back and two NRPN addresses are not published.
+		by_cc = [c for c in ob_x8.controls.values() if c.cc is not None]
+		by_nrpn = [c for c in ob_x8.controls.values() if c.nrpn is not None]
+
+		assert len(by_cc) == 105
+		assert len(by_nrpn) == 133
+
+	def test_sixteen_control_changes_are_held_back_as_the_sibling_holds_them (self) -> None:
+		"""Data entry, the NRPN transport and the channel mode messages - the TEO-5's list."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+		numbers = {c.cc for c in ob_x8.controls.values() if c.cc is not None}
+
+		for held in (6, 38, 96, 97, 98, 99, 100, 101, 120, 121, 122, 123, 124, 125, 126, 127):
+			assert held not in numbers, f"control change {held} should not publish"
+
+		# Bank Select does publish, as it does for `oberheim/teo_5`.
+		assert 0 in numbers and 32 in numbers
+
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+		theirs = {c.cc for c in teo.controls.values() if c.cc is not None}
+
+		assert 0 in theirs and 32 in theirs
+		assert 6 not in theirs and 120 not in theirs
+
+	def test_control_change_12_is_printed_twice_and_ships_twice (self) -> None:
+		"""Two parameters at one number, which the file carries rather than correcting."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+		at_12 = sorted(c.name for c in ob_x8.controls.values() if c.cc == 12)
+
+		assert at_12 == ["osc_1_filter_env_mod", "osc_1_xmod"]
+
+		# And the NRPN table gives them 9 and 12, which is the argument that the second row's
+		# "12" is its NRPN number repeated into the control change column.
+		assert ob_x8.controls["osc_1_xmod"].nrpn == 9
+		assert ob_x8.controls["osc_1_filter_env_mod"].nrpn == 12
+
+		account = " ".join((ob_x8.source or "").split())
+
+		assert "CONTROL CHANGE 12 IS PRINTED TWICE" in account
+
+	def test_two_nrpn_addresses_are_not_published_and_the_file_says_why (self) -> None:
+		"""The maker prints one name on two addresses, so neither is attached to a control.
+
+		This is the strongest refusal in the file. Pairing control change 78 with whichever of
+		56 and 57 came first would be arbitrary, and publishing both would invent a parameter.
+		"""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+		addresses = {c.nrpn for c in ob_x8.controls.values() if c.nrpn is not None}
+
+		assert 56 not in addresses
+		assert 57 not in addresses
+
+		# The two control changes they belong to publish, without an NRPN.
+		for name in ("mod_box_lfo_2_dest_osc_1", "mod_box_lfo_2_dest_osc_2"):
+			assert ob_x8.controls[name].nrpn is None, name
+
+		assert ob_x8.controls["mod_box_lfo_2_dest_osc_1"].cc == 77
+		assert ob_x8.controls["mod_box_lfo_2_dest_osc_2"].cc == 78
+
+		account = " ".join((ob_x8.source or "").split())
+
+		assert "TWO NRPN ADDRESSES ARE NOT PUBLISHED AT ALL" in account
+		assert "correcting a maker's printed name is not this project's to do" in account
+
+	def test_the_six_ranges_that_disagree_carry_both_figures (self) -> None:
+		"""`nrpn_range` holds the NRPN table's where the two tables differ, and only there.
+
+		Both readers found the same six out of 91 pairs. Three read as a mistyping of 0-127;
+		two are genuinely two-sided and the prose supports a different table in each; one is
+		only the maker's leading zero.
+		"""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		differing = {c.name: (c.range, c.nrpn_range)
+			for c in ob_x8.controls.values() if c.nrpn_range is not None}
+
+		assert differing == {
+			"page_2_lfo_1_mod_2_ramp_up": ((0, 127), (0, 27)),
+			"mod_box_arp_speed": ((0, 127), (0, 27)),
+			"page_2_chord_key_limit": ((0, 127), (0, 1207)),
+			"mod_box_lfo2_bend_amount": ((0, 255), (0, 12)),
+			"env_type": ((0, 1), (0, 2)),
+		}
+
+		# Filter Frequency is the sixth, and is not recorded as a disagreement because the two
+		# figures are the same number: the control change table prints "00-175".
+		assert ob_x8.controls["filter_frequency"].range == (0, 175)
+		assert ob_x8.controls["filter_frequency"].nrpn_range is None
+
+		account = " ".join((ob_x8.source or "").split())
+
+		assert "SIX RANGES DISAGREE BETWEEN THE TWO TABLES" in account
+		assert "from ¼ to 12 semitones" in account
+
+	def test_ten_ranges_break_a_limit_the_same_document_states (self) -> None:
+		"""Printed as printed, because no page says how a value that wide is scaled.
+
+		The maker says a control change is limited to 128 values and then prints a wider range
+		ten times in its own control change column. Writing 127 into `range` would put a number
+		in the corpus that no document prints.
+		"""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		wide = sorted((c.cc, c.range[1]) for c in ob_x8.controls.values()
+			if c.cc is not None and c.range[1] > 127)
+
+		assert wide == [(1, 255), (33, 175), (39, 255), (40, 255), (42, 255), (45, 255),
+			(46, 255), (48, 255), (73, 255), (74, 175)]
+
+		account = " ".join((ob_x8.source or "").split())
+
+		assert "while CCs are limited to a range of 128" in account
+		assert "would be this file's invention rather than the maker's statement" in account
+
+	def test_the_program_count_is_not_recorded_because_six_accounts_disagree (self) -> None:
+		"""Program change travels both ways, which every account agrees about, and that is all."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert ob_x8.midi.program_change is not None
+		assert ob_x8.midi.program_change.receives is True
+		assert ob_x8.midi.program_change.sends is True
+		assert ob_x8.midi.program_change.presets is None
+
+		account = " ".join((ob_x8.source or "").split())
+
+		assert "SIX ACCOUNTS OF HOW MANY PROGRAMS THERE ARE AND NO TWO AGREE" in account
+		assert "768 user-programmable presets" in account
+		assert "the entire 640 program sound set" in account
+
+	def test_the_split_puts_the_upper_one_channel_above_the_lower (self) -> None:
+		"""Which is OS 2.0's headline, and the reason this instrument has parts at all."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert ob_x8.parts["lower"].channel_offset == 0
+		assert ob_x8.parts["upper"].channel_offset == 1
+		assert ob_x8.parts["lower"].polyphony == 4
+		assert ob_x8.parts["upper"].polyphony == 4
+
+		# The four is stated against the parts and not against the instrument, because the
+		# validator refuses both and the parts do not share a pool.
+		assert ob_x8.voice.polyphony is None
+		assert ob_x8.voice.polyphony_shared is False
+
+		said = prose_of("oberheim", "ob_x8")
+
+		assert "The Upper MIDI channel is automatically assigned as Lower channel +1" in said
+		assert "THIS FORMAT CANNOT SAY SO WHILE ALSO DESCRIBING THE SPLIT" in said
+
+	def test_the_two_split_parameters_with_two_addresses_each (self) -> None:
+		"""The maker prints both numbers in one ruled cell and marks the name (UPPER/LOWER).
+
+		Which number is which is settled by the rows either side rather than by the document:
+		SPLIT UPPER TRANSPOSE is 1125 and SPLIT LOWER TRANSPOSE is 1093, so the 112x run is
+		the Upper's. The second reader reached the same ordering from a different library.
+		"""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert ob_x8.controls["split_params_upper_level_upper"].nrpn == 1122
+		assert ob_x8.controls["split_params_upper_level_lower"].nrpn == 1090
+		assert ob_x8.controls["split_params_split_point_upper"].nrpn == 1123
+		assert ob_x8.controls["split_params_split_point_lower"].nrpn == 1092
+
+		for name, part in (("split_params_upper_level_upper", "upper"),
+				("split_params_upper_level_lower", "lower"),
+				("split_upper_transpose", "upper"), ("split_lower_transpose", "lower")):
+			assert ob_x8.controls[name].part == part, name
+
+		# The maker's own label is kept on both halves; the part is what tells them apart.
+		assert ob_x8.controls["split_params_upper_level_upper"].label \
+			== ob_x8.controls["split_params_upper_level_lower"].label
+
+	def test_the_pages_are_file_pages_because_one_number_is_printed_twice (self) -> None:
+		"""Sheet 121 ends Appendix E on 112 and sheet 122 begins the MIDI section on 112."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert ob_x8.sources["manual"].page_offset == 0
+		assert ob_x8.sources["addendum"].page_offset == 0
+
+		account = " ".join((ob_x8.source or "").split())
+
+		assert "PAGES ARE CITED AS FILE PAGES, BECAUSE THE PRINTED NUMBERING IS BROKEN" in account
+		assert "two different sheets both print 112" in account
+
+	def test_the_guide_was_built_from_a_sequential_document_and_the_body_is_clean (self) -> None:
+		"""Which explains the sibling: the TEO-5's map says in its own words it is the Pro 3's."""
+		said = prose_of("oberheim", "ob_x8")
+
+		assert "Pro 3 User's Guide" in said
+		assert "Mark Wilcox/Sequential" in said
+		assert "THIS DOCUMENT'S BODY IS CLEAN" in said
+
+		# And the sibling, which is where the same lineage shows on the page rather than in
+		# the metadata.
+		assert "Pro 3" in prose_of("oberheim", "teo_5")
+
+	def test_os_2_0_adds_five_parameters_with_no_published_address (self) -> None:
+		"""So the control map is the guide's, and the absence is enumerated rather than assumed."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert ob_x8.model.firmware == "2.0"
+
+		labels = {c.label for c in ob_x8.controls.values()}
+
+		for absent in ("AFTERTOUCH TO VOL", "MIDI #74 TO OSC 2", "MIDI #74 TO FILTER",
+				"LFO VOLUME DEST", "AFTERTOUCH AMOUNT"):
+			assert absent not in labels, absent
+
+		said = prose_of("oberheim", "ob_x8")
+
+		assert "five Page 2 parameters with no published MIDI address at all" in said
+
+	def test_the_labels_keep_the_makers_typos_and_the_field_names_do_not (self) -> None:
+		"""A label is the maker's word for the parameter; a field name is this project's."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert ob_x8.controls["osc_2_freq"].label == "0SC 2 FREQ"
+		assert ob_x8.controls["expresion_pedal"].label == "EXPRESION PEDAL"
+		assert ob_x8.controls["page_2_panwidth"].label == "PAGE 2 PANWIDTH"
+		assert ob_x8.controls["mod_box_lfo2_bend_amount"].label == "MOD BOX LFO2 BEND AMOUNT"
+
+		# The maker prints in capitals throughout, so the labels do too - as `roland/tr_6s`
+		# does, and unlike `oberheim/teo_5`, whose own document prints title case.
+		assert all(c.label == c.label.upper() for c in ob_x8.controls.values())
+
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		assert not all(c.label == c.label.upper() for c in teo.controls.values())
+
+	def test_four_things_that_look_like_misprints_and_are_not (self) -> None:
+		"""Each reconciled against the prose, so that nobody later "corrects" them."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		# Three non-bend modes plus 64 half-semitone bend steps is 67 values.
+		assert ob_x8.controls["page_2_portamento_mode"].range == (0, 66)
+
+		# "5-octave+minor third range (0-+63 semitones.)"
+		assert ob_x8.controls["osc_1_freq"].range == (0, 63)
+
+		# 88 printable characters, consistent across all twenty name positions.
+		assert ob_x8.controls["program_name_char_0"].range == (0, 87)
+
+		account = " ".join((ob_x8.source or "").split())
+
+		assert "FOUR THINGS THAT LOOK LIKE MISPRINTS AND ARE NOT" in account
+		assert "in 0.5 semitone increments" in account
+
+	def test_it_is_not_the_teo_5 (self) -> None:
+		"""Two Oberheims, one document family, and almost nothing shared on the wire."""
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
+
+		assert ob_x8.model.name == "OB-X8"
+		assert teo.model.name == "TEO-5"
+
+		# The TEO-5's document prints every control change from 0 to 127; this one leaves
+		# eight numbers unmentioned and prints one of them twice.
+		theirs = {c.cc for c in teo.controls.values() if c.cc is not None}
+		ours = {c.cc for c in ob_x8.controls.values() if c.cc is not None}
+
+		assert len(ours) == 104
+		assert ours != theirs
+
+		# Both prefer NRPN, in the maker's own words, which is what makes it a house position.
+		assert ob_x8.midi.nrpn == "preferred"
+		assert teo.midi.nrpn == "preferred"

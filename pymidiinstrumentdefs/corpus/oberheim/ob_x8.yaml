@@ -1,0 +1,526 @@
+# THE MAKER PUBLISHES NO SEPARATE MIDI IMPLEMENTATION DOCUMENT FOR THIS INSTRUMENT, and the
+# implementation is a sixteen-sheet section inside the User's Guide, headed "OB-X8 MIDI
+# Implementation". So this definition is read out of a user manual that happens to contain a
+# complete implementation, which is not the same thing as a user-manual-only instrument.
+#
+# AND THE GUIDE WAS BUILT FROM A SEQUENTIAL DOCUMENT. Its PDF metadata says so: `/Title` is
+# "Pro 3 User's Guide" and `/Author` is "Mark Wilcox/Sequential". **That is the explanation of
+# the sibling.** `oberheim/teo_5`'s own implementation document says in as many words that its
+# control map is the Pro 3's, and nineteen pages of the TEO-5's guide carry the Sequential Take
+# 5's running headers. The same production line made both.
+#
+# **THIS DOCUMENT'S BODY IS CLEAN, THOUGH, AND THAT WAS CHECKED RATHER THAN ASSUMED.** All 137
+# sheets were searched for "Pro 3", "Sequential", "Prophet", "Take 5", "Trigon" and "OB-6".
+# "Pro 3" appears nowhere in the body. "Sequential" and "Prophet" appear on one sheet, and that
+# is Tom Oberheim's foreword telling the story of the OB-X against the Prophet-5. No sheet
+# carries another instrument's running header. So the lineage is in the file's metadata and the
+# map in it is this instrument's.
+#
+# WHAT IS GOOD HERE: the section prints a control change for 120 numbers, an NRPN for 133 more
+# parameters, the received and transmitted channel messages, and the system exclusive messages.
+# WHAT IS NOT: it contradicts itself about more things than any document in this corpus so far,
+# and the list of those is the bulk of the account below. **Every one of them was found twice,
+# by two readers working from different libraries, and the ones the two readers disagree about
+# are recorded as disagreements rather than settled.**
+
+definition: 1
+
+model:
+  manufacturer: Oberheim
+  name: OB-X8
+  # OS 2.0, which is the addendum's subject and the newest the maker offers: "The newest
+  # version of the OS is 2.0" (addendum p. 1).
+  # **THE CONTROL MAP BELOW IS THE GUIDE'S, AND THE GUIDE PREDATES OS 2.0.** The addendum
+  # renumbers, removes and adds nothing in either table - checked by name against both - and
+  # the only controller number it mentions at all is CC 74, which the guide already carries.
+  # What OS 2.0 does add is five Page 2 parameters with no published MIDI address at all:
+  # `47. Aftertouch Amount`, `48. Aftertouch To Vol`, `49. MIDI #74 to OSC 2`, `50. MIDI #74 to
+  # Filter` and `23. LFO Volume Dest`. Searched for by name in both tables and in neither.
+  # ONE DEFINITION COVERS TWO BODIES, the keyboard and the Module, which share one product page
+  # and one guide. **The MIDI section carries no keyboard-or-Module qualification anywhere** -
+  # sheets 122 to 137 were searched for "(Keyboard only)" and "(Module only)" and have none,
+  # while every such marker in the document falls between sheets 7 and 83. The differences the
+  # guide states are the keybed, the levers and where a parameter is reached from: "Master Tune
+  # (Keyboard only)... On the Module, Master Tune is found in the Global menu" (manual p. 46),
+  # "Lever Calibration (Keyboard only)" (manual p. 28), "Master Tune Fine (Module only)"
+  # (manual p. 22), "Lever Box (Keyboard only)" (manual p. 50). None of those names appears in
+  # either table. The Module has no keybed and no levers, so it has no local source for a note,
+  # a channel pressure or a pitch bend; **that is an inference from the absence of the hardware
+  # and not something either document states**, and what either body *receives* is the same.
+  firmware: "2.0"
+
+source: >-
+  OB-X8 User's Guide, printed "Version 1.2, May, 2023" and served as `OB-X8-Manual-V2_2.pdf`,
+  137 sheets: the MIDI implementation is sheets 122 to 137 - the globals that govern MIDI
+  response on p. 122, the received and transmitted channel and controller messages on
+  pp. 123-124, the control change table on pp. 125-128, how an NRPN travels on pp. 129-130, the
+  NRPN table on pp. 131-133, and system exclusive on pp. 134-137. The OS 2.0 Addendum (8 sheets) supplies
+  everything about split channels, MPE and the arpeggiator's clock. The product page is cited
+  for which documents the maker offers and for the two bodies sharing one page.
+
+  **PAGES ARE CITED AS FILE PAGES, BECAUSE THE PRINTED NUMBERING IS BROKEN.** Sheets 1 to 7
+  print no number; 8 and 9 print "viii" and "ix", and i to vii are never printed at all; sheets
+  10 to 120 print 1 to 111; and then **two different sheets both print 112** - sheet 121, the
+  last page of Appendix E, and sheet 122, the first page of the MIDI implementation - after
+  which 123 to 137 print 113 to 127. So the offset would be +9 for one run and +10 for the
+  other and undefined for 112 itself. Both readers read the folio off all 137 sheets
+  independently and agree on every range. The addendum prints no page number on any sheet.
+
+  THE MAKER STATES A LIMIT AND THEN BREAKS IT TEN TIMES, which is the one thing most likely to
+  be got wrong here. "NRPNs are the preferred method of parameter transmission, since they
+  cover the complete range of all parameters, while CCs are limited to a range of 128" (manual
+  p. 122) - and its own control change table prints a range wider than 128 on ten rows: CC 1 and
+  CC 73 and the six envelope times at 0-255, CC 33 at "00-175" and CC 74 at 0-175. **Those are
+  the parameter's range printed in a control change column, not the message's.** `range` below
+  carries the figure exactly as printed and nothing is scaled, because no page says how a value
+  that wide is scaled into seven bits, and a 127 that no document prints would be this file's
+  invention rather than the maker's statement. Where the parameter also has an NRPN, that is the
+  way to reach the top of it, which is the maker's own advice.
+
+  SIX RANGES DISAGREE BETWEEN THE TWO TABLES, and `nrpn_range` carries the NRPN table's. Both
+  readers found the same six and no others, out of 91 parameters this file pairs. One is not a
+  real disagreement: Filter Frequency is "00-175" by control change against 0-175 by NRPN, which
+  is a leading zero. **Three are unreadable as anything but a mistyping of 0-127** - Page 2 LFO 1
+  Mod 2 Ramp Up and Mod Box Arp Speed are 0-27 by NRPN, where Mod 2's own twin is 0-127 in both
+  tables, and Page 2 Chord Key Limit is "0-1207". **Two are genuinely two-sided.** Env Type is
+  0-1 by control change and 0-2 by NRPN, and the prose supports the control change: Page 2's
+  Envelope Type sets the envelopes "to either OB-X/Xa or OB-8 contours", which is two states.
+  Mod Box LFO 2 Bend Amount is 0-255 by control change and 0-12 by NRPN, twenty-one times apart,
+  and here the prose supports the **NRPN**: the Bend Lever Amount runs "from ¼ to 12 semitones"
+  (manual p. 67). Both figures are published in both cases and neither is resolved.
+
+  TWO NRPN ADDRESSES ARE NOT PUBLISHED AT ALL, which is the strongest thing in this file. The
+  NRPN table prints `MOD BOX LFO 2 DEST OSC 2` **twice**, at 56 and at 57, with one range. The
+  two tables list that block in the same order - control change 75 Rate, 76 Shape, 77 Dest Osc
+  1, 78 Dest Osc 2, 79 Depth against NRPN 54, 55, 56, 57, 58 - so 56 sits exactly where the
+  control change table has Dest Osc 1, and the reading that explains the document is that 56's
+  printed name is wrong. **That reading is not written into this file**, because correcting a
+  maker's printed name is not this project's to do. Nor is either address attached to a control:
+  pairing CC 78 with whichever of the two comes first would be arbitrary, and publishing both as
+  controls would invent a parameter the instrument has not. So the two control changes publish
+  without an NRPN, and 56 and 57 publish not at all. Both readers reached this independently.
+
+  THREE PARAMETERS ARE DELIBERATELY NOT PAIRED, and the two readers disagree about one of them.
+  NRPN 122 `MOD BOX TRANSPOSE UP/ DOWN` could be control change 9 `TRANSPOSE UP/DOWN` or control
+  change 90 `ARP TRANSPOSE`: all three are 0-2, the arpeggiator lives in the Mod Box, and both
+  control changes are otherwise unpaired. **The second reader paired it with 90 and this file
+  pairs it with neither**, which is a disagreement recorded rather than resolved. The other two
+  are NRPN 25 `FILTER KBD TRACK` against control change 36 `FILTER KEYBOARD`, and NRPN 123 `PAGE
+  2 FILTER KBD TRACK` against control change 37 `PAGE 2 FILTER KBD ON LEVEL`: plausible both
+  times, and "keyboard track" and "on level" are not the same words.
+
+  CONTROL CHANGE 12 IS PRINTED TWICE, for `OSC 1 XMOD` and for `OSC 1 FILTER ENV MOD`. The NRPN
+  table gives those 9 and 12, so the second row's "12" is very likely its NRPN number repeated
+  into the control change column. **Both ship at control change 12 as printed**, which is the
+  rule this corpus follows for a number a maker prints and nothing corrects.
+
+  SIXTEEN CONTROL CHANGES ARE NOT PUBLISHED AS CONTROLS, which follows `oberheim/teo_5` exactly:
+  6 and 38 Data Entry, 96 and 97 Data Increment and Decrement - whose printed "ranges" are "+1"
+  and "-1" - 98 to 101 NRPN and RPN, and 120 to 127, which are channel mode messages the
+  validator refuses. 0 and 32 Bank Select do publish, as they do for the sibling.
+
+  THE DOCUMENT GIVES SIX ACCOUNTS OF HOW MANY PROGRAMS THERE ARE AND NO TWO AGREE, so
+  `presets` is not recorded. "The OB-X8 contains 768 user-programmable presets... organized into
+  six Banks, each of which contain 128 preset locations (organized as 16 Groups of 8 Programs)"
+  (manual p. 15); a global transmits "the entire 640 program sound set" (manual p. 27); bank
+  select is "1 - 5 select user banks 1 - 5; 6 - 9 select factory banks 1 - 4" (manual p. 123),
+  which is nine banks against six, while the transmitted table gives "Bank Select: 1 - 5"; the
+  program dump request takes a "Bank Number, 0 - 7" (manual p. 135) and the program data dump a
+  "Group Number: 0 - 9" with "Program Number: 0 - 39" (manual p. 136); and the program change row
+  announces "0-39" and then enumerates 0 to 127 across sixteen groups (manual p. 123). Six
+  statements of one number. `receives` and `sends` are recorded because every account agrees
+  that program change travels both ways.
+
+  WHAT IS ABSENT, CHECKED RATHER THAN ASSUMED. **There is no MIDI implementation chart** - the
+  conventional grid - in either document, so `mode` is not recorded: the control change table
+  lists Omni and Mono and Poly Mode messages as received, and no page gives a default mode.
+  Neither document states a note range for the sound engine beyond "Note number 0-127" in the
+  message tables, so `note_range` is not recorded. And **neither message table is a complete
+  statement of what is received**: control changes 2 and 4 are absent from the control change
+  table and present in the message tables, while a global says the synth responds to "Pitch
+  Wheel, Mod Wheel, Pedal, Breath, Volume, and Expression".
+
+  FOUR THINGS THAT LOOK LIKE MISPRINTS AND ARE NOT, established from the prose by the second
+  reader, and recorded here so nobody "fixes" them. **Portamento Mode's 0-66 is right**: Page 2
+  lists three non-bend modes and a Bend Up mode whose range "is displayed as -12.0... to +19.5,
+  in 0.5 semitone increments", which is 64 bend steps plus three modes, 67 values. **Osc Freq's
+  0-63 is right**: "5-octave+minor third range (0-+63 semitones.)" (manual p. 30). **Program Name
+  Char's 0-87 is right**, 88 printable characters, and consistent across all twenty rows. **Arp
+  Transpose Interval's 0-120 against a count of 0-5 is right**, five keys pressed.
+
+  THE MAKER'S CAPITALS ARE THE LABELS, as they are for `roland/tr_6s`, whose document is also
+  entirely in capitals - where `oberheim/teo_5` keeps title case because its own document prints
+  title case. The printed typos are kept in the labels and not in the field names: `0SC 2 FREQ`
+  for control change 16, `EXPRESION PEDAL` for 11, `PAGE 2 PANWIDTH` for 10 against the NRPN
+  table's `PAGE 2 PAN WIDTH`, `MOD BOX LFO2` for 1 against `MOD BOX LFO 2` everywhere else.
+
+  NOT RECORDED: values, bands and defaults for any control. The two tables give a range and
+  nothing else, and the guide's Page 2 chapter names the states some parameters step through
+  under menu numbers that **the addendum shows are not stable** - it addresses "Global 3. MIDI
+  Channel" where the guide's third global is Local Control, and "Page 2 23. LFO Volume Dest"
+  where the guide's twenty-third is Vibrato LFO Wave. Those numbers also have to differ between
+  the keyboard and the Module, because one has a global the other has not. So no state is taken
+  from a menu position.
+
+  WHAT THIS FILE DOES NOT CARRY, and a reader implementing system exclusive needs to know:
+  **the document gives this instrument two different SysEx IDs.** The device inquiry reply says
+  "OB-X8  ID  (Family LS)" against 0011 0011, which is 0x33, and every one of the seven other
+  SysEx messages says "OB-X8 ID" against 0011 0001, which is 0x31. One is wrong and no page
+  tells which. The dump sizes do not agree either - 599 bytes for a program dump against 597 for
+  an edit buffer dump of the same data, and "The 128 'packed' parameter bytes in the program
+  dump follow the order of the NRPN list" - and a "Save Edit Buffer" table is byte-for-byte the
+  "Request Program Dump" table above it, command byte and description included. `sysex: true`
+  records that the instrument has system exclusive, which is not in doubt; the messages
+  themselves are beyond what this format holds.
+
+sources:
+  manual:
+    kind: manual
+    title: OB-X8 User's Guide
+    edition: Version 1.2
+    dated: 2023-05
+    landing: "https://oberheim.com/products/ob-x8/"
+    url: "https://oberheim.com/wp-content/uploads/2023/09/OB-X8-Manual-V2_2.pdf"
+    sha256: 55f631dc92855dddb2cf9206b254eb7ebbe1b41874feaf649e7da40b46c706aa
+    retrieved: 2026-10-04
+    # The printed edition is "Version 1.2, May, 2023", the file is named `V2_2`, and the PDF was
+    # created on 27 September 2023. Three numbering schemes and nothing says they are the same
+    # thing, so the printed one is recorded and nothing here rests on `V2_2` meaning anything.
+    # `page_offset` is left at 0 and pages are cited as file pages: see the source account.
+  addendum:
+    kind: firmware_addendum
+    title: Oberheim OB-X8 OS 2.0 New Features Addendum
+    dated: 2024-06-28
+    landing: "https://oberheim.com/products/ob-x8/"
+    url: "https://oberheim.com/wp-content/uploads/2024/07/OB-X8-OS2.0-Addendum.pdf"
+    sha256: 71b6ed663aaa37ad8da9b2a288b9c9e2e757d58f2716d73e6d820de93b0ee171
+    retrieved: 2026-10-04
+    # It names no version of itself. The date is the PDF's own creation date, because the
+    # document carries none in its pages.
+  product_page:
+    kind: product_page
+    title: "OB-X8"
+    landing: "https://oberheim.com/products/ob-x8/"
+    url: "https://oberheim.com/products/ob-x8/"
+    sha256: 72f707d3be799a5a3064da1992a0c9217661c278a0d67c9c80e8c996c04e812e
+    retrieved: 2026-10-04
+    paginated: false
+    # The digest is of the page's visible text as saved on 2026-10-04, which is the copy a
+    # citation can be checked against. Cited for the three documents the maker offers and for
+    # the keyboard and the Module sharing one page.
+
+midi:
+  # "MIDI Channel: All, 1-16. This allows you to set the MIDI channel that the OB-X8 will both
+  # send and respond to. When set to all, the OB-X8 will receive on all MIDI channels, and will
+  # transmit on channel 1" (manual p. 22). The MIDI section's own wording is shorter and does not
+  # say what it transmits on.
+  channels: [1, 16]
+  # NOT RECORDED: mode. There is no MIDI implementation chart in either document, and no page
+  # gives a default mode. See the source account.
+  # RECEIVES, AND NOTHING SAYS IT SENDS ONE. The arpeggiator's clock source is "MIDI In DIN or
+  # MIDI In USB" (addendum p. 6), and no page in either document describes a clock going out.
+  clock: receives
+  # RECEIVES, AND THE MAKER ENUMERATES WHICH MESSAGES. "The arpeggiator also responds to external
+  # MIDI Song Position Pointer messages, specifically Song Start, Song Continue, and Song Position
+  # Pointer" (addendum p. 6). **Song Stop is not among them**, which is the maker's own list and
+  # not an omission in this reading.
+  transport: receives
+  program_change:
+    # Both ways: the received and the transmitted channel message tables each carry a program
+    # change row (manual pp. 123-124).
+    receives: true
+    sends: true
+    # NOT RECORDED: presets. Six accounts and no two alike - see the source account.
+  # PREFERRED, IN THE MAKER'S OWN WORDS, and the same words it uses for the sibling: "NRPNs are
+  # the preferred method of parameter transmission, since they cover the complete range of all
+  # parameters, while CCs are limited to a range of 128" (manual p. 122). Which of the two a
+  # parameter change travels as is a setting - "Param Param Send: Off, CC, NRPN" and "Param
+  # Param Receive: Off, CC, NRPN" (manual p. 122), the doubled word being the maker's typo - so a
+  # control below carrying both numbers is one parameter reachable either way.
+  # **AND THE CLAIM IS NOT QUITE TRUE OF THIS INSTRUMENT**: four real controls have no NRPN at
+  # all - 9 Transpose Up/Down, 74 Brightness, 95 Lower/Upper/No Select and 119 Normal/Split/
+  # Double Mode - so NRPN does not "cover the complete range of all parameters" here.
+  nrpn: preferred
+  # "MIDI SysEx Cable: Off, MIDI, USB-When set to MIDI it will receive and transmit MIDI SysEx
+  # messages using the MIDI ports/cables" (manual p. 122). What the messages are is a different
+  # question and the document does not agree with itself about it: see the source account.
+  sysex: true
+  # MPE, WHICH IS A SETTING RATHER THAN A STATE. "the OB-X8 will respond to any MPE-capable
+  # controller across eight MPE MIDI channels (as the OB-X8 has eight voices)" (addendum p. 4),
+  # chosen by selecting "MPE Enabled" in the same global that sets the MIDI channel. So this is
+  # true of the instrument and not true all the time, which is the same shape as
+  # `expressive_e/osmose` and is why that flag exists. The three axes are "X-axis, or left-right
+  # movement, sent as Pitch Bend", "Y-axis, or front-to-back movement, sent as MIDI CC74
+  # (assignable per preset)" and "Z-axis, or up-down movement, sent as Channel Pressure/
+  # Aftertouch" (addendum p. 4). Whether MPE transmits as well as receives, whether there is a
+  # master channel, and whether MPE and the split channels below can both be on, are all
+  # unstated - the addendum says only "eight MPE MIDI channels".
+  per_voice_channels: true
+
+voice:
+  addressing: pitches
+  # **EIGHT VOICES, AND THIS FORMAT CANNOT SAY SO WHILE ALSO DESCRIBING THE SPLIT.** "The OB-X8
+  # is an eight-voice, polyphonic analog synthesizer" (manual p. 10), and Poly Chain raises it:
+  # "connect up to four OB-X8 keyboards or modules using Poly Chain mode, increasing the total
+  # polyphony from 8 up to as many as 32 voices" (addendum p. 2), one way only, over MIDI DIN.
+  #
+  # The eight are stated against the two parts below, four each, rather than here. That is not a
+  # preference: the validator refuses a whole-instrument figure beside parts that do not share a
+  # pool, and these parts do not share one - "Split (four voices with one sound on the lower
+  # portion of the keyboard, and four voices with a different sound on the upper)" (manual
+  # p. 15), with Double likewise "two different programs of four voices each layered on top of
+  # each other" (manual p. 15). Neither half can take a voice from the other.
+  #
+  # **So the eight is here in words only, and that is a gap rather than a decision.** The parts
+  # exist only in Split mode and the eight is true always, which is one claim this format cannot
+  # hold beside the other. The two part figures do sum to eight, which recovers it for anybody
+  # reading the parts. Raised as a question of its own rather than worked around silently.
+  polyphony_shared: false
+  # CHANNEL, AND POLY KEY PRESSURE IS A SINGLE ROW WITH NOTHING BEHIND IT. "Polyphonic Key
+  # Pressure" appears **once in 137 sheets**, in the received channel message table, and no page
+  # in either document says what it does. Everything else about pressure here is channel
+  # pressure: it is in both the received and the transmitted tables, it is what the TOUCH button
+  # routes, it is MPE's Z-axis, and the addendum calls it "mono pressure" where MPE is off. So
+  # `channel` is what the documents describe and `poly` would rest on one unexplained row.
+  aftertouch: channel
+  velocity:
+    # "Note On. Note off if vvvvvvv = 0" against "Note Off. Velocity is ignored" (manual p. 123).
+    note_on: received
+    note_off: false
+  pitch_bend:
+    # "Bend Lever Amount: Use this parameter to limit the range of the Bend lever, from ¼ to 12
+    # semitones" (manual p. 67), and two semitones by default. **MPE is a different number
+    # entirely**: "MPE Pitch Bend on the OB-X8 covers a range of +/-48 semitones by default,
+    # regardless of the program's Bend Lever Amount setting" (addendum p. 4). Twelve is the
+    # program's own maximum and is what a panel can set; the 48 belongs to MPE and is recorded
+    # here in words because this format holds one number.
+    semitones: 12
+    programmable: true
+
+parts:
+  # TWO PARTS, AND ONLY IN SPLIT MODE. "This new feature allows you to control the Lower and
+  # Upper programs of a Split program over separate MIDI channels. The Lower and Upper voices
+  # transmit and receive on separate MIDI channels" (addendum p. 2). They are "active whenever
+  # Split mode is enabled with the Global MIDI Channel set to any channel but All", and **"The
+  # Upper MIDI channel is automatically assigned as Lower channel +1"** - which is what
+  # `channel_offset` holds. What the Upper channel is when the global is 16 is not stated.
+  # Not available in Double mode: "The Double program will only transmit and receive on the
+  # Global MIDI channel" (addendum p. 2).
+  # **THE VOICES ARE NOT STATED AGAINST EITHER PART, AND THE VALIDATOR IS RIGHT TO ASK.** In
+  # Split mode the eight divide evenly - "Split (four voices with one sound on the lower portion
+  # of the keyboard, and four voices with a different sound on the upper)" (manual p. 15) - but
+  # that is true only in Split mode, and these parts exist only in Split mode while the eight
+  # voices in `voice` above are true of the instrument always. So the figure is said once, where
+  # it holds without a condition, and `voice.polyphony_shared: false` says the two halves do not
+  # draw on one another's voices. See the comment on `voice.polyphony_shared`.
+  lower:
+    label: Lower
+    channel_offset: 0
+    polyphony: 4
+    receives: [notes, controls]
+  upper:
+    label: Upper
+    channel_offset: 1
+    polyphony: 4
+    receives: [notes, controls]
+
+groups:
+  oscillators: Oscillators
+  page_2_oscillators: Page 2 Oscillators
+  control: Control
+  page_2_portamento: Page 2 Portamento
+  filter: Filter
+  page_2_lfo_1: Page 2 LFO 1
+  lfo_1: LFO 1
+  mod_box_lfo_2: Mod Box LFO 2
+  filter_envelope: Filter Envelope
+  volume_envelope: Volume Envelope
+  aftertouch: Aftertouch
+  amplifier: Amplifier
+  unison: Unison
+  mod_box: Mod Box
+  mod_box_arp: Mod Box Arpeggiator
+  page_2_pedal: Page 2 Pedal
+  page_2_chord: Page 2 Chord
+  envelopes: Envelopes
+  page_2_pan: Page 2 Pan
+  program_name: Program Name
+  page_2_filter: Page 2 Filter
+  split: Split
+  program_selection: Program Selection
+  keyboard: Keyboard
+
+controls:
+  # ---- oscillators
+  osc_1_freq:                         {label: OSC 1 FREQ, cc: 15, nrpn: 1, range: [0, 63], group: oscillators}
+  osc_2_freq:                         {label: 0SC 2 FREQ, cc: 16, nrpn: 2, range: [0, 63], group: oscillators}
+  osc_2_detune:                       {label: OSC 2 DETUNE, cc: 17, nrpn: 3, range: [0, 63], group: oscillators}
+  osc_1_waveform:                     {label: OSC 1 WAVEFORM, cc: 19, nrpn: 5, range: [0, 3], group: oscillators}
+  osc_2_waveform:                     {label: OSC 2 WAVEFORM, cc: 20, nrpn: 6, range: [0, 3], group: oscillators}
+  osc_1_pw:                           {label: OSC 1 PW, cc: 21, nrpn: 7, group: oscillators}
+  osc_2_pw:                           {label: OSC 2 PW, cc: 22, nrpn: 8, group: oscillators}
+  osc_1_xmod:                         {label: OSC 1 XMOD, cc: 12, nrpn: 9, range: [0, 1], group: oscillators}
+  osc_square_mode:                    {label: OSC SQUARE MODE, cc: 23, nrpn: 10, range: [0, 1], group: oscillators}
+  osc_1_filter_env_mod:               {label: OSC 1 FILTER ENV MOD, cc: 12, nrpn: 12, range: [0, 1], group: oscillators}
+  osc_1_sync:                         {label: OSC 1 SYNC, cc: 24, nrpn: 13, range: [0, 1], group: oscillators}
+  osc_1_level:                        {label: OSC 1 LEVEL, cc: 25, nrpn: 19, range: [0, 1], group: oscillators}
+  osc_2_level:                        {label: OSC 2 LEVEL, cc: 26, nrpn: 20, range: [0, 1], group: oscillators}
+  noise_level:                        {label: NOISE LEVEL, cc: 29, nrpn: 21, range: [0, 1], group: oscillators}
+  # ---- page_2_oscillators
+  page_2_voice_detune_range:          {label: PAGE 2 VOICE DETUNE RANGE, cc: 18, nrpn: 4, group: page_2_oscillators}
+  page_2_osc_xmod_amt:                {label: PAGE 2 OSC XMOD AMT, cc: 13, nrpn: 11, group: page_2_oscillators}
+  page_2_osc_1_on_level:              {label: PAGE 2 OSC 1 ON LEVEL, cc: 27, nrpn: 97, group: page_2_oscillators}
+  page_2_osc_2_on_level:              {label: PAGE 2 OSC 2 ON LEVEL, cc: 28, nrpn: 98, group: page_2_oscillators}
+  page_2_noise_on_level:              {label: PAGE 2 NOISE ON LEVEL, cc: 30, nrpn: 99, group: page_2_oscillators}
+  # ---- control
+  portamento_rate:                    {label: PORTAMENTO RATE, cc: 5, nrpn: 14, group: control}
+  vintage:                            {label: VINTAGE, cc: 3, nrpn: 26, group: control}
+  # ---- page_2_portamento
+  page_2_portamento_mode:             {label: PAGE 2 PORTAMENTO MODE, cc: 91, nrpn: 15, range: [0, 66], group: page_2_portamento}
+  page_2_portamento_match:            {label: PAGE 2 PORTAMENTO MATCH, cc: 92, nrpn: 16, range: [0, 1], group: page_2_portamento}
+  page_2_portamento_quantize:         {label: PAGE 2 PORTAMENTO QUANTIZE, cc: 93, nrpn: 17, range: [0, 1], group: page_2_portamento}
+  page_2_portamento_legato:           {label: PAGE 2 PORTAMENTO LEGATO, cc: 94, nrpn: 18, range: [0, 1], group: page_2_portamento}
+  # ---- filter
+  filter_frequency:                   {label: FILTER FREQUENCY, cc: 33, nrpn: 22, range: [0, 175], group: filter}
+  filter_resonance:                   {label: FILTER RESONANCE, cc: 34, nrpn: 23, group: filter}
+  filter_type:                        {label: FILTER TYPE, cc: 35, nrpn: 24, range: [0, 5], group: filter}
+  filter_kbd_track:                   {label: FILTER KBD TRACK, nrpn: 25, range: [0, 1], group: filter}
+  filter_modulation:                  {label: FILTER MODULATION, cc: 31, nrpn: 59, group: filter}
+  filter_pressure:                    {label: FILTER PRESSURE, cc: 44, nrpn: 70, range: [0, 1], group: filter}
+  filter_keyboard:                    {label: FILTER KEYBOARD, cc: 36, range: [0, 1], group: filter}
+  brightness_filter_cutoff_relative:  {label: BRIGHTNESS (FILTER CUTOFF - RELATIVE), cc: 74, range: [0, 175], group: filter}
+  # ---- page_2_lfo_1
+  page_2_lfo_type:                    {label: PAGE 2 LFO TYPE, cc: 62, nrpn: 27, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_sample_hold_in:          {label: PAGE 2 LFO SAMPLE/HOLD IN, cc: 63, nrpn: 28, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_trigger:               {label: PAGE 2 LFO 1 TRIGGER, cc: 102, nrpn: 39, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_trigger_phase:         {label: PAGE 2 LFO 1 TRIGGER PHASE, cc: 103, nrpn: 40, group: page_2_lfo_1}
+  page_2_lfo_1_kbd_track:             {label: PAGE 2 LFO 1 KBD TRACK, cc: 104, nrpn: 41, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_mod_1_ramp_delay:      {label: PAGE 2 LFO 1 MOD 1 RAMP DELAY, cc: 105, nrpn: 42, group: page_2_lfo_1}
+  page_2_lfo_1_mod_1_ramp_up:         {label: PAGE 2 LFO 1 MOD 1 RAMP UP, cc: 106, nrpn: 43, group: page_2_lfo_1}
+  page_2_lfo_1_ramp_invert:           {label: PAGE 2 LFO 1 RAMP INVERT, cc: 107, nrpn: 44, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_mod_1_quantize:        {label: PAGE 2 LFO 1 MOD 1 QUANTIZE, cc: 108, nrpn: 45, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_osc_1_mod_1_invert:    {label: PAGE 2 LFO 1 OSC 1 MOD 1 INVERT, cc: 109, nrpn: 46, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_mod_2_ramp_delay:      {label: PAGE 2 LFO 1 MOD 2 RAMP DELAY, cc: 110, nrpn: 47, group: page_2_lfo_1}
+  page_2_lfo_1_mod_2_ramp_up:         {label: PAGE 2 LFO 1 MOD 2 RAMP UP, cc: 111, nrpn: 48, nrpn_range: [0, 27], group: page_2_lfo_1}
+  page_2_lfo_1_mod_2_ramp_invert:     {label: PAGE 2 LFO 1 MOD 2 RAMP INVERT, cc: 112, nrpn: 49, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_mod_2_quantize:        {label: PAGE 2 LFO 1 MOD 2 QUANTIZE, cc: 113, nrpn: 50, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_1_osc_1_mod_2_invert:    {label: PAGE 2 LFO 1 OSC 1 MOD 2 INVERT, cc: 114, nrpn: 51, range: [0, 1], group: page_2_lfo_1}
+  page_2_mod_2_ramp_to_lfo_speed:     {label: PAGE 2 MOD 2 RAMP TO LFO SPEED, cc: 115, nrpn: 52, range: [0, 1], group: page_2_lfo_1}
+  page_2_lfo_shift_voices_5_8:        {label: PAGE 2 LFO SHIFT VOICES 5-8, cc: 116, nrpn: 53, range: [0, 2], group: page_2_lfo_1}
+  # ---- lfo_1
+  lfo_1_rate:                         {label: LFO 1 RATE, cc: 51, nrpn: 29, group: lfo_1}
+  lfo_1_shape:                        {label: LFO 1 SHAPE, cc: 52, nrpn: 30, range: [0, 4], group: lfo_1}
+  lfo_1_depth_1:                      {label: LFO 1 DEPTH 1, cc: 53, nrpn: 31, group: lfo_1}
+  lfo_1_depth_2:                      {label: LFO 1 DEPTH 2, cc: 54, nrpn: 32, group: lfo_1}
+  lfo_1_dest_1_osc_1:                 {label: LFO 1 DEST 1 OSC 1, cc: 55, nrpn: 33, range: [0, 1], group: lfo_1}
+  lfo_1_dest_1_osc_2:                 {label: LFO 1 DEST 1 OSC 2, cc: 56, nrpn: 34, range: [0, 1], group: lfo_1}
+  lfo_1_dest_1_filter:                {label: LFO 1 DEST 1 FILTER, cc: 57, nrpn: 35, range: [0, 1], group: lfo_1}
+  lfo_1_dest_2_pwm_1:                 {label: LFO 1 DEST 2 PWM 1, cc: 58, nrpn: 36, range: [0, 1], group: lfo_1}
+  lfo_1_dest_2_pwm_2:                 {label: LFO 1 DEST 2 PWM 2, cc: 59, nrpn: 37, range: [0, 1], group: lfo_1}
+  lfo_1_dest_2_volume:                {label: LFO 1 DEST 2 VOLUME, cc: 60, nrpn: 38, range: [0, 1], group: lfo_1}
+  # ---- mod_box_lfo_2
+  mod_box_lfo_2_rate:                 {label: MOD BOX LFO 2 RATE, cc: 75, nrpn: 54, group: mod_box_lfo_2}
+  mod_box_lfo_2_shape:                {label: MOD BOX LFO 2 SHAPE, cc: 76, nrpn: 55, range: [0, 5], group: mod_box_lfo_2}
+  mod_box_lfo_2_depth:                {label: MOD BOX LFO 2 DEPTH, cc: 79, nrpn: 58, group: mod_box_lfo_2}
+  mod_box_lfo2_bend_amount:           {label: MOD BOX LFO2 BEND AMOUNT, cc: 1, nrpn: 72, range: [0, 255], nrpn_range: [0, 12], group: mod_box_lfo_2}
+  mod_box_lfo_2_lower:                {label: MOD BOX LFO 2 LOWER, cc: 82, nrpn: 78, range: [0, 1], group: mod_box_lfo_2}
+  mod_box_lfo_2_upper:                {label: MOD BOX LFO 2 UPPER, cc: 83, nrpn: 79, range: [0, 1], group: mod_box_lfo_2}
+  mod_box_lfo_2_bend_osc_2_only:      {label: MOD BOX LFO 2 BEND OSC 2 ONLY, cc: 80, nrpn: 92, range: [0, 1], group: mod_box_lfo_2}
+  mod_box_lfo_2_dest_osc_1:           {label: MOD BOX LFO 2 DEST OSC 1, cc: 77, range: [0, 1], group: mod_box_lfo_2}
+  mod_box_lfo_2_dest_osc_2:           {label: MOD BOX LFO 2 DEST OSC 2, cc: 78, range: [0, 1], group: mod_box_lfo_2}
+  # ---- filter_envelope
+  filter_env_attack:                  {label: FILTER ENV ATTACK, cc: 39, nrpn: 60, range: [0, 255], group: filter_envelope}
+  filter_env_decay:                   {label: FILTER ENV DECAY, cc: 40, nrpn: 62, range: [0, 255], group: filter_envelope}
+  filter_env_sustain:                 {label: FILTER ENV SUSTAIN, cc: 41, nrpn: 64, group: filter_envelope}
+  filter_env_release:                 {label: FILTER ENV RELEASE, cc: 42, nrpn: 66, range: [0, 255], group: filter_envelope}
+  filter_env_velocity_on_off:         {label: FILTER ENV VELOCITY ON/OFF, cc: 43, nrpn: 68, range: [0, 1], group: filter_envelope}
+  # ---- volume_envelope
+  volume_env_attack:                  {label: VOLUME ENV ATTACK, cc: 45, nrpn: 61, range: [0, 255], group: volume_envelope}
+  volume_env_decay:                   {label: VOLUME ENV DECAY, cc: 46, nrpn: 63, range: [0, 255], group: volume_envelope}
+  volume_env_sustain:                 {label: VOLUME ENV SUSTAIN, cc: 47, nrpn: 65, group: volume_envelope}
+  volume_env_release:                 {label: VOLUME ENV RELEASE, cc: 48, nrpn: 67, range: [0, 255], group: volume_envelope}
+  volume_env_velocity_on_off:         {label: VOLUME ENV VELOCITY ON/OFF, cc: 49, nrpn: 69, range: [0, 1], group: volume_envelope}
+  # ---- aftertouch
+  lfo_pressure:                       {label: LFO PRESSURE, cc: 61, nrpn: 71, range: [0, 1], group: aftertouch}
+  # ---- amplifier
+  program_volume:                     {label: PROGRAM VOLUME, cc: 8, nrpn: 73, group: amplifier}
+  master_volume:                      {label: MASTER VOLUME, cc: 7, group: amplifier}
+  # ---- unison
+  unison:                             {label: UNISON, cc: 70, nrpn: 74, range: [0, 1], group: unison}
+  unison_voice_count:                 {label: UNISON VOICE COUNT, cc: 71, nrpn: 75, range: [0, 7], group: unison}
+  unison_key_mode:                    {label: UNISON KEY MODE, cc: 72, nrpn: 76, range: [0, 5], group: unison}
+  # ---- mod_box
+  mod_box_mode:                       {label: MOD BOX MODE, cc: 81, nrpn: 77, range: [0, 1], group: mod_box}
+  mod_box_transpose_up_down:          {label: MOD BOX TRANSPOSE UP/ DOWN, nrpn: 122, range: [0, 2], group: mod_box}
+  # ---- mod_box_arp
+  mod_box_arp_on:                     {label: MOD BOX ARP ON, cc: 84, nrpn: 80, range: [0, 1], group: mod_box_arp}
+  mod_box_arp_speed:                  {label: MOD BOX ARP SPEED, cc: 85, nrpn: 81, nrpn_range: [0, 27], group: mod_box_arp}
+  mod_box_arp_hold_kbd:               {label: MOD BOX ARP HOLD KBD, cc: 86, nrpn: 82, range: [0, 2], group: mod_box_arp}
+  mod_box_arp_down_up:                {label: MOD BOX ARP DOWN/UP, cc: 87, nrpn: 83, range: [0, 3], group: mod_box_arp}
+  mod_box_arp_lower:                  {label: MOD BOX ARP LOWER, cc: 88, nrpn: 84, range: [0, 1], group: mod_box_arp}
+  mod_box_arp_upper:                  {label: MOD BOX ARP UPPER, cc: 89, nrpn: 85, range: [0, 1], group: mod_box_arp}
+  arp_number_of_trans_pose_intervals: {label: ARP NUMBER OF TRANS POSE INTERVALS, nrpn: 86, range: [0, 5], group: mod_box_arp}
+  arp_trans_intval_note_0:            {label: ARP TRANS INTVAL NOTE 0, nrpn: 87, range: [0, 120], group: mod_box_arp}
+  arp_trans_intval_note_1:            {label: ARP TRANS INTVAL NOTE 1, nrpn: 88, range: [0, 120], group: mod_box_arp}
+  arp_trans_intval_note_2:            {label: ARP TRANS INTVAL NOTE 2, nrpn: 89, range: [0, 120], group: mod_box_arp}
+  arp_trans_intval_note_3:            {label: ARP TRANS INTVAL NOTE 3, nrpn: 90, range: [0, 120], group: mod_box_arp}
+  arp_trans_intval_note_4:            {label: ARP TRANS INTVAL NOTE 4, nrpn: 91, range: [0, 120], group: mod_box_arp}
+  arp_transpose:                      {label: ARP TRANSPOSE, cc: 90, range: [0, 2], group: mod_box_arp}
+  # ---- page_2_pedal
+  page_2_pedal_release:               {label: PAGE 2 PEDAL RELEASE, cc: 73, nrpn: 93, range: [0, 255], group: page_2_pedal}
+  # ---- page_2_chord
+  page_2_chord_key_limit:             {label: PAGE 2 CHORD KEY LIMIT, cc: 117, nrpn: 94, nrpn_range: [0, 1207], group: page_2_chord}
+  page_2_chord_hold_mode:             {label: PAGE 2 CHORD HOLD MODE, cc: 118, nrpn: 95, range: [0, 1], group: page_2_chord}
+  # ---- envelopes
+  env_type:                           {label: ENV TYPE, cc: 50, nrpn: 96, range: [0, 1], nrpn_range: [0, 2], group: envelopes}
+  # ---- page_2_pan
+  page_2_pan_mode:                    {label: PAGE 2 PAN MODE, nrpn: 100, range: [0, 4], group: page_2_pan}
+  page_2_panwidth:                    {label: PAGE 2 PANWIDTH, cc: 10, nrpn: 101, range: [0, 2], group: page_2_pan}
+  # ---- program_name
+  program_name_char_0:                {label: PROGRAM NAME CHAR 0, nrpn: 102, range: [0, 87], group: program_name}
+  program_name_char_1:                {label: PROGRAM NAME CHAR 1, nrpn: 103, range: [0, 87], group: program_name}
+  program_name_char_2:                {label: PROGRAM NAME CHAR 2, nrpn: 104, range: [0, 87], group: program_name}
+  program_name_char_3:                {label: PROGRAM NAME CHAR 3, nrpn: 105, range: [0, 87], group: program_name}
+  program_name_char_4:                {label: PROGRAM NAME CHAR 4, nrpn: 106, range: [0, 87], group: program_name}
+  program_name_char_5:                {label: PROGRAM NAME CHAR 5, nrpn: 107, range: [0, 87], group: program_name}
+  program_name_char_6:                {label: PROGRAM NAME CHAR 6, nrpn: 108, range: [0, 87], group: program_name}
+  program_name_char_7:                {label: PROGRAM NAME CHAR 7, nrpn: 109, range: [0, 87], group: program_name}
+  program_name_char_8:                {label: PROGRAM NAME CHAR 8, nrpn: 110, range: [0, 87], group: program_name}
+  program_name_char_9:                {label: PROGRAM NAME CHAR 9, nrpn: 111, range: [0, 87], group: program_name}
+  program_name_char_10:               {label: PROGRAM NAME CHAR 10, nrpn: 112, range: [0, 87], group: program_name}
+  program_name_char_11:               {label: PROGRAM NAME CHAR 11, nrpn: 113, range: [0, 87], group: program_name}
+  program_name_char_12:               {label: PROGRAM NAME CHAR 12, nrpn: 114, range: [0, 87], group: program_name}
+  program_name_char_13:               {label: PROGRAM NAME CHAR 13, nrpn: 115, range: [0, 87], group: program_name}
+  program_name_char_14:               {label: PROGRAM NAME CHAR 14, nrpn: 116, range: [0, 87], group: program_name}
+  program_name_char_15:               {label: PROGRAM NAME CHAR 15, nrpn: 117, range: [0, 87], group: program_name}
+  program_name_char_16:               {label: PROGRAM NAME CHAR 16, nrpn: 118, range: [0, 87], group: program_name}
+  program_name_char_17:               {label: PROGRAM NAME CHAR 17, nrpn: 119, range: [0, 87], group: program_name}
+  program_name_char_18:               {label: PROGRAM NAME CHAR 18, nrpn: 120, range: [0, 87], group: program_name}
+  program_name_char_19:               {label: PROGRAM NAME CHAR 19, nrpn: 121, range: [0, 87], group: program_name}
+  # ---- page_2_filter
+  page_2_filter_kbd_track:            {label: PAGE 2 FILTER KBD TRACK, nrpn: 123, group: page_2_filter}
+  page_2_filter_kbd_on_level:         {label: PAGE 2 FILTER KBD ON LEVEL, cc: 37, group: page_2_filter}
+  # ---- split
+  split_params_upper_level_upper:     {label: SPLIT PARAMS UPPER LEVEL (UPPER/LOWER), nrpn: 1122, range: [0, 63], part: upper, group: split}
+  split_params_upper_level_lower:     {label: SPLIT PARAMS UPPER LEVEL (UPPER/LOWER), nrpn: 1090, range: [0, 63], part: lower, group: split}
+  split_params_split_point_upper:     {label: SPLIT PARAMS SPLIT POINT (UPPER/LOWER), nrpn: 1123, part: upper, group: split}
+  split_params_split_point_lower:     {label: SPLIT PARAMS SPLIT POINT (UPPER/LOWER), nrpn: 1092, part: lower, group: split}
+# 147 controls in 24 groups
+
+  split_lower_transpose:              {label: SPLIT LOWER TRANSPOSE, nrpn: 1093, range: [0, 72], part: lower, group: split}
+  split_upper_transpose:              {label: SPLIT UPPER TRANSPOSE, nrpn: 1125, range: [0, 72], part: upper, group: split}
+  split_lower_detune:                 {label: SPLIT LOWER DETUNE, nrpn: 1094, range: [0, 64], part: lower, group: split}
+  split_pan_mode:                     {label: SPLIT PAN MODE, nrpn: 1076, range: [0, 4], group: split}
+  split_pan_width:                    {label: SPLIT PAN WIDTH, nrpn: 1077, range: [0, 2], group: split}
+  split_hold_chord_source:            {label: SPLIT HOLD/CHORD SOURCE, nrpn: 1072, range: [0, 2], group: split}
+  split_box_mod_source:               {label: SPLIT BOX MOD SOURCE, nrpn: 1061, range: [0, 2], group: split}
+  split_arp_source:                   {label: SPLIT ARP SOURCE, nrpn: 1047, range: [0, 2], group: split}
+  lower_upper_no_select:              {label: LOWER/UPPER/NO SELECT, cc: 95, range: [0, 2], group: split}
+  normal_split_double_mode:           {label: NORMAL/SPLIT/DOUBLE MODE, cc: 119, range: [0, 2], group: split}
+  # ---- program_selection
+  bank_select_msb:                    {label: BANK SELECT MSB, cc: 0, group: program_selection}
+  bank_select_lsb:                    {label: BANK SELECT LSB, cc: 32, group: program_selection}
+  # ---- keyboard
+  transpose_up_down:                  {label: TRANSPOSE UP/DOWN, cc: 9, range: [0, 2], group: keyboard}
+  expresion_pedal:                    {label: EXPRESION PEDAL, cc: 11, group: keyboard}
+  sustain:                            {label: SUSTAIN, cc: 64, range: [0, 1], group: keyboard}

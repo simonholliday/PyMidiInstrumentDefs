@@ -192,6 +192,7 @@ class TestBundledCorpus:
 			"moog/sub_37",
 			"moog/subharmonicon",
 			"moog/subsequent_37",
+			"native_instruments/maschine_plus",
 			"novation/bass_station_ii",
 			"novation/circuit",
 			"novation/circuit_tracks",
@@ -9151,3 +9152,179 @@ class TestOctatrack:
 		account = " ".join((octa.source or "").split())
 
 		assert "ONE PARAMETER NAME IS AT TWO NUMBERS IN THE AUDIO MAP" in account
+
+
+class TestMaschinePlus:
+
+	"""Two controller numbers in 243 pages, and an absence established by enumeration."""
+
+	def test_two_controls_and_both_are_the_specifications_own_numbers (self) -> None:
+		"""The whole published map, and neither number is this maker's choice.
+
+		Controller 1 the manual itself calls reserved for the modulation wheel; controller 64
+		is the damper pedal, and what it reaches here is an envelope's sustain level - a
+		continuous parameter on a number the specification defines as a switch.
+		"""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert len(maschine.controls) == 2
+
+		assert maschine.controls["modulation"].cc == 1
+		assert maschine.controls["sustain"].cc == 64
+
+		# The second is received only; no page says the instrument sends it.
+		assert maschine.controls["modulation"].direction == "both"
+		assert maschine.controls["sustain"].direction == "receives"
+
+		account = " ".join((maschine.source or "").split())
+
+		assert "BOTH NUMBERS ARE ONES THE MIDI SPECIFICATION HAD ALREADY SPOKEN FOR" in account
+		assert "a continuous parameter on a number the specification defines as a switch" \
+			in account
+
+	def test_the_absence_is_an_enumeration_and_not_a_silence (self) -> None:
+		"""The point of this definition: a machine found every number, and there were two.
+
+		The corpus has eleven definitions with no controls and they rest on evidence of
+		different strengths. This one is a third kind - a manual that names two numbers in
+		passing - and the only honest way to say so is to show the list is two long.
+		"""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "THAT ABSENCE IS AN ENUMERATION AND NOT A SILENCE" in said
+
+		account = " ".join((maschine.source or "").split())
+
+		assert "SO THE WORK ON THIS INSTRUMENT WAS TO ESTABLISH AN ABSENCE, AND A MACHINE " \
+			"ESTABLISHED IT" in account
+
+		# And both editions were searched, so the absence is not an artefact of which was read.
+		assert set(maschine.sources) >= {"manual", "older_manual"}
+		assert maschine.sources["manual"].dated == "2022-05-13"
+		assert maschine.sources["older_manual"].dated == "2020-10-01"
+
+		assert "the 2020 edition names the same two" in account
+
+	def test_every_other_controller_number_belongs_to_the_owner (self) -> None:
+		"""`learned`, and the two numbers above are the exceptions somebody else fixed.
+
+		The Iridium and the Pulsar-23 are the other definitions here that are `learned` and
+		still carry a few numbers, so the combination is established rather than invented.
+		"""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert maschine.midi.control_change == "learned"
+
+		for other in ("waldorf/iridium", "soma/pulsar_23"):
+			theirs = pymidiinstrumentdefs.load(other, [CORPUS])
+			assert theirs.midi.control_change == "learned", other
+			assert theirs.controls, other
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "EVERY CONTROLLER NUMBER BUT TWO BELONGS TO THE PLAYER" in said
+
+	def test_the_document_that_would_hold_the_map_is_not_published (self) -> None:
+		"""It ships inside an application, so this corpus cannot cite it.
+
+		**That is the sharpest limit on this instrument** and it is a limit of publication
+		rather than of reading, so the file says so rather than leaving a reader to wonder
+		why a controller map is missing.
+		"""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		account = " ".join((maschine.source or "").split())
+
+		assert "AND THE MANUAL FOR THAT APPLICATION IS NOT ON THE WEB" in account
+		assert "available as a PDF file via the Help menu of Controller Editor" in account
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "It ships inside an application" in said
+
+		# And the downloads page is saved for what it does not contain.
+		assert "downloads_page" in maschine.sources
+		assert maschine.sources["downloads_page"].paginated is False
+
+	def test_the_first_native_instruments_product_here (self) -> None:
+		"""A new maker, so no habits were established and the folder is new too."""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert maschine.model.manufacturer == "Native Instruments"
+
+		theirs = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			if name.startswith("native_instruments/")]
+
+		assert theirs == ["native_instruments/maschine_plus"]
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "THE FIRST NATIVE INSTRUMENTS PRODUCT HERE" in said
+
+	def test_no_firmware_because_this_maker_dates_rather_than_numbers (self) -> None:
+		"""Both editions are identified by a date in a file name and nothing else."""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert maschine.model.firmware is None
+		assert maschine.sources["manual"].edition is None
+		assert maschine.sources["older_manual"].edition is None
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "it is dated rather than numbered, which is this maker's habit" in said
+
+	def test_the_clock_does_each_direction_and_not_both_at_once (self) -> None:
+		"""A three-way setting, which the field cannot say and the file does."""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert maschine.midi.clock == "both"
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "BOTH, AND THE SETTING IS EXCLUSIVE" in said
+		assert "So it does each and not both at once" in said
+
+	def test_program_change_is_received_and_sending_is_not_claimed (self) -> None:
+		"""What arrives selects a Scene; what leaves is a message the owner assigned."""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert maschine.midi.program_change is not None
+		assert maschine.midi.program_change.receives is True
+		assert maschine.midi.program_change.sends is None
+		assert maschine.midi.program_change.presets is None
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "That is the instrument sending a message the owner chose, not reporting" in said
+
+	def test_its_parts_default_to_a_focus_rather_than_a_channel (self) -> None:
+		"""Unlike every other part in this corpus, and the file says so."""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert set(maschine.parts) == {"sound", "group"}
+		assert maschine.parts["sound"].channel == "assigned"
+		assert maschine.parts["group"].channel == "assigned"
+
+		# A Group takes notes and not controllers: the MIDI output page is for Sounds only.
+		assert "controls" in (maschine.parts["sound"].receives or ())
+		assert "controls" not in (maschine.parts["group"].receives or ())
+
+		said = prose_of("native_instruments", "maschine_plus")
+
+		assert "SO THE DEFAULT IS NOT A CHANNEL BUT A FOCUS" in said
+
+	def test_in_and_out_and_no_thru (self) -> None:
+		"""Worth stating because this maker's competitors mostly have three sockets."""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		account = " ".join((maschine.source or "").split())
+
+		assert "THE CONNECTORS ARE IN AND OUT AND THERE IS NO THRU" in account
+
+		# The Octatrack is the contrast, from the same kind of instrument.
+		octa = " ".join((pymidiinstrumentdefs.load(
+			"elektron/octatrack", [CORPUS]).source or "").split())
+
+		assert "MIDI In/Out/Thru" in octa

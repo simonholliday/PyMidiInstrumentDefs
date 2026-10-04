@@ -1,0 +1,280 @@
+# THE FIRST NATIVE INSTRUMENTS PRODUCT HERE, AND IT PUBLISHES TWO CONTROLLER NUMBERS IN 243 PAGES.
+# There is no MIDI implementation chart and no controller map. The manual's MIDI chapters are about
+# **routing notes** and about **assignments the owner makes**, and the two numbers it does name are
+# both ones the MIDI specification had already spoken for: controller 1, which the manual itself
+# calls "reserved for the modulation wheel" (manual p. 43), and controller 64, the damper pedal.
+#
+# **THAT ABSENCE IS AN ENUMERATION AND NOT A SILENCE**, which is the only kind worth recording.
+# Every way this maker could write a controller number was searched for across both published
+# editions - `MIDI CC #1`, `CC64`, `Control Change 64`, `Continuous Controller 64`, `controller 64`
+# - with the patterns deliberately wider than what was expected. **Two passages came back, and the
+# same two in both editions.** `Notes/4451_enumerate_controller_numbers.py` is the search.
+#
+# SO EVERY OTHER CONTROLLER NUMBER THIS INSTRUMENT ANSWERS TO BELONGS TO ITS OWNER, and the maker
+# says where that is decided: "an application that allows you to precisely define all MIDI
+# assignments for your MASCHINE controller" (manual p. 19), which is why `control_change` below is
+# `learned`. The Deluge and the OP-1 are in the same position and say the same thing.
+#
+# **AND THE DOCUMENT THAT WOULD HOLD THOSE ASSIGNMENTS IS NOT PUBLISHED AT ALL.** The manual points
+# at it four times and the fourth says where it lives: "the Controller Editor Manual available as a
+# PDF file via the Help menu of Controller Editor" (manual p. 19). **It ships inside an
+# application.** There is no URL for it on Native Instruments' downloads page, and this definition
+# therefore cannot cite it. That is a limit on what can be known about this instrument without
+# installing software, and it is recorded rather than worked around.
+
+definition: 1
+
+model:
+  manufacturer: Native Instruments
+  name: MASCHINE+
+  # NOT RECORDED. The manual carries no firmware version of its own and names none - it is dated
+  # rather than numbered, which is this maker's habit: both published editions are identified by
+  # the date in their file name and nothing else. The instrument runs the MASCHINE software, whose
+  # versions move separately and which the downloads page lists at 2.8 for the desktop edition.
+  # **That is a software version and not this instrument's firmware**, and the same confusion the
+  # TD-3 and the Model D have with Synthtribe's version numbers.
+
+source: >-
+  MASCHINE+ Manual, English edition of 13 May 2022, 243 pages: the MIDI sockets and the clock at
+  pp. 17-18, **the Controller Editor and what it is for at p. 19**, the Smart Strip's modulation
+  mode at p. 43, the MIDI settings at pp. 58-60, the Sampler's envelope at p. 94, the MIDI control
+  chapter at pp. 162-166, and the Macro Controls at p. 174. And the English edition of 1 October
+  2020, 215 pages, read in full and cited for nothing. And Native Instruments' Maschine downloads
+  page, for what is published.
+
+  **THE PRINTED PAGE IS EIGHT BEHIND THE SHEET**, so `page_offset: 8`, checked on five sheets
+  spread through the document rather than on one.
+
+  THERE IS NO MIDI IMPLEMENTATION CHART AND NO CONTROLLER MAP, which the instrument survey said
+  and which is confirmed by reading the maker's own list of downloads rather than the survey's
+  summary of it. That list offers this manual, an online edition of it, and manuals for nine other
+  Maschine products - **five of which are `Hardware Control Reference` documents and none of them
+  for this one**. That phrase is in the page's markup, in the file names, and **not in its visible
+  text**, so it is in backticks rather than quote marks: it cannot be cited. The Maschine MK1, MK2, MIKRO and STUDIO each have one; the MASCHINE+ does not.
+
+  **SO THE WORK ON THIS INSTRUMENT WAS TO ESTABLISH AN ABSENCE, AND A MACHINE ESTABLISHED IT.**
+  Five patterns, written wider than what was expected to be found, over every page of both
+  editions. The whole result:
+
+      "MIDI CC #1" (manual p. 43)           the Smart Strip's modulation mode
+      "Control Change 64" (manual p. 94)    the Sampler's envelope Sustain
+
+  **Two passages in 243 pages, and the 2020 edition names the same two.** So nothing about this
+  changed between October 2020 and May 2022, which is worth knowing because the older edition is
+  live and the downloads page does not link it.
+
+  BOTH NUMBERS ARE ONES THE MIDI SPECIFICATION HAD ALREADY SPOKEN FOR, and the manual knows it
+  about one of them and not the other. Of controller 1 it says "This MIDI Continuous Controller is
+  reserved for the modulation wheel" (manual p. 43) - so the maker is naming the protocol's own
+  meaning rather than claiming a number. Of controller 64 it says nothing: "This can also be
+  controlled by an external MIDI controller or keyboard using the MIDI Control Change 64" (manual
+  p. 94), where 64 is the damper pedal and what it reaches here is **an envelope's sustain level**,
+  a continuous parameter on a number the specification defines as a switch. **The maker does not
+  remark on that and nothing here resolves it**; it is recorded because a player meets it as a
+  surprise.
+
+  EVERY OTHER CONTROLLER NUMBER BELONGS TO THE OWNER, and the maker says so in as many words:
+  "you can also use it as a powerful and highly versatile MIDI controller to pilot any other
+  MIDI-capable software application" (manual p. 19) by way of "an application that allows you to
+  precisely define all MIDI assignments for your MASCHINE controller" (manual p. 19). Inside the
+  instrument it is the same: "It is also possible to assign MIDI Control Change messages, Pitchbend
+  and Program Changes to Macro Controls in order to control external MIDI devices" (manual p. 174),
+  and every number in that sentence is the player's to choose.
+
+  **AND THE MANUAL FOR THAT APPLICATION IS NOT ON THE WEB.** The instrument's manual points at it
+  four times, and the fourth says where it is: "the Controller Editor Manual available as a PDF
+  file via the Help menu of Controller Editor" (manual p. 19). Not on the downloads page, not under
+  `docs.native-instruments.com` among the ten Maschine PDFs there, and not reachable without
+  installing the software. **So whatever controller numbers that application's defaults use cannot
+  be established from anything this maker publishes**, and this definition does not guess at them.
+  That is the sharpest limit on this instrument and it is a limit of publication rather than of
+  reading.
+
+  WHAT IS ABSENT BESIDES, CHECKED RATHER THAN ASSUMED. **The words NRPN, RPN, System Exclusive and
+  SysEx appear nowhere in either edition.** Nor does any implementation chart, nor a note range,
+  nor a polyphony figure - this instrument's sound is a project of Groups and Sounds rather than a
+  voice count, and the manual gives none.
+
+  EVERY QUOTATION IN THIS FILE CARRIES A LOCATOR, AUDITED BY PAIRING THE QUOTE MARKS: **34
+  quotations, 34 locators**, with the seven remaining pairs being field values rather than
+  anybody's words. The gate checks 33 of them, and **the one it passes over is "MIDI CC #1"**,
+  which is ten characters where it requires twelve - so the two counts reconcile and the
+  difference is accounted for rather than left as a gap.
+
+  THE CONNECTORS ARE IN AND OUT AND THERE IS NO THRU, which is worth stating because this maker's
+  competitors mostly have three: "MASCHINE+ has dedicated MIDI sockets that allow you to directly
+  connect other MIDI devices using a MIDI cable with a 5-pin DIN MIDI jack" (manual p. 17), and the
+  instructions that follow name the MIDI OUT socket and the MIDI IN socket and no third.
+
+  AND ONE COPY-PASTE ERROR IN THE MAKER'S OWN TEXT, recorded because it bears on how closely the
+  prose can be read. Section 4.4.3 is headed **Send MIDI Clock** and its opening sentence is right
+  - "If MASCHINE+ is running in Standalone mode, it can send a MIDI Clock signal to any device
+  capable of receiving MIDI Clock" (manual p. 18) - and the instruction immediately beneath it
+  begins "To configure MASCHINE+ to receive MIDI Clock from an external device" (manual p. 18) -
+  **receive**, under a heading that says Send - which is the previous section's sentence left in
+  place. **Nothing below rests on it**; the clock is settled
+  from the settings page instead.
+
+  THE ONLINE EDITION WAS NOT FETCHED, and the reason is that it would not settle anything. Native
+  Instruments publishes this manual as a PDF and as an online guide, as Roland does for the S-1 -
+  where the two turned out to be the same document at the same version. **Here the PDF is dated
+  and the online guide is not**, so a difference between them could not be dated either way, and
+  the PDF is the one a machine can hash. If the online guide is ever needed, it is at
+  `docs.native-instruments.com/online-guides/maschine-plus-manual/en/index-en`.
+
+sources:
+  manual:
+    kind: manual
+    title: MASCHINE+ Manual
+    dated: 2022-05-13
+    landing: "https://www.native-instruments.com/pages/maschine-downloads"
+    url: "https://docs.native-instruments.com/pdf-guides/maschine/MASCHINE_Plus_Manual_English_13_05_2022.pdf"
+    sha256: 6bdd6d24586dcfac0598deb9ee6bb9356965062a29011538dde7421a0c25e654
+    retrieved: 2026-10-04
+    page_offset: 8
+    # 243 sheets, not encrypted, with a real text layer, made on 11 May 2022 by Antenna House's
+    # formatter from XSL - which is why its text reads cleanly and it carries no soft hyphens.
+    # **The date in the file name is two days after the PDF was built**, which is the only version
+    # information this document has: it carries no edition number anywhere.
+  older_manual:
+    kind: manual
+    title: MASCHINE+ Manual
+    dated: 2020-10-01
+    landing: "https://www.native-instruments.com/pages/maschine-downloads"
+    url: "https://www.native-instruments.com/fileadmin/ni_media/downloads/manuals/maschine/MASCHINE_Plus_Manual_English_01_10_2020.pdf"
+    sha256: 9a56f6404f6a541d1368b80cc3717047ee761d9cd800122af340264d578f3955
+    retrieved: 2026-10-04
+    page_offset: 8
+    # **LIVE AND NOT LINKED FROM THE DOWNLOADS PAGE**, which the instrument survey found and this
+    # confirms. 215 sheets against 243, so the newer edition grew by 28 pages.
+    # **Cited for nothing and read in full**, because the question it answers is whether the two
+    # editions publish different controller numbers. They publish the same two, in the same words,
+    # at printed pp. 35 and 83 here against 43 and 94 there. So the absence this definition records
+    # is not an artefact of which edition was read.
+  downloads_page:
+    kind: download_page
+    title: "MASCHINE Downloads"
+    landing: "https://www.native-instruments.com/pages/maschine-downloads"
+    url: "https://www.native-instruments.com/pages/maschine-downloads"
+    sha256: c3876e2a61956c89e6d6beea27ba2110d3bd210d8c27e8f827c0976f198540fc
+    retrieved: 2026-10-04
+    paginated: false
+    # The visible text of the page. **Cited for nothing** and saved for what it does not contain:
+    # no Hardware Control Reference for this product, where five other Maschine products have one,
+    # and **no Controller Editor manual at all**.
+    # One thing about reading it: it lists documents for ten Maschine products at once, so a search
+    # for a file name has to be filtered by product. Only `MASCHINE_Plus_*` is this instrument.
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 045a47111785ba4b3ecf1d8762a853c974902956114a10052e22e48015a4ae87.
+
+midi:
+  # PER SOUND AND PER GROUP, AND `All` IS THE DEFAULT: "Select the MIDI channel on which the Sound
+  # or Group will receive MIDI notes. If you select All (default setting), the Sound or Group will
+  # receive MIDI notes from all channels" (manual p. 166). So sixteen channels, each assignable to
+  # a Sound or a Group - and the default is to listen on all of them, which is why the parts below
+  # say `assigned` rather than deriving anything.
+  channels: [1, 16]
+  # BOTH, AND THE SETTING IS EXCLUSIVE, which is unusual enough to say. The maker gives a section
+  # to each direction - "it can be controlled externally via MIDI Clock by any device that is
+  # capable of sending MIDI Clock" (manual p. 17) and "If MASCHINE+ is running in Standalone mode,
+  # it can send a MIDI Clock signal to any device capable of receiving MIDI Clock" (manual p. 18) -
+  # but the settings page makes them one three-way choice: "Send Clock: Sends a MIDI Clock signal
+  # to any device that is capable of receiving MIDI Clock" (manual p. 58) against "Receive Clock:
+  # Receives external MIDI Clock signals and can then be controlled by any device capable of
+  # sending MIDI Clock" (manual p. 58), with Off as the third. **So it does each and not both at
+  # once**, which this field cannot say and this comment does.
+  clock: both
+  program_change:
+    # RECEIVED, AND WHAT IT REACHES IS NOT A SOUND: "Selects the type of MIDI Change item you want
+    # to trigger using Notes or Program Change MIDI messages from an external MIDI device" (manual
+    # p. 60), where the items are Scenes, Sections and Lock snapshots, and "Program Change: Selects
+    # Program Changes Note messages as the trigger for MIDI Changes" (manual p. 60) - the maker's
+    # own sentence, with a word left in from the Note option above it. The channel is its own
+    # setting: "Selects the MIDI channel number MASCHINE+ will receive MIDI notes or Program Change
+    # messages" (manual p. 60).
+    receives: true
+    # NOT RECORDED, WHETHER IT SENDS ONE. A program change can leave this instrument, but only as
+    # something the player assigned: "It is also possible to assign MIDI Control Change messages,
+    # Pitchbend and Program Changes to Macro Controls in order to control external MIDI devices"
+    # (manual p. 174). **That is the instrument sending a message the owner chose, not reporting
+    # its own state**, which is what this field is about - so it is left unset rather than claimed.
+    # ALSO NOT RECORDED: a preset count. A program change here selects a Scene, a Section or a Lock
+    # snapshot, and the manual puts no number on how many of those a project may hold.
+  # EVERY CONTROLLER NUMBER BUT TWO BELONGS TO THE PLAYER, and the maker says where they are
+  # decided: "an application that allows you to precisely define all MIDI assignments for your
+  # MASCHINE controller" (manual p. 19). Inside the instrument the Macro Controls are the same
+  # thing (manual p. 174), and even the pedal socket "can also be configured to send Continuous
+  # MIDI CC messages in the Preferences of the Controller Editor software" (manual p. 18).
+  # **THE TWO CONTROLS BELOW ARE THE EXCEPTIONS AND NEITHER IS THIS MAKER'S CHOICE** - both are
+  # numbers the MIDI specification had already spoken for. The Iridium and the Pulsar-23 are the
+  # other definitions here that are `learned` and still carry the few numbers somebody fixed.
+  control_change: learned
+  # NOT RECORDED: NRPN, system exclusive and the mode. **The words NRPN, RPN, System Exclusive and
+  # SysEx appear nowhere in either edition**, which is a checked absence; with no implementation
+  # chart there is no form in this document that undertakes to deny them, so nothing is recorded.
+
+parts:
+  # SOUNDS AND GROUPS, WHICH IS HOW THIS INSTRUMENT IS ORGANISED AND HOW ITS MIDI IS ADDRESSED.
+  # Each can be given a channel and a port of its own - "You can let particular Sounds and Groups
+  # react to incoming MIDI data and send MIDI data to the desired port" (manual p. 17) - and the
+  # default is neither: "By default, all MIDI data incoming on the activated MIDI input port(s)
+  # will be received by the focused Sound of the focused Group" (manual p. 162).
+  # **SO THE DEFAULT IS NOT A CHANNEL BUT A FOCUS**, which is unlike every other part in this
+  # corpus: what answers is whichever Sound the player is looking at. Both parts say `assigned`
+  # because a channel is something you give them, and neither has a default channel to record.
+  sound:
+    label: Sound
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # It sends too, and without needing a plug-in loaded: "MIDI notes corresponding to your hits
+    # on the pads" (manual p. 163), and "if the Sound has no Plug-in it will forward any incoming
+    # MIDI notes to its MIDI output" (manual p. 163).
+  group:
+    label: Group
+    channel: assigned
+    addressing: pitches
+    receives: [notes]
+    # A Group takes notes and not controllers: the MIDI page of the Input properties is where its
+    # note input is configured, and the Output properties' MIDI page "is available for Sounds
+    # only" (manual p. 163). So nothing claims a Group answers to a controller.
+  # NOT A PART: the Master. It has Macro Controls and Channel properties like the others, and the
+  # manual gives it no MIDI channel of its own.
+
+voice:
+  addressing: pitches
+  # NOT RECORDED: the polyphony and the note range. **This instrument's sound is a project of
+  # Groups and Sounds rather than a voice count**, and the manual gives no figure for either - no
+  # maximum polyphony, and no range of notes it answers to. What it does give is a note *mapping*
+  # for one case: a Group set to Drumkit mode places "each Sound on a specific key chromatically
+  # across the keyboard starting from C2 upwards" (manual p. 166), which is where its notes land
+  # and not how many it has.
+  # ALSO NOT RECORDED: velocity and aftertouch. The pads are velocity-sensitive and the manual
+  # describes what they send rather than what arrives, so nothing about reception is established.
+
+groups:
+  # The two sections of the instrument the two controls below belong to, named as the manual names
+  # them. **Neither is a parameter page this maker publishes a map for**, because it publishes no
+  # map: they are the places these two numbers are mentioned.
+  smart_strip: Smart Strip
+  sampler: Sampler
+
+controls:
+
+  # Smart Strip ─────────────────────────────────────────────
+  # THE MAKER NAMING THE PROTOCOL'S OWN MEANING RATHER THAN CLAIMING A NUMBER: "The Smart Strip
+  # always controls the parameter that is assigned to the standard MIDI CC #1. This MIDI Continuous
+  # Controller is reserved for the modulation wheel" (manual p. 43). So in Modulation mode the
+  # strip is a modulation wheel, and controller 1 is what it moves.
+  modulation:                  {label: Modulation, cc: 1, group: smart_strip}
+
+  # Sampler ─────────────────────────────────────────────────
+  # **A CONTINUOUS PARAMETER ON A NUMBER THE SPECIFICATION DEFINES AS A SWITCH**, which the maker
+  # does not remark on: "This can also be controlled by an external MIDI controller or keyboard
+  # using the MIDI Control Change 64" (manual p. 94), of the Sampler's envelope Sustain, which
+  # "Determines the constant level being kept after Decay until the note ends" (manual p. 94).
+  # Controller 64 is the damper pedal. **Nothing here resolves that**; it is recorded as printed
+  # because a player meets it as a surprise - a sustain pedal moving an envelope's sustain level.
+  # Received only: the sentence is about what an external controller or keyboard can do to this
+  # parameter, and no page says the instrument sends it.
+  sustain:                     {label: Sustain, cc: 64, direction: receives, group: sampler}

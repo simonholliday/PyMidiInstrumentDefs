@@ -178,6 +178,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/sub_37` | Moog Sub 37: 114 controls, every one of them the same as the Subsequent 37's, established by reading both charts rather than assumed |
 | `moog/subharmonicon` | Moog Subharmonicon: reads a note as an offset from C4, not as a pitch, and answers to one controller its manual does not list |
 | `moog/subsequent_37` | Moog Subsequent 37: 114 controls in CC and NRPN pairs, out of a chart whose empty cells were proved empty rather than unread |
+| `native_instruments/maschine_plus` | Native Instruments MASCHINE+: two controller numbers in 243 pages, both of them ones the MIDI specification had already spoken for - every other one belongs to the owner, and the document that would hold them ships inside an application |
 | `novation/bass_station_ii` | Novation Bass Station II: 94 controls across three products that share one guide, and one controller number the guide prints that the MIDI specification says is something else |
 | `novation/circuit` | Novation Circuit: 299 controls over two synths, four drums and a session, from a guide that prints seventy-four of its rows twice and leaves thirty-nine out - two of the eight macro knobs among them |
 | `novation/circuit_tracks` | Novation Circuit Tracks: 358 controls, the most here, over two synth tracks, four drum tracks, two MIDI tracks and a project - including eight the maker's contents page files as a table of values rather than of controls |

@@ -269,12 +269,22 @@ class TestBundledCorpus:
 		for that one word by hand. The sweep read each definition's account and nothing
 		else, so a file that ships and is rendered was never looked at. **Sweep what is
 		published, not what is convenient to load.**
+
+		**AND "analog" IS SWEPT CASE-SENSITIVELY, BECAUSE TWO INSTRUMENTS ARE NAMED WITH IT.**
+		The Behringer PRO-800's account wrote it twice and the site had to relax its check by
+		hand for v0.1.13 (#4473). A pattern that ignored case would report Elektron's Analog
+		Four and Analog Rytm on every run, so it would be turned off rather than obeyed.
 		"""
 		patterns = [
 			re.compile(r"\b[a-z]{3,}iz(e|es|ed|er|ers|ing|ation|ations)\b", re.IGNORECASE),
 			re.compile(r"\b[a-z]{3,}yz(e|es|ed|ing)\b", re.IGNORECASE),
 			re.compile(r"\b(favorite|favorites|color|colors|behavior|behaviors|honor|flavor)\b",
 				re.IGNORECASE),
+			# **NOT case-insensitive, and that is deliberate.** Two instruments here are named
+			# Analog Four and Analog Rytm, and the site reads past both as names; only the
+			# lower-case word is this project's prose to correct. `analogue` and `analogy` keep
+			# a word character after "analog", so neither matches. By #4473.
+			re.compile(r"\banalogs?\b"),
 		]
 
 		def prose (text: str) -> str:
@@ -2112,7 +2122,7 @@ class TestOsmose:
 		is where the difference is.
 
 		**And the Super 6 is the one whose MPE is narrower than the instrument**, for a
-		reason its maker gives: its analog hardware can only give six notes different
+		reason its maker gives: its analogue hardware can only give six notes different
 		control voltages, so MPE mode runs at six voices where the synthesizer has
 		twelve. A consumer that read `polyphony` and this flag together would get that
 		wrong, and no field here can say it.
@@ -9507,7 +9517,7 @@ class TestSuper6:
 		"""Two facts the flag cannot carry, and the maker gives a reason for the second.
 
 		**The six-voice limit is a hardware fact stated plainly**, which is rarer than the
-		limit: the analog hardware can only give six notes different control voltages. A
+		limit: the analogue hardware can only give six notes different control voltages. A
 		consumer reading `polyphony` and `per_voice_channels` together would get it wrong.
 		"""
 		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])

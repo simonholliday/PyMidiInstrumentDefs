@@ -1,0 +1,319 @@
+# TWO MAPS, AND WHICH ONE IS LIVE DEPENDS ON A MODE RATHER THAN ON A CHANNEL. The Tracker answers
+# to one set of thirty-two controller numbers for its performance effects and its mixer, whenever
+# CC In is on; and to a second set of forty-eight for the selected instrument's own parameters,
+# **only in MIDI Synthesizer mode and only while the sequencer is stopped**. The two sets share no
+# number, so nothing here has to choose between them - but this format has no field that says "in
+# this mode", and the groups below are the only thing distinguishing them.
+#
+# NOTHING BELOW IS TRANSMITTED. The Tracker's outgoing controllers are not a map at all: six slots
+# per MIDI instrument, A to F, each of which the player sets to any number. So this file describes
+# what the Tracker answers to, and the sending side is a setting rather than a fact.
+#
+# THE ONE CONTROLLER THAT IS NOT IN EITHER TABLE. The manual's Synthesizer Mode table has the
+# whole panning envelope and no row for panning itself - and the picture of the instrument's own
+# screen two pages earlier reads "Panning = 10". It ships, from the screen, and is marked.
+
+definition: 1
+
+model:
+  manufacturer: Polyend
+  name: Tracker
+  # The manual's own colophon: "October 2025 - Tracker OS 1.9.2 a" (manual p. 307), and the
+  # download page offers `PolyendTracker_1.9.2.ptf.zip` as the firmware. The `1v9v2a` in both
+  # PDFs' file names is that same version written for a URL.
+  firmware: "1.9.2"
+
+source: >-
+  Tracker Manual (308pp, October 2025, for OS 1.9.2a): chapter 11 is MIDI, and **the two tables
+  every number here comes from are at pp. 262 and 267**. Beside them: the MIDI configuration at
+  pp. 251-252, the MIDI instruments at p. 256, velocity at p. 258, the CC out slots at pp. 259-260,
+  program change at p. 263, "MIDI Synthesizer" mode (manual p. 264) at pp. 264-266, performance
+  over MIDI at p. 279,
+  the voices at p. 236 and the tracks at p. 18.
+
+  **THIS MANUAL IS NOT WRITTEN BY POLYEND.** Its colophon reads "Manual Produced in the United
+  Kingdom by Synthdawg" and its cover calls it "An Official Reference for The Polyend Tracker"
+  (manual p. 307, p. 1). So it is a third party's book that the maker publishes and serves from
+  its own download page as the manual. That is worth knowing before weighing it against the
+  instrument: where this book and the Tracker's own screen disagree, the screen is the instrument
+  and the book is a description of it.
+
+  **AND THAT IS NOT HYPOTHETICAL HERE.** The "Synthesizer Mode - MIDI CC Configurations" table
+  (manual p. 267) lists forty-seven
+  controller numbers and **has no row for panning**, although it carries the whole panning
+  envelope at 26 to 31. Two pages earlier, a picture of the Tracker's own display lists the same
+  parameters in the same unusual order - Tune, FineTune, Volume, **Panning**, Filter type, Cutoff,
+  Resonance - with their numbers beside them, and gives "Panning = 10" (manual p. 265). Every
+  other pair on that screen matches the table exactly. **So the table is the screen with one line
+  dropped**, and CC 10 is recorded below on the screen's authority, marked.
+
+  THE OTHER THING THE TABLE IS SHORT OF, AND THIS ONE IS NOT RECORDED. Five of the six envelope
+  blocks have six rows - Automation Type, Attack, Decay, Sustain, Release and Amount - and
+  **Finetune has five**, ending at 118 Finetune Release with no Finetune Amount. By the pattern
+  that would be 119. Nothing published says whether the parameter exists and was left out or does
+  not exist, so nothing is recorded for it; unlike panning, no second printing settles it.
+
+  WHAT THE TRACKER SENDS IS A SETTING, NOT A MAP. Each of its sixteen MIDI instruments carries
+  **six controller slots, A to F**, and the player puts any number in each: "Six CC parameter
+  slots A-F exist in tracker that can be allocated a CC and then used in FX1 or FX2 of a step"
+  (manual p. 259). The list offered when filling a slot is the MIDI specification's own names, not
+  this instrument's parameters, and it runs past 127: "the Program Change 128, Channel Aftertouch
+  129 and Polyphonic Aftertouch 130 can also be configured here" (manual p. 260). **So the
+  Tracker transmits program change and both kinds of aftertouch as step effects, and none of them
+  on a fixed number.**
+
+  AND THE MANUAL CONTRADICTS ITSELF ABOUT WHICH NUMBER PROGRAM CHANGE IS. Page 260 gives 128, and
+  page 263 says "Program change is configured as a CC parameter using number 129" - which is the
+  number p. 260 gives to Channel Aftertouch. Neither is recorded.
+
+  NOT RECORDED: whether the Tracker answers to a program change at all, because the configuration
+  menu enumerates its four inputs - clock, transport, notes and CC - and program change is not
+  among them, which is an absence of mention rather than a stated no; whether it answers to
+  aftertouch, for the same reason; its note range, which no document states, and which the Middle
+  C setting shifts anyway; and system exclusive, which appears only as a glossary entry explaining
+  what the term means.
+
+  **PITCH BEND IS A CHECKED ABSENCE**: the words "pitch bend" do not occur anywhere in this
+  manual's 308 pages, in either case, and neither does MPE.
+
+  THE MANUAL SPELLS THE MODE'S NAME BOTH WAYS. "Synthesizer" (manual p. 264) twenty-four times
+  across twelve pages, and "Synthesiser" (manual p. 265) twice - both on one page, in the two
+  paragraphs that explain the mode. A British author writing for a Polish maker in a document whose own headings are American.
+  The maker's spelling is kept wherever this file names the mode, which is why the word appears
+  here in quotation marks.
+
+  ONE LINE OF THIS MANUAL BELONGS TO ANOTHER INSTRUMENT. The settings table at p. 50 explains
+  Clock Out as "Sets the Tracker Mini clock output" - in a book about the Tracker, whose cover,
+  running head and every other page say Tracker. It is the only such line, and the same setting is
+  described without the Mini at p. 251. Recorded because a manual that carries a sibling's text in
+  one place may carry it in others.
+
+sources:
+  manual:
+    kind: manual
+    title: Tracker Manual
+    edition: 1v9v2a
+    dated: "2025-10"
+    landing: "https://polyend.com/downloads/tracker-downloads/"
+    url: "https://polyend-website.fra1.digitaloceanspaces.com/wp-content/uploads/2023/11/29122938/Polyend-Tracker-Manual-1v9v2a.pdf"
+    sha256: 638cd9075051df1df8aa904d307668397064bb1a3f99b2059429e99254c33f43
+    retrieved: 2026-10-04
+    page_offset: 0
+    # 308 pages, and its printed page numbers match its sheets exactly, which is rare enough here
+    # to be worth saying. **The URL's `/2023/11/` is where the maker's site filed the name, not
+    # when this file was made**: the PDF was built on 2025-10-14 and its colophon says October
+    # 2025, so Polyend has replaced the document in place and the path's date is misleading.
+  downloads:
+    kind: download_page
+    title: "Tracker downloads • Polyend"
+    landing: "https://polyend.com/downloads/tracker-downloads/"
+    url: "https://polyend.com/downloads/tracker-downloads/"
+    sha256: c0ab90b6b22c1dc06d9ba1985d40065b44d54c500c3a4f9cb9e1d5b9d41c3770
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for the firmware and for nothing else. It carries the release notes for every version
+    # inline rather than as a document, and two of them are about controllers: "Tracker can now
+    # be configured to send 6 distinct MIDI CCs per MIDI channel" (downloads), and a fix for "In
+    # Instrument Synthesizer mode Tracker not responding to CCs assigned to Delay Send correctly"
+    # (downloads).
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 4c8d6182f66e60e1f56f1d2fddfc1a65e89a95a46cd1372dee15f06658499f98.
+
+midi:
+  # TWO CHANNELS, SET SEPARATELY AND EACH ABLE TO BE ALL. Notes Input Channel "Sets the MIDI
+  # channel for external note inputs. Select All channels or Ch 1-16" (manual p. 251), and CC In
+  # channel "Sets the MIDI channel that is used to receive CC (control change) messages"
+  # (manual p. 251) with the same choices. So notes and controllers can arrive on different
+  # channels, which one range cannot say.
+  channels: [1, 16]
+  # Clock In sets the clock between "the internal generated clock (default) or an external clock
+  # received through the USB or MIDI In jack" (manual p. 251), and Clock Out "Sends the Tracker
+  # clock output to other devices" (manual p. 251). Internally it runs at "192 PPQN"
+  # (manual p. 250).
+  clock: both
+  # Transport In and Transport Out, each with the same routing choices (manual p. 251).
+  transport: both
+  program_change:
+    # SENT AS A STEP EFFECT AND NOT ON A FIXED NUMBER - it is one of the things a CC slot can be
+    # set to. **Which number selects it is the one thing the manual contradicts itself about**,
+    # 128 at p. 260 and 129 at p. 263, so neither is recorded.
+    sends: true
+    # `receives` IS DELIBERATELY UNSET. The configuration menu enumerates what the Tracker takes
+    # in - Clock In, Transport In, Notes In, CC In - and program change is not among them
+    # (manual p. 251), and the received map at p. 262 has no program-change destination. That is
+    # an absence of mention, not a stated no, so it is left unrecorded rather than called false.
+  # NONE, CHECKED. The word NRPN occurs twice in 308 pages: once as a glossary entry explaining
+  # what the term means - "Non-Registered Parameter Number is part of the MIDI standard"
+  # (manual p. 250) - and once as a label in the list of names a transmit slot can be set to.
+  # Neither is a statement that this instrument speaks NRPN.
+  nrpn: none
+  # `sysex` IS UNSET for the same reason: SYSEX appears once, in that same glossary, describing
+  # what system exclusive is for in general. Nothing says what the Tracker does with it.
+
+voice:
+  addressing: pitches
+  # "Tracker has 8 voices which would represent each of the tracks playback" (manual p. 236), and
+  # "Tracker has 8 tracks" (manual p. 18).
+  polyphony: 8
+  velocity:
+    # Sent with every step, and recordable from outside: "To be able to record velocity, the
+    # Config > General > 'Recording Options' would need a velocity option to be set"
+    # (manual p. 258).
+    note_on: both
+    # NOT RECORDED. Nothing says what the Tracker does with a note-off velocity it receives, and
+    # what it sends is a note's own velocity rather than a release one.
+  # `aftertouch` IS UNSET, and this is an asymmetry worth reading carefully: the Tracker **sends**
+  # both kinds as step effects - a step's MIDI message can be "CC (Control Change), PC (Program
+  # Change), Polyphonic Aftertouch or Channel Aftertouch" (manual p. 180) - and no document says
+  # it answers to either. This field describes what an instrument does with what it is sent.
+  #
+  # NOT RECORDED, note_range. No document states one, and "Middle C" is settable to C-3, C-4, C-5
+  # or C-6 (manual p. 251), which shifts the whole mapping against the sender's notes.
+
+# How to read the controls below. **Every one is received and none is transmitted**, for the
+# reason in the account above. They fall into two sets that are live at different times:
+#
+#   `performance_effects` and `master`   whenever CC In is on. "The MIDI CC Mapping within
+#                                        Tracker has a set of pre-defined destinations for CC
+#                                        messages" (manual p. 262).
+#   everything else                      only in MIDI Synthesizer mode, and only with the
+#                                        sequencer stopped: "To use Tracker as a synthesizer, the
+#                                        sequence must be stopped" (manual p. 265). They reach
+#                                        whichever instrument is selected.
+#
+# The two sets share no controller number, so no message means one thing in one mode and
+# something else in the other - which is luck rather than design, and is the only reason this
+# file can list them together at all.
+#
+# THE ORDER IS THE MAKER'S, NOT NUMERIC. The synthesizer map's first rows run 5, 3, 7, 10, 9, 1,
+# 11 because that is the order the instrument's own screen lists them in, and the manual follows
+# it. Sorting them would lose the evidence that the table was copied from the screen.
+#
+# NOT LISTED: nothing. Neither table has a mechanism row - no bank select, no data entry - so
+# unlike most instruments here there is nothing set aside, and every row of both tables is below.
+
+groups:
+  # Neither table has a sub-heading, so these are taken from **the maker's own prefix inside the
+  # rows**: every row of the first block begins "Performance Effect", every row of the second
+  # "Master -", and each envelope block is named for the parameter it shapes.
+  performance_effects: Performance Effect
+  master: Master
+  # The plain instrument parameters of Synthesizer Mode, as against the envelope blocks below.
+  # NOT THE MAKER'S WORD: the manual heads this run with nothing, and calls the thing they belong
+  # to "the selected instrument".
+  instrument: Instrument
+  volume: Volume
+  panning: Panning
+  cutoff: Cutoff
+  wavetable_position: Wavetable Position
+  granular_position: Granular Position
+  finetune: Finetune
+
+controls:
+# ──── performance_effects ────
+
+  track_1_pattern_select:            {label: Performance Effect Track 1 Pattern Select, cc: 41, direction: receives, group: performance_effects}
+  track_2_pattern_select:            {label: Performance Effect Track 2 Pattern Select, cc: 42, direction: receives, group: performance_effects}
+  track_3_pattern_select:            {label: Performance Effect Track 3 Pattern Select, cc: 43, direction: receives, group: performance_effects}
+  track_4_pattern_select:            {label: Performance Effect Track 4 Pattern Select, cc: 44, direction: receives, group: performance_effects}
+  track_5_pattern_select:            {label: Performance Effect Track 5 Pattern Select, cc: 45, direction: receives, group: performance_effects}
+  track_6_pattern_select:            {label: Performance Effect Track 6 Pattern Select, cc: 46, direction: receives, group: performance_effects}
+  track_7_pattern_select:            {label: Performance Effect Track 7 Pattern Select, cc: 47, direction: receives, group: performance_effects}
+  track_8_pattern_select:            {label: Performance Effect Track 8 Pattern Select, cc: 48, direction: receives, group: performance_effects}
+  slot_1_value:                      {label: Performance Effect Slot 1 Value - Top Row, cc: 51, direction: receives, group: performance_effects}
+  slot_2_value:                      {label: Performance Effect Slot 2 Value - Top Row, cc: 52, direction: receives, group: performance_effects}
+  slot_3_value:                      {label: Performance Effect Slot 3 Value - Top Row, cc: 53, direction: receives, group: performance_effects}
+  slot_4_value:                      {label: Performance Effect Slot 4 Value - Top Row, cc: 54, direction: receives, group: performance_effects}
+  slot_5_value:                      {label: Performance Effect Slot 5 Value - Top Row, cc: 55, direction: receives, group: performance_effects}
+  slot_6_value:                      {label: Performance Effect Slot 6 Value - Top Row, cc: 56, direction: receives, group: performance_effects}
+  slot_7_value:                      {label: Performance Effect Slot 7 Value - Top Row, cc: 57, direction: receives, group: performance_effects}
+  slot_8_value:                      {label: Performance Effect Slot 8 Value - Top Row, cc: 58, direction: receives, group: performance_effects}
+  slot_9:                            {label: Performance Effect Slot 9 - Top Row, cc: 59, direction: receives, group: performance_effects}
+  slot_10_value:                     {label: Performance Effect Slot 10 Value - Top Row, cc: 60, direction: receives, group: performance_effects}
+  slot_11_value:                     {label: Performance Effect Slot 11 Value - Top Row, cc: 61, direction: receives, group: performance_effects}
+  slot_12_value:                     {label: Performance Effect Slot 12 Value - Top Row, cc: 62, direction: receives, group: performance_effects}
+
+  # ──── master ────
+
+  track_mixer_track_1_volume:        {label: Master - Track Mixer Track 1 Volume Level, cc: 71, direction: receives, group: master}
+  track_mixer_track_2_volume:        {label: Master - Track Mixer Track 2 Volume Level, cc: 72, direction: receives, group: master}
+  track_mixer_track_3_volume:        {label: Master - Track Mixer Track 3 Volume Level, cc: 73, direction: receives, group: master}
+  track_mixer_track_4_volume:        {label: Master - Track Mixer Track 4 Volume Level, cc: 74, direction: receives, group: master}
+  track_mixer_track_5_volume:        {label: Master - Track Mixer Track 5 Volume Level, cc: 75, direction: receives, group: master}
+  track_mixer_track_6_volume:        {label: Master - Track Mixer Track 6 Volume Level, cc: 76, direction: receives, group: master}
+  track_mixer_track_7_volume:        {label: Master - Track Mixer Track 7 Volume Level, cc: 77, direction: receives, group: master}
+  track_mixer_track_8_volume:        {label: Master - Track Mixer Track 8 Volume Level, cc: 78, direction: receives, group: master}
+  global_mixer_delay_mix:            {label: Master - Global Mixer Delay Mix, cc: 79, direction: receives, group: master}
+  global_mixer_reverb_mix:           {label: Master - Global Mixer Reverb Mix, cc: 80, direction: receives, group: master}
+  global_mixer_dry_mix:              {label: Master - Global Mixer Dry Mix, cc: 81, direction: receives, group: master}
+  global_mixer_line_input:           {label: Master - Global Mixer Line Input, cc: 82, direction: receives, group: master}
+
+  # ──── instrument ────
+
+  tune:                              {label: Tune, cc: 5, direction: receives, group: instrument}
+  finetune:                          {label: Finetune, cc: 3, direction: receives, group: instrument}
+  volume:                            {label: Volume, cc: 7, direction: receives, group: instrument}
+  panning:                           {label: Panning, cc: 10, direction: receives, group: instrument}
+  filter_type:                       {label: Filter Type, cc: 9, direction: receives, group: instrument}
+  cutoff:                            {label: Cutoff, cc: 1, direction: receives, group: instrument}
+  resonance:                         {label: Resonance, cc: 11, direction: receives, group: instrument}
+  overdrive:                         {label: Overdrive, cc: 12, direction: receives, group: instrument}
+  bit_depth:                         {label: Bit Depth, cc: 13, direction: receives, group: instrument}
+  reverb_send:                       {label: Reverb Send, cc: 14, direction: receives, group: instrument}
+  delay_send:                        {label: Delay Send, cc: 15, direction: receives, group: instrument}
+  wavetable_granular_position:       {label: Wavetable / Granular Position, cc: 16, direction: receives, group: instrument}
+  wavetable_window_granular_length:  {label: Wavetable Window / Granular Length, cc: 17, direction: receives, group: instrument}
+
+  # ──── volume ────
+
+  volume_automation_type:            {label: Volume Automation Type, cc: 20, direction: receives, group: volume}
+  volume_attack_shape_lfo:           {label: Volume - Attack - Shape LFO, cc: 21, direction: receives, group: volume}
+  volume_decay_speed_lfo:            {label: Volume - Decay - Speed LFO, cc: 22, direction: receives, group: volume}
+  volume_sustain:                    {label: Volume Sustain, cc: 23, direction: receives, group: volume}
+  volume_release:                    {label: Volume Release, cc: 24, direction: receives, group: volume}
+  volume_amount:                     {label: Volume Amount, cc: 25, direction: receives, group: volume}
+
+  # ──── panning ────
+
+  panning_automation_type:           {label: Panning Automation Type, cc: 26, direction: receives, group: panning}
+  panning_attack_shape_lfo:          {label: Panning - Attack - Shape LFO, cc: 27, direction: receives, group: panning}
+  panning_decay_speed_lfo:           {label: Panning - Decay - Speed LFO, cc: 28, direction: receives, group: panning}
+  panning_sustain:                   {label: Panning Sustain, cc: 29, direction: receives, group: panning}
+  panning_release:                   {label: Panning Release, cc: 30, direction: receives, group: panning}
+  panning_amount:                    {label: Panning Amount, cc: 31, direction: receives, group: panning}
+
+  # ──── cutoff ────
+
+  cutoff_automation_type:            {label: Cutoff Automation Type, cc: 83, direction: receives, group: cutoff}
+  cutoff_attack_shape_lfo:           {label: Cutoff - Attack - Shape LFO, cc: 84, direction: receives, group: cutoff}
+  cutoff_decay_speed_lfo:            {label: Cutoff - Decay - Speed LFO, cc: 85, direction: receives, group: cutoff}
+  cutoff_sustain:                    {label: Cutoff Sustain, cc: 86, direction: receives, group: cutoff}
+  cutoff_release:                    {label: Cutoff Release, cc: 87, direction: receives, group: cutoff}
+  cutoff_amount:                     {label: Cutoff Amount, cc: 88, direction: receives, group: cutoff}
+
+  # ──── wavetable_position ────
+
+  wavetable_position_automation_type: {label: Wavetable Position Automation Type, cc: 102, direction: receives, group: wavetable_position}
+  wavetable_position_attack_shape_lfo: {label: Wavetable Position - Attack - Shape LFO, cc: 103, direction: receives, group: wavetable_position}
+  wavetable_position_decay_speed_lfo: {label: Wavetable Position - Decay - Speed LFO, cc: 104, direction: receives, group: wavetable_position}
+  wavetable_position_sustain:        {label: Wavetable Position Sustain, cc: 105, direction: receives, group: wavetable_position}
+  wavetable_position_release:        {label: Wavetable Position Release, cc: 106, direction: receives, group: wavetable_position}
+  wavetable_position_amount:         {label: Wavetable Position Amount, cc: 107, direction: receives, group: wavetable_position}
+
+  # ──── granular_position ────
+
+  granular_position_automation_type: {label: Granular Position Automation Type, cc: 108, direction: receives, group: granular_position}
+  granular_position_attack_shape_lfo: {label: Granular Position - Attack - Shape LFO, cc: 109, direction: receives, group: granular_position}
+  granular_position_decay_speed_lfo: {label: Granular Position - Decay - Speed LFO, cc: 110, direction: receives, group: granular_position}
+  granular_position_sustain:         {label: Granular Position Sustain, cc: 111, direction: receives, group: granular_position}
+  granular_position_release:         {label: Granular Position Release, cc: 112, direction: receives, group: granular_position}
+  granular_position_amount:          {label: Granular Position Amount, cc: 113, direction: receives, group: granular_position}
+
+  # ──── finetune ────
+
+  finetune_automation_type:          {label: Finetune Automation Type, cc: 114, direction: receives, group: finetune}
+  finetune_attack_shape_lfo:         {label: Finetune - Attack - Shape LFO, cc: 115, direction: receives, group: finetune}
+  finetune_decay_speed_lfo:          {label: Finetune - Decay - Speed LFO, cc: 116, direction: receives, group: finetune}
+  finetune_sustain:                  {label: Finetune Sustain, cc: 117, direction: receives, group: finetune}
+  finetune_release:                  {label: Finetune Release, cc: 118, direction: receives, group: finetune}

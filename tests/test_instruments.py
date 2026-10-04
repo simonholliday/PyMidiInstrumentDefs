@@ -172,6 +172,7 @@ class TestBundledCorpus:
 			"novation/circuit_tracks",
 			"novation/peak",
 			"oberheim/teo_5",
+			"polyend/tracker",
 			"pwm/malevolent",
 			"roland/d_50",
 			"roland/fantom_6_7_8",
@@ -7431,3 +7432,114 @@ class TestMC101:
 		said = prose_of("roland", "mc_101")
 
 		assert "for MC-101 compatibility." in said
+
+
+class TestPolyendTracker:
+
+	"""A tracker with two received maps, live in different modes, and one controller in neither."""
+
+	def test_eighty_controls_in_two_maps (self) -> None:
+		"""Thirty-two for performance and the mixer, forty-eight for the instrument."""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		assert len(tracker.controls) == 80
+		assert len(tracker.groups) == 9
+
+		numbers = [control.cc for control in tracker.controls.values() if control.cc is not None]
+
+		assert len(numbers) == 80
+		assert len(set(numbers)) == 80
+
+	def test_the_two_maps_share_no_number (self) -> None:
+		"""Which map is live depends on a mode, so an overlap would be unsayable.
+
+		`performance_effects` and `master` answer whenever CC In is on; everything else
+		answers only in MIDI Synthesizer mode with the sequencer stopped.  This format
+		has no field for that, and the only reason it can list both at once is that no
+		controller number is in both.
+		"""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		always = {control.cc for control in tracker.controls.values()
+			if control.group in ("performance_effects", "master")}
+		synth = {control.cc for control in tracker.controls.values()
+			if control.group not in ("performance_effects", "master")}
+
+		assert len(always) == 32
+		assert len(synth) == 48
+		assert not (always & synth)
+
+		said = prose_of("polyend", "tracker")
+
+		assert "TWO MAPS, AND WHICH ONE IS LIVE DEPENDS ON A MODE RATHER THAN ON A CHANNEL" in said
+
+	def test_the_controller_that_is_in_neither_table (self) -> None:
+		"""Panning is on the instrument's own screen and not in the manual's table."""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		by_number = {control.cc: control for control in tracker.controls.values()}
+
+		assert by_number[10].label == "Panning"
+		assert by_number[10].group == "instrument"
+
+		# The whole panning envelope is there, which is what makes the gap visible.
+		for envelope in range(26, 32):
+			assert by_number[envelope].group == "panning"
+
+		said = prose_of("polyend", "tracker")
+
+		assert "THE ONE CONTROLLER THAT IS NOT IN EITHER TABLE" in said
+		assert "Panning = 10" in said
+
+	def test_nothing_is_transmitted (self) -> None:
+		"""The outgoing side is six slots the player fills, so it is a setting not a map."""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		for control in tracker.controls.values():
+			assert control.direction == "receives", control.label
+
+		said = prose_of("polyend", "tracker")
+
+		assert "NOTHING BELOW IS TRANSMITTED" in said
+
+	def test_the_maker_did_not_write_this_manual (self) -> None:
+		"""A third party's book that Polyend publishes as the official reference."""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		said = prose_of("polyend", "tracker")
+
+		assert "THIS MANUAL IS NOT WRITTEN BY POLYEND" in said
+		assert "Manual Produced in the United Kingdom by Synthdawg" in said
+
+	def test_pitch_bend_is_a_checked_absence (self) -> None:
+		"""The words do not occur in 308 pages, and nor does MPE."""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		assert tracker.voice.pitch_bend is None
+		assert tracker.midi.per_voice_channels is None
+		assert tracker.midi.nrpn == "none"
+
+		said = prose_of("polyend", "tracker")
+
+		assert "PITCH BEND IS A CHECKED ABSENCE" in said
+
+	def test_what_it_sends_and_will_not_say_on_what_number (self) -> None:
+		"""Program change goes out as a step effect, and two pages give it two numbers."""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		assert tracker.midi.program_change is not None
+		assert tracker.midi.program_change.sends is True
+		assert tracker.midi.program_change.receives is None
+
+		said = prose_of("polyend", "tracker")
+
+		assert "AND THE MANUAL CONTRADICTS ITSELF ABOUT WHICH NUMBER PROGRAM CHANGE IS" in said
+
+	def test_the_order_is_the_makers_and_not_numeric (self) -> None:
+		"""The synthesizer map follows the instrument's own screen, which is the evidence."""
+		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		run = [control.cc for control in tracker.controls.values()
+			if control.group == "instrument"]
+
+		assert run == [5, 3, 7, 10, 9, 1, 11, 12, 13, 14, 15, 16, 17]

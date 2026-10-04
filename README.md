@@ -176,6 +176,7 @@ self-contained YAML file, and you share it by sending it.
 | `novation/circuit_tracks` | Novation Circuit Tracks: 358 controls, the most here, over two synth tracks, four drum tracks, two MIDI tracks and a project - including eight the maker's contents page files as a table of values rather than of controls |
 | `novation/peak` | Novation Peak: 246 controls off two documents three firmware releases apart, 33 of which carry no default, because the maker's default column does not agree with itself |
 | `oberheim/teo_5` | Oberheim TEO-5: 198 controls off an implementation document that says in its own words the map belongs to a Sequential synth |
+| `polyend/tracker` | Polyend Tracker: 80 controls in two maps that are live in different modes - the performance effects and mixer whenever it listens, the instrument's own parameters only in synthesizer mode - plus one controller the manual's table drops and the instrument's own screen shows |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |

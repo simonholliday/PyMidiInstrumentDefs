@@ -209,6 +209,7 @@ class TestBundledCorpus:
 			"roland/s_1",
 			"roland/tr8s",
 			"roland/tr_1000",
+			"roland/tr_6s",
 			"sequential/prophet_6",
 			"sequential/take_5",
 			"soma/pulsar_23",
@@ -9556,3 +9557,172 @@ class TestSuper6:
 
 		assert "The maximum pitch-bend range is one octave" in said
 		assert "MSB = +/- 12 semitones" in said
+
+
+class TestTR6S:
+
+	"""The smaller of two drum machines whose maker wrote one document by editing the other's.
+
+	**EVERY CLAIM HERE ABOUT WHAT THE TWO SHARE IS CHECKED AGAINST THE COMMITTED `roland/tr8s`
+	RATHER THAN ASSERTED**, because that is the whole lesson of this instrument: Roland's TR-6S
+	Parameter Guide says "the TR-8S" twice, so the documents cannot be told apart by reading them.
+	The numbers can.
+	"""
+
+	def test_the_whole_chart_arrives (self) -> None:
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+
+		assert len(tr_6s.controls) == 34
+		assert len(tr_6s.voice.voices) == 6
+		assert tr_6s.voice.voices["bd"] == 36
+
+	def test_every_instrument_has_tune_decay_level_and_ctrl (self) -> None:
+		groups = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS]).grouped_controls()
+
+		for voice in ("bd", "sd", "lt", "hc", "ch", "oh"):
+			names = [control.name for control in groups[voice]]
+
+			assert names == [f"{voice}_tune", f"{voice}_decay", f"{voice}_level", f"{voice}_ctrl"]
+
+	def test_the_two_transmit_only_controls_are_never_offered_for_sending (self) -> None:
+		"""And they are not the same case, which the file says and this pins.
+
+		The fill-in trigger is sent in one mode only and the chart footnotes it. BEAT is sent
+		always and footnoted nowhere - it is the one control here whose name is all that is known.
+		"""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+		unsendable = sorted(control.name for control in tr_6s.controls.values()
+			if not control.is_sendable)
+
+		assert unsendable == ["beat", "fill_in_trig"]
+
+		account = " ".join((tr_6s.source or "").split())
+
+		assert "Transmitted when the UTILITY:SOUND:LocalSw is SURFACE" in account
+		assert "with no footnote at all: sent always, and never heard" in account
+		assert "AND NOTHING SAYS WHAT BEAT IS" in account
+
+	def test_thirty_three_of_its_thirty_four_numbers_are_the_tr_8s_s (self) -> None:
+		"""The two-product question, settled by the numbers rather than by the names."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+		tr8s = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS])
+
+		mine = {control.cc for control in tr_6s.controls.values()}
+		theirs = {control.cc for control in tr8s.controls.values()}
+
+		assert len(mine & theirs) == 33
+
+		# **AND THE ONE THE SIBLING HAS NOT IS BEAT.** A consumer that reached for the TR-8S's
+		# map would miss it, and would offer twenty-two numbers this instrument ignores.
+		assert mine - theirs == {2}
+		assert len(theirs - mine) == 22
+
+	def test_the_six_shared_instruments_answer_to_the_same_notes (self) -> None:
+		"""Both maps, not only the one the format holds."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+		tr8s = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS])
+
+		for voice, note in tr_6s.voice.voices.items():
+			assert tr8s.voice.voices[voice] == note
+
+		# The alternate map is in each file's prose, because the format holds one map.
+		assert "BD 35, SD 40, LT 41, HC 54, CH 44 and OH 55" in " ".join(
+			(tr_6s.source or "").split())
+		assert "bd 35, sd 40, lt 41, mt 45, ht 48, rs 56, hc 54, ch 44, oh 55" in prose_of(
+			"roland", "tr8s")
+
+	def test_two_chart_editions_disagree_about_one_note_and_both_claim_version_1_00 (self) -> None:
+		"""So the number recorded is the one a third document agrees with, not the newer one."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+		account = " ".join((tr_6s.source or "").split())
+
+		assert "The earlier file prints OH's alternate as 58 and the later prints 55" in account
+		assert "neither the printed version nor the printed date changed" in account
+
+		# The earlier edition is held and cited for nothing, so a reader can turn to it.
+		assert "chart_eng01" in tr_6s.sources
+		assert tr_6s.sources["chart_eng01"].edition == "eng01"
+
+	def test_system_exclusive_is_not_recorded_because_two_documents_disagree (self) -> None:
+		"""The chart marks it absent and the Parameter Guide gives a device ID for it."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+
+		assert tr_6s.midi.sysex is None
+
+		account = " ".join((tr_6s.source or "").split())
+
+		assert "CONTRADICT EACH OTHER ABOUT SYSTEM EXCLUSIVE" in account
+		assert "the device ID numbers of both devices must match" in account
+
+	def test_the_labels_are_the_charts_own_capitals (self) -> None:
+		"""Because its remark column is the only name this maker gives these numbers."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+
+		assert tr_6s.controls["bd_tune"].label == "BD TUNE"
+		assert tr_6s.controls["master_fx_ctrl"].label == "MASTER FX CTRL"
+
+		# And the sibling's are in title case, which is not an inconsistency: it had a second
+		# source to follow and this instrument has none.
+		assert pymidiinstrumentdefs.load("roland/tr8s", [CORPUS]).controls["bd_tune"].label \
+			== "BD Tune"
+
+	def test_the_chart_is_three_releases_behind_the_firmware (self) -> None:
+		"""And the history is what says the gap does not matter."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+
+		assert tr_6s.model.firmware == "2.00"
+		assert tr_6s.sources["chart"].dated == "2020-04-22"
+
+		said = prose_of("roland", "tr_6s")
+
+		assert "MIDI sometimes becomes unsynchronized when a pattern is changed" in said
+		assert "No release adds, removes or renumbers anything below" in said
+
+	def test_two_channels_share_one_recorded_range (self) -> None:
+		"""Notes and controls on one, kit changes on the other, and the format holds one span."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+
+		assert tr_6s.midi.channels == (1, 16)
+		assert tr_6s.midi.program_change is not None
+		assert tr_6s.midi.program_change.presets == 128
+
+		account = " ".join((tr_6s.source or "").split())
+
+		assert "Specifies the MIDI transmit/receive channel of the pattern sequencer" in account
+		assert "channel for program change messages that switch kits" in account
+		assert "no document gives the kit channel's default" in account
+
+	def test_the_numbering_holes_are_the_charts_own (self) -> None:
+		"""Two readings reached the same explanation from opposite ends, which is why it is here."""
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+
+		numbers = sorted(control.cc for control in tr_6s.controls.values() if control.cc)
+
+		for missing in (21, 22, 26, 27, 98, 99, 100, 101, 103, 104, 105):
+			assert missing not in numbers
+
+		account = " ".join((tr_6s.source or "").split())
+
+		assert "THE NUMBERING HAS HOLES AND THEY ARE THE CHART'S" in account
+		assert "nobody should ever close them up" in account
+
+	def test_the_local_switch_is_reachable_from_the_panel_and_nowhere_else (self) -> None:
+		"""Which is what makes the fill-in trigger unreachable too."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS]).source or "").split())
+
+		assert "AND NOTHING OVER MIDI CAN PUT IT THERE" in account
+		assert "reachable from the panel and from nowhere else" in account
+
+	def test_neither_unnumbered_cover_is_cited (self) -> None:
+		"""The Super 6's lesson, one instrument later: a page number a document does not print.
+
+		Both of these documents number every sheet but the first, so `p. 1` would land on the
+		right sheet while naming a page that does not exist. What the covers say is in the file
+		without a locator, because there is no locator to give.
+		"""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS]).source or "").split())
+
+		assert "NEITHER COVER IS CITED, AND THAT IS DELIBERATE" in account
+		assert "because there is no locator to give" in account

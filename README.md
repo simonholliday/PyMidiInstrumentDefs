@@ -195,6 +195,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
+| `roland/tr_6s` | Roland TR-6S: 34 controls, 33 of which are the TR-8S's - and one the TR-8S has not, named BEAT and explained nowhere |
 | `sequential/prophet_6` | Sequential Prophet-6 keyboard and desktop module: 113 controls, most reachable by CC and by finer NRPN, from an appendix its maker prints three times over - twice in the English manual and once again in the German - with no two printings agreeing |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |

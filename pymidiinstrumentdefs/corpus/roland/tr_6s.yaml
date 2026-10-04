@@ -1,0 +1,330 @@
+# ROLAND PUBLISHES A REAL MIDI IMPLEMENTATION CHART FOR THIS INSTRUMENT, and it is the whole of
+# the control map: one sheet, thirty-four control changes each with a remark naming what it
+# reaches, and a table of note numbers for six instruments. Neither the Owner's Manual nor the
+# Parameter Guide names a single control number, so there is nothing to reconcile it against.
+#
+# THIS MACHINE IS THE TR-8S's SMALLER SIBLING AND THE TWO MAPS ARE NOT THE SAME. That was settled
+# by comparing the numbers rather than the names, which is the only way it could have been:
+# Roland wrote this instrument's Parameter Guide by editing the TR-8S's and left the other model's
+# name in two of its explanations. Thirty-three of these thirty-four numbers are the TR-8S's, at
+# the same numbers, and all six instruments the two machines share carry the same note numbers.
+# What differs is at both ends: the TR-8S has twenty-two numbers this machine has not - five more
+# instruments, its external input and its fill-in switch - and THIS ONE HAS A NUMBER THE TR-8S
+# HAS NOT, cc 2, named BEAT. A consumer that fed a TR-6S the TR-8S's map would offer twenty-two
+# controls that do nothing and would miss one that does.
+#
+# AND THE CHART IS THREE RELEASES BEHIND THE INSTRUMENT, which is this maker's habit and is
+# harmless here. It is marked "Version 1.00" and dated April 2020; Roland offers Ver.2.00 of
+# September 2023. Across all six releases since, the word MIDI appears once, in a bug fix: "MIDI
+# sometimes becomes unsynchronized when a pattern is changed". No release adds, removes or
+# renumbers anything below.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TR-6S
+  # Roland's own system program page offers Ver.2.00 of September 2023 and lists every release
+  # before it, none of which touches the control map. The Parameter Guide is marked "Ver. 2.0 and
+  # later" and matches; the Owner's Manual is still at 1.50 and the chart at 1.00. Checked
+  # 2026-10-04.
+  firmware: "2.00"
+
+source: >-
+  MIDI Implementation Chart, one sheet, marked Version 1.00 and dated April 22 2020: p. 1, which
+  is the whole of the control map and the note table below it. Parameter Guide, 15 pages, the
+  edition Roland names 04: the effects on pp. 2 and 3, the assignable knobs on p. 7, the kit
+  count and the shuffle on p. 13, and every MIDI setting on p. 14. Owner's Manual, 40 pages,
+  edition 02: the connectors on p. 6 and the data layout on p. 8.
+  And Roland's own system program page, for the version history.
+
+  THIRTY-FOUR CONTROL CHANGES AND SIX INSTRUMENTS. Twenty-four of the numbers belong to the six
+  instruments the chart names - BD, SD, LT, HC, CH and OH - four each, tune, decay, level and
+  one control. The other ten are kit and pattern settings: the master effect and its control,
+  the delay's level, time and feedback, the reverb's level, the shuffle, the accent, the fill-in
+  trigger and BEAT.
+
+  THE LABELS ARE THE CHART'S OWN WORDS IN ITS OWN CAPITALS, because its remark column is all
+  there is: "BD TUNE", "MASTER FX CTRL" and "FILL IN TRIG" (p. 1). The committed `roland/tr8s`
+  writes the same names in title case because it had a second source - a working map of that
+  machine, whose names it follows - and this instrument has nothing of the kind.
+
+  THIRTY-TWO OF THE THIRTY-FOUR GO BOTH WAYS AND TWO DO NOT, and they are not the same case.
+  cc 70, FILL IN TRIG, is marked "o *2" transmitted against "x" recognised, and the footnote says
+  "Transmitted when the UTILITY:SOUND:LocalSw is SURFACE" (p. 1) - so it is sent in one mode
+  only. cc 2, BEAT, is marked "o" against "x" with no footnote at all: sent always, and never
+  heard. A panel may read either and must never offer to send them.
+
+  THE NUMBERING HAS HOLES AND THEY ARE THE CHART'S, not a gap in the reading. BD is 20, 23, 24
+  and SD is 25, 28, 29 - skipping 21, 22, 26 and 27 - while LT, HC, CH and OH each run
+  consecutively. The six CTRL numbers are 96, 97, 102, 106, 107 and 108, with 98 to 101 and 103
+  to 105 unused. And the sheet does not print its rows in numeric order either: 80, 81 and 82 come
+  before 70, 71 and 91.
+
+  THE SECOND READING OF THIS SHEET SAID WHAT THOSE HOLES LOOK LIKE WITHOUT HAVING SEEN THE OTHER
+  INSTRUMENT: a sheet derived from a larger member of the family with the absent parts' numbers
+  deleted. The mechanical comparison says the same thing from the other end, and the two were
+  arrived at independently. So the gaps are where the TR-8S's MT, HT, RS, CC and RC sit, and
+  nobody should ever close them up.
+
+  AND NOTHING SAYS WHAT BEAT IS. The word, standing alone, is in neither the Owner's Manual nor
+  the Parameter Guide - both carry "WEAK BEATS" and nothing else - and the TR-8S's chart has no
+  such number. So this is the one control here whose name is the only thing known about it.
+
+  THE SIX CTRL NUMBERS REACH A PARAMETER THE OWNER CHOOSES. "Assigns a parameter to the [CTRL]
+  knobs of the instrument edit section so that it can be controlled" (p. 7), from a list of
+  seven: OFF, Pan, ReverbSend, DelaySend, LFO Depth, InstFX and User. cc 96 and its five
+  companions move whichever of those is selected, and MASTER FX CTRL on cc 19 is the same
+  arrangement for the master effect. What a reader gets from these numbers is therefore a knob
+  and not a parameter, and no field here records which.
+
+  TWO CHANNELS, AND THIS FORMAT HOLDS ONE RANGE FOR BOTH. "Pattern Ch 1-16 ... Specifies the MIDI
+  transmit/receive channel of the pattern sequencer" (p. 14), and "Kit Ch 1-16 ... Specifies the
+  MIDI transmit/receive channel for program change messages that switch kits" (p. 14). So the notes
+  and the controls arrive on one channel and the kit changes on another, and `midi.channels`
+  records the span each may take. The chart's Basic Channel default is 10, remarked "Memorized";
+  no document gives the kit channel's default.
+
+  SIX NOTE NUMBERS AND SIX MORE BESIDE THEM, ALL DEFAULTS. The chart's note table has two
+  columns, Note Number and Note Number (ALT), footnoted "These note numbers are configurable on
+  UTILITY:MIDI:Inst Note." (p. 1). The Parameter Guide confirms it from the other side and gives
+  the range: "Specify the MIDI note number for each track's instrument, instrument alternate
+  sound, and TRIGGER OUT" (p. 14), "OFF (---), 0 (C -)-127 (G 9)" (p. 14). `voices` below holds the first
+  column. The alternate sounds are BD 35, SD 40, LT 41, HC 54, CH 44 and OH 55, and this format
+  has one map where the instrument has two. TRIGGER OUT has no note number in the chart.
+
+  THE TWO SERVED EDITIONS OF THE CHART DISAGREE ABOUT ONE OF THOSE NUMBERS, AND BOTH CLAIM
+  VERSION 1.00. The earlier file prints OH's alternate as 58 and the later prints 55; nothing
+  else about the instrument differs between them, and neither the printed version nor the printed
+  date changed. 55 is recorded because a third document agrees with it and nothing agrees with
+  58: the committed `roland/tr8s`, read from its own chart under another task, gives the same six
+  alternates - 35, 40, 41, 54, 44, 55.
+
+  THE CHART AND THE PARAMETER GUIDE CONTRADICT EACH OTHER ABOUT SYSTEM EXCLUSIVE, so `sysex` is
+  not recorded. The chart marks System Exclusive "x" in both columns. The guide gives a parameter
+  for it, whose range is 17 to 32: "Device ID ... When transmitting and receiving system
+  exclusive messages, the device ID numbers of both devices must match" (p. 14). Two documents
+  of different vintages, and nothing here chooses between them.
+
+  EVERY CONTROL IS GATED BY A SETTING THE CHART DOES NOT MENTION. "Tx EditData ... Specifies
+  whether changes to the kit settings (panel operations) are transmitted as MIDI messages (ON) or
+  are not transmitted (OFF)" (p. 14), and "Rx EditData" is the same for the other direction.
+  Program change and the clock have their own pairs: "Sync Out ... Specifies whether clock,
+  start, and stop messages are transmitted to other devices (ON) or are not transmitted (OFF)"
+  (p. 14), and beside it "RxStartStop" (p. 14), "Tx Prog Chg" (p. 14) and "Rx Prog Chg"
+  (p. 14). So every "o" below is what the instrument can do and not what it is doing.
+
+  AND THE LOCAL SWITCH HAS THREE POSITIONS RATHER THAN TWO. "SURFACE: The controller section,
+  sequencer section, and external MIDI device are disconnected from the internal sound engine"
+  (p. 14) - which is the position the fill-in trigger is transmitted in, and the one the manual
+  tells a player to choose to use this instrument as a controller.
+
+  AND NOTHING OVER MIDI CAN PUT IT THERE. Local On/Off is one of the Aux messages the chart marks
+  "x" in both columns, so this three-way switch is reachable from the panel and from nowhere else.
+  A panel that wanted the fill-in trigger to be sent would have to ask its player to set it.
+
+  CHECKED AND ABSENT: both aftertouches and pitch bend, each marked "x" in both columns, as are
+  song position, song select, tune request and every Aux message except Active Sensing. Continue
+  is the one row that differs between the columns - "x" transmitted against "o" recognised - so
+  this instrument answers to a Continue it will never send.
+
+  NEITHER COVER IS CITED, AND THAT IS DELIBERATE. The Parameter Guide and the Owner's Manual each
+  print a page number on every sheet but the first, so "p. 1" would land on the right sheet of
+  either while naming a page the document does not have. What those covers say is this: the guide
+  covers Ver. 2.0 and later, and the manual applies to program version 1.50 or later - so the
+  manual is two minor versions behind the firmware and the guide is not. Both statements are in
+  this file and neither is quoted with a locator, because there is no locator to give.
+
+  NOT RECORDED: NRPN, which the chart has no row for and neither other document mentions - a
+  silence rather than a checked absence. Values, bands and defaults for any control, none of
+  which any document gives. And the maximum polyphony, which no document states.
+
+sources:
+  chart:
+    kind: midi_implementation
+    title: TR-6S MIDI Implementation Chart
+    edition: eng02
+    dated: 2020-04-22
+    landing: "https://www.roland.com/global/support/by_product/tr-6s/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/TR-6S_MIDIImpleChart_eng02_W.pdf"
+    sha256: 9e29e530f52dd6d0494d8e5207ff753bc3ef1329ff6b0ca04816140691a438c5
+    retrieved: 2026-10-04
+    # One sheet, cited as p. 1. The date above is the one printed on it; the edition is the one
+    # in the file name, because the sheet's own "Version 1.00" does not identify its contents -
+    # the earlier file at eng01 prints the same version and the same date with a different
+    # alternate note number for OH. See the source account.
+    page_offset: 0
+  chart_eng01:
+    kind: midi_implementation
+    title: TR-6S MIDI Implementation Chart
+    edition: eng01
+    dated: 2020-04-22
+    landing: "https://www.roland.com/global/support/by_product/tr-6s/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/TR-6S_MIDIImpleChart_eng01_W.pdf"
+    sha256: 1b839a0acfc606826a9d8d0914b66339184bec28ca6bd4d377d6acc9aa41bd83
+    retrieved: 2026-10-04
+    # THE EARLIER SERVED EDITION, HELD SO THAT THE ONE NUMBER THE TWO DISAGREE ABOUT CAN BE
+    # TURNED TO. Roland no longer offers it: the listing links eng02 only, and this file is still
+    # served at its own name. Nothing below is read from it. It prints the same "Version 1.00"
+    # and the same date as the edition above.
+    page_offset: 0
+  guide:
+    kind: reference
+    title: TR-6S Parameter Guide
+    edition: "04"
+    dated: 2023-09-06
+    landing: "https://www.roland.com/global/support/by_product/tr-6s/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/TR-6S_Parameter_eng04_W.pdf"
+    sha256: 89148cd7758d7dccb771d71429907a872cc8b8502e05d324426d633db1bec5e9
+    retrieved: 2026-10-04
+    # 15 pages, printed page = file page. Its cover reads "Parameter Guide 04 Ver. 2.0 and
+    # later"; the date above is the PDF's own creation date, because the document states none.
+    # IT NAMES NO CONTROL NUMBER ANYWHERE, which is why the chart above is the whole map.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: TR-6S Owner's Manual
+    edition: "02"
+    dated: 2022-09-29
+    landing: "https://www.roland.com/global/support/by_product/tr-6s/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/TR-6S_Manual_eng02_W.pdf"
+    sha256: 61cd4ded6f3aec45bf11c6949d3381900a99108653301c4b15f1f5d24a91f230
+    retrieved: 2026-10-04
+    # 40 pages, printed page = file page. It is two minor versions behind the firmware: "This
+    # manual applies to program "version 1.50" or later" (p. 1). The date above is the PDF's own
+    # creation date - the server's last-modified header reads 2026, four years later, because the
+    # file was re-uploaded without changing.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: "Roland - Support - TR-6S - Updates & Drivers"
+    edition: Ver.2.00
+    dated: 2023-09
+    landing: "https://www.roland.com/global/support/by_product/tr-6s/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/tr-6s/updates_drivers/feae3eef-3f39-45c5-b8d5-9383cbd35086/"
+    sha256: 9812526d0ebdabd236179fc501c1a6521cd133fe39e1e1d6e179b40fb55515f4
+    retrieved: 2026-10-04
+    paginated: false
+    # The visible text of the page, cited for which firmware is current and for the whole update
+    # history - which is what establishes that the chart still describes the shipping machine.
+    # The sha256 is of that text as saved on 2026-10-04; the page as served hashes to
+    # 29ab903744e38f6a29eb1689c541e994af2d92e1c475908712f33409be2535e0. Roland adds releases to
+    # this page, so no later fetch will match either.
+
+midi:
+  # Two settings, one range: "Pattern Ch 1-16" and "Kit Ch 1-16" (p. 14). The chart's Basic
+  # Channel row gives a default of 10 both ways, remarked "Memorized", and a Changed range of
+  # "1-16, OFF" - so either channel may also be switched off entirely.
+  channels: [1, 16]
+  # The chart's Mode row, default both ways. Its Messages row is "x" in both columns, so the
+  # four mode messages cannot change it from outside.
+  mode: 4
+  # "System Real Time : Clock" is marked o in both columns, and "Sync Out" and "TempoSync" are
+  # the settings behind each direction (p. 14).
+  clock: both
+  # Start and Stop are marked o in both columns. CONTINUE IS NOT: "x" transmitted against "o"
+  # recognised, so this instrument answers to a Continue it will never send.
+  transport: both
+  program_change:
+    # Marked o in both columns with "True Number 0-127", and the settings are separate: "Tx Prog
+    # Chg OFF, ON" and "Rx Prog Chg OFF, ON" (p. 14). They arrive on the kit channel rather than
+    # the pattern channel.
+    receives: true
+    sends: true
+    # "Start Kit LAST, 001-128" (p. 13), and the data layout names "128 KITs" beside "128
+    # patterns (16 x 8 banks)" (p. 8). The kit channel is "the MIDI transmit/receive channel for
+    # program change messages that switch kits" (p. 14), so a program change reaches a kit.
+    presets: 128
+  # NOT RECORDED: sysex. The chart marks System Exclusive "x" in both columns and the Parameter
+  # Guide gives a Device ID for it. See the source account.
+  # NOT RECORDED: nrpn. No document mentions it, which is silence rather than a checked absence.
+
+voice:
+  # Notes address instruments rather than pitches, which is what a rhythm machine is.
+  addressing: voices
+  velocity:
+    # The chart's Velocity row reads "o 9nH v=80" transmitted against a bare "o" recognised: a
+    # machine that accepts any velocity and sends one fixed value. Note Off is "o 8nH v=00"
+    # against "o". What it transmits is not a range and is not recorded as one - and the fixed
+    # value is not recorded either, because the chart marks the status byte as hexadecimal,
+    # "9nH", and gives the velocity no radix at all. 80 and 0x80 are both readings of it, and
+    # 0x80 is not a velocity a note on may carry.
+    note_on: received
+  # Key's and Channel's aftertouch are both marked "x" in both columns, as is pitch bend.
+  aftertouch: none
+  # The chart's note table, first column. EVERY ONE IS A FACTORY DEFAULT: "These note numbers are
+  # configurable on UTILITY:MIDI:Inst Note", and the Parameter Guide gives the range each may
+  # take, "OFF (---), 0 (C -)-127 (G 9)" (p. 14). The second column, the alternate sounds, is in
+  # the source account because this format has one map.
+  voices:
+    bd: 36
+    sd: 38
+    lt: 43
+    hc: 39
+    ch: 42
+    oh: 46
+
+groups:
+  # Roland's own two-letter names, and there are no longer ones to be had: the chart heads these
+  # six INST and neither other document expands one. The order is the order the chart lists the
+  # controls, which is the order they appear below.
+  # The first group is every control that belongs to no one instrument. The Parameter Guide files
+  # the effects under KIT - "KIT: MASTER FX" and "KIT: DELAY" at pp. 2-3 - and the shuffle under
+  # SYSTEM (p. 13), and the accent is a sequencer track of its own beside the six (p. 8).
+  global: Kit and pattern
+  bd: BD
+  sd: SD
+  lt: LT
+  hc: HC
+  ch: CH
+  oh: OH
+
+controls:
+
+  # Kit and pattern ───────────────────────────────────────────
+  beat:           {label: BEAT, cc: 2, direction: transmits, group: global}
+  shuffle:        {label: SHUFFLE, cc: 9, group: global}
+  master_fx:      {label: MASTER FX, cc: 15, group: global}
+  delay_level:    {label: DELAY LEVEL, cc: 16, group: global}
+  delay_time:     {label: DELAY TIME, cc: 17, group: global}
+  delay_feedback: {label: DELAY FEEDBACK, cc: 18, group: global}
+  master_fx_ctrl: {label: MASTER FX CTRL, cc: 19, group: global}
+  fill_in_trig:   {label: FILL IN TRIG, cc: 70, direction: transmits, group: global}
+  accent:         {label: ACCENT, cc: 71, group: global}
+  reverb_level:   {label: REVERB LEVEL, cc: 91, group: global}
+
+  # BD ────────────────────────────────────────────────────────
+  bd_tune:        {label: BD TUNE, cc: 20, group: bd}
+  bd_decay:       {label: BD DECAY, cc: 23, group: bd}
+  bd_level:       {label: BD LEVEL, cc: 24, group: bd}
+  bd_ctrl:        {label: BD CTRL, cc: 96, group: bd}
+
+  # SD ────────────────────────────────────────────────────────
+  sd_tune:        {label: SD TUNE, cc: 25, group: sd}
+  sd_decay:       {label: SD DECAY, cc: 28, group: sd}
+  sd_level:       {label: SD LEVEL, cc: 29, group: sd}
+  sd_ctrl:        {label: SD CTRL, cc: 97, group: sd}
+
+  # LT ────────────────────────────────────────────────────────
+  lt_tune:        {label: LT TUNE, cc: 46, group: lt}
+  lt_decay:       {label: LT DECAY, cc: 47, group: lt}
+  lt_level:       {label: LT LEVEL, cc: 48, group: lt}
+  lt_ctrl:        {label: LT CTRL, cc: 102, group: lt}
+
+  # HC ────────────────────────────────────────────────────────
+  hc_tune:        {label: HC TUNE, cc: 58, group: hc}
+  hc_decay:       {label: HC DECAY, cc: 59, group: hc}
+  hc_level:       {label: HC LEVEL, cc: 60, group: hc}
+  hc_ctrl:        {label: HC CTRL, cc: 106, group: hc}
+
+  # CH ────────────────────────────────────────────────────────
+  ch_tune:        {label: CH TUNE, cc: 61, group: ch}
+  ch_decay:       {label: CH DECAY, cc: 62, group: ch}
+  ch_level:       {label: CH LEVEL, cc: 63, group: ch}
+  ch_ctrl:        {label: CH CTRL, cc: 107, group: ch}
+
+  # OH ────────────────────────────────────────────────────────
+  oh_tune:        {label: OH TUNE, cc: 80, group: oh}
+  oh_decay:       {label: OH DECAY, cc: 81, group: oh}
+  oh_level:       {label: OH LEVEL, cc: 82, group: oh}
+  oh_ctrl:        {label: OH CTRL, cc: 108, group: oh}

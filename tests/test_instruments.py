@@ -2442,7 +2442,7 @@ class TestOpsix:
 		assert opsix.midi.program_change is not None
 		assert opsix.midi.program_change.receives is True
 		assert opsix.midi.program_change.sends is True
-		assert opsix.midi.program_change.presets == 100
+		assert opsix.midi.program_change.presets == 500
 
 
 class TestBassStationII:
@@ -6949,6 +6949,58 @@ class TestDeclaringAPicturedPage:
 		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
 
 		assert typhon.sources["manual"].pictured_pages == ()
+
+
+class TestPresetCounts:
+
+	"""What `presets` counts, which two definitions used to answer differently."""
+
+	def test_presets_is_what_the_instrument_holds_not_what_one_message_reaches (self) -> None:
+		"""An instrument that needs a bank select to reach the rest still records the rest.
+
+		`midi.program_change.presets` is "how many it has".  Most instruments here that
+		hold more than a program change can address record the whole number and explain
+		the banks in a comment - the Carbon8M's 500 in five banks of a hundred, the
+		MiniFreak's 512 in four banks of 128, the Sub 37's 256 in sixteen of sixteen.
+		**Two Korgs recorded the hundred that one program change reaches instead**, so a
+		consumer asking how many presets an instrument has got 500 from the Carbon8M and
+		100 from the opsix for the same arrangement.  One answered one way and one the
+		other is worse than neither, because it reads as settled and is wrong about one.
+
+		The figures below are each the maker's own, from the specifications page of its
+		own manual.
+		"""
+		holds = {
+			"arturia/minifreak": 512,
+			"korg/minilogue_xd": 500,
+			"korg/opsix": 500,
+			"modal/carbon8m": 500,
+			"moog/sub_37": 256,
+			"moog/subsequent_37": 256,
+			"sequential/prophet_6": 1000,
+			"sequential/take_5": 256,
+		}
+
+		for name, expected in holds.items():
+			definition = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			assert definition.midi.program_change is not None, name
+			assert definition.midi.program_change.presets == expected, name
+
+	def test_an_instrument_a_program_change_reaches_entirely_is_not_affected (self) -> None:
+		"""The rule only bites where the instrument holds more than one message addresses.
+
+		These three are right as they stand and must not be "corrected" to match the
+		others: the modwave mk II's set list really is 64 slots, and the microKORG has
+		no bank select at all.
+		"""
+		exact = {"korg/microkorg": 128, "korg/modwave_mk_ii": 64, "korg/wavestate": 64}
+
+		for name, expected in exact.items():
+			definition = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			assert definition.midi.program_change is not None, name
+			assert definition.midi.program_change.presets == expected, name
 
 
 def prose_of (maker: str, model: str) -> str:

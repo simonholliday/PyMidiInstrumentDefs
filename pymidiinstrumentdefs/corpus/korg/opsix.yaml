@@ -160,10 +160,12 @@ midi:
   program_change:
     receives: true
     sends: true
-    # The chart gives 0 to 99 in both columns and "True Number 0-99" (chart). The instrument
-    # holds five times that many programs and reaches the rest by bank select, which is
-    # controller 0 and 32 below.
-    presets: 100
+    # "500 (350 preset programs and 150 user programs as the factory-set default)" (p. 106),
+    # reached by bank select, which is controller 0 and 32 below. The chart gives 0 to 99 in
+    # both columns and "True Number 0-99" (chart), so one program change reaches a hundred of
+    # them. **The count is what the instrument holds, not what one program change reaches**,
+    # which is the rule every other definition here follows and a test now states.
+    presets: 500
   # The chart marks system exclusive both ways, with the footnote "Supports universal system
   # exclusive messages device inquiry, master volume, master fine tuning, and master coarse
   # tuning", and a second one: "Supports MIDI 2.0 Property Exchange" (chart). The file Korg

@@ -105,10 +105,12 @@ midi:
   program_change:
     receives: true
     sends: true
-    presets: 100           # "Program Change (pp=0~99)"
-    # The instrument holds 500 programs, 200 preset and 300 user (manual p. 66), reached as
-    # five banks of a hundred: Bank Select LSB takes vv=0~4 and a program change carries
-    # 0 to 99 within the chosen bank.
+    # "500 (200 preset programs and 300 user programs as the factory-set default)" (manual
+    # p. 66), reached as five banks of a hundred: Bank Select LSB takes vv=0~4 and a program
+    # change carries "Program Change (pp=0~99)" within the chosen bank. **The count is what
+    # the instrument holds, not what one program change reaches**, which is the rule every
+    # other definition here follows and a test now states.
+    presets: 500
   nrpn: supported          # 61 parameters, listed below; see the note on the MSB column
   sysex: true
   # The format has no field for Active Sensing, which this instrument both sends and

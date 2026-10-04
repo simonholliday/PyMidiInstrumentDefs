@@ -170,6 +170,7 @@ class TestBundledCorpus:
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
 			"korg/electribe",
+			"korg/m1",
 			"korg/microkorg",
 			"korg/microkorg2",
 			"korg/minilogue",
@@ -10939,3 +10940,224 @@ class TestOBX8:
 		# Both prefer NRPN, in the maker's own words, which is what makes it a house position.
 		assert ob_x8.midi.nrpn == "preferred"
 		assert teo.midi.nrpn == "preferred"
+
+
+class TestM1:
+
+	"""Rank 71, and the first definition here read entirely out of a document with no text in it.
+
+	**Four controls**, because everything else about this 1988 workstation is reached by system
+	exclusive. The chart lists ten control change numbers and six of them are how a registered
+	parameter travels.
+	"""
+
+	def test_four_controls_and_six_numbers_held_back (self) -> None:
+		"""Ten numbers in the chart's Control Change block, four of them parameters."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert len(m1.controls) == 4
+		assert sorted(c.cc for c in m1.controls.values() if c.cc is not None) == [1, 2, 7, 64]
+
+		# The maker's own names for them, out of the chart's Remarks column.
+		assert [m1.controls[n].label for n in
+			("pitch_mg", "vdf_modulation", "volume", "sustain")] \
+			== ["Pitch MG", "VDF modulation", "Volume", "Sustain"]
+
+		account = " ".join((m1.source or "").split())
+
+		assert "TEN CONTROL CHANGE NUMBERS ARE LISTED AND FOUR ARE PARAMETERS" in account
+		assert "Six of those ten are how a registered parameter" in account
+
+	def test_the_eleventh_row_is_the_sequencer_and_not_a_control (self) -> None:
+		"""`0-101` against "Sending and receiving Seq. Data only" would be 102 phantom controls."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+		numbers = {c.cc for c in m1.controls.values()}
+
+		# Nothing between 3 and 63 is a control, which is what that row would have made it.
+		assert not any(n in numbers for n in range(3, 64) if n != 7)
+
+		account = " ".join((m1.source or "").split())
+
+		assert "AN ELEVENTH ROW IS NOT A CONTROL AT ALL" in account
+		assert "Sending and receiving Seq. Data only" in account
+
+	def test_everything_else_is_system_exclusive (self) -> None:
+		"""Which is the finding, and the same state `behringer/model_d` is in by another road."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert m1.midi.sysex is True
+
+		# The chart has no NRPN row; what it has is an RPN, so NRPN is a checked absence.
+		assert m1.midi.nrpn is None
+
+		account = " ".join((m1.source or "").split())
+
+		assert "Parameter change by system exclusive is used to edit Programs" in account
+		assert "THE CHART HAS NO NRPN ROW" in account.upper()
+
+		# The other definition here whose remote surface is system exclusive.
+		assert len(pymidiinstrumentdefs.load("behringer/model_d", [CORPUS]).controls) == 0
+
+	def test_eight_timbres_each_with_its_own_receive_channel (self) -> None:
+		"""And a global channel that is none of them, which is what the keyboard plays on."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert len(m1.parts) == 8
+		assert list(m1.parts) == [f"timbre_{n}" for n in range(1, 9)]
+
+		for part in m1.parts.values():
+			assert part.channel == "assigned"
+			assert part.receives == ("notes", "controls", "program_change")
+			# The voices are shared, so no timbre carries a count of its own.
+			assert part.polyphony is None
+
+		assert m1.voice.polyphony == 16
+		assert m1.voice.polyphony_shared is True
+
+		said = prose_of("korg", "m1")
+
+		assert "Dynamic Voice Allocation" in said
+		assert "only the Timbres which are set to the same channel as the MIDI Global channel" \
+			in said
+
+	def test_sixteen_voices_or_eight_depending_on_the_program (self) -> None:
+		"""Single mode and Double mode, which is what `voicing_modes` is for."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert m1.voice.voicing_modes == (8, 16)
+		assert m1.voice.polyphony == 16
+
+		said = prose_of("korg", "m1")
+
+		assert "16 voice, 16 oscillator (Single mode)" in said
+		assert "8 voice, 16 oscillator (Double mode)" in said
+
+	def test_the_source_is_a_scan_and_the_file_says_what_that_costs (self) -> None:
+		"""No gate can check a number here, so the file says so rather than appearing checked.
+
+		This is the distinction the whole corpus turns on: a figure nobody could verify by
+		machine is not the same as a figure nobody looked at, and only the file can say which.
+		"""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+		account = " ".join((m1.source or "").split())
+
+		assert "EVERY NUMBER BELOW WAS READ BY EYE AND NO GATE CAN CHECK ONE OF THEM" in account
+		assert "The manual is a pure scan" in account
+
+		# The other two definitions whose numbers came off an image.
+		assert "yamaha/dx7" in account
+		assert "roland/juno_106" in account
+
+		said = prose_of("korg", "m1")
+
+		assert "**`file(1)` SAYS THIS DOCUMENT HAS 13 PAGES. IT HAS 138.**" in said
+
+	def test_the_clock_and_transport_are_one_way_at_a_time (self) -> None:
+		"""Both, where `both` records a pair of settings rather than a simultaneous capability."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert m1.midi.clock == "both"
+		assert m1.midi.transport == "both"
+
+		said = prose_of("korg", "m1")
+
+		assert "When Clock is Internal, it transmits but does not receive" in said
+		assert "only when this function is set to EXT" in said
+
+	def test_four_global_switches_can_turn_any_of_it_off (self) -> None:
+		"""A condition the format cannot carry, which the chart states four times over."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+		account = " ".join((m1.source or "").split())
+
+		assert "FOUR GLOBAL SWITCHES DECIDE WHETHER ANY OF IT ARRIVES" in account
+		assert "When set to DIS, the selected MIDI data is not received or sent" in account
+		assert "every field below is what the instrument does with its switches on" in account
+
+	def test_the_preset_count_is_one_of_two_the_player_chooses (self) -> None:
+		"""100 is recorded because the chart agrees with it; the other setting gives fifty."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert m1.midi.program_change is not None
+		assert m1.midi.program_change.presets == 100
+
+		account = " ".join((m1.source or "").split())
+
+		assert "Memory allocation can be changed to 50 Programs and 50 Combinations" in account
+		assert "a reader whose instrument is set the other way has fifty" in account
+
+	def test_aftertouch_is_refused_polyphonically_rather_than_unstated (self) -> None:
+		"""Keys x / x is a denial; it is the one row in this chart that refuses both ways."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert m1.voice.aftertouch == "channel"
+		assert m1.voice.velocity is not None
+		assert m1.voice.velocity.note_on == "received"
+		assert m1.voice.velocity.note_off is False
+
+		# No bend range is printed anywhere, so the field is absent rather than guessed.
+		assert m1.voice.pitch_bend is None
+
+		said = prose_of("korg", "m1")
+
+		assert "After Touch Keys x / x" in said
+
+	def test_the_drum_kits_have_no_factory_note_map (self) -> None:
+		"""The player assigns each sound to a key, so there is nothing fixed to publish."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+
+		assert m1.voice.voices == {}
+		assert m1.voice.addressing == "pitches"
+
+		account = " ".join((m1.source or "").split())
+
+		assert "Key sets the key (C0 to G8) to which the sound is assigned" in account
+		assert "soma/pulsar_23" in account
+
+	def test_the_ten_numbers_are_split_between_two_global_switches (self) -> None:
+		"""Which is the thing a definition of this instrument is most likely to get wrong.
+
+		The four published are under the CONTROL filter and so is pitch bend; the six held
+		back are under EXCLUSIVE, because on this instrument they are the machinery of
+		parameter editing rather than performance control. The first reading of this manual
+		had it as "all ten under CONTROL" and the second reading corrected it.
+		"""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+		account = " ".join((m1.source or "").split())
+
+		assert "THEY DO NOT DIVIDE THE WAY A READER WOULD GUESS" in account
+		assert "the ten control change numbers are split between two different switches" in account
+		assert "names the wrong switch for six of them" in account
+
+	def test_six_controller_numbers_exist_and_never_cross_the_cable (self) -> None:
+		"""102 to 107 are the sequencer's own, and the manual says so forty pages away."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+		numbers = {c.cc for c in m1.controls.values()}
+
+		for inside_only in range(102, 108):
+			assert inside_only not in numbers, f"{inside_only} does not leave the instrument"
+
+		account = " ".join((m1.source or "").split())
+
+		assert "MIDI does not input or output 102 to 107" in account
+		assert "a number the instrument cannot hear" in account
+
+	def test_the_one_rpn_reaches_one_parameter_and_is_received_only (self) -> None:
+		"""RPN 0,1 - the specification's own Master Fine Tuning - and nothing else."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+		account = " ".join((m1.source or "").split())
+
+		assert "controllers 98 and 99 appear nowhere in the document" in account
+		assert "That is RPN 0,1, which is the MIDI specification's own Master Fine Tuning" \
+			in account
+		assert "answers to it and never sends it" in account
+
+	def test_the_document_disagrees_with_itself_about_the_aftertouch_switch (self) -> None:
+		"""Chart says the AFTER TOUCH filter; the exclusive section says the CONTROL one."""
+		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
+		account = " ".join((m1.source or "").split())
+
+		assert "CONTRADICTS ITSELF ABOUT WHICH SWITCH GOVERNS AFTERTOUCH" in account
+		assert "Both readers checked the letter at full resolution and it is a C" in account
+
+		# The field still records the kind, which is not what the two statements disagree about.
+		assert m1.voice.aftertouch == "channel"

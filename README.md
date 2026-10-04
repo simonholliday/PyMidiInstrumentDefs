@@ -156,6 +156,7 @@ self-contained YAML file, and you share it by sending it.
 | `erica_synths/perkons_hd_01` | Erica Synths PĒRKONS HD-01: 44 controls off two pages of a manual reached through a news item, whose numbers a player can rewrite in a file on the SD card |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |
 | `korg/electribe` | Korg electribe: 18 controls out of a plain text file that prints every number twice, with sixteen parts on one MIDI channel and no way given of choosing one |
+| `korg/m1` | Korg M1: four controls, because everything else about this 1988 workstation is reached by system exclusive - read by eye out of a 138-page scan with no text in it at all |
 | `korg/microkorg` | Korg microKORG: 41 controller numbers that are the factory assignment and not fixed, each meaning one thing in a synth program and another in a vocoder one |
 | `korg/microkorg2` | Korg microKORG2: 181 controls out of a maker who prints the same map three times, where the NRPN table gives six parameters one address and numbers two more twice over, and the manual's own pages are what put all eight right |
 | `korg/minilogue` | Korg minilogue: 39 controls, thirteen of them switches whose named bands the maker gives twice over - as the values it sends and as the bands it reads them in - from an implementation its maker publishes as a plain text file and again, five years later, as a chart in the manual |

@@ -1,0 +1,332 @@
+# TWO MAPS AGAIN, AND THIS TIME ONE IS THE OTHER'S FIRST QUARTER. The PĒRKONS answers to the
+# forty-four numbers below **in SINGLE MIDI CHANNEL mode**, where all four voices are on one
+# channel and each has eleven numbers of its own. In MULTI MIDI CHANNEL mode each voice takes a
+# channel of its own and they all answer to voice 1's eleven - "In MULTI MIDI CHANNEL mode, MIDI
+# CC messages for all voices are the same as for VOICE 1, but you have to assign voices to
+# different MIDI channels" (p. 35). The mode is a setting on the instrument's configuration page
+# and the maker does not say which way it ships.
+#
+# **THIS FORMAT HAS NO FIELD FOR A MAP THAT IS LIVE IN ONE MODE ONLY**, so the file describes the
+# map the maker prints as a table and writes the other out here in words. Nothing is lost by it:
+# the other map is these same numbers' first quarter, moved onto four channels.
+#
+# THE NUMBERS ARE A FACTORY ASSIGNMENT AND THE PLAYER CAN REWRITE THEM, which is unusual enough to
+# say on the file's face: "You can alter the MIDI CC message assignment to your preference simply
+# by replacing CC message numbers in a text file on the SD card" (p. 36) - a file the same page
+# names `single-midi-cc.json`. So everything below is what a PĒRKONS answers to as it leaves the
+# factory, and a particular instrument may have been changed. There is no MIDI learn here and no
+# way to ask the instrument what it is set to; the file on the card is the whole of it.
+#
+# THE FOUR NOTE NUMBERS ARE NOT IN PRINT. "Voices will be triggered by NOTE ON messages - Voice 1
+# - C, Voice 2 - C#, Voice 3 - D, Voice 4 - D#" (p. 35), and **no octave is given anywhere in
+# thirty-seven pages**, so there is no note number to record. A player has to find the octave by
+# trying it.
+#
+# AND NEITHER ARE THE SWITCHES' POSITIONS. Each voice's ALGO, MODE and FILTER switch has three
+# positions and the manual names all three of each - the algorithms and their modes at pp. 8 to 11,
+# the filters at p. 7 - but it never prints what to send to reach one. So they are plain controls
+# below rather than three-state ones, because the only number a player actually needs is the one
+# the maker did not print.
+
+definition: 1
+
+model:
+  manufacturer: Erica Synths
+  # THE MAKER WRITES IT WITH A MACRON and the file's name cannot, so the two differ on purpose.
+  # Pērkons is the Baltic god of thunder and the manual opens by saying so. The same manual drops
+  # the macron twice - its heading on p. 34 spells the name PERKONS before "FIRMWARE V1.1.
+  # CHANGELOG" (p. 34), and p. 32 has "the PERKONS sends out all MIDI information from the internal
+  # sequencer" (p. 32) - so both spellings are the maker's.
+  name: PĒRKONS HD-01
+  # The manual's own page headings: pp. 31, 32 and 33 are each headed "CONFIGURATION SETTINGS -
+  # FIRMWARE V1.2" (p. 31). **AND 1.2 IS STILL THE NEWEST**, which is an absence and is evidenced:
+  # every post the maker's news listing serves, seventy-five of them in an unbroken run from June
+  # 2024 to August 2026, carries three PĒRKONS firmware announcements and no fourth.
+  # The maker's two namings of this release differ by a digit: the announcement is headed "PERKONS
+  # UPDATE 1.2" (firmware_1_2) and the image it offers is `perkons_both_v1.2.1-0-gbcccfd0.img`.
+  # This is 1.2, which is what the pages the numbers come from call it.
+  firmware: "1.2"
+
+source: >-
+  PĒRKONS HD-01 User Manual, 37 pages, December 2024, for firmware 1.2. **Everything below comes
+  from pp. 35 and 36**, the two pages headed MIDI IMPLEMENTATION, and they are the whole of what
+  this maker publishes about this instrument's MIDI: there is no implementation chart, no separate
+  MIDI document and nothing on midi.guide. Around them: the connectors at p. 6, the voice controls
+  at p. 7, the sound engines at pp. 8-11, the configuration page at pp. 31-33, and the firmware 1.1
+  changelog at p. 34.
+
+  THE MANUAL IS REACHED THROUGH A NEWS ITEM AND THERE IS NO OTHER ROUTE TO IT. The maker's product
+  and support pages assemble their download lists in the browser, so an HTTP client that fetches
+  either gets no link to anything. The manual is the second of two links in the announcement of
+  firmware 1.2, worded "DOWNLOAD UPDATED MANUAL HERE" (firmware_1_2). That announcement is cited
+  here as a document in its own right, with the two before it, because between them they are the
+  only changelogs this instrument has.
+
+  FORTY-FOUR CONTROLLER NUMBERS, 70 TO 113, WITH NOTHING UNUSED IN BETWEEN. Eleven controls for
+  each of four voices: "All 8 potentiometers and 3 switches of each voice on the PĒRKONS can be
+  controlled via MIDI CC messages" (p. 35). Voice 1 has 70 to 80, voice 2 81 to 91, voice 3 92 to
+  102 and voice 4 103 to 113, in the order the page lists the controls down its left-hand side.
+
+  THE TABLE IS A DRAWING AND NOT A TABLE. This manual was set in Adobe Illustrator and its two
+  kinds of table are grids of free-standing words with no ruling and no cells, so which number
+  belongs under which heading is in the coordinates and nowhere else. **Reading by the order the
+  words come out of the file is wrong in the way that looks right**: done that way, the fourth
+  voice's three algorithms come back as NOISE HAT, NOISE/TONE, ACOUSTIC HATS, which reads as
+  algorithms 1, 2 and 3 - and the maker says elsewhere that algorithm 3 is the one with the samples
+  in it, "VOICE 4, ALGORITHM 3 contains three hi-hat samples that can be selected via the MODE
+  switch" (p. 33), which is ACOUSTIC HATS. The columns settle it; the file order does not. Both
+  kinds of page also carry a drawing of the voice panel at the right-hand edge, whose words would
+  otherwise land in the table.
+
+  WHAT IS ABSENT, SEARCHED FOR ACROSS ALL THIRTY-SEVEN PAGES. The words NRPN, RPN and Registered
+  appear nowhere, which is what `nrpn: none` records. Neither do `System Exclusive`, `SysEx`,
+  `Program Change`, `Pitch Bend` or `Aftertouch` - but those are left unrecorded rather than
+  written as checked absences, because this is a manual and not an implementation chart, and one
+  that does not mention a thing has not been asked about it. The distinction matters most for
+  program change: the instrument holds 64 banks of 64 kits and 64 patterns (p. 28) and the manual
+  describes no way to reach any of them over MIDI, so no preset count is recorded here at all.
+
+  NO MIDI CHANNEL NUMBER OR RANGE IS PRINTED. The channel is chosen on the instrument - "In the
+  SINGLE CHANNEL MIDI CONFIG menu, you can select a MIDI channel for controlling the PĒRKONS"
+  (p. 32) - and the manual never says how many there are to choose from. The sub-menu is a row of
+  sixteen step buttons and MIDI has sixteen channels, which is a good guess and is not a fact the
+  maker printed, so `channels` is left unrecorded. The one channel number in print is a default:
+  "Voice 1 = MIDI CH1, Voice 2 = MIDI CH2 etc." (p. 34), for the other mode.
+
+  WHAT THE CONTROLS TRAVEL. Both ways. The connector caption has MIDI IN taking them - "Full-size
+  DIN5 MIDI In receives trigger note messages, MIDI clock as well as CC messages for all voice
+  parameters" (p. 6) - and the configuration page has them going out, "Step button 7 turns on the
+  transmission of parameter MIDI CC messages via the MIDI OUT port" (p. 32). The same caption at
+  p. 6 says only that "The MIDI OUT port outputs trigger and MIDI clock messages" (p. 6), which is
+  the shorter of the two accounts rather than a contradiction of it.
+
+  THE ONE FIRMWARE NOTE THAT TOUCHES THESE NUMBERS is "Fixed VCF mode CC bug" (firmware_1_2), which
+  is the maker saying that a voice's FILTER SWITCH did not answer right before December 2024. The
+  1.1 note added the note input - "Set MIDI mode to multi-channel and you can program notes into
+  the sequencer either by playing them live and recording or by pressing the desired step button
+  and then sending in the MIDI note" (p. 34) - and the 1.0 note mentions MIDI only for its clock.
+
+  THE MANUAL REPEATS A PARAGRAPH AND LOSES ONE, which is worth knowing before trusting any of its
+  prose. "Step button 9 of the second track" (p. 32) and "Step button 12 of the second track"
+  (p. 33) are both described as inverse odds, word for word the same paragraph twice over, while
+  the manual's own diagram has TRACK ROTATE at step 12 (p. 31). The announcement of firmware 1.2 is
+  what the missing paragraph would have said. Nothing below rests on that page; it is recorded
+  because a document that repeats itself may be missing something.
+
+  AND ITS OWN CROSS-REFERENCES ARE A PAGE OUT. One sends a reader to "page 30 of the manual"
+  (p. 17) and the next to "page 30 of this manual" (p. 18), for settings that begin on p. 31. The
+  printed page numbers themselves match the sheets exactly, and every locator here was taken from
+  the page rather than from a reference to it.
+
+sources:
+  manual:
+    kind: manual
+    title: PĒRKONS HD-01 User Manual
+    dated: "2024-12"
+    landing: "https://www.ericasynths.lv/news/perkons-hd-01-12-firmware-update/"
+    url: "https://erp.ericasynths.lv/media/PERKONS_manual_WEB_DEC_2024_Wa2wFLd.pdf"
+    sha256: f4ada882abbe7439e234f0a32723a3cc10c3d28fa2ae3e17995c893eb6b6e0bb
+    retrieved: 2026-10-04
+    page_offset: 0
+    # 37 pages, printed numbers matching the sheets exactly. Its colophon reads "User Manual
+    # December 2024" (p. 37) and its configuration pages say which firmware it describes. **The
+    # landing page is a news item rather than a downloads page**, which is this maker's shape: the
+    # product and support pages build their lists in the browser, so neither serves a link to an
+    # HTTP client. The `_Wa2wFLd` in the file name is the file host's own suffix for a stored
+    # upload, not an edition number, so trying the numbers has nothing to work on.
+    #
+    # TWO READERS DISAGREE ABOUT THIS DOCUMENT'S TEXT, and anybody who searches it should know.
+    # Its capitalised headings set the hyphen as a cased glyph, so a reader that resolves glyph
+    # names gives `PERKONS HD-01` and `PER-STEP` while one that does not gives
+    # `PERKONS HD/hyphen.case01` and `PER/hyphen.caseSTEP`. Twenty-six places in the file are
+    # affected. So a text search for `HD-01` finds nothing in the headings with one tool and finds
+    # it with another, and no quotation here is taken from a line that contains one.
+  firmware_1_2:
+    kind: release_notes
+    title: Pērkons HD-01 1.2 firmware update!
+    dated: "2024-12-18"
+    landing: "https://www.ericasynths.lv/news/perkons-hd-01-12-firmware-update/"
+    url: "https://www.ericasynths.lv/news/perkons-hd-01-12-firmware-update/"
+    sha256: 7a99759888709f7823f1d98528023982a0648517df5236d8617b3898c2027a26
+    retrieved: 2026-10-04
+    paginated: false
+    # The announcement this manual is linked from, and the only published changelog for 1.2 - the
+    # manual prints the 1.1 changelog and none for the firmware it describes. Cited for the one
+    # fix that touches these numbers. It also names voice 4's third algorithm "sample replacing on
+    # the 'Rompler engine'" (firmware_1_2), which the manual never calls it.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 0939e753673d07d286786f582ec1060b52098dc898281d3b370b7fd64c1b12e9.
+  firmware_1_1:
+    kind: release_notes
+    title: Pērkons 1.1 update!
+    dated: "2023-11-24"
+    landing: "https://www.ericasynths.lv/news/post/perkons-11-update/"
+    url: "https://www.ericasynths.lv/news/post/perkons-11-update/"
+    sha256: 5ffe400b75e5eeccba47698a1871d3f5158915e735774a5704576d3f3333cd06
+    retrieved: 2026-10-04
+    paginated: false
+    # The firmware that gave this instrument its MIDI note input, and the one text it publishes
+    # twice: the manual reprints it at p. 34. Compared word for word, the two printings differ in
+    # three places and only one is a word - the announcement has "Batter accuracy of note
+    # recording" (firmware_1_1) where the manual has "Improved accuracy of note recording" (p. 34).
+    # Nothing here rests on either, which is the point of having compared them.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 7fdd74d81c24d1d8da84ad2e98da9e13c1d0b6e017520de371fad432baf6457b.
+  firmware_1_0:
+    kind: release_notes
+    title: Pērkons HD-01 1.0 firmware update!
+    dated: "2022-09-19"
+    landing: "https://www.ericasynths.lv/news/post/perkons-hd-01-10-firmware-update/"
+    url: "https://www.ericasynths.lv/news/post/perkons-hd-01-10-firmware-update/"
+    sha256: 0217e727a306a345b9786fee091520dbb7a93eb79dcb725407ecd3afeb842134
+    retrieved: 2026-10-04
+    paginated: false
+    # The oldest firmware note this maker publishes. Cited for two things: that MIDI clock was
+    # answered to from the first published firmware, and that its shorthand for the voices - V3A3,
+    # V4A2 - reads the sound engine tables **by column**, which is what settled how to read them.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 52f812b1105be49573d681c06711fc45f91ec0f78744105fec2482b656210007.
+  news_listing:
+    kind: web_page
+    title: Erica Synths news listing
+    landing: "https://www.ericasynths.lv/news/"
+    url: "https://www.ericasynths.lv/news/"
+    sha256: a53bdbf71cec48af40f94c61c4878eb71bb040dea417c7e400431fd6c19138ac
+    retrieved: 2026-10-04
+    paginated: false
+    # Every post the listing serves across its six pages, merged and de-duplicated: 75 of them in
+    # an unbroken run from June 2024 to August 2026. **It is here to evidence an absence** - that
+    # no firmware after 1.2 has been announced - which is the one thing a definition usually has to
+    # hedge. The maker's sitemap says the same and cannot be relied on: its newest entry is from
+    # January 2026 and a post from August 2026 is missing from it altogether.
+
+midi:
+  # NOT RECORDED: the channel range. See the source account - the maker prints no number and no
+  # range anywhere, and the sixteen step buttons of the channel sub-menu are a good guess rather
+  # than a fact.
+  #
+  # NOT RECORDED: the mode. Omni and poly are not mentioned in thirty-seven pages.
+  #
+  # "Use the first three step buttons of the first track to select a clock source – internal clock,
+  # MIDI clock or external analogue clock" (p. 31) for one direction, and "step button 3 activates
+  # MIDI CLOCK on MIDI OUT" (p. 32) for the other. The connector caption agrees: "The MIDI OUT port
+  # outputs trigger and MIDI clock messages" (p. 6).
+  clock: both
+  # NOT RECORDED: transport. Start, Stop and Continue are not named anywhere, and the setting whose
+  # label looks like one is not - MIDI CONT. CLOCK "turns MIDI clock ON or OFF when the sequencer
+  # is stopped" (p. 32), which is about the clock and not about transport.
+  #
+  # NOT RECORDED: program change, and so no preset count either. The instrument holds a great many
+  # presets - "the Pērkons has 64 banks, each bank containing 64 kits and 64 patterns" (p. 28), on
+  # top of a features list that counts one bank of them, "64 kit and 64 pattern memory + additional
+  # memory on the SD card" (p. 4) - and the manual describes no way to reach any of them over MIDI.
+  # Patterns and kits are chosen with the step buttons and nothing else.
+  #
+  # NOT RECORDED: sysex. Neither `System Exclusive` nor `SysEx` appears in thirty-seven pages, but
+  # this is a manual rather than an implementation chart, and firmware here arrives on an SD card,
+  # so nothing has put the question to the maker.
+  #
+  # CHECKED AND ABSENT. The words NRPN, RPN and Registered appear nowhere in the manual, and the
+  # two pages headed MIDI IMPLEMENTATION are the maker's own account of what the instrument answers
+  # to.
+  nrpn: none
+
+voice:
+  # A NOTE PICKS A VOICE RATHER THAN A PITCH, in the mode this file describes: "Voices will be
+  # triggered by NOTE ON messages – Voice 1 – C, Voice 2 – C#, Voice 3 – D, Voice 4 – D#" (p. 35).
+  # **Which is as far as the document goes** - no octave, so there are no note numbers to list
+  # under `voices` and a player has to find them by trying.
+  # In the other channel mode a note is a pitch instead, and the maker says so: "Set MIDI mode to
+  # multi-channel and you can program notes into the sequencer either by playing them live and
+  # recording or by pressing the desired step button and then sending in the MIDI note" (p. 34).
+  addressing: voices
+  # "4 hybrid voices (digital sound engine and analogue multimode filter with overdrive)" (p. 4),
+  # each with its own trigger, its own output and one set of controls, so four notes at once and no
+  # more. Nothing says a voice will hold a second note.
+  polyphony: 4
+  velocity:
+    # IT ARRIVES AND DOES NOTHING UNTIL A SETTING IS TURNED ON, which is what `gated` says here:
+    # "If the setting is ON in the configuration menu, MIDI notes will be recorded with velocity.
+    # Higher velocity means higher volume" (p. 34). The setting is MIDI VELOCITY on the
+    # configuration page (p. 31) and is not a control this instrument answers to, so there is
+    # nothing to name in `gated_by`.
+    note_on: gated
+  # NOT RECORDED: note off, aftertouch, pitch bend and the note range. None of the four is
+  # mentioned anywhere in the manual, and a drum machine's silence about pitch bend is not the same
+  # as a chart's X against it.
+
+groups:
+  # THE PAGE'S OWN COLUMN HEADINGS (p. 35), and the only grouping it offers: the four voices are
+  # identical in their controls and different in their sound engines.
+  voice_1: Voice 1
+  voice_2: Voice 2
+  voice_3: Voice 3
+  voice_4: Voice 4
+
+controls:
+
+  # ──── voice_1 ────
+  # Its three algorithms are FOLD DRUM 1, WAVETABLE DRUM and SIMPLE DRUM (p. 8), in that order,
+  # which is what the ALGO switch picks between.
+
+  voice_1_tune:          {label: Voice 1 Tune, cc: 70, group: voice_1}
+  voice_1_decay:         {label: Voice 1 Decay, cc: 71, group: voice_1}
+  voice_1_param_1:       {label: Voice 1 PARAM1, cc: 72, group: voice_1}
+  voice_1_param_2:       {label: Voice 1 PARAM2, cc: 73, group: voice_1}
+  voice_1_cutoff:        {label: Voice 1 Cutoff, cc: 74, group: voice_1}
+  voice_1_drive:         {label: Voice 1 Drive, cc: 75, group: voice_1}
+  voice_1_fx_send:       {label: Voice 1 FX Send, cc: 76, group: voice_1}
+  voice_1_level:         {label: Voice 1 Level, cc: 77, group: voice_1}
+  voice_1_algo_switch:   {label: Voice 1 Algo Switch, cc: 78, group: voice_1}
+  voice_1_mode_switch:   {label: Voice 1 Mode Switch, cc: 79, group: voice_1}
+  voice_1_filter_switch: {label: Voice 1 Filter Switch, cc: 80, group: voice_1}
+
+  # ──── voice_2 ────
+  # FOLD DRUM 2, WAVETABLE DRUM and COMPLEX DRUM (p. 9). Its second algorithm carries the same
+  # name as voice 1's, and the maker prints it that way.
+
+  voice_2_tune:          {label: Voice 2 Tune, cc: 81, group: voice_2}
+  voice_2_decay:         {label: Voice 2 Decay, cc: 82, group: voice_2}
+  voice_2_param_1:       {label: Voice 2 PARAM1, cc: 83, group: voice_2}
+  voice_2_param_2:       {label: Voice 2 PARAM2, cc: 84, group: voice_2}
+  voice_2_cutoff:        {label: Voice 2 Cutoff, cc: 85, group: voice_2}
+  voice_2_drive:         {label: Voice 2 Drive, cc: 86, group: voice_2}
+  voice_2_fx_send:       {label: Voice 2 FX Send, cc: 87, group: voice_2}
+  voice_2_level:         {label: Voice 2 Level, cc: 88, group: voice_2}
+  voice_2_algo_switch:   {label: Voice 2 Algo Switch, cc: 89, group: voice_2}
+  voice_2_mode_switch:   {label: Voice 2 Mode Switch, cc: 90, group: voice_2}
+  voice_2_filter_switch: {label: Voice 2 Filter Switch, cc: 91, group: voice_2}
+
+  # ──── voice_3 ────
+  # RESONANT DRUMS, SLAP and KARPLUS (p. 10).
+
+  voice_3_tune:          {label: Voice 3 Tune, cc: 92, group: voice_3}
+  voice_3_decay:         {label: Voice 3 Decay, cc: 93, group: voice_3}
+  voice_3_param_1:       {label: Voice 3 PARAM1, cc: 94, group: voice_3}
+  voice_3_param_2:       {label: Voice 3 PARAM2, cc: 95, group: voice_3}
+  voice_3_cutoff:        {label: Voice 3 Cutoff, cc: 96, group: voice_3}
+  voice_3_drive:         {label: Voice 3 Drive, cc: 97, group: voice_3}
+  voice_3_fx_send:       {label: Voice 3 FX Send, cc: 98, group: voice_3}
+  voice_3_level:         {label: Voice 3 Level, cc: 99, group: voice_3}
+  voice_3_algo_switch:   {label: Voice 3 Algo Switch, cc: 100, group: voice_3}
+  voice_3_mode_switch:   {label: Voice 3 Mode Switch, cc: 101, group: voice_3}
+  voice_3_filter_switch: {label: Voice 3 Filter Switch, cc: 102, group: voice_3}
+
+  # ──── voice_4 ────
+  # NOISE HAT, NOISE/TONE and ACOUSTIC HATS (p. 11) - the hi-hat voice, and the one whose third
+  # algorithm plays samples a player can replace on the SD card.
+
+  voice_4_tune:          {label: Voice 4 Tune, cc: 103, group: voice_4}
+  voice_4_decay:         {label: Voice 4 Decay, cc: 104, group: voice_4}
+  voice_4_param_1:       {label: Voice 4 PARAM1, cc: 105, group: voice_4}
+  voice_4_param_2:       {label: Voice 4 PARAM2, cc: 106, group: voice_4}
+  voice_4_cutoff:        {label: Voice 4 Cutoff, cc: 107, group: voice_4}
+  voice_4_drive:         {label: Voice 4 Drive, cc: 108, group: voice_4}
+  voice_4_fx_send:       {label: Voice 4 FX Send, cc: 109, group: voice_4}
+  voice_4_level:         {label: Voice 4 Level, cc: 110, group: voice_4}
+  voice_4_algo_switch:   {label: Voice 4 Algo Switch, cc: 111, group: voice_4}
+  voice_4_mode_switch:   {label: Voice 4 Mode Switch, cc: 112, group: voice_4}
+  voice_4_filter_switch: {label: Voice 4 Filter Switch, cc: 113, group: voice_4}

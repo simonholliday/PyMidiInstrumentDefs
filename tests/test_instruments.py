@@ -145,6 +145,7 @@ class TestBundledCorpus:
 			"elektron/model_cycles",
 			"elektron/model_samples",
 			"elektron/syntakt",
+			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
 			"korg/electribe",
 			"korg/microkorg",
@@ -7686,3 +7687,128 @@ class TestCircuit:
 		said = prose_of("novation", "circuit")
 
 		assert "NOVATION SERVES THIS GUIDE TWICE AT ONE NAME" in said
+
+
+class TestPerkonsHD01:
+
+	"""An Erica Synths drum machine whose map a player can rewrite on the SD card."""
+
+	def test_forty_four_controls_in_four_voices (self) -> None:
+		"""Eleven each, on an unbroken run of controller numbers."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert len(perkons.controls) == 44
+		assert len(perkons.groups) == 4
+		assert not perkons.parts
+
+		per = collections.Counter(control.group for control in perkons.controls.values())
+
+		assert per == {"voice_1": 11, "voice_2": 11, "voice_3": 11, "voice_4": 11}
+
+		numbers = sorted(control.cc for control in perkons.controls.values()
+			if control.cc is not None)
+
+		assert numbers == list(range(70, 114))
+
+	def test_each_voice_holds_one_block_of_eleven (self) -> None:
+		"""The page is read down its columns, so a voice's numbers are consecutive."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		blocks = {"voice_1": (70, 80), "voice_2": (81, 91),
+			"voice_3": (92, 102), "voice_4": (103, 113)}
+
+		for group, (low, high) in blocks.items():
+
+			mine = sorted(control.cc for control in perkons.controls.values()
+				if control.group == group and control.cc is not None)
+
+			assert mine == list(range(low, high + 1))
+
+	def test_the_map_is_a_factory_assignment_the_player_can_rewrite (self) -> None:
+		"""A file on the SD card, not MIDI learn, and the file says so on its face."""
+		said = prose_of("erica_synths", "perkons_hd_01")
+
+		assert "THE NUMBERS ARE A FACTORY ASSIGNMENT AND THE PLAYER CAN REWRITE THEM" in said
+		assert "single-midi-cc.json" in said
+
+		# `learned` would be wrong here: there is a published map, and it is this one.
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert perkons.midi.control_change is None
+		assert not perkons.midi.learns_control_change
+
+	def test_the_other_channel_mode_is_recorded_in_words (self) -> None:
+		"""Four voices on four channels, answering to voice 1's eleven numbers."""
+		said = prose_of("erica_synths", "perkons_hd_01")
+
+		assert "TWO MAPS AGAIN, AND THIS TIME ONE IS THE OTHER'S FIRST QUARTER" in said
+		assert "THIS FORMAT HAS NO FIELD FOR A MAP THAT IS LIVE IN ONE MODE ONLY" in said
+
+	def test_the_note_numbers_are_not_in_print (self) -> None:
+		"""Four note names and no octave, so there is nothing to record."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert perkons.voice is not None
+		assert perkons.voice.addressing == "voices"
+		assert perkons.voice.voices == {}
+		assert perkons.voice.note_range is None
+
+		said = prose_of("erica_synths", "perkons_hd_01")
+
+		assert "THE FOUR NOTE NUMBERS ARE NOT IN PRINT" in said
+
+	def test_the_switches_have_no_states_because_none_are_printed (self) -> None:
+		"""Three positions each, all named, and no value given for any of them."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		switches = [control for control in perkons.controls.values()
+			if control.name.endswith(("_algo_switch", "_mode_switch", "_filter_switch"))]
+
+		assert len(switches) == 12
+
+		for switch in switches:
+			assert switch.states == []
+			assert switch.kind == pymidiinstrumentdefs.CONTINUOUS
+
+	def test_velocity_arrives_but_a_setting_gates_it (self) -> None:
+		"""Nothing to name as the gate, because the gate is not a control."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert perkons.voice is not None
+		assert perkons.voice.velocity is not None
+		assert perkons.voice.velocity.note_on == "gated"
+		assert perkons.voice.velocity.gated_by == ()
+
+	def test_it_holds_presets_and_no_program_change_reaches_them (self) -> None:
+		"""Sixty-four banks of sixty-four, and no way in from outside."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert perkons.midi.program_change is None
+
+		said = prose_of("erica_synths", "perkons_hd_01")
+
+		assert "no preset count is recorded here at all" in said
+
+	def test_the_firmware_is_named_and_the_absence_of_a_later_one_is_evidenced (self) -> None:
+		"""A news run of seventy-five posts is what lets this file name 1.2."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert perkons.model.firmware == "1.2"
+		assert "news_listing" in perkons.sources
+		assert set(perkons.sources) == {"manual", "firmware_1_2", "firmware_1_1",
+			"firmware_1_0", "news_listing"}
+
+		said = prose_of("erica_synths", "perkons_hd_01")
+
+		assert "AND 1.2 IS STILL THE NEWEST" in said
+
+	def test_it_is_the_first_erica_synths_instrument_here (self) -> None:
+		"""No habits of this maker were known before it."""
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert perkons.model.manufacturer == "Erica Synths"
+		assert perkons.model.name == "PĒRKONS HD-01"
+
+		erica = sorted(path.stem for path in (CORPUS / "erica_synths").glob("*.yaml"))
+
+		assert erica == ["perkons_hd_01"]

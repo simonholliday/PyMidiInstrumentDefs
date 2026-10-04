@@ -149,6 +149,7 @@ self-contained YAML file, and you share it by sending it.
 | `elektron/model_cycles` | Elektron Model:Cycles: the Model:Samples' manual with a synth in it, where four of its 30 controls mean something different on each of six machines |
 | `elektron/model_samples` | Elektron Model:Samples: 29 controls off a one-page appendix headed CC MSB that gives an LSB for exactly one of them |
 | `elektron/syntakt` | Elektron Syntakt: twelve tracks and an FX track, where 28 controller numbers mean one thing on a track and another on the FX track |
+| `erica_synths/perkons_hd_01` | Erica Synths PĒRKONS HD-01: 44 controls off two pages of a manual reached through a news item, whose numbers a player can rewrite in a file on the SD card |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |
 | `korg/electribe` | Korg electribe: 18 controls out of a plain text file that prints every number twice, with sixteen parts on one MIDI channel and no way given of choosing one |
 | `korg/microkorg` | Korg microKORG: 41 controller numbers that are the factory assignment and not fixed, each meaning one thing in a synth program and another in a vocoder one |

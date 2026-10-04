@@ -230,6 +230,30 @@ class TestBundledCorpus:
 			"yamaha/dx7",
 		]
 
+	def test_the_readme_qualifies_a_channel_that_could_be_read_two_ways (self) -> None:
+		"""The site this corpus feeds publishes Subsample too, which has audio channels.
+
+		Its house voice qualifies "channel" wherever a reader could take it more than one
+		way, and its glossary check reports a bare one in this README without ever blocking
+		(#4464).  Two of the four it finds are this project's own prose and are qualified
+		here; **the other two are names and must not be "corrected"** - the MIDI
+		specification's "channel mode", and Roland's own "a control channel".  Listed so
+		that a later rewrite of either row does not quietly undo the first pair or
+		over-correct the second.
+		"""
+		readme = (pathlib.Path(__file__).parent.parent / "README.md").read_text(encoding = "utf-8")
+
+		rows = {match.group(1): match.group(0)
+			for match in re.finditer(r"(?m)^\| `([^`]+)` \|.*$", readme)}
+
+		assert "six parts on six MIDI channels" in rows["korg/volca_drum"]
+		assert "a fifth MIDI channel that makes no sound" in rows["roland/mc_101"]
+
+		# And the two the site accepts as names, which stay bare.
+		assert "reserves for channel mode" in rows["asm/hydrasynth_explorer"]
+		assert "a control channel that makes no sound" in rows["roland/mc_707"]
+
+
 	def test_nothing_published_writes_a_us_spelling_in_its_own_prose (self) -> None:
 		"""The site this corpus feeds is written in British English and will not publish one.
 

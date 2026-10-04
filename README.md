@@ -165,7 +165,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
 | `korg/volca_beats` | Korg volca beats: 20 controls and ten parts off a plain text file, where the chart beside it draws its yes and no marks and names only seven of the ten |
-| `korg/volca_drum` | Korg volca drum: six parts on six channels, and the one of its maker's two charts that the instrument answers to out of the box |
+| `korg/volca_drum` | Korg volca drum: six parts on six MIDI channels, and the one of its maker's two charts that the instrument answers to out of the box |
 | `korg/wavestate` | Korg wavestate: 41 of its 50 controller numbers are defaults a player can reassign, and its maker publishes no control-change chart |
 | `make_noise/zero_coast` | Make Noise 0-COAST: 19 controllers off a list whose maker says most of them are ignored unless the instrument is in a particular mode - and one row of which is not text at all but a drawing |
 | `modal/carbon8m` | Modal CARBON8M: 106 controls, and a voice count set per patch |
@@ -193,7 +193,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
-| `roland/mc_101` | Roland MC-101: 28 controls over four tracks and a fifth channel that makes no sound, from a chart its maker publishes in numbered editions - of which the middle one is missing, so one firmware step was never printed |
+| `roland/mc_101` | Roland MC-101: 28 controls over four tracks and a fifth MIDI channel that makes no sound, from a chart its maker publishes in numbered editions - of which the middle one is missing, so one firmware step was never printed |
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
 | `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |

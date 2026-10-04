@@ -176,6 +176,7 @@ class TestBundledCorpus:
 			"roland/d_50",
 			"roland/fantom_6_7_8",
 			"roland/juno_106",
+			"roland/mc_101",
 			"roland/mc_707",
 			"roland/tr8s",
 			"roland/tr_1000",
@@ -7316,3 +7317,117 @@ class TestMinilogue:
 		assert minilogue.voice.polyphony == 4
 		assert minilogue.voice.voicing_modes == (1, 2, 4)
 		assert minilogue.voice.note_range == (0, 127)
+
+
+class TestMC101:
+
+	"""A Roland whose chart is published in editions, one of which is missing."""
+
+	def test_twenty_eight_controls_from_two_documents (self) -> None:
+		"""Twenty-five on the chart and three the chart has never carried."""
+		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])
+
+		assert len(mc_101.controls) == 28
+		assert len(mc_101.groups) == 7
+
+		numbers = sorted(control.cc for control in mc_101.controls.values()
+			if control.cc is not None)
+
+		assert len(numbers) == 28
+		assert len(set(numbers)) == 28
+
+		# The three the update notes name and the chart does not.
+		for added in (2, 4, 93):
+			assert added in numbers, added
+
+	def test_it_publishes_the_same_numbers_as_its_bigger_sibling (self) -> None:
+		"""Four tracks against eight, and one control map between them - bar one name.
+
+		The two instruments publish the same twenty-eight controller numbers, and
+		twenty-seven of them carry the same name.  **CC 93 is the exception, and it is
+		the one number neither chart prints**: the MC-707's reference manual names it
+		outright, "Delay Send Level (CC#93)", and the MC-101's reference gives no number
+		for any send at all, so the only name this instrument has for it is the update
+		notes' own setting, `Rx ChoDlySend`.  Each is labelled from the document that
+		defines it, which is why they differ.
+		"""
+		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])
+		mc_707 = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		here = {control.cc: control.label for control in mc_101.controls.values()
+			if control.cc is not None}
+		there = {control.cc: control.label for control in mc_707.controls.values()
+			if control.cc is not None}
+
+		assert sorted(here) == sorted(there)
+
+		differ = {number for number in here if here[number] != there[number]}
+
+		assert differ == {93}
+		assert here[93] == "Rx ChoDlySend"
+		assert there[93] == "Delay Send Level"
+
+		assert mc_101.parts["track"].count == 4
+		assert mc_707.parts["track"].count == 8
+
+	def test_only_the_four_knob_numbers_are_transmitted (self) -> None:
+		"""Everything else is received and never sent, by the chart's own columns."""
+		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])
+
+		sent = [control.cc for control in mc_101.controls.values()
+			if control.cc is not None and control.direction != "receives"]
+
+		assert sorted(sent) == [80, 81, 82, 83]
+
+	def test_the_control_channel_takes_no_control_change (self) -> None:
+		"""A channel that makes no sound: scenes by program change, the Scatter Pad by note."""
+		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])
+
+		assert set(mc_101.parts) == {"track", "control"}
+
+		control = mc_101.parts["control"]
+
+		assert control.count == 1
+		assert control.channel == "assigned"
+		assert sorted(control.receives or ()) == ["notes", "program_change"]
+
+		track = mc_101.parts["track"]
+
+		assert sorted(track.receives or ()) == ["controls", "notes", "program_change"]
+
+	def test_the_missing_chart_edition_is_recorded (self) -> None:
+		"""eng01 and eng03 exist and eng02 does not, so one firmware step is unprinted."""
+		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])
+
+		assert "chart" in mc_101.sources
+		assert "chart_1_00" in mc_101.sources
+		assert mc_101.sources["chart"].edition == "eng03"
+		assert mc_101.sources["chart_1_00"].edition == "eng01"
+
+		account = " ".join((mc_101.source or "").split())
+
+		assert "TWO EDITIONS OF THE CHART EXIST AND THE MIDDLE ONE DOES NOT" in account
+		assert "THE CHART SHOWS IN ONE STEP WHAT THE INSTRUMENT DID IN TWO" in account
+
+	def test_two_checked_absences_and_one_refusal (self) -> None:
+		"""No NRPN anywhere in five documents; system exclusive left unrecorded."""
+		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])
+
+		assert mc_101.midi.nrpn == "none"
+		assert mc_101.midi.sysex is None
+
+		said = prose_of("roland", "mc_101")
+
+		assert "nowhere in any of this instrument's five documents" in said
+		assert "NOT RECORDED, BECAUSE TWO DOCUMENTS CONTRADICT EACH OTHER" in said
+
+	def test_it_cites_another_instruments_chart_for_one_sentence (self) -> None:
+		"""The MC-707's footnote is the maker saying where CC 83 comes from."""
+		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])
+
+		assert "sibling_chart" in mc_101.sources
+		assert mc_101.sources["sibling_chart"].title == "MC-707 MIDI Implementation Chart"
+
+		said = prose_of("roland", "mc_101")
+
+		assert "for MC-101 compatibility." in said

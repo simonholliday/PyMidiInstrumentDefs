@@ -154,6 +154,7 @@ class TestBundledCorpus:
 			"korg/modwave_mk_ii",
 			"korg/multi_poly",
 			"korg/opsix",
+			"korg/volca_beats",
 			"korg/volca_drum",
 			"korg/wavestate",
 			"make_noise/zero_coast",
@@ -7980,3 +7981,122 @@ class TestMiniNova:
 		said = prose_of("novation", "mininova")
 
 		assert "The UltraNova is the larger synthesiser this one is derived from" in said
+
+
+class TestVolcaBeats:
+
+	"""A Korg whose chart draws its marks and leaves three of its ten parts out of a footnote."""
+
+	def test_twenty_controls_in_an_unbroken_run (self) -> None:
+		"""Forty to fifty-nine, and every one of them only receives."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+
+		assert len(beats.controls) == 20
+
+		numbers = sorted(control.cc for control in beats.controls.values()
+			if control.cc is not None)
+
+		assert numbers == list(range(40, 60))
+
+		for control in beats.controls.values():
+			assert control.direction == "receives"
+
+	def test_the_groups_are_the_makers_prefixes_and_one_control_has_none (self) -> None:
+		"""Inventing a group for a single control would invent a grouping the maker has not."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+
+		assert set(beats.groups) == {"part_level", "pcm_speed", "stutter", "decay"}
+
+		per = collections.Counter(control.group for control in beats.controls.values())
+
+		assert per == {"part_level": 10, "pcm_speed": 4, "decay": 3, "stutter": 2, None: 1}
+		assert beats.controls["hat_grain"].group is None
+
+	def test_the_ten_parts_have_notes_and_the_charts_footnote_has_seven (self) -> None:
+		"""The text file has all ten; a reader of the chart alone could not play three of them."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+
+		assert beats.voice is not None
+		assert beats.voice.addressing == "voices"
+		assert beats.voice.voices == {"kick": 36, "snare": 38, "clap": 39, "cl_hat": 42,
+			"lo_tom": 43, "op_hat": 46, "crash": 49, "hi_tom": 50, "agogo": 67, "claves": 75}
+
+		# Every part with a level has a note and the other way round, which is the cross-check
+		# that found the footnote short.
+		levelled = {control.label.split("(")[1].rstrip(")").replace(" ", "_")
+			for control in beats.controls.values() if control.group == "part_level"}
+
+		assert levelled == set(beats.voice.voices)
+
+		said = prose_of("korg", "volca_beats")
+
+		assert "AND THE CHART IS SHORT BY THREE PARTS WHERE THE TEXT FILE IS NOT" in said
+
+	def test_the_note_range_is_the_true_voice_row (self) -> None:
+		"""Recognised is 0 to 127 and only ten numbers inside 36 to 75 do anything."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+
+		assert beats.voice is not None
+		assert beats.voice.note_range == (36, 75)
+		assert beats.voice.plays_note(36) and beats.voice.plays_note(75)
+		assert not beats.voice.plays_note(35) and not beats.voice.plays_note(76)
+
+	def test_velocity_comes_from_the_text_file_because_the_charts_cell_cannot_be_read (self) -> None:
+		"""A cross and a value together in one cell, and the other document settles it."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+
+		assert beats.voice is not None
+		assert beats.voice.velocity is not None
+		assert beats.voice.velocity.note_on == "received"
+		assert beats.voice.velocity.note_off is False
+
+		said = prose_of("korg", "volca_beats")
+
+		assert "a cross and a value" in said
+
+	def test_it_sends_nothing_at_all (self) -> None:
+		"""Which is a fact about the sockets rather than about the implementation."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+
+		assert beats.midi.clock == "receives"
+		assert beats.midi.transport == "receives"
+		assert beats.midi.program_change is not None
+		assert beats.midi.program_change.sends is False
+		assert beats.midi.program_change.receives is False
+		assert beats.midi.program_change.presets is None
+
+		said = prose_of("korg", "volca_beats")
+
+		assert "not equipped with a MIDI Out jack" in said
+
+	def test_the_checked_absences (self) -> None:
+		"""Each one a cross in both of the chart's columns, or a word searched for and not found."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+
+		assert beats.midi.sysex is False
+		assert beats.midi.nrpn == "none"
+		assert beats.voice is not None
+		assert beats.voice.aftertouch == "none"
+		assert beats.voice.pitch_bend is None
+		assert beats.voice.polyphony is None
+
+	def test_no_firmware_is_recorded_because_a_system_update_changed_what_is_charted (self) -> None:
+		"""The volca drum's reasoning over again, and the same maker."""
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+		drum = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert beats.model.firmware is None
+		assert drum.model.firmware is None
+		assert "updater" in beats.sources
+		assert beats.sources["updater"].edition == "1.04"
+
+		said = prose_of("korg", "volca_beats")
+
+		assert "Fixes MIDI Song Position Pointer." in said
+
+	def test_the_charts_marks_are_drawings (self) -> None:
+		"""Which is why both readings of it were made by eye."""
+		said = prose_of("korg", "volca_beats")
+
+		assert "THE PLAIN TEXT FILE IS THE BETTER DOCUMENT" in said
+		assert "not in its text layer at all" in said

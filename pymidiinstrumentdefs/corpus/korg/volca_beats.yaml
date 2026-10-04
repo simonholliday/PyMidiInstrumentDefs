@@ -1,0 +1,297 @@
+# THE PLAIN TEXT FILE IS THE BETTER DOCUMENT, AND IT IS THE FIRST TIME IN THIS CORPUS. Korg
+# publishes two: a 3.9 KB ASCII implementation and a one-sheet implementation chart. **The chart's
+# Yes and No marks are drawings and are not in its text layer at all** - a text extraction of that
+# sheet returns no O and no X, not one - while the text file rules its twenty controller numbers
+# and its ten note numbers into tables a machine can read, and gives each in hexadecimal and in
+# decimal so that the two can be checked against each other. Both are cited. The numbers below come
+# from the text file; the chart is what settles what the instrument does with everything else.
+#
+# AND THE CHART IS SHORT BY THREE PARTS WHERE THE TEXT FILE IS NOT. The chart's footnote naming
+# the note numbers stops after seven of them - "36: KICK, 38: SNARE, 43: LO TOM, 50: HI TOM, 42: CL
+# HAT, 46: OP HAT, 39: CLAP" (chart p. 1) - and never gives CLAVES, AGOGO or CRASH, although its
+# own True Voice row says 36 to 75 and 75 is the claves. The text file has all ten. **A reader of
+# the chart alone could not play three of this instrument's ten parts.**
+#
+# NOTHING IS TRANSMITTED, AND THAT IS A FACT ABOUT THE SOCKETS. "No message is transmitted. (The
+# volca beats is not equipped with a MIDI Out jack.)" (midi_impl). So every control below is marked
+# `receives`, and so are the clock and the transport.
+#
+# TWO GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, and both ship on. The twenty
+# controllers and the note numbers all carry footnote *1, "Received when global parameter MIDI RX
+# ShortMessage is set to ON." (chart p. 1), and the owner's manual marks On as that setting's
+# factory default (manual). The clock, the transport and the song position carry *3, "Not received
+# when global parameter MIDI Clock src is set to Internal; received when set to Auto." (chart
+# p. 1), and Auto is its factory default (manual).
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: volca beats
+  # NOT RECORDED, and the reason is the volca drum's reason over again. The chart is "Ver.: 1.00"
+  # dated "2013. 06. 10" (chart p. 1) and the text implementation is "Revision 0.01 (2013.06.23)"
+  # (midi_impl); Korg's downloads page offers a System Updater at **1.04**, and the one before it
+  # says in its own release notes "Fixes MIDI Song Position Pointer." (updater).
+  # **SO THE DOCUMENTS DESCRIBE THIS INSTRUMENT BEFORE A CHANGE TO SOMETHING THEY CHART**, and
+  # Korg has not republished either. Writing 1.04 here would claim the rows below match it, which
+  # that release note puts in doubt for at least one of them. Checked 2026-10-04.
+
+source: >-
+  volca beats MIDI Implementation, a plain text file of 3.9 KB: **every controller number and every
+  note number below is one of its rows**. volca beats MIDI Implementation Chart, one sheet, for
+  everything else the instrument does and does not answer to. Owner's Manual, for the two global
+  settings and for the MIDI channel. And Korg's downloads page and System Updater page, for what is
+  published and for what has changed since.
+
+  THE CHART'S MARKS ARE DRAWINGS. Pulling the text out of that sheet gives its headings, its row
+  names, its values and its footnotes, and **not one O and not one X** - every Yes and every No on
+  it is a vector, and its own legend's two symbols are missing from the text for the same reason.
+  So both readings of the chart here were made by eye off renders at 300 to 600 dots to the inch,
+  and neither could have been taken from the file. That is the EP-133's and the DrumBrute Impact's
+  situation in a third maker's document.
+
+  TWENTY CONTROLLER NUMBERS, 40 TO 59, WITH NOTHING UNUSED IN BETWEEN, and ten note numbers from 36
+  to 75. The text file gives both in hexadecimal and in decimal, which is the one thing in it that
+  can be checked without a second reader, and the two agree on all thirty rows.
+
+  **THE TEXT FILE IS PRINTED ONCE**, which is worth saying because two other Korg text
+  implementations in this corpus are not: the electribe's prints its whole table twice and so does
+  the minilogue's, and a reader who took the second printing for more rows would double the map.
+  Asserted rather than assumed.
+
+  THE TWO DOCUMENTS DISAGREE ABOUT ONE THING AND THE CHART CONTRADICTS ITSELF IN ONE CELL. The
+  chart's Velocity Note On cell, read at 600 dots to the inch, holds **a cross and a value
+  together**: a cross, then "9n, V=1 - 127" (chart p. 1). A cross means not recognised and that
+  value is the form of what is recognised, so the cell cannot be read either way. The text file
+  settles it with no ambiguity at all: "Note On  vv=1~127" (midi_impl) sits under its heading
+  "2.RECOGNIZED RECEIVE DATA" (midi_impl), and that is what `velocity` records below.
+
+  AND WHAT THE CHART DOES NOT COUNT AS A CONTRADICTION. Its Velocity Note Off row is a cross in
+  both columns, while the text file lists two Note Off forms among the messages it recognises. They
+  are about different things: the chart's row is release velocity, which this instrument ignores,
+  and the text file's rows are the note-off messages themselves, which it accepts. Both are
+  recorded.
+
+  THE OWNER'S MANUAL LEAVES THE MIDI SOCKET OUT OF ITS OWN SPECIFICATION. Its walkthrough of the
+  back panel describes it - "This jack is where you can connect an external MIDI device to control
+  the sound generator of the volca beats" (manual) - and its Main Specifications list the
+  connectors as the headphones jack and the two sync jacks and nothing else. The instrument has a
+  MIDI IN and the specification does not say so.
+
+  THE MAKER SPELLS THINGS SEVERAL WAYS AND EVERY SPELLING HERE IS ITS OWN. The chart's PCM SPEED
+  row names the parts "(CLAP, CALVES, AGOGO, CRASH)" (chart p. 1), where the text file and the rest
+  of the chart write CLAVES. The text file's real-time table reads "Contiune" for Continue
+  (midi_impl). The setting that gates every control is "MIDI RX Short Message" (midi_impl) in the
+  text file and "MIDI RX ShortMessage" (chart p. 1) on the chart, which is also how the owner's
+  manual writes it (manual). And the three controls at 56, 57 and 58 are "DECAY (TOM)" (midi_impl),
+  "DECAY (CLOSED HAT)" (midi_impl) and "DECAY (OPEN HAT)" (midi_impl) in the text file, against
+  "TOM DECAY" (chart p. 1), "CLOSED HAT DECAY" (chart p. 1) and "OPEN HAT DECAY" (chart p. 1) on
+  the chart. **The labels below follow the text file**, because that is the document the numbers
+  come from. None of it changes a number.
+
+  AND THE OLDER DOCUMENT CARRIES THE HIGHER VERSION. The chart is dated 2013.06.10 at version 1.00
+  and the text file 2013.06.23 at revision 0.01, thirteen days later. Which is a reminder that a
+  version number is a label a maker chooses rather than an order, and that age is not it either.
+
+sources:
+  midi_impl:
+    kind: midi_implementation
+    title: volca beats MIDI Implementation
+    edition: "0.01"
+    dated: "2013-06-23"
+    landing: "https://www.korg.com/us/support/download/manual/0/141/2738/"
+    url: "https://cdn.korg.com/us/support/download/files/a871093e542c1b06e90218ce3c326ef3.txt"
+    sha256: ca13fc77023632ae70115f1399137e14c1d29dcac5259d1d8add5f1de27f9af1
+    retrieved: 2026-10-04
+    paginated: false
+    # **EVERY NUMBER IN THIS FILE COMES FROM THIS DOCUMENT.** 3,969 bytes of ASCII with CRLF line
+    # endings, headed "KORG volca beats MIDI Implementation" (midi_impl) and dated, in the same
+    # line, "Revision 0.01 (2013.06.23)" (midi_impl).
+    # Korg's downloads page dates the file 2016.01.08, three years after the revision it carries,
+    # and the two are not reconciled anywhere.
+  chart:
+    kind: midi_implementation
+    title: volca beats MIDI Implementation Chart
+    edition: "1.00"
+    dated: "2013-06-10"
+    landing: "https://www.korg.com/us/support/download/manual/0/141/1961/"
+    url: "https://cdn.korg.com/us/support/download/files/456d19dc4cc9e6e73f7ed9ac34e38aec.pdf"
+    sha256: 005732b6b75aea5c33d632489a7f26b45a72b973cb7799e71b9325ddb11c06e8
+    retrieved: 2026-10-04
+    page_offset: 0
+    # One sheet, drawn in Adobe Illustrator CS4. Cited for the rows the text file does not have -
+    # the mode, the aftertouch, the pitch bend, program change, system exclusive and the aux
+    # messages - and for the two footnotes that say which global settings have to be on.
+    # **Its Yes and No marks are drawings**, so nothing on it can be read by a machine; see the
+    # source account.
+    #
+    # AND TWO READERS DISAGREE ABOUT ITS TEXT AS WELL AS ITS MARKS. This sheet sets `fi` and `ff`
+    # as ligatures, so a reader that resolves them gives `specified` and `Off` where one that does
+    # not gives `speci/f_ied` and `O/f_f`. A search for either word finds nothing with the second
+    # kind of tool, and no quotation here is taken from a phrase that contains one.
+  manual:
+    kind: manual
+    title: volca beats Owner's Manual
+    edition: EFGSCJ 3
+    landing: "https://www.korg.com/us/support/download/manual/0/141/1959/"
+    url: "https://cdn.korg.com/us/support/download/files/a8a87f14c9e3aef6f0e4429d15c92c36.pdf"
+    sha256: 4b8be5a17f14f403b59341b9e8fceeb255725a16aa96c19a182a7b5fa937833f
+    retrieved: 2026-10-04
+    paginated: false
+    # Two very large sheets holding six languages between them - the edition Korg names EFGSCJ 3,
+    # built 2024-06-07 - so a printed page is not a file page and the English text is one column
+    # among six. **It is cited by name rather than by page for that reason**, which is honest
+    # about what can be checked: the whole document is searched instead of one page of it.
+    # Cited for the two global settings and their factory defaults, for the MIDI channel, and for
+    # the specification that leaves the MIDI socket out.
+  downloads:
+    kind: download_page
+    title: "Downloads | volca beats | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/product/0/141/"
+    url: "https://www.korg.com/us/support/download/product/0/141/"
+    sha256: 415ebddc94af933956e963daf35d5df191472d94e1ddeba0c7fd172d611a5c60
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for what Korg publishes: the two MIDI documents, the owner's manual, a Chinese RoHS
+    # sheet and the System Updater. Four documents and one piece of software, and no release notes
+    # of their own.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # af09d8ef37143c70ef6a3c57d04bdd22e5a546992e44d0dbc774d00fd2c1354a.
+  updater:
+    kind: release_notes
+    title: "volca beats/System Updater"
+    edition: "1.04"
+    dated: "2019-10-03"
+    landing: "https://www.korg.com/us/support/download/software/0/141/1474/"
+    url: "https://www.korg.com/us/support/download/software/0/141/1474/"
+    sha256: 6c3bf1fe0d3490f09ef8cec0be5653756c04c007ddfd9bfc52152514241a4ab0
+    retrieved: 2026-10-04
+    paginated: false
+    # **The page that stops this file naming a firmware.** It carries the release notes inline
+    # rather than as a document, for three versions: 1.04 fixed a bug in 1.03, and 1.03 is the one
+    # that matters here. Both MIDI documents were written in 2013 and neither has been
+    # republished.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 3271d98d14bfbeedd22ca01e68a2e093e67696276f292ed55e76f3602d4de89a.
+
+midi:
+  # The chart's Basic Channel row gives 1 to 16 for the default and 1 to 16 for a changed one,
+  # remarked "Memorized" (chart p. 1), and the owner's manual says how it is changed: hold MEMORY
+  # while turning it on, then "Step buttons 1 to 16 correspond to the MIDI channels 1 to 16"
+  # (manual).
+  channels: [1, 16]
+  # The chart's recognised Mode row reads 3, which is omni off and poly; its Messages and Altered
+  # rows are both a cross (chart p. 1).
+  mode: 3
+  # A circle received and a cross transmitted, with footnote *3 (chart p. 1), and the text file
+  # lists "Timing Clock" (midi_impl) among its system real time messages. There is no MIDI OUT to
+  # send one on.
+  clock: receives
+  # Start, Continue and Stop are all in the text file's real time table (midi_impl), and the
+  # chart's Command row is a circle received with footnote *3 (chart p. 1). Song Position is a
+  # circle too, and the text file says what it does with one: "pppp : 0~15 = STEP 1 ~ STEP 16"
+  # (midi_impl).
+  transport: receives
+  program_change:
+    # A cross in both columns, and its Variable Range row is asterisks in both (chart p. 1). The
+    # instrument does hold sequences - the owner's manual says it "is equipped with 8 memory
+    # locations that are used to save sequences" (manual) - and nothing over MIDI reaches them, so
+    # no preset count is recorded.
+    receives: false
+    sends: false
+  # A cross in both columns (chart p. 1).
+  sysex: false
+  # CHECKED AND ABSENT. The words NRPN, RPN, Registered and Parameter Number appear nowhere in
+  # either MIDI document.
+  nrpn: none
+
+voice:
+  # A NOTE PICKS A PART RATHER THAN A PITCH, and the chart says what happens to any other
+  # note: "Sounds are not produced for notes other than the" (chart p. 1) specified ones.
+  addressing: voices
+  # The chart's True Voice row, which is the narrower of its two: Note Number recognised is
+  # "0 - 127" and True Voice is "36 - 75" (chart p. 1). Ten numbers inside that span do something
+  # and the rest are silent, which `voices` below gives exactly.
+  note_range: [36, 75]
+  velocity:
+    # FROM THE TEXT FILE, BECAUSE THE CHART'S CELL CANNOT BE READ EITHER WAY. The text file's
+    # recognised channel messages include "Note On  vv=1~127" (midi_impl); the chart's Velocity
+    # Note On cell holds a cross and that same form together. See the source account.
+    note_on: received
+    # The chart's Velocity Note Off row is a cross in both columns (chart p. 1) - which is release
+    # velocity, and is not the same question as whether a note-off message is accepted. The text
+    # file accepts two forms of one, "Note Off  vv=0~127" (midi_impl) and a note-on with a
+    # velocity of zero, and ignores the velocity in both.
+    note_off: false
+  # A checked absence, from the chart's own rows: Polyphonic (Key) is a cross in both columns and
+  # Monophonic (Channel) is a cross in both (chart p. 1).
+  aftertouch: none
+  # NOT RECORDED: pitch bend, because there is none. The chart marks Pitch Bend a cross in both
+  # columns (chart p. 1), so there is no range to state.
+  #
+  # NOT RECORDED: polyphony. Neither document says how many of the ten parts will sound at once,
+  # and the specification counts the sound generators rather than the voices - "Analog sound
+  # sources (kick drum, snare, high tom, low tom and hi-hat), PCM sound sources (crash, clap,
+  # claves and agogo)" (manual).
+  voices:
+    # THE TEN PARTS AND THE NOTE THAT PLAYS EACH, from the text file's own list, where every number
+    # is given in hexadecimal and in decimal and the two agree. **The chart's footnote gives only
+    # the first seven of these** - see the note at the top of this file.
+    kick: 36
+    snare: 38
+    clap: 39
+    cl_hat: 42
+    lo_tom: 43
+    op_hat: 46
+    crash: 49
+    hi_tom: 50
+    agogo: 67
+    claves: 75
+
+groups:
+  # THE MAKER'S OWN PREFIX INSIDE THE ROWS, which is also how the chart rules the same twenty into
+  # blocks: ten part levels on 40 to 49, four PCM speeds on 50 to 53, then one row each. **Hat
+  # grain has no prefix and no group**, because inventing one for a single control would be
+  # inventing a grouping the maker does not have.
+  part_level: Part level
+  pcm_speed: PCM speed
+  stutter: Stutter
+  decay: Decay
+controls:
+
+  # ──── part_level ────
+
+  part_level_kick:   {label: Part level (kick), cc: 40, direction: receives, group: part_level}
+  part_level_snare:  {label: Part level (snare), cc: 41, direction: receives, group: part_level}
+  part_level_lo_tom: {label: Part level (lo tom), cc: 42, direction: receives, group: part_level}
+  part_level_hi_tom: {label: Part level (hi tom), cc: 43, direction: receives, group: part_level}
+  part_level_cl_hat: {label: Part level (cl hat), cc: 44, direction: receives, group: part_level}
+  part_level_op_hat: {label: Part level (op hat), cc: 45, direction: receives, group: part_level}
+  part_level_clap:   {label: Part level (clap), cc: 46, direction: receives, group: part_level}
+  part_level_claves: {label: Part level (claves), cc: 47, direction: receives, group: part_level}
+  part_level_agogo:  {label: Part level (agogo), cc: 48, direction: receives, group: part_level}
+  part_level_crash:  {label: Part level (crash), cc: 49, direction: receives, group: part_level}
+
+  # ──── pcm_speed ────
+
+  pcm_speed_clap:    {label: PCM speed (clap), cc: 50, direction: receives, group: pcm_speed}
+  pcm_speed_claves:  {label: PCM speed (claves), cc: 51, direction: receives, group: pcm_speed}
+  pcm_speed_agogo:   {label: PCM speed (agogo), cc: 52, direction: receives, group: pcm_speed}
+  pcm_speed_crash:   {label: PCM speed (crash), cc: 53, direction: receives, group: pcm_speed}
+
+  # ──── stutter ────
+
+  stutter_time:      {label: Stutter time, cc: 54, direction: receives, group: stutter}
+  stutter_depth:     {label: Stutter depth, cc: 55, direction: receives, group: stutter}
+
+  # ──── decay ────
+
+  decay_tom:         {label: Decay (tom), cc: 56, direction: receives, group: decay}
+  decay_closed_hat:  {label: Decay (closed hat), cc: 57, direction: receives, group: decay}
+  decay_open_hat:    {label: Decay (open hat), cc: 58, direction: receives, group: decay}
+
+  # ──── no group of its own ────
+
+  hat_grain:         {label: Hat grain, cc: 59, direction: receives}

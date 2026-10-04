@@ -211,6 +211,7 @@ class TestBundledCorpus:
 			"roland/tr8s",
 			"roland/tr_1000",
 			"roland/tr_6s",
+			"sequential/prophet_5",
 			"sequential/prophet_6",
 			"sequential/take_5",
 			"soma/pulsar_23",
@@ -7047,6 +7048,7 @@ class TestPresetCounts:
 			"modal/carbon8m": 500,
 			"moog/sub_37": 256,
 			"moog/subsequent_37": 256,
+			"sequential/prophet_5": 400,
 			"sequential/prophet_6": 1000,
 			"sequential/take_5": 256,
 		}
@@ -7214,14 +7216,15 @@ class TestProphet6:
 		assert prophet.midi.nrpn == "preferred"
 		assert take_5.midi.nrpn == "preferred"
 
-		# Four definitions say `preferred`, and three of them are this one company -
+		# Five definitions say `preferred`, and four of them are this one company -
 		# Sequential, and the Oberheim it builds - which is what makes it a house position
-		# rather than one instrument's.
+		# rather than one instrument's. The Prophet-5's implementation puts it in a callout
+		# rather than in the body, and the words are the same again.
 		preferred = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
 
 		assert preferred == ["elektron/digitone_ii", "oberheim/teo_5",
-			"sequential/prophet_6", "sequential/take_5"]
+			"sequential/prophet_5", "sequential/prophet_6", "sequential/take_5"]
 
 	def test_one_file_covers_the_keyboard_and_the_module (self) -> None:
 		"""The maker treats them as one instrument, and says so on its own download page."""
@@ -9958,3 +9961,198 @@ class TestMpcLive:
 		said = prose_of("akai", "mpc_live")
 
 		assert "Internal improvements and maintenance updates" in said
+
+
+class TestProphet5:
+
+	"""The 2020 instrument, whose implementation is also the Prophet-10's and is older than it.
+
+	**THE NAME ALONE IDENTIFIES NOTHING HERE**: Sequential's Prophet-5 of 2020 is a MIDI
+	instrument, the Prophet-5 of 1978 is not, and the Rev 3.3 of the 1980s had a MIDI of its own
+	that nothing in this corpus describes.
+	"""
+
+	def test_the_whole_implementation_arrives (self) -> None:
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert len(prophet.controls) == 64
+		assert len(prophet.groups) == 10
+
+		# 59 are the parameter table's and five are performance controllers from the message
+		# tables, which is why the performance group is the one that mixes the two.
+		assert prophet.controls["osc_a_frequency"].cc == 3
+		assert prophet.controls["mod_wheel"].cc == 1
+
+	def test_the_makers_typo_is_kept_because_it_is_printed_twice (self) -> None:
+		"""ON/FF for ON/OFF, in the controller table and in the NRPN table both."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.controls["osc_a_saw_on_ff"].label == "OSC A SAW ON/FF"
+		assert prophet.controls["osc_a_saw_on_ff"].cc == 15
+
+		assert "it is printed that way in the NRPN table as well" in " ".join(
+			(prophet.source or "").split())
+
+	def test_only_the_breath_controller_is_one_way (self) -> None:
+		"""Measured over two lists, received and transmitted, rather than asserted."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		one_way = sorted(control.name for control in prophet.controls.values()
+			if control.direction != "both")
+
+		assert one_way == ["breath_controller"]
+		assert prophet.controls["breath_controller"].direction == "transmits"
+
+	def test_two_mode_messages_and_one_contradiction_are_left_out_by_name (self) -> None:
+		account = " ".join(
+			(pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS]).source or "").split())
+		numbers = {control.cc for control in
+			pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS]).controls.values()}
+
+		for refused in (121, 123, 13):
+			assert refused not in numbers
+
+		assert "All Notes Off: Clear all MIDI notes" in account
+		assert "Expression is controller 11" in account
+		assert "There is no third statement anywhere to settle which the maker meant" in account
+
+	def test_nrpn_is_the_preferred_method_and_the_numbers_are_not_recorded (self) -> None:
+		"""The maker says preferred in as many words, and the two tables do not line up."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.midi.nrpn == "preferred"
+		assert not any(control.nrpn for control in prophet.controls.values())
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "NRPNs are the preferred method of parameter transmission" in account
+		assert "no arithmetic relates one number to the other" in account
+
+	def test_it_receives_poly_pressure_and_its_keyboard_sends_channel (self) -> None:
+		"""The Super 6's shape from the other side, and the one field cannot say it twice."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.voice.aftertouch == "poly"
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "the transmitted table has \"Channel Pressure\" (p. 3) and no polyphonic row at " \
+			"all" in account
+		assert "The Prophet-5 provides monophonic (or \"channel\") aftertouch" in account
+
+	def test_the_bend_range_is_per_program_and_counted_two_ways (self) -> None:
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.voice.pitch_bend is not None
+		assert prophet.voice.pitch_bend.semitones == 12
+		assert prophet.voice.pitch_bend.programmable is True
+
+		# And the controller counts the same twelve values from zero.
+		assert prophet.controls["pitch_wheel_range"].range == (0, 11)
+
+		assert "A setting of 12 equals an octave" in " ".join((prophet.source or "").split())
+
+	def test_four_hundred_programs_and_a_program_change_reaches_forty (self) -> None:
+		"""And the row that says so contradicts itself, which the file quotes rather than fixes."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.midi.program_change is not None
+		assert prophet.midi.program_change.presets == 400
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "The Prophet-5 contains a total of 400 programs" in account
+		assert "AND THAT PROGRAM CHANGE ROW CONTRADICTS ITSELF" in account
+		assert "Nothing here resolves it" in account
+
+	def test_the_implementation_is_also_the_prophet_10s (self) -> None:
+		"""Settled by the documents, three ways, and not by reasoning from the names."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		# The sibling's guide is held and cited for exactly one thing.
+		assert "sibling_guide" in prophet.sources
+		assert prophet.sources["sibling_guide"].title == "Prophet-10 User's Guide"
+
+		said = prose_of("sequential", "prophet_5")
+
+		assert "Cited for one thing and nothing else" in said
+		assert "identical but for the model name and where the lines wrap" in said
+		assert "Prophet-5/10" in " ".join((prophet.source or "").split())
+
+	def test_the_implementation_is_older_than_two_operating_systems (self) -> None:
+		"""So the published tables are known to be incomplete, and the file says so."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.model.firmware == "2.1.0"
+		assert prophet.sources["implementation"].edition == "1.4"
+		assert prophet.sources["implementation"].dated == "2021-03-11"
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "Neither addendum mentions MIDI and neither gives a number for anything it adds" \
+			in account
+		assert "known to be incomplete for the instrument as it ships" in account
+
+	def test_the_guides_front_matter_is_numbered_in_roman_numerals (self) -> None:
+		"""The Super 6's trap at rank 64, met again three ranks later and measured."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.sources["guide"].page_offset == 11
+		assert prophet.sources["implementation"].page_offset == 0
+
+		assert "sheets 8 to 11 print viii, ix, x and xi" in prose_of("sequential", "prophet_5")
+
+	def test_a_parameter_change_is_cc_or_nrpn_and_never_both (self) -> None:
+		"""Each global takes one of three values, so a panel offering both describes no machine."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS]).source or "").split())
+
+		assert "They are transmitted when Param Xmit is set to CC, and recognized/received when " \
+			"Param Rcv is set to CC" in account
+		assert "A panel that offered both at once would be describing a machine that cannot " \
+			"exist" in account
+
+	def test_the_two_maps_agree_about_every_range_they_share (self) -> None:
+		"""Fifty names in both tables and not one range differs - measured, by two readings."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS]).source or "").split())
+
+		assert "Measured over the 50 parameter names printed in both: **not one range differs.**" \
+			in account
+		assert "disagree about numbering and never about scaling" in account
+
+	def test_six_more_defects_are_recorded_and_none_resolved (self) -> None:
+		"""Including the one a reader would be hurt by: two system exclusive identities."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS]).source or "").split())
+
+		assert "VELOCTIY > FILTER" in account
+		assert "This instrument's system exclusive identity is given two ways" in account
+		assert "51 against 49, and nothing in the document says which" in account
+		assert "the RPN reset message is given the wrong controller numbers" in account
+		assert "nothing in the document says how to save the edit buffer" in account
+		assert "a program is addressed three incompatible ways" in account
+
+	def test_the_maker_names_the_revision_on_a_page_it_does_not_number (self) -> None:
+		"""The implementation says nothing; the guide says it in unnumbered front matter."""
+		said = prose_of("sequential", "prophet_5")
+
+		assert "AND THE MAKER NAMES IT ON A PAGE IT DOES NOT NUMBER" in said
+		assert "Or as we call it around here, the Prophet-5 Rev4" in said
+		assert "because there is no locator to give" in said
+
+	def test_the_implementation_never_mentions_the_prophet_10 (self) -> None:
+		"""So the sibling question is settled by three other documents, not by this one."""
+		said = prose_of("sequential", "prophet_5")
+
+		assert "THE IMPLEMENTATION ITSELF NEVER MENTIONS THE PROPHET-10, not once in thirteen" \
+			in said
+
+	def test_the_clock_and_the_transport_are_absent_rather_than_denied (self) -> None:
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+
+		assert prophet.midi.clock is None
+		assert prophet.midi.transport is None
+		assert prophet.midi.sysex is True
+
+		assert "not as a no, as nothing at all" in " ".join((prophet.source or "").split())

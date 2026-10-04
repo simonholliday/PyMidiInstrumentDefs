@@ -1,0 +1,443 @@
+# THE MAKER SAYS WHY THIS INSTRUMENT TAKES FOUR MIDI CHANNELS, AND IT IS THE WHOLE DESIGN.
+# "If the base channel is set to 1, the Machinedrum will use channels 1 through 4 to send and
+# recognise MIDI data. The reason for using four channels is to allow for easy access of control
+# change messages to all parameters" (p. 67). And then, of the non-registered parameters it
+# thereby avoids: "which are usually hard to make good use of from keyboards and from many
+# computer sequencers" (p. 67).
+#
+# **THE SENTENCE BETWEEN THOSE TWO CANNOT BE QUOTED HERE, AND THE REASON IS A TOOL AND NOT THE
+# PAGE.** It reads "By using four channels in total, we have avoided using 'non-registered
+# parameters' ('NRPN')" - and the two extractors in this project disagree about this file's
+# hyphens. PyMuPDF reads 3,764 of them and `pypdf` reads 2,816, and where `pypdf` loses one it
+# often puts an "x" in its place: this page gives "nonxregistered", and elsewhere the same file
+# yields "hixhat", "highxpass", "lowxpass", "bandxpass", "prexdelay" and "prexlistening".
+# **`check_quotations.py` reads with `pypdf`**, so a quotation crossing one of those words can
+# never be found however exactly it is transcribed. The quotations here are cut to fall either
+# side of it rather than adapted, because the page prints the hyphen and this file is not going
+# to pretend otherwise.
+#
+# **AND IT IS THE FONT RATHER THAN THE FILE**, which the second reader established and which
+# matters: the body is set in a subset of Arial whose character map is broken, and **Appendix B
+# and Appendix C are set in Courier New and are unaffected**. So every hyphen in the control
+# change map and the system exclusive reference is a true hyphen, and the fault reaches only the
+# prose. Raised as its own bug, because the gate's wording for it reads as "you transcribed this
+# wrongly".
+#
+# So sixteen tracks of twenty-six parameters are reached by control change alone, four tracks to
+# a channel, and `nrpn: none` below is a decision the maker states rather than a silence.
+# **416 controls, which is the largest definition in this corpus**, and it comes out of an
+# appendix of two sheets.
+#
+# THE APPENDIX ABBREVIATES, AND THIS FILE DOES NOT EXPAND IT. It prints one track's twenty-four
+# parameters in full and writes the other fifteen blocks as
+#
+#     | 28   40 | Track 2 SD - Machine parameter 1   |  X  |  X  |
+#     | ..   .. | ...
+#     | 3f   63 | ...
+#
+# - the first number, the first name, the marks for that first row only, and the last number with
+# its name elided. **The instrument has 416 of these parameters and the maker prints 71 of them
+# with both a number and a name.** Those 71 are what publishes.
+#
+# **THE EXPANSION IS NEARLY CERTAIN AND IS STILL NOT WHAT THE PAGE SAYS**, which is why it is
+# here in words instead. Three things would be this file's assertion rather than the maker's:
+# the twenty-two intermediate names in every abbreviated block and each block's twenty-fourth;
+# the Trn and Rec marks for rows 2 to 24 of those blocks, where only the opening row is marked -
+# and the marks are not decorative, because the mute rows are receive-only; and whether the
+# eight-number gap at 64 to 71 is deliberate at all. **If that gap were instead a misprint, half
+# the map would move.**
+#
+# THE RULE, FOR ANYBODY WHO WANTS TO APPLY IT KNOWINGLY: each channel carries four levels at 8
+# to 11 and four mutes at 12 to 15, then four blocks of twenty-four at 16-39, 40-63, 72-95 and
+# 96-119; the one block printed in full runs Machine parameter 1 to 8, AM Depth, AM Rate, EQ
+# Freq, EQ Gain, Filter base frequency, Filter width, Filter Q, Sample rate reduction,
+# Distortion, Volume, Pan, Delay send, Reverb send, LFO Speed, LFO Amount, LFO Shape. That is
+# twenty-four names for twenty-four numbers, and every abbreviated block is twenty-four long and
+# opens with the same first name.
+#
+# **AND THE MAKER'S OWN COUNT AGREES WITH NEITHER.** The specifications say "384 MIDI
+# controllable (MIDI CC) parameters" (p. 94), which is sixteen tracks of twenty-four and leaves
+# out the sixteen levels and sixteen mutes that the appendix prints in full. 384 is not quoted
+# as a figure anywhere in this file, and 416 is not published as controls.
+#
+# AND THE INSTRUMENT IS FIVE MACHINES, by the manual's own file: its PDF keywords read
+# "SPS-1; SPS-1UW; SPS-1 MKII; SPS-1UW MKII; SPS-1UW+ MKII". The maker's download page says the
+# same from the other side - "OS compatible with all Machinedrum versions" - and serves this one
+# document from two product pages, byte for byte identical.
+
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Machinedrum
+  # The manual says so itself, in a colophon that names all five machines and then reads
+  # "USER'S MANUAL for operating system version 1.63. This manual (rev M) is copyright" (p. 11),
+  # over a copyright range of 2001 to 2012. **The model names cannot be quoted here**, for the
+  # reason the header gives: every hyphen in them comes out of the body font as an "x".
+  # **THE DOWNLOAD PAGE DATES THIS OS TO 23 MAY 2016 AND THAT DATE IS NOT TO BE USED.** The same
+  # page dates eight unrelated files to 23 May of five different years - including this manual,
+  # which the PDF proves was produced on 3 January 2012 with no later revision. A catalogue of
+  # unrelated files all dated 23 May is a site migration, not a set of release dates, and the one
+  # case that can be checked is wrong. So the manual is from the turn of 2011 into 2012, it names
+  # 1.63 as its subject, and it gates nothing on 1.63 the way it gates the Turbo menu on 1.53.
+  # **What cannot be established from the document** is whether the program change section below
+  # describes 1.63's handling or an earlier OS's - the release note says 1.63 "adds improved
+  # handling of program change messages", and the changelog that would settle it is inside an
+  # upgrade zip the library does not hold.
+  firmware: "1.63"
+
+source: >-
+  Machinedrum User's Manual for OS 1.63, 126 sheets. **The MIDI material is two sheets**:
+  Appendix B, "MIDI CONTROL REFERENCE", on pp. 113-114, which carries the control change map and
+  the default note map. Appendix C, "SYSEX REFERENCE", is pp. 115-120 and is beyond what this
+  format holds. The global settings that govern MIDI response are pp. 65-90, and the sysex
+  transfer pages pp. 72-82. The two support pages are cited for which documents the maker offers
+  and for the OS covering every model.
+
+  **PAGES ARE CITED AS FILE PAGES, BECAUSE THE DOCUMENT NUMBERS ITSELF FOUR WAYS.** The contents
+  pages print "1 of 6" to "6 of 6"; the body runs 1 to 88 at eight behind the sheet; the
+  appendices are lettered, A-1 to A-16, B-1 to B-2 and C-1 to C-6, which is not a number at all;
+  and the index restarts at 1 and runs to 4. **So the folios 1, 2, 3 and 4 are each printed on
+  two different sheets**, in the body and again in the index. No single offset serves that, and a
+  lettered page cannot be an offset from anything. Four sheets print no folio at all. Both
+  readers took the folio off the page rather than inferring it, and agree on every run.
+
+  THE APPENDIX IS DRAWN IN CHARACTERS, not in a grid: a `+---------+---...---+-----+-----+`
+  ruler, rows delimited by `|`, and the two right-hand columns holding an `X` or a space. That is
+  the shape this corpus had only met in Korg's plain text files, and **this is the first time it
+  has appeared inside a PDF**. The reading is by delimiter and the ruler is available as a second
+  reading of the same rows.
+
+  SIXTY-FOUR NUMBERS ARE USED ON EVERY CHANNEL AND SIXTY-FOUR ARE NOT. Each channel carries four
+  levels at 8-11, four mutes at 12-15, and four blocks of twenty-four at 16-39, 40-63, 72-95 and
+  96-119. **So 0 to 7, 64 to 71 and 120 to 127 are never used on any channel** - the last being
+  the channel mode messages, and the middle eight being a gap the maker leaves between its second
+  and third blocks and never explains.
+
+  **THE APPENDIX'S PARAMETER NAMES ARE ONLY TRUE OF A TRACK HOLDING A DRUM MACHINE**, which is
+  the sharpest limit on the labels below. A track can hold a MIDI machine instead, and of those
+  the manual says "As there is no internal audio processing fo these machines, their controls
+  extend over the SYNTHESIS, EFFECT and ROUTING menus" (p. 108, the maker's own "fo"). On such a
+  track the numbers the appendix calls AM Depth through Sample rate reduction address eight
+  channel-and-value pairs, and the eight it calls Distortion through LFO Shape address six named
+  things - **so two of the eight are undetermined, and the manual does not say which**. One of
+  the six is "PCHG", a controller that makes the instrument send a program change. The same holds
+  for the control machines. A consumer reading "controller 32 is Distortion" will be wrong on
+  every track holding one of those, and this file cannot say which tracks those are because it is
+  the player's choice.
+
+  AND THE STEREO MASTER EFFECTS HAVE NO CONTROL CHANGE NUMBERS, despite the appendix opening
+  "All machine parameters in the Machinedrum are accessible by MIDI control change messages"
+  (p. 113). The Rhythm Echo, the Gate Box reverb, the master EQ and the Dynamix processor appear
+  nowhere in it. They are reached by system exclusive, or by assigning a control machine to a
+  track and using that track's eight machine parameters. The claim is defensible because a master
+  effect is not a machine parameter, and a definition that advertised direct controllers for them
+  would be wrong.
+
+  THE MUTES ARE RECEIVED AND NOT SENT, which is the only direction in the appendix that is not
+  both ways: every mute row has an "X" in the Rec column and a blank in Trn, where every other
+  row has both. Sixteen controls carry `direction: receives` for that reason.
+
+  NOT RECORDED: `channels`. **The manual never prints the range the base channel can take.** It
+  says what four channels are used when the base is 1, and that turning the base below "1-4"
+  displays "--" and stops the instrument sending or reacting - and it never says what the highest
+  base is. **Six Elektron definitions in this corpus were corrected once for attributing a
+  channel range to manuals that do not print one**, and this is the seventh manual that does not
+  print one.
+
+  NOT RECORDED: `polyphony`. The manual states no voice count for the sixteen tracks, and a drum
+  machine's is not something to infer from the track count.
+
+  THE NOTE MAP IS A DEFAULT AND THE MANUAL SAYS SO TWICE. Appendix B heads it "DEFAULT MIDI
+  MAPPINGS" and closes it "This mapping can be changed in the MIDI map editor", and the global
+  section describes that editor: "The MAP EDITOR is used to setup how the Machinedrum will react
+  to incoming MIDI notes. You can trigger drum sounds, patterns and the start, stop and play
+  functions of the sequencer" (p. 67). So `voices` below is where the instrument starts, not what
+  it is - the same state as `korg/microkorg`'s controller numbers.
+
+  **THE MANUAL NAMES NOTES THREE INCOMPATIBLE WAYS AND NUMBERS THEM ONE WAY**, which is why
+  `voices` below carries numbers and no names. Appendix B prints "3c 60 | C4", making note 0 a
+  C-1; Appendix C's system exclusive section says "$0=C0"; and Appendix A's MIDI machine gives a
+  note range "C-2 to G8", which would make note 0 a C-2. **The numbers agree everywhere** - 36,
+  60, 0 to 127 - and only the octave names disagree, so the numbers are what this file records.
+
+  AND THE SAME APPENDIX MAPS SIXTEEN MORE NOTES TO PATTERNS, 64 to 89, "E4" to "F6", against
+  "A01" to "A16". **Those are not voices and are not recorded as any**: a note that selects a
+  pattern is a transport message wearing a note's clothes, and this format has no field for it.
+  The map editor's third category does the same for the transport proper - "CTRL allows you to
+  let MIDI notes control the transport control of the Machinedrum" (p. 67).
+
+  WHAT THE FIVE MACHINES DIFFER BY, AND NONE OF IT IS MIDI. The global settings list marks three
+  entries by model - "Mechanical settings (MKII units only)", "Sample manager (Machinedrum UW
+  models only)" and "+Drive settings (+Drive models only)" (p. 65) - and the first is the
+  encoder resolution, the second moves samples by system exclusive, and the third is storage.
+  **None of them is a control change number, and the appendix carries no model qualification at
+  all.** So one definition covers the five, which is what the maker's own "OS compatible with all
+  Machinedrum versions" says.
+
+sources:
+  manual:
+    kind: manual
+    title: Machinedrum User's Manual
+    edition: rev M
+    dated: 2012-01-03
+    landing: "https://www.elektron.se/support-downloads/machinedrum"
+    url: "https://www.elektron.se/wp-content/uploads/2024/09/machinedrum_manual_OS1.63_1.pdf"
+    sha256: 6b398674c0da23f1084ab2a6858d38b04b14647282ff6d19649235bbf49e32f1
+    retrieved: 2026-10-04
+    # **THE SAME BYTES ARE SERVED FROM TWO URLS.** The Machinedrum's support page links
+    # `machinedrum_manual_OS1.63_1.pdf` and the Machinedrum UW's links
+    # `machinedrum_manual_OS1.63.pdf`; the two were fetched and compared and are identical, byte
+    # for byte, uploaded thirteen minutes apart. One manual, posted twice. The date above is the
+    # OS's release date from the support page, not the file's - the PDF was made in 2012.
+    # `page_offset` is 0 and pages are cited as file pages: see the source account.
+  support_page:
+    kind: download_page
+    title: "Machinedrum - Elektron"
+    landing: "https://www.elektron.se/support-downloads/machinedrum"
+    url: "https://www.elektron.se/support-downloads/machinedrum"
+    sha256: adb7c6d08bc1a540392afdd071b97624c3db744662ff8ee3bdd1100a13320e58
+    retrieved: 2026-10-04
+    paginated: false
+  uw_support_page:
+    kind: download_page
+    title: "Machinedrum UW - Elektron"
+    landing: "https://www.elektron.se/support-downloads/machinedrum-uw"
+    url: "https://www.elektron.se/support-downloads/machinedrum-uw"
+    sha256: 59886b1b3979d82b83d758ccb332108d4137a7de10b436d56d57901922e35df1
+    retrieved: 2026-10-04
+    paginated: false
+    # Held because it is the page that answers the two-product question: it serves the same
+    # manual and heads its OS entry "Machinedrum / Machinedrum UW OS 1.63", with "OS compatible
+    # with all Machinedrum versions" (uw_support_page).
+
+midi:
+  # NOT RECORDED: channels. The manual never prints the range the base channel can take - see
+  # the source account, and the six Elektron definitions that were corrected for getting this
+  # wrong before.
+  # NOT RECORDED: mode. There is no MIDI implementation chart in this manual at all, and no page
+  # states a default mode.
+  # BOTH, BY TWO SETTINGS. "EXTERNAL will sync the Machinedrum to incoming tempo via MIDI"
+  # (p. 88) for TEMPO IN, and "ON will make the Machinedrum send out MIDI clock" (p. 89) for
+  # TEMPO OUT.
+  clock: both
+  # BOTH, BY TWO MORE. CTRL IN: "ON will make the Machinedrum respond to MIDI start, stop and
+  # continue messages" (p. 89). CTRL OUT: "ON will make the Machinedrum send out MIDI start, stop
+  # and continue messages" (p. 90). **Both name the same three messages**, which is rarer in this
+  # corpus than it sounds - most makers leave one of the three out of one of the directions.
+  transport: both
+  program_change:
+    # "The Machinedrum can both transmit and receive MIDI Program change messages" (p. 68), each
+    # switchable: "If PRG CHANGE IN is set to ON the Machinedrum will respond to incoming program
+    # changes. If PRG CHANGE OUT is set to ON the Machinedrum will send program change messages
+    # when a new pattern is selected" (p. 69).
+    receives: true
+    sends: true
+    # **AND THE TWO DIRECTIONS USE DIFFERENT CHANNELS**, which this format cannot hold and the
+    # manual states plainly: "The Machinedrum will receive program change messages on all four
+    # base channels, but only send program change messages on the first channel in the base
+    # channel range" (p. 69).
+    # A program change selects a pattern, and the patterns are eight banks of sixteen - the map
+    # editor's "PAT A-H" (p. 67) against the appendix's "A01" to "A16" - which is 128.
+    presets: 128
+  # NONE, AND IT IS A DECISION THE MAKER EXPLAINS RATHER THAN A SILENCE. The sentence is on
+  # p. 67 and is quoted in two halves in the header comment, for the reason given there: by using
+  # four channels in total it has avoided non-registered parameters, "which are usually hard to
+  # make good use of from keyboards and from many computer sequencers" (p. 67).
+  nrpn: none
+  # The global settings offer "Sysex send of pattern, song and kit data" and "Sysex receive of
+  # pattern, song and kit data" (p. 65), and Appendix C defines the messages.
+  sysex: true
+
+voice:
+  addressing: voices
+  # NOT RECORDED: polyphony. No page states a voice count. See the source account.
+  # THE DEFAULTS, AND THEY ARE EDITABLE - see the source account. Appendix B's first table, "hex
+  # dec | note | track", from "24 36 | C2 | 1" to "3e 62 | D4 | 16". The names are the maker's
+  # own two letters for each track, as the control change table prints them.
+  voices:
+    bd: 36
+    sd: 38
+    ht: 40
+    mt: 41
+    lt: 43
+    cp: 45
+    rs: 47
+    cb: 48
+    ch: 50
+    oh: 52
+    rc: 53
+    cc: 55
+    m1: 57
+    m2: 59
+    m3: 60
+    m4: 62
+
+# SIXTEEN TRACKS, FOUR TO A CHANNEL, and `channel_offset` holds which. "The MIDI base channel is
+# the first MIDI channel that the Machinedrum will listen to and send data to. If the base
+# channel is set to 1, the Machinedrum will use channels 1 through 4" (p. 67), and the appendix
+# heads its four tables "MIDI base channel + 0" to "MIDI base channel + 3".
+#
+# **A LABEL BELOW IS THE PARAMETER AND THE PART IS THE TRACK.** The maker writes every row as
+# "Track 1 BD - Level"; the track half of that is what `part` holds, so repeating it in all 416
+# labels would say the same thing twice.
+parts:
+  track_1:
+    label: Track 1 BD
+    channel_offset: 0
+    receives: [notes, controls]
+  track_2:
+    label: Track 2 SD
+    channel_offset: 0
+    receives: [notes, controls]
+  track_3:
+    label: Track 3 HT
+    channel_offset: 0
+    receives: [notes, controls]
+  track_4:
+    label: Track 4 MT
+    channel_offset: 0
+    receives: [notes, controls]
+  track_5:
+    label: Track 5 LT
+    channel_offset: 1
+    receives: [notes, controls]
+  track_6:
+    label: Track 6 CP
+    channel_offset: 1
+    receives: [notes, controls]
+  track_7:
+    label: Track 7 RS
+    channel_offset: 1
+    receives: [notes, controls]
+  track_8:
+    label: Track 8 CB
+    channel_offset: 1
+    receives: [notes, controls]
+  track_9:
+    label: Track 9 CH
+    channel_offset: 2
+    receives: [notes, controls]
+  track_10:
+    label: Track 10 OH
+    channel_offset: 2
+    receives: [notes, controls]
+  track_11:
+    label: Track 11 RC
+    channel_offset: 2
+    receives: [notes, controls]
+  track_12:
+    label: Track 12 CC
+    channel_offset: 2
+    receives: [notes, controls]
+  track_13:
+    label: Track 13 M1
+    channel_offset: 3
+    receives: [notes, controls]
+  track_14:
+    label: Track 14 M2
+    channel_offset: 3
+    receives: [notes, controls]
+  track_15:
+    label: Track 15 M3
+    channel_offset: 3
+    receives: [notes, controls]
+  track_16:
+    label: Track 16 M4
+    channel_offset: 3
+    receives: [notes, controls]
+
+groups:
+  synthesis: Synthesis
+  track_effects: Track Effects
+  routing: Routing
+  lfo: LFO
+
+controls:
+  # ---- track 1, BD, on base channel + 0
+  track_1_level:                 {label: Level, cc: 8, part: track_1}
+  track_1_mute:                  {label: Mute (>0 mutes trk), cc: 12, direction: receives, part: track_1}
+  track_1_machine_parameter_1:   {label: Machine parameter 1, cc: 16, part: track_1, group: synthesis}
+  track_1_machine_parameter_2:   {label: Machine parameter 2, cc: 17, part: track_1, group: synthesis}
+  track_1_machine_parameter_3:   {label: Machine parameter 3, cc: 18, part: track_1, group: synthesis}
+  track_1_machine_parameter_4:   {label: Machine parameter 4, cc: 19, part: track_1, group: synthesis}
+  track_1_machine_parameter_5:   {label: Machine parameter 5, cc: 20, part: track_1, group: synthesis}
+  track_1_machine_parameter_6:   {label: Machine parameter 6, cc: 21, part: track_1, group: synthesis}
+  track_1_machine_parameter_7:   {label: Machine parameter 7, cc: 22, part: track_1, group: synthesis}
+  track_1_machine_parameter_8:   {label: Machine parameter 8, cc: 23, part: track_1, group: synthesis}
+  track_1_am_depth:              {label: AM Depth, cc: 24, part: track_1, group: track_effects}
+  track_1_am_rate:               {label: AM Rate, cc: 25, part: track_1, group: track_effects}
+  track_1_eq_freq:               {label: EQ Freq, cc: 26, part: track_1, group: track_effects}
+  track_1_eq_gain:               {label: EQ Gain, cc: 27, part: track_1, group: track_effects}
+  track_1_filter_base_frequency: {label: Filter base frequency, cc: 28, part: track_1, group: track_effects}
+  track_1_filter_width:          {label: Filter width, cc: 29, part: track_1, group: track_effects}
+  track_1_filter_q:              {label: Filter Q, cc: 30, part: track_1, group: track_effects}
+  track_1_sample_rate_reduction: {label: Sample rate reduction, cc: 31, part: track_1, group: track_effects}
+  track_1_distortion:            {label: Distortion, cc: 32, part: track_1, group: track_effects}
+  track_1_volume:                {label: Volume, cc: 33, part: track_1, group: routing}
+  track_1_pan:                   {label: Pan, cc: 34, part: track_1, group: routing}
+  track_1_delay_send:            {label: Delay send, cc: 35, part: track_1, group: routing}
+  track_1_reverb_send:           {label: Reverb send, cc: 36, part: track_1, group: routing}
+  track_1_lfo_speed:             {label: LFO Speed, cc: 37, part: track_1, group: lfo}
+  track_1_lfo_amount:            {label: LFO Amount, cc: 38, part: track_1, group: lfo}
+  track_1_lfo_shape:             {label: LFO Shape, cc: 39, part: track_1, group: lfo}
+  # ---- track 2, SD, on base channel + 0
+  track_2_level:                 {label: Level, cc: 9, part: track_2}
+  track_2_mute:                  {label: Mute (>0 mutes trk), cc: 13, direction: receives, part: track_2}
+  track_2_machine_parameter_1:   {label: Machine parameter 1, cc: 40, part: track_2, group: synthesis}
+  # ---- track 3, HT, on base channel + 0
+  track_3_level:                 {label: Level, cc: 10, part: track_3}
+  track_3_mute:                  {label: Mute (>0 mutes trk), cc: 14, direction: receives, part: track_3}
+  track_3_machine_parameter_1:   {label: Machine parameter 1, cc: 72, part: track_3, group: synthesis}
+  # ---- track 4, MT, on base channel + 0
+  track_4_level:                 {label: Level, cc: 11, part: track_4}
+  track_4_mute:                  {label: Mute (>0 mutes trk), cc: 15, direction: receives, part: track_4}
+  track_4_machine_parameter_1:   {label: Machine parameter 1, cc: 96, part: track_4, group: synthesis}
+  # ---- track 5, LT, on base channel + 1
+  track_5_level:                 {label: Level, cc: 8, part: track_5}
+  track_5_mute:                  {label: Mute (>0 mutes trk), cc: 12, direction: receives, part: track_5}
+  track_5_machine_parameter_1:   {label: Machine parameter 1, cc: 16, part: track_5, group: synthesis}
+  # ---- track 6, CP, on base channel + 1
+  track_6_level:                 {label: Level, cc: 9, part: track_6}
+  track_6_mute:                  {label: Mute (>0 mutes trk), cc: 13, direction: receives, part: track_6}
+  track_6_machine_parameter_1:   {label: Machine parameter 1, cc: 40, part: track_6, group: synthesis}
+  # ---- track 7, RS, on base channel + 1
+  track_7_level:                 {label: Level, cc: 10, part: track_7}
+  track_7_mute:                  {label: Mute (>0 mutes trk), cc: 14, direction: receives, part: track_7}
+  track_7_machine_parameter_1:   {label: Machine parameter 1, cc: 72, part: track_7, group: synthesis}
+  # ---- track 8, CB, on base channel + 1
+  track_8_level:                 {label: Level, cc: 11, part: track_8}
+  track_8_mute:                  {label: Mute (>0 mutes trk), cc: 15, direction: receives, part: track_8}
+  track_8_machine_parameter_1:   {label: Machine parameter 1, cc: 96, part: track_8, group: synthesis}
+  # ---- track 9, CH, on base channel + 2
+  track_9_level:                 {label: Level, cc: 8, part: track_9}
+  track_9_mute:                  {label: Mute (>0 mutes trk), cc: 12, direction: receives, part: track_9}
+  track_9_machine_parameter_1:   {label: Machine parameter 1, cc: 16, part: track_9, group: synthesis}
+  # ---- track 10, OH, on base channel + 2
+  track_10_level:                {label: Level, cc: 9, part: track_10}
+  track_10_mute:                 {label: Mute (>0 mutes trk), cc: 13, direction: receives, part: track_10}
+  track_10_machine_parameter_1:  {label: Machine parameter 1, cc: 40, part: track_10, group: synthesis}
+  # ---- track 11, RC, on base channel + 2
+  track_11_level:                {label: Level, cc: 10, part: track_11}
+  track_11_mute:                 {label: Mute (>0 mutes trk), cc: 14, direction: receives, part: track_11}
+  track_11_machine_parameter_1:  {label: Machine parameter 1, cc: 72, part: track_11, group: synthesis}
+  # ---- track 12, CC, on base channel + 2
+  track_12_level:                {label: Level, cc: 11, part: track_12}
+  track_12_mute:                 {label: Mute (>0 mutes trk), cc: 15, direction: receives, part: track_12}
+  track_12_machine_parameter_1:  {label: Machine parameter 1, cc: 96, part: track_12, group: synthesis}
+  # ---- track 13, M1, on base channel + 3
+  track_13_level:                {label: Level, cc: 8, part: track_13}
+  track_13_mute:                 {label: Mute (>0 mutes trk), cc: 12, direction: receives, part: track_13}
+  track_13_machine_parameter_1:  {label: Machine parameter 1, cc: 16, part: track_13, group: synthesis}
+  # ---- track 14, M2, on base channel + 3
+  track_14_level:                {label: Level, cc: 9, part: track_14}
+  track_14_mute:                 {label: Mute (>0 mutes trk), cc: 13, direction: receives, part: track_14}
+  track_14_machine_parameter_1:  {label: Machine parameter 1, cc: 40, part: track_14, group: synthesis}
+  # ---- track 15, M3, on base channel + 3
+  track_15_level:                {label: Level, cc: 10, part: track_15}
+  track_15_mute:                 {label: Mute (>0 mutes trk), cc: 14, direction: receives, part: track_15}
+  track_15_machine_parameter_1:  {label: Machine parameter 1, cc: 72, part: track_15, group: synthesis}
+  # ---- track 16, M4, on base channel + 3
+  track_16_level:                {label: Level, cc: 11, part: track_16}
+  track_16_mute:                 {label: Mute (>0 mutes trk), cc: 15, direction: receives, part: track_16}
+  track_16_machine_parameter_1:  {label: Machine parameter 1, cc: 96, part: track_16, group: synthesis}

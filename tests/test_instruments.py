@@ -163,6 +163,7 @@ class TestBundledCorpus:
 			"elektron/digitakt_ii",
 			"elektron/digitone",
 			"elektron/digitone_ii",
+			"elektron/machinedrum",
 			"elektron/model_cycles",
 			"elektron/model_samples",
 			"elektron/octatrack",
@@ -11161,3 +11162,163 @@ class TestM1:
 
 		# The field still records the kind, which is not what the two statements disagree about.
 		assert m1.voice.aftertouch == "channel"
+
+
+class TestMachinedrum:
+
+	"""Rank 72, and the definition that publishes what the maker prints rather than what it means.
+
+	The appendix abbreviates fifteen of its sixteen per-track blocks. Expanding them would
+	give 416 controls and would assert three things the page does not: the intermediate
+	parameter names, the direction marks for the rows it elides, and that the eight-number
+	gap at 64 to 71 is deliberate. **71 is what is printed with a number and a name.**
+	"""
+
+	def test_only_what_the_maker_prints_is_published (self) -> None:
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+
+		assert len(machinedrum.controls) == 71
+		assert len(machinedrum.parts) == 16
+		assert len(machinedrum.groups) == 4
+
+		# One track is printed in full and the other fifteen give a level, a mute and the
+		# first of their twenty-four.
+		per_part = collections.Counter(c.part for c in machinedrum.controls.values())
+
+		assert per_part["track_1"] == 26
+		assert all(per_part[f"track_{n}"] == 3 for n in range(2, 17))
+
+		said = " ".join(prose_of("elektron", "machinedrum").split())
+
+		assert "THIS FILE DOES NOT EXPAND IT" in said
+		assert "the maker prints 71 of them with both a number and a name" in said
+
+	def test_the_three_things_an_expansion_would_assert (self) -> None:
+		"""Named one by one, because the expansion is nearly certain and still not printed."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+		said = " ".join(prose_of("elektron", "machinedrum").split())
+
+		assert "THE EXPANSION IS NEARLY CERTAIN AND IS STILL NOT WHAT THE PAGE SAYS" in said
+		assert "the twenty-two intermediate names in every abbreviated block" in said
+		assert "only the opening row is marked" in said
+		assert "If that gap were instead a misprint, half the map would move" in said
+
+		# And the rule is written down, so a consumer can apply it knowingly.
+		assert "THE RULE, FOR ANYBODY WHO WANTS TO APPLY IT KNOWINGLY" in said
+
+	def test_the_makers_own_count_agrees_with_neither (self) -> None:
+		"""384 in the specifications, 416 by the appendix, and this file publishes 71."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+		said = " ".join(prose_of("elektron", "machinedrum").split())
+
+		assert "384 MIDI controllable (MIDI CC) parameters" in said
+		assert "384 is not quoted as a figure anywhere in this file" in said
+
+	def test_sixteen_tracks_over_four_channels (self) -> None:
+		"""`channel_offset` holds which of the four, because the base itself is the player's."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+
+		offsets = [machinedrum.parts[f"track_{n}"].channel_offset for n in range(1, 17)]
+
+		assert offsets == [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+
+		# And the base channel's own range is not recorded, because no page prints it.
+		assert machinedrum.midi.channels is None
+
+		account = " ".join((machinedrum.source or "").split())
+
+		assert "The manual never prints the range the base channel can take" in account
+		assert "this is the seventh manual that does not print one" in account
+
+	def test_the_mutes_are_received_and_never_sent (self) -> None:
+		"""The one direction in the appendix that is not both ways, and it is sixteen rows."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+
+		receives_only = [c for c in machinedrum.controls.values() if c.direction == "receives"]
+
+		assert len(receives_only) == 16
+		assert all(c.label == "Mute (>0 mutes trk)" for c in receives_only)
+		assert sorted(c.cc for c in receives_only if c.cc is not None) \
+			== sorted([12, 13, 14, 15] * 4)
+
+	def test_nrpn_is_refused_by_design_and_the_maker_says_why (self) -> None:
+		"""Four channels exist so that NRPN need not, which is rarer than a silence."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+
+		assert machinedrum.midi.nrpn == "none"
+
+		said = " ".join(prose_of("elektron", "machinedrum").split())
+
+		assert "The reason for using four channels is to allow for easy access of control " \
+			"change messages to all parameters" in said
+		assert "which are usually hard to make good use of from keyboards" in said
+
+	def test_the_labels_are_only_true_of_a_track_holding_a_drum_machine (self) -> None:
+		"""A MIDI machine on a track gives the same numbers different meanings, and two unknown."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+		account = " ".join((machinedrum.source or "").split())
+
+		assert "ONLY TRUE OF A TRACK HOLDING A DRUM MACHINE" in account
+		assert "two of the eight are undetermined, and the manual does not say which" in account
+
+		# And the master effects have no controllers at all, despite the appendix's claim.
+		assert "THE STEREO MASTER EFFECTS HAVE NO CONTROL CHANGE NUMBERS" in account
+
+	def test_the_note_map_is_a_default_and_carries_numbers_not_names (self) -> None:
+		"""Three octave conventions in one manual, and the numbers agree in all three."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+
+		assert machinedrum.voice.addressing == "voices"
+		assert len(machinedrum.voice.voices) == 16
+		assert machinedrum.voice.voices["bd"] == 36
+		assert machinedrum.voice.voices["m4"] == 62
+
+		account = " ".join((machinedrum.source or "").split())
+
+		assert "THE MANUAL NAMES NOTES THREE INCOMPATIBLE WAYS AND NUMBERS THEM ONE WAY" in account
+		assert "This mapping can be changed in the MIDI map editor" in account
+
+	def test_one_definition_covers_five_machines (self) -> None:
+		"""Two axes - sampling or not, MKI or MKII - and none of it reaches the appendix."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+		said = prose_of("elektron", "machinedrum")
+
+		assert "SPS-1; SPS-1UW; SPS-1 MKII; SPS-1UW MKII; SPS-1UW+ MKII" in said
+		assert "OS compatible with all Machinedrum versions" in said
+
+		account = " ".join((machinedrum.source or "").split())
+
+		assert "None of them is a control change number" in account
+
+	def test_the_same_manual_is_served_from_two_urls (self) -> None:
+		"""Byte for byte, which is what settles that the two products share one document."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+
+		assert set(machinedrum.sources) == {"manual", "support_page", "uw_support_page"}
+
+		said = prose_of("elektron", "machinedrum")
+
+		assert "THE SAME BYTES ARE SERVED FROM TWO URLS" in said
+		assert "identical, byte for byte, uploaded thirteen minutes apart" in said
+
+	def test_the_hyphen_fault_is_the_font_and_the_appendix_escapes_it (self) -> None:
+		"""Which is why two quotations here are cut rather than adapted."""
+		said = prose_of("elektron", "machinedrum")
+
+		assert "nonxregistered" in said
+		assert "PyMuPDF reads 3,764 of them and `pypdf` reads 2,816" in said
+		assert "Appendix B and Appendix C are set in Courier New and are unaffected" in said
+
+	def test_the_edition_is_the_manuals_own_and_not_the_download_pages_date (self) -> None:
+		"""The page dates this very file four years after the file says it was made."""
+		machinedrum = pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS])
+
+		assert machinedrum.sources["manual"].edition == "rev M"
+		assert machinedrum.sources["manual"].dated == "2012-01-03"
+		assert machinedrum.model.firmware == "1.63"
+
+		said = prose_of("elektron", "machinedrum")
+
+		assert "THE DOWNLOAD PAGE DATES THIS OS TO 23 MAY 2016 AND THAT DATE IS NOT TO BE USED" \
+			in said
+		assert "A catalogue of unrelated files all dated 23 May is a site migration" in said

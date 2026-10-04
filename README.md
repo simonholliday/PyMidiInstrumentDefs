@@ -149,6 +149,7 @@ self-contained YAML file, and you share it by sending it.
 | `elektron/digitakt_ii` | Elektron Digitakt II: 144 controls off an appendix that numbers two of its own sections twice, and gives four pairs of parameters the same NRPN |
 | `elektron/digitone` | Elektron Digitone: nine parts on nine MIDI channels, where one CC means three things |
 | `elektron/digitone_ii` | Elektron Digitone II: 164 controls over sixteen tracks that each sound or send, sharing sixteen voices - and eleven NRPNs that mean one thing on an audio track and another on a MIDI track |
+| `elektron/machinedrum` | Elektron Machinedrum: 71 controls, which is what its maker prints - sixteen tracks over four MIDI channels, of which it enumerates one track and abbreviates the other fifteen with an ellipsis |
 | `elektron/model_cycles` | Elektron Model:Cycles: the Model:Samples' manual with a synth in it, where four of its 30 controls mean something different on each of six machines |
 | `elektron/model_samples` | Elektron Model:Samples: 29 controls off a one-page appendix headed CC MSB that gives an LSB for exactly one of them |
 | `elektron/octatrack` | Elektron Octatrack: two controller maps where 51 numbers mean different things, one file for the MKI and the MKII because their appendices agree row for row - and sixteen rows the maker puts on numbers the MIDI specification reserves for channel mode, which this format cannot hold |

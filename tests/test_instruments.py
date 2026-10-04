@@ -197,6 +197,7 @@ class TestBundledCorpus:
 			"native_instruments/maschine_plus",
 			"novation/bass_station_ii",
 			"novation/circuit",
+			"novation/circuit_rhythm",
 			"novation/circuit_tracks",
 			"novation/mininova",
 			"novation/peak",
@@ -8045,14 +8046,19 @@ class TestMiniNova:
 			(CORPUS / "novation" / "mininova.yaml").read_text()
 
 	def test_it_is_none_of_the_other_novations (self) -> None:
-		"""Five of them now, and the UltraNova is a sixth this does not describe."""
+		"""Six of them now, and the UltraNova is a seventh this does not describe.
+
+		**Three of the six are Circuits**, and the oldest name is a prefix of the other two,
+		so the listing is by name rather than by anything that could match a substring.
+		"""
 		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
 
 		assert mininova.model.name == "MiniNova"
 
 		novations = sorted(path.stem for path in (CORPUS / "novation").glob("*.yaml"))
 
-		assert novations == ["bass_station_ii", "circuit", "circuit_tracks", "mininova", "peak"]
+		assert novations == ["bass_station_ii", "circuit", "circuit_rhythm", "circuit_tracks",
+			"mininova", "peak"]
 
 		said = prose_of("novation", "mininova")
 
@@ -10364,3 +10370,188 @@ class TestMicroKORG2:
 		account = " ".join((microkorg2.source or "").split())
 
 		assert "ARE RIGHT FOR SYSTEM 1.02 AND SHORT FOR 2.0.2" in account
+
+
+class TestCircuitRhythm:
+
+	"""The third Circuit here, and the first family of three this corpus can compare.
+
+	**The headline is the comparison, not the count**: 64 of this machine's 74 addresses are
+	also used by `novation/circuit`, and only nine of them mean the same thing.
+	"""
+
+	def test_the_whole_reference_arrives (self) -> None:
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		assert len(rhythm.controls) == 74
+		assert len(rhythm.groups) == 17
+
+		by_cc = [c for c in rhythm.controls.values() if c.cc is not None]
+		by_nrpn = [c for c in rhythm.controls.values() if c.nrpn is not None]
+
+		assert len(by_cc) == 50
+		assert len(by_nrpn) == 24
+
+		# The NRPNs are printed MSB:LSB, so 1:18 is 146.
+		assert rhythm.controls["reverb_type"].nrpn == 1 * 128 + 18
+		assert rhythm.controls["sampler_pitch"].cc == 21
+
+	def test_eleven_addresses_mean_one_thing_across_the_family (self) -> None:
+		"""Ten effect NRPNs, and the one control change that survives the instrument.
+
+		A first pass said nine and a looser one said twelve, so the eleven are listed by
+		address here as they are in `Notes/4468_compare_with_the_siblings.py`, rather than
+		matched by folding labels - which is what got it wrong both times.
+		"""
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+		siblings = [pymidiinstrumentdefs.load(name, [CORPUS])
+			for name in ("novation/circuit", "novation/circuit_tracks")]
+
+		one_meaning = [("cc", 71)] + [("nrpn", n) for n in
+			(134, 135, 136, 137, 138, 139, 146, 147, 148, 149)]
+
+		assert len(one_meaning) == 11
+
+		for kind, number in one_meaning:
+			assert any(getattr(c, kind) == number for c in rhythm.controls.values()), \
+				f"the Rhythm no longer uses {kind} {number}"
+
+			for sibling in siblings:
+				assert any(getattr(c, kind) == number for c in sibling.controls.values()), \
+					f"{sibling.model.name} no longer uses {kind} {number}"
+
+		# And controller 21 is on both machines and is a different parameter on each.
+		assert rhythm.controls["sampler_pitch"].cc == 21
+
+		theirs_at_21 = [control.label for control in siblings[0].controls.values()
+			if control.cc == 21]
+
+		assert theirs_at_21, "the Circuit no longer uses controller 21, so this has nothing to say"
+		assert "pitch" not in theirs_at_21[0].lower()
+
+		said = " ".join(prose_of("novation", "circuit_rhythm").split())
+
+		assert "ONLY ELEVEN OF THEM MEAN THE SAME THING" in said
+		assert "the eleventh is the one control change" in said
+
+	def test_the_master_filters_frequency_moved_and_its_resonance_did_not (self) -> None:
+		"""The most dangerous line in the family, and the reason the comparison was run."""
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		assert rhythm.controls["lp_hp_filter_frequency"].cc == 79
+		assert rhythm.controls["lp_hp_filter_resonance"].cc == 71
+
+		# And this machine uses 74 for nothing, where both siblings put the filter there.
+		assert not any(control.cc == 74 for control in rhythm.controls.values())
+
+		for name in ("novation/circuit", "novation/circuit_tracks"):
+			sibling = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			assert any(control.cc == 74 and "frequency" in control.label
+				for control in sibling.controls.values()), name
+
+		said = " ".join(prose_of("novation", "circuit_rhythm").split())
+
+		assert "AND THE MASTER FILTER'S FREQUENCY MOVED" in said
+		assert "this machine uses 74 for nothing at all" in said
+
+	def test_five_rows_the_maker_prints_and_says_are_not_supported (self) -> None:
+		"""A stated absence, named rather than dropped."""
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		for absent in ("master_volume", "click_on_off", "click_volume", "click_rate"):
+			assert absent not in rhythm.controls
+
+		assert "master" not in rhythm.groups
+		assert "click" not in rhythm.groups
+
+		account = " ".join((rhythm.source or "").split())
+
+		assert "marked NOT SUPPORTED: Master Volume, and the Click's On/Off, Volume, Rate and" \
+			in account
+
+	def test_three_defaults_are_on_the_parameters_own_scale_and_are_not_published (self) -> None:
+		"""Which the format's own validator caught, by refusing one outside its range."""
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		for scaled in ("sampler_pitch", "sampler_slope", "mixer_pan"):
+			assert rhythm.controls[scaled].default is None, scaled
+
+		# The fourth of the same shape keeps its default, because 64 is outside the signed
+		# scale the maker prints and so can only be a byte.
+		assert rhythm.controls["lp_hp_filter_frequency"].default == 64
+
+		account = " ".join((rhythm.source or "").split())
+
+		assert "it is nought semitones, which is byte 64" in account
+
+	def test_eight_sample_tracks_and_a_project_on_sixteen_channels (self) -> None:
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		assert set(rhythm.parts) == {"sample_track", "project"}
+		assert rhythm.parts["sample_track"].count == 8
+		assert rhythm.parts["sample_track"].is_assigned
+
+		# The tracks take parameters on their own channels; the notes arrive on the
+		# Project's channel instead, which is why the two parts receive different things.
+		assert rhythm.parts["sample_track"].receives == ("controls",)
+		assert rhythm.parts["project"].receives == ("notes", "program_change")
+
+		assert rhythm.voice.voices == {
+			"sample_track_1": 36, "sample_track_2": 38, "sample_track_3": 40,
+			"sample_track_4": 41, "sample_track_5": 43, "sample_track_6": 45,
+			"sample_track_7": 47, "sample_track_8": 48,
+		}
+
+	def test_only_the_sampler_parts_name_a_part_because_only_they_are_given_one (self) -> None:
+		"""The reference names a channel for one of its four tables."""
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		parted = {c.name for c in rhythm.controls.values() if c.part}
+
+		assert len(parted) == 25
+		assert all(rhythm.controls[name].part == "sample_track" for name in parted)
+
+		account = " ".join((rhythm.source or "").split())
+
+		assert "the Effects and Global Control Data tables name no channel at all" in account
+
+	def test_system_exclusive_is_left_out_rather_than_taken_from_the_family (self) -> None:
+		"""Both siblings record it as true; this one's documents never mention it."""
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		assert rhythm.midi.sysex is None
+		assert pymidiinstrumentdefs.load("novation/circuit", [CORPUS]).midi.sysex is True
+		assert pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS]).midi.sysex is True
+
+		account = " ".join((rhythm.source or "").split())
+
+		assert "112 sheets" in account
+		assert "an enumerated silence and not a denial" in account
+
+	def test_the_firmware_is_the_only_one_named_and_the_reference_names_none (self) -> None:
+		"""And the by-name test is reported as the weak evidence it is on this document."""
+		rhythm = pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS])
+
+		assert rhythm.model.firmware == "2.0"
+		assert rhythm.sources["addendum"].edition == "V1 English"
+
+		account = " ".join((rhythm.source or "").split())
+
+		assert "MENTIONS MIDI NOT ONCE in eleven sheets" in account
+		assert "THAT TEST PROVES MUCH LESS HERE THAN IT DID ON THE LAST INSTRUMENT" in account
+
+		# What does tie the two documents together is a redundancy, and it is the figure
+		# worth asserting rather than the argument.
+		assert "fourteen of those defaults are" in account
+		assert "All fourteen agree" in account
+
+	def test_four_leftovers_from_a_siblings_document_are_recorded (self) -> None:
+		"""None changes a number; all four would mislead somebody reading quickly."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("novation/circuit_rhythm", [CORPUS]).source or "").split())
+
+		assert "Triggering Drums" in account
+		assert "there is no Drum Control table in these six sheets" in account
+		assert "which are the Circuit Tracks' eight tracks, not this machine's eight sample" \
+			in account

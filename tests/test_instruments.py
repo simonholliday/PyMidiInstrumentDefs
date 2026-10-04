@@ -148,6 +148,7 @@ class TestBundledCorpus:
 			"expressive_e/osmose",
 			"korg/electribe",
 			"korg/microkorg",
+			"korg/minilogue",
 			"korg/minilogue_xd",
 			"korg/modwave_mk_ii",
 			"korg/multi_poly",
@@ -6972,6 +6973,7 @@ class TestPresetCounts:
 		"""
 		holds = {
 			"arturia/minifreak": 512,
+			"korg/minilogue": 200,
 			"korg/minilogue_xd": 500,
 			"korg/opsix": 500,
 			"modal/carbon8m": 500,
@@ -7184,3 +7186,133 @@ class TestProphet6:
 
 		assert "does not respond to MIDI Start or Stop command" in said
 		assert "RECEIVES ONLY, and said by implication rather than outright" in said
+
+
+class TestMinilogue:
+
+	"""A Korg whose implementation is a text file, and whose maker prints it twice five years apart."""
+
+	def test_thirty_nine_controls_in_ten_panel_sections (self) -> None:
+		"""Of 44 rows the receiving table prints: five are set aside and the file says why."""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+
+		assert len(minilogue.controls) == 39
+		assert len(minilogue.groups) == 10
+
+		numbers = sorted(control.cc for control in minilogue.controls.values()
+			if control.cc is not None)
+
+		assert len(numbers) == 39
+		assert len(set(numbers)) == 39
+		assert numbers[0] == 16 and numbers[-1] == 88
+
+		# Bank select and the three channel mode messages are the five left out.
+		for set_aside in (0, 32, 120, 122, 123):
+			assert set_aside not in numbers, set_aside
+
+	def test_it_is_not_the_minilogue_xd (self) -> None:
+		"""Two instruments, one name, and the corpus has both - so each says which it is."""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+		xd = pymidiinstrumentdefs.load("korg/minilogue_xd", [CORPUS])
+
+		assert minilogue.model.name == "minilogue"
+		assert xd.model.name == "minilogue xd"
+
+		# They are different instruments and the numbers say so: the xd has NRPN and this
+		# has none, the xd holds 500 programs and this 200.
+		assert minilogue.midi.nrpn == "none"
+		assert xd.midi.nrpn == "supported"
+
+		assert minilogue.midi.program_change is not None
+		assert minilogue.midi.program_change.presets == 200
+
+		said = prose_of("korg", "minilogue")
+
+		assert "NOT THE minilogue xd, WHICH IS A DIFFERENT INSTRUMENT" in said
+
+	def test_every_value_it_sends_lands_in_the_band_it_reads (self) -> None:
+		"""The implementation describes a switch twice, and the two were checked against each other.
+
+		Sending, it gives the exact values; receiving, the bands.  They are not the same
+		arithmetic - the four-way switches band in quarters and are sent as 0, 42, 84, 127,
+		and the three-way ones band in thirds and are sent as 0, 64, 127 - so 42 and 84 look
+		like thirds boundaries and are read against quarters.
+		"""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+
+		stepped = [control for control in minilogue.controls.values() if control.values]
+
+		assert len(stepped) == 13
+
+		by_number = {control.cc: control for control in minilogue.controls.values()}
+
+		assert by_number[48].values == {"ft_16": 0, "ft_8": 32, "ft_4": 64, "ft_2": 96}
+		assert by_number[50].values == {"sqr": 0, "tri": 43, "saw": 86}
+		assert by_number[84].values == {"pole_2": 0, "pole_4": 64}
+
+		# Every band starts where the one before it ends, with nothing uncovered.
+		for control in stepped:
+			starts = sorted(control.values.values())
+
+			assert starts[0] == 0, control.label
+			assert starts == list(control.values.values()), control.label
+
+	def test_the_implementations_names_are_the_ones_shipped (self) -> None:
+		"""The manual's chart abbreviates seven, and two of its abbreviations mislead."""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+
+		by_number = {control.cc: control for control in minilogue.controls.values()}
+
+		assert by_number[82].label == "CUTOFF VELOCITY"
+		assert by_number[83].label == "CUTOFF KEYBOARD TRACK"
+		assert by_number[84].label == "CUTOFF TYPE"
+		assert by_number[27].label == "VOICE MODE DEPTH"
+
+		said = prose_of("korg", "minilogue")
+
+		assert "THE TWO PRINTINGS AGREE ON EVERY NUMBER" in said
+		assert "The names are not confirmed twice" in said
+
+	def test_the_older_document_is_stale_about_its_own_switches (self) -> None:
+		"""Right about every number and wrong about the conditions, which is the lesson."""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+
+		said = prose_of("korg", "minilogue")
+
+		assert "OUT OF DATE ABOUT HOW ITS OWN MESSAGES ARE SWITCHED ON" in said
+		assert "No such setting exists on this instrument" in said
+
+		# Both documents are cited, because the claim rests on the pair of them.
+		assert set(minilogue.sources) == {"midi_impl", "manual", "downloads"}
+		assert minilogue.sources["midi_impl"].paginated is False
+
+	def test_two_checked_absences_the_successor_does_not_have (self) -> None:
+		"""No NRPN and no aftertouch, both from the maker's own rows rather than from silence."""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+
+		assert minilogue.midi.nrpn == "none"
+		assert minilogue.voice.aftertouch == "none"
+
+		assert minilogue.midi.clock == "both"
+		assert minilogue.midi.transport == "both"
+		assert minilogue.midi.mode == 3
+
+	def test_portamento_is_on_the_panel_and_has_no_controller (self) -> None:
+		"""The slider reaches it and MIDI does not, which the successor changed."""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+		xd = pymidiinstrumentdefs.load("korg/minilogue_xd", [CORPUS])
+
+		assert 5 not in {control.cc for control in minilogue.controls.values()}
+		assert 5 in {control.cc for control in xd.controls.values()}
+
+		said = prose_of("korg", "minilogue")
+
+		assert "PORTAMENTO has no controller number at all" in said
+
+	def test_four_voices_and_three_note_counts_the_maker_states (self) -> None:
+		"""Eight voice modes, and only four of them described as a number of notes."""
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+
+		assert minilogue.voice.polyphony == 4
+		assert minilogue.voice.voicing_modes == (1, 2, 4)
+		assert minilogue.voice.note_range == (0, 127)

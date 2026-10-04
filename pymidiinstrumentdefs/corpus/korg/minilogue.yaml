@@ -1,0 +1,295 @@
+# NOT THE minilogue xd, WHICH IS A DIFFERENT INSTRUMENT AND IS ALSO IN THIS CORPUS. This is the
+# original minilogue of 2016: four voices, two VCOs, one analogue filter, a delay and no digital
+# oscillator. `korg/minilogue_xd` is the 2019 successor, with a third oscillator, a different
+# controller map and 500 programs against this one's 200. There is also a minilogue bass, which
+# Korg serves from its own download page and which is not covered here.
+#
+# THE MAKER PUBLISHES THIS TWICE AND THE TWO ARE FIVE YEARS APART. A plain text implementation,
+# Revision 1.10 of 2016, and a MIDI Implementation Chart in the owner's manual, Version 1.20 of
+# 2019. **They agree on all 41 controller numbers, exactly** - the same numbers with the same gaps
+# at 25, 28 and 38 - and disagree about seven names, about three channel mode messages, and about
+# how the whole thing is switched on. See the source note: the older document is right about its
+# numbers and out of date about its conditions.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: minilogue
+  # The newest firmware Korg publishes: the download page offers "minilogue/System Updater"
+  # at "2.01" (downloads), dated 2019.06.28, which is three weeks after the manual's chart is dated. The
+  # implementation text predates both by three years and says so in its own first line.
+  firmware: "2.01"
+
+source: >-
+  MIDI implementation (plain text, no pages at all): section 1-1 for what the instrument
+  transmits, 2-1 for what it recognises, their footnotes for what a stepped control's values
+  mean, and 1-2 and 2-2 for the real-time messages. The owner's manual (64pp) for the
+  specifications at p. 62, the voice modes at pp. 24-25, the MIDI and clock settings at pp. 46-47,
+  the slider's bend ranges at p. 35, the program count at p. 8, the panel sections at p. 4, and
+  **its MIDI Implementation Chart at p. 63**, which is the second printing of all of this.
+
+  THE TWO PRINTINGS AGREE ON EVERY NUMBER AND DISAGREE ABOUT ALMOST EVERYTHING ELSE. Expand the
+  chart's ranges - "34-37", "39, 40, 33", "16-23" and the rest - and you get the implementation's
+  41 controller numbers with nothing added and nothing missing, including the same gaps at 25, 28
+  and 38. That is the part a definition rests on, and it is confirmed twice.
+
+  **The names are not confirmed twice.** The chart abbreviates seven of them, and two of its
+  abbreviations are misleading: it prints "82, 83" against "VELOCITY KEY TRACK, KEYBOARD TRACK" (manual p. 63), which
+  reads as a parameter called velocity key track and another called keyboard track, where the
+  implementation has CUTOFF VELOCITY and CUTOFF KEYBOARD TRACK; and "84, 88" against "FILTER TYPE, DELAY OUTPUT
+  ROUTING" (manual p. 63) where the implementation has CUTOFF TYPE. **The implementation's names are the
+  ones below**, because they are the fuller and because the chart's are a grid's shorthand.
+
+  AND THE OLDER DOCUMENT IS OUT OF DATE ABOUT HOW ITS OWN MESSAGES ARE SWITCHED ON. The
+  implementation says every message it lists depends on one master switch each way - "This message
+  is transmitted when the 'Enable Tx MIDI' is set to 'On'" (midi_impl) and "This message is
+  recognized when the 'Enable Rx MIDI' is set to 'On'" (midi_impl). **No such setting exists on this instrument.** The manual's
+  global settings have six separate ones - MIDI Rx CC, MIDI Tx CC, MIDI Rx Prog Chg, MIDI Tx Prog
+  Chg, MIDI Rx Pitch Bend, MIDI Tx Pitch Bend (p. 47) - and the chart's footnotes name those.
+  So a document can be exactly right about its numbers and wrong about its conditions, and the
+  numbers being confirmed says nothing about the rest of it.
+
+  THE THREE PLACES THE TWO PRINTINGS NAME DIFFERENT CHANNEL MODE MESSAGES. The implementation's
+  receiving table has CC 120 All Sound Off, 122 Local Sw and 123 All Note Off, and no 121; the
+  chart's control change block has "120, 121" against "All sound off, Reset all
+  Controllers" (manual p. 63) and moves
+  Local On/Off and All Notes Off into its Aux Messages row. The word "Reset" appears nowhere in
+  the implementation. None of the five is a control here, so nothing rests on it.
+
+  **The chart also contradicts itself**: its Aux Messages row says All Notes Off is received as
+  "O 123-127" (manual p. 63), which claims 124 to 127 - Omni and Mono and Poly mode - while its own Mode row is
+  marked X received, and the implementation lists only 123. And its footnote on transport reads
+  "When the Global setting is 'En Rx Transport=On', the minilogue will transmit signals"
+  (manual p. 63), where
+  the manual's own page says that setting governs what is received (p. 47). Both are left as
+  printed.
+
+  NOT RECORDED: what the eight voice modes are worth as note counts beyond the four the maker
+  states in those words; whether a received note-off velocity does anything, beyond the chart
+  saying it does not; and Song Position Pointer, which the chart marks received and the
+  implementation never mentions - the two cannot both be right and nothing here settles it.
+
+  WHAT THE PANEL HAS AND MIDI DOES NOT REACH, which is unusually clear here because the manual
+  lists the slider's destinations (p. 35): **PORTAMENTO has no controller number at all**, nor
+  does the master volume, the tempo, the octave switch, the slider itself, the sequencer, or the
+  choice of voice mode - only its depth knob. The successor adds a portamento controller; this
+  instrument has none.
+
+sources:
+  midi_impl:
+    kind: midi_implementation
+    title: minilogue/MIDI Implementation
+    edition: Revision 1.10
+    dated: 2016-07-10
+    landing: "https://www.korg.com/us/support/download/product/0/544/"
+    url: "https://cdn.korg.com/us/support/download/files/9491c06ef6ee0ba63a947c5e74dd5d4f.txt"
+    sha256: 17b5eeccb1e99d9ecc9e3b0c6c9dc514b92832c28201b8520e5edd40a99df9c2
+    retrieved: 2026-10-04
+    paginated: false
+    # Korg's own title for it. **A plain text file, not a PDF** - 59 KB of ASCII ruled with
+    # pipes - which is the easiest document any instrument here has had. It numbers its own
+    # sections and has no pages, so a citation names a section. Its own first line says
+    # "Revision 1.10 (2016.07.10)" (midi_impl); the download page dates it 2016.07.08, two days earlier,
+    # and both are recorded because they disagree.
+  manual:
+    kind: manual
+    title: minilogue/Owner's Manual (English)
+    edition: E 5
+    dated: 2025-08-04
+    landing: "https://www.korg.com/us/support/download/product/0/544/"
+    url: "https://cdn.korg.com/us/support/download/files/aaf54ac0657b42e2b47be6bd33516bde.pdf"
+    sha256: ce208460c7baca8ec1dfd4700a9eb56d6192762753758f63df368be235f6349d
+    retrieved: 2026-10-04
+    page_offset: 0
+    # The edition is the PDF's own internal subject, "E 5"; the date is the download page's.
+    # Its MIDI Implementation Chart at p. 63 carries its own stamp, "Date: 2019.06.06" and
+    # "Version: 1.20" (manual p. 63), which is the chart's version and not the manual's.
+  downloads:
+    kind: download_page
+    title: "Downloads | minilogue | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/product/0/544/"
+    url: "https://www.korg.com/us/support/download/product/0/544/"
+    sha256: a35c80b208954583b92a4b3c4125dbb4e738fc6c2122fd973248d4986ad4a096
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for which firmware Korg ships - "minilogue/System Updater" at "2.01"
+    # (downloads) - and for the
+    # dates it gives the other two files. **Korg's download pages do not link the files**: each
+    # entry is its own page at /support/download/manual/0/544/<id>/ with the content-hashed CDN
+    # URL inside it, so the URLs above were resolved one id at a time.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # a777c4a49ce0fc354fd743436a8b8c51bc535bd0958a9d3ab5795bb691ac7aa9.
+
+midi:
+  # "MIDI Ch [1...16] Specifies the MIDI channel of the minilogue. This MIDI channel will be used
+  # to transmit and receive note messages, as well as control change messages" (manual p. 46).
+  channels: [1, 16]
+  # The chart's Mode row gives "3" as the default received (manual p. 63), which is Omni Off,
+  # Poly.
+  mode: 3
+  # Timing Clock is transmitted (section 1-2) and recognised (section 2-2). Receiving it depends
+  # on the Clock Source setting: "Auto (USB), Auto (MIDI): When there is no input, the internal
+  # clock will be used; and when input is detected, the internal clock will be synchronized"
+  # (manual p. 46), while Internal uses "Only the internal clock".
+  clock: both
+  # Start and Stop both ways; **Continue is recognised and never transmitted** - section 1-2 has
+  # F8, FA, FC and FE, and section 2-2 has FB as well. The format has one field, so the asymmetry
+  # is recorded here. Receiving them is gated by "En Rx Transport" (manual p. 47).
+  transport: both
+  program_change:
+    receives: true
+    sends: true
+    # "The minilogue comes equipped with 200 Programs. Of those, 100 are ready-to-play preset
+    # Programs and 100 locations are available to save your own sounds and custom edits"
+    # (manual p. 8). A program change carries "Program Change (pp=0~99)" (midi_impl) and the
+    # bank comes from Bank Select LSB, which takes "vv=0~1" (midi_impl). The count is what the instrument holds.
+    presets: 200
+  # A CHECKED ABSENCE. There is no NRPN anywhere in this implementation: neither table has a Data
+  # Entry, a Data Increment, an NRPN address pair or an RPN pair, and the words do not occur in
+  # the file. Its successor has 61 NRPNs; this instrument has none.
+  nrpn: none
+  sysex: true
+  # The format has no field for Active Sensing, which this instrument both sends and recognises
+  # (sections 1-2 and 2-2).
+
+voice:
+  addressing: pitches
+  # "Maximum polyphony: 4 voices" (manual p. 62).
+  polyphony: 4
+  # The chart's Note Number row gives "0–127" transmitted and received, with True Voice the
+  # same (manual p. 63).
+  note_range: [0, 127]
+  # EIGHT VOICE MODES, AND THE MAKER STATES A NOTE COUNT FOR ONLY FOUR OF THEM (pp. 24-25). POLY
+  # is "a 4-voice poly synth" (manual p. 24), DUO stacks the four "as a 2-voice poly
+  # synth" (manual p. 24), and UNISON and MONO each make them "a mono synth" (manual p. 24) -
+  # so one, two and four are the counts the maker gives in those
+  # words. CHORD, DELAY, ARP and SIDE CHAIN are described by what they do with the four voices
+  # rather than by how many notes sound, and are not counted here.
+  voicing_modes: [1, 2, 4]
+  velocity:
+    note_on: received      # "Note On  vv=1~127" (midi_impl); a note on with vv=0 is a note off
+    # The chart's Velocity row says Note Off is X received and "X 8n, V=64" (manual p. 63)
+    # transmitted: it sends
+    # a fixed 64 and does nothing with what it gets. The implementation's receiving table prints
+    # "Note Off  vv=0~127" (midi_impl), which says the byte is carried rather than that it is used, and the
+    # chart is the document that answers the question.
+    note_off: false
+  # A CHECKED ABSENCE, from the chart's own row: After Touch, Key's and Channel, is X transmitted
+  # and X received. Neither table has a Dn or an An message in it.
+  aftertouch: none
+  pitch_bend:
+    # "Bend Range +" and "Bend Range –" are each "[1 Note...12 Note]" (manual p. 35), set
+    # separately
+    # (manual p. 35), and they apply to the slider when it is assigned to pitch bend. The chart
+    # marks Pitch Bend O both ways, gated by MIDI Rx Pitch Bend and MIDI Tx Pitch Bend.
+    programmable: true
+
+# How to read the controls below. Every one of them is **transmitted and recognised**: the two
+# tables list the same 41 numbers, and differ only in what they say the values mean. `values`
+# names each band of a stepped control by its lowest number, taken from the receiving table,
+# because what a definition's named values answer is what to send to put a control into a state.
+#
+# THE TWO TABLES DESCRIBE A SWITCH TWO WAYS AND THEY WERE CHECKED AGAINST EACH OTHER. Sending,
+# the implementation gives the exact values - "VCO OCTAVE:16',8',4',2' = vv:0,42,84,127" (midi_impl);
+# reading, it gives bands - "vv:0~31,32~63,64~95,96~127 = VCO OCTAVE:16',8',4',2'" (midi_impl).
+# **Every value this
+# instrument says it sends falls inside the band it says it reads that meaning from**, on all
+# thirteen stepped controls. That is worth saying because 42 and 84 look like the boundaries of
+# thirds and are read against quarters: the four-way switches band in quarters and the three-way
+# ones in thirds, and the sent values are not the band starts.
+#
+# The band identifiers are this file's, because a YAML key cannot be `16'` or `0%` or `2 POLE`,
+# and a bare `off` would be read as false. The maker's own names are in the bands above.
+#
+# NOT LISTED: CC 0 and 32, Bank Select MSB and LSB, which choose a bank rather than set a
+# parameter; and CC 120 All Sound Off, 122 Local Sw and 123 All Note Off, which are channel mode
+# messages belonging to the MIDI specification rather than to this instrument. Those three are
+# recognised and never transmitted.
+
+groups:
+  # The panel's own sections, as the manual numbers and names them (p. 4), in panel order.
+  vco_1: VCO 1
+  vco_2: VCO 2
+  vco_2_modulation: VCO 2 MODULATION
+  mixer: MIXER
+  filter: FILTER
+  amp_eg: AMP EG
+  eg: EG
+  lfo: LFO
+  delay: DELAY
+  # NOT A PANEL SECTION. The VOICE MODE DEPTH knob stands on its own as item 20 of the panel
+  # diagram, with no bracket over it; the manual's chapter for what it does is "Voice modes"
+  # (manual pp. 24-25), and this is the maker's word from there.
+  voice_mode: Voice mode
+
+controls:
+# ──── vco_1 ────
+
+  vco_1_pitch:             {label: VCO 1 PITCH, cc: 34, group: vco_1}
+  vco_1_shape:             {label: VCO 1 SHAPE, cc: 36, group: vco_1}
+  vco_1_octave:            {label: VCO 1 OCTAVE, cc: 48, values: {"ft_16": 0, "ft_8": 32, "ft_4": 64, "ft_2": 96}, group: vco_1}
+  vco_1_wave:              {label: VCO 1 WAVE, cc: 50, values: {"sqr": 0, "tri": 43, "saw": 86}, group: vco_1}
+
+  # ──── vco_2 ────
+
+  vco_2_pitch:             {label: VCO 2 PITCH, cc: 35, group: vco_2}
+  vco_2_shape:             {label: VCO 2 SHAPE, cc: 37, group: vco_2}
+  vco_2_octave:            {label: VCO 2 OCTAVE, cc: 49, values: {"ft_16": 0, "ft_8": 32, "ft_4": 64, "ft_2": 96}, group: vco_2}
+  vco_2_wave:              {label: VCO 2 WAVE, cc: 51, values: {"sqr": 0, "tri": 43, "saw": 86}, group: vco_2}
+
+  # ──── vco_2_modulation ────
+
+  cross_mod_depth:         {label: VCO 2 CROSS MOD DEPTH, cc: 41, group: vco_2_modulation}
+  pitch_eg_int:            {label: VCO 2 PITCH EG INT, cc: 42, group: vco_2_modulation}
+  sync:                    {label: SYNC, cc: 80, values: {"off": 0, "on": 64}, group: vco_2_modulation}
+  ring:                    {label: RING, cc: 81, values: {"off": 0, "on": 64}, group: vco_2_modulation}
+
+  # ──── mixer ────
+
+  vco_1_level:             {label: VCO 1 LEVEL, cc: 39, group: mixer}
+  vco_2_level:             {label: VCO 2 LEVEL, cc: 40, group: mixer}
+  noise_level:             {label: NOISE LEVEL, cc: 33, group: mixer}
+
+  # ──── filter ────
+
+  cutoff:                  {label: CUTOFF, cc: 43, group: filter}
+  resonance:               {label: RESONANCE, cc: 44, group: filter}
+  cutoff_eg_int:           {label: CUTOFF EG INT, cc: 45, group: filter}
+  cutoff_velocity:         {label: CUTOFF VELOCITY, cc: 82, values: {"pct_0": 0, "pct_50": 43, "pct_100": 86}, group: filter}
+  cutoff_keyboard_track:   {label: CUTOFF KEYBOARD TRACK, cc: 83, values: {"pct_0": 0, "pct_50": 43, "pct_100": 86}, group: filter}
+  cutoff_type:             {label: CUTOFF TYPE, cc: 84, values: {"pole_2": 0, "pole_4": 64}, group: filter}
+
+  # ──── amp_eg ────
+
+  amp_eg_attack:           {label: AMP EG ATTACK, cc: 16, group: amp_eg}
+  amp_eg_decay:            {label: AMP EG DECAY, cc: 17, group: amp_eg}
+  amp_eg_sustain:          {label: AMP EG SUSTAIN, cc: 18, group: amp_eg}
+  amp_eg_release:          {label: AMP EG RELEASE, cc: 19, group: amp_eg}
+
+  # ──── eg ────
+
+  eg_attack:               {label: EG ATTACK, cc: 20, group: eg}
+  eg_decay:                {label: EG DECAY, cc: 21, group: eg}
+  eg_sustain:              {label: EG SUSTAIN, cc: 22, group: eg}
+  eg_release:              {label: EG RELEASE, cc: 23, group: eg}
+
+  # ──── lfo ────
+
+  lfo_rate:                {label: LFO RATE, cc: 24, group: lfo}
+  lfo_int:                 {label: LFO INT, cc: 26, group: lfo}
+  lfo_target:              {label: LFO TARGET, cc: 56, values: {"cutoff": 0, "shape": 43, "pitch": 86}, group: lfo}
+  lfo_eg:                  {label: LFO EG, cc: 57, values: {"off": 0, "rate": 43, "int": 86}, group: lfo}
+  lfo_wave:                {label: LFO WAVE, cc: 58, values: {"sqr": 0, "tri": 43, "saw": 86}, group: lfo}
+
+  # ──── delay ────
+
+  delay_hi_pass_cutoff:    {label: DELAY HI PASS CUTOFF, cc: 29, group: delay}
+  delay_time:              {label: DELAY TIME, cc: 30, group: delay}
+  delay_feedback:          {label: DELAY FEEDBACK, cc: 31, group: delay}
+  delay_output_routing:    {label: DELAY OUTPUT ROUTING, cc: 88, values: {"bypass": 0, "post_hpf": 43, "pre_hpf": 86}, group: delay}
+
+  # ──── voice_mode ────
+
+  voice_mode_depth:        {label: VOICE MODE DEPTH, cc: 27, group: voice_mode}

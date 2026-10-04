@@ -144,6 +144,7 @@ class TestBundledCorpus:
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
+			"akai/mpc_live",
 			"akai/mpc_sample",
 			"arturia/astrolab",
 			"arturia/drumbrute_impact",
@@ -531,15 +532,15 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Eleven definitions carry no controls, for four different reasons.
+		"""Twelve definitions carry no controls, for four different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a twelfth
+		Pinned here because the count has gone stale in notes twice: a thirteenth
 		cannot be added without saying which kind it is.
 		"""
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 11
+		assert len(empty) == 12
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -550,7 +551,7 @@ class TestAbsences:
 
 		assert kinds["none"] == {"behringer/model_d", "behringer/td_3",
 			"moog/labyrinth", "vermona/drm1_mkiv"}
-		assert kinds["learned"] == {"arturia/drumbrute_impact", "roland/d_50",
+		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact", "roland/d_50",
 			"synthstrom_audible/deluge", "teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
@@ -9726,3 +9727,234 @@ class TestTR6S:
 
 		assert "NEITHER COVER IS CITED, AND THAT IS DELIBERATE" in account
 		assert "because there is no locator to give" in account
+
+
+class TestMpcLive:
+
+	"""One user guide, ten machines, and the work was deciding which sentences are this one's.
+
+	**EVERY CLAIM HERE ABOUT SCOPE IS CHECKED AGAINST THE DOCUMENT'S OWN CONVENTION**, which it
+	announces in its introduction and then marks two different ways - one easy to enumerate and
+	one that is a section's opening sentence and marks nothing under it.
+	"""
+
+	def test_it_carries_no_controls_and_the_file_says_why (self) -> None:
+		"""The second Akai to reach that answer, and for a different reason from the first."""
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert not live.controls
+		assert live.midi.control_change == "learned"
+
+		account = " ".join((live.source or "").split())
+
+		assert "assign external MIDI controllers to various parameters in your specific MPC project" \
+			in account
+		assert "These assignments will be saved with your MPC project" in account
+
+		# The MPC Sample has no controls either, and nobody has established what it would do with
+		# one. **That is a different answer**, and the corpus keeps them apart.
+		sample = pymidiinstrumentdefs.load("akai/mpc_sample", [CORPUS])
+
+		assert not sample.controls
+		assert sample.midi.control_change is None
+
+	def test_the_guide_names_the_ten_machines_it_covers_and_two_it_does_not (self) -> None:
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert ("MPC X, MPC X Special Edition, MPC Live, MPC Live II, MPC One, MPC One+, "
+			"MPC One G2, MPC Key 61, MPC Key 37, and MPC Key 37 G2") in account
+
+		assert "MPC Live III and MPC XL, which have a separate User Guide" in account
+
+	def test_a_sections_opening_sentence_scopes_everything_under_it (self) -> None:
+		"""The mechanism that marks nothing, and the one that would have cost two wrong fields."""
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+		account = " ".join((live.source or "").split())
+
+		assert "The keyboard control screen allows you to edit the functions of the keybed on " \
+			"MPC Key 61, Key 37, and Key 37 G2" in account
+
+		# Which is why neither of that screen's two MIDI settings is recorded here - and the
+		# file says that is the reason, rather than that nothing is said.
+		assert live.voice.aftertouch is None
+		assert "The one page that configures a received one is the keyboard screen" in account
+
+	def test_the_machine_itself_offers_controls_it_does_not_have (self) -> None:
+		"""The third place the ten machines must be told apart, and the only unverifiable one."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "will show many more hardware controls than are actually available on your MPC " \
+			"hardware" in account
+		assert "the only one a document cannot be checked against" in account
+
+	def test_the_pads_send_aftertouch_three_ways_and_the_field_holds_one (self) -> None:
+		"""The second reader caught this: it is stated, and the earlier draft said it was not.
+
+		`voice.aftertouch` records what an instrument answers to. What this document states is
+		what the pads **send**, per pad, at the owner's choice of none, channel or poly - so the
+		field is unset because no single value is right, not because the page is silent.
+		"""
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+		account = " ".join((live.source or "").split())
+
+		assert live.voice.aftertouch is None
+
+		assert "Off: The pad will not send any aftertouch messages" in account
+		assert "the aftertouch message each pad sends will be independent from the others" in account
+		assert "AND NOT BECAUSE NOTHING IS SAID" in account
+
+		# And velocity is the same shape: what the pads send, not what it answers to.
+		assert live.voice.velocity is None
+		assert "pressing the pad will send a note at full-level (127) always" in account
+
+	def test_three_times_it_says_a_fixed_map_exists_and_declines_to_print_it (self) -> None:
+		"""Which is a sharper absence than silence, and is why control_change says learned."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "the Q-Links are fixed to a selection of MIDI performance controls" in account
+		assert "Standard MIDI control change assignments" in account
+		assert "Classic MPC (the default MIDI note map of classic MPCs)" in account
+
+	def test_it_states_its_own_coverage_three_times_and_once_differently (self) -> None:
+		"""Ten, then eight, then ten - and the eight is the one that defines the term used."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "This chapter explains the features and functions of each MPC v3.9-supported " \
+			"model" in account
+		assert "dropping the MPC X and the MPC X Special Edition" in account
+
+		# And it inherits between two pairs of machines, but not this one and its successor.
+		assert "also apply to the MPC X Special Edition unless otherwise noted" in account
+		assert "There is no such rule for this machine and the MPC Live II" in account
+
+	def test_the_absence_is_recorded_with_its_two_limits (self) -> None:
+		"""A text search cannot see a screenshot, and 43 pages are missing from the contents."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "Every MIDI screen in this guide is an image" in account
+		assert "FORTY-THREE PAGES ARE MISSING FROM THE TABLE OF CONTENTS" in account
+
+		# And the one place an incoming controller message has a documented effect.
+		assert "the one place in 530 pages where an incoming controller message is given a " \
+			"documented effect" in account
+
+	def test_an_omission_from_the_spec_table_is_binding_and_unsearchable (self) -> None:
+		"""No CV, no thru-port, no footswitch - so three unqualified chapters are not this one's."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "An absence from a table is as binding as a parenthetical and cannot be searched " \
+			"for" in account
+
+	def test_the_model_names_are_prefixes_of_each_other (self) -> None:
+		"""A substring test over-includes, silently, and always by claiming more than was said."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "This instrument's name is the whole of the next one's: MPC Live, MPC Live II" \
+			in account
+		assert "always by claiming more than the maker said" in account
+
+	def test_the_one_list_of_controller_numbers_is_not_a_control_map (self) -> None:
+		"""And four of its numbers are not control changes at all."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "Check these boxes to allow the listed MIDI Control Change messages to pass " \
+			"through the track" in account
+		assert "not what this instrument does when it receives one" in account
+
+		# 128 to 131 are above the 127 a control change can carry.
+		assert "CC128 Pitchbend, CC129 Channel Pressure, CC130 Program Change and CC131 " \
+			"Aftertouch" in account
+
+	def test_the_note_map_is_the_owners_and_its_presets_are_named_twice (self) -> None:
+		"""One document, one list of three, two spellings of the second - recorded, not resolved."""
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert not live.voice.voices
+
+		account = " ".join((live.source or "").split())
+
+		assert "lets you assign specific MIDI notes to your MPC hardware pads" in account
+
+		# The two spellings, each quoted from its own page, and the file resolving neither.
+		assert "Chromatic C-2 (an ascending" in account
+		assert "Chromatic C1, Chromatic C2, or Classic MPC" in account
+		assert "two spellings of the second of them, and nothing here chooses between them" \
+			in account
+
+	def test_the_clock_setting_has_four_positions_and_the_field_holds_two (self) -> None:
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert live.midi.clock == "both"
+
+		account = " ".join((live.source or "").split())
+
+		assert "communication from Ableton Link (Ableton Link), or none of these (Off)" in account
+		assert "MIDI Time Code and Ableton Link are the other choices and no field here " \
+			"records them" in account
+
+		# And MIDI Machine Control, which no field here records either.
+		assert "will be able to receive MIDI Machine Control (MMC) information" in account
+
+	def test_program_change_goes_both_ways_and_reaches_no_recorded_count (self) -> None:
+		"""Because what it selects is a setting with two positions and neither count is given."""
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert live.midi.program_change is not None
+		assert live.midi.program_change.receives is True
+		assert live.midi.program_change.sends is True
+		assert live.midi.program_change.presets is None
+
+		account = " ".join((live.source or "").split())
+
+		assert "an incoming MIDI program change message will change: a Sequence or Track" in account
+		assert "one number would be wrong for one of them" in account
+
+	def test_a_glossary_reads_like_a_specification_and_is_not_one (self) -> None:
+		"""Three of the terms a control map would be written in appear only there."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "the MIDI specification being explained and not this instrument being described" \
+			in account
+		assert "can range from 0 to 127" in account
+
+	def test_nothing_is_recorded_that_no_document_states (self) -> None:
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert live.midi.sysex is None
+		assert live.midi.nrpn is None
+		assert live.voice.polyphony is None
+		assert live.voice.velocity is None
+
+		# Pitch bend is settable and its range is not published.
+		assert live.voice.pitch_bend is not None
+		assert live.voice.pitch_bend.programmable is True
+		assert live.voice.pitch_bend.semitones is None
+
+	def test_two_midi_inputs_and_two_outputs_which_no_field_here_records (self) -> None:
+		"""The first instrument in this corpus with more than one port of each."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).source or "").split())
+
+		assert "(2) 5-pin MIDI inputs" in account
+		assert "(2) 5-pin MIDI outputs" in account
+		assert "a channel number in this definition does not say which socket it arrives on" \
+			in account
+
+	def test_the_firmware_is_the_operating_systems_and_the_guide_is_a_patch_behind (self) -> None:
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert live.model.firmware == "3.9.1"
+		assert live.sources["guide"].edition == "v3.9"
+
+		said = prose_of("akai", "mpc_live")
+
+		assert "Internal improvements and maintenance updates" in said

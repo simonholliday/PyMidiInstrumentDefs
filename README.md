@@ -130,6 +130,7 @@ self-contained YAML file, and you share it by sending it.
 
 | Name | Instrument |
 |------|------------|
+| `akai/mpc_live` | Akai Professional MPC Live: no controls either, because one user guide covers ten machines and every controller number in it is one the owner assigns |
 | `akai/mpc_sample` | Akai Professional MPC Sample: no controls at all, because its maker publishes no controller number and the absence is proved rather than assumed |
 | `arturia/astrolab` | Arturia AstroLab: 36 controls off a table that gives a direction for every row in both directions - and a Section column that cannot be read as a grouping, because the rows are in controller-number order |
 | `arturia/drumbrute_impact` | Arturia DrumBrute Impact: publishes no controller number at all - its drum map is the one set of numbers it states, and it states them inside a screenshot |

@@ -182,6 +182,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
+| `sequential/prophet_6` | Sequential Prophet-6 keyboard and desktop module: 113 controls, most reachable by CC and by finer NRPN, from an appendix its maker prints three times over - twice in the English manual and once again in the German - with no two printings agreeing |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |
 | `synthstrom_audible/deluge` | Synthstrom Audible Deluge: no fixed controller or note map at all, read from both of the guidebooks its maker publishes - one per display edition - whose last chapter turns out to be a reprint of a user-written guide |

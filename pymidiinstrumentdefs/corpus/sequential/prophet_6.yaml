@@ -1,0 +1,428 @@
+# The sixth instrument here whose voices take a channel each - and the first that RECEIVES MPE
+# without ever sending it. Its maker says so plainly: "Although the Prophet-6 doesn't output MPE
+# from its own keyboard, you can connect an MPE-driven controller such as the LinnStrument via
+# MIDI to control the Prophet-6" (addendum p. 2).
+#
+# ONE DEFINITION, TWO INSTRUMENTS. Sequential makes a Prophet-6 keyboard and a Prophet-6 desktop
+# module, and this file describes both, because the maker treats them as one: the operating
+# system page serves one file for "the Prophet-6 keyboard and desktop module", the addendum says
+# MPE "enables the Prophet-6 keyboard and module to respond", and the manual's only mention of
+# the module is about chaining one to the other. **Everything here but the keyboard's own
+# aftertouch is true of both.** The Prophet-5 and Prophet-10 are different instruments with
+# their own documents and are not covered.
+#
+# THE MAKER PUBLISHES THIS APPENDIX THREE TIMES and no two printings agree. See the source note.
+
+definition: 1
+
+model:
+  manufacturer: Sequential
+  name: Prophet-6
+  # The newest OS any document here describes. The manual is Operation Manual 2.1 and names no
+  # OS at all; the addendum is written for 1.6.7 and adds MPE, a vintage mode and four more
+  # aftertouch curves. Sequential ships **Main 1.7.5** and publishes no notes for it - see the
+  # operating_system source for what that does and does not tell us.
+  firmware: "1.6.7"
+
+source: >-
+  Operation Manual version 2.1 (100pp, Feb 2021): the global settings that govern MIDI at
+  pp. 72-73, the received and transmitted messages at pp. 73-75, **the controller table at
+  p. 76**, the NRPN transport at p. 77, **the Global parameter table at p. 78**, **the Program
+  parameter table at pp. 79-80**, **the Control NRPN table at p. 81**, and the SysEx messages at
+  pp. 81-83. The programs and banks are at p. 2, the voices at p. 1, the aftertouch at p. 59.
+  The OS 1.6.7 addendum carries everything the manual does not: MPE, and four more aftertouch
+  curves. The German Handbuch and the operating system page are cited only where named.
+
+  THE MAKER PRINTS THIS APPENDIX THREE TIMES AND NO TWO PRINTINGS AGREE. The English manual
+  prints the Global block twice over - once on p. 78 with the meaning of every value and again
+  at the foot of p. 80 without them - and the German *Handbuch* prints the whole appendix a
+  third time, in English, inside German prose. Three printings is three chances to be caught,
+  and each one caught something.
+
+  WHAT THE TWO PRINTINGS OF THE GLOBAL BLOCK DISAGREE ABOUT. They hold the same eighteen
+  numbers, name eleven of them differently - `Master Fine Tune` against `Tuning Fine`,
+  `Aftertouch Response` against `At Response`, `MIDI Control Enable` against the doubled `MIDI
+  MIDI Control` - and **give two of them different ranges**: MIDI Clock Mode is 0-3 on p. 78 and
+  0-4 on p. 80, MIDI Out Select is 0-3 on p. 78 and 0-1 on p. 80. NEITHER RANGE IS RECORDED for
+  those two, because nothing here can settle which printing is right. The manual's own prose
+  does not settle it either: it lists **five** clock modes at p. 72 where p. 78 names four, and
+  offers MIDI Out as "MID, USB" at p. 73 where p. 78 names four choices.
+
+  WHAT THE GERMAN EDITION CAUGHT, AND WHAT IT HAS WRONG ITSELF. The two editions print the same
+  60 controller numbers with the same name on every one. They differ in three places, and each
+  edition owns a defect: the English misspells CC 6 as `Data Enttry MSB` where the German has
+  `Data Entry MSB`; the English prints **CC 120 twice**, as `All Sound Off` and again as `Reset
+  Controllers` directly above `121 Reset Controllers`; and the German has **no CC 125 at all**,
+  running 124, 126, 127 where the English has Omni Mode On between them. Nothing in this file
+  rests on any of the three - they are all channel mode messages or value transport - but a
+  maker's translation is a second printing of the same table, and comparing them is what
+  separates one edition's slips from the instrument's facts.
+
+  THE CONTROL NRPN TABLE CONTRADICTS ITSELF. Page 81 says its four rows are "received and
+  transmitted but not saved as part of a program", and three of the four are NRPN 1, 2 and 3 -
+  `Osc 1 Sync`, `Osc 1 Level`, `Osc 1 Shape` - with the same numbers, the same ranges and the
+  same names as three rows of the **program** table on p. 79. They cannot be both. They are
+  recorded here as program parameters, which is where two of the three printings put them, and
+  only NRPN 1088 Seq Play/Stop is taken from the control table.
+
+  NOT RECORDED: which number means which named state, except where the Global table spells it
+  out, because the implementation gives ranges and nothing else; what changed in the OS releases
+  after 1.6.7, which Sequential publishes no notes for; the range of MIDI Clock Mode and MIDI Out
+  Select, for the reason above; the number of aftertouch curves, because the manual says four and
+  the addendum says eight; and the thirteen NRPN blocks that address a program's stored data
+  rather than a control - its name at 236-255 and its sequence at 256-1023, six notes and six
+  velocities for each of 64 steps. The manual also says a Global dump carries "50 nibbles (LS
+  then MS) for 25 Global parameters" (p. 83) while the Global table names eighteen, so **seven
+  global parameters exist that no table here names**.
+
+sources:
+  manual:
+    kind: manual
+    title: Prophet-6 Operation Manual
+    edition: Version 2.1
+    dated: "2021-02"
+    landing: "https://sequential.com/support/download/prophet-6-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/02/Prophet-6-Operation-Manual-2.1.pdf"
+    sha256: 8e824e577a2981582a96b65939ba00d261b12a0a60183d0bdb7af144228bd4fa
+    retrieved: 2026-10-04
+    page_offset: 10
+    # Sequential lists this as "User Guide" on the page above; the document calls itself the
+    # Operation Manual on its cover, in its running head and in its own metadata, so that is
+    # the title here. Its contents page runs Appendix A, then Appendix C: **there is no
+    # Appendix B**, and the lettering was not closed up.
+  addendum:
+    kind: firmware_addendum
+    title: Prophet-6 Manual Addendum for OS 1.6.7
+    landing: "https://sequential.com/support/download/prophet-6-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2022/02/Prophet-6-Manual-Addendum-OS-v1.6.7.pdf"
+    sha256: 91f96af10ad564621db1ed1e427eae1948a0e2eb8e47d1c7fd9ab1a7187a73ab
+    retrieved: 2026-10-04
+    # Listed as "User Guide Addendum"; its own first line is "Prophet-6 OS 1.6.7 Addendum" and
+    # its internal title is the one above. Six pages, and the only document that mentions MPE.
+  handbuch:
+    kind: manual
+    title: Prophet-6 Handbuch
+    dated: "2016-02"
+    landing: "https://sequential.com/support/download/prophet-6-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2022/04/Prophet-6-Handbuch.pdf"
+    sha256: 2f3786a03c3f2c13b42b24a9c23904a4a44b8e53a8fbf5db6da4137caa516d89
+    retrieved: 2026-10-04
+    page_offset: 10
+    # The German edition, and **a third printing of the same appendix**: its Anhang C holds the
+    # same tables in English inside German prose. It is five years older than the English and
+    # carries the Dave Smith Instruments name, so a difference between them is either a misprint
+    # or a change the instrument made, and this cannot tell those apart. Cited only for the three
+    # places the two editions differ, recorded in the source note above. Its own date is from its
+    # file rather than its cover, which carries none.
+  operating_system:
+    kind: download_page
+    title: "Prophet-6 Operating System - Sequential"
+    edition: Main 1.7.5
+    landing: "https://sequential.com/support/download/prophet-6-operating-system/"
+    url: "https://sequential.com/support/download/prophet-6-operating-system/"
+    sha256: 613993b5a302f0e00308dcf9ff4925b9de6a020d56778ffeea9b4ceb97fc096e
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for two things and nothing else. **Which firmware Sequential ships**: "Main 1.7.5",
+    # as saved on 2026-10-04, where the newest document describing the instrument is written for
+    # 1.6.7. And **that one OS serves both models**: "The downloadable file below contains the
+    # latest operating system for the Prophet-6 keyboard and desktop module."
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 96c02a0a372576085968b1c95651ba66c8fda105634e9c8fec9251b90598916a.
+    #
+    # WHAT IT DOES NOT SAY IS WHAT CHANGED. The download is a zip holding the OS and a ReadMe,
+    # and the ReadMe is instructions from end to end - how to send SysEx from MIDI-OX or SysEx
+    # Librarian - with no list of changes anywhere in it. This is the same maker and the same
+    # gap the Take 5 has. So nothing here is known to be stale, and nothing is known to be
+    # current either.
+
+midi:
+  # "MIDI Channel: All, 1…16" (p. 72), and since OS 1.6.7 one more setting past 16: step
+  # "through MIDI channels 1-16 until you reach the final setting, mpe" (addendum p. 2).
+  channels: [1, 16]
+  # Five modes (p. 72), of which Out sends and In, Slave Thru and In-No-Start/Stop receive, so
+  # which way clock travels is a global setting rather than a fact about the instrument.
+  clock: both
+  # RECEIVES ONLY, and said by implication rather than outright. The one mode that mentions
+  # transport says what it does NOT do - "In, No Start/Stop (n55): Receives MIDI Clock but does
+  # not respond to MIDI Start or Stop command" (p. 72) - which is only worth a setting if the
+  # other modes do respond. Nothing anywhere says the Prophet-6 sends Start or Stop, and the
+  # System Real-Time table at p. 73 lists one message, MIDI Timing Clock.
+  transport: receives
+  program_change:
+    receives: true
+    sends: true
+    # "The Prophet-6 contains a total of 1000 programs. 500 are permanent and 500 can be
+    # overwritten" (p. 2), in ten banks of a hundred: "Banks 0-4 are User Banks that can be
+    # overwritten. Banks 5-9 are Factory Banks that are permanent." A program change carries
+    # "0-99 for Programs 1-100 within current Bank" (p. 73) and the bank comes from Bank Select.
+    presets: 1000
+  # "NRPNs are the preferred method of parameter transmission, since they cover the complete
+  # range of all parameters, while CCs are limited to a range of 128" (p. 72) - word for word
+  # what the Take 5's implementation says, which is this maker's settled position rather than
+  # one instrument's. Which one it sends and which it receives are two separate global settings,
+  # and either can be turned off.
+  nrpn: preferred
+  sysex: true
+  # MPE, added in OS 1.6.7 and ONE WAY ONLY. "Although the Prophet-6 doesn't output MPE from its
+  # own keyboard, you can connect an MPE-driven controller such as the LinnStrument via MIDI to
+  # control the Prophet-6" (addendum p. 2). The zone is fixed rather than negotiated: "the six
+  # individual voices of the Prophet-6 correspond to MIDI channels 2-7 and are driven by the
+  # Lower Zone setup on the connected MPE controller". Two pitch bend ranges are set separately,
+  # master and per-voice, each 1-96 semitones, and the controller's Y axis reaches one of four
+  # destinations - low-pass cutoff or a pulse width - unipolar or bipolar (addendum pp. 3-4).
+  # A boolean cannot carry any of that, which is the open question on this format.
+  per_voice_channels: true
+
+voice:
+  addressing: pitches
+  # "The Prophet-6 is a six-voice, polyphonic analog synthesizer with voltage-controlled
+  # oscillators, filters, and amplifiers" (p. 1).
+  polyphony: 6
+  # "Note number 0 — 127" (p. 73), for both received and transmitted notes.
+  note_range: [0, 127]
+  velocity:
+    note_on: received
+    note_off: false          # "Note Off. Velocity is ignored" (p. 73)
+  # Both kinds are received - Polyphonic Key Pressure and Channel Pressure are each listed at
+  # p. 73 - while the instrument's own keyboard sends only the one: "The Prophet-6 provides
+  # monophonic (or 'channel') aftertouch, which means that applying pressure to any key" affects
+  # the whole sound (p. 59), and the transmitted table at p. 74 has no Polyphonic Key Pressure
+  # in it.
+  aftertouch: poly
+  pitch_bend:
+    # NRPN 31 Pbend Range, below. HOW FAR IT GOES IS NOT SETTLED by the documents: the NRPN
+    # table gives 0-24 (p. 79) and the prose "P Wheel Range: 0...12 Semitones" (p. 59). Both are
+    # recorded; the range on the control is the implementation's, because that is the number a
+    # sender puts in a message.
+    programmable: true
+
+# How to read the controls below. A control with both `cc` and `nrpn` is one parameter reachable
+# two ways, paired number to number because the maker's two tables name the same parameter
+# differently in eight places - `Sub Osc Level` by CC and `Osc 1 Sub Level` by NRPN,
+# `Distortion Amount` against `Distortion Amt`, `Arp Time Signature` against `Arp Tim Sig`,
+# `Low-pass Resonance` against `Low-pass Res`, `Arp Mode` against the lower-cased `Arp mode`,
+# `Low-pass Vel On/Off` against `Low-pass Vel On` and the same for the high-pass, and `VCA Env
+# Vel Amt` against `VCA Env Vel On/Off`. That last pair looks like two different parameters and
+# is not: the manual calls it a button - "Velocity: This button enables keyboard velocity to
+# modulate the VCA" (p. 28) - and the NRPN's 0-1 agrees with the button.
+#
+# `nrpn_range` appears where the NRPN is finer than the CC's 0-127; a control with only `nrpn`
+# carries that range as its own. Every On/Off parameter is 0-1, which the tables never explain,
+# though 0 for off is the convention.
+#
+# NOT LISTED, and each for a reason: CC 0 and 32 (Bank Select), 6 and 38 (Data Entry), 96 and 97
+# (Data Increment and Decrement), 98-101 (NRPN and RPN addressing) and 39 (Volume LSB, the fine
+# half of CC 7) are how a value or a bank travels rather than parameters; CC 120-127 are channel
+# mode messages, which this format refuses as controls; and the thirteen NRPN blocks at 236-1023
+# are a program's name and sequence, which one control cannot carry.
+#
+# **The two tables disagree about which CC selects a bank.** The received and transmitted
+# message tables both use CC 32 (p. 74, p. 75) and the controller table calls CC 0 "Bank Select
+# MSB" (p. 76). Neither is a control here, so nothing rests on it.
+
+groups:
+  # The maker's own panel sections, as the panel prints them and the manual's chapters echo
+  # them, in the order the controls below run. Where the panel and the contents page differ the
+  # panel wins, because that is what a player is looking at: the panel's "LOW FREQUENCY
+  # OSCILLATOR" over the contents' plural.
+  #
+  # NOT THE MAKER'S WORD. The manual has no section that holds the five controllers a player's
+  # hands and feet send, because they are not on the panel at all.
+  performance: Performance
+  oscillators: Oscillators
+  mixer: Mixer
+  glide: Glide
+  low_pass_filter: Low-pass Filter
+  high_pass_filter: High-pass Filter
+  filter_envelope: Filter Envelope
+  amplifier_envelope: Amplifier Envelope
+  lfo: Low Frequency Oscillator
+  aftertouch: Aftertouch
+  poly_mod: Poly Mod
+  effects: Effects
+  distortion: Distortion
+  unison: Unison
+  # The panel's own section, which the manual reaches these four through: "To set the key mode
+  # and p whl range, hold down the associated button in the misc parameters section" (p. 58).
+  # Its four controls are p whl range, key mode, pan spread and prgm vol.
+  misc_parameters: Misc Parameters
+  # A panel section of its own, bracketed between the arpeggiator and the sequencer and holding
+  # tap tempo, bpm and value (p. 38) - which is why BPM sits here rather than under either, and
+  # why the manual describes it twice, once in each (pp. 40, 46).
+  clock: Clock
+  arpeggiator: Arpeggiator
+  sequencer: Sequencer
+  global: Global Settings
+
+controls:
+# ──── performance ────
+
+  mod_wheel:                   {label: Mod Wheel, cc: 1, group: performance}
+  foot_controller:             {label: Foot Controller, cc: 4, group: performance}
+  midi_volume:                 {label: MIDI Volume, cc: 7, group: performance}
+  damper_pedal:                {label: Damper Pedal, cc: 64, group: performance}
+  brightness:                  {label: Brightness, cc: 74, group: performance}
+
+  # ──── oscillators ────
+
+  osc_1_freq:                  {label: Osc 1 Freq, cc: 67, nrpn: 0, range: [0, 60], group: oscillators}
+  osc_1_sync:                  {label: Osc 1 Sync, nrpn: 1, range: [0, 1], group: oscillators}
+  osc_1_shape:                 {label: Osc 1 Shape, cc: 70, nrpn: 3, nrpn_range: [0, 254], group: oscillators}
+  osc_1_pulse_width:           {label: Osc 1 Pulse Width, cc: 71, nrpn: 4, nrpn_range: [0, 255], group: oscillators}
+  osc_2_freq:                  {label: Osc 2 Freq, cc: 75, nrpn: 5, range: [0, 60], group: oscillators}
+  osc_2_freq_fine:             {label: Osc 2 Freq Fine, cc: 76, nrpn: 6, nrpn_range: [0, 254], group: oscillators}
+  osc_2_shape:                 {label: Osc 2 Shape, cc: 78, nrpn: 8, nrpn_range: [0, 254], group: oscillators}
+  osc_2_pulse_width:           {label: Osc 2 Pulse Width, cc: 79, nrpn: 9, nrpn_range: [0, 255], group: oscillators}
+  osc_2_low_freq:              {label: Osc 2 Low Freq, nrpn: 10, range: [0, 1], group: oscillators}
+  osc_2_key:                   {label: Osc 2 Key On/Off, nrpn: 11, range: [0, 1], group: oscillators}
+  slop:                        {label: Slop, nrpn: 33, group: oscillators}
+
+  # ──── mixer ────
+
+  osc_1_level:                 {label: Osc 1 Level, cc: 69, nrpn: 2, group: mixer}
+  osc_2_level:                 {label: Osc 2 Level, cc: 77, nrpn: 7, group: mixer}
+  sub_osc_level:               {label: Sub Osc Level, cc: 8, nrpn: 27, group: mixer}
+  noise_level:                 {label: Noise Level, nrpn: 32, group: mixer}
+
+  # ──── glide ────
+
+  glide_mode:                  {label: Glide Mode, cc: 5, nrpn: 28, range: [0, 3], group: glide}
+  glide:                       {label: Glide On/Off, cc: 65, nrpn: 29, range: [0, 1], group: glide}
+  glide_rate:                  {label: Glide Rate, nrpn: 30, group: glide}
+
+  # ──── low_pass_filter ────
+
+  low_pass_freq:               {label: Low-pass Freq, cc: 102, nrpn: 45, nrpn_range: [0, 164], group: low_pass_filter}
+  low_pass_resonance:          {label: Low-pass Resonance, cc: 103, nrpn: 46, nrpn_range: [0, 255], group: low_pass_filter}
+  low_pass_key_amt:            {label: Low-pass Key Amt, cc: 104, nrpn: 47, range: [0, 2], group: low_pass_filter}
+  low_pass_velocity:           {label: Low-pass Vel On/Off, cc: 105, nrpn: 48, range: [0, 1], group: low_pass_filter}
+  low_pass_env_amt:            {label: Low-pass Env Amt, cc: 47, nrpn: 77, nrpn_range: [0, 254], group: low_pass_filter}
+
+  # ──── high_pass_filter ────
+
+  high_pass_freq:              {label: High-pass Freq, cc: 106, nrpn: 49, nrpn_range: [0, 164], group: high_pass_filter}
+  high_pass_resonance:         {label: High-pass Resonance, cc: 107, nrpn: 50, nrpn_range: [0, 255], group: high_pass_filter}
+  high_pass_key_amt:           {label: High-pass Key Amt, cc: 108, nrpn: 51, range: [0, 2], group: high_pass_filter}
+  high_pass_velocity:          {label: High-pass Vel On/Off, cc: 109, nrpn: 52, range: [0, 1], group: high_pass_filter}
+  high_pass_env_amt:           {label: High-pass Env Amt, cc: 54, nrpn: 82, nrpn_range: [0, 254], group: high_pass_filter}
+
+  # ──── filter_envelope ────
+
+  filter_env_attack:           {label: Filter Env Attack, cc: 50, nrpn: 78, group: filter_envelope}
+  filter_env_decay:            {label: Filter Env Decay, cc: 51, nrpn: 79, group: filter_envelope}
+  filter_env_sustain:          {label: Filter Env Sustain, cc: 52, nrpn: 80, group: filter_envelope}
+  filter_env_release:          {label: Filter Env Release, cc: 53, nrpn: 81, group: filter_envelope}
+
+  # ──── amplifier_envelope ────
+
+  vca_env_amt:                 {label: VCA Env Amt, cc: 40, nrpn: 66, group: amplifier_envelope}
+  vca_env_attack:              {label: VCA Env Attack, cc: 43, nrpn: 67, group: amplifier_envelope}
+  vca_env_decay:               {label: VCA Env Decay, cc: 44, nrpn: 68, group: amplifier_envelope}
+  vca_env_sustain:             {label: VCA Env Sustain, cc: 45, nrpn: 69, group: amplifier_envelope}
+  vca_env_release:             {label: VCA Env Release, cc: 46, nrpn: 70, group: amplifier_envelope}
+  vca_env_velocity:            {label: VCA Env Vel On/Off, cc: 41, nrpn: 71, range: [0, 1], group: amplifier_envelope}
+
+  # ──── lfo ────
+
+  lfo_freq:                    {label: LFO Freq, nrpn: 88, range: [0, 254], group: lfo}
+  lfo_initial_amt:             {label: LFO Initial Amt, nrpn: 89, range: [0, 255], group: lfo}
+  lfo_shape:                   {label: LFO Shape, nrpn: 90, range: [0, 4], group: lfo}
+  lfo_sync:                    {label: LFO Sync, nrpn: 91, range: [0, 1], group: lfo}
+  lfo_freq_1_dest:             {label: LFO Freq 1 Dest On/Off, nrpn: 93, range: [0, 1], group: lfo}
+  lfo_freq_2_dest:             {label: LFO Freq 2 Dest On/Off, nrpn: 94, range: [0, 1], group: lfo}
+  lfo_pw_dest:                 {label: LFO PW 1, 2 Dest On/Off, nrpn: 95, range: [0, 1], group: lfo}
+  lfo_amp_dest:                {label: LFO Amp Dest On/Off, nrpn: 96, range: [0, 1], group: lfo}
+  lfo_low_pass_dest:           {label: LFO Low-pass Dest On/Off, nrpn: 97, range: [0, 1], group: lfo}
+  lfo_high_pass_dest:          {label: LFO High-pass Dest On/Off, nrpn: 98, range: [0, 1], group: lfo}
+
+  # ──── aftertouch ────
+
+  pressure_amt:                {label: Pressure Amt, nrpn: 109, range: [0, 254], group: aftertouch}
+  pressure_freq_1_dest:        {label: Pressure Freq 1 Dest On/Off, nrpn: 110, range: [0, 1], group: aftertouch}
+  pressure_freq_2_dest:        {label: Pressure Freq 2 Dest On/Off, nrpn: 111, range: [0, 1], group: aftertouch}
+  pressure_low_pass_dest:      {label: Pressure Low-pass Dest On/Off, nrpn: 112, range: [0, 1], group: aftertouch}
+  pressure_high_pass_dest:     {label: Pressure High-pass Dest On/Off, nrpn: 113, range: [0, 1], group: aftertouch}
+  pressure_vca_dest:           {label: Pressure VCA Dest On/Off, nrpn: 114, range: [0, 1], group: aftertouch}
+  pressure_lfo_amt_dest:       {label: Pressure LFO Amt Dest On/Off, nrpn: 115, range: [0, 1], group: aftertouch}
+
+  # ──── poly_mod ────
+
+  poly_mod_filter_env_amt:     {label: PolyMod Filter Env Amt, nrpn: 143, range: [0, 254], group: poly_mod}
+  poly_mod_osc_2_amt:          {label: PolyMod Osc 2 Amt, nrpn: 144, range: [0, 254], group: poly_mod}
+  poly_mod_freq_1_dest:        {label: PolyMod Freq 1 Dest On/Off, nrpn: 145, range: [0, 1], group: poly_mod}
+  poly_mod_shape_1_dest:       {label: PolyMod Shape 1 Dest On/Off, nrpn: 146, range: [0, 1], group: poly_mod}
+  poly_mod_pw_1_dest:          {label: PolyMod PW 1 Dest On/Off, nrpn: 147, range: [0, 1], group: poly_mod}
+  poly_mod_low_pass_dest:      {label: PolyMod Low-Pass Dest On/Off, nrpn: 148, range: [0, 1], group: poly_mod}
+  poly_mod_high_pass_dest:     {label: PolyMod High-Pass Dest On/Off, nrpn: 149, range: [0, 1], group: poly_mod}
+
+  # ──── effects ────
+
+  fx:                          {label: FX On/Off, nrpn: 135, range: [0, 1], group: effects}
+  fx_1_select:                 {label: FX 1 Select, nrpn: 119, range: [0, 5], group: effects}
+  fx_1_mix:                    {label: FX 1 Mix, nrpn: 120, group: effects}
+  fx_1_param_1:                {label: FX 1 Param 1, nrpn: 121, range: [0, 255], group: effects}
+  fx_1_param_2:                {label: FX 1 Param 2, nrpn: 122, group: effects}
+  fx_1_sync:                   {label: FX 1 Sync, nrpn: 123, range: [0, 1], group: effects}
+  fx_2_select:                 {label: FX 2 Select, nrpn: 127, range: [0, 9], group: effects}
+  fx_2_mix:                    {label: FX 2 Mix, nrpn: 128, group: effects}
+  fx_2_param_1:                {label: FX 2 Param 1, nrpn: 129, range: [0, 255], group: effects}
+  fx_2_param_2:                {label: FX 2 Param 2, nrpn: 130, group: effects}
+  fx_2_sync:                   {label: FX 2 Sync, nrpn: 131, range: [0, 1], group: effects}
+
+  # ──── distortion ────
+
+  distortion_amt:              {label: Distortion Amount, cc: 9, nrpn: 64, group: distortion}
+
+  # ──── unison ────
+
+  unison:                      {label: Unison On/Off, nrpn: 156, range: [0, 1], group: unison}
+  unison_mode:                 {label: Unison Mode, nrpn: 157, range: [0, 6], group: unison}
+
+  # ──── misc_parameters ────
+
+  pitch_bend_range:            {label: Pbend Range, nrpn: 31, range: [0, 24], group: misc_parameters}
+  key_mode:                    {label: Key Mode, nrpn: 158, range: [0, 5], group: misc_parameters}
+  pan_spread:                  {label: Pan Spread, nrpn: 63, group: misc_parameters}
+  voice_volume:                {label: Voice Volume, nrpn: 62, group: misc_parameters}
+
+  # ──── clock ────
+
+  bpm:                         {label: BPM, cc: 3, nrpn: 167, nrpn_range: [30, 250], group: clock}
+
+  # ──── arpeggiator ────
+
+  arp:                         {label: Arp On/Off, cc: 58, nrpn: 160, range: [0, 1], group: arpeggiator}
+  arp_mode:                    {label: Arp Mode, cc: 59, nrpn: 161, range: [0, 4], group: arpeggiator}
+  arp_range:                   {label: Arp Range, cc: 60, nrpn: 162, range: [0, 2], group: arpeggiator}
+  arp_time_signature:          {label: Arp Time Signature, cc: 62, nrpn: 163, range: [0, 9], group: arpeggiator}
+
+  # ──── sequencer ────
+
+  sequencer:                   {label: Seq On/Off, nrpn: 168, range: [0, 1], group: sequencer}
+  seq_length:                  {label: Seq Length, nrpn: 169, range: [0, 63], group: sequencer}
+  seq_mode:                    {label: Seq Mode, nrpn: 170, range: [0, 1], group: sequencer}
+  seq_play_mode:               {label: Seq Play Mode, nrpn: 171, range: [0, 1], group: sequencer}
+  seq_play_stop:               {label: Seq Play/Stop, nrpn: 1088, range: [0, 1], group: sequencer}
+
+  # ──── global ────
+
+  master_fine_tune:            {label: Master Fine Tune, nrpn: 1024, range: [0, 100], group: global}
+  master_coarse_tune:          {label: Master Coarse Tune, nrpn: 1025, range: [0, 24], group: global}
+  midi_channel:                {label: MIDI Channel, nrpn: 1026, range: [0, 16], group: global}
+  midi_clock_mode:             {label: MIDI Clock Mode, nrpn: 1027, group: global}
+  midi_clock_port:             {label: MIDI Clock Port, nrpn: 1028, range: [0, 1], group: global}
+  midi_param_send:             {label: MIDI Param Send, nrpn: 1029, range: [0, 2], group: global}
+  midi_param_receive:          {label: MIDI Param Receive, nrpn: 1030, range: [0, 2], group: global}
+  midi_control_enable:         {label: MIDI Control Enable, nrpn: 1031, range: [0, 1], group: global}
+  midi_sysex_enable:           {label: MIDI SysEx Enable, nrpn: 1032, range: [0, 1], group: global}
+  midi_out_select:             {label: MIDI Out Select, nrpn: 1033, group: global}
+  local_control:               {label: Local Control, nrpn: 1035, range: [0, 1], group: global}
+  pot_mode:                    {label: Pot Mode, nrpn: 1037, range: [0, 2], group: global}
+  seq_jack:                    {label: Seq Jack, nrpn: 1039, range: [0, 3], group: global}
+  sustain_polarity:            {label: Sustain Polarity, nrpn: 1040, range: [0, 3], group: global}
+  velocity_response:           {label: Velocity Response, nrpn: 1041, range: [0, 3], group: global}
+  aftertouch_response:         {label: Aftertouch Response, nrpn: 1042, range: [0, 3], group: global}
+  stereo_mono:                 {label: Mono/Stereo, nrpn: 1043, range: [0, 1], group: global}
+  alt_tuning:                  {label: Alt Tuning, nrpn: 1044, range: [0, 16], group: global}

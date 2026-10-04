@@ -178,6 +178,7 @@ class TestBundledCorpus:
 			"roland/mc_707",
 			"roland/tr8s",
 			"roland/tr_1000",
+			"sequential/prophet_6",
 			"sequential/take_5",
 			"soma/pulsar_23",
 			"synthstrom_audible/deluge",
@@ -1988,18 +1989,20 @@ class TestOsmose:
 
 		A consumer asking which instruments spread their voices across channels has to
 		get all of them or none; one flagged and one not is worse than none, because it
-		reads as a settled answer and is wrong about the one it misses. There are five
+		reads as a settled answer and is wrong about the one it misses. There are six
 		now. The Deluge is a sequencer as much as a synthesizer - it reads a zone of
-		channels as one instrument and writes one out too - and the Hydrasynth Explorer
-		is the one whose maker says plainest what the flag means, that its voices break
+		channels as one instrument and writes one out too - the Hydrasynth Explorer is
+		the one whose maker says plainest what the flag means, that its voices break
 		into individual channels so each note can have its own bend, timbre and
-		pressure.
+		pressure, and **the Prophet-6 is the first that receives MPE and never sends
+		it**, which this field cannot say and its file does.
 		"""
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["asm/hydrasynth_explorer", "expressive_e/osmose",
-			"modal/carbon8m", "synthstrom_audible/deluge", "waldorf/iridium"]
+			"modal/carbon8m", "sequential/prophet_6", "synthstrom_audible/deluge",
+			"waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -6946,3 +6949,186 @@ class TestDeclaringAPicturedPage:
 		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
 
 		assert typhon.sources["manual"].pictured_pages == ()
+
+
+def prose_of (maker: str, model: str) -> str:
+
+	"""One definition's comments as running prose, with the # and the line breaks folded away.
+
+	A comment wraps where the line runs out, so a sentence worth pinning is nearly always
+	split across two lines and cannot be found in the file as it stands.
+	"""
+
+	text = (CORPUS / maker / f"{model}.yaml").read_text()
+
+	return " ".join(line.lstrip("\t ").lstrip("#").strip() for line in text.splitlines())
+
+
+class TestProphet6:
+
+	"""A Sequential whose maker prints one appendix three times and agrees with itself nowhere."""
+
+	def test_one_hundred_and_thirteen_controls_in_nineteen_panel_sections (self) -> None:
+		"""Most parameters are reachable two ways, and seventy by NRPN alone."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		assert len(prophet.controls) == 113
+		assert len(prophet.groups) == 19
+
+		both = [control for control in prophet.controls.values()
+			if control.cc is not None and control.nrpn is not None]
+		cc_only = [control for control in prophet.controls.values()
+			if control.cc is not None and control.nrpn is None]
+		nrpn_only = [control for control in prophet.controls.values() if control.cc is None]
+
+		assert (len(both), len(cc_only), len(nrpn_only)) == (38, 5, 70)
+
+		# No number is used twice in either table.
+		numbers = [control.cc for control in prophet.controls.values() if control.cc is not None]
+		addresses = [control.nrpn for control in prophet.controls.values()
+			if control.nrpn is not None]
+
+		assert len(set(numbers)) == len(numbers)
+		assert len(set(addresses)) == len(addresses)
+
+	def test_the_five_controls_with_no_nrpn_are_the_ones_off_the_panel (self) -> None:
+		"""A player's hands and feet: the maker's NRPN tables hold none of them."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		off_panel = sorted(control.cc for control in prophet.controls.values()
+			if control.cc is not None and control.nrpn is None)
+
+		assert off_panel == [1, 4, 7, 64, 74]
+
+		for control in prophet.controls.values():
+
+			if control.cc in off_panel:
+				assert control.group == "performance"
+
+	def test_the_two_numbers_the_document_gives_two_ranges_carry_none (self) -> None:
+		"""The Global block is printed twice and disagrees with itself about two of its rows.
+
+		MIDI Clock Mode is 0-3 on p. 78 and 0-4 on p. 80; MIDI Out Select is 0-3 and
+		0-1.  Neither is recorded, because picking one would state a fact nobody has.
+		Every other global carries the range both printings give it.
+		"""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		disputed = {1027, 1033}
+
+		for control in prophet.controls.values():
+
+			if control.nrpn in disputed:
+				assert control.range == (0, 127), control.label   # the format's own default
+
+		by_address = {control.nrpn: control for control in prophet.controls.values()}
+
+		assert by_address[1026].range == (0, 16)      # MIDI Channel, agreed
+		assert by_address[1024].range == (0, 100)     # Master Fine Tune, agreed
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "NEITHER RANGE IS RECORDED for those two" in account
+
+	def test_the_maker_prints_this_appendix_three_times (self) -> None:
+		"""Twice in the English manual and once more in the German, and that is the check."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "THE MAKER PRINTS THIS APPENDIX THREE TIMES AND NO TWO PRINTINGS AGREE" in account
+		assert "WHAT THE GERMAN EDITION CAUGHT, AND WHAT IT HAS WRONG ITSELF" in account
+
+		# The German edition is cited, which is what makes the comparison checkable.
+		assert "handbuch" in prophet.sources
+		assert prophet.sources["handbuch"].title == "Prophet-6 Handbuch"
+
+	def test_the_control_nrpn_table_contradicts_the_program_table (self) -> None:
+		"""Three of its four rows are program parameters with the same numbers and ranges.
+
+		Only NRPN 1088, Seq Play/Stop, is taken from it; 1, 2 and 3 are recorded as
+		the program parameters that two of the three printings say they are.
+		"""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		by_address = {control.nrpn: control for control in prophet.controls.values()}
+
+		assert by_address[1088].label == "Seq Play/Stop"
+		assert by_address[1088].group == "sequencer"
+
+		assert by_address[1].label == "Osc 1 Sync"
+		assert by_address[2].label == "Osc 1 Level"
+		assert by_address[3].label == "Osc 1 Shape"
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "THE CONTROL NRPN TABLE CONTRADICTS ITSELF" in account
+
+	def test_mpe_is_received_and_never_sent (self) -> None:
+		"""The sixth instrument here with per-voice channels, and the first one way only."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		assert prophet.midi.per_voice_channels is True
+		assert prophet.voice.polyphony == 6
+
+		# Six voices on six channels, which is what the addendum says the flag means here.
+		# The detail is in the file's comments, because a boolean cannot carry it.
+		said = prose_of("sequential", "prophet_6")
+
+		assert "doesn't output MPE from its own keyboard" in said
+		assert "correspond to MIDI channels 2-7" in said
+
+		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
+			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
+
+		assert "sequential/prophet_6" in flagged
+		assert len(flagged) == 6
+
+	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
+		"""Word for word the same sentence in both implementations, so it is the maker's."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+		take_5 = pymidiinstrumentdefs.load("sequential/take_5", [CORPUS])
+
+		assert prophet.midi.nrpn == "preferred"
+		assert take_5.midi.nrpn == "preferred"
+
+		# Four definitions say `preferred`, and three of them are this one company -
+		# Sequential, and the Oberheim it builds - which is what makes it a house position
+		# rather than one instrument's.
+		preferred = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
+			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
+
+		assert preferred == ["elektron/digitone_ii", "oberheim/teo_5",
+			"sequential/prophet_6", "sequential/take_5"]
+
+	def test_one_file_covers_the_keyboard_and_the_module (self) -> None:
+		"""The maker treats them as one instrument, and says so on its own download page."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		assert prophet.model.name == "Prophet-6"
+
+		said = prose_of("sequential", "prophet_6")
+
+		assert "ONE DEFINITION, TWO INSTRUMENTS" in said
+		assert "the Prophet-6 keyboard and desktop module" in said
+
+	def test_a_thousand_programs_in_ten_banks_half_of_them_permanent (self) -> None:
+		"""Five user banks and five factory banks, a hundred programs each."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		assert prophet.midi.program_change is not None
+		assert prophet.midi.program_change.receives is True
+		assert prophet.midi.program_change.sends is True
+		assert prophet.midi.program_change.presets == 1000
+
+	def test_transport_is_received_and_the_file_says_how_that_was_settled (self) -> None:
+		"""The maker never says it outright; one clock mode says what it does not do."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
+
+		assert prophet.midi.clock == "both"
+		assert prophet.midi.transport == "receives"
+
+		said = prose_of("sequential", "prophet_6")
+
+		assert "does not respond to MIDI Start or Stop command" in said
+		assert "RECEIVES ONLY, and said by implication rather than outright" in said

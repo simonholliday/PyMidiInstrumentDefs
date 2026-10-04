@@ -169,6 +169,7 @@ class TestBundledCorpus:
 			"moog/subharmonicon",
 			"moog/subsequent_37",
 			"novation/bass_station_ii",
+			"novation/circuit",
 			"novation/circuit_tracks",
 			"novation/peak",
 			"oberheim/teo_5",
@@ -7543,3 +7544,145 @@ class TestPolyendTracker:
 			if control.group == "instrument"]
 
 		assert run == [5, 3, 7, 10, 9, 1, 11, 12, 13, 14, 15, 16, 17]
+
+
+class TestCircuit:
+
+	"""A Novation whose guide prints seventy-four rows twice and leaves thirty-nine out."""
+
+	def test_two_hundred_and_ninety_nine_controls_in_three_parts (self) -> None:
+		"""233 for a synth, 28 for the drums, 38 for the session."""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+
+		assert len(circuit.controls) == 299
+		assert len(circuit.groups) == 15
+		assert set(circuit.parts) == {"synth", "drums", "session"}
+
+		per = collections.Counter(control.part for control in circuit.controls.values())
+
+		assert per == {"synth": 233, "drums": 28, "session": 38}
+
+	def test_it_is_not_the_circuit_tracks (self) -> None:
+		"""Two instruments, one family, and the corpus has both."""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
+
+		assert circuit.model.name == "Circuit"
+		assert tracks.model.name == "Circuit Tracks"
+
+		# The Tracks adds two MIDI tracks this has not, and more controls with them.
+		assert set(tracks.parts) - set(circuit.parts) == {"midi_track", "project"}
+		assert len(tracks.controls) > len(circuit.controls)
+
+		said = prose_of("novation", "circuit")
+
+		assert "NOT THE CIRCUIT TRACKS, WHICH IS A DIFFERENT INSTRUMENT" in said
+
+	def test_the_guide_prints_seventy_four_rows_twice (self) -> None:
+		"""Every repeat identical, so nothing is lost but the counting."""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+
+		said = prose_of("novation", "circuit")
+
+		assert "THE GUIDE PRINTS SEVENTY-FOUR OF ITS 307 SYNTH ROWS MORE THAN ONCE" in said
+		assert "Every repeat is identical in every cell" in said
+
+		# No parameter is listed twice under one part AND one section.  Six names do repeat
+		# within the session, and that is the guide's doing rather than a reprint: the six
+		# send levels are printed once under Reverb and again under Delay, on different
+		# numbers.  The section is what tells those apart, which is why it is in the key.
+		labels = [(control.part, control.group, control.label)
+			for control in circuit.controls.values()]
+
+		assert len(set(labels)) == len(labels)
+
+		repeated = [control.label for control in circuit.controls.values()
+			if control.group == "delay" and "send level" in control.label]
+
+		assert len(repeated) == 6
+
+	def test_thirty_nine_rows_the_guide_leaves_out (self) -> None:
+		"""The reprint replaced content rather than adding it, and nothing is invented.
+
+		Macro knobs 1 and 2 are absent, macro knob 3 begins four rows in, and mod matrix
+		11 has no destination.  The missing numbers are predictable from the pattern -
+		the macro positions run CC 83 to 87 for knobs 4 to 8 - and predicting a
+		controller number is not reading one, so none is recorded.
+		"""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+
+		macros = sorted(control.label for control in circuit.controls.values()
+			if control.label.lower().startswith("macro knob"))
+
+		assert not [name for name in macros if name.startswith(("macro knob 1", "macro knob 2"))]
+		assert "macro knob 3 depth A" in macros
+		assert "macro knob 3 position" not in macros
+		assert "macro knob 4 position" in macros
+
+		destinations = {control.label for control in circuit.controls.values()}
+
+		assert "mod matrix 10 destination" in destinations
+		assert "mod matrix 11 destination" not in destinations
+
+		said = prose_of("novation", "circuit")
+
+		assert "AND THE REPRINT DID NOT ADD CONTENT, IT REPLACED IT" in said
+
+	def test_two_nrpn_addresses_carry_ten_parameters (self) -> None:
+		"""The value says which switch, and each control's range is what tells them apart."""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+
+		shared = collections.defaultdict(list)
+
+		for control in circuit.controls.values():
+
+			if control.nrpn is not None and control.part == "synth":
+				shared[control.nrpn].append(control)
+
+		twice = {number: held for number, held in shared.items() if len(held) > 1}
+
+		assert sorted(twice) == [122, 123]
+		assert len(twice[122]) == 8
+		assert len(twice[123]) == 2
+
+		# Every one of the ten has a range of its own, and none of them overlap.
+		for number, held in twice.items():
+			spans = sorted(control.range for control in held)
+
+			for before, after in zip(spans, spans[1:]):
+				assert before[1] < after[0], (number, before, after)
+
+	def test_the_session_is_on_a_channel_a_player_cannot_move (self) -> None:
+		"""Tracks take 1 to 15 and the session keeps 16."""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+
+		assert circuit.midi.channels == (1, 15)
+
+		said = prose_of("novation", "circuit")
+
+		assert "Channel 16 is reserved for the session" in said
+		assert circuit.parts["session"].receives == ("controls", "program_change")
+		assert circuit.parts["synth"].polyphony == 6
+
+	def test_the_guide_is_stale_about_its_own_channels (self) -> None:
+		"""It is the newer document and it describes the older instrument."""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+
+		said = prose_of("novation", "circuit")
+
+		assert "THE GUIDE IS OUT OF DATE ABOUT ITS OWN CHANNELS, AND IT IS THE NEWER DOCUMENT" \
+			in said
+		assert "update_1_8" in circuit.sources
+		assert circuit.sources["guide"].edition == "1.3"
+
+	def test_it_cites_two_uploads_of_one_guide (self) -> None:
+		"""The same version served twice, listed once, and identical in text."""
+		circuit = pymidiinstrumentdefs.load("novation/circuit", [CORPUS])
+
+		assert "guide_other_upload" in circuit.sources
+		assert circuit.sources["guide"].edition == circuit.sources["guide_other_upload"].edition
+		assert circuit.sources["guide"].sha256 != circuit.sources["guide_other_upload"].sha256
+
+		said = prose_of("novation", "circuit")
+
+		assert "NOVATION SERVES THIS GUIDE TWICE AT ONE NAME" in said

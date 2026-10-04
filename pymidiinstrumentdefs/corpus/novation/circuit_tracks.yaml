@@ -251,12 +251,21 @@ midi:
   # - will be available as MIDI Clock at the rear panel USB and MIDI Out connectors" (user guide p.
   # 105). Both default to on.
   clock: both
-  # RECEIVES, AND THAT IS THE HALF THE DOCUMENTS ESTABLISH. The reference guide lists start, stop,
-  # continue and timing clock under "Supported Realtime Messages" and song position pointer and
-  # song select under "Supported System Common Messages" (guide p. 10), in a document whose every
-  # other table says "Send messages on" - so these are messages the instrument answers to. Neither
-  # document says it sends start, stop or continue; only the clock is described going out.
-  transport: receives
+  # BOTH, AND THAT IS AN ANSWER FOR THE WHOLE FAMILY RATHER THAN A READING OF THIS DOCUMENT
+  # ALONE. The reference guide lists start, stop, continue and timing clock under "Supported
+  # Realtime Messages" and song position pointer and song select under "Supported System Common
+  # Messages" (guide p. 10), and says of none of them which direction it goes. All three Circuit
+  # references print that heading in those words and all three are silent in the same way, so one
+  # reading has to serve the three. The switch is what settles it, and this guide carries it like
+  # the others: Clock Rx and Clock Tx are separate settings, "By default, both MIDI Rx and MIDI Tx
+  # are ON (buttons brightly lit) for all data categories" (user guide p. 104), and the clock is
+  # one of those categories. Start, stop and continue travel with the clock.
+  #
+  # THIS FILE RECORDED `receives` UNTIL THE THIRD CIRCUIT ARRIVED. The reasoning was that every
+  # other table in this reference says "Send messages on", so a table that does not is about
+  # what the instrument answers to. That argument is good about this document and holds for
+  # neither sibling's, which is why it could not settle the family.
+  transport: both
   program_change:
     # Both ways, and both switchable: pads 29 and 30 in Setup View are "MIDI Program Change Rx
     # on/off" and "MIDI Program Change Tx on/off" (user guide p. 104), and "By default, both MIDI

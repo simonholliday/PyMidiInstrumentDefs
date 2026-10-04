@@ -31,10 +31,25 @@ source: >-
   Cymbal, and neither document contains one of them. So the two-letter names are what the
   maker calls these, and the expansions everybody knows are nobody's to add here.
 
-  THE REFERENCE MANUAL IS CITED FOR ONE THING, and nothing below depends on it: that the
-  eleven controls which belong to no drum voice are kit and pattern parameters rather than
-  the instrument's own, which is where that group's label comes from. Its KIT: MASTER FX is
-  at p. 26 and its KIT: EXT IN at p. 29, and the shuffle is a pattern setting at p. 17.
+  THE REFERENCE MANUAL IS CITED FOR TWO THINGS. The first is that the eleven controls which
+  belong to no drum voice are kit and pattern parameters rather than the instrument's own,
+  which is where that group's label comes from, and nothing below depends on it: its KIT:
+  MASTER FX is at p. 26 and its KIT: EXT IN at p. 29, and the shuffle is a pattern setting at
+  p. 17. The second is the system exclusive conflict, which is the next paragraph.
+
+  THE CHART AND THE REFERENCE MANUAL CONTRADICT EACH OTHER ABOUT SYSTEM EXCLUSIVE, so `sysex`
+  is not recorded. The chart marks System Exclusive "x" in both columns. The manual gives a
+  parameter for it on its MIDI settings page, whose range is 17 to 32: "When transmitting and
+  receiving system exclusive messages, the device ID numbers of both devices must match"
+  (p. 46). Two documents of different vintages, and nothing here chooses between them.
+
+  THIS FILE SAID `sysex: false` UNTIL THE TR-6S MET THE SAME CONFLICT, and that was the chart
+  read correctly rather than a misreading. It was changed because of what the claim does to a
+  reader: `false` says this instrument has no system exclusive in either direction, so a panel
+  would hide every sysex feature of a machine whose maker documents a device ID for matching
+  sysex messages. A chart's "x" on that row conventionally means "no published system
+  exclusive implementation", which is a weaker thing to say and is consistent with both
+  documents. The two Rolands are recorded the same way for the same reason.
 
 sources:
   midi_impl:
@@ -85,7 +100,10 @@ midi:
     receives: true
     sends: true
     presets: 128             # "True Number 0-127", both ways
-  sysex: false               # "x" both ways, as are Song Position and Song Select
+  # NOT RECORDED: sysex. The chart marks System Exclusive "x" in both columns and the
+  # Reference Manual gives a Device ID for it, so the two documents disagree and neither is
+  # recorded. See the source account. Song Position and Song Select are "x" both ways too,
+  # and this format has no field for either.
 
 voice:
   addressing: voices

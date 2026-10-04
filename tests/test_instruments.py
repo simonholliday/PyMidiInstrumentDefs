@@ -658,6 +658,30 @@ class TestTR8S:
 		assert len(tr8s.voice.voices) == 11
 		assert tr8s.voice.voices["bd"] == 36
 
+	def test_system_exclusive_is_not_recorded_because_two_documents_disagree (self) -> None:
+		"""And the TR-6S, which met the same conflict later, is recorded the same way.
+
+		This file said `sysex: false` for a while, which was the chart read correctly. What
+		changed it is what the claim does to a reader: a panel told an instrument has no
+		system exclusive hides every sysex feature of a machine whose maker documents a
+		device ID for matching sysex messages.
+		"""
+		tr8s = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS])
+		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])
+
+		assert tr8s.midi.sysex is None
+		assert tr_6s.midi.sysex is None
+
+		account = " ".join((tr8s.source or "").split())
+
+		assert "CONTRADICT EACH OTHER ABOUT SYSTEM EXCLUSIVE" in account
+		assert "the device ID numbers of both devices must match" in account
+		assert "THIS FILE SAID `sysex: false` UNTIL THE TR-6S MET THE SAME CONFLICT" in account
+
+		# The manual is cited twice over now, and the account no longer says otherwise.
+		assert "CITED FOR TWO THINGS" in account
+		assert "CITED FOR ONE THING" not in account
+
 
 class TestSubharmonicon:
 
@@ -5099,7 +5123,7 @@ class TestCircuitTracks:
 		assert tracks.model.firmware is None
 
 		assert tracks.midi.clock == "both"
-		assert tracks.midi.transport == "receives"
+		assert tracks.midi.transport == "both"
 		assert tracks.midi.sysex is True
 		assert tracks.midi.channels == (1, 16)
 
@@ -10552,6 +10576,33 @@ class TestCircuitRhythm:
 
 		assert "112 sheets" in account
 		assert "an enumerated silence and not a denial" in account
+
+	def test_the_three_circuits_agree_about_the_transport (self) -> None:
+		"""One maker's one sentence, printed three times, and now read one way.
+
+		All three Programmer's Reference Guides head the list "Supported Realtime Messages"
+		and none of them says which direction any of start, stop, continue or the timing
+		clock goes. The switch is the evidence all three documents carry: Rx and Tx are
+		separate settings over a MIDI Clock category that is on both ways by default.
+		"""
+		for name in ("novation/circuit", "novation/circuit_rhythm", "novation/circuit_tracks"):
+			assert pymidiinstrumentdefs.load(name, [CORPUS]).midi.transport == "both", name
+
+		# The file that changed says it changed, and why its old reading could not settle three.
+		tracks = " ".join(prose_of("novation", "circuit_tracks").split())
+
+		assert "THIS FILE RECORDED `receives` UNTIL THE THIRD CIRCUIT ARRIVED" in tracks
+		assert "holds for neither sibling's" in tracks
+
+		# And this one no longer calls the disagreement open.
+		rhythm = " ".join(prose_of("novation", "circuit_rhythm").split())
+
+		assert "BOTH, AND ALL THREE CIRCUITS AGREE ABOUT IT" in rhythm
+		assert "THE FAMILY DID NOT ALWAYS AGREE" in rhythm
+
+		# And no file still describes the Circuit Tracks as recording receives.
+		assert "records receives" not in rhythm
+		assert "raised rather than settled here" not in rhythm
 
 	def test_the_firmware_is_the_only_one_named_and_the_reference_names_none (self) -> None:
 		"""And the by-name test is reported as the weak evidence it is on this document."""

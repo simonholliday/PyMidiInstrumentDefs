@@ -144,9 +144,9 @@ source: >-
   CLOCK BOTH WAYS, BY A SWITCH FOR EACH DIRECTION. "MIDI Rx (receive) and Tx (transmit) can
   be enabled independently for each of the data categories" (p. 90), the categories being
   Note, CC, Program Change and Clock, and "By default, both MIDI Rx and MIDI Tx are ON
-  (buttons brightly lit) for all data categories" (p. 90). The transport is recorded the
-  Circuit's way rather than the Circuit Tracks' - see the comment on the field, and the open
-  question it names.
+  (buttons brightly lit) for all data categories" (p. 90). The transport is recorded the same
+  way and from the same switch, and all three Circuits now agree about it - see the comment on
+  the field.
 
   THREE SOCKETS, AND THE THIRD IS SWITCHABLE. "three MIDI connectors on 5-pin DIN sockets.
   Allows external equipment to be triggered by Circuit Rhythm's sequences, or external
@@ -284,15 +284,19 @@ midi:
   # "MIDI Rx (receive) and Tx (transmit) can be enabled independently for each of the data
   # categories" (p. 90), one of which is Clock, and both are on by default.
   clock: both
-  # BOTH, WHICH IS THE CIRCUIT'S ANSWER TO THIS QUESTION AND NOT THE CIRCUIT TRACKS'. All
-  # three references list start, stop, continue and timing clock under "Supported Realtime
-  # Messages" (p. 5) without saying which direction any of them goes. `novation/circuit` records
-  # both, reasoning from the one switch covering both directions; `novation/circuit_tracks`
-  # records receives, reasoning from its reference saying "Send messages on" over every other
-  # table. **That second argument does not apply here**: this reference says "Send on
-  # appropriate channel 1-8" (p. 3) over one table of four and nothing of the sort over the rest. So
-  # the Circuit's reading is the one that fits this document. The disagreement between the
-  # two siblings is a question of its own and is raised rather than settled here.
+  # BOTH, AND ALL THREE CIRCUITS AGREE ABOUT IT. Each of the three references lists start,
+  # stop, continue and timing clock under "Supported Realtime Messages" (p. 5) without saying
+  # which direction any of them goes, so the switch is what answers it: Rx and Tx are separate
+  # settings over a Clock category that is on both ways by default, and start, stop and
+  # continue travel with the clock.
+  #
+  # THE FAMILY DID NOT ALWAYS AGREE, AND THIS FILE IS WHERE THAT SURFACED. `novation/circuit`
+  # had read that silence as both, from the one switch covering both directions, and
+  # `novation/circuit_tracks` had read it as receives, from a reference saying "Send messages
+  # on" over every other table. **That second argument does not apply here**: this reference
+  # says "Send on appropriate channel 1-8" (p. 3) over one table of four and nothing of the sort
+  # over the rest. So this file took the Circuit's reading and raised the difference as a
+  # question of its own, and the three were then settled together on the switch.
   transport: both
   program_change:
     # "MIDI Program Change Rx on/off" (p. 90) and "MIDI Program Change Tx on/off" are pads 29

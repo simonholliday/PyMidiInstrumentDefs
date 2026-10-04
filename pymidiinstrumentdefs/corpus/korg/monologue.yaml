@@ -1,0 +1,281 @@
+# THE MAP IS PRINTED TWICE, ONE WAY ROUND EACH, AND THE TWO ARE NOT THE SAME. Korg's implementation
+# has a `1.TRANSMITTED DATA` half and a `2.RECOGNIZED RECEIVE DATA` half. **Twenty-two controller
+# numbers are in both; two are in the received half only** - VCO 1 PITCH at 34 and VCO 1 OCTAVE at
+# 48 - and the maker's own specification says why without saying it: the panel has a pitch and an
+# octave control for VCO 2 and **none for VCO 1**, so there is nothing for it to send.
+#
+# AND EVERY STEPPED CONTROL IS WRITTEN ONE WAY FOR SENDING AND ANOTHER FOR RECEIVING. It sends
+# three exact numbers - "VCO 1 WAVE:SQR,TRI,SAW = vv:0,64,127" (midi_impl) - and answers to three
+# bands, "vv:0~42,43~85,86~127 = VCO 1 WAVE:SQR,TRI,SAW" (midi_impl). **The bands are what is
+# recorded**, because they are what a sender needs, and the extraction checks that every number the
+# instrument sends falls inside the band it would be read back in. All of them do.
+#
+# **EXCEPT FOR LFO MODE, WHOSE BANDS THE MAKER REFERS TO AND DOES NOT PRINT.** Its received row
+# carries the footnote tag `*5-6` and there is no `*5-6` anywhere in the file; `*5-1` to `*5-5` and
+# `*5-7` to `*5-9` are all there. Its eight siblings' bands are all 0~42, 43~85 and 86~127, and
+# filling them in from that pattern would be inventing the one thing the maker did not write. So
+# LFO MODE alone carries `choices` - the three exact numbers its *transmitted* footnote does print,
+# which are true, safe to send, and claim nothing about the numbers in between.
+#
+# TWO MIDI DOCUMENTS, AND THE NEWER ONE IS INSIDE THE MANUAL. Korg's downloads page offers one
+# implementation and no chart; the chart is on p. 58 of the owner's manual, and it is **four months
+# newer** - "Version: 1.10" (manual p. 58) and "Date: 2019.06.06" (manual p. 58) against the
+# implementation's "Revision 1.00 (2019.02.19)" (midi_impl). Where they differ the chart is followed, and they
+# differ in one place that matters: **song position**.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: monologue
+  # **2.00, AND THIS ONE WAS ANSWERABLE** - which the two volcas in this corpus were not, so it is
+  # worth saying how. Three things line up. The owner's manual in this library is the September
+  # 2024 edition and it documents the active step feature and the Slider Range parameter, both of
+  # which the System Updater's release notes say version 2.00 added (updater). 2.00 is the newest
+  # system Korg offers. And the one MIDI change in those notes - "support for MIDI set position
+  # messages" (updater) - is visible in the documents: the February 2019 implementation **has no
+  # system common section at all**, and the June 2019 chart in the manual marks Song Position
+  # received (manual p. 58).
+  # So the implementation is stale by exactly one documented change, the manual is not, and the
+  # controller map is the same in both. Checked 2026-10-04.
+  firmware: "2.00"
+
+source: >-
+  monologue MIDI Implementation, 66 KB of ASCII: **every controller number below is one of its
+  rows**, and it is the only document that has the two the panel cannot send. monologue Owner's
+  Manual, 59 pages, for the panel sections, the programs, the global settings and - on its p. 58 -
+  **the implementation chart Korg does not publish separately**, which is the newer of the two MIDI
+  documents. And Korg's downloads page and System Updater page, for what is published and for what
+  has changed since.
+
+  THE CHART'S MARKS ARE LETTERS AND NOT DRAWINGS, which was the first thing checked and is not
+  always true: the volca beats' chart draws every one of its yes and no marks as a vector and
+  returns none of them to a machine. This one's `O` and `X` are in the text layer, which is why it
+  could be cut by position rather than read by eye. **One grep settles that question and it is
+  worth spending.**
+
+  WHERE THE TWO DOCUMENTS DIFFER, AND IT IS THREE PLACES. First, **song position**: the
+  implementation has no system common section, the chart marks Song Position received, and the
+  System Updater's notes for 2.00 say it added "support for MIDI set position messages" (updater).
+  Second, the chart lists controller **121** among the channel mode messages it answers to and the
+  implementation does not - the implementation has 120, 122 and 123, the chart has 120 and 121 in
+  its control change rows and Local On/Off and All Notes Off in its aux rows. Third, the chart
+  lists only the twenty-two numbers that go both ways and **never mentions 34 or 48**, which only
+  the implementation has. None of the three changes a control below.
+
+  THREE ROWS OF THE IMPLEMENTATION ARE NOT CONTROLS AND ARE LEFT OUT, by number rather than by
+  accident: All Sound Off at 120, Local Sw at 122 and All Note Off at 123. They mean the same on
+  every instrument that has them. The manual says something about them worth keeping: "CC#120
+  onward cannot be controlled using this setting" (manual), of the global filter that turns every
+  other control change off.
+
+  SIX GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, which is more than any other
+  instrument here. The chart's footnotes make the control changes conditional on "MIDI Rx CC"
+  and "MIDI Tx CC" (manual p. 58), program change on "MIDI Rx Prog Chg" (manual p. 58) and
+  "MIDI Tx Prog Chg" (manual p. 58), and pitch bend on "MIDI Rx Pitch Bend" (manual p. 58) and
+  "MIDI Tx Pitch Bend" (manual p. 58), each of them an Off/On in the global menu (manual). **The manual does not print a factory default for any of the six**, which
+  is a real gap: the volca beats' manual marks its two with an asterisk and a key, and this one
+  does not.
+
+  THE MAKER'S NAMES DIFFER BETWEEN ITS OWN DOCUMENTS and the implementation is followed, because it
+  is the document the numbers come from. Controllers 16 and 17 are "AMP EG ATTACK" (midi_impl) and
+  "AMP EG DECAY" (midi_impl) where the chart's row reads "EG (ATTACK, DECAY, INT)" (manual p. 58).
+  The setting that gates the control changes is "Enable Tx MIDI" (midi_impl) and "Enable Rx MIDI"
+  (midi_impl) in the implementation, and "MIDI Tx CC" (manual p. 58) and "MIDI Rx CC"
+  (manual p. 58) in the chart and the manual.
+  Controller 26 is "LFO INT" (midi_impl) and "LFO (RATE, DEPTH)" (manual p. 58). Controller 123 is
+  "All Note Off" (midi_impl) and "All Notes Off" (manual p. 58). And the chart heads its last block
+  "Aux Meassages" (manual p. 58).
+
+  AND ONE FOOTNOTE OF THE CHART SAYS THE OPPOSITE OF WHAT IT MEANS. Its sixth ends "the monologue
+  will transmit signals." (manual p. 58) of the setting it calls En Rx Transport - an **Rx**
+  setting cannot govern transmission, and the implementation says the same setting governs what is
+  recognised: "This message is recognized when the" (midi_impl) setting is on. The implementation
+  is right and the chart's wording is a slip. Nothing below rests on it.
+
+sources:
+  midi_impl:
+    kind: midi_implementation
+    title: monologue MIDI Implementation
+    edition: "1.00"
+    dated: "2019-02-19"
+    landing: "https://www.korg.com/us/support/download/manual/0/733/4231/"
+    url: "https://cdn.korg.com/us/support/download/files/16ee9047b932f624ed640d98940ff798.txt"
+    sha256: 139e399a493a964d67294eca4f937426fc3680f96f002c2379f4648c0658c3d2
+    retrieved: 2026-10-04
+    paginated: false
+    # **EVERY CONTROLLER NUMBER BELOW COMES FROM THIS DOCUMENT**, which is 66 KB of ASCII and far
+    # more than a control map: the two channel-message tables are a page of it and the rest is the
+    # system exclusive specification, the bulk tuning dumps and the program data. Korg's downloads
+    # page dates the file 2019.02.27, eight days after the revision it carries.
+  manual:
+    kind: manual
+    title: monologue Owner's Manual
+    edition: E 3
+    landing: "https://www.korg.com/us/support/download/manual/0/733/3519/"
+    url: "https://cdn.korg.com/us/support/download/files/0ed33bb02a3ce4cc3ec976f0378a996e.pdf"
+    sha256: e08a62bc34fcf994abe4c4bf6bdacc29d91222a8bb05108202606cc2827031c1
+    retrieved: 2026-10-04
+    page_offset: 0
+    # 59 pages, printed numbers matching the sheets exactly, built 2024-09-19. **Its p. 58 is the
+    # implementation chart Korg publishes nowhere else**, and is the newer of this instrument's two
+    # MIDI documents. The rest is cited for the panel sections, the programs, the keyboard and the
+    # global settings.
+  downloads:
+    kind: download_page
+    title: "Downloads | monologue | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/product/0/733/"
+    url: "https://www.korg.com/us/support/download/product/0/733/"
+    sha256: 572910e3f45b3f55796331508887824c8e66b1838e006c226afffbc9a2578863
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for what Korg publishes, which is a long list and **has no implementation chart in
+    # it**: owner's manuals in five languages, a quick start guide, a sound librarian manual, the
+    # MIDI implementation, a Chinese RoHS sheet, four sound packs, a USB driver and the System
+    # Updater.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 611e5ddf03ee8d1102ff38839359f101092306a9a690923303f11d6feb608ea4.
+  updater:
+    kind: release_notes
+    title: "monologue/System Updater"
+    edition: "2.00"
+    dated: "2019-06-28"
+    landing: "https://www.korg.com/us/support/download/software/0/733/3529/"
+    url: "https://www.korg.com/us/support/download/software/0/733/3529/"
+    sha256: 2cae42964dceb8e08271aaa6933d328aa127412e45fab84b4f5ddd2ad6f46099
+    retrieved: 2026-10-04
+    paginated: false
+    # **The page that lets this file name a firmware**, where for two other Korgs here the same
+    # page is what stopped one. It carries its release notes inline for three versions, and two of
+    # 2.00's lines are what matter: one names a feature the 2024 manual documents, and one names a
+    # MIDI change the older of the two MIDI documents does not have.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 72fb5e5510b0350c914514ddaf10e43dc5f61c4cf82d9c7c8835a74a50cb066d.
+
+midi:
+  # The chart's Basic Channel row gives 1 to 16 for the default and 1 to 16 for a changed one, in
+  # both columns, remarked "Memorized" (manual p. 58). The manual's global menu agrees and says
+  # what kind of channel it is: "This is both the Transmit and Receive channel." (manual).
+  channels: [1, 16]
+  # The chart's Mode row: a cross transmitted and **3** received, which is omni off and poly, with
+  # Messages a cross in both columns (manual p. 58).
+  mode: 3
+  # The chart's Clock row is O in both columns with footnote *5 (manual p. 58), and the
+  # implementation lists Timing Clock in both of its system real time tables (midi_impl). The
+  # footnote names the setting: with Clock Source set to Internal "the monologue will not receive
+  # signals" (manual p. 58), and it does receive them when set to "Auto (MIDI)" or "Auto (USB)"
+  # (manual p. 58).
+  clock: both
+  # The chart's Commands row is O in both columns with footnote *6 (manual p. 58). **The two
+  # directions are not symmetrical and the implementation shows it**: what the instrument sends is
+  # Start and Stop, and what it recognises is Start, Continue and Stop (midi_impl). So it answers
+  # to a continue it will never send.
+  transport: both
+  program_change:
+    # "O 0–99" in both columns with footnote *3, and a True Number of "0–99" received (manual
+    # p. 58). The implementation has the same row both ways: "Program Change (pp=0~99)"
+    # (midi_impl).
+    receives: true
+    sends: true
+    # WHAT THE INSTRUMENT HOLDS: "Number of programs: 100 (80 preset programs, 20 user programs)"
+    # (manual), and a program change reaches all of them - 0 to 99 is the whole of it, with no
+    # bank select anywhere in either document.
+    presets: 100
+  # O in both columns with footnote *4, "In addition to Korg exclusive messages, Inquiry is
+  # supported." (manual p. 58). The implementation spends fifty of its sixty-six kilobytes on it:
+  # program dumps, global dumps, a search-device handshake, bulk tuning dumps and single note
+  # tuning changes.
+  sysex: true
+  # CHECKED AND ABSENT. The words NRPN, RPN and Registered Parameter appear nowhere in the 66 KB
+  # implementation, and the manual uses "registered" only of favourite programs and trademarks.
+  nrpn: none
+
+voice:
+  # "The monologue is a monophonic synthesizer" (manual), which its own front cover says again -
+  # the chart is headed "[MONOPHONIC ANALOGUE SYNTHESIZER]" (manual p. 58).
+  polyphony: 1
+  # The chart's Note Number row is "0–127" in both columns and its True Voice row "0–127" received
+  # (manual p. 58). The keyboard itself is smaller - "25 keys (slim keyboard, velocity sensitive)"
+  # (manual) - but what the instrument will sound is the chart's figure.
+  note_range: [0, 127]
+  velocity:
+    # "O 9n, V=1–127" (manual p. 58) in both columns of the chart's Note On row, and the
+    # implementation has it both ways: "Note On  vv=1~127" (midi_impl) in each of its two channel
+    # tables.
+    note_on: received
+    # **A CROSS WITH A VALUE BESIDE IT, AND IT MEANS SOMETHING HERE.** The chart's Note Off row is
+    # "X 8n, V=64" transmitted and a cross received (manual p. 58): release velocity is neither
+    # sent nor acted on, and the note-off the instrument does send carries a fixed 64. The
+    # implementation agrees - its transmitted table gives a note off whose third byte is 40 in hex
+    # and 64 in decimal, and its received one takes "Note Off  vv=0~127" (midi_impl).
+    note_off: false
+  # A checked absence, from the chart's own rows: Polyphonic (Key) is a cross in both columns and
+  # Monophonic (Channel) is a cross in both (manual p. 58).
+  aftertouch: none
+  pitch_bend:
+    # O in both columns with footnote *1 (manual p. 58). **The reach is a setting and the manual
+    # ties it to the slider rather than to an incoming message**: "Bend Range +" (manual) and
+    # "Bend Range" minus are each "[1 Note...12 Note]" (manual), and each "specifies how much pitch
+    # bend will be applied when moving the slider" (manual). So the two directions are settable separately, which no other
+    # instrument here does, and what an incoming bend does with them is not printed.
+    programmable: true
+
+groups:
+  # THE MAKER'S OWN PANEL SECTIONS, from its specification's list of main synthesis parameters
+  # (manual). The chart in the same manual rules the same controls into the same blocks, so the two
+  # documents agree about the grouping even where they disagree about a name.
+  master: Master
+  vco_1: VCO 1
+  vco_2: VCO 2
+  mixer: Mixer
+  filter: Filter
+  eg: EG
+  lfo: LFO
+controls:
+
+  # ──── master ────
+
+  drive:         {label: DRIVE, cc: 28, group: master}
+
+  # ──── vco_1 ────
+
+  vco_1_pitch:   {label: VCO 1 PITCH, cc: 34, direction: receives, group: vco_1}
+  vco_1_shape:   {label: VCO 1 SHAPE, cc: 36, group: vco_1}
+  vco_1_octave:  {label: VCO 1 OCTAVE, cc: 48, values: {"n16": 0, "n8": 32, "n4": 64, "n2": 96}, direction: receives, group: vco_1}
+  vco_1_wave:    {label: VCO 1 WAVE, cc: 50, values: {"sqr": 0, "tri": 43, "saw": 86}, group: vco_1}
+
+  # ──── vco_2 ────
+
+  vco_2_pitch:   {label: VCO 2 PITCH, cc: 35, group: vco_2}
+  vco_2_shape:   {label: VCO 2 SHAPE, cc: 37, group: vco_2}
+  vco_2_octave:  {label: VCO 2 OCTAVE, cc: 49, values: {"n16": 0, "n8": 32, "n4": 64, "n2": 96}, group: vco_2}
+  vco_2_wave:    {label: VCO 2 WAVE, cc: 51, values: {"noise": 0, "tri": 43, "saw": 86}, group: vco_2}
+  sync_ring:     {label: SYNC/RING, cc: 60, values: {"ring": 0, "off": 43, "sync": 86}, group: vco_2}
+
+  # ──── mixer ────
+
+  vco_1_level:   {label: VCO 1 LEVEL, cc: 39, group: mixer}
+  vco_2_level:   {label: VCO 2 LEVEL, cc: 40, group: mixer}
+
+  # ──── filter ────
+
+  cutoff:        {label: CUTOFF, cc: 43, group: filter}
+  resonance:     {label: RESONANCE, cc: 44, group: filter}
+
+  # ──── eg ────
+
+  amp_eg_attack: {label: AMP EG ATTACK, cc: 16, group: eg}
+  amp_eg_decay:  {label: AMP EG DECAY, cc: 17, group: eg}
+  eg_int:        {label: EG INT, cc: 25, group: eg}
+  eg_type:       {label: EG TYPE, cc: 61, values: {"gate": 0, "a_g_d": 43, "a_d": 86}, group: eg}
+  eg_target:     {label: EG TARGET, cc: 62, values: {"cutoff": 0, "pitch_2": 43, "pitch": 86}, group: eg}
+
+  # ──── lfo ────
+
+  lfo_rate:      {label: LFO RATE, cc: 24, group: lfo}
+  lfo_int:       {label: LFO INT, cc: 26, group: lfo}
+  lfo_target:    {label: LFO TARGET, cc: 56, values: {"cutoff": 0, "shape": 43, "pitch": 86}, group: lfo}
+  lfo_wave:      {label: LFO WAVE, cc: 58, values: {"sqr": 0, "tri": 43, "saw": 86}, group: lfo}
+  lfo_mode:      {label: LFO MODE, cc: 59, choices: {"n1_shot": 0, "slow": 64, "fast": 127}, group: lfo}

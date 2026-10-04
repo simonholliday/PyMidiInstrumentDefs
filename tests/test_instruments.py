@@ -152,6 +152,7 @@ class TestBundledCorpus:
 			"korg/minilogue",
 			"korg/minilogue_xd",
 			"korg/modwave_mk_ii",
+			"korg/monologue",
 			"korg/multi_poly",
 			"korg/opsix",
 			"korg/volca_beats",
@@ -8100,3 +8101,146 @@ class TestVolcaBeats:
 
 		assert "THE PLAIN TEXT FILE IS THE BETTER DOCUMENT" in said
 		assert "not in its text layer at all" in said
+
+
+class TestMonologue:
+
+	"""A Korg whose map is printed twice, one way round each, and the two are not the same."""
+
+	def test_twenty_four_controls_in_the_makers_panel_sections (self) -> None:
+		"""Seven groups, from its own specification's list of synthesis parameters."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		assert len(monologue.controls) == 24
+		assert list(monologue.groups) == ["master", "vco_1", "vco_2", "mixer", "filter", "eg", "lfo"]
+
+		numbers = sorted(control.cc for control in monologue.controls.values()
+			if control.cc is not None)
+
+		assert numbers == [16, 17, 24, 25, 26, 28, 34, 35, 36, 37, 39, 40,
+			43, 44, 48, 49, 50, 51, 56, 58, 59, 60, 61, 62]
+
+	def test_two_controls_are_received_only_because_the_panel_cannot_send_them (self) -> None:
+		"""VCO 2 has a pitch and an octave control and VCO 1 has neither."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		receives = sorted(name for name, control in monologue.controls.items()
+			if control.direction == "receives")
+
+		assert receives == ["vco_1_octave", "vco_1_pitch"]
+
+		# Their VCO 2 counterparts go both ways.
+		assert monologue.controls["vco_2_pitch"].direction == "both"
+		assert monologue.controls["vco_2_octave"].direction == "both"
+
+		said = prose_of("korg", "monologue")
+
+		assert "none for VCO 1" in said
+
+	def test_the_named_values_are_the_bands_it_answers_to (self) -> None:
+		"""It sends three exact numbers and answers to three bands, and the bands are recorded."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		assert monologue.controls["vco_1_wave"].values == {"sqr": 0, "tri": 43, "saw": 86}
+		assert monologue.controls["vco_2_wave"].values == {"noise": 0, "tri": 43, "saw": 86}
+		assert monologue.controls["vco_2_octave"].values == {"n16": 0, "n8": 32, "n4": 64, "n2": 96}
+
+		# Every number it sends falls inside the band it would be read back in.
+		assert monologue.controls["vco_1_wave"].values["tri"] <= 64 <= 85
+
+	def test_one_control_carries_choices_because_its_footnote_is_unprinted (self) -> None:
+		"""The document refers to *5-6 and never prints it, so its bands are not invented."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		mode = monologue.controls["lfo_mode"]
+
+		assert mode.cc == 59
+		assert mode.values == {}
+		assert mode.choices == {"n1_shot": 0, "slow": 64, "fast": 127}
+
+		# It is the only one in the file shaped that way.
+		assert [name for name, control in monologue.controls.items() if control.choices] \
+			== ["lfo_mode"]
+
+		said = prose_of("korg", "monologue")
+
+		assert "WHOSE BANDS THE MAKER REFERS TO AND DOES NOT PRINT" in said
+
+	def test_the_newer_of_its_two_midi_documents_is_inside_the_manual (self) -> None:
+		"""Korg publishes no chart for this one, and the manual has one on p. 58."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		assert set(monologue.sources) == {"midi_impl", "manual", "downloads", "updater"}
+		assert monologue.sources["midi_impl"].edition == "1.00"
+		assert monologue.sources["manual"].edition == "E 3"
+
+		said = prose_of("korg", "monologue")
+
+		assert "THE NEWER ONE IS INSIDE THE MANUAL" in said
+
+	def test_a_firmware_is_named_and_three_documents_were_needed_to_do_it (self) -> None:
+		"""Where the two volcas could not, this one could."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+		beats = pymidiinstrumentdefs.load("korg/volca_beats", [CORPUS])
+		drum = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert monologue.model.firmware == "2.00"
+		assert beats.model.firmware is None
+		assert drum.model.firmware is None
+		assert monologue.sources["updater"].edition == "2.00"
+
+		said = prose_of("korg", "monologue")
+
+		assert "support for MIDI set position messages" in said
+
+	def test_it_is_monophonic_and_holds_a_hundred_programs (self) -> None:
+		"""One voice, and a program change reaches every one of them."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		assert monologue.voice is not None
+		assert monologue.voice.polyphony == 1
+		assert monologue.midi.program_change is not None
+		assert monologue.midi.program_change.presets == 100
+		assert monologue.midi.program_change.receives is True
+		assert monologue.midi.program_change.sends is True
+
+	def test_what_it_sends_and_answers_to_are_not_symmetrical (self) -> None:
+		"""It answers to a continue it will never send."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		assert monologue.midi.clock == "both"
+		assert monologue.midi.transport == "both"
+
+		said = prose_of("korg", "monologue")
+
+		assert "it answers to a continue it will never send" in said
+
+	def test_the_checked_absences_and_the_settable_bend (self) -> None:
+		"""Each from the chart's own rows, and a bend range set separately in each direction."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+
+		assert monologue.midi.nrpn == "none"
+		assert monologue.midi.sysex is True
+		assert monologue.voice is not None
+		assert monologue.voice.aftertouch == "none"
+		assert monologue.voice.pitch_bend is not None
+		assert monologue.voice.pitch_bend.programmable is True
+		assert monologue.voice.pitch_bend.semitones is None
+
+	def test_it_is_not_the_minilogue (self) -> None:
+		"""Two instruments, one family, and the corpus has three of them."""
+		monologue = pymidiinstrumentdefs.load("korg/monologue", [CORPUS])
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
+
+		assert monologue.model.name == "monologue"
+		assert minilogue.model.name == "minilogue"
+
+		assert monologue.voice is not None and minilogue.voice is not None
+		assert monologue.voice.polyphony == 1
+		assert minilogue.voice.polyphony == 4
+
+		# And they do not answer to the same numbers.
+		mine = {control.cc for control in monologue.controls.values()}
+		theirs = {control.cc for control in minilogue.controls.values()}
+
+		assert mine != theirs

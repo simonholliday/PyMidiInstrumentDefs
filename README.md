@@ -156,6 +156,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/minilogue` | Korg minilogue: 39 controls, thirteen of them switches whose named bands the maker gives twice over - as the values it sends and as the bands it reads them in - from an implementation its maker publishes as a plain text file and again, five years later, as a chart in the manual |
 | `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
 | `korg/modwave_mk_ii` | Korg modwave mk II: one manual covers three models, and the only difference is the voice count - with a chart whose two direction columns had to be proved rather than read in order |
+| `korg/monologue` | Korg monologue: 24 controls out of an implementation printed twice, one direction each, where two numbers are received only and one control's bands are the footnote the maker forgot |
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
 | `korg/volca_beats` | Korg volca beats: 20 controls and ten parts off a plain text file, where the chart beside it draws its yes and no marks and names only seven of the ten |

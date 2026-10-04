@@ -216,6 +216,7 @@ class TestBundledCorpus:
 			"teenage_engineering/ep_133_ko_ii",
 			"teenage_engineering/op_1",
 			"teenage_engineering/op_xy",
+			"udo_audio/super_6",
 			"vermona/drm1_mkiv",
 			"voce/electric_piano",
 			"waldorf/blofeld",
@@ -2056,13 +2057,19 @@ class TestOsmose:
 		`arturia/polybrute_12` publish the same controller chart, so a consumer that
 		told them apart by their numbers would get one answer for both, and this field
 		is where the difference is.
+
+		**And the Super 6 is the one whose MPE is narrower than the instrument**, for a
+		reason its maker gives: its analog hardware can only give six notes different
+		control voltages, so MPE mode runs at six voices where the synthesizer has
+		twelve. A consumer that read `polyphony` and this flag together would get that
+		wrong, and no field here can say it.
 		"""
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
 			"expressive_e/osmose", "modal/carbon8m", "sequential/prophet_6",
-			"synthstrom_audible/deluge", "waldorf/iridium"]
+			"synthstrom_audible/deluge", "udo_audio/super_6", "waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -7195,7 +7202,7 @@ class TestProphet6:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert "sequential/prophet_6" in flagged
-		assert len(flagged) == 7
+		assert len(flagged) == 8
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -9328,3 +9335,224 @@ class TestMaschinePlus:
 			"elektron/octatrack", [CORPUS]).source or "").split())
 
 		assert "MIDI In/Out/Thru" in octa
+
+
+class TestSuper6:
+
+	"""The most complete implementation a new maker has brought here, and an NRPN rule."""
+
+	def test_the_nrpn_is_the_controller_number_plus_1024 (self) -> None:
+		"""The finding, and it is measured over every pair rather than assumed.
+
+		NRPN 1027 is controller 3, both named Tempo; 1031 is controller 7, both VCA
+		Envelope Level. **A consumer can derive one from the other**, which is rare enough
+		to be worth a test of its own - and if a later edition breaks the rule, this is
+		where it shows.
+		"""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		paired = [control for control in super_6.controls.values()
+			if control.cc is not None and control.nrpn is not None]
+
+		assert len(paired) == 41
+
+		# **AND NO BANDED CONTROL HAS ONE.** The NRPN block mirrors the continuous
+		# parameters only, which is a sharper statement than the arithmetic gives: a
+		# switched parameter has nothing to gain from fourteen bits.
+		assert all(not control.values for control in paired)
+
+		for control in paired:
+			assert control.cc is not None and control.nrpn is not None
+			assert control.nrpn == control.cc + 1024, control.name
+
+		# And every one of them carries the wider range the NRPN table gives.
+		for control in paired:
+			assert control.nrpn_range == (0, 16383), control.name
+			assert control.range == (0, 127), control.name
+
+	def test_the_protocols_own_rows_are_listed_and_left_out (self) -> None:
+		"""This maker lists them, which is the opposite of the rank before it.
+
+		The Octatrack put its own MIDI track solos on 120 to 127 and the format had to
+		refuse them. **This maker lists 120 to 127 as what the specification says they
+		are** - All Sound Off, Reset All Controllers, Local Control, All Notes Off, the
+		four mode messages - so leaving them out loses nothing of this instrument.
+		"""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		numbers = {control.cc for control in super_6.controls.values()}
+
+		# **38 IS IN THIS LIST BECAUSE THE SECOND READER PUT IT THERE.** It is
+		# `LSB for Control 6 (Data Entry)`, so keeping it was keeping half of a pair.
+		for number in list(range(120, 128)) + [6, 38, 96, 97, 98, 99, 100, 101]:
+			assert number not in numbers, f"controller {number} should not be a control"
+
+		# Bank Select is kept, as two other definitions here keep theirs.
+		assert 0 in numbers
+
+		account = " ".join((super_6.source or "").split())
+
+		assert "this table is unusual in listing them at all" in account
+		assert "which is the opposite of the instrument one rank earlier" in account
+
+	def test_every_number_from_0_to_127_gets_a_row (self) -> None:
+		"""What makes the table complete rather than selective, and a blank row is the maker.
+
+		97 of its 128 rows name a parameter and 31 are blank. **A blank row is the maker
+		saying nothing rather than the reading losing something**, which is the distinction
+		that lets this definition's absences be trusted.
+		"""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		account = " ".join((super_6.source or "").split())
+
+		assert "THE CONTROLLER TABLE GIVES EVERY NUMBER FROM 0 TO 127 A ROW" in account
+		assert "97 of its 128 rows name a parameter and 31 are blank" in account
+
+		# 97 named less 16 of the protocol's own is 81, plus 5 NRPN-only global settings.
+		assert len(super_6.controls) == 86
+
+		nrpn_only = [control for control in super_6.controls.values()
+			if control.cc is None and control.nrpn is not None]
+
+		assert len(nrpn_only) == 5
+		assert all(control.group == "global" for control in nrpn_only)
+
+	def test_forty_controls_have_their_value_bands_named (self) -> None:
+		"""The Value Range column is real, which most are not."""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		banded = [control for control in super_6.controls.values() if control.values]
+
+		assert len(banded) == 40
+
+		# A band is recorded by its lowest value, which is what `values` means.
+		waveform = next(control for control in super_6.controls.values()
+			if control.cc == 16)
+
+		assert waveform.values == {"triangle": 0, "square": 21, "random": 43,
+			"saw": 64, "hf": 85, "hf_trk": 107}
+
+	def test_it_receives_mpe_and_never_sends_it_at_six_of_its_twelve_voices (self) -> None:
+		"""Two facts the flag cannot carry, and the maker gives a reason for the second.
+
+		**The six-voice limit is a hardware fact stated plainly**, which is rarer than the
+		limit: the analog hardware can only give six notes different control voltages. A
+		consumer reading `polyphony` and `per_voice_channels` together would get it wrong.
+		"""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		assert super_6.midi.per_voice_channels is True
+		assert super_6.voice.polyphony == 12
+
+		said = prose_of("udo_audio", "super_6")
+
+		assert "the Super 6 will respond to incoming MIDI messages sent from an MPE " \
+			"controller via an individual MIDI channel per note" in said
+		assert "so MPE mode is limited to six voices" in said
+		assert "which puts this instrument beside the Prophet-6 rather than beside the " \
+			"Osmose" in said
+
+		# And the MPE timbre axis is one of the controls below, not a separate route.
+		cutoff = next(control for control in super_6.controls.values() if control.cc == 74)
+
+		assert cutoff.label == "VCF Cutoff Frequency"
+
+	def test_the_resolution_is_a_choice_about_sending_and_never_about_receiving (self) -> None:
+		"""Unusual enough to be the second thing the file says."""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		assert super_6.midi.nrpn == "supported"
+
+		said = prose_of("udo_audio", "super_6")
+
+		assert "the Super 6 will always respond to both parameter changes sent in 7 and " \
+			"14 bit resolution" in said
+		assert "So a sender chooses the resolution and a listener never has to" in said
+
+	def test_one_manual_covers_both_models (self) -> None:
+		"""Which answers in one document what the two ranks before it needed work for."""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		assert list(super_6.sources) == ["manual", "support_page"]
+
+		said = prose_of("udo_audio", "super_6")
+
+		assert "ONE MANUAL COVERS THE KEYBOARD AND THE DESKTOP MODELS" in said
+		assert "MIDI In, Out and Thru Ports: Standard 5-pin MIDI DIN connectors" in said
+
+	def test_no_firmware_because_the_maker_masks_its_own_version (self) -> None:
+		"""Three numbers exist and none of them is the firmware."""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		assert super_6.model.firmware is None
+
+		# The edition is the document's version, which is the only place it appears.
+		assert super_6.sources["manual"].edition == "1.4"
+
+		said = prose_of("udo_audio", "super_6")
+
+		assert "THE MAKER MASKS THE NUMBER IN ITS OWN INSTRUCTIONS" in said
+		assert "the manual is two minor versions behind the firmware on offer" in said
+
+	def test_the_front_matter_is_numbered_in_roman_numerals (self) -> None:
+		"""A trap the citation gate cannot catch, so the file names it.
+
+		Sheets 1 to 13 print roman numerals and the body prints arabic equal to the sheet.
+		**A citation to "p. 12" would pass the gate while being wrong**, because the
+		arithmetic lands on sheet 12 and the text is there, under a folio the document
+		calls xii. The clearest statement of the voice count is on that sheet and is
+		deliberately not cited.
+		"""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		assert super_6.sources["manual"].page_offset == 0
+
+		account = " ".join((super_6.source or "").split())
+
+		assert "THE FRONT MATTER IS NUMBERED IN ROMAN NUMERALS AND THE BODY IN ARABIC" \
+			in account
+		assert "a citation to `p. 12` would pass the gate while being wrong" in account
+
+		# So the voice count is cited from two other pages instead.
+		said = prose_of("udo_audio", "super_6")
+
+		assert "its 12 voices are twinned to form six stereo" in said
+		assert "In 12-voice non-binaural mode" in said
+
+	def test_the_message_tables_give_a_direction_for_every_row (self) -> None:
+		"""Including one that is received and never sent, and one that is simply absent."""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		# Polyphonic Key Pressure is No transmitted and Yes received.
+		assert super_6.voice.aftertouch == "poly"
+
+		assert super_6.voice.velocity is not None
+		assert super_6.voice.velocity.note_on == "both"
+		assert super_6.voice.velocity.note_off is True
+
+		account = " ".join((super_6.source or "").split())
+
+		assert "Polyphonic Key Pressure is No transmitted and Yes received" in account
+
+		# **AND CONTINUE IS NOT IN THE TABLE AT ALL**, which is an absence and not a No -
+		# the distinction the S-1 is the contrast for.
+		assert "CONTINUE IS NOT IN THE TABLE AT ALL" in account
+
+		s_1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert s_1.midi.transport == "both"
+		assert "it answers to a transport it cannot be told to resume" in prose_of("roland", "s_1")
+
+	def test_the_bend_range_is_stated_twice_from_two_directions (self) -> None:
+		"""A sentence and a registered parameter's data entry value, agreeing."""
+		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
+
+		assert super_6.voice.pitch_bend is not None
+		assert super_6.voice.pitch_bend.semitones == 12
+		assert super_6.voice.pitch_bend.programmable is True
+
+		said = prose_of("udo_audio", "super_6")
+
+		assert "The maximum pitch-bend range is one octave" in said
+		assert "MSB = +/- 12 semitones" in said

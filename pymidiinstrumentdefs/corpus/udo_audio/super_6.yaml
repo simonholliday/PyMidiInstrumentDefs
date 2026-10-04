@@ -1,0 +1,402 @@
+# THE MOST COMPLETE IMPLEMENTATION A NEW MAKER HAS BROUGHT TO THIS CORPUS. UDO publishes no
+# separate MIDI document and does not need to: the manual's own MIDI Specifications chapter has a
+# System Real-Time table, a Channel Messages table with a direction for every row, **a controller
+# table that gives every number from 0 to 127 a row whether it does anything or not**, a Registered
+# Parameter Number table, and two Non-Registered Parameter Number tables. Nothing here was inferred
+# from a silence.
+#
+# **THE NRPN IS THE CONTROLLER NUMBER PLUS 1024, AND THAT IS THE FINDING.** NRPN 1027 is controller
+# 3, both named `Tempo`; 1031 is controller 7, both `VCA Envelope Level`. Measured over all 41
+# patch-related NRPNs that name a parameter, **40 name the same parameter as controller N minus
+# 1024** - and the 41st is the two tables spelling one parameter two ways. So 41 of the controls
+# below carry both numbers, with `nrpn_range` holding the wider range the NRPN gives.
+#
+# AND THE RESOLUTION IS A CHOICE ABOUT SENDING AND NEVER ABOUT RECEIVING, which is unusual enough
+# to put at the top. NRPN mode is a transmit option - "parameter changes are transmitted as
+# unregistered parameter number messages at a resolution of 14 bits if MIDI CC Transmit is also
+# enabled" (manual p. 103) - while **"When MIDI CC Receive is enabled, the Super 6 will always
+# respond to both parameter changes sent in 7 and 14 bit resolution" (manual p. 103)**. So a sender
+# chooses the resolution and a listener never has to.
+#
+# ONE MANUAL COVERS THE KEYBOARD AND THE DESKTOP MODELS, which answers a question that cost real
+# work on the two ranks before this one. There is no comparing to do: the same document has a
+# Connections section for each - printed pp. 25 and 26 - and **both say "MIDI In, Out and Thru
+# Ports: Standard 5-pin MIDI DIN connectors" (manual p. 25)** in the same words. The maker settles it rather than
+# a reader having to.
+#
+# **IT RECEIVES MPE AND NEVER SENDS IT, AND THE HARDWARE IS WHY ITS MPE IS SIX-VOICE.** See `midi`
+# below; the maker's own explanation is better than any summary.
+
+definition: 1
+
+model:
+  manufacturer: UDO Audio
+  name: Super 6
+  # NOT RECORDED, AND THE MAKER MASKS THE NUMBER IN ITS OWN INSTRUCTIONS. The manual mentions
+  # firmware only to say how to update or see it, and where a version would go it prints a
+  # placeholder: the file to copy is `xos_v#.##.bin` and the one to delete `xos_v*.**.bin`
+  # (manual p. 23), both of them printed with the version masked. **So the document is deliberately version-agnostic**, and it also does not say
+  # which firmware it describes.
+  # THREE NUMBERS EXIST AND NONE OF THEM IS IT. The PDF's own title is `Super_6_Manual_1.4`,
+  # which is the **document's** version; the support page offers "firmware (v1.6)"
+  # (support_page); and the instrument shows its own version as a pattern of lit buttons at
+  # power-on rather than as a number anywhere. **So the manual is two minor versions behind the
+  # firmware on offer**, which is the PolyBrute's position exactly - and what the numbers below
+  # match is the 1.4 manual.
+
+source: >-
+  Owner's Manual, 140 pages, the PDF's own title `Super_6_Manual_1.4`: **the MIDI Specifications
+  chapter at pp. 120-132**, which is where every number here comes from; the connections for both
+  models at pp. 25-26; the patches at p. 16; the bender at pp. 70 and 77; the voice modes at
+  pp. 54 and 93; the global settings at p. 103; and **MPE support at pp. 105-106**. And UDO's
+  Super 6 support page, for the firmware on offer.
+
+  **THE FRONT MATTER IS NUMBERED IN ROMAN NUMERALS AND THE BODY IN ARABIC, WHICH IS A TRAP THE
+  CITATION GATE CANNOT CATCH.** Sheets 1 to 13 print x, xi, xii, xiii; sheet 14 prints 14 and
+  every sheet after it prints its own number. So `page_offset` is 0 for everything this file cites
+  - and **a citation to `p. 12` would pass the gate while being wrong**, because the arithmetic
+  lands on sheet 12 and the text is there, under a folio the document calls xii. The clearest
+  statement of the voice count is on that sheet and **is not cited for exactly that reason**; two
+  others on numbered pages are cited instead.
+
+  THE MIDI SPECIFICATIONS CHAPTER IS IN FIVE TABLES AND THREE SHAPES:
+
+      p. 120        System Real-Time Messages, and Channel Messages - a direction for each
+      pp. 121-127   Continuous Controller Messages - `CC # | Value Range | Parameter Name`
+      pp. 127-128   Registered Parameter Numbers
+      p. 128        Non-Registered Parameter Numbers, Global Parameters
+      pp. 129-132   Non-Registered Parameter Numbers, Patch-Related Parameters
+
+  **THE CONTROLLER TABLE GIVES EVERY NUMBER FROM 0 TO 127 A ROW**, whether it does anything or not,
+  with `-` in the other two columns where it does not. That is asserted rather than noticed, and it
+  is what makes this table complete rather than selective: **97 of its 128 rows name a parameter
+  and 31 are blank**, and a blank row is the maker saying nothing rather than the reading losing
+  something.
+
+  THE NRPN NUMBER IS PRINTED TWICE AND THE TWO FORMS CHECK EACH OTHER. A row gives the number in
+  decimal and then its MSB and LSB in hexadecimal - 1027, `08H`, `03H` - and 8 x 128 + 3 is 1027,
+  which is how this format holds an NRPN. **All 46 rows that carry a pair agree**, which is a free
+  assertion and the one the PRO-800's hexadecimal column taught one rank earlier.
+
+  **AND THE PATCH-RELATED NRPN IS THE CONTROLLER NUMBER PLUS 1024.** Measured, not assumed: of the
+  41 patch-related NRPNs that name a parameter, **40 name the same parameter as controller N minus
+  1024**, and the pairing below is made on those names rather than on the arithmetic. The 41st is
+  joined anyway - see below - so 41 controls carry both numbers.
+
+  **AND THE NRPN BLOCK IS A MIRROR OF THE CONTINUOUS PARAMETERS ONLY**, which the second reader
+  put more sharply than the arithmetic does: **not one of the 40 controls whose value bands are
+  named has an NRPN at all** - every one of them is a blank row in the NRPN table. So the pattern
+  is not "every parameter twice" but "every *continuous* parameter at two resolutions", and the
+  switched ones, which have nothing to gain from fourteen bits, are left out of it. **That is an
+  observation about every row printed and not a rule the maker states.**
+
+  THE ONE PAIR THE TWO TABLES NAME DIFFERENTLY IS NRPN 1119 AND CONTROLLER 95. The controller table
+  says `HPF Fix Cutoff Frequency` and the NRPN table says `HPF Cutoff Frequency` - the word `Fix` in
+  one and not the other. They are joined on three grounds: it is the only unmatched name on either
+  side, the arithmetic puts it exactly where the other forty sit, and one name contains the other.
+  **The label below is the controller table's**, because that is the table the control's number
+  comes from.
+
+  THE VALUE RANGE COLUMN IS REAL, which most are not. Most rows read `0-127` or `0-16383`, and **40
+  of the controls below have their bands named** - `0 = Triangle`, `21 = Square`, `43 = Random`,
+  `64 = Saw`, `85 = HF`, `107 = HF TRK` - which is what `values` holds, each band by its lowest
+  number. A row reading a plain range is continuous and carries nothing.
+
+  SIXTEEN OF THE 97 NAMED CONTROLLER ROWS ARE THE PROTOCOL AND NOT THIS INSTRUMENT, and **this
+  table is unusual in listing them at all**: controller 6 is `Data Entry MSB` and **38 is
+  `LSB for Control 6 (Data Entry)`**, 96 and 97 the data increment and decrement, 98 and 99 the
+  NRPN selects, 100 and 101 the RPN selects, and **120 to 127 the channel mode messages, which the
+  validator refuses outright**. The maker is being
+  complete rather than claiming them - which is the opposite of the instrument one rank earlier,
+  where the maker put its own MIDI track solos on 120 to 127. **Bank Select on controller 0 is
+  kept**, as two other definitions here keep theirs. That leaves **81 controls off the table**,
+  plus the five global settings below.
+
+  **AND THE SECOND READER FOUND THAT 38 BELONGED IN THAT LIST WHEN I HAD KEPT IT.** The guide
+  beside this corpus says to leave 6 and 38 out where they are only how an NRPN's value travels -
+  and this maker names 38 in as many words - so keeping it was keeping half of a pair. The two
+  readings agreed about the table and **a second reader is for more than the numbers.**
+
+  THE FIVE GLOBAL NRPNs ARE CONTROLS AND THAT IS A JUDGEMENT. They are this instrument's own MIDI
+  settings - its channel, its clock transmit and receive, its program change transmit and receive -
+  addressable over NRPN like anything else, and **2054 is absent from an otherwise contiguous run**
+  of 2051 to 2056, which the maker does not account for. Two of the five are the same facts
+  `midi.clock` and `midi.program_change` record from the other side, which is not a contradiction:
+  a field says what the instrument does and a control says how to change it from outside.
+
+  EVERY NUMBER WAS READ TWICE AND THE TWO READINGS AGREE. The second reading, made without sight of
+  the first, used a different library's layout mode on a different interpreter and then checked
+  itself against four of the sheets rendered and read by eye.
+
+  **AND THE GRID HAD TO BE BOUNDED TWICE OVER, WHICH IS THE READING LESSON HERE.** Every sheet of
+  this manual carries a navigation sidebar down its left edge with its own ruled lines, so the grid
+  is bounded by x - including the sidebar put the table's first column inside a cell forty points
+  wide. And printed p. 127 holds **the last ten rows of the controller table and the start of the
+  Registered Parameter Numbers table**, which has five columns where the controller table has
+  three, so the grid is bounded by height as well: without that, controllers 118 to 127 were
+  silently lost. A third bound was needed because **the sheet the controller table opens on draws
+  its heading row's cells differently from its data rows**, adding two column edges that belong to
+  nothing - so a column edge is one that recurs on many rows, measured at 21 to 52 times each
+  against the spurious pair's once.
+
+  WHAT THE MESSAGE TABLES SAY, AND THEY SAY IT WITH DIRECTIONS. `MIDI Timing Clock`, `Start` and
+  `Stop` are all Yes in both columns (manual p. 120); so are `Note On`, `Note Off`,
+  `Channel Pressure` and `Pitch
+  Bend. **Polyphonic Key Pressure is No transmitted and Yes received** - it answers to polyphonic
+  pressure and never sends it. Control Change and Program Change both read
+  "See Global Settings" (manual p. 120), which is where their switches are.
+
+  **CONTINUE IS NOT IN THE TABLE AT ALL.** Start and Stop are there and Continue is not listed -
+  which is an absence rather than a No, and is recorded as one. The S-1 in this corpus has Continue
+  marked `x` in both columns, which is the maker saying so; this is the maker not saying.
+
+  **AND THE QUOTATION GATE CAUGHT TWO SENTENCES THIS FILE HAD WRONG, WHICH IS WORTH RECORDING
+  AGAINST THE METHOD THAT PRODUCED THEM.** Reading a page by taking its words and sorting them by
+  position - which is how the sidebar was dropped while this instrument was being read - **puts a
+  run set in a different style where its coordinates fall rather than where it is read**. On p. 105
+  that turned "set the DYNAMICS switch in the VCA section to either 1/2 or ON." into "set the
+  switch in the VCA section to either DYNAMICS 1/2 ON", because `DYNAMICS`, `1/2` and `ON` are
+  styled differently from the words around them. Both velocity sentences were quoted that way and
+  **the gate refused both**. Reading order is what `get_text()` gives and what a quotation needs;
+  sorting by position is for a table.
+
+  EVERY QUOTATION IN THIS FILE'S PROSE CARRIES A LOCATOR, AUDITED BY PAIRING THE QUOTE MARKS: **25
+  quotations, 25 locators** - 24 citing a page and one naming the unpaginated support page - with
+  the six remaining pairs being field values. The gate checks all 25 and none is under the twelve
+  characters it requires, so the two counts reconcile exactly.
+
+  NOT RECORDED: system exclusive, and the mode. **The words System Exclusive and SysEx appear
+  nowhere in these 140 pages** - but system exclusive is neither a channel message nor a system
+  real-time message, so the two tables that do enumerate would not have listed it either. **So its
+  absence here is a silence and not an enumeration**, and nothing is recorded. With no
+  implementation chart in the classic form there is no omni or poly mode row to read, though
+  controllers 124 to 127 are listed as the protocol's own.
+
+  ALSO NOT RECORDED: the note range, which no page states.
+
+sources:
+  manual:
+    kind: manual
+    title: UDO Super 6 Owner's Manual
+    edition: "1.4"
+    dated: 2024-05-24
+    landing: "https://www.udo-audio.com/super-6-support"
+    url: "https://cdn.prod.website-files.com/641dd1a703957e750da6b5e3/66e4297ca75f0eb7e730884b_UDO_Super6_Manual.pdf"
+    sha256: daa9d099700106ed2fdc689cb527ec961cfbbc6befa161d589dbd680dfcce35c
+    retrieved: 2026-10-04
+    page_offset: 0
+    # **EVERY NUMBER IN THIS FILE COMES FROM PP. 120 TO 132.** 140 sheets, not encrypted, with a
+    # real text layer, made with Adobe InDesign 19.0 on 24 May 2024.
+    # The edition is the PDF's own `/Title`, `Super_6_Manual_1.4`, which is **the only place any
+    # version of this document appears**: the file name carries a Webflow content hash instead -
+    # `66e4297ca75f0eb7e730884b_` - so **the URL will change without the document changing, and
+    # the digest is the only stable identifier.**
+    # And this is the manual's version and not the instrument's firmware. See `model` above.
+  support_page:
+    kind: download_page
+    title: "Super 6 Support"
+    landing: "https://www.udo-audio.com/super-6-support"
+    url: "https://www.udo-audio.com/super-6-support"
+    sha256: 8a27c2bd2099dc70297505b78050131ff6a26e5ea6147d2811c477e99331d475
+    retrieved: 2026-10-04
+    paginated: false
+    # The visible text of the page, and **it is 1,470 bytes** - the smallest download page in this
+    # library by a wide margin, where the last instrument's was 1,709 lines. UDO publishes one
+    # manual and nothing else: the firmware and the patch packs are Dropbox folders, which carry
+    # no text a page copy could hold.
+    # Cited for the firmware version on offer and for nothing else.
+
+midi:
+  # SIXTEEN, AND THE MAKER STATES IT AS AN NRPN'S OWN RANGE: NRPN 2051 is `MIDI Channel` with the
+  # bands "0 = MIDI Channel 1 15 = MIDI Channel 16" (manual p. 128). So the setting counts from
+  # zero and the channels from one, which is worth knowing before sending it.
+  channels: [1, 16]
+  # RECEIVED PER NOTE AND NEVER SENT, and the maker's sentence is the whole of it: "When you enable
+  # MPE mode, the Super 6 will respond to incoming MIDI messages sent from an MPE controller via an
+  # individual MIDI channel per note" (manual p. 105). **Respond to**, with nothing anywhere about
+  # sending MPE - which puts this instrument beside the Prophet-6 rather than beside the Osmose.
+  # **AND ITS MPE IS SIX-VOICE WHERE THE INSTRUMENT IS TWELVE, FOR A REASON THE MAKER GIVES**:
+  # "The analog hardware only allows up to six notes to have different control voltages for most
+  # parameters, so MPE mode is limited to six voices" (manual p. 105). A hardware limit stated
+  # plainly, which is rarer than the limit itself.
+  # WHAT EACH MPE DIMENSION REACHES IS THE INSTRUMENT'S OWN CONTROL, not a separate MPE route:
+  # "MPE mappings are an extension of standard MIDI mappings like pitch bend and channel
+  # aftertouch, but polyphonic" (manual p. 105). And the timbre axis is a control below: "As per
+  # MPE standard, Y-axis gestures are sent via MIDI CC message 74. Since CC74 is assigned to the
+  # filter cutoff frequency, the Y-axis data sent from an MPE controller controls the brightness of
+  # a sound" (manual p. 105) - and controller 74 below is indeed `VCF Cutoff Frequency`.
+  per_voice_channels: true
+  # `MIDI Timing Clock` is Yes in both the Transmit and Receive columns (manual p. 120), and the
+  # two directions are separately switchable as NRPNs 2052 and 2053 below.
+  clock: both
+  # Start and Stop are both Yes in both columns (manual p. 120). **Continue is not in the table at
+  # all** - an absence rather than a No, which is why this says `both` of what is listed and the
+  # source account says what is not.
+  transport: both
+  program_change:
+    # "See Global Settings" (manual p. 120) in both columns of the Channel Messages table, and the
+    # setting is TX/RX P: "Press this button to determine whether program change messages should be
+    # transmitted and received via MIDI" (manual p. 103). NRPNs 2055 and 2056 below are the same
+    # two switches reachable from outside.
+    receives: true
+    sends: true
+    # WHAT THE INSTRUMENT HOLDS: "A total of 128 patches are accessible from the front panel. They
+    # are organised in 16 banks (A1-H2) featuring 8 patches each" (manual p. 16). 128 is exactly
+    # what a program change reaches, so no bank select is needed for it - which is why controller 0
+    # below is `Bank Select` and the count still fits.
+    presets: 128
+  # SUPPORTED, AND IT IS A TRANSMIT OPTION RATHER THAN A MODE. "NRPN mode. When enabled (LED lit),
+  # parameter changes are transmitted as unregistered parameter number messages at a resolution of
+  # 14 bits if MIDI CC Transmit is also enabled" (manual p. 103) - so it changes what the
+  # instrument sends. **Receiving is always both**: "When MIDI CC Receive is enabled, the Super 6
+  # will always respond to both parameter changes sent in 7 and 14 bit resolution" (manual p. 103).
+  # So a sender chooses the resolution and a listener never has to, and the 41 controls below that
+  # carry both numbers can be driven either way.
+  nrpn: supported
+  # NOT RECORDED: system exclusive and the mode. See the source account - the absence is a silence
+  # rather than an enumeration, because the two tables that enumerate would not have listed it.
+  # `control_change` is left unset because a map is published - see the controls below. It travels
+  # both ways and each direction is its own switch: "MIDI CC Transmit. When enabled (LED lit),
+  # parameter changes are transmitted as continuous controller messages" (manual p. 103) and the
+  # same sentence for Receive, which is what TX/RX E is for.
+
+voice:
+  addressing: pitches
+  # TWELVE, AND SIX WHEN BINAURAL, WHICH IS THE DEFAULT. "The Super 6 defaults to binaural mode, in
+  # which its 12 voices are twinned to form six stereo 'super voices'" (manual p. 93), and the
+  # other mode is named from the other side: "In 12-voice non-binaural mode, each of these six LFOs
+  # is shared by two voices" (manual p. 54).
+  # **THE CLEAREST STATEMENT OF THE COUNT IS NOT CITED AND THE SOURCE ACCOUNT SAYS WHY** - it is on
+  # a page the document numbers xii.
+  polyphony: 12
+  # Six or twelve, by the BINAURAL button. **And MPE mode is a third state at six**, for a hardware
+  # reason rather than a setting - see `midi.per_voice_channels` above.
+  voicing_modes: [6, 12]
+  velocity:
+    # `Note On` and `Note Off` are both Yes in both columns of the Channel Messages table (manual
+    # p. 120), and velocity has to be switched on for MPE to use it: "Note On Velocity: For this
+    # MIDI message to take effect in MPE mode, set the DYNAMICS switch in the VCA section to
+    # either 1/2 or ON." (manual p. 105).
+    note_on: both
+    # **NOTE OFF VELOCITY IS REAL HERE, WHICH IS RARE**: the same page gives it its own bullet -
+    # "Note Off Velocity: For this MIDI message to take effect in MPE mode, set the DYNAMICS
+    # switch in the VCA section to either 1/2 or ON." (manual p. 105).
+    note_off: true
+  # POLYPHONIC RECEIVED AND CHANNEL BOTH WAYS, which the Channel Messages table says row by row:
+  # `Polyphonic Key Pressure` is **No transmitted and Yes received**, while `Channel Pressure` is
+  # Yes in both columns (manual p. 120). So it answers to polyphonic pressure and never sends it,
+  # and sends and answers to channel pressure - recorded as `poly` because that is the wider thing
+  # it answers to, which is how the Hydrasynth Explorer and the Iridium record theirs.
+  aftertouch: poly
+  pitch_bend:
+    # TWELVE SEMITONES, STATED TWICE AND FROM TWO DIRECTIONS. "The maximum pitch-bend range is one
+    # octave" (manual p. 70), and the registered parameter table gives the same figure as a data
+    # entry value: RPN 0 is `Pitch Bend Sensitivity` with "MSB = +/- 12 semitones" (manual p. 127).
+    semitones: 12
+    # And it is settable from the panel by playing the note you want the bend to reach: "if you
+    # press D4, the bend range is 2 semitones, so you can bend from A#3 to D4 when playing a C4"
+    # (manual p. 77).
+    programmable: true
+  # NOT RECORDED: the note range, which no page states.
+
+groups:
+  # ONE GROUP, FOR THE FIVE SETTINGS THE MAKER PUTS UNDER ITS OWN HEADING. The NRPN chapter divides
+  # its parameters into "Global Parameters" (manual p. 128) and "Patch-Related Parameters" (manual
+  # p. 129), and the five below are the first of those.
+  # **THE OTHER 82 CONTROLS GET NO GROUP**, and that is this maker's doing rather than a gap here:
+  # the controller table is one flat list of 128 rows with no headings in it, and the manual's
+  # chapters divide the instrument by panel section in a way the table does not follow. Inventing
+  # a grouping the table does not have would be inventing one the maker does not have.
+  global: Global
+
+controls:
+
+  # the controller table, in its own order ──────────────
+  bank_select:                          {label: Bank Select, cc: 0}
+  modulation_lever:                     {label: Modulation Lever, cc: 1}
+  tempo:                                {label: Tempo, cc: 3, nrpn: 1027, nrpn_range: [0, 16383]}
+  foot_controller:                      {label: Foot Controller, cc: 4}
+  portamento_time:                      {label: Portamento Time, cc: 5, nrpn: 1029, nrpn_range: [0, 16383]}
+  vca_envelope_level:                   {label: VCA Envelope Level, cc: 7, nrpn: 1031, nrpn_range: [0, 16383]}
+  expression:                           {label: Expression, cc: 11}
+  delay_time:                           {label: Delay Time, cc: 12, nrpn: 1036, nrpn_range: [0, 16383]}
+  delay_feedback:                       {label: Delay Feedback, cc: 13, nrpn: 1037, nrpn_range: [0, 16383]}
+  sequence_load:                        {label: Sequence Load, cc: 14}
+  lfo_1_waveform_hf_mode:               {label: LFO 1 Waveform/HF Mode, cc: 16, values: {"triangle": 0, "square": 21, "random": 43, "saw": 64, "hf": 85, "hf_trk": 107}}
+  lfo_1_rate:                           {label: LFO 1 Rate, cc: 17, nrpn: 1041, nrpn_range: [0, 16383]}
+  lfo_1_delay:                          {label: LFO 1 Delay, cc: 18, nrpn: 1042, nrpn_range: [0, 16383]}
+  lfo_1_lr_phase:                       {label: LFO 1 LR Phase, cc: 19, nrpn: 1043, nrpn_range: [0, 16383]}
+  lfo_1_mode:                           {label: LFO 1 Mode, cc: 20, values: {"free_norm": 0, "once_dds_1": 43, "reset_dds_2": 85}}
+  dds_lfo_1_amount:                     {label: DDS LFO 1 Amount, cc: 21, nrpn: 1045, nrpn_range: [0, 16383]}
+  dds_env_1_amount:                     {label: DDS Env 1 Amount, cc: 22, nrpn: 1046, nrpn_range: [0, 16383]}
+  dds_modulator_destination:            {label: DDS Modulator Destination, cc: 23, values: {"dds_1": 0, "both": 43, "dds_2": 85}}
+  super_mode:                           {label: Super Mode, cc: 24, values: {"off": 0, "n1_2": 43, "on": 85}}
+  pw_detune:                            {label: PW/Detune, cc: 25, nrpn: 1049, nrpn_range: [0, 16383]}
+  pwm_swm:                              {label: PWM/SWM, cc: 26, nrpn: 1050, nrpn_range: [0, 16383]}
+  pwm_swm_source:                       {label: PWM/SWM Source, cc: 27, values: {"lfo_1": 0, "both": 43, "env_1": 85}}
+  cross_modulation:                     {label: Cross Modulation, cc: 28, nrpn: 1052, nrpn_range: [0, 16383]}
+  dds_1_waveform:                       {label: DDS 1 Waveform, cc: 29, values: {"sine": 0, "saw": 21, "square": 43, "triangle": 64, "noise": 85, "alternative_waveform": 107}}
+  dds_1_range:                          {label: DDS 1 Range, cc: 30, values: {"n64": 0, "n32": 21, "n16": 43, "n8": 64, "n4": 85, "n2": 107}}
+  dds_2_waveform:                       {label: DDS 2 Waveform, cc: 31, values: {"sine": 0, "saw": 21, "square": 43, "triangle": 64, "noise": 85, "pulse": 107}}
+  envelope_1_decay_hold:                {label: Envelope 1 Decay Hold, cc: 32, nrpn: 1056, nrpn_range: [0, 16383]}
+  envelope_2_decay_hold:                {label: Envelope 2 Decay Hold, cc: 33, nrpn: 1057, nrpn_range: [0, 16383]}
+  dds_2_range:                          {label: DDS 2 Range, cc: 34, values: {"lfo": 0, "n32": 21, "n16": 43, "n8": 64, "n4": 85, "n2": 107}}
+  dds_2_tune:                           {label: DDS 2 Tune, cc: 35, nrpn: 1059, nrpn_range: [0, 16383]}
+  dds_2_mode:                           {label: DDS 2 Mode, cc: 36, values: {"norm": 0, "x_fade_sub_osc": 43, "sync_audio_in": 85}}
+  oscillator_mix_split_point:           {label: Oscillator Mix/Split Point, cc: 37, nrpn: 1061, nrpn_range: [0, 16383]}
+  vcf_hpf_mode:                         {label: VCF HPF Mode, cc: 40, values: {"off": 0, "fix": 43, "trk": 85}}
+  vcf_drive:                            {label: VCF Drive, cc: 41, values: {"off": 0, "n1": 43, "n2": 85}}
+  vcf_keytrack:                         {label: VCF Keytrack, cc: 43, values: {"off": 0, "n1_2": 43, "on": 85}}
+  vcf_envelope_source:                  {label: VCF Envelope Source, cc: 44, values: {"env_1": 0, "n1_2": 43, "env_2": 85}}
+  vcf_envelope_amount:                  {label: VCF Envelope Amount, cc: 45, nrpn: 1069, nrpn_range: [0, 16383]}
+  vcf_lfo_1_amount:                     {label: VCF LFO 1 Amount, cc: 46, nrpn: 1070, nrpn_range: [0, 16383]}
+  vcf_dds_2_amount:                     {label: VCF DDS 2 Amount, cc: 47, nrpn: 1071, nrpn_range: [0, 16383]}
+  vca_dynamics:                         {label: VCA Dynamics, cc: 48, values: {"off": 0, "n1_2": 43, "on": 85}}
+  vca_envelope_mode:                    {label: VCA Envelope Mode, cc: 49, values: {"env_2": 0, "fixed_env_1": 43, "fixed_env_2": 85}}
+  envelope_1_mode:                      {label: Envelope 1 Mode, cc: 50, values: {"normal": 0, "inverted": 43, "loop": 85}}
+  envelope_1_keytrack:                  {label: Envelope 1 Keytrack, cc: 51, values: {"off": 0, "n1_2": 43, "on": 85}}
+  envelope_1_attack_hold:               {label: Envelope 1 Attack Hold, cc: 52, nrpn: 1076, nrpn_range: [0, 16383]}
+  envelope_1_attack:                    {label: Envelope 1 Attack, cc: 53, nrpn: 1077, nrpn_range: [0, 16383]}
+  envelope_1_decay:                     {label: Envelope 1 Decay, cc: 54, nrpn: 1078, nrpn_range: [0, 16383]}
+  envelope_1_sustain:                   {label: Envelope 1 Sustain, cc: 55, nrpn: 1079, nrpn_range: [0, 16383]}
+  envelope_1_release:                   {label: Envelope 1 Release, cc: 56, nrpn: 1080, nrpn_range: [0, 16383]}
+  envelope_2_decay:                     {label: Envelope 2 Decay, cc: 57, nrpn: 1081, nrpn_range: [0, 16383]}
+  envelope_2_sustain:                   {label: Envelope 2 Sustain, cc: 58, nrpn: 1082, nrpn_range: [0, 16383]}
+  manual_mode:                          {label: Manual Mode, cc: 59, values: {"off": 0, "on": 64}}
+  lfo_2_trigger_source:                 {label: LFO 2 Trigger Source, cc: 60, values: {"trig": 0, "at_trig": 43, "on": 85}}
+  performance_control_destination:      {label: Performance Control Destination, cc: 61, values: {"dds_1": 0, "n1_2": 43, "dds_2": 85}}
+  lfo_2_rate:                           {label: LFO 2 Rate, cc: 62, nrpn: 1086, nrpn_range: [0, 16383]}
+  lfo_2_delay:                          {label: LFO 2 Delay, cc: 63, nrpn: 1087, nrpn_range: [0, 16383]}
+  sustain_pedal:                        {label: Sustain Pedal, cc: 64, values: {"off": 0, "on": 64}}
+  octave_select:                        {label: Octave Select, cc: 67, values: {"n2": 0, "n1": 26, "n0": 51}}
+  delay_freeze:                         {label: Delay Freeze, cc: 69, values: {"off": 0, "on": 64}}
+  dds_lfo_2_amount:                     {label: DDS LFO 2 Amount, cc: 70, nrpn: 1094, nrpn_range: [0, 16383]}
+  vcf_resonance:                        {label: VCF Resonance, cc: 71, nrpn: 1095, nrpn_range: [0, 16383]}
+  envelope_2_release:                   {label: Envelope 2 Release, cc: 72, nrpn: 1096, nrpn_range: [0, 16383]}
+  envelope_2_attack:                    {label: Envelope 2 Attack, cc: 73, nrpn: 1097, nrpn_range: [0, 16383]}
+  vcf_cutoff_frequency:                 {label: VCF Cutoff Frequency, cc: 74, nrpn: 1098, nrpn_range: [0, 16383]}
+  vcf_lfo_2_amount:                     {label: VCF LFO 2 Amount, cc: 75, nrpn: 1099, nrpn_range: [0, 16383]}
+  dds_pitch_bend_amount:                {label: DDS Pitch Bend Amount, cc: 76, nrpn: 1100, nrpn_range: [0, 16383]}
+  vcf_pitch_bend_amount:                {label: VCF Pitch Bend Amount, cc: 77, nrpn: 1101, nrpn_range: [0, 16383]}
+  voice_assign_mode:                    {label: Voice Assign Mode, cc: 78, values: {"poly_2": 0, "poly_1": 26, "unison": 51, "legato": 77, "solo": 102}}
+  unison_size:                          {label: Unison Size, cc: 79, values: {"n3_voices": 0, "n6_voices": 26, "n6_voices_octave": 51, "n6_voices_octave_fifth": 77, "n6_voices_major_chord": 102}}
+  binaural_mode:                        {label: Binaural Mode, cc: 80, values: {"off": 0, "on": 64}}
+  clock_sync:                           {label: Clock Sync, cc: 81, values: {"off": 0, "on": 64}}
+  arpeggiator_range:                    {label: Arpeggiator Range, cc: 82, values: {"n1_octave": 0, "n2_octaves": 32, "n3_octaves": 64, "n4_octaves": 96}}
+  arpeggiator_sequencer_swing:          {label: Arpeggiator/Sequencer Swing, cc: 83, values: {"swing_0": 0, "swing_1": 26, "swing_2": 51, "swing_3": 77, "swing_4": 102}}
+  arpeggiator_sequencer_external_clock: {label: Arpeggiator/Sequencer External Clock, cc: 84, values: {"off": 0, "on": 64}}
+  arpeggiator_sequencer_mode:           {label: Arpeggiator/Sequencer Mode, cc: 85, values: {"up": 0, "down": 26, "up_down": 51, "random": 77, "sequencer": 102}}
+  arpeggiator_sequencer_on_off:         {label: Arpeggiator/Sequencer On/Off, cc: 86, values: {"off": 0, "on": 64}}
+  arpeggiator_sequencer_hold:           {label: Arpeggiator/Sequencer Hold, cc: 87, values: {"off": 0, "on": 64}}
+  delay_level:                          {label: Delay Level, cc: 91, nrpn: 1115, nrpn_range: [0, 16383]}
+  vca_lfo_1_amount:                     {label: VCA LFO 1 Amount, cc: 92, nrpn: 1116, nrpn_range: [0, 16383]}
+  chorus:                               {label: Chorus, cc: 93, values: {"off": 0, "chorus_1": 32, "chorus_2": 64, "chorus_1_2": 96}}
+  drift:                                {label: Drift, cc: 94, nrpn: 1118, nrpn_range: [0, 16383]}
+  hpf_fix_cutoff_frequency:             {label: HPF Fix Cutoff Frequency, cc: 95, nrpn: 1119, nrpn_range: [0, 16383]}
+
+  # Global ──────────────────────────────────────────────
+  midi_channel:                         {label: MIDI Channel, nrpn: 2051, values: {"midi_channel_1": 0, "midi_channel_16": 15}, group: global}
+  midi_clock_transmit:                  {label: MIDI Clock Transmit, nrpn: 2052, values: {"off": 0, "on": 1}, group: global}
+  midi_clock_receive:                   {label: MIDI Clock Receive, nrpn: 2053, values: {"off": 0, "on": 1}, group: global}
+  midi_program_change_transmit:         {label: MIDI Program Change Transmit, nrpn: 2055, values: {"off": 0, "on": 1}, group: global}
+  midi_program_change_receive:          {label: MIDI Program Change Receive, nrpn: 2056, values: {"off": 0, "on": 1}, group: global}

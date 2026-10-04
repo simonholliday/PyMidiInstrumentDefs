@@ -1,0 +1,314 @@
+# TWO TABLES, AND NEITHER WOULD DO ON ITS OWN. The S-1's MIDI is at the back of its owner's manual
+# in two pieces: an implementation chart on p. 73 whose Control Change rows give **ranges and no
+# names at all** - `12-31`, `71-76`, `102-107` - and a control change list on pp. 73 to 75 that
+# gives a name for every number and says nothing about direction. **The chart has the directions
+# and the list has the names**, and the thirteen ranges cover exactly the fifty-four numbers the
+# list has, which is the one cross-check the manual affords.
+#
+# SIX CONTROLS ARE RECEIVED AND NEVER SENT, and the chart is where that is: six of its thirteen
+# Control Change rows are x transmitted and o received, and the numbers in them - 1, 10, 11, 64, 65
+# and 77 - are the only ones below marked `receives`. They are the modulation wheel, pan, the
+# expression and damper pedals, portamento on-off and the transpose switch.
+#
+# **TWO CONTROLS HAVE THE SAME NAME AND THE MAKER TELLS THEM APART WITH A DRAWING.** Controllers 19
+# and 20 are both an OSC LEVEL for an OSCILLATOR knob (manual p. 74), with a waveform symbol in
+# place of the knob's name that no text extraction returns - it is a small bitmap rather than a
+# character. Read off the page, **19's is a pulse wave and 20's is a sawtooth**, so they are the
+# levels of the two oscillator waveforms. The number goes on the end of each name here, and a
+# reader should know that what distinguishes them in the maker's own document is something a
+# machine cannot read.
+#
+# IT ANSWERS ON TWO CHANNELS AT ONCE, AND BOTH ARE SETTABLE. Its chart's Basic Channel default
+# cell names two of them, 3 for the synth and 16 for program change, and wraps across two lines in
+# doing so (manual p. 73): one channel for notes and controllers, another for the program changes
+# that change patterns. The manual has a menu entry for each - "CH (MIDI Channel)" (manual p. 68)
+# and "Pc.Ch (Program Change Channel)" (manual p. 68), both 1 to 16. The two are the parts below.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: S-1
+  # THE CHART HEADS ITSELF "AIRA Compact" (manual p. 73), which is Roland's name for the family
+  # this belongs to rather than for this instrument. **This file is the S-1 and no sibling**, and
+  # the name is worth a caution of its own: a Stylophone S-1 exists and is a different instrument
+  # from a different maker.
+  # The manual is "Version 1.02" (manual p. 73) and its chart is dated "Apr. 18, 2023" (manual
+  # p. 73). **No firmware number appears anywhere in it** - not on the cover, not in the menus and
+  # not in the specification - and Roland publishes no release notes for this instrument, so there
+  # is none to record. What the numbers below match is the manual of April 2023.
+
+source: >-
+  S-1 Owner's Manual, version 1.02, 75 pages: **every number below is on one of its last three**.
+  Its MIDI implementation chart is p. 73 and its control change list runs from the foot of that
+  page to the end of p. 75. The rest is cited for the two channels, the patterns, the polyphony and
+  the connectors. And Roland's owner's manuals page for the S-1, for what is published.
+
+  ROLAND PUBLISHES THIS MANUAL AS WEB PAGES AND AS A PDF, in nine languages each, and **they are
+  the same document**: the listing offers "S-1 Owner's Manual (Version 1.02) [HTML]" (downloads)
+  and "S-1 Owner's Manual (Version 1.02) [PDF]" (downloads) side by side, both at version
+  1.02, and the PDF is what this definition reads because it is the one a machine can check.
+
+  THE CHART'S MARKS ARE LETTERS AND NOT DRAWINGS, which was the first thing checked - another
+  maker's chart in this library draws every one of its yes and no marks as a vector and returns
+  none of them to a machine. Roland's are **lower-case** `o` and `x`, where most makers use
+  capitals, so a check that looked for the capitals would have found nothing and concluded the
+  same thing wrongly.
+
+  **TRYING THE NUMBERS FOUND AN UNLISTED EDITION, AND IT IS THE SAME DOCUMENT.** The PDF is served
+  as `S-1_eng02_W.pdf`; `S-1_eng01_W.pdf` is live and unlisted beside it, at 4,322,959 bytes
+  against 2,835,392, and `eng00` and `eng03` to `eng05` all answer 403. The two were built six days
+  apart in May 2023 and **are identical in text on 72 of their 75 sheets**: what differs is a
+  five-word phrase about charging temperature that moves from one page to the next, and the edition
+  number on the last page. Both say "Version 1.02" (manual p. 73) inside. So this is a re-export
+  rather than a correction, and nothing in the definition changes either way. The method found a
+  missing edition for another Roland in this library and found nothing here; both are worth having.
+
+  THE TWO TABLES AGREE ABOUT WHICH NUMBERS EXIST, which is asserted rather than assumed. The
+  chart's thirteen Control Change rows carry ranges - 1, 3, 5, 10, 11, 12-31, 64, 65, 71-76, 77,
+  78-83, 85-87, 89-93 and 102-107 - and expanding them gives exactly the fifty-four numbers the
+  list names, with nothing in one and not the other.
+
+  AND FIVE OF THE LIST'S EXPLANATIONS HAVE A HOLE IN THEM. Controllers 15, 19, 20, 102 and 107 each
+  have an empty bracket where the manual draws a waveform - a small bitmap, not a character - that
+  no text extraction returns. Read off the page, the pulse wave is in 15, 19 and 102 and the
+  sawtooth in 20 and 107. For three of them the symbol is inside the panel route and costs nothing;
+  **for 19 and 20 it is the only thing that tells two identically-named controls apart**, and it
+  is what says 19 is the pulse oscillator's level and 20 the sawtooth's.
+
+  THE LIST ENDS ON P. 74 AND THE RUNNING HEAD SAYS OTHERWISE. Printed p. 75 carries the heading
+  "MIDI implementation chart" (manual p. 75) and no table at all: it is the colophon. A reader
+  turning to the last page for the last of the controllers finds nothing and might conclude the
+  list was truncated.
+
+  THE CHART HAS NO LEGEND. The block that normally sits under a chart of this shape - the one that
+  says what Mode 1 to Mode 4 are and that `o` means yes and `x` means no - is absent, so this
+  chart's marks are never defined anywhere in the manual. They are read here as every other chart
+  in this library reads them.
+
+  WHAT IS ABSENT, from the chart's own rows. System exclusive is x in both columns, and so are song
+  position, song select, tune request, and omni, mono and poly mode. Continue is x in both columns
+  where start and stop are o in both, so **it answers to a transport it cannot be told to resume**.
+  Aftertouch is x in all four of its cells. Pitch bend is x transmitted and o received. And the
+  words NRPN, RPN and Registered Parameter appear nowhere in the manual's 75 pages.
+
+sources:
+  manual:
+    kind: manual
+    title: S-1 Owner's Manual
+    edition: "1.02"
+    dated: "2023-04-18"
+    landing: "https://www.roland.com/global/support/by_product/s-1/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/S-1_eng02_W.pdf"
+    sha256: 50116d7e9cb2a3b44fd18da9a986d9043bbf794c7cde228ba15c4cdeed0c2297
+    retrieved: 2026-10-04
+    page_offset: 0
+    # **EVERY NUMBER IN THIS FILE COMES FROM ITS LAST THREE PAGES.** 75 pages, printed numbers
+    # matching the sheets exactly, built 2023-05-15 with Acrobat PDFMaker. Roland serves it from
+    # `static.roland.com` behind a UUID page under `/owners_manuals/`, so it cannot be fetched from
+    # the listing alone and resolving the UUID is what exposes the edition number in the file name.
+  manual_other_upload:
+    kind: manual
+    title: S-1 Owner's Manual
+    edition: "1.02"
+    dated: "2023-04-18"
+    landing: "https://www.roland.com/global/support/by_product/s-1/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/S-1_eng01_W.pdf"
+    sha256: 3c836836c995a06bdf73e00e6c3f96178b52423fb47912b8a254e7b72ec879c8
+    retrieved: 2026-10-04
+    page_offset: 0
+    # **THE SAME MANUAL, SERVED AT A NAME THE LISTING DOES NOT OFFER**, found by trying the numbers
+    # in the file name. It is cited for nothing and recorded because it exists: a reader who found
+    # it would want to know it is not a different edition. Identical in text on 72 of 75 sheets,
+    # built six days earlier, half as large again.
+  downloads:
+    kind: download_page
+    title: "Roland - Support - S-1 - Owner's Manuals"
+    landing: "https://www.roland.com/global/support/by_product/s-1/owners_manuals/"
+    url: "https://www.roland.com/global/support/by_product/s-1/owners_manuals/"
+    sha256: d876cd09710e6080b473f02a050357e894345432bea2a77a08154414ab855989
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for what Roland publishes: the owner's manual in nine languages, as web pages and as a
+    # PDF, **all of them at version 1.02 and none newer**. No separate MIDI document, no release
+    # notes and no firmware.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # b010e8f6690175530f6f495b5bd18df431e995e47e7ffe2aa2e266dfd79d996f.
+
+midi:
+  # The chart's Basic Channel row gives "1–16" (manual p. 73) in both columns against Changed,
+  # which is the range either of the two channels below can be set to. Both menus agree.
+  channels: [1, 16]
+  # "Mode 3" in both columns, with Messages and Altered both x (manual p. 73). Omni off, poly.
+  mode: 3
+  # The chart's Clock row is o in both columns (manual p. 73), and the manual's menu has a setting
+  # for where it comes from: "SYnC (MIDI Clock Sync)" (manual p. 68), whose settings are "AUtO",
+  # "Int", "NiDi" and "USb" (manual p. 68).
+  clock: both
+  # Start and Stop are both o in both columns (manual p. 73). **Continue is x in both**, so it
+  # answers to a transport it cannot be told to resume - which is unusual enough to say out loud.
+  transport: both
+  program_change:
+    # o in both columns, with a True Number of "0–63" in both (manual p. 73). Two menu settings
+    # govern it: "txPc (Tx Program Change)" (manual p. 68) and "rxPc (Rx Program Change)"
+    # (manual p. 68).
+    receives: true
+    sends: true
+    # WHAT THE INSTRUMENT HOLDS, and the chart's own range agrees: "The patterns are arranged in
+    # banks (1–4) and numbers (1–16), for a total of 64 patterns." (manual p. 9), which is the 0
+    # to 63 of its True Number row.
+    presets: 64
+  # x in both columns (manual p. 73).
+  sysex: false
+  # CHECKED AND ABSENT. The words NRPN, RPN and Registered Parameter appear nowhere in the manual's
+  # 75 pages.
+  nrpn: none
+
+parts:
+  # TWO CHANNELS AT ONCE, AND THE CHART GIVES BOTH DEFAULTS. Its Basic Channel row names 3 for the
+  # synth and 16 for program change, in both columns (manual p. 73) - one channel carrying the
+  # notes and the controllers, another carrying only the program changes that change patterns. The
+  # manual
+  # has a menu entry for each and both take 1 to 16, so neither is fixed and neither derives from
+  # the other, which is what `assigned` says.
+  synth:
+    label: Synth
+    channel: assigned
+    receives: [notes, controls]
+    # ALL FOUR OF THE INSTRUMENT'S VOICES, because the other part does not sound: "Maximum
+    # Polyphony 4 voices" (manual p. 71), which the panel reaches as a chord - "Lets you play more
+    # than one tone at the same time (up to four voices)." (manual p. 24). The three CHORD VOICE
+    # switches below are how the other three are turned on.
+    polyphony: 4
+  pattern:
+    label: Pattern
+    channel: assigned
+    # "Sets the MIDI channel for transmitting/receiving the program change messages used to change
+    # patterns." (manual p. 68) - and nothing else reaches it.
+    receives: [program_change]
+
+voice:
+  # NOT SHARED, AND THE FIGURE IS ON THE PART, because only one of the two parts sounds at all:
+  # the pattern part takes program change and nothing else. So "Maximum Polyphony 4 voices"
+  # (manual p. 71) is stated against the synth part above rather than here - the format's rule is
+  # to say it once, where it is true.
+  polyphony_shared: false
+  # "0–127" in both columns of the chart's Note Number row, with a True Voice of the same (manual
+  # p. 73). The instrument itself has no keyboard in the ordinary sense - its keys are pads - and
+  # the chart's figure is what it will sound.
+  note_range: [0, 127]
+  velocity:
+    # "o" in both columns of the chart's Note On row (manual p. 73).
+    note_on: received
+    # "x" in both columns of its Note Off row (manual p. 73), so release velocity is neither sent
+    # nor acted on.
+    note_off: false
+  # A checked absence, from the chart's own rows: Key's and Channel's are both x in both columns
+  # (manual p. 73).
+  aftertouch: none
+  # NOT RECORDED: how far it bends. The chart marks Pitch Bend x transmitted and o received (manual
+  # p. 73) - so it answers to a bend it will never send - and gives no range. Two controls below
+  # set how far a bend reaches, one for the oscillator and one for the filter, and the manual gives
+  # no figure for either.
+
+groups:
+  # THE FIRST WORD OF THE MAKER'S OWN NAME FOR EACH CONTROL, which is also how its panel is laid
+  # out. Two merges the maker's own brackets license: the poly mode and the three chord voices all
+  # reach the panel through the `[POLY]` pad, and reverb, delay and chorus are the effects.
+  # **Two controls get no group** - the transpose switch and the noise mode - because inventing one
+  # for a single control would invent a grouping the maker does not have.
+  midi: MIDI
+  lfo: LFO
+  portamento: Portamento
+  osc: Oscillator
+  filter: Filter
+  amp: Amp
+  env: Envelope
+  chord: Chord
+  effects: Effects
+controls:
+
+  # ──── midi ────
+
+  modulation_wheel:        {label: Modulation Wheel, cc: 1, direction: receives, group: midi}
+  pan:                     {label: Pan, cc: 10, direction: receives, group: midi}
+  expression_pedal:        {label: Expression Pedal, cc: 11, direction: receives, group: midi}
+  damper_pedal:            {label: Damper Pedal, cc: 64, direction: receives, group: midi}
+
+  # ──── lfo ────
+
+  lfo_rate:                {label: LFO RATE, cc: 3, group: lfo}
+  lfo_wave_form:           {label: LFO WAVE FORM, cc: 12, group: lfo}
+  lfo_modulation_depth:    {label: LFO MODULATION DEPTH, cc: 17, group: lfo}
+  lfo_mode:                {label: LFO MODE, cc: 79, group: lfo}
+  lfo_key_trigger:         {label: LFO KEY TRIGGER, cc: 105, group: lfo}
+  lfo_sync:                {label: LFO SYNC, cc: 106, group: lfo}
+
+  # ──── portamento ────
+
+  portamento_time:         {label: PORTAMENTO TIME, cc: 5, group: portamento}
+  portamento_mode:         {label: PORTAMENTO MODE, cc: 31, group: portamento}
+  portamento:              {label: PORTAMENTO, cc: 65, direction: receives, group: portamento}
+
+  # ──── osc ────
+
+  osc_lfo:                 {label: OSC LFO, cc: 13, group: osc}
+  osc_range:               {label: OSC RANGE, cc: 14, group: osc}
+  osc_pulse_width:         {label: OSC PULSE WIDTH, cc: 15, group: osc}
+  osc_pwm_source:          {label: OSC PWM SOURCE, cc: 16, group: osc}
+  osc_bend_sens:           {label: OSC BEND SENS, cc: 18, group: osc}
+  osc_level_19:            {label: OSC LEVEL, cc: 19, group: osc}
+  osc_level_20:            {label: OSC LEVEL, cc: 20, group: osc}
+  osc_sub_osc_level:       {label: OSC SUB OSC LEVEL, cc: 21, group: osc}
+  osc_sub_oct_type:        {label: OSC SUB OCT TYPE, cc: 22, group: osc}
+  osc_noise_level:         {label: OSC NOISE LEVEL, cc: 23, group: osc}
+  fine_tune:               {label: FINE TUNE, cc: 76, group: osc}
+  osc_draw_multiply:       {label: OSC DRAW MULTIPLY, cc: 102, group: osc}
+  osc_chop_overtone:       {label: OSC CHOP OVERTONE, cc: 103, group: osc}
+  osc_chop_comb:           {label: OSC CHOP COMB, cc: 104, group: osc}
+  osc_draw_sw:             {label: OSC DRAW SW, cc: 107, group: osc}
+
+  # ──── filter ────
+
+  filter_envelope:         {label: FILTER ENVELOPE, cc: 24, group: filter}
+  filter_lfo:              {label: FILTER LFO, cc: 25, group: filter}
+  filter_keyboard_follow:  {label: FILTER KEYBOARD FOLLOW, cc: 26, group: filter}
+  filter_bend_sens:        {label: FILTER BEND SENS, cc: 27, group: filter}
+  filter_resonance:        {label: FILTER RESONANCE, cc: 71, group: filter}
+  filter_frequency:        {label: FILTER FREQUENCY, cc: 74, group: filter}
+
+  # ──── amp ────
+
+  amp_envelope_mode_sw:    {label: AMP ENVELOPE MODE SW, cc: 28, group: amp}
+
+  # ──── env ────
+
+  env_trigger_mode:        {label: ENV TRIGGER MODE, cc: 29, group: env}
+  env_sustain:             {label: ENV SUSTAIN, cc: 30, group: env}
+  env_release:             {label: ENV RELEASE, cc: 72, group: env}
+  env_attack:              {label: ENV ATTACK, cc: 73, group: env}
+  env_decay:               {label: ENV DECAY, cc: 75, group: env}
+
+  # ──── chord ────
+
+  poly_mode:               {label: POLY MODE, cc: 80, group: chord}
+  chord_voice_2_sw:        {label: CHORD VOICE 2 SW, cc: 81, group: chord}
+  chord_voice_3_sw:        {label: CHORD VOICE 3 SW, cc: 82, group: chord}
+  chord_voice_4_sw:        {label: CHORD VOICE 4 SW, cc: 83, group: chord}
+  chord_voice_2_key_shift: {label: CHORD VOICE 2 KEY SHIFT, cc: 85, group: chord}
+  chord_voice_3_key_shift: {label: CHORD VOICE 3 KEY SHIFT, cc: 86, group: chord}
+  chord_voice_4_key_shift: {label: CHORD VOICE 4 KEY SHIFT, cc: 87, group: chord}
+
+  # ──── effects ────
+
+  reverb_time:             {label: REVERB TIME, cc: 89, group: effects}
+  delay_time:              {label: DELAY TIME, cc: 90, group: effects}
+  reverb_level:            {label: REVERB LEVEL, cc: 91, group: effects}
+  delay_level:             {label: DELAY LEVEL, cc: 92, group: effects}
+  chorus:                  {label: CHORUS, cc: 93, group: effects}
+
+  # ──── no group of its own ────
+
+  transpose_sw:            {label: TRANSPOSE SW, cc: 77, direction: receives}
+  noise_mode:              {label: NOISE MODE, cc: 78}

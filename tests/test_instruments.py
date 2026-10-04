@@ -184,6 +184,7 @@ class TestBundledCorpus:
 			"roland/juno_106",
 			"roland/mc_101",
 			"roland/mc_707",
+			"roland/s_1",
 			"roland/tr8s",
 			"roland/tr_1000",
 			"sequential/prophet_6",
@@ -8244,3 +8245,123 @@ class TestMonologue:
 		theirs = {control.cc for control in minilogue.controls.values()}
 
 		assert mine != theirs
+
+
+class TestS1:
+
+	"""A Roland whose chart gives ranges with no names and whose list gives names with no direction."""
+
+	def test_fifty_four_controls_from_two_tables (self) -> None:
+		"""The chart's thirteen ranges expand to exactly the list's fifty-four numbers."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert len(s1.controls) == 54
+		assert len(s1.groups) == 9
+
+		numbers = sorted(control.cc for control in s1.controls.values() if control.cc is not None)
+
+		assert numbers[0] == 1 and numbers[-1] == 107
+		assert len(numbers) == len(set(numbers))
+
+		said = prose_of("roland", "s_1")
+
+		assert "TWO TABLES, AND NEITHER WOULD DO ON ITS OWN" in said
+
+	def test_six_controls_are_received_and_never_sent (self) -> None:
+		"""Six of the chart's thirteen Control Change rows are x transmitted and o received."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		receives = sorted(control.cc for control in s1.controls.values()
+			if control.direction == "receives" and control.cc is not None)
+
+		assert receives == [1, 10, 11, 64, 65, 77]
+
+	def test_two_controls_are_told_apart_by_a_drawing (self) -> None:
+		"""Both read OSC LEVEL and the waveform between the brackets is the only difference."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert s1.controls["osc_level_19"].cc == 19
+		assert s1.controls["osc_level_20"].cc == 20
+		assert s1.controls["osc_level_19"].label == s1.controls["osc_level_20"].label
+
+		said = prose_of("roland", "s_1")
+
+		assert "TWO CONTROLS HAVE THE SAME NAME AND THE MAKER TELLS THEM APART WITH A DRAWING" in said
+		assert "19's is a pulse wave and 20's is a sawtooth" in said
+
+	def test_it_answers_on_two_channels_at_once (self) -> None:
+		"""One for the synth, one for the program changes that change patterns."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert set(s1.parts) == {"synth", "pattern"}
+		assert s1.parts["synth"].channel == "assigned"
+		assert s1.parts["pattern"].channel == "assigned"
+		assert s1.parts["synth"].receives == ("notes", "controls")
+		assert s1.parts["pattern"].receives == ("program_change",)
+		assert s1.midi.channels == (1, 16)
+
+	def test_the_voices_are_the_synths_and_are_stated_there (self) -> None:
+		"""Only one of the two parts sounds, so the figure is said once where it is true."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert s1.voice is not None
+		assert s1.voice.polyphony is None
+		assert s1.voice.polyphony_shared is False
+		assert s1.parts["synth"].polyphony == 4
+		assert s1.parts["pattern"].polyphony is None
+
+	def test_it_answers_to_a_transport_it_cannot_be_told_to_resume (self) -> None:
+		"""Start and stop are o in both columns and continue is x in both."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert s1.midi.transport == "both"
+		assert s1.midi.clock == "both"
+
+		said = prose_of("roland", "s_1")
+
+		assert "it answers to a transport it cannot be told to resume" in said
+
+	def test_the_checked_absences (self) -> None:
+		"""Each from the chart's own rows, or a word searched for across seventy-five pages."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert s1.midi.sysex is False
+		assert s1.midi.nrpn == "none"
+		assert s1.midi.mode == 3
+		assert s1.voice is not None
+		assert s1.voice.aftertouch == "none"
+		assert s1.voice.pitch_bend is None
+		assert s1.voice.velocity is not None
+		assert s1.voice.velocity.note_off is False
+
+	def test_it_holds_sixty_four_patterns_and_the_chart_agrees (self) -> None:
+		"""Four banks of sixteen, and a True Number of 0 to 63."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert s1.midi.program_change is not None
+		assert s1.midi.program_change.presets == 64
+		assert s1.midi.program_change.receives is True
+		assert s1.midi.program_change.sends is True
+
+	def test_it_cites_two_uploads_of_one_manual (self) -> None:
+		"""The same version served twice, listed once, and identical in text."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert "manual_other_upload" in s1.sources
+		assert s1.sources["manual"].edition == s1.sources["manual_other_upload"].edition
+		assert s1.sources["manual"].sha256 != s1.sources["manual_other_upload"].sha256
+
+		said = prose_of("roland", "s_1")
+
+		assert "TRYING THE NUMBERS FOUND AN UNLISTED EDITION, AND IT IS THE SAME DOCUMENT" in said
+
+	def test_no_firmware_is_recorded_and_none_is_published (self) -> None:
+		"""A manual version is not a firmware number, and Roland publishes neither for this one."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert s1.model.firmware is None
+		assert s1.sources["manual"].edition == "1.02"
+
+		said = prose_of("roland", "s_1")
+
+		assert "No firmware number appears anywhere in it" in said

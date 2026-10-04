@@ -131,13 +131,13 @@ self-contained YAML file, and you share it by sending it.
 | Name | Instrument |
 |------|------------|
 | `akai/mpc_sample` | Akai Professional MPC Sample: no controls at all, because its maker publishes no controller number and the absence is proved rather than assumed |
-| `asm/hydrasynth_explorer` | ASM Hydrasynth Explorer: 110 controls off a chart its maker prints twice, once by module and once by number - and four more the maker puts on numbers the MIDI specification reserves for channel mode, which this format cannot hold |
 | `arturia/astrolab` | Arturia AstroLab: 36 controls off a table that gives a direction for every row in both directions - and a Section column that cannot be read as a grouping, because the rows are in controller-number order |
 | `arturia/drumbrute_impact` | Arturia DrumBrute Impact: publishes no controller number at all - its drum map is the one set of numbers it states, and it states them inside a screenshot |
 | `arturia/microfreak` | Arturia MicroFreak: four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
 | `arturia/minifreak` | Arturia MiniFreak: six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |
 | `arturia/polybrute` | Arturia PolyBrute: 74 controls off a chart set as eighteen small tables three across, whose column positions shift from one block of rows to the next |
 | `arturia/polybrute_12` | Arturia PolyBrute 12: the same 74-number chart as the PolyBrute, asserted against it number for number - plus controller 74, the MPE Slide dimension, which that chart does not list |
+| `asm/hydrasynth_explorer` | ASM Hydrasynth Explorer: 110 controls off a chart its maker prints twice, once by module and once by number - and four more the maker puts on numbers the MIDI specification reserves for channel mode, which this format cannot hold |
 | `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
 | `behringer/td_3` | Behringer TD-3: no control changes either, established from the maker's own complete MIDI message table - its "Modded Out" sibling adds exactly one and needs a definition of its own |
 | `dreadbox/typhon` | Dreadbox Typhon: 98 controllers out of a three-column list on two pages of the manual, which is the only place its maker publishes them - the standalone CC chart on the same download page belongs to a different instrument |
@@ -182,16 +182,16 @@ self-contained YAML file, and you share it by sending it.
 | `novation/mininova` | Novation MiniNova: 557 controls off a nine-sheet chart, where 105 answer to a controller number and the other 452 only to an NRPN, and no parameter to both |
 | `novation/peak` | Novation Peak: 246 controls off two documents three firmware releases apart, 33 of which carry no default, because the maker's default column does not agree with itself |
 | `oberheim/teo_5` | Oberheim TEO-5: 198 controls off an implementation document that says in its own words the map belongs to a Sequential synth |
-| `polyend/tracker` | Polyend Tracker: 80 controls in two maps that are live in different modes - the performance effects and mixer whenever it listens, the instrument's own parameters only in synthesizer mode - plus one controller the manual's table drops and the instrument's own screen shows |
+| `polyend/tracker` | Polyend Tracker: 80 controls in two maps that are live in different modes - the performance effects and mixer whenever it listens, the instrument's own parameters only in synthesiser mode - plus one controller the manual's table drops and the instrument's own screen shows |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
-| `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |
-| `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `roland/mc_101` | Roland MC-101: 28 controls over four tracks and a fifth channel that makes no sound, from a chart its maker publishes in numbered editions - of which the middle one is missing, so one firmware step was never printed |
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
+| `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
+| `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `sequential/prophet_6` | Sequential Prophet-6 keyboard and desktop module: 113 controls, most reachable by CC and by finer NRPN, from an appendix its maker prints three times over - twice in the English manual and once again in the German - with no two printings agreeing |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |
@@ -199,10 +199,10 @@ self-contained YAML file, and you share it by sending it.
 | `teenage_engineering/ep_133_ko_ii` | teenage engineering EP–133 K.O. II: four controllers and 48 pads, out of a web guide whose implementation chart says yes with a picture and no with a letter |
 | `teenage_engineering/op_1` | teenage engineering OP-1: publishes no controller number at all - four incoming control changes are routed by the player, per sound |
 | `teenage_engineering/op_xy` | teenage engineering OP-XY: its maker publishes one guide twice, and the two editions give different numbers for the same row |
-| `waldorf/blofeld` | Waldorf Blofeld: a chart with a row for all 128 controller numbers, seventeen of which are not controls - and one manual covering a Desktop with no MIDI out and a Keyboard with one |
-| `waldorf/iridium` | Waldorf Iridium: no control map at all - almost every parameter is reached by MIDI learn, so what is here is the fifteen controller numbers the maker fixes, out of a manual two product pages serve as the same bytes |
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV: a drum machine that ignores controller data |
 | `voce/electric_piano` | Voce ELECTRIC PIANO: 16 or 32 voices, depending on the chorus |
+| `waldorf/blofeld` | Waldorf Blofeld: a chart with a row for all 128 controller numbers, seventeen of which are not controls - and one manual covering a Desktop with no MIDI out and a Keyboard with one |
+| `waldorf/iridium` | Waldorf Iridium: no control map at all - almost every parameter is reached by MIDI learn, so what is here is the fifteen controller numbers the maker fixes, out of a manual two product pages serve as the same bytes |
 | `waldorf/streichfett` | Waldorf Streichfett: controls whose values are exact numbers, not bands |
 | `yamaha/dx7` | Yamaha DX7: sends one set of controllers and answers to another, out of a 1983 manual that only exists as a scan |
 

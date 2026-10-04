@@ -109,6 +109,24 @@ class TestBundledCorpus:
 
 		assert missing == []
 
+	def test_the_readmes_table_is_in_the_order_the_loader_lists_them (self) -> None:
+		"""A table of seventy-five rows is only findable if its order is the obvious one.
+
+		Sixteen rows had drifted out of place by v0.1.12 - the Hydrasynth above the five
+		Arturias, two Rolands above the two MC rows, two Waldorfs above the Vermona and
+		the Voce - because a row is added where the eye lands rather than where it sorts.
+		Nothing published reads the order, so this is for a reader of the table and for
+		nobody else, which is reason enough: a list nobody can scan is a list nobody uses.
+		"""
+		readme = (pathlib.Path(__file__).parent.parent / "README.md").read_text(encoding = "utf-8")
+
+		printed = re.findall(r"^\| `([^`]+)` \|", readme, re.MULTILINE)
+
+		assert printed == sorted(printed), "the README's table rows are out of order"
+
+		# And it is the loader's own listing, so the two cannot drift apart silently.
+		assert printed == sorted(pymidiinstrumentdefs.available([CORPUS]))
+
 	def test_a_definition_with_nrpn_controls_says_so_about_the_instrument (self) -> None:
 		"""An unset `midi.nrpn` means nobody looked, which is untrue of a file full of NRPNs.
 
@@ -203,13 +221,21 @@ class TestBundledCorpus:
 			"yamaha/dx7",
 		]
 
-	def test_no_definition_writes_a_us_spelling_in_its_own_prose (self) -> None:
+	def test_nothing_published_writes_a_us_spelling_in_its_own_prose (self) -> None:
 		"""The site this corpus feeds is written in British English and will not publish one.
 
 		A quotation keeps its source's spelling, and so does a maker's own name for a thing -
-		a control's label, a document's title - so only a definition's own account is swept.
-		This exists because three definitions had to be corrected by hand before the site
-		could take its spelling exception off, and nothing would have caught the fourth.
+		a control's label, a document's title - so what is quoted is left alone and only the
+		prose around it is swept. This exists because three definitions had to be corrected
+		by hand before the site could take its spelling exception off, and nothing would
+		have caught the fourth.
+
+		**AND THE README IS SWEPT TOO, BECAUSE IT IS PUBLISHED AND WAS NOT.** The site
+		prints it beneath its list of instruments, and "synthesizer mode" in the Polyend
+		Tracker's row stopped the site publishing v0.1.12 - the exception had to be relaxed
+		for that one word by hand. The sweep read each definition's account and nothing
+		else, so a file that ships and is rendered was never looked at. **Sweep what is
+		published, not what is convenient to load.**
 		"""
 		patterns = [
 			re.compile(r"\b[a-z]{3,}iz(e|es|ed|er|ers|ing|ation|ations)\b", re.IGNORECASE),
@@ -218,18 +244,33 @@ class TestBundledCorpus:
 				re.IGNORECASE),
 		]
 
+		def prose (text: str) -> str:
+			"""One passage with everybody else's spelling taken out of it.
+
+			Double quotation marks are a quotation and backticks are an identifier - a
+			field name, a definition's name, a file - and neither is this project's
+			prose to correct.
+			"""
+			return re.sub(r"`[^`]*`", " ", re.sub(r'"[^"]*"', " ", text))
+
 		found = []
 
 		for name in pymidiinstrumentdefs.available([CORPUS]):
 			account = pymidiinstrumentdefs.load(name, [CORPUS]).source or ""
 
-			# What is inside double quotation marks is somebody else's spelling to keep.
-			outside = re.sub(r'"[^"]*"', " ", account)
-
 			for pattern in patterns:
-				found += [(name, hit.group(0)) for hit in pattern.finditer(outside)]
+				found += [(name, hit.group(0))
+					for hit in pattern.finditer(prose(account))]
 
-		assert found == []
+		# The README ships in the wheel and is rendered on the site, so it is prose too.
+		readme = (CORPUS.parent.parent / "README.md").read_text(encoding = "utf-8")
+
+		for number, line in enumerate(readme.splitlines(), start = 1):
+			for pattern in patterns:
+				found += [(f"README.md line {number}", hit.group(0))
+					for hit in pattern.finditer(prose(line))]
+
+		assert found == [], f"a US spelling is in prose that gets published: {found}"
 
 	def test_nothing_bundled_sits_outside_a_makers_folder (self) -> None:
 		"""A file directly in the corpus has no maker, so nothing could load it by name."""

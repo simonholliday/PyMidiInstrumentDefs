@@ -106,6 +106,14 @@ FOLDED: typing.Final[dict[str, str]] = {
 	"“": "", "”": "", "‘": "", "’": "", '"': "", "'": "",
 	"ʼ": "", "′": "",
 	"–": "-", "—": "-", "…": "...",
+	# **A SOFT HYPHEN GOES ENTIRELY**, because it is a discretionary line break and not a
+	# character of the word. Elektron's manuals carry between 86 and 320 of them each - the
+	# Octatrack's 309 - and the text layer returns "mes­ sages" where the page prints
+	# "messages" unbroken. So a quotation spanning one could never be found, and every
+	# Elektron definition here was written around that without anybody naming it.
+	# This can only make more quotations match and never fewer: nothing a definition could
+	# type contains U+00AD, so removing it cannot create a false match.
+	"­": "",
 }
 
 

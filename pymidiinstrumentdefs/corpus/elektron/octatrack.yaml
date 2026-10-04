@@ -1,0 +1,504 @@
+# TWO MAPS, AND THE SAME CONTROLLER NUMBER MEANS DIFFERENT THINGS IN EACH. Appendix C of this
+# manual has two controller sections: C.7, what an audio track answers to, and C.8, what a MIDI
+# track answers to "While in MIDI mode and CC DIRECT CONNECT is deactivated" (manual p. 141).
+# Controller 22 is `Amp param #1 (Attack)` in the first and `Amp param #1 (Transpose)` in the
+# second; controller 34 is `FX1 param #1` against `Pitch bend`. **51 of the 64 numbers in the
+# audio map are in the MIDI map too, with different meanings**, which is why every control below
+# names its part and why a reader who ignored the sections would get half of them wrong.
+# **99 of the appendix's 115 rows are below**; the other sixteen are on controller numbers this
+# format refuses, and the source account says which and why.
+#
+# **THIS ONE FILE COVERS THE MKI AND THE MKII, AND THAT WAS ESTABLISHED RATHER THAN ASSUMED.**
+# Elektron publishes a manual per product - the MKI's at OS 1.40A of February 2022 and the MKII's
+# at OS 1.40C of August 2026 - and the two appendices were read by the same code and compared on
+# four questions: the controller numbers, the parameter names, the direction marks and the
+# hexadecimal cells. **All 115 rows agree on all four.** Both support pages also serve the same
+# firmware image, so an OS version does not tell the two apart either.
+#
+# WHAT THE TWO PRODUCTS DO DIFFER IN IS NOT MIDI. The MKII (2017) has an OLED screen and balanced
+# inputs where the MKI (2010) does not; the MKI is on Elektron's legacy page and the MKII is
+# current. **Nothing in this file turns on either**, and the numbers below are from the newer
+# manual because it is the newer document and describes the OS both pages serve.
+#
+# THE MAKER'S WORD `PART` IS NOT THIS FORMAT'S. An Octatrack bank holds "16 patterns and 4 parts"
+# (manual p. 17), where a part is a saved set of machine and sample assignments - closer to this
+# format's `presets` than to its `parts`. **The two `parts` below are the audio tracks and the
+# MIDI tracks**, which is what the format means: things with channels of their own.
+#
+# AND EVERY ROW OF THE MIDI MAP IS RECEIVE-ONLY, by its own introduction: C.8 says the auto
+# channel "responds to the following CC messages" (manual p. 141), and all 51 of its rows carry a
+# mark in REC and none in TRN. The audio map has 57 rows marked both ways and 7 received only.
+# **No row in either map is marked transmitted only.**
+
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Octatrack
+  # BOTH SUPPORT PAGES SERVE THE SAME IMAGE, `OCTATRACK_OS1.40C_readme.pdf`, which is how one
+  # firmware number can stand for two products - the PolyBrute pair in this corpus is the other
+  # instrument where that is true. The MKII's manual is the edition written for this OS; the
+  # MKI's is for 1.40A, two revisions behind, and its appendix is identical anyway.
+  firmware: "1.40C"
+
+source: >-
+  Octatrack MKII User Manual for OS 1.40C, 148 pages: **APPENDIX C: MIDI CONTROL REFERENCE at
+  pp. 137-142**, whose two controller tables are every control below; the MIDI settings at
+  pp. 40-41, where the clock, transport, program change and channel architecture are; the MIDI
+  sequencer at p. 90; the CTRL pages at p. 94; the OS upgrade at p. 112; the banks and patterns at
+  p. 17; and the hardware at p. 116. And the MKI's manual for OS 1.40A, for the comparison that
+  establishes one file covers both. And both support pages, for what Elektron publishes.
+
+  THE PRINTED FOLIO EQUALS THE SHEET THROUGHOUT, so no `page_offset`. That was checked on every
+  one of the 148 sheets rather than on a sample: sheets 4 to 147 each print their own number, and
+  only the cover, two sheets of front matter and the back cover carry none.
+
+  **THE TWO MANUALS' APPENDICES AGREE ON ALL 115 ROWS, WHICH IS WHY THIS FILE COVERS TWO
+  PRODUCTS.** They were read by the same extraction code - a comparison of two readings made by
+  two different scripts would be measuring the scripts - and compared on four questions asked
+  separately: the set of controller numbers, the parameter name on each, the two direction marks,
+  and the hexadecimal cell. **Nothing differs.** That is 115 rows of appendix, of which 99 become
+  controls below - the comparison is of the documents and not of this file.
+
+  AND THE OLDER MANUAL MISNUMBERS ITS OWN SECTION, which is the one real difference between the
+  two documents and is worth knowing before searching either. The MKII calls the second controller
+  table **C.8**; the MKI calls it **C.3** - and C.3 is already that manual's SLOTS NOTE MAPPING,
+  so the older edition has two sections numbered C.3 and the newer one corrected it. A reader
+  searching the MKI's manual for C.8 finds nothing.
+
+  THE MKII'S SUPPORT PAGE PRINTS A DATE THAT CONTRADICTS THE FILE IT SERVES. The page says its
+  English manual is of "Apr 14, 2021" (mkii_page); the file is named `..._OS1.40C_260827.pdf`, sits under
+  `/uploads/2026/08/`, and its own PDF metadata says it was made on 27 August 2026. **Three
+  independent signals against one**, so the page's date is stale rather than the file being
+  mislabelled - and **a date taken off a maker's page without checking the file would have put
+  this manual five years before the firmware it describes.**
+
+  THE APPENDIX IS A RULED GRID AND ITS ROWS COME OFF THE RULES, with one trap worth passing on:
+  **the sheet the controller table opens on also carries two note-mapping tables with a different
+  number of columns**, so taking every rule on that sheet gave six columns for a four-column
+  table. The grid is therefore built from the rules inside a height window rather than from the
+  whole sheet. **A sheet may hold more than one table.**
+
+  THE FIRST COLUMN HOLDS TWO NUMBERS IN ONE CELL - a hexadecimal with a dollar sign and a decimal,
+  inside the same ruled box, which is why the heading is the two words `HEX DEC`. **So the
+  hexadecimal is asserted against the decimal**, all 115 rows of it, which costs one line and
+  which caught a real fault in another maker's table at the rank before this one. Here the two
+  agree everywhere.
+
+  AND THE MARKS ARE PLACED BY THE GRID AND NEVER BY READING ORDER, because an `X` in the text
+  layer says nothing at all - **only its column does**. The second reader reports that a naive
+  search for `X` also picks up the one inside `FX1 param` and `FX2 param` and would have invented
+  transmitted marks on twelve rows.
+
+  EVERY NUMBER WAS READ TWICE AND THE TWO READINGS AGREE ON ALL 115 ROWS - on the parameter name,
+  the hexadecimal cell, **both direction marks**, the map, and the printed page. The second
+  reading used a different library's layout mode on a different interpreter and then checked
+  itself against all four sheets rendered at 200 dpi and read by eye.
+
+  **THE SECOND READER REPORTS ONE PLACE WHERE THE RENDERING WAS NOT A CONFIRMATION BUT THE
+  ANSWER.** The last sheet of the MIDI map carries no column heading and not one row marked in
+  both columns, so there is a single mark position on it and nothing on the sheet itself to say
+  which of the two columns that is. They settled it two ways - by the offset measured against the
+  previous sheet, and by reading the rendered page, where the left cell is visibly empty on all 28
+  rows. **A method that cannot answer from one page needs the page before it or the picture**, and
+  saying which was used is part of the reading.
+
+  APPENDIX C'S OWN NAMES FOR THE MIDI MAP'S PAGES ARE THE AUDIO MAP'S NAMES, which is the sharpest
+  trap here and the reason the groups below are keyed on the map as well as the name. In C.8,
+  `Amp param #1` to `#6` are glossed Transpose, Legato, Mode, Speed, Octave Range and Arp Note
+  Length - **which are precisely the six parameters sections 15.4.3 and 15.4.4 put on the
+  ARPEGGIATOR pages**, not on an amplifier. Likewise C.8's `Playback param` rows are glossed Note,
+  Velocity, Length and three more notes, which is the NOTE page. **A reader grouping on the prefix
+  alone would file the arpeggiator under the amplifier.** The bracketed gloss is the evidence.
+
+  TEN OF THE MIDI MAP'S CONTROLLERS SET VALUES WHOSE DESTINATION THE OWNER CHOOSES. Controllers 36
+  to 45 are `CC #1 param` to `CC #10 param`, and what they reach is a setting: "CC1-CC4 specifies
+  the CC commands that will be controlled on the CTRL 1 MAIN page" (manual p. 94), with a MIDI CC
+  learn mode for choosing them. So **the ten numbers are fixed and published and the ten
+  destinations are not**, which is a milder form of the owner-editable map the PERKONS HD-01
+  raised. Nothing below claims a destination.
+
+  ONE PARAMETER NAME IS AT TWO NUMBERS IN THE AUDIO MAP, with different directions: `Track level`
+  is controller 7, marked received only, and controller 46, marked both ways. Controller 7 is the
+  MIDI specification's own Channel Volume, so this is the maker giving one parameter a standard
+  address that only listens and an address of its own that also reports. **Both are below, told
+  apart by number**, because nothing else distinguishes them.
+
+  **SIXTEEN OF THE 115 ROWS CANNOT BE CONTROLS, AND THE MAKER IS THE REASON.** This instrument
+  puts its MIDI track solos on controllers **120 to 127** - eight rows in each map, `MIDI Trk 1
+  Solo` to `MIDI Trk 8 Solo` - and that block is the MIDI specification's channel mode messages.
+  This format refuses them on the rule that a channel mode message means the same on every
+  instrument that has it, **which is exactly what this instrument makes untrue**: a sequencer
+  sending All Sound Off to it solos a MIDI track.
+
+  So they are published, named and numbered here and absent from the controls below, which leaves
+  **99 of the appendix's 115 rows**. That is a real loss and it is recorded rather than worked
+  around - the Hydrasynth Explorer met the same thing on four numbers and is handled the same way.
+  **Unlike that instrument, this one also puts eight parameters on 112 to 119**, which the
+  specification leaves undefined, so the maker has treated the whole of 112 to 127 as free space
+  and only half of it is.
+
+  WHAT IS ABSENT, CHECKED RATHER THAN ASSUMED. **The words NRPN and RPN appear nowhere in these
+  148 pages**, and neither does `system exclusive`, and neither does `voices`. The first of those
+  is suggestive and is not recorded: see `midi` below.
+
+  EVERY QUOTATION IN THIS FILE'S PROSE CARRIES A LOCATOR, AUDITED BY PAIRING THE QUOTE MARKS:
+  **28 quotations, 28 locators** - 27 citing a page and one naming the unpaginated support page -
+  with the seventeen remaining pairs being field values rather than anybody's words.
+
+  **AND THE AUDIT HAS TO STOP AT THE CONTROLS BLOCK ON THIS INSTRUMENT, WHICH IS NEW.** 99 of
+  this file's controls carry a label in quote marks - `"Track Mute [0]=Unmuted, [1-127]=Muted"` -
+  not because they are quotations but because a YAML flow mapping cannot hold a comma or a bracket
+  bare. **A pairing audit run over the whole file reports 113 unlocated quotations and 99 of them
+  are not quotations at all.** So the audit is of the prose, and a sweep written for the corpus
+  would need to know that.
+
+  THE GAP FROM 61 TO 112 IS REAL AND IS THE MAKER'S. The audio map runs 7, 8, 16 to 61, then 112
+  to 127, with nothing between - and the second reader checked the rendered pages for exactly that,
+  finding the table closes with a bottom border after 61 and reopens at 112. **Nothing was
+  dropped.** The manual defines nothing in that span and says why nowhere.
+
+  FOUR SMALL FAULTS, KEPT AS PRINTED. Controllers 59 and 60 read `Note on  [0]=C-1, 127=G9)` and
+  `Note off [0] =C-1, 127=G9)` - an unmatched closing bracket in each, and a stray space that
+  falls after `on` in one and before the `=` in the other, so **two sibling rows are mis-set in two
+  different ways**. Controller 51 doubles a space where its neighbours do not. And controller 27 is
+  `Amp param #6 (N/A)`, a parameter given a slot, a number and a note that it does not apply.
+
+  AND THE TWO MAPS MARK CONTROLLERS 112 TO 127 DIFFERENTLY FOR WHAT READS AS THE SAME ROW. The
+  sixteen MIDI track mutes and solos are character-for-character identical in both tables, and the
+  audio map marks them transmitted and received while the MIDI map marks them received only.
+  **That is not the document contradicting itself**, which is what it looks like: C.8's own
+  introduction says the auto channel "responds to the following CC messages" (manual p. 141), so
+  **the whole of C.8 is a receive-only table by construction** and all 51 of its rows are marked
+  that way. The two tables describe two routes to one parameter, and only one of them reports back.
+
+sources:
+  manual:
+    kind: manual
+    title: Octatrack MKII User Manual
+    edition: "1.40C"
+    dated: 2026-08-27
+    landing: "https://www.elektron.se/support-downloads/octatrack-mkii"
+    url: "https://www.elektron.se/wp-content/uploads/2026/08/Octatrack-MKII-User-Manual_ENG_OS1.40C_260827.pdf"
+    sha256: 15722380657b972243b56c5f298666b359c255c72855bafcb3a372faa746fc3b
+    retrieved: 2026-10-04
+    # **EVERY CONTROL IN THIS FILE COMES FROM PP. 139 TO 142.** 148 sheets, the printed folio
+    # equal to the sheet on all of 4 to 147, not encrypted, with a real text layer, made with
+    # Adobe InDesign 21.5 on 27 August 2026. The date is the PDF's own and the file name's, and
+    # **not the support page's**, which says April 2021 - see the source account.
+    # ITS INNER MARGIN SWAPS SIDE between an odd sheet and an even one, so the appendix's columns
+    # are at different x positions on different sheets and have to be taken per sheet.
+    # **AND IT CARRIES 309 SOFT HYPHENS**, which is what made `tools/check_quotations.py` fold
+    # U+00AD: the text layer returns `mes-sages` broken across a line where the page prints the
+    # word whole, so a quotation spanning one could not be found. Every Elektron manual in this
+    # library has between 86 and 320 of them.
+  mki_manual:
+    kind: manual
+    title: Octatrack User Manual
+    edition: "1.40A"
+    dated: 2022-02-04
+    landing: "https://www.elektron.se/support-downloads/octatrack-mki"
+    url: "https://www.elektron.se/wp-content/uploads/2024/09/Octatrack-User-Manual_ENG-OS1.40A_220204.pdf"
+    sha256: dd0a5bb8eb80fd9d56fbdbb466a221d73a5cfd5cad396bca0e6a9f09f5255cb2
+    retrieved: 2026-10-04
+    # The MKI's manual, also 148 sheets. **Cited for nothing and read in full**: its appendix was
+    # extracted by the same code and compared with the MKII's, which is what establishes that one
+    # definition covers both products. Two revisions behind on the OS and four years older, and
+    # **it numbers its second controller table C.3 where the MKII numbers it C.8** - a clash with
+    # its own SLOTS NOTE MAPPING that the newer edition corrected.
+  release_notes:
+    kind: release_notes
+    title: "Octatrack OS 1.40C release notes"
+    edition: "1.40C"
+    landing: "https://www.elektron.se/support-downloads/octatrack-mkii"
+    url: "https://www.elektron.se/wp-content/uploads/2025/03/OCTATRACK_OS1.40C_readme.pdf"
+    sha256: ab5536c2575913d1b3c34bf719ad5349f5f4ab48d0e8caa068c4cb6561f5f833
+    retrieved: 2026-10-04
+    # **THE SAME FILE IS LINKED FROM BOTH PRODUCTS' PAGES**, which is how one firmware number
+    # stands for two instruments. Cited for the firmware number and for nothing else.
+  mkii_page:
+    kind: download_page
+    title: "Octatrack MKII - Elektron"
+    landing: "https://www.elektron.se/support-downloads/octatrack-mkii"
+    url: "https://www.elektron.se/support-downloads/octatrack-mkii"
+    sha256: 0032e58dd33225592b16de1dfaec1125fa0212f3099a56f7fb0ade3b88564696
+    retrieved: 2026-10-04
+    paginated: false
+    # The visible text of the page. **Cited for nothing in the definition** and saved because it
+    # is where the manual and the firmware come from, and because its printed date for the manual
+    # is wrong - which only a saved copy can show later.
+  mki_page:
+    kind: download_page
+    title: "Octatrack MKI - Elektron"
+    landing: "https://www.elektron.se/support-downloads/octatrack-mki"
+    url: "https://www.elektron.se/support-downloads/octatrack-mki"
+    sha256: 0b5a03f13ba3ef36b1f2a7001c451ac921a6aac4eb64d52e233ed5c62018021e
+    retrieved: 2026-10-04
+    paginated: false
+    # The other product's page, saved for the same reason: it is where the MKI's manual comes
+    # from, and it serves the identical firmware.
+
+midi:
+  # Sixteen, said twice. The MIDI tracks take "Any MIDI channel can be assigned to the MIDI tracks"
+  # (manual p. 90) and "several tracks can share the same channel" (manual p. 90); the audio tracks' "TRIG CHANNEL sets which MIDI channels the
+  # audio tracks respond and send data to" (manual p. 41), and "An OFF setting means the audio
+  # track will not respond to, nor send out, any MIDI data" (manual p. 41) - so a track may have
+  # no channel at all, which is why both parts below say `assigned`.
+  channels: [1, 16]
+  # BOTH, AND EACH DIRECTION IS ITS OWN SWITCH: "CLOCK SEND will when active make the MKII
+  # transmit MIDI clock" (manual p. 40) and "CLOCK RECEIVE will when active make the Octatrack
+  # MKII receive MIDI clock from external devices" (manual p. 40).
+  clock: both
+  # BOTH, LIKEWISE, AND THE MAKER NAMES THE MESSAGES: "TRANSPORT SEND will when active make the
+  # Octatrack MKII send out system realtime messages like play, stop, continue and song position
+  # pointer" (manual p. 40), against "TRANSPORT RECEIVE will when active make the Octatrack MKII
+  # respond to system realtime messages like play, stop, continue and song position pointer"
+  # (manual p. 40).
+  transport: both
+  program_change:
+    # Two switches again: "PROG CH SEND will when checked send out program change MIDI messages
+    # when the active pattern on the Octatrack MKII changes" (manual p. 40) and "PROG CH RECEIVE
+    # will when checked make the Octatrack MKII listen and react to incoming program change
+    # messages that changes the pattern on the Octatrack MKII" (manual p. 40).
+    receives: true
+    sends: true
+    # WHAT A PROGRAM CHANGE REACHES IS A PATTERN, AND THE MANUAL COUNTS THEM: "Each project hosts
+    # 16 banks and each bank hosts 16 patterns and 4 parts" (manual p. 17), "meaning 256 patterns
+    # are always at hand" (manual p. 17). **That arithmetic is the maker's own**, which is worth
+    # saying because the last instrument in this corpus got its own multiplication wrong.
+    # 256 does not fit in a program change, and the manual does not say how the banks are reached.
+    presets: 256
+  # TRUE, AND FOR ONE PURPOSE ONLY, WHICH IS DIFFERENT FROM EVERY OTHER ELEKTRON HERE. The words
+  # `system exclusive` appear nowhere in 148 pages and there is no dump menu; the single thing
+  # this instrument does with system exclusive is take its own operating system - "Load the new OS
+  # in an appropriate program capable of sending sysex files" (manual p. 112), and "The upgrade can
+  # not be sent over the Octatrack's USB port" (manual p. 112), so over the five-pin ports and
+  # nowhere else.
+  # **THE OTHER NINE ELEKTRONS HERE RECORD `sysex: true` FOR A DUMP MENU THAT SENDS AND RECEIVES
+  # PROJECT AND PATTERN DATA.** This one has no such menu, so the field is the same and what it
+  # covers is not. Elektron's own Transfer software moves samples and projects over USB, and the
+  # manual does not say what protocol that is.
+  sysex: true
+  # NOT RECORDED, AND THIS IS THE CLOSEST CALL IN THE FILE. **The words NRPN and RPN appear nowhere
+  # in these 148 pages**, and Appendix C lists not one. That is more suggestive here than a bare
+  # silence would be, because **this maker's newer manuals publish NRPN beside CC in the same
+  # appendix form** - the Digitone's gives both for every row - so the absence of an NRPN column
+  # in a document of the same house style is a difference worth noticing.
+  # **It is still not a statement.** This appendix is a reference to what the instrument answers
+  # to, not a chart with a column for what it does not, and this instrument is from 2010 - older
+  # than the habit it is being compared against. So the field is left unset and the evidence is
+  # here, which is the honest state rather than a guess in either direction.
+  # `control_change` is left unset because two maps are published - see the controls below.
+
+parts:
+  # THE AUDIO TRACKS AND THE MIDI TRACKS, which is what the format means by a part: "An Octatrack
+  # MKII pattern handles eight audio tracks and eight MIDI tracks" (manual p. 17), each with a
+  # channel of its own. **This is not the maker's own word `part`** - a bank holds four of those
+  # and they are saved settings, not channels.
+  audio:
+    label: Audio Track
+    count: 8
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # Takes notes as well as controllers, and what a note does depends on a setting: "AUDIO NOTE
+    # IN controls how incoming MIDI notes affect the audio tracks" (manual p. 40), with six note
+    # mappings in Appendix C to choose between. A note may trigger a track, play a sample
+    # chromatically, pick a slot, pick a slice, toggle a mute or set a delay time.
+  midi:
+    label: MIDI Track
+    count: 8
+    channel: assigned
+    receives: [controls]
+    # **THESE DO NOT SOUND**: "no sound is being generated by the MIDI tracks, only data that
+    # transmitted through the MIDI OUT port" (manual p. 90) - the maker's own sentence, missing a
+    # word and kept as printed. Each "can trigger a chord of up to 4 notes with adjustable
+    # velocity and length, control pitch bend and aftertouch as well as 10 freely assignable
+    # control change parameters" (manual p. 90).
+    # NOT `notes`: what a MIDI track does with a note arriving on its own channel is a mixture
+    # rather than a sounding - incoming notes "are mixed with the MIDI data sent by the track"
+    # (manual p. 90) and arpeggiated - so only the controllers below are claimed.
+  # AND THE TWO BLOCK EACH OTHER WHERE THEY SHARE A CHANNEL, which is a fact a player meets and
+  # the format has nowhere to put: "If an audio track and a MIDI track share the same MIDI
+  # channel, the MIDI track will block the audio track from sending out data while the audio track
+  # will block the MIDI track from receiving data" (manual p. 90).
+  # NOT A PART: the AUTO CHANNEL, which "is the MIDI channel giving access to the currently active
+  # track" (manual p. 41). It is a route to whichever part is active rather than a part of its
+  # own, and it is how C.8's map is reached.
+
+voice:
+  addressing: pitches
+  # NOT RECORDED: the polyphony. **The word `voices` appears nowhere in these 148 pages.** This is
+  # a sampler described entirely in tracks - eight audio tracks, each hosting one machine - and the
+  # manual never says how many sounds one track may play at once, so there is no figure to record
+  # and none is inferred. A count of tracks is not a count of voices.
+  # ALSO NOT RECORDED: the note range, velocity and aftertouch. What the audio tracks do with an
+  # incoming note is a choice between six mappings in Appendix C rather than a range, and the
+  # widest of them is "C-1 (0) - G9 (127)" (manual p. 138) for the slot mapping, which is the whole of MIDI rather
+  # than a property of the instrument. **The MIDI tracks' pitch bend and aftertouch are controls
+  # below** - controllers 34 and 35 of the MIDI map - because what they set is a value the track
+  # sends onward, not something this instrument's own voice answers to.
+
+groups:
+  # THE MAKER'S OWN PARAMETER PAGE NAMES, from sections 11.4 and 15.4, in the order those sections
+  # print them: the audio track's pages first, then the MIDI track's.
+  # **A CONTROL IS PLACED BY ITS MAP AND ITS OWN NAME TOGETHER, AND THE MAP IS NOT OPTIONAL.**
+  # Appendix C reuses the audio map's page names in the MIDI map for different pages: `Amp param`
+  # is the AMP page in C.7 and the **ARPEGGIATOR** page in C.8, where its six rows are glossed
+  # Transpose, Legato, Mode, Speed, Octave Range and Arp Note Length - precisely what sections
+  # 15.4.3 and 15.4.4 put there. `Playback param` is the SRC page in one and the NOTE page in the
+  # other. So grouping on the prefix alone files the arpeggiator under the amplifier.
+  track: Track
+  src: SRC
+  amp: Amp
+  lfo: LFO
+  fx1: FX1
+  fx2: FX2
+  recorder: Recorder
+  scene: Scene
+  note: Note
+  arpeggiator: Arpeggiator
+  midi_lfo: MIDI LFO
+  ctrl_1: CTRL 1
+  ctrl_2: CTRL 2
+  midi_tracks: MIDI Tracks
+  # **THREE CONTROLS GET NO PAGE**, all in the audio map: `Note on` and `Note off`, which send a
+  # note rather than set a parameter, and `Send request`, which asks the instrument to resend its
+  # own controller values. None belongs to a parameter page and the maker names none for them.
+
+controls:
+
+  # audio - Track ─────────────────────────────────────
+  audio_track_level_7:         {label: Track level, cc: 7, direction: receives, part: audio, group: track}
+  track_balance:               {label: Track balance, cc: 8, direction: receives, part: audio, group: track}
+  audio_track_level_46:        {label: Track level, cc: 46, part: audio, group: track}
+  cue_level:                   {label: Cue level, cc: 47, part: audio, group: track}
+  crossfader:                  {label: Crossfader, cc: 48, part: audio, group: track}
+  track_mute:                  {label: "Track Mute [0]=Unmuted, [1-127]=Muted", cc: 49, part: audio, group: track}
+  track_solo:                  {label: "Track Solo [0]=No solo, [1-127]=Soloed", cc: 50, part: audio, group: track}
+  track_cue:                   {label: "Track Cue [0]=Not Cued, [1-127]=Cued", cc: 51, part: audio, group: track}
+  track_arm:                   {label: "Track Arm [0]=Trk disarm, [1-127]=Arm", cc: 52, part: audio, group: track}
+
+  # audio - SRC ───────────────────────────────────────
+  audio_playback_param_1:      {label: "Playback param #1", cc: 16, part: audio, group: src}
+  audio_playback_param_2:      {label: "Playback param #2", cc: 17, part: audio, group: src}
+  audio_playback_param_3:      {label: "Playback param #3", cc: 18, part: audio, group: src}
+  audio_playback_param_4:      {label: "Playback param #4", cc: 19, part: audio, group: src}
+  audio_playback_param_5:      {label: "Playback param #5", cc: 20, part: audio, group: src}
+  audio_playback_param_6:      {label: "Playback param #6", cc: 21, part: audio, group: src}
+
+  # audio - Amp ───────────────────────────────────────
+  audio_amp_param_1:           {label: "Amp param #1 (Attack)", cc: 22, part: audio, group: amp}
+  audio_amp_param_2:           {label: "Amp param #2 (Hold)", cc: 23, part: audio, group: amp}
+  audio_amp_param_3:           {label: "Amp param #3 (Release)", cc: 24, part: audio, group: amp}
+  audio_amp_param_4:           {label: "Amp param #4 (Volume)", cc: 25, part: audio, group: amp}
+  audio_amp_param_5:           {label: "Amp param #5 (Balance)", cc: 26, part: audio, group: amp}
+  audio_amp_param_6:           {label: "Amp param #6 (N/A)", cc: 27, part: audio, group: amp}
+
+  # audio - LFO ───────────────────────────────────────
+  lfo_param_1:                 {label: "LFO param #1 (Speed 1)", cc: 28, part: audio, group: lfo}
+  lfo_param_2:                 {label: "LFO param #2 (Speed 2)", cc: 29, part: audio, group: lfo}
+  lfo_param_3:                 {label: "LFO param #3 (Speed 3)", cc: 30, part: audio, group: lfo}
+  lfo_param_4:                 {label: "LFO param #4 (Depth 1)", cc: 31, part: audio, group: lfo}
+  lfo_param_5:                 {label: "LFO param #5 (Depth 2)", cc: 32, part: audio, group: lfo}
+  lfo_param_6:                 {label: "LFO param #6 (Depth 3)", cc: 33, part: audio, group: lfo}
+
+  # audio - FX1 ───────────────────────────────────────
+  fx1_param_1:                 {label: "FX1 param #1", cc: 34, part: audio, group: fx1}
+  fx1_param_2:                 {label: "FX1 param #2", cc: 35, part: audio, group: fx1}
+  fx1_param_3:                 {label: "FX1 param #3", cc: 36, part: audio, group: fx1}
+  fx1_param_4:                 {label: "FX1 param #4", cc: 37, part: audio, group: fx1}
+  fx1_param_5:                 {label: "FX1 param #5", cc: 38, part: audio, group: fx1}
+  fx1_param_6:                 {label: "FX1 param #6", cc: 39, part: audio, group: fx1}
+
+  # audio - FX2 ───────────────────────────────────────
+  fx2_param_1:                 {label: "FX2 param #1", cc: 40, part: audio, group: fx2}
+  fx2_param_2:                 {label: "FX2 param #2", cc: 41, part: audio, group: fx2}
+  fx2_param_3:                 {label: "FX2 param #3", cc: 42, part: audio, group: fx2}
+  fx2_param_4:                 {label: "FX2 param #4", cc: 43, part: audio, group: fx2}
+  fx2_param_5:                 {label: "FX2 param #5", cc: 44, part: audio, group: fx2}
+  fx2_param_6:                 {label: "FX2 param #6", cc: 45, part: audio, group: fx2}
+
+  # audio - Recorder ──────────────────────────────────
+  recrdr_arm:                  {label: "Recrdr Arm [0]=Rec disarm, [1-127]=Arm", cc: 53, part: audio, group: recorder}
+  audio_all_arm:               {label: "All Arm [0]=All disarm, [1-127]=Arm", cc: 54, part: audio, group: recorder}
+  pickup_src_ab_level:         {label: Pickup SRC AB level, cc: 57, direction: receives, part: audio, group: recorder}
+  pickup_src_cd_level:         {label: Pickup SRC CD level, cc: 58, direction: receives, part: audio, group: recorder}
+
+  # audio - Scene ─────────────────────────────────────
+  audio_scene_a_select:        {label: Scene A Select, cc: 55, part: audio, group: scene}
+  audio_scene_b_select:        {label: Scene B Select, cc: 56, part: audio, group: scene}
+
+  # audio - MIDI Tracks ───────────────────────────────
+  audio_midi_trk_1_mute:       {label: "MIDI Trk 1 Mute [0]=Unmute, [1-127]=Mute", cc: 112, part: audio, group: midi_tracks}
+  audio_midi_trk_2_mute:       {label: "MIDI Trk 2 Mute [0]=Unmute, [1-127]=Mute", cc: 113, part: audio, group: midi_tracks}
+  audio_midi_trk_3_mute:       {label: "MIDI Trk 3 Mute [0]=Unmute, [1-127]=Mute", cc: 114, part: audio, group: midi_tracks}
+  audio_midi_trk_4_mute:       {label: "MIDI Trk 4 Mute [0]=Unmute, [1-127]=Mute", cc: 115, part: audio, group: midi_tracks}
+  audio_midi_trk_5_mute:       {label: "MIDI Trk 5 Mute [0]=Unmute, [1-127]=Mute", cc: 116, part: audio, group: midi_tracks}
+  audio_midi_trk_6_mute:       {label: "MIDI Trk 6 Mute [0]=Unmute, [1-127]=Mute", cc: 117, part: audio, group: midi_tracks}
+  audio_midi_trk_7_mute:       {label: "MIDI Trk 7 Mute [0]=Unmute, [1-127]=Mute", cc: 118, part: audio, group: midi_tracks}
+  audio_midi_trk_8_mute:       {label: "MIDI Trk 8 Mute [0]=Unmute, [1-127]=Mute", cc: 119, part: audio, group: midi_tracks}
+
+  # audio - no page of the maker's own ────────────────
+  note_on:                     {label: "Note on [0]=C-1, 127=G9)", cc: 59, direction: receives, part: audio}
+  note_off:                    {label: "Note off [0] =C-1, 127=G9)", cc: 60, direction: receives, part: audio}
+  send_request_0_all_audio_cc: {label: "Send request, 0 = all audio CC", cc: 61, direction: receives, part: audio}
+
+  # midi - Recorder ───────────────────────────────────
+  midi_all_arm:                {label: "All Arm [0]=All disarm, [1-127]=Arm", cc: 54, direction: receives, part: midi, group: recorder}
+
+  # midi - Scene ──────────────────────────────────────
+  midi_scene_a_select:         {label: Scene A Select, cc: 55, direction: receives, part: midi, group: scene}
+  midi_scene_b_select:         {label: Scene B Select, cc: 56, direction: receives, part: midi, group: scene}
+
+  # midi - Note ───────────────────────────────────────
+  midi_playback_param_1:       {label: "Playback param #1 (Note)", cc: 16, direction: receives, part: midi, group: note}
+  midi_playback_param_2:       {label: "Playback param #2 (Velocity)", cc: 17, direction: receives, part: midi, group: note}
+  midi_playback_param_3:       {label: "Playback param #3 (Length)", cc: 18, direction: receives, part: midi, group: note}
+  midi_playback_param_4:       {label: "Playback param #4 (Note 2)", cc: 19, direction: receives, part: midi, group: note}
+  midi_playback_param_5:       {label: "Playback param #5 (Note 3)", cc: 20, direction: receives, part: midi, group: note}
+  midi_playback_param_6:       {label: "Playback param #6 (Note 4)", cc: 21, direction: receives, part: midi, group: note}
+
+  # midi - Arpeggiator ────────────────────────────────
+  midi_amp_param_1:            {label: "Amp param #1 (Transpose)", cc: 22, direction: receives, part: midi, group: arpeggiator}
+  midi_amp_param_2:            {label: "Amp param #2 (Legato)", cc: 23, direction: receives, part: midi, group: arpeggiator}
+  midi_amp_param_3:            {label: "Amp param #3 (Mode)", cc: 24, direction: receives, part: midi, group: arpeggiator}
+  midi_amp_param_4:            {label: "Amp param #4 (Speed)", cc: 25, direction: receives, part: midi, group: arpeggiator}
+  midi_amp_param_5:            {label: "Amp param #5 (Octave Range)", cc: 26, direction: receives, part: midi, group: arpeggiator}
+  midi_amp_param_6:            {label: "Amp param #6 (Arp Note Length)", cc: 27, direction: receives, part: midi, group: arpeggiator}
+
+  # midi - MIDI LFO ───────────────────────────────────
+  midi_lfo_param_1:            {label: "MIDI LFO param #1 (Speed 1)", cc: 28, direction: receives, part: midi, group: midi_lfo}
+  midi_lfo_param_2:            {label: "MIDI LFO param #2 (Speed 2)", cc: 29, direction: receives, part: midi, group: midi_lfo}
+  midi_lfo_param_3:            {label: "MIDI LFO param #3 (Speed 3)", cc: 30, direction: receives, part: midi, group: midi_lfo}
+  midi_lfo_param_4:            {label: "MIDI LFO param #4 (Depth 1)", cc: 31, direction: receives, part: midi, group: midi_lfo}
+  midi_lfo_param_5:            {label: "MIDI LFO param #5 (Depth 2)", cc: 32, direction: receives, part: midi, group: midi_lfo}
+  midi_lfo_param_6:            {label: "MIDI LFO param #6 (Depth 3)", cc: 33, direction: receives, part: midi, group: midi_lfo}
+
+  # midi - CTRL 1 ─────────────────────────────────────
+  pitch_bend:                  {label: Pitch bend, cc: 34, direction: receives, part: midi, group: ctrl_1}
+  aftertouch:                  {label: Aftertouch, cc: 35, direction: receives, part: midi, group: ctrl_1}
+  cc_1_param:                  {label: "CC #1 param", cc: 36, direction: receives, part: midi, group: ctrl_1}
+  cc_2_param:                  {label: "CC #2 param", cc: 37, direction: receives, part: midi, group: ctrl_1}
+  cc_3_param:                  {label: "CC #3 param", cc: 38, direction: receives, part: midi, group: ctrl_1}
+  cc_4_param:                  {label: "CC #4 param", cc: 39, direction: receives, part: midi, group: ctrl_1}
+
+  # midi - CTRL 2 ─────────────────────────────────────
+  cc_5_param:                  {label: "CC #5 param", cc: 40, direction: receives, part: midi, group: ctrl_2}
+  cc_6_param:                  {label: "CC #6 param", cc: 41, direction: receives, part: midi, group: ctrl_2}
+  cc_7_param:                  {label: "CC #7 param", cc: 42, direction: receives, part: midi, group: ctrl_2}
+  cc_8_param:                  {label: "CC #8 param", cc: 43, direction: receives, part: midi, group: ctrl_2}
+  cc_9_param:                  {label: "CC #9 param", cc: 44, direction: receives, part: midi, group: ctrl_2}
+  cc_10_param:                 {label: "CC #10 param", cc: 45, direction: receives, part: midi, group: ctrl_2}
+
+  # midi - MIDI Tracks ────────────────────────────────
+  midi_track_mute:             {label: "MIDI Track Mute [0]=Unmuted, [1-127]=Muted", cc: 49, direction: receives, part: midi, group: midi_tracks}
+  midi_track_solo:             {label: "MIDI Track Solo [0]=No solo, [1-127]=Soloed", cc: 50, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_1_mute:        {label: "MIDI Trk 1 Mute [0]=Unmute, [1-127]=Mute", cc: 112, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_2_mute:        {label: "MIDI Trk 2 Mute [0]=Unmute, [1-127]=Mute", cc: 113, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_3_mute:        {label: "MIDI Trk 3 Mute [0]=Unmute, [1-127]=Mute", cc: 114, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_4_mute:        {label: "MIDI Trk 4 Mute [0]=Unmute, [1-127]=Mute", cc: 115, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_5_mute:        {label: "MIDI Trk 5 Mute [0]=Unmute, [1-127]=Mute", cc: 116, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_6_mute:        {label: "MIDI Trk 6 Mute [0]=Unmute, [1-127]=Mute", cc: 117, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_7_mute:        {label: "MIDI Trk 7 Mute [0]=Unmute, [1-127]=Mute", cc: 118, direction: receives, part: midi, group: midi_tracks}
+  midi_midi_trk_8_mute:        {label: "MIDI Trk 8 Mute [0]=Unmute, [1-127]=Mute", cc: 119, direction: receives, part: midi, group: midi_tracks}

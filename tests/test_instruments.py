@@ -164,6 +164,7 @@ class TestBundledCorpus:
 			"elektron/digitone_ii",
 			"elektron/model_cycles",
 			"elektron/model_samples",
+			"elektron/octatrack",
 			"elektron/syntakt",
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
@@ -8876,3 +8877,277 @@ class TestPro800:
 		assert "THE FIRMWARE THIS DESCRIBES IS NOT ESTABLISHED AND THE DOCUMENT PROVES THE " \
 			"PARAMETER SET HAS MOVED" in said
 		assert "are now controllable in three modes" in said
+
+
+class TestOctatrack:
+
+	"""Two controller maps, one file for two products, and sixteen rows the format refuses."""
+
+	def test_one_file_covers_two_products_because_the_appendices_agree (self) -> None:
+		"""The question the rank posed, and the answer is in the file's own account.
+
+		Elektron publishes a manual per product, four years and two OS revisions apart. Both
+		appendices were read by the same code and compared on four questions - the numbers,
+		the names, the direction marks and the hexadecimal cells - and all 115 rows agree.
+		Both are in `sources`, and the older one is cited for nothing: it is there because
+		reading it is what establishes this.
+		"""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assert set(octa.sources) >= {"manual", "mki_manual"}
+		assert octa.sources["manual"].edition == "1.40C"
+		assert octa.sources["mki_manual"].edition == "1.40A"
+
+		said = prose_of("elektron", "octatrack")
+
+		assert "THIS ONE FILE COVERS THE MKI AND THE MKII, AND THAT WAS ESTABLISHED RATHER " \
+			"THAN ASSUMED" in said
+
+		account = " ".join((octa.source or "").split())
+
+		assert "THE TWO MANUALS' APPENDICES AGREE ON ALL 115 ROWS" in account
+
+	def test_the_same_number_means_different_things_in_the_two_maps (self) -> None:
+		"""51 numbers are in both maps, which is the whole reason for the parts.
+
+		**This is the test worth having.** A consumer that ignored `part` would get one of the
+		two meanings for every one of those numbers, and would be wrong half the time.
+		"""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		audio = {control.cc for control in octa.controls.values()
+			if control.part == "audio" and control.cc is not None}
+		midi = {control.cc for control in octa.controls.values()
+			if control.part == "midi" and control.cc is not None}
+
+		# 51 numbers overlap in the appendix; 8 of those are on refused numbers, so 43 of the
+		# overlap survives into the controls.
+		assert len(audio & midi) == 43
+
+		# And the overlapping numbers really do mean different things.
+		def named (part: str, number: int) -> str:
+			"""One map's label for a controller number."""
+			return next(control.label for control in octa.controls.values()
+				if control.part == part and control.cc == number)
+
+		assert named("audio", 22) == "Amp param #1 (Attack)"
+		assert named("midi", 22) == "Amp param #1 (Transpose)"
+		assert named("audio", 34) == "FX1 param #1"
+		assert named("midi", 34) == "Pitch bend"
+
+	def test_the_appendix_reuses_a_page_name_for_a_different_page (self) -> None:
+		"""So the grouping is keyed on the map as well as the name, and here is why.
+
+		`Amp param` is the AMP page in the audio map and the ARPEGGIATOR page in the MIDI map.
+		The bracketed glosses are the evidence: Transpose, Legato, Mode, Speed, Octave Range
+		and Arp Note Length are what sections 15.4.3 and 15.4.4 put on the arpeggiator pages.
+		**A reader grouping on the prefix alone files the arpeggiator under the amplifier.**
+		"""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		amp = sorted(control.cc for control in octa.controls.values()
+			if control.group == "amp" and control.cc is not None)
+		arp = sorted(control.cc for control in octa.controls.values()
+			if control.group == "arpeggiator" and control.cc is not None)
+
+		assert amp == [22, 23, 24, 25, 26, 27]
+		assert arp == [22, 23, 24, 25, 26, 27]
+
+		# The same numbers, in different maps, under different pages.
+		assert {control.part for control in octa.controls.values()
+			if control.group == "amp"} == {"audio"}
+		assert {control.part for control in octa.controls.values()
+			if control.group == "arpeggiator"} == {"midi"}
+
+		account = " ".join((octa.source or "").split())
+
+		assert "APPENDIX C'S OWN NAMES FOR THE MIDI MAP'S PAGES ARE THE AUDIO MAP'S NAMES" \
+			in account
+
+	def test_sixteen_rows_are_refused_because_the_maker_used_channel_mode (self) -> None:
+		"""Controllers 120 to 127 carry MIDI track solos, and this format will not hold them.
+
+		The second instrument here to lose published numbers this way, after the Hydrasynth
+		Explorer - and the loss is recorded in the file rather than worked around.
+		"""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		numbers = {control.cc for control in octa.controls.values()}
+
+		for number in range(120, 128):
+			assert number not in numbers, f"controller {number} is a channel mode message"
+
+		# But 112 to 119 are undefined in the specification and are carried.
+		for number in range(112, 120):
+			assert number in numbers, f"controller {number} should be a control"
+
+		assert len(octa.controls) == 99
+
+		account = " ".join((octa.source or "").split())
+
+		assert "SIXTEEN OF THE 115 ROWS CANNOT BE CONTROLS, AND THE MAKER IS THE REASON" \
+			in account
+		assert "a sequencer sending All Sound Off to it solos a MIDI track" in account
+
+		# The Hydrasynth Explorer is the precedent and says the same thing its own way.
+		explorer = " ".join((pymidiinstrumentdefs.load(
+			"asm/hydrasynth_explorer", [CORPUS]).source or "").split())
+
+		assert "numbers the specification reserves for channel mode" in explorer.lower()
+
+	def test_the_midi_map_is_receive_only_by_its_own_introduction (self) -> None:
+		"""Every row of C.8 is marked in REC and none in TRN, which the section states.
+
+		It reads at first like the manual contradicting itself: the sixteen MIDI track mutes
+		and solos are identical rows in both maps, marked both ways in one and received only
+		in the other. **The section's own first sentence settles it** - the auto channel
+		"responds to" these messages - so C.8 is a receive-only table by construction.
+		"""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		midi = [control for control in octa.controls.values() if control.part == "midi"]
+
+		assert midi
+		assert all(control.direction == "receives" for control in midi)
+
+		# The audio map is mostly both ways, with seven received only.
+		audio = [control for control in octa.controls.values() if control.part == "audio"]
+		one_way = [control.cc for control in audio
+			if control.direction == "receives" and control.cc is not None]
+
+		assert sorted(one_way) == [7, 8, 57, 58, 59, 60, 61]
+
+		account = " ".join((octa.source or "").split())
+
+		assert "the whole of C.8 is a receive-only table by construction" in account
+
+	def test_the_parts_are_the_tracks_and_not_the_makers_own_word (self) -> None:
+		"""An Octatrack bank holds four "parts" and they are not these."""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assert set(octa.parts) == {"audio", "midi"}
+		assert octa.parts["audio"].count == 8
+		assert octa.parts["midi"].count == 8
+
+		# The MIDI tracks do not sound, so they take controls and not notes.
+		assert "notes" not in (octa.parts["midi"].receives or ())
+		assert "notes" in (octa.parts["audio"].receives or ())
+
+		said = prose_of("elektron", "octatrack")
+
+		assert "THE MAKER'S WORD `PART` IS NOT THIS FORMAT'S" in said
+
+	def test_no_polyphony_because_the_word_voices_is_nowhere_in_the_manual (self) -> None:
+		"""A count of tracks is not a count of voices, and this manual gives only tracks."""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assert octa.voice.polyphony is None
+		assert octa.voice.note_range is None
+
+		said = prose_of("elektron", "octatrack")
+
+		assert "The word `voices` appears nowhere in these 148 pages" in said
+		assert "A count of tracks is not a count of voices" in said
+
+	def test_one_firmware_image_serves_both_products (self) -> None:
+		"""Both support pages link the same release notes, so a version tells them apart."""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assert octa.model.firmware == "1.40C"
+		assert octa.sources["release_notes"].edition == "1.40C"
+
+		said = prose_of("elektron", "octatrack")
+
+		assert "BOTH SUPPORT PAGES SERVE THE SAME IMAGE" in said
+		assert "THE SAME FILE IS LINKED FROM BOTH PRODUCTS' PAGES" in said
+
+	def test_the_support_pages_printed_date_contradicts_the_file_it_serves (self) -> None:
+		"""Three signals against one, so the page is stale rather than the file mislabelled."""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assert octa.sources["manual"].dated == "2026-08-27"
+
+		account = " ".join((octa.source or "").split())
+
+		assert "THE MKII'S SUPPORT PAGE PRINTS A DATE THAT CONTRADICTS THE FILE IT SERVES" \
+			in account
+		assert "Three independent signals against one" in account
+
+	def test_sysex_is_true_for_one_purpose_unlike_the_other_elektrons (self) -> None:
+		"""Nine Elektrons here record it for a dump menu; this one has none.
+
+		The only thing this instrument does with system exclusive is take its own operating
+		system, over the five-pin ports and not over USB. The field is the same and what it
+		covers is not, so the file says which.
+		"""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assert octa.midi.sysex is True
+
+		said = prose_of("elektron", "octatrack")
+
+		assert "TRUE, AND FOR ONE PURPOSE ONLY, WHICH IS DIFFERENT FROM EVERY OTHER " \
+			"ELEKTRON HERE" in said
+		assert "The upgrade can not be sent over the Octatrack's USB port" in said
+
+	def test_nrpn_is_unset_and_the_reasoning_is_in_the_file (self) -> None:
+		"""The closest call here: suggestive, and not a statement.
+
+		The words appear nowhere in 148 pages, and this maker's newer manuals publish NRPN
+		beside CC in the same appendix form. That is a difference worth noticing and still
+		not something the document says, so the field is unset and the evidence is written
+		down - which is the honest state rather than a guess in either direction.
+		"""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assert octa.midi.nrpn is None
+		assert [control.name for control in octa.controls.values()
+			if control.nrpn is not None] == []
+
+		# The comparison the file makes: this maker's other appendices do give NRPNs.
+		digitone = pymidiinstrumentdefs.load("elektron/digitone", [CORPUS])
+
+		assert digitone.midi.nrpn is not None
+		assert any(control.nrpn is not None for control in digitone.controls.values())
+
+		said = prose_of("elektron", "octatrack")
+
+		assert "NOT RECORDED, AND THIS IS THE CLOSEST CALL IN THE FILE" in said
+		assert "It is still not a statement" in said
+
+	def test_ten_of_the_midi_maps_controllers_have_owner_chosen_destinations (self) -> None:
+		"""The numbers are fixed and published; what they reach is a setting."""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		assignable = sorted(control.cc for control in octa.controls.values()
+			if (control.label or "").startswith("CC #") and control.cc is not None)
+
+		assert assignable == [36, 37, 38, 39, 40, 41, 42, 43, 44, 45]
+
+		# Four on the CTRL 1 page and six on CTRL 2, which is the maker's own division.
+		assert sorted(control.cc for control in octa.controls.values()
+			if control.group == "ctrl_1" and control.cc is not None) \
+			== [34, 35, 36, 37, 38, 39]
+		assert sorted(control.cc for control in octa.controls.values()
+			if control.group == "ctrl_2" and control.cc is not None) \
+			== [40, 41, 42, 43, 44, 45]
+
+		account = " ".join((octa.source or "").split())
+
+		assert "the ten numbers are fixed and published and the ten destinations are not" \
+			in account
+
+	def test_one_parameter_name_is_at_two_numbers_with_two_directions (self) -> None:
+		"""Track level is controller 7, received only, and 46, both ways."""
+		octa = pymidiinstrumentdefs.load("elektron/octatrack", [CORPUS])
+
+		seven = octa.controls["audio_track_level_7"]
+		forty_six = octa.controls["audio_track_level_46"]
+
+		assert seven.label == forty_six.label == "Track level"
+		assert seven.cc == 7 and seven.direction == "receives"
+		assert forty_six.cc == 46 and forty_six.direction == "both"
+
+		account = " ".join((octa.source or "").split())
+
+		assert "ONE PARAMETER NAME IS AT TWO NUMBERS IN THE AUDIO MAP" in account

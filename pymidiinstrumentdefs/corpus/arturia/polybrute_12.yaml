@@ -1,0 +1,528 @@
+# THE SAME MAP ON A DIFFERENT INSTRUMENT, AND THAT IS THE WHOLE POINT OF THIS FILE. The PolyBrute
+# 12's controller chart is **identical to the PolyBrute's** - the same 74 numbers, the same names
+# on them, under the same eighteen headings - and `arturia/polybrute` is already in this corpus.
+# That was not assumed from the family name: the 12's chart was extracted from its own manual
+# twice, by two methods, and then compared **number for number against the committed PolyBrute
+# definition**, which is the thing a reader would be misled by. Nothing differed.
+#
+# **SO THE TWO FILES AGREE ABOUT THE CHART AND DISAGREE ABOUT THE INSTRUMENT**, and a reader who
+# noticed the first and assumed the second would be wrong six ways. What differs below: twelve
+# voices instead of six, polyphonic aftertouch instead of channel, MPE on up to sixteen channels,
+# **one controller number the chart does not list**, a pitch-bend range the PolyBrute's manual
+# never printed, and a transport that this manual says travels both ways where the PolyBrute's
+# said only one.
+#
+# THE ONE CONTROL THAT IS NOT IN THE CHART IS CONTROLLER 74, the MPE Slide dimension, and the
+# chart's silence about it is not an oversight: an MPE instrument's third dimension is CC 74 by
+# the specification rather than by the maker's choice, so a chart of panel assignments has no
+# reason to carry it. It is named in section 12.8.8 and in both aftertouch tables instead. The
+# Carbon8M's file in this corpus says the same of its own chart, which leaves 74 blank for
+# this reason. **So the 12's map is the PolyBrute's map plus one number**, and that is the
+# only sense in which one is a superset of the other.
+#
+# THE POLYBRUTE NOIR IS A FINISH of the six-voice instrument and belongs to `arturia/polybrute`.
+# Nothing here covers it.
+
+definition: 1
+
+model:
+  manufacturer: Arturia
+  name: PolyBrute 12
+  # NOT RECORDED, AND FOR THE SAME REASON AS THE POLYBRUTE'S: this manual never says which
+  # firmware it describes. Firmware is mentioned three times in 137 pages and every one is about
+  # how to see or install it - "Press [Assign 6] to view the current firmware version of your
+  # PolyBrute 12" (manual p. 121) is the nearest it comes.
+  # **AND THE FIRMWARE THE PAGE SERVES IS THE POLYBRUTE'S OWN FILE.** The 12's resources page
+  # offers "PolyBrute 12 Firmware" (resources_page) at "Version 3.1.1.1875" (resources_page) of 20 June 2024, and
+  # the file behind that button is `polybrute__3_1_1_1875.pbf` under
+  # `/api/download/products/polybrute/firmware/` - the same URL, the same version and the same
+  # date the PolyBrute's own page serves. **One firmware image runs both products**, which is
+  # worth knowing before anybody reads a version number as telling the two apart. It also means
+  # the firmware is a major version ahead of neither manual and sixteen months older than this
+  # one, so the manual is the later document here, which it was not on the sibling.
+
+source: >-
+  User manual (137pp), English edition 3.1.0: the rear panel at p. 9, the polyphony at pp. 6 and
+  40, the timbrality and the zones at p. 41, the voice allocation at pp. 47-48, the presets at
+  p. 13, the bend range at p. 104, **the aftertouch modes and the two MPE tables at pp. 104-107**,
+  the sync settings at pp. 111-112, the keyboard settings at pp. 113-114, the MIDI settings at
+  pp. 115-118, the specifications at p. 122, and **the chart of controller numbers at 13.1,
+  pp. 123-124**, which is where all but one of the numbers here comes from. And Arturia's
+  resources page for the PolyBrute 12, for what is published.
+
+  THE PRINTED PAGE IS NINE BEHIND THE PAGE OF THE FILE, so `page_offset: 9`, and the chart is on
+  the 132nd and 133rd sheets of a 137-sheet document. **The PolyBrute's offset is seven**, because
+  its front matter is two sheets shorter - a sibling's offset is not a hint, and the first nine
+  sheets here carry no printed folio at all, so nothing in the introduction can be cited by page.
+
+  **IT IS A DIFFERENT DOCUMENT AND ITS OWN METADATA SAYS SO**, which is checked rather than
+  assumed because two manuals under one family's version numbering is exactly how a sibling's
+  chart gets read as this one's. This file calls itself `User Manual PolyBrute 12` internally,
+  with the subject `polybrute-12` and the keywords `polybrute-12__3.1.0__20251010__en`, and was
+  built on 15 October 2025 by Prince 15.4.1. The PolyBrute's calls itself `User Manual PolyBrute`,
+  subject `polybrute`, built 19 October 2023 by Prince 13.5. Nineteen months and two typesetter
+  versions apart, 137 sheets against 127.
+
+  AND THAT SAME CHECK FOUND SOMETHING ABOUT THE SIBLING WORTH PASSING ON: the PolyBrute's PDF
+  carries the keywords `polybrute__3.0.0__20231019__en`, so **the document's own version is 3.0.0
+  where the page that serves it says 3.0.1**. That refines what `arturia/polybrute` records - it
+  says four translations were 3.0.0 while the English was 3.0.1, and the English file's own
+  metadata agrees with the translations rather than with the page. Nothing in either definition
+  changes; it is recorded so that nobody reads Arturia's page numbers as the documents' own.
+
+  THE CHART IS A GRID OF EIGHTEEN SMALL TABLES, THREE ACROSS, which is the sibling's difficulty
+  repeated exactly. Each table is a *Parameter* column beside a *MIDI CC* one with a heading over
+  it, and three sit side by side. Two things make a plain text reading unsafe: **the column
+  positions move from one block of rows to the next**, so a fixed cut slices some rows through the
+  middle of a word while looking orderly; and **eight lines carry fewer than three cells**, where
+  a left-hand table has run out, so `Morphée Y 115`, `Morphée Z 89` and `Rate 73` are each alone
+  on their line over the table they belong to. A reader that splits a line on runs of whitespace
+  and takes the pieces in order files all three under the leftmost table, which would put two of
+  the Morphée's axes in VCO 1 and the third LFO's rate in LFO 1.
+
+  SO BOTH READINGS PLACED A CELL BY WHERE IT IS RATHER THAN BY HOW MANY PRECEDE IT, and they agree
+  on all 74 rows. One recovered the ruled grid the page draws and dropped each word into the cell
+  its own centre lands in; the second, made without sight of the first, used a different library's
+  layout mode, derived each block's offsets from that block's own heading row, and then checked the
+  result against both sheets rendered at 200 dpi and read by eye.
+
+  **AND THE RENDERING WAS THE LESS RELIABLE OF THE TWO, WHICH IS WORTH SAYING OUT LOUD.** The
+  second reader reports that this manual is set in a geometric sans whose zero is a perfect
+  circle, so in the image 70, 80, 90, 10 and 102 to 110 all read as 7O, 8O, 9O, 1O and 1O2. The
+  text layer gives unambiguous digits and was taken as authoritative. An eye-reading of a render
+  is the method this project reaches for when a text layer cannot be trusted, and here it is the
+  method that would have introduced the error.
+
+  EVERY NUMBER IS DISTINCT - 74 controls and 74 controller numbers, so nothing here needs a part to
+  say what a number means. **Fourteen parameter names are not distinct**: `Rate` names four
+  different things, `Attack`, `Decay`, `Sustain` and `Release` three apiece, and `Cutoff`,
+  `Resonance`, `Level`, `Tune`, `Pulse Width`, `Saw / Tri Mix`, `Saw / Square Mix`, `Velo` and
+  `VCF Env Amt` two - so every one of those carries its table in its key, and **the keys below are
+  the PolyBrute's keys, asserted against the committed file** so that a reader comparing the two
+  definitions sees no difference this file invented.
+
+  CONTROL CHANGE TRAVELS BOTH WAYS AND IT IS A SETTING: "ON enables the PolyBrute 12 to send and
+  receive MIDI Continuous Controller (CC) messages when almost any knob is turned, via either USB
+  MIDI or the 5-pin MIDI port" (manual p. 116). So every charted control below is `both`, which is
+  this format's default and is why none of them says so.
+
+  THE CHART NAMES THE TWO FILTERS ONE WAY IN ITS HEADINGS AND ANOTHER WAY IN ITS ROWS, exactly as
+  the sibling's does: two tables are headed `LADDER FILTER` and `STEINER FILTER` while the
+  `FILTER FM` table beside them routes to `VCF 1` and `VCF 2`, so the chart alone cannot say which
+  filter controllers 79 and 80 reach. The PolyBrute's file settles it from three sentences
+  elsewhere in that manual - VCF 1 is the Steiner and VCF 2 the Ladder - and this instrument's
+  filters are the same two by the same names. **The group labels below keep the chart's own
+  words**, and a reader wanting the mapping has it in `arturia/polybrute`.
+
+  SEVERAL OF THESE NUMBERS MEAN SOMETHING ELSE IN THE MIDI SPECIFICATION, AND THE MANUAL NEVER
+  SAYS SO. Controller 7 is Channel Volume and here it is the Steiner filter's Level; 8 is Balance
+  and here it is the Ladder's Level; 2 is Breath Controller and here it is Reverb Level; 4 is Foot
+  Controller and here it is Expression 2. **So a sequencer sending a routine volume message will
+  move a filter level on this instrument.** Four others do follow convention - 1 is the mod wheel,
+  5 is Glide where the specification has portamento time, 10 is Stereo where it has pan, 11 is
+  Expression 1 - which makes the four above look like choices rather than oversights. Inherited
+  from the sibling's chart because the chart is the same, and repeated here because a reader of
+  this file may never open that one.
+
+  WHAT THE GAPS IN THE NUMBERING ARE. The chart uses 74 of the 118 numbers between 1 and 118, and
+  controller 74 below takes a seventy-fifth from outside it. The absence from 32 to 64 is two
+  facts and not one: 32 to 63 is the block the MIDI specification reserves for the fine halves of
+  controllers 0 to 31, so an instrument sending seven-bit values has no use for it, and 64 is the
+  damper pedal, which this instrument takes on a jack of its own - "Sustain Normally open" (manual
+  p. 122). The rest are 6, 20, 84, 88, 96 to 101 and 119 to 127. **The manual accounts for none of
+  them and none is inferred here.**
+
+  THE SURVEY SAID THIS INSTRUMENT HAS A USB-C SOCKET AND THE MANUAL SAYS USB TYPE B, three times
+  and consistently: "USB - USB Type B port for connecting PolyBrute 12 to a Mac or PC" (manual
+  p. 9), "USB Type B (max. cable length 3 meters)" (manual p. 9) in the rear-panel table on the
+  same page, and
+  "USB type B connector for use with DAWs and PolyBrute Connect" (manual p. 122). The five-pin
+  jacks are named twice and agree: "MIDI In/Out/Thru - Standard 5-pin DIN jacks, used to connect
+  PolyBrute 12 to other MIDI devices" (manual p. 9) and "MIDI In/Out/Thru connectors" (manual
+  p. 122). **So the connector difference the survey reported between the two products is not
+  there**, and the correction is recorded rather than passed over.
+
+  THE EDITOR'S MANUAL IS THE SAME FILE THE POLYBRUTE CITES, which is established from the page
+  rather than by fetching 32 MB twice: the 12's resources page offers "Polybrute Connect EN
+  Manual" (resources_page) at 2.0.0 of 3 December 2021, behind the identical URL
+  `/api/download/products/polybrute-connect/manual/polybrute-connect_Manual_2_0_0_EN.pdf`. That
+  document is already in this library under the sibling, where it was read in full: 77 pages, one
+  mention of the controller surface as a setting, **no chart and no controller number**. And this
+  manual does not defer to it - it points at itself, "See the Specifications [p.122] chapter for a
+  chart of the CC numbers" (manual p. 116) - so it is not cited here.
+
+  NOT RECORDED: system exclusive and NRPN. **The words SysEx, System Exclusive, NRPN and RPN
+  appear nowhere in these 137 pages**, which is a checked absence and still not enough to record
+  one. The S-1 in this corpus does record `nrpn: none` off the same kind of search, and the
+  difference is the document: that instrument publishes a MIDI implementation chart, which is a
+  form that undertakes to list what it does not do, so its silence is an answer. **This manual
+  publishes a list of controller assignments and no chart**, so its silence is only silence. The
+  sibling's file leaves both unset for the same reason and the two agree.
+
+  EVERY QUOTATION BELOW CARRIES A LOCATOR, AND THAT WAS AUDITED RATHER THAN ASSUMED. The
+  quotation gate only acts on a quotation followed by `(p. N)` or a source key, and says nothing
+  at all about one followed by neither - so the quote marks in this file were paired off in order
+  and counted: **62 quotations, 62 locators**, with the six remaining pairs being field values
+  rather than anybody's words. Ten quotations had no locator when the file was first written,
+  including two of the three Duo Bend modes and both halves of the voice-mode sentence, and the
+  gate reported none of them. **A gate's silence is not a pass**, and the only way to know which
+  quotations it looked at is to count them yourself.
+
+  **AND THE TWO COUNTS RECONCILE EXACTLY, WHICH IS THE POINT OF TAKING BOTH.** The gate checks 60
+  here - 57 against a page and 3 against a document with no pages - where this file has 62
+  locators. The two missing are "5-octave" (manual p. 122) and the edition "3.1.0"
+  (resources_page), both **shorter than the twelve characters the gate requires**, so it passes
+  over them silently. A figure that cannot be reconciled with a count made another way is a figure
+  nobody can act on; these can.
+
+  ALSO NOT RECORDED: the note range, and the mode. No page states what the instrument answers to
+  across the keyboard - the keyboard is "5-octave" (manual p. 122) with buttons that "shift keyboard range ± 2
+  octaves from center" (manual p. 122), which is a fact about the keyboard and not about what
+  arrives - and with no implementation chart there is no omni or poly mode row to read.
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual PolyBrute 12
+    edition: "3.1.0"
+    dated: 2025-10-15
+    landing: "https://www.arturia.com/products/hardware-synths/polybrute-12/resources"
+    url: "https://www.arturia.com/api/download/products/polybrute-12/manual/polybrute-12_Manual_3_1_0_EN.pdf"
+    sha256: 82ddce8d640173e3073a651674da0e95b915f037bad7233f9a83c7085f908840
+    retrieved: 2026-10-04
+    page_offset: 9
+    # **ALL BUT ONE OF THE NUMBERS IN THIS FILE COMES FROM ITS LAST SIX PAGES**, and controller 74
+    # from p. 117. 137 sheets, the first nine of them unnumbered, so printed p. 1 is sheet 10 and
+    # printed p. 6 is the first page this file can cite. The date is the one the resources page
+    # prints beside the download, and the PDF's own creation date agrees with it to the day.
+    # ONE TYPOGRAPHICAL TRAP, MEASURED: this document writes the same menu instruction two ways.
+    # The Sync pages use an en dash inside their bracket - `[Assign 1-2]` at p. 112 - where every
+    # other page uses a hyphen, `[Assign 1-4]` at p. 116. A quotation keeps its source's own
+    # characters, so the three Sync quotations below carry the en dash and the rest do not.
+  resources_page:
+    kind: product_page
+    title: "PolyBrute 12 Resources - Arturia"
+    landing: "https://www.arturia.com/products/hardware-synths/polybrute-12/resources"
+    url: "https://www.arturia.com/products/hardware-synths/polybrute-12/resources"
+    sha256: 21a7ef1bdeb405faa615efe6501066ea01e175dd2a41db69c11796f80aa86c7b
+    retrieved: 2026-10-04
+    paginated: false
+    # The visible text of the page. Cited for what the manual does not carry: which edition it is,
+    # when it was published, and which firmware is current.
+    # **THIS PAGE DOES NOT REPEAT THE SIBLING'S HABIT.** On the PolyBrute's page the same week,
+    # the English manual was 3.0.1 and the French, Spanish, German and Japanese were all 3.0.0
+    # across ten days. Here all five are "3.1.0" (resources_page), dated across two days - so a translation would
+    # be a usable second reading of this edition in a way it was not of the PolyBrute's. It was
+    # not needed, because two readings of the English agreed.
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 15072d48e27305308cd536640b8821edc387f016b057db8ca5770269e44cc025.
+
+midi:
+  # "The lower zone sends/receives on MIDI channel 2 by default. Change this at Settings > MIDI >
+  # Channels: select [Assign 3] (Input Channel Lower) or [Assign 4] (Output Channel Lower), then
+  # use the [Assign] buttons to set the value to 1-16 or None" (manual p. 41). So sixteen
+  # channels, said by the maker rather than assumed from the protocol - and each zone has an input
+  # channel and an output channel of its own, which is why there are two parts below.
+  channels: [1, 16]
+  # MPE ON UP TO SIXTEEN CHANNELS, WHICH IS WHAT `per_voice_channels` SAYS AND IS WHY IT IS HERE:
+  # "MPE allows a sound source to be controlled by up to 16 MIDI Channels at once, one for global
+  # control and the others rotating to play different voices as required" (manual p. 117), and the
+  # count is a setting - "Channel Count: Defines how many channels/voices will be allocated for
+  # MPE send/receive" (manual p. 117), where "we don't include the Master Channel in this list, we
+  # only include Member Channel" (manual p. 117).
+  # **IT GOES BOTH WAYS AND IT IS SWITCHABLE**: "MPE On/Off: Toggles MPE. Values include: Off,
+  # Receive, Send, Both" (manual p. 117). The two directions are not symmetrical and the manual
+  # says so: "When receiving MPE, PolyBrute 12 accepts channel (mono) aftertouch on multiple MIDI
+  # channels (one per note), which are routed polyphonically to the Mod Matrix" (manual p. 118),
+  # against "When sending MPE, PolyBrute 12 sends mono aftertouch (Channel Pressure) and Slide
+  # (CC74) on multiple channels (one per note)" (manual p. 118).
+  # **AND IN SPLIT MODE THE TWO ZONES CROSS OVER**, which no boolean can carry: "In Split Mode,
+  # the 'Channel Count' selected will be the number of channels/voices allocated for the
+  # PolyBrute's Upper Zone. The remaining channels/voices will be allocated to the PolyBrute's
+  # Lower Zone" (manual p. 118), and then "The PolyBrute's Upper Zone will use the MPE Lower Zone
+  # whereas the PolyBrute's Lower Zone will use the MPE Upper Zone" (manual p. 118). An
+  # instrument's own upper half is MPE's lower zone. That is in this comment because it is a fact
+  # a player meets and the format has nowhere to put it.
+  per_voice_channels: true
+  # Received through Sync>Source, whose "Auto detects an incoming clock and syncs to that. If no
+  # clock is present, the internal clock is selected automatically at the last known tempo"
+  # (manual p. 111); sent through Sync>Clock Send, "Use [Assign 1–2] to turn MIDI Clock
+  # transmission on (default) or off" (manual p. 112). Both directions, and both switchable.
+  clock: both
+  # **BOTH WAYS, AND THIS IS WHERE THE TWO MANUALS DIFFER RATHER THAN THE TWO INSTRUMENTS.** The
+  # PolyBrute's file leaves `transport` unset because its manual gives a send switch and never
+  # states reception. This manual gives both, as separate menu entries on one page: "Use [Assign
+  # 1–2] to turn MIDI Transport Message (Send) transmission on (default) or off" (manual p. 112)
+  # and "Use [Assign 1–2] to turn MIDI Transport Message transmission (Receive) on (default) or
+  # off" (manual p. 112). Whether the PolyBrute gained the setting or only the sentence is not
+  # established here and is not guessed at.
+  transport: both
+  program_change:
+    # One setting covers both directions and says so: "Use [Assign 1-4] to make a selection.
+    # Choices include: Off, Receive, Send, Both. This includes both MIDI Program Change and Bank
+    # Select messages" (manual p. 116).
+    receives: true
+    sends: true
+    # WHAT THE INSTRUMENT HOLDS: "PolyBrute 12 has 8 banks of 96 presets (for a total of 768)"
+    # (manual p. 13), which is why bank select is in that sentence - 768 does not fit in a program
+    # change. The same count as the sibling's.
+    presets: 768
+  # NOT RECORDED: system exclusive, NRPN and the mode. See the source account for each; the first
+  # two are checked absences that this document's form is not strong enough to turn into an answer.
+  # `control_change` is left unset because a map is published - see the controls below.
+
+voice:
+  addressing: pitches
+  # TWELVE, WHICH IS THE INSTRUMENT'S NAME AND IS STATED FOUR WAYS: "PolyBrute features 12 voices
+  # of polyphony allowing you to play up to 12 notes concurrently" (manual p. 6), "Poly
+  # (polyphonic) allows all twelve voices to be triggered independently by different keys" (manual
+  # p. 40), "When a note is triggered the PolyBrute 12 can play as many as twelve voices on a
+  # single key" (manual p. 47), and and the two others - "Unison stacks multiple voices on a
+  # single key" (manual p. 40) and "Mono (monophonic) limits the keyboard to playing only one
+  # dual-oscillator voice" (manual p. 40). Double the sibling's six.
+  polyphony: 12
+  # The two zones draw on the one pool of twelve: in Split "the keyboard has two zones" (manual
+  # p. 41) and the voice modes are per zone, so twelve is a ceiling across both together rather
+  # than each. One layering mode takes half of it away and the manual says so: in Stereo Layer
+  # "two voices are allocated for each note played, and it pans them Left and Right. Please note
+  # that only 6 voices can be played" (manual p. 41) - the same fraction as the sibling's three
+  # out of six.
+  polyphony_shared: true
+  # **THE UNISON COUNT IS PRINTED HERE AND IS NOT IN THE SIBLING'S MANUAL**, which is why this
+  # list has five entries where `arturia/polybrute` has two: "Use [Assign 1-4] to set the value
+  # for the lower zone (Two, Three, Six and Twelve voices) and [Assign 5-8] to set the value for
+  # the upper zone (Two, Three, Six and Twelve voices)" (manual p. 40). Mono is one and Poly is
+  # twelve, so one, two, three, six and twelve are what a zone can be set to.
+  voicing_modes: [1, 2, 3, 6, 12]
+  velocity:
+    # "These affect the MIDI velocity transmitted to the PolyBrute based on how hard your fingers
+    # play the keys" (manual p. 113), and the curve is a setting: "Use [Assign 1] to set the
+    # velocity and aftertouch curves, and [Assign 2] to set the aftertouch sensitivity" (manual
+    # p. 113). Three curves each, named at pp. 113-114.
+    note_on: received
+  # POLYPHONIC, AND THE SPECIFICATIONS SAY IT TWO WAYS ON ONE PAGE. Under Keyboard they list
+  # "channel aftertouch" (manual p. 122); nine lines below, under Performance controls, they list
+  # "Aftertouch (pressure sensitivity), channel or polyphonic" (manual p. 122). **Two statements
+  # of one fact that do not meet**, which would ordinarily mean recording neither.
+  # **WHAT SETTLES IT IS THE BODY OF THE MANUAL, NOT EITHER LINE.** Four pages of aftertouch modes
+  # describe polyphonic pressure as what the keybed produces - "The notes are triggered
+  # immediately at the touch point, and the polyphonic aftertouch signals use the entire travel of
+  # the key from the touch point down to the bottom of the keybed" (manual p. 106) - and the MPE
+  # OUT table on that page gives `Aftertouch (Poly)` as what is sent, without MPE, in four of its
+  # five aftertouch modes. Only Mono AT sends Channel Pressure there. So the narrower line is the
+  # incomplete one and `poly` is the instrument.
+  # **AND WITH MPE ON IT SENDS THE OTHER KIND**: "When sending MPE, PolyBrute 12 sends mono
+  # aftertouch (Channel Pressure) and Slide (CC74) on multiple channels (one per note)" (manual
+  # p. 118). One pressure message per channel, one channel per note. Both kinds are real on this
+  # instrument, which is how the Hydrasynth Explorer and the Iridium record theirs too.
+  # THE FIVE MODES, for a reader who meets them on the panel: Mono AT, Poly AT, FullTouch
+  # Envelope, FullTouch, and FullTouch + Z (manual pp. 105-107). "FullTouch: The range starts at
+  # the beginning of the key press and stops at the Classic AT area start" (manual p. 105) - so
+  # FullTouch is pressure over the whole of the key's travel and Classic AT is pressure past the
+  # key stop, and a mode chooses which of them reaches which modulation lane.
+  aftertouch: poly
+  pitch_bend:
+    # TWENTY-FOUR IS AS FAR AS THE WHEEL GOES, AND THE SIBLING'S MANUAL NEVER SAID: "Use [Assign
+    # 1-8] to set the bend range for the Pitch wheel. Maximum range is +/- 24 semitones (+/-2
+    # octaves)" (manual p. 104). `arturia/polybrute` records no figure at all because no page of
+    # its manual states one, so this is the 12's manual being the better document rather than the
+    # 12 being the wider-bending instrument.
+    semitones: 24
+    programmable: true
+    # **MPE BENDS BY A DIFFERENT AND SEPARATELY SET RANGE**, which is not what this field holds
+    # and would be wrong in it: "Bend Range: Controls the reference range of MPE pitch bending (in
+    # semitones) for send and receive" (manual p. 117), with "Values include: 2, 12, 24, 36, 48
+    # (default), 60, 72, 96" (manual p. 117) - a default of four octaves. The manual states the
+    # precedence itself: "Pitch bend is handled with the MPE Bend Range rather than the
+    # keyboard's, and Slide (CC74) is routed depending on the Aftertouch mode selected" (manual
+    # p. 118). So 24 above is the pitch wheel's own reach, and MPE's is in this comment.
+    # ALSO NOT IN THIS FIELD: Duo Bend, which restricts which notes a bend reaches rather than how
+    # far it goes - "PB Monophonic (default)" (manual p. 107), "PB Duophonic" (manual p. 107),
+    # "PB Duo Upper Split" (manual p. 107) and "PB Duo Lower Split" (manual p. 107). The same shape of distinction as the sibling's duophonic
+    # aftertouch: one message, applied to a chosen set of voices.
+
+parts:
+  # The two keyboard zones, which exist only in one of the three Timbrality modes: "Single: the
+  # keyboard has one zone; each note triggers one voice that can morph between sounds A + B"
+  # (manual p. 41) and "Split: the keyboard has two zones. The lower zone is always sound A; the
+  # upper zone can morph between sounds A + B" (manual p. 41), with Layer between them.
+  # THEY ARE PARTS BECAUSE EACH HAS ITS OWN CHANNELS, not because the keyboard is divided: the
+  # MIDI settings give an Input Channel and an Output Channel for each, and "The pages for the
+  # upper and lower zones are identical, so both are described here" (manual p. 115).
+  upper:
+    label: Upper Zone
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+  lower:
+    label: Lower Zone
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # "The lower zone sends/receives on MIDI channel 2 by default" (manual p. 41), which is the
+    # only default either zone is given; the upper's is not printed. A default is not a
+    # derivation, so both say `assigned` and which channel yours are on belongs to your project.
+    # It is also the half that can drive the pattern generators: "The lower zone can trigger the
+    # Sequencer or Arpeggiator, so you can play a pattern or arpeggio using the lower zone while
+    # playing more notes in the upper zone" (manual p. 41).
+  # NOT A PART: the Sequencer and Arpeggiator, whose output is a setting on the MIDI menu rather
+  # than a channel - "ON sends the output of the Seq/Arp section to the MIDI output; OFF does not
+  # send the data over MIDI" (manual p. 116). It plays through the zones above.
+
+groups:
+  # Arturia's own names, from the headings over the eighteen tables the charted numbers were read
+  # from, with the word `Parameter` dropped because every heading carries it and none of them is
+  # told apart by it. The capitals are the chart's styling and are not reproduced, except where
+  # the heading is an abbreviation the panel prints that way. The order is the chart's order,
+  # which is also the order of the controls below. **The same eighteen as the sibling's, by the
+  # same rule**, which is what lets the two files be read side by side.
+  vco_1: VCO 1
+  vco_2: VCO 2
+  expression: Expression
+  filter_fm: Filter FM
+  midi: MIDI
+  noise: Noise
+  ladder_filter: Ladder Filter
+  steiner_filter: Steiner Filter
+  mixer: Mixer
+  vcf_env: VCF Env
+  vca_env: VCA Env
+  mod_env: Mod Env
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  lfo_3: LFO 3
+  effects: Effects
+  sequencer: Sequencer
+  filters_common: Filters Common
+  # A NINETEENTH THAT IS NOT A TABLE, for the one control that is not in the chart. The word is
+  # the maker's: section 12.8.8 is headed MIDI>MPE and the two tables at pp. 106-107 are headed
+  # MPE OUT and MPE IN. It is kept apart from the chart's own groups so that a reader can see
+  # which page each control came off.
+  mpe: MPE
+
+controls:
+
+  # VCO 1 ───────────────────────────────────────────────────
+  vco_1_tune:                  {label: Tune, cc: 66, group: vco_1}
+  metalizer:                   {label: Metalizer, cc: 70, group: vco_1}
+  vco_1_pulse_width:           {label: Pulse Width, cc: 69, group: vco_1}
+  sync:                        {label: Sync, cc: 65, group: vco_1}
+  vco_1_saw_tri_mix:           {label: Saw / Tri Mix, cc: 17, group: vco_1}
+  vco_1_saw_square_mix:        {label: Saw / Square Mix, cc: 12, group: vco_1}
+
+  # VCO 2 ───────────────────────────────────────────────────
+  vco_2_tune:                  {label: Tune, cc: 72, group: vco_2}
+  sub_mix:                     {label: Sub Mix, cc: 14, group: vco_2}
+  vco_2_pulse_width:           {label: Pulse Width, cc: 75, group: vco_2}
+  fm_2_1:                      {label: FM 2 > 1, cc: 77, group: vco_2}
+  vco_2_saw_tri_mix:           {label: Saw / Tri Mix, cc: 15, group: vco_2}
+  vco_2_saw_square_mix:        {label: Saw / Square Mix, cc: 16, group: vco_2}
+
+  # Expression ──────────────────────────────────────────────
+  exp_1:                       {label: Exp 1, cc: 11, group: expression}
+  exp_2:                       {label: Exp 2, cc: 4, group: expression}
+  glide:                       {label: Glide, cc: 5, group: expression}
+  morph_knob:                  {label: Morph Knob, cc: 3, group: expression}
+  ribbon:                      {label: Ribbon, cc: 9, group: expression}
+  morph_e_x:                   {label: Morphée X, cc: 114, group: expression}
+  morph_e_y:                   {label: Morphée Y, cc: 115, group: expression}
+  morph_e_z:                   {label: Morphée Z, cc: 89, group: expression}
+
+  # Filter FM ───────────────────────────────────────────────
+  vco_2_vcf_1:                 {label: VCO 2 > VCF 1, cc: 79, group: filter_fm}
+  noise_vcf_2:                 {label: Noise > VCF 2, cc: 80, group: filter_fm}
+
+  # MIDI ────────────────────────────────────────────────────
+  mod_wheel:                   {label: Mod Wheel, cc: 1, group: midi}
+
+  # Noise ───────────────────────────────────────────────────
+  noise_color:                 {label: Noise Color, cc: 22, group: noise}
+
+  # Ladder Filter ───────────────────────────────────────────
+  ladder_filter_cutoff:        {label: Cutoff, cc: 25, group: ladder_filter}
+  ladder_filter_resonance:     {label: Resonance, cc: 87, group: ladder_filter}
+  disto:                       {label: Disto, cc: 85, group: ladder_filter}
+  series_para:                 {label: Series > Para, cc: 86, group: ladder_filter}
+  ladder_filter_vcf_env_amt:   {label: VCF Env Amt, cc: 26, group: ladder_filter}
+  ladder_filter_level:         {label: Level, cc: 8, group: ladder_filter}
+
+  # Steiner Filter ──────────────────────────────────────────
+  steiner_filter_cutoff:       {label: Cutoff, cc: 23, group: steiner_filter}
+  steiner_filter_resonance:    {label: Resonance, cc: 83, group: steiner_filter}
+  brute_factor:                {label: Brute Factor, cc: 82, group: steiner_filter}
+  lp_hp_bp:                    {label: LP > HP > BP, cc: 81, group: steiner_filter}
+  steiner_filter_vcf_env_amt:  {label: VCF Env Amt, cc: 24, group: steiner_filter}
+  steiner_filter_level:        {label: Level, cc: 7, group: steiner_filter}
+
+  # Mixer ───────────────────────────────────────────────────
+  mixer_vco_1:                 {label: VCO 1, cc: 18, group: mixer}
+  mixer_vco_2:                 {label: VCO 2, cc: 19, group: mixer}
+  mixer_noise:                 {label: Noise, cc: 21, group: mixer}
+
+  # VCF Env ─────────────────────────────────────────────────
+  vcf_env_velo:                {label: Velo, cc: 94, group: vcf_env}
+  vcf_env_attack:              {label: Attack, cc: 102, group: vcf_env}
+  vcf_env_decay:               {label: Decay, cc: 103, group: vcf_env}
+  vcf_env_sustain:             {label: Sustain, cc: 28, group: vcf_env}
+  vcf_env_release:             {label: Release, cc: 104, group: vcf_env}
+
+  # VCA Env ─────────────────────────────────────────────────
+  vca_env_velo:                {label: Velo, cc: 95, group: vca_env}
+  vca_env_attack:              {label: Attack, cc: 105, group: vca_env}
+  vca_env_decay:               {label: Decay, cc: 106, group: vca_env}
+  vca_env_sustain:             {label: Sustain, cc: 29, group: vca_env}
+  vca_env_release:             {label: Release, cc: 107, group: vca_env}
+
+  # Mod Env ─────────────────────────────────────────────────
+  delay:                       {label: Delay, cc: 108, group: mod_env}
+  mod_env_attack:              {label: Attack, cc: 109, group: mod_env}
+  mod_env_decay:               {label: Decay, cc: 110, group: mod_env}
+  mod_env_sustain:             {label: Sustain, cc: 30, group: mod_env}
+  mod_env_release:             {label: Release, cc: 111, group: mod_env}
+
+  # LFO 1 ───────────────────────────────────────────────────
+  phase:                       {label: Phase, cc: 90, group: lfo_1}
+  lfo_1_rate:                  {label: Rate, cc: 91, group: lfo_1}
+
+  # LFO 2 ───────────────────────────────────────────────────
+  fade_in:                     {label: Fade In, cc: 92, group: lfo_2}
+  lfo_2_rate:                  {label: Rate, cc: 93, group: lfo_2}
+
+  # LFO 3 ───────────────────────────────────────────────────
+  curve:                       {label: Curve, cc: 67, group: lfo_3}
+  symmetry:                    {label: Symmetry, cc: 68, group: lfo_3}
+  lfo_3_rate:                  {label: Rate, cc: 73, group: lfo_3}
+
+  # Effects ─────────────────────────────────────────────────
+  mod_intensity:               {label: Mod Intensity, cc: 13, group: effects}
+  delay_level:                 {label: Delay Level, cc: 31, group: effects}
+  delay_time:                  {label: Delay Time, cc: 112, group: effects}
+  delay_regeneration:          {label: Delay Regeneration, cc: 113, group: effects}
+  reverb_level:                {label: Reverb Level, cc: 2, group: effects}
+  reverb_time:                 {label: Reverb Time, cc: 78, group: effects}
+  reverb_damping:              {label: Reverb Damping, cc: 76, group: effects}
+  stereo:                      {label: Stereo, cc: 10, group: effects}
+
+  # Sequencer ───────────────────────────────────────────────
+  sequencer_rate:              {label: Rate, cc: 116, group: sequencer}
+  gate:                        {label: Gate, cc: 118, group: sequencer}
+  motion_rec_rate:             {label: Motion Rec Rate, cc: 117, group: sequencer}
+
+  # Filters Common ──────────────────────────────────────────
+  master_cutoff:               {label: Master Cutoff, cc: 27, group: filters_common}
+  key_track:                   {label: Key Track, cc: 71, group: filters_common}
+
+  # MPE ─────────────────────────────────────────────────────
+  # THE ONE CONTROL THE CHART DOES NOT CARRY, and the only number this instrument answers to that
+  # the PolyBrute's map has not got. It is the MPE third dimension, named in the aftertouch tables
+  # and in the MPE section: "Aftertouch and Slide (CC74) MIDI data are routed differently into the
+  # modulation lanes according to your selected aftertouch mode, or if you have enabled or not the
+  # MPE" (manual p. 106), and "Slide (CC74) is routed depending on the Aftertouch mode selected"
+  # (manual p. 118). **Where it lands is a setting, not a fixed destination**: the MPE IN table at
+  # p. 107 routes it to the `Z` modulation lane in four of the five aftertouch modes and to
+  # `Aftertouch` in FullTouch Envelope.
+  # Both ways, by the same sentences as the rest: it is received per note when MPE is on, and
+  # "When sending MPE, PolyBrute 12 sends mono aftertouch (Channel Pressure) and Slide (CC74) on
+  # multiple channels (one per note)" (manual p. 118). So no `direction` - the format's default is
+  # what this is.
+  slide:                       {label: Slide, cc: 74, group: mpe}

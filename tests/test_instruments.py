@@ -132,6 +132,7 @@ class TestBundledCorpus:
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"arturia/polybrute",
+			"arturia/polybrute_12",
 			"asm/hydrasynth_explorer",
 			"behringer/model_d",
 			"behringer/td_3",
@@ -1998,20 +1999,26 @@ class TestOsmose:
 
 		A consumer asking which instruments spread their voices across channels has to
 		get all of them or none; one flagged and one not is worse than none, because it
-		reads as a settled answer and is wrong about the one it misses. There are six
+		reads as a settled answer and is wrong about the one it misses. There are seven
 		now. The Deluge is a sequencer as much as a synthesizer - it reads a zone of
 		channels as one instrument and writes one out too - the Hydrasynth Explorer is
 		the one whose maker says plainest what the flag means, that its voices break
 		into individual channels so each note can have its own bend, timbre and
 		pressure, and **the Prophet-6 is the first that receives MPE and never sends
 		it**, which this field cannot say and its file does.
+
+		**The PolyBrute 12 is the one whose sibling is in this corpus without the
+		flag**, which is the case this list exists for: `arturia/polybrute` and
+		`arturia/polybrute_12` publish the same controller chart, so a consumer that
+		told them apart by their numbers would get one answer for both, and this field
+		is where the difference is.
 		"""
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
-		assert flagged == ["asm/hydrasynth_explorer", "expressive_e/osmose",
-			"modal/carbon8m", "sequential/prophet_6", "synthstrom_audible/deluge",
-			"waldorf/iridium"]
+		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
+			"expressive_e/osmose", "modal/carbon8m", "sequential/prophet_6",
+			"synthstrom_audible/deluge", "waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -7144,7 +7151,7 @@ class TestProphet6:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert "sequential/prophet_6" in flagged
-		assert len(flagged) == 6
+		assert len(flagged) == 7
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -8365,3 +8372,225 @@ class TestS1:
 		said = prose_of("roland", "s_1")
 
 		assert "No firmware number appears anywhere in it" in said
+
+
+class TestPolyBrute12:
+
+	"""The sibling of an instrument already here, whose chart turns out to be the same chart."""
+
+	def test_its_chart_is_the_polybrutes_chart_number_for_number (self) -> None:
+		"""The one thing worth asserting about two definitions of two products.
+
+		This is the test the instrument exists for. Arturia publishes a manual for each
+		product and the two charts agree completely, so **a consumer must get the same
+		answer from either file** about any number either carries - and if a later
+		edition of one manual changes a row, this is where that shows up rather than in
+		somebody's reading of a diff.
+		"""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		charted = {name: control for name, control in twelve.controls.items()
+			if control.group != "mpe"}
+
+		assert set(charted) == set(six.controls)
+
+		for name, control in charted.items():
+			assert control.cc == six.controls[name].cc, name
+			assert control.label == six.controls[name].label, name
+			assert control.group == six.controls[name].group, name
+
+		# And the group labels with them, because a number under a different heading
+		# would be a difference in the chart even with the number unchanged.
+		assert {key: label for key, label in twelve.groups.items() if key != "mpe"} \
+			== six.groups
+
+	def test_the_one_control_the_chart_does_not_carry (self) -> None:
+		"""Controller 74 is the MPE third dimension, and the chart has no reason to list it."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		slide = twelve.controls["slide"]
+
+		assert slide.cc == 74
+		assert slide.label == "Slide"
+		assert slide.group == "mpe"
+
+		# Both ways, which is the format's default and so is what the file leaves unsaid.
+		assert slide.direction == "both"
+
+		# **THE SENSE IN WHICH ONE MAP IS A SUPERSET OF THE OTHER**: exactly one number.
+		ours = {control.cc for control in twelve.controls.values()}
+		theirs = {control.cc for control in six.controls.values()}
+
+		assert ours - theirs == {74}
+		assert theirs - ours == set()
+
+		assert len(twelve.controls) == 75
+		assert len(six.controls) == 74
+
+	def test_it_has_double_the_voices_and_the_count_is_said_four_ways (self) -> None:
+		"""Twelve against six, which is the product name and the first real difference."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert twelve.voice.polyphony == 12
+		assert six.voice.polyphony == 6
+
+		# Two zones out of one pool on both, and one layering mode costs half of it.
+		assert twelve.voice.polyphony_shared is True
+
+		# **THE UNISON COUNT IS PRINTED IN THIS MANUAL AND NOT IN THE POLYBRUTE'S**, so
+		# this list is five long where the sibling's is two. That is the document being
+		# better rather than the instrument being different.
+		assert twelve.voice.voicing_modes == (1, 2, 3, 6, 12)
+		assert six.voice.voicing_modes == (1, 6)
+
+		said = prose_of("arturia", "polybrute_12")
+
+		assert "Please note that only 6 voices can be played" in said
+
+	def test_the_aftertouch_is_poly_although_one_specification_line_says_channel (self) -> None:
+		"""Two statements of one fact on one page, settled by the body of the manual.
+
+		The rule this corpus follows is that a document contradicting itself about a
+		thing records neither. **What takes this out of that rule is a third statement**,
+		four pages of aftertouch modes that describe polyphonic pressure as what the
+		keybed produces - so the narrower specification line is incomplete rather than in
+		conflict, and the file sets out all of it.
+		"""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert twelve.voice.aftertouch == "poly"
+		assert six.voice.aftertouch == "channel"
+
+		said = prose_of("arturia", "polybrute_12")
+
+		assert "Two statements of one fact that do not meet" in said
+		assert "WHAT SETTLES IT IS THE BODY OF THE MANUAL, NOT EITHER LINE" in said
+		assert "Aftertouch (pressure sensitivity), channel or polyphonic" in said
+
+	def test_mpe_is_the_difference_the_field_can_carry (self) -> None:
+		"""One boolean for the thing the whole instrument is named around."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert twelve.midi.per_voice_channels is True
+		assert six.midi.per_voice_channels is None
+
+		assert twelve.midi.channels == (1, 16)
+
+		said = prose_of("arturia", "polybrute_12")
+
+		# What the boolean cannot say, in the file instead: the two zones cross over.
+		assert "AND IN SPLIT MODE THE TWO ZONES CROSS OVER" in said
+		assert "An instrument's own upper half is MPE's lower zone" in said
+
+	def test_the_bend_range_is_recorded_where_the_siblings_is_not (self) -> None:
+		"""The pitch wheel's own reach, and not MPE's, which is set separately."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert twelve.voice.pitch_bend is not None
+		assert twelve.voice.pitch_bend.semitones == 24
+		assert twelve.voice.pitch_bend.programmable is True
+
+		# The PolyBrute's manual states no figure, so its file holds none.
+		assert six.voice.pitch_bend is None
+
+		said = prose_of("arturia", "polybrute_12")
+
+		assert "MPE BENDS BY A DIFFERENT AND SEPARATELY SET RANGE" in said
+
+	def test_the_transport_difference_is_the_manuals_and_not_the_instruments (self) -> None:
+		"""Two separate menu entries here; the sibling's manual gives only the send switch."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert twelve.midi.transport == "both"
+		assert six.midi.transport is None
+
+		assert twelve.midi.clock == "both"
+		assert six.midi.clock == "both"
+
+		said = prose_of("arturia", "polybrute_12")
+
+		assert "Whether the PolyBrute gained the setting or only the sentence is not" in said
+
+	def test_the_file_says_which_product_it_covers (self) -> None:
+		"""Two manuals under one family's version numbers, so the name is not enough."""
+		said = prose_of("arturia", "polybrute_12")
+
+		assert "THE SAME MAP ON A DIFFERENT INSTRUMENT" in said
+		assert "THE POLYBRUTE NOIR IS A FINISH" in said
+
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+
+		account = " ".join((twelve.source or "").split())
+
+		# The document identifies itself, which is what was checked rather than assumed.
+		assert "User Manual PolyBrute 12" in account
+		assert "polybrute-12__3.1.0__20251010__en" in account
+
+	def test_no_firmware_and_the_image_is_the_siblings_own_file (self) -> None:
+		"""One firmware runs both products, which a version number would hide."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+
+		assert twelve.model.firmware is None
+		assert twelve.sources["manual"].edition == "3.1.0"
+		assert twelve.sources["manual"].dated == "2025-10-15"
+		assert twelve.sources["manual"].page_offset == 9
+
+		said = prose_of("arturia", "polybrute_12")
+
+		assert "AND THE FIRMWARE THE PAGE SERVES IS THE POLYBRUTE'S OWN FILE" in said
+		assert "One firmware image runs both products" in said
+
+	def test_the_survey_was_wrong_about_the_socket_and_the_file_says_so (self) -> None:
+		"""USB-C per the survey, USB type B per the manual, three times and agreeing."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+
+		account = " ".join((twelve.source or "").split())
+
+		assert "THE SURVEY SAID THIS INSTRUMENT HAS A USB-C SOCKET AND THE MANUAL SAYS " \
+			"USB TYPE B" in account
+		assert "the connector difference the survey reported between the two products is " \
+			"not there" in account
+
+	def test_the_source_account_keeps_the_trap_and_the_render_warning (self) -> None:
+		"""Because the next reader of a grid chart needs the trap, not the result."""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+
+		account = " ".join((twelve.source or "").split())
+
+		assert "THE CHART IS A GRID OF EIGHTEEN SMALL TABLES, THREE ACROSS" in account
+		assert "the column positions move from one block of rows to the next" in account
+
+		# **AND THE WARNING THAT COST THE SECOND READER NOTHING AND COULD HAVE COST A LOT**:
+		# this typeface's zero reads as a capital O in a render, so an eye-reading of an
+		# image is the less reliable of the two methods here.
+		assert "THE RENDERING WAS THE LESS RELIABLE OF THE TWO" in account
+		assert "all read as 7O, 8O, 9O, 1O and 1O2" in account
+
+	def test_sysex_and_nrpn_are_left_unset_for_a_stated_reason (self) -> None:
+		"""A checked absence, and a document whose form is not strong enough to settle it.
+
+		The S-1 records `nrpn: none` off the same kind of word search, and the difference
+		is the document: an implementation chart undertakes to list what an instrument
+		does not do, so its silence is an answer. A list of controller assignments does
+		not, so this manual's silence is only silence - and both Arturias agree.
+		"""
+		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
+		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
+
+		assert twelve.midi.nrpn is None
+		assert twelve.midi.sysex is None
+		assert six.midi.nrpn is None
+		assert six.midi.sysex is None
+
+		assert pymidiinstrumentdefs.load("roland/s_1", [CORPUS]).midi.nrpn == "none"
+
+		account = " ".join((twelve.source or "").split())
+
+		assert "its silence is only silence" in account

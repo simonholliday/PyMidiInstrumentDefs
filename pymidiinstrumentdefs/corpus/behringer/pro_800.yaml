@@ -1,0 +1,438 @@
+# SEVENTY CONTROLS OUT OF A TABLE WITH SIX COLUMNS, AND THE COLUMN A NAME SITS IN IS HALF OF WHAT
+# THE TABLE SAYS. Behringer publishes one document for this instrument - a Quick Start Guide - and
+# at the back of it is a table headed "MIDI Continuous Controllers" (guide p. 106) whose columns are `CC Num`,
+# `Hex`, `Continuous - Coarse`, `Continuous - Fine tune`, `Stepped params` and `MIDI standard`.
+# Every row puts its parameter's name in **exactly one** of the last four and a dash in the other
+# three, so a reading that returned only the name would lose whether a number is a coarse half, a
+# fine half, a stepped parameter or one of the protocol's own.
+#
+# **THIRTY-FOUR CONTROLS ARE 14-BIT AND THE MAKER NEVER SAYS SO IN A SENTENCE.** There is no
+# statement anywhere that this instrument uses two controllers per parameter - only a table with a
+# coarse column and a fine column, and **no row carries both**. OSC A Freq's coarse half is
+# controller 8 and its fine half is controller 80, thirty-four rows further down, and the only
+# thing joining them is that they have the same name. That pairing is what `lsb` below records,
+# and it was asserted both ways: 34 coarse names against 34 fine names, every one matching.
+#
+# AND IT IS NOT THE MIDI SPECIFICATION'S PAIRING, NOR EVEN A CONSTANT ONE. The protocol pairs
+# controller N with N+32. Measured here, the fine half sits **+72 above the coarse half on sixteen
+# parameters, +76 on fourteen and +75 on four**. So a consumer that assumed the convention would
+# send OSC A Freq's fine value to controller 40, which on this instrument is the VCF Aftertouch
+# amount. **Three offsets, no rule, and the names are the only way across.**
+#
+# THE TABLE HAS THREE FAULTS AND NONE OF THEM IS MENDED HERE. Controllers 48 and 49 are both
+# printed `OSC A Saw`; controller 79's `Hex` cell reads `AF` where 79 in hexadecimal is `4F`; and
+# the coarse column calls controller 41 `LFO Aftertouch amount` where the fine column calls
+# controller 116 `LFO Aftertouch`. All three are in the source account with what is printed, and
+# the labels below are the maker's own spelling - `OSB B Tri` and `OSB B Square` included.
+#
+# **THE FIRMWARE THIS DESCRIBES IS NOT ESTABLISHED AND THE DOCUMENT PROVES THE PARAMETER SET HAS
+# MOVED.** The guide names no firmware version anywhere, and its own prose shows it has been
+# revised for one: "Oscillator A and B frequency ranges are now controllable in three modes"
+# (guide p. 21) and "The range remains the same, but it is now possible to sweep the frequency of
+# the oscillators with a greater or smaller degree of fine control" (guide p. 21). **A reader
+# matching these numbers against an instrument must check their own firmware**, and nothing
+# published lets this file say which one it is. See the source account.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: PRO-800
+  # NOT RECORDED, and this maker publishes nothing that would establish it - the third Behringer
+  # here in that position, after the TD-3 and the Model D.
+  # Three numbers exist and **none of them is the instrument's firmware**: the guide carries `V
+  # 4.0` on its cover, which is the document's own edition; the SYNTHTRIBE application has
+  # versions of its own, which three TD-3 product pages once advertised three different ones of;
+  # and the product page carries none at all. The guide's own account of firmware is a pointer
+  # and not a number: "Please check the behringer.com website regularly for any updates to the
+  # Behringer SYNTHTRIBE app" (guide p. 19), and "The app looks for the latest firmware file
+  # which can then be downloaded and used to update the PRO-800" (guide p. 19).
+  # **WHAT MAKES THIS WORSE HERE THAN ON THE TD-3** is that the parameter set demonstrably moves
+  # with firmware - see the note above the definition - so an unversioned table is a table whose
+  # edition matters. What the numbers below match is the guide of 25 July 2024.
+
+source: >-
+  Quick Start Guide (62 sheets, 123 printed pages, V 4.0), in eleven languages: the top and rear
+  panels at pp. 16-19, the getting-started and firmware notes at p. 19, **the Additional
+  Parameters, Global Settings and Preset Parameters tables at p. 21**, the keyboard modes and the
+  patch store at p. 21, **the table of controller numbers at pp. 106-109**, and the
+  specifications at pp. 110-113. And Behringer's product page for the PRO-800, for the preset
+  count and for what the instrument is.
+
+  TWO PRINTED PAGES ARE SET TO A SHEET, so `pages_per_sheet: 2` with an offset of one, which is
+  this maker's habit - its TD-3 guide needs the same. Every sheet after the cover is 805 by 595
+  points, **two pages side by side**, with the folios at the top outer corners: on the 54th sheet,
+  106 at x 31 and 107 at x 762. A citation to p. 107 is the **right half** of the 54th sheet.
+
+  **SO A ROW'S OWN X POSITION IS WHAT SAYS WHICH PAGE IT IS ON**, and that is how the three blocks
+  of the table were placed: p. 107 carries 45 rows, p. 108 carries 43 and p. 109 carries 24, each
+  read off the folio printed on its own half of its own sheet rather than computed. **The citation
+  checker cannot tell the two halves apart** - it searches a whole sheet - so a wrong half would
+  pass it, which is why this was measured rather than left to the gate.
+
+  AND THAT SENTENCE WAS WRITTEN THE OTHER WAY ROUND FIRST, WHICH MADE THIS FILE CITE TWO PAGES IT
+  DOES NOT USE. A citation has to be able to say several pages at once, so the checker reads a
+  comma or the word *and* followed by a number as another page in the same citation. **So a count
+  written immediately after a page citation becomes a page.** The first draft put the row counts
+  after their pages - forty-five after the first, forty-three after the second - and the gate duly
+  reported this file as citing two pages it never mentions. Putting the count before the page
+  fixes it. **Nothing but the gate's own list of pages would have shown it**, which is a reason to
+  read that list rather than only the figure at the end of it - and a reason this paragraph names
+  no numbers next to a page of its own.
+
+  THE TABLE IS A RULED GRID AND THE ROWS COME OFF ITS VERTICALS, which is the one thing about
+  reading it worth passing on. The grid is drawn cell by cell, so the column edges fall out of the
+  rule spans exactly. **But the horizontals bounding the shaded heading row and the table's outer
+  edge are filled shapes rather than thin ones**, so taking the rows from the horizontal rules
+  silently lost the heading and the first and last data row of every block - three rows per block,
+  nine in all - and nothing would have caught it, because what comes back is a shorter table and
+  not a broken one. The verticals are drawn one per cell, about eleven points tall, so their tops
+  and bottoms together give every row boundary including the outermost.
+
+  EVERY NUMBER WAS READ TWICE AND THE TWO AGREE ON ALL 112 ROWS. The second reading, made without
+  sight of the first, used a different library's layout mode on a different interpreter and then
+  checked itself against both sheets rendered and read by eye.
+
+  EVERY ROW NAMES EXACTLY ONE COLUMN, which is asserted rather than assumed: a row naming two
+  would be one controller doing two things, and a row naming none would be a number listed for no
+  reason. 112 rows - **34 coarse, 34 fine, 30 stepped and 14 the protocol's own.**
+
+  EIGHT OF THOSE FOURTEEN ARE THE MIDI SPECIFICATION AND NOT THIS INSTRUMENT, so they are not
+  controls below. Six are how an NRPN travels - 6 "NRPN Data MSB" (guide p. 107), 38
+  "NRPN Data LSB" (guide p. 107), 96 "NRPN Data increment" (guide p. 109), 97
+  "NRPN Data decrement" (guide p. 109), 98 "NRPN Param LSB" (guide p. 109) and 99
+  "NRPN Param MSB" (guide p. 109) - and two are channel mode messages, 120 "All sounds off"
+  (guide p. 109) and 123 "All notes off" (guide p. 109), **which the validator refuses
+  outright**. The remaining six are kept, Bank
+  Select among them, which two definitions in this corpus already carry as a control.
+
+  **NRPN IS REAL AND NOT ONE NRPN NUMBER IS PUBLISHED.** Those six controllers are the whole of
+  the mechanism and the maker's own table names them, so `nrpn: supported` is said by the
+  document rather than inferred - but **no page of these 123 names a single NRPN parameter
+  number**, so no control below carries one. The maker's feature list claims NRPN and controller control of
+  all parameters and a bulk load and save - said without quote marks because **it is not in the
+  page's visible text and so cannot be cited at all**; see the note on the product page, because that claim is not
+  citable and the mechanism in the table is.
+
+  THE GROUPS ARE THE MAKER'S OWN PANEL SECTIONS, named in the specifications at p. 110 -
+  Oscillator, POLY-MOD, Noise, LFO-MOD, Glide, Filter, Amplifier and Output - and each control is
+  placed by the prefix of its own printed name. What this file decides is only that VCF is the
+  filter and VCA the amplifier; both halves of every other mapping are the maker's words.
+
+  **AND FIFTEEN CONTROLS GET NO GROUP**, which is a fact about the instrument rather than a gap
+  here. They are the performance and MIDI parameters that live in its menus rather than on its
+  panel - the bender, the mod wheel, the vibrato, unison, the arpeggiator, the velocity and
+  aftertouch amounts - and the maker names no section for any of them. Inventing one would invent
+  a grouping the maker does not have.
+
+  THREE FAULTS IN THE TABLE, each found by asserting something about it rather than by reading it:
+
+  **Controllers 48 and 49 are both printed `OSC A Saw`** (guide p. 107). The six rows around them
+  run OSC A Saw, OSC A Saw, OSC A Square, OSC B Saw, OSB B Tri, OSB B Square - so a reader can see
+  what the second one was probably meant to say and **this file does not say it**. The two are
+  `osc_a_saw_48` and `osc_a_saw_49` below, distinguished by number because the maker's own words
+  do not distinguish them.
+
+  **Controller 79's `Hex` cell reads `AF`** (guide p. 108) and 79 in hexadecimal is `4F`. Nothing
+  here depends on the Hex column - it is the decimal number again - but it is the one cell in the
+  table that is checkable arithmetic, and it is wrong, which is worth knowing before trusting the
+  rest.
+
+  **The two halves of one parameter are not named alike.** The coarse column calls controller 41
+  `LFO Aftertouch amount` and the fine column calls controller 116 `LFO Aftertouch` (guide
+  pp. 107, 109). They are joined below as one 14-bit control, on four grounds: it is the only
+  unpaired name on either side; 116 sits at +75 from 41, exactly as 114, 115 and 117 sit from 39,
+  40 and 42; the names differ by one word; and **the instrument's own menu calls the parameter
+  "LFO Aftertouch Amount" (guide p. 21)**, which is the coarse column's spelling.
+
+  AND THE GUIDE'S PROSE CONTRADICTS ITS OWN TABLE ABOUT A KEYPAD BUTTON, which is recorded because
+  it bears on how much the prose can be trusted rather than because it changes a number. The
+  Additional Parameters table puts `OscA Freq Pot Mode` and `OscB Freq Pot Mode` under key 6
+  (guide p. 21); four paragraphs later the prose says "press button 8 twice on the additional
+  parameters page" (guide p. 21), and key 8 in that same table is the three aftertouch amounts.
+  **Neither is corrected here and nothing below rests on either.**
+
+  TWELVE CONTROLLER NUMBERS BETWEEN 0 AND 123 ARE NOT IN THE TABLE: 4, 5, 43 to 47, 71, 118, 119,
+  121 and 122. **The maker accounts for none of them** and none is inferred. Two are worth a
+  reader's notice: 71 would be the fine half of nothing, since the coarse block stops at 42; and
+  121 and 122 are channel mode messages, so their absence is of a piece with 120 and 123 being
+  present.
+
+  WHAT IS ABSENT, CHECKED RATHER THAN ASSUMED. **MIDI transport is nowhere stated.** The Global
+  Settings menu has "Sync In Start/Stop On / Off" (guide p. 21), and that is the analog Sync In
+  jack rather than MIDI - the jack whose polarity and pulse rate the two settings either side of it
+  govern. No page says whether a MIDI start or stop is answered to, so `transport` is left unset.
+
+  AND THE SYNC JACK'S PULSE RATES ARE GIVEN TWO WAYS THAT DO NOT AGREE, which is set out here and
+  recorded in no field because the format holds nothing for an analog jack. The specifications say
+  "TS 3.5 mm 1PPS, 2PPQ, 24PPQ, 48PPQ" (guide p. 110), four options; the Global Settings menu
+  says "Sync In PPQN 1 PPS / 2 PPQ / 4 PPQ / 24 / 48" (guide p. 21), five. **The menu has
+  a 4 PPQ the specifications do not.** A third list, for a different thing, is the SYNC CLOCK
+  button's: "Third press: clock in PPQN settings: 24, 48, 96, 192 are available" (guide p. 17).
+
+  ALSO NOT RECORDED: the note range, which no page states; and **which kind of aftertouch it
+  answers to**. Three parameters set how far a received pressure reaches - the VCA, VCF and LFO
+  Aftertouch amounts, on controllers 39 to 41 - so it plainly answers to one, and **no page says
+  whether that is channel pressure or polyphonic**. This instrument has no keyboard of its own, so
+  nothing about its own keybed settles it either.
+
+  **IT HAS NO KEYBOARD**, which is worth saying plainly because the guide's prose repeatedly says
+  `the keyboard` and means the one you attach: "By holding the PERF and SETTINGS buttons then
+  playing a note on an attached MIDI keyboard the keyboard will transpose to the note played
+  relative to C" (guide p. 21). Its own panel has a numeric keypad. So everything below arrives
+  over MIDI or USB.
+
+  EVERY QUOTATION IN THIS FILE CARRIES A LOCATOR, AUDITED BY PAIRING THE QUOTE MARKS RATHER THAN
+  BY TRUSTING THE GATE. **46 quotations, 46 locators** - 42 citing a page and 4 naming the
+  unpaginated product page - which reconciles exactly with what the gate reports, with the five
+  remaining pairs of quote marks being field values rather than anybody's words.
+
+  AND THIS FILE FOUND A THIRD WAY THE GATE GOES QUIET, WHICH IS WORTH MORE THAN THE FIGURE. It
+  was already known that a quotation with no locator is skipped, and that one shorter than twelve
+  characters is skipped. The third is that **the gate allows only whitespace between a closing
+  quote mark and its locator**, so a quotation emphasised in this project's own house style -
+  bold markers closing immediately after the quote mark, before the parenthesis - is silently not
+  checked either. It looks located to a reader and is not. Two other definitions in this corpus
+  did the same thing, and moving the markers took one of them from 19 checked quotations to 21.
+
+  THE PRODUCT PAGE'S FEATURE LIST IS NOT CITABLE AND ITS PROSE IS. This maker builds its
+  specification and feature tables with a script, so none of that text reaches a saved copy - the
+  finding the TD-3 established at rank 45, and **here it can be stated more precisely**: the
+  feature list's claim about NRPN *is* in the page's markup, inside a JSON payload in a `script`
+  element, which `Tools/save_page.py` strips along with every other script. So the claim exists,
+  cannot be quoted from the saved text, and is not relied on below. The page's descriptive prose
+  does reach the text and is cited.
+
+sources:
+  guide:
+    kind: manual
+    title: Quick Start Guide PRO-800
+    edition: V 4.0
+    landing: "https://www.behringer.com/en/products/0718-ABF"
+    url: "https://cdn-media.empowertribe.com/d070b1451258414fa134b8f71b75b18c/QSG_BE_0718-ABF_PRO-800_WW.pdf"
+    sha256: 3661b6bd40fa523d80534e1b49b106c2611b7d054d781d1c18a97dae57a658b5
+    retrieved: 2026-10-04
+    page_offset: 1
+    pages_per_sheet: 2
+    # **EVERY NUMBER IN THIS FILE COMES FROM PRINTED PP. 107 TO 109**, plus p. 21 for the menus
+    # and p. 110 for the voice count. 62 sheets, 123 printed pages, two to a sheet after the
+    # cover; not encrypted, with a real text layer, made with Adobe InDesign 19.0 on 25 July 2024.
+    # The edition is the `V 4.0` its own cover carries, which is the document's version and not
+    # the instrument's firmware.
+    # The `WW` in the file name is the worldwide edition, which carries all eleven languages in
+    # one file; Behringer serves a `CN` and a `JP` edition separately. **The English is one of the
+    # eleven rather than a document of its own**, so there is no separate English edition to
+    # compare it against - which is why the second reading of the table used a different method
+    # on the same file rather than a different file.
+  product_page:
+    kind: product_page
+    title: "PRO-800 | Behringer"
+    landing: "https://www.behringer.com/en/products/0718-ABF"
+    url: "https://www.behringer.com/en/products/0718-ABF"
+    sha256: bddc524ef860f8bb59c8a9fa22fe9a637b1315dbb193910c94352c2f6c638d86
+    retrieved: 2026-10-04
+    paginated: false
+    # The visible text of the page. Cited for the preset count and for what the instrument is -
+    # "Based on the classic Prophet 600" (product_page) and "Up to 400 patches can be stored on
+    # the PRO-800!" (product_page) - and for nothing about MIDI.
+    # **WHAT IS NOT IN IT**: the specification table and the feature list, which this maker builds
+    # by script. The feature list's NRPN claim is in the markup inside a `script` element and is
+    # therefore absent from this text copy. Nothing here relies on it.
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # cfa54ff70a5810847f62aa0f1678be72ea0f6bbfcd0fb51ffde67a05e0df1816.
+
+midi:
+  # "MIDI In Out/Thru 2 x 5-pin DIN/ 16 channels" (guide p. 110), and the menu agrees from the
+  # other side: "MIDI Rx Channel Off / 1 – 16 / All / Dipswitch" (guide p. 21) beside
+  # "MIDI Tx Channel Thru / 1 – 16 / All / Dipswitch" (guide p. 21).
+  # **AND THE CHANNEL CAN BE SET IN HARDWARE, WHICH IS UNUSUAL ENOUGH TO SAY OUT LOUD**: the rear
+  # panel has "MIDI CHANNEL SELECTION" (guide p. 19) where you "Move the four dip switches to
+  # select the MIDI channel" (guide p. 19) - four switches, sixteen channels - and `Dipswitch` is
+  # then one of the values either menu setting can take. So the channel has two sources and the
+  # menu chooses between them.
+  channels: [1, 16]
+  # RECEIVED AND NOT STATED TO BE SENT. "SYNC SOURCE – choose from internal, MIDI, USB or Sync In"
+  # (guide p. 17), so a MIDI clock is one of four things it will follow. **No page says it sends
+  # one.** The SYNC CLOCK button sets the internal tempo and its subdivision, and "Sync In
+  # Forward" (guide p. 21) forwards the analog jack rather than MIDI.
+  clock: receives
+  program_change:
+    # One setting covers both directions: "MIDI PC Off / Tx / Rx / TxRx" (guide p. 21).
+    receives: true
+    sends: true
+    # WHAT THE INSTRUMENT HOLDS, stated three ways and arithmetically once. "Up to 400 patches can
+    # be stored on the PRO-800!" (product_page), "400 Program Memories in Eurorack Format"
+    # (product_page), and four banks in the guide's own Preset Parameters table (guide p. 21).
+    # **THE GUIDE'S OWN ARITHMETIC DOES NOT WORK AND IS NOT WHAT IS RECORDED.** It says "PROGRAM
+    # SELECT 0-9 switches. used to select program numbers 0-100.  There are four banks of
+    # programs, making 400 programs overall" (guide p. 17) - and four banks of 0 to 100 is 404,
+    # not 400. What settles it is the guide itself, two pages later: "Press the two-digit location
+    # to which you want to save the patch" (guide p. 21). **Two digits is a hundred locations**,
+    # four banks of a hundred is four hundred, and `0-100` is the loose half of the sentence.
+    # 400 does not fit in a program change, which is why Bank Select is a control below.
+    presets: 400
+  # STATED BY THE MENU THAT DOES IT: "Preset Dump (Second press to confirm SysEx dump)"
+  # (guide p. 21). Nothing else about system exclusive is published - no manufacturer
+  # identifier, no message format - so what is known is that a dump exists.
+  sysex: true
+  # SAID BY THE MAKER'S OWN TABLE RATHER THAN INFERRED. Six of its rows are the NRPN mechanism and
+  # it names them as such: `NRPN Data MSB`, `NRPN Data LSB`, `NRPN Data increment`, `NRPN Data
+  # decrement`, `NRPN Param LSB` and `NRPN Param MSB` (guide pp. 107-109).
+  # **AND NOT ONE NRPN PARAMETER NUMBER IS PUBLISHED ANYWHERE IN 123 PAGES**, so no control below
+  # carries an `nrpn`. The transport is documented and the addresses are not, which is a different
+  # thing from an instrument whose NRPNs are listed - and the reason this field says `supported`
+  # rather than the controls saying it.
+  nrpn: supported
+  # NOT RECORDED: transport. See the source account - the menu's "Sync In Start/Stop On / Off"
+  # (guide p. 21) is the analog jack, and MIDI start and stop are nowhere mentioned.
+  # `control_change` is left unset because a map is published - see the controls below. It travels
+  # both ways and it is a setting: "MIDI CC Off / Tx / Rx / TxRx" (guide p. 21).
+
+voice:
+  addressing: pitches
+  # "Number of voices 8" (guide p. 110), and the panel reaches them three ways: "The
+  # synthesizer starts in Polyphonic mode, in which any new note will be assigned to one of the 8
+  # voices" (guide p. 21).
+  polyphony: 8
+  # EIGHT IN POLY, EIGHT IN UNISON AND ONE IN THE THIRD MODE. "If you switch Unison Track on with
+  # no pressed key, you are in Unison mode, all 8 voices will play the same note" (guide p. 21)
+  # - so unison is eight voices on one note rather than a smaller stack - and the guide names a
+  # fourth state that is one voice: "If you switch on Unison Track with one key pressed you enter
+  # single voice unison mode" (guide p. 21). Chord mode is the fourth and takes as many voices as
+  # the chord has, which the guide does not put a number on.
+  voicing_modes: [1, 8]
+  velocity:
+    # RECEIVED, AND THE AMOUNT IS A SETTING: the Additional Parameters menu has
+    # "VCA Velocity Amount" (guide p. 21) and a VCF one beside it, and controllers 31, 32, 107 and 108 below
+    # are those two amounts. **Whether it sends velocity is not stated and it has no keys of its
+    # own to send any from**, so only reception is recorded.
+    note_on: received
+  # NOT RECORDED, AND IT PLAINLY ANSWERS TO ONE. Three parameters set how far a received pressure
+  # reaches - "VCA Aftertouch Amount" (guide p. 21) and "LFO Aftertouch Amount"
+  # (guide p. 21) among them, on controllers 39 to 41 below - so pressure arrives and is acted on. **No page says whether that is channel
+  # pressure or polyphonic**, and this instrument has no keybed of its own to settle it from the
+  # other side. A field that holds one of two answers is left unset rather than guessed.
+  pitch_bend:
+    # TWENTY-FOUR SEMITONES AND SETTABLE, from the Preset Parameters menu: "Pitchbend Range 0-24" (guide p. 21). Twenty-four is as far as it will go; the setting reaches down to
+    # none, which is a bend of nothing rather than a narrower one.
+    semitones: 24
+    programmable: true
+    # **AND WHERE A BEND GOES IS ALSO A SETTING**, which is rarer than the range being one:
+    # "Pitchbend Target  Off / VCO / VCF / Volume" (guide p. 21). So a pitch bend message
+    # may move the filter or the level instead of the pitch, and controller 66 below is that
+    # target. The format has no field for it and this comment is where it lives.
+  # NOT RECORDED: the note range. No page states what this instrument answers to across a
+  # keyboard it does not have.
+
+groups:
+  # THE MAKER'S OWN PANEL SECTIONS, named in the specifications (guide p. 110) and in the order
+  # that page prints them. The `Program` section is there too and has no controller number of its
+  # own, so it is not here.
+  # Each control below is placed by the prefix of **its own printed name** - `VCF Freq` to Filter,
+  # `VCA Atck` to Amplifier, `Pmod VCF` to POLY-MOD. Both halves of every mapping are the maker's
+  # words; what this file decides is only that VCF is the filter and VCA is the amplifier, which
+  # the specifications confirm by listing a cutoff and a resonance under one and four envelope
+  # stages under the other.
+  oscillator: Oscillator
+  poly_mod: POLY-MOD
+  noise: Noise
+  lfo_mod: LFO-MOD
+  glide: Glide
+  filter: Filter
+  amplifier: Amplifier
+  output: Output
+  # **FIFTEEN CONTROLS GET NO GROUP AT ALL**, and that is the instrument rather than a gap here:
+  # the bender, the mod wheel, the breath controller, the sustain pedal, bank select, unison and
+  # its detune, voice spread, the arpeggiator mode, the vibrato, the modulation delay and the four
+  # velocity and aftertouch amounts live in the menus rather than on the panel, and the maker
+  # names no section for any of them.
+
+controls:
+
+  # Oscillator ────────────────────────────────────────────
+  osc_a_freq:             {label: OSC A Freq, cc: 8, lsb: 80, group: oscillator}
+  osc_a_vol:              {label: OSC A Vol, cc: 9, lsb: 81, group: oscillator}
+  osc_a_pw:               {label: OSC A PW, cc: 10, lsb: 82, group: oscillator}
+  osc_b_freq:             {label: OSC B Freq, cc: 11, lsb: 83, group: oscillator}
+  osc_b_vol:              {label: OSC B Vol, cc: 12, lsb: 84, group: oscillator}
+  osc_b_pw:               {label: OSC B PW, cc: 13, lsb: 85, group: oscillator}
+  osc_b_fine:             {label: OSC B Fine, cc: 14, lsb: 86, group: oscillator}
+  osc_a_saw_48:           {label: OSC A Saw, cc: 48, group: oscillator}
+  osc_a_saw_49:           {label: OSC A Saw, cc: 49, group: oscillator}
+  osc_a_square:           {label: OSC A Square, cc: 50, group: oscillator}
+  osc_b_saw:              {label: OSC B Saw, cc: 51, group: oscillator}
+  osb_b_tri:              {label: OSB B Tri, cc: 52, group: oscillator}
+  osb_b_square:           {label: OSB B Square, cc: 53, group: oscillator}
+  osc_b_sync:             {label: OSC B Sync, cc: 54, group: oscillator}
+  chromatic_pitch_a:      {label: Chromatic Pitch A, cc: 68, group: oscillator}
+  chromatic_pitch_b:      {label: Chromatic Pitch B, cc: 69, group: oscillator}
+
+  # POLY-MOD ──────────────────────────────────────────────
+  pmod_filter_env_amount: {label: Pmod Filter Env amount, cc: 26, lsb: 102, group: poly_mod}
+  pmod_osc_b_amount:      {label: Pmod OSC B amount, cc: 27, lsb: 103, group: poly_mod}
+  pmod_freq_a:            {label: Pmod Freq A, cc: 55, group: poly_mod}
+  pmod_vcf:               {label: Pmod VCF, cc: 56, group: poly_mod}
+
+  # Noise ─────────────────────────────────────────────────
+  noise:                  {label: Noise, cc: 37, lsb: 113, group: noise}
+
+  # LFO-MOD ───────────────────────────────────────────────
+  lfo_freq:               {label: LFO Freq, cc: 28, lsb: 104, group: lfo_mod}
+  lfo_amount:             {label: LFO Amount, cc: 29, lsb: 105, group: lfo_mod}
+  lfo_aftertouch_amount:  {label: LFO Aftertouch amount, cc: 41, lsb: 116, group: lfo_mod}
+  lfo_shape:              {label: LFO Shape, cc: 57, group: lfo_mod}
+  lfo_speed:              {label: LFO Speed, cc: 58, group: lfo_mod}
+  lfo_targets:            {label: LFO Targets, cc: 59, group: lfo_mod}
+  lfo_dest_freq:          {label: LFO Dest Freq, cc: 74, group: lfo_mod}
+  lfo_dest_filter:        {label: LFO Dest Filter, cc: 75, group: lfo_mod}
+  lfo_dest_pwm:           {label: LFO Dest PWM, cc: 76, group: lfo_mod}
+
+  # Glide ─────────────────────────────────────────────────
+  glide:                  {label: Glide, cc: 30, lsb: 106, group: glide}
+  glide_mode:             {label: Glide Mode, cc: 79, group: glide}
+
+  # Filter ────────────────────────────────────────────────
+  vcf_freq:               {label: VCF Freq, cc: 15, lsb: 87, group: filter}
+  vcf_reso:               {label: VCF Reso, cc: 16, lsb: 88, group: filter}
+  vcf_env_amount:         {label: VCF ENV amount, cc: 17, lsb: 89, group: filter}
+  vcf_rel:                {label: VCF Rel, cc: 18, lsb: 90, group: filter}
+  vcf_sus:                {label: VCF Sus, cc: 19, lsb: 91, group: filter}
+  vcf_dec:                {label: VCF Dec, cc: 20, lsb: 92, group: filter}
+  vcf_atck:               {label: VCF Atck, cc: 21, lsb: 93, group: filter}
+  vcf_vel:                {label: VCF Vel, cc: 32, lsb: 108, group: filter}
+  vcf_aftertouch:         {label: VCF Aftertouch, cc: 40, lsb: 115, group: filter}
+  vcf_keyboard:           {label: VCF Keyboard, cc: 60, group: filter}
+  vcf_env_exp:            {label: VCF ENV Exp, cc: 61, group: filter}
+  vcf_env_speed:          {label: VCF ENV Speed, cc: 62, group: filter}
+  keyboard_tracking:      {label: Keyboard Tracking, cc: 78, group: filter}
+
+  # Amplifier ─────────────────────────────────────────────
+  vca_rel:                {label: VCA Rel, cc: 22, lsb: 94, group: amplifier}
+  vca_sus:                {label: VCA Sus, cc: 23, lsb: 95, group: amplifier}
+  vca_dec:                {label: VCA Dec, cc: 24, lsb: 100, group: amplifier}
+  vca_atck:               {label: VCA Atck, cc: 25, lsb: 101, group: amplifier}
+  vca_vel:                {label: VCA Vel, cc: 31, lsb: 107, group: amplifier}
+  vca_aftertouch:         {label: VCA Aftertouch, cc: 39, lsb: 114, group: amplifier}
+  vca_env_exp:            {label: VCA ENV Exp, cc: 63, group: amplifier}
+  vca_env_speed:          {label: VCA ENV Speed, cc: 72, group: amplifier}
+
+  # Output ────────────────────────────────────────────────
+  master_tune:            {label: Master Tune, cc: 3, group: output}
+  main_volume:            {label: Main volume, cc: 7, group: output}
+
+  # no section of the maker's own ─────────────────────────
+  bank_sel:               {label: Bank sel, cc: 0}
+  mod_wheel:              {label: Mod Wheel, cc: 1}
+  breath:                 {label: Breath, cc: 2}
+  mod_delay:              {label: Mod delay, cc: 33, lsb: 109}
+  vib_freq:               {label: Vib Freq, cc: 34, lsb: 110}
+  vib_amt:                {label: Vib Amt, cc: 35, lsb: 111}
+  unison_detune:          {label: Unison Detune, cc: 36, lsb: 112}
+  pitch_range:            {label: Pitch Range, cc: 42, lsb: 117}
+  sustain_pedal:          {label: Sustain pedal, cc: 64}
+  unison:                 {label: Unison, cc: 65}
+  bender_target:          {label: Bender target, cc: 66}
+  modwheel_amount:        {label: Modwheel Amount, cc: 67}
+  modwheel_target:        {label: Modwheel Target, cc: 70}
+  arp_mode:               {label: Arp Mode, cc: 73}
+  voice_spread:           {label: Voice Spread, cc: 77}

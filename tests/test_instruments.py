@@ -153,6 +153,7 @@ class TestBundledCorpus:
 			"arturia/polybrute_12",
 			"asm/hydrasynth_explorer",
 			"behringer/model_d",
+			"behringer/pro_800",
 			"behringer/td_3",
 			"dreadbox/typhon",
 			"elektron/analog_four",
@@ -8635,3 +8636,243 @@ class TestPolyBrute12:
 		account = " ".join((twelve.source or "").split())
 
 		assert "its silence is only silence" in account
+
+
+class TestPro800:
+
+	"""A table whose columns say what each number is, and 34 controls paired by name alone."""
+
+	def test_the_column_a_name_sits_in_is_half_of_what_the_table_says (self) -> None:
+		"""112 rows become 70 controls, and the arithmetic has to be visible.
+
+		34 coarse rows each absorb a fine row as their `lsb`; 30 stepped rows and 6 of the 14
+		protocol rows become controls of their own; and 8 protocol rows are left out. So
+		112 - 34 - 8 = 70, and this is where that is written down.
+		"""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		assert len(pro.controls) == 70
+
+		fourteen = [control for control in pro.controls.values() if control.lsb is not None]
+
+		assert len(fourteen) == 34
+
+		account = " ".join((pro.source or "").split())
+
+		assert "34 coarse, 34 fine, 30 stepped and 14 the protocol's own" in account
+
+	def test_the_fine_half_is_not_where_the_specification_puts_it (self) -> None:
+		"""Three offsets, none of them 32, so no rule gets you from one half to the other.
+
+		**This is the finding.** The MIDI specification pairs controller N with N+32. This
+		maker pairs 8 with 80, 24 with 100 and 39 with 114 - and a consumer that assumed the
+		convention would send OSC A Freq's fine value to controller 40, which on this
+		instrument is the VCF Aftertouch amount.
+		"""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		offsets = {control.lsb - control.cc for control in pro.controls.values()
+			if control.lsb is not None and control.cc is not None}
+
+		assert offsets == {72, 75, 76}
+		assert 32 not in offsets
+
+		# The one that would bite, named so the test says why it matters.
+		by_number = {control.cc: control for control in pro.controls.values()}
+
+		assert by_number[8].label == "OSC A Freq"
+		assert by_number[8].lsb == 80
+		assert by_number[40].label == "VCF Aftertouch"
+
+	def test_no_fine_controller_is_also_a_control_of_its_own (self) -> None:
+		"""A fine half is an `lsb` and nothing else, or a consumer would see it twice."""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		fine = {control.lsb for control in pro.controls.values() if control.lsb is not None}
+		coarse = {control.cc for control in pro.controls.values()}
+
+		assert fine & coarse == set()
+		assert len(fine) == 34
+
+	def test_the_protocols_own_controllers_are_left_out (self) -> None:
+		"""Six NRPN controllers and two channel mode messages are not this instrument.
+
+		The guide beside this corpus draws the line: channel mode messages are refused
+		outright, and Data Entry is left out where it is only how an NRPN's value travels.
+		This table says that is exactly what it is - it calls CC 6 and 38 `NRPN Data MSB`
+		and `NRPN Data LSB` - and the same argument covers CC 96 to 99.
+		"""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		numbers = {control.cc for control in pro.controls.values()}
+
+		for number in (6, 38, 96, 97, 98, 99, 120, 123):
+			assert number not in numbers, f"controller {number} should not be a control"
+
+		# Bank Select is kept, as two other definitions in this corpus keep theirs.
+		assert 0 in numbers
+
+		for other in ("korg/opsix", "oberheim/teo_5"):
+			theirs = pymidiinstrumentdefs.load(other, [CORPUS])
+			assert any(control.cc == 0 for control in theirs.controls.values()), other
+
+	def test_nrpn_is_supported_and_no_nrpn_number_is_published (self) -> None:
+		"""The transport is documented and the addresses are not, which is a real state.
+
+		Six controllers are the NRPN mechanism and the maker names them as such, so
+		`supported` is said by the document. But no page of 123 names an NRPN parameter
+		number, so **no control carries one** - and the two facts together are what the
+		file has to convey.
+		"""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		assert pro.midi.nrpn == "supported"
+
+		assert [control.name for control in pro.controls.values()
+			if control.nrpn is not None] == []
+
+		said = prose_of("behringer", "pro_800")
+
+		assert "NRPN IS REAL AND NOT ONE NRPN NUMBER IS PUBLISHED" in said
+
+	def test_the_three_faults_in_the_table_are_recorded_and_not_mended (self) -> None:
+		"""A duplicated name, a wrong hexadecimal cell and two halves named differently."""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		# The duplicate is carried as printed, told apart by number and not by invention.
+		assert pro.controls["osc_a_saw_48"].label == "OSC A Saw"
+		assert pro.controls["osc_a_saw_49"].label == "OSC A Saw"
+		assert pro.controls["osc_a_saw_48"].cc == 48
+		assert pro.controls["osc_a_saw_49"].cc == 49
+
+		# And the maker's own misspelling of its own oscillator is kept, twice.
+		labels = {control.label for control in pro.controls.values()}
+
+		assert "OSB B Tri" in labels
+		assert "OSB B Square" in labels
+
+		account = " ".join((pro.source or "").split())
+
+		assert "Controllers 48 and 49 are both printed `OSC A Saw`" in account
+		assert "Controller 79's `Hex` cell reads `AF`" in account
+		assert "The two halves of one parameter are not named alike" in account
+
+	def test_the_one_pair_joined_on_four_grounds_rather_than_on_its_name (self) -> None:
+		"""Controller 41 and controller 116 are one parameter spelled two ways.
+
+		Every other coarse half pairs with a fine half of the same name. This one does not,
+		and it is joined anyway - which is a judgement, so the file sets out all four
+		reasons rather than leaving a reader to wonder.
+		"""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		joined = next(control for control in pro.controls.values() if control.cc == 41)
+
+		assert joined.label == "LFO Aftertouch amount"
+		assert joined.lsb == 116
+
+		# +75, exactly as its three neighbours sit.
+		for number in (39, 40, 42):
+			other = next(c for c in pro.controls.values() if c.cc == number)
+			assert other.lsb is not None and other.lsb - number == 75
+
+		account = " ".join((pro.source or "").split())
+
+		assert "it is the only unpaired name on either side" in account
+		assert 'the instrument\'s own menu calls the parameter "LFO Aftertouch Amount"' in account
+
+	def test_two_printed_pages_to_a_sheet_as_on_the_other_behringer (self) -> None:
+		"""A spread holds two pages, so a citation to p. 107 is one half of a sheet."""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+		td_3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert pro.sources["guide"].pages_per_sheet == 2
+		assert pro.sources["guide"].page_offset == 1
+
+		# The same shape on the same maker's other guide, which is why it is worth a test -
+		# and the same source key, so a reader comparing the two meets one name for one
+		# kind of document.
+		assert td_3.sources["guide"].pages_per_sheet == 2
+
+		account = " ".join((pro.source or "").split())
+
+		assert "TWO PRINTED PAGES ARE SET TO A SHEET" in account
+		assert "The citation checker cannot tell the two halves apart" in account
+
+	def test_the_preset_count_is_four_hundred_and_the_guide_cannot_count (self) -> None:
+		"""Four banks of a hundred, settled by the guide against the guide.
+
+		"program numbers 0-100" over "four banks" is 404. What settles it is the guide
+		itself two pages later, telling you to press a two-digit location - a hundred per
+		bank - and the product page twice saying 400.
+		"""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		assert pro.midi.program_change is not None
+		assert pro.midi.program_change.presets == 400
+
+		said = prose_of("behringer", "pro_800")
+
+		assert "THE GUIDE'S OWN ARITHMETIC DOES NOT WORK AND IS NOT WHAT IS RECORDED" in said
+		assert "Two digits is a hundred locations" in said
+
+	def test_what_is_absent_is_absent_for_a_stated_reason (self) -> None:
+		"""Transport, the note range and the kind of aftertouch, each with its own sentence."""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		assert pro.midi.transport is None
+		assert pro.voice.note_range is None
+
+		# It plainly answers to pressure and no page says which kind, so the field is unset.
+		assert pro.voice.aftertouch is None
+
+		labels = {control.label for control in pro.controls.values()}
+
+		assert "VCA Aftertouch" in labels
+		assert "VCF Aftertouch" in labels
+
+		said = prose_of("behringer", "pro_800")
+
+		assert "NOT RECORDED, AND IT PLAINLY ANSWERS TO ONE" in said
+
+		assert "the menu's \"Sync In Start/Stop On / Off\"" in said
+
+	def test_the_maker_publishes_a_feature_claim_it_cannot_be_quoted_on (self) -> None:
+		"""A script-built feature list is in the markup and not in the text that is cited."""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		account = " ".join((pro.source or "").split())
+
+		assert "THE PRODUCT PAGE'S FEATURE LIST IS NOT CITABLE AND ITS PROSE IS" in account
+		assert "inside a JSON payload in a `script` element" in account
+
+	def test_its_groups_are_the_makers_panel_sections_and_fifteen_have_none (self) -> None:
+		"""A flat table has no headings, so the grouping comes from the specifications."""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		assert list(pro.groups) == ["oscillator", "poly_mod", "noise", "lfo_mod",
+			"glide", "filter", "amplifier", "output"]
+
+		bare = [control.name for control in pro.controls.values() if not control.group]
+
+		assert len(bare) == 15
+
+		said = prose_of("behringer", "pro_800")
+
+		assert "FIFTEEN CONTROLS GET NO GROUP AT ALL" in said
+
+	def test_no_firmware_although_the_parameter_set_demonstrably_moves (self) -> None:
+		"""The third Behringer here with no firmware number, and the one where it matters."""
+		pro = pymidiinstrumentdefs.load("behringer/pro_800", [CORPUS])
+
+		assert pro.model.firmware is None
+		assert pro.sources["guide"].edition == "V 4.0"
+
+		for other in ("behringer/td_3", "behringer/model_d"):
+			assert pymidiinstrumentdefs.load(other, [CORPUS]).model.firmware is None
+
+		said = prose_of("behringer", "pro_800")
+
+		assert "THE FIRMWARE THIS DESCRIBES IS NOT ESTABLISHED AND THE DOCUMENT PROVES THE " \
+			"PARAMETER SET HAS MOVED" in said
+		assert "are now controllable in three modes" in said

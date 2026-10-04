@@ -172,6 +172,7 @@ class TestBundledCorpus:
 			"novation/bass_station_ii",
 			"novation/circuit",
 			"novation/circuit_tracks",
+			"novation/mininova",
 			"novation/peak",
 			"oberheim/teo_5",
 			"polyend/tracker",
@@ -7812,3 +7813,170 @@ class TestPerkonsHD01:
 		erica = sorted(path.stem for path in (CORPUS / "erica_synths").glob("*.yaml"))
 
 		assert erica == ["perkons_hd_01"]
+
+
+class TestMiniNova:
+
+	"""A Novation whose implementation guide has no controller number in it."""
+
+	def test_five_hundred_and_fifty_seven_controls_in_eighty_five_groups (self) -> None:
+		"""The chart's own Category column, every one of its values."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		assert len(mininova.controls) == 557
+		assert len(mininova.groups) == 85
+		assert not mininova.parts
+
+	def test_the_controllers_and_the_nrpns_are_two_different_sets (self) -> None:
+		"""Not one map addressed twice, which is the usual arrangement and not this one."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		by_cc = [control for control in mininova.controls.values() if control.cc is not None]
+		by_nrpn = [control for control in mininova.controls.values() if control.nrpn is not None]
+		both = [control for control in mininova.controls.values()
+			if control.cc is not None and control.nrpn is not None]
+
+		assert len(by_cc) == 105
+		assert len(by_nrpn) == 452
+		assert both == []
+
+		said = prose_of("novation", "mininova")
+
+		assert "THE CONTROL CHANGES AND THE NRPNS ARE TWO DIFFERENT SETS OF PARAMETERS" in said
+
+	def test_the_three_channel_mode_rows_are_left_out (self) -> None:
+		"""The chart lists them and they belong to the specification, not to one synthesiser."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		numbers = {control.cc for control in mininova.controls.values()}
+
+		assert not numbers & {120, 122, 123}
+
+		said = prose_of("novation", "mininova")
+
+		assert "THREE OF THE CHART'S ROWS ARE NOT CONTROLS AND ARE LEFT OUT" in said
+
+		# The unusual values the chart gives Local Off/On survive in the prose, because a player
+		# who sent 0 or 127 would get nothing.
+		assert "99=On" in said and "33=Off" in said
+
+	def test_two_nrpn_addresses_carry_thirty_six_parameters (self) -> None:
+		"""The value says which switch, and each control's range is what tells them apart."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		shared = collections.defaultdict(list)
+
+		for control in mininova.controls.values():
+
+			if control.nrpn is not None:
+				shared[control.nrpn].append(control)
+
+		twice = {number: held for number, held in shared.items() if len(held) > 1}
+
+		assert sorted(twice) == [122, 251]
+		assert len(twice[122]) == 30
+		assert len(twice[251]) == 6
+
+		# On 122 no two bands overlap, which is the arrangement working.
+		bands = sorted(control.range for control in twice[122])
+
+		for earlier, later in zip(bands, bands[1:]):
+			assert earlier[1] < later[0]
+
+	def test_the_one_row_whose_own_columns_disagree_keeps_no_names (self) -> None:
+		"""Its named values fall outside its own range, so neither reading is recorded."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		insert = mininova.controls["vocaltune_insert"]
+
+		assert insert.range == (25, 27)
+		assert insert.choices == {}
+		assert insert.values == {}
+
+		said = prose_of("novation", "mininova")
+
+		assert "AND NRPN 251 IS THE ONE PLACE THIS CHART CONTRADICTS ITSELF" in said
+
+	def test_a_borrowed_set_of_names_moves_onto_its_own_range (self) -> None:
+		"""A pointer lends names and not numbers."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		first = mininova.controls["lfo_1_oneshot"]
+		third = mininova.controls["lfo_3_oneshot"]
+
+		assert first.choices == {"normal": 12, "oneshot": 13}
+		assert third.choices == {"normal": 32, "oneshot": 33}
+		assert third.range == (32, 33)
+
+	def test_three_rows_are_a_family_rather_than_a_parameter (self) -> None:
+		"""Their NRPN LSB column holds a range, and the row says what each number in it addresses."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		gator = [name for name in mininova.controls if name.startswith("gator_step_")]
+		spectra = [name for name in mininova.controls if name.startswith("vocoder_spectrum_")]
+		keys = [name for name in mininova.controls if name.startswith("chorder_key_")]
+
+		assert len(gator) == 32
+		assert len(spectra) == 32
+		assert len(keys) == 9
+
+		# Consecutive addresses, which is what the chart says they are.
+		for family in (gator, spectra, keys):
+
+			numbers = sorted(mininova.controls[name].nrpn or 0 for name in family)
+
+			assert numbers == list(range(numbers[0], numbers[0] + len(numbers)))
+
+		# The chorder's first key is Key 2, because Key 1 is the root and is not addressed.
+		assert "chorder_key_1" not in mininova.controls
+		assert "chorder_key_2" in mininova.controls
+
+	def test_the_keyboard_octave_wraps_rather_than_spanning (self) -> None:
+		"""Printed `(124 - 4)`, which is not a range, so the control keeps the whole of one."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		octave = mininova.controls["voice_keyboardoctave"]
+
+		assert octave.range == (0, 127)
+		assert octave.choices["minus_4_octaves"] == 124
+		assert octave.choices["plus_4_octaves"] == 4
+		assert len(octave.choices) == 9
+
+	def test_it_holds_three_banks_of_a_hundred_and_twenty_eight (self) -> None:
+		"""What the instrument holds, not what one program change reaches."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		assert mininova.midi.program_change is not None
+		assert mininova.midi.program_change.presets == 384
+		assert mininova.voice is not None
+		assert mininova.voice.polyphony == 18
+		assert mininova.voice.aftertouch == "channel"
+
+	def test_no_firmware_is_recorded_and_none_is_published (self) -> None:
+		"""Three version numbers in the sources and not one of them is the instrument's."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		assert mininova.model.firmware is None
+		assert mininova.sources["chart"].edition == "0002"
+		assert mininova.sources["midi_impl"].edition == "0001"
+		assert mininova.sources["manual"].edition == "1.01"
+		assert "downloads" in mininova.sources
+
+		said = prose_of("novation", "mininova")
+
+		assert "None of them\n  # is a firmware number." in \
+			(CORPUS / "novation" / "mininova.yaml").read_text()
+
+	def test_it_is_none_of_the_other_novations (self) -> None:
+		"""Five of them now, and the UltraNova is a sixth this does not describe."""
+		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
+
+		assert mininova.model.name == "MiniNova"
+
+		novations = sorted(path.stem for path in (CORPUS / "novation").glob("*.yaml"))
+
+		assert novations == ["bass_station_ii", "circuit", "circuit_tracks", "mininova", "peak"]
+
+		said = prose_of("novation", "mininova")
+
+		assert "The UltraNova is the larger synthesiser this one is derived from" in said

@@ -1,0 +1,1149 @@
+# TWO MIDI DOCUMENTS, AND THE ONE CALLED THE IMPLEMENTATION GUIDE HAS NO CONTROLLER NUMBER IN IT.
+# Novation publishes both on one page. The `MiniNova MIDI Implementation Guide` is a single sheet
+# of the classic Function/Transmitted/Received chart, and where a controller number would be it
+# says "See MiniNova CC & NRPN tables" (midi_impl). **Everything below comes from those tables**,
+# the nine-sheet `MiniNova CC & NRPN Chart`, and everything about what the instrument answers to
+# in general comes from the one-sheet guide. Reading either alone would leave half the file empty.
+#
+# THE CONTROL CHANGES AND THE NRPNS ARE TWO DIFFERENT SETS OF PARAMETERS, NOT ONE MAP ADDRESSED
+# TWICE. **Of 557 controls, 105 carry a controller number, 452 carry an NRPN, and not one carries
+# both.** So a panel that offers only control changes reaches 105 of this synthesiser's parameters
+# and cannot reach the other 452 at all - which is the opposite of the usual arrangement, where
+# the NRPNs are the fine version of numbers a player could also send as controllers.
+#
+# THREE OF THE CHART'S ROWS ARE NOT CONTROLS AND ARE LEFT OUT. All Sounds Off, Local Off/On and
+# All Notes Off are CC 120, 122 and 123, which mean the same on every instrument that has them and
+# belong to the MIDI specification rather than to one synthesiser. **The Local Off/On row is worth
+# reading before it goes**, because the chart gives it values no specification does - "99=On,
+# 33=Off" (midi_impl), where the standard says 0 and 127.
+#
+# TWO NRPN ADDRESSES CARRY THIRTY-SIX PARAMETERS BETWEEN THEM, and the value says which. NRPN 122
+# is thirty switches - every envelope's trigger, every LFO's four, the gator's three, the
+# vocoder's five - each with two numbers of its own, so 0 and 1 are the first envelope's and 66
+# and 67 the vocoder's input. NRPN 251 is six more. **Each control's range is what tells them
+# apart**, and the Circuit's guide does the same thing with two addresses and ten parameters.
+#
+# AND NRPN 251 IS THE ONE PLACE THIS CHART CONTRADICTS ITSELF. Of its six parameters, the three
+# LFO fade modes should occupy three bands and the second and third are printed with the same one,
+# 4 to 7; the ninth mod matrix slot's first source sits on the same address with the range 0 to
+# 18, which overlaps all of them; and the vocal tuner's insert point is the only row in the chart
+# whose named values fall outside its own range. All four are recorded exactly as printed, and the
+# insert point is recorded with **no** named values, because the two columns that would name them
+# disagree.
+
+definition: 1
+
+model:
+  manufacturer: Novation
+  name: MiniNova
+  # NOT RECORDED, and this one was looked for in three places. The user guide is "Version 1.01"
+  # (p. 1) and that is the guide's version, not the instrument's; the chart says "Version 0002" (chart
+  # p. 1) on its first seven sheets and "Version 0001" (chart p. 8) on its last two; the
+  # implementation guide says "Version: 0001" (midi_impl) and "Date: 10/02/2014" (midi_impl).
+  # **None of them
+  # is a firmware number.** The guide tells
+  # a player where to look instead - "Firmware update files will be available from time to time at
+  # support.novationmusic.com" (p. 9) - and the instrument shows its own under "Operating System
+  # Version" (p. 13). So what the numbers below match is the chart of February 2014, and nothing
+  # published says which firmware that is.
+
+source: >-
+  MiniNova CC & NRPN Chart, nine sheets: **every control below is one of its 490 rows**, seven
+  sheets of them, with the four tables its Remarks point at on the last two. MiniNova MIDI
+  Implementation Guide, one sheet, for everything in `midi:` and `voice:`. MiniNova User Guide
+  v1.01, 39 pages, for the voices, the patches and what the keyboard itself sends. And Novation's
+  downloads page, for what is published and what is not.
+
+  THE CHART IS THE DOCUMENT WITH THE NUMBERS AND IT IS NOT THE ONE CALLED THE IMPLEMENTATION
+  GUIDE. That one-sheet guide is the classic chart of functions, and against Control Change it
+  says "See MiniNova CC & NRPN tables" (midi_impl) rather than giving any. Both are linked from
+  the same downloads page, 58.41 KB and 120.83 KB; a reader who fetched the one whose name
+  promises an implementation would come away with none.
+
+  THE TABLE IS A GRID OF FREE-STANDING WORDS WITH NO RULING IN THE FILE, cut here at measured
+  coordinates. Its columns - Category, Parameter, CC, NRPN MSB, NRPN LSB, Input Range, Mapped
+  Range, Remarks - are left-aligned and never move across the seven sheets, which makes it the
+  easiest chart in this library to cut. **What is not easy is where one row ends**: a row is as
+  tall as its Remarks need, one line for most and five for a parameter whose every value is named,
+  so a row is not a line. The rows are found by the Parameter column and nothing else.
+
+  THE RANGE RECORDED IS THE INPUT RANGE, NOT THE MAPPED ONE. The chart prints both - what to send
+  and what it means - so the first oscillator's pitch bend amount is "(52 - 76)" to send and
+  "(-12 - 12)" to read. **What travels is the first of the two**, and the second belongs to a
+  panel's display rather than to a file about messages.
+
+  A POINTER LENDS NAMES AND NOT NUMBERS, which is the trap in the Remarks column. 137 of the 490
+  rows say "See" something: four point at the tables on sheets 8 and 9, one points outside the
+  document altogether - "See User Manual for FX Routing Options" (chart p. 4) - and the rest point
+  at another row. **Copied across unchanged, a borrowed set of names lands on numbers the control
+  cannot be sent**: the third LFO's one-shot switch has the range 32 to 33 and says "See LFO1
+  OneShot" (chart p. 3), where the first LFO's row reads "12=Normal, 13=OneShot" (chart p. 3).
+  The names move by the
+  distance between the two rows' own ranges, and only where the two are the same width.
+
+  THREE ROWS ARE A FAMILY RATHER THAN A PARAMETER, and they are the only rows here that become
+  more than one control each. Their NRPN LSB column holds a range instead of a number and the row
+  says what each number in it addresses: the gator's step levels are "0-31 for Steps 1 to 32, 0-7
+  for respective Gator step level." (chart p. 5), the vocoder's are "Vocal Tune Spectrum Levels
+  for Spectra 0-31" (chart p. 5), and the chorder's are "NRPNLow: 17=Key 2 .. 25=Key 10,
+  Value=Number of semitones from the root" (chart p. 5). That is 73 controls out of 557.
+
+  THE MAKER MISSPELLS NRPN AS NPRN, AND NOT ONLY IN PASSING. The chart's first sheet is headed
+  "Novation MiniNova Extended CC & NRPN Map" (chart p. 1) and the running foot of all seven says
+  "Novation MiniNova CC NPRN Map" (chart p. 1); the file Novation serves it as is named `mininova-cc-nprn-chart.pdf`;
+  and two of its own rows are "NPRN LSB" and "NPRN MSB", at CC 98 and 99. Both spellings are the
+  maker's and both are kept where they are quoted.
+
+  AND THE PARAMETER NAMED AFTER THE INSTRUMENT IS THERE FOR ITS SIBLING. At the very top of the
+  NRPN space, 127:127, sits the arpeggiator parameter the chart spells `Mininova`, with a small n
+  where the rest of the document writes MiniNova, remarked "Managed parameter for UltraNova compatibility"
+  (chart p. 5). The UltraNova is the larger synthesiser this one is derived from and is **not**
+  what this file describes.
+
+  WHAT ELSE THE CHART GETS WRONG OR NEARLY WRONG, recorded rather than mended. Two of its value
+  lists end in a stray comma, which drops the last value of each for anyone reading by comma;
+  "Breath Controlller" (chart p. 1) has three Ls; "Only banks 1-3 are implmented" (chart p. 1) is
+  missing an E; a reverb
+  type reads "Lrgroom" beside "SmlRoom"; the global MIDI channel's range is punctuated "(0, 15)"
+  as though it were a list of two; and none of the four cross-references matches its table's own
+  title - "See Table 1: Waveforms" (chart p. 1) against "Table 1: Waveform Table" (chart p. 8),
+  "See Table 3: Sync" (chart p. 3) against "Table 3: Sync Values" (chart p. 8).
+
+  THE SEVEN SHEETS, AND WHAT EACH ONE REACHES, because a reader who wants to check one number has
+  to know which to open. Sheet 1 runs from the patch's own category - "Used in save menu 0=None,
+  1=Arp, 2=Bass" (chart p. 1) - up through the oscillators; sheet 2 carries the rest of them and
+  the animate buttons, "0=Animate Hold Off, 1=Animate Hold On" (chart p. 2); sheet 3 the envelopes
+  and the first LFO, whose fade has "0=Fade In, 1=Fade Out, 2=Gate In, 3=Gate Out" (chart p. 3);
+  sheet 4 the other two LFOs and the effects, where the first slot offers "0=Bypass, 1=EQ,
+  2=Compres1, 3=Compres2" (chart p. 4); sheet 5 the gator, the vocoder and the arpeggiator, the
+  gator's mode being "0=Mono16, 1=MonoAlt1, 2=MonoAlt2, 3=Stereo16" (chart p. 5); sheet 6 the
+  first nineteen mod matrix slots, each with the same trigger list "0=Off, 1=A1ReTrig, 2=A2ReTrig"
+  (chart p. 6); and sheet 7 the twentieth, the tweak assignments and the globals, with the vocal
+  tuner's "16=Off, 17=Scale Correction, 18=KBCtrl, 19=Pitch" (chart p. 7).
+
+  WHAT THE CHART DOES NOT LIST. Controller numbers 62, 66, 67, 100 to 105 and 107 appear nowhere
+  in it, and each LFO's NRPN block skips one - 72 to 74, 81 to 83, 90 to 92. Both are absences in
+  the chart rather than conclusions about the instrument, and nothing here fills them in.
+
+sources:
+  chart:
+    kind: midi_implementation
+    title: MiniNova CC & NRPN Chart
+    edition: "0002"
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/mininova"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/novation/downloads/10787/mininova-cc-nprn-chart.pdf"
+    sha256: da7a3a772d835214aef6c490d83e0b6abf523969d4a08c8d6c51f540947c2c26
+    retrieved: 2026-10-04
+    page_offset: 0
+    # **EVERY NUMBER IN THIS FILE COMES FROM THIS DOCUMENT.** Nine sheets with no printed page
+    # numbers other than its own "1 of 9" foot, which matches the sheets. Its own version is given
+    # twice and differently: "Version 0002" (chart p. 1) on the seven sheets of the map and
+    # "Version 0001" (chart p. 8) on the two of tables behind it, which is one document carrying two numbers rather than two
+    # documents. Built 2014-06-03 by its own metadata.
+  midi_impl:
+    kind: midi_implementation
+    title: MiniNova MIDI Implementation Guide
+    edition: "0001"
+    dated: "2014-02-10"
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/mininova"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/novation/downloads/10787/mininova-midi-implementation.pdf"
+    sha256: 879fd77cba36635560493ca9a905a20d9143bbd522d9152c5e47c4969b1d02a5
+    retrieved: 2026-10-04
+    page_offset: 0
+    # One sheet, and **everything in `midi:` below comes from it**. It gives its own date and
+    # version in its heading - "Date: 10/02/2014" (midi_impl) and "Version: 0001" (midi_impl) -
+    # and names the instrument "Model: Novation MiniNova" (midi_impl). It is the document whose name promises controller numbers and
+    # which has none: against Control Change it says to look at the other one.
+  manual:
+    kind: manual
+    title: MiniNova User Guide
+    edition: "1.01"
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/mininova"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/MiniNova%20User%20Manual%201.01%20English%20-%20EN.pdf"
+    sha256: bca2fa0b9f5db8adfec44d588090a4751cd5543100a76910f9822a1f3495b8ac
+    retrieved: 2026-10-04
+    page_offset: 0
+    # 39 pages, printed numbers matching the sheets exactly. Cited for the voices, the patches,
+    # the keyboard and the pitch wheel. **It never uses the word NRPN**, and it carries no
+    # controller number at all, so it settles nothing about the map - which is why the chart is
+    # the document this file rests on. The downloads page calls it "MiniNova User Guide v1.01
+    # English - EN" (downloads) and the file is named MiniNova User Manual 1.01; it is one document.
+  downloads:
+    kind: download_page
+    title: "MiniNova | Novation Downloads"
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/mininova"
+    url: "https://downloads.novationmusic.com/novation/synthesisers/mininova"
+    sha256: 26ce90ce3b6033f5dcbb7020a2f39639a8b8b6816ec31f49dab0ec3791daf136
+    retrieved: 2026-10-04
+    paginated: false
+    # Cited for what Novation publishes and what it does not. It serves the user guide in
+    # twenty-four languages, the two MIDI documents, a MiniNova Editor user guide and four USB
+    # drivers - and **no firmware and no release notes of any kind**, which is why no firmware is
+    # recorded above.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # a6f25c733c2bd0c67dc04845aa80a1084272f3b672a73deaff43e326b5bbe2ff.
+
+midi:
+  # Its Basic Channel row gives "1 - 16" in both columns, for the default and for a changed one
+  # alike, remarked "Global Setting (MIDI Channel)" (midi_impl). The guide says which it leaves the factory on: a master
+  # keyboard should be "set to MIDI channel 1 (the MiniNova's default channel)" (p. 6).
+  channels: [1, 16]
+  # NOT RECORDED, because the chart gives two and does not choose. Its Mode row reads "Mode 3,4"
+  # in both columns, remarked "Patch Dependent" (midi_impl) - so omni is off either way and
+  # whether it is poly or mono is a property of the patch rather than of the instrument.
+  clock: receives
+  # System Real Time: Commands is X in both columns (midi_impl), and so are Song Position, Song
+  # Select and Tune Request. So nothing starts or stops it over MIDI.
+  transport: none
+  program_change:
+    # O in both columns, remarked "Use Bank Select LSB (CC32) for Banks 1=A, 2=B, 3=C"
+    # (midi_impl).
+    receives: true
+    sends: true
+    # WHAT THE INSTRUMENT HOLDS, which is the settled way of counting: "The Patches are arranged
+    # as 3 banks (A to C), each with 128 patches (000 to 127)" (p. 7), and the guide does the
+    # multiplication itself where it describes dumping them all - "all 384 Patches (128 x 3
+    # banks)" (p. 34). One program change reaches 128 of them and the bank select reaches the
+    # other two hundred and fifty-six.
+    presets: 384
+  # O in both columns, remarked "For Patch Dumps" (midi_impl). The guide describes three of them:
+  # the current patch, all 384, and the global settings (p. 34).
+  sysex: true
+  # 452 of the 557 controls below are reachable only this way, and the chart is headed "Extended
+  # CC & NRPN Map" (chart p. 1). **`supported` rather than `preferred` because neither document ranks them**:
+  # nothing says to prefer an NRPN where a controller number exists, and in fact no parameter here
+  # has both, so the question never arises for any one control.
+  nrpn: supported
+
+voice:
+  # "Full polyphony, with up to 18 voices" (p. 4), and the guide says the same again where it
+  # warns about running out: "there are a maximum of 18 voices internally" (p. 20).
+  polyphony: 18
+  # "Note Number 0 - 127" (midi_impl) received and transmitted, "True Voice 0 - 127" (midi_impl). The keyboard
+  # itself is smaller and transposable - "37-note (3 octaves) keyboard with velocity sensing"
+  # (p. 5), with OCTAVE buttons that "transpose the keyboard up or down one octave each time they
+  # are pressed" (p. 5) - but what the instrument will sound is the chart's figure.
+  note_range: [0, 127]
+  velocity:
+    # "Velocity Note On 0-127" (midi_impl) in both columns.
+    note_on: received
+    # "Note Off X" transmitted and "0-127" received (midi_impl), so it arrives and is never sent.
+    note_off: true
+  # "Aftertouch Key's X" (midi_impl) in both columns, and its Channel row is X transmitted and O
+  # received.
+  # The guide says the same from the player's side and says why: "the MiniNova keyboard does not
+  # send Aftertouch data, but the synth engine will correctly respond to any Aftertouch data
+  # received via MIDI (via DIN or USB)" (p. 36).
+  aftertouch: channel
+  pitch_bend:
+    # "Pitch Bend" (midi_impl) is O in both columns, and the wheel's reach is a setting rather than a
+    # fact: "The range of operation can be set via the menu system, from a semitone to an octave,
+    # in semitone steps" (p. 8). So there is no one number to record, which is what `programmable`
+    # says. Each oscillator also has a pitch bend amount of its own among the controls below.
+    programmable: true
+
+groups:
+  # THE CHART'S OWN CATEGORY COLUMN, every one of its eighty-five values, in the order the chart
+  # first reaches each. They are the maker's grouping and not a tidied one: `Osc123` is the three
+  # oscillators together where `Osc1` is the first alone, `Filter` is what both filters share, and
+  # `Animate1` to `Animate8` carry one parameter each.
+  patch:        Patch
+  midi:         MIDI
+  voice:        Voice
+  mixer:        Mixer
+  fx:           FX
+  osc_123:      Osc123
+  osc_1:        Osc1
+  osc_2:        Osc2
+  osc_3:        Osc3
+  filter:       Filter
+  filter_1:     Filter1
+  envelope_1:   Envelope1
+  osc:          Osc
+  filter_2:     Filter2
+  animate_1:    Animate1
+  animate_2:    Animate2
+  animate_3:    Animate3
+  animate_4:    Animate4
+  animate_5:    Animate5
+  animate_6:    Animate6
+  animate_7:    Animate7
+  animate_8:    Animate8
+  animate:      Animate
+  envelope_2:   Envelope2
+  envelope_3:   Envelope3
+  envelope_4:   Envelope4
+  envelope_5:   Envelope5
+  envelope_6:   Envelope6
+  fx_1:         FX1
+  fx_2:         FX2
+  fx_3:         FX3
+  fx_4:         FX4
+  fx_5:         FX5
+  envelope:     Envelope
+  lfo_1:        LFO1
+  lfo_2:        LFO2
+  lfo_3:        LFO3
+  equaliser:    Equaliser
+  compressor_1: Compressor1
+  compressor_2: Compressor2
+  distortion_1: Distortion1
+  distortion_2: Distortion2
+  delay_1:      Delay1
+  delay_2:      Delay2
+  reverb_1:     Reverb1
+  reverb_2:     Reverb2
+  chorus_1:     Chorus1
+  chorus_2:     Chorus2
+  chorus_3:     Chorus3
+  chorus_4:     Chorus4
+  gator:        Gator
+  vocoder:      Vocoder
+  arp:          Arp
+  arp_1:        Arp1
+  arp_2:        Arp2
+  arp_3:        Arp3
+  arp_4:        Arp4
+  arp_5:        Arp5
+  arp_6:        Arp6
+  arp_7:        Arp7
+  arp_8:        Arp8
+  chorder:      Chorder
+  vocaltune:    VocalTune
+  modmatrix_1:  ModMatrix1
+  modmatrix_2:  ModMatrix2
+  modmatrix_3:  ModMatrix3
+  modmatrix_4:  ModMatrix4
+  modmatrix_5:  ModMatrix5
+  modmatrix_6:  ModMatrix6
+  modmatrix_7:  ModMatrix7
+  modmatrix_8:  ModMatrix8
+  modmatrix_9:  ModMatrix9
+  modmatrix_10: ModMatrix10
+  modmatrix_11: ModMatrix11
+  modmatrix_12: ModMatrix12
+  modmatrix_13: ModMatrix13
+  modmatrix_14: ModMatrix14
+  modmatrix_15: ModMatrix15
+  modmatrix_16: ModMatrix16
+  modmatrix_17: ModMatrix17
+  modmatrix_18: ModMatrix18
+  modmatrix_19: ModMatrix19
+  modmatrix_20: ModMatrix20
+  tweaks:       Tweaks
+  global:       Global
+
+controls:
+
+  # ──── patch ────
+
+  patch_category:              {label: Patch Category, nrpn: 320, range: [0, 14], choices: {"none": 0, "arp": 1, "bass": 2, "bell": 3, "classic": 4, "drum": 5, "keyboard": 6, "lead": 7, "movement": 8, "pad": 9, "poly": 10, "sfx": 11, "string": 12, "extinput": 13, "voc_tune": 14}, group: patch}
+  patch_genre:                 {label: Patch Genre, nrpn: 321, range: [0, 9], choices: {"none": 0, "classic": 1, "d_b_brks": 2, "house": 3, "industrl": 4, "jazz": 5, "r_b_hhop": 6, "rock_pop": 7, "techno": 8, "dubstep": 9}, group: patch}
+  patch_patch_select:          {label: Patch Patch Select, nrpn: 8064, range: [0, 2], choices: {"decrement_patch": 0, "get_program_change": 1, "increment_patch": 2}, group: patch}
+  patch_bank_select:           {label: Patch Bank Select, nrpn: 8065, range: [1, 3], choices: {"bank_a": 1, "bank_b": 2, "bank_c": 3}, group: patch}
+
+  # ──── midi ────
+
+  midi_modulation:             {label: MIDI Modulation, cc: 1, group: midi}
+  midi_breath_controlller:     {label: MIDI Breath Controlller, cc: 2, group: midi}
+  midi_data_entry_msb:         {label: MIDI Data Entry MSB, cc: 6, group: midi}
+  midi_expression_controller:  {label: MIDI Expression Controller, cc: 11, group: midi}
+  midi_bank_lsb:               {label: MIDI Bank LSB, cc: 32, choices: {"a": 1, "b": 2, "c": 3}, group: midi}
+  midi_data_entry_lsb:         {label: MIDI Data Entry LSB, cc: 38, group: midi}
+  midi_sustain_pedal:          {label: MIDI Sustain Pedal, cc: 64, values: {"off": 0, "on": 64}, group: midi}
+  midi_data_increment:         {label: MIDI Data Increment, cc: 96, group: midi}
+  midi_data_decrement:         {label: MIDI Data Decrement, cc: 97, group: midi}
+  midi_nprn_lsb:               {label: MIDI NPRN LSB, cc: 98, group: midi}
+  midi_nprn_msb:               {label: MIDI NPRN MSB, cc: 99, group: midi}
+  midi_tempo_rate:             {label: MIDI Tempo Rate, nrpn: 319, range: [40, 240], group: midi}
+
+  # ──── voice ────
+
+  voice_polyphonymode:         {label: Voice PolyphonyMode, cc: 3, range: [0, 4], choices: {"mono": 0, "mono_ag": 1, "poly_1": 2, "poly_2": 3, "mono_2": 4}, group: voice}
+  voice_portamentorate:        {label: Voice PortamentoRate, cc: 5, group: voice}
+  voice_preglide:              {label: Voice PreGlide, cc: 9, range: [52, 76], group: voice}
+  voice_portamentomode:        {label: Voice PortamentoMode, cc: 12, range: [0, 1], choices: {"expo": 0, "linear": 1}, group: voice}
+  voice_keyboardoctave:        {label: Voice KeyboardOctave, cc: 13, choices: {"minus_4_octaves": 124, "minus_3_octaves": 125, "minus_2_octaves": 126, "minus_1_octaves": 127, "n0_octave": 0, "plus_1_octave": 1, "plus_2_octaves": 2, "plus_3_octaves": 3, "plus_4_octaves": 4}, group: voice}
+  voice_unison:                {label: Voice Unison, cc: 14, range: [0, 4], group: voice}
+  voice_unisondetune:          {label: Voice UnisonDetune, cc: 15, group: voice}
+
+  # ──── mixer ────
+
+  mixer_wetlevel:              {label: Mixer WetLevel, cc: 8, group: mixer}
+  mixer_osc_1_level:           {label: Mixer Osc1Level, cc: 51, group: mixer}
+  mixer_osc_2_level:           {label: Mixer Osc2Level, cc: 52, group: mixer}
+  mixer_osc_3_level:           {label: Mixer Osc3Level, cc: 53, group: mixer}
+  mixer_ringmodlevel_13:       {label: Mixer RingModLevel13, cc: 54, group: mixer}
+  mixer_ringmodlevel_23:       {label: Mixer RingModLevel23, cc: 55, group: mixer}
+  mixer_noiselevel:            {label: Mixer NoiseLevel, cc: 56, group: mixer}
+  mixer_noisecolour:           {label: Mixer NoiseColour, cc: 57, range: [0, 3], choices: {"white": 0, "high": 1, "band": 2, "hiband": 3}, group: mixer}
+  mixer_prefxlevel:            {label: Mixer PreFXLevel, cc: 58, range: [52, 82], group: mixer}
+  mixer_postfxlevel:           {label: Mixer PostFXLevel, cc: 59, range: [52, 82], group: mixer}
+
+  # ──── fx ────
+
+  fx_panposition:              {label: FX PanPosition, cc: 10, group: fx}
+  fx_panrate:                  {label: FX PanRate, cc: 88, group: fx}
+  fx_pansync:                  {label: FX PanSync, cc: 89, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: fx}
+  fx_panmoddepth:              {label: FX PanModDepth, cc: 90, group: fx}
+  fx_routing:                  {label: FX Routing, nrpn: 97, range: [0, 7], group: fx}
+  fx_feedback:                 {label: FX Feedback, nrpn: 98, group: fx}
+
+  # ──── osc_123 ────
+
+  osc_123_drift:               {label: Osc123 Drift, cc: 16, group: osc_123}
+  osc_123_phase:               {label: Osc123 Phase, cc: 17, range: [0, 120], group: osc_123}
+  osc_123_fixedtranspose:      {label: Osc123 FixedTranspose, cc: 18, group: osc_123}
+
+  # ──── osc_1 ────
+
+  osc_1_wave:                  {label: Osc1 Wave, cc: 19, range: [0, 71], choices: {"sine": 0, "triangle": 1, "sawtooth": 2, "saw_9_1_pw": 3, "saw_8_2_pw": 4, "saw_7_3_pw": 5, "saw_6_4_pw": 6, "saw_5_5_pw": 7, "saw_4_6_pw": 8, "saw_3_7_pw": 9, "saw_2_8_pw": 10, "saw_1_9_pw": 11, "pw": 12, "square": 13, "basscamp": 14, "bass_fm": 15, "ep_dull": 16, "ep_bell": 17, "clav": 18, "doubreed": 19, "retro": 20, "strnmch_1": 21, "strnmch_2": 22, "organ_1": 23, "organ_2": 24, "evilorg": 25, "histuff": 26, "bell_fm_1": 27, "bell_fm_2": 28, "digbell_1": 29, "digbell_2": 30, "digbell_3": 31, "digbell_4": 32, "digipad": 33, "wtable_1": 34, "wtable_2": 35, "wtable_3": 36, "wtable_4": 37, "wtable_5": 38, "wtable_6": 39, "wtable_7": 40, "wtable_8": 41, "wtable_9": 42, "wtable_10": 43, "wtable_11": 44, "wtable_12": 45, "wtable_13": 46, "wtable_14": 47, "wtable_15": 48, "wtable_16": 49, "wtable_17": 50, "wtable_18": 51, "wtable_19": 52, "wtable_20": 53, "wtable_21": 54, "wtable_22": 55, "wtable_23": 56, "wtable_24": 57, "wtable_25": 58, "wtable_26": 59, "wtable_27": 60, "wtable_28": 61, "wtable_29": 62, "wtable_30": 63, "wtable_31": 64, "wtable_32": 65, "wtable_33": 66, "wtable_34": 67, "wtable_35": 68, "wtable_36": 69, "audinl_m": 70, "audioinr": 71}, group: osc_1}
+  osc_1_waveinterpolate:       {label: Osc1 WaveInterpolate, cc: 20, group: osc_1}
+  osc_1_pulsewidthindex:       {label: Osc1 PulseWidthIndex, cc: 21, group: osc_1}
+  osc_1_virtualsyncdepth:      {label: Osc1 VirtualSyncDepth, cc: 22, group: osc_1}
+  osc_1_hardness:              {label: Osc1 Hardness, cc: 23, group: osc_1}
+  osc_1_density:               {label: Osc1 Density, cc: 24, group: osc_1}
+  osc_1_densitydetune:         {label: Osc1 DensityDetune, cc: 25, group: osc_1}
+  osc_1_semitones:             {label: Osc1 Semitones, cc: 26, group: osc_1}
+  osc_1_cents:                 {label: Osc1 Cents, cc: 27, group: osc_1}
+  osc_1_pitchbend:             {label: Osc1 PitchBend, cc: 28, range: [52, 76], group: osc_1}
+
+  # ──── osc_2 ────
+
+  osc_2_wave:                  {label: Osc2 Wave, cc: 29, range: [0, 71], choices: {"sine": 0, "triangle": 1, "sawtooth": 2, "saw_9_1_pw": 3, "saw_8_2_pw": 4, "saw_7_3_pw": 5, "saw_6_4_pw": 6, "saw_5_5_pw": 7, "saw_4_6_pw": 8, "saw_3_7_pw": 9, "saw_2_8_pw": 10, "saw_1_9_pw": 11, "pw": 12, "square": 13, "basscamp": 14, "bass_fm": 15, "ep_dull": 16, "ep_bell": 17, "clav": 18, "doubreed": 19, "retro": 20, "strnmch_1": 21, "strnmch_2": 22, "organ_1": 23, "organ_2": 24, "evilorg": 25, "histuff": 26, "bell_fm_1": 27, "bell_fm_2": 28, "digbell_1": 29, "digbell_2": 30, "digbell_3": 31, "digbell_4": 32, "digipad": 33, "wtable_1": 34, "wtable_2": 35, "wtable_3": 36, "wtable_4": 37, "wtable_5": 38, "wtable_6": 39, "wtable_7": 40, "wtable_8": 41, "wtable_9": 42, "wtable_10": 43, "wtable_11": 44, "wtable_12": 45, "wtable_13": 46, "wtable_14": 47, "wtable_15": 48, "wtable_16": 49, "wtable_17": 50, "wtable_18": 51, "wtable_19": 52, "wtable_20": 53, "wtable_21": 54, "wtable_22": 55, "wtable_23": 56, "wtable_24": 57, "wtable_25": 58, "wtable_26": 59, "wtable_27": 60, "wtable_28": 61, "wtable_29": 62, "wtable_30": 63, "wtable_31": 64, "wtable_32": 65, "wtable_33": 66, "wtable_34": 67, "wtable_35": 68, "wtable_36": 69, "audinl_m": 70, "audioinr": 71}, group: osc_2}
+  osc_2_waveinterpolate:       {label: Osc2 WaveInterpolate, cc: 30, group: osc_2}
+  osc_2_pulsewidthindex:       {label: Osc2 PulseWidthIndex, cc: 31, group: osc_2}
+  osc_2_virtualsyncdepth:      {label: Osc2 VirtualSyncDepth, cc: 33, group: osc_2}
+  osc_2_hardness:              {label: Osc2 Hardness, cc: 34, group: osc_2}
+  osc_2_density:               {label: Osc2 Density, cc: 35, group: osc_2}
+  osc_2_densitydetune:         {label: Osc2 DensityDetune, cc: 36, group: osc_2}
+  osc_2_semitones:             {label: Osc2 Semitones, cc: 37, group: osc_2}
+  osc_2_cents:                 {label: Osc2 Cents, cc: 39, group: osc_2}
+  osc_2_pitchbend:             {label: Osc2 PitchBend, cc: 40, range: [52, 76], group: osc_2}
+
+  # ──── osc_3 ────
+
+  osc_3_wave:                  {label: Osc3 Wave, cc: 41, range: [0, 71], choices: {"sine": 0, "triangle": 1, "sawtooth": 2, "saw_9_1_pw": 3, "saw_8_2_pw": 4, "saw_7_3_pw": 5, "saw_6_4_pw": 6, "saw_5_5_pw": 7, "saw_4_6_pw": 8, "saw_3_7_pw": 9, "saw_2_8_pw": 10, "saw_1_9_pw": 11, "pw": 12, "square": 13, "basscamp": 14, "bass_fm": 15, "ep_dull": 16, "ep_bell": 17, "clav": 18, "doubreed": 19, "retro": 20, "strnmch_1": 21, "strnmch_2": 22, "organ_1": 23, "organ_2": 24, "evilorg": 25, "histuff": 26, "bell_fm_1": 27, "bell_fm_2": 28, "digbell_1": 29, "digbell_2": 30, "digbell_3": 31, "digbell_4": 32, "digipad": 33, "wtable_1": 34, "wtable_2": 35, "wtable_3": 36, "wtable_4": 37, "wtable_5": 38, "wtable_6": 39, "wtable_7": 40, "wtable_8": 41, "wtable_9": 42, "wtable_10": 43, "wtable_11": 44, "wtable_12": 45, "wtable_13": 46, "wtable_14": 47, "wtable_15": 48, "wtable_16": 49, "wtable_17": 50, "wtable_18": 51, "wtable_19": 52, "wtable_20": 53, "wtable_21": 54, "wtable_22": 55, "wtable_23": 56, "wtable_24": 57, "wtable_25": 58, "wtable_26": 59, "wtable_27": 60, "wtable_28": 61, "wtable_29": 62, "wtable_30": 63, "wtable_31": 64, "wtable_32": 65, "wtable_33": 66, "wtable_34": 67, "wtable_35": 68, "wtable_36": 69, "audinl_m": 70, "audioinr": 71}, group: osc_3}
+  osc_3_waveinterpolate:       {label: Osc3 WaveInterpolate, cc: 42, group: osc_3}
+  osc_3_pulsewidthindex:       {label: Osc3 PulseWidthIndex, cc: 43, group: osc_3}
+  osc_3_virtualsyncdepth:      {label: Osc3 VirtualSyncDepth, cc: 44, group: osc_3}
+  osc_3_hardness:              {label: Osc3 Hardness, cc: 45, group: osc_3}
+  osc_3_density:               {label: Osc3 Density, cc: 46, group: osc_3}
+  osc_3_densitydetune:         {label: Osc3 DensityDetune, cc: 47, group: osc_3}
+  osc_3_semitones:             {label: Osc3 Semitones, cc: 48, group: osc_3}
+  osc_3_cents:                 {label: Osc3 Cents, cc: 49, group: osc_3}
+  osc_3_pitchbend:             {label: Osc3 PitchBend, cc: 50, range: [52, 76], group: osc_3}
+
+  # ──── filter ────
+
+  filter_routing:              {label: Filter Routing, cc: 60, range: [0, 5], choices: {"bypass": 0, "single": 1, "series": 2, "parallel": 3, "parall_2": 4, "drum": 5}, group: filter}
+  filter_balance:              {label: Filter Balance, cc: 61, group: filter}
+  filter_freqlink:             {label: Filter FreqLink, nrpn: 122, range: [42, 43], choices: {"freqlink_off": 42, "freqlink_on": 43}, group: filter}
+  filter_reslink:              {label: Filter ResLink, nrpn: 122, range: [44, 45], choices: {"off": 44, "on": 45}, group: filter}
+
+  # ──── filter_1 ────
+
+  filter_1_drive:              {label: Filter1 Drive, cc: 63, group: filter_1}
+  filter_1_drivetype:          {label: Filter1 DriveType, cc: 65, range: [0, 6], choices: {"diode": 0, "valve": 1, "clipper": 2, "xover": 3, "rectify": 4, "bitsdown": 5, "ratedown": 6}, group: filter_1}
+  filter_1_type:               {label: Filter1 Type, cc: 68, range: [0, 13], choices: {"lp_6_nores": 0, "lp_12": 1, "lp_18": 2, "lp_24": 3, "bp_6_6": 4, "bp_12_12": 5, "bp_6_12": 6, "bp_12_6": 7, "bp_6_18": 8, "bp_18_6": 9, "hp_6_nores": 10, "hp_12": 11, "hp_18": 12, "hp_24": 13}, group: filter_1}
+  filter_1_track:              {label: Filter1 Track, cc: 69, group: filter_1}
+  filter_1_resonance:          {label: Filter1 Resonance, cc: 71, group: filter_1}
+  filter_1_frequency:          {label: Filter1 Frequency, cc: 74, group: filter_1}
+  filter_1_qnormalise:         {label: Filter1 QNormalise, cc: 78, group: filter_1}
+  filter_1_env_2_tofreq:       {label: Filter1 Env2ToFreq, cc: 79, group: filter_1}
+
+  # ──── envelope_1 ────
+
+  envelope_1_sustain:          {label: Envelope1 Sustain, cc: 70, group: envelope_1}
+  envelope_1_release:          {label: Envelope1 Release, cc: 72, group: envelope_1}
+  envelope_1_attack:           {label: Envelope1 Attack, cc: 73, group: envelope_1}
+  envelope_1_decay:            {label: Envelope1 Decay, cc: 75, group: envelope_1}
+  envelope_1_trigger:          {label: Envelope1 Trigger, nrpn: 122, range: [0, 1], choices: {"single": 0, "multi": 1}, group: envelope_1}
+  envelope_1_velocity:         {label: Envelope1 Velocity, cc: 108, group: envelope_1}
+  envelope_1_sustainrate:      {label: Envelope1 SustainRate, cc: 109, group: envelope_1}
+  envelope_1_sustaintime:      {label: Envelope1 SustainTime, cc: 110, group: envelope_1}
+  envelope_1_adrepeats:        {label: Envelope1 ADRepeats, cc: 111, group: envelope_1}
+  envelope_1_attacktrack:      {label: Envelope1 AttackTrack, cc: 112, group: envelope_1}
+  envelope_1_decaytrack:       {label: Envelope1 DecayTrack, cc: 113, group: envelope_1}
+  envelope_1_leveltrack:       {label: Envelope1 LevelTrack, cc: 114, group: envelope_1}
+  envelope_1_attackslope:      {label: Envelope1 AttackSlope, cc: 115, group: envelope_1}
+  envelope_1_decayslope:       {label: Envelope1 DecaySlope, cc: 116, group: envelope_1}
+  envelope_1_animtrigger:      {label: Envelope1 AnimTrigger, cc: 117, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: envelope_1}
+
+  # ──── osc ────
+
+  osc_vibratospeed:            {label: Osc VibratoSpeed, cc: 76, group: osc}
+  osc_vibratodepth:            {label: Osc VibratoDepth, cc: 77, group: osc}
+
+  # ──── filter_2 ────
+
+  filter_2_drive:              {label: Filter2 Drive, cc: 80, group: filter_2}
+  filter_2_drivetype:          {label: Filter2 DriveType, cc: 81, range: [0, 6], choices: {"diode": 0, "valve": 1, "clipper": 2, "xover": 3, "rectify": 4, "bitsdown": 5, "ratedown": 6}, group: filter_2}
+  filter_2_type:               {label: Filter2 Type, cc: 82, range: [0, 13], choices: {"lp_6_nores": 0, "lp_12": 1, "lp_18": 2, "lp_24": 3, "bp_6_6": 4, "bp_12_12": 5, "bp_6_12": 6, "bp_12_6": 7, "bp_6_18": 8, "bp_18_6": 9, "hp_6_nores": 10, "hp_12": 11, "hp_18": 12, "hp_24": 13}, group: filter_2}
+  filter_2_frequency:          {label: Filter2 Frequency, cc: 83, group: filter_2}
+  filter_2_track:              {label: Filter2 Track, cc: 84, group: filter_2}
+  filter_2_resonance:          {label: Filter2 Resonance, cc: 85, group: filter_2}
+  filter_2_qnormalise:         {label: Filter2 QNormalise, cc: 86, group: filter_2}
+  filter_2_env_2_tofreq:       {label: Filter2 Env2ToFreq, cc: 87, group: filter_2}
+
+  # ──── animate_1 ────
+
+  animate_1_hold:              {label: Animate1 Hold, nrpn: 7680, group: animate_1}
+
+  # ──── animate_2 ────
+
+  animate_2_hold:              {label: Animate2 Hold, nrpn: 7681, group: animate_2}
+
+  # ──── animate_3 ────
+
+  animate_3_hold:              {label: Animate3 Hold, nrpn: 7682, group: animate_3}
+
+  # ──── animate_4 ────
+
+  animate_4_hold:              {label: Animate4 Hold, nrpn: 7683, group: animate_4}
+
+  # ──── animate_5 ────
+
+  animate_5_hold:              {label: Animate5 Hold, nrpn: 7684, group: animate_5}
+
+  # ──── animate_6 ────
+
+  animate_6_hold:              {label: Animate6 Hold, nrpn: 7685, group: animate_6}
+
+  # ──── animate_7 ────
+
+  animate_7_hold:              {label: Animate7 Hold, nrpn: 7686, group: animate_7}
+
+  # ──── animate_8 ────
+
+  animate_8_hold:              {label: Animate8 Hold, nrpn: 7687, group: animate_8}
+
+  # ──── animate ────
+
+  animate_hold_button_on:      {label: Animate Hold Button On, nrpn: 7696, range: [0, 1], choices: {"animate_hold_off": 0, "animate_hold_on": 1}, group: animate}
+
+  # ──── envelope_2 ────
+
+  envelope_2_trigger:          {label: Envelope2 Trigger, nrpn: 122, range: [2, 3], choices: {"single": 2, "multi": 3}, group: envelope_2}
+  envelope_2_velocity:         {label: Envelope2 Velocity, nrpn: 0, group: envelope_2}
+  envelope_2_attack:           {label: Envelope2 Attack, nrpn: 1, group: envelope_2}
+  envelope_2_decay:            {label: Envelope2 Decay, nrpn: 2, group: envelope_2}
+  envelope_2_sustain:          {label: Envelope2 Sustain, nrpn: 3, group: envelope_2}
+  envelope_2_release:          {label: Envelope2 Release, nrpn: 4, group: envelope_2}
+  envelope_2_sustainrate:      {label: Envelope2 SustainRate, nrpn: 5, group: envelope_2}
+  envelope_2_sustaintime:      {label: Envelope2 SustainTime, nrpn: 6, group: envelope_2}
+  envelope_2_adrepeats:        {label: Envelope2 ADRepeats, nrpn: 7, group: envelope_2}
+  envelope_2_attacktrack:      {label: Envelope2 AttackTrack, nrpn: 8, group: envelope_2}
+  envelope_2_decaytrack:       {label: Envelope2 DecayTrack, nrpn: 9, group: envelope_2}
+  envelope_2_leveltrack:       {label: Envelope2 LevelTrack, nrpn: 10, group: envelope_2}
+  envelope_2_attackslope:      {label: Envelope2 AttackSlope, nrpn: 11, group: envelope_2}
+  envelope_2_decayslope:       {label: Envelope2 DecaySlope, nrpn: 12, group: envelope_2}
+  envelope_2_animtrigger:      {label: Envelope2 AnimTrigger, nrpn: 13, range: [0, 24], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8, "a_1_triggr": 9, "a_2_triggr": 10, "a_3_triggr": 11, "a_4_triggr": 12, "a_5_triggr": 13, "a_6_triggr": 14, "a_7_triggr": 15, "a_8_triggr": 16, "a_1_enable": 17, "a_2_enable": 18, "a_3_enable": 19, "a_4_enable": 20, "a_5_enable": 21, "a_6_enable": 22, "a_7_enable": 23, "a_8_enable": 24}, group: envelope_2}
+
+  # ──── envelope_3 ────
+
+  envelope_3_trigger:          {label: Envelope3 Trigger, nrpn: 122, range: [4, 5], choices: {"single": 4, "multi": 5}, group: envelope_3}
+  envelope_3_delay:            {label: Envelope3 Delay, nrpn: 14, group: envelope_3}
+  envelope_3_attack:           {label: Envelope3 Attack, nrpn: 15, group: envelope_3}
+  envelope_3_decay:            {label: Envelope3 Decay, nrpn: 16, group: envelope_3}
+  envelope_3_sustain:          {label: Envelope3 Sustain, nrpn: 17, group: envelope_3}
+  envelope_3_release:          {label: Envelope3 Release, nrpn: 18, group: envelope_3}
+  envelope_3_sustainrate:      {label: Envelope3 SustainRate, nrpn: 19, group: envelope_3}
+  envelope_3_sustaintime:      {label: Envelope3 SustainTime, nrpn: 20, group: envelope_3}
+  envelope_3_adrepeats:        {label: Envelope3 ADRepeats, nrpn: 21, group: envelope_3}
+  envelope_3_attacktrack:      {label: Envelope3 AttackTrack, nrpn: 22, group: envelope_3}
+  envelope_3_decaytrack:       {label: Envelope3 DecayTrack, nrpn: 23, group: envelope_3}
+  envelope_3_leveltrack:       {label: Envelope3 LevelTrack, nrpn: 24, group: envelope_3}
+  envelope_3_attackslope:      {label: Envelope3 AttackSlope, nrpn: 25, group: envelope_3}
+  envelope_3_decayslope:       {label: Envelope3 DecaySlope, nrpn: 26, group: envelope_3}
+  envelope_3_animtrigger:      {label: Envelope3 AnimTrigger, nrpn: 27, range: [0, 24], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8, "a_1_triggr": 9, "a_2_triggr": 10, "a_3_triggr": 11, "a_4_triggr": 12, "a_5_triggr": 13, "a_6_triggr": 14, "a_7_triggr": 15, "a_8_triggr": 16, "a_1_enable": 17, "a_2_enable": 18, "a_3_enable": 19, "a_4_enable": 20, "a_5_enable": 21, "a_6_enable": 22, "a_7_enable": 23, "a_8_enable": 24}, group: envelope_3}
+
+  # ──── envelope_4 ────
+
+  envelope_4_trigger:          {label: Envelope4 Trigger, nrpn: 122, range: [6, 7], choices: {"single": 6, "multi": 7}, group: envelope_4}
+  envelope_4_delay:            {label: Envelope4 Delay, nrpn: 28, group: envelope_4}
+  envelope_4_attack:           {label: Envelope4 Attack, nrpn: 29, group: envelope_4}
+  envelope_4_decay:            {label: Envelope4 Decay, nrpn: 30, group: envelope_4}
+  envelope_4_sustain:          {label: Envelope4 Sustain, nrpn: 31, group: envelope_4}
+  envelope_4_release:          {label: Envelope4 Release, nrpn: 32, group: envelope_4}
+  envelope_4_sustainrate:      {label: Envelope4 SustainRate, nrpn: 33, group: envelope_4}
+  envelope_4_sustaintime:      {label: Envelope4 SustainTime, nrpn: 34, group: envelope_4}
+  envelope_4_adrepeats:        {label: Envelope4 ADRepeats, nrpn: 35, group: envelope_4}
+  envelope_4_attacktrack:      {label: Envelope4 AttackTrack, nrpn: 36, group: envelope_4}
+  envelope_4_decaytrack:       {label: Envelope4 DecayTrack, nrpn: 37, group: envelope_4}
+  envelope_4_leveltrack:       {label: Envelope4 LevelTrack, nrpn: 38, group: envelope_4}
+  envelope_4_attackslope:      {label: Envelope4 AttackSlope, nrpn: 39, group: envelope_4}
+  envelope_4_decayslope:       {label: Envelope4 DecaySlope, nrpn: 40, group: envelope_4}
+  envelope_4_animtrigger:      {label: Envelope4 AnimTrigger, nrpn: 41, range: [0, 24], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8, "a_1_triggr": 9, "a_2_triggr": 10, "a_3_triggr": 11, "a_4_triggr": 12, "a_5_triggr": 13, "a_6_triggr": 14, "a_7_triggr": 15, "a_8_triggr": 16, "a_1_enable": 17, "a_2_enable": 18, "a_3_enable": 19, "a_4_enable": 20, "a_5_enable": 21, "a_6_enable": 22, "a_7_enable": 23, "a_8_enable": 24}, group: envelope_4}
+
+  # ──── envelope_5 ────
+
+  envelope_5_trigger:          {label: Envelope5 Trigger, nrpn: 122, range: [8, 9], choices: {"single": 8, "multi": 9}, group: envelope_5}
+  envelope_5_delay:            {label: Envelope5 Delay, nrpn: 42, group: envelope_5}
+  envelope_5_attack:           {label: Envelope5 Attack, nrpn: 43, group: envelope_5}
+  envelope_5_decay:            {label: Envelope5 Decay, nrpn: 44, group: envelope_5}
+  envelope_5_sustain:          {label: Envelope5 Sustain, nrpn: 45, group: envelope_5}
+  envelope_5_release:          {label: Envelope5 Release, nrpn: 46, group: envelope_5}
+  envelope_5_sustainrate:      {label: Envelope5 SustainRate, nrpn: 47, group: envelope_5}
+  envelope_5_sustaintime:      {label: Envelope5 SustainTime, nrpn: 48, group: envelope_5}
+  envelope_5_adrepeats:        {label: Envelope5 ADRepeats, nrpn: 49, group: envelope_5}
+  envelope_5_attacktrack:      {label: Envelope5 AttackTrack, nrpn: 50, group: envelope_5}
+  envelope_5_decaytrack:       {label: Envelope5 DecayTrack, nrpn: 51, group: envelope_5}
+  envelope_5_leveltrack:       {label: Envelope5 LevelTrack, nrpn: 52, group: envelope_5}
+  envelope_5_attackslope:      {label: Envelope5 AttackSlope, nrpn: 53, group: envelope_5}
+  envelope_5_decayslope:       {label: Envelope5 DecaySlope, nrpn: 54, group: envelope_5}
+  envelope_5_animtrigger:      {label: Envelope5 AnimTrigger, nrpn: 55, range: [0, 24], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8, "a_1_triggr": 9, "a_2_triggr": 10, "a_3_triggr": 11, "a_4_triggr": 12, "a_5_triggr": 13, "a_6_triggr": 14, "a_7_triggr": 15, "a_8_triggr": 16, "a_1_enable": 17, "a_2_enable": 18, "a_3_enable": 19, "a_4_enable": 20, "a_5_enable": 21, "a_6_enable": 22, "a_7_enable": 23, "a_8_enable": 24}, group: envelope_5}
+
+  # ──── envelope_6 ────
+
+  envelope_6_trigger:          {label: Envelope6 Trigger, nrpn: 122, range: [10, 11], choices: {"single": 10, "multi": 11}, group: envelope_6}
+  envelope_6_delay:            {label: Envelope6 Delay, nrpn: 56, group: envelope_6}
+  envelope_6_attack:           {label: Envelope6 Attack, nrpn: 57, group: envelope_6}
+  envelope_6_decay:            {label: Envelope6 Decay, nrpn: 58, group: envelope_6}
+  envelope_6_sustain:          {label: Envelope6 Sustain, nrpn: 59, group: envelope_6}
+  envelope_6_release:          {label: Envelope6 Release, nrpn: 60, group: envelope_6}
+  envelope_6_sustainrate:      {label: Envelope6 SustainRate, nrpn: 61, group: envelope_6}
+  envelope_6_sustaintime:      {label: Envelope6 SustainTime, nrpn: 62, group: envelope_6}
+  envelope_6_adrepeats:        {label: Envelope6 ADRepeats, nrpn: 63, group: envelope_6}
+  envelope_6_attacktrack:      {label: Envelope6 AttackTrack, nrpn: 64, group: envelope_6}
+  envelope_6_decaytrack:       {label: Envelope6 DecayTrack, nrpn: 65, group: envelope_6}
+  envelope_6_leveltrack:       {label: Envelope6 LevelTrack, nrpn: 66, group: envelope_6}
+  envelope_6_attackslope:      {label: Envelope6 AttackSlope, nrpn: 67, group: envelope_6}
+  envelope_6_decayslope:       {label: Envelope6 DecaySlope, nrpn: 68, group: envelope_6}
+  envelope_6_animtrigger:      {label: Envelope6 AnimTrigger, nrpn: 69, range: [0, 24], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8, "a_1_triggr": 9, "a_2_triggr": 10, "a_3_triggr": 11, "a_4_triggr": 12, "a_5_triggr": 13, "a_6_triggr": 14, "a_7_triggr": 15, "a_8_triggr": 16, "a_1_enable": 17, "a_2_enable": 18, "a_3_enable": 19, "a_4_enable": 20, "a_5_enable": 21, "a_6_enable": 22, "a_7_enable": 23, "a_8_enable": 24}, group: envelope_6}
+
+  # ──── fx_1 ────
+
+  fx_1_level:                  {label: FX1 Level, cc: 91, group: fx_1}
+  fx_1_select:                 {label: FX1 Select, nrpn: 99, range: [0, 14], choices: {"bypass": 0, "eq": 1, "compres_1": 2, "compres_2": 3, "distort_1": 4, "distort_2": 5, "delay_1": 6, "delay_2": 7, "reverb_1": 8, "reverb_2": 9, "chorus_1": 10, "chorus_2": 11, "chorus_3": 12, "chorus_4": 13, "gator": 14}, group: fx_1}
+
+  # ──── fx_2 ────
+
+  fx_2_level:                  {label: FX2 Level, cc: 92, group: fx_2}
+  fx_2_select:                 {label: FX2 Select, nrpn: 100, range: [0, 14], choices: {"bypass": 0, "eq": 1, "compres_1": 2, "compres_2": 3, "distort_1": 4, "distort_2": 5, "delay_1": 6, "delay_2": 7, "reverb_1": 8, "reverb_2": 9, "chorus_1": 10, "chorus_2": 11, "chorus_3": 12, "chorus_4": 13, "gator": 14}, group: fx_2}
+
+  # ──── fx_3 ────
+
+  fx_3_level:                  {label: FX3 Level, cc: 93, group: fx_3}
+  fx_3_select:                 {label: FX3 Select, nrpn: 101, range: [0, 14], choices: {"bypass": 0, "eq": 1, "compres_1": 2, "compres_2": 3, "distort_1": 4, "distort_2": 5, "delay_1": 6, "delay_2": 7, "reverb_1": 8, "reverb_2": 9, "chorus_1": 10, "chorus_2": 11, "chorus_3": 12, "chorus_4": 13, "gator": 14}, group: fx_3}
+
+  # ──── fx_4 ────
+
+  fx_4_level:                  {label: FX4 Level, cc: 94, group: fx_4}
+  fx_4_select:                 {label: FX4 Select, nrpn: 102, range: [0, 14], choices: {"bypass": 0, "eq": 1, "compres_1": 2, "compres_2": 3, "distort_1": 4, "distort_2": 5, "delay_1": 6, "delay_2": 7, "reverb_1": 8, "reverb_2": 9, "chorus_1": 10, "chorus_2": 11, "chorus_3": 12, "chorus_4": 13, "gator": 14}, group: fx_4}
+
+  # ──── fx_5 ────
+
+  fx_5_level:                  {label: FX5 Level, cc: 95, group: fx_5}
+  fx_5_select:                 {label: FX5 Select, nrpn: 103, range: [0, 14], choices: {"bypass": 0, "eq": 1, "compres_1": 2, "compres_2": 3, "distort_1": 4, "distort_2": 5, "delay_1": 6, "delay_2": 7, "reverb_1": 8, "reverb_2": 9, "chorus_1": 10, "chorus_2": 11, "chorus_3": 12, "chorus_4": 13, "gator": 14}, group: fx_5}
+
+  # ──── envelope ────
+
+  envelope_trackcentre:        {label: Envelope TrackCentre, cc: 106, group: envelope}
+
+  # ──── lfo_1 ────
+
+  lfo_1_waveform:              {label: LFO1 Waveform, nrpn: 70, range: [0, 37], group: lfo_1}
+  lfo_1_phaseoffset:           {label: LFO1 PhaseOffset, nrpn: 71, range: [0, 119], group: lfo_1}
+  lfo_1_slewrate:              {label: LFO1 SlewRate, nrpn: 72, group: lfo_1}
+  lfo_1_delay:                 {label: LFO1 Delay, nrpn: 74, group: lfo_1}
+  lfo_1_delaysync:             {label: LFO1 DelaySync, nrpn: 75, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: lfo_1}
+  lfo_1_rate:                  {label: LFO1 Rate, nrpn: 76, group: lfo_1}
+  lfo_1_ratesync:              {label: LFO1 RateSync, nrpn: 77, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: lfo_1}
+  lfo_1_oneshot:               {label: LFO1 OneShot, nrpn: 122, range: [12, 13], choices: {"normal": 12, "oneshot": 13}, group: lfo_1}
+  lfo_1_keysync:               {label: LFO1 KeySync, nrpn: 122, range: [14, 15], choices: {"freerun": 14, "keysync": 15}, group: lfo_1}
+  lfo_1_commonsync:            {label: LFO1 CommonSync, nrpn: 122, range: [16, 17], choices: {"normal": 16, "common": 17}, group: lfo_1}
+  lfo_1_delaytrigger:          {label: LFO1 DelayTrigger, nrpn: 122, range: [18, 19], choices: {"single": 18, "multi": 19}, group: lfo_1}
+  lfo_1_fademode:              {label: LFO1 FadeMode, nrpn: 251, range: [0, 3], choices: {"fade_in": 0, "fade_out": 1, "gate_in": 2, "gate_out": 3}, group: lfo_1}
+
+  # ──── lfo_2 ────
+
+  lfo_2_waveform:              {label: LFO2 Waveform, nrpn: 79, range: [0, 37], choices: {"sine": 0, "triangle": 1, "sawtooth": 2, "square": 3, "rand_s_h": 4, "time_s_h": 5, "pianoenv": 6, "seq_1": 7, "seq_2": 8, "seq_3": 9, "seq_4": 10, "seq_5": 11, "seq_6": 12, "seq_7": 13, "altern_1": 14, "altern_2": 15, "altern_3": 16, "altern_4": 17, "altern_5": 18, "altern_6": 19, "altern_7": 20, "altern_8": 21, "chromat": 22, "chrom_16": 23, "major": 24, "major_7": 25, "minor_7": 26, "minarp_1": 27, "minarp_2": 28, "diminish": 29, "decminor": 30, "minor_3rd": 31, "pedal": 32, "n4ths": 33, "n4ths_x_12": 34, "n1625_maj": 35, "n1625_min": 36, "n2511": 37}, group: lfo_2}
+  lfo_2_phaseoffset:           {label: LFO2 PhaseOffset, nrpn: 80, range: [0, 119], group: lfo_2}
+  lfo_2_slewrate:              {label: LFO2 SlewRate, nrpn: 81, group: lfo_2}
+  lfo_2_delay:                 {label: LFO2 Delay, nrpn: 83, group: lfo_2}
+  lfo_2_delaysync:             {label: LFO2 DelaySync, nrpn: 84, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: lfo_2}
+  lfo_2_rate:                  {label: LFO2 Rate, nrpn: 85, group: lfo_2}
+  lfo_2_ratesync:              {label: LFO2 RateSync, nrpn: 86, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: lfo_2}
+  lfo_2_oneshot:               {label: LFO2 OneShot, nrpn: 122, range: [22, 23], choices: {"normal": 22, "oneshot": 23}, group: lfo_2}
+  lfo_2_keysync:               {label: LFO2 KeySync, nrpn: 122, range: [24, 25], choices: {"freerun": 24, "keysync": 25}, group: lfo_2}
+  lfo_2_commonsync:            {label: LFO2 CommonSync, nrpn: 122, range: [26, 27], choices: {"normal": 26, "common": 27}, group: lfo_2}
+  lfo_2_delaytrigger:          {label: LFO2 DelayTrigger, nrpn: 122, range: [28, 29], choices: {"single": 28, "multi": 29}, group: lfo_2}
+  lfo_2_fademode:              {label: LFO2 FadeMode, nrpn: 251, range: [4, 7], choices: {"fade_in": 4, "fade_out": 5, "gate_in": 6, "gate_out": 7}, group: lfo_2}
+
+  # ──── lfo_3 ────
+
+  lfo_3_waveform:              {label: LFO3 Waveform, nrpn: 88, range: [0, 37], group: lfo_3}
+  lfo_3_phaseoffset:           {label: LFO3 PhaseOffset, nrpn: 89, range: [0, 119], group: lfo_3}
+  lfo_3_slewrate:              {label: LFO3 SlewRate, nrpn: 90, group: lfo_3}
+  lfo_3_delay:                 {label: LFO3 Delay, nrpn: 92, group: lfo_3}
+  lfo_3_delaysync:             {label: LFO3 DelaySync, nrpn: 93, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: lfo_3}
+  lfo_3_rate:                  {label: LFO3 Rate, nrpn: 94, group: lfo_3}
+  lfo_3_ratesync:              {label: LFO3 RateSync, nrpn: 95, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: lfo_3}
+  lfo_3_oneshot:               {label: LFO3 OneShot, nrpn: 122, range: [32, 33], choices: {"normal": 32, "oneshot": 33}, group: lfo_3}
+  lfo_3_keysync:               {label: LFO3 KeySync, nrpn: 122, range: [34, 35], choices: {"freerun": 34, "keysync": 35}, group: lfo_3}
+  lfo_3_commonsync:            {label: LFO3 CommonSync, nrpn: 122, range: [36, 37], choices: {"normal": 36, "common": 37}, group: lfo_3}
+  lfo_3_delaytrigger:          {label: LFO3 DelayTrigger, nrpn: 122, range: [38, 39], choices: {"single": 38, "multi": 39}, group: lfo_3}
+  lfo_3_fademode:              {label: LFO3 FadeMode, nrpn: 251, range: [4, 7], choices: {"fade_in": 4, "fade_out": 5, "gate_in": 6, "gate_out": 7}, group: lfo_3}
+
+  # ──── equaliser ────
+
+  equaliser_bassfrequency:     {label: Equaliser BassFrequency, nrpn: 104, group: equaliser}
+  equaliser_basslevel:         {label: Equaliser BassLevel, nrpn: 105, group: equaliser}
+  equaliser_midfrequency:      {label: Equaliser MidFrequency, nrpn: 106, group: equaliser}
+  equaliser_midlevel:          {label: Equaliser MidLevel, nrpn: 107, group: equaliser}
+  equaliser_treblefrequency:   {label: Equaliser TrebleFrequency, nrpn: 108, group: equaliser}
+  equaliser_treblelevel:       {label: Equaliser TrebleLevel, nrpn: 109, group: equaliser}
+
+  # ──── compressor_1 ────
+
+  compressor_1_ratio:          {label: Compressor1 Ratio, nrpn: 110, group: compressor_1}
+  compressor_1_threshold:      {label: Compressor1 Threshold, nrpn: 111, range: [0, 60], group: compressor_1}
+  compressor_1_attack:         {label: Compressor1 Attack, nrpn: 112, group: compressor_1}
+  compressor_1_release:        {label: Compressor1 Release, nrpn: 113, group: compressor_1}
+  compressor_1_hold:           {label: Compressor1 Hold, nrpn: 114, group: compressor_1}
+  compressor_1_gain:           {label: Compressor1 Gain, nrpn: 115, group: compressor_1}
+
+  # ──── compressor_2 ────
+
+  compressor_2_ratio:          {label: Compressor2 Ratio, nrpn: 116, group: compressor_2}
+  compressor_2_threshold:      {label: Compressor2 Threshold, nrpn: 117, range: [0, 60], group: compressor_2}
+  compressor_2_attack:         {label: Compressor2 Attack, nrpn: 118, group: compressor_2}
+  compressor_2_release:        {label: Compressor2 Release, nrpn: 119, group: compressor_2}
+  compressor_2_hold:           {label: Compressor2 Hold, nrpn: 120, group: compressor_2}
+  compressor_2_gain:           {label: Compressor2 Gain, nrpn: 121, group: compressor_2}
+
+  # ──── distortion_1 ────
+
+  distortion_1_type:           {label: Distortion1 Type, nrpn: 128, range: [0, 6], choices: {"diode": 0, "valve": 1, "clipper": 2, "xover": 3, "rectify": 4, "bitsdown": 5, "ratedown": 6}, group: distortion_1}
+  distortion_1_compensation:   {label: Distortion1 Compensation, nrpn: 129, group: distortion_1}
+  distortion_1_level:          {label: Distortion1 Level, nrpn: 130, range: [52, 82], group: distortion_1}
+
+  # ──── distortion_2 ────
+
+  distortion_2_type:           {label: Distortion2 Type, nrpn: 131, range: [0, 6], choices: {"diode": 0, "valve": 1, "clipper": 2, "xover": 3, "rectify": 4, "bitsdown": 5, "ratedown": 6}, group: distortion_2}
+  distortion_2_compensation:   {label: Distortion2 Compensation, nrpn: 132, group: distortion_2}
+  distortion_2_level:          {label: Distortion2 Level, nrpn: 133, range: [52, 82], group: distortion_2}
+
+  # ──── delay_1 ────
+
+  delay_1_time:                {label: Delay1 Time, nrpn: 134, group: delay_1}
+  delay_1_timesync:            {label: Delay1 TimeSync, nrpn: 135, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: delay_1}
+  delay_1_feedback:            {label: Delay1 Feedback, nrpn: 136, group: delay_1}
+  delay_1_width:               {label: Delay1 Width, nrpn: 137, group: delay_1}
+  delay_1_lrratio:             {label: Delay1 LRRatio, nrpn: 138, range: [0, 12], choices: {"l_1_1_r": 0, "l_4_3_r": 1, "l_3_4_r": 2, "l_3_2_r": 3, "l_2_3_r": 4, "l_2_1_r": 5, "l_1_2_r": 6, "l_3_1_r": 7, "l_1_3_r": 8, "l_4_1_r": 9, "l_1_4_r": 10, "l_1_off": 11, "off_1_r": 12}, group: delay_1}
+  delay_1_slewrate:            {label: Delay1 SlewRate, nrpn: 139, group: delay_1}
+
+  # ──── delay_2 ────
+
+  delay_2_time:                {label: Delay2 Time, nrpn: 140, group: delay_2}
+  delay_2_timesync:            {label: Delay2 TimeSync, nrpn: 141, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: delay_2}
+  delay_2_feedback:            {label: Delay2 Feedback, nrpn: 142, group: delay_2}
+  delay_2_width:               {label: Delay2 Width, nrpn: 143, group: delay_2}
+  delay_2_lrratio:             {label: Delay2 LRRatio, nrpn: 144, range: [0, 12], choices: {"l_1_1_r": 0, "l_4_3_r": 1, "l_3_4_r": 2, "l_3_2_r": 3, "l_2_3_r": 4, "l_2_1_r": 5, "l_1_2_r": 6, "l_3_1_r": 7, "l_1_3_r": 8, "l_4_1_r": 9, "l_1_4_r": 10, "l_1_off": 11, "off_1_r": 12}, group: delay_2}
+  delay_2_slewrate:            {label: Delay2 SlewRate, nrpn: 145, group: delay_2}
+
+  # ──── reverb_1 ────
+
+  reverb_1_type:               {label: Reverb1 Type, nrpn: 146, range: [0, 5], choices: {"chamber": 0, "smlroom": 1, "lrgroom": 2, "smlhall": 3, "lrghall": 4, "grthall": 5}, group: reverb_1}
+  reverb_1_decay:              {label: Reverb1 Decay, nrpn: 147, group: reverb_1}
+  reverb_1_damping:            {label: Reverb1 Damping, nrpn: 148, group: reverb_1}
+
+  # ──── reverb_2 ────
+
+  reverb_2_type:               {label: Reverb2 Type, nrpn: 149, range: [0, 5], choices: {"chamber": 0, "smlroom": 1, "lrgroom": 2, "smlhall": 3, "lrghall": 4, "grthall": 5}, group: reverb_2}
+  reverb_2_decay:              {label: Reverb2 Decay, nrpn: 150, group: reverb_2}
+  reverb_2_damping:            {label: Reverb2 Damping, nrpn: 151, group: reverb_2}
+
+  # ──── chorus_1 ────
+
+  chorus_1_type:               {label: Chorus1 Type, nrpn: 152, range: [0, 1], choices: {"phaser": 0, "chorus": 1}, group: chorus_1}
+  chorus_1_rate:               {label: Chorus1 Rate, nrpn: 153, group: chorus_1}
+  chorus_1_ratesync:           {label: Chorus1 RateSync, nrpn: 154, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: chorus_1}
+  chorus_1_feedback:           {label: Chorus1 Feedback, nrpn: 155, group: chorus_1}
+  chorus_1_moddepth:           {label: Chorus1 ModDepth, nrpn: 156, group: chorus_1}
+  chorus_1_delay:              {label: Chorus1 Delay, nrpn: 157, group: chorus_1}
+
+  # ──── chorus_2 ────
+
+  chorus_2_type:               {label: Chorus2 Type, nrpn: 158, range: [0, 1], choices: {"phaser": 0, "chorus": 1}, group: chorus_2}
+  chorus_2_rate:               {label: Chorus2 Rate, nrpn: 159, group: chorus_2}
+  chorus_2_ratesync:           {label: Chorus2 RateSync, nrpn: 160, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: chorus_2}
+  chorus_2_feedback:           {label: Chorus2 Feedback, nrpn: 161, group: chorus_2}
+  chorus_2_moddepth:           {label: Chorus2 ModDepth, nrpn: 162, group: chorus_2}
+  chorus_2_delay:              {label: Chorus2 Delay, nrpn: 163, group: chorus_2}
+
+  # ──── chorus_3 ────
+
+  chorus_3_type:               {label: Chorus3 Type, nrpn: 164, range: [0, 1], choices: {"phaser": 0, "chorus": 1}, group: chorus_3}
+  chorus_3_rate:               {label: Chorus3 Rate, nrpn: 165, group: chorus_3}
+  chorus_3_ratesync:           {label: Chorus3 RateSync, nrpn: 166, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: chorus_3}
+  chorus_3_feedback:           {label: Chorus3 Feedback, nrpn: 167, group: chorus_3}
+  chorus_3_moddepth:           {label: Chorus3 ModDepth, nrpn: 168, group: chorus_3}
+  chorus_3_delay:              {label: Chorus3 Delay, nrpn: 169, group: chorus_3}
+
+  # ──── chorus_4 ────
+
+  chorus_4_type:               {label: Chorus4 Type, nrpn: 170, range: [0, 1], choices: {"phaser": 0, "chorus": 1}, group: chorus_4}
+  chorus_4_rate:               {label: Chorus4 Rate, nrpn: 171, group: chorus_4}
+  chorus_4_ratesync:           {label: Chorus4 RateSync, nrpn: 172, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: chorus_4}
+  chorus_4_feedback:           {label: Chorus4 Feedback, nrpn: 173, group: chorus_4}
+  chorus_4_moddepth:           {label: Chorus4 ModDepth, nrpn: 174, group: chorus_4}
+  chorus_4_delay:              {label: Chorus4 Delay, nrpn: 175, group: chorus_4}
+
+  # ──── gator ────
+
+  gator_on:                    {label: Gator On, nrpn: 122, range: [52, 53], choices: {"off": 52, "on": 53}, group: gator}
+  gator_keysync:               {label: Gator KeySync, nrpn: 122, range: [54, 55], choices: {"freerun": 54, "keysync": 55}, group: gator}
+  gator_keylatch:              {label: Gator KeyLatch, nrpn: 122, range: [56, 57], choices: {"latchoff": 56, "latchon": 57}, group: gator}
+  gator_ratesync:              {label: Gator RateSync, nrpn: 177, range: [0, 35], choices: {"off": 0, "n32nd_t": 1, "n32nd": 2, "n16th_t": 3, "n16th": 4, "n8th_t": 5, "n16th_d": 6, "n8th": 7, "n4th_t": 8, "n8th_d": 9, "n4th": 10, "n1_plus_1_3": 11, "n4th_d": 12, "n2nd": 13, "n2_plus_2_3": 14, "n3_beats": 15, "n4_beats": 16, "n5_plus_1_3": 17, "n6_beats": 18, "n8_beats": 19, "n10_plus_2_3": 20, "n12_beats": 21, "n13_plus_1_3": 22, "n16_beats": 23, "n18_beats": 24, "n18_plus_2_3": 25, "n20_beats": 26, "n21_plus_1_3": 27, "n24_beats": 28, "n28_beats": 29, "n30_beats": 30, "n32_beats": 31, "n36_beats": 32, "n42_beats": 33, "n48_beats": 34, "n64_beats": 35}, group: gator}
+  gator_mode:                  {label: Gator Mode, nrpn: 178, range: [0, 5], choices: {"mono_16": 0, "monoalt_1": 1, "monoalt_2": 2, "stereo_16": 3, "steralt_1": 4, "steralt_2": 5}, group: gator}
+  gator_edgeslew:              {label: Gator EdgeSlew, nrpn: 180, group: gator}
+  gator_hold:                  {label: Gator Hold, nrpn: 181, group: gator}
+  gator_lrdelay:               {label: Gator LRDelay, nrpn: 182, group: gator}
+  gator_step_1_level:          {label: Gator Step 1 Level, nrpn: 640, range: [0, 7], group: gator}
+  gator_step_2_level:          {label: Gator Step 2 Level, nrpn: 641, range: [0, 7], group: gator}
+  gator_step_3_level:          {label: Gator Step 3 Level, nrpn: 642, range: [0, 7], group: gator}
+  gator_step_4_level:          {label: Gator Step 4 Level, nrpn: 643, range: [0, 7], group: gator}
+  gator_step_5_level:          {label: Gator Step 5 Level, nrpn: 644, range: [0, 7], group: gator}
+  gator_step_6_level:          {label: Gator Step 6 Level, nrpn: 645, range: [0, 7], group: gator}
+  gator_step_7_level:          {label: Gator Step 7 Level, nrpn: 646, range: [0, 7], group: gator}
+  gator_step_8_level:          {label: Gator Step 8 Level, nrpn: 647, range: [0, 7], group: gator}
+  gator_step_9_level:          {label: Gator Step 9 Level, nrpn: 648, range: [0, 7], group: gator}
+  gator_step_10_level:         {label: Gator Step 10 Level, nrpn: 649, range: [0, 7], group: gator}
+  gator_step_11_level:         {label: Gator Step 11 Level, nrpn: 650, range: [0, 7], group: gator}
+  gator_step_12_level:         {label: Gator Step 12 Level, nrpn: 651, range: [0, 7], group: gator}
+  gator_step_13_level:         {label: Gator Step 13 Level, nrpn: 652, range: [0, 7], group: gator}
+  gator_step_14_level:         {label: Gator Step 14 Level, nrpn: 653, range: [0, 7], group: gator}
+  gator_step_15_level:         {label: Gator Step 15 Level, nrpn: 654, range: [0, 7], group: gator}
+  gator_step_16_level:         {label: Gator Step 16 Level, nrpn: 655, range: [0, 7], group: gator}
+  gator_step_17_level:         {label: Gator Step 17 Level, nrpn: 656, range: [0, 7], group: gator}
+  gator_step_18_level:         {label: Gator Step 18 Level, nrpn: 657, range: [0, 7], group: gator}
+  gator_step_19_level:         {label: Gator Step 19 Level, nrpn: 658, range: [0, 7], group: gator}
+  gator_step_20_level:         {label: Gator Step 20 Level, nrpn: 659, range: [0, 7], group: gator}
+  gator_step_21_level:         {label: Gator Step 21 Level, nrpn: 660, range: [0, 7], group: gator}
+  gator_step_22_level:         {label: Gator Step 22 Level, nrpn: 661, range: [0, 7], group: gator}
+  gator_step_23_level:         {label: Gator Step 23 Level, nrpn: 662, range: [0, 7], group: gator}
+  gator_step_24_level:         {label: Gator Step 24 Level, nrpn: 663, range: [0, 7], group: gator}
+  gator_step_25_level:         {label: Gator Step 25 Level, nrpn: 664, range: [0, 7], group: gator}
+  gator_step_26_level:         {label: Gator Step 26 Level, nrpn: 665, range: [0, 7], group: gator}
+  gator_step_27_level:         {label: Gator Step 27 Level, nrpn: 666, range: [0, 7], group: gator}
+  gator_step_28_level:         {label: Gator Step 28 Level, nrpn: 667, range: [0, 7], group: gator}
+  gator_step_29_level:         {label: Gator Step 29 Level, nrpn: 668, range: [0, 7], group: gator}
+  gator_step_30_level:         {label: Gator Step 30 Level, nrpn: 669, range: [0, 7], group: gator}
+  gator_step_31_level:         {label: Gator Step 31 Level, nrpn: 670, range: [0, 7], group: gator}
+  gator_step_32_level:         {label: Gator Step 32 Level, nrpn: 671, range: [0, 7], group: gator}
+
+  # ──── vocoder ────
+
+  vocoder_on:                  {label: Vocoder On, nrpn: 122, range: [58, 59], choices: {"off": 58, "on": 59}, group: vocoder}
+  vocoder_sibilancetype:       {label: Vocoder SibilanceType, nrpn: 122, range: [60, 61], choices: {"hipass": 60, "noise": 61}, group: vocoder}
+  vocoder_freeze:              {label: Vocoder Freeze, nrpn: 122, range: [62, 63], choices: {"unfreeze": 62, "freeze": 63}, group: vocoder}
+  vocoder_allmax:              {label: Vocoder AllMax, nrpn: 122, range: [64, 65], choices: {"allmax_off": 64, "allmax_on": 65}, group: vocoder}
+  vocoder_vocoderinput:        {label: Vocoder VocoderInput, nrpn: 122, range: [66, 67], choices: {"audio_in": 66, "vtoutput": 67}, group: vocoder}
+  vocoder_width:               {label: Vocoder Width, nrpn: 185, group: vocoder}
+  vocoder_sibilance:           {label: Vocoder Sibilance, nrpn: 186, group: vocoder}
+  vocoder_specshift:           {label: Vocoder SpecShift, nrpn: 187, group: vocoder}
+  vocoder_specspread:          {label: Vocoder SpecSpread, nrpn: 188, group: vocoder}
+  vocoder_level:               {label: Vocoder Level, nrpn: 199, group: vocoder}
+  vocoder_carrierlevel:        {label: Vocoder CarrierLevel, nrpn: 200, group: vocoder}
+  vocoder_modulatorlevel:      {label: Vocoder ModulatorLevel, nrpn: 201, group: vocoder}
+  vocoder_resonance:           {label: Vocoder Resonance, nrpn: 202, group: vocoder}
+  vocoder_decay:               {label: Vocoder Decay, nrpn: 203, group: vocoder}
+  vocoder_gatethreshold:       {label: Vocoder GateThreshold, nrpn: 204, range: [0, 96], group: vocoder}
+  vocoder_gaterelease:         {label: Vocoder GateRelease, nrpn: 205, group: vocoder}
+  vocoder_spectrum_0_level:    {label: Vocoder Spectrum 0 Level, nrpn: 768, group: vocoder}
+  vocoder_spectrum_1_level:    {label: Vocoder Spectrum 1 Level, nrpn: 769, group: vocoder}
+  vocoder_spectrum_2_level:    {label: Vocoder Spectrum 2 Level, nrpn: 770, group: vocoder}
+  vocoder_spectrum_3_level:    {label: Vocoder Spectrum 3 Level, nrpn: 771, group: vocoder}
+  vocoder_spectrum_4_level:    {label: Vocoder Spectrum 4 Level, nrpn: 772, group: vocoder}
+  vocoder_spectrum_5_level:    {label: Vocoder Spectrum 5 Level, nrpn: 773, group: vocoder}
+  vocoder_spectrum_6_level:    {label: Vocoder Spectrum 6 Level, nrpn: 774, group: vocoder}
+  vocoder_spectrum_7_level:    {label: Vocoder Spectrum 7 Level, nrpn: 775, group: vocoder}
+  vocoder_spectrum_8_level:    {label: Vocoder Spectrum 8 Level, nrpn: 776, group: vocoder}
+  vocoder_spectrum_9_level:    {label: Vocoder Spectrum 9 Level, nrpn: 777, group: vocoder}
+  vocoder_spectrum_10_level:   {label: Vocoder Spectrum 10 Level, nrpn: 778, group: vocoder}
+  vocoder_spectrum_11_level:   {label: Vocoder Spectrum 11 Level, nrpn: 779, group: vocoder}
+  vocoder_spectrum_12_level:   {label: Vocoder Spectrum 12 Level, nrpn: 780, group: vocoder}
+  vocoder_spectrum_13_level:   {label: Vocoder Spectrum 13 Level, nrpn: 781, group: vocoder}
+  vocoder_spectrum_14_level:   {label: Vocoder Spectrum 14 Level, nrpn: 782, group: vocoder}
+  vocoder_spectrum_15_level:   {label: Vocoder Spectrum 15 Level, nrpn: 783, group: vocoder}
+  vocoder_spectrum_16_level:   {label: Vocoder Spectrum 16 Level, nrpn: 784, group: vocoder}
+  vocoder_spectrum_17_level:   {label: Vocoder Spectrum 17 Level, nrpn: 785, group: vocoder}
+  vocoder_spectrum_18_level:   {label: Vocoder Spectrum 18 Level, nrpn: 786, group: vocoder}
+  vocoder_spectrum_19_level:   {label: Vocoder Spectrum 19 Level, nrpn: 787, group: vocoder}
+  vocoder_spectrum_20_level:   {label: Vocoder Spectrum 20 Level, nrpn: 788, group: vocoder}
+  vocoder_spectrum_21_level:   {label: Vocoder Spectrum 21 Level, nrpn: 789, group: vocoder}
+  vocoder_spectrum_22_level:   {label: Vocoder Spectrum 22 Level, nrpn: 790, group: vocoder}
+  vocoder_spectrum_23_level:   {label: Vocoder Spectrum 23 Level, nrpn: 791, group: vocoder}
+  vocoder_spectrum_24_level:   {label: Vocoder Spectrum 24 Level, nrpn: 792, group: vocoder}
+  vocoder_spectrum_25_level:   {label: Vocoder Spectrum 25 Level, nrpn: 793, group: vocoder}
+  vocoder_spectrum_26_level:   {label: Vocoder Spectrum 26 Level, nrpn: 794, group: vocoder}
+  vocoder_spectrum_27_level:   {label: Vocoder Spectrum 27 Level, nrpn: 795, group: vocoder}
+  vocoder_spectrum_28_level:   {label: Vocoder Spectrum 28 Level, nrpn: 796, group: vocoder}
+  vocoder_spectrum_29_level:   {label: Vocoder Spectrum 29 Level, nrpn: 797, group: vocoder}
+  vocoder_spectrum_30_level:   {label: Vocoder Spectrum 30 Level, nrpn: 798, group: vocoder}
+  vocoder_spectrum_31_level:   {label: Vocoder Spectrum 31 Level, nrpn: 799, group: vocoder}
+  vocoder_spectrumresample:    {label: Vocoder SpectrumResample, nrpn: 800, range: [1, 1], group: vocoder}
+
+  # ──── arp ────
+
+  arp_on:                      {label: Arp On, nrpn: 122, range: [46, 47], choices: {"off": 46, "on": 47}, group: arp}
+  arp_keylatch:                {label: Arp KeyLatch, nrpn: 122, range: [50, 51], choices: {"latch_off": 50, "latch_on": 51}, group: arp}
+  arp_octaves:                 {label: Arp Octaves, nrpn: 190, range: [0, 3], group: arp}
+  arp_ratesync:                {label: Arp RateSync, nrpn: 191, range: [0, 18], group: arp}
+  arp_gate:                    {label: Arp Gate, nrpn: 192, range: [1, 127], group: arp}
+  arp_mode:                    {label: Arp Mode, nrpn: 193, range: [0, 6], choices: {"up": 0, "down": 1, "updown": 2, "updown_2": 3, "played": 4, "random": 5, "chord": 6}, group: arp}
+  arp_pattern:                 {label: Arp Pattern, nrpn: 194, range: [0, 32], choices: {"n32ndt": 0, "n32nd": 1, "n16tht": 2, "n16th": 3, "n8tht": 4, "n16thd": 5, "n8th": 6, "n4tht": 7, "n8thd": 8, "n4th": 9, "n1_plus_1_3": 10, "n4thd": 11, "n2nd": 12, "n2_plus_2_3": 13, "n3beats": 14, "n4beats": 15, "n5_plus_1_3": 16, "n6beats": 17, "n8beats": 18}, group: arp}
+  arp_swing:                   {label: Arp Swing, nrpn: 196, range: [1, 99], group: arp}
+  arp_mininova:                {label: Arp Mininova, nrpn: 16383, range: [0, 1], group: arp}
+  arp_length:                  {label: Arp Length, nrpn: 7720, range: [2, 8], group: arp}
+
+  # ──── arp_1 ────
+
+  arp_1_step:                  {label: Arp1 Step, nrpn: 7712, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_1}
+
+  # ──── arp_2 ────
+
+  arp_2_step:                  {label: Arp2 Step, nrpn: 7713, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_2}
+
+  # ──── arp_3 ────
+
+  arp_3_step:                  {label: Arp3 Step, nrpn: 7714, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_3}
+
+  # ──── arp_4 ────
+
+  arp_4_step:                  {label: Arp4 Step, nrpn: 7715, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_4}
+
+  # ──── arp_5 ────
+
+  arp_5_step:                  {label: Arp5 Step, nrpn: 7716, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_5}
+
+  # ──── arp_6 ────
+
+  arp_6_step:                  {label: Arp6 Step, nrpn: 7717, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_6}
+
+  # ──── arp_7 ────
+
+  arp_7_step:                  {label: Arp7 Step, nrpn: 7718, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_7}
+
+  # ──── arp_8 ────
+
+  arp_8_step:                  {label: Arp8 Step, nrpn: 7719, choices: {"arp_step_1_off": 0, "arp_step_1_on": 1}, group: arp_8}
+
+  # ──── chorder ────
+
+  chorder_transpose:           {label: Chorder Transpose, nrpn: 206, range: [53, 75], group: chorder}
+  chorder_on:                  {label: Chorder On, nrpn: 207, range: [0, 1], choices: {"off": 0, "on": 1}, group: chorder}
+  chorder_chorder_count:       {label: Chorder Chorder Count, nrpn: 912, range: [0, 10], group: chorder}
+  chorder_key_2:               {label: Chorder Key 2, nrpn: 913, group: chorder}
+  chorder_key_3:               {label: Chorder Key 3, nrpn: 914, group: chorder}
+  chorder_key_4:               {label: Chorder Key 4, nrpn: 915, group: chorder}
+  chorder_key_5:               {label: Chorder Key 5, nrpn: 916, group: chorder}
+  chorder_key_6:               {label: Chorder Key 6, nrpn: 917, group: chorder}
+  chorder_key_7:               {label: Chorder Key 7, nrpn: 918, group: chorder}
+  chorder_key_8:               {label: Chorder Key 8, nrpn: 919, group: chorder}
+  chorder_key_9:               {label: Chorder Key 9, nrpn: 920, group: chorder}
+  chorder_key_10:              {label: Chorder Key 10, nrpn: 921, group: chorder}
+
+  # ──── vocaltune ────
+
+  vocaltune_shift:             {label: VocalTune Shift, nrpn: 208, range: [40, 88], group: vocaltune}
+  vocaltune_bend:              {label: VocalTune Bend, nrpn: 209, range: [40, 88], group: vocaltune}
+  vocaltune_mode:              {label: VocalTune Mode, nrpn: 251, range: [16, 19], choices: {"off": 16, "scale_correction": 17, "kbctrl": 18, "pitch": 19}, group: vocaltune}
+  vocaltune_insert:            {label: VocalTune Insert, nrpn: 251, range: [25, 27], group: vocaltune}
+  vocaltune_scaletype:         {label: VocalTune ScaleType, nrpn: 312, range: [0, 5], choices: {"played": 0, "chromatic": 1, "major": 2, "natminor": 3, "harminor": 4, "melminor": 5}, group: vocaltune}
+  vocaltune_scalekey:          {label: VocalTune ScaleKey, nrpn: 313, range: [0, 11], choices: {"c": 0, "c_sharp": 1, "d": 2, "d_sharp": 3, "e": 4, "f": 5, "f_sharp": 6, "g": 7, "g_sharp": 8, "a": 9, "a_sharp": 10, "b": 11}, group: vocaltune}
+  vocaltune_correctiontime:    {label: VocalTune CorrectionTime, nrpn: 314, group: vocaltune}
+  vocaltune_level:             {label: VocalTune Level, nrpn: 315, group: vocaltune}
+  vocaltune_vibrato:           {label: VocalTune Vibrato, nrpn: 316, group: vocaltune}
+  vocaltune_vibratomodwheel:   {label: VocalTune VibratoModWheel, nrpn: 317, group: vocaltune}
+  vocaltune_vibratorate:       {label: VocalTune VibratoRate, nrpn: 318, group: vocaltune}
+
+  # ──── modmatrix_1 ────
+
+  modmatrix_1_source_1:        {label: ModMatrix1 Source1, nrpn: 211, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_1}
+  modmatrix_1_source_2:        {label: ModMatrix1 Source2, nrpn: 212, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_1}
+  modmatrix_1_animtrigger:     {label: ModMatrix1 AnimTrigger, nrpn: 213, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_1}
+  modmatrix_1_depth:           {label: ModMatrix1 Depth, nrpn: 214, group: modmatrix_1}
+  modmatrix_1_destination:     {label: ModMatrix1 Destination, nrpn: 215, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_1}
+
+  # ──── modmatrix_2 ────
+
+  modmatrix_2_source_1:        {label: ModMatrix2 Source1, nrpn: 216, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_2}
+  modmatrix_2_source_2:        {label: ModMatrix2 Source2, nrpn: 217, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_2}
+  modmatrix_2_animtrigger:     {label: ModMatrix2 AnimTrigger, nrpn: 218, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_2}
+  modmatrix_2_depth:           {label: ModMatrix2 Depth, nrpn: 219, group: modmatrix_2}
+  modmatrix_2_destination:     {label: ModMatrix2 Destination, nrpn: 220, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_2}
+
+  # ──── modmatrix_3 ────
+
+  modmatrix_3_source_1:        {label: ModMatrix3 Source1, nrpn: 221, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_3}
+  modmatrix_3_source_2:        {label: ModMatrix3 Source2, nrpn: 222, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_3}
+  modmatrix_3_animtrigger:     {label: ModMatrix3 AnimTrigger, nrpn: 223, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_3}
+  modmatrix_3_depth:           {label: ModMatrix3 Depth, nrpn: 224, group: modmatrix_3}
+  modmatrix_3_destination:     {label: ModMatrix3 Destination, nrpn: 225, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_3}
+
+  # ──── modmatrix_4 ────
+
+  modmatrix_4_source_1:        {label: ModMatrix4 Source1, nrpn: 226, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_4}
+  modmatrix_4_source_2:        {label: ModMatrix4 Source2, nrpn: 227, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_4}
+  modmatrix_4_animtrigger:     {label: ModMatrix4 AnimTrigger, nrpn: 228, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_4}
+  modmatrix_4_depth:           {label: ModMatrix4 Depth, nrpn: 229, group: modmatrix_4}
+  modmatrix_4_destination:     {label: ModMatrix4 Destination, nrpn: 230, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_4}
+
+  # ──── modmatrix_5 ────
+
+  modmatrix_5_source_1:        {label: ModMatrix5 Source1, nrpn: 231, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_5}
+  modmatrix_5_source_2:        {label: ModMatrix5 Source2, nrpn: 232, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_5}
+  modmatrix_5_animtrigger:     {label: ModMatrix5 AnimTrigger, nrpn: 233, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_5}
+  modmatrix_5_depth:           {label: ModMatrix5 Depth, nrpn: 234, group: modmatrix_5}
+  modmatrix_5_destination:     {label: ModMatrix5 Destination, nrpn: 235, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_5}
+
+  # ──── modmatrix_6 ────
+
+  modmatrix_6_source_1:        {label: ModMatrix6 Source1, nrpn: 236, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_6}
+  modmatrix_6_source_2:        {label: ModMatrix6 Source2, nrpn: 237, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_6}
+  modmatrix_6_animtrigger:     {label: ModMatrix6 AnimTrigger, nrpn: 238, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_6}
+  modmatrix_6_depth:           {label: ModMatrix6 Depth, nrpn: 239, group: modmatrix_6}
+  modmatrix_6_destination:     {label: ModMatrix6 Destination, nrpn: 240, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_6}
+
+  # ──── modmatrix_7 ────
+
+  modmatrix_7_source_1:        {label: ModMatrix7 Source1, nrpn: 241, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_7}
+  modmatrix_7_source_2:        {label: ModMatrix7 Source2, nrpn: 242, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_7}
+  modmatrix_7_animtrigger:     {label: ModMatrix7 AnimTrigger, nrpn: 243, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_7}
+  modmatrix_7_depth:           {label: ModMatrix7 Depth, nrpn: 244, group: modmatrix_7}
+  modmatrix_7_destination:     {label: ModMatrix7 Destination, nrpn: 245, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_7}
+
+  # ──── modmatrix_8 ────
+
+  modmatrix_8_source_1:        {label: ModMatrix8 Source1, nrpn: 246, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_8}
+  modmatrix_8_source_2:        {label: ModMatrix8 Source2, nrpn: 247, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_8}
+  modmatrix_8_animtrigger:     {label: ModMatrix8 AnimTrigger, nrpn: 248, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_8}
+  modmatrix_8_depth:           {label: ModMatrix8 Depth, nrpn: 249, group: modmatrix_8}
+  modmatrix_8_destination:     {label: ModMatrix8 Destination, nrpn: 250, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_8}
+
+  # ──── modmatrix_9 ────
+
+  modmatrix_9_source_1:        {label: ModMatrix9 Source1, nrpn: 251, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_9}
+  modmatrix_9_source_2:        {label: ModMatrix9 Source2, nrpn: 252, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_9}
+  modmatrix_9_animtrigger:     {label: ModMatrix9 AnimTrigger, nrpn: 253, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_9}
+  modmatrix_9_depth:           {label: ModMatrix9 Depth, nrpn: 254, group: modmatrix_9}
+  modmatrix_9_destination:     {label: ModMatrix9 Destination, nrpn: 255, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_9}
+
+  # ──── modmatrix_10 ────
+
+  modmatrix_10_source_1:       {label: ModMatrix10 Source1, nrpn: 256, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_10}
+  modmatrix_10_source_2:       {label: ModMatrix10 Source2, nrpn: 257, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_10}
+  modmatrix_10_animtrigger:    {label: ModMatrix10 AnimTrigger, nrpn: 258, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_10}
+  modmatrix_10_depth:          {label: ModMatrix10 Depth, nrpn: 259, group: modmatrix_10}
+  modmatrix_10_destination:    {label: ModMatrix10 Destination, nrpn: 260, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_10}
+
+  # ──── modmatrix_11 ────
+
+  modmatrix_11_source_1:       {label: ModMatrix11 Source1, nrpn: 261, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_11}
+  modmatrix_11_source_2:       {label: ModMatrix11 Source2, nrpn: 262, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_11}
+  modmatrix_11_animtrigger:    {label: ModMatrix11 AnimTrigger, nrpn: 263, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_11}
+  modmatrix_11_depth:          {label: ModMatrix11 Depth, nrpn: 264, group: modmatrix_11}
+  modmatrix_11_destination:    {label: ModMatrix11 Destination, nrpn: 265, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_11}
+
+  # ──── modmatrix_12 ────
+
+  modmatrix_12_source_1:       {label: ModMatrix12 Source1, nrpn: 266, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_12}
+  modmatrix_12_source_2:       {label: ModMatrix12 Source2, nrpn: 267, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_12}
+  modmatrix_12_animtrigger:    {label: ModMatrix12 AnimTrigger, nrpn: 268, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_12}
+  modmatrix_12_depth:          {label: ModMatrix12 Depth, nrpn: 269, group: modmatrix_12}
+  modmatrix_12_destination:    {label: ModMatrix12 Destination, nrpn: 270, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_12}
+
+  # ──── modmatrix_13 ────
+
+  modmatrix_13_source_1:       {label: ModMatrix13 Source1, nrpn: 271, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_13}
+  modmatrix_13_source_2:       {label: ModMatrix13 Source2, nrpn: 272, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_13}
+  modmatrix_13_animtrigger:    {label: ModMatrix13 AnimTrigger, nrpn: 273, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_13}
+  modmatrix_13_depth:          {label: ModMatrix13 Depth, nrpn: 274, group: modmatrix_13}
+  modmatrix_13_destination:    {label: ModMatrix13 Destination, nrpn: 275, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_13}
+
+  # ──── modmatrix_14 ────
+
+  modmatrix_14_source_1:       {label: ModMatrix14 Source1, nrpn: 276, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_14}
+  modmatrix_14_source_2:       {label: ModMatrix14 Source2, nrpn: 277, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_14}
+  modmatrix_14_animtrigger:    {label: ModMatrix14 AnimTrigger, nrpn: 278, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_14}
+  modmatrix_14_depth:          {label: ModMatrix14 Depth, nrpn: 279, group: modmatrix_14}
+  modmatrix_14_destination:    {label: ModMatrix14 Destination, nrpn: 280, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_14}
+
+  # ──── modmatrix_15 ────
+
+  modmatrix_15_source_1:       {label: ModMatrix15 Source1, nrpn: 281, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_15}
+  modmatrix_15_source_2:       {label: ModMatrix15 Source2, nrpn: 282, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_15}
+  modmatrix_15_animtrigger:    {label: ModMatrix15 AnimTrigger, nrpn: 283, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_15}
+  modmatrix_15_depth:          {label: ModMatrix15 Depth, nrpn: 284, group: modmatrix_15}
+  modmatrix_15_destination:    {label: ModMatrix15 Destination, nrpn: 285, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_15}
+
+  # ──── modmatrix_16 ────
+
+  modmatrix_16_source_1:       {label: ModMatrix16 Source1, nrpn: 286, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_16}
+  modmatrix_16_source_2:       {label: ModMatrix16 Source2, nrpn: 287, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_16}
+  modmatrix_16_animtrigger:    {label: ModMatrix16 AnimTrigger, nrpn: 288, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_16}
+  modmatrix_16_depth:          {label: ModMatrix16 Depth, nrpn: 289, group: modmatrix_16}
+  modmatrix_16_destination:    {label: ModMatrix16 Destination, nrpn: 290, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_16}
+
+  # ──── modmatrix_17 ────
+
+  modmatrix_17_source_1:       {label: ModMatrix17 Source1, nrpn: 291, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_17}
+  modmatrix_17_source_2:       {label: ModMatrix17 Source2, nrpn: 292, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_17}
+  modmatrix_17_animtrigger:    {label: ModMatrix17 AnimTrigger, nrpn: 293, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_17}
+  modmatrix_17_depth:          {label: ModMatrix17 Depth, nrpn: 294, group: modmatrix_17}
+  modmatrix_17_destination:    {label: ModMatrix17 Destination, nrpn: 295, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_17}
+
+  # ──── modmatrix_18 ────
+
+  modmatrix_18_source_1:       {label: ModMatrix18 Source1, nrpn: 296, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_18}
+  modmatrix_18_source_2:       {label: ModMatrix18 Source2, nrpn: 297, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_18}
+  modmatrix_18_animtrigger:    {label: ModMatrix18 AnimTrigger, nrpn: 298, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_18}
+  modmatrix_18_depth:          {label: ModMatrix18 Depth, nrpn: 299, group: modmatrix_18}
+  modmatrix_18_destination:    {label: ModMatrix18 Destination, nrpn: 300, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_18}
+
+  # ──── modmatrix_19 ────
+
+  modmatrix_19_source_1:       {label: ModMatrix19 Source1, nrpn: 301, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_19}
+  modmatrix_19_source_2:       {label: ModMatrix19 Source2, nrpn: 302, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_19}
+  modmatrix_19_animtrigger:    {label: ModMatrix19 AnimTrigger, nrpn: 303, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_19}
+  modmatrix_19_depth:          {label: ModMatrix19 Depth, nrpn: 304, group: modmatrix_19}
+  modmatrix_19_destination:    {label: ModMatrix19 Destination, nrpn: 305, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_19}
+
+  # ──── modmatrix_20 ────
+
+  modmatrix_20_source_1:       {label: ModMatrix20 Source1, nrpn: 306, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_20}
+  modmatrix_20_source_2:       {label: ModMatrix20 Source2, nrpn: 307, range: [0, 18], choices: {"direct": 0, "modwheel": 1, "afttouch": 2, "express": 3, "velocity": 4, "keyboard": 5, "lfo_1_plus": 6, "lfo_1_plus_minus": 7, "lfo_2_plus": 8, "lfo_2_plus_minus": 9, "lfo_3_plus": 10, "lfo_3_plus_minus": 11, "env_amp": 12, "env_filt": 13, "env_3": 14, "env_4": 15, "env_5": 16, "env_6": 17, "audinenv": 18}, group: modmatrix_20}
+  modmatrix_20_animtrigger:    {label: ModMatrix20 AnimTrigger, nrpn: 308, range: [0, 8], choices: {"off": 0, "a_1_retrig": 1, "a_2_retrig": 2, "a_3_retrig": 3, "a_4_retrig": 4, "a_5_retrig": 5, "a_6_retrig": 6, "a_7_retrig": 7, "a_8_retrig": 8}, group: modmatrix_20}
+  modmatrix_20_depth:          {label: ModMatrix20 Depth, nrpn: 309, group: modmatrix_20}
+  modmatrix_20_destination:    {label: ModMatrix20 Destination, nrpn: 310, range: [0, 69], choices: {"o_123_ptch": 0, "o_1_pitch": 1, "o_2_pitch": 2, "o_3_pitch": 3, "o_1_vsync": 4, "o_2_vsync": 5, "o_3_vsync": 6, "o_1_pw_idx": 7, "o_2_pw_idx": 8, "o_3_pw_idx": 9, "o_1_hard": 10, "o_2_hard": 11, "o_3_hard": 12, "o_1_level": 13, "o_2_level": 14, "o_3_level": 15, "noiselvl": 16, "rm_1_3_lvl": 17, "rm_2_3_lvl": 18, "f_1_damnt": 19, "f_2_damnt": 20, "f_1_freq": 21, "f_2_freq": 22, "f_1_res": 23, "f_2_res": 24, "fbalance": 25, "l_1_rate": 26, "l_2_rate": 27, "l_3_rate": 28, "aenv_dec": 29, "fenv_dec": 30, "fx_1_amnt": 31, "fx_2_amnt": 32, "fx_3_amnt": 33, "fx_4_amnt": 34, "fx_5_amnt": 35, "fxfeedbk": 36, "fxwetlvl": 37, "ch_1_rate": 38, "ch_1_depth": 39, "ch_1_delay": 40, "ch_1_fback": 41, "ch_2_rate": 42, "ch_2_depth": 43, "ch_2_delay": 44, "ch_2_fback": 45, "ch_3_rate": 46, "ch_3_depth": 47, "ch_3_delay": 48, "ch_3_fback": 49, "ch_4_rate": 50, "ch_4_depth": 51, "ch_4_delay": 52, "ch_4_fback": 53, "dly_1_time": 54, "dly_1_fdbk": 55, "dly_2_time": 56, "dly_2_fdbk": 57, "eqbaslvl": 58, "eqbasfrq": 59, "eqmidlvl": 60, "eqmidfrq": 61, "eqtrblvl": 62, "eqtrbfrq": 63, "pan_posn": 64, "vocshift": 65, "vocspred": 66, "vocres": 67, "prefxlvl": 68, "ptchshft": 69}, group: modmatrix_20}
+
+  # ──── tweaks ────
+
+  tweaks_assignment_1:         {label: Tweaks Assignment, nrpn: 512, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+  tweaks_assignment_2:         {label: Tweaks Assignment, nrpn: 513, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+  tweaks_assignment_3:         {label: Tweaks Assignment, nrpn: 514, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+  tweaks_assignment_4:         {label: Tweaks Assignment, nrpn: 515, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+  tweaks_assignment_5:         {label: Tweaks Assignment, nrpn: 516, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+  tweaks_assignment_6:         {label: Tweaks Assignment, nrpn: 517, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+  tweaks_assignment_7:         {label: Tweaks Assignment, nrpn: 518, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+  tweaks_assignment_8:         {label: Tweaks Assignment, nrpn: 519, range: [0, 125], choices: {"no_assign": 0, "voiceportamentorate": 1, "mixerwetlevel": 2, "mixerpostfxlevel": 3, "fxpanposition": 4, "voiceunisondetune": 5, "osc_1_waveinterpolate": 6, "osc_1_pulsewidthindex": 7, "osc_1_virtualsyncdepth": 8, "osc_1_hardness": 9, "osc_1_density": 10, "osc_1_densitydetune": 11, "osc_1_semitones": 12, "osc_1_cents": 13, "osc_2_waveinterpolate": 14, "osc_2_pulsewidthindex": 15, "osc_2_virtualsyncdepth": 16, "osc_2_hardness": 17, "osc_2_density": 18, "osc_2_densitydetune": 19, "osc_2_semitones": 20, "osc_2_cents": 21, "osc_3_waveinterpolate": 22, "osc_3_pulsewidthindex": 23, "osc_3_virtualsyncdepth": 24, "osc_3_hardness": 25, "osc_3_density": 26, "osc_3_densitydetune": 27, "osc_3_semitones": 28, "osc_3_cents": 29, "mixerosc_1_level": 30, "mixerosc_2_level": 31, "mixerosc_3_level": 32, "mixerringmodlevel_13": 33, "mixerringmodlevel_23": 34, "mixernoiselevel": 35, "filterbalance": 36, "filter_1_frequency": 37, "filter_1_resonance": 38, "filter_1_drive": 39, "filter_1_track": 40, "filter_2_frequency": 41, "filter_2_resonance": 42, "filter_2_drive": 43, "filter_2_track": 44, "filter_1_env_2_tofreq": 45, "filter_2_env_2_tofreq": 46, "envelope_1_attack": 47, "envelope_1_decay": 48, "envelope_1_sustain": 49, "envelope_1_release": 50, "envelope_2_attack": 51, "envelope_2_decay": 52, "envelope_2_sustain": 53, "envelope_2_release": 54, "envelope_3_delay": 55, "envelope_3_attack": 56, "envelope_3_decay": 57, "envelope_3_sustain": 58, "envelope_3_release": 59, "lfo_1_rate": 60, "lfo_1_ratesync": 61, "lfo_1_slewrate": 62, "lfo_2_rate": 63, "lfo_2_ratesync": 64, "lfo_2_slewrate": 65, "lfo_3_rate": 66, "lfo_3_ratesync": 67, "lfo_3_slewrate": 68, "fx_1_level": 69, "fx_2_level": 70, "fx_3_level": 71, "fx_4_level": 72, "fx_5_level": 73, "fxfeedback": 74, "reserved": 75, "reserved_76": 76, "delay_1_time": 77, "delay_1_timesync": 78, "delay_1_feedback": 79, "delay_1_slewrate": 80, "delay_2_time": 81, "delay_2_timesync": 82, "delay_2_feedback": 83, "delay_2_slewrate": 84, "chorus_1_rate": 85, "chorus_1_feedback": 86, "chorus_1_moddepth": 87, "chorus_1_delay": 88, "chorus_2_rate": 89, "chorus_2_feedback": 90, "chorus_2_moddepth": 91, "chorus_2_delay": 92, "chorus_3_rate": 93, "chorus_3_feedback": 94, "chorus_3_moddepth": 95, "chorus_3_delay": 96, "chorus_4_rate": 97, "chorus_4_feedback": 98, "chorus_4_moddepth": 99, "chorus_4_delay": 100, "gatoredgeslew": 101, "gatorhold": 102, "gatorlrdelay": 103, "arpgate": 104, "arpswing": 105, "modmatrix_1_depth": 106, "modmatrix_2_depth": 107, "modmatrix_3_depth": 108, "modmatrix_4_depth": 109, "modmatrix_5_depth": 110, "modmatrix_6_depth": 111, "modmatrix_7_depth": 112, "modmatrix_8_depth": 113, "modmatrix_9_depth": 114, "modmatrix_10_depth": 115, "modmatrix_11_depth": 116, "modmatrix_12_depth": 117, "modmatrix_13_depth": 118, "modmatrix_14_depth": 119, "modmatrix_15_depth": 120, "modmatrix_16_depth": 121, "modmatrix_17_depth": 122, "modmatrix_18_depth": 123, "modmatrix_19_depth": 124, "modmatrix_20_depth": 125}, group: tweaks}
+
+  # ──── global ────
+
+  global_global_protect:       {label: Global Global Protect, nrpn: 8192, range: [0, 1], choices: {"protect_off": 0, "protect_on": 1}, group: global}
+  global_global_midichannel:   {label: Global Global MIDIChannel, nrpn: 8196, range: [0, 15], group: global}
+  global_global_tuningcents:   {label: Global Global TuningCents, nrpn: 8198, range: [15, 114], group: global}
+  global_global_transpose:     {label: Global Global Transpose, nrpn: 8199, range: [40, 88], group: global}
+  global_global_velocitycurve: {label: Global Global VelocityCurve, nrpn: 8201, values: {"low": 0, "medium": 1, "high": 2, "switch": 3, "fixed_velocity": 4}, group: global}
+  global_global_clocksource:   {label: Global Global ClockSource, nrpn: 8203, range: [0, 3], choices: {"internal": 0, "usb": 1, "din": 2, "auto": 3}, group: global}
+  global_global_sustainpedal:  {label: Global Global SustainPedal, nrpn: 8206, range: [0, 2], choices: {"auto": 0, "n_open": 1, "n_closed": 2}, group: global}
+  global_global_wheellights:   {label: Global Global WheelLights, nrpn: 8212, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  global_global_potpickup:     {label: Global Global PotPickup, nrpn: 8213, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  global_global_standbymode:   {label: Global Global StandbyMode, nrpn: 8214, range: [0, 2], choices: {"off": 0, "on": 1, "n10_mins": 2}, group: global}
+  global_global_arpmidi:       {label: Global Global ArpMIDI, nrpn: 8215, range: [0, 1], choices: {"midi_to_arp": 0, "arp_to_midi": 1}, group: global}
+  global_audio_inputgain:      {label: Global Audio InputGain, nrpn: 8220, range: [21, 97], group: global}
+  global_audio_inputfx:        {label: Global Audio InputFX, nrpn: 8222, group: global}

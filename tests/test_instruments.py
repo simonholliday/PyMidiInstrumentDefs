@@ -171,6 +171,7 @@ class TestBundledCorpus:
 			"expressive_e/osmose",
 			"korg/electribe",
 			"korg/microkorg",
+			"korg/microkorg2",
 			"korg/minilogue",
 			"korg/minilogue_xd",
 			"korg/modwave_mk_ii",
@@ -6974,12 +6975,20 @@ class TestDeclaringAPicturedPage:
 
 	"""A source can say which of its pages publish their numbers only as an image."""
 
-	def test_only_the_drumbrute_impact_declares_one (self) -> None:
-		"""It is the only instrument here whose numbers are published as a picture.
+	def test_two_instruments_declare_one_and_each_for_its_own_reason (self) -> None:
+		"""Two pages in this corpus publish their numbers only as a picture, not one.
 
-		Listed by name so that a second one has to be added here deliberately: the
-		declaration switches off the strongest check this corpus has, for the pages it
-		names, so it should never spread quietly.
+		Listed by name so that a third has to be added here deliberately: the declaration
+		switches off the strongest check this corpus has, for the pages it names, so it
+		should never spread quietly.
+
+		**The two got there differently**, which is worth knowing before declaring a third.
+		The DrumBrute Impact's page 99 gives its drum map as a *screenshot of the maker's
+		own editor*, in a manual of otherwise ordinary text.  The microKORG2's page 133 is
+		a MIDI Implementation Chart whose **type was converted to outlines** when the manual
+		was made - 2,362 vector drawings and 79 characters where a reader sees a full page
+		of numbers.  A picture of a screen and a page of outlined type look identical to a
+		text search and need the same declaration.
 		"""
 		declared = {
 			name: {key: source.pictured_pages
@@ -6990,6 +6999,7 @@ class TestDeclaringAPicturedPage:
 
 		assert {name: pages for name, pages in declared.items() if pages} == {
 			"arturia/drumbrute_impact": {"manual": (99,)},
+			"korg/microkorg2": {"manual": (133,)},
 		}
 
 	def test_a_page_declared_twice_is_refused (self) -> None:
@@ -7042,6 +7052,7 @@ class TestPresetCounts:
 		"""
 		holds = {
 			"arturia/minifreak": 512,
+			"korg/microkorg2": 256,
 			"korg/minilogue": 200,
 			"korg/minilogue_xd": 500,
 			"korg/opsix": 500,
@@ -10156,3 +10167,200 @@ class TestProphet5:
 		assert prophet.midi.sysex is True
 
 		assert "not as a no, as nothing at all" in " ".join((prophet.source or "").split())
+
+
+class TestMicroKORG2:
+
+	"""The instrument whose maker publishes the same map three times, and the three agree.
+
+	**IT IS NOT `korg/microkorg`**, which is also in this corpus and whose numbers are the
+	player's to assign where this one's are fixed.  The names are prefixes of each other in
+	both directions, which is why nothing here was matched by substring.
+	"""
+
+	def test_the_whole_map_arrives (self) -> None:
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert len(microkorg2.controls) == 181
+		assert len(microkorg2.groups) == 23
+
+		by_control_change = [c for c in microkorg2.controls.values() if c.cc is not None]
+		by_nrpn = [c for c in microkorg2.controls.values() if c.nrpn is not None]
+
+		# 71 from the implementation's panel table, plus the modulation wheel and the damper
+		# pedal, which it keeps in its channel-message tables instead.
+		assert len(by_control_change) == 73
+
+		# Every one of the implementation's NRPN rows, including the eight whose address it
+		# garbles and the manual supplies.
+		assert len(by_nrpn) == 108
+
+		addresses = [control.nrpn for control in by_nrpn]
+		assert len(set(addresses)) == len(addresses), "two NRPNs share an address"
+
+		assert microkorg2.controls["filter_cutoff"].cc == 74
+		assert microkorg2.controls["vocoder_band1_level"].nrpn == 0x05 * 128 + 0x10
+
+	def test_the_three_statements_of_the_map_agree (self) -> None:
+		"""The implementation's table, the chart's list and the manual's own annotations."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS]).source or "").split())
+
+		assert "the remaining 71 are the implementation's table exactly" in account
+		assert "**70 controller numbers**, which are 69 of the" in account
+		assert "**77 NRPN addresses**" in account
+
+	def test_the_manual_puts_eight_nrpn_addresses_right (self) -> None:
+		"""The implementation gives six parameters one address and numbers two others twice.
+
+		**This is not choosing between a maker's two columns**, which #2522 forbids.  The
+		manual's own parameter pages carry a second numbering scheme, `(NRPN m, n)`, which
+		is coherent where the implementation is not and agrees with it everywhere it is.
+		"""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		# The implementation prints 04/20 for all six; the manual annotates 4, 32...37.
+		destinations = [microkorg2.controls[f"patch{n}_destination"].nrpn for n in range(1, 7)]
+		assert destinations == [4 * 128 + lsb for lsb in range(32, 38)]
+
+		# And 6, 1 / 6, 2 / 6, 3, where the implementation's hexadecimal column reads
+		# 01 / 01 / 02 and would put Speed on top of Intensity.
+		hard_tune = [microkorg2.controls[name].nrpn
+			for name in ("hardtune_intensity", "hardtune_speed", "hardtune_formant")]
+		assert hard_tune == [6 * 128 + lsb for lsb in (1, 2, 3)]
+
+		account = " ".join((microkorg2.source or "").split())
+
+		assert "Hardtune Speed is printed as \"06 | 01 ( 2)\"" in account
+		assert "ALL SIX `Patch N Destination` ROWS CARRY THE SAME ADDRESS" in account
+		assert "THE MANUAL SETTLES BOTH, ON ITS OWN PAGES AND IN ITS OWN SCHEME" in account
+		assert "not a choice between two columns with nothing to settle it" in account
+
+	def test_four_absences_were_checked_rather_than_assumed (self) -> None:
+		"""Each one is a thing a reader would otherwise go looking for."""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+		account = " ".join((microkorg2.source or "").split())
+
+		assert "does not have a half-damper function" in account
+		assert "Controller 50 is the one gap inside the OSC 3 run" in account
+		assert "there is no global dump" in account
+		assert "the manual never writes \"bank select\", anywhere in its 134 pages" in account
+
+		# The pitch bend range is one of them: a program parameter no number reaches.
+		assert not any(control.label.startswith("Pitch Bend")
+			for control in microkorg2.controls.values())
+
+	def test_two_timbres_on_two_channels_and_no_control_names_either (self) -> None:
+		"""The same numbers reach whichever timbre's channel they arrive on."""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert set(microkorg2.parts) == {"timbre_1", "timbre_2"}
+
+		# Timbre 1 is the global channel itself; Timbre 2 is set on its own.
+		assert microkorg2.parts["timbre_1"].channel_offset == 0
+		assert microkorg2.parts["timbre_2"].is_assigned
+
+		# A program change selects a program, which contains both, so there is nothing a
+		# second channel could select on its own.
+		assert "program_change" in (microkorg2.parts["timbre_1"].receives or ())
+		assert "program_change" not in (microkorg2.parts["timbre_2"].receives or ())
+
+		assert not any(control.part for control in microkorg2.controls.values())
+
+	def test_the_firmware_is_behind_the_release_notes_on_purpose (self) -> None:
+		"""Which is what `docs/adding-an-instrument.md` says to do, and why this flags itself."""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert microkorg2.model.firmware == "1.02"
+		assert microkorg2.sources["release_notes"].edition == "2.0.2"
+
+		said = prose_of("korg", "microkorg2")
+
+		assert "THE NEWEST SYSTEM THESE DOCUMENTS STILL DESCRIBE" in said
+		assert "return nothing at all in 1,784 lines" in said
+
+	def test_the_chart_is_a_picture_and_says_so (self) -> None:
+		"""Printed page 133 carries 2,362 drawings and 79 characters, so it was read by eye."""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert microkorg2.sources["manual"].pictured_pages == (133,)
+
+		account = " ".join((microkorg2.source or "").split())
+
+		assert "THE CHART'S PAGE CANNOT BE READ AS TEXT" in account
+		assert "2,362 vector drawings and 79 characters" in account
+
+	def test_the_implementation_has_no_pages_at_all (self) -> None:
+		"""Korg's plain-text shape, as the microKORG's and the wavestate's are."""
+		implementation = pymidiinstrumentdefs.load(
+			"korg/microkorg2", [CORPUS]).sources["implementation"]
+
+		assert implementation.paginated is False
+		assert implementation.file_page(1) is None
+
+	def test_the_maker_spells_its_own_instrument_two_ways (self) -> None:
+		"""microKORG2 on the pages and in the manual, microKORG 2 in the two map documents."""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert microkorg2.model.name == "microKORG2"
+
+		said = prose_of("korg", "microkorg2")
+
+		assert "AND KORG SPELLS THE NAME TWO WAYS IN ITS OWN DOCUMENTS" in said
+		assert "the other is recorded rather than tidied away" in said
+
+	def test_it_is_not_the_microkorg_and_the_difference_is_the_numbers (self) -> None:
+		"""The older one's numbers are defaults; this one's are the maker's and fixed."""
+		microkorg = pymidiinstrumentdefs.load("korg/microkorg", [CORPUS])
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert microkorg.model.firmware is None
+		assert microkorg2.model.firmware == "1.02"
+
+		account = " ".join((microkorg2.source or "").split())
+
+		assert "THAT IS THE DIFFERENCE FROM THE microKORG" in account
+		assert "mentions microKORG 2 three times and no other microKORG at all" in account
+
+	def test_what_the_chart_settles_that_the_implementation_does_not (self) -> None:
+		"""Mode, after touch, release velocity and the transport, all read off one page."""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert microkorg2.midi.mode == 3
+		assert microkorg2.voice.aftertouch == "none"
+
+		assert microkorg2.voice.velocity is not None
+		assert microkorg2.voice.velocity.note_on == "received"
+		assert microkorg2.voice.velocity.note_off is False
+
+		# A checked absence rather than a silence: the chart's Commands row is X both ways.
+		assert microkorg2.midi.transport == "none"
+		assert microkorg2.midi.clock == "both"
+
+	def test_the_two_documents_disagree_about_two_things_and_it_is_recorded (self) -> None:
+		"""Local control and what is sent as all-notes-off. Neither is publishable anyway."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS]).source or "").split())
+
+		assert "AND THE TWO DOCUMENTS DISAGREE ABOUT TWO THINGS" in account
+		assert "says X in both columns" in account
+
+	def test_the_colour_variants_are_settled_three_ways (self) -> None:
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+		account = " ".join((microkorg2.source or "").split())
+
+		assert "two limited edition color models" in account
+		assert "MK-2: 2.2 kg/4.85 lb, MK-2 MBK/MWH: 2.1 kg/4.63 lb" in account
+		assert "One system, one manual, one map" in account
+
+	def test_two_published_lists_are_short_for_the_current_system (self) -> None:
+		"""Right for 1.02, which is what this file says it describes, and said out loud."""
+		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
+
+		assert microkorg2.controls["patch1_source1"].nrpn_range == (0, 17)
+		assert "one_shot" in microkorg2.controls["osc1_wave"].values
+		assert "user" not in microkorg2.controls["osc1_wave"].values
+
+		account = " ".join((microkorg2.source or "").split())
+
+		assert "ARE RIGHT FOR SYSTEM 1.02 AND SHORT FOR 2.0.2" in account

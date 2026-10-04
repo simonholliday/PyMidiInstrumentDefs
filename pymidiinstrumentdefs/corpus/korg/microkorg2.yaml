@@ -1,0 +1,568 @@
+# KORG PUBLISHES THIS INSTRUMENT'S MAP THREE TIMES, AND THE THREE TOGETHER ARE RIGHT WHERE
+# NO ONE OF THEM IS. A plain-text MIDI implementation gives 71 panel controls and 108 NRPNs;
+# the Owner's Manual's own MIDI Implementation Chart lists 79 controller numbers; and the
+# manual's parameter pages name a controller number or an NRPN beside a parameter wherever
+# one can be reached. The chart's 79 less the eight that are not panel parameters at all are
+# the implementation's 71, number for number; the manual's pages name 70 controller numbers,
+# 69 of those 71 plus the modulation wheel, and the two it never names are Timbre Level and
+# Timbre Pan. Asserted rather than eyeballed, in
+# `Notes/4463_cross_check_the_three_statements.py`.
+#
+# AND THE IMPLEMENTATION'S NRPN TABLE IS BROKEN IN EIGHT ROWS, WHICH THE MANUAL PUTS RIGHT.
+# It prints every number twice, in hexadecimal and in decimal, which is a check it makes on
+# itself: in two rows the two columns disagree, and in six more it gives six different
+# parameters one and the same address. **All 108 are below anyway**, because the manual
+# annotates `(NRPN 4, 32...37)` and `(NRPN 6, 1)` to `(NRPN 6, 3)` on its own pages, so this
+# is a second document of the maker's settling what the first garbles rather than a guess
+# between two columns. Each of the eight carries a comment saying what the implementation
+# prints instead.
+#
+# IT IS NOT THE microKORG, WHICH IS ALSO HERE. `korg/microkorg` is the 2002 instrument, a
+# different machine with a different map - and its numbers are the player's to assign, where
+# this one's are fixed. The names are prefixes of each other in both directions, so nothing
+# here was matched by substring: see the source account for the count that was taken instead.
+#
+# AND KORG SPELLS THE NAME TWO WAYS IN ITS OWN DOCUMENTS. The download page, the product page
+# and the manual's running header all say "microKORG2"; the MIDI implementation's first line and
+# the chart's Model field both say "microKORG 2", with a space. The maker's commonest spelling
+# is the one used here, and the other is recorded rather than tidied away.
+#
+# THE MAP IS TWO SYSTEM VERSIONS BEHIND THE INSTRUMENT. Both primary documents describe the
+# machine as it shipped; system 2.0 added a virtual patch source, two virtual patch destinations
+# and a custom oscillator, and the implementation was never reissued. `model.firmware` says
+# which system this file describes and the release-notes source says which is current - see the
+# source account for the item-by-item check that established it.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: microKORG2
+  # THE NEWEST SYSTEM THESE DOCUMENTS STILL DESCRIBE, not the newest system there is, which is
+  # 2.0.2 of 2025.12.10. Established by taking each thing Korg's own release notes say version
+  # 2.0 added and searching the implementation for it by name: Key Split, logueSDK, Low Mode,
+  # Slice, Step Record, Level Scale and Pan Scale return nothing at all in 1,784 lines, the
+  # virtual patch source list stops at 17 where Osc3 is now a source, and the destination list
+  # stops at 75 where Vocoder Level Scale and Pan Scale have since been added. Nothing in the
+  # 1.02 release notes touches MIDI, so these documents describe 1.02 as well as what came
+  # before it, and nothing after.
+  firmware: "1.02"
+
+source: >-
+  Four documents, all Korg's own, and the first two carry the map twice over.
+
+  THE MIDI IMPLEMENTATION IS A PLAIN TEXT FILE WITH NO PAGES, cited by its own section
+  numbers. It states "microKORG 2 MIDI Implementation             Revision 1.0
+  (2024.05.10)" on its first line, which is the document's revision and not the
+  instrument's - the trap the wavestate's chart set, and the TR-6S's. Korg's download page
+  dates the same file 2024.11.27, seven months later, which is when it was last posted.
+
+  ITS PANEL TABLE GIVES 71 CONTROL CHANGES, numbered 5 to 118, each with a parameter name
+  and a value description. Both channel-message tables, the transmitted and the recognised,
+  carry one row for the lot of them and say the same thing about it - "Control Data
+  cc=5~118" - so this instrument sends every number it answers to. THAT IS THE DIFFERENCE
+  FROM THE microKORG, whose implementation gives no controller number for any panel
+  parameter because the numbers there are the player's to assign. Here they are fixed, and
+  the manual says so in as many words: "On the microKORG2, control change numbers are
+  assigned to the main parameters that alter the sound, and you can use an external MIDI
+  sequencer to trigger the sound generator while controlling these parameters" (p. 84).
+
+  AND THE MANUAL PRINTS THE SAME MAP TWICE MORE, which is this document set's own
+  redundancy and was asserted rather than trusted. Its MIDI Implementation Chart, on printed
+  page 133, lists 79 controller numbers in 22 rows; eight of them - 0, 1, 6, 32, 38, 64, 98
+  and 99 - are bank select, the modulation wheel, data entry, the damper pedal and the NRPN
+  pair rather than panel parameters, and the remaining 71 are the implementation's table
+  exactly. Separately, the manual's own parameter pages name a number beside a parameter
+  wherever there is one, in two schemes: **70 controller numbers**, which are 69 of the
+  implementation's 71 plus controller 1 for the modulation wheel, and **77 NRPN addresses**.
+  The only two of the panel table it never names are Timbre Level and Timbre Pan, which have
+  no numbered entry of their own anywhere in 134 pages.
+
+  THAT SECOND SCHEME IS EASY TO MISS AND IT IS THE ONE THAT MATTERS. The manual writes a run
+  of parameters as one span - "(NRPN 4, 32...37)" (p. 71) for the six virtual patch
+  destinations, "(NRPN 5, 16...31)" (p. 91) for the sixteen vocoder band levels - and names
+  single addresses the same way, "(NRPN 6, 1)" and "(NRPN 6, 2)" and "(NRPN 6, 3)" (p. 92).
+  **Six of the addresses it gives are addresses the implementation never prints at all**,
+  and they are exactly the six needed to make the implementation's broken rows whole.
+
+  THE CHART'S PAGE CANNOT BE READ AS TEXT. Its type was converted to outlines when the
+  manual was made, so printed page 133 carries 2,362 vector drawings and 79 characters -
+  the running header and the heading. It was read from a render of that page instead, which
+  is the one reading here that nothing else checks, and it is declared as `pictured_pages`
+  so that a checker finding no numbers on that page knows why.
+
+  WHERE THE IMPLEMENTATION CONTRADICTS ITSELF, AND WHAT THE MANUAL PUTS RIGHT. Its NRPN
+  table prints each number in hexadecimal and again in decimal, which is a check the
+  document makes on itself and fails twice: Hardtune Speed is printed as "06 | 01 ( 2)" and
+  Hardtune Formant as "06 | 02 ( 3)". Taken as hexadecimal, Speed lands on Hardtune
+  Intensity's own address; taken as decimal, the three run 1, 2, 3. SEPARATELY, ALL SIX
+  `Patch N Destination` ROWS CARRY THE SAME ADDRESS, "04 | 20 (32)", where the six Source 1
+  rows run 04/00 to 04/05 and the six Source 2 rows run 04/10 to 04/15 - so five of the six
+  cannot be right.
+
+  THE MANUAL SETTLES BOTH, ON ITS OWN PAGES AND IN ITS OWN SCHEME: the hard tune page
+  annotates Intensity, Speed and Formant "(NRPN 6, 1)", "(NRPN 6, 2)" and "(NRPN 6, 3)"
+  (p. 92), and the virtual patch page annotates Destination "(NRPN 4, 32...37)" (p. 71).
+  Both are coherent, both agree with the implementation wherever it is coherent, and
+  together they account for every one of its 108 rows. **So all 108 are below**, the eight
+  taken from the manual rather than from the implementation, each with a comment saying what
+  the implementation prints instead. That is a second document of the maker's own correcting
+  the first, not a choice between two columns with nothing to settle it.
+
+  AND THE TWO DOCUMENTS DISAGREE ABOUT TWO THINGS, which is recorded rather than resolved.
+  The implementation's recognised table lists "Local Control Off/On" on controller 122;
+  the chart's Aux Messages row for Local On/Off says X in both columns. And the chart says
+  All Notes Off is transmitted, while the only thing the implementation's transmitted table
+  carries there is All Sound Off, controller 120, sent when a global setting changes. Both
+  numbers are in the range this format refuses as controls in any case, so neither affects
+  what is below.
+
+  TWO TIMBRES, ON TWO CHANNELS THE PLAYER SETS SEPARATELY. "Sets the global MIDI channel.
+  This MIDI channel is used to transmit and receive note messages, bend messages and
+  control change messages for Timbre 1" (p. 84), and "Sets the MIDI channel that Timbre 2
+  will send and receive MIDI messages on" (p. 84). The chart's own note says the same of the
+  parameters: the channel for Timbre 2's timbre parameters is Timbre 2 Channel. So every
+  control change below reaches whichever timbre's channel it arrives on, which is why none
+  of them names a part. A THIRD CHANNEL ONLY TRANSMITS: "Sets the MIDI channel used for
+  transmitting note messages corresponding to the pitch that's detected by the vocal
+  processor" (p. 84), which can be any of the sixteen or Disable. It is not a part, because
+  nothing can be sent to it.
+
+  THE SYSTEM VERSION THESE DOCUMENTS DESCRIBE IS NOT THE CURRENT ONE, and the way that was
+  established is worth keeping. Korg's system update page lists 1.02, 2.0.0, 2.0.1 and
+  2.0.2. Every MIDI-visible thing version 2.0 added was searched for in the implementation
+  by name and none of it is there: Key Split, logueSDK, Low Mode, Slice, Step Record, Level
+  Scale and Pan Scale return nothing in 1,784 lines. Two published lists are demonstrably
+  short because of it - the virtual patch source list ends at 17 and Osc3 is now a source,
+  and the destination list ends at 75 while the version 2.0 supplement says "both Vocoder
+  Level Scale and Vocoder Pan Scale are available as virtual patch destinations" (p. 6).
+  The custom oscillator adds a wave this file's `osc1_wave` bands do not have, since
+  version 2.0 says to "set WAVE to USER" (p. 7). SO THE RANGES ON THE PATCH SOURCES BELOW,
+  AND THE WAVE BANDS, ARE RIGHT FOR SYSTEM 1.02 AND SHORT FOR 2.0.2. Korg has published no
+  numbers for what 2.0 added.
+
+  THE COLOUR VARIANTS ARE THIS INSTRUMENT, settled three ways rather than assumed. The
+  product page describes the MBK and MWH as "two limited edition color models" differing in
+  the control panel, side panel, dials and wheels; the manual's specification covers all
+  three in one weight line, "MK-2: 2.2 kg/4.85 lb, MK-2 MBK/MWH: 2.1 kg/4.63 lb" (p. 131);
+  and the system updater page says it "can be used for the following products as well" and
+  names "microKORG2 MBK/MWH". One system, one manual, one map.
+
+  AND IT IS NOT THE microKORG, THE microKORG S, THE XL, THE XL+ OR THE CRYSTAL. Those are
+  different instruments with different maps, and `korg/microkorg` is already here. The older
+  name is a prefix of every newer one, so a substring test would have matched this
+  instrument's documents for the ancestor and the ancestor's for this one. Counted instead
+  with a whole-name test that refuses the characters which would make it a longer name, the
+  implementation mentions microKORG 2 three times and no other microKORG at all - so nothing
+  in it had to be scoped away. WHAT A TEXT SEARCH CANNOT SEE is the chart on printed page
+  133, whose Model field reads "microKORG 2" in outlines rather than in text; it was read
+  from the render with the rest of that page.
+
+  NO MIDI THRU. The specification lists "MIDI IN, OUT connectors" (p. 131) and a
+  "USB Type-C port" (p. 131), and the rear panel names the same two. Routing chooses between:
+  "USB+MIDI" or "USB" (p. 84) - so the USB port is never off, and there is no setting that
+  leaves only the sockets live.
+
+  FOUR THINGS ARE ABSENT FROM MIDI AND WERE CHECKED RATHER THAN ASSUMED. **The damper has no
+  half position**: "The microKORG2 does not have a half-damper function" (p. 82), so
+  controller 64 is a switch whatever a pedal sends. **The pitch bend range has no number at
+  all** - it is a per-timbre program parameter on the PITCH page (p. 53) and neither the
+  implementation's table nor the manual's annotations give it a controller or an NRPN.
+  **Controller 50 is the one gap inside the OSC 3 run**, 48, 49, 51, 52, and what sits
+  between Shape/Sample and Semitones on the maker's own OSC 3 page is "OSC Mod Type
+  (ModType)" (p. 58), printed with no number where every parameter around it has one. **And
+  there is no global dump**: the implementation's function code list offers current program
+  and one program and nothing else, so the MIDI channels, the clock source, local control and
+  the four MIDI filters cannot be read or written over system exclusive as documented.
+
+  ONE MORE ASYMMETRY BETWEEN THE TWO DOCUMENTS, which is not a contradiction but will catch
+  somebody out: **the manual never writes "bank select", anywhere in its 134 pages.** Bank
+  select is documented only in the implementation, under its note *2, and in the chart's
+  own Program Change remark. A reader working from the manual alone would conclude this
+  instrument has 64 programs.
+
+  TWO PAGES OF THE MANUAL PRINT NO NUMBER OF THEIR OWN - its first sheet and its last - so
+  neither is cited here. Every other sheet prints its own sheet number, which is why the
+  offset below is nothing.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: microKORG2/MIDI Implementation
+    edition: "Revision 1.0"
+    dated: 2024-05-10
+    landing: "https://www.korg.com/us/support/download/product/0/944/"
+    url: "https://cdn.korg.com/us/support/download/files/b036b8ec3ac0aafc8e9afbda82058159.txt?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27microKORG2_MIDIimp.txt&response-content-type=application%2Foctet-stream%3B"
+    sha256: 02c316a1b82e2e4eaae864d6b0842d4a46aee0ea3ba8018f71e2c452d39f7e05
+    retrieved: 2026-10-04
+    # A plain text file of ruled ASCII tables, 1,784 lines, no pages at all - so it is cited by
+    # its own section numbers and records `paginated: false`. The title above is the download
+    # page's; the document heads itself "microKORG 2 MIDI Implementation", with a space.
+    paginated: false
+  manual:
+    kind: manual
+    title: microKORG2/Owner's Manual (En)
+    edition: Published 10/2024
+    dated: 2024-08-27
+    landing: "https://www.korg.com/us/support/download/product/0/944/"
+    url: "https://cdn.korg.com/us/support/download/files/c85c5843a66034c0c3e8aa20b1532a41.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27microKORG2_OM_En1.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 41a8d5ae62df03031a710643a01b88992a16b29bf4a635110e3307c9f1f66457
+    retrieved: 2026-10-04
+    # 134 sheets, printed page = sheet, measured on every one of them. Sheets 1 and 134 print no
+    # number and are not cited. The edition above is the cover's own line; the date is the
+    # download page's. KORG HAS NOT REISSUED THE ENGLISH MANUAL FOR SYSTEM 2.0, although the
+    # French, German, Spanish and Chinese ones carry 2025.10.07 - which is the supplement's date.
+    page_offset: 0
+    # Printed page 133 is the MIDI Implementation Chart, and its type is outlines rather than
+    # text: 2,362 drawings and 79 characters. Declared so that a checker finding none of its
+    # numbers there is told why rather than left to guess.
+    pictured_pages: [133]
+  supplement:
+    kind: firmware_addendum
+    title: microKORG2 version 2.0
+    edition: "2.0"
+    dated: 2025-10-07
+    landing: "https://www.korg.com/us/support/download/product/0/944/"
+    url: "https://cdn.korg.com/us/support/download/files/d872390a83504bca29c1909eca422f62.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27microKORG2_Update_2_0_En1.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 72aae518af223c833f54bcff14a244aa1d30c13f0d09d8394bbf915cc3c5ddfa
+    retrieved: 2026-10-04
+    # Eight pages, each printing its own number as "1/8" and so on. Cited for what system 2.0
+    # added that the implementation cannot know about.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: microKORG2/System Updater
+    edition: "2.0.2"
+    dated: 2025-12-10
+    landing: "https://www.korg.com/us/support/download/software/0/944/5273/"
+    url: "https://www.korg.com/us/support/download/software/0/944/5273/"
+    sha256: b64be5f7ceec4d410a7861c7621f346bc2ca6d8882c0254fb409d68a13b830ed
+    retrieved: 2026-10-04
+    # The page's visible text as saved by `Tools/save_page.py`, kept beside the HTML it came
+    # from. It carries the whole published history - 1.02, 2.0.0, 2.0.1, 2.0.2 - and the line
+    # that settles the colour variants. `model.firmware` above is behind this edition on
+    # purpose, and this source is what says by how much.
+    paginated: false
+  product_page:
+    kind: product_page
+    title: microKORG2 | KORG (USA)
+    landing: "https://www.korg.com/us/products/synthesizers/microkorg2"
+    url: "https://www.korg.com/us/products/synthesizers/microkorg2"
+    sha256: fc266109e5264df319b01a749b8bdde744b88e36d5b8ae3abe03a5a8fd741ad4
+    retrieved: 2026-10-04
+    # Cited for one thing: what the MBK and MWH colour models are.
+    paginated: false
+
+midi:
+  # "Sets the global MIDI channel" (p. 84), and the chart gives 1-16 for the basic channel in
+  # both directions, transmitted and recognised, with Change 1-16 and "Memorized".
+  channels: [1, 16]
+  # The chart's Mode row: Default is X transmitted and 3 recognised, and its own legend reads
+  # "Mode 3: Omni Off, Poly".
+  mode: 3
+  # "Sets the clock to which the arpeggiator is synchronized" (p. 84), choosing between Auto,
+  # Internal, External USB and External MIDI. The chart gives Clock as O in both columns.
+  clock: both
+  # A CHECKED ABSENCE. The chart's System Real Time row for Commands is X in both columns, so
+  # start, stop and continue are neither sent nor answered - this instrument's arpeggiator and
+  # loop recorder follow the clock alone.
+  transport: none
+  program_change:
+    # The chart: Program Change O 0-63 transmitted and O 0-63 recognised, True Number 0-63.
+    receives: true
+    sends: true
+    # "256 (4 banks x 8 genres x 8 programs)" (p. 131). A program change reaches 64 of them and
+    # bank select picks the bank: the chart gives CC#0 and CC#32 as 00,00 for CLASSIC, 00,01 for
+    # MODERN, 00,02 for FUTURE and 00,03 for USER, which the implementation prints the same way
+    # under its own section 1-1.
+    presets: 256
+  # The NRPNs reach what the control changes cannot: the arpeggiator, the virtual patches, the
+  # vocoder's sixteen bands, the hard tune, the harmonizer and the loop recorder. Not preferred,
+  # because the maker nowhere says so - only used for a different half of the instrument.
+  nrpn: supported
+  # The chart gives System Exclusive as O in both columns, and the implementation has a function
+  # code list of its own, a device inquiry reply and a Korg search-device exchange. It is gated:
+  # "Sets whether MIDI system exclusive messages are transmitted and received" (p. 87). A warning
+  # worth passing on: "You may not be able to exchange the MIDI system exclusive messages of the
+  # microKORG2 with certain MIDI interface devices" (p. 25).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # The chart's Note Number row: 0-127 transmitted, 0-127 recognised, True Voice 0-127, from a
+  # keyboard of 37 keys with octave shift and transpose on top of it.
+  note_range: [0, 127]
+  # "The maximum polyphony is eight voices (eight notes). In Dual mode, the maximum polyphony is
+  # four voices (since timbres 1 and 2 are played together)" (p. 51).
+  polyphony: 8
+  polyphony_shared: true
+  velocity:
+    # The chart: Note On is O 9n, V=1-127 in both columns. A global curve shapes what the
+    # keyboard produces, "Curve 1...8, Const Max" (p. 81).
+    note_on: received
+    # IT NEITHER SENDS NOR READS A RELEASE VELOCITY. The chart's Note Off row is "X 8n, V=64"
+    # transmitted and X recognised, so what it sends is a fixed 64 and what it receives is
+    # discarded.
+    note_off: false
+  # "This instrument features a 37-note keyboard (mini keyboard, velocity sensitive, no
+  # aftertouch)" (p. 14), and the chart's two After Touch rows are X in all four columns.
+  aftertouch: none
+  pitch_bend:
+    # "Pitch Bend Range (PB Range) [-24...0...24]" (p. 53) and "Specifies the amount of pitch change in
+    # semitones that occurs when you use the pitch bend" (p. 53), set per program on the timbre's
+    # own PITCH page. SYSTEM 2.0 SPLIT IT IN TWO - "Pitch bend up and down range can now be set
+    # independently" (p. 2 of the version 2.0 supplement) - which this field cannot say; 24 is
+    # the furthest either half reaches.
+    semitones: 24
+    programmable: true
+
+parts:
+  # Two timbres, each on a channel the player sets. Neither is a part a control change is
+  # addressed to - the same numbers reach whichever timbre's channel they arrive on - so no
+  # control below names one. The voices are shared, which is why neither carries a polyphony:
+  # eight between them in Single mode and four each in Dual.
+  timbre_1:
+    label: Timbre 1
+    # It has no channel of its own: it is the global channel. "This MIDI channel is used to
+    # transmit and receive note messages, bend messages and control change messages for
+    # Timbre 1" (p. 84).
+    channel_offset: 0
+    addressing: pitches
+    receives: [notes, controls, program_change]
+  timbre_2:
+    label: Timbre 2
+    # "Sets the MIDI channel that Timbre 2 will send and receive MIDI messages on. Timbre 2 will
+    # sound when a note message is received via this MIDI channel" (p. 84). Set on its own, not
+    # derived - and the troubleshooting page confirms the two must differ to be told apart:
+    # "Are the MIDI 'Global Ch' and 'Timb2 Ch' set to different channels?" (p. 122).
+    channel: assigned
+    addressing: pitches
+    # NOT program change: a program change selects a program, which contains both timbres, so
+    # there is nothing a second channel could select on its own.
+    receives: [notes, controls]
+
+groups:
+  # The maker's own arrangement twice over: the chart prints one row per group of controller
+  # numbers and the manual gives each group its own page, and the two agree. The NRPNs are
+  # grouped by their own MSB, which is how the implementation prints them - one per section.
+  performance: Performance
+  portamento: PITCH
+  timbre: TIMBRE
+  unison: VOICE
+  osc1: OSC 1
+  osc2: OSC 2
+  osc3: OSC 3
+  noise: NOISE
+  filter: FILTER
+  amp_eg: Amp EG
+  filter_eg: Filter EG
+  lfo1: LFO 1
+  lfo2: LFO 2
+  patch: Virtual patch
+  mod_effect: MOD
+  delay: DELAY
+  reverb: REVERB
+  eq: EQ
+  arpeggiator: Arpeggiator
+  vocoder: Vocoder
+  hard_tune: Hard Tune
+  harmonizer: Harmonizer
+  loop_recorder: Loop recorder
+
+controls:
+
+  # ── Control changes, the implementation's note *3 plus the two it keeps elsewhere ──
+  # In number order, which is not the order the document prints them in: the modulation wheel
+  # and the damper pedal are in the channel-message tables rather than the panel table, and the
+  # chart lists them among the control changes. Generated by `Notes/4463_write_controls.py` from
+  # the extraction, not typed. A comment carries the maker's own value notation wherever this
+  # format has no field for it - a bipolar parameter sent as two data-entry bytes that wrap
+  # through zero, or a value list the implementation prints in a table of its own.
+  modulation:                  {label: Modulation, cc: 1, group: performance}  # the MOD Wheel, sections 1-1 and 2-1; the chart calls it Modulation wheel
+  portamento_time:             {label: Portamento Time, cc: 5, group: portamento}
+  timbre_level:                {label: Timbre Level, cc: 7, group: timbre}
+  osc1_wave:                   {label: OSC1 Wave, cc: 8, values: {"saw": 0, "square": 22, "triangle": 43, "sine": 64, "dwgs": 86, "one_shot": 107}, group: osc1}
+  osc1_shape_sample:           {label: OSC1 Shape/Sample, cc: 9, group: osc1}  # *3-3: 00~7F
+  timbre_pan:                  {label: Timbre Pan, cc: 10, group: timbre}  # 00,01~40~7F:L63,L63~Center~R63
+  mod_control1:                {label: Mod Control1, cc: 12, group: mod_effect}
+  delay_control2:              {label: Delay Control2, cc: 13, group: delay}
+  reverb_control2:             {label: Reverb Control2, cc: 14, group: reverb}
+  osc1_mod_amount:             {label: OSC1 Mod Amount, cc: 15, group: osc1}  # 00~7F:Off,1~127
+  osc1_semitones:              {label: OSC1 Semitones, cc: 16, group: osc1}  # *3-4: 00~7F:-24~24
+  osc1_fine_tune:              {label: OSC1 FineTune, cc: 17, group: osc1}  # *3-5: 00~7F:-50~50[Cent]
+  osc2_wave:                   {label: OSC2 Wave, cc: 18, values: {"saw": 0, "square": 22, "triangle": 43, "sine": 64, "dwgs": 86, "one_shot": 107}, group: osc2}
+  osc2_shape_sample:           {label: OSC2 Shape/Sample, cc: 19, group: osc2}  # *3-3: 00~7F
+  osc2_mod_amount:             {label: OSC2 Mod Amount, cc: 20, group: osc2}  # 00~7F:Off,1~127
+  osc2_semitones:              {label: OSC2 Semitones, cc: 21, group: osc2}  # *3-4: 00~7F:-24~24
+  osc2_fine_tune:              {label: OSC2 FineTune, cc: 22, group: osc2}  # *3-5: 00~7F:-50~50[Cent]
+  osc1_level:                  {label: OSC1 Level, cc: 23, group: osc1}
+  osc2_level:                  {label: OSC2 Level, cc: 24, group: osc2}
+  osc3_level:                  {label: OSC3 Level, cc: 25, group: osc3}
+  noise_level:                 {label: Noise Level, cc: 26, group: noise}
+  filter_type:                 {label: Filter Type, cc: 27, group: filter}
+  filter_keytrack:             {label: Filter Keytrack, cc: 28, group: filter}  # *T-6: 00,01~40~7F:-63,-63~0~63
+  noise_type:                  {label: Noise Type, cc: 29, values: {"lpf": 0, "hpf": 32, "bpf": 64, "deci": 96}, group: noise}
+  noise_color:                 {label: Noise Color, cc: 30, group: noise}
+  unison_detune:               {label: Unison Detune, cc: 33, group: unison}
+  unison_spread:               {label: Unison Spread, cc: 34, group: unison}
+  timbre_transpose:            {label: Timbre Transpose, cc: 35, group: timbre}  # *3-4: 00~7F:-24~24
+  timbre_fine_tune:            {label: Timbre FineTune, cc: 36, group: timbre}  # *3-5: 00~7F:-50~50[Cent]
+  osc3_wave:                   {label: OSC3 Wave, cc: 48, values: {"saw": 0, "square": 22, "triangle": 43, "sine": 64, "dwgs": 86, "one_shot": 107}, group: osc3}
+  osc3_shape_sample:           {label: OSC3 Shape/Sample, cc: 49, group: osc3}  # *3-3: 00~7F
+  osc3_semitones:              {label: OSC3 Semitones, cc: 51, group: osc3}  # *3-4: 00~7F:-24~24
+  osc3_fine_tune:              {label: OSC3 FineTune, cc: 52, group: osc3}  # *3-5: 00~7F:-50~50[Cent]
+  hold:                        {label: Hold, cc: 64, group: performance}  # the DAMPER Pedal, sections 1-1 and 2-1; the chart calls it Damper pedal
+  portamento_mode:             {label: Portamento Mode, cc: 65, values: {"fingered": 0, "always": 64}, group: portamento}
+  amp_eg_sustain:              {label: Amp EG Sustain, cc: 70, group: amp_eg}
+  filter_resonance:            {label: Filter Resonance, cc: 71, group: filter}
+  amp_eg_release:              {label: Amp EG Release, cc: 72, group: amp_eg}
+  amp_eg_attack:               {label: Amp EG Attack, cc: 73, group: amp_eg}
+  filter_cutoff:               {label: Filter Cutoff, cc: 74, group: filter}
+  amp_eg_decay:                {label: Amp EG Decay, cc: 75, group: amp_eg}
+  lfo2_frequency:              {label: LFO2 Frequency, cc: 76, group: lfo2}  # *3-7: 00~7F:0~127
+  amp_eg_velocity_sens:        {label: Amp EG Velocity Sens, cc: 79, group: amp_eg}
+  filter_drive:                {label: Filter Drive, cc: 83, group: filter}
+  filter_eg_intensity:         {label: Filter EG Intensity, cc: 84, group: filter_eg}  # 00,01~40~7F:-63,-63~0~63
+  filter_eg_attack:            {label: Filter EG Attack, cc: 85, group: filter_eg}
+  filter_eg_decay:             {label: Filter EG Decay, cc: 86, group: filter_eg}
+  filter_eg_sustain:           {label: Filter EG Sustain, cc: 87, group: filter_eg}
+  filter_eg_release:           {label: Filter EG Release, cc: 88, group: filter_eg}
+  lfo1_wave:                   {label: LFO1 Wave, cc: 89, values: {"triangle": 0, "saw_down": 26, "saw_up": 52, "square": 77, "sample_and_hold": 103}, group: lfo1}
+  lfo1_frequency:              {label: LFO1 Frequency, cc: 90, group: lfo1}  # *3-7: 00~7F:0~127
+  lfo1_smooth:                 {label: LFO1 Smooth, cc: 91, group: lfo1}
+  lfo2_delay:                  {label: LFO2 Delay, cc: 92, group: lfo2}
+  eq_output_feedback:          {label: EQ Output Feedback, cc: 93, group: eq}  # 00,01~40~7F:-63,-63~0~63
+  eq_high_frequency:           {label: EQ High Frequency, cc: 94, range: [0, 127], group: eq}  # 00~7F:1.0~18.0[kHz]
+  eq_low_frequency:            {label: EQ Low Frequency, cc: 95, range: [0, 127], group: eq}  # 00~7F:40~1000[Hz]
+  lfo2_wave:                   {label: LFO2 Wave, cc: 102, values: {"triangle": 0, "saw_down": 26, "saw_up": 52, "square": 77, "sample_and_hold": 103}, group: lfo2}
+  patch1_intensity:            {label: Patch1 Intensity, cc: 103, group: patch}  # 00,01~40~7F:-63,-63~0~63
+  patch2_intensity:            {label: Patch2 Intensity, cc: 104, group: patch}  # 00,01~40~7F:-63,-63~0~63
+  patch3_intensity:            {label: Patch3 Intensity, cc: 105, group: patch}  # 00,01~40~7F:-63,-63~0~63
+  patch4_intensity:            {label: Patch4 Intensity, cc: 106, group: patch}  # 00,01~40~7F:-63,-63~0~63
+  patch5_intensity:            {label: Patch5 Intensity, cc: 107, group: patch}  # 00,01~40~7F:-63,-63~0~63
+  patch6_intensity:            {label: Patch6 Intensity, cc: 108, group: patch}  # 00,01~40~7F:-63,-63~0~63
+  eq_high_gain:                {label: EQ High Gain, cc: 109, group: eq}  # 00,01~40~7F:-63,-63~0~63
+  eq_low_gain:                 {label: EQ Low Gain, cc: 110, group: eq}  # 00,01~40~7F:-63,-63~0~63
+  mod_control2:                {label: Mod Control2, cc: 111, group: mod_effect}
+  mod_control3:                {label: Mod Control3, cc: 112, group: mod_effect}
+  delay_control3:              {label: Delay Control3, cc: 113, group: delay}
+  delay_control4:              {label: Delay Control4, cc: 114, group: delay}
+  delay_control1:              {label: Delay Control1, cc: 115, group: delay}
+  reverb_control3:             {label: Reverb Control3, cc: 116, group: reverb}
+  reverb_control4:             {label: Reverb Control4, cc: 117, group: reverb}
+  reverb_control1:             {label: Reverb Control1, cc: 118, group: reverb}
+
+  # ── NRPNs, the implementation's note *4, in the order it prints them ───────────
+  # The number is the MSB times 128 plus the LSB, which is how this format addresses one.
+  # EIGHT OF THESE 108 ADDRESSES COME FROM THE MANUAL AND NOT FROM THE IMPLEMENTATION,
+  # which prints one address for all six virtual patch destinations and two columns that
+  # disagree for two of the three hard tune parameters. Each of the eight says what the
+  # implementation prints instead, and the page the manual settles it on.
+  arpeggiator_off_on:          {label: Arpeggiator Off/On, nrpn: 2, choices: {"off": 0, "on": 1}, group: arpeggiator}
+  arpeggiator_latch_off_on:    {label: Arpeggiator Latch Off/On, nrpn: 4, choices: {"off": 0, "on": 1}, group: arpeggiator}
+  arpeggiator_swing:           {label: Arpeggiator Swing, nrpn: 5, group: arpeggiator}  # 7F 1C~7F,00 00,00 01~64:-100~0~+100
+  arpeggiator_resolution:      {label: Arpeggiator Resolution, nrpn: 6, nrpn_range: [0, 6], group: arpeggiator}  # 00~06:1/32,24,16,12,8,6,4
+  arpeggiator_type:            {label: Arpeggiator Type, nrpn: 7, nrpn_range: [0, 9], group: arpeggiator}
+  arpeggiator_octave_range:    {label: Arpeggiator Octave Range, nrpn: 8, nrpn_range: [0, 3], group: arpeggiator}  # 00~03:1~4 Octave
+  arpeggiator_last_step:       {label: Arpeggiator Last Step, nrpn: 9, nrpn_range: [0, 7], group: arpeggiator}  # 00~07:1(1 Step)~8(All Step)
+  arpeggiator_gate_time:       {label: Arpeggiator Gate Time, nrpn: 10, nrpn_range: [0, 100], group: arpeggiator}
+  arpeggiator_target_timbre:   {label: Arpeggiator Target Timbre, nrpn: 11, choices: {"both_timbre": 0, "timbre1": 1, "timbre2": 2}, group: arpeggiator}
+  arpeggiator_key_sync:        {label: Arpeggiator Key Sync, nrpn: 12, choices: {"off": 0, "on": 1}, group: arpeggiator}
+  patch1_source1:              {label: Patch 1 Source 1, nrpn: 512, nrpn_range: [0, 17], group: patch}
+  patch2_source1:              {label: Patch 2 Source 1, nrpn: 513, nrpn_range: [0, 17], group: patch}
+  patch3_source1:              {label: Patch 3 Source 1, nrpn: 514, nrpn_range: [0, 17], group: patch}
+  patch4_source1:              {label: Patch 4 Source 1, nrpn: 515, nrpn_range: [0, 17], group: patch}
+  patch5_source1:              {label: Patch 5 Source 1, nrpn: 516, nrpn_range: [0, 17], group: patch}
+  patch6_source1:              {label: Patch 6 Source 1, nrpn: 517, nrpn_range: [0, 17], group: patch}
+  patch1_source2:              {label: Patch 1 Source 2, nrpn: 528, nrpn_range: [0, 17], group: patch}
+  patch2_source2:              {label: Patch 2 Source 2, nrpn: 529, nrpn_range: [0, 17], group: patch}
+  patch3_source2:              {label: Patch 3 Source 2, nrpn: 530, nrpn_range: [0, 17], group: patch}
+  patch4_source2:              {label: Patch 4 Source 2, nrpn: 531, nrpn_range: [0, 17], group: patch}
+  patch5_source2:              {label: Patch 5 Source 2, nrpn: 532, nrpn_range: [0, 17], group: patch}
+  patch6_source2:              {label: Patch 6 Source 2, nrpn: 533, nrpn_range: [0, 17], group: patch}
+  patch1_destination:          {label: Patch 1 Destination, nrpn: 544, nrpn_range: [0, 75], group: patch}  # the implementation prints 20 (32) - see p. 71
+  patch2_destination:          {label: Patch 2 Destination, nrpn: 545, nrpn_range: [0, 75], group: patch}  # the implementation prints 20 (32) - see p. 71
+  patch3_destination:          {label: Patch 3 Destination, nrpn: 546, nrpn_range: [0, 75], group: patch}  # the implementation prints 20 (32) - see p. 71
+  patch4_destination:          {label: Patch 4 Destination, nrpn: 547, nrpn_range: [0, 75], group: patch}  # the implementation prints 20 (32) - see p. 71
+  patch5_destination:          {label: Patch 5 Destination, nrpn: 548, nrpn_range: [0, 75], group: patch}  # the implementation prints 20 (32) - see p. 71
+  patch6_destination:          {label: Patch 6 Destination, nrpn: 549, nrpn_range: [0, 75], group: patch}  # the implementation prints 20 (32) - see p. 71
+  vocoder_mic_direct:          {label: Vocoder Mic Direct, nrpn: 641, group: vocoder}
+  vocoder_synth_dry_wet:       {label: Vocoder Synth Dry/Wet, nrpn: 642, nrpn_range: [0, 100], group: vocoder}
+  vocoder_formant:             {label: Vocoder Formant, nrpn: 643, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:-63~0~63
+  vocoder_resonance:           {label: Vocoder Resonance, nrpn: 644, group: vocoder}
+  vocoder_e_f_sens:            {label: Vocoder E.F.Sens, nrpn: 645, group: vocoder}  # 00~7E,7F:0~126,Hold
+  vocoder_band1_level:         {label: Vocoder Band 1 Level, nrpn: 656, group: vocoder}
+  vocoder_band2_level:         {label: Vocoder Band 2 Level, nrpn: 657, group: vocoder}
+  vocoder_band3_level:         {label: Vocoder Band 3 Level, nrpn: 658, group: vocoder}
+  vocoder_band4_level:         {label: Vocoder Band 4 Level, nrpn: 659, group: vocoder}
+  vocoder_band5_level:         {label: Vocoder Band 5 Level, nrpn: 660, group: vocoder}
+  vocoder_band6_level:         {label: Vocoder Band 6 Level, nrpn: 661, group: vocoder}
+  vocoder_band7_level:         {label: Vocoder Band 7 Level, nrpn: 662, group: vocoder}
+  vocoder_band8_level:         {label: Vocoder Band 8 Level, nrpn: 663, group: vocoder}
+  vocoder_band9_level:         {label: Vocoder Band 9 Level, nrpn: 664, group: vocoder}
+  vocoder_band10_level:        {label: Vocoder Band 10 Level, nrpn: 665, group: vocoder}
+  vocoder_band11_level:        {label: Vocoder Band 11 Level, nrpn: 666, group: vocoder}
+  vocoder_band12_level:        {label: Vocoder Band 12 Level, nrpn: 667, group: vocoder}
+  vocoder_band13_level:        {label: Vocoder Band 13 Level, nrpn: 668, group: vocoder}
+  vocoder_band14_level:        {label: Vocoder Band 14 Level, nrpn: 669, group: vocoder}
+  vocoder_band15_level:        {label: Vocoder Band 15 Level, nrpn: 670, group: vocoder}
+  vocoder_band16_level:        {label: Vocoder Band 16 Level, nrpn: 671, group: vocoder}
+  vocoder_band1_pan:           {label: Vocoder Band 1 Pan, nrpn: 672, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band2_pan:           {label: Vocoder Band 2 Pan, nrpn: 673, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band3_pan:           {label: Vocoder Band 3 Pan, nrpn: 674, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band4_pan:           {label: Vocoder Band 4 Pan, nrpn: 675, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band5_pan:           {label: Vocoder Band 5 Pan, nrpn: 676, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band6_pan:           {label: Vocoder Band 6 Pan, nrpn: 677, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band7_pan:           {label: Vocoder Band 7 Pan, nrpn: 678, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band8_pan:           {label: Vocoder Band 8 Pan, nrpn: 679, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band9_pan:           {label: Vocoder Band 9 Pan, nrpn: 680, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band10_pan:          {label: Vocoder Band 10 Pan, nrpn: 681, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band11_pan:          {label: Vocoder Band 11 Pan, nrpn: 682, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band12_pan:          {label: Vocoder Band 12 Pan, nrpn: 683, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band13_pan:          {label: Vocoder Band 13 Pan, nrpn: 684, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band14_pan:          {label: Vocoder Band 14 Pan, nrpn: 685, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band15_pan:          {label: Vocoder Band 15 Pan, nrpn: 686, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band16_pan:          {label: Vocoder Band 16 Pan, nrpn: 687, group: vocoder}  # 7F 41~7F,00 00,00 01~3F:L63~Cnt~R63
+  vocoder_band1_formant:       {label: Vocoder Band 1 Formant, nrpn: 688, group: vocoder}
+  vocoder_band2_formant:       {label: Vocoder Band 2 Formant, nrpn: 689, group: vocoder}
+  vocoder_band3_formant:       {label: Vocoder Band 3 Formant, nrpn: 690, group: vocoder}
+  vocoder_band4_formant:       {label: Vocoder Band 4 Formant, nrpn: 691, group: vocoder}
+  vocoder_band5_formant:       {label: Vocoder Band 5 Formant, nrpn: 692, group: vocoder}
+  vocoder_band6_formant:       {label: Vocoder Band 6 Formant, nrpn: 693, group: vocoder}
+  vocoder_band7_formant:       {label: Vocoder Band 7 Formant, nrpn: 694, group: vocoder}
+  vocoder_band8_formant:       {label: Vocoder Band 8 Formant, nrpn: 695, group: vocoder}
+  vocoder_band9_formant:       {label: Vocoder Band 9 Formant, nrpn: 696, group: vocoder}
+  vocoder_band10_formant:      {label: Vocoder Band 10 Formant, nrpn: 697, group: vocoder}
+  vocoder_band11_formant:      {label: Vocoder Band 11 Formant, nrpn: 698, group: vocoder}
+  vocoder_band12_formant:      {label: Vocoder Band 12 Formant, nrpn: 699, group: vocoder}
+  vocoder_band13_formant:      {label: Vocoder Band 13 Formant, nrpn: 700, group: vocoder}
+  vocoder_band14_formant:      {label: Vocoder Band 14 Formant, nrpn: 701, group: vocoder}
+  vocoder_band15_formant:      {label: Vocoder Band 15 Formant, nrpn: 702, group: vocoder}
+  vocoder_band16_formant:      {label: Vocoder Band 16 Formant, nrpn: 703, group: vocoder}
+  hardtune_intensity:          {label: Hardtune Intensity, nrpn: 769, group: hard_tune}
+  hardtune_speed:              {label: Hardtune Speed, nrpn: 770, group: hard_tune}  # the implementation prints 01 (2) - see p. 92
+  hardtune_formant:            {label: Hardtune Formant, nrpn: 771, group: hard_tune}  # the implementation prints 02 (3) - see p. 92
+  harmonies_level:             {label: Harmonies Level, nrpn: 897, group: harmonizer}
+  harmonizer_stereo_spread:    {label: Harmonizer Stereo Spread, nrpn: 898, group: harmonizer}  # 7F 41~7F,00 00,00 01~3F:-63~0~63
+  harmonizer_formant:          {label: Harmonizer Formant, nrpn: 899, group: harmonizer}  # 7F 41~7F,00 00,00 01~3F:-63~0~63
+  harmonizer_pitch_detune:     {label: Harmonizer Pitch Detune, nrpn: 900, group: harmonizer}  # 7F 41~7F,00 00,00 01~3F:-63~0~63
+  harmonizer_delay:            {label: Harmonizer Delay, nrpn: 901, group: harmonizer}  # 00 00~7F,01 00~16:0~127,128~150
+  harmony_number:              {label: Harmony Number, nrpn: 912, nrpn_range: [1, 2], group: harmonizer}
+  harmony1_pitch_type1:        {label: Harmony 1 Pitch (Type 1), nrpn: 928, nrpn_range: [0, 28], group: harmonizer}
+  harmony1_pitch_type2:        {label: Harmony 1 Pitch (Type 2), nrpn: 929, nrpn_range: [0, 20], group: harmonizer}
+  harmony1_pitch_type3:        {label: Harmony 1 Pitch (Type 3), nrpn: 930, nrpn_range: [0, 24], group: harmonizer}
+  harmony1_pitch_type4:        {label: Harmony 1 Pitch (Type 4), nrpn: 931, nrpn_range: [0, 28], group: harmonizer}
+  harmony1_pitch_type5:        {label: Harmony 1 Pitch (Type 5), nrpn: 932, nrpn_range: [0, 12], group: harmonizer}
+  harmony1_pitch_type6:        {label: Harmony 1 Pitch (Type 6), nrpn: 933, nrpn_range: [0, 8], group: harmonizer}
+  harmony1_pitch_type7:        {label: Harmony 1 Pitch (Type 7), nrpn: 934, nrpn_range: [0, 48], group: harmonizer}
+  harmony2_pitch_type1:        {label: Harmony 2 Pitch (Type 1), nrpn: 944, nrpn_range: [0, 28], group: harmonizer}
+  harmony2_pitch_type2:        {label: Harmony 2 Pitch (Type 2), nrpn: 945, nrpn_range: [0, 20], group: harmonizer}
+  harmony2_pitch_type3:        {label: Harmony 2 Pitch (Type 3), nrpn: 946, nrpn_range: [0, 24], group: harmonizer}
+  harmony2_pitch_type4:        {label: Harmony 2 Pitch (Type 4), nrpn: 947, nrpn_range: [0, 28], group: harmonizer}
+  harmony2_pitch_type5:        {label: Harmony 2 Pitch (Type 5), nrpn: 948, nrpn_range: [0, 12], group: harmonizer}
+  harmony2_pitch_type6:        {label: Harmony 2 Pitch (Type 6), nrpn: 949, nrpn_range: [0, 8], group: harmonizer}
+  harmony2_pitch_type7:        {label: Harmony 2 Pitch (Type 7), nrpn: 950, nrpn_range: [0, 48], group: harmonizer}
+  loop_rec_stutter:            {label: LoopRec Stutter, nrpn: 1040, choices: {"off": 0, "on_forward": 1, "on_reverse": 2}, group: loop_recorder}
+  loop_rec_stutter_length:     {label: LoopRec Stutter Length, nrpn: 1041, nrpn_range: [0, 10], group: loop_recorder}  # 00~0A:1/1,2,4,6,8,12,16,24,32,64,128
+  loop_rec_stutter_offset:     {label: LoopRec Stutter Offset, nrpn: 1042, group: loop_recorder}  # 7F 41~7F,00 00,00 01~3F:-63~0~63
+  loop_play_level:             {label: Loop Play Level, nrpn: 1043, group: loop_recorder}

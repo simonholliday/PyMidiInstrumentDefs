@@ -1,0 +1,545 @@
+# THIS MAKER ADDRESSES ONE INSTRUMENT TWO WAYS AT ONCE, AND ONLY ONE OF THEM CAN BE WRITTEN DOWN.
+# 242 controls out of an appendix of 74 controller numbers and 92 parameter numbers:
+#
+#   **ACROSS**, by the kind of track. The CC table prints a column for each of four - audio, bus,
+#   send FX, mix - and fills between one and four of them per row, so a number can name the same
+#   parameter on every kind, or name one on some kinds and nothing on others, or **name two
+#   different parameters on two kinds**. Which one a message reaches is the channel it arrives on.
+#   **That one is expanded here**, one control per cell the appendix fills, which is the maker's
+#   own unit and what the eleven other Elektrons in this corpus do - every one of their controls
+#   carries a part.
+#
+#   **DOWN**, by the subtrack. The last table's MSB column reads `1-8` and the page says what that
+#   means: "1–8 = values control parameters for the eight separate subtracks (1–8)." (manual
+#   p. 123). So its 49 rows are 392 numbers - **and 343 of them are printed nowhere.**
+#
+# **THE SECOND IS NOT EXPANDED, AND THE REASON IS A GATE RATHER THAN A PREFERENCE.** Expanding it
+# was the first thing tried: 585 controls, every number distinct, nothing colliding. The citation
+# checker refused it, and was right to - it looks for every number a definition claims in the
+# documents that definition cites, and found 329 of them on no page. **The manual publishes a
+# range and a rule, not 392 numbers**, and a definition that listed them would be asserting what
+# nobody printed.
+#
+# So one subtrack's set is carried, at the MSB the range's low end gives, and the labels say which
+# subtrack that is. **The other seven are the same LSBs with the MSB counted up** - stated here
+# because no field holds it. `nrpn_range` is the nearest thing the format has and it means a value
+# range rather than an address range, so it is not it. Raised rather than hidden.
+#
+# SIX NUMBERS NAME DIFFERENT PARAMETERS ON DIFFERENT KINDS OF TRACK, and they are the only ones
+# that genuinely conflict rather than being present here and absent there. CC 16 to 18 and 20 to
+# 22 are the first source machine's data entry knobs A, B, C, E, F and G on an audio track, and
+# the external inputs' level, pan and routing on the mix track. A message sent to the wrong
+# channel does something rather than nothing, which is why each is two controls here.
+#
+# **ONE ROW OF THAT TABLE IS MISPRINTED.** CC 16 to 23 are SRC 1's eight data entry knobs and CC
+# 24 to 31 are SRC 2's - and the appendix prints CC 31 as `SRC 1 Data entry knob H (machine
+# dependent)`, the same words as CC 23. Two distinct numbers cannot both be SRC 1's knob H, and
+# the seven before it are SRC 2's A to G. **The label below ships as printed and only the key
+# follows the sequence**, so the document's words are where a reader looks for them and the
+# inference is in an identifier, which is not data.
+#
+# THE DATA ENTRY KNOBS ARE THE OPEN QUESTION OF THIS MAKER'S FORMAT, AND THE MAKER NAMES THEM
+# GENERICALLY ITSELF.
+# Thirty-two of the controls below are `SRC 1`, `SRC 2`, `FX 1`, `FX 2` or `FLTR` data entry knobs
+# A to H, each marked `(machine dependent)` or `(SRC machine dependent)` by the appendix - so what
+# a number does depends on which machine the track is running, and the appendix publishes the slot
+# rather than the meanings. That is the standing answer to that question arrived at from the
+# maker's side: there is nothing here to decline, because the generic name is the only name
+# printed. What each machine puts on each knob is in Appendix A and is not carried.
+#
+# NOT RECORDED, AND WHY. **Aftertouch**, which is received - "Opens a menu where you can assign up
+# to four parameters to the MIDI aftertouch command." (manual p. 52) - and whose kind the manual
+# never gives, neither channel nor polyphonic, in 130 pages. **Pitch bend**, likewise received,
+# with a depth setting of its own - "Sets the amount of pitch bend data from external MIDI devices
+# that affects Tonverk." (manual p. 51) - and no figure anywhere for how far it bends, so both
+# fields would be invented. **Polyphony**: the play mode is per track, "Here, you can set whether
+# a preset is polyphonic or monophonic" (manual p. 50), and the only voice count in the manual
+# belongs to one source machine rather than to the instrument. And **system exclusive**, which is
+# not mentioned in any spelling on any of the 130 pages - a silence rather than a checked absence.
+#
+# AND THE MANUAL NEVER SAYS WHICH OS IT DESCRIBES. Its cover reads `Tonverk / User Manual` and
+# nothing else; no page carries a version. The OS is in the file's name and on the page that
+# serves it, which announced `Tonverk OS 1.4.1` (download_page) the same day. See `model`.
+
+definition: 1
+
+model:
+  manufacturer: Elektron
+  name: Tonverk
+  # **THE DOCUMENT DOES NOT STATE THIS AND THE EVIDENCE IS ITS NAME AND ITS DATE.** The manual
+  # prints no OS version on any of its 130 pages. Its file is named `..._OS1.4.1_...`, the
+  # downloads page lists it as "Tonverk User Manual - EN" (download_page) dated Sept 23, 2026,
+  # and the same page's Updates section announces "Tonverk OS 1.4.1" (download_page) on that same
+  # date. So the two were issued together, which is as close as this maker comes to saying it.
+  # **The survey this instrument was picked from recorded OS 1.4.0** and the page now offers
+  # 1.4.1, so a reader who comes back to this will find a third. Checked 2026-10-05.
+  firmware: "1.4.1"
+
+source: >-
+  The Tonverk User Manual, 130 pages, created 2026-09-23 by its own metadata and offered as
+  "Tonverk User Manual - EN" (download_page) on the day its maker announced "Tonverk OS 1.4.1"
+  (download_page). Elektron publishes no separate MIDI implementation for this instrument and
+  puts the tables in the manual's own Appendix D: "This appendix lists the CC and NRPN
+  specification for Tonverk." (manual p. 120).
+
+  EVERY NUMBER BELOW COMES FROM THAT APPENDIX, which is pp. 120-124 and three tables. D.1 gives 74
+  controller numbers against four columns of track kind; D.2 gives 43 NRPNs for audio tracks, every
+  MSB nought; D.3 gives 49 more whose MSB is the subtrack. `Notes/4606_extract_tonverk.py` reads
+  all three off the grid the publisher drew, and `Notes/4606_write_controls.py` turns them into the
+  block below.
+
+  **AND ONE FIGURE OUTSIDE THESE DOCUMENTS AGREES WITH THE READING IN A WAY WORTH RECORDING.**
+  midi.guide lists this instrument at 435 NRPNs, which is exactly 49 times eight plus the 43 of
+  D.2 - so whoever compiled that entry expanded the subtracks the same way, and read the same 49
+  and 43 rows. It is not a source and nothing here rests on it; it is a third party arriving at
+  this appendix's own arithmetic independently, which is the only corroboration available for a
+  maker who publishes one document.
+
+  **THE GRID COST THREE ROWS BEFORE IT WAS READ PROPERLY, AND THE WAY IT DID IS WORTH CARRYING.**
+  This publisher draws a table's header and its body as two blocks whose column edges differ in
+  the first decimal, and **the body's rules stop one short of the table's bottom rule, which
+  belongs to the header's block.** So reading the blocks apart loses the last row of every page -
+  here controller numbers 51, 103 and 110, each the last on its page, each silently absent. They
+  are recovered by matching edges within two points and taking the union of the rules. Page 122
+  also carries the end of one table and the start of another, five columns and three, so a page
+  cannot be read with one set of column edges either.
+
+  SIXTEEN TRACKS IN FOUR KINDS, WHICH IS WHERE THE PARTS COME FROM. "The Tonverk sequencer has 16
+  tracks. 8 Audio/MIDI tracks, 4 Bus and MIDI tracks, 3 Send FX tracks, and one Mix track."
+  (manual p. 20). Each has a channel of its own: "TRACK/BUS/SEND/MIX CHANNEL selects the dedicated
+  MIDI channel that is used to receive or send" (manual p. 76) parameter data for it, and set to
+  OFF a track neither receives nor sends. **There is a seventeenth channel besides** - "AUTO
+  CHANNEL selects the MIDI channel that will give access to the currently active track." (manual
+  p. 77) - and the manual notes that the track sharing that channel then listens to nothing, which
+  no field here can say.
+
+  NOTES GO TO WHICHEVER TRACK IS ACTIVE, NOT TO A TRACK OF THEIR OWN. "The 128 notes in the
+  standard MIDI range (0-127) all trigger the preset of the active track" (manual p. 30) in its
+  chromatic variations. **And eight of those notes mean something else again on a track running
+  the Subtracks machine**: "The subtracks are triggered over MIDI using these note values: 60, 62,
+  64, 65, 67, 69, 71, and 72." (manual p. 30). So a note is a pitch or a subtrack selector
+  depending on the machine, which is the same shape as the eight MSBs below and is recorded in
+  prose because no field holds it.
+
+  THE DIRECTIONS ARE ALL SETTINGS AND ALL TWO-WAY. Clock: "CLOCK RECEIVE determines whether
+  Tonverk responds to MIDI clock sent from external devices or not." (manual p. 76) and "CLOCK
+  SEND determines whether Tonverk transmits MIDI clock or not." (manual p. 76). Transport the
+  same, with "TRANSPORT SEND determines whether Tonverk transmits MIDI transport messages or
+  not." (manual p. 76). Program change both ways, with a channel for each direction. And the
+  controls: "RECEIVE CC/NRPN will, when active, make it possible to control Tonverk's parameters
+  from an external MIDI device sending CC and NRPN data." (manual p. 76), against a channel that
+  is "used to receive or send" (manual p. 76) - so every control below is two-way and none carries
+  a direction of its own.
+
+  WHAT THE MANUAL GETS WRONG, RECORDED AND NOT TIDIED. **Two consecutive sections print the same
+  sentence.** 11.1.11 is headed PITCH BEND and 11.1.12 AFTERTOUCH, and both read "Opens a menu
+  where you can assign up to four parameters to the MIDI aftertouch command." (manual p. 52) - so
+  the pitch bend section describes aftertouch, and what pitch bend's four assignable parameters
+  are is stated nowhere. The misprinted CC 31 is the other one, above. A third is smaller: `not
+  availble` for available, twice on p. 51.
+
+  NOT CARRIED: what each machine puts on each data entry knob. Appendix A runs thirty pages and
+  names the parameters of every SRC and FX machine, and the MIDI appendix publishes the slots
+  rather than the meanings - `SRC 1 Data entry knob A (machine dependent)` and so on through 32 of
+  them. **That is the same shape as the Analog Rytm's 220 rows and gets the same answer**, with
+  one difference worth noting: this maker never publishes a number against a machine's parameter
+  at all, so there is nothing here to decline. The generic name is the only name printed.
+
+sources:
+  manual:
+    kind: manual
+    title: Tonverk User Manual
+    edition: OS 1.4.1
+    dated: 2026-09-23
+    landing: "https://www.elektron.se/support-downloads/tonverk"
+    url: "https://www.elektron.se/wp-content/uploads/2026/09/Tonverk-User-Manual_ENG_OS1.4.1_260923.pdf"
+    sha256: 0bcb08a1ffdd4ee3d603c2ddf454e082c47b44451b07d905029f2deba5292045
+    retrieved: 2026-10-05
+    # 130 pages, counted with pypdf and with PyMuPDF, which agree. Every page prints its own
+    # number and it is the file's page index - asserted on all five appendix pages - so a
+    # citation needs no offset. The folio sits at y 802 and the appendix's tables print bare
+    # numbers as high as y 746, which is how the one is kept out of the other.
+    # **The edition above is not stated in the document.** Its cover reads `Tonverk / User
+    # Manual` and no page carries a version; the OS is in the file's name and on the page that
+    # serves it. See `model`.
+    # Appendix D, pp. 120-124, is the source of every number below. Everything else is cited for
+    # the structure, the settings and the four absences.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: Tonverk downloads
+    landing: "https://www.elektron.se/support-downloads/"
+    url: "https://www.elektron.se/support-downloads/tonverk"
+    sha256: 27d2f03ef1e7c244e0230d43d373eb2abe5ed5330ae6e5a41b7f9627110e2e64
+    retrieved: 2026-10-05
+    paginated: false
+    # Cited for what the manual does not say about itself - the OS it describes and the date it
+    # was issued - and for what Elektron offers besides: the OS itself, its release notes,
+    # wavetables, and a Japanese manual still at OS 1.00 from November 2025, **which describes a
+    # different instrument from this one** and is not read here. No separate MIDI implementation
+    # is offered, which is this maker's habit across all eleven of its instruments in this corpus.
+    # The digest is of the extraction; the served bytes are saved beside it as `.html`.
+
+midi:
+  # Sixteen, and this instrument uses more of them at once than most: one for each of its sixteen
+  # tracks, "TRACK/BUS/SEND/MIX CHANNEL selects the dedicated MIDI channel that is used to receive
+  # or send" (manual p. 76), plus an AUTO channel for whichever track is active and a channel each
+  # for program change in and out. No page states a default for any of them.
+  channels: [1, 16]
+  # BOTH, AND EACH DIRECTION IS ITS OWN SWITCH: "CLOCK RECEIVE determines whether Tonverk responds
+  # to MIDI clock sent from external devices or not." (manual p. 76) and "CLOCK SEND determines
+  # whether Tonverk transmits MIDI clock or not." (manual p. 76).
+  clock: both
+  # The same again, one switch each way - "TRANSPORT SEND determines whether Tonverk transmits
+  # MIDI transport messages or not." (manual p. 76).
+  transport: both
+  program_change:
+    # Both ways and on channels of their own, which the settings menu sets separately from the
+    # tracks': PROG CH RECEIVE and PROG CH SEND, with PROGRAM CHG IN CH and PROGRAM CHG OUT CH.
+    receives: true
+    sends: true
+    # **PATTERNS, NOT PRESETS**: "MIDI program change messages 0-127 will select pattern 1-128
+    # (A01-H16) on Tonverk." (manual p. 30), which is eight banks of sixteen.
+    presets: 128
+  # 92 of the 242 controls below are addressed by NRPN and by nothing else, and the appendix's
+  # own count is 435 once the subtracks are counted out - see the comment above the definition.
+  # The maker names the two together as one switch -
+  # "RECEIVE CC/NRPN will, when active, make it possible to control Tonverk's parameters from an
+  # external MIDI device sending CC and NRPN data." (manual p. 76) - so `supported` is as far as
+  # the documents go.
+  nrpn: supported
+
+voice:
+  # "The 128 notes in the standard MIDI range (0-127) all trigger the preset of the active track"
+  # (manual p. 30). **Eight of them do something else on a track running the Subtracks machine** -
+  # see the source account - and the format has one word for how an instrument reads a note.
+  addressing: pitches
+  note_range: [0, 127]
+  velocity:
+    # Received: the appendix gives `TRIG velocity` a controller number of its own on every kind of
+    # track, and the sequencer records the velocity of notes played in.
+    note_on: received
+  # NOT RECORDED: aftertouch's kind. It is plainly received - "Opens a menu where you can assign
+  # up to four parameters to the MIDI aftertouch command." (manual p. 52) - and **no page of 130
+  # says whether that is channel pressure or polyphonic**, so either would be invented. The same
+  # omission the Typhon's manual makes.
+  # NOT RECORDED: pitch bend, for the same reason from the other side. It is received and has a
+  # depth setting of its own - "Sets the amount of pitch bend data from external MIDI devices that
+  # affects Tonverk." (manual p. 51) - and nothing anywhere says how far it bends, so the two
+  # fields a `pitch_bend` block holds would both be guesses.
+  # NOT RECORDED: polyphony. The play mode is a per-track setting - "Here, you can set whether a
+  # preset is polyphonic or monophonic" (manual p. 50) - and the only voice count in the manual
+  # belongs to one source machine rather than to the instrument.
+
+parts:
+  # THE SIXTEEN TRACKS, IN THE FOUR KINDS THE APPENDIX GIVES A COLUMN EACH: "The Tonverk sequencer
+  # has 16 tracks. 8 Audio/MIDI tracks, 4 Bus and MIDI tracks, 3 Send FX tracks, and one Mix
+  # track." (manual p. 20). Every one has a channel of its own, chosen rather than derived, so all
+  # four say `assigned`.
+  #
+  # **ONLY THE AUDIO TRACKS TAKE NOTES**, because notes play the active track's preset and only
+  # tracks 1-8 hold one. The other three kinds are a bus, a send effect and the mixer: they take
+  # controls and nothing else.
+  audio:
+    label: Audio track
+    channel: assigned
+    count: 8
+    addressing: pitches
+    # "Tracks 1-8 can be used as audio tracks" (manual p. 20), each holding a preset. They can
+    # also run a MIDI machine instead, which turns the track into a sequencer for something else
+    # and is not a thing this format describes.
+    receives: [notes, controls]
+  bus:
+    label: Bus track
+    channel: assigned
+    count: 4
+    # "Tonverk has four separate buses, each with its own sequencer track" (manual p. 20).
+    receives: [controls]
+  fx_send:
+    label: Send FX track
+    channel: assigned
+    count: 3
+    # "Tonverk has three Send FX tracks" (manual p. 20).
+    receives: [controls]
+  mix:
+    label: Mix track
+    channel: assigned
+    # One, and the only kind whose column in the appendix names the external inputs.
+    receives: [controls]
+
+groups:
+  trig: Trig
+  src: Source
+  filter: Filter
+  amp: Amp
+  fx: FX
+  fx_lfo: FX LFO
+  voice_lfo: Voice LFO
+  mod_env: Modulation envelope
+  voice: Voice
+  mixer: Mixer
+  subtrack: Subtracks SRC machine
+controls:
+  # TRIG --------------------------------------------------------
+  audio_trig_note:                            {label: "TRIG note", cc: 3, part: audio, group: trig}
+  bus_trig_note:                              {label: "TRIG note", cc: 3, part: bus, group: trig}
+  fx_send_trig_note:                          {label: "TRIG note", cc: 3, part: fx_send, group: trig}
+  mix_trig_note:                              {label: "TRIG note", cc: 3, part: mix, group: trig}
+  audio_trig_velocity:                        {label: "TRIG velocity", cc: 4, part: audio, group: trig}
+  bus_trig_velocity:                          {label: "TRIG velocity", cc: 4, part: bus, group: trig}
+  fx_send_trig_velocity:                      {label: "TRIG velocity", cc: 4, part: fx_send, group: trig}
+  mix_trig_velocity:                          {label: "TRIG velocity", cc: 4, part: mix, group: trig}
+  audio_trig_note_length:                     {label: "TRIG note length", cc: 5, part: audio, group: trig}
+  bus_trig_note_length:                       {label: "TRIG note length", cc: 5, part: bus, group: trig}
+  fx_send_trig_note_length:                   {label: "TRIG note length", cc: 5, part: fx_send, group: trig}
+  mix_trig_note_length:                       {label: "TRIG note length", cc: 5, part: mix, group: trig}
+
+  # SOURCE ------------------------------------------------------
+  audio_src_1_data_entry_knob_a:              {label: "SRC 1 Data entry knob A (machine dependent)", cc: 16, part: audio, group: src}
+  audio_src_1_data_entry_knob_b:              {label: "SRC 1 Data entry knob B (machine dependent)", cc: 17, part: audio, group: src}
+  audio_src_1_data_entry_knob_c:              {label: "SRC 1 Data entry knob C (machine dependent)", cc: 18, part: audio, group: src}
+  audio_src_1_data_entry_knob_d:              {label: "SRC 1 Data entry knob D (machine dependent)", cc: 19, part: audio, group: src}
+  audio_src_1_data_entry_knob_e:              {label: "SRC 1 Data entry knob E (machine dependent)", cc: 20, part: audio, group: src}
+  audio_src_1_data_entry_knob_f:              {label: "SRC 1 Data entry knob F (machine dependent)", cc: 21, part: audio, group: src}
+  audio_src_1_data_entry_knob_g:              {label: "SRC 1 Data entry knob G (machine dependent)", cc: 22, part: audio, group: src}
+  audio_src_1_data_entry_knob_h:              {label: "SRC 1 Data entry knob H (machine dependent)", cc: 23, part: audio, group: src}
+  audio_src_2_data_entry_knob_a:              {label: "SRC 2 Data entry knob A (machine dependent)", cc: 24, part: audio, group: src}
+  audio_src_2_data_entry_knob_b:              {label: "SRC 2 Data entry knob B (machine dependent)", cc: 25, part: audio, group: src}
+  audio_src_2_data_entry_knob_c:              {label: "SRC 2 Data entry knob C (machine dependent)", cc: 26, part: audio, group: src}
+  audio_src_2_data_entry_knob_d:              {label: "SRC 2 Data entry knob D (machine dependent)", cc: 27, part: audio, group: src}
+  audio_src_2_data_entry_knob_e:              {label: "SRC 2 Data entry knob E (machine dependent)", cc: 28, part: audio, group: src}
+  audio_src_2_data_entry_knob_f:              {label: "SRC 2 Data entry knob F (machine dependent)", cc: 29, part: audio, group: src}
+  audio_src_2_data_entry_knob_g:              {label: "SRC 2 Data entry knob G (machine dependent)", cc: 30, part: audio, group: src}
+  audio_src_2_data_entry_knob_h:              {label: "SRC 1 Data entry knob H (machine dependent)", cc: 31, part: audio, group: src}
+
+  # FILTER ------------------------------------------------------
+  audio_fltr_data_entry_knob_a:               {label: "FLTR Data entry knob A (SRC machine dependent)", cc: 70, part: audio, group: filter}
+  audio_fltr_data_entry_knob_b:               {label: "FLTR Data entry knob B (SRC machine dependent)", cc: 71, part: audio, group: filter}
+  audio_fltr_data_entry_knob_c:               {label: "FLTR Data entry knob C (SRC machine dependent)", cc: 72, part: audio, group: filter}
+  audio_fltr_data_entry_knob_d:               {label: "FLTR Data entry knob D (SRC machine dependent)", cc: 73, part: audio, group: filter}
+  audio_fltr_data_entry_knob_e:               {label: "FLTR Data entry knob E (SRC machine dependent)", cc: 74, part: audio, group: filter}
+  audio_fltr_data_entry_knob_f:               {label: "FLTR Data entry knob F (SRC machine dependent)", cc: 75, part: audio, group: filter}
+  audio_fltr_data_entry_knob_g:               {label: "FLTR Data entry knob G (SRC machine dependent)", cc: 76, part: audio, group: filter}
+  audio_fltr_data_entry_knob_h:               {label: "FLTR Data entry knob H (SRC machine dependent)", cc: 77, part: audio, group: filter}
+  audio_fltr_base:                            {label: "FLTR base", cc: 78, part: audio, group: filter}
+  audio_fltr_width:                           {label: "FLTR width", cc: 79, part: audio, group: filter}
+  audio_fltr_env_reset_nrpn:                  {label: "FLTR env reset", nrpn: 45, part: audio, group: filter}
+  audio_fltr_env_delay_nrpn:                  {label: "FLTR env delay", nrpn: 46, part: audio, group: filter}
+  audio_fltr_key_tracking_nrpn:               {label: "FLTR key tracking", nrpn: 47, part: audio, group: filter}
+
+  # AMP ---------------------------------------------------------
+  audio_amp_pan:                              {label: "AMP pan", cc: 10, part: audio, group: amp}
+  audio_amp_attack:                           {label: "AMP attack", cc: 83, part: audio, group: amp}
+  audio_amp_hold:                             {label: "AMP hold", cc: 84, part: audio, group: amp}
+  audio_amp_decay:                            {label: "AMP decay", cc: 85, part: audio, group: amp}
+  audio_amp_sustain:                          {label: "AMP sustain", cc: 86, part: audio, group: amp}
+  audio_amp_release:                          {label: "AMP release", cc: 87, part: audio, group: amp}
+  audio_amp_overdrive:                        {label: "AMP overdrive", cc: 88, part: audio, group: amp}
+  audio_amp_volume:                           {label: "AMP volume", cc: 89, part: audio, group: amp}
+  audio_amp_mode_nrpn:                        {label: "AMP mode", nrpn: 48, part: audio, group: amp}
+  audio_amp_reset_nrpn:                       {label: "AMP reset", nrpn: 49, part: audio, group: amp}
+
+  # FX ----------------------------------------------------------
+  audio_fx_send_amount_1:                     {label: "FX send amount 1", cc: 44, part: audio, group: fx}
+  bus_fx_send_amount_1:                       {label: "FX send amount 1", cc: 44, part: bus, group: fx}
+  audio_fx_send_amount_2:                     {label: "FX send amount 2", cc: 45, part: audio, group: fx}
+  bus_fx_send_amount_2:                       {label: "FX send amount 2", cc: 45, part: bus, group: fx}
+  audio_fx_send_amount_3:                     {label: "FX send amount 3", cc: 46, part: audio, group: fx}
+  bus_fx_send_amount_3:                       {label: "FX send amount 3", cc: 46, part: bus, group: fx}
+  audio_fx_routing_destination:               {label: "FX routing destination", cc: 47, part: audio, group: fx}
+  bus_fx_routing_destination:                 {label: "FX routing destination", cc: 47, part: bus, group: fx}
+  fx_send_fx_routing_destination:             {label: "FX routing destination", cc: 47, part: fx_send, group: fx}
+  audio_fx_1_data_entry_knob_a:               {label: "FX 1 Data entry knob A (machine dependent)", cc: 48, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_a:                 {label: "FX 1 Data entry knob A (machine dependent)", cc: 48, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_a:             {label: "FX 1 Data entry knob A (machine dependent)", cc: 48, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_a:                 {label: "FX 1 Data entry knob A (machine dependent)", cc: 48, part: mix, group: fx}
+  audio_fx_1_data_entry_knob_b:               {label: "FX 1 Data entry knob B (machine dependent)", cc: 49, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_b:                 {label: "FX 1 Data entry knob B (machine dependent)", cc: 49, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_b:             {label: "FX 1 Data entry knob B (machine dependent)", cc: 49, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_b:                 {label: "FX 1 Data entry knob B (machine dependent)", cc: 49, part: mix, group: fx}
+  audio_fx_1_data_entry_knob_c:               {label: "FX 1 Data entry knob C (machine dependent)", cc: 50, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_c:                 {label: "FX 1 Data entry knob C (machine dependent)", cc: 50, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_c:             {label: "FX 1 Data entry knob C (machine dependent)", cc: 50, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_c:                 {label: "FX 1 Data entry knob C (machine dependent)", cc: 50, part: mix, group: fx}
+  audio_fx_1_data_entry_knob_d:               {label: "FX 1 Data entry knob D (machine dependent)", cc: 51, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_d:                 {label: "FX 1 Data entry knob D (machine dependent)", cc: 51, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_d:             {label: "FX 1 Data entry knob D (machine dependent)", cc: 51, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_d:                 {label: "FX 1 Data entry knob D (machine dependent)", cc: 51, part: mix, group: fx}
+  audio_fx_1_data_entry_knob_e:               {label: "FX 1 Data entry knob E (machine dependent)", cc: 52, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_e:                 {label: "FX 1 Data entry knob E (machine dependent)", cc: 52, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_e:             {label: "FX 1 Data entry knob E (machine dependent)", cc: 52, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_e:                 {label: "FX 1 Data entry knob E (machine dependent)", cc: 52, part: mix, group: fx}
+  audio_fx_1_data_entry_knob_f:               {label: "FX 1 Data entry knob F (machine dependent)", cc: 53, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_f:                 {label: "FX 1 Data entry knob F (machine dependent)", cc: 53, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_f:             {label: "FX 1 Data entry knob F (machine dependent)", cc: 53, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_f:                 {label: "FX 1 Data entry knob F (machine dependent)", cc: 53, part: mix, group: fx}
+  audio_fx_1_data_entry_knob_g:               {label: "FX 1 Data entry knob G (machine dependent)", cc: 54, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_g:                 {label: "FX 1 Data entry knob G (machine dependent)", cc: 54, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_g:             {label: "FX 1 Data entry knob G (machine dependent)", cc: 54, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_g:                 {label: "FX 1 Data entry knob G (machine dependent)", cc: 54, part: mix, group: fx}
+  audio_fx_1_data_entry_knob_h:               {label: "FX 1 Data entry knob H (machine dependent)", cc: 55, part: audio, group: fx}
+  bus_fx_1_data_entry_knob_h:                 {label: "FX 1 Data entry knob H (machine dependent)", cc: 55, part: bus, group: fx}
+  fx_send_fx_1_data_entry_knob_h:             {label: "FX 1 Data entry knob H (machine dependent)", cc: 55, part: fx_send, group: fx}
+  mix_fx_1_data_entry_knob_h:                 {label: "FX 1 Data entry knob H (machine dependent)", cc: 55, part: mix, group: fx}
+  audio_fx_2_data_entry_knob_a:               {label: "FX 2 Data entry knob A (machine dependent)", cc: 56, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_a:                 {label: "FX 2 Data entry knob A (machine dependent)", cc: 56, part: bus, group: fx}
+  audio_fx_2_data_entry_knob_b:               {label: "FX 2 Data entry knob B (machine dependent)", cc: 57, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_b:                 {label: "FX 2 Data entry knob B (machine dependent)", cc: 57, part: bus, group: fx}
+  audio_fx_2_data_entry_knob_c:               {label: "FX 2 Data entry knob C (machine dependent)", cc: 58, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_c:                 {label: "FX 2 Data entry knob C (machine dependent)", cc: 58, part: bus, group: fx}
+  audio_fx_2_data_entry_knob_d:               {label: "FX 2 Data entry knob D (machine dependent)", cc: 59, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_d:                 {label: "FX 2 Data entry knob D (machine dependent)", cc: 59, part: bus, group: fx}
+  audio_fx_2_data_entry_knob_e:               {label: "FX 2 Data entry knob E (machine dependent)", cc: 60, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_e:                 {label: "FX 2 Data entry knob E (machine dependent)", cc: 60, part: bus, group: fx}
+  audio_fx_2_data_entry_knob_f:               {label: "FX 2 Data entry knob F (machine dependent)", cc: 61, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_f:                 {label: "FX 2 Data entry knob F (machine dependent)", cc: 61, part: bus, group: fx}
+  audio_fx_2_data_entry_knob_g:               {label: "FX 2 Data entry knob G (machine dependent)", cc: 62, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_g:                 {label: "FX 2 Data entry knob G (machine dependent)", cc: 62, part: bus, group: fx}
+  audio_fx_2_data_entry_knob_h:               {label: "FX 2 Data entry knob H (machine dependent)", cc: 63, part: audio, group: fx}
+  bus_fx_2_data_entry_knob_h:                 {label: "FX 2 Data entry knob H (machine dependent)", cc: 63, part: bus, group: fx}
+
+  # FX LFO ------------------------------------------------------
+  audio_fx_lfo1_speed:                        {label: "FX LFO1 speed", cc: 111, part: audio, group: fx_lfo}
+  bus_fx_lfo1_speed:                          {label: "FX LFO1 speed", cc: 111, part: bus, group: fx_lfo}
+  fx_send_fx_lfo1_speed:                      {label: "FX LFO1 speed", cc: 111, part: fx_send, group: fx_lfo}
+  mix_fx_lfo1_speed:                          {label: "FX LFO1 speed", cc: 111, part: mix, group: fx_lfo}
+  audio_fx_lfo1_multiplier:                   {label: "FX LFO1 multiplier", cc: 112, part: audio, group: fx_lfo}
+  bus_fx_lfo1_multiplier:                     {label: "FX LFO1 multiplier", cc: 112, part: bus, group: fx_lfo}
+  fx_send_fx_lfo1_multiplier:                 {label: "FX LFO1 multiplier", cc: 112, part: fx_send, group: fx_lfo}
+  mix_fx_lfo1_multiplier:                     {label: "FX LFO1 multiplier", cc: 112, part: mix, group: fx_lfo}
+  audio_fx_lfo1_depth:                        {label: "FX LFO1 depth", cc: 113, part: audio, group: fx_lfo}
+  bus_fx_lfo1_depth:                          {label: "FX LFO1 depth", cc: 113, part: bus, group: fx_lfo}
+  fx_send_fx_lfo1_depth:                      {label: "FX LFO1 depth", cc: 113, part: fx_send, group: fx_lfo}
+  mix_fx_lfo1_depth:                          {label: "FX LFO1 depth", cc: 113, part: mix, group: fx_lfo}
+  audio_fx_lfo2_speed:                        {label: "FX LFO2 speed", cc: 114, part: audio, group: fx_lfo}
+  bus_fx_lfo2_speed:                          {label: "FX LFO2 speed", cc: 114, part: bus, group: fx_lfo}
+  fx_send_fx_lfo2_speed:                      {label: "FX LFO2 speed", cc: 114, part: fx_send, group: fx_lfo}
+  mix_fx_lfo2_speed:                          {label: "FX LFO2 speed", cc: 114, part: mix, group: fx_lfo}
+  audio_fx_lfo2_multiplier:                   {label: "FX LFO2 multiplier", cc: 115, part: audio, group: fx_lfo}
+  bus_fx_lfo2_multiplier:                     {label: "FX LFO2 multiplier", cc: 115, part: bus, group: fx_lfo}
+  fx_send_fx_lfo2_multiplier:                 {label: "FX LFO2 multiplier", cc: 115, part: fx_send, group: fx_lfo}
+  mix_fx_lfo2_multiplier:                     {label: "FX LFO2 multiplier", cc: 115, part: mix, group: fx_lfo}
+  audio_fx_lfo2_depth:                        {label: "FX LFO2 depth", cc: 116, part: audio, group: fx_lfo}
+  bus_fx_lfo2_depth:                          {label: "FX LFO2 depth", cc: 116, part: bus, group: fx_lfo}
+  fx_send_fx_lfo2_depth:                      {label: "FX LFO2 depth", cc: 116, part: fx_send, group: fx_lfo}
+  mix_fx_lfo2_depth:                          {label: "FX LFO2 depth", cc: 116, part: mix, group: fx_lfo}
+  audio_fx_lfo1_speed_nrpn:                   {label: "FX LFO1 speed", nrpn: 26, part: audio, group: fx_lfo}
+  audio_fx_lfo1_multiplier_nrpn:              {label: "FX LFO1 multiplier", nrpn: 27, part: audio, group: fx_lfo}
+  audio_fx_lfo1_fade_nrpn:                    {label: "FX LFO1 fade", nrpn: 28, part: audio, group: fx_lfo}
+  audio_fx_lfo1_waveform_nrpn:                {label: "FX LFO1 waveform", nrpn: 30, part: audio, group: fx_lfo}
+  audio_fx_lfo1_start_phase_fx_lfo1_slew_nrpn: {label: "FX LFO1 start phase FX LFO1 slew", nrpn: 31, part: audio, group: fx_lfo}
+  audio_fx_lfo1_trig_mode_nrpn:               {label: "FX LFO1 trig mode", nrpn: 32, part: audio, group: fx_lfo}
+  audio_fx_lfo1_depth_nrpn:                   {label: "FX LFO1 depth", nrpn: 33, part: audio, group: fx_lfo}
+  audio_fx_lfo2_speed_nrpn:                   {label: "FX LFO2 speed", nrpn: 34, part: audio, group: fx_lfo}
+  audio_fx_lfo2_multiplier_nrpn:              {label: "FX LFO2 multiplier", nrpn: 35, part: audio, group: fx_lfo}
+  audio_fx_lfo2_fade_nrpn:                    {label: "FX LFO2 fade", nrpn: 36, part: audio, group: fx_lfo}
+  audio_fx_lfo2_waveform_nrpn:                {label: "FX LFO2 waveform", nrpn: 38, part: audio, group: fx_lfo}
+  audio_fx_lfo2_start_phase_nrpn:             {label: "FX LFO2 start phase / FX LFO2 slew", nrpn: 39, part: audio, group: fx_lfo}
+  audio_fx_lfo2_trig_mode_nrpn:               {label: "FX LFO2 trig mode", nrpn: 40, part: audio, group: fx_lfo}
+  audio_fx_lfo2_depth_nrpn:                   {label: "FX LFO2 depth", nrpn: 41, part: audio, group: fx_lfo}
+
+  # VOICE LFO ---------------------------------------------------
+  audio_voice_lfo1_speed:                     {label: "VOICE LFO1 speed", cc: 102, part: audio, group: voice_lfo}
+  audio_voice_lfo1_multiplier:                {label: "VOICE LFO1 multiplier", cc: 103, part: audio, group: voice_lfo}
+  audio_voice_lfo1_depth:                     {label: "VOICE LFO1 depth", cc: 104, part: audio, group: voice_lfo}
+  audio_voice_lfo2_speed:                     {label: "VOICE LFO2 speed", cc: 105, part: audio, group: voice_lfo}
+  audio_voice_lfo2_multiplier:                {label: "VOICE LFO2 multiplier", cc: 106, part: audio, group: voice_lfo}
+  audio_voice_lfo2_depth:                     {label: "VOICE LFO2 depth", cc: 107, part: audio, group: voice_lfo}
+  audio_voice_lfo1_speed_nrpn:                {label: "VOICE LFO1 speed", nrpn: 1, part: audio, group: voice_lfo}
+  audio_voice_lfo1_multiplier_nrpn:           {label: "VOICE LFO1 multiplier", nrpn: 2, part: audio, group: voice_lfo}
+  audio_voice_lfo1_fade_nrpn:                 {label: "VOICE LFO1 fade", nrpn: 3, part: audio, group: voice_lfo}
+  audio_voice_lfo1_waveform_nrpn:             {label: "VOICE LFO1 waveform", nrpn: 5, part: audio, group: voice_lfo}
+  audio_voice_lfo1_start_phase_nrpn:          {label: "VOICE LFO1 start phase / VOICE LFO1 slew", nrpn: 6, part: audio, group: voice_lfo}
+  audio_voice_lfo1_trig_mode_nrpn:            {label: "VOICE LFO1 trig mode", nrpn: 7, part: audio, group: voice_lfo}
+  audio_voice_lfo1_depth_nrpn:                {label: "VOICE LFO1 depth", nrpn: 8, part: audio, group: voice_lfo}
+  audio_voice_lfo2_speed_nrpn:                {label: "VOICE LFO2 speed", nrpn: 9, part: audio, group: voice_lfo}
+  audio_voice_lfo2_multiplier_nrpn:           {label: "VOICE LFO2 multiplier", nrpn: 10, part: audio, group: voice_lfo}
+  audio_voice_lfo2_fade_nrpn:                 {label: "VOICE LFO2 fade", nrpn: 11, part: audio, group: voice_lfo}
+  audio_voice_lfo2_waveform_nrpn:             {label: "VOICE LFO2 waveform", nrpn: 13, part: audio, group: voice_lfo}
+  audio_voice_lfo2_start_phase_nrpn:          {label: "VOICE LFO2 start phase / VOICE LFO2 slew", nrpn: 14, part: audio, group: voice_lfo}
+  audio_voice_lfo2_trig_mode_nrpn:            {label: "VOICE LFO2 trig mode", nrpn: 15, part: audio, group: voice_lfo}
+  audio_voice_lfo2_depth_nrpn:                {label: "VOICE LFO2 depth", nrpn: 16, part: audio, group: voice_lfo}
+
+  # MODULATION ENVELOPE -----------------------------------------
+  audio_mod_env_depth:                        {label: "MOD ENV depth", cc: 110, part: audio, group: mod_env}
+  audio_mod_env_attack_nrpn:                  {label: "MOD ENV attack", nrpn: 17, part: audio, group: mod_env}
+  audio_mod_env_decay_nrpn:                   {label: "MOD ENV decay", nrpn: 18, part: audio, group: mod_env}
+  audio_mod_env_sustain_nrpn:                 {label: "MOD ENV sustain", nrpn: 19, part: audio, group: mod_env}
+  audio_mod_env_release_nrpn:                 {label: "MOD ENV release", nrpn: 20, part: audio, group: mod_env}
+  audio_mod_env_reset_nrpn:                   {label: "MOD ENV reset", nrpn: 21, part: audio, group: mod_env}
+  audio_mod_env_delay_nrpn:                   {label: "MOD ENV delay", nrpn: 22, part: audio, group: mod_env}
+  audio_mod_env_depth_nrpn:                   {label: "MOD ENV depth", nrpn: 24, part: audio, group: mod_env}
+
+  # VOICE -------------------------------------------------------
+  audio_portamento_time:                      {label: "Portamento time", cc: 9, part: audio, group: voice}
+  audio_portamento_on:                        {label: "Portamento on/off", cc: 65, part: audio, group: voice}
+  audio_retrig_on_nrpn:                       {label: "Retrig on/off", nrpn: 42, part: audio, group: voice}
+  audio_retrig_time_nrpn:                     {label: "Retrig time", nrpn: 43, part: audio, group: voice}
+  audio_retrig_velocity_nrpn:                 {label: "Retrig velocity", nrpn: 44, part: audio, group: voice}
+
+  # MIXER -------------------------------------------------------
+  mix_in_a_level:                             {label: "In A level", cc: 16, part: mix, group: mixer}
+  mix_in_a_pan:                               {label: "In A Pan", cc: 17, part: mix, group: mixer}
+  mix_in_a_routing_destination:               {label: "In A routing destination", cc: 18, part: mix, group: mixer}
+  mix_in_b_level:                             {label: "In B level", cc: 20, part: mix, group: mixer}
+  mix_in_b_pan:                               {label: "In B Pan", cc: 21, part: mix, group: mixer}
+  mix_in_b_routing_destination:               {label: "In B routing destination", cc: 22, part: mix, group: mixer}
+  audio_global_mute:                          {label: "Global mute", cc: 94, part: audio, group: mixer}
+  bus_global_mute:                            {label: "Global mute", cc: 94, part: bus, group: mixer}
+  fx_send_global_mute:                        {label: "Global mute", cc: 94, part: fx_send, group: mixer}
+  mix_global_mute:                            {label: "Global mute", cc: 94, part: mix, group: mixer}
+  audio_track_level:                          {label: "Track level", cc: 95, part: audio, group: mixer}
+  bus_track_level:                            {label: "Track level", cc: 95, part: bus, group: mixer}
+  fx_send_track_level:                        {label: "Track level", cc: 95, part: fx_send, group: mixer}
+  mix_track_level:                            {label: "Track level", cc: 95, part: mix, group: mixer}
+
+  # SUBTRACKS SRC MACHINE ---------------------------------------
+  subtrack_1_src_tune:                        {label: "Subtrack 1 SRC tune", nrpn: 144, part: audio, group: subtrack}
+  subtrack_1_src_play_mode:                   {label: "Subtrack 1 SRC play mode", nrpn: 145, part: audio, group: subtrack}
+  subtrack_1_src_start:                       {label: "Subtrack 1 SRC start", nrpn: 148, part: audio, group: subtrack}
+  subtrack_1_src_length:                      {label: "Subtrack 1 SRC length", nrpn: 149, part: audio, group: subtrack}
+  subtrack_1_src_loop_point:                  {label: "Subtrack 1 SRC loop point", nrpn: 150, part: audio, group: subtrack}
+  subtrack_1_fltr_env_reset:                  {label: "Subtrack 1 FLTR env reset", nrpn: 173, part: audio, group: subtrack}
+  subtrack_1_fltr_env_delay:                  {label: "Subtrack 1 FLTR env delay", nrpn: 174, part: audio, group: subtrack}
+  subtrack_1_amp_mode:                        {label: "Subtrack 1 AMP mode", nrpn: 176, part: audio, group: subtrack}
+  subtrack_1_amp_env_reset:                   {label: "Subtrack 1 AMP env reset", nrpn: 177, part: audio, group: subtrack}
+  subtrack_1_fltr_attack:                     {label: "Subtrack 1 FLTR attack", nrpn: 198, part: audio, group: subtrack}
+  subtrack_1_fltr_decay:                      {label: "Subtrack 1 FLTR decay", nrpn: 199, part: audio, group: subtrack}
+  subtrack_1_fltr_sustain:                    {label: "Subtrack 1 FLTR sustain", nrpn: 200, part: audio, group: subtrack}
+  subtrack_1_fltr_release:                    {label: "Subtrack 1 FLTR release", nrpn: 201, part: audio, group: subtrack}
+  subtrack_1_fltr_frequency:                  {label: "Subtrack 1 FLTR frequency", nrpn: 202, part: audio, group: subtrack}
+  subtrack_1_fltr_resonance:                  {label: "Subtrack 1 FLTR resonance", nrpn: 203, part: audio, group: subtrack}
+  subtrack_1_fltr_type:                       {label: "Subtrack 1 FLTR type", nrpn: 204, part: audio, group: subtrack}
+  subtrack_1_fltr_env_depth:                  {label: "Subtrack 1 FLTR env depth", nrpn: 205, part: audio, group: subtrack}
+  subtrack_1_fltr_base:                       {label: "Subtrack 1 FLTR base", nrpn: 206, part: audio, group: subtrack}
+  subtrack_1_fltr_width:                      {label: "Subtrack 1 FLTR width", nrpn: 207, part: audio, group: subtrack}
+  subtrack_1_fltr_frequency_spread:           {label: "Subtrack 1 FLTR frequency spread", nrpn: 208, part: audio, group: subtrack}
+  subtrack_1_amp_attack:                      {label: "Subtrack 1 AMP attack", nrpn: 211, part: audio, group: subtrack}
+  subtrack_1_amp_hold:                        {label: "Subtrack 1 AMP hold", nrpn: 212, part: audio, group: subtrack}
+  subtrack_1_amp_decay:                       {label: "Subtrack 1 AMP decay", nrpn: 213, part: audio, group: subtrack}
+  subtrack_1_amp_sustain:                     {label: "Subtrack 1 AMP sustain", nrpn: 214, part: audio, group: subtrack}
+  subtrack_1_amp_release:                     {label: "Subtrack 1 AMP release", nrpn: 215, part: audio, group: subtrack}
+  subtrack_1_amp_overdrive:                   {label: "Subtrack 1 AMP overdrive", nrpn: 216, part: audio, group: subtrack}
+  subtrack_1_amp_pan:                         {label: "Subtrack 1 AMP pan", nrpn: 138, part: audio, group: subtrack}
+  subtrack_1_amp_volume:                      {label: "Subtrack 1 AMP volume", nrpn: 217, part: audio, group: subtrack}
+  subtrack_1_voice_lfo1_speed:                {label: "Subtrack 1 VOICE LFO1 speed", nrpn: 230, part: audio, group: subtrack}
+  subtrack_1_voice_lfo1_multiplier:           {label: "Subtrack 1 VOICE LFO1 multiplier", nrpn: 231, part: audio, group: subtrack}
+  subtrack_1_voice_lfo1_fade:                 {label: "Subtrack 1 VOICE LFO1 fade", nrpn: 232, part: audio, group: subtrack}
+  subtrack_1_voice_lfo1_waveform:             {label: "Subtrack 1 VOICE LFO1 waveform", nrpn: 234, part: audio, group: subtrack}
+  subtrack_1_voice_lfo1_start_phase:          {label: "Subtrack 1 VOICE LFO1 start phase / VOICE LFO1 slew", nrpn: 235, part: audio, group: subtrack}
+  subtrack_1_voice_lfo1_trig_mode:            {label: "Subtrack 1 VOICE LFO1 trig mode", nrpn: 236, part: audio, group: subtrack}
+  subtrack_1_voice_lfo1_depth:                {label: "Subtrack 1 VOICE LFO1 depth", nrpn: 237, part: audio, group: subtrack}
+  subtrack_1_voice_lfo2_speed:                {label: "Subtrack 1 VOICE LFO2 speed", nrpn: 238, part: audio, group: subtrack}
+  subtrack_1_voice_lfo2_multiplier:           {label: "Subtrack 1 VOICE LFO2 multiplier", nrpn: 239, part: audio, group: subtrack}
+  subtrack_1_voice_lfo2_fade:                 {label: "Subtrack 1 VOICE LFO2 fade", nrpn: 240, part: audio, group: subtrack}
+  subtrack_1_voice_lfo2_waveform:             {label: "Subtrack 1 VOICE LFO2 waveform", nrpn: 242, part: audio, group: subtrack}
+  subtrack_1_voice_lfo2_start_phase_voice_lfo2_slew: {label: "Subtrack 1 VOICE LFO2 start phase VOICE LFO2 slew", nrpn: 243, part: audio, group: subtrack}
+  subtrack_1_voice_lfo2_trig_mode:            {label: "Subtrack 1 VOICE LFO2 trig mode", nrpn: 244, part: audio, group: subtrack}
+  subtrack_1_voice_lfo2_depth:                {label: "Subtrack 1 VOICE LFO2 depth", nrpn: 245, part: audio, group: subtrack}
+  subtrack_1_mod_env_attack:                  {label: "Subtrack 1 MOD ENV attack", nrpn: 246, part: audio, group: subtrack}
+  subtrack_1_mod_env_decay:                   {label: "Subtrack 1 MOD ENV decay", nrpn: 247, part: audio, group: subtrack}
+  subtrack_1_mod_env_sustain:                 {label: "Subtrack 1 MOD ENV sustain", nrpn: 248, part: audio, group: subtrack}
+  subtrack_1_mod_env_release:                 {label: "Subtrack 1 MOD ENV release", nrpn: 249, part: audio, group: subtrack}
+  subtrack_1_mod_env_reset:                   {label: "Subtrack 1 MOD ENV reset", nrpn: 250, part: audio, group: subtrack}
+  subtrack_1_mod_env_delay:                   {label: "Subtrack 1 MOD ENV delay", nrpn: 251, part: audio, group: subtrack}
+  subtrack_1_mod_env_depth:                   {label: "Subtrack 1 MOD ENV depth", nrpn: 253, part: audio, group: subtrack}

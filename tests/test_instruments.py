@@ -173,6 +173,7 @@ class TestBundledCorpus:
 			"elektron/model_samples",
 			"elektron/octatrack",
 			"elektron/syntakt",
+			"elektron/tonverk",
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
 			"korg/electribe",
@@ -916,6 +917,119 @@ class TestSyntakt:
 		assert syntakt.parts["track"].polyphony == 1
 		assert syntakt.voice.polyphony_shared is False
 		assert sorted(syntakt.parts) == ["fx", "track"]
+
+
+class TestTonverk:
+
+	"""Sixteen tracks in four kinds, and an appendix that generates more numbers than it prints."""
+
+	def test_its_sixteen_tracks_come_in_four_kinds (self) -> None:
+		"""Eight audio, four bus, three send FX and one mix, each with a channel of its own."""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+
+		assert list(tonverk.parts) == ["audio", "bus", "fx_send", "mix"]
+		assert [part.count for part in tonverk.parts.values()] == [8, 4, 3, 1]
+		assert sum(part.count for part in tonverk.parts.values()) == 16
+		assert all(part.is_assigned for part in tonverk.parts.values())
+
+		# **ONLY THE AUDIO TRACKS TAKE NOTES**, because a note plays the active track's preset
+		# and only tracks 1 to 8 hold one.
+		assert tonverk.parts["audio"].takes("notes")
+
+		for key in ("bus", "fx_send", "mix"):
+			assert not tonverk.parts[key].takes("notes")
+			assert tonverk.parts[key].receives == ("controls",)
+
+	def test_six_numbers_name_different_parameters_on_different_kinds (self) -> None:
+		"""Which is a different thing from a number present on one kind and absent on another."""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+
+		byte: dict[int, dict[str, str]] = {}
+
+		for control in tonverk.controls.values():
+			if control.cc is not None and control.part is not None:
+				byte.setdefault(control.cc, {})[control.part] = control.label
+
+		conflicting = sorted(number for number, kinds in byte.items()
+			if len(set(kinds.values())) > 1)
+
+		assert conflicting == [16, 17, 18, 20, 21, 22]
+
+		# Each is a source machine's data entry knob on an audio track and an input setting on
+		# the mix track, so a message on the wrong channel does something rather than nothing.
+		assert byte[16]["audio"].startswith("SRC 1 Data entry knob A")
+		assert byte[16]["mix"] == "In A level"
+
+	def test_one_row_of_the_appendix_is_misprinted (self) -> None:
+		"""CC 23 and CC 31 are printed with the same name, and only one of them can be right."""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+
+		# The label ships as printed; only the key follows the sequence.
+		assert tonverk.controls["audio_src_1_data_entry_knob_h"].cc == 23
+		assert tonverk.controls["audio_src_2_data_entry_knob_h"].cc == 31
+
+		assert tonverk.controls["audio_src_2_data_entry_knob_h"].label == \
+			"SRC 1 Data entry knob H (machine dependent)"
+
+		said = prose_of("elektron", "tonverk")
+
+		assert "Two distinct numbers cannot both be SRC 1's knob H" in said
+
+	def test_the_subtrack_numbers_it_does_not_print_are_not_here (self) -> None:
+		"""49 rows against a `1-8` MSB is 392 numbers, and 343 of them are on no page."""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+
+		subtracks = [key for key in tonverk.controls if key.startswith("subtrack_")]
+
+		assert len(subtracks) == 49
+		assert all(key.startswith("subtrack_1_") for key in subtracks)
+
+		# Every one of them is the first subtrack's, which is the MSB the printed range opens
+		# with - so each number is findable on the page the definition cites.
+		for key in subtracks:
+			control = tonverk.controls[key]
+
+			assert control.nrpn is not None
+			assert 128 <= control.nrpn < 256
+			assert control.label.startswith("Subtrack 1 ")
+
+		said = prose_of("elektron", "tonverk")
+
+		assert "343 of them are printed nowhere" in said
+
+	def test_every_direction_is_a_setting_and_all_of_them_are_two_way (self) -> None:
+		"""Clock, transport and program change each have a switch per direction."""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+
+		assert tonverk.midi.clock == "both"
+		assert tonverk.midi.transport == "both"
+
+		assert tonverk.midi.program_change is not None
+		assert tonverk.midi.program_change.receives is True
+		assert tonverk.midi.program_change.sends is True
+
+		# Patterns, not presets: eight banks of sixteen.
+		assert tonverk.midi.program_change.presets == 128
+
+		# And the controls travel both ways, so none carries a direction of its own.
+		assert all(control.direction == pymidiinstrumentdefs.definition.BOTH
+			for control in tonverk.controls.values())
+
+	def test_four_things_are_left_out_and_each_says_why (self) -> None:
+		"""Two the manual half-states, one it states per machine, one it never mentions."""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+
+		assert tonverk.voice.aftertouch is None
+		assert tonverk.voice.pitch_bend is None
+		assert tonverk.voice.polyphony is None
+		assert tonverk.midi.sysex is None
+
+		said = prose_of("elektron", "tonverk")
+
+		# Aftertouch and pitch bend are received and their shapes are not stated.
+		assert "assign up to four parameters to the MIDI aftertouch command" in said
+		assert "Sets the amount of pitch bend data from external MIDI devices" in said
+		assert "not mentioned in any spelling on any of the 130 pages" in said
 
 
 class TestWavestate:

@@ -171,6 +171,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/monologue` | Korg monologue: 24 controls out of an implementation printed twice, one direction each, where two numbers are received only and one control's bands are the footnote the maker forgot |
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
+| `korg/volca_bass` | Korg volca bass: 12 controls that only arrive, from an instrument with no MIDI Out jack - and three of them reach parameters its panel cannot, two of which its owner's manual never names |
 | `korg/volca_beats` | Korg volca beats: 20 controls and ten parts off a plain text file, where the chart beside it draws its yes and no marks and names only seven of the ten |
 | `korg/volca_drum` | Korg volca drum: six parts on six MIDI channels, and the one of its maker's two charts that the instrument answers to out of the box |
 | `korg/wavestate` | Korg wavestate: 41 of its 50 controller numbers are defaults a player can reassign, and its maker publishes no control-change chart |

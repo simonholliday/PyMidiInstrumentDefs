@@ -185,6 +185,7 @@ class TestBundledCorpus:
 			"korg/monologue",
 			"korg/multi_poly",
 			"korg/opsix",
+			"korg/volca_bass",
 			"korg/volca_beats",
 			"korg/volca_drum",
 			"korg/wavestate",
@@ -8616,6 +8617,100 @@ class TestVolcaBeats:
 
 		assert "THE PLAIN TEXT FILE IS THE BETTER DOCUMENT" in said
 		assert "not in its text layer at all" in said
+
+
+class TestVolcaBass:
+
+	"""An instrument with no MIDI Out jack, whose maker says so rather than leaving a blank."""
+
+	def test_every_control_only_arrives (self) -> None:
+		"""Twelve of them, and the implementation gives the reason in its second line."""
+		bass = pymidiinstrumentdefs.load("korg/volca_bass", [CORPUS])
+
+		assert len(bass.controls) == 12
+		assert all(control.direction == "receives" for control in bass.controls.values())
+
+		said = prose_of("korg", "volca_bass")
+
+		assert "No message is transmitted." in said
+		assert "The volca bass is not equipped with a MIDI Out jack." in said
+
+		# Which is a checked absence in both documents: one says it in a sentence and the
+		# other by thirty identical marks.
+		assert "thirty crosses in the Transmitted column and not one circle" in said
+
+	def test_three_controls_reach_what_the_panel_cannot (self) -> None:
+		"""The chart's `*3`, and the manual never prints two of the three names."""
+		bass = pymidiinstrumentdefs.load("korg/volca_bass", [CORPUS])
+
+		for key, number in (("slide_time", 5), ("expression", 11), ("gate_time", 49)):
+			assert bass.controls[key].cc == number
+			assert bass.controls[key].group == "performance"
+
+		said = prose_of("korg", "volca_bass")
+
+		assert "Cannot be changed with machine operations; can only be changed with MIDI." in said
+
+		# **AND THE FORMAT HAS NO WORD FOR IT.** `panel_only` says the opposite, so none of
+		# the three carries it and the prose has to.
+		assert not any(control.panel_only for control in bass.controls.values())
+		assert "there is no field for a control a message reaches that the panel" in said
+
+	def test_the_octave_bands_are_the_only_value_map_either_document_gives (self) -> None:
+		"""Six bands over the whole span, from the implementation's own `*2` table."""
+		bass = pymidiinstrumentdefs.load("korg/volca_bass", [CORPUS])
+
+		assert bass.controls["octave"].values == {
+			"oct_1": 0, "oct_2": 22, "oct_3": 44, "oct_4": 66, "oct_5": 88, "oct_6": 110}
+
+		# And nothing else here names a value at all.
+		assert [key for key, control in bass.controls.items() if control.values] == ["octave"]
+		assert not any(control.choices for control in bass.controls.values())
+
+	def test_what_the_chart_settles_as_a_checked_absence (self) -> None:
+		"""Four crosses in both columns, which is different from four silences."""
+		bass = pymidiinstrumentdefs.load("korg/volca_bass", [CORPUS])
+
+		assert bass.midi.sysex is False
+		assert bass.midi.nrpn == "none"
+		assert bass.voice.aftertouch == "none"
+
+		assert bass.midi.program_change is not None
+		assert bass.midi.program_change.receives is False
+		assert bass.midi.program_change.sends is False
+
+		# And what it settles positively.
+		assert bass.midi.channels == (1, 16)
+		assert bass.midi.mode == 3
+		assert bass.midi.clock == "receives"
+		assert bass.midi.transport == "receives"
+
+	def test_polyphony_is_not_recorded_although_there_are_three_oscillators (self) -> None:
+		"""The grouping the manual describes is a property of sequences, not of MIDI notes."""
+		bass = pymidiinstrumentdefs.load("korg/volca_bass", [CORPUS])
+
+		assert bass.voice.polyphony is None
+		assert bass.voice.voicing_modes == ()
+
+		# The three oscillators are three controls, which is as far as the documents go.
+		for index in (1, 2, 3):
+			assert bass.controls[f"vco_pitch_{index}"].group == "oscillators"
+
+		said = prose_of("korg", "volca_bass")
+
+		assert "VCOs grouped together are activated by the same sequence data" in said
+		assert "No page of any of the three documents says how many" in said
+
+	def test_the_two_documents_disagree_about_one_footnote (self) -> None:
+		"""Recorded and not resolved, because nothing in the file turns on it."""
+		bass = pymidiinstrumentdefs.load("korg/volca_bass", [CORPUS])
+
+		said = prose_of("korg", "volca_bass")
+
+		assert "carries no footnote at all" in said
+
+		# Pitch bend has no block here at all, which is why the disagreement costs nothing.
+		assert bass.voice.pitch_bend is None
 
 
 class TestMonologue:

@@ -1,0 +1,255 @@
+# THIS INSTRUMENT SENDS NOTHING, AND ITS MAKER SAYS SO IN A SENTENCE RATHER THAN BY LEAVING A
+# COLUMN BLANK. "No message is transmitted." (implementation), with the reason in the line
+# beneath it: "The volca bass is not equipped with a MIDI Out jack." (implementation). So every
+# control below is `receives`, and that is a checked absence rather than a silence - which is
+# worth the distinction, because this maker's chart could have said it by blankness alone and
+# instead says it twice.
+#
+# **THE CHART SAYS THE SAME THING THIRTY TIMES AND NONE OF THEM IS TEXT.** Its answers are drawn
+# marks: a circle for yes and a cross for no, and a text extraction of the page returns every row
+# label and not one answer. They are recoverable because **the two are drawn differently** - a
+# circle is a path of curve segments and a cross a path of straight lines - so
+# `Notes/4604_extract_volca_bass.py` reads all 59 of them by asking what each path is made of,
+# and finds **thirty crosses in the Transmitted column and not one circle.** That is the
+# SP-404MKII's arrow-glyph problem in a form that could be solved rather than worked around.
+#
+# TWO DOCUMENTS DISAGREE ABOUT ONE MESSAGE, AND IT IS RECORDED RATHER THAN RESOLVED. The chart
+# marks Pitch Bend with `*1` - "Received when global parameter MIDI RX ShortMessage is set to ON."
+# (chart p. 1) - and the implementation's Pitch Bender Change row **carries no footnote at all**,
+# where every one of its twelve control change rows carries `*1`. So one document says pitch bend
+# depends on that setting and the other says, by its silence in a table that is otherwise
+# scrupulous about marking, that it does not. Nothing below turns on it: pitch bend has no field
+# here anyway, because no document says how far this instrument bends.
+#
+# THREE OF THE TWELVE CONTROLLERS REACH SOMETHING THE PLAYER CANNOT. The chart marks CC 5, 11
+# and 49 with `*3`: "Cannot be changed with machine operations; can only be changed with MIDI."
+# (chart p. 1). And the owner's manual bears it out - **it never prints the words `GATE TIME` or
+# `EXPRESSION` at all**, and gives `SLIDE` only as a per-step switch with no mention of its time.
+# So a MIDI controller does not merely duplicate this instrument's panel, it extends it.
+#
+# **The format has no word for that.** `panel_only` says the opposite - a control on the panel
+# that no message reaches - and there is no field for a control a message reaches that the panel
+# does not. Raised rather than hidden, and the three are in the `performance` group below, which
+# is what they have in common besides.
+#
+# EVERY MESSAGE THIS INSTRUMENT ANSWERS TO IS CONDITIONAL ON A GLOBAL SETTING, and both settings
+# ship permissive. `*1` covers the notes and all twelve controllers and is off when `MIDI RX
+# ShortMessage` is Off; `*2` covers the clock and the transport - "Not received when global
+# parameter MIDI Clock src is set to Internal; received when set to Auto." (chart p. 1). The
+# manual's table of global parameters marks Auto and On as the factory defaults, so an instrument
+# out of the box answers to all of it.
+#
+# NOT RECORDED: polyphony. This instrument has three oscillators and a setting that groups them -
+# "Each VCO will be in a separate group and operated by separate sequences." (manual p. 1) at one
+# extreme and "All VCOs will be in the same group." (manual p. 1) at the other - but the manual
+# describes that grouping as a property of **sequences**: "VCOs grouped together are activated by
+# the same sequence data" (manual p. 1). **No page of any of the three documents says how many
+# notes arriving over MIDI will sound at once**, so three would be an inference from the hardware
+# and one would be an inference from the name.
+#
+# Also not recorded: pitch bend's range, which no document states; and anything about the SYNC
+# IN and OUT jacks, which carry a voltage pulse rather than a MIDI message and so are no part of
+# `clock`.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: volca bass
+  # NOT RECORDED, and the omission is this maker's. None of the three documents states a firmware
+  # version for the instrument: the chart carries its own `Ver.: 1.01`, the implementation its own
+  # `Revision 0.01`, and both of those number the document. The downloads page offers a `volca
+  # bass/System Updater` at 1.02, so a firmware number exists and no document here says which one
+  # it describes. Checked 2026-10-05.
+
+source: >-
+  The volca bass MIDI Implementation, "Revision 0.01 (2013.06.23)" (implementation), **a 3.4 KB
+  plain text file rather than a PDF**; the volca bass MIDI Implementation Chart, whose single sheet is cited
+  throughout as p. 1, carrying `Ver.: 1.01` and dated 2013. 06. 10 on its face; and the volca bass Owner's Manual,
+  edition EFGSCJ 4. All three are offered on one Korg downloads page, which is saved beside them.
+
+  THE IMPLEMENTATION IS THE SOURCE OF EVERY NUMBER and the chart is a second reading of it.
+  Twelve control changes, and both documents name all twelve - checked one by one rather than
+  taken on trust, because the chart's names live in its Remarks column, which is text, where its
+  answers do not.
+
+  **THE CHART'S ANSWERS ARE DRAWINGS.** 59 marks inside the table, a circle for yes and a cross
+  for no, and nothing in the text layer to say which is where. They are read by what each path is
+  made of - curves against straight lines - which is sound here because the chart uses no other
+  shape inside its rules. Thirty crosses in the Transmitted column and not one circle, nineteen
+  circles in the recognised one. The legend below the table prints one of each beside the words
+  it defines, and is excluded by the table's own bottom rule rather than by eye.
+
+  WHAT THE TWO DOCUMENTS DISAGREE ABOUT is one footnote on pitch bend; see the comment above the
+  definition. **What they agree about is everything else**, including the direction of every
+  message, the twelve numbers, and their names bar one spelling: the implementation prints `EG
+  DECAT/RELEASE` where the chart prints `EG DECAY/RELEASE`, and the chart is the one that can be
+  read as a word. The implementation also prints `Contiune` for Continue in its realtime table.
+  Two typos in 3.4 KB, both carried here as findings rather than as names - the control below
+  takes the chart's spelling.
+
+  AND ONE SMALL DEFECT IN THE IMPLEMENTATION'S OWN APPARATUS: its channel-message table defines
+  `[H]:Hex, [D]:Decimal` and its system-common table then heads two columns `Second[B]` and
+  `Third[B]`, where `[B]` is defined nowhere. From the bit patterns printed under it, it means
+  binary.
+
+  THE ONE THING ONLY THE IMPLEMENTATION SAYS is what a Song Position Pointer does here: "pppp :
+  0~15 = STEP 1 ~ STEP 16" (implementation), with the rest of the message's bits marked ignored.
+  So this instrument reads a song position as a step within one sixteen-step pattern and discards
+  the bars - which is a sixteen-step sequencer's honest reading of a message meant for a longer
+  song, and the chart says only that the message is received.
+
+  THE THREE DOCUMENTS ARE DATED THREE WAYS AND NONE OF THEM AGREES WITH THE PAGE THAT OFFERS
+  THEM. The chart's face says 2013. 06. 10, its own metadata says it was made on 2013-06-14, and
+  the downloads page dates the file 2015.06.01. The implementation's face says 2013.06.23 and the
+  page dates it 2016.01.08. **Neither date on a page is a date in a document**, which is worth
+  knowing before citing either: the dates recorded in the sources below are the documents' own.
+
+  Korg encrypts every PDF it serves for this instrument with an empty password, as it does for
+  the volca drum - noted because a reader whose tool refuses them is meeting a setting and not a
+  fault.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: KORG volca bass MIDI Implementation
+    edition: Revision 0.01
+    dated: 2013-06-23
+    landing: "https://www.korg.com/us/support/download/product/0/140/"
+    url: "https://cdn.korg.com/us/support/download/files/4f041c47111fbe16809ec94c3bd90ca7.txt?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27volca_bass_MIDIimp.txt&response-content-type=application%2Foctet-stream%3B"
+    sha256: 45d01b374c11a12ea3f6ad5e00086837f661fadb8da9651b9dd48472bd0dfeaf
+    retrieved: 2026-10-05
+    paginated: false
+    # **A PLAIN TEXT FILE**, 3,397 bytes, ASCII with CRLF endings, laid out as ASCII-art tables.
+    # It has no pages, so a locator against it names the source and nothing else. The source of
+    # every number below, of the six `OCTAVE` bands, and of the only statement anywhere about
+    # what a Song Position Pointer means here.
+  chart:
+    kind: midi_implementation
+    title: volca bass MIDI Implementation chart
+    edition: E 1
+    dated: 2013-06-10
+    landing: "https://www.korg.com/us/support/download/product/0/140/"
+    url: "https://cdn.korg.com/us/support/download/files/5b722ac465bb10f1907528e571968f4e.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27volca_bass_MIDI_Chart_E.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 761eb13dd2202936dad695ca726025607cbdc41f3253d6da560c84a9d31a24e5
+    retrieved: 2026-10-05
+    # One page, cited as p. 1, and the page prints no number of its own. The edition above is the
+    # file's `/Subject` field; the date is the one printed on the face of the page, which is four
+    # days before the file was made and two years before the downloads page says it was posted.
+    # **Its answers are drawn marks and not text** - see the source account.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: volca bass Owner's Manual
+    edition: EFGSCJ 4
+    dated: 2024-11-07
+    landing: "https://www.korg.com/us/support/download/product/0/140/"
+    url: "https://cdn.korg.com/us/support/download/files/2f40ef4723d56c66090c59ef38ea2a1b.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27volca_bass_OM_EFGSCJ4.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 9375cc1234298f2983a7d81f6bb3e4ff89cd923bc26b63980cede9a7f4009a50
+    retrieved: 2026-10-05
+    # **Two sheets, each 28.7 by 20.3 inches**, which is how six languages fit into two pages -
+    # the same shape as the volca drum's. The English text is a column region of each sheet and
+    # is what is cited; printed page = file page, and neither sheet prints a number.
+    # Cited for the MIDI channel setting, for the two global parameters the chart's footnotes
+    # name and their factory defaults, and for the VCO grouping. **And for two absences**: it
+    # never prints `GATE TIME` or `EXPRESSION`, which is what makes the chart's `*3` checkable.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: Downloads - volca bass
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/0/140/"
+    sha256: 017f370c317ec3b577cb16296639b41983da8ee7c7be189353d324da220cb438
+    retrieved: 2026-10-05
+    paginated: false
+    # Cited for what Korg offers for this instrument: the three documents above, a RoHS notice in
+    # Chinese, and a `volca bass/System Updater` at 1.02 - which is the only version number
+    # anywhere that belongs to the instrument rather than to a document. The page reaches each
+    # file through a licence-agreement page rather than linking it directly, so none of the four
+    # URLs above is on this page at all. The digest is of the extraction; the served bytes are
+    # saved beside it as `.html`.
+
+midi:
+  # "Step buttons 1 to 16 correspond to the MIDI channels 1 to 16." (manual p. 1), and the chart
+  # gives 1 - 16 for both the default and the changed channel, with "Memorized" against it. **No
+  # default is recorded**: the chart prints the span in the box where a single default would go,
+  # and no page says which channel a new instrument starts on.
+  channels: [1, 16]
+  # The chart's Mode row: 3 recognised, which is OMNI OFF, POLY by its own legend.
+  mode: 3
+  # RECEIVES, AND IT COULD NOT BE ANYTHING ELSE: the chart marks Clock with a cross transmitted
+  # and a circle recognised, and the instrument has no MIDI Out jack to send one from. Conditional
+  # on a setting that ships permissive - "Not received when global parameter MIDI Clock src is set
+  # to Internal; received when set to Auto." (chart p. 1).
+  clock: receives
+  # Start, Continue and Stop as one Command row of the chart, and Song Position as its own row,
+  # all recognised and none transmitted. The implementation prints the three realtime bytes and
+  # misspells one of them.
+  transport: receives
+  program_change:
+    # A CHECKED ABSENCE IN BOTH DIRECTIONS: the chart marks Program Change with a cross
+    # transmitted and a cross recognised, and its Variable Range row is the asterisks it prints
+    # where a cell does not apply. The implementation lists no program change among the channel
+    # messages it recognises, and that table is exhaustive.
+    receives: false
+    sends: false
+  # The implementation enumerates every channel message this instrument answers to and there is
+  # no registered or non-registered parameter among them, which makes this a checked absence
+  # rather than a silence. The chart has no row for either, as this maker's charts do not.
+  nrpn: none
+  # The chart marks System Exclusive with a cross in both columns.
+  sysex: false
+
+voice:
+  # The chart gives Note Number as `0 – 127` recognised, against nothing
+  # transmitted, and the implementation's Note On and Note Off rows take a key number. This is a
+  # bassline synthesiser and a note is a pitch, which is where it differs from the volca drum.
+  addressing: pitches
+  note_range: [0, 127]
+  velocity:
+    # The chart's Velocity row: Note On recognised as "9n, V=1 – 127" (chart p. 1) with a
+    # cross in both columns. The implementation agrees and adds the convention in words - a Note
+    # On of velocity nought is a Note Off.
+    note_on: received
+    note_off: false
+  # A checked absence from the chart's own rows: Polyphonic (Key) is a cross in both columns and
+  # Monophonic (Channel) is a cross in both columns.
+  aftertouch: none
+  # NOT RECORDED: pitch bend's range. The chart recognises Pitch Bend and the implementation
+  # prints its status byte, and **no document says how far it bends**, so there is no number for
+  # `semitones` and nothing to say about whether it is programmable.
+
+groups:
+  oscillators: Oscillators
+  lfo: LFO
+  envelope: Envelope
+  performance: Performance
+
+controls:
+  # OSCILLATORS -----------------------------------------------------
+  # **THE ONE CONTROL EITHER DOCUMENT GIVES A MEANING TO.** Six bands over the whole span, from
+  # the implementation's `*2` table, which is the only value map anywhere in these documents.
+  octave:                           {label: OCTAVE, cc: 40, values: {"oct_1": 0, "oct_2": 22, "oct_3": 44, "oct_4": 66, "oct_5": 88, "oct_6": 110}, group: oscillators, direction: receives}
+  vco_pitch_1:                      {label: VCO PITCH 1, cc: 43, group: oscillators, direction: receives}
+  vco_pitch_2:                      {label: VCO PITCH 2, cc: 44, group: oscillators, direction: receives}
+  vco_pitch_3:                      {label: VCO PITCH 3, cc: 45, group: oscillators, direction: receives}
+
+  # LFO -------------------------------------------------------------
+  lfo_rate:                         {label: LFO RATE, cc: 41, group: lfo, direction: receives}
+  lfo_int:                          {label: LFO INT, cc: 42, group: lfo, direction: receives}
+
+  # ENVELOPE --------------------------------------------------------
+  eg_attack:                        {label: EG ATTACK, cc: 46, group: envelope, direction: receives}
+  # **THE CHART'S SPELLING, BECAUSE THE IMPLEMENTATION'S IS NOT A WORD.** That file prints `EG
+  # DECAT/RELEASE`; the chart prints `EG DECAY/RELEASE`, and the knob on the panel is DECAY/
+  # RELEASE. Recorded here rather than silently corrected, because the number comes from the
+  # file that misspells it.
+  eg_decay_release:                 {label: EG DECAY/RELEASE, cc: 47, group: envelope, direction: receives}
+  cutoff_eg_int:                    {label: CUTOFF EG INT, cc: 48, group: envelope, direction: receives}
+
+  # PERFORMANCE -----------------------------------------------------
+  # **THESE THREE ARE THE ONES THE PANEL CANNOT REACH**, marked `*3` on the chart, and two of
+  # them are named nowhere in the owner's manual. A controller is the only way to any of them.
+  slide_time:                       {label: SLIDE TIME, cc: 5, group: performance, direction: receives}
+  expression:                       {label: EXPRESSION, cc: 11, group: performance, direction: receives}
+  gate_time:                        {label: GATE TIME, cc: 49, group: performance, direction: receives}

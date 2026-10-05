@@ -1,0 +1,636 @@
+# SIXTY PARAMETERS ARE NAMED HERE WITH NO NUMBER AT ALL, AND THAT IS THIS DOCUMENT'S HEADLINE.
+# The MIDI parameters list names all four parameters of all sixteen Modulation Matrix slots. It
+# prints the four numbers of slot 1 - NRPN 1:0 to 1:3 - and then the Control Number column is
+# empty for every row of slots 2 to 16: sixty rows with a name, a range and a default, and no
+# way to address any of them. **The sibling Peak's manual numbers all sixteen slots**, 1:0 to
+# 16:3, and the two instruments share an engine - so the numbers exist and are published, in the
+# other instrument's document. They are not here, and they are not inferred: see the source
+# account for the three editions that were searched before that was written down.
+#
+# THE MAKER'S DEFAULT COLUMN DOES NOT AGREE WITH ITSELF, AND 36 OF THE 189 CONTROLS BELOW CARRY
+# NO DEFAULT BECAUSE OF IT. The list prints up to two numbers per row - `64 (0)` - and the second
+# is the first as the display shows it, which the row's own Range column gives the arithmetic
+# for: a range of `0-127 (-64 to +63)` says the display is the wire value less 64, so `64 (0)`
+# checks out and `0 (60)` cannot. Nothing in either document explains either column. Three ways
+# the rule found a row the guide does not settle:
+#
+#   28 rows where the two halves cannot both be right, by the row's own range;
+#    3 where the body states a range shifted from the MIDI one and the default then lands
+#      somewhere the document contradicts - a pan that would default to hard left where the
+#      screen beside it reads `PanPosn +0` (addendum p. 4), an arpeggiator that would start on
+#      two octaves where the body says one, and a reverb whose three presets the body numbers
+#      1 to 3;
+#    3 that print no default at all, the FM NRPNs the addendum gives in a bug-fix bullet;
+#    1 that prints no wire value at all, the Arp/Clock Sync Rate's "16th.";
+#    1 whose row carries no range for the arithmetic to use, `Effects Routing`.
+#
+# A default is recorded only where every statement the documents make about it agrees.
+# `Notes/4599_write_controls.py` applies that rule and names each of the 36 refusals with the
+# arithmetic that refused it. **THE REVERB IS THE ONE THE GUIDE DISPROVES TWICE**, and it is the
+# same parameter of the same engine that the Peak's manual disproves twice: its three presets
+# "are simply numbered 1, 2 and 3, and set the RevSize parameter (see page 37) to values of 0,
+# 64 or 127 respectively" (guide p. 35), and `RevSize`'s own initial value is 64 - which is
+# preset 2, where the Default Value column's 2 on a range of 0-2 would be preset 3.
+#
+# AND THE SECOND WITNESS THIS GUIDE HAS CANNOT BE JOINED TO ITS OWN TABLE. The Peak's manual
+# prints an Init Patch table keyed by parameter name and 34 of its rows could be checked against
+# it. This guide has no such table. What it has is 105 blocks of body text, each giving a
+# `Displayed as` / `Initial value` / `Range of adjustment` triple, 88 of them with an initial
+# value - and the display name is scoped to a menu screen while the MIDI list's name does not
+# carry the menu, so `Velocity`, `Delay`, `HoldTime` and `Repeats` each name three or more
+# parameters. Joining the 89 names that occur only once, by longest suffix, yields 16 matches of
+# which at least two are plainly wrong: the envelope's `Delay` lands on `Reverb Pre Delay`. **A
+# false join does not produce a wrong value, it produces a wrong refusal**, discarding a default
+# the document states correctly - so none of the 16 was used, and the five joins in `PANEL` were
+# each made by hand on the page they cite.
+#
+# THIS DEFINITION IS BUILT FROM TWO DOCUMENTS DESCRIBING TWO FIRMWARES, and it targets the
+# later. The guide is "applicable to Summit synthesisers with v1.1 firmware" (guide p. 4) and the
+# addendum is "For Firmware Updates 2.0 and 2.1" (addendum p. 1).
+#
+# **AND `1.1` IN THE FILE NAME IS THE GUIDE'S EDITION, NOT THE FIRMWARE, ALTHOUGH HERE THEY ARE
+# THE SAME NUMBER.** That coincidence is the trap, and one other edition springs it: Novation
+# offers this guide in twenty-four language versions, and the Italian is labelled version 1.2
+# and dated fourteen months later while its own body sentence still gives the firmware as v1.1.
+# So the two numbers move independently and the English reader cannot tell, because for it they
+# agree. The French edition, labelled V2, omits the firmware sentence altogether. **No edition
+# in any language describes firmware 2.x**, which is what the addendum is for.
+#
+# TWO PARTS, EACH WITH A CHANNEL OF ITS OWN, AND THE MAP DEPENDS ON THE MODE. This is "a
+# bi-timbral, 16-voice, polyphonic instrument" (guide p. 22) whose two Parts are "two independent
+# synthesisers" (guide p. 41), and the channel each answers to is a setting rather than a
+# derivation, which is why both parts below say `assigned`. A Single Patch is addressed on the
+# Global channel and the Parts are silent; a Multi Patch is addressed per Part and the Global
+# channel transmits nothing. The guide tabulates the whole of it on p. 46.
+#
+# **THE ADDENDUM CHANGES THAT TABLE AND THE TABLE WAS NEVER RE-ISSUED.** The guide's p. 46 says
+# that in a Multi Patch the Global channel is "Data not accepted" (guide p. 46) in Split mode and
+# accepted in Dual mode only "if MULTIPART CONTROL is set to Both" (guide p. 46). Firmware 2.1
+# replaced that: "Layer Mode - Both parts respond to MIDI received on the Global Channel"
+# (addendum p. 15), Split mode routes Global-channel data to both engines by the split point, and
+# Dual mode sends it to the selected Part. So the later document is recorded here and the earlier
+# table is left standing in the guide for anyone who reads only that. This is a change the maker
+# describes as a change, not two documents contradicting each other.
+#
+# THE GLOBAL CHANNEL'S DEFAULT IS STATED THREE TIMES AND ONE OF THEM DISAGREES, so no default is
+# recorded for it. The Settings menu figure prints `Globl Chan 1`, the overview says "MIDI
+# Channel 1 is set as the active channel for global synth data" (guide p. 15), and the paragraph
+# beside the figure gives the initial value as 3 - which is Part B's. Two witnesses say 1, one
+# says 3, and `channels` holds a span rather than a default, so nothing below turns on it.
+#
+# NO CONTROL HERE HAS `choices`, ALTHOUGH DOZENS OF THEM ARE SELECTORS. The guide names the
+# states of its stepped parameters in prose and numbers none of them: the three sync-rate tables,
+# the 60 wavetables, the modulation matrix's 23 sources and 37 destinations, and the chorus
+# programs "named 2 Tap, 4 Tap and Ensemble" (guide p. 35) all carry no value against any row.
+# **The one place the order of a published list could be checked against something, it agrees** -
+# the LFO Range button "has three settings: Low, High and Sync" (guide p. 31) over a range of
+# 0-2, and the default is 0, which is Low. That is worth recording because the Peak's manual
+# lists the same three settings of the same engine in the other order and so disagrees with its
+# own default: this sentence is the one that is right. One list agreeing is not a convention, so
+# nothing here is numbered by its order.
+#
+# NOT RECORDED: the note range, because no page states one - the keyboard is 61 notes (guide
+# p. 4) and nothing says which. Transport, which neither document mentions: not start, not stop,
+# not continue, not song position. Whether MIDI clock is sent, since both documents describe only
+# the receiving side. The MIDI mode, there being no implementation chart in either document. And
+# the clock source itself, a five-way setting the MIDI parameters list gives no number for.
+
+definition: 1
+
+model:
+  manufacturer: Novation
+  name: Summit
+  # The newest firmware any document here describes. The addendum is "For Firmware Updates 2.0
+  # and 2.1" (addendum p. 1) and its MIDI parameters list adds eighteen of this instrument's
+  # parameters and renames one, with three more in a bug-fix bullet - all of which are below.
+  # Novation delivers firmware through Novation Components, which serves nothing a fetch can
+  # read, so whether 2.1 is still the newest is not stated anywhere this reached. The instrument
+  # reports its own version in the Settings menu and the guide's example screen shows
+  # "Version 070.618" (guide p. 40) - six digits whose format the guide never explains, and
+  # which cannot be the v1.1 its text claims. Checked 2026-10-05.
+  firmware: "2.1"
+
+source: >-
+  Summit User Guide v1.1 English, 62 pages, created 2021-07-12 by its own metadata, and the
+  "Summit and Peak User Guide Addendum Version 2.1" (addendum p. 1), 18 pages, created
+  2022-07-27. Novation publishes no programmer's reference and no separate MIDI implementation
+  for this instrument, unlike its Circuit, so these two documents are the whole of the published
+  map - which the saved downloads page establishes as what was offered on the day.
+
+  BOTH END IN A MIDI PARAMETERS LIST and the two together are this definition: 229 rows over the
+  guide's pp. 47-49 and 19 more on the addendum's p. 18, plus three NRPNs the addendum publishes
+  in a bug-fix bullet and in no table at all. 189 controls come out of 251 rows. Sixty of the
+  rows carry no control number, one carries `NA:NA`, and one is a rename rather than an addition.
+
+  THE TABLE IS A DRAWN GRID AND THAT IS HOW IT WAS READ. Novation's publisher gives every cell a
+  rule above and below it, each rule a separate thin rectangle whose own x extent is one column's
+  width, so the page itself states where its five columns begin and end. That is not a
+  convenience here: cells wrap onto two and three lines, and every page prints two of these
+  tables side by side. `Notes/4599_extract_summit.py` reads the grid.
+
+  **TWO THINGS ABOUT THIS DOCUMENT THAT THE PEAK'S DID NOT NEED.** The blocks have to be ordered
+  by x rather than by the height of their rules, because on p. 47 the right-hand table's first
+  rule sits above the left-hand table's - so reading them in the order the rules appear takes the
+  page's second column first and interleaves the table, with every row individually correct,
+  which is the kind of wrong that does not announce itself. And counting five columns is not
+  enough to find the table: pp. 50-55 carry the 768 factory Patch names in a five-column grid
+  drawn the same way, so the header row is what tells them apart.
+
+  THE SIXTY BLANK CELLS WERE CHECKED THREE WAYS BEFORE BEING CALLED BLANK. The grid finds the
+  cells empty; a plain text extraction finds nothing between the kind and the range; and no
+  number of the form `2:0` to `16:3` occurs anywhere in any edition of this guide that has a
+  readable text layer - the English 1.1, the Italian 1.2 and the French V2, two languages over
+  fourteen months - while all three print slot 1's four numbers. So this is the maker's omission
+  and not one edition's typesetting. `Notes/4599_extract_summit.py` asserts it for all three.
+
+  WHAT THE OTHER EDITIONS ARE FOR, AND WHAT THEY ARE NOT. Neither is read for a number or quoted
+  for a word. The Italian settles that the version in the file name is the guide's edition rather
+  than the firmware, because it is labelled 1.2 and still states v1.1; its text layer was
+  regenerated by a different tool and its reading order is lost, so nothing could be extracted
+  from it even had that been wanted, and its parameter names are translated. The French witnesses
+  the sixty blank cells a second time. **Its first page is in German**, a colophon whose address
+  and trademark notice are in that language, where its second page carries the same colophon in
+  French, and its contents page is headed in English.
+
+  THE DEFAULTS REST ON ONE WITNESS AND THE GUIDE HAS A SECOND ONE THAT CANNOT BE REACHED. See
+  the comment above the definition: 105 body blocks give an `Initial value` keyed by a display
+  name scoped to a menu screen, which the MIDI list's names do not carry. Five were joined by
+  hand and three of those refused a default. The other 83 are a witness this reading could not
+  use, and saying so is the point - a reader who wants those 36 refusals narrowed has somewhere
+  to start, and it is not a method this file pretends to have applied.
+
+  FOUR RANGE CELLS HOLD HALF A RANGE EACH, which is a typesetting fault rather than a
+  contradiction, and the range is carried. Measured off the page: `Mixer Osc1` and `Mixer Patch
+  Level` are 20-point rows carrying both halves of their range, while `Mixer Osc2`, `Mixer Osc3`,
+  `Ring 1*2 Level` and `Noise Level` are 11-point rows carrying one half each, in pairs - the
+  wire numbers in the first of each pair and the bracketed display half in the second. Nothing
+  disagrees with anything; text has left its box. All six are mixer level controls and the two
+  complete cells read `0-255 (0 to +255)`, so that is what the four are given.
+
+  AND THREE ROWS SHOUT. `Oscillator 1/2/3 Shape Source` print their bracketed half as `0 TO +2`
+  where all 226 other rows print `to` in lower case. A case-sensitive reader does not mis-read
+  them, it fails to read them at all, computes no shift and refuses three defaults the guide
+  states perfectly well - so the match is case-insensitive and the three rows are asserted still
+  to shout, because a false refusal looks exactly like diligence.
+
+  TWO ROWS HAVE NO RANGE AT ALL, `Effects Routing` (NRPN 0:89) and `Chorus Type` (NRPN 0:111).
+  Their neighbours are complete, their own rows are single-height with nothing in the column, and
+  no other page gives either a range. `Effects Routing` therefore keeps no default either: its
+  column reads `0 (0)`, and with no range there is no arithmetic to check its two halves by,
+  which is a different thing from two statements that disagree.
+
+  THE ADDENDUM COVERS THIS INSTRUMENT AND THE PEAK AND MARKS WHAT BELONGS TO WHICH, under
+  "Update Features Exclusive to Peak" (addendum p. 12) and "Update Features Exclusive to Summit"
+  (addendum p. 14). Four numbers that the Peak's definition left out on that evidence are this
+  instrument's and are here. `Atouch Scale`, NRPN 64:3, is aftertouch scaling - "You can adjust
+  AtouchForce between 1-10" (addendum p. 14) - under the second heading, and the Peak has no
+  keyboard to scale. The three FM NRPNs 25:13, 25:17 and 25:21 appear in no table in either
+  document: they are in the p. 15 bug-fix bullet "FM controls now send and respond to their NRPN
+  messages" (addendum p. 15), in a list that talks throughout about voices 9 to 16, which an
+  eight-voice Peak does not have, and that names this instrument outright in another of its
+  bullets. **The reverse also holds and needs no action**: the two features under the Peak's own
+  heading, envelope Delay and a high-pass noise filter, were added to the Peak "to match Summit"
+  (addendum p. 12), so this instrument already had both and its own list already numbers them.
+
+  VELOCITY ARRIVES AND DOES NOTHING UNTIL A PATCH TURNS IT UP, which is why it is recorded as
+  gated. The Amp Envelope's Velocity parameter has an initial value of 0 and "If set to zero, the
+  volume is the same regardless of how the keys are played" (guide p. 30). The two Modulation
+  Envelopes have the same parameter and the same initial value. So a velocity lane can appear
+  dead on a correctly wired Summit, and the three controls that explain it are named in
+  `gated_by`. The Peak has the same three parameters at the same defaults and records `received`;
+  which of the two is right for that instrument is a question about that definition, not this one.
+
+  NOT RECORDED, AND WHY. The note range: the keyboard is 61 notes (guide p. 4) and no page says
+  which 61, nor what octave shifting reaches. Transport: neither document mentions start, stop,
+  continue or song position. Whether MIDI clock is sent: the clock source setting chooses between
+  the internal clock and one "provided by an external device able to transmit MIDI clock" (guide
+  p. 34), and both documents describe only the receiving side, so `both` would claim the half
+  that was not established. The MIDI mode, there being no implementation chart in either
+  document. And the clock source itself, which the MIDI parameters list gives no number for.
+
+  ONE FURTHER DOCUMENT COULD NOT BE READ. The downloads page offers "an online version of this
+  user guide and translations" (download_page) at userguides.novationmusic.com, which answers a
+  fetch with a Cloudflare challenge rather than the guide - twice, hours apart. Whether it is a
+  later edition than the 1.1 PDF is therefore not established, and nothing here rests on it. The
+  Peak's reading met the same refusal at the same domain a day earlier.
+
+sources:
+  guide:
+    kind: manual
+    title: Summit User Guide
+    edition: v1.1, for firmware v1.1
+    dated: 2021-07-12
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/summit"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Summit%20User%20Guide%201.1%20EN.pdf"
+    sha256: 5d0a8eea37b92f1c9760a53235e1bd735e377c50a49c32194e6e705836668d91
+    retrieved: 2026-10-05
+    # 62 pages, counted with pypdf and with PyMuPDF, which agree. Every page prints its own
+    # number and it is the file's own page index, so a citation needs no offset - asserted at
+    # pages 1, 2, 3, 4, 5, 11, 21, 31, 45, 46, 47, 48, 49, 56 and 62, including the first and
+    # the last. **The folio sits at x 30, y 817 and a controller value never does**, which is
+    # how it is kept out of the table: pp. 47-49 print bare integers in their own right.
+    # THE BOOKMARK FOR THE MIDI PARAMETERS LIST IS WRONG. The PDF's own outline gives the list
+    # at 47 and `Sound designers` at 49, and the list runs to the end of p. 49 - sixty of its
+    # rows are on the page the outline says is somebody else's. Found by reading the table's
+    # grid to its last rule rather than by trusting the outline.
+    page_offset: 0
+  addendum:
+    kind: manual
+    title: Summit and Peak User Guide Addendum Version 2.1
+    edition: V1, for firmware updates 2.0 and 2.1
+    dated: 2022-07-27
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/summit"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/downloads/summit_peak_2.1_firmware_update_addendum_v1_english_en.pdf"
+    sha256: c57ee8ff062dc2cae21d149e57b69865e8c0b0a7c5be1def6102774515c4c5cd
+    retrieved: 2026-10-03
+    # 18 pages, counted twice and agreed. Covers this instrument and the Peak together and marks
+    # which features belong to which, which is why it can be read for one of them. **Offered on
+    # both instruments' downloads pages and saved under the Peak, because that is where it was
+    # first read** - one file, one digest, two definitions citing it. See its provenance record.
+    page_offset: 0
+  translation:
+    kind: manual
+    title: Summit User Guide v1.2 Italiano
+    edition: "1.2"
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/summit"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/downloads/summit_user_guide_v1.2_it.pdf"
+    sha256: bd7e00e4810878cb9f82b15cfbf7b1327f5c6a1c6834242fca1e9904bad4f8bb
+    retrieved: 2026-10-05
+    # 63 pages, created 2022-09-13. **CITED FOR ONE FACT AND QUOTED FOR NOTHING**: its cover
+    # gives the edition as 1.2 and its own body sentence still gives the firmware as v1.1, which
+    # is what establishes that the two numbers are independent - the English edition cannot show
+    # that, because for it they are the same number. Its text layer was regenerated by a
+    # different tool and its reading order is lost, so no number was read from it; its parameter
+    # names are translated in any case. Searched, not read.
+    page_offset: 0
+  second_edition:
+    kind: manual
+    title: Summit Mode d'emploi V2 Francais
+    edition: V2
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/summit"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Summit%20User%20Guide%20V2%20-%20FR.pdf"
+    sha256: e84a3cccfab1556269592e9af9bbb81004e9259d3c559030741171518203dbb1
+    retrieved: 2026-10-05
+    # 65 pages, created 2021-11-30. **CITED FOR AN ABSENCE AND QUOTED FOR NOTHING**: it is the
+    # second edition that witnesses the sixty blank Control Number cells, which is what makes
+    # them the maker's omission rather than one edition's typesetting. It also omits the
+    # firmware sentence the English and Italian editions both carry, so it says nothing about
+    # which firmware it describes. Three of its pages are not in French: p. 1 is a German
+    # colophon, p. 2 the same colophon in French, p. 3 a contents page headed in English.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: Summit Downloads
+    landing: "https://downloads.novationmusic.com/"
+    url: "https://downloads.novationmusic.com/novation/synthesisers/summit"
+    sha256: 0c22844bd9b37f2560699786dbdb3686c3f5ba86c0040a61c18eaad79e00f429
+    retrieved: 2026-10-05
+    paginated: false
+    # Cited for what Novation publishes for this instrument and for what it does not. **The
+    # English guide is the oldest numbered edition on the page**: v1.1, against eighteen
+    # translations at v1.2 and a French one at V2. No programmer's reference and no separate MIDI
+    # implementation are offered, unlike this maker's Circuit. The digest is of the extraction;
+    # the served bytes are saved beside it as `.html`.
+
+midi:
+  # "MIDI protocol provides for 16 channels of data" (guide p. 41), and three settings choose
+  # them: `PartA Chan`, `PartB Chan` and `Globl Chan`, each with a "Range of adjustment: 1 to 16"
+  # (guide p. 41). **No default is recorded for the Global channel** - the figure beside that
+  # paragraph prints `Globl Chan 1` and the overview says "MIDI Channel 1 is set as the active
+  # channel for global synth data" (guide p. 15), while the paragraph itself gives the initial
+  # value as 3, which is Part B's. Two statements against one, and the field holds a span anyway.
+  channels: [1, 16]
+  # RECEIVES, AND ONLY THAT IS ESTABLISHED. The clock source is a five-way setting choosing
+  # between the internal clock and one "provided by an external device able to transmit MIDI
+  # clock" (guide p. 34), and the LFOs, delay and arpeggiator all follow an incoming one.
+  # Nothing in either document says this instrument sends a clock, so `both` would claim the
+  # half that was not established.
+  clock: receives
+  program_change:
+    # "This setting controls how Summit handles MIDI Program Change and Bank Change messages"
+    # (guide p. 42), defaulting to Rec+Tran, with which "Summit sends a Program/Bank Change
+    # message whenever a new Patch is loaded, and will also load a Patch when told to by an
+    # external MIDI controller" (guide p. 42). Both directions, and both switchable independently
+    # of the controllers, which have a setting of their own.
+    receives: true
+    sends: true
+    # TWO BLOCKS OF 512, WHICH IS WHY THIS IS 1024. The memory holds "512 for Single Patches"
+    # (guide p. 12) and 512 for Multi Patches, and "each consists of four Banks of 128" (guide
+    # p. 12) designated A to D. Both halves of the count are stated twice and agree: p. 4 gives
+    # 384 factory Patches of each kind "each arranged as three banks of 128" (guide p. 4) plus a
+    # User bank of 128, and p. 12 gives "768 factory Patches" (guide p. 12) over Banks A to C.
+    # **Which block a program change reaches is the Single or Multi mode the player is in**, not
+    # a MIDI message, so 512 are addressable at a time and 1024 exist.
+    presets: 1024
+  # 115 OF THE 189 CONTROLS BELOW ARE ADDRESSED BY NRPN AND BY NOTHING ELSE, against 74 the
+  # control changes reach. The maker still does not prefer either in words:
+  # the Settings menu names them together as one switch, "CC/NRPN", with one value for both
+  # (guide p. 42), so `supported` is as far as the documents go.
+  nrpn: supported
+  # Patches travel this way: "It is also possible to import Patch data into Summit via MIDI SysEx
+  # messages, using applications such as SysEx Librarian (Mac) or MIDI-OX (Windows)" (guide
+  # p. 45), and the Settings menu's backup page sends the current Patch, any of the eight Banks,
+  # all of either block, the Settings, or everything (guide p. 44). No byte layout is published.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # NO SINGLE FIGURE FOR THE WHOLE INSTRUMENT, and the maker gives the reason rather than leaving
+  # one out: "When you select a Single Patch, Summit becomes a single synth with sixteen voices.
+  # With Multi Patches, you still have sixteen voices, but now eight are allocated to generating
+  # Part A and eight to Part B" (guide p. 22). The allocation is fixed rather than drawn from a
+  # pool, so eight is a figure each part can count on and is recorded against each below.
+  polyphony_shared: false
+  # ONE OR SIXTEEN IN A SINGLE PATCH, because voicing is a setting saved with the Patch and
+  # chosen per Part: five modes of which "three of the possible modes are mono and two are
+  # polyphonic" (guide p. 22), and in Poly "up to 16 voices of a Single Patch can sound
+  # simultaneously" (guide p. 22). In a Multi Patch the ceiling is the eight on each part below.
+  voicing_modes: [1, 16]
+  velocity:
+    # IT ARRIVES AND DOES NOTHING UNTIL A PATCH TURNS IT UP. The Amp Envelope's Velocity
+    # parameter has an initial value of 0, and "If set to zero, the volume is the same regardless
+    # of how the keys are played" (guide p. 30). The two Modulation Envelopes carry the same
+    # parameter at the same initial value. So a velocity lane can appear dead on a correctly
+    # wired Summit, which is what this value is for, and `gated_by` names the three controls
+    # that explain it. A global `VelCurve` (guide p. 44) shapes the keyboard's own response and
+    # gates nothing.
+    note_on: gated
+    gated_by: [amp_envelope_velocity, mod_envelope_1_velocity, mod_envelope_2_velocity]
+  # CHANNEL AFTERTOUCH FROM ITS OWN KEYBOARD, AND POLY ACCEPTED FROM OUTSIDE - one field, two
+  # kinds, and the stronger one recorded. The modulation matrix's AftTouch source takes
+  # "aftertouch, either from Summit's own keyboard or as external MIDI data" (guide p. 39), which
+  # "is the most common type of aftertouch" (guide p. 39) - channel pressure - and "Summit will
+  # also accept polyphonic aftertouch" (guide p. 39) from a controller that sends it. The
+  # sending side is channel pressure only: "The keys, mod and pitch wheels and aftertouch send
+  # MIDI data" (addendum p. 14). How hard the keyboard has to be pressed is itself settable,
+  # `atouch_scale` below.
+  aftertouch: poly
+  pitch_bend:
+    # TWELVE BY DEFAULT AND SETTABLE PER OSCILLATOR, which is unusual enough to say plainly:
+    # there is no one bend range here but three, `Oscillator 1/2/3 Bend Range` below, each an
+    # NRPN over 40-88 for -24 to +24. "The keyboard pitch wheel can vary the pitch of each of
+    # the oscillators by up to two octaves" (guide p. 26) agrees with that span, and twelve is
+    # where all three start - stated as "a default value of +12" (guide p. 26) and as the MIDI
+    # list's 76, which is +12 on that range.
+    semitones: 12
+    programmable: true
+
+parts:
+  # THE TWO HALVES OF A MULTI PATCH, each given a channel of its own rather than deriving one:
+  # "PartA Chan lets you select which MIDI channel is to be used for MIDI data relating to Part
+  # A" (guide p. 41), and Part B's setting "operates described for as PartA Chan above" (guide
+  # p. 41) - the maker's own words, and the transposition is theirs. The factory values are
+  # channel 2 for Part A and 3 for Part B.
+  #
+  # **IN A SINGLE PATCH NEITHER IS ADDRESSED**: "No data is transmitted or received on the Single
+  # MIDI channels when Summit is in Multi Patch mode" (guide p. 41) is the one direction, and
+  # p. 46's table gives the other - a Single Patch transmits and receives "on the Global Channel
+  # only" (guide p. 46), with the Parts marked "No data transmitted or received" (guide p. 46).
+  # That is why every control below is unparted: the same parameter is reached on the Global
+  # channel in Single mode and on a Part's channel in Multi mode, and which one is a mode rather
+  # than a property of the control.
+  #
+  # **AND WHETHER THE GLOBAL CHANNEL ALSO REACHES A PART CHANGED IN FIRMWARE 2.1.** The guide's
+  # table says Layer mode accepts Global-channel data, Split mode does not, and Dual mode does
+  # only "if MULTIPART CONTROL is set to Both" (guide p. 46). The addendum replaces that for all
+  # three: "Layer Mode - Both parts respond to MIDI received on the Global Channel" (addendum
+  # p. 15), Split mode routes it to both engines by the split point, and Dual mode sends it to
+  # the selected Part. The later document is what `receives` records.
+  part_a:
+    label: Part A
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # "you still have sixteen voices, but now eight are allocated to generating Part A and eight
+    # to Part B" (guide p. 22), and "Summit supports eight voices per Part" (guide p. 22).
+    polyphony: 8
+  part_b:
+    label: Part B
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    polyphony: 8
+
+groups:
+  voice: Voice
+  oscillators: Oscillators
+  mixer: Mixer
+  filter: Filter
+  envelopes: Envelopes
+  lfos: LFOs
+  effects: Effects
+  arp: ARP
+  animate: Animate
+  mod_matrix: Modulation Matrix
+  settings: Settings
+controls:
+  # VOICE -----------------------------------------------------------
+  patch_category:                   {label: Patch Category, nrpn: 0, range: [0, 14], default: 0, group: voice}
+  patch_genre:                      {label: Patch Genre, nrpn: 1, range: [0, 9], default: 0, group: voice}
+  voice_mode:                       {label: Voice Mode, nrpn: 2, range: [0, 4], default: 3, group: voice}
+  voice_unison:                     {label: Voice Unison, nrpn: 3, range: [0, 4], default: 0, group: voice}
+  voice_unison_detune:              {label: Voice Unison Detune, nrpn: 4, default: 25, group: voice}
+  voice_keyboard_octave:            {label: Voice Keyboard Octave, nrpn: 6, range: [61, 67], default: 64, group: voice}
+  glide_time:                       {label: Glide Time, cc: 5, group: voice}
+  voice_pre_glide:                  {label: Voice Pre-Glide, nrpn: 7, range: [52, 76], default: 64, group: voice}
+  glide_on:                         {label: Glide On, cc: 35, range: [0, 1], default: 0, group: voice}
+  pan_posn:                         {label: Pan Posn, nrpn: 51, group: voice}
+  pan_type:                         {label: Pan Type, nrpn: 52, range: [0, 3], default: 0, group: voice}
+  spread:                           {label: Spread, nrpn: 5, default: 0, group: voice}
+
+  # OSCILLATORS -----------------------------------------------------
+  osc_common_diverge:               {label: Osc Common Diverge, nrpn: 9, default: 0, group: oscillators}
+  osc_common_drift:                 {label: Osc Common Drift, nrpn: 10, default: 0, group: oscillators}
+  osc_common_noise_lpf:             {label: Osc Common Noise LPF, nrpn: 11, default: 127, group: oscillators}
+  oscillator_1_range:               {label: Oscillator 1 Range, cc: 3, range: [63, 66], default: 64, group: oscillators}
+  oscillator_1_coarse:              {label: Oscillator 1 Coarse, cc: 14, lsb: 46, range: [0, 255], default: 128, group: oscillators}
+  oscillator_1_fine:                {label: Oscillator 1 Fine, cc: 15, lsb: 47, range: [28, 228], default: 128, group: oscillators}
+  oscillator_1_modenv2_pitch:       {label: Oscillator 1 ModEnv2 > Pitch, cc: 9, range: [1, 127], default: 64, group: oscillators}
+  oscillator_1_lfo2_pitch:          {label: Oscillator 1 LFO2 > Pitch, cc: 16, lsb: 48, range: [1, 255], default: 128, group: oscillators}
+  oscillator_1_wave:                {label: Oscillator 1 Wave, nrpn: 14, range: [0, 4], group: oscillators}
+  oscillator_1_wave_more:           {label: Oscillator 1 Wave More, nrpn: 15, range: [4, 63], group: oscillators}
+  oscillator_1_shape_source:        {label: Oscillator 1 Shape Source, nrpn: 16, range: [0, 2], default: 0, group: oscillators}
+  oscillator_1_manual_shape:        {label: Oscillator 1 Manual Shape, cc: 12, default: 64, group: oscillators}
+  oscillator_1_modenv1_shape:       {label: Oscillator 1 ModEnv1 > Shape, cc: 119, default: 64, group: oscillators}
+  oscillator_1_lfo1_shape:          {label: Oscillator 1 LFO1 > Shape, cc: 33, range: [1, 127], group: oscillators}
+  oscillator_1_vsync:               {label: Oscillator 1 Vsync, cc: 34, default: 0, group: oscillators}
+  oscillator_1_saw_density:         {label: Oscillator 1 Saw Density, nrpn: 17, default: 0, group: oscillators}
+  oscillator_1_saw_density_detune:  {label: Oscillator 1 Saw Density Detune, nrpn: 18, default: 0, group: oscillators}
+  oscillator_1_fixed_note:          {label: Oscillator 1 Fixed Note, nrpn: 19, range: [0, 88], default: 0, group: oscillators}
+  oscillator_1_bend_range:          {label: Oscillator 1 Bend Range, nrpn: 20, range: [40, 88], default: 76, group: oscillators}
+  oscillator_2_range:               {label: Oscillator 2 Range, cc: 37, range: [63, 66], default: 64, group: oscillators}
+  oscillator_2_coarse:              {label: Oscillator 2 Coarse, cc: 17, lsb: 49, range: [0, 255], default: 64, group: oscillators}
+  oscillator_2_fine:                {label: Oscillator 2 Fine, cc: 18, lsb: 50, range: [28, 228], default: 64, group: oscillators}
+  oscillator_2_modenv2_pitch:       {label: Oscillator 2 ModEnv2 > Pitch, cc: 38, range: [1, 127], default: 64, group: oscillators}
+  oscillator_2_lfo2_pitch:          {label: Oscillator 2 LFO2 > Pitch, cc: 19, lsb: 51, range: [1, 255], default: 64, group: oscillators}
+  oscillator_2_wave:                {label: Oscillator 2 Wave, nrpn: 23, range: [0, 4], group: oscillators}
+  oscillator_2_wave_more:           {label: Oscillator 2 Wave More, nrpn: 24, range: [4, 63], group: oscillators}
+  oscillator_2_shape_source:        {label: Oscillator 2 Shape Source, nrpn: 25, range: [0, 2], default: 0, group: oscillators}
+  oscillator_2_manual_shape:        {label: Oscillator 2 Manual Shape, cc: 39, default: 64, group: oscillators}
+  oscillator_2_modenv1_shape:       {label: Oscillator 2 ModEnv1 > Shape, cc: 40, default: 64, group: oscillators}
+  oscillator_2_lfo1_shape:          {label: Oscillator 2 LFO1 > Shape, cc: 41, range: [1, 127], group: oscillators}
+  oscillator_2_vsync:               {label: Oscillator 2 Vsync, cc: 42, default: 0, group: oscillators}
+  oscillator_2_saw_density:         {label: Oscillator 2 Saw Density, nrpn: 26, default: 0, group: oscillators}
+  oscillator_2_saw_density_detune:  {label: Oscillator 2 Saw Density Detune, nrpn: 27, group: oscillators}
+  oscillator_2_fixed_note:          {label: Oscillator 2 Fixed Note, nrpn: 28, range: [0, 88], default: 0, group: oscillators}
+  oscillator_2_bend_range:          {label: Oscillator 2 Bend Range, nrpn: 29, range: [40, 88], default: 76, group: oscillators}
+  oscillator_3_range:               {label: Oscillator 3 Range, cc: 65, range: [63, 66], default: 64, group: oscillators}
+  oscillator_3_coarse:              {label: Oscillator 3 Coarse, cc: 20, lsb: 52, range: [0, 255], default: 128, group: oscillators}
+  oscillator_3_fine:                {label: Oscillator 3 Fine, cc: 21, lsb: 53, range: [28, 228], default: 128, group: oscillators}
+  oscillator_3_modenv2_pitch:       {label: Oscillator 3 ModEnv2 > Pitch, cc: 43, range: [1, 127], default: 64, group: oscillators}
+  oscillator_3_lfo2_pitch:          {label: Oscillator 3 LFO2 > Pitch, cc: 22, lsb: 54, range: [1, 255], default: 128, group: oscillators}
+  oscillator_3_wave:                {label: Oscillator 3 Wave, nrpn: 32, range: [0, 4], group: oscillators}
+  oscillator_3_wave_more:           {label: Oscillator 3 Wave More, nrpn: 33, range: [4, 63], group: oscillators}
+  oscillator_3_shape_source:        {label: Oscillator 3 Shape Source, nrpn: 34, range: [0, 2], default: 0, group: oscillators}
+  oscillator_3_manual_shape:        {label: Oscillator 3 Manual Shape, cc: 71, default: 64, group: oscillators}
+  oscillator_3_modenv1_shape:       {label: Oscillator 3 ModEnv1 > Shape, cc: 72, default: 64, group: oscillators}
+  oscillator_3_lfo1_shape:          {label: Oscillator 3 LFO1 > Shape, cc: 73, range: [1, 127], group: oscillators}
+  oscillator_3_vsync:               {label: Oscillator 3 Vsync, cc: 44, default: 0, group: oscillators}
+  oscillator_3_saw_density:         {label: Oscillator 3 Saw Density, nrpn: 35, default: 0, group: oscillators}
+  oscillator_3_saw_density_detune:  {label: Oscillator 3 Saw Density Detune, nrpn: 36, group: oscillators}
+  oscillator_3_fixed_note:          {label: Oscillator 3 Fixed Note, nrpn: 37, range: [0, 88], default: 0, group: oscillators}
+  oscillator_3_bend_range:          {label: Oscillator 3 Bend Range, nrpn: 38, range: [40, 88], default: 76, group: oscillators}
+  select_tuning_table:              {label: Select Tuning Table, nrpn: 3206, range: [0, 16], default: 0, group: oscillators}
+  fm_osc3_1_manual_amount:          {label: FM OSC3 -> 1 Manual Amount, nrpn: 3213, group: oscillators}
+  fm_osc1_2_manual_amount:          {label: FM OSC1 -> 2 Manual Amount, nrpn: 3217, group: oscillators}
+  fm_osc2_3_manual_amount:          {label: FM OSC2 -> 3 Manual Amount, nrpn: 3221, group: oscillators}
+
+  # MIXER -----------------------------------------------------------
+  mixer_osc1:                       {label: Mixer Osc1, cc: 23, lsb: 55, range: [0, 255], default: 255, group: mixer}
+  mixer_osc2:                       {label: Mixer Osc2, cc: 24, lsb: 56, range: [0, 255], default: 0, group: mixer}
+  mixer_osc3:                       {label: Mixer Osc3, cc: 25, lsb: 57, range: [0, 255], default: 0, group: mixer}
+  ring_1_2_level:                   {label: Ring 1*2 Level, cc: 26, lsb: 58, range: [0, 255], default: 0, group: mixer}
+  noise_level:                      {label: Noise Level, cc: 27, lsb: 59, range: [0, 255], default: 0, group: mixer}
+  mixer_patch_level:                {label: Mixer Patch Level, nrpn: 41, default: 64, group: mixer}
+  mixer_vca_gain:                   {label: Mixer VCA gain, nrpn: 42, default: 127, group: mixer}
+  mixer_dry_level:                  {label: Mixer Dry Level, nrpn: 43, default: 127, group: mixer}
+  mixer_wet_level:                  {label: Mixer Wet Level, nrpn: 44, default: 127, group: mixer}
+
+  # FILTER ----------------------------------------------------------
+  filter_overdrive:                 {label: Filter Overdrive, cc: 80, default: 0, group: filter}
+  filter_post_drive:                {label: Filter Post Drive, cc: 36, default: 0, group: filter}
+  filter_slope:                     {label: Filter Slope, nrpn: 45, range: [0, 1], default: 1, group: filter}
+  filter_shape:                     {label: Filter Shape, nrpn: 46, range: [0, 2], default: 0, group: filter}
+  filter_key_tracking:              {label: Filter Key Tracking, cc: 75, default: 127, group: filter}
+  filter_resonance:                 {label: Filter Resonance, cc: 79, default: 0, group: filter}
+  filter_frequency:                 {label: Filter Frequency, cc: 29, lsb: 61, range: [0, 255], group: filter}
+  filter_lfo1_filter:               {label: Filter LFO1 > Filter, cc: 28, lsb: 60, range: [1, 255], default: 128, group: filter}
+  filter_osc3_filter:               {label: Filter Osc3 > Filter, cc: 76, default: 0, group: filter}
+  filter_env_select:                {label: Filter Env Select, nrpn: 47, range: [0, 1], group: filter}
+  filter_ampenv_filter:             {label: Filter AmpEnv > Filter, cc: 77, range: [1, 127], default: 64, group: filter}
+  filter_modenv1_filter:            {label: Filter ModEnv1 > Filter, cc: 78, range: [1, 127], default: 64, group: filter}
+  filter_divergence:                {label: Filter Divergence, nrpn: 48, default: 0, group: filter}
+
+  # ENVELOPES -------------------------------------------------------
+  amp_envelope_attack:              {label: Amp Envelope Attack, cc: 86, default: 0, group: envelopes}
+  amp_envelope_decay:               {label: Amp Envelope Decay, cc: 87, default: 90, group: envelopes}
+  amp_envelope_sustain:             {label: Amp Envelope Sustain, cc: 88, default: 127, group: envelopes}
+  amp_envelope_release:             {label: Amp Envelope Release, cc: 89, default: 40, group: envelopes}
+  amp_envelope_velocity:            {label: Amp Envelope Velocity, nrpn: 55, default: 64, group: envelopes}
+  amp_envelope_trigger:             {label: Amp Envelope Trigger, nrpn: 56, range: [0, 1], default: 0, group: envelopes}
+  mod_envelope_select:              {label: Mod Envelope Select, nrpn: 59, range: [0, 1], group: envelopes}
+  mod_envelope_1_attack:            {label: Mod Envelope 1 Attack, cc: 90, default: 0, group: envelopes}
+  mod_envelope_1_decay:             {label: Mod Envelope 1 Decay, cc: 91, default: 75, group: envelopes}
+  mod_envelope_1_sustain:           {label: Mod Envelope 1 Sustain, cc: 92, default: 35, group: envelopes}
+  mod_envelope_1_release:           {label: Mod Envelope 1 Release, cc: 93, default: 45, group: envelopes}
+  mod_envelope_1_velocity:          {label: Mod Envelope 1 Velocity, nrpn: 60, default: 64, group: envelopes}
+  mod_envelope_1_trigger:           {label: Mod Envelope 1 Trigger, nrpn: 61, range: [0, 1], group: envelopes}
+  mod_envelope_2_attack:            {label: Mod Envelope 2 Attack, cc: 94, default: 0, group: envelopes}
+  mod_envelope_2_decay:             {label: Mod Envelope 2 Decay, cc: 95, default: 75, group: envelopes}
+  mod_envelope_2_sustain:           {label: Mod Envelope 2 Sustain, cc: 117, default: 35, group: envelopes}
+  mod_envelope_2_release:           {label: Mod Envelope 2 Release, cc: 103, default: 45, group: envelopes}
+  mod_envelope_2_velocity:          {label: Mod Envelope 2 Velocity, nrpn: 64, default: 64, group: envelopes}
+  mod_envelope_2_trigger:           {label: Mod Envelope 2 Trigger, nrpn: 65, range: [0, 1], group: envelopes}
+  animate_1_att:                    {label: Animate 1 Att, nrpn: 3234, default: 0, group: envelopes}
+  animate_1_rel:                    {label: Animate 1 Rel, nrpn: 3235, default: 0, group: envelopes}
+  animate_2_att:                    {label: Animate 2 Att, nrpn: 3236, default: 0, group: envelopes}
+  animate_2_rel:                    {label: Animate 2 Rel, nrpn: 3237, default: 0, group: envelopes}
+
+  # LFOS ------------------------------------------------------------
+  lfo_1_range:                      {label: LFO 1 Range, nrpn: 68, range: [0, 2], default: 0, group: lfos}
+  lfo_1_rate:                       {label: LFO 1 Rate, cc: 30, lsb: 62, range: [0, 255], default: 128, group: lfos}
+  lfo_1_sync_rate:                  {label: LFO 1 Sync Rate, cc: 81, range: [0, 34], default: 16, group: lfos}
+  lfo_1_wave:                       {label: LFO 1 Wave, nrpn: 69, range: [0, 3], default: 0, group: lfos}
+  lfo_1_phase:                      {label: LFO 1 Phase, nrpn: 70, range: [0, 120], default: 0, group: lfos}
+  lfo_1_slew:                       {label: LFO 1 Slew, nrpn: 71, default: 0, group: lfos}
+  lfo_1_fade_time:                  {label: LFO 1 Fade Time, cc: 82, default: 0, group: lfos}
+  lfo_1_fade_in_out:                {label: LFO 1 Fade In/Out, nrpn: 72, range: [0, 3], default: 0, group: lfos}
+  lfo_1_one_shot:                   {label: LFO 1 One Shot, nrpn: 75, range: [0, 1], default: 0, group: lfos}
+  lfo_1_common:                     {label: LFO 1 Common, nrpn: 76, range: [0, 1], default: 0, group: lfos}
+  lfo_2_range:                      {label: LFO 2 Range, cc: 83, range: [0, 2], default: 0, group: lfos}
+  lfo_2_rate:                       {label: LFO 2 Rate, cc: 31, lsb: 63, range: [0, 255], default: 128, group: lfos}
+  lfo_2_sync_rate:                  {label: LFO 2 Sync Rate, cc: 84, range: [0, 34], group: lfos}
+  lfo_2_wave:                       {label: LFO 2 Wave, nrpn: 78, range: [0, 3], default: 0, group: lfos}
+  lfo_2_phase:                      {label: LFO 2 Phase, nrpn: 79, range: [0, 120], default: 0, group: lfos}
+  lfo_2_slew:                       {label: LFO 2 Slew, nrpn: 80, default: 0, group: lfos}
+  lfo_2_fade_time:                  {label: LFO 2 Fade Time, cc: 85, default: 0, group: lfos}
+  lfo_2_fade_in_out:                {label: LFO 2 Fade In/Out, nrpn: 81, range: [0, 3], default: 0, group: lfos}
+  lfo_2_one_shot:                   {label: LFO 2 One Shot, nrpn: 84, range: [0, 1], default: 0, group: lfos}
+  lfo_2_common:                     {label: LFO 2 Common, nrpn: 85, range: [0, 1], default: 0, group: lfos}
+  lfo3phase:                        {label: LFO3Phase, nrpn: 3238, range: [0, 120], default: 0, group: lfos}
+  lfo3slew:                         {label: LFO3Slew, nrpn: 3239, default: 0, group: lfos}
+  lfo3fadetime:                     {label: LFO3FadeTime, nrpn: 3240, default: 0, group: lfos}
+  lfo4phase:                        {label: LFO4Phase, nrpn: 3241, range: [0, 120], default: 0, group: lfos}
+  lfo4slew:                         {label: LFO4Slew, nrpn: 3242, default: 0, group: lfos}
+  lfo4fadetime:                     {label: LFO4FadeTime, nrpn: 3243, default: 0, group: lfos}
+
+  # EFFECTS ---------------------------------------------------------
+  distortion_level:                 {label: Distortion level, cc: 104, default: 0, group: effects}
+  effects_master_bypass:            {label: Effects Master Bypass, nrpn: 88, range: [0, 1], default: 0, group: effects}
+  effects_routing:                  {label: Effects Routing, nrpn: 89, group: effects}
+  delay_level:                      {label: Delay Level, cc: 108, default: 0, group: effects}
+  delay_time:                       {label: Delay Time, cc: 109, group: effects}
+  delay_width:                      {label: Delay Width, nrpn: 92, group: effects}
+  delay_sync:                       {label: Delay Sync, nrpn: 93, range: [0, 1], default: 0, group: effects}
+  delay_sync_time:                  {label: Delay Sync Time, nrpn: 94, range: [0, 18], group: effects}
+  delay_feedback:                   {label: Delay Feedback, cc: 110, group: effects}
+  delay_lp_damp:                    {label: Delay LP Damp, nrpn: 95, default: 85, group: effects}
+  delay_hp_damp:                    {label: Delay HP Damp, nrpn: 96, default: 0, group: effects}
+  delay_slew_rate:                  {label: Delay Slew Rate, nrpn: 97, default: 32, group: effects}
+  reverb_level:                     {label: Reverb Level, cc: 112, default: 0, group: effects}
+  reverb_type:                      {label: Reverb Type, nrpn: 101, range: [0, 2], group: effects}
+  reverb_time:                      {label: Reverb Time, cc: 113, group: effects}
+  reverb_damping_lp:                {label: Reverb Damping LP, nrpn: 102, group: effects}
+  reverb_damping_hp:                {label: Reverb Damping HP, nrpn: 103, group: effects}
+  reverb_size:                      {label: Reverb Size, nrpn: 104, default: 64, group: effects}
+  reverb_mod:                       {label: Reverb Mod, nrpn: 105, default: 64, group: effects}
+  reverb_mod_rate:                  {label: Reverb Mod Rate, nrpn: 106, group: effects}
+  reverb_low_pass:                  {label: Reverb Low Pass, nrpn: 107, group: effects}
+  reverb_high_pass:                 {label: Reverb High Pass, nrpn: 108, default: 0, group: effects}
+  reverb_pre_delay:                 {label: Reverb Pre Delay, nrpn: 109, default: 40, group: effects}
+  chorus_level:                     {label: Chorus Level, cc: 105, default: 0, group: effects}
+  chorus_type:                      {label: Chorus Type, nrpn: 111, default: 2, group: effects}
+  chorus_rate:                      {label: Chorus Rate, cc: 118, default: 20, group: effects}
+  chorus_mod_depth:                 {label: Chorus Mod Depth, nrpn: 112, group: effects}
+  chorus_feedback:                  {label: Chorus Feedback, cc: 107, default: 64, group: effects}
+  chorus_lp:                        {label: Chorus LP, nrpn: 113, default: 90, group: effects}
+  chorus_hp:                        {label: Chorus HP, nrpn: 114, default: 2, group: effects}
+  chorus_phaser_flanger:            {label: Chorus/Phaser/Flanger, nrpn: 115, range: [0, 2], default: 0, group: effects}
+  lo_fi_delay_time_mode:            {label: Lo-Fi Delay Time Mode, nrpn: 98, range: [0, 4], default: 0, group: effects}
+
+  # ARP -------------------------------------------------------------
+  arp_clock_sync_rate:              {label: Arp/Clock Sync Rate, nrpn: 116, range: [0, 18], group: arp}
+  arp_clock_type:                   {label: Arp/Clock Type, nrpn: 117, range: [0, 6], default: 0, group: arp}
+  arp_clock_rhythm:                 {label: Arp/Clock Rhythm, nrpn: 118, range: [0, 32], default: 0, group: arp}
+  arp_clock_octave:                 {label: Arp/Clock Octave, nrpn: 119, range: [0, 5], group: arp}
+  arp_clock_gate:                   {label: Arp/Clock Gate, cc: 116, default: 64, group: arp}
+  arp_clock_swing:                  {label: Arp/Clock Swing, nrpn: 120, range: [20, 80], default: 50, group: arp}
+  arp_clock_on:                     {label: Arp/Clock On, nrpn: 121, range: [0, 1], default: 0, group: arp}
+  arp_clock_key_latch:              {label: Arp/Clock Key Latch, nrpn: 122, range: [0, 1], default: 0, group: arp}
+  arp_clock_key_sync:               {label: Arp/Clock Key Sync, nrpn: 123, range: [0, 1], default: 0, group: arp}
+  arp_chance:                       {label: Arp Chance, nrpn: 3233, range: [1, 100], default: 100, group: arp}
+
+  # ANIMATE ---------------------------------------------------------
+  animate_1_hold:                   {label: Animate 1 Hold, cc: 114, range: [0, 1], default: 0, group: animate}
+  animate_2_hold:                   {label: Animate 2 Hold, cc: 115, range: [0, 1], default: 0, group: animate}
+
+  # MODULATION MATRIX -----------------------------------------------
+  mod_matrix_selection:             {label: Mod Matrix Selection, nrpn: 125, range: [0, 15], default: 0, group: mod_matrix}
+  mod_matrix_1_source1:             {label: Mod Matrix 1 Source1, nrpn: 128, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_1_source2:             {label: Mod Matrix 1 Source2, nrpn: 129, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_1_depth:               {label: Mod Matrix 1 Depth, nrpn: 130, default: 64, group: mod_matrix}
+  mod_matrix_1_destination:         {label: Mod Matrix 1 Destination, nrpn: 131, range: [0, 36], default: 0, group: mod_matrix}
+
+  # SETTINGS --------------------------------------------------------
+  atouch_scale:                     {label: Atouch Scale, nrpn: 8195, range: [1, 10], default: 5, group: settings}
+  patch_cue:                        {label: Patch Cue, nrpn: 8192, range: [0, 1], default: 0, group: settings}

@@ -209,6 +209,7 @@ class TestBundledCorpus:
 			"novation/circuit_tracks",
 			"novation/mininova",
 			"novation/peak",
+			"novation/summit",
 			"oberheim/ob_x8",
 			"oberheim/teo_5",
 			"polyend/tracker",
@@ -4284,6 +4285,149 @@ class TestPeak:
 		assert peak.midi.program_change.sends is True
 
 
+class TestSummit:
+
+	"""The Peak's keyboard sibling, whose guide names sixty parameters it will not number."""
+
+	def test_sixty_parameters_are_named_with_no_number_and_are_not_here (self) -> None:
+		"""Slot 1 of the Modulation Matrix is numbered and slots 2 to 16 are blank.
+
+		**The sibling's manual numbers all sixteen**, 1:0 to 16:3, and the two share an
+		engine - so this is the one place in the corpus where the number a definition wants
+		is published, and published in another instrument's document.
+		"""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		# Slot 1 is here in full, as NRPN 1:0 to 1:3 recorded as MSB x 128 + LSB.
+		for part, number in enumerate(("source1", "source2", "depth", "destination")):
+			assert summit.controls[f"mod_matrix_1_{number}"].nrpn == 128 + part
+
+		# And nothing from slot 2 upwards is here at all.
+		for slot in range(2, 17):
+			for number in ("source1", "source2", "depth", "destination"):
+				assert f"mod_matrix_{slot}_{number}" not in summit.controls
+
+				# The Peak has every one of them, which is what makes this an omission.
+				assert peak.controls[f"mod_matrix_{slot}_{number}"].nrpn == \
+					slot * 128 + ("source1", "source2", "depth", "destination").index(number)
+
+	def test_one_hundred_and_eighty_nine_controls_in_the_table_s_own_sections (self) -> None:
+		"""229 rows of the guide and 22 of the addendum, less the 62 that reach nothing."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+
+		assert len(summit.controls) == 189
+		assert len(summit.groups) == 11
+
+		# The guide's own section headings, in the order it prints them, plus the two the
+		# table gives no heading of its own.  `animate` is one the Peak's table does not have.
+		assert list(summit.groups) == [
+			"voice", "oscillators", "mixer", "filter", "envelopes", "lfos", "effects",
+			"arp", "animate", "mod_matrix", "settings"]
+
+		# One setting governs the whole table, so no control carries a direction of its own.
+		assert all(c.direction == pymidiinstrumentdefs.definition.BOTH
+			for c in summit.controls.values())
+
+	def test_two_parts_with_eight_voices_each_out_of_sixteen (self) -> None:
+		"""Sixteen voices in a Single Patch and a fixed eight per Part in a Multi."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+
+		assert list(summit.parts) == ["part_a", "part_b"]
+
+		for part in summit.parts.values():
+			assert part.is_assigned
+			assert part.polyphony == 8
+			assert part.takes("notes")
+			assert part.takes("controls")
+			assert part.takes("program_change")
+
+		# The allocation is fixed rather than drawn from a pool, so no figure is recorded for
+		# the instrument and the voicing modes are the Single Patch's one or sixteen.
+		assert summit.voice.polyphony_shared is False
+		assert summit.voice.polyphony is None
+		assert summit.voice.voicing_modes == (1, 16)
+
+		# Every control is unparted: which channel reaches it is a mode, not a property of it.
+		assert all(c.part is None for c in summit.controls.values())
+
+	def test_velocity_arrives_and_does_nothing_until_a_patch_turns_it_up (self) -> None:
+		"""Three envelope parameters start at zero, and the guide says what that means."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+
+		assert summit.voice.velocity is not None
+		assert summit.voice.velocity.note_on == "gated"
+		assert summit.voice.velocity.gated_by == (
+			"amp_envelope_velocity", "mod_envelope_1_velocity", "mod_envelope_2_velocity")
+
+		# Each gate is a real control, and each starts in the middle of a signed range, which
+		# is zero on the display - the value the guide says silences the touch response.  The
+		# file omits the range because it is the whole of a controller's span, which the
+		# loader fills back in, so writing it out would say nothing.
+		for gate in summit.voice.velocity.gated_by:
+			assert summit.controls[gate].default == 64
+			assert summit.controls[gate].range == (0, 127)
+
+		said = prose_of("novation", "summit")
+
+		assert "If set to zero, the volume is the same regardless of how the keys are played" \
+			in said
+
+	def test_four_numbers_the_peak_left_out_on_this_instrument_s_evidence (self) -> None:
+		"""The shared addendum marks what belongs to which, and these four are the Summit's."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
+
+		# Aftertouch scaling, under "Update Features Exclusive to Summit".
+		assert summit.controls["atouch_scale"].nrpn == 64 * 128 + 3
+		assert summit.controls["atouch_scale"].range == (1, 10)
+		assert "atouch_scale" not in peak.controls
+
+		# And three FM NRPNs from a bug-fix list about voices 9 to 16.
+		for msb, lsb, key in ((25, 13, "fm_osc3_1_manual_amount"),
+				(25, 17, "fm_osc1_2_manual_amount"), (25, 21, "fm_osc2_3_manual_amount")):
+			assert summit.controls[key].nrpn == msb * 128 + lsb
+			assert key not in peak.controls
+
+	def test_the_version_in_the_file_name_is_the_guide_s_edition_not_the_firmware (self) -> None:
+		"""Which only another edition can show, because for the English one they agree."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+
+		# The definition targets the addendum's firmware, not either guide edition.
+		assert summit.model.firmware == "2.1"
+
+		assert summit.sources["guide"].edition == "v1.1, for firmware v1.1"
+		assert summit.sources["translation"].edition == "1.2"
+
+		said = prose_of("novation", "summit")
+
+		assert "the Italian is labelled version 1.2 and dated fourteen months later while" \
+			" its own body sentence still gives the firmware as v1.1" in said
+
+	def test_the_global_channel_s_default_is_stated_three_times_and_one_disagrees (self) -> None:
+		"""So none is recorded, and the span is all the field holds anyway."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+
+		assert summit.midi.channels == (1, 16)
+
+		said = prose_of("novation", "summit")
+
+		assert "Two witnesses say 1, one says 3" in said
+
+	def test_the_sixty_blank_cells_were_checked_against_three_editions (self) -> None:
+		"""Two languages over fourteen months, which is what makes it the maker's omission."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+
+		# The two editions that are cited for an absence and quoted for nothing.
+		assert set(summit.sources) == {
+			"guide", "addendum", "translation", "second_edition", "download_page"}
+
+		said = prose_of("novation", "summit")
+
+		assert "no number of the form `2:0` to `16:3` occurs anywhere in any edition of this" \
+			" guide that has a readable text layer" in said
+
+
 class TestModwaveMkII:
 
 	"""One document set for three products, and a chart whose columns had to be proved."""
@@ -8197,10 +8341,12 @@ class TestMiniNova:
 			(CORPUS / "novation" / "mininova.yaml").read_text()
 
 	def test_it_is_none_of_the_other_novations (self) -> None:
-		"""Six of them now, and the UltraNova is a seventh this does not describe.
+		"""Seven of them now, and the UltraNova is an eighth this does not describe.
 
-		**Three of the six are Circuits**, and the oldest name is a prefix of the other two,
-		so the listing is by name rather than by anything that could match a substring.
+		**Three of the seven are Circuits**, and the oldest name is a prefix of the other
+		two, so the listing is by name rather than by anything that could match a substring.
+		The Summit and the Peak share an engine and are two definitions, which is the maker's
+		own division: one is a keyboard with two of the other's synth core in it.
 		"""
 		mininova = pymidiinstrumentdefs.load("novation/mininova", [CORPUS])
 
@@ -8209,7 +8355,7 @@ class TestMiniNova:
 		novations = sorted(path.stem for path in (CORPUS / "novation").glob("*.yaml"))
 
 		assert novations == ["bass_station_ii", "circuit", "circuit_rhythm", "circuit_tracks",
-			"mininova", "peak"]
+			"mininova", "peak", "summit"]
 
 		said = prose_of("novation", "mininova")
 

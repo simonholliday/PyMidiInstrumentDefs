@@ -1,0 +1,626 @@
+# BEFORE TAKING A NUMBER FROM THESE DOCUMENTS, READ THIS.
+#
+# **SEVEN OF THIS INSTRUMENT'S CONTROLLERS ARE PUBLISHED ONLY INSIDE A FOOTNOTE.** The
+# implementation chart's Control Change rows name 16 to 19, 80 to 83, 7, 8 and 20 to 27, and
+# that is where a reader stops. **Controllers 85 to 91 appear nowhere in those rows** - they are
+# in a table hung off footnote `*8`, which the chart cites from rows about other numbers
+# entirely. A reading that takes the chart's rows as the controller list misses seven of the
+# twenty-five, including the one that deletes a recording.
+#
+# **AND ONE CONTROLLER MEANS A DIFFERENT THING ON EVERY CHANNEL IT REACHES.** `CC#83` chooses an
+# effect by number, and the maker publishes **three different numbered lists** for it: one for
+# the two sample buses, one for the two master buses, one for the input. The same effect is a
+# different number in each - `303 VinylSim` is 18, 1 and 12 - so a value sent to the wrong
+# channel selects the wrong effect rather than failing. That is why `cc: 83` is three controls
+# below and not one.
+#
+# **THE CHANNEL MAP DEPENDS ON THE MODE AND THE FORMAT HOLDS ONE MAP.** Channels 1 to 5 are the
+# four effect buses and the input; channels 1 to 10 are the ten sample banks in MIDI mode A;
+# two settable channels carry everything in MIDI mode B; channel 11 is the vocoder; channel 16
+# is chromatic playback; and in DJ mode channels 1, 2 and 3 are the two decks and the pattern
+# sequencer. **The parts below are the effect buses, because that is the assignment the chart
+# states as a flat table and the one every control here needs.** The rest is in the account.
+#
+# **TWO EDITIONS OF THIS MANUAL CARRY THE SAME CHART AND THAT IS A FREE VERIFICATION.** Roland
+# publishes it as a PDF at version 5.50 and as web pages, whose chart was published at version
+# 5.00. Both stamp the chart `Version: 5` of `Jul. 01, 2025`, and every row, every footnote
+# table and all 102 effect names agree. `Notes/4595_extract_sp_404mkii.py` asserts it.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: SP-404MKII
+  # **THE MANUAL'S VERSION AND THE CHART'S ARE NOT THE SAME NUMBER.** The Reference Manual is
+  # "Version 5.50" (p. 1) and the chart inside it is stamped `Version: 5` (p. 167) - the chart
+  # tracks the major and the manual the minor, so a chart that looks a release behind is not.
+  firmware: "5.50"
+
+source: >-
+  SP-404MK2 Reference Manual, Version 5.50 (174pp), which is the source of every number here:
+  **the MIDI implementation chart at pp. 167-168**, its footnote tables at pp. 169-170, the
+  three CC#83 effect lists at pp. 157-160, the MIDI system settings at pp. 137-138, the
+  vocoder's channel at p. 156, the specifications at p. 166 and the MIDI note map at pp.
+  170-173. Roland's web edition of the chart and of the effect lists is saved beside it and
+  cited for agreeing; its own list of documents for this instrument is saved as evidence of what
+  the maker offers.
+
+
+  **SEVEN CONTROLLERS ARE PUBLISHED ONLY INSIDE A FOOTNOTE, AND THEY ARE THE DESTRUCTIVE ONES.**
+  The chart's Control Change rows are `CC#16-19`, `CC#80-83`, `CC#07`, `CC#08` and `CC#20-27`
+  (p. 168). **Controllers 85 to 91 are in none of them.** They are in a table headed
+  "Control change message numbers and corresponding controllers in Looper mode" (p. 169), which
+  hangs off footnote `*8` - and `*8` is cited from the rows for 7, 8 and 20 to 27, which are
+  about DJ mode. So the only pointer to seven controllers is a footnote marker on rows that do
+  not contain them, and what they do includes "Deletes the sampled content" (p. 169) and
+  "Starts sampling" (p. 169). A reader who takes the chart's rows as the list of controllers
+  loses those seven silently.
+
+
+  THEIR DIRECTION IS IN ONE SENTENCE OF BODY PROSE AND IN NO CELL OF THE CHART. Every row that
+  cites `*8` gives a direction - 7 and 8 both ways, 20 to 27 transmitted only - and **the Looper
+  table has no row of its own**. What settles it is 124 pages away from the chart: "you can
+  operate some of the controls from an external controller by using control change messages"
+  (p. 45), which sends the reader to that very table by name. **So they are received**, and the
+  sentence that says so is the only prose pointer to seven controllers in a 174-page document.
+  The second reader found it; a first reading had the direction right and the evidence weaker,
+  calling it a reading of what the controls do rather than a statement.
+
+
+  **ONE CONTROLLER NUMBER, THREE VALUE MAPS, AND THE SAME EFFECT NUMBERED DIFFERENTLY IN EACH.**
+  "You can use a control change message (CC#83) to select the effects" (p. 157), and the maker
+  prints the correspondence three times: for "BUS1 (MIDI ch 1), BUS2 (MIDI ch 2)" (p. 157) with
+  43 values, for "BUS3 (MIDI ch 3), BUS4 (MIDI ch 4)" (p. 158) with 41, and for "INPUT FX (MIDI
+  ch 5)" (p. 159) with 18. **`303 VinylSim` is 18 on the sample buses, 1 on the master buses and
+  12 on the input**; `Reverb` is 22, 20 and 7; `Equalizer` is 36, 7 and 16. So this is not one
+  control with a long list of choices, it is three controls that share a number, and a consumer
+  that offered one list for all five channels would be wrong on two of them. Each is recorded
+  against its part below.
+
+
+  **AND THE RENUMBERING IS ALMOST BUT NOT QUITE TOTAL, WHICH IS WORSE THAN EITHER.** Thirty-five
+  effects appear in more than one list. **`(OFF)` is nought in all three, `WrmSaturator` is 11 in
+  both the master buses' list and the input's - and every other one of the thirty-five is
+  renumbered everywhere it appears.** So a reader who spot-checks two lists and lands on either
+  of those two concludes the lists are the same, and a reader who lands on any of the other
+  thirty-three concludes they are unrelated. Both readings are wrong. The second reader found the
+  `WrmSaturator` coincidence against a first reading that had said no shared number existed at
+  all, which is the kind of overclaim a comparison exists to catch.
+
+
+  WHY THEY DIFFER AT ALL IS NOT ARBITRARY, AND THE SECOND READER ESTABLISHED IT: each list is
+  that bus's own on-screen menu order, confirmed against the `EFX Type` value lists in the
+  parameter guide, which run in the same order with `Bypass` where the chart has `(OFF)`. So the
+  numbers are positions in a menu rather than identifiers of an effect, which is exactly why they
+  do not travel between channels.
+
+
+  **FIVE OF THE SAMPLE BUSES' VALUES DO NOT NAME AN EFFECT AT ALL.** `Direct FX1` to `Direct FX5`
+  at 1 to 5 are the five top-panel effect buttons, each of which the player assigns from a list of
+  41. So those five choices select whatever the player put there, and the five effects the master
+  buses have and the sample buses do not - `Filter+Drive`, `Resonator`, `Sync Delay`, `Isolator`
+  and `DJFX Looper` - are exactly the ones reachable on the sample buses through those buttons.
+  Recorded because a consumer reading `direct_fx1` as the name of an effect would be wrong.
+
+
+  THE THREE LISTS ARE EACH CONTIGUOUS FROM NOUGHT, WHICH IS THEIR OWN CHECK - 0 to 42, 0 to 40
+  and 0 to 17, with nothing missing and nothing doubled - and all three agree between the PDF
+  and the web edition, 102 names over all. **The chart's own example corroborates them from
+  outside**: `0xB3 53 01` sending "BUS 4 EFX number = 01 (303 VinylSim)" (p. 168) is a program
+  change
+  shown on channel 4, which is BUS 4, and 1 is `303 VinylSim` in the master buses' list and
+  nothing like it in the other two.
+
+
+  **AND A PRINTED PAGE NUMBER WAS READ AS AN EFFECT NUMBER, WHICH THE SECOND EDITION CAUGHT.**
+  The effect lists are columns of bare integers and every page of the PDF carries its own number
+  as a bare line, so pages 157 to 160 each displaced a real value. The web edition has no folios
+  and was right where the PDF was wrong. The guard is the format's own - **a controller value
+  cannot exceed 127** - rather than a page range that would have to be maintained. This is
+  `sequential/fourm`'s lesson met a second time, and the first time a second *edition* rather
+  than a second reader found it.
+
+
+  THE CHANNEL MAP DEPENDS ON THE MODE, AND THIS IS THE ONE THING THE FORMAT CANNOT HOLD WHOLE.
+  Five schemes share sixteen channels. **The effect buses**: `CH 1: BUS 1` through `CH 5: INPUT`
+  (p. 169), a flat table with no qualification, and these are the channels every control below
+  uses. **The sample banks in MIDI mode A**: the note map gives channels 1 to 10 a bank each,
+  with notes 35 to 51 selecting a pad within it. **MIDI mode B**: two channels carry all ten
+  banks, the lower one banks A to E and the upper F to J, over notes 0 and 12 to 91, with the
+  pair settable - "Pad MIDI Channels 1/2, 2/3-9/10, 10/11" (p. 138) - and the whole map
+  shiftable by "Note offset -11-35" (p. 138). **The vocoder**: "For note messages (Note Number
+  = 0-127) and pitch bend messages, set the MIDI channel on your external device to '11'"
+  (p. 156). **Chromatic playback**: channel 16, notes 36 to 60. **And DJ mode reassigns the
+  first three**, where channel 1 is one deck, 2 the other and 3 the pattern sequencer (p. 169).
+  So channels 1, 2 and 3 mean a bus, a bank, a deck or a sequencer depending on what the player
+  is doing, and nothing in a message says which. The schemes are told apart by message type and
+  controller number rather than by channel, and **the document never puts them side by side**.
+
+
+  **AND THE PAD CHANNEL SETTING COLLIDES WITH THE VOCODER'S.** Three printed statements cannot
+  all hold: the setting offers a pair up to `10/11`, the chart's basic channel row stops at 10,
+  and the note map's own column heads read `CH 1-9` and `CH 2-10`. **Choose `10/11` and the
+  pads' upper half lands on channel 11, which is the vocoder's fixed channel.** The second
+  reader laid the three side by side; nothing in the manual reconciles them, and nothing says
+  what happens. `channels` records the 1 to 10 because it is the figure two of the three agree
+  on.
+
+
+  **THE PARTS BELOW ARE THE EFFECT BUSES AND NOTHING ELSE**, because that is the assignment the
+  chart states outright and the only one the controls need. Their channels are **fixed** - no
+  setting moves them, and the Pad MIDI Channels offset does not reach them - and this format has
+  no word for a fixed channel: `channel_offset` says a channel cannot be set on its own, which
+  is true here, and implies it is derived from a base channel, which is not. The nearest field
+  is used and the gap is raised where the format's questions are kept.
+
+
+  THE CHART'S BASIC CHANNEL IS 1 TO 10 AND ONLY IN ONE MODE. `x (MIDI mode A)` and `1-10 (MIDI
+  mode B)` (p. 167), in both the transmitted and the recognised column and for both the default
+  and the changed row. **So in MIDI mode A this instrument has no basic channel at all** - every
+  one of its ten banks has a channel, and no single one is the instrument's. `channels` records
+  the 1 to 10 because it is the only figure stated; channel 11 is reachable as the upper half of
+  the mode B pair, and 11 and 16 carry the vocoder and chromatic playback whatever the mode.
+
+
+  PROGRAM CHANGE IS RECEIVED, NEVER SENT, AND THE BANK COMES FROM THE CHANNEL. The chart marks
+  it "x" transmitted and "o" recognised (p. 168), gated by a setting - "PC Rx ON, OFF ... When
+  this is ON, program change messages are received" (p. 138) - and a table gives `PC#0 Pattern 1`
+  through "PC#15 Pattern 16" (p. 170). **The chart's own example is where the bank comes
+  from**: `0xC3 0F` selecting "Bank D Pattern 16" (p. 168) is a program change on channel 4,
+  selecting the
+  fourth bank's sixteenth pattern. So sixteen patterns are reachable per channel and the channel
+  chooses the bank. **No preset count is recorded** - the instrument holds 2,560 patterns
+  (p. 166) of which a program change reaches 16 at a time, and the product of the two is a
+  figure the maker never prints.
+
+
+  CLOCK AND TRANSPORT BOTH TRAVEL BOTH WAYS, EACH UNDER A CONDITION THE CHART STATES. Sending is
+  "Output when MIDI Sync Out is 'ON' and when there is no tempo input from an external device"
+  (p. 168), and receiving is "Enabled when this unit is in remote mode (when a tempo signal is
+  received from an external device)" (p. 168) - so the two are exclusive by construction and the
+  instrument is a master or a slave and never both. The settings behind them are
+  `MIDI Sync Out OFF, ON` and a four-way `MIDI Sync` of `Auto`, `Internal`, `MIDI` and `USB`
+  (p. 137) - and **the phrase `remote mode` (p. 168) that the receiving condition turns on is
+  used once in the whole manual and never defined**, which the second reader established by
+  searching for it. The looper is driven the same way: "You can control the start/stop of
+  recording from an external MIDI device using the start command (FA)/stop command (FC)"
+  (p. 41), and **continue is never mentioned anywhere** - only start and stop.
+
+
+  SYSTEM EXCLUSIVE IS A CHECKED ABSENCE, WHICH IS WORTH SAYING BECAUSE THERE IS AN EDITOR.
+  "System Exclusive x x" (p. 168), in both columns. Roland publishes an SP-404MKII App with a
+  user's guide of its own, so something carries patches and samples between the two, and **it is
+  not system exclusive**. The instrument's import and export go through an SD card and a USB
+  connection instead.
+
+
+  AND THERE IS NO REGISTERED OR NON-REGISTERED PARAMETER ROW IN THE CHART AT ALL. Not a cross in
+  two columns - no row. Controllers 98 to 101 appear nowhere in the document. **That is a
+  silence and not a checked absence**, which is why `nrpn` is unset rather than `none`, and it
+  is the one place this chart is less complete than the form it is written in.
+
+
+  **PITCH BEND IS RECEIVED ON ONE CHANNEL FOR ONE PURPOSE AND THERE IS NO FIELD THAT SAYS SO.**
+  The chart gives `Pitch Bend x o *2` with `*2` reading "Enabled when INPUT FX is 'Vocoder'
+  (MIDI CH 11)" (p. 168), and the vocoder's own page confirms it. So it is received, never sent,
+  only on channel 11, and only while one input effect is selected - and no page states a range
+  or whether one can be set. `voice.pitch_bend` holds a depth and whether it is settable, so
+  with neither stated there is nothing to write there, and recording nothing is indistinguishable
+  from nobody having looked. Said here instead, and raised with the format's other questions.
+
+
+  VELOCITY IS RECEIVED AND TRANSMITTED ON NOTE ON AND NEITHER WAY ON NOTE OFF - "o o" against
+  `x x` (p. 167) - which fits an instrument whose pads the specifications call
+  "16 pads + 1 sub pad (Velocity-sensitive pad)" (p. 166). **Aftertouch is a checked absence of
+  both kinds in both directions**, four crossed cells. So are Song Position, Song Select, Tune
+  Request, Reset All Controllers, Local On/Off, All Notes Off and System Reset, each crossed
+  twice; All Sound Off is received, with the footnote "All samples stop playing back when the
+  MIDI cable is unplugged" (p. 168). **That note is almost certainly on the wrong row**: it
+  describes a consequence of the cable going away rather than of a message arriving, which is
+  what an active sensing timeout is - and Active Sensing is the one affirmative row in this
+  chart with no note against it. The second reader's reading, and the likeliest explanation of
+  the oddest cell here.
+
+
+  A NOTE NUMBER HERE ADDRESSES A PAD AND NOT A PITCH, EXCEPT ON TWO CHANNELS WHERE IT DOES BOTH.
+  Hence `addressing: voices` on the instrument and `pitches` on the vocoder and the chromatic
+  parts. **And the map is neither fixed nor learned**: `MIDI Mode` switches between two
+  published maps and `Note offset` shifts one of them by up to 35 semitones, so `note_map` is
+  left unset rather than called either.
+
+
+  EIGHT DEFECTS IN THE CHART'S OWN APPARATUS, AND SEVEN OF THEM ARE IN BOTH EDITIONS.
+  **Footnote `*7` heads two different tables** - `MIDI channels` and `Control change message
+  numbers and corresponding EFX controls` (p. 169) - so a row citing `*7` cites both and says
+  neither. **Footnote `*8` heads two more**, the DJ mode table and the Looper mode table, and
+  the three rows that cite it are all DJ mode's - so **nothing points at the Looper table at
+  all**. **The chart's Program Change row cites `*9` and nothing anywhere is headed `*9`**; the
+  table it means is printed with no number. **The transmitted cell for `CC#16-19` is a capital
+  `O`** where every other affirmative cell is the lower-case `o` the legend defines.
+  **The Note Number row cites the wrong footnote in one of its two columns**: its transmitted
+  entry for channel 16 reads `*7` and its recognised entry for the same channel reads `*6`,
+  and `*7` is the controller and channel table, which says nothing about note ranges.
+  **A worked example contradicts the table it illustrates**: `0xB0 14 01` is glossed `CH1 play`
+  (p. 168) while the table defines that controller as "0: pause, 127: play" (p. 169), and 1 is
+  neither. **`*7` is attached to the recognised column alone** on both controller rows that cite
+  it, which implies the channel map applies only on the way in. And the eighth is the PDF's
+  alone: **its footnote list prints `*1` and then `1` to `5`**, so the note the chart calls `*6`
+  is printed as `5` and every note after the first is mislabelled. The web edition's markup
+  numbers all six correctly under a style named for the asterisk, so **the source is right and
+  the typesetting is wrong** - the first time in this corpus that two editions of one document
+  have disagreed and the web one has been the better.
+
+
+  **AND A NINTH IS NOT IN THE CHART BUT IN THE NOTE MAP, WHERE IT COSTS A WHOLE BANK.** The map
+  gives the mode B pair five banks on each channel, and **bank H is nowhere in it**: the upper
+  channel's notes 44 to 59 print bank `I`, which its notes 60 to 75 print as well. Counted
+  mechanically over the map's four pages, banks C to G have sixteen cells each, **bank I has
+  thirty-two and bank H has none**. By the pattern the other four pairs make - A with F, B with
+  G, D with I, E with J - the duplicated block should be H. **So a reader transcribing the map
+  as printed gets an instrument whose eighth bank cannot be addressed in mode B**, and it is in
+  both editions. Found by the second reader and confirmed here by counting; recorded and not
+  corrected, because which of the two blocks is wrong is a guess.
+
+
+  THREE MORE OF THE MAKER'S INCONSISTENCIES, EACH HARMLESS AND EACH WORTH NOT RE-DERIVING. The
+  chart's rows write `CC#07` and `CC#08` where its own footnote table writes `CC#7` and `CC#8`.
+  The DJ table's third column is headed `MIDI channels 3` for a single channel. And **the two
+  words for this instrument's name disagree inside one maker**: the manual's cover and the
+  chart's own `Model:` line both say SP-404MK2, Roland's document list titles some files
+  SP-404MKII and others SP-404MK2, and the product is sold as the SP-404MKII. This definition
+  follows the brand, as the ranking does.
+
+
+  WHAT THE MAKER PUBLISHES NOW, AND WHY IT IS WORTH SAYING. Its own document list offers the
+  Reference Manual at **version 5.50** in HTML and PDF, a Quick Start in eight languages, an App
+  User's Guide, a Roland Cloud guide, a shortcut list and three third-party setup guides. **The
+  version 3.00 manual that this instrument's survey recorded as its source is not listed any
+  more**, and the version 5.00 web page that the same survey named as the current MIDI reference
+  is one revision behind. Neither was wrong when written. **A document address
+  recorded as current is a dated claim even when nothing on it carries a date**, which is
+  `ableton/move`'s finding arriving from the other direction: there the document was stale and
+  said nothing about it, here the record of which document to read went stale instead.
+
+sources:
+  manual:
+    kind: manual
+    title: SP-404MK2 Reference Manual
+    edition: "5.50"
+    landing: "https://www.roland.com/global/support/by_product/sp-404mk2/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/SP-404mk2_v550_reference_eng04_W.pdf"
+    sha256: ab7635f6bf4c702d21e03d4379dddd8e5ecfc64735d40990620f8e7a699c3dbd
+    retrieved: 2026-10-05
+    # 174 sheets, one printed page to a sheet, so no offset - asserted at sheets 5, 50, 110,
+    # 160, 167 and 171, each of which prints its own number among its first lines. The back
+    # cover prints `04`, which is the edition code in the file name and not a page.
+    # **ITS FOOTNOTE LIST IS MISNUMBERED AND THE WEB EDITION'S IS NOT**: `*1` is set hard and
+    # the five notes after it are auto-numbered from 1, so the chart's `*6` is printed as `5`.
+    # See the source account; the web edition is the one to trust for a footnote number.
+  web_chart:
+    kind: midi_implementation
+    title: SP-404MK2 MIDI implementation chart
+    edition: "5.00"
+    landing: "https://static.roland.com/manuals/sp-404mk2_reference_v500/en-US/index.html"
+    url: "https://static.roland.com/manuals/sp-404mk2_reference_v500/en-US/8010996378593163.html"
+    sha256: 4f799484aabf5b25c95cc701c88712cb21d9b432c5c4f0e34bf4e2e6b9963fcc
+    retrieved: 2026-10-05
+    paginated: false
+    # **THE SAME CHART FROM AN EARLIER EDITION OF THE SAME MANUAL, AND IT AGREES.** Published
+    # for manual version 5.00 and stamped `Version: 5` of `Jul. 01, 2025`, exactly as the 5.50
+    # PDF's is. Every row, every footnote table and all 102 effect names match. Cited for the
+    # agreement, for having the footnote numbering right where the PDF has it wrong, and for
+    # having no page numbers in it - which is how a folio read as an effect number was caught.
+  web_effects:
+    kind: reference
+    title: SP-404MK2 Control change messages and corresponding effects
+    edition: "5.00"
+    landing: "https://static.roland.com/manuals/sp-404mk2_reference_v500/en-US/index.html"
+    url: "https://static.roland.com/manuals/sp-404mk2_reference_v500/en-US/8002420378583179.html"
+    sha256: 8b0777d576ebb237b571791ec2744047388e3aee2a2291d640cb304b4d1b0f49
+    retrieved: 2026-10-05
+    paginated: false
+    # The three CC#83 lists from the same earlier edition, read against the PDF's pp. 157-160
+    # value by value. **102 names, all three lists contiguous from nought, no disagreement.**
+  documents_page:
+    kind: download_page
+    title: SP-404MKII Owner's Manuals
+    landing: "https://www.roland.com/global/support/by_product/sp-404mk2/owners_manuals/"
+    url: "https://www.roland.com/global/support/by_product/sp-404mk2/owners_manuals/"
+    sha256: 478d7479568b6da2a1b6c3587a616d89036354a9d0a1b775e183d761174fedd3
+    retrieved: 2026-10-05
+    paginated: false
+    # **SAVED AS EVIDENCE OF WHICH DOCUMENT IS CURRENT**, which is the thing that goes stale
+    # fastest and leaves no trace when it does. It offers the Reference Manual at version 5.50
+    # and nothing earlier; the version 3.00 PDF this instrument's survey cited is gone from it.
+    # Its list is built in the browser, so the document links were read out of the markup.
+
+midi:
+  # `x (MIDI mode A)` and `1-10 (MIDI mode B)` (p. 167), in both columns and both rows. **In
+  # MIDI mode A there is no basic channel at all** - see the source account, and note that
+  # channels 11 and 16 carry the vocoder and chromatic playback whatever the mode says.
+  channels: [1, 10]
+  # Transmitted and received, each under its own condition, and the two are exclusive: it sends
+  # a clock only when nothing is sending it one. See the source account.
+  clock: both
+  # The chart's System Realtime Commands row, both ways, under the same two conditions.
+  transport: both
+  program_change:
+    # "o" recognised against "x" transmitted (p. 168), gated by `PC Rx` (p. 138). **The MIDI
+    # channel chooses the bank and the program number the pattern**, 16 to a bank - which is
+    # the chart's own example and not an inference. No count is recorded: see the account.
+    receives: true
+    sends: false
+  # A CHECKED ABSENCE IN BOTH COLUMNS (p. 168), and worth stating because the maker ships an
+  # editor application for this instrument. Whatever that speaks, it is not system exclusive.
+  sysex: false
+  # NOT RECORDED: the chart has **no registered or non-registered parameter row at all**, which
+  # is a silence rather than a cross. Controllers 98 to 101 appear nowhere in the document.
+
+voice:
+  # A NOTE NUMBER ADDRESSES A PAD AND NOT A PITCH. The note map gives each number a bank and a
+  # pad; only the vocoder and chromatic parts below read a note as a pitch.
+  addressing: voices
+  # "Maximum polyphony 32 voices" (p. 166).
+  polyphony: 32
+  # **ONE POOL OF 32 ACROSS EVERYTHING, WHICH IS WHAT THE PARTS BELOW BEING EFFECT BUSES
+  # MEANS.** They are not voice holders: a bus processes whatever is playing through it, so no
+  # part has a share of the 32 it can count on and the figure above is a ceiling over all of
+  # them together. The Digitone's shape rather than the Streichfett's, and for a different
+  # reason - there the parts are instruments competing for voices, here they are not
+  # instruments at all.
+  polyphony_shared: true
+  velocity:
+    # "o" against "o" on note on (p. 167), for pads the specifications call velocity-sensitive.
+    note_on: received
+    # **AND NOTE OFF VELOCITY NEITHER WAY**, crossed in both columns.
+    note_off: false
+  # A checked absence, both kinds, both directions - four crossed cells in the chart.
+  aftertouch: none
+  # NOT RECORDED, the pitch bend: it is received, on channel 11 alone, and only while the input
+  # effect is the vocoder, and no page gives a depth or says whether one can be set. This field
+  # holds a depth and a settability and would have to be empty to carry the fact. See the
+  # source account.
+  # NOT RECORDED, the note map: `MIDI Mode` switches between two published maps and `Note
+  # offset` shifts one of them, so it is neither `fixed` nor `learned`.
+
+parts:
+  # **THE FOUR EFFECT BUSES AND THE INPUT, ON CHANNELS 1 TO 5**, from "CH 1: BUS 1" through
+  # `CH 5: INPUT` (p. 169). They are split in two because `CC#83` means something different on
+  # each half: buses 1 and 2 carry a sample's own effects and buses 3 and 4 the whole output's,
+  # which is the division the maker's own chapters make, and each half has its own numbered
+  # effect list.
+  #
+  # **THESE CHANNELS ARE FIXED AND THE FORMAT HAS NO WORD FOR THAT.** No setting moves them and
+  # the `Pad MIDI Channels` offset does not reach them. `channel_offset` is used because its
+  # stated meaning is that a channel cannot be set on its own, which is true; what it also
+  # implies, that the channel is derived from a base channel, is not. Raised rather than hidden.
+  bus_1_2:
+    label: BUS 1, BUS 2
+    channel_offset: 0
+    count: 2
+    receives: [controls]
+  bus_3_4:
+    label: BUS 3, BUS 4
+    channel_offset: 2
+    count: 2
+    receives: [controls]
+  input_fx:
+    label: INPUT
+    channel_offset: 4
+    receives: [controls]
+  vocoder:
+    label: Vocoder
+    # Channel 11, fixed: "set the MIDI channel on your external device to '11'" (p. 156).
+    channel_offset: 10
+    # **THE ONE PLACE A NOTE IS A PITCH AND THE ONLY PLACE PITCH BEND IS RECEIVED.** Notes 0 to
+    # 127, and it answers only while the input effect is the vocoder.
+    addressing: pitches
+    receives: [notes]
+  chromatic:
+    label: Chromatic
+    # Channel 16, fixed, notes 36 to 60 - and **the chromatic chapter never mentions MIDI at
+    # all**. The only place this channel appears in 174 pages is a footnote to the chart.
+    channel_offset: 15
+    addressing: pitches
+    receives: [notes]
+
+controls:
+  # **THE SIX KNOBS AND THE SWITCH ARE THE SAME ON EVERY BUS**, so they are unparted: the chart
+  # gives `CC#16-19` and `CC#80-83` as flat rows reaching all five channels of the `*7` table,
+  # and only the effect *number* below differs by bus. The names are the maker's own from
+  # "Control change message numbers and corresponding EFX controls" (p. 169).
+  ctrl_1:                        {label: Ctrl 1, cc: 16}
+  ctrl_2:                        {label: Ctrl 2, cc: 17}
+  ctrl_3:                        {label: Ctrl 3, cc: 18}
+  # "EFX switch (0-63: OFF, 64-127: ON)" (p. 169), so the turnover is the maker's and not
+  # assumed.
+  efx_switch:                    {label: EFX switch, cc: 19, values: {"off": 0, "on": 64}}
+  ctrl_4:                        {label: Ctrl 4, cc: 80}
+  ctrl_5:                        {label: Ctrl 5, cc: 81}
+  ctrl_6:                        {label: Ctrl 6, cc: 82}
+
+  # ── CC#83, three times, because the same number selects a different effect on each half of
+  # the bus structure and on the input. 43, 41 and 18 values, each contiguous from nought, and
+  # nine effects appear in all three lists with a different number every time. **The identifiers
+  # reorder two of the maker's names** - `303 VinylSim` is `vinylsim_303` - because a name in
+  # this format cannot begin with a digit.
+  bus_1_2_efx_number:
+    label: EFX number
+    cc: 83
+    part: bus_1_2
+    range: [0, 42]
+    choices:
+      "off": 0
+      "direct_fx1": 1
+      "direct_fx2": 2
+      "direct_fx3": 3
+      "direct_fx4": 4
+      "direct_fx5": 5
+      "scatter": 6
+      "downer": 7
+      "ha_dou": 8
+      "ko_da_ma": 9
+      "zan_zou": 10
+      "to_gu_ro": 11
+      "sbf": 12
+      "stopper": 13
+      "tape_echo": 14
+      "timectrldly": 15
+      "super_filter": 16
+      "wrmsaturator": 17
+      "vinylsim_303": 18
+      "vinylsim_404": 19
+      "cassette_sim": 20
+      "lo_fi": 21
+      "reverb": 22
+      "chorus": 23
+      "juno_chorus": 24
+      "flanger": 25
+      "phaser": 26
+      "wah": 27
+      "slicer": 28
+      "tremolo_pan": 29
+      "chromatic_ps": 30
+      "hyper_reso": 31
+      "ring_mod": 32
+      "crusher": 33
+      "overdrive": 34
+      "distortion": 35
+      "equalizer": 36
+      "compressor": 37
+      "sx_reverb": 38
+      "sx_delay": 39
+      "cloud_delay": 40
+      "back_spin": 41
+      "djfx_delay": 42
+
+  bus_3_4_efx_number:
+    label: EFX number
+    cc: 83
+    part: bus_3_4
+    range: [0, 40]
+    choices:
+      "off": 0
+      "vinylsim_303": 1
+      "vinylsim_404": 2
+      "cassette_sim": 3
+      "lo_fi": 4
+      "downer": 5
+      "compressor": 6
+      "equalizer": 7
+      "isolator": 8
+      "super_filter": 9
+      "filter_drive": 10
+      "wrmsaturator": 11
+      "overdrive": 12
+      "distortion": 13
+      "crusher": 14
+      "ring_mod": 15
+      "sbf": 16
+      "resonator": 17
+      "hyper_reso": 18
+      "chromatic_ps": 19
+      "reverb": 20
+      "ha_dou": 21
+      "zan_zou": 22
+      "sync_delay": 23
+      "timectrldly": 24
+      "ko_da_ma": 25
+      "tape_echo": 26
+      "chorus": 27
+      "juno_chorus": 28
+      "flanger": 29
+      "phaser": 30
+      "wah": 31
+      "slicer": 32
+      "tremolo_pan": 33
+      "to_gu_ro": 34
+      "djfx_looper": 35
+      "scatter": 36
+      "sx_reverb": 37
+      "sx_delay": 38
+      "cloud_delay": 39
+      "djfx_delay": 40
+
+  input_fx_efx_number:
+    label: EFX number
+    cc: 83
+    part: input_fx
+    range: [0, 17]
+    choices:
+      "off": 0
+      "auto_pitch": 1
+      "vocoder": 2
+      "harmony": 3
+      "gt_amp_sim": 4
+      "chorus": 5
+      "juno_chorus": 6
+      "reverb": 7
+      "timectrldly": 8
+      "chromatic_ps": 9
+      "downer": 10
+      "wrmsaturator": 11
+      "vinylsim_303": 12
+      "vinylsim_404": 13
+      "cassette_sim": 14
+      "lo_fi": 15
+      "equalizer": 16
+      "compressor": 17
+
+
+  # ── DJ MODE REASSIGNS THE FIRST THREE CHANNELS, which is why these are unparted: channel 1 is
+  # one deck, channel 2 the other and channel 3 the pattern sequencer (p. 169), none of which is
+  # the bus that channel carries otherwise. **A part here would say the wrong thing in the other
+  # mode**, so the channels are in this comment and not in the structure above.
+  #
+  # The volume slider and the crossfade are the only two that travel both ways in DJ mode.
+  volume_slider:                 {label: volume slider, cc: 7}
+  # "X-FADE (CH1: CH2 = 127:0-0:127)" (p. 169) - nought is one deck full up and 127 the other,
+  # which is a crossfade and not a level.
+  x_fade:                        {label: X-FADE, cc: 8}
+
+  # **THE EIGHT BUTTONS DJ MODE SENDS AND DOES NOT ANSWER TO**: "o *8" transmitted against "x"
+  # recognised (p. 168), which is the only row in this chart that travels one way and outwards.
+  # Six of them are momentary - "0: release the button, 127: press the button" (p. 169) - and
+  # two are states.
+  play_pause:                    {label: play/pause button, cc: 20, direction: transmits,
+    values: {"pause": 0, "play": 127}}
+  cue_point:                     {label: cue button, cc: 21, direction: transmits,
+    values: {"released": 0, "pressed": 127}}
+  sync:                          {label: SYNC button, cc: 22, direction: transmits,
+    values: {"off": 0, "on": 127}}
+  cue:                           {label: CUE button, cc: 23, direction: transmits,
+    values: {"off": 0, "on": 127}}
+  bend_up:                       {label: BEND+ button, cc: 24, direction: transmits,
+    values: {"released": 0, "pressed": 127}}
+  bend_down:                     {label: BEND- button, cc: 25, direction: transmits,
+    values: {"released": 0, "pressed": 127}}
+  bpm_up:                        {label: BPM+ button, cc: 26, direction: transmits,
+    values: {"released": 0, "pressed": 127}}
+  bpm_down:                      {label: BPM- button, cc: 27, direction: transmits,
+    values: {"released": 0, "pressed": 127}}
+
+  # ── THE SEVEN THE CHART'S ROWS DO NOT CONTAIN, from the Looper mode table (pp. 169-170),
+  # which hangs off a footnote cited from rows about other numbers. **Nothing states their
+  # direction**: each one's printed effect is something done to this instrument on receiving a
+  # value, so they are recorded as received, and that is a reading rather than a cell. On
+  # channel 1, which in Looper mode is neither a bus nor a deck.
+  #
+  # **AND ONE OF THEM DELETES A RECORDING ON A VALUE OF 127.**
+  looper_exit:                   {label: EXIT button, cc: 85, direction: receives,
+    values: {"stop_all_samples": 127}}
+  looper_pitch_speed:            {label: PITCH/SPEED button, cc: 86, direction: receives,
+    values: {"reset_tempo": 127}}
+  looper_delete:                 {label: DEL button, cc: 87, direction: receives,
+    values: {"delete_sampled_content": 127}}
+  looper_record:                 {label: REC button, cc: 88, direction: receives,
+    values: {"stop_sampling": 0, "start_sampling": 127}}
+  looper_resample:               {label: RESAMPLE button, cc: 89, direction: receives,
+    values: {"overdub": 127}}
+  # "Adjusts the value of BPM/PLAY-RATE parameters" (p. 170) - the one continuous control here.
+  looper_ctrl_3:                 {label: CTRL 3 knob, cc: 90, direction: receives}
+  # "Undoes (UNDO) the data you just input (recorded)" (p. 170) at 127 and "Cancels the undo
+  # action (REDO)" (p. 170) at 0, which is the only control in this corpus where nought is an
+  # action rather than an off state.
+  looper_undo:                   {label: SHIFT + PATTERN SELECT, cc: 91, direction: receives,
+    values: {"redo": 0, "undo": 127}}

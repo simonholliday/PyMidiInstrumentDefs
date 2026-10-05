@@ -219,6 +219,7 @@ class TestBundledCorpus:
 			"roland/mc_101",
 			"roland/mc_707",
 			"roland/s_1",
+			"roland/sp_404mkii",
 			"roland/tr8s",
 			"roland/tr_1000",
 			"roland/tr_6s",

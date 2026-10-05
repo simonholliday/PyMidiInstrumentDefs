@@ -178,6 +178,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/labyrinth` | Moog Labyrinth: answers to notes, clock and transport, and nothing else |
 | `moog/matriarch` | Moog Matriarch: 37 controls, one of which only its firmware notes mention, and a voice count you can switch over MIDI |
 | `moog/messenger` | Moog Messenger: 56 controls, 31 of them 14-bit pairs the specification's own way round, with every band named |
+| `moog/minimoog_model_d` | Moog Minimoog Model D: one control, the fourteen-bit mod wheel on CC 1 and CC 33 - the only controller number in 84 pages, from a maker whose manual points at a SysEx document it no longer offers |
 | `moog/minitaur` | Moog Minitaur: plays notes 0-72, with the firmware v2.1 corrections |
 | `moog/mother_32` | Moog Mother-32: seven controllers, four of which reach no sound at all but a voltage at a jack the player patches |
 | `moog/muse` | Moog Muse: 102 controls off one appendix that four documents print identically, two of whose rows are misprinted - and two timbres on two MIDI channels out of the box |

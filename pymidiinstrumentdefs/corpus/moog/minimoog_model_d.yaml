@@ -1,0 +1,211 @@
+# BEFORE ADDING A CONTROLLER NUMBER TO THIS FILE, READ THIS.
+#
+# **This instrument answers to one controller and the manual names it once.** The mod wheel is
+# CC 1 with CC 33 as its fine half, on printed page 35, and no other controller number appears
+# anywhere in 84 pages - checked by two readers, the second scanning every content stream and
+# all 432 form objects rather than only the extracted text.
+#
+# **THE MANUAL POINTS AT A SYSEX DOCUMENT THAT MOOG NO LONGER OFFERS.** Page 46 says the SysEx
+# documentation can be downloaded from the maker's site; the maker's own downloads listing
+# serves exactly two files for this instrument, and neither is it. Do not take that absence as
+# proof the document never existed - it did, and the listing shows Moog publishes exactly such
+# a sheet for the Minitaur. **What is true is that it is not published now**, so nothing from
+# it is here and nothing from any reconstruction of it is either.
+#
+# The original 1970-81 Minimoog has no MIDI and is not this instrument. **"Model D" alone also
+# names Behringer's clone**, which is in this corpus as `behringer/model_d` with a MIDI
+# implementation of its own.
+
+definition: 1
+
+model:
+  manufacturer: Moog Music
+  name: Minimoog Model D
+
+source: >-
+  Minimoog Model D User's Manual Version 2, 2022, which is 84 pages and one of only two
+  documents Moog publishes for this instrument. The other is a sheet of blank patch templates
+  with nothing about MIDI in it. The maker's downloads listing is cited for what it does and
+  does not offer.
+
+
+  **THE EDITION MATTERS MORE THAN USUAL HERE.** An earlier, shorter edition of this manual is
+  hosted by third parties, and in it Global Settings begins on page 23 where this one has it on
+  page 46. **Every page cited below is Version 2's**, and against the earlier edition none of
+  them resolves.
+
+
+  ONE CONTROLLER, NAMED ONCE. "It now includes mod-wheel MIDI support: CC #1 (MSB or Most
+  Significant Byte) and CC #33 (LSB or Least Significant Byte)" (guide p. 35). That is a
+  fourteen-bit mod wheel rather than two controls, so it is recorded as one with a fine half.
+  **The sentence is in the MIDI IN paragraph**, so the numbers are stated for what the
+  instrument receives; the manual says elsewhere that the wheel also transmits - "Mod Wheel now
+  receives and transmits MIDI data" (guide p. 10) - without saying on what number, which is the
+  only sensible reading but is this file's inference and not the maker's words.
+
+
+  Two readers found no second controller number. The second scanned every content stream in the
+  document, recursing into all 432 form objects and counting the text-showing operators, which
+  is how a negative claim about this manual can be made at all: **nothing is hidden in a stream
+  that the extracted text does not already carry**. There are no images in the file.
+
+
+  **AND ONE PAGE OF IT CANNOT BE READ BY ANY EXTRACTOR.** Page 53, the Signal Flow diagram, is a
+  form object with no font resources and not one text-showing operator: every label is an
+  outlined path, so it is invisible to `fitz` and `pypdf` alike. It was rendered and looked at.
+  It is an analogue audio and control-voltage block diagram - mixer, ladder filter, two amplifiers,
+  the outputs, and a key - and it carries no controller number.
+
+
+  WHAT THE MIDI JACKS CARRY, stated twice and agreeing. "MIDI In: Note On (Trigger), Note #,
+  Velocity, Pitch Bend, and Mod Wheel" and "MIDI Out: Note On (Trigger), Note #, Velocity,
+  Aftertouch, Pitch Bend, and Mod Wheel" (guide p. 81), which is the same list page 35 gives in
+  prose.
+
+
+  **SO AFTERTOUCH IS SENT AND NOT RECEIVED**, which the manual confirms three ways: the receive
+  list omits it, the send list has it, and the power-on commands offer a "MIDI Aftertouch
+  Output" switch with no input counterpart. `aftertouch: sends` says that, borrowing the word
+  this format already uses for a one-way `transport`. **It is the only word available and it is
+  not quite the right one**: the field names a kind of aftertouch elsewhere in this corpus -
+  channel, poly, none - and here it names a direction instead.
+
+
+  MIDI THRU IS A JACK AND NOT A MESSAGE LIST. "This jack rebroadcasts the signal arriving at the
+  MIDI IN jack and passes it along to other MIDI equipment" (guide p. 35), so it carries
+  everything that arrives, including messages this instrument ignores. Page 81 calls it a mirror
+  of the MIDI In signal, which is true of the jack and would be false of the list above.
+
+
+  THE CHANNEL IS SET BY HOLDING KEYS WHILE THE POWER COMES ON, and so is most of the rest of the
+  MIDI behaviour. "Sets MIDI IN to MIDI channel 1-16 or OMNI" (guide p. 49), with the input and
+  output settable together or separately, note data transposable by "+/- 12 semitones" in either
+  direction (guide p. 49), local control switchable, and the pitch wheel, mod wheel and
+  aftertouch outputs each switchable on and off.
+
+
+  **A READER WHOSE MIDI NOTES MAKE NO SOUND IS PROBABLY IN THE WRONG GATE SOURCE.** One of the
+  power-on commands sets the gate source so that "notes received via MIDI will not trigger the
+  contour generators" (guide p. 48). The default is all three sources together, and this is
+  worth knowing before concluding an instrument is broken.
+
+
+  THE VELOCITY CURVES ARE ABOUT WHAT IT SENDS. Three of them, Soft, Medium and Hard, and "Sets
+  MIDI Velocity Curve to medium" (guide p. 50) is the default. Every description is about
+  physical effort at the key, so they shape the velocity this instrument transmits rather than
+  its response to velocity arriving. **What a received velocity does is never stated**: the
+  keyboard's own velocity signal is not hardwired to any parameter, and whether a MIDI velocity
+  reaches the same place as the keyboard's is not written down.
+
+
+  NOT RECORDED: a note range. The manual states the keyboard outright - "Key Range: F0 to C4"
+  and 44 keys (guide p. 80) - and anchors it to MIDI, since "This key corresponds to MIDI note
+  48, meaning that MIDI note 36 will produce a Pitch CV value of zero volts" (guide p. 51). That
+  gives 41 to 84 by arithmetic the manual explains. **It is still not recorded, for two
+  reasons**: the manual never says what the instrument does with a note outside that span, and
+  the MIDI In transpose moves the mapping by up to a year of semitones either way, so there is no
+  fixed range to record even if the first objection were answered.
+
+
+  NOT RECORDED: `mode`. There is no MIDI implementation chart; the contents list ends at the
+  warranty with no MIDI appendix.
+
+
+  NOT RECORDED: `clock`, `transport`, `program_change`, `nrpn`. Both readers searched for every
+  one of them and the manual mentions none - no MIDI clock, no start or stop, no song position,
+  no program change, no bank select, no NRPN. It also has no USB: the MIDI is five-pin DIN only.
+
+
+  **THE SPECIFICATIONS PAGE IS NOT CAREFULLY CHECKED, WHICH IS WORTH KNOWING BECAUSE TWO FACTS
+  HERE REST ON IT.** It gives the operational temperature as 50F to 122F where page 4 says 110F,
+  and its storage range reads "5F to 140F (2C to 60C)" where 5F is -15C. The bend range and the
+  MIDI jack lists come from that page, and both are corroborated elsewhere - the bend by the
+  pitch wheel going "up a fifth" on page 24, and the jack lists by page 35 - which is why they
+  are recorded and the temperatures are not mentioned at all.
+
+sources:
+  guide:
+    kind: manual
+    title: Minimoog Model D User's Manual
+    edition: Version 2
+    landing: "https://www.moogmusic.com/downloads/?product=Minimoog+Model+D"
+    url: "https://cdn.inmusicbrands.com/Moog/Model%20D/Minimoog_Model_D_Manual.pdf"
+    sha256: c7e6f1abd54999cad7aa232d782df397f974ff210db1e6a429a863af6e850b1f
+    retrieved: 2026-10-05
+    # 84 sheets, **one printed page to a sheet**, so no offset: sheet 35 carries folio 35, and
+    # the contents list on sheet 5 lands every entry on the sheet of its own number. Not
+    # encrypted, 72,028 characters of text, Adobe InDesign 18.0 on 14 November 2022. The edition
+    # is from its last page, which also dates it.
+  patch_sheets:
+    kind: manual
+    title: Minimoog Model D Patch Sheets
+    landing: "https://www.moogmusic.com/downloads/?product=Minimoog+Model+D"
+    url: "https://cdn.inmusicbrands.com/Moog/Model%20D/Minimoog_Model_D_Patch_Sheets.pdf"
+    sha256: a7829bae6c6fee9d5c0fda1f36678fa22c9188b08475ae1b89ee7e8e55dd29f5
+    retrieved: 2026-10-05
+    paginated: false
+    # **THE OTHER HALF OF WHAT MOOG PUBLISHES, AND IT CONTAINS NOTHING ABOUT MIDI.** Two blank
+    # patch templates, 360 characters in total: the words NOTES and PRESET NAME, a line pointing
+    # at the maker's site for more of them, and a row of knob positions. Cited so that the count
+    # of this instrument's documents is two rather than one, and read so that nobody has to read
+    # it again.
+    # Those knob positions are a trap for anyone grepping it: "10 10 10 0 5 5 0 0 0 0 0 0 10 0 0
+    # 0 0 0 0" are panel settings on this instrument's printed 0 to 10 scale, they are the only
+    # numbers in the file, and no text beside them says so.
+  downloads:
+    kind: download_page
+    title: Moog downloads
+    landing: "https://www.moogmusic.com/downloads"
+    url: "https://www.moogmusic.com/api/downloads"
+    sha256: 2b12c3d24177c87c55f47550f16333f1228b33d740b8dd7fd4067a88605c0349
+    retrieved: 2026-10-02
+    paginated: false
+    # Moog serves no page listing its downloads: the list is data the browser fetches. **It is
+    # the only evidence of what Moog publishes for an instrument and of what it does not**, and
+    # for this one it offers two files - the manual and the patch sheets. It was fetched again on
+    # 2026-10-05 for this definition and came back byte for byte identical, a fourth fetch
+    # returning one set of bytes, so nothing new was saved.
+    # **The same listing offers `Minitaur Sysex Commands` for a sibling instrument**, which is
+    # what makes the missing Model D sheet a fact about this product rather than about Moog.
+
+midi:
+  # "Sets MIDI IN to MIDI channel 1-16 or OMNI" (guide p. 49). Input and output are settable
+  # together or separately, all by holding keys while the power comes on.
+  channels: [1, 16]
+  # "Some of these functions are accessed via Power-On commands, while others are accessed via
+  # MIDI SysEx (System Exclusive) messages" (guide p. 46). **What the messages are is not
+  # published**: the same page says "SysEx documentation can be downloaded at moogmusic.com" and
+  # the maker's downloads listing does not offer it. So this records that the instrument answers
+  # to system exclusive and nothing about what to send it.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "Minimoog Model D is a self-contained monophonic analog synthesizer" (guide p. 15), said
+  # again in the specifications and nowhere contradicted.
+  polyphony: 1
+  velocity:
+    # "44 full-size keys with Velocity and After Pressure" (guide p. 15), and the MIDI In list
+    # carries Velocity. **What a received velocity reaches is not stated anywhere.**
+    note_on: received
+  # **A DIRECTION WHERE THIS FIELD USUALLY NAMES A KIND.** The manual's receive list omits
+  # aftertouch, its send list has it, and the power-on commands offer an output switch for it
+  # with no input counterpart - three statements agreeing. See the account.
+  aftertouch: sends
+  pitch_bend:
+    # "Pitch Bend Range: (+/-) 7 semitones" (guide p. 80), corroborated by the wheel going "up a
+    # fifth in its maximum position" (guide p. 24). **The figure is given under the keyboard
+    # heading**, so it is the wheel's own throw; the manual never separately states what range a
+    # received pitch bend spans, and this file takes them to be the same circuit because the
+    # manual gives no reason to think otherwise.
+    semitones: 7
+
+controls:
+  mod_wheel:
+    # "It now includes mod-wheel MIDI support: CC #1 (MSB or Most Significant Byte) and CC #33
+    # (LSB or Least Significant Byte)" (guide p. 35). The only controller number in 84 pages.
+    # No direction is recorded because it goes both ways: "Mod Wheel now receives and transmits
+    # MIDI data" (guide p. 10).
+    label: Mod Wheel
+    cc: 1
+    lsb: 33

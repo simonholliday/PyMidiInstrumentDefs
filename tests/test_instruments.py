@@ -192,6 +192,7 @@ class TestBundledCorpus:
 			"moog/labyrinth",
 			"moog/matriarch",
 			"moog/messenger",
+			"moog/minimoog_model_d",
 			"moog/minitaur",
 			"moog/mother_32",
 			"moog/muse",

@@ -15,7 +15,7 @@ model:
   # and nothing Korg publishes says what it changed. Checked 2026-10-01.
   # THIS MANUAL DESCRIBES FOUR INSTRUMENTS, and this definition is for the first: its
   # specifications give "wavestate: 64 stereo voices", "wavestate mkII: 96 stereo voices",
-  # "wavestate SE and wavestate module: 120 stereo voices" (printed p. 93), and the MIDI
+  # "wavestate SE and wavestate module: 120 stereo voices" (manual p. 93), and the MIDI
   # chart's aftertouch remark names the SE alone. The mkII is a separate model with its own
   # support page and is not described here.
 
@@ -135,10 +135,10 @@ midi:
 
 voice:
   addressing: pitches
-  # "Maximum Polyphony: wavestate: 64 stereo voices" (printed p. 93).
+  # "Maximum Polyphony: wavestate: 64 stereo voices" (manual p. 93).
   polyphony: 64
   # One pool: the figure above is for the instrument, and each Layer has its own "Max # of
-  # Notes" setting that caps what it may take from it (printed p. 13).
+  # Notes" setting that caps what it may take from it (manual p. 13).
   polyphony_shared: true
   # "Note Number 0-127" both ways, with the chart's own caveat as its remark: "Some sounds
   # will not play across the entire note range". So the range is what the instrument accepts
@@ -160,12 +160,12 @@ parts:
   # Four Layers, A to D, which is what this instrument is: "The wavestate plays one
   # Performance at a time. A Performance has four Layers, A...D, a Vector Envelope, and a
   # master reverb and EQ. Each Layer contains an Arpeggiator, a Program, and other settings
-  # such as MIDI channel, key and velocity zones" (printed p. 3).
+  # such as MIDI channel, key and velocity zones" (manual p. 3).
   # EACH IS ON THE GLOBAL CHANNEL UNTIL THE PLAYER MOVES IT, which is why every one of them
   # carries channel_offset 0 rather than a channel of its own. "Use Global MIDI Channel [Off,
-  # On]. On: This is the default. The Layer will play from the built-in keyboard, and receive
+  # On] On: This is the default. The Layer will play from the built-in keyboard, and receive
   # on the Global Channel. Off: The Layer will receive on the channel specified below, and
-  # will not play from the built-in keyboard" (printed p. 15). So a Layer becomes separately
+  # will not play from the built-in keyboard" (manual p. 15). So a Layer becomes separately
   # addressable only when somebody turns that off, and which channel it then takes belongs to
   # their project rather than here.
   layer_a: {label: Layer A, channel_offset: 0, addressing: pitches, receives: [notes, controls]}

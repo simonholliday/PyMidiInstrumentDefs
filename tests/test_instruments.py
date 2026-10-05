@@ -7658,13 +7658,22 @@ class TestPolyendTracker:
 		assert "NOTHING BELOW IS TRANSMITTED" in said
 
 	def test_the_maker_did_not_write_this_manual (self) -> None:
-		"""A third party's book that Polyend publishes as the official reference."""
+		"""A third party's book that Polyend publishes as the official reference.
+
+		**The ellipsis in the quotation is not decoration.** The colophon sets the typesetter's
+		web address below the name, and the page's text layer returns it *between* "by" and
+		"Synthdawg" - so the words a reader takes in at one glance are not one string in the
+		file, and quoting them unbroken failed the quotation gate the moment the locator became
+		readable at all. Both extractors agree on that ordering, so it is the page and not a
+		bad reading of it.
+		"""
 		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
 
 		said = prose_of("polyend", "tracker")
 
 		assert "THIS MANUAL IS NOT WRITTEN BY POLYEND" in said
-		assert "Manual Produced in the United Kingdom by Synthdawg" in said
+		assert "Manual Produced in the United Kingdom by ... Synthdawg" in said
+		assert "the ellipsis is the typesetter's web address" in said
 
 	def test_pitch_bend_is_a_checked_absence (self) -> None:
 		"""The words do not occur in 308 pages, and nor does MPE."""

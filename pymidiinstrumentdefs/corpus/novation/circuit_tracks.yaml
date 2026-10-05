@@ -16,7 +16,7 @@
 # EIGHT CONTROLS COME OUT OF THE USER GUIDE AND NOT THE REFERENCE GUIDE, which is the opposite of
 # what two documents from one maker usually do. The MIDI tracks' Macro knobs send control changes
 # to whatever is plugged into them, and the numbers they send with the factory templates - CC 1, 2,
-# 5, 11, 12, 13, 71 and 74 - are printed only in the User Guide (user guide p. 58). They are the
+# 5, 11, 12, 13, 71 and 74 - are printed only in the User Guide (user_guide p. 58). They are the
 # only controls here that travel outward, so they carry `direction: transmits`.
 #
 # TWO NUMBERS BREAK THEIR OWN BLOCK'S PATTERN AND BOTH SHIP AS PRINTED. The sidechain's `synth 2
@@ -115,7 +115,7 @@ source: >-
   CC 15 is `drum 1 decay` on channel 10. What is left is the project's channel 16, which the
   interleaving of 12, 13, 14 and 15 argues for, or the MIDI tracks' 3 and 4, which the user guide
   argues for instead: "on the MIDI tracks, these act on the analogue audio signal applied at the
-  two audio Inputs" (user guide p. 57), those tracks defaulting to channels 3 and 4 (guide p. 15).
+  two audio Inputs" (user_guide p. 57), those tracks defaulting to channels 3 and 4 (guide p. 15).
   Two readings of the document arrived at those two answers independently, which is the clearest
   evidence that it does not say.
 
@@ -154,11 +154,11 @@ source: >-
   THE DRUM TRACKS ARE FOUR THINGS ON ONE CHANNEL, which is the one place this instrument's shape
   does not fit a part each. "Messages on MIDI Channel 10" (guide p. 11) heads a table of 28
   controls, seven for each of four drums, and the user guide confirms that "all four drum tracks
-  use the same MIDI channel" (user guide p. 103). So the four are one addressable part here, and
+  use the same MIDI channel" (user_guide p. 103). So the four are one addressable part here, and
   which drum a note sounds is the Drum Notes Table on p. 11: 60, 62, 64 and 65.
 
   128 PATCHES AGAINST A PUBLISHED PROGRAM CHANGE RANGE OF 0 TO 63, and both numbers are stated
-  plainly. "Each of the two synth tracks can use any one of 128 pre-loaded Patches" (user guide p.
+  plainly. "Each of the two synth tracks can use any one of 128 pre-loaded Patches" (user_guide p.
   33), arranged as four pages of 32, while the reference guide's Patch and Project Select table
   gives program change `0 - 63` for synth 1 on channel 1 and the same for synth 2 on channel 2
   (guide p. 10). Nothing in either document says how the other 64 are reached, or whether a bank
@@ -175,8 +175,7 @@ source: >-
   THE GUIDE'S FIRST SENTENCE ABOUT THE SYNTHS IS MISTYPED, and it is worth knowing because it is
   the sentence that assigns the channels: "Send messages on MIDI Channel 1 for Synth 1 and Channel
   2 for Synth" (guide p. 3), and then a full stop. The missing 2 is a typo rather than an
-  ambiguity - the user guide's own table gives Synth 1 on channel 1 and Synth 2 on channel 2 (user
-  guide p. 103). The full stop is left outside the quotation because it does not survive both PDF
+  ambiguity - the user guide's own table gives Synth 1 on channel 1 and Synth 2 on channel 2 (user_guide p. 103). The full stop is left outside the quotation because it does not survive both PDF
   readers used here: this guide's text layer loses two of them and the whole of its contents page's
   leader dots to one reader and not the other, which is 2,172 characters.
 
@@ -184,10 +183,10 @@ source: >-
   document - 131 pages between them and not one mention. Pitch bend, because the only place it
   appears is as two engine parameters, `osc 1 pitchbend` and `osc 2 pitchbend`, each setting how
   far that oscillator bends; the one page that lists what messages the instrument answers to names
-  "MIDI Note On/Note Off, Program Change (PGM) and Continuous Controller (CC)" (user guide p. 107)
+  "MIDI Note On/Note Off, Program Change (PGM) and Continuous Controller (CC)" (user_guide p. 107)
   and does not name pitch bend, so recording a bend range would claim a response nothing states.
   The note range of the synth tracks, which no page gives: the grid is "a set of 32 illuminated,
-  velocity-sensitive pads" (user guide p. 5) whose notes depend on the scale and root note chosen,
+  velocity-sensitive pads" (user_guide p. 5) whose notes depend on the scale and root note chosen,
   and nothing says what an incoming note number outside that selection does. And the MIDI mode,
   there being no implementation chart in either document.
 
@@ -242,13 +241,13 @@ sources:
 midi:
   # Sixteen, and the sixteenth is not a track. "Each track - Synth 1, Synth 2, MIDI 1, MIDI 2 and
   # Drum 1 - 4 can be set to any of MIDI channels 1-15. Channel 16 is reserved for the Project"
-  # (user guide p. 103), with the warning that "No two tracks can transmit on the same MIDI
-  # channel" (user guide p. 103).
+  # (user_guide p. 103), with the warning that "No two tracks can transmit on the same MIDI
+  # channel" (user_guide p. 103).
   channels: [1, 16]
   # BOTH WAYS, AND EACH WAY CAN BE SWITCHED OFF ON ITS OWN. "When Clock Rx is ON, Circuit Tracks is
-  # in AUTO mode and the BPM will be set by an externally applied MIDI clock" (user guide p. 105),
+  # in AUTO mode and the BPM will be set by an externally applied MIDI clock" (user_guide p. 105),
   # and "If Clock Tx is ON, Circuit Tracks is the clock master and its clock - whatever the source
-  # - will be available as MIDI Clock at the rear panel USB and MIDI Out connectors" (user guide p.
+  # - will be available as MIDI Clock at the rear panel USB and MIDI Out connectors" (user_guide p.
   # 105). Both default to on.
   clock: both
   # BOTH, AND THAT IS AN ANSWER FOR THE WHOLE FAMILY RATHER THAN A READING OF THIS DOCUMENT
@@ -258,7 +257,7 @@ midi:
   # references print that heading in those words and all three are silent in the same way, so one
   # reading has to serve the three. The switch is what settles it, and this guide carries it like
   # the others: Clock Rx and Clock Tx are separate settings, "By default, both MIDI Rx and MIDI Tx
-  # are ON (buttons brightly lit) for all data categories" (user guide p. 104), and the clock is
+  # are ON (buttons brightly lit) for all data categories" (user_guide p. 104), and the clock is
   # one of those categories. Start, stop and continue travel with the clock.
   #
   # THIS FILE RECORDED `receives` UNTIL THE THIRD CIRCUIT ARRIVED. The reasoning was that every
@@ -268,16 +267,16 @@ midi:
   transport: both
   program_change:
     # Both ways, and both switchable: pads 29 and 30 in Setup View are "MIDI Program Change Rx
-    # on/off" and "MIDI Program Change Tx on/off" (user guide p. 104), and "By default, both MIDI
-    # Rx and MIDI Tx are ON (buttons brightly lit) for all data categories" (user guide p. 104).
+    # on/off" and "MIDI Program Change Tx on/off" (user_guide p. 104), and "By default, both MIDI
+    # Rx and MIDI Tx are ON (buttons brightly lit) for all data categories" (user_guide p. 104).
     receives: true
     sends: true
-    # "Each of the two synth tracks can use any one of 128 pre-loaded Patches" (user guide p. 33).
+    # "Each of the two synth tracks can use any one of 128 pre-loaded Patches" (user_guide p. 33).
     # The published program change range reaches 64 of them - see the source account.
     presets: 128
   # 244 of the 358 controls below are addressed by NRPN and by nothing else, which is more than
   # twice what the control changes reach. The maker never ranks the two: the Setup View switch that
-  # turns controllers on and off is a single "MIDI CC" category covering both (user guide p. 104),
+  # turns controllers on and off is a single "MIDI CC" category covering both (user_guide p. 104),
   # so `supported` is as far as the documents go.
   nrpn: supported
   # Patches travel this way and the byte layout is published in full. The message formats are on
@@ -297,9 +296,9 @@ parts:
     channel: assigned
     addressing: pitches
     receives: [notes, controls, program_change]
-    # "Two synth tracks with 6-voice polyphony" (user guide p. 6), and the body says it again:
+    # "Two synth tracks with 6-voice polyphony" (user_guide p. 6), and the body says it again:
     # "Circuit Tracks' six-note polyphony lets you play any six notes from each synth, and they
-    # don't have to be a conventional chord" (user guide p. 36). SIX EACH AND NOT SIX SHARED - the
+    # don't all need to be in the same octave" (user_guide p. 36). SIX EACH AND NOT SIX SHARED - the
     # sentence says each synth, which is why the figure is here and not on the instrument.
     polyphony: 6
   drums:
@@ -308,7 +307,7 @@ parts:
     addressing: voices
     receives: [notes, controls]
     # FOUR DRUM TRACKS AND ONE PART, because they share a channel: "Note that all four drum tracks
-    # use the same MIDI channel" (user guide p. 103), and the control table is headed "Messages on
+    # use the same MIDI channel" (user_guide p. 103), and the control table is headed "Messages on
     # MIDI Channel 10" (guide p. 11) for all 28 of its rows. Which drum a note sounds is the Drum
     # Notes Table, recorded under `voice.voices`. No program change: the guide sends the reader to
     # the drum table for patch selection instead, where it is CC 8, 18, 44 and 50.
@@ -319,15 +318,15 @@ parts:
     # WHAT REACHES A MIDI TRACK IS NOT STATED, SO `receives` IS NOT GIVEN. What it sends is: "Note
     # data is transmitted from the performance pads in Note View, and from the sequencer just like
     # the synth tracks. CC data is also transmitted by the Macro knobs, depending on the selected
-    # MIDI template" (user guide p. 57), and those eight control changes are below. The tracks
+    # MIDI template" (user_guide p. 57), and those eight control changes are below. The tracks
     # "do not control an internal synth engine but are intended to control external equipment or
-    # software via MIDI" (user guide p. 57), so there is no engine here for a message to reach.
+    # software via MIDI" (user_guide p. 57), so there is no engine here for a message to reach.
   project:
     label: Project
     channel: assigned
     receives: [controls, program_change]
     # Channel 16, and the one channel a player cannot move: "Channel 16 is reserved for the
-    # Project" (user guide p. 103), against the eight tracks that may take any of 1 to 15. It takes
+    # Project" (user_guide p. 103), against the eight tracks that may take any of 1 to 15. It takes
     # no notes - it is the two effects, the master filter, the sidechains and the mixer - and it
     # takes a program change of its own, which selects a project rather than a patch: 0 to 63
     # instant and 64 to 127 queued (guide p. 10).
@@ -340,8 +339,8 @@ voice:
   velocity:
     # The engine is modulated by it: "velocity" is one of the ten named sources in the modulation
     # matrix (guide p. 9), and a synth track is played by incoming notes - "You can also create a
-    # synth pattern in Circuit Tracks by sending it MIDI note data from an external keyboard"
-    # (user guide p. 38). Nothing states what it does with a note-off velocity.
+    # synth pattern in Circuit Tracks by sending it MIDI note data from an external controller"
+    # (user_guide p. 38). Nothing states what it does with a note-off velocity.
     note_on: received
   # The drum tracks' four notes, from the Drum Notes Table (guide p. 11). FIXED, AS FAR AS EITHER
   # DOCUMENT GOES: neither says these may be changed, unlike the rhythm machines here that print a
@@ -770,19 +769,19 @@ controls:
   fx_bypass:                     {label: FX Bypass, nrpn: 149, range: [0, 1], default: 0, choices: {off_fx_enabled: 0, on_fx_disabled: 1}, part: project, group: additional_controls}
 
   # MIDI TEMPLATE -----------------------------------------------------------
-  # The maker's "Normal use" for this number is Modulation wheel (user guide p. 58).
+  # The maker's "Normal use" for this number is Modulation wheel (user_guide p. 58).
   midi_template_macro_1:         {label: Macro 1, cc: 1, direction: transmits, part: midi_track, group: midi_template}
-  # The maker's "Normal use" for this number is Breath control (user guide p. 58).
+  # The maker's "Normal use" for this number is Breath control (user_guide p. 58).
   midi_template_macro_2:         {label: Macro 2, cc: 2, direction: transmits, part: midi_track, group: midi_template}
-  # The maker's "Normal use" for this number is Portamento time (user guide p. 58).
+  # The maker's "Normal use" for this number is Portamento time (user_guide p. 58).
   midi_template_macro_3:         {label: Macro 3, cc: 5, direction: transmits, part: midi_track, group: midi_template}
-  # The maker's "Normal use" for this number is Expression (user guide p. 58).
+  # The maker's "Normal use" for this number is Expression (user_guide p. 58).
   midi_template_macro_4:         {label: Macro 4, cc: 11, direction: transmits, part: midi_track, group: midi_template}
-  # The maker's "Normal use" for this number is Effect control 1 (user guide p. 58).
+  # The maker's "Normal use" for this number is Effect control 1 (user_guide p. 58).
   midi_template_macro_5:         {label: Macro 5, cc: 12, direction: transmits, part: midi_track, group: midi_template}
-  # The maker's "Normal use" for this number is Effect control 2 (user guide p. 58).
+  # The maker's "Normal use" for this number is Effect control 2 (user_guide p. 58).
   midi_template_macro_6:         {label: Macro 6, cc: 13, direction: transmits, part: midi_track, group: midi_template}
-  # The maker's "Normal use" for this number is Resonance (user guide p. 58).
+  # The maker's "Normal use" for this number is Resonance (user_guide p. 58).
   midi_template_macro_7:         {label: Macro 7, cc: 71, direction: transmits, part: midi_track, group: midi_template}
-  # The maker's "Normal use" for this number is Filter frequency (user guide p. 58).
+  # The maker's "Normal use" for this number is Filter frequency (user_guide p. 58).
   midi_template_macro_8:         {label: Macro 8, cc: 74, direction: transmits, part: midi_track, group: midi_template}

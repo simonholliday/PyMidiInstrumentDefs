@@ -316,3 +316,126 @@ class TestAQuotationThatNamesTheDocumentAndThePage:
 		body = 'source: >-\n  "a thing the maker says" (and a remark about it).\n'
 
 		assert tool.quotations(body) == []
+
+
+class TestALocatorThisToolCannotRead:
+
+	"""A locator that does not parse used to be indistinguishable from no locator at all.
+
+	The rule for a quotation with no locator is to pass over it in silence, so a citation the
+	pattern could not read was not checked, was not counted as unchecked, and nothing in the
+	tool's output said it existed. **Forty-eight quotations across thirteen definitions were in
+	that state**, and reading them where they stood turned up five that were not on the pages
+	they cite, three of them quotations saying something the maker had not said.
+
+	So the convention is `(p. N)` or `(key p. N)`, exactly one pair, and every shape below is
+	one a writer actually reached for in this corpus. #4475.
+	"""
+
+	# The shapes that parsed all along, which must keep parsing.
+	GOOD = {
+		"p. 42": (None, [42]),
+		"pp. 42-43": (None, [42, 43]),
+		"p. 42, 44": (None, [42, 44]),
+		"guide p. 6": ("guide", [6]),
+		"manual, p. 110": ("manual", [110]),
+		"user_guide p. 104": ("user_guide", [104]),
+	}
+
+	# Every shape that was silently skipped, taken from the definitions that held them.
+	BAD = (
+		"user guide p. 104",                            # a two-word document name
+		"release notes 1.4.0 p. 8",                     # a name carrying a version
+		"p. 89 of the guide",                           # the document named after the page
+		"fw 5 manual, printed p. 11",                   # both at once
+		"p. 35, mode 1",                                # the writer's aside after the page
+		"p. 29 lists all six, pp. 29-36 describe them", # two citations and prose
+		"notes' p. 4",                                  # an apostrophe in the name
+		"p. 2 of the version 2.0 supplement",
+		"manual p. 125, reference p. 29",               # two documents, one quotation
+		"manual p. 307, p. 1",                          # two pages, and which document is which
+	)
+
+	def test_the_shapes_that_parsed_before_still_parse (self) -> None:
+		"""The narrowing must not have cost a locator that was already being read."""
+		for locator, expected in self.GOOD.items():
+			assert tool.read_locator(locator) == expected, locator
+
+	def test_every_shape_that_was_skipped_is_now_refused (self) -> None:
+		"""Refused aloud, which is the whole point: it was accepted silently before."""
+		for locator in self.BAD:
+			assert tool.read_locator(locator) is None, locator
+
+	def test_a_refused_locator_is_reported_against_its_quotation (self) -> None:
+		"""Reporting the quotation is what makes the count actionable rather than a number."""
+		body = 'source: >-\n  "a sentence worth checking" (user guide p. 104).\n'
+
+		assert tool.unreadable_locators(body) == [
+			("a sentence worth checking", "user guide p. 104")]
+
+	def test_a_refused_locator_is_not_counted_as_checked (self) -> None:
+		"""It must be in neither figure, or one of them is quietly wrong."""
+		body = 'source: >-\n  "a sentence worth checking" (user guide p. 104).\n'
+
+		assert tool.quotations(body) == []
+
+	def test_a_bare_source_key_is_not_a_broken_page_citation (self) -> None:
+		"""`(product_page)` cites no page, so it belongs to the other check and not to this one."""
+		body = 'source: >-\n  "no page to turn to here" (product_page).\n'
+
+		assert tool.unreadable_locators(body) == []
+
+	def test_prose_in_brackets_is_not_a_broken_page_citation (self) -> None:
+		"""Only something page-shaped counts, or every aside becomes a reported failure."""
+		body = 'source: >-\n  "a thing the maker says" (and a remark about it).\n'
+
+		assert tool.unreadable_locators(body) == []
+
+	def test_a_locator_folded_over_two_lines_is_read_as_one (self) -> None:
+		"""A sweep that forgot this invented a broken locator for every citation that wrapped."""
+		body = (
+			"controls:\n"
+			"  one:\n"
+			'    # "a sentence worth checking" (user_guide\n'
+			"    # p. 104).\n"
+			"    cc: 70\n"
+		)
+
+		assert tool.unreadable_locators(body) == []
+		assert tool.quotations(body) == [("a sentence worth checking", "user_guide", [104])]
+
+
+class TestAQuotationThatBeginsWithAParenthesis:
+
+	"""A maker prints value ranges in brackets, so a quotation of one starts with `(`.
+
+	`elektron/model_cycles` quotes "(OFF, 1-127)" and `korg/microkorg2` quotes
+	"(NRPN 4, 32...37)". **This is the shape that punishes a pattern which matches any
+	parenthesis after a quotation**: the prose in front ends at a closing quote, and twelve or
+	more characters counted from *there* run to the quote that opens the real quotation - whose
+	next character is the `(` the quotation itself begins with. The engine then pairs prose with
+	a value range, finds nothing page-shaped in it, and skips it in silence, taking the real
+	quotation with it.
+
+	Two were being lost that way while the count looked complete, which is #4475's own defect
+	arriving by a new route, in the fix for it.
+	"""
+
+	BODY = (
+		"source: >-\n"
+		'  The manual names "one thing and another" and both sends are "(OFF, 1-127)" (p. 37).\n'
+	)
+
+	def test_the_quotation_after_the_prose_is_still_found (self) -> None:
+		"""It is the one the page citation belongs to, so losing it loses the check."""
+		assert ("(OFF, 1-127)", None, [37]) in tool.quotations(self.BODY)
+
+	def test_the_prose_before_it_is_not_mistaken_for_a_quotation (self) -> None:
+		"""A value range is not a locator, so that pairing must not be made at all."""
+		found = [quotation for quotation, _, _ in tool.quotations(self.BODY)]
+
+		assert "both sends are" not in " ".join(found)
+
+	def test_it_is_not_reported_as_an_unreadable_locator_either (self) -> None:
+		"""Being refused aloud would be better than silence, and being read is better still."""
+		assert tool.unreadable_locators(self.BODY) == []

@@ -150,7 +150,7 @@ sources:
     # match either, which is the point of saving it.
 
 midi:
-  # "MIDI channels 1-14" in each direction, with the remark "MPE channel master 1" (chart,
+  # "MIDI channels 1-14" in each direction, with the remark "MPE channel master 1" (midi_impl
   # p. 1). The other two are spoken for: "Individual notes must be sent on MIDI channels #2
   # to #14 (#2 to #12 for some presets). The Master Channel, according to the MPE standard,
   # is #1. MIDI channels #15 & #16 are used for communication with the Haken Editor
@@ -189,7 +189,7 @@ midi:
     # the product page says "up to 2048 preset slots", user presets are addressable too,
     # and that same page says "580 factory presets", which is neither 529 nor 609.
     presets: 609
-  # "NRPNs (Yes/No) No No", and RPN 00 to 05 the same (chart, p. 1). The two NRPN and two
+  # "NRPNs (Yes/No) No No", and RPN 00 to 05 the same (midi_impl p. 1). The two NRPN and two
   # RPN controller numbers are printed in the control table and marked No both ways as well,
   # which is the same answer twice over.
   nrpn: none
@@ -237,7 +237,7 @@ voice:
     note_on: ignored
     note_off: false
   pitch_bend:
-    # "Pitch Bend (Yes/No) Yes Yes" (chart, p. 1). The range is per preset and the manual
+    # "Pitch Bend (Yes/No) Yes Yes" (midi_impl p. 1). The range is per preset and the manual
     # gives no number: the voice tab "features only one parameter: the pitch bend range of
     # the pitch slider" (p. 35), which bends every sounding note together, where the keys
     # bend one note each.
@@ -246,9 +246,16 @@ voice:
 groups:
   # THE MANUAL'S OWN TAB NAMES, which are its headings for the parts of the sound these
   # controls reach, printed in lower case as every heading in this manual is: "macros tab",
-  # "global fx tab", "eq tab", "comp & drive tab", "voice tab", "mod/pedal tab" (p. 29 lists
-  # all six, pp. 29-36 describe them). The word "tab" names the screen a group is on rather
+  # "global fx tab", "eq tab", "comp & drive tab", "voice tab" (manual p. 29) and
+  # "mod/pedal tab" (manual p. 35). The word "tab" names the screen a group is on rather
   # than the group, so it is left off.
+  # **AND THE MANUAL NAMES THAT LAST ONE TWICE, DIFFERENTLY.** Page 29 introduces the Synth
+  # menu's tabs and calls it "assign tab", on a line reading "define the parameters controlled
+  # by the modulation slider and the pedals" (manual p. 29). Page 35, where the tab is
+  # described, heads it "mod/pedal tab" instead. **So citing page 29 for the name this file
+  # uses was wrong**, and it stayed invisible for as long as the locator could not be parsed.
+  # Page 29 also names a seventh, "save tab", which is an action rather than a part of the
+  # sound, and is why "all six" was wrong twice over.
   # NOT THE MAKER'S WORD: "Program", for the one bank select row. The manual heads nothing
   # with a word for choosing a sound from outside, because the manual does not cover it.
   # NO GROUP FOR THE EQ, because no control below is in one: the chart gives CC 83 and 84

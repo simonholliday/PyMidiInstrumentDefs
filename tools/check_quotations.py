@@ -55,7 +55,36 @@ documents, since a citation names a page and not which document it is in.
 	python tools/check_quotations.py                      # every bundled definition
 	python tools/check_quotations.py moog/subsequent_37   # one, by name
 
-It exits non-zero if any quotation is not on the page it cites.
+**Three things it used to pass over in silence, and now counts.**  A locator it cannot
+parse - ``(user guide p. 104)``, where only one word is allowed before the page - was
+indistinguishable from no locator at all, and the rule for no locator is to say nothing:
+forty-eight quotations across thirteen definitions were neither checked nor reported as
+unchecked.  A locator naming a source the definition does not have was collected and then
+never printed.  And the summary's third figure added definitions with nothing to check to
+quotations that could not be read, so a change of one definition looked like a change of
+one quotation.
+
+**A tool that decides what to check by matching a pattern has to say what it matched and
+skipped.**  Each of those three read as complete while being silent, which is worse than
+either checking or refusing, and the comment on ``QUOTED`` records a fourth of the same
+shape from before any of them.
+
+**And a page is read twice before a quotation is called absent.**  ``pypdf`` turns some
+makers' ordinary hyphens into an ``x`` - ``nonxregistered`` for ``non-registered`` - and
+since ``squash()`` folds hyphens away on purpose, a hyphen *dropped* costs nothing while a
+hyphen become a letter is the one thing the folding cannot absorb.  So a quotation the first
+reading cannot find is looked for again in a second extractor's reading of the same page,
+run in a subprocess on the system Python.  One it finds is on the page it cites and passes,
+and the disagreement is printed, because a page two extractors read differently is worth
+knowing about whichever of them is right.
+
+It exits non-zero if any quotation is not on the page it cites, if any locator cannot be
+read, or if any locator names a source its definition does not have.
+
+**The last two became failures the moment they reached nought**, which was the only moment it
+could be done for nothing.  A convention that is reported and not enforced is one that
+drifts, and the drift here had already cost five wrong citations in definitions released
+months earlier - three of them quotations saying something the maker had not said.
 """
 
 import hashlib
@@ -63,6 +92,7 @@ import logging
 import os
 import pathlib
 import re
+import subprocess
 import sys
 import typing
 
@@ -75,26 +105,68 @@ import pymidiinstrumentdefs
 # reported rather than counted as a failure.
 READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt"})
 
-# A quotation and the page it is credited to: "...text..." (p. 42), or (pp. 42-43), or -
-# where a definition cites more than one document - "...text..." (guide p. 6) and
-# "...text..." (manual, p. 110), which name the source the page belongs to.
-# Twelve characters is the shortest that is worth checking; below that a phrase matches
+# A quotation and whatever locator follows it, **taken whole and parsed afterwards**.
+# Twelve characters is the shortest quotation worth checking; below that a phrase matches
 # half the manual.
 #
-# **THE NAMED FORMS WERE SILENTLY SKIPPED** until the comment below was read against this
-# pattern: it said a key followed by a page "is the paged form above", and this did not
-# match one.  Thirty-three quotations across eight definitions were therefore never
-# verified, and every one of them looked verified in the count.  Naming the source now
-# makes a quotation *more* strongly checked rather than not checked at all, because the
-# page is then looked for in that document alone.
-QUOTED = re.compile(
-	r"[“\"]([^”\"]{12,})[”\"]\s*\((?:([a-z][a-z0-9_]*),?\s+)?p{1,2}\.\s*([\d,\s-]+)\)")
+# It used to be one pattern that matched a quotation and a well-formed locator together, and
+# that is why two silent skips happened in it.  **A pattern that matches only what it can
+# read cannot report what it cannot read**: a locator it did not match looked exactly like a
+# quotation with no locator, which this tool passes over without a word.  Taking the
+# parenthesis whole and reading it in `read_locator()` separates two questions that were one
+# - is there a locator here, and can I understand it - so the second can be answered aloud.
+# **THE LOOKAHEAD IS LOAD-BEARING AND WAS LEARNED THE HARD WAY.** Without it this pattern
+# matched any parenthesis at all, and a quotation can begin with one: `"(OFF, 1-127)" (p. 37)`
+# quotes a value range the maker prints. The prose before it ends at a closing quote, and
+# `[^"]{12,}` starting *there* runs to the quote that opens the real quotation - whose next
+# character is the `(` of `(OFF`. So the engine matched prose-plus-`OFF, 1-127`, found nothing
+# page-shaped in it, skipped it without a word, and **the real quotation after it was never
+# looked at**. Two were lost that way, which is this task's own defect in a new costume.
+#
+# Requiring the parenthesis to be *trying* to cite a page rejects that pairing, so the engine
+# advances and finds the true one. It keeps the split that matters: the pattern decides whether
+# a locator is there, `read_locator()` decides whether it can be read, and only the second is
+# allowed to fail quietly - by being reported.
+QUOTED = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\((?=[^)]*pp?\.\s*\d)([^)]*)\)")
+
+# **THE WHOLE OF A LOCATOR**: an optional source key, then the page or pages.  `p. 42`,
+# `pp. 42-43`, `p. 42, 44`, `guide p. 6`, `manual, p. 110`, and nothing else - which is the
+# convention #4475 settled on, and `fullmatch` is how it is enforced rather than suggested.
+#
+# A comma inside the pages is more pages of one citation, which is how `check_citations.py`
+# reads a comma followed by a number too.  A locator naming **two** documents was allowed
+# here briefly, for a passage both of a maker's documents print.  The one instrument that
+# seemed to need it turned out not to: its two documents word the sentence differently - one
+# prints "Bend Up > -64" and the other "Bend Up -64" - so the quotation belonged to one
+# document all along and the citation was simply wrong.  **The shape went out with the case
+# that justified it.**  A writer who reaches for it now gets an unreadable locator, reported
+# and counted, which is the loud failure this task was about.
+PAIR = re.compile(r"(?:([a-z][a-z0-9_]*),?\s+)?pp?\.\s*([\d,\s-]+)")
+
+# There is deliberately no second "is this page-shaped" test anywhere below.  `QUOTED`'s
+# lookahead is the only place that decides, so a bare source key like `(product_page)` never
+# reaches `read_locator()` at all and cannot be mistaken for a locator this tool failed to
+# read.  A guard repeating that test would always pass, and would suggest a case it catches.
 
 # The other shape a locator takes, for a document with no pages to cite: the source's own
 # key, as in `"polyphony up to 24 voices" (product_page)`.  A key followed by a page is the
 # paged form above and deliberately does not match here - the page is the more precise
 # locator and is the one worth checking.
 BY_SOURCE = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\(([a-z][a-z0-9_]*)\)")
+
+# **WHY A LOCATOR THIS TOOL CANNOT READ IS NOW REPORTED RATHER THAN SKIPPED.**
+#
+# A locator that did not parse was indistinguishable from no locator at all, and the rule for
+# a quotation with no locator is to pass over it without a word.  So `(user guide p. 104)` -
+# two words where the old pattern allowed one - was not checked, was not counted as
+# unchecked, and nothing in this tool's output said it existed.  When this was found,
+# forty-eight quotations across thirteen definitions were in that state, and
+# `novation/circuit_tracks` reported fourteen of fourteen while holding thirty-four
+# quotations that cite a page.  Reading them where they stood turned up five that were not on
+# the pages they cite, in definitions that had been released for months.
+#
+# The convention is therefore `(p. N)` or `(source_key p. N)`, exactly one pair, and
+# `read_locator()` refuses anything else out loud rather than passing it over.  #4475.
 
 # A quotation is retyped with the keyboard's punctuation and the page prints the
 # typesetter's, so the two never match on the character.
@@ -121,6 +193,51 @@ FOLDED: typing.Final[dict[str, str]] = {
 # page 81 reads "sending the MiniFreak a MIDI [p.112] Start command", and a definition
 # quoting that sentence as a reader sees it is right rather than wrong.
 CROSS_REFERENCE = re.compile(r"\[\s*p\.?\s*\d+\s*\]", re.IGNORECASE)
+
+
+# A second reading of one page, asked for only where the first reading could not find a
+# quotation.  `pypdf` turns some makers' ordinary hyphens into an `x`: across one 126-sheet
+# Elektron manual it reads 2,816 hyphens where PyMuPDF reads 3,764, and returns
+# `nonxregistered` where the page prints `non-registered`.  `squash()` folds hyphens away on
+# purpose, so a hyphen an extractor *drops* costs nothing, and this - a hyphen become a
+# letter - is the one case that folding cannot absorb.  #4483.
+#
+# **IT IS A SUBPROCESS AND NOT AN IMPORT, DELIBERATELY.**  #2522 splits the interpreters so
+# that the two readers of an instrument cannot reach for the same extractor: `fitz` is on the
+# system Python alone and `pypdf` in the project venv alone.  That rule is about *readers*,
+# and this is a tool, so the exception is a narrow one - but installing `fitz` into the venv
+# would make the wrong thing merely inadvisable for a second reader where it is now
+# impossible.  So it stays out, and the rule stays a fact about the interpreter rather than a
+# convention somebody has to remember.
+SECOND_READER = "/usr/bin/python3"
+
+SECOND_READING = """
+import sys
+
+import fitz
+
+document = fitz.open(sys.argv[1])
+sys.stdout.write(document[int(sys.argv[2]) - 1].get_text())
+"""
+
+
+def read_again (path: pathlib.Path, file_page: int) -> str | None:
+
+	"""One file page of a document as a second extractor reads it, or nothing at all.
+
+	Nothing where that extractor is not installed, and that is not a failure: the run is
+	then honest about having had one reading of the page rather than two.
+	"""
+
+	try:
+		done = subprocess.run(
+				[SECOND_READER, "-c", SECOND_READING, str(path), str(file_page)],
+				capture_output = True, text = True, timeout = 120)
+
+	except (OSError, subprocess.SubprocessError):
+		return None
+
+	return done.stdout if done.returncode == 0 else None
 
 
 def squash (text: str) -> str:
@@ -258,12 +375,44 @@ def documents (definition: typing.Any, index: dict[str, pathlib.Path]) -> tuple[
 	return found, absent
 
 
+def flowed (text: str) -> str:
+
+	"""The file's prose with its line breaks and comment markers closed up.
+
+	A comment runs over several lines, so a quotation or the locator after it can be broken
+	across two of them.  **Every search in this tool reads this rather than the file, and
+	they must all read the same thing**: a sweep written against the raw text instead
+	invented an unparsable ``(manual # p. 95)`` for every citation in the corpus that
+	happened to wrap, which looked exactly like a finding and was not.  It was three copies
+	of this one expression before that happened.
+	"""
+
+	return re.sub(r"\n\s*#?\s*", " ", text)
+
+
+def read_locator (locator: str) -> tuple[str | None, list[int]] | None:
+
+	"""The source and pages a locator names, or nothing at all if it cannot be read.
+
+	Only ever called about a locator that is trying to cite a page, so ``None`` means one
+	thing: **this cites a page and I cannot understand it**, which is reported rather than
+	passed over.  Anything the pattern does not account for whole - a two-word document name,
+	a version number, the writer's own aside after the page - is that answer.
+	"""
+
+	match = PAIR.fullmatch(locator.strip())
+
+	if match is None:
+		return None
+
+	source, cited = match.groups()
+
+	return source or None, [int(n) for n in re.findall(r"\d+", cited)]
+
+
 def quotations (text: str) -> list[tuple[str, str | None, list[int]]]:
 
 	"""Every quoted passage in the file with a page citation, the source it names, and the pages.
-
-	A comment is folded over several lines, so the file's own line breaks and comment
-	markers are closed up before the quotations are found.
 
 	The source is whatever the locator put before the page - `(guide p. 6)` gives `guide` -
 	and is nothing where the citation is the bare `(p. 6)`.  A definition with one document
@@ -271,10 +420,15 @@ def quotations (text: str) -> list[tuple[str, str | None, list[int]]]:
 	the page be looked for in the right place.
 	"""
 
-	flowed = re.sub(r"\n\s*#?\s*", " ", text)
+	found = []
 
-	return [(quotation, source or None, [int(n) for n in re.findall(r"\d+", cited)])
-		for quotation, source, cited in QUOTED.findall(flowed)]
+	for quotation, locator in QUOTED.findall(flowed(text)):
+		read = read_locator(locator)
+
+		if read is not None:
+			found.append((quotation, read[0], read[1]))
+
+	return found
 
 
 def named_quotations (text: str, keys: typing.Iterable[str]) -> list[tuple[str, str]]:
@@ -286,10 +440,26 @@ def named_quotations (text: str, keys: typing.Iterable[str]) -> list[tuple[str, 
 	parenthesis after a quotation is not mistaken for a locator.
 	"""
 
-	flowed = re.sub(r"\n\s*#?\s*", " ", text)
 	known = set(keys)
 
-	return [(quotation, where) for quotation, where in BY_SOURCE.findall(flowed) if where in known]
+	return [(quotation, where)
+		for quotation, where in BY_SOURCE.findall(flowed(text)) if where in known]
+
+
+def unreadable_locators (text: str) -> list[tuple[str, str]]:
+
+	"""Every quotation whose locator looks like a page citation this tool cannot read.
+
+	``QUOTED`` takes the parenthesis whole, so this is every quotation whose locator is trying
+	to cite a page and cannot be read.  Reporting them is the whole purpose: they are the
+	quotations that would otherwise be skipped without a word.
+	**The count is nought and the run now fails if it is not**, which it could only be made
+	to do once the forty-eight that were there had been read and put right.
+	"""
+
+	return [(quotation, " ".join(locator.split()))
+		for quotation, locator in QUOTED.findall(flowed(text))
+		if read_locator(locator) is None]
 
 
 def with_pages (held: list[Document]) -> list[Document]:
@@ -307,28 +477,80 @@ def with_pages (held: list[Document]) -> list[Document]:
 	return [document for document in held if document.source.paginated]
 
 
-def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tuple[int, int, int]:
+class Tally (typing.NamedTuple):
 
-	"""Check one definition, printing what it found.  Returns found, missing, unquoted."""
+	"""What one definition's check came to.  Every field counts quotations but one.
+
+	**The third figure used to add two different things together.**  A definition with
+	nothing to check returned 1, meaning one definition, and a definition whose documents
+	could not be read returned a count of its quotations - so "27 could not be checked"
+	was definitions and quotations summed.  That is what made a change of one definition
+	show up as a change of one quotation, which is the only reason the silent skip above
+	was found at all.  Counting them apart costs two fields and lets each figure answer
+	one question.
+
+	Every field defaults to nought so that a running total starts at ``Tally()``.
+	"""
+
+	# On the page they cite, or inside the source they name.
+	passed: int = 0
+
+	# Not there, which is the only thing that fails the run.
+	missing: int = 0
+
+	# Counted in `passed` as well, because the page does carry the words: these are the
+	# ones only the second extractor could find.  A figure above nought says two readings
+	# of one page differ, which is worth knowing whichever is right.
+	disagreed: int = 0
+
+	# They cite a page or a source, and no document that could hold it could be read: a
+	# scan, or a manual nobody has put in the library.
+	unchecked: int = 0
+
+	# Their locator looks like a page citation and this tool cannot read it.
+	unreadable: int = 0
+
+	# Their locator names a source this definition does not have, which is a mistake in
+	# the file.  **These were collected and never printed** until #4475.
+	misnamed: int = 0
+
+	# **IN DEFINITIONS, NOT QUOTATIONS**, and the only field that is: one if this
+	# definition quotes nothing with a locator at all, nought otherwise.
+	nothing_to_check: int = 0
+
+
+def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tally:
+
+	"""Check one definition, printing what it found."""
 
 	definition = pymidiinstrumentdefs.load_file(path)
 	held, absent = documents(definition, index)
 	body = path.read_text(encoding = "utf-8")
 	found = quotations(body)
 	named = named_quotations(body, (definition.sources or {}))
+	unreadable = unreadable_locators(body)
 
 	print(f"\n{name}")
 
 	for line in absent:
 		print(f"    {line}")
 
+	# Said before anything else, and said even where the definition is otherwise clean,
+	# because the point of the figure is that nobody knew these quotations existed.
+	if unreadable:
+		print(f"    {len(unreadable)} quotations have a locator this tool cannot read, so they "
+			f"are NOT CHECKED - the convention is a single word before the page:")
+
+		for quotation, locator in unreadable:
+			print(f"        ({locator}): {quotation[:88]}")
+
 	if not found and not named:
 		print(f"    no quotation in it cites a page or a source, so there is nothing to check")
-		return 0, 0, 1
+		return Tally(unreadable = len(unreadable), nothing_to_check = 1)
 
 	if not held:
 		print(f"    {len(found) + len(named)} quotations cite a source and none could be read")
-		return 0, 0, len(found) + len(named)
+		return Tally(unchecked = len(found) + len(named), unreadable = len(unreadable))
 
 	print(f"    {len(held)} document(s): " + ", ".join(
 		f"{d.name} [{len(d.pages)} sheets, offset {d.source.page_offset:+d}"
@@ -345,6 +567,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 	missing: list[tuple[str, list[int]]] = []
 	partly: list[tuple[str, list[int]]] = []
 	misnamed: list[tuple[str, str]] = []
+	disagreed: list[tuple[str, str, int]] = []
 	passed = 0
 
 	for quotation, source, cited in found:
@@ -354,7 +577,9 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 		# A quotation that names its source is looked for in that document alone, which is
 		# the stronger check: a page number that happens to exist in one of the other three
 		# cannot pass it. A name that is not one of this definition's sources is a mistake
-		# in the file rather than a reason to fall back.
+		# in the file rather than a reason to fall back - and **it used to be collected and
+		# never printed**, so seven of them across three definitions had never been checked
+		# against anything when #4475 found them.
 		if source is not None and source not in (definition.sources or {}):
 			misnamed.append((quotation, source))
 			continue
@@ -377,6 +602,36 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 				break
 
 		if where is None:
+			# **BEFORE CALLING A QUOTATION ABSENT, ASK THE OTHER EXTRACTOR.** The page may
+			# carry the words and this tool's reading of it may be the thing at fault, which
+			# is what #4483 was: a correct quotation reported as on "no page of any document
+			# held", the strongest wording here, because `pypdf` had turned a hyphen into an
+			# `x`. A quotation the second reading finds **is** on the page it cites, so it
+			# passes - and the disagreement is printed, because a page two extractors read
+			# differently is worth knowing about whichever of them is right.
+			second = None
+
+			for document in looking:
+				for number in cited:
+					at = document.source.file_page(number)
+
+					if at is None or not 1 <= at <= len(document.pages):
+						continue
+
+					again = read_again(document.path, at)
+
+					if again is not None and all(part in squash(again) for part in parts):
+						second = (document.name, number)
+						break
+
+				if second:
+					break
+
+			if second is not None:
+				disagreed.append((quotation, second[0], second[1]))
+				passed += 1
+				continue
+
 			# Every clause on the cited page, but not run together by its text layer: a
 			# specification table read across its cells, or a parameter's name joined to
 			# its description with a dash. The citation is sound and the match cannot be
@@ -401,6 +656,13 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 	if found:
 		print(f"    {passed} of {len(found)} quotations are on the page they cite")
 
+	if disagreed:
+		print(f"    {len(disagreed)} of those were found only by the second extractor, so the "
+			f"page carries the words and pypdf {pypdf.__version__} reads it differently:")
+
+		for quotation, in_document, number in disagreed:
+			print(f"        {in_document} printed p. {number}: {quotation[:84]}")
+
 	if partly:
 		print(f"    {len(partly)} more have every clause on the cited page, but its text layer "
 			f"does not run them together, which is a weaker check:")
@@ -415,6 +677,20 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 		elsewhere = [f"{d.name} printed p. {number}" for d in turnable for number in d.where(parts)]
 
 		print(f"          it is on: {', '.join(elsewhere) if elsewhere else 'no page of any document held'}")
+
+		# **THE STRONGEST WORDING THIS TOOL HAS, SAID ABOUT THE DEFINITION, WHEN THE FAULT
+		# CAN BE THE TOOL'S.**  Every page here was read by one extractor, and `pypdf` turns
+		# some makers' ordinary hyphens into an `x`: across one 126-sheet Elektron manual it
+		# reads 2,816 hyphens where PyMuPDF reads 3,764, and returns `nonxregistered`,
+		# `highxpass`, `hixhat` - exactly the words a MIDI definition wants to quote.
+		# `squash()` drops hyphens on both sides on purpose, so a *lost* hyphen is harmless
+		# and this, a hyphen replaced by a letter, is the one case the folding cannot absorb.
+		# So the reader who meets this has to be told what read the page, or they conclude
+		# their own transcription is wrong and reword a correct quotation.  #4483.
+		if not elsewhere:
+			print(f"          read with pypdf {pypdf.__version__}, and that is one reading of "
+				f"the page rather than the page: if the quotation crosses a hyphen, check "
+				f"what is printed before changing it (#4483)")
 
 	# A quotation that names a source rather than a page is looked for in the whole of that
 	# document, which is what `paginated: false` means: there is no page to turn to.
@@ -447,7 +723,23 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> tup
 	for quotation, key in elsewhere_missing:
 		print(f"\n      NOT IN {key}: {quotation[:120]}")
 
-	return passed + named_passed, len(missing) + len(elsewhere_missing), unchecked
+	# A locator naming a source the definition does not have.  The loop above declines to
+	# fall back to searching every document, which is right - a page number that happens to
+	# exist in another manual must not pass a quotation credited to one this definition does
+	# not hold - but it then dropped the quotation without a word, so the file's mistake was
+	# invisible and the quotation was never checked against anything.
+	for quotation, source in misnamed:
+		print(f"\n      NO SOURCE NAMED {source!r}: {quotation[:110]}")
+		print(f"          this definition's sources are: "
+			f"{', '.join(sorted(definition.sources or {})) or 'none'}")
+
+	return Tally(
+			passed = passed + named_passed,
+			missing = len(missing) + len(elsewhere_missing),
+			disagreed = len(disagreed),
+			unchecked = unchecked,
+			unreadable = len(unreadable),
+			misnamed = len(misnamed))
 
 
 def main (argv: list[str]) -> int:
@@ -466,8 +758,9 @@ def main (argv: list[str]) -> int:
 	corpus = pathlib.Path(pymidiinstrumentdefs.__file__).parent / "corpus"
 	wanted = argv[1:] or pymidiinstrumentdefs.available([corpus])
 
-	found = missing = unquoted = 0
+	total = Tally()
 	failed: list[str] = []
+	unreadable_in: list[str] = []
 
 	for name in wanted:
 		path = corpus / f"{name}.yaml"
@@ -476,21 +769,42 @@ def main (argv: list[str]) -> int:
 			print(f"\n{name}\n    no such definition")
 			return 2
 
-		a, b, c = check(name, path, index)
-		found += a
-		missing += b
-		unquoted += c
+		tally = check(name, path, index)
+		total = Tally(*(running + one for running, one in zip(total, tally)))
 
-		if b:
+		# Any of the three is a failure, so any of the three names the definition.  A locator
+		# nobody can read means a quotation checked against nothing, which is as bad as one
+		# checked and wrong - worse, because it looks like neither.
+		if tally.missing or tally.unreadable or tally.misnamed:
 			failed.append(name)
 
-	print(f"\n{found} quotations check out across {len(wanted)} definition(s); "
-		f"{missing} are not on the page they cite; {unquoted} could not be checked")
+		if tally.unreadable:
+			unreadable_in.append(name)
+
+	print(f"\n{total.passed} quotations check out across {len(wanted)} definition(s); "
+		f"{total.missing} are not on the page they cite; "
+		f"{total.unchecked} could not be checked")
+
+	# Said as its own sentence rather than folded into the figures above, because it is a
+	# count of quotations nobody had looked at rather than a count of checks that ran.
+	print(f"{total.unreadable} quotations across {len(unreadable_in)} definition(s) have a "
+		f"locator this tool cannot read, so they are not in any figure above"
+		+ (f": {', '.join(unreadable_in)}" if unreadable_in else ""))
+
+	if total.disagreed:
+		print(f"{total.disagreed} of those were found only by the second extractor, so two "
+			f"readings of one page differ - counted above as checking out, because the page "
+			f"does carry the words")
+
+	if total.misnamed:
+		print(f"{total.misnamed} quotations name a source their definition does not have")
+
+	print(f"{total.nothing_to_check} definition(s) quote nothing with a locator")
 
 	if failed:
 		print(f"not clean: {', '.join(failed)}")
 
-	return 1 if missing else 0
+	return 1 if total.missing or total.unreadable or total.misnamed else 0
 
 
 if __name__ == "__main__":

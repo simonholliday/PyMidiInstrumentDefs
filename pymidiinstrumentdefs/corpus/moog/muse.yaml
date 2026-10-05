@@ -57,8 +57,7 @@ source: >-
   1.2.0, 1.3.0 and 1.4.0 release notes as well as the manual, and `Notes/4253_compare_editions.py`
   reads all four off their own vector rules and diffs them: 102 rows, identical in every cell.
   The appendix arrived with firmware 1.1.0 - "MIDI CC map implemented - see APPENDIX A at the end
-  of this document" (release notes 1.4.0 p. 8), under the heading "CHANGES IN V1.1.0" (release
-  notes 1.4.0 p. 8) - and has not been revised since. Every controller number below is therefore
+  of this document" (release_notes p. 8), under the heading "CHANGES IN V1.1.0" (release_notes p. 8) - and has not been revised since. Every controller number below is therefore
   four times attested, and a second reader who had not seen the first extraction and was told not
   to use its method read all 102 rows again and agreed on each one, name and range alike
   (`Notes/4253_compare_readings.py`).
@@ -88,7 +87,7 @@ source: >-
   p. 110) and "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)" (manual p. 110).
 
   **Both default to 1, which is a collision, and the maker noticed.** Firmware 1.4.0 lists
-  "Prevent collisions between MIDI IN channel numbers" (release notes 1.4.0 p. 6) among its
+  "Prevent collisions between MIDI IN channel numbers" (release_notes p. 6) among its
   improvements. The two defaults are recorded as printed because that is what the manual for this
   firmware says; what the instrument does when they are equal is not published.
 
@@ -97,7 +96,7 @@ source: >-
   MIDI channel where those two buttons are. So a panel row addresses whichever timbre the channel
   maps to, and the exceptions are the modules the manual itself calls global: "The OUTPUT section
   controls the final output signal from Muse" (manual p. 50), "As the Diffusion Delay is a global
-  signal processor" (release notes 1.4.0 p. 2), "the SEQUENCER allows you to create global
+  signal processor" (release_notes p. 2), "the SEQUENCER allows you to create global
   sequences that can be used with any patch in Muse" (manual p. 24) and "The CLOCK section
   establishes the global tempo for Muse" (manual p. 65). Thirteen rows fall in those four and
   carry no part; the other 89 carry `part: timbre`.
@@ -124,17 +123,15 @@ source: >-
 
   TWO CONTROLLER NUMBERS ARE STATED A SECOND TIME, IN BOTH DIRECTIONS, AND THEY ARE THE PEDALS.
   The v1.1.0 change list gives each as a pair of sentences: "Sustain pedal will output on MIDI
-  CC64" and "Muse will now respond to incoming sustain pedal messages on MIDI CC64" (release
-  notes 1.4.0 p. 8); "Expression pedal connected to EXPRESSION IN will output on MIDI CC11" and
-  "Muse will now respond to incoming expression pedal messages on CC11" (release notes 1.4.0
+  CC64" and "Muse will now respond to incoming sustain pedal messages on MIDI CC64" (release_notes p. 8); "Expression pedal connected to EXPRESSION IN will output on MIDI CC11" and
+  "Muse will now respond to incoming expression pedal messages on CC11" (release_notes
   p. 8). So for two of the 102 the appendix's silence about direction is filled in by prose.
 
   THE OLDEST RELEASE NOTES CARRY THE FULLEST ACCOUNT OF THE CHANGE THAT MATTERS. The v1.1.0 list
   appears in all three sets, and 1.2.0's is the longest: it alone carries "If SUSTAIN PEDAL
-  POLARITY in CV menu set to "CV", MIDI CC will not be output on CC64" (release notes 1.2.0 p. 6)
+  POLARITY in CV menu set to "CV", MIDI CC will not be output on CC64" (release_notes_1_2_0 p. 6)
   and the whole of how AUTO picks a clock, including "If an external MIDI START signal is received
-  at either the DIN or USB ports, MIDI clock will automatically be chosen for the user" (release
-  notes 1.2.0 p. 6). The 1.3.0 and 1.4.0 editions abridge both away. **So the newest document is
+  at either the DIN or USB ports, MIDI clock will automatically be chosen for the user" (release_notes_1_2_0 p. 6). The 1.3.0 and 1.4.0 editions abridge both away. **So the newest document is
   not always the fullest, even when it is the same list.**
 
   PROGRAM CHANGE IS A BANK AND A NUMBER, AND THERE ARE TWO SEPARATE MAPS OF THEM. For patches:
@@ -143,8 +140,8 @@ source: >-
   available patches)" (manual p. 95). For sequences there is a channel of its own - "SEQ PGM CHNG
   CHANNEL (1-16. DEFAULT: 16)" (manual p. 110) with "MSB is 0, LSB is 1-16 (selects SEQ BANK), PC
   1-16" (manual p. 110) - and "Muse contains 16 banks of 16 presets and its SEQUENCER contains 16
-  banks of 16 sequences" (release notes 1.2.0 p. 2). Both arrived in 1.4.0: "MIDI program change
-  control over patches and sequences" (release notes 1.4.0 p. 5).
+  banks of 16 sequences" (release_notes_1_2_0 p. 2). Both arrived in 1.4.0: "MIDI program change
+  control over patches and sequences" (release_notes p. 5).
 
   EIGHT VOICES ACROSS THE PAIR, NOT EACH. "POLYPHONY 8 Voices" (manual p. 116) for an instrument
   that always holds two timbres, and the arithmetic is stated: "The Voice Count settings for
@@ -160,7 +157,7 @@ source: >-
   SEQ, ON. DEFAULT: OFF)" (manual p. 66) sends one. "MIDI START/STOP OUT (ON, OFF. DEFAULT: OFF)"
   (manual p. 66) against "SEQ START/STOP IN (ON, IGNORE. DEFAULT: ON)" and "ARP START/STOP IN
   (ON, IGNORE. DEFAULT: ON)" (manual p. 66). All of it arrived at once: "MIDI CLOCK IN/OUT and
-  START/STOP functionality fully implemented" (release notes 1.4.0 p. 5), so a Muse on an earlier
+  START/STOP functionality fully implemented" (release_notes p. 5), so a Muse on an earlier
   firmware is a different instrument in this respect.
 
   NOT RECORDED, AND EACH FOR A STATED REASON. **No system exclusive**, because the words "system
@@ -303,7 +300,7 @@ voice:
   # CHANNEL, AND NOT POLY. "61 full-size semi-weighted Fatar keybed with Velocity and channel
   # Aftertouch" (manual p. 116), transmitted on the keyboard channel (manual p. 110), and 1.4.0
   # added "Slew/filtering applied to aftertouch MIDI output, matching filtering applied to panel
-  # knobs" (release notes 1.4.0 p. 6). Polyphonic aftertouch is named nowhere in any document.
+  # knobs" (release_notes p. 6). Polyphonic aftertouch is named nowhere in any document.
   aftertouch: channel
   pitch_bend:
     # "Pitch bend defaults to +/- 7 Semitones" (manual p. 14), which the setting confirms from the
@@ -324,13 +321,13 @@ parts:
     # A CHANNEL EACH, SET BY THE PLAYER, SO NEITHER DERIVES FROM THE OTHER. "MIDI IN CHANNEL
     # (OMNI, 1-16. DEFAULT: 1)" for timbre A and "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)"
     # for timbre B (manual p. 110) - both default to 1, which is why 1.4.0 lists "Prevent
-    # collisions between MIDI IN channel numbers" (release notes 1.4.0 p. 6).
+    # collisions between MIDI IN channel numbers" (release_notes p. 6).
     channel: assigned
     addressing: pitches
     # NOTES AND CONTROLLERS. Notes reach a timbre by channel, and a 1.4.0 bug fix shows how
     # precisely: "Fix bug where, with MULTI MODE enabled, a MIDI note off sent to one timbre was
     # incorrectly also sent to the other timbre if both timbres had a note with that pitch"
-    # (release notes 1.4.0 p. 6). **Program change does not**: it loads a whole patch, which holds
+    # (release_notes p. 6). **Program change does not**: it loads a whole patch, which holds
     # both timbres, and sequences have a channel of their own rather than a timbre's.
     receives: [notes, controls]
 

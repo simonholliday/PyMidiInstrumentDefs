@@ -183,6 +183,22 @@ prints lowercase hex, so every row whose hex digits contained a letter — inclu
 CUTOFF and RESONANCE — was dropped in silence. A second extraction, done
 independently, found all 67 immediately.
 
+**And this applies to the words as much as the numbers, because an extractor's reading
+is not the page.** Writing the Machinedrum definition, a correct quotation failed
+`check_quotations.py`, which reported it was on "no page of any document held" — the
+strongest thing that tool says. The transcription was right. `pypdf`, which the tool
+reads with, returns that manual's `non-registered` as `nonxregistered`: across 126
+sheets it finds 2,816 hyphens where PyMuPDF finds 3,764, and it puts an `x` inside 61
+words. They are the words a MIDI definition reaches for — `highxpass`, `lowxpass`,
+`hixhat`, `prexdelay`.
+
+So **if the gate cannot find a quotation, check whether it crosses a hyphen before you
+change a word of it.** The checker folds hyphens away deliberately, so a hyphen the
+extractor *drops* costs nothing; one it replaces with a letter is the single case that
+folding cannot absorb. Open the page, read what is printed, and quote that. Where the
+word itself is unquotable, quote the halves either side of it and say in the file why —
+do not reach for brackets or an ellipsis to paper over a hyphen the page really prints.
+
 **Count the rows in the source and account for every one of them.** Every row is
 either in your definition, or excluded for a reason you can state: it is a channel
 mode message, it is a blank row, it is an NRPN rather than a CC, or the format has no
@@ -487,6 +503,42 @@ A fourth is for the case where the numbers are not text at all:
   document. It cannot verify that your numbers are inside the picture. **Nothing
   but reading it twice can**, so read it twice, by eye, from the image at its own
   resolution, and look for an arithmetic relation the document itself explains.
+
+### Write a quotation's locator the one way a machine can read
+
+Every quotation should be followed by a locator, and it takes exactly one shape:
+
+```
+"the maker's sentence" (p. 42)               one document, or one that needs no naming
+"the maker's sentence" (pp. 42-43)           a spread
+"the maker's sentence" (p. 42, 44)           two pages of one citation
+"the maker's sentence" (user_guide p. 104)   a key from this definition's own sources:
+```
+
+**A source key, not a description of the document.** `(user guide p. 104)` is two words and
+does not parse. `(user_guide p. 104)` names a key, and the quotation is then looked for in
+**that document alone** — which is the stronger check, because a page number that happens to
+exist in one of the other three cannot pass it.
+
+**Nothing else goes inside the brackets.** Not a version, as in `(release notes 1.4.0 p. 8)`.
+Not the document after the page, as in `(p. 89 of the guide)`. And not your own aside about
+the quotation, as in `(p. 22, the misspelling is the manual's)` — that belongs in the
+sentence around the quotation, where a reader will see it.
+
+**This is enforced, and the reason is worth a paragraph.** A locator the checker could not
+read was indistinguishable from no locator at all, and a quotation with no locator is passed
+over in silence — so a definition reported "14 of 14 quotations are on the page they cite"
+while holding 34 that cite a page. Forty-eight quotations across thirteen definitions were in
+that state. Reading them found five that were wrong, and **three of those were quotations
+saying something the maker had not said** — the one fault a page citation cannot catch,
+because the page is real and the sentence is not. The checker now refuses a locator it cannot
+read instead of skipping it, so an unreadable one fails the run rather than passing quietly.
+
+**Where a passage appears in two of a maker's documents, cite the one you transcribed.** A
+locator names one document and one page. The two often word it differently — one Access
+manual prints "Bend Up > -64" where that maker's own reference prints "Bend Up -64" — so the
+quotation belongs to whichever you actually read, and the other document is worth a sentence
+of its own rather than a second page number in the same brackets.
 
 ## 7. When there is no document
 

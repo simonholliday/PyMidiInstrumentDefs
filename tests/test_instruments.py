@@ -158,6 +158,7 @@ class TestBundledCorpus:
 			"behringer/pro_800",
 			"behringer/td_3",
 			"behringer/ub_xa",
+			"dirtywave/m8",
 			"dreadbox/typhon",
 			"elektron/analog_four",
 			"elektron/analog_rytm_mkii",
@@ -577,9 +578,9 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Thirteen definitions carry no controls, for five different reasons.
+		"""Fourteen definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a fourteenth
+		Pinned here because the count has gone stale in notes twice: a fifteenth
 		cannot be added without saying which kind it is.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
@@ -594,7 +595,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 13
+		assert len(empty) == 14
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -605,8 +606,9 @@ class TestAbsences:
 
 		assert kinds["none"] == {"behringer/model_d", "behringer/td_3",
 			"moog/labyrinth", "vermona/drm1_mkiv"}
-		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact", "roland/d_50",
-			"synthstrom_audible/deluge", "teenage_engineering/op_1"}
+		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact",
+			"dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
+			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
 		# And the three that record no word at all, for two opposite reasons.
@@ -620,6 +622,15 @@ class TestAbsences:
 
 		assert "THE MAKER CLAIMS A MIDI IMPLEMENTATION AND PUBLISHES NO PART OF IT" in ub_xa
 		assert "Neither word this format has is true here" in ub_xa
+
+		# **THE M8 IS THE CLEAREST OF THE LEARNED SIX AND THE ONLY ONE WHERE THE MAKER
+		# SAYS SO IN ITS OWN SPECIFICATIONS.** Everywhere else `learned` is a conclusion
+		# drawn from a map's absence; here Dirtywave prints "user defined" on the
+		# specification list, so the word is the maker's rather than the reader's.
+		m8 = " ".join((pymidiinstrumentdefs.load("dirtywave/m8", [CORPUS]).source or "").split())
+
+		assert "user defined" in m8
+		assert "THERE IS NO CONTROL MAP AND THE MAKER SAYS SO IN ITS OWN SPECIFICATIONS" in m8
 
 		for name in ("akai/mpc_sample", "pwm/malevolent"):
 			account = " ".join((pymidiinstrumentdefs.load(name, [CORPUS]).source or "").split())

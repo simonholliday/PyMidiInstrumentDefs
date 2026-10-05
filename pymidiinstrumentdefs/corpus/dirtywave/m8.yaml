@@ -1,0 +1,310 @@
+# BEFORE TAKING A NUMBER FROM THIS DOCUMENT, READ THIS.
+#
+# **THIS INSTRUMENT ASSIGNS NO CONTROLLER NUMBER TO ANY PARAMETER OF ITS OWN**, so this file
+# carries no controls at all. Every continuous controller it answers to is one the player
+# assigns, and the maker says so in its own specifications: "MIDI Output engine with 10 user
+# defined CCs per instrument" (manual p. 91).
+#
+# **AND A THIRD PARTY PUBLISHES "128 CCs" FOR IT, WHICH IS THE MAPPING-SLOT COUNT.** The only
+# 128 near this subject is "Up to 128 mappings are available per song" (manual p. 43) - slots a
+# player can fill, not numbers a maker assigned. Four other things in the manual are also
+# counted as 128, including the instrument slots and the MIDI note range.
+#
+# **EVERY NUMBER IN THIS MANUAL IS HEXADECIMAL UNLESS IT IS A PAGE NUMBER.** "The M8 uses a
+# number system called hexadecimal... For example, '40' in hexadecimal is 64 in decimal"
+# (manual p. 8). So the note column's "default of 64" (manual p. 14) is decimal 100. Nothing here depends on
+# that, because there are no numbers to take - but the next reader of this manual should know
+# before they take one.
+#
+# **THE MANUAL IS FIVE MONTHS OLDER THAN THE FIRMWARE AND IT DOES NOT MATTER HERE.** The manual
+# is Version 6.5.2 of April 2026 and the current firmware is 6.6.3 C of September 2026, with
+# eight releases and a minor version bump between them. Firmware changes this instrument's
+# parameter set - 6.6.0 added a Hypersynth shape parameter and a ModFX comb type - but a
+# definition that maps no parameter to a controller cannot be invalidated by a new parameter.
+# **That would stop being true the moment anybody added a control to this file.**
+
+definition: 1
+
+model:
+  manufacturer: Dirtywave
+  name: M8
+  # Stated on the manual's cover, which is sheet 1 and prints the folio "I" - so the version
+  # cannot be cited by page number and is given here as a value rather than a quotation.
+  firmware: "6.5.2"
+
+source: >-
+  M8 Operation Manual Version 6.5.2, read in full, with Dirtywave's own firmware changelog and
+  its Resources & Downloads page for what the manual is too old to cover.
+
+
+  **THERE IS NO CONTROL MAP AND THE MAKER SAYS SO IN ITS OWN SPECIFICATIONS.** Among the
+  engines it lists "MIDI Output engine with 10 user defined CCs per instrument" (manual p. 91).
+  *User defined* is Dirtywave's word. Nothing in 98 sheets says that a parameter of this
+  instrument answers to a particular controller number, there is no MIDI implementation chart,
+  and the appendix the chart would sit in holds key shortcuts, FX commands, synthesis models,
+  groove examples, a wave table index, a hexadecimal table and the specifications.
+
+
+  WHAT IT HAS INSTEAD IS MIDI LEARN, IN THREE PLACES AND WITH THREE DIFFERENT LIMITS. Incoming:
+  "MIDI mappings are MIDI CCs (Continuous Control - knobs on an external MIDI controller) or
+  the touchscreen that are assigned to instrument or mixer parameters" (manual p. 43), assigned
+  by holding a key and turning the control. Outgoing: "Up to 10 custom MIDI CC numbers with
+  optional default values can be assigned per MIDI instrument" (manual p. 64) on the MIDI Out
+  instrument, and "Up to 4 custom MIDI CC numbers with optional default values can be assigned"
+  (manual p. 62) on the External Instrument. **The specifications line above says ten and covers
+  both, so it is wrong about one of them**: the External Instrument is a MIDI output engine by
+  its own first sentence and has four.
+
+
+  **AND THE "128 CCs" A THIRD PARTY PUBLISHES FOR THIS INSTRUMENT IS THE MAPPING-SLOT COUNT.**
+  "Up to 128 mappings are available per song" (manual p. 43) counts slots a player can fill,
+  and nothing assigns a number to any of them. Four other things in this manual are counted as
+  128 as well - the instrument slots, the MIDI note range, the song markers and the instrument
+  equaliser banks - so a round number near the word CC in this document is not evidence of a
+  map.
+
+
+  ONE MAPPING RULE IS WORTH KEEPING because it is asymmetric: "The destination parameter can
+  only be assigned to one mapping, but one control/touchscreen axis can control many
+  parameters" (manual p. 43). So one incoming controller may move many things and no parameter
+  can be reached two ways.
+
+
+  **CONTINUOUS CONTROLLERS ARRIVE ON A CHANNEL OF THEIR OWN, NOT ON A TRACK'S.** "CONTROL MAP
+  CHANNEL - MIDI channel for incoming MIDI CCs for MIDI Mapping" (manual p. 44) is one of three
+  global channels, beside one for recording notes and one for cueing song rows, and all three
+  are separate from the eight per-track channels. That is why the parts below receive notes and
+  program change and **not** controls: a track is not where a controller lands.
+
+
+  EIGHT TRACKS, EACH ADDRESSABLE ON ITS OWN CHANNEL, which is what makes this a sound module as
+  well as a sequencer: "The M8 can act like a sound module, where each of the 8 tracks can be
+  independently controlled by an external sequencer or controller" (manual p. 45). Each track
+  takes a channel, an instrument number and a mode of MONO, LEGATO or POLY, where "POLY - Poly
+  mode utilizes all tracks of the same MIDI channel to enable polyphonic playback" (manual
+  p. 45). **So polyphony over MIDI is a matter of how many tracks a player gives one channel.**
+
+
+  **AND THE SPECIFICATIONS PAGE SAYS TWO THINGS FOUR LINES APART THAT DO NOT SIT EASILY
+  TOGETHER.** It gives "8 Monophonic Tracks/Voices" (manual p. 91) and then "Hypersynth - 6 note stereo chord
+  synthesizer" (manual p. 91), and the same engine is "a 6 note saw wave chord synthesizer" (manual p. 60)
+   - saw against stereo, a second and smaller disagreement between the two
+  descriptions. **So one engine is stated to sound six notes on a track the same page calls
+  monophonic, and the manual never reconciles them.**
+
+
+  WHAT THIS FILE DOES WITH THAT, AND WHY. `polyphony: 1` is recorded against the track because
+  two statements say it in plain words - "Each track can play one single note at a time" (manual
+  p. 5) and the specification above - and because that is the figure the field asks for: how
+  many notes a part will take at once. The Hypersynth line describes what one engine *sounds*
+  from a trigger, which may be paraphony, one voice playing a chord. **The manual does not say
+  so and this file does not claim it**: `paraphonic` is unset, the disagreement is written here,
+  and a reader who needs to know what a Hypersynth track emits should read manual p. 60 rather
+  than trust a field.
+
+
+  NOT RECORDED: `mode`. No basic channel default is stated anywhere, and there is no
+  implementation chart to give one.
+
+
+  NOT RECORDED: `presets` as a factory bank. There are "128 instruments available per song that
+  each contain settings, instrument modulations, and a table" (manual p. 16), and they are
+  per-song slots rather than a factory bank - empty by default, the default type being NONE so
+  that an unused slot is visible, and loaded or saved from the SD card. The figure is recorded
+  against `program_change` because 128 is also exactly what a program change reaches here, but
+  a reader should know these are the player's instruments and not the maker's.
+
+
+  A CHECKED ABSENCE: aftertouch, of either kind and in either direction. Neither the word nor
+  `channel pressure` nor `polyphonic key pressure` occurs anywhere in 98 sheets.
+
+
+  A CHECKED ABSENCE: registered and non-registered parameters. Neither acronym occurs, searched
+  as a word.
+
+
+  A CHECKED ABSENCE: system exclusive. Neither `system exclusive` nor `sysex` occurs anywhere,
+  which also means there is no device identity reply and no documented way to address this
+  instrument other than by channel.
+
+
+  **A CHECKED ABSENCE THAT NEEDS A WARNING ATTACHED: MIDI pitch bend.** The manual prints "PBN
+  XX (Pitch Bend)" (manual p. 71) and it is an FX command that "Enables a continuous pitch slide
+  up (00-7F) or down (80-FF) by the given amount" (manual p. 71) - the sequencer's own pitch slide, not a MIDI
+  message. Nothing says this instrument sends or receives pitch bend, so `pitch_bend` is unset,
+  and a reader grepping for the words will find them and must not conclude otherwise.
+
+
+  ALSO ABSENT, each searched for and not found: MIDI thru, local control, omni mode, the
+  modulation wheel by either name, MPE, 14-bit controllers, running status and MIDI machine
+  control.
+
+
+  WHAT TRAVELS BOTH WAYS IS SYNC, AND IT IS A SETTING RATHER THAN A FACT. The MIDI settings
+  view has separate SYNC IN and SYNC OUT, each taking one of five values - clock, transport,
+  clock and transport, transport with song position pointer, or all three (manual p. 44). So
+  clock, transport and song position are all available in both directions and none of them is
+  always on. **And the same page disagrees with itself about transport**: its opening sentence
+  says "transport control (play, stop, continue)" (manual p. 44) while the setting's own line says only
+  "TRANSPORT - Enable song start/stop MIDI transport messages" (manual p. 44), so continue is named in the
+  prose and absent from the description. Recorded as `both` either way, because the
+  disagreement is about which messages and not about the direction.
+
+
+  **EVERY MIDI SETTING THIS INSTRUMENT HAS TRAVELS WITH THE SONG FILE AND NONE IS GLOBAL.**
+  "All mappings are stored within the song file" (manual p. 43) and "All parameters in this page
+  are stored within the song" (manual p. 44), with a saveable default for new songs. So a
+  channel assignment, a sync direction and a control surface choice are properties of the
+  player's project rather than of the instrument, which is worth saying out loud to anybody
+  building a panel for it.
+
+
+  PROGRAM CHANGE GOES BOTH WAYS AND THE TWO DIRECTIONS ARE NOT SYMMETRICAL. Received per track
+  and behind a setting: "PG CHANGE - Enable instrument selection via MIDI Program-change
+  messages" (manual p. 45), selecting the instrument slot. Sent by the two output engines, with
+  bank select beside it: "BANK:PG - Optional MIDI Bank-select and Program-change" (manual
+  p. 64). **Bank select is sent and nothing says it is received.**
+
+
+  ONE STATED MESSAGE ORDER, WHICH A PANEL CAN RELY ON: a MIDI instrument's default controller
+  values "will be sent with the Note-on command after Program-change messages" (manual pp. 62,
+  64).
+
+
+  THE PORTS, FROM THE SPECIFICATIONS: "3.5mm TRS MIDI (Type A) input and output" (manual p. 91) and "USB MIDI
+  and Audio Class 1 compliant" (manual p. 91), and the two are declared equivalent - "USB MIDI
+  behaves the same way as the physical TRS MIDI connections allowing sync, remote control, and
+  sequencing" (manual p. 65). An output engine chooses between them and can also send
+  internally, to this instrument's own track input.
+
+
+  ONE CONTROL SURFACE IS NAMED AND ONLY ONE: "CTRL SURFACE - Set the MIDI control surface to be
+  used with M8. Currently only the Novation Launchpad Pro MK3 is supported" (manual p. 44).
+
+
+  THE MODEL:01 AND THE MODEL:02 ARE ONE DEFINITION. The specifications list them separately and
+  every difference is hardware - battery, display size, a microphone, dimensions and weight -
+  with the MIDI line, the ports and every engine shared (manual p. 91).
+
+
+  **AND THE MANUAL IS FIVE MONTHS OLDER THAN THE FIRMWARE, WHICH IS RECORDED BECAUSE IT WILL
+  MATTER LATER.** Dirtywave's downloads page gives the manual as last updated 04/21/2026 and the
+  firmware as "6.6.3C Firmware" (downloads) last updated 09/14/2026, and the changelog dates
+  6.6.3 C to 2026-09-13 (changelog). Eight releases lie between, including a minor version bump
+  which added a Hypersynth shape parameter and a ModFX comb filter type. **None of it reaches
+  this file, because a definition that maps no parameter to a controller has nothing a new
+  parameter can invalidate** - every field here is in both documents and unchanged by all eight.
+  The changelog's MIDI entries in that span are four bug fixes and one usability message.
+
+sources:
+  manual:
+    kind: manual
+    title: M8 Operation Manual
+    edition: "6.5.2"
+    dated: 2026-04-21
+    landing: "https://dirtywave.com/pages/resources-downloads"
+    url: "https://cdn.shopify.com/s/files/1/0455/0485/6229/files/m8_operation_manual_v20260421.pdf"
+    sha256: "006360bd2a2819e900d785b8ed4bafdc14030eb74acc4add265fdaca65dbeac7"
+    retrieved: 2026-10-05
+    # 98 sheets, one printed page to a sheet. **`file(1)` says 64 and is wrong**, which is worth
+    # knowing because the specifications are on sheet 98.
+    # **TWO NUMBERING SCHEMES.** Sheets 1 to 7 print roman folios I to VII; sheets 8 to 98 print
+    # 1 to 91. So the offset is 7 for every arabic page, asserted at sheets 8, 51 and 98 - and
+    # **the front matter cannot be cited at all**, because `(p. 1)` resolves to sheet 8. The
+    # cover's version statement lives there, which is why `model.firmware` gives it as a value
+    # rather than quoting it.
+    page_offset: 7
+  changelog:
+    kind: release_notes
+    title: M8 firmware changelog
+    landing: "https://github.com/Dirtywave/M8Firmware"
+    url: "https://raw.githubusercontent.com/Dirtywave/M8Firmware/main/changelog.txt"
+    sha256: "2d5c874d06d18161c406010a3d83f5df6eb45662c44a38da15bc3535ba4a93a2"
+    retrieved: 2026-10-05
+    paginated: false
+    # Dirtywave publishes firmware as files committed to a branch, so **the GitHub API's
+    # releases and tags endpoints both return nothing** and a check written against release
+    # metadata reports that this instrument has no firmware at all. This file is the version
+    # record. Cited for the firmware gap and for nothing else.
+  downloads:
+    kind: download_page
+    title: Resources & Downloads
+    landing: "https://dirtywave.com/pages/resources-downloads"
+    url: "https://dirtywave.com/pages/resources-downloads"
+    sha256: "47940a778a1df028601c74876b27cb9804f1000c0e67207dc6ce1d8df1580733"
+    retrieved: 2026-10-05
+    paginated: false
+    # Saved rather than linked because the manual's address is a content-delivery URL carrying
+    # a cache token that will change. Its whole visible text is 43 lines, and it is cited for
+    # the one thing only it states: the manual's date and the firmware's version together.
+    # **It also confirms there is no second document** - it offers the manual, the firmware, a
+    # changelog link and five community resources, and no chart of any kind.
+
+midi:
+  # **PRINTED FOR THE OUTPUT ENGINES AND NOT FOR THE INPUT CHANNELS**, which the second reader
+  # established: "MIDI Channel selection 1 to 16" (manual p. 62) is on manual pp. 62 and 64, both output
+  # instruments. The per-track input channel and the three global channels state no range at
+  # all. Recorded because 1 to 16 is the whole of MIDI and cannot overstate what this answers
+  # to; the asymmetry is in the account. A third "1 to 16" on manual p. 10 counts phrases in a
+  # chain and is not a channel.
+  channels: [1, 16]
+  # Separate SYNC IN and SYNC OUT settings, each able to carry clock (manual p. 44).
+  clock: both
+  # The same settings carry transport and song position pointer both ways. See the account for
+  # the manual's own disagreement about whether continue is among the messages.
+  transport: both
+  # **MIDI LEARN IS THE MAP.** Up to 128 mappings per song, each assigned by the player, and no
+  # controller number is published for any parameter.
+  control_change: learned
+  program_change:
+    # Per track and behind a setting, selecting the instrument slot (manual p. 45).
+    receives: true
+    # By the two output engines, with bank select beside it (manual pp. 62, 64). Nothing says
+    # bank select is received.
+    sends: true
+    # The instrument slots a program change reaches, and also what the instrument holds: 128
+    # per song. **They are the player's and not a factory bank** - see the account.
+    presets: 128
+
+parts:
+  track:
+    label: Track
+    channel: assigned
+    count: 8
+    addressing: pitches
+    # **NOTES AND PROGRAM CHANGE AND NOT CONTROLS.** Continuous controllers arrive on the
+    # global CONTROL MAP CHANNEL rather than on a track's own channel (manual p. 44), so a
+    # track is addressable for notes and for instrument selection and is not where a controller
+    # lands.
+    receives: [notes, program_change]
+    # One note at a time, stated twice: "Each track can play one single note at a time" (manual
+    # p. 5) and "8 Monophonic Tracks/Voices" (manual p. 91). **A third statement on p. 91 sits
+    # awkwardly beside those two** - see the account, which records it rather than settling it.
+    polyphony: 1
+
+voice:
+  addressing: pitches
+  # "8 Monophonic Tracks/Voices" (manual p. 91), which the manual also states as eight tracks
+  # each playing "one single note at a time" (manual p. 5). The per-track figure is the one in
+  # doubt, not this one.
+  # Each track has its one voice to itself rather than drawing on a pool: the maker counts
+  # tracks and voices as the same thing, "8 Monophonic Tracks/Voices" (manual p. 91), and
+  # polyphony over MIDI comes from giving several tracks one channel (manual p. 45). The
+  # instrument's eight is therefore stated against the part below, once, where it is true.
+  polyphony_shared: false
+  velocity:
+    # Received: recordable as note velocity (manual p. 44) and available as a modulation source
+    # that affects instrument volume unless taken over (manual p. 21).
+    note_on: received
+    # **NOT RECORDED EITHER WAY FOR WHAT IT SENDS**, because the manual names one column two
+    # ways: "phrases contain the notes, velocities, instrument assignments" (manual p. 5)
+    # against "The next column 'V' is the volume which determines the loudness" (manual p. 14).
+    # One document, two names for one column, and it never says which leaves the port.
+  # Aftertouch, pitch bend and note-off velocity are all unset and all checked - see the
+  # account, and note that the manual does print the words "Pitch Bend" for an FX command that
+  # is not a MIDI message.
+
+# **NO CONTROLS, AND THAT IS THE FINDING.** Every continuous controller this instrument answers
+# to is one its player assigned, so there is nothing here a definition could state that would
+# be true of anybody else's unit.
+controls: {}

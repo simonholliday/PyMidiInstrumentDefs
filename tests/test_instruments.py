@@ -235,6 +235,7 @@ class TestBundledCorpus:
 			"waldorf/iridium",
 			"waldorf/streichfett",
 			"yamaha/dx7",
+			"yamaha/reface_dx",
 		]
 
 	def test_the_readme_qualifies_a_channel_that_could_be_read_two_ways (self) -> None:

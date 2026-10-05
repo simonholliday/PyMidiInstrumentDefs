@@ -221,6 +221,7 @@ self-contained YAML file, and you share it by sending it.
 | `waldorf/iridium` | Waldorf Iridium: no control map at all - almost every parameter is reached by MIDI learn, so what is here is the fifteen controller numbers the maker fixes, out of a manual two product pages serve as the same bytes |
 | `waldorf/streichfett` | Waldorf Streichfett: controls whose values are exact numbers, not bands |
 | `yamaha/dx7` | Yamaha DX7: sends one set of controllers and answers to another, out of a 1983 manual that only exists as a scan |
+| `yamaha/reface_dx` | Yamaha reface DX: 29 controls out of a data list covering four instruments, told apart by the system exclusive model identifier - and 25 of them answer only while MIDI Control is on |
 
 The set is a starting point rather than a catalogue. `moog/dfam` is five lines,
 because the DFAM has no MIDI at all and saying so is worth more than saying

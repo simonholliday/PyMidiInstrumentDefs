@@ -1,0 +1,251 @@
+# BEFORE TAKING A NUMBER FROM THESE DOCUMENTS, READ THIS.
+#
+# **ONE DOCUMENT SET COVERS FOUR INSTRUMENTS** - the reface CS, DX, CP and YC - and the only
+# reason one of them can be read on its own is that the Data List is partitioned rather than
+# interleaved: the DX has sheets 6 to 10 and no other model appears on them. Two readers
+# established that independently, the second by the system exclusive Model ID, which is the one
+# piece of evidence a machine can check: **the DX is `05H` and that byte is on sheets 6 and 7
+# and nowhere else in the file.**
+#
+# **AND THE MODEL IDS ARE NOT IN THE ORDER THE DOCUMENT PRESENTS THE MODELS.** The pages run
+# CS, DX, CP, YC; the identifiers run CS `03H`, **CP `04H`**, **DX `05H`**, YC `06H`. Anyone
+# mapping page order onto identifier order gives the DX the CP's.
+#
+# **THREE THINGS ARE TRUE OF A SIBLING AND NOT OF THIS INSTRUMENT**, and each is a plausible
+# mistake: the CS transmits control change 11 as well as 64, where the DX transmits 64 alone;
+# the CS reaches pitch bend range at a system address that is **reserved** on the DX, whose own
+# is a voice parameter; and control change 80 means the algorithm here and the oscillator type
+# on the CS. **The DX is also the only one of the four that does program change at all.**
+
+definition: 1
+
+model:
+  manufacturer: Yamaha
+  name: reface DX
+  firmware: "1.30"
+
+source: >-
+  reface CS/DX/CP/YC Data List, which carries this instrument's MIDI data format, its MIDI data
+  table and its implementation chart on sheets 6 to 10, with the Version 1.30 Supplementary
+  Manual for what that firmware added and the reface Reference Manual for the edit mode those
+  controllers reach.
+
+
+  **ONE SET OF DOCUMENTS COVERS FOUR INSTRUMENTS AND THE DATA LIST IS PARTITIONED BY MODEL.**
+  Its contents list gives the reface CS sheets 2 to 5, the DX 6 to 10, the CP 11 to 14 and the
+  YC 15 to 19, each with its own format, table and chart, and the running head of every sheet
+  names exactly one model. Two readers checked it independently and the second found the test a
+  machine can apply: the system exclusive Model ID, `05H` for the DX, which appears on sheets 6
+  and 7 and nowhere else in nineteen sheets. **No material of this instrument's lies outside
+  those five sheets and no other model's lies within them.**
+
+
+  TWENTY-FIVE PARAMETERS CARRY A CONTROLLER NUMBER, and they are the algorithm plus six apiece
+  for four operators - level, feedback level, feedback type, frequency mode, and frequency ratio
+  coarse and fine. Both readers extracted the table independently, with different tools on
+  different interpreters, and agree on every row and every value.
+
+
+  **THE NUMBERS ARE 80, 85 TO 90, AND 102 TO 119. THEY ARE NOT 80 TO 119.** Fifteen inside those
+  endpoints are unused - 81 to 84 and 91 to 101 - and they are the specification's own
+  assignments, so a reader expanding the endpoints into a span invents fifteen controllers this
+  instrument does not answer to. The implementation chart prints the two groups as separate rows
+  on a different sheet, which is a second table agreeing with the first.
+
+
+  **AND THE TRAP IN THAT TABLE IS A REAL ONE RATHER THAN A HYPOTHETICAL.** A parameter's number
+  and a setting's transmitted value are both bare integers in the same column of the extracted
+  text, and the algorithm's twelve settings transmit 0, 12, 23, 35, 46, 58, 69, **81, 92, 104**
+  and **115** - of which 104 and 115 are controller numbers of other parameters in the same
+  table. A reader taking the first integer on each line publishes four controllers that do not
+  exist and gives two of them somebody else's parameter.
+
+
+  FOUR CONTROLLERS ARE FIXED AND ARE NOT PART OF THAT TABLE: modulation, volume and expression
+  are received and never transmitted, and the sustain switch travels both ways. The maker's
+  footnote on it is worth keeping: "When Sustain is set to 'FC4/5,' operating the foot switch
+  transmits only values of 0 (off) or 127 (on)" (dl p. 6), so the pedal's own kind decides
+  whether that controller is continuous or a switch.
+
+
+  **THE TWENTY-FIVE ARE BEHIND A SETTING AND THE FOUR ARE NOT.** "When MIDI Control Mode is
+  turned on, Control Change numbers are assigned in order that voice parameter changes made
+  using controllers on the front panel can be controlled via MIDI" (dl p. 6), and the table
+  itself is headed "Transmitted and recognized Control Change Number and Value, when MIDI
+  control is on" (dl p. 8). The implementation chart carries that qualification as a footnote
+  against those two rows and against no others. **So with MIDI Control off this instrument still
+  answers to the four, to notes, to pitch bend and to program change, and to none of the
+  twenty-five.** The setting is reached from the panel or by system exclusive and by no
+  controller.
+
+
+  NOT RECORDED: `mode`. The chart gives two different defaults - 3 transmitted and 1 recognised -
+  and the field holds one number. **This is `roland/juno_106`'s case exactly**, and it is settled
+  the same way.
+
+
+  NOT RECORDED: `polyphony`. **None of the three documents states a voice count**, and the
+  owner's manual that would is not among them.
+
+
+  A CHECKED ABSENCE: aftertouch. The chart marks both kinds, key's and channel's, as neither
+  transmitted nor recognised, and nothing in the other two documents contradicts it.
+
+
+  A CHECKED ABSENCE: registered and non-registered parameters. Neither appears in any of the
+  three documents, and controllers 96 to 101 are among the fifteen the table leaves unused.
+
+
+  **AND ONE ABSENCE THAT IS NOT WHERE A READER WOULD LOOK FOR IT**: there is no bank select of
+  any kind. Controllers 0 and 32 appear nowhere, and the chart has no row for either. The 32
+  programs are reached by program change alone, eight to a bank across four banks, which the
+  document states twice and consistently.
+
+
+  **LOCAL CONTROL IS NOT REACHABLE BY CONTROLLER 122.** The chart marks Local ON/OFF neither
+  transmitted nor recognised, and the setting lives at a system exclusive address and on the
+  panel instead. An instrument with local control that does not take the controller for it is
+  worth saying out loud.
+
+
+  THE BEND RANGE IS A VOICE PARAMETER AND NOT A SYSTEM ONE, reached by system exclusive alone
+  and settable from minus 24 to plus 24 semitones, so `programmable` records that it is the
+  player's and no figure is given. **The same parameter on the reface CS is a system parameter
+  at an address this instrument leaves reserved**, so its value is not transferable.
+
+
+  WHAT FIRMWARE 1.30 ADDED TO THIS INSTRUMENT, and it changed none of the tables above: master
+  tuning, master transpose, a looper `Quantize Mode` and a guide or click sound switch. The
+  supplement covers all four models and gave the reface CS nine new functions where this
+  instrument got four - five of the CS's being things this one already had - so **its list must
+  not be read across**.
+
+
+  **THE CHART WAS NOT REDATED FOR THAT FIRMWARE AND THE SIBLING'S WAS.** This instrument's is
+  version 1.0 of 20 February 2015 while the CS's is version 1.1 of 31 March 2016, and the data
+  table on sheet 8 does carry this instrument's 1.30 parameters at their system addresses. So
+  either those addresses predate the firmware and 1.30 only gave them panel access, or the table
+  was revised and the chart's version stamp was overlooked. **The documents are consistent with
+  both and this file does not choose.** `firmware` records 1.30 because that is the newest the
+  maker documents.
+
+sources:
+  dl:
+    kind: midi_implementation
+    title: reface CS/DX/CP/YC Data List
+    edition: "b0"
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/7/794817/reface_en_dl_b0.pdf"
+    sha256: 705182642a7be012570805c9686e1eac58bd2b9fa8584f91d33414929e1a85e9
+    retrieved: 2026-10-05
+    # 19 sheets, one printed page to a sheet, so no offset: sheet 6 is headed "reface Data List
+    # 6". **Sheets 6 to 10 are this instrument's and nothing here cites another model's.**
+    # The address redirects to `data.yamaha.com`, which is where the bytes come from.
+    # **SHEET 8 IS A TWO-COLUMN PAGE AND THAT MATTERS TO ANYONE READING IT AGAIN.** The control
+    # change table is the left column and the system exclusive tables are the right, and the
+    # right column begins *higher up the page* than the left. A reader going by line order meets
+    # the system exclusive headings before the first row of the table, so "read until the system
+    # exclusive section begins" finds nothing at all.
+  supplement:
+    kind: manual
+    title: reface Version 1.30 Supplementary Manual
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/0/960060/v130_Manual_en.pdf"
+    sha256: 8d00416aff1ad50178fa3db56a1d7d215cd849a793d971987eb0d4c8989873bd
+    retrieved: 2026-10-05
+    paginated: false
+    # 28 sheets, partitioned by model as the Data List is: this instrument has two of them.
+    # Cited for what firmware 1.30 added and for nothing else, because it adds no MIDI table,
+    # no controller and no message.
+  reference:
+    kind: manual
+    title: reface Reference Manual
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/7/438827/reface_en_rm_a0.pdf"
+    sha256: 78db93bfa3d3fd293b9c9865a236b0df3e74840e00f85d44c314a5941684541d
+    retrieved: 2026-10-05
+    paginated: false
+    # **IT IS ENTIRELY THIS INSTRUMENT'S DESPITE A RUNNING HEAD THAT NAMES THE FAMILY**, being
+    # the edit mode reference for the four operators the controllers above reach. Read in full
+    # and **carries no MIDI table of any kind**, which is why nothing is cited from it: it is
+    # recorded so that the next reader knows it has been looked at.
+
+midi:
+  # The chart's basic channel: 1 transmitted by default, 1 to 16 either way, and the default is
+  # remembered across a power cycle.
+  channels: [1, 16]
+  # System real time clock, marked both transmitted and recognised in the chart.
+  clock: both
+  # The chart's System Real Time Commands row, both ways.
+  transport: both
+  program_change:
+    receives: true
+    sends: true
+    # Four banks of eight, program numbers 0 to 31, stated in the data format and again in the
+    # program change table. **There is no bank select of any kind** - see the account.
+    presets: 32
+  # A checked absence rather than a silence: neither appears anywhere in the three documents,
+  # and the controllers they would use are among the fifteen the table leaves unused.
+  nrpn: none
+  sysex: true
+
+voice:
+  addressing: pitches
+  velocity:
+    # The chart gives note on as transmitted and recognised with v=1-127.
+    note_on: received
+    # **AND NOTE OFF VELOCITY NEITHER WAY.** The chart marks it x in both columns, and the data
+    # format says of the note off message that velocity "is ignored".
+    note_off: false
+  # A checked absence, both kinds, both directions.
+  aftertouch: none
+  pitch_bend:
+    # The message travels both ways; the range is a voice parameter reached by system exclusive
+    # alone, minus 24 to plus 24 semitones, so it is the player's and no default is stated.
+    programmable: true
+
+controls:
+  # **THE FOUR THAT ARE NOT IN THE TABLE**, from the data format on sheet 6. Three are received
+  # and never transmitted, which the implementation chart confirms row by row.
+  modulation:                        {label: MODULATION, cc: 1, direction: receives}
+  volume:                            {label: VOLUME, cc: 7, direction: receives}
+  expression:                        {label: EXPRESSION, cc: 11, direction: receives}
+  # The only controller this instrument transmits, and it travels both ways. What it sends
+  # depends on the pedal: with Sustain set to FC4/5 the footswitch sends only 0 or 127.
+  sustain_switch:                    {label: SUSTAIN SWITCH, cc: 64}
+
+  # **AND THE TWENTY-FIVE THE TABLE CARRIES**, which answer only while MIDI Control is on.
+  algo_algorithm:                    {label: ALGO (algorithm), cc: 80,
+    choices: {algo_1: 0, algo_2: 12, algo_3: 23, algo_4: 35, algo_5: 46, algo_6: 58, algo_7: 69, algo_8: 81, algo_9: 92, algo_10: 104, algo_11: 115, algo_12: 127}}
+  op1_level_output_level:            {label: OP1 LEVEL (output level), cc: 85}
+  op1_fb_feedback_level:             {label: OP1 FB (feedback level), cc: 86}
+  op1_fb_feedback_type:              {label: OP1 FB (feedback type), cc: 87,
+    choices: {sawtooth: 0, square: 127}}
+  op1_freq_mode:                     {label: OP1 FREQ MODE, cc: 88,
+    choices: {ratio: 0, fixed: 127}}
+  op1_freq_ratio_freq_coarse:        {label: OP1 FREQ RATIO/FREQ (coarse), cc: 89, range: [0, 31]}
+  op1_freq_ratio_freq_fine:          {label: OP1 FREQ RATIO/FREQ (fine), cc: 90, range: [0, 99]}
+  op2_level_output_level:            {label: OP2 LEVEL (output level), cc: 102}
+  op2_fb_feedback_level:             {label: OP2 FB (feedback level), cc: 103}
+  op2_fb_feedback_type:              {label: OP2 FB (feedback type), cc: 104,
+    choices: {sawtooth: 0, square: 127}}
+  op2_freq_mode:                     {label: OP2 FREQ MODE, cc: 105,
+    choices: {ratio: 0, fixed: 127}}
+  op2_freq_ratio_freq_coarse:        {label: OP2 FREQ RATIO/FREQ (coarse), cc: 106, range: [0, 31]}
+  op2_freq_ratio_freq_fine:          {label: OP2 FREQ RATIO/FREQ (fine), cc: 107, range: [0, 99]}
+  op3_level_output_level:            {label: OP3 LEVEL (output level), cc: 108}
+  op3_fb_feedback_level:             {label: OP3 FB (feedback level), cc: 109}
+  op3_fb_feedback_type:              {label: OP3 FB (feedback type), cc: 110,
+    choices: {sawtooth: 0, square: 127}}
+  op3_freq_mode:                     {label: OP3 FREQ MODE, cc: 111,
+    choices: {ratio: 0, fixed: 127}}
+  op3_freq_ratio_freq_coarse:        {label: OP3 FREQ RATIO/FREQ (coarse), cc: 112, range: [0, 31]}
+  op3_freq_ratio_freq_fine:          {label: OP3 FREQ RATIO/FREQ (fine), cc: 113, range: [0, 99]}
+  op4_level_output_level:            {label: OP4 LEVEL (output level), cc: 114}
+  op4_fb_feedback_level:             {label: OP4 FB (feedback level), cc: 115}
+  op4_fb_feedback_type:              {label: OP4 FB (feedback type), cc: 116,
+    choices: {sawtooth: 0, square: 127}}
+  op4_freq_mode:                     {label: OP4 FREQ MODE, cc: 117,
+    choices: {ratio: 0, fixed: 127}}
+  op4_freq_ratio_freq_coarse:        {label: OP4 FREQ RATIO/FREQ (coarse), cc: 118, range: [0, 31]}
+  op4_freq_ratio_freq_fine:          {label: OP4 FREQ RATIO/FREQ (fine), cc: 119, range: [0, 99]}

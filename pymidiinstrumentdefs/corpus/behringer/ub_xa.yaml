@@ -1,0 +1,215 @@
+# BEFORE ADDING A CONTROLLER NUMBER TO THIS FILE, READ THIS.
+#
+# This instrument has **no controls here because its maker publishes none**, and that was
+# established rather than assumed. Behringer's product page claims "comprehensive MIDI
+# implementation" and the only document behind it is a Quick Start Guide that names MIDI 158
+# times and never once names a controller number, a control change, an NRPN or a chart.
+#
+# **THE PANEL CALLOUTS ARE THE TRAP, AND THEY ARE CONVINCING.** Both this guide and the UB-Xa
+# D's pair a parenthesised integer with a parameter name, contiguously, in all nine languages:
+# "(22) VOLUME MOD", "(47) MODULATION", "(54) ATTACK", "(81) MIDI IN". That reads exactly like a
+# controller map and is not one - they are figure callouts keyed to the panel drawing. The proof
+# is that **the same control carries a different number in each document**: VOLUME is callout
+# (1) in this guide and (11) in the desktop's, and OSC 1 MOD is (76) here and (22) there.
+# A contiguous run to 95 is not how controller numbers are assigned. Anything scraped from
+# those would be fiction.
+#
+# A third-party map exists for instruments like this one. It is not evidence and nothing from
+# it is here.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: UB-Xa
+
+source: >-
+  Quick Start Guide, V 3.0, which is the only document Behringer publishes about this
+  instrument: 35 sheets printed two pages to a sheet, 68 printed pages, in nine languages of
+  which English is one. The product page is cited for two things the guide does not state at
+  all, and the UB-Xa D's own guide for one question that could only be settled by reading it.
+
+
+  **THE MAKER CLAIMS A MIDI IMPLEMENTATION AND PUBLISHES NO PART OF IT.** The product page says
+  this synthesiser is "filled to the brim with modern features such as velocity and after-touch,
+  512 user program memories and comprehensive MIDI implementation" (product_page). No document
+  behind that sentence names a single controller number. Across both guides the words "Control
+  Change", "controller", "NRPN", "RPN", "Program Change", "SysEx", "System Exclusive",
+  "implementation", "Chart" and "Appendix" occur **nought times each**, in a pair of documents
+  that say "MIDI" 158 and 179 times.
+
+
+  Checked eight ways by two readers, the second asked to break the finding rather than confirm
+  it and using a different extractor on a different interpreter. Between them: every sheet of
+  both documents extracted in two modes; a 48-term sweep of the words for table, implementation,
+  appendix and mapping in all nine languages; 839 windows where an integer 0 to 127 falls within
+  45 characters of a MIDI word, every one of them a panel callout, a folio, a voltage, a tempo
+  or a dimension; the tagged structure tree of both files, which holds **exactly one table per
+  document and it is the specifications**; outlines, named destinations, form fields,
+  attachments, annotations, URIs and optional content groups, all absent; and no embedded image
+  in either file, so nothing is hiding as a scan.
+
+
+  **The one thing a text search cannot see is drawn art, so it was rendered and looked at.**
+  Sheets 7 to 21 are the hook-up diagram and the panel drawings with their numbered callouts.
+  No sheet is a chart.
+
+
+  **AND THE GUIDE RESERVES TWO PRINTED PAGES AT THE BACK AND LEAVES THEM EMPTY.** Printed 66 and
+  67 carry a running head, two folios and nothing else. That is where an implementation chart
+  would have gone.
+
+
+  WHAT IT DOES PUBLISH, AND IT IS FOUR SENTENCES. The specifications give "16-voice bi-timbral"
+  and "MIDI In/out/thru 5-pin DIN / 16 channels" and "USB (MIDI) USB 2.0, type B" and "61
+  full-size keys with velocity and polyphonic aftertouch" (guide p. 60). The sockets are
+  described one by one, the MIDI IN being "to input MIDI from an external MIDI device such as a
+  sequencer or DAW" (guide p. 16).
+
+
+  **THE MENUS ARE DESCRIBED AND NEVER OPENED.** "Set MIDI channels for the USB and MIDI ports.
+  Normal/Upper, Split or Double. Also switch the keyboard off with the Local Off mode" (guide
+  p. 42) is the whole of what the guide says about its USB/MIDI settings, and the velocity and
+  aftertouch menu gets "This menu contains settings for the various velocity and aftertouch
+  modes" (guide p. 42). So a reader learns that MIDI channels are settable and never which, that
+  velocity modes exist and never what they are. That is this document's shape throughout: a
+  setting exists, and what it can be set to is not written down.
+
+
+  THE TWO LAYERS EACH TAKE A MIDI CHANNEL, AND NO NUMBER IS GIVEN FOR EITHER. In Split "Each
+  section can be set to the same or different MIDI channel", and in Dual the two layers "can
+  have the same or independent MIDI channels which allows external MIDI-enabled devices to
+  trigger the UB-Xa" (guide p. 42). **So this instrument has parts and this file records none**,
+  because a part needs a channel or an offset from one and the maker states neither: both are
+  the player's to choose, in a menu whose contents are not published. Recording a part with an
+  invented channel would be the one thing worse than recording nothing.
+
+
+  THE DOCUMENT DISAGREES WITH ITSELF ABOUT HOW MANY THINGS IT IS AT ONCE. Its cover calls it a
+  "16-Voice Multi-Timbral Polyphonic Synthesizer" (guide p. 1) and its specifications call it
+  "16-voice bi-timbral" (guide p. 60). Both readings are recorded and neither is corrected
+  anywhere in the guide. The layering account above is bi-timbral in substance - two patches,
+  two layers, two channels - so nothing here depends on resolving it.
+
+
+  **AND THE TWO PRODUCTS' GUIDES DISAGREE WITH EACH OTHER ABOUT THE ONE SWITCH THAT MENTIONS A
+  CONTROL CHANGE.** This guide says OSC 1 MOD "turns on control of OSC 1 pitch via the
+  performance LFO" (guide p. 17). The desktop UB-Xa D's guide says the same switch "turns on
+  control of OSC 1 via MIDI CC" (desktop_guide p. 15), repeated in all nine of its languages.
+  This guide's reading is the coherent one, because the switch sits in the performance LFO block
+  beside the pitch bend lever; the desktop's sentence would otherwise be the only statement in
+  69 sheets that a control change reaches anything, and it names no number. **It is recorded
+  because the two makers' documents disagree, and nothing rests on it.**
+
+
+  THE DESKTOP IS A SEPARATE PRODUCT AND IS NOT FOLDED IN. Behringer serves a UB-Xa D under its
+  own product code with its own Quick Start Guide, in its own WW, CN and JP editions. The two
+  files differ by 6.7 MB and one sheet, and the difference is draughtsmanship rather than
+  content: the desktop's panel art is traced about two and a half times as finely. It has no
+  keyboard, so the keys, the wheels and the polyphonic aftertouch recorded here are not its. It
+  is cited for one thing only - that **two products, two documents, and the same silence in
+  both** is stronger evidence about this maker than one document could be.
+
+
+  NOT RECORDED: `mode`. There is no MIDI implementation chart in either document.
+
+
+  NOT RECORDED: `control_change`. **Neither word this format has is true here.** "none" says
+  somebody checked and the instrument answers to no controller, which the maker's own claim
+  contradicts; "learned" says there is no factory map by design, which is a different instrument's
+  situation entirely. What is true is that a map is claimed and not published, and that is a third
+  case. Left unset rather than filled with the less wrong of two false answers.
+
+
+  NOT RECORDED: `nrpn`, `sysex`, `transport`, `clock`. The guides say nothing about any of them.
+  The product page does claim "NRPN/CC control of all parameters and bulk load/save" - but that
+  sentence lives inside a script element in the page's markup and does not appear on the page a
+  reader sees, so it cannot be cited and nothing here rests on it.
+
+
+  NOT RECORDED: `per_voice_channels`. The survey's entry for this instrument records MPE support;
+  **"MPE" appears in neither guide nor in the citable text of the product page**, so there is
+  nothing to record it from.
+
+
+  NOT RECORDED: a bend range. The guide describes a "PITCH BEND LEVER" and gives no interval for
+  it anywhere.
+
+sources:
+  guide:
+    kind: manual
+    title: Quick Start Guide UB-Xa
+    edition: V 3.0
+    landing: "https://www.behringer.com/en/products/0722-AAF"
+    url: "https://cdn-media.empowertribe.com/684f218c86df485f9042dd934d5f56c3/QSG_BE_0722-AAF_UB-Xa_WW.pdf"
+    sha256: 3e2a84b86fb720ca2593c128fc905958a513da9801af4900eff003b3a8d243b0
+    retrieved: 2026-10-05
+    page_offset: 1
+    pages_per_sheet: 2
+    # 35 sheets, 68 printed pages, two to a sheet after the cover; not encrypted, with a real
+    # text layer of 261,327 characters, made with Adobe InDesign 18.5 on 31 July 2023. The
+    # edition is the `V 3.0` its own cover carries, which is the document's version and not the
+    # instrument's firmware - no document here states a firmware at all.
+    # **THE LAYOUT IS BY SECTION AND THEN BY LANGUAGE, WHICH COSTS A CARELESS READER A THIRD OF
+    # IT.** Every language's panel reference comes first, then every language's Getting started.
+    # English panel reference ends at sheet 9 and Spanish begins at sheet 10, so a reader who
+    # stops there has not reached the menus, which are at sheet 22. The first reading of this
+    # file did exactly that and reported that the guide never describes its menus. It does.
+    # The `WW` edition carries nine languages and no Japanese or Chinese: the highest codepoint
+    # in its text layer is U+2022. Those are the separate `CN` and `JP` editions.
+  desktop_guide:
+    kind: manual
+    title: Quick Start Guide UB-Xa D
+    edition: V 0.0
+    landing: "https://www.behringer.com/en/products/0718-AAL"
+    url: "https://cdn-media.empowertribe.com/95d6c45f3ee44f849d053b479509f03f/QSG_BE_0718-AAL_UB-Xa-D_WW.pdf"
+    sha256: 72b6658c63b4c7610043516dfc05d9897e928fd97a19abbc006cc8428034e5b2
+    retrieved: 2026-10-05
+    page_offset: 1
+    pages_per_sheet: 2
+    # **A DIFFERENT PRODUCT'S DOCUMENT, CITED FOR TWO THINGS AND NOTHING ELSE**: that the desktop
+    # publishes no controller number either, and the OSC 1 MOD sentence this guide contradicts.
+    # 34 sheets, 66 printed pages, Adobe InDesign 19.0 on 12 October 2023 - a later export than
+    # the keyboard's, carrying the lower version number of the two.
+  product_page:
+    kind: product_page
+    title: "UB-Xa | Behringer"
+    landing: "https://www.behringer.com/en/products/0722-AAF"
+    url: "https://www.behringer.com/en/products/0722-AAF"
+    sha256: 43097ff20b8563a13768128f84588907b9a8c5eae8e5179feee3e775c5f7eec9
+    retrieved: 2026-10-05
+    paginated: false
+    # The visible text of the page. Cited for the preset count, which the guide gives nowhere,
+    # and for the maker's own claim about its MIDI - and for nothing with a number in it.
+    # **WHAT IS NOT IN IT**: the feature list, which this maker builds by script. The sentence
+    # "Comprehensive MIDI implementation (including NRPN/CC control of all parameters and bulk
+    # load/save)" is in the page as served, exactly once, inside a `script` element, and is
+    # therefore absent from this text copy and uncitable. The claim a reader can actually see
+    # says only "comprehensive MIDI implementation", with no number in it.
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # f58a353dcc1acda58101de0a4d8f84f22b7a66bddc9a8de8d1a4872b3a7b3832.
+
+midi:
+  # "MIDI In/out/thru 5-pin DIN / 16 channels" (guide p. 60). The guide says channels are set in
+  # a menu and never which channel anything defaults to.
+  channels: [1, 16]
+  program_change:
+    # **THE COUNT IS THE PAGE'S AND NOT THE GUIDE'S**, which states none: "512 user program
+    # memories" (product_page), said twice on that page and agreeing with itself both times.
+    # Whether a program change over MIDI reaches them is not stated anywhere, so `receives` and
+    # `sends` are left unset rather than assumed from the existence of a preset count.
+    presets: 512
+
+voice:
+  addressing: pitches
+  # "16-voice bi-timbral" (guide p. 60). The cover says Multi-Timbral instead; see the account.
+  polyphony: 16
+  velocity:
+    # "61 full-size keys with velocity and polyphonic aftertouch" (guide p. 60), and the page
+    # agrees. **Whether it sends velocity is not stated**, and it has keys, so unlike a desktop
+    # module that silence is a real gap rather than a question that does not arise.
+    note_on: received
+  # Polyphonic, from the same sentence. The guide names a "velocity and aftertouch menu" with
+  # "settings for the various velocity and aftertouch modes" (guide p. 42) and lists none of
+  # them, so what those modes are is not recorded.
+  aftertouch: poly

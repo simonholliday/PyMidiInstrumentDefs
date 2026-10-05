@@ -157,6 +157,7 @@ class TestBundledCorpus:
 			"behringer/model_d",
 			"behringer/pro_800",
 			"behringer/td_3",
+			"behringer/ub_xa",
 			"dreadbox/typhon",
 			"elektron/analog_four",
 			"elektron/analog_rytm_mkii",
@@ -573,15 +574,24 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Twelve definitions carry no controls, for four different reasons.
+		"""Thirteen definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a thirteenth
+		Pinned here because the count has gone stale in notes twice: a fourteenth
 		cannot be added without saying which kind it is.
+
+		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
+		Its maker claims "comprehensive MIDI implementation" and publishes no part of
+		one, which is neither ``none`` - that says the instrument answers to no
+		controller, and the maker's own claim contradicts it - nor ``learned``, which
+		says there is no factory map by design. So it shares ``None`` with the two
+		definitions where nobody has established anything, and it is the opposite of
+		those: a great deal was established, by two readers, and what they established
+		is that the document does not exist.
 		"""
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 12
+		assert len(empty) == 13
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -596,8 +606,22 @@ class TestAbsences:
 			"synthstrom_audible/deluge", "teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
-		# And the two that claim nothing, because nobody has established anything.
-		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent"}
+		# And the three that record no word at all, for two opposite reasons.
+		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent", "behringer/ub_xa"}
+
+		# **TWO OF THOSE CLAIM NOTHING BECAUSE NOBODY HAS ESTABLISHED ANYTHING. THE THIRD
+		# CLAIMS NOTHING BECAUSE THERE IS NO WORD FOR WHAT WAS ESTABLISHED.** Only one of
+		# them says so, and that is the difference a reader needs, so it is asserted rather
+		# than left to the empty field they share.
+		ub_xa = " ".join((pymidiinstrumentdefs.load("behringer/ub_xa", [CORPUS]).source or "").split())
+
+		assert "THE MAKER CLAIMS A MIDI IMPLEMENTATION AND PUBLISHES NO PART OF IT" in ub_xa
+		assert "Neither word this format has is true here" in ub_xa
+
+		for name in ("akai/mpc_sample", "pwm/malevolent"):
+			account = " ".join((pymidiinstrumentdefs.load(name, [CORPUS]).source or "").split())
+
+			assert "Neither word this format has is true here" not in account
 
 
 class TestCarbon8M:

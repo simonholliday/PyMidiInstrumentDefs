@@ -1,0 +1,273 @@
+# THE IMPLEMENTATION CHART IS TWO PAGES AND THEY ARE TWO WHOLE MAPS, NOT ONE MAP CONTINUED.
+# Page 1 is headed "Model: JU-06A" (chart p. 1) and page 2 "Model: JU-06A (Control Surface Mode)"
+# (chart p. 2), which the owner's manual describes as a state entered by holding a button at
+# power-on: "This makes the unit operate as a control surface. The JU-06A does not produce sound."
+# (manual p. 2). So the instrument has two sets of controller numbers and which one is live is
+# decided before it starts.
+#
+# **FIFTEEN NUMBERS ARE IN BOTH AND ELEVEN OF THEM MEAN SOMETHING ELSE.** This is the case the
+# format's open question about two maps said nothing would stop a maker producing, and the
+# Polyend Tracker was only writable because its two maps happened to share no number. These share
+# plenty:
+#
+#   cc  3   LFO RATE        on page 1  |  VCF FREQ   on page 2
+#   cc  9   LFO DELAY                  |  VCF RES
+#   cc 26   VCA LEVEL                  |  DCO LFO
+#   cc 29   LFO WAVE                   |  LFO RATE
+#   cc 82   DELAY TIME                 |  VCF KYBD
+#   cc 86   POLY / (POLY) / SOLO / UNISON | ENV R
+#
+# **AND EIGHTEEN PARAMETERS APPEAR IN BOTH CHARTS UNDER DIFFERENT NUMBERS**, which is the half
+# that catches a reader checking by name rather than by number. Four of them are swapped in
+# pairs: `VCF FREQ` is cc 74 on page 1 and cc 3 on page 2 while `LFO RATE` is cc 3 on page 1 and
+# cc 29 on page 2; `VCF RES` is cc 71 and cc 9 while `LFO DELAY` is cc 9 and cc 27. So **a
+# JU-06A in control surface mode turning its filter knob sends cc 3, and a JU-06A in sound module
+# mode reading cc 3 moves its LFO rate** - and this maker's own Chain Mode invites two of them to
+# be cabled together.
+#
+# **ONLY PAGE 1 IS CARRIED.** A definition holding both would answer `what is cc 3` twice with
+# nothing to choose by: the surface's map is transmit-only and page 1's cc 3 is transmitted too,
+# so direction does not separate them either. Page 2 is recorded here and in the source account
+# instead, which is the standing answer to a meaning that depends on a setting rather than on a
+# channel. `Notes/4608_extract_ju_06a.py` reads both pages and counts the overlap, so the figures
+# above are measured rather than asserted.
+#
+# THREE OF THE THIRTY-NINE ARE RECOGNISED AND NEVER SENT - cc 1, cc 11 and cc 64, the modulation
+# wheel, the expression pedal and hold. Everything else travels both ways. **Nothing on page 1 is
+# transmitted without also being recognised**, which the extraction asserts, so the instrument
+# never sends a number it would not understand coming back.
+#
+# NOT RECORDED: the firmware. The chart stamps itself "Version 1.01" (chart p. 1) and its second
+# page "Version 1.00" (chart p. 2) - two versions in one file, which can only be the charts' own -
+# and no document here gives the instrument a version at all.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: JU-06A
+  # NOT RECORDED, and the omission is this maker's. The implementation chart carries a version
+  # on each of its two pages and they differ, so those number the charts; the manual carries
+  # none; the sound list carries none. A Boutique-series recreation of the Juno-106, which is
+  # `roland/juno_106` here and is a different instrument with different numbers.
+  # Checked 2026-10-06.
+
+source: >-
+  The JU-06A MIDI Implementation Chart, two pages, "Date: Sep. 5, 2019" (chart p. 1); the JU-06A
+  Owner's Manual, two large sheets; and the JU-06A Sound List. All three are offered on Roland's
+  owner's manuals page for this product, which is saved beside them.
+
+  **THE CHART IS THE SOURCE OF EVERY NUMBER AND IT IS TEXT RATHER THAN DRAWINGS.** Roland set it
+  in Excel, so every `o` and `x` is in the text layer - which is worth saying beside the Korg
+  volca bass read three ranks earlier, whose chart of the same era draws its marks as paths and
+  returns none of them to a text extraction.
+
+  TWO MAPS, AND ONLY ONE OF THEM IS BELOW. See the comment above the definition for the overlap
+  and why page 2 is not carried. **What page 2 is**, for a reader who meets it: 24 controller
+  numbers, every one transmitted and none recognised, which is the instrument working as a
+  controller for something else. Its full list, in its own numbering: 3 VCF FREQ, 9 VCF RES, 12
+  CHORUS OFF/ON, 16 DCO SQR SW, 17 DCO SAW SW, 18 DCO SUB, 19 DCO NOISE, 26 DCO LFO, 27 LFO
+  DELAY, 28 VCF LFO, 29 LFO RATE, 47 DCO RANGE, 50 DCO PWM, 60 DCO LFO/MAN/ENV, 70 CHORUS I/II,
+  79 HPF FREQ, 81 VCF ENV, 82 VCF KYBD, 83 ENV A, 84 ENV D, 85 ENV S, 86 ENV R, 88 VCA ENV/GATE,
+  110 VCA LEVEL. **It also sends notes where the sound module map receives them** - 60 to 71 from
+  the bank and memory buttons, 48 to 72 from the optional keyboard unit - and transmits active
+  sensing and nothing else.
+
+  THE TWO PAGES DIFFER IN ONE MORE WAY WORTH NOTING: page 1's basic channel is 1 to 16 both ways
+  and page 2's is 1 transmitted and nothing recognised. So the control surface sends on channel 1
+  and cannot be told otherwise, where the sound module's channel is a setting - "Specifies the
+  MIDI transmit/receive channel (1-16). Default: 1 ch" (manual p. 2).
+
+  WHAT THE OTHER TWO DOCUMENTS SETTLE. The manual gives the polyphony, the three voice modes, the
+  bend range's span, the channel and its default, and the mode that selects page 2. **And it gives
+  one thing no chart could**: "Although the JU-06A is four-note polyphonic, you can increase the
+  polyphony by using a MIDI cable to connect two or more JU-06A units and turning Chain mode on."
+  (manual p. 2), where the fifth note and those after it leave by MIDI OUT for the next unit. The
+  sound list names 64 patches, which is exactly what the chart's program change range reaches.
+
+  NOT RECORDED: aftertouch, a cross in both columns of both charts. System exclusive, likewise.
+  The note range is 0 to 127 on page 1 and is recorded; page 2's two narrower ranges belong to
+  the map that is not carried. And the firmware, which no document states - see `model`.
+
+sources:
+  chart:
+    kind: midi_implementation
+    title: JU-06A MIDI Implementation Chart
+    edition: multi02
+    dated: 2019-09-05
+    landing: "https://www.roland.com/global/support/by_product/ju-06a/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JU-06A_MIDIImpleChart_multi02_W.pdf"
+    sha256: 91a3420cda9da067cd29d9b1bb2641396eaa1de294bcf8fa83b1c52a3cf237fa
+    retrieved: 2026-10-06
+    # Two pages, neither printing a number, cited as p. 1 and p. 2 - **and they are two
+    # different instruments' maps rather than one map continued.** The date above is the one
+    # printed on both pages; the file was made 2020-10-05 by its own metadata, a year later.
+    # Made in Microsoft Excel, which is why its marks are text where this era's Korg charts
+    # draw them.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: JU-06A Owner's Manual
+    edition: eng02
+    dated: 2019-08-06
+    landing: "https://www.roland.com/global/support/by_product/ju-06a/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JU-06A_eng02_W.pdf"
+    sha256: a837c3c5aefdecc5bd709c407f261ca9bc6bd1e95b25b4bc5014aa13acb54934
+    retrieved: 2026-10-06
+    # **Two sheets of 1191 by 842 points**, which is A3 landscape - a fold-out rather than a
+    # booklet - and **neither prints a page number**, so a locator here counts sheets. The
+    # date is the file's own creation date; no page carries one.
+    # Cited for the polyphony, the voice modes, the bend range, the channel and its default,
+    # the mode that selects the chart's second page, and Chain mode.
+    page_offset: 0
+  sound_list:
+    kind: manual
+    title: JU-06A Sound List
+    edition: e01
+    landing: "https://www.roland.com/global/support/by_product/ju-06a/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JU-06A_Sound_List_e01_W.pdf"
+    sha256: 7769ae29ba3381d9051cf468f04e4ad1cced21a5e39892ea81cc0192b18bc9d5
+    retrieved: 2026-10-06
+    # One page naming 64 patches as eight banks of eight, `1-1` through `8-8`. Cited for the
+    # count alone, which is exactly what the chart's program change range reaches - so two
+    # documents agree about it and neither says the other's number.
+    page_offset: 0
+  manuals_page:
+    kind: download_page
+    title: Roland - Support - JU-06A - Owner's Manuals
+    landing: "https://www.roland.com/global/support/"
+    url: "https://www.roland.com/global/support/by_product/ju-06a/owners_manuals/"
+    sha256: 9926d6a59a51f00442fb3937091746d524194d570424e73588e009f1ad2b7fa7
+    retrieved: 2026-10-06
+    paginated: false
+    # Cited for what Roland offers: nine documents, of which seven are the owner's manual in
+    # seven languages and the other two are the chart and the sound list. **No separate MIDI
+    # implementation beyond the chart**, which is this maker's habit for the Boutique series.
+    # **The page does not link a single document directly**: each goes through an intermediate
+    # page keyed by a GUID, and only those carry the `static.roland.com` address. So a reader
+    # who saves this page has saved no document addresses - the same shape as Korg's licence
+    # pages. The digest is of the extraction; the served bytes are saved beside it as `.html`.
+
+midi:
+  # "Specifies the MIDI transmit/receive channel (1-16). Default: 1 ch" (manual p. 2), and the
+  # chart's Basic Channel row gives 1 - 16 both ways. **The map that is not carried differs
+  # here too**: page 2 transmits on channel 1 and recognises nothing.
+  channels: [1, 16]
+  # The chart's Mode row reads Mode 3 in both columns, which is omni off and poly by its own
+  # legend.
+  mode: 3
+  # A circle in both columns of the chart's Clock row.
+  clock: both
+  # BOTH, WITH ONE ASYMMETRY THE FIELD CANNOT HOLD: Start and Stop are a circle in both columns
+  # and **Continue is recognised and not transmitted**, footnoted "*1 Same process as Start."
+  # (chart p. 1) - so this instrument answers to a Continue by starting, and never sends one.
+  transport: both
+  program_change:
+    # A range rather than a mark, in both columns: 0 - 63.
+    receives: true
+    sends: true
+    # SIXTY-FOUR, AND TWO DOCUMENTS AGREE WITHOUT EITHER CITING THE OTHER. The chart's program
+    # change range is 0 - 63, and the sound list names 64 patches as eight banks of eight.
+    presets: 64
+  # A cross in both columns of the chart's System Exclusive row, on both of its pages.
+  sysex: false
+
+voice:
+  addressing: pitches
+  # The chart's Note Number row: 0 - 127 in both columns. The map that is not carried gives two
+  # narrower ranges instead, for the buttons and for the optional keyboard.
+  note_range: [0, 127]
+  # "Maximum Polyphony 4 voices" (manual p. 2), from the specifications.
+  polyphony: 4
+  # ONE OR FOUR, BECAUSE VOICING IS A SETTING: "SOLO Plays monophonically." (manual p. 1),
+  # "UNISON Plays all sounds in unison." (manual p. 1) and "POLY Plays polyphonically." (manual
+  # p. 1), chosen with two step buttons. Unison sounds all four on one note, which is four
+  # voices for one key rather than a fifth answer.
+  voicing_modes: [1, 4]
+  velocity:
+    # The chart's Velocity row: Note On a circle in both columns, Note Off a cross in both.
+    note_on: received
+    note_off: false
+  # A checked absence, from the chart's own row: After Touch is a cross in both columns, and the
+  # chart has one row for it rather than the usual two.
+  aftertouch: none
+  pitch_bend:
+    # SETTABLE, AND NO DOCUMENT SAYS WHERE IT STARTS. "Specifies the pitch bend range in
+    # semitone units. OFF, 1-24" (manual p. 2) is the span, and it is also `bend_range` below,
+    # cc 87 - so a controller can set it. No page states a default, so `semitones` would be
+    # invented.
+    programmable: true
+
+groups:
+  dco: DCO
+  hpf: HPF
+  vcf: VCF
+  vca: VCA
+  envelope: Envelope
+  lfo: LFO
+  delay: Delay
+  chorus: Chorus
+  portamento: Portamento
+  performance: Performance
+  voice: Voice
+controls:
+  # DCO -------------------------------------------------
+  dco_range:                    {label: "DCO RANGE", cc: 12, group: dco}
+  dco_lfo:                      {label: "DCO LFO", cc: 13, group: dco}
+  dco_pwm:                      {label: "DCO PWM", cc: 14, group: dco}
+  dco_lfo_man_env:              {label: "DCO LFO/MAN/ENV", cc: 15, group: dco}
+  dco_sqr_sw:                   {label: "DCO SQR SW", cc: 16, group: dco}
+  dco_saw_sw:                   {label: "DCO SAW SW", cc: 17, group: dco}
+  dco_sub:                      {label: "DCO SUB", cc: 18, group: dco}
+  dco_noise:                    {label: "DCO NOISE", cc: 19, group: dco}
+  dco_sub_sw:                   {label: "DCO SUB SW", cc: 28, group: dco}
+
+  # HPF -------------------------------------------------
+  hpf_freq:                     {label: "HPF FREQ", cc: 20, group: hpf}
+
+  # VCF -------------------------------------------------
+  vcf_env_polarity:             {label: "VCF ENV Polarity", cc: 21, group: vcf}
+  vcf_env:                      {label: "VCF ENV", cc: 22, group: vcf}
+  vcf_lfo:                      {label: "VCF LFO", cc: 23, group: vcf}
+  vcf_kybd:                     {label: "VCF KYBD", cc: 24, group: vcf}
+  vcf_res:                      {label: "VCF RES", cc: 71, group: vcf}
+  vcf_freq:                     {label: "VCF FREQ", cc: 74, group: vcf}
+
+  # VCA -------------------------------------------------
+  vca_env_gate:                 {label: "VCA ENV / GATE", cc: 25, group: vca}
+  vca_level:                    {label: "VCA LEVEL", cc: 26, group: vca}
+
+  # ENVELOPE --------------------------------------------
+  env_s:                        {label: "ENV S", cc: 27, group: envelope}
+  env_r:                        {label: "ENV R", cc: 72, group: envelope}
+  env_a:                        {label: "ENV A", cc: 73, group: envelope}
+  env_d:                        {label: "ENV D", cc: 75, group: envelope}
+
+  # LFO -------------------------------------------------
+  lfo_rate:                     {label: "LFO RATE", cc: 3, group: lfo}
+  lfo_delay:                    {label: "LFO DELAY", cc: 9, group: lfo}
+  lfo_wave:                     {label: "LFO WAVE", cc: 29, group: lfo}
+  lfo_trig:                     {label: "LFO TRIG", cc: 30, group: lfo}
+
+  # DELAY -----------------------------------------------
+  delay_time:                   {label: "DELAY TIME", cc: 82, group: delay}
+  delay_feedback:               {label: "DELAY FEEDBACK", cc: 83, group: delay}
+  delay_sw:                     {label: "DELAY SW", cc: 89, group: delay}
+  delay_level:                  {label: "DELAY LEVEL", cc: 91, group: delay}
+
+  # CHORUS ----------------------------------------------
+  chorus_off_i_ii_i_ii:         {label: "CHORUS OFF / I / II / I+II", cc: 93, group: chorus}
+
+  # PORTAMENTO ------------------------------------------
+  portamento_time:              {label: "PORTAMENTO TIME", cc: 5, group: portamento}
+  portamento_sw:                {label: "PORTAMENTO SW", cc: 65, group: portamento}
+
+  # PERFORMANCE -----------------------------------------
+  modulation:                   {label: "MODULATION", cc: 1, group: performance, direction: receives}
+  expression_pedal:             {label: "EXPRESSION PEDAL", cc: 11, group: performance, direction: receives}
+  hold:                         {label: "HOLD", cc: 64, group: performance, direction: receives}
+  bend_range:                   {label: "BEND RANGE", cc: 87, group: performance}
+
+  # VOICE -----------------------------------------------
+  poly_poly_solo_unison:        {label: "POLY / (POLY) / SOLO / UNISON", cc: 86, group: voice}
+  tempo_sync:                   {label: "TEMPO SYNC", cc: 88, group: voice}

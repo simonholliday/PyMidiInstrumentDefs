@@ -204,6 +204,7 @@ self-contained YAML file, and you share it by sending it.
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |
+| `roland/ju_06a` | Roland JU-06A: 39 controls off one page of an implementation chart whose other page is a second whole map - fifteen numbers in both and eleven of them meaning something else |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
 | `roland/mc_101` | Roland MC-101: 28 controls over four tracks and a fifth MIDI channel that makes no sound, from a chart its maker publishes in numbered editions - of which the middle one is missing, so one firmware step was never printed |
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |

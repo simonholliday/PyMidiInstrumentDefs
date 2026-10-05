@@ -218,6 +218,7 @@ class TestBundledCorpus:
 			"pwm/malevolent",
 			"roland/d_50",
 			"roland/fantom_6_7_8",
+			"roland/ju_06a",
 			"roland/juno_106",
 			"roland/mc_101",
 			"roland/mc_707",
@@ -3171,6 +3172,81 @@ class TestJuno106:
 		assert juno.midi.program_change.presets == 128
 		assert juno.midi.program_change.receives is True
 		assert juno.midi.program_change.sends is True
+
+
+class TestJU06A:
+
+	"""A chart whose two pages are two whole maps, and only one of them is carried."""
+
+	def test_only_the_sound_module_s_map_is_here (self) -> None:
+		"""39 controls off page 1; page 2's 24 are in prose, because fifteen collide."""
+		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
+
+		assert len(ju.controls) == 39
+
+		said = prose_of("roland", "ju_06a")
+
+		assert "Model: JU-06A (Control Surface Mode)" in said
+		assert "FIFTEEN NUMBERS ARE IN BOTH AND ELEVEN OF THEM MEAN SOMETHING ELSE" in said
+
+		# The six the comment tabulates are all page 1's meanings here, not page 2's.
+		assert ju.controls["lfo_rate"].cc == 3
+		assert ju.controls["vcf_freq"].cc == 74
+		assert ju.controls["lfo_delay"].cc == 9
+		assert ju.controls["vcf_res"].cc == 71
+
+	def test_two_pairs_of_numbers_are_swapped_between_the_two_maps (self) -> None:
+		"""Which is what catches a reader checking by name rather than by number."""
+		said = prose_of("roland", "ju_06a")
+
+		assert "`VCF FREQ` is cc 74 on page 1 and cc 3 on page 2 while `LFO RATE` is cc 3 on" \
+			" page 1 and cc 29 on page 2" in said
+
+	def test_three_controls_are_recognised_and_never_sent (self) -> None:
+		"""The modulation wheel, the expression pedal and hold - and nothing the other way."""
+		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
+
+		receiving = sorted(control.cc for control in ju.controls.values()
+			if control.direction == "receives" and control.cc is not None)
+
+		assert receiving == [1, 11, 64]
+
+		# And nothing is transmitted without also being recognised, so the instrument never
+		# sends a number it would not understand coming back.
+		assert not [control for control in ju.controls.values()
+			if control.direction == "transmits"]
+
+	def test_two_documents_agree_about_the_patch_count_without_citing_each_other (self) -> None:
+		"""The chart's program change range is 0-63 and the sound list names 64 patches."""
+		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
+
+		assert ju.midi.program_change is not None
+		assert ju.midi.program_change.presets == 64
+		assert "sound_list" in ju.sources
+
+	def test_four_voices_in_three_modes_and_a_bend_range_with_no_start (self) -> None:
+		"""All from the manual, which is the only document that gives any of them."""
+		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
+
+		assert ju.voice.polyphony == 4
+		assert ju.voice.voicing_modes == (1, 4)
+		assert ju.voice.aftertouch == "none"
+
+		# The range is settable - it is `bend_range`, cc 87 - and no page says where it starts.
+		assert ju.voice.pitch_bend is not None
+		assert ju.voice.pitch_bend.programmable is True
+		assert ju.voice.pitch_bend.semitones is None
+		assert ju.controls["bend_range"].cc == 87
+
+	def test_continue_is_answered_by_starting (self) -> None:
+		"""A footnote the transport field has no room for."""
+		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
+
+		assert ju.midi.transport == "both"
+
+		said = prose_of("roland", "ju_06a")
+
+		assert "*1 Same process as Start." in said
 
 
 class TestAnalogRytmMkii:

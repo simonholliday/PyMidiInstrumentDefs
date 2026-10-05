@@ -1,0 +1,310 @@
+# BEFORE CHANGING A NUMBER IN THIS FILE, READ THIS.
+#
+# **This instrument publishes two tables for one set of parameters** - continuous controllers
+# and NRPNs - and a global switch chooses which of the two each direction uses. They are two
+# addresses for one control rather than two controls, which is why a control here carries both
+# and why `nrpn_range` carries the second range where it differs.
+#
+# **THE TWO TABLES DISAGREE TWENTY-TWO TIMES AND ONLY SIXTEEN OF THEM ARE RESOLUTION.** Where
+# NRPN offers more steps - 0 to 255 against 0 to 127 - that is the documented purpose of having
+# both. The other six disagree about how many **settings** a parameter has, and one of each pair
+# is simply wrong. The document never says which, so both are recorded and the account below
+# names all six.
+#
+# **THE LABELS KEEP THE MAKER'S MISSPELLINGS.** `AmpEnv_Decy` and `AmpEnv_Relase` are printed
+# that way in the controller table, and the NRPN table spells both correctly. Do not tidy them:
+# a reader matching this file against the document has to find what the document says.
+
+definition: 1
+
+model:
+  manufacturer: Sequential
+  name: Fourm
+
+source: >-
+  Fourm MIDI Implementation v1.1, fifteen pages, which is this maker's own document for this
+  instrument alone and names no other product in it. The User Guide is cited where the
+  implementation is silent or wrong about itself.
+
+
+  **THE IMPLEMENTATION CARRIES BOTH A CONTROLLER TABLE AND AN NRPN TABLE**, and a global decides
+  which is used: the controllers "are transmitted when MIDI Param Send is set to CC, and
+  recognized/received when MIDI Param Receive is set to CC" (midi p. 5), and the NRPNs "are
+  transmitted when MIDI Parameter Send is set to NRPN in globals, and received when MIDI
+  Parameter Receive is set to NRPN in globals" (midi p. 7). Each direction is independently one
+  of NRPN, CC or off, so the two tables are never both live in one direction. The maker prefers
+  NRPN: "NRPNs are the preferred method of parameter transmission, since they cover the complete
+  range of all parameters, while CCs are limited to a range of 128" (guide p. 14).
+
+
+  The controller table is on midi pp. 5-6 and the NRPN table on midi pp. 8-10, with the
+  global parameters on midi p. 11 and the control NRPN on midi p. 12.
+
+
+  **ALL 128 CONTROLLER NUMBERS ARE ACCOUNTED FOR.** 92 carry a parameter and a range; 27 print
+  `---` in both columns; 8 are the channel mode messages, which carry a name and no range at all
+  and are not parameters; and one, 112, is `Editor_Byte` with its range left as `---`, an editor
+  handshake rather than anything a player sets. 92 plus 27 plus 8 plus 1 is 128.
+
+
+  Of those 92, **82 have an NRPN twin and 10 do not** - and the ten are exactly the standard MIDI
+  controllers, bank select, mod wheel, breath, foot, data entry, volume, expression and
+  brightness, which are not program parameters and so have no place in a program parameter
+  table. **Eight further parameters are reachable by NRPN alone**: the two feedback controls, the
+  amplifier envelope amount, Vintage, and the four unison notes. So this file holds 100 controls
+  for 92 controller numbers.
+
+
+  **TWO READERS EXTRACTED BOTH TABLES INDEPENDENTLY, WITH DIFFERENT TOOLS ON DIFFERENT
+  INTERPRETERS, AND AGREE CELL FOR CELL ON ALL 128 ROWS.** The second worked from the text
+  matrix of every chunk rather than from line order, which is what makes the agreement worth
+  something: the two methods fail differently.
+
+
+  **AND THEY AGREE BECAUSE OF ONE ASSERTION.** Each sheet of the controller table opens with its
+  own folio as a bare line, and the table happens to span sheets 5 and 6 - so a reader taking
+  every number as a row gets a second controller 5 and a controller 6 whose parameter is the
+  running head, silently overwriting the real `Data Entry MSB`. **The numbers that would have
+  been wrong are exactly 5 and 6.** Both readers hit it and both caught it.
+
+
+  WHERE THE TWO TABLES DISAGREE ABOUT SETTINGS RATHER THAN RESOLUTION, and this is the list:
+  Noise Type is 0-2 by controller and 0-3 by NRPN; Filter Key Amount is 0-2 and 0-127; Sequencer
+  Reset is 1-64 and 0-1; Sequencer Play Mode is 0-2 and 0-3; Sequencer Mod Destination is 0-10
+  and 0-6; and Clock BPM is 15-127 and 30-250. **Neither table is reliably the right one** - the
+  user guide settles four in the controller's favour and two in the NRPN's - so each is recorded
+  both ways and none is quietly corrected.
+
+
+  THE CONTROLLER TABLE UNDERSTATES WHAT THE INSTRUMENT ANSWERS TO. It marks 96 to 101 as
+  assigned nothing, and the NRPN section uses all six of them - 98 and 99 for the parameter
+  number, 96 and 97 for data increment and decrement, 100 and 101 for the registered parameter
+  number. **They are not spare**, whatever the table says, and nothing here publishes them as
+  controls.
+
+
+  NOT RECORDED: `mode`. The document carries no MIDI implementation chart.
+
+
+  **THE DOCUMENT CONTRADICTS ITSELF ABOUT HOW MANY PROGRAMS A BANK HOLDS, THREE WAYS.** Program
+  change is "0-127 for Programs 1-127 within current Bank" on one page and "0-127 for Programs
+  00-128 within current Bank" on the next, which are 127 and 129 programs for 128 values. The
+  user guide gives the instrument 512 programs in four banks, so 128 a bank, and `presets`
+  records the 512 rather than either of the two wrong statements.
+
+
+  **AND ABOUT HOW BANKS ARE NUMBERED, ALSO THREE WAYS**: the controller table gives bank select
+  0-3 both halves, the received table says 1 to 4, and the transmitted table says 0 to 9, which
+  matches nothing. The system exclusive sections say 0 to 3 twice, which agrees with the
+  controller table, so the controls below carry 0-3 and the account records the rest.
+
+
+  NOT RECORDED: a bend range in semitones. The range is a program parameter rather than a fixed
+  property - controller 3 and NRPN 26, both 0-12 - so `programmable` says it is the player's and
+  no figure is given for a default, which the document does not state.
+
+
+  **POLYPHONIC AFTERTOUCH IS RECEIVED AND NOT TRANSMITTED, WHICH IS REMARKABLE FOR THIS
+  INSTRUMENT.** The received table carries both polyphonic key pressure and channel pressure;
+  the transmitted table carries channel pressure alone. This is a synthesiser whose cover calls
+  it a "compact and powerful 4-voice poly synth equipped with a Tactive™ polyphonic aftertouch
+  keybed" (guide p. 1), so either it cannot send over MIDI what its own keybed generates, or the
+  transmitted table has an omission. **The document says what it says and this file records it**;
+  it cannot be settled by testing, because this instrument is not on the rig.
+
+
+  NOT RECORDED: `transport` is recorded as sends and the two statements behind it disagree. The
+  clock mode setting says "Out: MIDI Clock + Start and Stop are sent" (midi p. 1), while the
+  System Real-Time Messages table lists one row, the timing clock, and neither start nor stop.
+  A direct sentence is better evidence than an omission from a list, so `sends` is recorded and
+  the disagreement is written here rather than resolved.
+
+
+  NOT RECORDED: `per_voice_channels`. The document says nothing about MPE.
+
+
+  **THE DOCUMENT HAS TWO FOOTNOTE MARKERS AND NO FOOTNOTES.** MIDI Param Send and MIDI Param
+  Receive carry an asterisk and a dagger in the globals table, and those two marks are the only
+  ones in fifteen pages: **the text they point at is not in the document.** Whatever qualifies
+  the switch between controllers and NRPNs was cut, and it is exactly the thing a reader of this
+  file would want.
+
+
+  One more sign that this document was adapted from a sibling's: it says it "lists Fourm program
+  parameters 0-352" and the table it introduces runs 1 to 726 and has no row 0. Neither bound is
+  right, and no other product is named anywhere in the file.
+
+sources:
+  midi:
+    kind: midi_implementation
+    title: Fourm MIDI Implementation
+    edition: V1.1
+    landing: "https://sequential.com/support/download/fourm-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2025/12/Fourm-MIDI-Implementation-Document_V1.1.pdf"
+    sha256: 19871a644b92bd3dd29835595d893f56e82c8d717daf9cd5ba10584a5b067afd
+    retrieved: 2026-10-05
+    # 15 sheets, one printed page to a sheet. Adobe InDesign 20.5 on 12 December 2025. Its own
+    # title is "Fourm MIDI Implementation Document" and its author field reads
+    # "Brian Tester/Sequential".
+    # **THE SHEET A TABLE SITS ON OPENS WITH ITS OWN FOLIO**, which looks exactly like a row.
+    # The controller table spans sheets 5 and 6, so an unguarded reader invents a controller 5
+    # and a controller 6 out of the running head.
+  guide:
+    kind: manual
+    title: Fourm User Guide
+    edition: "1.2"
+    landing: "https://sequential.com/support/download/fourm-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2025/12/Fourm-User-Guide_1.2.pdf"
+    sha256: 00d7cd8b59d454632a08161ef4f31f5a44301a69714e4375b429cc846c2c1221
+    retrieved: 2026-10-05
+    page_offset: 9
+    # 113 sheets. Cited for the four facts the implementation does not state or states wrongly:
+    # the voice count, the program count, the preference for NRPN, and the keybed.
+    # **THE EDITION IS THE FILE'S AND NOT THE DOCUMENT'S.** Its own title page says "User Guide
+    # Version 1 August, 2025" while the file is served as `Fourm-User-Guide_1.2.pdf` and the
+    # maker's page calls it 1.2. The two do not agree and `1.2` is recorded because that is what
+    # the maker publishes it as.
+
+midi:
+  # "MIDI Channel: All, 1...16 - Selects which MIDI channel to send and receive data, 1 to 16.
+  # All receives on all 16 channels" (midi p. 1).
+  channels: [1, 16]
+  # Four settings: off, out, in, and in with routing to the thru jack (midi p. 1). So it does
+  # both, and which is a global rather than a property of the instrument.
+  clock: both
+  # See the account: the clock mode setting says start and stop are sent, and the System
+  # Real-Time Messages table lists only the timing clock.
+  transport: sends
+  program_change:
+    # Both directions, each behind a global - "MIDI Prog Send: Off, On" and "MIDI Prog Rcv:
+    # Off, On" (midi p. 2). Program change selects within the current bank only.
+    receives: true
+    sends: true
+    # "The Fourm contains 512 program locations. These are divided into two sets of 256
+    # programs" (guide p. 4), which is four banks of 128. The implementation's own two
+    # statements of the per-bank count are both wrong; see the account.
+    presets: 512
+  # "NRPNs are the preferred method of parameter transmission, since they cover the complete
+  # range of all parameters, while CCs are limited to a range of 128" (guide p. 14).
+  nrpn: preferred
+  # Programs, alternative tunings and system updates all travel by it, and a global chooses
+  # whether it goes over the MIDI ports or the USB port (midi p. 2).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "Fourm is a compact and powerful 4-voice poly synth" (guide p. 1). The implementation never
+  # states a voice count.
+  polyphony: 4
+  velocity:
+    # Received on note on, and the document says of note off that "Velocity is ignored".
+    note_on: received
+  # **RECEIVED, NOT TRANSMITTED** - see the account. The received table carries polyphonic key
+  # pressure and channel pressure both; the transmitted table carries channel pressure alone.
+  aftertouch: poly
+  pitch_bend:
+    # The range is a program parameter, controller 3 and NRPN 26, both 0-12, so it is the
+    # player's. The document states no default and none is invented here.
+    programmable: true
+
+controls:
+  bank_select_msb:               {label: Bank Select MSB, cc: 0, range: [0, 3]}
+  mod_wheel:                     {label: Mod Wheel, cc: 1}
+  breath_controller:             {label: Breath Controller, cc: 2}
+  pitch_bend_range:              {label: Pitch Bend_Range, cc: 3, nrpn: 26, range: [0, 12]}
+  foot_controller:               {label: Foot Controller, cc: 4}
+  data_entry_msb:                {label: Data Entry MSB, cc: 6}
+  master_volume:                 {label: Master Volume, cc: 7}
+  expression_pedal:              {label: Expression Pedal, cc: 11}
+  osc1_octave:                   {label: Osc1_Octave, cc: 12, nrpn: 1, range: [0, 4]}
+  osc1_freq:                     {label: Osc1_Freq, cc: 13, nrpn: 3, nrpn_range: [0, 1400]}
+  osc1_sync:                     {label: Osc1_Sync, cc: 14, nrpn: 7, range: [0, 1]}
+  osc1_saw:                      {label: Osc1_Saw, cc: 15, nrpn: 9, range: [0, 1]}
+  osc1_pulse:                    {label: Osc1_Pulse, cc: 16, nrpn: 11, range: [0, 1]}
+  osc1_pw:                       {label: Osc1_PW, cc: 17, nrpn: 13}
+  osc1_level:                    {label: Osc1_Level, cc: 18, nrpn: 15}
+  osc2_octave:                   {label: Osc2_Octave, cc: 19, nrpn: 2, range: [0, 6]}
+  osc2_freq:                     {label: Osc2_Freq, cc: 20, nrpn: 5, nrpn_range: [0, 1400]}
+  osc2_tri:                      {label: Osc2_Tri, cc: 21, nrpn: 8, range: [0, 1]}
+  osc2_saw:                      {label: Osc2_Saw, cc: 22, nrpn: 10, range: [0, 1]}
+  osc2_pulse:                    {label: Osc2_Pulse, cc: 23, nrpn: 12, range: [0, 1]}
+  osc2_pw:                       {label: Osc2_PW, cc: 24, nrpn: 14}
+  osc2_level:                    {label: Osc2_Level, cc: 25, nrpn: 16}
+  noise_on:                      {label: Noise_On, cc: 26, nrpn: 19, range: [0, 1]}
+  noise_level:                   {label: Noise_Level, cc: 27, nrpn: 20}
+  noise_type:                    {label: Noise_Type, cc: 28, nrpn: 21, range: [0, 2], nrpn_range: [0, 3]}
+  unison_on:                     {label: Unison_On, cc: 29, nrpn: 58, range: [0, 1]}
+  unison_voices:                 {label: Unison_Voices, cc: 30, nrpn: 59, range: [0, 4]}
+  unison_detune:                 {label: Unison_Detune, cc: 31, nrpn: 60}
+  bank_select_lsb:               {label: Bank Select LSB, cc: 32, range: [0, 3]}
+  glide_on:                      {label: Glide_On, cc: 33, nrpn: 23, range: [0, 1]}
+  glide_rate:                    {label: Glide_Rate, cc: 34, nrpn: 25}
+  glide_mode:                    {label: Glide Mode, cc: 35, nrpn: 24, range: [0, 3]}
+  keymode:                       {label: KeyMode, cc: 36, nrpn: 83, range: [0, 2]}
+  env_retrig:                    {label: Env Retrig, cc: 37, nrpn: 52, range: [0, 1]}
+  data_entry_lsb:                {label: Data Entry LSB, cc: 38}
+  filter_cutoff:                 {label: Filter_Cutoff, cc: 39, nrpn: 27, nrpn_range: [0, 1023]}
+  filter_res:                    {label: Filter_Res, cc: 40, nrpn: 29, nrpn_range: [0, 255]}
+  filter_keytrack:               {label: Filter_KeyTrack, cc: 41, nrpn: 30, range: [0, 1]}
+  filter_keyamt:                 {label: Filter_KeyAmt, cc: 42, nrpn: 31, range: [0, 2], nrpn_range: [0, 127]}
+  filtenv_attack:                {label: FiltEnv_Attack, cc: 43, nrpn: 40, nrpn_range: [0, 255]}
+  filtenv_decay:                 {label: FiltEnv_Decay, cc: 44, nrpn: 42, nrpn_range: [0, 255]}
+  filtenv_sustain:               {label: FiltEnv_Sustain, cc: 45, nrpn: 44}
+  filtenv_release:               {label: FiltEnv_Release, cc: 46, nrpn: 46, nrpn_range: [0, 255]}
+  filtenv_velon:                 {label: FiltEnv_VelOn, cc: 47, nrpn: 48, range: [0, 1]}
+  filtenv_velamt:                {label: FiltEnv_VelAmt, cc: 48, nrpn: 50}
+  filtenv_amt:                   {label: FiltEnv_Amt, cc: 49, nrpn: 53, nrpn_range: [0, 255]}
+  ampenv_attack:                 {label: AmpEnv_Attack, cc: 50, nrpn: 41, nrpn_range: [0, 255]}
+  ampenv_decy:                   {label: AmpEnv_Decy, cc: 51, nrpn: 43, nrpn_range: [0, 255]}
+  ampenv_sustain:                {label: AmpEnv_Sustain, cc: 52, nrpn: 45}
+  ampenv_relase:                 {label: AmpEnv_Relase, cc: 53, nrpn: 47, nrpn_range: [0, 255]}
+  ampenv_velon:                  {label: AmpEnv_VelOn, cc: 54, nrpn: 49, range: [0, 1]}
+  ampenv_velamt:                 {label: AmpEnv_VelAmt, cc: 55, nrpn: 51}
+  lfo_sync:                      {label: LFO_Sync, cc: 56, nrpn: 33, range: [0, 1]}
+  lfo_freq:                      {label: LFO_Freq, cc: 57, nrpn: 34, nrpn_range: [0, 255]}
+  lfo_freqsync:                  {label: LFO_FreqSync, cc: 58, nrpn: 35, range: [0, 15]}
+  lfo_shapes:                    {label: LFO_Shapes, cc: 59, nrpn: 36, range: [0, 15]}
+  lfo_revsaw:                    {label: LFO_RevSaw, cc: 60, nrpn: 37, range: [0, 1]}
+  lfo_shtype:                    {label: LFO_SHType, cc: 61, nrpn: 38, range: [0, 5]}
+  arp_on:                        {label: Arp_On, cc: 65, nrpn: 110, range: [0, 1]}
+  arp_mode:                      {label: Arp_Mode, cc: 66, nrpn: 111, range: [0, 7]}
+  arp_range:                     {label: Arp_Range, cc: 67, nrpn: 112, range: [0, 2]}
+  arp_repeat:                    {label: Arp_Repeat, cc: 68, nrpn: 113, range: [0, 3]}
+  arp_relatch:                   {label: Arp_Relatch, cc: 69, nrpn: 114, range: [0, 1]}
+  arp_beatsync:                  {label: Arp_Beatsync, cc: 70, nrpn: 115, range: [0, 1]}
+  seq_reset:                     {label: Seq_Reset, cc: 71, nrpn: 116, range: [1, 64], nrpn_range: [0, 1]}
+  seq_playmode:                  {label: Seq_PlayMode, cc: 72, nrpn: 117, range: [0, 2], nrpn_range: [0, 3]}
+  seq_moddest:                   {label: Seq_ModDest, cc: 73, nrpn: 118, range: [0, 10], nrpn_range: [0, 6]}
+  brightness:                    {label: Brightness, cc: 74}
+  modsrc_filterenvroute:         {label: ModSrc_FilterEnvRoute, cc: 75, nrpn: 65, range: [0, 2]}
+  modsrc_oscbroute:              {label: ModSrc_OscBRoute, cc: 76, nrpn: 66, range: [0, 2]}
+  modsrc_lforoute:               {label: ModSrc_LFORoute, cc: 77, nrpn: 67, range: [0, 2]}
+  modsrc_filterenvamt:           {label: ModSrc_FilterEnvAmt, cc: 78, nrpn: 68, nrpn_range: [0, 254]}
+  modsrc_oscbamt:                {label: ModSrc_OscBAmt, cc: 79, nrpn: 69, nrpn_range: [0, 254]}
+  modsrc_lfoamt:                 {label: ModSrc_LFOAmt, cc: 80, nrpn: 70, nrpn_range: [0, 254]}
+  moddst_freqasrcroute:          {label: ModDst_FreqASrcRoute, cc: 81, nrpn: 72, range: [0, 3]}
+  moddst_freqbsrcroute:          {label: ModDst_FreqBSrcRoute, cc: 82, nrpn: 73, range: [0, 3]}
+  moddst_pwasrcroute:            {label: ModDst_PWASrcRoute, cc: 83, nrpn: 74, range: [0, 3]}
+  moddst_pwbsrcroute:            {label: ModDst_PWBSrcRoute, cc: 84, nrpn: 75, range: [0, 3]}
+  moddst_cutoffsrcroute:         {label: ModDst_CutoffSrcRoute, cc: 85, nrpn: 76, range: [0, 3]}
+  moddst_ampsrcroute:            {label: ModDst_AmpSrcRoute, cc: 86, nrpn: 77, range: [0, 3]}
+  moddst_lfofreqsrcroute:        {label: ModDst_LFOFreqSrcRoute, cc: 87, nrpn: 78, range: [0, 3]}
+  moddst_lfoamtsrcroute:         {label: ModDst_LFOAmtSrcRoute, cc: 88, nrpn: 79, range: [0, 3]}
+  modsrc_aftertouchamt:          {label: ModSrc_AftertouchAmt, cc: 89, nrpn: 71, nrpn_range: [0, 254]}
+  moddst_atdest1:                {label: ModDst_ATDest1, cc: 92, nrpn: 80, range: [0, 3]}
+  moddst_atdest2:                {label: ModDst_ATDest2, cc: 93, nrpn: 81, range: [0, 3]}
+  moddst_atdest3:                {label: ModDst_ATDest3, cc: 94, nrpn: 82, range: [0, 3]}
+  voice_volume:                  {label: Voice_Volume, cc: 95, nrpn: 56}
+  clock_bpm:                     {label: Clock_BPM, cc: 102, nrpn: 87, range: [15, 127], nrpn_range: [30, 250]}
+  clock_div:                     {label: Clock_Div, cc: 103, nrpn: 88, range: [0, 10]}
+  scale:                         {label: Scale, cc: 104, nrpn: 84, range: [0, 65]}
+  transpose:                     {label: Transpose, cc: 105, nrpn: 85, range: [0, 4]}
+  category:                      {label: Category, cc: 106, nrpn: 86, range: [0, 16]}
+  feedback_on:                   {label: Feedback On, nrpn: 17, range: [0, 1]}
+  feedback_level:                {label: Feedback Level, nrpn: 18}
+  amp_env_amt:                   {label: Amp Env Amt, nrpn: 54, range: [0, 255]}
+  vintage:                       {label: Vintage, nrpn: 57}
+  unison_note_1:                 {label: Unison Note 1, nrpn: 61, range: [0, 60]}
+  unison_note_2:                 {label: Unison Note 2, nrpn: 62, range: [0, 60]}
+  unison_note_3:                 {label: Unison Note 3, nrpn: 63, range: [0, 60]}
+  unison_note_4:                 {label: Unison Note 4, nrpn: 64, range: [0, 60]}

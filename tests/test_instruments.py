@@ -219,6 +219,7 @@ class TestBundledCorpus:
 			"roland/tr8s",
 			"roland/tr_1000",
 			"roland/tr_6s",
+			"sequential/fourm",
 			"sequential/prophet_5",
 			"sequential/prophet_6",
 			"sequential/take_5",
@@ -7327,15 +7328,19 @@ class TestProphet6:
 		assert prophet.midi.nrpn == "preferred"
 		assert take_5.midi.nrpn == "preferred"
 
-		# Five definitions say `preferred`, and four of them are this one company -
+		# Six definitions say `preferred`, and five of them are this one company -
 		# Sequential, and the Oberheim it builds - which is what makes it a house position
 		# rather than one instrument's. The Prophet-5's implementation puts it in a callout
-		# rather than in the body, and the words are the same again.
+		# rather than in the body, and the words are the same again. The Fourm, four years
+		# later than the Prophet-6, still says it in the user guide rather than the
+		# implementation, and says it about the same two things: the range NRPN covers and
+		# the 128 a controller is limited to.
 		preferred = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
 
 		assert preferred == ["elektron/digitone_ii", "oberheim/ob_x8", "oberheim/teo_5",
-			"sequential/prophet_5", "sequential/prophet_6", "sequential/take_5"]
+			"sequential/fourm", "sequential/prophet_5", "sequential/prophet_6",
+			"sequential/take_5"]
 
 	def test_one_file_covers_the_keyboard_and_the_module (self) -> None:
 		"""The maker treats them as one instrument, and says so on its own download page."""

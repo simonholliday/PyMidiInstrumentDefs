@@ -1,0 +1,270 @@
+# BEFORE TAKING A NUMBER OR A BEHAVIOUR FROM THESE DOCUMENTS, READ THIS.
+#
+# **THE MANUAL IS OBSOLETE AND NOTHING ON IT SAYS SO.** It is copyright 2024, its newest
+# software reference is version 1.1, and the current software is 2.1.1. **Five of its MIDI
+# statements have been false since 1.5.0** - it says you toggle between MIDI In Only and MIDI
+# Out Only, never uses the words `MIDI channel`, never mentions MIDI clock, has aftertouch
+# received and not sent, and says MIDI does not work in Control Live Mode. Every one of those
+# is superseded, and this file is built on `release_notes` instead.
+#
+# **A WEB MANUAL WITH NO VERSION ON IT IS MORE DANGEROUS THAN A PDF WITH A STALE ONE.** A dated
+# document invites the comparison that catches it. This one carries no version, no edition, no
+# date and no `Last-Modified` header, and reads exactly like current documentation.
+#
+# **AND THE PRODUCT PAGE IS THE RELIABLE ONE HERE, WHICH IS NOT THE USUAL WAY ROUND.** Its two
+# MIDI claims - simultaneous send and receive with per-track channels, and aftertouch sent -
+# both look like overreach against the manual and are both confirmed by the release notes.
+
+definition: 1
+
+model:
+  manufacturer: Ableton
+  name: Move
+  # The newest version in the release notes. The manual states none, and the instrument shows
+  # its own under Current Version in the Update submenu, so this is the only published figure.
+  firmware: "2.1.1"
+
+source: >-
+  Move's release notes, read in full and version by version, with the Operation Manual for what
+  the instrument is, and the product page, tech specs and new-features page for what the manual
+  is too old to cover.
+
+
+  **THE MANUAL NUMBERS ITS SECTIONS**, so its citations name one: the MIDI material is in
+  section 2.1.7, the MIDI setting, and section 4.1.3, Connecting MIDI Devices, with
+  aftertouch in section 9.4, the ports in section 1.2.2, Ableton Link in section 4.2 and the
+  track count in section 4.3.3.
+
+
+  **THE MANUAL CANNOT BE USED FOR MIDI AND IT TOOK A SECOND READER TO SEE IT.** It is copyright
+  2024 and its newest software reference is version 1.1; the current software is 2.1.1. The
+  release notes carry a dated MIDI entry for 1.2.0, 1.3.0, 1.5.0, 1.6.0 and 1.7.0, and between
+  them they overturn **five** of the manual's statements. A first reading took the manual as
+  authoritative and the product page as marketing overreach, and had the instrument backwards in
+  five fields.
+
+
+  **WHAT CHANGED, AND WHEN.** MIDI clock out at 1.2.0: "It is now possible to send MIDI Sync
+  (i.e., MIDI clock) out when Move is set to receive MIDI notes" (release_notes). Polyphonic
+  aftertouch out at 1.3.0: "Move now sends out polyphonic aftertouch when set to MIDI Out, which
+  lets you play expressively when using external MIDI controllers" (release_notes). Simultaneous
+  input and output, per-track channels, and clock in, all at 1.5.0: "MIDI input and output can
+  now be active simultaneously. Additionally, MIDI send and receive channels can be configured
+  for each track" (release_notes). USB-C became a MIDI port at 1.7.0.
+
+
+  **THE CHANNEL RANGE IS ESTABLISHED BY THE MAKER'S OWN WORKED EXAMPLE AND NOWHERE ELSE.** The
+  manual never writes the words `MIDI channel` at all. The release notes do it by arithmetic:
+  "if the first track has MIDI In set to Channel 5, and all the other tracks are set to MIDI In
+  Auto, when any of the other tracks is selected, it will receive MIDI notes from channels 1-4
+  and 6-16" (release_notes). So the range is 1 to 16, and that sentence is the only place either
+  endpoint appears in any of the five documents.
+
+
+  AND MIDI IN HAS AN AUTO SETTING WORTH KNOWING ABOUT, because it is not a channel: it
+  "activates all MIDI input channels for the currently selected track - except for channels that
+  are explicitly assigned to other tracks" (release_notes). A track set to Auto therefore
+  answers on a range that depends on what the other three tracks are set to, which is a property
+  of the player's Set rather than of the instrument.
+
+
+  **IT ANSWERS TO NO CONTROLLER, AND THE MAKER SAYS SO: "monophonic aftertouch, MIDI CC, and
+  MIDI mapping are not supported" (manual).** That statement is from the 1.1-era manual and no
+  release note since adds either parameter control by controller number or MIDI learn, so it
+  still holds - and it is a stated absence rather than a silence, which is why `control_change`
+  records `none` rather than being left unset.
+
+
+  **ONE CONTROLLER NUMBER EXISTS IN ALL FIVE DOCUMENTS AND IT IS SENT, NOT ANSWERED.** From
+  1.3.0: "an 'All Sound Off' MIDI message (CC 120) is sent to the MIDI output" (release_notes),
+  when playback stops or a clip is retriggered. `control_change: none` is a statement about what
+  this instrument answers to - see the field's own meaning in the format - so the two do not
+  conflict, and CC 120 is a channel mode message rather than a parameter controller in any case.
+  It is recorded here because it is the one number a reader of these documents will find.
+
+
+  FOUR TRACKS, EACH WITH ITS OWN SEND AND RECEIVE CHANNEL. "Move supports a maximum of four
+  tracks" (manual), and from 1.5.0 each has per-track options for MIDI Out and MIDI In
+  (release_notes). The parts below record that; `polyphony` is not recorded because **no document
+  states a voice count for this instrument at all.**
+
+
+  AFTERTOUCH TRAVELS BOTH WAYS AND ONLY TWO OF THE INSTRUMENT'S OWN ENGINES ANSWER IT. Received:
+  "Move can receive polyphonic aftertouch messages" (manual). Sent, from 1.3.0, as above. And
+  the narrowing: "Drift and Wavetable support this type of aftertouch" (manual), said twice, so
+  the other instrument types do not. **The format records a kind and has no room for a
+  direction**, which is the third instrument in a fortnight to want one, after the Minimoog
+  Model D.
+
+
+  **A CHECKED ABSENCE, STATED TWICE AND UNDER TWO NAMES: channel aftertouch.** The MIDI section
+  calls it "monophonic aftertouch" (manual) and the playing chapter says "Move does not support Channel
+  Aftertouch, where the pressure applied to one pad affects all pads simultaneously" (manual).
+  A reader searching for either name will miss the other, so both are here.
+
+
+  NOT RECORDED: `transport`. Every synchronisation entry in the release notes says *MIDI Sync*,
+  glossed once as "(i.e., MIDI clock)" (release_notes), and **nothing in any of the five documents names start,
+  stop, continue or song position as a MIDI message.** `clock` is recorded and `transport` is
+  not, which is a narrower claim than the documents might seem to support.
+
+
+  **AND THE START AND STOP COMMANDS IN THESE DOCUMENTS ARE ABLETON LINK'S, WHICH IS NOT MIDI.**
+  Link "keeps devices in time over a wired or wireless network" (manual) and has a setting named
+  Start/Stop which "syncs the playback position as well as the tempo" (manual). That is the exact
+  vocabulary of MIDI transport and song position, reached by something that is not MIDI at all,
+  and it is the likeliest thing in this instrument's documents to be recorded as MIDI by mistake.
+
+
+  CHECKED ABSENCES, each searched for in all five documents and found nowhere: program change,
+  bank select, pitch bend, registered and non-registered parameters, system exclusive, MIDI
+  thru, local control, omni mode and MPE.
+
+
+  NOT RECORDED: `velocity`, in either direction. The pads are "velocity-sensitive" (manual) and a Full
+  Velocity setting plays everything "at the maximum velocity (i.e., a velocity value of 127)"
+  (manual) - but that is what the pads generate internally, and **no document says whether note
+  velocity travels over MIDI either way.** The one genuine MIDI value in these documents is that
+  127, and it is about the pads.
+
+
+  THE PORTS, AND THEY DISAGREE ACROSS THREE PAGES. The manual gives MIDI to USB-A alone: "You
+  can connect a MIDI device via the USB-A port on the back of the unit" (manual), where Move is
+  the host and "can supply it with up to 500 mA of power" (manual). 1.7.0 added USB-C, Move being
+  the device: "other hardware with a USB Host port can now connect to Move via its USB-C port"
+  (release_notes). The new-features page states the current position plainly - "Share MIDI with
+  external gear via Move's USB-C and USB-A ports" (new_features) - while **the tech specs still
+  put MIDI only on USB-A** (tech_specs) and **the product page's own port list omits USB-A
+  entirely** (product_page). There is no DIN and no TRS MIDI.
+
+
+  A DEVICE RESTRICTION THAT READS AS A CONTRADICTION AND IS NOT QUITE ONE: "Low-speed and
+  full-speed USB devices are supported, but not hi-speed USB devices such as Push" (manual),
+  against 1.7.0 naming "Push 3 or other hardware with a MIDI capable USB-A port" (release_notes)
+  among what Move
+  can exchange MIDI with (release_notes). The first is about what Move will host on its own
+  USB-A port and the second about Move being hosted over USB-C, which reconciles them - but
+  **neither document says so**, and a reader taking either alone gets the opposite answer about
+  the same two products.
+
+
+  WHAT GATES MIDI ENTIRELY: Control Live Mode. The manual says "sending and receiving MIDI data
+  does not work when Move is in Control Live Mode" (manual) and that the MIDI setup entry
+  disappears there; 1.6.0 then made devices on the USB-A port forward to the computer in that
+  mode instead (release_notes). So the manual's flat statement is no longer the whole of it, and
+  what a connected device does in that mode depends on the version.
+
+
+  **ONE DOCUMENT THAT WOULD SETTLE WHAT IS LEFT COULD NOT BE READ.** Release note 1.7.0 points
+  at a dedicated Knowledge Base article about using MIDI with Move. `help.ableton.com` answered
+  403 on two attempts spaced ninety seconds apart, the request unvaried. It exists, it is not in
+  the library, and it is where to look first for velocity, transport and program change.
+
+sources:
+  release_notes:
+    kind: release_notes
+    title: Move Release Notes
+    landing: "https://www.ableton.com/en/release-notes/move-1/"
+    url: "https://www.ableton.com/en/release-notes/move-1/"
+    sha256: "5f2e59d1b23ddba076484c9bb95abd9357c3cc79ed1db204e486da1a6347c1d2"
+    retrieved: 2026-10-05
+    paginated: false
+    # **THE MIDI IMPLEMENTATION RECORD FOR THIS INSTRUMENT**, and the only document that is
+    # current. Newest entry `Move 2.1.1`.
+    # **ITS ADDRESS IS `move-1` AND GUESSING IT WRONG COSTS THE WHOLE READING.**
+    # `/en/release-notes/move/` and `/en/move/release-notes/` both answer 404, and two wrong
+    # guesses were briefly written down as `no release notes exist`. It is linked from the tech
+    # specs page and from the new-features page, and from nowhere on the manual.
+  manual:
+    kind: manual
+    title: Ableton Move Manual
+    landing: "https://www.ableton.com/en/move/manual/"
+    url: "https://www.ableton.com/en/move/manual/"
+    sha256: "3790e9ec2649b84dcc48597e1de5b3d995de043ac5e07e49463ce3df2ffb7a46"
+    retrieved: 2026-10-05
+    paginated: false
+    # **OBSOLETE FOR MIDI AND SILENT ABOUT BEING SO**: copyright 2024, newest software
+    # reference 1.1, no version or date on the page. Cited here only for what has not changed -
+    # the track count, the ports as hardware, which engines answer aftertouch, the two names for
+    # channel aftertouch, and the pads. Its provenance record lists the five statements that are
+    # no longer true.
+    # One page, 21 chapters, so no page to cite. Its 196 figures are all lazy-loaded with empty
+    # alt text, so **nothing any screenshot shows is in the saved copy** - including the MIDI
+    # submenu's option list.
+  product_page:
+    kind: product_page
+    title: Move
+    landing: "https://www.ableton.com/en/move/"
+    url: "https://www.ableton.com/en/move/"
+    sha256: "552e7221487006ed1209fc2f9c10624f8fd6ba8cb85d8fa7e6f5fa52f3e9a5a9"
+    retrieved: 2026-10-05
+    paginated: false
+    # **RIGHT WHERE THE MANUAL IS WRONG**, which is not the usual way round and is why it is
+    # cited rather than merely saved. Its MIDI paragraph is inside a hidden modal, so a reader
+    # of the page never sees it without clicking.
+  tech_specs:
+    kind: specification
+    title: Move Tech Specs
+    landing: "https://www.ableton.com/en/move/tech-specs/"
+    url: "https://www.ableton.com/en/move/tech-specs/"
+    sha256: "96851515234e0c19cbe6b383c1ad6a4dbb902a784dd070ddd11e7c62cf73ad89"
+    retrieved: 2026-10-05
+    paginated: false
+    # **NOT A SPECIFICATION IN THIS CORPUS'S SENSE**: no chart, no controller list, no channel
+    # range. Cited for the ports, and saved because it is where the release notes are linked
+    # from. It still puts MIDI on USB-A alone, so it is behind the release notes too.
+  new_features:
+    kind: web_page
+    title: Move - All New Features
+    landing: "https://www.ableton.com/en/move/all-new-features/"
+    url: "https://www.ableton.com/en/move/all-new-features/"
+    sha256: "278dc4407e404cdcbfeda68f635dfe7da8c7e97c4d64468fd8611b47a5cee2b3"
+    retrieved: 2026-10-05
+    paginated: false
+    # Cited for one placement: **"Send and receive MIDI" (new_features) is listed under
+    # "New features and devices added since release" (new_features)**, which is the single
+    # clearest proof that the manual describes an earlier instrument. It dates nothing, which is why the release notes are the
+    # cited source for every change.
+
+midi:
+  # **FROM THE MAKER'S OWN WORKED EXAMPLE IN THE RELEASE NOTES AND NOWHERE ELSE.** The manual
+  # never writes `MIDI channel` at all. Per-track send and receive channels arrived at 1.5.0.
+  channels: [1, 16]
+  # Out at 1.2.0 and in at 1.5.0, both as the MIDI Sync setting. **The manual mentions clock
+  # nowhere**, because at 1.1 there was none.
+  clock: both
+  # `transport` is deliberately unset: every entry says MIDI Sync, glossed as MIDI clock, and
+  # nothing names start, stop, continue or song position as a MIDI message. **Ableton Link's
+  # Start/Stop setting is not MIDI** - see the account.
+  # A stated absence, not a silence: "monophonic aftertouch, MIDI CC, and MIDI mapping are not
+  # supported" (manual), and no release note since adds either. This field is about what the
+  # instrument answers to; the one controller it sends, CC 120, is in the account.
+  control_change: none
+  # `sysex` is **unset and not `false`**, which is the distinction settled on the Roland TR-8S:
+  # `false` says the instrument has no system exclusive in either direction, and no
+  # document here says that - none of the five mentions it at all. A silence is not a checked
+  # absence, however thorough the search behind it.
+
+voice:
+  addressing: pitches
+  # Received per the manual and sent from 1.3.0, so both ways - and the field holds a kind
+  # rather than a direction. Only Drift and Wavetable answer it.
+  aftertouch: poly
+  # `velocity` is unset in both directions: the pads are velocity-sensitive and no document
+  # says whether note velocity travels. `polyphony` is unset because no document states one.
+
+parts:
+  track:
+    label: Track
+    channel: assigned
+    count: 4
+    addressing: pitches
+    # Notes only. **Program change is not mentioned in any of the five documents**, and
+    # controls are refused instrument-wide. A track's MIDI In may instead be set to Auto, which
+    # answers on every channel not explicitly assigned elsewhere.
+    receives: [notes]
+
+# **NO CONTROLS, AND THE MAKER STATES THE ABSENCE RATHER THAN LEAVING IT TO BE INFERRED.** This
+# is the third kind of nothing in this corpus: Behringer advertises a map it never publishes,
+# Dirtywave calls its controllers user defined, and Ableton says MIDI CC is not supported.
+controls: {}

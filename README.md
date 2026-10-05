@@ -130,6 +130,7 @@ self-contained YAML file, and you share it by sending it.
 
 | Name | Instrument |
 |------|------------|
+| `ableton/move` | Ableton Move: no controls, because its maker states the absence - "MIDI CC, and MIDI mapping are not supported" - and the one controller it sends is All Sound Off on stop; built against its own manual, which is three years of releases out of date and says nothing about being so |
 | `access/virus_ti` | Access Virus TI: four controls, because the maker's two manuals publish no control map at all - the 2006 one says the list is on its website and the 2013 one deletes even that sentence |
 | `akai/mpc_live` | Akai Professional MPC Live: no controls either, because one user guide covers ten machines and every controller number in it is one the owner assigns |
 | `akai/mpc_sample` | Akai Professional MPC Sample: no controls at all, because its maker publishes no controller number and the absence is proved rather than assumed |

@@ -144,6 +144,7 @@ class TestBundledCorpus:
 	def test_the_bundled_names (self) -> None:
 		"""Every bundled definition, by name, so adding or removing one shows here too."""
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
+			"ableton/move",
 			"access/virus_ti",
 			"akai/mpc_live",
 			"akai/mpc_sample",
@@ -578,9 +579,9 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Fourteen definitions carry no controls, for five different reasons.
+		"""Fifteen definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a fifteenth
+		Pinned here because the count has gone stale in notes twice: a sixteenth
 		cannot be added without saying which kind it is.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
@@ -595,7 +596,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 14
+		assert len(empty) == 15
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -604,7 +605,7 @@ class TestAbsences:
 			key = "stated_none" if definition.midi.stated_none else definition.midi.control_change
 			kinds.setdefault(key, set()).add(name)
 
-		assert kinds["none"] == {"behringer/model_d", "behringer/td_3",
+		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/td_3",
 			"moog/labyrinth", "vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact",
 			"dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
@@ -622,6 +623,15 @@ class TestAbsences:
 
 		assert "THE MAKER CLAIMS A MIDI IMPLEMENTATION AND PUBLISHES NO PART OF IT" in ub_xa
 		assert "Neither word this format has is true here" in ub_xa
+
+		# **THE MOVE STATES THE ABSENCE IN THE PLAINEST WORDS OF THE FIVE**, and is the only
+		# definition in this corpus built against its maker's manual rather than on it: that
+		# manual is three years of releases out of date and says nothing about being so, which
+		# is a thing a reader of the corpus needs told rather than left to find.
+		move = " ".join((pymidiinstrumentdefs.load("ableton/move", [CORPUS]).source or "").split())
+
+		assert "MIDI CC, and MIDI mapping are not supported" in move
+		assert "THE MANUAL CANNOT BE USED FOR MIDI AND IT TOOK A SECOND READER TO SEE IT" in move
 
 		# **THE M8 IS THE CLEAREST OF THE LEARNED SIX AND THE ONLY ONE WHERE THE MAKER
 		# SAYS SO IN ITS OWN SPECIFICATIONS.** Everywhere else `learned` is a conclusion

@@ -141,6 +141,7 @@ self-contained YAML file, and you share it by sending it.
 | `arturia/polybrute` | Arturia PolyBrute: 74 controls off a chart set as eighteen small tables three across, whose column positions shift from one block of rows to the next |
 | `arturia/polybrute_12` | Arturia PolyBrute 12: the same 74-number chart as the PolyBrute, asserted against it number for number - plus controller 74, the MPE Slide dimension, which that chart does not list |
 | `asm/hydrasynth_explorer` | ASM Hydrasynth Explorer: 110 controls off a chart its maker prints twice, once by module and once by number - and four more the maker puts on numbers the MIDI specification reserves for channel mode, which this format cannot hold |
+| `asm/leviasynth` | ASM Leviasynth: 109 controls off a complete 128-row chart the maker prints three times across two manuals, all three agreeing row for row - and one definition covers the Desktop and the Keyboard because of it |
 | `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
 | `behringer/pro_800` | Behringer PRO-800: 70 controls out of a table whose six columns say what each number is - 34 of them 14-bit, paired to a fine half by name alone, at three different offsets and none of them the MIDI specification's |
 | `behringer/td_3` | Behringer TD-3: no control changes either, established from the maker's own complete MIDI message table - its "Modded Out" sibling adds exactly one and needs a definition of its own |

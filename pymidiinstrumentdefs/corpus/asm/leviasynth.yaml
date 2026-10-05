@@ -1,0 +1,679 @@
+# BEFORE TAKING A NUMBER FROM THESE DOCUMENTS, READ THIS.
+#
+# **ONE CHART, PRINTED THREE TIMES, AND ALL THREE AGREE.** ASM gives the Desktop and the
+# Keyboard a manual each; the Desktop's prints the control change chart twice, once sorted by
+# controller number and once sorted by module, and the Keyboard's prints it again. Read row by
+# row, **the three printings hold the same 128 rows with the same name and the same number every
+# time** - so one definition covers both products, and the reading was checked against the
+# documents before any second reader saw it. `Notes/4587_extract_leviasynth.py` asserts it and
+# refuses if a single row differs.
+#
+# **AND THE CHART IS A COMPLETE 128-ROW TABLE**, every controller number from 0 to 127 appearing
+# exactly once, 18 of them marked `Reserved` and 110 named. Nothing is missing and nothing is
+# doubled, which means the reading can be checked for completeness against nothing but itself.
+# **110 is also the figure a third party publishes for this instrument, and it is right** - the
+# first time in this corpus that such a count has been.
+#
+# **THE MODULE COLUMN HAD TO BE SPLIT BY A CLOSED VOCABULARY AND NOT BY GEOMETRY.** `pypdf`
+# returns each row as one text run, so `LFO 2 Level 4` is genuinely ambiguous between module
+# `LFO 2` parameter `Level` and module `LFO` parameter `2 Level`. The module-sorted printing
+# resolves it, being in alphabetical order *by module*: the module names are readable off the
+# sort and they are a closed set of 29. Every row is split by longest-prefix match against that
+# set and every row is asserted to match exactly one module, which is what makes the split a
+# reading rather than a guess.
+#
+# **TWO OF THE MAKER'S OWN ODDITIES ARE REPRODUCED HERE AND NOT TIDIED.** `ENV5` has no space
+# where `ENV 1` to `ENV 4` do, in both printings and in both manuals; the labels keep it, because
+# a reader searching the chart for `ENV 5` will not find it, while the group identifier is
+# `env_5` so that the five envelopes read as a set. And `VCA` is printed in *both* columns of one
+# row, so the label is `VCA VCA Level`, which looks like a mistake and is what the chart says.
+
+definition: 1
+
+model:
+  manufacturer: ASM
+  name: Leviasynth
+  # The firmware the downloads page offers, from "Leviasynth Keyboard Firmware Pack 1.2.0"
+  # (downloads) and "Leviasynth Desktop Firmware Pack 1.2.0" (downloads), two lines apart on one
+  # page, so the two products are on the same firmware. **Neither manual names
+  # a firmware version anywhere**: both are "1.2.1", which is the document's own revision. The
+  # two numbers sit a digit apart on one page and are not the same kind of thing.
+  firmware: "1.2.0"
+
+source: >-
+  Leviasynth Desktop Owner's Manual 1.2.1 (174pp), which is the source of every number here: the
+  MIDI settings at pp. 150-153, **the MIDI CC Charts at pp. 169-172**, the voice modes at p. 90,
+  the pitch bend range at p. 92, the Multi mode comparison at p. 129, the pad velocity and
+  aftertouch settings at p. 156, the feature list at pp. 11-12 and the specifications at p. 173.
+  The Keyboard manual is cited twice and for nothing else; the Algorithms document and the
+  downloads page are recorded below for what they do and do not hold.
+
+
+  THE CHART IS PRINTED THREE TIMES AND THAT IS WHAT VERIFIED IT. Pages 169-170 carry it under
+  "Sorted bY cc number" (p. 169) and pages 171-172 the same rows under "Sorted bY module"
+  (p. 171), and the Keyboard manual prints it a third time at its own pp. 168-171. **All three
+  agree on all 128 rows, name for name and number for number.** A maker who prints a chart twice
+  has handed a reader a free verification, which is the habit `asm/hydrasynth_explorer` recorded
+  for this maker and which was therefore looked for deliberately. It is worth saying that the
+  Hydrasynth's two printings named nineteen parameters two different ways and **these three name
+  none** - so the habit is not reliable in either direction, and finding the second printing is
+  not the same as being able to trust the first.
+
+
+  THE SECOND READING CONFIRMED ALL 110 NAMED ROWS, read by a different extractor off the page
+  geometry and then checked by eye against the pages rendered at up to 250 dots to the inch. The
+  two readings differ in nothing but the second reader's own annotations on the `ENV5` spelling.
+
+
+  THE CHART IS COMPLETE AND THAT IS ITS OWN CHECK. Every controller number 0 to 127 appears
+  exactly once: 18 marked `Reserved` and 110 named. **The 18 include the whole channel mode block
+  except one** - 120, 121, 122, 124, 125, 126 and 127 are all `Reserved`, so this maker has not
+  mistaken that block for free space, and the exception is 123, correctly named `All notes off`.
+  This format refuses it as a control because a channel mode message means the same thing on
+  every instrument that has it, which leaves **109 of the chart's 110 named rows** below. The
+  other eleven reserved numbers are the specification's own: 6 and 38 (data entry), 98 to 101
+  (the NRPN and RPN selects), and 115 to 119.
+
+
+  THE SIX CONTROLS IN THE `Global` GROUP ARE A LIST THE MANUAL PROMISES AND NEVER LABELS. Page
+  153's footnote reads "The Parameter Tx / Rx settings do not affect the transmission or reception
+  of System MIDI controls such as Mod wheel (CC #1), Volume (CC #7), or Sustain (CC #64). For a
+  full list of System MIDI controls, see the MIDI CC Charts" (p. 153) - and **the chart nowhere
+  uses the phrase `System MIDI controls`**. What it has is a module called `Global`, holding
+  exactly those three plus bank select either side and the expression pedal, and a reader has to
+  work out that the promised list is that module. Said here because the footnote matters: those
+  six are the controls the `Parameter TX` and `Parameter RX` settings cannot switch off, so they
+  are the only ones in this file that work whatever those settings say.
+
+
+  THREE OF THOSE SIX HAVE A TRANSMIT SWITCH AND ONLY ONE HAS A RECEIVE SWITCH. `Aftertouch TX`,
+  `Sustain pedal TX` and `Expression pedal TX` appear on MIDI Parameters page 2 with no receive
+  counterpart, while the modulation wheel has both, and the footnote says what travels: "When
+  enabled, the modulation wheel sends and / or receives MIDI CC #1" (p. 152). The pedal numbers
+  are stated outright too - "The sustain pedal always sends MIDI CC #64" (p. 96), and "An
+  expression pedal sends CC #11 by default, not CC #7" (p. 152). **No `direction` is recorded
+  against any control below**, because a switch that stops an instrument transmitting its own
+  pedal says nothing about whether the same number reaches it from outside, and no page here
+  does.
+
+
+  **EVERYTHING ELSE BELOW CAN BE SWITCHED OFF, OR MOVED TO NRPN.** "Parameter TX Off, NRPN, CC"
+  (p. 153) and "Parameter RX Off, NRPN, CC" (p. 153) choose the format a parameter edit travels
+  in, in each direction, and the manual explains that this "allows for more user-friendly
+  automation on DAWs that do not support the MIDI NRPN standard" (p. 153). So the 103 controls
+  outside the `Global` group reach the instrument only while `Parameter RX` is set to `CC`, and
+  the same parameters travel as non-registered parameter numbers on the other setting. **No NRPN
+  number is published anywhere.** The manual says "The NRPN implementation data for Leviasynth is
+  available at AshunSoundMachines.com" (p. 153); the downloads page lists two manuals, an
+  algorithms document, firmware packs and a patch librarian, and no such file. So `nrpn` is
+  `supported` with no numbers, which is where `asm/hydrasynth_explorer` ended for the same reason.
+
+
+  AN INTERNAL DISAGREEMENT ABOUT WHERE A PROGRAM CHANGE IS RECEIVED, AND HOW IT IS READ HERE.
+  Two bullets sit consecutively on one page: "MIDI Bank select / Program change messages are
+  always sent and received on the TX / RX Global channels" (p. 151), then "Leviasynth responds to
+  Bank / Program changes on the RX Global, RX Lower, and RX Upper channels" (p. 151). Page 153
+  repeats the first. **Page 150 is the only place the question is treated at length, and it
+  separates the two directions**: "MIDI Bank select / Program change messages are sent and
+  received on the TX Global and RX Global channels. They are not sent by the Lower / Upper
+  channels when a Multi is selected" (p. 150), followed by "Leviasynth responds to incoming Bank
+  / Program changes on the RX Global, RX Lower, and RX Upper channels, whether you're in Single
+  mode or Multi mode" (p. 150). Reading page 150 back onto the others makes all four consistent -
+  **sent on Global alone, received on all three** - because the sentence that qualifies the Lower
+  and Upper channels qualifies them for *sending*. So both parts below carry `program_change` in
+  what they receive, and the disagreement is written down here rather than hidden behind the
+  choice it forced.
+
+
+  THE BANK SELECT VALUES ARE PUBLISHED PER BANK, WHICH IS WHY BOTH HALVES ARE CONTROLS HERE. A
+  table on p. 151 gives the MSB as `00` for every one of the 23 banks and the LSB as 0-7 for
+  Single banks A-H, 8-12 for the five Multis' Upper patches, 13-17 for their Lower patches and
+  18-22 for the Multis themselves, each with "Each set of Bank select messages must be followed
+  by a program change message in order to select the desired bank and patch" (p. 151). **Its
+  Decimal column counts from 1 and the MIDI CC column from 0**, so the reader who takes the
+  Decimal figure sends everybody one bank too high; the values below are the MIDI CC column's.
+  Note that `asm/hydrasynth_explorer` drops bank select from its controls on the ground that it is
+  how a bank is chosen rather than a parameter, and most of this corpus keeps it. **This file
+  keeps it** - the values are published per bank and a panel can offer them - and the split with
+  this maker's other definition is raised rather than left standing.
+
+
+  WHAT THE KEYBOARD MANUAL HAS THAT THE DESKTOP'S DOES NOT, which is the pair's one substantive
+  difference. MIDI Parameters: Page 2 in the Desktop manual numbers its rows 1, 3, 4, 5, 6, 7, 8 -
+  **there is no row 2**. The Keyboard's row 2 is "Ribbon pitch bend TX Off, On On = ribbon sends
+  pitch bend data" (keyboard p. 150), the Desktop has no ribbon, and the gap in the numbering is
+  the only sign. **But the Desktop manual's MPE paragraph names it anyway**: "Page 2: Aftertouch
+  TX, Ribbon PB TX, Transport Msg, and Overflow = MPE Lock" (p. 151). So that manual describes a
+  control its own table does not contain, and anybody reading the MPE note alone would record a
+  ribbon parameter for an instrument that has none. The difference the other way is the input: the
+  Desktop has 16 pads where the Keyboard has keys.
+
+
+  **AND THE DESKTOP ANSWERS TO RIBBON DATA WITHOUT HAVING A RIBBON**, which is the one place that
+  shared prose turns out to be load-bearing rather than careless. The Modulation Sources table
+  footnotes its ribbon row: "The desktop unit doesn't have a ribbon controller, but this mod
+  source allows a Leviasynth keyboard, Hydrasynth, or Hydrasynth Deluxe to control these mod
+  routes" (p. 127). So the ribbon is a received modulation source on both products and a physical
+  control on one, and a reader who took the missing table row as the whole story would have the
+  Desktop deaf to something it answers to.
+
+
+  THAT RIBBON ROW ALSO MEANS THE KEYBOARD EMITS NRPN BY A SECOND ROUTE, since switching it off
+  makes the ribbon "sends NRPN data" (keyboard p. 150) rather than pitch bend. Nothing below
+  enumerates what travels that way, because no document does.
+
+
+  AND THE KEYBOARD MANUAL BREAKS THAT TABLE ACROSS A PAGE WHERE THE DESKTOP'S DOES NOT. Its rows
+  1 to 6 are on p. 150 and rows 7 and 8 - Transport Msg and Overflow - on p. 151. A reader who
+  takes the table from the page its heading is on gets six of its eight rows and no sign that two
+  are missing. Recorded because both manuals were read and only one has the problem.
+
+
+  THE 16 VOICES DIVIDE 8 AND 8, AND THE MAKER SAYS SO IN THE PLACE IT MATTERS. The feature list
+  gives "16 voices, with up to eight oscillators per voice" (p. 12), then "Single mode: One
+  16-voice patch" (p. 12) and "Multi mode: layer or split two independent 8-voice patches"
+  (p. 12), and
+  p. 129 restates it as "Single mode offers one 16-voice patch at a time. A Multi contains two
+  8-voice patches" (p. 129). **The sentence that settles it is about a limit rather than a
+  feature**: "A Unison patch with a Density value of 9+ voices will be limited to 8 voices when
+  used in Multi mode. This is the maximum number of voices available for each part" (p. 90). So
+  each part has eight of its own and they are not drawn from a shared pool, which is why
+  `polyphony_shared` is false and the eights are stated against the parts. A third page confirms
+  the independence from the other side: with stereo oscillators on one part, "its polyphony is
+  reduced from 8 voices to 4 stereo voices. The other part still has 8-voice polyphony" (p. 94).
+  **The 16 is therefore nowhere in the fields below**, because this format states a figure each
+  part can count on and 16 is not one - it is what Single mode gives the one patch there is.
+
+
+  THERE IS A 32 AS WELL, AND IT NEEDS A SECOND INSTRUMENT. "Overflow mode can link two units for
+  up to 32-voice polyphony (Single mode only)" (p. 12), worked through on p. 152: "Now play 17
+  notes on Leviasynth: it plays the first 16 voices and the 17th comes from the slave" (p. 152).
+  A fact about two instruments and not about this one.
+
+
+  AFTERTOUCH TRAVELS BOTH WAYS AND IN TWO KINDS, AND ONE FIELD HOLDS A KIND. Receiving is
+  established by the MPE paragraph - "Leviasynth already supports polyphonic aftertouch, so MPE
+  pressure is mapped automatically to Poly aftertouch" (p. 151), with "any patch that uses PolyAT
+  as a mod source should respond automatically to pressure sent by an MPE controller" (p. 151) -
+  and corroborated by the sequencer, where "Each note track can record pitch bend, mod wheel, and
+  polyphonic aftertouch" (p. 12). Sending is a setting with three positions, "Aftertouch TX Off,
+  Mono, Poly" (p. 152), and the manual is explicit that both kinds exist on the panel whatever it
+  is set to: "Setting this to Off still allows both forms of aftertouch to be used locally but
+  stops them from being transmitted. Mono enables Channel aftertouch values to be sent (one value
+  for all active voices); Poly allows polyphonic aftertouch values to be sent" (p. 152). **So this
+  instrument receives poly and sends either poly or channel, by a setting, and `voice.aftertouch`
+  can hold one of those three facts.** It holds `poly`, which is what the same shape gave
+  `asm/hydrasynth_explorer`, and the rest is here. This is the third instrument in a fortnight
+  whose aftertouch wants more of this field than a kind, and it is raised where the format's
+  questions are kept.
+
+
+  VELOCITY IS RECEIVED, AND THE SENTENCE THAT ESTABLISHES IT IS WORD FOR WORD THIS MAKER'S OTHER
+  MANUAL'S. "To disable velocity sensitivity for the pads, select a fixed value (Fix 60, Fix 80,
+  etc.). This only affects local response and outgoing MIDI; incoming velocity response is
+  unaffected" (p. 156). The Hydrasynth Explorer's manual carries the same two sentences about its
+  keybed, four years earlier. **Shared prose is usually how a document comes to say something
+  false** - it is what put a ribbon in the Desktop manual two paragraphs above - and here it
+  happens to be true of both instruments, which is the point: the reuse tells you nothing about
+  the truth either way, so the pad page was read rather than assumed.
+
+
+  PITCH BEND IS SETTABLE TO 24 SEMITONES AND SAVED WITH THE PATCH, so the figure below is a
+  maximum and not a factory setting: "This parameter lets incoming pitch bend messages cover up to
+  a 4-octave range: 2 octaves up and 2 octaves down (+/- 24 semitones)" (p. 92), and "The setting
+  is saved with the patch" (p. 92). The manual never states what a new patch starts at.
+
+
+  CLOCK AND TRANSPORT BOTH TRAVEL BOTH WAYS. "INT RUN: Selects Leviasynth as the master tempo
+  clock. Sync signals are sent to MIDI, USB, and the CV Clock output" (p. 151) and "MIDI In:
+  Slaves Leviasynth to incoming MIDI clock data" (p. 151), with a note worth repeating for anybody
+  wiring this up alongside modular gear: "Leviasynth cannot be synced to an incoming CV clock
+  signal" (p. 151) - it sends a clock voltage and will not take one. Transport is a single
+  three-position setting, "Transport Msg Off, TX, RX Send or receive MIDI Start / Stop messages"
+  (p. 152), and the manual is precise about which messages: "This setting enables the Leviasynth
+  sequencer to send or respond to the MIDI System Real Time messages for Start and Stop"
+  (p. 152). **Start and Stop and not Continue**, and no document mentions song position.
+
+
+  SYSTEM EXCLUSIVE IS A PORT, A DATA TYPE AND AN ACTION, AND NO FORMAT IS PUBLISHED. "SysEx Port
+  MIDI OUT, USB Selects which port will send SysEx data" (p. 153), a data-type setting whose six
+  USB choices run from one patch to all banks with or without sequences, and "Sends selected
+  SysEx data via MIDI Out or USB" (p. 153). So `sysex` is true and there is no message layout
+  here, because the manual publishes none and the maker's own librarian is the intended consumer.
+
+
+  **THE CHART IS THE FACTORY MAP AND NOT THE LIMIT OF WHAT THIS INSTRUMENT SENDS**, which has to
+  be said or the 109 rows below read as exhaustive. `MIDI CC [000-127]` is a modulation source
+  (p. 127) *and* a modulation destination (p. 128), with the footnote "MIDI CC #: Incoming MIDI
+  data can modulate certain parameters, and they can return the favor" (p. 128). So a patch's mod
+  matrix can be routed to emit **any** controller number, the eighteen the chart marks `Reserved`
+  included, and the expression pedal has its own version of the same freedom: it "can send any
+  MIDI CC via the Mod Matrix" (p. 152). The controls below are what the maker assigns; what a
+  player's patch sends is unbounded and no document could list it.
+
+
+  IT HAS LOCAL CONTROL AND DOES NOT ANSWER THE CONTROLLER FOR IT. "Local Off, On [1] Disconnect
+  pads from internal engine" (p. 154) is a System setting, and "The Local On / Off setting is
+  remembered when power is turned off" (p. 154). **CC 122 is the specification's Local Control
+  On/Off and this chart marks it `Reserved`**, so the feature exists on the panel and nothing can
+  reach it over MIDI. Worth saying out loud because a consumer that offers a local-control button
+  for every instrument that has the feature would offer one here that cannot work. The reface DX
+  a rank earlier had the same shape.
+
+
+  AND ITS SCALE QUANTISATION GOES ONE WAY, which is the one thing here that can make a note sound
+  at a pitch nobody sent. With a non-chromatic scale selected, notes outside it "will be quantized
+  to the pre-determined scale notes. This also affects the incoming MIDI notes" (p. 95) -
+  "However, outgoing MIDI notes are not affected" (p. 95), the manual's own example being that a
+  C#3 played on a pad leaves as a C#3 whether or not the scale contains it. So `addressing` is
+  `pitches` and a player should know that what arrives is not always what sounds.
+
+
+  WHAT IS NOT RECORDED, AND EACH IS A SILENCE RATHER THAN AN ABSENCE. No document gives a MIDI
+  implementation chart in the specification's own sense, so there is no statement about mode
+  messages or about whether note off carries release velocity, and no page in either manual
+  mentions Continue, song position, song select, time code or active sensing. **Omni is a setting
+  and not a mode here** - `RX Global Omni, 1-16` (p. 150) - and the manual's gloss is that it
+  "means that in Single mode and Multi mode the Leviasynth responds to MIDI data on any channel"
+  (p. 150), which this format treats as a setting a player makes rather than a row in a chart.
+  MIDI thru exists as hardware, "MIDI In/Out/Thru" (p. 173), and no page says whether it merges.
+
+sources:
+  desktop:
+    kind: manual
+    title: Leviasynth Desktop Owner's Manual
+    edition: "1.2.1"
+    landing: "https://www.ashunsoundmachines.com/downloads"
+    url: "https://www.mecldata.com/download/asm/Leviasynth_Desktop_Owners_Manual_1.2.1.pdf"
+    sha256: 998efdcb56e0e30c9a6fbfd9d8ba5c44726ec3f24c4223ee95da4dac614f62c7
+    retrieved: 2026-10-05
+    # 174 sheets, one printed page to a sheet, so no offset - asserted at sheets 10, 92 and 169,
+    # each of which prints its own number as its first line.
+    # **`file(1)` GIVES NO PAGE COUNT FOR THIS DOCUMENT AT ALL**, and reports 465 for the
+    # Keyboard manual beside it, which has 173. A page count from `file(1)` is worth nothing and
+    # this is the third document in a week to prove it.
+  keyboard:
+    kind: manual
+    title: Leviasynth Keyboard Owner's Manual
+    edition: "1.2.1"
+    landing: "https://www.ashunsoundmachines.com/downloads"
+    url: "https://www.mecldata.com/download/asm/Leviasynth_Keyboard_Owners_Manual_1.2.1.pdf"
+    sha256: de5a2b136bfe254651133879800a64d4e013954eff96ae7bf5dc4c97760f20de
+    retrieved: 2026-10-05
+    # 173 sheets, one printed page to a sheet, so no offset - asserted at sheets 10, 94 and 168.
+    # **Its chart is identical to the Desktop's**, read row by row, which is the third printing
+    # and the reason one definition covers both products. Cited for two things only: the ribbon
+    # row the Desktop manual's table lacks, and what that row says the ribbon sends instead.
+    # Everything else here comes from the Desktop manual, which is the fuller document.
+  algorithms:
+    kind: reference
+    title: Leviasynth Algorithms
+    landing: "https://www.ashunsoundmachines.com/downloads"
+    url: "https://www.mecldata.com/download/asm/Leviasynth_Algorithms.pdf"
+    sha256: c386aa1ae9983c41bbf9759ea1260320f2602689f294adc2e56ffbb614e0a0a1
+    retrieved: 2026-10-05
+    paginated: false
+    # **CITED FOR NOTHING, AND WORTH HAVING LOOKED AT.** 15 sheets of oscillator routing
+    # diagrams; the word MIDI appears nought times and `CC` as a word nought times. An
+    # "Algorithms" document for an eight-oscillator phase-modulation instrument is exactly where
+    # a numbered table might have hidden - the Yamaha reface DX's algorithm *is* a controller,
+    # number 80 - and here it is not: the 001-upward numbers in it are diagram labels, and no
+    # controller number in this instrument's chart selects an algorithm at all.
+  downloads:
+    kind: download_page
+    title: Downloads
+    landing: "https://www.ashunsoundmachines.com/downloads"
+    url: "https://www.ashunsoundmachines.com/downloads"
+    sha256: 7ef5c4b037c8d24c8cc034dcb1dc3e2d7df46aa3cffe0392928c70c40bdd7dfd
+    retrieved: 2026-10-05
+    paginated: false
+    # **THE ONLY DOCUMENT THAT SAYS WHICH FIRMWARE THIS IS**, and cited for that alone. It also
+    # bounds what any later reading can find: three documents for this instrument, all three
+    # saved, and no NRPN implementation data of the kind p. 153 promises.
+
+midi:
+  # "TX Global Off, 1-16" (p. 150) with "RX Global Omni, 1-16" (p. 150), and a transmit and
+  # receive channel for each part besides. So sixteen channels, with the receive side able to
+  # answer to all of them - which is a setting rather than a mode this format records.
+  channels: [1, 16]
+  # Three sources and the instrument is one of them: `Clock Sync Internal, USB, MIDI In`
+  # (p. 150). See the source account for what it will not take a clock from.
+  clock: both
+  # One setting, both directions: "Transport Msg Off, TX, RX Send or receive MIDI Start / Stop
+  # messages" (p. 152). Start and Stop only - see the source account.
+  transport: both
+  program_change:
+    # One setting per direction: "Pgm Change TX Off, On Send MIDI Program Change upon patch
+    # selection" (p. 153) and "Pgm Change RX Off, On Receive MIDI Program Change commands"
+    # (p. 153).
+    receives: true
+    sends: true
+    # "8 banks of 128 patches each (Single mode)" (p. 11). The five banks of 128 Multis are
+    # reached the same way and are not added in, because a Multi is a pair of these patches
+    # rather than a 1,281st patch: "Each Multi holds two independent patches (i.e., parts) for an
+    # additional 1,280 patches" (p. 11) counts the same sounds a second time.
+    presets: 1024
+  # A SETTING SAYS SO AND NOTHING PUBLISHES A NUMBER: "Parameter TX Off, NRPN, CC" (p. 153) and
+  # "Parameter RX Off, NRPN, CC" (p. 153) make NRPN one of two formats a parameter edit may
+  # travel in, and
+  # the manual publishes a chart for the other and sends the reader to a web page for this one.
+  # The Keyboard's ribbon is a second route by which NRPN leaves. See the source account.
+  nrpn: supported
+  # A port, a data type and a send action (p. 153), with no message layout published anywhere.
+  sysex: true
+  # ITS VOICES TAKE A CHANNEL EACH WHEN MPE IS ON: "When active, the voices of your Leviasynth
+  # break into individual channels so each note can have its own pitch bend, timbre and pressure
+  # control" (p. 151), switched by a setting whose own description is "Send / receive MPE data"
+  # (p. 150) - so it is received and transmitted.
+  #
+  # **AND TURNING IT ON TAKES OTHER SETTINGS AWAY**, which the manual says in a heading:
+  # "enabling mpe will lock out, change or disable certain midi parameters" (p. 151). It names
+  # them - all six channel assignments read `MPE Lock`, and so do aftertouch transmit, the
+  # Keyboard's ribbon bend transmit, transport messages and overflow. So `channels` above and
+  # this flag are not independent facts here: **with MPE on there is no channel to set.** Worth
+  # knowing for a panel, which would otherwise offer a channel picker that does nothing.
+  per_voice_channels: true
+
+voice:
+  addressing: pitches
+  # NO SINGLE FIGURE FOR THE WHOLE INSTRUMENT, and the maker gives a reason rather than leaving
+  # one out: 16 voices make one patch in Single mode and two 8-voice patches in Multi mode, and
+  # 8 is stated as the ceiling each part has to itself. Each is recorded against its part below.
+  # See the source account for the three pages that say so and the fourth that settles it.
+  polyphony_shared: false
+  velocity:
+    # "This only affects local response and outgoing MIDI; incoming velocity response is
+    # unaffected" (p. 156), of the pads' own fixed-velocity setting.
+    note_on: received
+  # POLYPHONIC, RECEIVED AS WELL AS SENT, AND THE PANEL HAS BOTH KINDS WHATEVER THE SETTING SAYS.
+  # "Leviasynth already supports polyphonic aftertouch, so MPE pressure is mapped automatically
+  # to Poly aftertouch" (p. 151) is the receiving side; "Aftertouch TX Off, Mono, Poly" (p. 152)
+  # is the sending side, and it can send channel aftertouch instead. One field holds one kind, so
+  # the rest of it is in the source account.
+  aftertouch: poly
+  pitch_bend:
+    # A MAXIMUM AND NOT A DEFAULT: "2 octaves up and 2 octaves down (+/- 24 semitones)" (p. 92),
+    # saved with the patch, and no page says what a new patch starts at.
+    semitones: 24
+    programmable: true
+
+parts:
+  # THE TWO HALVES OF A MULTI, each with its own transmit and receive channel - "RX Lower Off,
+  # 1-16" (p. 150) and "RX Upper Off, 1-16" (p. 150) - and mutually exclusive, so one channel
+  # cannot carry both. In Single mode neither is addressed and everything happens on the Global
+  # channel, which is why every control below is unparted.
+  #
+  # **BOTH TAKE CONTROLLER DATA ON THEIR OWN CHANNEL AND ON THE GLOBAL ONE**: "The Upper and
+  # Lower parts will respond to parameter and controller data that arrives on the Global channel
+  # as well as on the Upper / Lower MIDI channels" (p. 150). And the dependence runs one way
+  # only - "If RX Lower + Up = Off, the Upper / Lower parts ignore note data, but will respond to
+  # parameter and controller data received on the Global channel" (p. 150) - so a part with no
+  # channel of its own is still editable and simply cannot be played.
+  lower:
+    label: Lower
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # "This is the maximum number of voices available for each part" (p. 90).
+    polyphony: 8
+  upper:
+    label: Upper
+    channel: assigned
+    addressing: pitches
+    # The Arpeggiator is shared between the two and its settings follow this part (p. 129),
+    # which is the one asymmetry between them and is not a MIDI fact.
+    receives: [notes, controls, program_change]
+    polyphony: 8
+
+groups:
+  analog_filter: Analog Filter
+  delay: Delay
+  digital_filter: Digital Filter
+  env_1: ENV 1
+  env_2: ENV 2
+  env_3: ENV 3
+  env_4: ENV 4
+  env_5: ENV5
+  global: Global
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  lfo_3: LFO 3
+  lfo_4: LFO 4
+  lfo_5: LFO 5
+  macro: Macro
+  multi_edit: Multi Edit
+  osc_1: OSC 1
+  osc_2: OSC 2
+  osc_3: OSC 3
+  osc_4: OSC 4
+  osc_5: OSC 5
+  osc_6: OSC 6
+  osc_7: OSC 7
+  osc_8: OSC 8
+  post_fx: Post-FX
+  pre_fx: Pre-FX
+  reverb: Reverb
+  vca: VCA
+  voice: Voice
+
+# 109 controls in 29 groups
+
+controls:
+
+  # Analog Filter ─────────────────────────────────────────────
+  analog_filter_pre_drive:     {label: Analog Filter Pre-Drive, cc: 57, group: analog_filter}
+  analog_filter_keytrack:      {label: Analog Filter Keytrack, cc: 58, group: analog_filter}
+  analog_filter_lfo_2_amt:     {label: Analog Filter LFO 2 Amt, cc: 59, group: analog_filter}
+  analog_filter_velocity_env:  {label: Analog Filter Velocity > ENV, cc: 60, group: analog_filter}
+  analog_filter_env_2_amt:     {label: Analog Filter ENV 2 Amt, cc: 61, group: analog_filter}
+  analog_filter_resonance:     {label: Analog Filter Resonance, cc: 71, group: analog_filter}
+  analog_filter_cutoff:        {label: Analog Filter Cutoff, cc: 74, group: analog_filter}
+
+  # Delay ─────────────────────────────────────────────────────
+  delay_feedback:              {label: Delay Feedback, cc: 14, group: delay}
+  delay_time:                  {label: Delay Time, cc: 15, group: delay}
+  delay_feedback_tone:         {label: Delay Feedback Tone, cc: 62, group: delay}
+  delay_wet_tone:              {label: Delay Wet Tone, cc: 63, group: delay}
+  delay_dry_wet:               {label: Delay Dry / Wet, cc: 92, group: delay}
+
+  # Digital Filter ────────────────────────────────────────────
+  digital_filter_morph:        {label: Digital Filter Morph, cc: 50, group: digital_filter}
+  digital_filter_keytrack:     {label: Digital Filter Keytrack, cc: 51, group: digital_filter}
+  digital_filter_lfo_1_amt:    {label: Digital Filter LFO 1 Amt, cc: 52, group: digital_filter}
+  digital_filter_velocity_env: {label: Digital Filter Velocity > ENV, cc: 53, group: digital_filter}
+  digital_filter_env_1_amt:    {label: Digital Filter ENV 1 Amt, cc: 54, group: digital_filter}
+  digital_filter_cutoff:       {label: Digital Filter Cutoff, cc: 55, group: digital_filter}
+  digital_filter_resonance:    {label: Digital Filter Resonance, cc: 56, group: digital_filter}
+
+  # ENV 1 ─────────────────────────────────────────────────────
+  env_1_attack:                {label: ENV 1 Attack, cc: 81, group: env_1}
+  env_1_decay:                 {label: ENV 1 Decay, cc: 82, group: env_1}
+  env_1_sustain:               {label: ENV 1 Sustain, cc: 83, group: env_1}
+  env_1_release:               {label: ENV 1 Release, cc: 84, group: env_1}
+
+  # ENV 2 ─────────────────────────────────────────────────────
+  env_2_attack:                {label: ENV 2 Attack, cc: 85, group: env_2}
+  env_2_decay:                 {label: ENV 2 Decay, cc: 86, group: env_2}
+  env_2_sustain:               {label: ENV 2 Sustain, cc: 87, group: env_2}
+  env_2_release:               {label: ENV 2 Release, cc: 88, group: env_2}
+
+  # ENV 3 ─────────────────────────────────────────────────────
+  env_3_attack:                {label: ENV 3 Attack, cc: 89, group: env_3}
+  env_3_decay:                 {label: ENV 3 Decay, cc: 90, group: env_3}
+  env_3_sustain:               {label: ENV 3 Sustain, cc: 96, group: env_3}
+  env_3_release:               {label: ENV 3 Release, cc: 97, group: env_3}
+
+  # ENV 4 ─────────────────────────────────────────────────────
+  env_4_attack:                {label: ENV 4 Attack, cc: 102, group: env_4}
+  env_4_decay:                 {label: ENV 4 Decay, cc: 103, group: env_4}
+  env_4_sustain:               {label: ENV 4 Sustain, cc: 104, group: env_4}
+  env_4_release:               {label: ENV 4 Release, cc: 105, group: env_4}
+
+  # ENV5 ──────────────────────────────────────────────────────
+  env5_attack:                 {label: ENV5 Attack, cc: 106, group: env_5}
+  env5_decay:                  {label: ENV5 Decay, cc: 107, group: env_5}
+  env5_sustain:                {label: ENV5 Sustain, cc: 108, group: env_5}
+  env5_release:                {label: ENV5 Release, cc: 109, group: env_5}
+
+  # Global ────────────────────────────────────────────────────
+  # **THE SIX THE `Parameter TX / RX` SETTINGS CANNOT SWITCH OFF.** This module is the list
+  # p. 153's footnote promises under a name the chart never uses - see the source account - so
+  # these work whatever format the rest of the file is set to travel in.
+  global_bank_select_msb:
+    label: Global Bank select MSB
+    cc: 0
+    # The bank table's MSB column reads `00` on every one of its four rows (p. 151), so nought
+    # is the only value this half ever carries. It is sent anyway, because the maker requires
+    # both halves before a program change will leave the current bank.
+    range: [0, 0]
+    group: global
+  global_modulation_wheel:     {label: Global Modulation wheel, cc: 1, group: global}
+  global_master_volume:        {label: Global Master Volume, cc: 7, group: global}
+  global_expression_pedal:     {label: Global Expression pedal, cc: 11, group: global}
+  global_bank_select_lsb:
+    label: Global Bank select LSB
+    cc: 32
+    # **THE MAKER PUBLISHES A VALUE PER BANK**, in a table of four rows on p. 151, which is why
+    # this is a control here rather than a sentence under `program_change`. Twenty-three banks:
+    # the eight Single banks A to H, then the Upper patches of the five Multis, then their Lower
+    # patches, then the five Multis themselves.
+    #
+    # **THAT TABLE PRINTS EACH BAND THREE TIMES AND THE THREE DISAGREE.** Its MIDI CC column
+    # counts from nought - `00-07`, `08-12`, `13-17`, `18-22` on its four rows (p. 151) - its
+    # Decimal column from one, and **its Hexadecimal column does neither
+    # consistently**: `00-07` and `08-0C` follow the MIDI CC column, `0D-12` spans six values
+    # where there are five banks, and `13-17` is the Decimal column converted rather than the
+    # MIDI CC one. The values below are the MIDI CC column's, which is what goes in the message;
+    # a reader who takes the Decimal figure selects one bank too high every time, and the
+    # Hexadecimal column cannot be used at all.
+    range: [0, 22]
+    choices:
+      bank_a: 0
+      bank_b: 1
+      bank_c: 2
+      bank_d: 3
+      bank_e: 4
+      bank_f: 5
+      bank_g: 6
+      bank_h: 7
+      m1_upper: 8
+      m2_upper: 9
+      m3_upper: 10
+      m4_upper: 11
+      m5_upper: 12
+      m1_lower: 13
+      m2_lower: 14
+      m3_lower: 15
+      m4_lower: 16
+      m5_lower: 17
+      multi_1: 18
+      multi_2: 19
+      multi_3: 20
+      multi_4: 21
+      multi_5: 22
+    group: global
+  global_sustain_pedal:        {label: Global Sustain pedal, cc: 64, group: global}
+
+  # LFO 1 ─────────────────────────────────────────────────────
+  lfo_1_level:                 {label: LFO 1 Level, cc: 70, group: lfo_1}
+  lfo_1_rate:                  {label: LFO 1 Rate, cc: 72, group: lfo_1}
+  lfo_1_waveform:              {label: LFO 1 Waveform, cc: 110, group: lfo_1}
+
+  # LFO 2 ─────────────────────────────────────────────────────
+  lfo_2_level:                 {label: LFO 2 Level, cc: 4, group: lfo_2}
+  lfo_2_rate:                  {label: LFO 2 Rate, cc: 73, group: lfo_2}
+  lfo_2_waveform:              {label: LFO 2 Waveform, cc: 111, group: lfo_2}
+
+  # LFO 3 ─────────────────────────────────────────────────────
+  lfo_3_level:                 {label: LFO 3 Level, cc: 75, group: lfo_3}
+  lfo_3_rate:                  {label: LFO 3 Rate, cc: 76, group: lfo_3}
+  lfo_3_waveform:              {label: LFO 3 Waveform, cc: 112, group: lfo_3}
+
+  # LFO 4 ─────────────────────────────────────────────────────
+  lfo_4_level:                 {label: LFO 4 Level, cc: 77, group: lfo_4}
+  lfo_4_rate:                  {label: LFO 4 Rate, cc: 78, group: lfo_4}
+  lfo_4_waveform:              {label: LFO 4 Waveform, cc: 113, group: lfo_4}
+
+  # LFO 5 ─────────────────────────────────────────────────────
+  lfo_5_level:                 {label: LFO 5 Level, cc: 79, group: lfo_5}
+  lfo_5_rate:                  {label: LFO 5 Rate, cc: 80, group: lfo_5}
+  lfo_5_waveform:              {label: LFO 5 Waveform, cc: 114, group: lfo_5}
+
+  # Macro ─────────────────────────────────────────────────────
+  macro_macro_1_value:         {label: Macro Macro 1 Value, cc: 16, group: macro}
+  macro_macro_2_value:         {label: Macro Macro 2 Value, cc: 17, group: macro}
+  macro_macro_3_value:         {label: Macro Macro 3 Value, cc: 18, group: macro}
+  macro_macro_4_value:         {label: Macro Macro 4 Value, cc: 19, group: macro}
+  macro_macro_5_value:         {label: Macro Macro 5 Value, cc: 20, group: macro}
+  macro_macro_6_value:         {label: Macro Macro 6 Value, cc: 21, group: macro}
+  macro_macro_7_value:         {label: Macro Macro 7 Value, cc: 22, group: macro}
+  macro_macro_8_value:         {label: Macro Macro 8 Value, cc: 23, group: macro}
+
+  # Multi Edit ────────────────────────────────────────────────
+  multi_edit_balance:          {label: Multi Edit Balance, cc: 8, group: multi_edit}
+
+  # OSC 1 ─────────────────────────────────────────────────────
+  osc_1_initial_level:         {label: OSC 1 Initial Level, cc: 24, group: osc_1}
+  osc_1_pitch:                 {label: OSC 1 Pitch, cc: 33, group: osc_1}
+  osc_1_feedback:              {label: OSC 1 Feedback, cc: 42, group: osc_1}
+
+  # OSC 2 ─────────────────────────────────────────────────────
+  osc_2_initial_level:         {label: OSC 2 Initial Level, cc: 25, group: osc_2}
+  osc_2_pitch:                 {label: OSC 2 Pitch, cc: 34, group: osc_2}
+  osc_2_feedback:              {label: OSC 2 Feedback, cc: 43, group: osc_2}
+
+  # OSC 3 ─────────────────────────────────────────────────────
+  osc_3_initial_level:         {label: OSC 3 Initial Level, cc: 26, group: osc_3}
+  osc_3_pitch:                 {label: OSC 3 Pitch, cc: 35, group: osc_3}
+  osc_3_feedback:              {label: OSC 3 Feedback, cc: 44, group: osc_3}
+
+  # OSC 4 ─────────────────────────────────────────────────────
+  osc_4_initial_level:         {label: OSC 4 Initial Level, cc: 27, group: osc_4}
+  osc_4_pitch:                 {label: OSC 4 Pitch, cc: 36, group: osc_4}
+  osc_4_feedback:              {label: OSC 4 Feedback, cc: 45, group: osc_4}
+
+  # OSC 5 ─────────────────────────────────────────────────────
+  osc_5_initial_level:         {label: OSC 5 Initial Level, cc: 28, group: osc_5}
+  osc_5_pitch:                 {label: OSC 5 Pitch, cc: 37, group: osc_5}
+  osc_5_feedback:              {label: OSC 5 Feedback, cc: 46, group: osc_5}
+
+  # OSC 6 ─────────────────────────────────────────────────────
+  osc_6_initial_level:         {label: OSC 6 Initial Level, cc: 29, group: osc_6}
+  osc_6_pitch:                 {label: OSC 6 Pitch, cc: 39, group: osc_6}
+  osc_6_feedback:              {label: OSC 6 Feedback, cc: 47, group: osc_6}
+
+  # OSC 7 ─────────────────────────────────────────────────────
+  osc_7_initial_level:         {label: OSC 7 Initial Level, cc: 30, group: osc_7}
+  osc_7_pitch:                 {label: OSC 7 Pitch, cc: 40, group: osc_7}
+  osc_7_feedback:              {label: OSC 7 Feedback, cc: 48, group: osc_7}
+
+  # OSC 8 ─────────────────────────────────────────────────────
+  osc_8_initial_level:         {label: OSC 8 Initial Level, cc: 31, group: osc_8}
+  osc_8_pitch:                 {label: OSC 8 Pitch, cc: 41, group: osc_8}
+  osc_8_feedback:              {label: OSC 8 Feedback, cc: 49, group: osc_8}
+
+  # Post-FX ───────────────────────────────────────────────────
+  post_fx_param1:              {label: Post-FX Param1, cc: 68, group: post_fx}
+  post_fx_param2:              {label: Post-FX Param2, cc: 69, group: post_fx}
+  post_fx_dry_wet:             {label: Post-FX Dry / Wet, cc: 94, group: post_fx}
+
+  # Pre-FX ────────────────────────────────────────────────────
+  pre_fx_param1:               {label: Pre-FX Param1, cc: 12, group: pre_fx}
+  pre_fx_param2:               {label: Pre-FX Param2, cc: 13, group: pre_fx}
+  pre_fx_dry_wet:              {label: Pre-FX Dry / Wet, cc: 93, group: pre_fx}
+
+  # Reverb ────────────────────────────────────────────────────
+  reverb_time:                 {label: Reverb Time, cc: 66, group: reverb}
+  reverb_tone:                 {label: Reverb Tone, cc: 67, group: reverb}
+  reverb_dry_wet:              {label: Reverb Dry / Wet, cc: 91, group: reverb}
+
+  # VCA ───────────────────────────────────────────────────────
+  vca_vca_level:               {label: VCA VCA Level, cc: 2, group: vca}
+  vca_lfo_3_amt:               {label: VCA LFO 3 Amt, cc: 3, group: vca}
+
+  # Voice ─────────────────────────────────────────────────────
+  voice_glide_time:            {label: Voice Glide Time, cc: 5, group: voice}
+  voice_polyphony:             {label: Voice Polyphony, cc: 9, group: voice}
+  voice_density:               {label: Voice Density, cc: 10, group: voice}
+  voice_glide_toggle:          {label: Voice Glide (Toggle), cc: 65, group: voice}
+  voice_detune:                {label: Voice Detune, cc: 95, group: voice}

@@ -155,6 +155,7 @@ class TestBundledCorpus:
 			"arturia/polybrute",
 			"arturia/polybrute_12",
 			"asm/hydrasynth_explorer",
+			"asm/leviasynth",
 			"behringer/model_d",
 			"behringer/pro_800",
 			"behringer/td_3",
@@ -2159,7 +2160,7 @@ class TestOsmose:
 
 		A consumer asking which instruments spread their voices across channels has to
 		get all of them or none; one flagged and one not is worse than none, because it
-		reads as a settled answer and is wrong about the one it misses. There are seven
+		reads as a settled answer and is wrong about the one it misses. There are ten
 		now. The Deluge is a sequencer as much as a synthesizer - it reads a zone of
 		channels as one instrument and writes one out too - the Hydrasynth Explorer is
 		the one whose maker says plainest what the flag means, that its voices break
@@ -2186,14 +2187,23 @@ class TestOsmose:
 		from under the program - "+/-48 semitones by default, regardless of the program's
 		Bend Lever Amount setting" - where `voice.pitch_bend.semitones` says 12, which is
 		the program's own maximum. Two numbers, one field, and its file says which.
+
+		**And the Leviasynth is the one where turning MPE on takes other settings
+		away.** Its manual says so in a heading - "enabling mpe will lock out, change or
+		disable certain midi parameters" - and names them: all six of its transmit and
+		receive channel assignments read `MPE Lock`, and so do its aftertouch transmit,
+		its ribbon bend transmit, its transport messages and its overflow. So this flag
+		and `channels` are not independent here either, and in a stronger sense than the
+		OB-X8's: there the channel setting holds MPE as one of its values, here MPE
+		makes the channel settings unreachable. No field says it and its file does.
 		"""
 		flagged = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
-			"expressive_e/osmose", "modal/carbon8m", "oberheim/ob_x8",
-			"sequential/prophet_6", "synthstrom_audible/deluge", "udo_audio/super_6",
-			"waldorf/iridium"]
+			"asm/leviasynth", "expressive_e/osmose", "modal/carbon8m",
+			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
+			"udo_audio/super_6", "waldorf/iridium"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -7340,7 +7350,11 @@ class TestProphet6:
 
 		# The OB-X8 joined them at #4477: MPE is a value of its MIDI Channel global.
 		assert "oberheim/ob_x8" in flagged
-		assert len(flagged) == 9
+
+		# And the Leviasynth, whose MPE takes the channel settings away rather than
+		# sitting beside them. The Osmose's test above carries what each of the ten is.
+		assert "asm/leviasynth" in flagged
+		assert len(flagged) == 10
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""

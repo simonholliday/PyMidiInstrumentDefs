@@ -1,0 +1,352 @@
+# THE TWO FORMS OF ONE GUIDE EACH HAVE WHAT THE OTHER LACKS, AND THAT IS THIS DEFINITION'S
+# HEADLINE. The guide is a web page and a PDF, and the page's own link offers the PDF as
+# "download as PDF" (guide) as though they were the same document. They are not:
+#
+#   **THE MIDI REFERENCE IS ON THE PAGE AND IN NEITHER PDF.** Two tables - "incoming midi
+#   messages" (guide) and "incoming midi control change messages" (guide), 49 controller
+#   numbers between them - and the phrase `incoming midi` occurs nowhere in the 1.7.0 PDF or
+#   in the 1.6.0 one. So a reader who downloads the guide to keep has no MIDI implementation
+#   at all, and the thing they downloaded is the same guide by the same name.
+#
+#   **AND THE FOUR CONTROLLERS THE MIDI LFO ANSWERS TO ARE IN THE PDF AND NOT IN THE TABLE.**
+#   "use midi cc 1-4 from the external source and use the encoders to assign the internal
+#   parameter destinations" (pdf p. 31), in both PDF editions, and the page's control change
+#   table starts at 7 and never mentions 1, 2, 3 or 4.
+#
+# So 52 controls come out of two documents that are nominally one, and neither alone would
+# have produced this file. The page's body is 152 images - every section but the warnings and
+# the MIDI reference is a picture of the printed page - which is why the sentence above could
+# not have been found on the page at all.
+#
+# **EVERY CONTROL IS `receives`, AND THAT IS THE MAKER'S OWN HEADING RATHER THAN A READING.**
+# Both tables are titled "incoming", and **there is no outgoing table anywhere in either
+# document.** What this instrument sends is published nowhere, although it has a mode that
+# whose own description is "a midi controller keyboard" (pdf p. 57) and whose encoders plainly
+# send something. A direction of `both` would claim the half that was not established, 52 times.
+#
+# EIGHT CONTROLLERS MEAN TWO DIFFERENT THINGS AND A NINTH CHOOSES WHICH. CC 46 to 53 each
+# carry two functions in one cell - `synth: parameter 1` and `drum: active key pitch` - and
+# `mode_select`, CC 93, is what picks between them: under 64 is synth and 64 or over is drum.
+# The table's own footnote says so: "synth mode: synth engine params." (guide) against "drum
+# mode: active key pitch, loop in, loop out, play mode" (guide).
+#
+# **The format has nowhere to say that a control's meaning depends on a setting**, which is an
+# open question in the tracker with three cases before this one. The standing answer there is
+# to carry one control per number and record both meanings, so each label carries both and the
+# key is the synth side - because synth is the mode a value under 64 selects, which makes it
+# the one a reader meets first. Nothing is lost: both of the maker's phrases are in the label.
+#
+# TWO CHANNEL SCHEMES, AND THEY OVERLAP. Three controllers answer on channels 1 to 4, where
+# "channel 1 - 4 = track 1 - 4" (guide); one answers on channels 1 to 8, where "channel 1 - 8
+# = sound slot 1 - 8" (guide); and the other 48 answer on any channel. So channel 2 is tape
+# track 2 for a mixer controller and sound slot 2 for the slot selector, at the same time, and
+# both are recorded as parts below. **Both footnotes are printed as a single asterisk** against
+# two different things, which is the SP-404MKII's `*7` defect in a shorter table.
+#
+# NOT RECORDED, AND WHY. Aftertouch: the word occurs in neither PDF nor on the page, in 78
+# pages and two tables. System exclusive: likewise, in any spelling. NRPN: likewise. The note
+# range, which no page states. Polyphony, which no page states. The MIDI mode, there being no
+# implementation chart. And **pitch bend, which is received and which this format can only
+# record as a bend range** - the table gives "synth pitch bend" (guide) over 0 - 16383 and no
+# document says how far it bends, so both of the fields there would be invented.
+#
+# THE PDF PRINTS NO PAGE NUMBERS AT ALL, in 78 pages, so a locator here counts sheets from the
+# cover. That is what `page_offset: 0` means for this source and it is not the usual case.
+
+definition: 1
+
+model:
+  manufacturer: teenage engineering
+  name: OP-1 field
+  # The firmware the guide describes, as the PDF's own metadata title spells it: `OP-1 field
+  # user guide firmware 1.7.0 (REV 10)`. The web page agrees, giving its version as v.1.7.0.
+  # **The previous edition is still linked from the same page** and describes 1.6.0 - see the
+  # `previous` source. Checked 2026-10-05.
+  firmware: "1.7.0"
+
+source: >-
+  The OP-1 field guide, in the two forms teenage engineering publishes it: a web page at
+  teenage.engineering/guides/op-1, whose version is v.1.7.0, and a PDF whose metadata titles it
+  `OP-1 field user guide firmware 1.7.0 (REV 10)`, 78 pages, created 2026-04-29. **Neither is
+  complete and the page offers the PDF as though it were the same document.**
+
+  THE MIDI REFERENCE IS THE PAGE'S AND THE PDF HAS NOTHING LIKE IT. Two tables - nine incoming
+  message rows and 38 control change rows giving 49 controller numbers - and the word "incoming"
+  appears nowhere in either PDF edition. The four controllers the midi LFO answers to run the
+  other way: they are in the PDF's prose and in no table. So both documents are cited, and 52
+  controls come out of them.
+
+  THE TABLE IS READ STRUCTURALLY, NOT OFF THE RENDERED TEXT. Each row of the page is a `div`
+  carrying four cell `div`s, one per column, so the page states where its columns are - the same
+  principle as a drawn rule in a PDF. The rendered text flattens that to one value a line, where
+  a function cell wrapping onto two lines and a value cell split around a `≥` glyph are
+  indistinguishable from a new column. `Notes/4602_extract_op_1_field.py` reads the grid.
+
+  **THE PAGE CARRIES TWO `download as PDF` LINKS AND ONE OF THEM IS INVISIBLE.** The 1.7.0 guide
+  is behind those words; the 1.6.0 guide is behind a bare line break in the next span, so a
+  reader sees one link and anything reading the markup finds two, with nothing in the link text
+  to tell them apart. Choosing `the PDF on the page` is therefore a coin toss between two
+  firmwares, and both are saved beside this definition so that which was read is not a guess.
+
+  WHAT THE PREVIOUS EDITION IS FOR. It is cited for one fact and quoted for one sentence. Its
+  MIDI settings page is fuller than the current edition's: "set the incoming and outgoing midi
+  channel" (previous p. 61) against the 1.7.0 guide's one-line summary, which names only the
+  outgoing one. So the newer document is the less precise about which directions that setting
+  reaches, and the older one is what says there is an incoming channel at all. It also names
+  "such as modwheel and other midi cc data" (previous p. 61) where the newer says only "other
+  messages" (pdf p. 60), which is the only place either document connects a controller number
+  to the setting that filters it.
+
+  CLOCK IS RECORDED AS RECEIVED AND THE PROSE ALMOST SAYS MORE. The incoming table lists clock
+  as a sync input, and the tempo chapter describes four sync modes of which "midi sync - external
+  clock sync" (pdf p. 52) is the one that reads a MIDI clock: "external clock is detected and
+  sync is received" (pdf p. 53). **What it does not quite say is that a MIDI clock is sent.**
+  "ochre means master clock is sent, orange means midi sync is received" (pdf p. 52) is about the
+  tape-speed link display, "beat match - internal master clock" (pdf p. 52) names a mode without
+  naming a port, and free tempo is where "internal clock is used, no sync is sent or received"
+  (pdf p. 53) - which implies sending happens elsewhere without saying over what. The one sync
+  output the document describes plainly is PO sync, an audio pulse on the headphone jack rather
+  than a MIDI message. So `receives` is as far as the documents go.
+
+  TRANSPORT IS RECEIVED IN FULL - start, continue, stop and song position, each with a row of its
+  own, the last one to "set sequencer position" (guide). The settings page mentions an "origin
+  for song position pointer" (pdf p. 60), which reads like a transmitting side; it is one phrase
+  against a table headed incoming, so it is recorded here and not in the field.
+
+  PROGRAM CHANGE REACHES SIXTEEN SLOTS THROUGH ONE RANGE OF NUMBERS: "load synth/drum slot"
+  (guide), where "0–7 = synth slots 1–8" (guide) and 8 to 15 are the drum slots. So the sixteen
+  are eight synth and eight drum, which is why `presets` is 16 and not 8.
+
+  ONE CONTROLLER IS LEFT OUT AND THE REASON IS THE STANDARD RATHER THAN THE DOCUMENT. The table's
+  last row is CC 123, all notes off, which is a channel mode message: it means the same on every
+  instrument that has one, so PyMidiDefs says it and a definition does not.
+
+  AND THE MAKER'S OWN APPARATUS HAS THREE SMALL FAULTS, recorded and not tidied. **Two different
+  footnotes are both printed as a single asterisk** - one about channels 1 to 4 being tape
+  tracks, one about what synth and drum mode do to eight of the rows - so the mark cannot tell a
+  reader which it means. One row reads `1 -4` where its three siblings read `1 - 4`. And **two
+  numbers are skipped between neighbours that are both used**: CC 89 sits between 88 and 90, and
+  CC 103 between 102 and 104, with nothing anywhere saying whether they do nothing or were
+  missed. The table's other gaps are wide ones and need no explaining.
+
+  THE SIBLING IS ALREADY HERE AND IS A DIFFERENT INSTRUMENT. `teenage_engineering/op_1` is the
+  original OP-1, whose guide is at the `/original` path because **this maker reused the older
+  instrument's address for the newer one**: teenage.engineering/guides/op-1 serves this
+  instrument. That definition carries **no controls at all** - its guide publishes no controller
+  list - so the successor publishes a full MIDI reference where the original published none.
+  Which is which was established from the page titles rather than from the addresses.
+
+  **AND THE FOUR MIDI LFO INPUTS ARE THE ONE THING BOTH INSTRUMENTS HAVE, RECORDED TWO WAYS.**
+  The original's four incoming control changes are routed to a destination the player picks, so
+  that definition records `control_change: learned` and no controls - there is no factory map to
+  publish. This instrument has the same four and a factory map of 48 besides, and
+  `control_change` holds one word for a whole instrument, so it cannot say "48 fixed and 4
+  assignable". The four are therefore carried as controls, which is true of their numbers - the
+  maker fixes 1 to 4 and the player fixes only what they reach - and `control_change` is left
+  unset rather than claiming the instrument learns its whole map. **This is the first definition
+  here with both kinds at once.**
+
+sources:
+  guide:
+    kind: manual
+    title: OP-1 field guide
+    edition: v.1.7.0
+    landing: "https://teenage.engineering/guides"
+    url: "https://teenage.engineering/guides/op-1"
+    sha256: 06b7fc52e7b68a75fbcc001991ee80c6977b933652cf0704c322a83812048683
+    retrieved: 2026-10-05
+    paginated: false
+    # **THE ONLY PLACE THE MIDI IMPLEMENTATION IS PUBLISHED.** Two tables, nine message rows
+    # and 38 control change rows, read off the page's own four-column grid rather than off its
+    # rendered text - see the source account. Everything else on the page is an image: 152 of
+    # them, one per section of the printed guide, which is why the PDF has to be read for
+    # anything in prose.
+    # The digest is of the page's visible text as saved by `Tools/save_page.py`; the bytes as
+    # served are saved beside it as `.html` and hash to
+    # 79a5a152fecaf84f1162320868aa1800eb36c56b990b169ec88ea31cd4ffdd8f.
+  pdf:
+    kind: manual
+    title: OP-1 field user guide
+    edition: firmware 1.7.0 (REV 10)
+    dated: 2026-04-29
+    landing: "https://teenage.engineering/guides/op-1"
+    url: "https://assets.teenage.engineering/_img/69f248938d433104c4dd1846_original.pdf"
+    sha256: 76614cddc4108855628d4bc6a3223d9c23c82d8d6a2b3351405671aa29bc5fbf
+    retrieved: 2026-10-05
+    # 78 pages, counted with pypdf and with PyMuPDF, which agree, and titled in its own
+    # metadata rather than on its cover - the cover says only "portable synthesizer user
+    # guide" (pdf p. 1).
+    # **IT PRINTS NO PAGE NUMBERS ANYWHERE**, in 78 pages, so a locator against this source
+    # counts sheets from the cover. That is what the offset below means here, and it is not
+    # what it means for most of this corpus.
+    # Cited for the four controllers the web table omits, for the sync modes, and for the
+    # settings page. **It carries no MIDI reference at all.**
+    page_offset: 0
+  previous:
+    kind: manual
+    title: OP-1 field user guide
+    edition: firmware 1.6.0 (REV 9)
+    dated: 2025-12-15
+    landing: "https://teenage.engineering/guides/op-1"
+    url: "https://assets.teenage.engineering/_img/69414b094b4b8519058eaf0b_original.pdf"
+    sha256: 7dd1b2fad3ac7dd6456ae7732dd263198dc5267f1714c264d0e87811229f3968
+    retrieved: 2026-10-05
+    # 79 pages, one more than the current edition. **Still linked from the same page as the
+    # current one, behind a bare line break rather than behind any words**, which is why it was
+    # found and why it is pinned: a reader following `download as PDF` gets the newer file and
+    # a tool reading the markup may get either.
+    # Cited because **its MIDI settings page is fuller than the current edition's**, naming an
+    # incoming channel the newer one does not. It carries the same four midi LFO controllers
+    # and the same absence of a MIDI reference, so it witnesses both halves of this
+    # definition's headline a second time.
+    page_offset: 0
+
+midi:
+  # The incoming table gives "play synth/drum note" (guide) on channels 1 to 16, and pitch bend
+  # and program change the same sixteen. The 48 unparted controllers below answer on any of them;
+  # the four that are parted answer on the channels their part names.
+  channels: [1, 16]
+  # RECEIVES, AND THE PROSE ALMOST SAYS MORE - see the source account for the three sentences
+  # that describe a clock being sent without saying it is a MIDI one, and for the sync output
+  # that is an audio pulse rather than a message. The receiving side is plain: the incoming
+  # table lists clock as a sync input and "external clock is detected and sync is received"
+  # (pdf p. 53).
+  clock: receives
+  # ALL FOUR, EACH WITH A ROW OF ITS OWN in the incoming table: start and continue start and
+  # continue tape playback, stop stops the tape, and song position is there to "set sequencer
+  # position" (guide). A phrase in the settings page reads like a transmitting side as well and
+  # is recorded in the source account rather than here.
+  transport: receives
+  program_change:
+    # "load synth/drum slot" (guide), on channels 1 to 16.
+    receives: true
+    # SIXTEEN SLOTS THROUGH ONE RANGE OF NUMBERS, eight of each kind: "0–7 = synth slots 1–8"
+    # (guide) and 8 to 15 the drum slots. So a program change reaches a different kind of sound
+    # depending on which half of the range it falls in, which is why this is 16 and not 8.
+    presets: 16
+
+voice:
+  # "play synth/drum note" (guide) on any of the sixteen channels. Which sound a note plays
+  # depends on the mode and the slot, both of which are controls below.
+  addressing: pitches
+  velocity:
+    # The note-on row's value column reads "velocity 1-127" (guide). **The range the maker gives
+    # starts at 1**, not nought, which is the standard's own note-off convention stated as a
+    # range rather than as a rule.
+    note_on: received
+
+parts:
+  # TWO SCHEMES OVER THE SAME SIXTEEN CHANNELS, AND THEY OVERLAP. Three mixer controllers answer
+  # per tape track, where "channel 1 - 4 = track 1 - 4" (guide); the slot selector answers per
+  # sound slot, where "channel 1 - 8 = sound slot 1 - 8" (guide). So channel 2 is tape track 2
+  # for a mixer controller and sound slot 2 for the slot selector **at the same time**, and a
+  # consumer reading one part's channel cannot conclude anything about the other's.
+  #
+  # **THESE CHANNELS ARE FIXED AND THE FORMAT HAS NO WORD FOR THAT.** The tables state them as
+  # 1 to 4 and 1 to 8 flatly and no document says a base channel moves them. `channel_offset` is
+  # used because its stated meaning is that a channel cannot be set on its own, which is true;
+  # what it also implies, that the channel is derived from a base channel, is not. That is the
+  # SP-404MKII's gap met a second time, and the overlap is new.
+  #
+  # **NEITHER PART TAKES NOTES.** A note plays the active sound on any of the sixteen channels
+  # and reaches no track and no slot of its own, so both parts receive controls and nothing else.
+  track:
+    label: Tape track
+    channel_offset: 0
+    count: 4
+    receives: [controls]
+  sound_slot:
+    label: Sound slot
+    channel_offset: 0
+    count: 8
+    receives: [controls]
+
+groups:
+  midi_lfo: MIDI LFO
+  mixer: Mixer
+  patch: Patch
+  patch_fx: Patch FX
+  patch_lfo: Patch LFO
+  master_fx: Master FX
+  master_compressor: Master compressor
+  master_eq: Master EQ
+  tape: Tape
+  tempo: Tempo
+  performance: Performance
+  select: Sound selection
+controls:
+  # MIDI LFO ------------------------------------------------------
+  midi_lfo_input_1:                 {label: "MIDI LFO input 1", cc: 1, group: midi_lfo, direction: receives}
+  midi_lfo_input_2:                 {label: "MIDI LFO input 2", cc: 2, group: midi_lfo, direction: receives}
+  midi_lfo_input_3:                 {label: "MIDI LFO input 3", cc: 3, group: midi_lfo, direction: receives}
+  midi_lfo_input_4:                 {label: "MIDI LFO input 4", cc: 4, group: midi_lfo, direction: receives}
+
+  # MIXER ---------------------------------------------------------
+  mixer_volume:                     {label: "mixer volume", cc: 7, part: track, group: mixer, direction: receives}
+  mixer_mute:                       {label: "mixer mute", cc: 9, values: {"muted": 64}, part: track, group: mixer, direction: receives}
+  mixer_pan:                        {label: "mixer pan", cc: 10, part: track, group: mixer, direction: receives}
+
+  # PATCH ---------------------------------------------------------
+  synth_parameter_1:                {label: "synth: parameter 1 / drum: active key pitch", cc: 46, group: patch, direction: receives}
+  synth_parameter_2:                {label: "synth: parameter 2 / drum: active key loop in", cc: 47, group: patch, direction: receives}
+  synth_parameter_3:                {label: "synth: parameter 3 / drum: active key loop out", cc: 48, group: patch, direction: receives}
+  synth_parameter_4:                {label: "synth: parameter 4 / drum: active key play mode", cc: 49, group: patch, direction: receives}
+  synth_envelope_attack:            {label: "synth envelope: attack / drum envelope: attack", cc: 50, group: patch, direction: receives}
+  synth_envelope_decay:             {label: "synth envelope: decay / drum envelope: gain", cc: 51, group: patch, direction: receives}
+  synth_envelope_sustain:           {label: "synth envelope: sustain / drum envelope: release", cc: 52, group: patch, direction: receives}
+  synth_envelope_release:           {label: "synth envelope: release / drum envelope: smooth", cc: 53, group: patch, direction: receives}
+  randomize_active_patch:           {label: "randomize active patch", cc: 62, values: {"triggered": 64}, group: patch, direction: receives}
+  reset_active_patch:               {label: "reset active patch", cc: 63, values: {"triggered": 64}, group: patch, direction: receives}
+
+  # PATCH FX ------------------------------------------------------
+  patch_fx_parameter_1:             {label: "patch fx parameter 1", cc: 54, group: patch_fx, direction: receives}
+  patch_fx_parameter_2:             {label: "patch fx parameter 2", cc: 55, group: patch_fx, direction: receives}
+  patch_fx_parameter_3:             {label: "patch fx parameter 3", cc: 56, group: patch_fx, direction: receives}
+  patch_fx_parameter_4:             {label: "patch fx parameter 4", cc: 57, group: patch_fx, direction: receives}
+
+  # PATCH LFO -----------------------------------------------------
+  patch_lfo_parameter_1:            {label: "patch lfo parameter 1", cc: 58, group: patch_lfo, direction: receives}
+  patch_lfo_parameter_2:            {label: "patch lfo parameter 2", cc: 59, group: patch_lfo, direction: receives}
+  patch_lfo_parameter_3:            {label: "patch lfo parameter 3", cc: 60, group: patch_lfo, direction: receives}
+  patch_lfo_parameter_4:            {label: "patch lfo parameter 4", cc: 61, group: patch_lfo, direction: receives}
+
+  # MASTER FX -----------------------------------------------------
+  master_fx_parameter_1:            {label: "master fx parameter 1", cc: 70, group: master_fx, direction: receives}
+  master_fx_parameter_2:            {label: "master fx parameter 2", cc: 71, group: master_fx, direction: receives}
+  master_fx_parameter_3:            {label: "master fx parameter 3", cc: 72, group: master_fx, direction: receives}
+  master_fx_parameter_4:            {label: "master fx parameter 4", cc: 73, group: master_fx, direction: receives}
+
+  # MASTER COMPRESSOR ---------------------------------------------
+  master_compressor_parameter_1:    {label: "master compressor parameter 1", cc: 74, group: master_compressor, direction: receives}
+  master_compressor_parameter_2:    {label: "master compressor parameter 2", cc: 75, group: master_compressor, direction: receives}
+  master_compressor_parameter_3:    {label: "master compressor parameter 3", cc: 76, group: master_compressor, direction: receives}
+  master_compressor_parameter_4:    {label: "master compressor parameter 4", cc: 77, group: master_compressor, direction: receives}
+
+  # MASTER EQ -----------------------------------------------------
+  master_eq_low:                    {label: "master eq low", cc: 90, group: master_eq, direction: receives}
+  master_eq_mid:                    {label: "master eq mid", cc: 91, group: master_eq, direction: receives}
+  master_eq_high:                   {label: "master eq high", cc: 92, group: master_eq, direction: receives}
+
+  # TAPE ----------------------------------------------------------
+  tape_record_level:                {label: "tape record level", cc: 78, group: tape, direction: receives}
+  tape_previous_bar:                {label: "tape: previous bar", cc: 82, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_next_bar:                    {label: "tape: next bar", cc: 83, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_jump_to_start:               {label: "tape: jump to start", cc: 84, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_jump_to_end:                 {label: "tape: jump to end", cc: 85, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_set_loop_in:                 {label: "tape: set loop in", cc: 86, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_set_loop_out:                {label: "tape: set loop out", cc: 87, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_toggle_loop:                 {label: "tape: toggle loop", cc: 88, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_stop:                        {label: "tape: stop", cc: 104, values: {"triggered": 64}, group: tape, direction: receives}
+  tape_play:                        {label: "tape: play", cc: 105, values: {"triggered": 64}, group: tape, direction: receives}
+
+  # TEMPO ---------------------------------------------------------
+  tempo:                            {label: "tempo", cc: 80, values: {"bpm_40_to_50": 0, "bpm_52_to_166": 6, "bpm_168_to_180": 121}, group: tempo, direction: receives}
+  metronome_level:                  {label: "metronome level", cc: 81, group: tempo, direction: receives}
+
+  # PERFORMANCE ---------------------------------------------------
+  sustain_pedal:                    {label: "sustain pedal", cc: 64, values: {"down": 64}, group: performance, direction: receives}
+  octave:                           {label: "octave", cc: 79, values: {"down": 0, "up": 64}, group: performance, direction: receives}
+
+  # SOUND SELECTION -----------------------------------------------
+  mode_select:                      {label: "mode select", cc: 93, values: {"synth": 0, "drum": 64}, group: select, direction: receives}
+  sound_slot_select:                {label: "sound slot select", cc: 102, values: {"triggered": 64}, part: sound_slot, group: select, direction: receives}

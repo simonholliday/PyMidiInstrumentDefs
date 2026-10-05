@@ -232,6 +232,7 @@ class TestBundledCorpus:
 			"synthstrom_audible/deluge",
 			"teenage_engineering/ep_133_ko_ii",
 			"teenage_engineering/op_1",
+			"teenage_engineering/op_1_field",
 			"teenage_engineering/op_xy",
 			"udo_audio/super_6",
 			"vermona/drm1_mkiv",
@@ -2365,6 +2366,142 @@ class TestOP1:
 		assert op1.voice.polyphony is None
 		assert op1.voice.note_range is None
 		assert op1.voice.velocity is None
+
+
+class TestOP1Field:
+
+	"""The successor, whose guide exists twice and whose two forms each lack what the other has."""
+
+	def test_the_two_forms_of_one_guide_are_cited_for_different_halves (self) -> None:
+		"""The web page has the MIDI reference; the PDF has four controllers it omits."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		assert set(field.sources) == {"guide", "pdf", "previous"}
+
+		# The page has no pages to turn to and both PDFs do, which is why a locator against
+		# this definition takes two different shapes.
+		assert not field.sources["guide"].paginated
+		assert field.sources["pdf"].paginated
+		assert field.sources["previous"].paginated
+
+		said = prose_of("teenage_engineering", "op_1_field")
+
+		assert "THE MIDI REFERENCE IS ON THE PAGE AND IN NEITHER PDF" in said
+		assert "AND THE FOUR CONTROLLERS THE MIDI LFO ANSWERS TO ARE IN THE PDF AND NOT IN" \
+			" THE TABLE" in said
+
+	def test_the_four_the_pdf_publishes_are_the_lowest_four_numbers (self) -> None:
+		"""CC 1 to 4, which the web table skips entirely - it starts at 7."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		for index in (1, 2, 3, 4):
+			control = field.controls[f"midi_lfo_input_{index}"]
+
+			assert control.cc == index
+			assert control.group == "midi_lfo"
+
+		# And the web table's own lowest number is 7, so the four cannot have come from it.
+		from_the_table = [control.cc for key, control in field.controls.items()
+			if not key.startswith("midi_lfo_input_") and control.cc is not None]
+
+		assert min(from_the_table) == 7
+
+	def test_every_control_is_received_because_both_tables_say_incoming (self) -> None:
+		"""There is no outgoing table anywhere, so nothing claims a transmitting side."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		assert len(field.controls) == 52
+		assert all(control.direction == "receives" for control in field.controls.values())
+
+		# Which is not the same as the instrument sending nothing: it has a controller mode,
+		# and what that sends is published nowhere.
+		said = prose_of("teenage_engineering", "op_1_field")
+
+		assert "there is no outgoing table anywhere in either\n# document" in \
+			(CORPUS / "teenage_engineering" / "op_1_field.yaml").read_text().lower()
+		assert "a midi controller keyboard" in said
+
+	def test_eight_controllers_mean_two_things_and_a_ninth_chooses (self) -> None:
+		"""CC 46 to 53 carry both of the maker's functions, and CC 93 selects the mode."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		paired = [control for control in field.controls.values()
+			if " / " in control.label]
+
+		assert len(paired) == 8
+		assert sorted(control.cc for control in paired if control.cc is not None) == \
+			list(range(46, 54))
+
+		# Each label holds both of the maker's phrases, which is the standing answer to a
+		# meaning that depends on a setting: carry one control and record both meanings.
+		assert field.controls["synth_parameter_1"].label == \
+			"synth: parameter 1 / drum: active key pitch"
+
+		# And the control that picks between them names its two bands.
+		assert field.controls["mode_select"].cc == 93
+		assert field.controls["mode_select"].values == {"synth": 0, "drum": 64}
+
+	def test_two_channel_schemes_over_the_same_sixteen_channels (self) -> None:
+		"""Four tape tracks and eight sound slots, both starting at the base channel."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		assert list(field.parts) == ["track", "sound_slot"]
+		assert field.parts["track"].count == 4
+		assert field.parts["sound_slot"].count == 8
+
+		# **BOTH START AT THE SAME PLACE**, which is what the overlap means: channel 2 is
+		# tape track 2 and sound slot 2 at once.
+		assert field.parts["track"].channel_offset == 0
+		assert field.parts["sound_slot"].channel_offset == 0
+
+		# Neither takes notes - a note plays the active sound on any of the sixteen.
+		for part in field.parts.values():
+			assert part.receives == ("controls",)
+			assert not part.takes("notes")
+
+		# Three controllers are the tracks' and one is the slots'.
+		parted = collections.Counter(control.part for control in field.controls.values())
+
+		assert parted["track"] == 3
+		assert parted["sound_slot"] == 1
+		assert parted[None] == 48
+
+	def test_the_tempo_controller_is_a_piecewise_map_recorded_as_bands (self) -> None:
+		"""Three bands over one range, and what each spans is in its name."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		assert field.controls["tempo"].values == {
+			"bpm_40_to_50": 0, "bpm_52_to_166": 6, "bpm_168_to_180": 121}
+
+	def test_all_notes_off_is_left_out_because_the_standard_says_it (self) -> None:
+		"""The table's last row is CC 123, which a definition may not carry."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		assert 123 not in {control.cc for control in field.controls.values()}
+
+		said = prose_of("teenage_engineering", "op_1_field")
+
+		assert "which is a channel mode message" in said
+
+	def test_it_is_the_first_with_both_a_factory_map_and_assignable_controllers (self) -> None:
+		"""Its sibling records `learned` and no controls; this one cannot say both."""
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
+
+		assert op1.midi.learns_control_change
+		assert op1.controls == {}
+
+		# This one leaves the field unset rather than claiming the whole map is learned,
+		# because 48 of its 52 controllers are the maker's and four are the player's.
+		assert field.midi.control_change is None
+		assert not field.midi.learns_control_change
+		assert not field.midi.refuses_control_change
+
+		said = prose_of("teenage_engineering", "op_1_field")
+
+		assert "This is the first definition\n  here with both kinds at once" in \
+			(CORPUS / "teenage_engineering" / "op_1_field.yaml").read_text()
+		assert "it cannot say \"48 fixed and 4" in said
 
 
 class TestOpXy:

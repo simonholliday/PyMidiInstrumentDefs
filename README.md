@@ -218,6 +218,7 @@ self-contained YAML file, and you share it by sending it.
 | `synthstrom_audible/deluge` | Synthstrom Audible Deluge: no fixed controller or note map at all, read from both of the guidebooks its maker publishes - one per display edition - whose last chapter turns out to be a reprint of a user-written guide |
 | `teenage_engineering/ep_133_ko_ii` | teenage engineering EP–133 K.O. II: four controllers and 48 pads, out of a web guide whose implementation chart says yes with a picture and no with a letter |
 | `teenage_engineering/op_1` | teenage engineering OP-1: publishes no controller number at all - four incoming control changes are routed by the player, per sound |
+| `teenage_engineering/op_1_field` | teenage engineering OP-1 field: 52 controls out of two forms of one guide, where the web page carries the whole MIDI reference and the downloadable PDF carries none of it - and the four controllers the page omits are in the PDF |
 | `teenage_engineering/op_xy` | teenage engineering OP-XY: its maker publishes one guide twice, and the two editions give different numbers for the same row |
 | `udo_audio/super_6` | UDO Audio Super 6: 86 controls off the most complete implementation a new maker has brought here - every number from 0 to 127 given a row, and 41 of them carrying an NRPN that is the controller number plus 1024 |
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV: a drum machine that ignores controller data |

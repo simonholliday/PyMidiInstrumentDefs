@@ -127,7 +127,17 @@ READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt"})
 # advances and finds the true one. It keeps the split that matters: the pattern decides whether
 # a locator is there, `read_locator()` decides whether it can be read, and only the second is
 # allowed to fail quietly - by being reported.
-QUOTED = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\((?=[^)]*pp?\.\s*\d)([^)]*)\)")
+#
+# **AND THE EMPHASIS MARKERS ARE PART OF THE PATTERN FOR A REASON.**  It allowed only
+# whitespace between the closing quote mark and the locator, so `"..."**  (p. 21)` - a
+# quotation emphasised in this project's own house style, with the markers closing before the
+# parenthesis - did not match, and the quotation was skipped without a word.  **It looks
+# located to a reader and it is not**, which makes it the one silence a writer cannot find by
+# reading their own file carefully.  Three definitions were in that state when it was found;
+# their files were put right, and the pattern was not, so the next writer to type it would
+# have paid again.  Allowing `*` and `_` here is strictly better than asking everybody to
+# remember, and it can only ever match more.
+QUOTED = re.compile(r"[“\"]([^”\"]{12,})[”\"][\s*_]*\((?=[^)]*pp?\.\s*\d)([^)]*)\)")
 
 # **THE WHOLE OF A LOCATOR**: an optional source key, then the page or pages.  `p. 42`,
 # `pp. 42-43`, `p. 42, 44`, `guide p. 6`, `manual, p. 110`, and nothing else - which is the
@@ -152,7 +162,8 @@ PAIR = re.compile(r"(?:([a-z][a-z0-9_]*),?\s+)?pp?\.\s*([\d,\s-]+)")
 # key, as in `"polyphony up to 24 voices" (product_page)`.  A key followed by a page is the
 # paged form above and deliberately does not match here - the page is the more precise
 # locator and is the one worth checking.
-BY_SOURCE = re.compile(r"[“\"]([^”\"]{12,})[”\"]\s*\(([a-z][a-z0-9_]*)\)")
+# The emphasis markers are allowed here for the same reason as in `QUOTED` above.
+BY_SOURCE = re.compile(r"[“\"]([^”\"]{12,})[”\"][\s*_]*\(([a-z][a-z0-9_]*)\)")
 
 # **WHY A LOCATOR THIS TOOL CANNOT READ IS NOW REPORTED RATHER THAN SKIPPED.**
 #
@@ -462,6 +473,180 @@ def unreadable_locators (text: str) -> list[tuple[str, str]]:
 		if read_locator(locator) is None]
 
 
+# ── What this tool did not look at, which is the figure it never printed ─────────────────
+#
+# Everything above answers "of the quotations I can see, are they on their pages".  Nothing
+# above answers **"how many did I not see"** - and a quotation with no locator at all is
+# passed over in silence, so a definition could read "5 of 5 quotations are on the page they
+# cite" while holding thirty nobody had looked at.  `korg/minilogue` did exactly that, and
+# giving its quotations locators took it to 22 of 22 and immediately caught three that were
+# right about the printed page and absent from its text layer.  #4359.
+#
+# **THE COUNT HAS TO PAIR THE QUOTE MARKS RATHER THAN PATTERN-MATCH THEM.**  A `[^"]{12,}`
+# between two quote characters matches the prose *between* a closing mark and the next
+# opening one just as readily as it matches a quotation, so the obvious sweep reports about
+# twice what is there.  That has now been written wrongly twice - once while auditing the
+# PĒRKONS, where it gave 49 for a file holding 35, and once while answering whether this
+# task was worth doing at all.  Pairing in order is the whole fix, and it is sound here: no
+# definition in the corpus uses a curly double quote, and every one holds an even number of
+# straight ones, which `odd_quote_marks()` below asserts rather than assumes.
+
+# Straight only, because nothing in the corpus writes a curly double quote and a curly pair
+# would need pairing by direction instead of by order.
+QUOTE_MARK = re.compile(r"\"")
+
+# A locator follows a quotation if a parenthesis does, allowing this project's emphasis
+# markers exactly as `QUOTED` does.  Whether it is a locator this tool can *read* is
+# `read_locator()`'s question and is already reported; this only asks whether the writer
+# gave one at all.
+LOCATOR_AFTER = re.compile(r"^[\s*_]*\(([^)]*)\)")
+
+# Page-shaped, in the same words `QUOTED`'s lookahead uses, so the two cannot disagree about
+# what counts as an attempt to cite a page.
+PAGE_SHAPED = re.compile(r"pp?\.\s*\d")
+
+# The shortest quotation this tool will check, stated once so the floor and the report of
+# what the floor excluded cannot drift apart.
+FLOOR = 12
+
+
+def prose (text: str) -> str:
+
+	"""The part of a definition a quotation can live in: its comments and its written account.
+
+	**A quotation lives in prose, and a pair of quote marks anywhere else is YAML syntax.**
+	`elektron/octatrack` is the case that settles it: 99 of its controls carry a label in
+	quote marks, not because the label is quoted from anywhere but because this maker writes
+	parameter names with commas and brackets in them and a flow mapping cannot hold either
+	bare.  A sweep over that whole file reports 113 unlocated quotations of which 99 are
+	labels - and **a sweep that invents a hundred faults on a correct file is one nobody reads
+	twice**, which is the same reason `check_provenance_digests.py` had to stop calling two
+	sound records faulty.
+
+	So this keeps the `source` block scalar and **the comment part of every line that has
+	one**, and drops the field and value in front of it - a title, a url, a sha256, a
+	control's mapping.  Comments are kept wherever they are, including inside the controls
+	block, because a comment there is prose like any other.
+
+	**A TRAILING COMMENT IS PROSE AND KEEPING ONLY WHOLE COMMENT LINES MISSED IT.**  That was
+	this function's own first bug, and `odd_quote_marks()` caught it on the first corpus run:
+	`arturia/minifreak` writes ``programmable: true   # "Bend Range: sets the range of pitch
+	bend messages`` and carries the quotation on into the next line, so the opening mark was
+	dropped with the field and the closing one kept.  The count came out odd, which is the
+	only reason anybody looked.  A hundred and one lines in the corpus are that shape, so the
+	prose being dropped was not a corner.
+
+	**The comment cannot be found by splitting on the first `#`.**  A hundred and one `#`
+	characters in this corpus sit inside a quoted value - `CC#7`, `"Playback param #1"`,
+	``firmware: "#246"`` - so the test is whether an *even* number of quote marks precedes it,
+	which is what says it is outside a string rather than in one.
+	"""
+
+	kept = []
+	in_account = False
+
+	for line in text.split("\n"):
+		stripped = line.strip()
+
+		# The written account is a block scalar, so it runs until something unindented
+		# starts the next field.  Its own lines carry no marker of their own, and a `#` in
+		# it is literal text rather than a comment, so the whole line is kept as it stands.
+		if in_account:
+			if stripped and not line.startswith((" ", "\t")):
+				in_account = False
+			else:
+				kept.append(line)
+				continue
+
+		if re.match(r"^source:\s*[>|]", line):
+			in_account = True
+			continue
+
+		for mark in re.finditer(r"#", line):
+			if line[:mark.start()].count("\"") % 2 == 0:
+				kept.append(line[mark.start():])
+				break
+
+	return "\n".join(kept)
+
+
+def quotable (text: str) -> str:
+
+	"""The prose a quotation can be found in, flowed, with code spans taken out.
+
+	**A quoted passage inside backticks is code and not a quotation**, and honouring that is
+	not a nicety: the remedy this tool recommends for a passage that quotes nothing is to put
+	it in backticks, so a sweep that went on reporting it afterwards would be telling people
+	to do something that does not work.  `elektron/octatrack` is the case - its account
+	explains the label trap by quoting a label as an example, inside backticks, and that one
+	line was the only false positive left in the file once the YAML values were out.
+
+	Flowed first and stripped second, because a code span can be broken across two comment
+	lines exactly as a quotation can.
+	"""
+
+	return re.sub(r"`[^`]*`", " ", flowed(prose(text)))
+
+
+def odd_quote_marks (text: str) -> bool:
+
+	"""Whether this definition's prose holds an odd number of quote marks.
+
+	Pairing in order is only sound where the marks pair, so a file with an odd count is one
+	this coverage figure cannot speak for.  Said out loud rather than silently mis-paired,
+	because the whole point of the figure is that a silence was being read as a clean bill.
+	"""
+
+	return len(QUOTE_MARK.findall(quotable(text))) % 2 == 1
+
+
+def uncovered (text: str, keys: typing.Iterable[str]) -> tuple[list[str], list[str]]:
+
+	"""The quoted passages this tool never looked at, and why, by pairing the marks in order.
+
+	Two answers, because there are two reasons and a reader cannot reconcile a figure against
+	one of them:
+
+	- **no locator at all**, of `FLOOR` characters or more, which is what #4359 is about;
+	- **under `FLOOR` characters while carrying a locator**, which is the floor doing its job
+	  and is still invisible in the figures - the PolyBrute 12's 62 locators against the
+	  gate's 60 are these two, `5-octave` and a version string.
+
+	**Neither is reported as an error, and that is deliberate.**  Some of what this finds
+	should not be a quotation at all: `"System Exclusive"` quoting nothing, a PDF's internal
+	metadata title, one definition quoting another definition in this corpus.  The remedy for
+	those is backticks rather than an invented locator, so the figure is a coverage report and
+	says *passages*, not *unchecked quotations*.  A tool that called them faults would be the
+	kind people learn to disbelieve.
+	"""
+
+	flat = quotable(text)
+
+	if len(QUOTE_MARK.findall(flat)) % 2:
+		return [], []
+
+	known = set(keys)
+	positions = list(QUOTE_MARK.finditer(flat))
+
+	unlocated: list[str] = []
+	short: list[str] = []
+
+	for opening, closing in zip(positions[::2], positions[1::2]):
+		quotation = flat[opening.end():closing.start()]
+		after = LOCATOR_AFTER.match(flat[closing.end():])
+
+		located = after is not None and (
+			PAGE_SHAPED.search(after.group(1)) is not None
+			or after.group(1).strip() in known)
+
+		if located and len(quotation) < FLOOR:
+			short.append(quotation)
+		elif not located and len(quotation) >= FLOOR:
+			unlocated.append(quotation)
+
+	return unlocated, short
+
+
 def with_pages (held: list[Document]) -> list[Document]:
 
 	"""The documents a page citation could be found in at all.
@@ -518,6 +703,22 @@ class Tally (typing.NamedTuple):
 	# definition quotes nothing with a locator at all, nought otherwise.
 	nothing_to_check: int = 0
 
+	# Quoted passages of `FLOOR` characters or more with no locator at all, which this tool
+	# never looked at and never counted.  **A coverage figure rather than a fault**: some of
+	# what it finds should be backticks rather than a quotation, so it is reported and does
+	# not fail the run.  #4359.
+	no_locator: int = 0
+
+	# Quoted passages that carry a locator and are shorter than `FLOOR`, so the floor
+	# excluded them.  The floor is right and its effect was invisible, which is what stopped
+	# a hand count ever reconciling with the figures above.
+	too_short: int = 0
+
+	# **IN DEFINITIONS, NOT QUOTATIONS**: one where the prose holds an odd number of quote
+	# marks, so the two figures above cannot be computed for it by pairing.  Nought is the
+	# whole corpus today and this says so rather than mis-pairing in silence.
+	unpairable: int = 0
+
 
 def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tally:
 
@@ -530,10 +731,42 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 	named = named_quotations(body, (definition.sources or {}))
 	unreadable = unreadable_locators(body)
 
+	# **Computed before any of the early returns below and carried into every one of them.**
+	# A definition with nothing checkable is exactly where an unlocated quotation hides, so a
+	# coverage figure that only appeared on the path where checking happened would miss the
+	# cases it exists for.
+	unpairable = odd_quote_marks(body)
+	unlocated, short = ([], []) if unpairable else uncovered(body, (definition.sources or {}))
+
+	coverage = {
+		"no_locator": len(unlocated),
+		"too_short": len(short),
+		"unpairable": 1 if unpairable else 0,
+	}
+
 	print(f"\n{name}")
 
 	for line in absent:
 		print(f"    {line}")
+
+	if unpairable:
+		print(f"    its prose holds an ODD NUMBER OF QUOTE MARKS, so this tool cannot pair "
+			f"them and says nothing about what it did not check here")
+
+	# Said whether or not anything else is wrong, because the point of the figure is that
+	# these passages were in no figure at all.
+	if unlocated:
+		print(f"    {len(unlocated)} passage(s) of {FLOOR}+ characters are in quotation marks "
+			f"with NO LOCATOR, so they were not checked - give each one a locator, or use "
+			f"backticks where it is not quoting a document:")
+
+		for quotation in unlocated:
+			print(f"        {quotation[:88]}")
+
+	if short:
+		print(f"    {len(short)} passage(s) carry a locator and are under {FLOOR} characters, "
+			f"which is this tool's floor, so they were not checked: "
+			+ ", ".join(repr(quotation) for quotation in short))
 
 	# Said before anything else, and said even where the definition is otherwise clean,
 	# because the point of the figure is that nobody knew these quotations existed.
@@ -546,11 +779,11 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 
 	if not found and not named:
 		print(f"    no quotation in it cites a page or a source, so there is nothing to check")
-		return Tally(unreadable = len(unreadable), nothing_to_check = 1)
+		return Tally(unreadable = len(unreadable), nothing_to_check = 1, **coverage)
 
 	if not held:
 		print(f"    {len(found) + len(named)} quotations cite a source and none could be read")
-		return Tally(unchecked = len(found) + len(named), unreadable = len(unreadable))
+		return Tally(unchecked = len(found) + len(named), unreadable = len(unreadable), **coverage)
 
 	print(f"    {len(held)} document(s): " + ", ".join(
 		f"{d.name} [{len(d.pages)} sheets, offset {d.source.page_offset:+d}"
@@ -739,7 +972,8 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 			disagreed = len(disagreed),
 			unchecked = unchecked,
 			unreadable = len(unreadable),
-			misnamed = len(misnamed))
+			misnamed = len(misnamed),
+			**coverage)
 
 
 def main (argv: list[str]) -> int:
@@ -761,6 +995,8 @@ def main (argv: list[str]) -> int:
 	total = Tally()
 	failed: list[str] = []
 	unreadable_in: list[str] = []
+	unlocated_in: list[str] = []
+	unpairable_in: list[str] = []
 
 	for name in wanted:
 		path = corpus / f"{name}.yaml"
@@ -781,6 +1017,12 @@ def main (argv: list[str]) -> int:
 		if tally.unreadable:
 			unreadable_in.append(name)
 
+		if tally.no_locator:
+			unlocated_in.append(name)
+
+		if tally.unpairable:
+			unpairable_in.append(name)
+
 	print(f"\n{total.passed} quotations check out across {len(wanted)} definition(s); "
 		f"{total.missing} are not on the page they cite; "
 		f"{total.unchecked} could not be checked")
@@ -798,6 +1040,23 @@ def main (argv: list[str]) -> int:
 
 	if total.misnamed:
 		print(f"{total.misnamed} quotations name a source their definition does not have")
+
+	# **THE TWO FIGURES THAT MAKE THE ONE ABOVE RECONCILABLE.**  Until these existed, a hand
+	# count of a file's locators could not be squared with what this tool said it checked,
+	# and the difference was the whole fault: a figure could not be told from a complete
+	# figure.  `korg/minilogue` read "5 of 5" while holding thirty nobody had looked at.
+	# Neither fails the run - see `uncovered()` for why a coverage report must not.
+	print(f"{total.no_locator} passage(s) of {FLOOR}+ characters are in quotation marks with "
+		f"no locator at all, so they are in no figure above"
+		+ (f": {', '.join(unlocated_in)}" if unlocated_in else ""))
+
+	print(f"{total.too_short} passage(s) carry a locator and are under {FLOOR} characters, "
+		f"which is this tool's floor, so they are in no figure above")
+
+	if total.unpairable:
+		print(f"{total.unpairable} definition(s) hold an odd number of quote marks in their "
+			f"prose, so the two figures above do not speak for them: "
+			f"{', '.join(unpairable_in)}")
 
 	print(f"{total.nothing_to_check} definition(s) quote nothing with a locator")
 

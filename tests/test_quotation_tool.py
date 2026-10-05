@@ -439,3 +439,279 @@ class TestAQuotationThatBeginsWithAParenthesis:
 	def test_it_is_not_reported_as_an_unreadable_locator_either (self) -> None:
 		"""Being refused aloud would be better than silence, and being read is better still."""
 		assert tool.unreadable_locators(self.BODY) == []
+
+
+class TestWhatTheToolDidNotLookAt:
+
+	"""Counting the quotations with no locator, which is the figure that never existed.
+
+	`korg/minilogue` read "5 of 5 quotations are on the page they cite" while holding thirty
+	nobody had looked at, because a quotation with no locator is passed over in silence. The
+	count is a coverage report rather than a list of faults - see `uncovered()` for why it
+	must not fail the run - so these tests are about what it counts and what it must not.
+	"""
+
+	BODY = (
+		"source: >-\n"
+		'  The chart marks it "both ways on every channel" (p. 4), and the panel reads\n'
+		'  "Local Control Off" with nowhere given for it.\n'
+	)
+
+	def test_the_located_quotation_is_not_in_the_figure (self) -> None:
+		"""It was checked, so counting it here would double-count it."""
+		unlocated, _ = tool.uncovered(self.BODY, [])
+
+		assert "both ways on every channel" not in unlocated
+
+	def test_the_unlocated_quotation_is (self) -> None:
+		"""This is the whole of #4359: it was in no figure at all before."""
+		unlocated, _ = tool.uncovered(self.BODY, [])
+
+		assert unlocated == ["Local Control Off"]
+
+	def test_the_prose_between_two_quotations_is_not_counted (self) -> None:
+		"""**The mistake this has to avoid, and it has been made twice.**
+
+		A `[^"]{12,}` between two quote characters matches the words between a closing mark
+		and the next opening one as readily as a quotation, which gave 49 for a file holding
+		35. Pairing in order is what stops it.
+		"""
+		unlocated, _ = tool.uncovered(self.BODY, [])
+
+		assert not any("and the panel reads" in passage for passage in unlocated)
+
+
+class TestAQuotedLabelIsNotAQuotation:
+
+	"""A pair of quote marks outside prose is YAML syntax, and `elektron/octatrack` proves it.
+
+	Ninety-nine of its controls carry a label in quote marks, not because the label is quoted
+	from anywhere but because this maker writes parameter names with commas and brackets in
+	them and a flow mapping cannot hold either bare. A sweep over the whole file reports 113
+	unlocated quotations of which 99 are labels, and **a sweep that invents a hundred faults
+	on a correct file is one nobody reads twice.**
+	"""
+
+	BODY = (
+		"source: >-\n"
+		'  The manual calls it "a performance macro" (p. 60).\n'
+		"sources:\n"
+		"  manual:\n"
+		'    title: "Octatrack MKII User Manual"\n'
+		'    sha256: "0f4e2a"\n'
+		"controls:\n"
+		'  track_mute: {label: "Track Mute [0]=Unmuted, [1-127]=Muted", cc: 49}\n'
+	)
+
+	def test_a_control_label_is_not_reported (self) -> None:
+		"""It is a field value, and reporting it would bury the real answer."""
+		unlocated, _ = tool.uncovered(self.BODY, [])
+
+		assert not any("Track Mute" in passage for passage in unlocated)
+
+	def test_a_title_and_a_digest_are_not_reported (self) -> None:
+		"""Both are quoted because YAML needs them quoted, not because anybody cited them."""
+		unlocated, _ = tool.uncovered(self.BODY, [])
+
+		assert not any("Octatrack MKII" in passage for passage in unlocated)
+		assert not any("0f4e2a" in passage for passage in unlocated)
+
+	def test_the_account_is_still_read (self) -> None:
+		"""Dropping the field values must not drop the prose with them."""
+		assert ("a performance macro", None, [60]) in tool.quotations(self.BODY)
+
+	def test_a_comment_inside_the_controls_block_is_still_read (self) -> None:
+		"""A comment is prose wherever it sits, and some definitions put one there."""
+		body = self.BODY + '  # The guide calls this "the mute behaviour" with no page.\n'
+		unlocated, _ = tool.uncovered(body, [])
+
+		assert "the mute behaviour" in unlocated
+
+
+class TestBackticksAreTheRemedyAndMustWork:
+
+	"""A quoted passage inside backticks is code, and the tool has to say so.
+
+	This is not a nicety. The remedy the tool recommends for a passage that quotes nothing is
+	to put it in backticks, so a sweep that went on reporting it afterwards would be telling
+	people to do something that does not work. `elektron/octatrack`'s account explains the
+	label trap by quoting a label as an example, inside backticks, and that one line was the
+	only false positive left in the file once the YAML values were out.
+	"""
+
+	def test_a_code_span_is_not_a_quotation (self) -> None:
+		"""Otherwise the advice the tool prints contradicts what the tool then does."""
+		body = (
+			"source: >-\n"
+			'  Its controls carry a label in quote marks - `"Track Mute [0]=Unmuted"` - which\n'
+			"  is syntax rather than a citation.\n"
+		)
+
+		unlocated, _ = tool.uncovered(body, [])
+
+		assert unlocated == []
+
+	def test_a_code_span_broken_across_two_comment_lines_is_still_code (self) -> None:
+		"""A comment wraps, and a span can wrap with it exactly as a quotation can."""
+		body = (
+			"midi:\n"
+			'  # The field is written `"a long label that wraps\n'
+			'  # across two lines"` and is not quoted from anywhere.\n'
+		)
+
+		unlocated, _ = tool.uncovered(body, [])
+
+		assert unlocated == []
+
+
+class TestAQuotationUnderTheFloor:
+
+	"""The floor is right and its effect was invisible, which stopped any count reconciling.
+
+	`arturia/polybrute_12` has 62 locators in its file and the gate reported 60. The two it
+	passed over are `"5-octave"` and the edition `"3.1.0"`, both shorter than twelve
+	characters - **a second reason to skip, reported as nothing at all.** An audit that only
+	looked for missing locators still would not have reconciled.
+	"""
+
+	BODY = (
+		"source: >-\n"
+		'  A "5-octave" (p. 3) keyboard, and the chart marks it "both ways here" (p. 4).\n'
+	)
+
+	def test_the_short_one_is_counted_apart (self) -> None:
+		"""It carries a locator, so it is not a missing-locator fault."""
+		unlocated, short = tool.uncovered(self.BODY, [])
+
+		assert short == ["5-octave"]
+		assert unlocated == []
+
+	def test_the_long_one_is_checked_and_in_neither_figure (self) -> None:
+		"""Both figures are about what was not looked at."""
+		unlocated, short = tool.uncovered(self.BODY, [])
+
+		assert "both ways here" not in unlocated + short
+		assert ("both ways here", None, [4]) in tool.quotations(self.BODY)
+
+
+class TestMarkupBetweenAQuotationAndItsLocator:
+
+	"""The one silence a writer cannot find by reading their own file carefully.
+
+	`QUOTED` allowed only whitespace between the closing quote mark and the locator, so a
+	quotation emphasised in this project's house style - with the markers closing before the
+	parenthesis - did not match and was skipped without a word. Three definitions were in
+	that state; their files were put right and the pattern was not, so the next writer to
+	type it would have paid again.
+	"""
+
+	def test_bold_markers_before_the_locator_do_not_hide_it (self) -> None:
+		"""`"..."** (p. 45)` looks located to a reader and was not."""
+		body = 'source: >-\n  The guide reads **"the part parameters"** (p. 45) and nothing else.\n'
+
+		assert ("the part parameters", None, [45]) in tool.quotations(body)
+
+	def test_it_is_not_then_reported_as_having_no_locator (self) -> None:
+		"""The two halves of this fix have to agree, or one invents what the other hides."""
+		body = 'source: >-\n  The guide reads **"the part parameters"** (p. 45) and nothing else.\n'
+		unlocated, _ = tool.uncovered(body, [])
+
+		assert unlocated == []
+
+	def test_a_named_source_is_found_past_the_markers_too (self) -> None:
+		"""`BY_SOURCE` had the same gap and would have kept it."""
+		body = 'source: >-\n  It says **"up to twenty-four voices"** (product_page) plainly.\n'
+
+		assert ("up to twenty-four voices", "product_page") in tool.named_quotations(
+			body, ["product_page"])
+
+
+class TestProseWithAnOddNumberOfQuoteMarks:
+
+	"""Pairing is only sound where the marks pair, so an odd count is said out loud.
+
+	Nought definitions in the corpus are in this state and every one holds an even number of
+	straight double quotes, which is why pairing is safe at all. Saying so rather than
+	mis-pairing in silence is the point: a silence being read as a clean bill is the fault
+	this whole figure exists to close.
+	"""
+
+	BODY = 'source: >-\n  It reads "one thing and another (p. 4) with a mark missing.\n'
+
+	def test_it_is_reported_rather_than_mis_paired (self) -> None:
+		"""Whatever pairing produced here would be fiction."""
+		assert tool.odd_quote_marks(self.BODY) is True
+
+	def test_and_the_figures_say_nothing_for_it (self) -> None:
+		"""Better to speak for nothing than to speak wrongly."""
+		assert tool.uncovered(self.BODY, []) == ([], [])
+
+	def test_an_even_file_is_not_reported (self) -> None:
+		"""The ordinary case, and the corpus is entirely this case."""
+		assert tool.odd_quote_marks(
+			'source: >-\n  It reads "one thing and another" (p. 4) plainly.\n') is False
+
+
+class TestATrailingCommentIsProseToo:
+
+	"""**This was the coverage scan's own first bug, and the odd-mark guard is what found it.**
+
+	Keeping only lines that are entirely a comment dropped the comment part of every line
+	that also carries a field. `arturia/minifreak` writes
+	``programmable: true   # "Bend Range: sets the range of pitch bend messages`` and runs the
+	quotation on into the next line, so the opening mark went with the field and the closing
+	one was kept — an odd count, which is the only reason anybody looked. A hundred and one
+	lines in the corpus are that shape.
+
+	The comment cannot be found by splitting on the first `#`, because a hundred and one of
+	them sit inside a quoted value — `CC#7`, `"Playback param #1"`, ``firmware: "#246"``. The
+	test is an even number of quote marks in front of it.
+	"""
+
+	def test_a_quotation_in_a_trailing_comment_is_read (self) -> None:
+		"""Dropping it is the silence this whole figure exists to close."""
+		body = (
+			"voice:\n"
+			'  pitch_bend: true   # "the range of pitch bend messages from MIDI" with no page\n'
+		)
+
+		unlocated, _ = tool.uncovered(body, [])
+
+		assert unlocated == ["the range of pitch bend messages from MIDI"]
+
+	def test_a_quotation_running_on_from_a_trailing_comment_pairs (self) -> None:
+		"""The MiniFreak's own shape: the marks sit on two different lines."""
+		body = (
+			"voice:\n"
+			'  pitch_bend: true     # "Bend Range: sets the range of pitch bend\n'
+			'                       # messages from MIDI, in semitones" (p. 84)\n'
+		)
+
+		assert tool.odd_quote_marks(body) is False
+		assert ("Bend Range: sets the range of pitch bend messages from MIDI, in semitones",
+			None, [84]) in tool.quotations(body)
+
+	def test_a_hash_inside_a_control_label_does_not_make_it_prose (self) -> None:
+		"""Otherwise every one of the Octatrack's `param #1` labels comes back as a quotation."""
+		body = 'controls:\n  lfo_param_1: {label: "LFO param #1 (Speed 1)", cc: 28}\n'
+
+		unlocated, _ = tool.uncovered(body, [])
+
+		assert unlocated == []
+
+	def test_a_hash_inside_a_quotation_does_not_truncate_it (self) -> None:
+		"""Makers write `CC#7`, and the comment starts before it rather than at it."""
+		body = '  # The reference reads "Patch Volume reacts to MIDI CC#7 as well" with no page\n'
+
+		unlocated, _ = tool.uncovered(body, [])
+
+		assert unlocated == ["Patch Volume reacts to MIDI CC#7 as well"]
+
+	def test_a_quoted_field_value_with_a_hash_is_not_prose (self) -> None:
+		"""`firmware: "#246"` is teenage engineering's own version string, not a citation."""
+		body = 'model:\n  firmware: "#246"\n'
+
+		unlocated, short = tool.uncovered(body, [])
+
+		assert unlocated == []
+		assert short == []

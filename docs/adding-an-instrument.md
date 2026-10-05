@@ -534,6 +534,40 @@ saying something the maker had not said** — the one fault a page citation cann
 because the page is real and the sentence is not. The checker now refuses a locator it cannot
 read instead of skipping it, so an unreadable one fails the run rather than passing quietly.
 
+**A locator goes after each closing quote, not once at the end of the sentence.** This is the
+commonest way one goes missing, and it reads as though everything is cited:
+
+```
+wrong    The chart marks "Song Position", "Song Select" and "Tune Request" (p. 9).
+right    The chart marks "Song Position" (p. 9), "Song Select" (p. 9) and
+         "Tune Request" (p. 9).
+```
+
+In the first, only the last of the three is checked and the other two are not looked at by
+anything. Five quotations in one definition were in that state, four of them the second half
+of a sentence whose first half carried the citation.
+
+**Where a passage is not quoting a document, use backticks instead of quote marks.** A field
+value, a file name, a term you are naming rather than citing — `System Exclusive`, not
+`"System Exclusive"`. The checker reads past a backticked span entirely, so this is the
+remedy for anything it reports that was never meant as a quotation. A PDF's internal metadata
+title and a quotation of another definition in this corpus are both this case: neither has a
+page to cite, so neither should be written as a quotation.
+
+**Two things you do not have to worry about.** Emphasis around a quotation is fine —
+`**"the part parameters"** (p. 45)` is read exactly as the plain form is. And a passage
+shorter than twelve characters is not checked at all, because a short phrase matches half a
+manual; that is a deliberate floor rather than something to work around, so do not lean on a
+three-character quotation to carry a claim.
+
+**You can see what the checker did not look at.** Run it on your own definition —
+`python tools/check_quotations.py <maker>/<model>`, two seconds against half an hour for the
+corpus — and it prints, besides the checks that ran, how many passages are in quotation marks
+with no locator and how many fell under the floor. Those two figures are what let you square
+its count against your own reading of the file. **A figure you cannot reconcile cannot be
+told from a complete one**, which is how a definition came to report five of five while
+holding thirty nobody had read.
+
 **Where a passage appears in two of a maker's documents, cite the one you transcribed.** A
 locator names one document and one page. The two often word it differently — one Access
 manual prints "Bend Up > -64" where that maker's own reference prints "Bend Up -64" — so the

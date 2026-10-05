@@ -238,6 +238,7 @@ class TestBundledCorpus:
 			"waldorf/iridium",
 			"waldorf/streichfett",
 			"yamaha/dx7",
+			"yamaha/reface_cp",
 			"yamaha/reface_dx",
 		]
 

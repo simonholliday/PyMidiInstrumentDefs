@@ -1,0 +1,418 @@
+# BEFORE TAKING A NUMBER FROM THESE DOCUMENTS, READ THIS.
+#
+# **ONE DOCUMENT SET COVERS FOUR INSTRUMENTS** - the reface CS, DX, CP and YC - and this is the
+# second of them written here, after `yamaha/reface_dx`. The Data List is partitioned rather
+# than interleaved: **this instrument has sheets 11 to 14** and no other model appears on them.
+# The proof is a value rather than a layout - **the system exclusive Model ID, `04H` for the
+# CP** - and it is checked both ways, that the byte is on this instrument's sheets and that no
+# sibling's byte is.
+#
+# **AND THE MODEL IDS ARE NOT IN THE ORDER THE DOCUMENT PRESENTS THE MODELS.** The pages run CS,
+# DX, CP, YC; the identifiers run CS `03H`, **CP `04H`**, **DX `05H`**, YC `06H`. Anyone mapping
+# page order onto identifier order gives this instrument the DX's.
+#
+# **FIVE THINGS ARE TRUE OF A SIBLING AND NOT OF THIS INSTRUMENT**, and each is a plausible
+# import from a few sheets away in one file. **This instrument does no program change at all**,
+# where the DX does; **its pitch bend is receive only**, where the DX's travels both ways;
+# **it answers to no MIDI clock and no transport message**, where the DX answers to both; **its
+# controller 80 is the electric piano type**, where it is the algorithm on the DX and the
+# oscillator type on the CS; and **the CS transmits controller 11 as well as 64** where this
+# transmits 64 alone.
+#
+# And one the other way: **this is the only one of the four with a sostenuto and a soft pedal**,
+# controllers 66 and 67, which no sibling receives. It is the piano of the family and it has the
+# piano's three pedals.
+
+definition: 1
+
+model:
+  manufacturer: Yamaha
+  name: reface CP
+  # The newest firmware the maker documents for this instrument, from the Version 1.30
+  # Supplementary Manual - "Yamaha has upgraded the reface CP firmware, adding the following new
+  # functions" (supplement p. 15). The Data List carries no firmware at all, only the edition
+  # letter `b0` in its file name, and its implementation chart predates this firmware - see the
+  # source account.
+  firmware: "1.30"
+
+source: >-
+  reface CS/DX/CP/YC Data List, which carries this instrument's MIDI data format, its MIDI data
+  table and its implementation chart on **sheets 11 to 14**: the data format and the controllers
+  outside the table at sheet 11, the system overview at 12, **the control change table and the
+  system exclusive parameter tables at 13**, and the implementation chart at 14. The Version 1.30
+  Supplementary Manual is cited for what that firmware added, and the reface Reference Manual for
+  nothing at all - see below.
+
+
+  **THE PARTITION IS WHAT MAKES A FOUR-MODEL DOCUMENT READABLE FOR ONE MODEL.** Its contents
+  give the reface CS sheets 2 to 5, the DX 6 to 10, **the CP 11 to 14** and the YC 15 to 19, each
+  with its own format, table and chart, and the running head of every sheet names exactly one
+  model. **The test a machine can apply is the system exclusive Model ID**, which is a value
+  rather than a layout: all four share the group number `7FH 1CH` and the model byte separates
+  them. This instrument's is `04H`, and `Notes/4591_extract_reface_cp.py` asserts both halves -
+  that it appears on this instrument's sheets, and that none of the other three models' bytes
+  appears inside 11 to 14. **No material of this instrument's lies outside those four sheets and
+  no other model's lies within them.**
+
+
+  THE TABLE WAS READ TWICE BY TWO METHODS IN ONE SCRIPT, AND THEN A THIRD TIME BY A FRESH READER.
+  Once in the text layer's own order, with each value entry consumed as a three-line group; once
+  from the position of every word on the page, grouping into rows by y-origin and into cells by
+  x-origin. **The two agree on all twelve parameters, every controller number, every name and
+  every value entry.** Two methods in one script catch a mistake in one method; they do not catch
+  a mistake in one reading of the document, which is what the second reader is for.
+
+
+  **THE TRAP THE reface DX's ACCOUNT RECORDED IS HERE AND IT IS QUIETER.** A parameter's
+  controller number and a
+  setting's transmitted value are both bare integers on their own line. On the DX four of the
+  algorithm's transmitted values are themselves controller numbers of other parameters in the
+  same table, so a careless reader gives two parameters somebody else's number - a loud failure.
+  **On this instrument no transmitted value collides with any controller number**: the values are
+  0, 25, 51, 64, 76, 102 and 127 and the numbers are 17 to 19, 80, 81 and 85 to 91. So the same
+  careless reader invents seven controllers here and misattributes none, **which is harder to
+  notice rather than less wrong**. The script prints the overlap so that a revision creating one
+  says so.
+
+
+  **WHERE THE REAL MISATTRIBUTION RISK LIES IS BETWEEN THE FOUR MODELS, AND IT IS WORSE THAN THE
+  BARE INTEGERS.** All four of them use controller 80 and all four mean something different by
+  it: it is this instrument's electric piano **TYPE**, the CS's **OSC TYPE**, the DX's **ALGO**
+  and the YC's **WAVE**. Controller 19 means three things in three models - this instrument's
+  tremolo-or-wah rate, the CS's **EFFECT RATE** and the YC's **ROTARY SPEED** - and 17 and 18
+  mean two apiece, this instrument's switch and depth against the CS's **EFFECT TYPE** and
+  **EFFECT DEPTH**. **And 85 to 90 are this instrument's chorus, delay and reverb and the DX's
+  first operator's six parameters.** Nothing in the numbers themselves says which model a reading
+  came from; only the sheet range and the Model ID do.
+
+
+  **THE NUMBERING IS NOT CONTIGUOUS AND THAT LOOKS LIKE AN ERROR AND IS NOT.** The table runs 80
+  and 81 for the voice, then *backwards* to 17, 18 and 19 for the first effect, then forwards to
+  85 through 91 for the other two and the reverb, leaving 82, 83 and 84 unassigned - and the CS
+  uses 82 for its oscillator modulation. Both readings confirmed 17, 18 and 19 by their place in
+  the number column, and the second reader confirmed them again off the page rendered at 300 dots
+  to the inch. **The likely reason is the CS, whose effect block is on the same three numbers**,
+  so a player moving between the two instruments finds the effect controls where they left them.
+  That is a conjecture about intent and the maker states nothing.
+
+
+  AND THIS SHEET IS NOT LAID OUT LIKE THE DX'S, WHICH COST THE SECOND METHOD ITS FIRST RUN. On
+  the DX's sheet 8 the control change table is the whole left column and the system exclusive
+  tables are the right one. **Here the table is the top of the left column and the address tables
+  carry on below it in the same column** - and their High, Mid and Low columns put bare hexadecimal
+  pairs exactly where a controller number sits, so a reader bounded only by the column runs on and
+  harvests `00` and `30` as two more parameters. It did. The bound is the maker's own heading,
+  `Parameter Base Address`, and it is in the script.
+
+
+  **TWELVE PARAMETERS IN THE TABLE AND SIX CONTROLLERS OUTSIDE IT, WHICH IS EIGHTEEN.** The table
+  is the four effect sections and the voice: the electric piano type, the drive, and then a
+  switch, a depth and a rate or speed or time for each of tremolo/wah, chorus/phaser and
+  delay, with a reverb depth. The six outside it are in the data format instead, and the
+  difference between the two groups is not what they do but whether a setting can turn them off.
+
+
+  **THE TWELVE ANSWER ONLY WHILE MIDI CONTROL IS ON AND THE SIX ALWAYS ANSWER.** The table's own
+  heading says so - "Transmitted and recognized Control Change Number and Value, when MIDI
+  control is on" (dl p. 13) - and the data format puts it the same way: "When MIDI Control Mode is
+  turned on, Control Change numbers are assigned in order that voice parameter changes made using
+  controllers on the front panel can be controlled via MIDI" (dl p. 11). The implementation chart
+  carries the qualification as a footnote, "Transmitted and recognized if MIDI control mode is
+  on" (dl p. 14), against the three rows that are the table's numbers and against no others.
+  **MIDI Control is a system exclusive parameter at `00 00 0E`, `off, ON`, reachable from the
+  panel and by system exclusive and by no controller at all** - so nothing in this file can turn
+  on the thing that most of this file needs.
+
+
+  THE SIX OUTSIDE THE TABLE, AND FIVE OF THEM ARE RECEIVED AND NEVER SENT. The data format lists
+  one transmitted control number, `c = 64 SUSTAIN SWITCH`, and six received - modulation 1,
+  volume 7, expression 11, sustain switch 64, **sostenuto 66 and soft pedal 67**. The chart
+  confirms each cell. **Sostenuto and the soft pedal are this instrument's alone in the family**:
+  the CS, the DX and the YC receive 1, 7, 11 and 64 and nothing else.
+
+
+  **AND WHAT THE SUSTAIN SWITCH SENDS DEPENDS ON THE PEDAL PLUGGED INTO IT.** A footnote: "When
+  Sustain is set to 'FC4/5,' operating the foot switch transmits only values of 0 (off) or 127
+  (on)" (dl p. 11) - and `Sustain Pedal Select`, `FC3, FC4/5`, is a system parameter at
+  `00 00 0B`. So with an FC3 the controller is continuous and with an FC4 or FC5 it is a switch,
+  which is a fact about the pedal rather than about the instrument and is why no `kind` is
+  declared for it below.
+
+
+  **SOSTENUTO AND THE SOFT PEDAL ARE SWITCHES AND THE DOCUMENT SAYS WHERE THEY TURN OVER**:
+  `v = 0-63:OFF , 64-127:ON` for each (dl p. 11). Recorded as bands below, because a consumer
+  that drew them as continuous would be drawing something this instrument does not have.
+
+
+  PROGRAM CHANGE IS A CHECKED ABSENCE AND THIS IS WHERE THE FAMILY MOST INVITES A MISTAKE. The
+  chart marks it absent in both columns, and the data format has no program change section at
+  all. **`The reface series does not do program change` is true of this instrument and of the CS
+  and the YC, and false of the DX**, which does it over four banks of eight. That sentence is
+  nobody's but mine, written as the belief a reader of this family most easily forms. **It is
+  true three times out of four, and the one place it fails is the one place a reader would carry
+  it from.**
+
+
+  NO MIDI CLOCK AND NO TRANSPORT, ALSO CHECKED AND ALSO UNLIKE THE DX. The chart's System Real
+  Time rows - Clock, and Commands - are crossed in both columns, as are Song Position, Song
+  Select and Tune Request. **The DX's chart marks Clock and Commands present both ways**, so this
+  is a real difference between two instruments in one document rather than an omission here. The
+  only system real time message this instrument has at all is active sensing, "Transmitted at
+  every 200 msec" (dl p. 11), which this format does not record.
+
+
+  PITCH BEND IS RECEIVED, NEVER TRANSMITTED, AND CANNOT BE SET. The data format heads its section
+  "PITCH BEND CHANGE (Receive only)" (dl p. 11) and the chart agrees, crossed in the transmitted
+  column and present in the recognised one. **And there is no parameter for its range anywhere**:
+  no controller, no registered parameter number, and **the system address its sibling uses for
+  exactly that is reserved here.** The CS has `Pitch Bend Range` at `00 00 0F`, `28 - 58` in hex,
+  minus 24 to plus 24 semitones; this instrument's `0F` is `reserved`. **So writing the CS's
+  pitch-bend-range address to a reface CP targets a reserved byte**, which is the concrete form
+  of the warning the reface DX's account left for this rank.
+
+
+  **AND FOUR MORE OF THIS INSTRUMENT'S RESERVED BYTES ARE A SIBLING'S PARAMETER**, which is the
+  general shape of that warning and worth having whole. The four models share one system table
+  layout with a different set of holes punched in it: `00 00 08` and `09` are Tempo MSB and LSB,
+  `30 - 300`, on the CS and the DX and reserved here; `0A` is the DX's LCD Contrast and reserved
+  here; `0F` is the CS's pitch bend range and reserved here; `14` is the CS's Foot Volume /
+  Sustain switch and reserved here. **So five addresses that do something on a sibling do
+  nothing on this instrument**, and every one of them is a byte a reader could send in good
+  faith.
+
+
+  THE MISSING TEMPO IS NOT A SEPARATE FACT FROM THE MISSING CLOCK. This instrument has no tempo
+  parameter, no transport message, no MIDI clock either way - **and no looper**, where the CS's
+  and the DX's system overview diagrams carry a recorder and this instrument's sheet 12 is a
+  keyboard, a local control switch and a tone generator. Four absences that are one absence: it
+  is the only member of the family with nothing in it that runs in time.
+
+
+  AFTERTOUCH OF BOTH KINDS IN BOTH DIRECTIONS IS CROSSED IN THE CHART, which is four cells and a
+  checked absence rather than a silence. So are the registered and non-registered parameter
+  numbers, whose controllers are among the numbers the table leaves unused.
+
+
+  THE KEYS SEND A NARROWER RANGE THAN THE INSTRUMENT ANSWERS TO. The chart gives note number
+  transmitted as 24 to 108 and recognised as 0 to 127, with `Transpose` in the remarks - and
+  Master Transpose, minus 12 to plus 12 semitones, is a system parameter at `00 00 07` and a
+  new function of this firmware. **So the transmitted span is the 37 keys plus what transposing
+  them reaches, and nothing restricts what the instrument will sound**, which is why no note
+  range is recorded below. Velocity goes both ways on note on and neither way on note off: the
+  chart prints `o 9nH,v=1-127` transmitted against `o v=1-127` recognised, and for note off
+  `x 9nH,v=0` against `x`, while the data format says of the note off message that velocity
+  `is ignored` (dl p. 11).
+
+
+  **IT HAS LOCAL CONTROL AND DOES NOT ANSWER THE CONTROLLER FOR IT**, which is the reface DX's
+  shape and the Leviasynth's one rank earlier. `Local Control`, `off, ON`, is a system parameter
+  at `00 00 06`; the chart crosses Local ON/OFF in both columns, so controller 122 does not reach
+  it. Three instruments in five ranks where the feature exists and the standard controller for it
+  does not work.
+
+
+  WHAT IS NOT RECORDED, AND WHY. **`mode`** - the chart gives two different defaults, 3
+  transmitted and 1 recognised, and the field holds one number. **This is `roland/juno_106`'s
+  case exactly and `yamaha/reface_dx`'s**, and is settled the same way. It is also where this
+  instrument differs from that one again: the DX's chart recognises modes `1 - 4` with a footnote
+  that the mono count is always treated as one, and **this instrument's recognises `1,3` alone**
+  and carries no such footnote - omni on and omni off, and no mono-or-poly change. Its own
+  channel mode section matches, saying of mono and poly only that each does what All Sound Off
+  does. **`polyphony`** - none of the three documents states a voice count, and the owner's
+  manual that would is not among them. **The receive channel's `All` setting** is omni as a
+  setting rather than a mode: the system table gives `MIDI receive channel` as `00 - 0F, 10` for
+  `1 - 16, All` and the transmit channel as `00 - 0F, 7F` for `1 - 16, off`, **and the two
+  sentinels are different numbers for the same idea**, which is easy to transpose. The
+  Supplementary Manual gives the factory settings: **the receive channel starts at `All` and the
+  transmit channel at 1**, so out of the box this instrument answers to every channel.
+
+
+  THE CHART WAS NOT REDATED FOR THIS FIRMWARE AND A SIBLING'S WAS. This instrument's
+  implementation chart is **version 1.0, dated 23 March 2015**; the CS's is version 1.1, dated 31
+  March 2016. The same is true of the DX's, version 1.0 of 20 February 2015. So two of the four
+  charts in one file predate the firmware this definition names, and **the Supplementary Manual
+  adds no MIDI table, no controller and no message** - what it adds for this instrument is master
+  tuning, master transpose, and the transmit and receive channels, which is why `channels` can be
+  stated at all. The documents are consistent with the charts being complete and with their
+  having been left unrevised, and this definition does not choose.
+
+
+  THE SUPPLEMENTARY MANUAL IS PARTITIONED TOO AND ITS RUNNING HEAD WILL NOT TELL YOU SO. Every
+  sheet from 2 to 28 carries "reface CS / reface DX / reface CP / reface YC  New Functions"
+  (supplement p. 15) as its head, so searching it for a model name matches every page and proves
+  nothing. **The partition
+  is in the section headings instead**: `New reface CS Functions` at sheets 3 to 12, the DX's at
+  13 to 14, **this instrument's at 15 to 20**, the YC's at 21 to 26, and an appendix at 27 to 28.
+  Recorded because the Data List's own partition *can* be found by the running head and this one
+  cannot, and the two documents sit beside each other.
+
+
+  FOUR DEFECTS IN THE DATA LIST, FOUND BY THE SECOND READER AND RECORDED RATHER THAN TIDIED.
+  **Two footnotes on facing sheets are both numbered `*1` and mean different things** - on sheet
+  11 it is the sustain pedal's conditional, on sheet 14 it is "Transmitted and recognized if MIDI
+  control mode is on" (dl p. 14) - so a marker carried across the page boundary picks up the
+  wrong text. **The chart's controller 64 row carries no marker at all**, a bare present-present
+  with nothing to say the pedal setting changes what it sends, where the CS's chart does flag its
+  equivalents; the chart read alone therefore promises a continuous sustain in every case.
+  **The three effect switches' first state is named twice and differently on one sheet** - `OFF`
+  in the control change table and `thru (middle position)` in the system exclusive table - and
+  the second and third states likewise, `TREMOLO` against `tremolo (TREMOLO)`. The names below
+  are the control change table's, because that is the table a controller number comes from. And
+  `thru (middle potision)` is printed at one of the three addresses and correctly at the other
+  two, which is the maker's typing and is left alone.
+
+
+  AND TWO IN THE SUPPLEMENTARY MANUAL, NEITHER OF WHICH CHANGES A FIELD HERE. Its appendix marks
+  the transmit channel as the CS's and the DX's while **its own pages for this instrument give
+  this instrument one**; the two are reconcilable, because the appendix lists only what a single
+  key held at power-on reaches and this instrument's channels are set in an advanced mode
+  instead, but nothing on the page says so. And the setting-confirmation display for the sustain
+  pedal is **inverted between the CS and this instrument** - lit for FC4/5 on the one and for FC3
+  on the other, under the same parameter name. One of the two is likely wrong and these documents
+  do not say which, so it is recorded and not resolved.
+
+
+  **ONE DISAGREEMENT BETWEEN THE TWO READERS, AND THE DOCUMENT SETTLES IT.** The second reader
+  reported that controller 81 is this instrument's drive and the DX's first operator level. **It
+  is not**: the DX's table puts OP1 LEVEL at 85 and uses no 81 at all, its numbers being 80, 85
+  to 90 and 102 to 119. Checked in the DX's own number column, and it agrees with that
+  instrument's definition and account. The CS is where 81 does double duty, as OSC TEXTURE. Said
+  here because the reader's other comparisons were right and this one was not, which is the
+  reason a comparison gets checked rather than accepted.
+
+
+  AND THE REFERENCE MANUAL IS THE OPPOSITE TRAP TO BOTH OF THEM. Its title names the family and
+  **its content is the reface DX's alone** - the edit mode reference for the four operators the
+  DX's controllers address. It names the DX on three of its eleven sheets and no other model
+  anywhere. **So one title over four models can mean the content is partitioned, as the Data List
+  is; or that it is all one model's, as this is - and neither can be inferred from the title.**
+  It is cited for nothing here and recorded so that nobody has to open it to find that out.
+
+sources:
+  dl:
+    kind: midi_implementation
+    title: reface CS/DX/CP/YC Data List
+    edition: "b0"
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/7/794817/reface_en_dl_b0.pdf"
+    sha256: 705182642a7be012570805c9686e1eac58bd2b9fa8584f91d33414929e1a85e9
+    retrieved: 2026-10-05
+    # 19 sheets, one printed page to a sheet, so no offset: sheet 11 is headed `reface Data List`
+    # and prints its own number. **Sheets 11 to 14 are this instrument's and nothing here cites
+    # another model's.**
+    # The address redirects to `data.yamaha.com`, which is where the bytes come from.
+    # **SHEET 13 HOLDS THE CONTROL CHANGE TABLE AND THE ADDRESS TABLES IN ONE COLUMN**, the
+    # table on top and the addresses below it, which is not how the DX's sheet 8 is laid out -
+    # there the two are side by side. A reader bounded by the column rather than by the maker's
+    # `Parameter Base Address` heading reads two hexadecimal address digits as controller
+    # numbers. Saved under the DX's folder because it is one file; see its provenance record.
+  supplement:
+    kind: manual
+    title: reface Version 1.30 Supplementary Manual
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/0/960060/v130_Manual_en.pdf"
+    sha256: 8d00416aff1ad50178fa3db56a1d7d215cd849a793d971987eb0d4c8989873bd
+    retrieved: 2026-10-05
+    # 28 sheets, one printed page to a sheet. **This instrument's section is sheets 15 to 20**,
+    # found by its heading and not by its running head, which names all four models on every
+    # page - see the source account. Cited for what firmware 1.30 added and for nothing else,
+    # because it adds no MIDI table, no controller and no message.
+  reference:
+    kind: manual
+    title: reface Reference Manual
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/7/438827/reface_en_rm_a0.pdf"
+    sha256: 78db93bfa3d3fd293b9c9865a236b0df3e74840e00f85d44c314a5941684541d
+    retrieved: 2026-10-05
+    paginated: false
+    # **NOT THIS INSTRUMENT'S AT ALL, DESPITE A TITLE THAT NAMES THE FAMILY.** It is the reface
+    # DX's edit mode reference, naming that model on three of eleven sheets and no other model
+    # anywhere. Read in full, carries no MIDI table of any kind, and is **cited for nothing**.
+    # Recorded so that the next reader of this family knows it has been looked at and what it
+    # turned out to be.
+
+midi:
+  # The chart's basic channel: 1 transmitted by default, 1 to 16 either way. The system table
+  # makes the two settings asymmetric - `MIDI transmit channel` is `1 - 16, off` and `MIDI
+  # receive channel` is `1 - 16, All` - so it can be told to answer everywhere and to say
+  # nothing. Both became settable in this firmware.
+  channels: [1, 16]
+  # A CHECKED ABSENCE AND UNLIKE THE DX. The chart crosses Clock and Commands in both columns,
+  # where the DX's marks both present both ways. Active sensing is the only system real time
+  # message this instrument has.
+  clock: none
+  # The same four crossed cells, plus Song Position and Song Select crossed as well.
+  transport: none
+  program_change:
+    # A CHECKED ABSENCE, both ways, and **the one thing in this family most likely to be carried
+    # across by mistake**: the DX does program change over four banks of eight and the CS, this
+    # instrument and the YC do none at all. A cross in both columns of the chart, and no program
+    # change section in the data format.
+    receives: false
+    sends: false
+  # A checked absence: neither appears anywhere in the three documents, and the controllers they
+  # would use are among the numbers the table leaves unused.
+  nrpn: none
+  # Parameter change, bulk dump, dump request and parameter request, all four with the Model ID
+  # `04H` that proves which instrument this is.
+  sysex: true
+
+voice:
+  addressing: pitches
+  velocity:
+    # The chart gives note on as transmitted and recognised with v=1-127.
+    note_on: received
+    # **AND NOTE OFF VELOCITY NEITHER WAY.** The chart marks it x in both columns, and the data
+    # format says of the note off message that velocity `is ignored` (dl p. 11).
+    note_off: false
+  # A checked absence, both kinds, both directions - four crossed cells in the chart.
+  aftertouch: none
+  pitch_bend:
+    # **RECEIVED, NEVER SENT, AND NOT SETTABLE BY ANY MEANS THESE DOCUMENTS GIVE.** No
+    # controller, no registered parameter number, and the system address the CS uses for exactly
+    # this - `00 00 0F` - is `reserved` on this instrument. No document states the range, which
+    # is why there is no figure here. See the source account.
+    programmable: false
+
+controls:
+  # **THE SIX THAT ARE NOT IN THE TABLE**, from the data format on sheet 11, and the ones that
+  # work whatever MIDI Control is set to. Five are received and never transmitted, which the
+  # implementation chart confirms cell by cell.
+  modulation:                    {label: MODULATION, cc: 1, direction: receives}
+  volume:                        {label: VOLUME, cc: 7, direction: receives}
+  expression:                    {label: EXPRESSION, cc: 11, direction: receives}
+  # The only controller this instrument transmits, and it travels both ways. **What it sends
+  # depends on the pedal**: with `Sustain Pedal Select` set to FC4/5 the footswitch sends only
+  # 0 or 127, and with FC3 it is continuous - so no kind is declared for it.
+  sustain_switch:                {label: SUSTAIN SWITCH, cc: 64}
+  # **THIS INSTRUMENT'S ALONE IN THE FAMILY**, and it is the piano of the four. The data format
+  # gives the turnover for each: `v = 0-63:OFF , 64-127:ON`.
+  sostenuto:                     {label: SOSTENUTO, cc: 66, direction: receives,
+    values: {"off": 0, "on": 64}}
+  soft_pedal:                    {label: SOFT PEDAL, cc: 67, direction: receives,
+    values: {"off": 0, "on": 64}}
+
+  # **AND THE TWELVE THE TABLE CARRIES**, which answer only while MIDI Control is on. The
+  # maker's own printed names, slashes and full stops and all.
+  type:                          {label: TYPE, cc: 80,
+    choices: {"rd_i": 0, "rd_ii": 25, "wr": 51, "clv": 76, "toy": 102, "cp": 127}}
+  drive:                         {label: DRIVE, cc: 81}
+  tremolo_wah_switch:            {label: TREMOLO/WAH SWITCH, cc: 17,
+    choices: {"off": 0, "tremolo": 64, "wah": 127}}
+  # What this modulates depends on the voice, which the system exclusive table's notes column
+  # says and the control change table's does not: "Rd I, Rd II, CP: sound is modulated left and
+  # right" (dl p. 13), "Wr, Clv, Toy: volume is modulated" (dl p. 13).
+  tremolo_wah_depth:             {label: TREMOLO/WAH DEPTH, cc: 18}
+  # And this one changes meaning with the effect: "TREMOLO: speed of modulation" (dl p. 13),
+  # "WAH: resonance offset value" (dl p. 13). So one controller is a rate or a frequency
+  # depending on the switch above it.
+  tremolo_wah_rate:              {label: TREMOLO/WAH RATE, cc: 19}
+  chorus_phaser_switch:          {label: CHORUS/PHASER SWITCH, cc: 85,
+    choices: {"off": 0, "chorus": 64, "phaser": 127}}
+  chorus_phaser_depth:           {label: CHORUS/PHASER DEPTH, cc: 86}
+  chorus_phaser_speed:           {label: CHORUS/PHASER SPEED, cc: 87}
+  d_delay_a_delay_switch:        {label: D.DELAY/A.DELAY SWITCH, cc: 88,
+    choices: {"off": 0, "d_delay": 64, "a_delay": 127}}
+  d_delay_a_delay_depth:         {label: D.DELAY/A.DELAY DEPTH, cc: 89}
+  d_delay_a_delay_time:          {label: D.DELAY/A.DELAY TIME, cc: 90}
+  reverb_depth:                  {label: REVERB DEPTH, cc: 91}

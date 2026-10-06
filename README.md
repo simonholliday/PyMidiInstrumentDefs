@@ -251,6 +251,7 @@ self-contained YAML file, and you share it by sending it.
 | `waldorf/protein` | Waldorf Protein: fifteen fixed modulation sources and MIDI learn for everything else, out of a manual whose MIDI chapter is a glossary of what MIDI is |
 | `waldorf/streichfett` | Waldorf Streichfett: controls whose values are exact numbers, not bands |
 | `yamaha/dx7` | Yamaha DX7: sends one set of controllers and answers to another, out of a 1983 manual that only exists as a scan |
+| `yamaha/montage_6_7_8` | Yamaha MONTAGE6/7/8: 29 controls over 16 parts, out of a Data List whose maker lists ten editions of it and serves two of those rows from one file - the map is unchanged across the three editions read, and half the controls are the factory assignment rather than a fixture |
 | `yamaha/reface_cp` | Yamaha reface CP: 18 controls out of the same data list as the reface DX, and the only one of its four instruments with a sostenuto and a soft pedal - it does no program change at all, where its sibling does |
 | `yamaha/reface_cs` | Yamaha reface CS: 21 controls out of a Data List that covers four instruments in four self-contained sections - 17 of them answer only while a setting is on, and its pedal socket sends one of two controllers and never both |
 | `yamaha/reface_dx` | Yamaha reface DX: 29 controls out of a data list covering four instruments, told apart by the system exclusive model identifier - and 25 of them answer only while MIDI Control is on |

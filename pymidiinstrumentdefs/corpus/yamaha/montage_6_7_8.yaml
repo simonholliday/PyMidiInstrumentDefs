@@ -1,0 +1,398 @@
+# **THE DOWNLOAD PAGE OFFERS TEN DATA LISTS FOR THIS INSTRUMENT AND TWO OF THE ROWS SERVE THE SAME
+# FILE.** Fetched separately from the row labelled `Data List` and the row labelled
+# `Data List for V1.2`: same 5,088,645 bytes, same SHA-256. So a label on that page cannot identify
+# an edition, and neither can a filename, because both rows end `montage_en_dl_c0.pdf`. **What
+# identifies an edition is the code Yamaha prints in the document's own colophon** - `MW-J0`,
+# `MW-I0`, `MW-C0` - matching the suffix of its own file name. All three editions here were
+# established that way rather than from the row they came out of.
+#
+# **AND NO DATA LIST PRINTS A FIRMWARE VERSION ANYWHERE INSIDE IT.** The only version in any of
+# them is on the implementation chart, which reads `Version : 1.0` and `Date :18-FEB-2016` **in an
+# edition published in May 2020**. Those are the chart's own date and version. A reader who takes
+# that 1.0 for a firmware number is three major releases out.
+#
+# **THE MAP HAS NOT MOVED IN FOUR AND A HALF YEARS, AND THAT IS CHECKED RATHER THAN BELIEVED.**
+# Both implementation charts and both control-number lists were read geometrically out of the
+# July 2016, September 2019 and May 2020 editions and compared **cell for cell**. Every cell
+# agrees, and so does the table of default assignable numbers. So the chart's unchanging claim
+# about itself is true, and this definition describes the instrument at every firmware it has had.
+#
+# **TWO IMPLEMENTATION CHARTS, AND THEY ANSWER DIFFERENTLY.** Yamaha charts a `synthesizer part`
+# and a `sequencer part` on facing sheets. The `synthesizer part` takes channel pressure and refuses key
+# pressure, transmits no clock, and refuses song position and local control; the `sequencer part`
+# takes both kinds of pressure and answers to all three. **This definition follows the synthesizer
+# part**, because that is the half that makes a sound, and the account says what the other half
+# adds.
+#
+# **FIVE YAMAHAS ARE HERE NOW AND THE MAKER RULE HELD A TWELFTH TIME.** `yamaha/dx7`,
+# `yamaha/reface_cp`, `yamaha/reface_cs` and `yamaha/reface_dx` are the others, and the three
+# refaces share one Data List between them - which is why a Yamaha Data List was expected to be a
+# family document, and this one is. But none of the four names a MIDI mode and **this one names
+# mode 3 outright**, and none of the four has a part structure at all.
+
+definition: 1
+
+model:
+  manufacturer: Yamaha
+  name: MONTAGE6/7/8
+  # **ONE DEFINITION FOR THREE KEYBEDS, FOLLOWING `roland/fantom_6_7_8`** - and the specification
+  # settles it rather than the precedent alone: the three models differ in their keybed and in
+  # nothing else, and all three have aftertouch. See the account.
+  #
+  # **3.51, WHICH IS NOT A NUMBER ANY DOCUMENT HERE CARRIES.** It is the newest firmware the
+  # maker offers, `MONTAGE OS Updater V3.51` dated 2021-02-22 (downloads_page), while the newest
+  # Data List is labelled for V3.50. The map is checked unchanged across three editions spanning
+  # 2016 to 2020, which brackets every release, so naming the current firmware is safe here in
+  # the way `roland/fantom_6_7_8` established.
+  firmware: "3.51"
+  # Checked 2026-10-06.
+
+source: >-
+  **THE CONTROLLER NUMBERS COME FROM TWO LISTS, AND TWO OF THEM ARE NAMED DIFFERENTLY DEPENDING ON
+  WHICH WAY THEY TRAVEL.** The Data List's MIDI Data Format prints a transmitted list of fourteen
+  numbers and a received list of twenty-one, and controller 71 is "FILTER RESONANCE" (data_list p. 191) in the
+  first and "HARMONIC CONTENT" (data_list p. 191) in the second, while 74 is "FILTER CUTOFF FREQ"
+  (data_list p. 191) and "BRIGHTNESS" (data_list p. 191). **Same controller, same sheet, two names** - the instrument's own parameter name going
+  out and the MIDI specification's name coming in. The labels below use the received name, because
+  what a consumer sends is what the instrument receives, and the transmitted name is here.
+
+  **NOTHING IS TRANSMITTED THAT IS NOT ALSO RECEIVED, AND SEVEN NUMBERS ARE RECEIVED ONLY.** The
+  two lists were compared rather than read one from the other: the transmitted list is a subset.
+  The seven are 6 and 38 (data entry), 96 and 97 (data entry increment and decrement), and three
+  real controls - 11 "EXPRESSION" (data_list p. 191), 65 "PORTAMENTO SWITCH" (data_list p. 191)
+  and 66 "SOSTENUTO" (data_list p. 191),
+  which are `direction: receives` below. The other twelve go both ways.
+
+  **SIX NUMBERS ARE ADDRESSING MACHINERY AND ARE NOT CONTROLS**, on the ruling the Fantom
+  established: 0 and 32 are "Bank Select", 6 and 38 "Data Entry", 96 and 97 "RPN Inc,Dec" and 100
+  and 101 "RPN LSB,MSB" (data_list p. 225). They address a parameter rather than being one. The
+  chart's channel mode rows are refused by the format in any case.
+
+  **FOURTEEN MORE CONTROLLERS ARE FACTORY ASSIGNMENTS RATHER THAN FIXTURES, AND THE DEFINITION SAYS
+  WHICH.** The chart gives "1-95" against "Assignable Cntrl" (data_list p. 225), and a footnote
+  prints the shipped assignment of each physical controller: the breath controller to 2, the ribbon
+  to 16, the eight assignable knobs to 17 to 24, the two assignable functions to 86 and 87, and the
+  motion sequencer's hold and trigger to 88 and 89 (data_list p. 191). Those are the `assignable`
+  group below, and every one of them can be moved to any number in 1 to 95. `midi.control_change:
+  learned` is what says the rest of that range is the owner's - the same reading
+  `waldorf/iridium` carries beside fifteen published controls.
+
+  **TWO OF THE SEVENTEEN ROWS IN THAT FOOTNOTE HAVE A WORD WHERE THE OTHERS HAVE A NUMBER**, and
+  they are not controls at all: foot controller 2 is shipped pointing at the Super Knob and the foot
+  switch at Arp SW (data_list p. 191). A fifteenth number, foot controller 1 at 11, is a number the
+  fixed list already uses for Expression. So fourteen new controls rather than seventeen.
+
+  **EVERY RECEIVED MESSAGE IS BEHIND A SWITCH, AND NO DOCUMENT SAYS WHICH WAY IT POINTS WHEN THE
+  INSTRUMENT ARRIVES.** The chart marks almost every recognised row "O *1", with "*1
+  receive/transmit if switch is on." (data_list p. 225) and no word about which switch. The
+  Reference Manual has it: each of the sixteen parts carries a Receive SW page whose "CC (Receive
+  Control Change) Determines whether Control Change messages are received or not. Settings: Off,
+  On" (reference_manual p. 92) governs eleven more switches beneath it, every one of which reads
+  "This is not available when the Receive Control Change is set to Off" (reference_manual p. 92).
+  **Not one of the 187 sheets marks a factory position for any of them.** So the gate is recorded
+  here and its shipped state is not, which `dreadbox/nymphes` and the Cascadia both show matters: a
+  consumer whose controllers do nothing should look at that page first.
+
+  **THE INSTRUMENT IS SIXTEEN PARTS AND PART N ANSWERS ON CHANNEL N.** "[SW1] Complies with Part
+  Receive Switch. The MIDI Receive Channel complies with the Part number." (data_list p. 191), with
+  "16 Parts (internal), Audio Input Parts (A/D*1, USB*1)" (manual p. 63) in the specification. The
+  `parts` block below says so; which part a player uses belongs to their project.
+
+  **AND THE POLYPHONY IS GIVEN TWICE AND NEVER TOTALLED.** "Polyphony AWM2: 128 (max.; stereo/mono
+  waveforms) FM-X: 128 (max.)" (manual p. 63), and in troubleshooting, "the maximum polyphony (128
+  for each of AWM2 and FM-X) of the MONTAGE" (manual p. 60). **Two engines, two ceilings, no sum in
+  86 sheets** - the word appears exactly twice and both times gives two numbers. So no polyphony is
+  recorded, which is the discipline `roland/fantom_6_7_8` applied to a maximum referred to three
+  times and never given. `polyphony_shared` is recorded, because the parts do draw on pools rather
+  than owning voices; that there are two pools is a thing the boolean cannot say.
+
+  **MODE 3 IS NAMED OUTRIGHT, WHICH NO OTHER YAMAHA HERE DOES.** The `synthesizer part`'s chart gives
+  "3" as the default mode in both columns and marks mode messages "X" (data_list p. 225), with the
+  legend "Mode 3 : OMNI OFF, POLY" (data_list p. 225) printed beneath it. The `sequencer part`'s chart gives "X" for the
+  same row, which is consistent: a recorder has no reception mode.
+
+  **THE TWO CHARTS DISAGREE ABOUT AFTERTOUCH AND THE FIELD HOLDS ONE WORD.** The chart's After Touch block has a
+  row for a key's pressure and one for a channel's, and the `synthesizer part` marks the first "X"
+  in both columns and the second "O" (data_list p. 225), while the `sequencer part` marks both rows
+  "O" both ways (data_list pp. 225-226). So polyphonic pressure is recorded and played back and
+  **never reaches the tone generator**, and `aftertouch: channel` describes what makes a sound.
+  This is `roland/fantom_6_7_8`'s situation with the answer the other way about, because there both
+  kinds reached the engine. **Worth your eye if you disagree** - it is the one field here where the
+  two halves of the instrument give different answers and the stronger one is not the right one.
+
+  **THE SAME SPLIT RUNS THROUGH THREE MORE ROWS**, all in the account rather than in a field: the
+  `synthesizer part` transmits no clock while the `sequencer part` transmits and receives it, and the
+  `sequencer part` alone answers to song position and to local control. `clock: both` and
+  `transport: both` describe the instrument, and the `synthesizer part` on its own would have given
+  neither.
+
+  **AND THE TWO SOCKETS ARE AN EITHER-OR, WHICH IS WORTH A CONSUMER KNOWING.** "MIDI IN/OUT
+  Determines which physical output/input terminal(s) will be used for transmitting/receiving MIDI
+  data. Settings: MIDI, USB" (reference_manual p. 169), with "The two types of terminals above
+  cannot be used at the same time. Only one of them can be used to transmit/receive MIDI data"
+  (reference_manual p. 169). So
+  an instrument wired both ways answers over one of them, and nothing in this format can say which.
+
+  **THE THREE MODELS DIFFER IN THEIR KEYBED AND IN NOTHING ELSE**, which is what makes one
+  definition right for all three: "MONTAGE8: 88 keys, Balanced Hammer Effect Keyboard (Initial
+  Touch/Aftertouch)" (manual p. 63), "MONTAGE7: 76 keys, FSX Keyboard (Initial Touch/Aftertouch)"
+  (manual p. 63) and "MONTAGE6: 61 keys, FSX Keyboard (Initial Touch/Aftertouch)" (manual p. 63), over one tone generator, one
+  polyphony figure, one multi-timbral capacity and one connector list. `roland/fantom_6_7_8` is the
+  precedent for the name; the specification is the evidence.
+
+  **THE FIVE SOUND CONTROLLERS AND THE TWO SOUND CONTROLLER-SHAPED ONES READ THEIR RANGE AS
+  SIGNED.** Controllers 71 to 75 are each given as "v = 0: -64 - 64: 0 - 127: +63" (data_list p. 191),
+  so 64 means no change and the two halves pull opposite ways. The range below is the MIDI range,
+  because that is what a consumer sends; the signed reading is here because no field carries it.
+
+  **THE SUSTAIN CONTROLLER IS CONTINUOUS OR A SWITCH DEPENDING ON THE PEDAL PLUGGED INTO IT.** It
+  is received over "v = 0 - 127", but "When the sustain pedal is set to something other than 'FC3
+  (Half On),' operating the sustain pedal transmits only values of 0 (off) or 127 (on)"
+  (data_list p. 191). So it is recorded as continuous, which is what it answers to, and the
+  half-damper caveat is about what it sends.
+
+  **PITCH BEND IS SETTABLE OVER RPN AND THE SHIPPED DEPTH IS NOT PRINTED.** The received flow lists
+  three registered parameters - "PITCH BEND SENS." (data_list p. 191), "FINE TUNING" (data_list
+  p. 191) and "COARSE TUNING" (data_list p. 191) - and an RPN reset (data_list p. 191). No sheet of any document gives the factory bend range, so `semitones`
+  is unrecorded and `programmable` is true.
+
+  CHECKED ABSENCES, AND WHAT WAS SWEPT FOR EACH:
+
+  - **NRPN: none.** The chart's registered-parameter rows are 96-97 and 100-101, which are RPN;
+    controllers 98 and 99 appear in no list, in no chart row and in neither flow diagram. So the
+    instrument answers to registered parameters and not to non-registered ones.
+  - **Release velocity: not received.** The chart's Velocity block has a Note Off row, and it
+    reads "X 9nH,v=0" (data_list p. 225) transmitted and "X" recognised (data_list p. 225); the
+    data format says of a note off "VELOCITY 0vvvvvvv v: ignored Receive only" (data_list p. 191) - which is the instrument
+    saying in two places that it reads the message and discards the number.
+  - **Polyphonic aftertouch: not received by the tone generator**, per the chart row above. It is
+    not an unread page: the `sequencer part`'s chart marks the same row O, so the X is deliberate.
+  - **The note range is the whole of MIDI**, and stated twice: the chart gives 0-127 against both
+    Note Number and True Voice (data_list p. 225), and the data format names the ends, "k = 0
+    (C-2) - 127 (G8)" (data_list p. 191).
+
+  NOT RECORDED: the number of presets. The specification says "Performances Approx. 1,900"
+  (manual p. 63), and the bank table runs to seventy-two banks of 128 across preset, user and
+  library space (data_list p. 191). **An approximation is not a count**, so `presets` is left out
+  rather than turned into a figure the maker did not give.
+
+sources:
+  data_list:
+    kind: midi_implementation
+    title: MONTAGE6/7/8 Data List
+    edition: MW-J0, the row labelled for V3.50
+    dated: 2020-04-08
+    landing: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/9/1341759/montage_en_dl_j0.pdf"
+    sha256: ed2c9ea6ead9521641319f345dd24dd58cb1a1260160c880bc9ad39fa43e73e4
+    retrieved: 2026-10-06
+    page_offset: 0
+    # **227 sheets, folio equal to sheet on all 225 that carry one.** The MIDI chapters are the
+    # last four: Control List at 182, MIDI Data Format at 190, MIDI Data Table at 194 and the two
+    # implementation charts at 225 and 226.
+    # **The `Control List` at 182 is not a controller map and was nearly read as one.** It is the
+    # modulation matrix - a numbered list of controller-box sources and of destinations - and its
+    # `No.` column is an internal index. Its first rows are Pitch Bend 0, Modulation Wheel 1,
+    # After Touch 2, which read exactly like controller numbers and are not.
+  data_list_3_00:
+    kind: midi_implementation
+    title: MONTAGE6/7/8 Data List
+    edition: MW-I0, the row labelled for V3.00
+    dated: 2019-08-05
+    landing: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/6/1286176/montage_en_dl_i0.pdf"
+    sha256: 286ae9c4432e72bc4c2326a6b942bdb676a4bc6749175832f4759439731625f1
+    retrieved: 2026-10-06
+    page_offset: 0
+    # 227 sheets. Cited for agreeing: every cell of both charts and both control lists.
+  data_list_first:
+    kind: midi_implementation
+    title: MONTAGE6/7/8 Data List
+    edition: MW-C0, the first, served under two labels
+    dated: 2016-07-05
+    landing: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/5/812525/montage_en_dl_c0.pdf"
+    sha256: 2656cdad2a2d300e94e8830087f9c0b8e779813a9aa0409f21a6a107d03a53c6
+    retrieved: 2026-10-06
+    page_offset: 0
+    # **210 sheets, and its MIDI chapters are seventeen sheets earlier than the later editions'** -
+    # the charts are on 208 and 209 - which is why the reader finds them by their own heading.
+    # **The same bytes are also served at `other_assets/3/856353/montage_en_dl_c0.pdf`**, the row
+    # the page labels `for V1.2`: fetched separately, hashed separately, identical. That is the
+    # finding this source exists to carry.
+  manual:
+    kind: manual
+    title: MONTAGE Owner's Manual
+    edition: MWTO-B0
+    dated: 2016-04-26
+    landing: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/7/812097/montage_en_om_b0.pdf"
+    sha256: 04f306733ba8c9412fd6cca016fc9b76caa67632754da17309725318ae647723
+    retrieved: 2026-10-06
+    # **Its folio runs ten behind its sheets** on every one of the 70 that carries a folio, so a
+    # printed page cited here is ten sheets further into the file. Measured, not assumed.
+    page_offset: 10
+  reference_manual:
+    kind: reference
+    title: MONTAGE6/7/8 Reference Manual
+    edition: MW-B0
+    dated: 2022-07-01
+    landing: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/9/812529/montage_en_rm_b0.pdf"
+    sha256: 813a0876a9717f58e18d263b5b30bc6dbb90c9e6ef08e8855da59e7ef846cc4e
+    retrieved: 2026-10-06
+    page_offset: 0
+    # 187 sheets, folio equal to sheet. **The most recently revised document the maker offers for
+    # this instrument**, two years after the newest Data List - and the only one that says what the
+    # chart's `*1` footnote means.
+  supplementary_manual:
+    kind: firmware_addendum
+    title: MONTAGE Supplementary Manual
+    edition: MW-H0
+    dated: 2020-05-18
+    landing: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/2/960092/montage_en_sm_h0.pdf"
+    sha256: fa6586f1f45b5f572b38b91595bb84883b54855cacebce783e9218b9fd3e06d2
+    retrieved: 2026-10-06
+    page_offset: 0
+    # 133 sheets. **The one document in the set whose own cover names a firmware version**, and it
+    # names every one: "New Functions in MONTAGE Version 3.50" (supplementary_manual p. 3) down
+    # to 1.1. Published the same
+    # month as the MW-J0 Data List, which corroborates that Data List's label from inside the
+    # document set rather than from the page. It adds nothing to the MIDI map.
+  downloads_page:
+    kind: download_page
+    title: MONTAGE - Downloads - Yamaha USA
+    landing: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    url: "https://usa.yamaha.com/products/music_production/synthesizers/montage/downloads.html"
+    sha256: 393a51bf552ae7bbca0cc3c64086061f3640606da3a5de17996e6649b2a8d689
+    retrieved: 2026-10-06
+    paginated: false
+    # Cited by source key, for the printed product name and for the firmware version.
+    # Saved as served and as text; **the digest above is the text copy**, which is the one the
+    # citation checker reads.
+    # **Checked first, because this maker sells a MONTAGE M as this instrument's successor** and
+    # the two have separate pages. This page's own title says MONTAGE and every document behind it
+    # says MONTAGE6/7/8.
+
+midi:
+  # 1 to 16, memorised. Sixteen parts answer on sixteen channels; see `parts` below.
+  channels: [1, 16]
+  # **Named outright, which no other Yamaha here does.** Mode 3 is OMNI OFF, POLY, per the chart's
+  # own legend, and mode messages are refused.
+  mode: 3
+  # Receives it, and transmits its own when the `sequencer part` is switched to. The synthesizer
+  # part's chart alone would have said `receives`; see the account.
+  clock: both
+  transport: both
+  # **Two learnable jacks' worth of range and fourteen published defaults.** The chart gives
+  # controllers 1 to 95 as assignable, so most of that range means whatever a Performance says -
+  # the reading `teenage_engineering/op_1` established and `waldorf/iridium` carries beside
+  # fifteen published controls.
+  control_change: learned
+  # A checked absence: 98 and 99 appear in no list, no chart row and neither flow diagram, while
+  # four registered-parameter controllers do.
+  nrpn: none
+  sysex: true
+  program_change:
+    receives: true
+    sends: true
+    # `presets` omitted: the maker's figure is an approximation. See the account.
+
+parts:
+  part:
+    label: Part
+    count: 16
+    channel: assigned
+    receives: [notes, controls, program_change]
+    addressing: pitches
+
+voice:
+  addressing: pitches
+  # Stated twice: the chart gives 0-127 against Note Number and True Voice, and the data format
+  # names the ends as C-2 and G8.
+  note_range: [0, 127]
+  # NOT RECORDED, the polyphony: two engines, two ceilings of 128, and no sum printed anywhere.
+  # The parts draw on those pools rather than owning voices, which is what the flag below says;
+  # that there are two of them is in the account, because a boolean cannot carry it.
+  polyphony_shared: true
+  velocity:
+    note_on: received
+    # The chart marks Note Off "X" recognised, and the data format says the velocity byte of a
+    # note off is ignored. Two statements, one answer.
+    note_off: false
+  # **CHANNEL, AND THE OTHER CHART SAYS POLY** - the `sequencer part` records and plays back key
+  # pressure that the tone generator does not answer to. See the account; this is the field in
+  # this definition most worth a second opinion.
+  aftertouch: channel
+  pitch_bend:
+    # Settable over RPN 0, with fine and coarse tuning beside it. The shipped depth is printed
+    # nowhere in 633 sheets of documentation.
+    programmable: true
+
+groups:
+  wheels: Wheels
+  mix: Volume and Pan
+  portamento: Portamento
+  pedals: Pedals and Switches
+  # The chart's own names for these two blocks of numbers.
+  sound_controller: Sound Controller
+  effect_depth: Effect Depth
+  assignable: Assignable Cntrl
+
+controls:
+
+  # FIXED, AND TRAVELLING BOTH WAYS ------------------------------------------
+  # Twelve numbers in both of the maker's lists. Where the two lists give different names, the
+  # label is the received one and the transmitted one is in the comment.
+
+  modulation:            {label: Modulation, cc: 1, group: wheels}
+  channel_volume:        {label: Channel Volume, cc: 7, group: mix}
+  pan:                   {label: Pan, cc: 10, group: mix}
+  portamento_time:       {label: Portamento Time, cc: 5, group: portamento}
+  sustain:               {label: Sustain Switch, cc: 64, group: pedals}
+
+  # **Signed about 64, so the middle of the range means no change** - "v = 0: -64 - 64: 0 - 127:
+  # +63" (data_list p. 191) for all five. No named states, because the maker prints none.
+  # 71 and 74 are the two the maker names differently by direction: transmitted they are
+  # `FILTER RESONANCE` and `FILTER CUTOFF FREQ`.
+  harmonic_content:      {label: Harmonic Content, cc: 71, group: sound_controller}
+  eg_release_time:       {label: EG Release Time, cc: 72, group: sound_controller}
+  eg_attack_time:        {label: EG Attack Time, cc: 73, group: sound_controller}
+  brightness:            {label: Brightness, cc: 74, group: sound_controller}
+  eg_decay_time:         {label: EG Decay Time, cc: 75, group: sound_controller}
+
+  effects_1_depth:       {label: Effects 1 Depth, cc: 91, group: effect_depth}
+  effects_4_depth:       {label: Effects 4 Depth, cc: 94, group: effect_depth}
+
+  # FIXED, AND RECEIVED ONLY -------------------------------------------------
+  # Three numbers in the received list and not in the transmitted one.
+
+  expression:            {label: Expression, cc: 11, direction: receives, group: mix}
+  # Two bands rather than two exact values: the maker prints "0 - 63: OFF, 64 - 127: ON"
+  # (data_list p. 191) for each of the two.
+  portamento_switch:     {label: Portamento Switch, cc: 65, values: {"off": 0, "on": 64}, direction: receives, group: portamento}
+  sostenuto:             {label: Sostenuto, cc: 66, values: {"off": 0, "on": 64}, direction: receives, group: pedals}
+
+  # THE FACTORY ASSIGNMENTS --------------------------------------------------
+  # **Every one of these is a default and not a fixture.** Each is the number its physical
+  # controller is shipped sending, and each can be moved anywhere in 1 to 95 - which is what
+  # `midi.control_change: learned` above says. A consumer offering them should say so.
+  # Two more rows of the same footnote are shipped pointing at something that is not a controller
+  # at all, so they are not here: foot controller 2 at the Super Knob and the foot switch at
+  # Arp SW. A third, foot controller 1, is shipped at 11, which is Expression above.
+
+  breath:                {label: Breath Controller, cc: 2, group: assignable}
+  ribbon:                {label: Ribbon Controller, cc: 16, group: assignable}
+  assignable_knob_1:     {label: Assignable Knob 1, cc: 17, group: assignable}
+  assignable_knob_2:     {label: Assignable Knob 2, cc: 18, group: assignable}
+  assignable_knob_3:     {label: Assignable Knob 3, cc: 19, group: assignable}
+  assignable_knob_4:     {label: Assignable Knob 4, cc: 20, group: assignable}
+  assignable_knob_5:     {label: Assignable Knob 5, cc: 21, group: assignable}
+  assignable_knob_6:     {label: Assignable Knob 6, cc: 22, group: assignable}
+  assignable_knob_7:     {label: Assignable Knob 7, cc: 23, group: assignable}
+  assignable_knob_8:     {label: Assignable Knob 8, cc: 24, group: assignable}
+  assignable_function_1: {label: Assignable Function 1, cc: 86, group: assignable}
+  assignable_function_2: {label: Assignable Function 2, cc: 87, group: assignable}
+  motion_seq_hold:       {label: Motion Seq Hold, cc: 88, group: assignable}
+  motion_seq_trigger:    {label: Motion Seq Trigger, cc: 89, group: assignable}

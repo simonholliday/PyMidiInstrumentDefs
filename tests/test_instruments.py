@@ -267,6 +267,7 @@ class TestBundledCorpus:
 			"waldorf/protein",
 			"waldorf/streichfett",
 			"yamaha/dx7",
+			"yamaha/montage_6_7_8",
 			"yamaha/reface_cp",
 			"yamaha/reface_cs",
 			"yamaha/reface_dx",
@@ -15858,3 +15859,216 @@ class TestCascadia:
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
 		assert len(makers) == 31
+
+
+class TestMontage:
+
+	"""Ten Data List rows, and two of them serve one file.
+
+	So a label on Yamaha's download page cannot identify an edition and neither can a
+	filename - both rows end `montage_en_dl_c0.pdf`.  What identifies one is the code
+	Yamaha prints in the document's own colophon, and the map turns out not to have
+	moved in four and a half years anyway.
+	"""
+
+	def test_twenty_nine_controls_and_half_of_them_are_only_the_factory_choice (self) -> None:
+		"""The chart gives 1 to 95 as assignable, and a footnote gives the shipped numbers."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		numbers = sorted(control.cc for control in montage.controls.values()
+			if control.cc is not None)
+
+		assert len(montage.controls) == 29
+		assert numbers == [1, 2, 5, 7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+			64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 94]
+
+		# **Fourteen of the twenty-nine are a default rather than a fixture**, and they are
+		# in a group of their own so a consumer can read them as one.
+		assignable = [name for name, control in montage.controls.items()
+			if control.group == "assignable"]
+
+		assert len(assignable) == 14
+		assert montage.midi.learns_control_change is True
+		assert montage.groups["assignable"] == "Assignable Cntrl"
+
+		# Six numbers the chart names are addressing machinery and are not here.
+		for machinery in (0, 32, 6, 38, 96, 97, 100, 101):
+			assert machinery not in numbers, machinery
+
+	def test_three_are_received_and_never_transmitted (self) -> None:
+		"""The maker prints two lists and the transmitted one is a subset."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		receives = sorted(control.cc for control in montage.controls.values()
+			if control.direction == "receives" and control.cc is not None)
+
+		assert receives == [11, 65, 66]
+		assert montage.controls["expression"].cc == 11
+		assert montage.controls["portamento_switch"].cc == 65
+		assert montage.controls["sostenuto"].cc == 66
+
+		# The other twenty-six travel both ways, which is this format's default.
+		assert {control.direction for control in montage.controls.values()} == {"both", "receives"}
+
+	def test_two_controllers_are_named_differently_depending_on_direction (self) -> None:
+		"""Same number, same sheet, two names - and the label is the received one."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		flat = " ".join((montage.source or "").split())
+
+		assert montage.controls["harmonic_content"].cc == 71
+		assert montage.controls["brightness"].cc == 74
+
+		assert '"FILTER RESONANCE"' in flat and '"HARMONIC CONTENT"' in flat
+		assert '"FILTER CUTOFF FREQ"' in flat and '"BRIGHTNESS"' in flat
+		assert "**Same controller, same sheet, two names**" in flat
+
+	def test_two_rows_of_the_download_page_serve_one_file (self) -> None:
+		"""Proved by hash rather than by inference, which is the Iridium's test inverted."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		comments = " ".join(prose_of("yamaha", "montage_6_7_8").split())
+
+		assert "two of the rows serve the same file" in comments.lower()
+		assert "same 5,088,645 bytes, same SHA-256" in comments
+
+		# **The edition is identified by the code inside the document**, not by the row.
+		for key, code in (("data_list", "MW-J0"), ("data_list_3_00", "MW-I0"),
+				("data_list_first", "MW-C0")):
+			assert (montage.sources[key].edition or "").startswith(code), key
+
+	def test_the_map_is_unchanged_across_every_edition_read (self) -> None:
+		"""Three editions spanning 2016 to 2020, compared cell for cell."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		comments = " ".join(prose_of("yamaha", "montage_6_7_8").split())
+
+		assert "**cell for cell**" in comments
+		assert "Every cell agrees" in comments
+
+		# And the chart's own version is not the instrument's, which is the trap.
+		assert "`Version : 1.0`" in comments
+		assert montage.model.firmware == "3.51"
+
+		dates = [str(montage.sources[key].dated) for key in
+			("data_list_first", "data_list_3_00", "data_list")]
+
+		assert dates == sorted(dates)
+		assert dates[0].startswith("2016") and dates[-1].startswith("2020")
+
+	def test_the_two_charts_disagree_and_the_definition_follows_the_sounding_one (self) -> None:
+		"""Polyphonic pressure is recorded by the sequencer and never reaches the engine.
+
+		Which is `roland/fantom_6_7_8`'s situation with the answer the other way about,
+		because there both kinds reached the engine and `poly` was the stronger word.
+		"""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		flat = " ".join((montage.source or "").split())
+
+		assert montage.voice.aftertouch == "channel"
+		assert "**never reaches the tone generator**" in flat
+		assert "the one field here where the two halves of the instrument give different " \
+			"answers and the stronger one is not the right one" in flat
+
+		# The Fantom took the other answer on its own evidence.
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert fantom.voice.aftertouch == "poly"
+
+		# And the split is why two fields say `both` where one chart alone would not.
+		assert montage.midi.clock == "both"
+		assert montage.midi.transport == "both"
+
+	def test_the_polyphony_is_given_twice_and_never_totalled (self) -> None:
+		"""Two engines, two ceilings of 128, and no sum in 86 sheets."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		flat = " ".join((montage.source or "").split())
+
+		assert montage.voice.polyphony is None
+		assert montage.voice.polyphony_shared is True
+		assert '"Polyphony AWM2: 128 (max.; stereo/mono waveforms) FM-X: 128 (max.)"' in flat
+		assert "no sum in 86 sheets" in flat
+
+		# The Fantom is the precedent for leaving it out.
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert fantom.voice.polyphony is None
+
+	def test_sixteen_parts_each_on_its_own_channel (self) -> None:
+		"""Part N answers on channel N, which the data format states outright."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		part = montage.parts["part"]
+
+		assert part.count == 16
+		assert part.is_assigned is True
+		assert part.takes("notes") and part.takes("controls") and part.takes("program_change")
+		assert part.addressing == "pitches"
+
+		flat = " ".join((montage.source or "").split())
+
+		assert '"[SW1] Complies with Part Receive Switch. The MIDI Receive Channel complies ' \
+			'with the Part number."' in flat
+
+	def test_mode_three_is_named_which_no_other_yamaha_here_does (self) -> None:
+		"""Four Yamahas were already here and not one of them names a reception mode."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+
+		assert montage.midi.mode == 3
+
+		others = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			if name.startswith("yamaha/") and name != "yamaha/montage_6_7_8"]
+
+		assert sorted(others) == ["yamaha/dx7", "yamaha/reface_cp", "yamaha/reface_cs",
+			"yamaha/reface_dx"]
+
+		for name in others:
+			assert pymidiinstrumentdefs.load(name, [CORPUS]).midi.mode is None, name
+
+		# The one thing all five do share, which the maker rule says proves nothing.
+		for name in others + ["yamaha/montage_6_7_8"]:
+			assert pymidiinstrumentdefs.load(name, [CORPUS]).midi.sysex is True, name
+
+	def test_every_received_message_sits_behind_a_switch_with_no_printed_default (self) -> None:
+		"""The chart's footnote names a switch and never says which way it points."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+		flat = " ".join((montage.source or "").split())
+
+		assert '"*1 receive/transmit if switch is on."' in flat
+		assert "**Not one of the 187 sheets marks a factory position for any of them.**" in flat
+
+		# The two switches that are bands rather than exact values, as the maker prints them.
+		for name in ("portamento_switch", "sostenuto"):
+			control = montage.controls[name]
+
+			assert control.values == {"off": 0, "on": 64}
+			assert control.band("off") == (0, 63) and control.band("on") == (64, 127)
+
+	def test_the_presets_are_an_approximation_so_no_count_is_recorded (self) -> None:
+		"""An approximation is not a count."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+
+		assert montage.midi.program_change is not None
+		assert montage.midi.program_change.receives is True
+		assert montage.midi.program_change.sends is True
+		assert montage.midi.program_change.presets is None
+
+		flat = " ".join((montage.source or "").split())
+
+		assert '"Performances Approx. 1,900"' in flat
+		assert "**An approximation is not a count**" in flat
+
+		# NRPN is a checked absence, against four registered-parameter controllers.
+		assert montage.midi.nrpn == "none"
+		assert "controllers 98 and 99 appear in no list" in flat
+
+	def test_one_definition_for_three_keybeds_on_the_fantoms_precedent (self) -> None:
+		"""And the specification is the evidence, not the precedent alone."""
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+
+		assert montage.model.name == "MONTAGE6/7/8"
+
+		flat = " ".join((montage.source or "").split())
+
+		assert "**THE THREE MODELS DIFFER IN THEIR KEYBED AND IN NOTHING ELSE**" in flat
+		assert '"MONTAGE8: 88 keys, Balanced Hammer Effect Keyboard (Initial Touch/Aftertouch)"' in flat
+
+		# The precedent it follows, and the two names are spelled the maker's way in each.
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert fantom.model.name == "FANTOM-6/7/8"
+		assert "roland/fantom_6_7_8" in flat

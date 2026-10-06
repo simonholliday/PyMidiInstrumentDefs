@@ -1,0 +1,157 @@
+# THIS INSTRUMENT'S WHOLE PUBLISHED MIDI IS ONE PAGE WITH NO NUMBERS ON IT, AND THE NUMBERS WERE
+# IN A LEAFLET THAT CAME IN THE BOX. Its owner's manual gives MIDI a single page, printed 38,
+# which lists seven kinds of information and then sends the reader elsewhere for the rest. So
+# **no control below**, and that is the maker's position rather than an unread page.
+#
+# WHAT THAT PAGE SAYS. "Information which can be communicated are as follows." (manual p. 38) and
+# then, numbered: Rhythm Pattern, Tempo Syncro, Start/Stop, Dynamics, Song Selection, Song
+# Position Point, Through Function. **There is no controller number anywhere on it, and no note
+# number**, and nothing in the other 42 pages carries either. The page ends by referring the
+# reader to an enclosed leaflet - Roland's own words name it in quotation marks - which **is not
+# among the 457 documents its maker publishes** and is not in the library beside this file.
+#
+# **THE ABSENCE OF A SEPARATE IMPLEMENTATION IS CHECKED AGAINST THE MAKER'S OWN LIST, NOT AGAINST
+# A SEARCH.** Roland's manual archive carries 457 documents, of which **38 are titled as a
+# MIDI implementation** - "D-50 MIDI Implementation" (archive) among them - and it lists **ten TR
+# drum machines, every one of them an owner's manual and nothing else**: "TR-909 Owner's Manual"
+# (archive), "TR-808 Owner's Manual" (archive), "TR-707 Owner's Manual" (archive) and seven more.
+# So this maker does publish separate implementations, and publishes none for any of its TRs.
+#
+# THE ONE THING THE PAGE DOES SETTLE IS THE CHANNELS, AND IT SETTLES THEM ODDLY. There are two:
+# "Setting Receiving Channel: To set the Channel number for MIDI information which controls the
+# internal sound source, press the appropriate Main Key, while holding the Shuffle/Flam Button."
+# (manual p. 38), and a sending channel set the same way with a different modifier, for "MIDI
+# information which controls external sound source" (manual p. 38). The keys that set them are
+# the sixteen the specifications list as "Main Keys (1 to 16)" (manual p. 39).
+#
+# **AND AT POWER-ON THE TWO ARE DIFFERENT NUMBERS**: "If the unit has been just turned on, the
+# receiving Channel is automatically set to 0, and the transmit Channel to 11." (manual p. 38),
+# where nought "is Omni mode that receives all Channel information" (manual p. 38). So a channel
+# of nought is not a seventeenth channel but a mode, which is 1983's way of saying omni and is
+# not a thing this format has a field for.
+#
+# NO DIRECTION IS RECORDED FOR ANY MESSAGE, BECAUSE THE PAGE GIVES NONE. Its list is headed by
+# what `can be communicated` and names no direction for any of the seven, and the two channels
+# establish only that both directions exist. So the clock, the transport, the song select and the
+# song position pointer are all plainly spoken here and **which way each travels is not
+# published** - which is a different thing from a chart's crossed box, and is said rather than
+# guessed at.
+#
+# `control_change: none` IS THE ONE PLACE THAT LIST IS READ AS COMPLETE. The seven items are
+# message kinds in the maker's own words - Dynamics is velocity, Tempo Syncro is clock, Song
+# Position Point is the pointer - and a control change is not among them. That is what the field
+# is for: somebody looked and found none, as against nobody having looked.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TR-909
+  # NOT RECORDED. The manual states no firmware and no edition; its only number is a part number
+  # on the back cover. This is a 1983 instrument, discontinued, and nothing here is updatable.
+  # Checked 2026-10-06.
+
+source: >-
+  The TR-909 Owner's Manual, 43 sheets, which is **the only document Roland publishes for this
+  instrument** - and Roland's own manual archive, which is cited for that being true rather than
+  merely unfound.
+
+  **THE MANUAL IS A SCAN AND HAS NO TEXT LAYER AT ALL.** 43 sheets, one image to a sheet, no
+  fonts and no drawings - so every word quoted here was read off a rendered page by eye, and the
+  quotation checker reports them as unchecked rather than as wrong. **That is this corpus's
+  established position for a manual of this age** and not a new liberty: `roland/juno_106`,
+  `roland/d_50`, `yamaha/dx7` and `korg/m1` are all built from scans the same way, and the
+  library holds eight such files. The archive page beside it is text, so the claims that rest on
+  it are checked in the ordinary way.
+
+  ITS MIDI IS ONE PAGE AND CARRIES NO NUMBERS. See the comment above the definition. What follows
+  from it is a definition with **no controls**, which is a statement about what Roland published
+  and not about what the instrument does.
+
+  THE PAGE OFFSET IS +1 AND IS WORTH STATING. The scan opens with a cover and a contents sheet
+  that carry no folio, so **printed page = sheet + 1** from there on, checked at printed 6, 38,
+  39 and 41. Printed 38 is the MIDI page and printed 39 the specifications.
+
+  **ONE FIGURE IS GIVEN TWICE AND DIFFERS.** The trigger output is "a positive 14V, 18ms" (manual
+  p. 38) on the MIDI page and "+14V, 20 ms pulse" (manual p. 39) in the specifications overleaf.
+  Neither is a MIDI message - it is a jack that pulses with the rim shot - and it is recorded
+  because it is the one place two pages of this manual can be checked against each other, and
+  they disagree.
+
+  HOW THE DOCUMENT WAS FOUND, WHICH IS NOT WHERE THIS MAKER'S CURRENT ONES ARE. The global
+  support page for this product, `by_product/tr-909/owners_manuals/`, is **an empty shell**: it
+  builds its list in the browser and its markup carries no document link at all, where the same
+  page for a current product carries nine. The archive page that does carry it is on the US site,
+  which is where `roland/juno_106` found its own manual two days before this. **One guessed CDN
+  address was tried and returned 403**, which is evidence about the guess and not about the file;
+  the address that works is the one the archive prints.
+
+  AND THE ARCHIVE IS SAVED ONCE FOR THIS MAKER RATHER THAN ONCE PER INSTRUMENT. The copy cited
+  here is the one `roland/juno_106` saved on 2026-10-02, **and its visible text is byte for byte
+  what a fetch returned four days later**. The markup was not: two fetches of an unchanged page
+  differ in four lines, a CSRF token and an ASP.NET view state, so **the served bytes of this
+  maker's pages are not a stable identifier while their rendered text is**. That is a good reason
+  to cite the text, which this corpus already does, and a bad reason to pin the HTML.
+
+  NOT RECORDED: the note numbers its eleven sound sources answer to, which no page gives; the
+  direction of any message; program change, which the maker's list does not mention at all;
+  system exclusive, likewise; and the firmware. Its own specifications give the shape of the
+  instrument - "48 Rhythm Patterns (16 x 3 Pattern Groups) x 2 (Bank I, II)" (manual p. 39) over
+  four tracks, eleven sound sources, and MIDI sockets that are one IN and two OUTs - and none of
+  that is a number this format holds.
+
+sources:
+  manual:
+    kind: manual
+    title: TR-909 Owner's Manual
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "http://cdn.roland.com/assets/media/pdf/TR-909_OM.pdf"
+    sha256: d786988e4cc0554af3088dd719e8fcdab1b7e624d5e83dd9eacc7d02ae754153
+    retrieved: 2026-10-06
+    # **A SCAN WITH NO TEXT LAYER**: 43 sheets, one image each, no fonts. Every quotation here
+    # was read off a rendered page, and the quotation checker reports them unchecked.
+    # Roland's own link is plain HTTP, as it is for this maker's other archived manuals. The
+    # same bytes are served over HTTPS from
+    # https://static.roland.com/assets/media/pdf/TR-909_OM.pdf, which was fetched and compared
+    # byte for byte; the address above is the one the archive page actually carries.
+    # **Printed page = sheet + 1**, because the cover and the contents sheet carry no folio.
+    # Checked at printed 6, 38, 39 and 41. The MIDI page is printed 38 and is one page.
+    page_offset: -1
+  archive:
+    kind: web_page
+    title: "Roland - Support - Manual Archive"
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "https://www.roland.com/us/support/manual_archive/"
+    sha256: aa08cc61d2b474998265e8e0c893154f7145dfdb48d2726e8478c90e2558b499
+    retrieved: 2026-10-02
+    paginated: false
+    # **Cited for an absence, and it is the maker's own list rather than a search.** 457
+    # documents, 38 of them titled `MIDI Implementation`, and ten TR drum machines of which
+    # every one is an owner's manual and nothing else. It is also the only place Roland offers
+    # this manual at all: the global support page for the product is an empty shell.
+    # Saved once for this maker under `_downloads` rather than once per instrument, by
+    # `roland/juno_106` on the date above. A fetch four days later returned **the same visible
+    # text byte for byte** and different markup, so the date is the saving and not a claim that
+    # nothing has moved since.
+
+midi:
+  # TWO CHANNELS AND SIXTEEN KEYS TO SET THEM WITH. Each is set by pressing "the appropriate Main
+  # Key" (manual p. 38) with a modifier, and the specifications list "Main Keys (1 to 16)"
+  # (manual p. 39) - which is the whole of the evidence for this span, joined across two pages of
+  # one document because neither states it alone.
+  # **A receiving channel of nought is omni rather than a channel**, and the instrument powers up
+  # on it while transmitting on 11. Neither default is recorded, because this field holds a span.
+  channels: [1, 16]
+  # SOMEBODY LOOKED AND FOUND NONE. The maker's list of what "can be communicated" (manual p. 38)
+  # names seven kinds of message in its own words and a control change is not among them, nor is
+  # any controller number printed anywhere in 43 sheets. That is a checked absence; what it is
+  # not is a claim that the instrument ignores every controller, only that Roland published none.
+  control_change: none
+
+voice:
+  # NOT RECORDED: how a note addresses this instrument. Its eleven sound sources are listed in the
+  # specifications and "Rhythm Pattern" (manual p. 38) is one of the seven things MIDI carries
+  # here - but **no page says which note reaches which drum**, or whether a note reaches one at
+  # all, so both `addressing` and `note_range` would be invented.
+  # NOT RECORDED EITHER: velocity, although `Dynamics` is in that same list (manual p. 38). What
+  # the list establishes is that dynamics travel, not which direction nor in what message.

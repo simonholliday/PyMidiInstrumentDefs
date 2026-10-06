@@ -227,6 +227,7 @@ class TestBundledCorpus:
 			"roland/tr8s",
 			"roland/tr_1000",
 			"roland/tr_6s",
+			"roland/tr_909",
 			"sequential/fourm",
 			"sequential/prophet_5",
 			"sequential/prophet_6",
@@ -600,11 +601,18 @@ class TestAbsences:
 		definitions where nobody has established anything, and it is the opposite of
 		those: a great deal was established, by two readers, and what they established
 		is that the document does not exist.
+
+		**The TR-909 joins ``none`` by a route none of the others took.**  Its maker
+		did publish a MIDI page, numbered seven kinds of message on it in its own
+		words, and put no controller among them - then sent the reader to a leaflet
+		that came in the box and that Roland does not publish.  So the field is right
+		for the usual reason, somebody looked and found none, and the looking was at
+		an enumeration rather than at a chart's crossed box.
 		"""
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 15
+		assert len(empty) == 16
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -614,7 +622,7 @@ class TestAbsences:
 			kinds.setdefault(key, set()).add(name)
 
 		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/td_3",
-			"moog/labyrinth", "vermona/drm1_mkiv"}
+			"moog/labyrinth", "roland/tr_909", "vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact",
 			"dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
 			"teenage_engineering/op_1"}
@@ -3172,6 +3180,81 @@ class TestJuno106:
 		assert juno.midi.program_change.presets == 128
 		assert juno.midi.program_change.receives is True
 		assert juno.midi.program_change.sends is True
+
+
+class TestTR909:
+
+	"""Whose maker published one MIDI page, seven kinds of message, and not one number."""
+
+	def test_it_carries_no_controls_and_says_somebody_looked (self) -> None:
+		"""`control_change: none`, reached by an enumeration rather than a crossed box."""
+		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
+
+		assert tr.controls == {}
+		assert tr.groups == {}
+		assert tr.midi.refuses_control_change
+		assert not tr.midi.learns_control_change
+		assert not tr.midi.stated_none
+
+		said = prose_of("roland", "tr_909")
+
+		assert "Information which can be communicated are as follows." in said
+
+	def test_the_absence_of_an_implementation_is_checked_against_the_makers_own_list (self) -> None:
+		"""457 documents, 38 of them implementations, ten TRs and not one among them."""
+		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
+
+		assert set(tr.sources) == {"manual", "archive"}
+		assert tr.sources["archive"].kind == "web_page"
+
+		said = prose_of("roland", "tr_909")
+
+		assert "TR-909 Owner's Manual" in said
+		assert "D-50 MIDI Implementation" in said
+		assert "every one of them an owner's manual and nothing else" in said
+
+	def test_its_manual_is_a_scan_and_the_corpus_already_has_seven_more (self) -> None:
+		"""So the quotations are read by eye and the checker reports them unchecked."""
+		said = prose_of("roland", "tr_909")
+
+		assert "THE MANUAL IS A SCAN AND HAS NO TEXT LAYER AT ALL." in said
+
+		# Named because this is not a new liberty: four shipped definitions do it already.
+		for sibling in ("roland/juno_106", "roland/d_50", "yamaha/dx7", "korg/m1"):
+			assert sibling in said
+
+	def test_the_page_offset_runs_the_other_way_from_most_of_the_corpus (self) -> None:
+		"""A cover and a contents sheet carry no folio, so printed is one ahead of the sheet."""
+		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
+
+		assert tr.sources["manual"].page_offset == -1
+
+		# The MIDI page is printed 38, which is the scan's 37th sheet.
+		assert tr.sources["manual"].file_page(38) == 37
+
+	def test_two_channels_whose_power_on_values_differ (self) -> None:
+		"""Nought is omni on the receiving side and the transmitting side starts on 11."""
+		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
+
+		assert tr.midi.channels == (1, 16)
+
+		said = prose_of("roland", "tr_909")
+
+		assert "the receiving Channel is automatically set to 0, and the transmit Channel to 11." \
+			in said
+		assert "is Omni mode that receives all Channel information" in said
+
+	def test_no_direction_is_recorded_for_any_message (self) -> None:
+		"""Because the page says what can be communicated and never which way."""
+		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
+
+		assert tr.midi.clock is None
+		assert tr.midi.transport is None
+		assert tr.midi.program_change is None
+		assert tr.midi.sysex is None
+		assert tr.voice.addressing is None
+		assert tr.voice.note_range is None
+		assert tr.voice.velocity is None
 
 
 class TestJU06A:

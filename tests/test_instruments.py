@@ -185,6 +185,7 @@ class TestBundledCorpus:
 			"erica_synths/hexdrums",
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
+			"intellijel/cascadia",
 			"korg/drumlogue",
 			"korg/electribe",
 			"korg/kronos",
@@ -15614,3 +15615,246 @@ class TestArtemis:
 		assert '"Mind that this only works from the USB connection, not the MIDI DIN."' in flat
 		assert "ITS SYSTEM EXCLUSIVE DOES NOT TRAVEL DOWN ITS OWN DIN SOCKET" in flat
 		assert "true of one of this instrument's two MIDI connections and not the other" in flat
+
+
+class TestCascadia:
+
+	"""Four controllers, and four is the whole of what this maker publishes.
+
+	Every other definition here with a handful of controls has a handful because
+	somebody could only find a handful.  This one has four because MIDI arrives,
+	becomes a voltage at one of eight jacks, and which controller drives two of
+	those jacks is whatever its owner last taught it.
+	"""
+
+	def test_four_controls_and_every_one_of_them_only_receives (self) -> None:
+		"""One sentence settles the direction of all four: the output jack carries a clock."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+		numbers = sorted(control.cc for control in cascadia.controls.values()
+			if control.cc is not None)
+
+		assert len(cascadia.controls) == 4
+		assert numbers == [1, 2, 5, 65]
+		assert {control.direction for control in cascadia.controls.values()} == {"receives"}
+
+		# **`learned` alongside published controls**, which is the arrangement the Iridium
+		# established with fifteen of them and the MPC Key 37 with one.
+		assert cascadia.midi.learns_control_change is True
+
+		flat = " ".join((cascadia.source or "").split())
+
+		assert "**FOUR CONTROLLER NUMBERS ARE PUBLISHED FOR THIS INSTRUMENT AND NO MORE.**" in flat
+		assert "**This one rests on a sentence.**" in flat
+
+	def test_two_are_fixed_and_two_are_only_what_the_factory_chose (self) -> None:
+		"""A consumer that offers all four as fixtures is wrong about half of them."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+		flat = " ".join((cascadia.source or "").split())
+
+		# The portamento pair cannot be reassigned.
+		assert cascadia.controls["portamento"].cc == 65
+		assert cascadia.controls["portamento_time"].cc == 5
+		assert "**Neither is learnable and neither can be reassigned**" in flat
+
+		# The other two are the default source for a jack, over the full range.
+		assert cascadia.controls["midi_mod_output"].cc == 1
+		assert cascadia.controls["midi_cc_output"].cc == 2
+		assert "what a Cascadia answers to **as it leaves the factory**" in flat
+
+	def test_the_portamento_switch_carries_choices_because_a_band_would_invent_a_boundary (self) -> None:
+		"""The maker gives 127 and 0 and says nothing about anything between them."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+		portamento = cascadia.controls["portamento"]
+
+		assert portamento.choices == {"off": 0, "on": 127}
+		assert portamento.values == {}
+		assert portamento.kind == pymidiinstrumentdefs.SWITCH
+
+		# A choice is one exact value, so neither state claims any ground around itself.
+		assert portamento.band("off") == (0, 0)
+		assert portamento.band("on") == (127, 127)
+
+		# **And `off` is a string here, not a boolean.** YAML would have read it either way.
+		assert set(portamento.choices) == {"off", "on"}
+
+	def test_a_controller_sent_to_a_new_cascadia_reaches_a_jack_patched_to_nothing (self) -> None:
+		"""Four of the eight MIDI outputs are patched at the factory and these two are not.
+
+		Which makes this the sharpest thing in the definition for anybody writing a
+		panel: the two controls are real, published and audible only after somebody
+		puts a cable in.
+		"""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+		flat = " ".join((cascadia.source or "").split())
+
+		assert "**SENDING EITHER OF THEM TO A NEW CASCADIA MOVES A VOLTAGE THAT IS CONNECTED " \
+			"TO NOTHING.**" in flat
+		assert "**So controller 1 and controller 2 are audible only after somebody patches a " \
+			"cable**" in flat
+
+		# And in Dual Mono mode they stop being controller destinations at all.
+		assert cascadia.voice.voicing_modes == (1, 2)
+		assert "the two controllers below and the second voice are alternatives, not additions" \
+			in flat
+
+	def test_the_manual_documents_a_firmware_three_releases_behind_the_instrument (self) -> None:
+		"""And the gap was checked rather than assumed harmless."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+
+		assert cascadia.model.firmware == "1.4.4.0"
+		assert cascadia.sources["manual"].edition == "v1.4, for firmware 1.4.1"
+
+		flat = " ".join((cascadia.source or "").split())
+
+		assert "**not one of them touches anything recorded here**" in flat
+
+	def test_the_bend_range_contradiction_is_settled_and_the_clock_one_is_not (self) -> None:
+		"""Two self-contradictions in one manual, resolved two different ways.
+
+		The bend range is decided by the maker's changelog, which carries the manual's
+		unheaded block word for word under a version heading.  The clock is not decided
+		at all, because all four editions carry both halves.
+		"""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+		flat = " ".join((cascadia.source or "").split())
+
+		# Settled: the table is stale, and the typo is what proves the match.
+		assert "**So the maximum is 96 and the table is out of date**" in flat
+		assert "including its misspelling of `Ableton` as `Albeton`" in flat
+
+		# But the shipped value is nowhere printed, so only the settability is recorded.
+		assert cascadia.voice.pitch_bend is not None
+		assert cascadia.voice.pitch_bend.programmable is True
+		assert cascadia.voice.pitch_bend.semitones is None
+
+		# Not settled, and the field rests on the other port instead.
+		assert cascadia.midi.clock == "both"
+		assert "there is no moment at which one replaced the other" in flat
+		assert "**`clock: both` does not rest on either**" in flat
+
+	def test_all_four_editions_of_the_manual_are_cited_and_each_does_a_job (self) -> None:
+		"""Reading the earlier three is what told the two contradictions apart.
+
+		It is also what caught a wrong answer: the first pass concluded that the
+		current edition had introduced the clock clash, on a search window that
+		stopped four words short of the sentence saying otherwise.
+		"""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+		editions = sorted(key for key in cascadia.sources if key.startswith("manual"))
+
+		assert editions == ["manual", "manual_1_1", "manual_1_2", "manual_1_3"]
+		assert sorted(cascadia.sources) == ["changelog", "firmware_index", "manual",
+			"manual_1_1", "manual_1_2", "manual_1_3", "product_page"]
+
+		# Oldest first, and the first edition names no firmware on its cover at all.
+		dates = [str(cascadia.sources[key].dated) for key in
+			("manual_1_1", "manual_1_2", "manual_1_3", "manual")]
+
+		assert dates == sorted(dates)
+		assert "the first, which names no firmware on its cover" in \
+			(cascadia.sources["manual_1_1"].edition or "")
+
+		assert " ".join(prose_of("intellijel", "cascadia").split()).count(
+			"**A few words either side of a match is not the sentence**") == 1
+
+	def test_velocity_is_gated_by_a_switch_that_has_no_controller_number (self) -> None:
+		"""The manual itself describes the silence this value exists to explain."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+
+		assert cascadia.voice.velocity is not None
+		assert cascadia.voice.velocity.note_on == "gated"
+		assert cascadia.voice.velocity.note_off is False
+
+		# **Empty, because the thing doing the gating is a panel switch.** The Perkons
+		# HD-01 is the precedent for recording `gated` with nothing to name.
+		assert cascadia.voice.velocity.gated_by == ()
+
+		flat = " ".join((cascadia.source or "").split())
+
+		assert "**No edition prints which position that switch ships in**" in flat
+		assert "the maker's own missing letter" in flat
+
+	def test_per_voice_channels_is_unrecorded_on_a_monophonic_mpe_instrument (self) -> None:
+		"""The first instrument here where answering to MPE and spreading voices come apart.
+
+		In this corpus the field means the voices are spread across channels, one note
+		to each.  One voice cannot be spread, so both answers would mislead - and the
+		Messenger left the same field unrecorded on the same kind of machine.
+		"""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+
+		assert cascadia.midi.per_voice_channels is None
+		assert cascadia.voice.polyphony == 1
+
+		flat = " ".join((cascadia.source or "").split())
+
+		assert "`true` would misdescribe the instrument and `false` would hide the feature" in flat
+
+		# **AND NOT ONE INSTRUMENT THAT SETS THE FLAG IS MONOPHONIC**, which is the whole
+		# distinction: twelve set it, and none of the twelve records one voice. So this
+		# would have been the first, and the field's meaning here cannot stretch to it.
+		setters = {}
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			other = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			if other.midi is not None and other.midi.per_voice_channels is True:
+				setters[name] = other
+
+		assert len(setters) == 12
+		assert "modal/carbon8m" in setters and "waldorf/iridium" in setters
+		assert [name for name, other in setters.items() if other.voice.polyphony == 1] == []
+
+		# And the monophonic one that also leaves it alone, for a weaker reason: nothing
+		# in its manual said either way.
+		messenger = pymidiinstrumentdefs.load("moog/messenger", [CORPUS])
+
+		assert messenger.midi.per_voice_channels is None
+		assert messenger.voice.polyphony == 1
+
+	def test_what_this_maker_calls_a_midi_mode_is_not_what_midi_calls_one (self) -> None:
+		"""Which is why no mode is recorded, and not for want of looking."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+
+		assert cascadia.midi.mode is None
+
+		flat = " ".join((cascadia.source or "").split())
+
+		assert "**WHAT THIS MAKER CALLS A MIDI MODE IS NOT WHAT MIDI CALLS ONE**" in flat
+		assert "no sheet of the four editions names one or uses the word `omni`" in flat
+
+	def test_the_transport_absence_could_not_have_been_established_by_counting (self) -> None:
+		"""Eight hits, every one of them ordinary English, in a manual with no transport."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+		flat = " ".join((cascadia.source or "").split())
+
+		assert cascadia.midi.transport == "none"
+		assert "**A count would have reported eight transport mentions in a manual that has " \
+			"none**" in flat
+
+		# The other checked absences, each with what was swept for it.
+		assert cascadia.midi.sysex is False
+		assert cascadia.midi.nrpn == "none"
+		assert cascadia.midi.program_change is not None
+		assert cascadia.midi.program_change.receives is False
+		assert cascadia.midi.program_change.sends is False
+
+		# No note range, because a note above the top of the pitch output is not silent.
+		assert cascadia.voice.note_range is None
+		assert "NOT RECORDED: the note range." in flat
+
+	def test_the_first_intellijel_so_the_maker_rule_has_nothing_to_rest_on (self) -> None:
+		"""Eleven times the standing rule has been tested; here there is not even one sibling."""
+		names = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			if name.startswith("intellijel/")]
+
+		assert names == ["intellijel/cascadia"]
+
+		comments = " ".join(prose_of("intellijel", "cascadia").split())
+
+		assert "Intellijel is the thirty-first maker here and its first instrument." in comments
+
+		# Thirty-one makers, counted rather than claimed.
+		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
+
+		assert len(makers) == 31

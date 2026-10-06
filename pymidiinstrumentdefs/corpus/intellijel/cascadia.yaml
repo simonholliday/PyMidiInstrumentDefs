@@ -1,0 +1,365 @@
+# **THIS INSTRUMENT DOES NOT HAVE A CONTROLLER MAP, AND FOUR CONTROLLERS IS THE WHOLE TRUTH OF
+# IT.** Every other definition here that carries a handful of controls carries them because
+# somebody could only find a handful. This one carries four because four is all there are: MIDI
+# arrives, becomes a voltage at one of eight jacks, and which controller drives two of those jacks
+# is whatever its owner last taught it. `midi.control_change: learned` says so, and the four below
+# are the only numbers the maker fixes or defaults.
+#
+# **THE MANUAL CONTRADICTS ITSELF TWICE, AND READING THE OTHER THREE EDITIONS SETTLES ONE OF THE
+# TWO.** The pitch bend range is `(1 - 24)` in the reference table and raised to 96 in the firmware
+# notes twelve sheets later; no earlier edition mentions 96, and the maker's changelog carries
+# those notes word for word under a version heading this manual drops - so the table is stale and
+# the account says which half to believe. The tap clock over USB is enabled by default on one sheet
+# and off by default on another, **in all four editions**, so there is nothing to prefer and
+# neither is carried.
+#
+# **AND THE FIRST READING OF THAT WAS WRONG IN A WAY WORTH RECORDING.** It concluded that the
+# current edition had introduced the USB clash, on the strength of a search whose window of
+# surrounding words stopped four words short of the sentence that says otherwise. The assertion
+# that said so failed. **A few words either side of a match is not the sentence**, and this is the
+# second time in three instruments that reading around a hit rather than reading the hit has been
+# the difference between a finding and a fabrication.
+#
+# **NOTHING ABOUT THIS MAKER IS ASSUMED, BECAUSE THERE IS NOTHING TO ASSUME FROM.** Intellijel is
+# the thirty-first maker here and its first instrument. The standing rule that two instruments by
+# one maker are not a habit has held eleven ways; here there is not even one.
+
+definition: 1
+
+model:
+  manufacturer: Intellijel
+  name: Cascadia
+  # **1.4.4.0, WHICH IS NOT THE FIRMWARE THE MANUAL DOCUMENTS** - see the account. The maker's own
+  # firmware index names this one and the three releases between it and the manual's 1.4.1 change
+  # nothing recorded here.
+  firmware: "1.4.4.0"
+  # Checked 2026-10-06.
+
+source: >-
+  **EIGHT JACKS, AND MIDI IS WHAT COMES OUT OF THEM.** "This section of Cascadia takes MIDI data
+  received at the back panel's MIDI IN [14.G] jack (or USB MIDI [14.J] port) and extracts 8
+  user-assignable CV outputs for patching into Cascadia" (manual p. 17). So a controller sent here
+  does not set a parameter: it moves a voltage, and what that voltage reaches is decided with a
+  patch cable. The eight are pitch, velocity, gate, trigger, a clock, an LFO, and the two the
+  controllers below drive.
+
+  **FOUR CONTROLLER NUMBERS ARE PUBLISHED FOR THIS INSTRUMENT AND NO MORE.** All 122 sheets were
+  swept for every form of a controller number, and five appear: 1, 2, 5, 65 and 74. Two of the
+  five are fixed, two are factory choices the owner can replace, and the fifth is a recommendation
+  rather than an assignment, so it is not below.
+
+  **THE TWO FIXED ONES ARE A PORTAMENTO, AND THEIR VALUES ARE EXACT RATHER THAN BANDED.** "CC 65
+  (Portamento Control) on Cascadia's MIDI Channel" (manual p. 18), with "Value 127 = Turns
+  Cascadia's portamento ON" (manual p. 18) and "Value 0 = Turns Cascadia's portamento OFF"
+  (manual p. 18) - two numbers and not two
+  halves of the range, which is why that control carries `choices` and not `values`: nothing says
+  what 1 to 126 do. Beside it, "Sets Cascadia's portamento time from 0 seconds (CC 5 = 0) to about
+  1.1 seconds (CC 5 = 127), slewing the pitch" (manual p. 18). **Neither is learnable and neither
+  can be reassigned**; they are the only two controllers that reach into the instrument rather than
+  out of a jack. The changelog dates them to firmware 1.2.0.2 and records a fix to both at 1.3.1.0
+  - "FIXED: MIDI Portamento (CC# 5 and 65) was not responding in certain configurations"
+  (changelog), an entry the manual's own change log has not got.
+
+  **THE OTHER TWO ARE DEFAULTS, AND SAYING SO IS THE POINT OF RECORDING THEM.** "By default, this
+  is assigned to 'CC 2 (Breath Controller)', though you can select another value" (manual p. 18) of
+  the MIDI CC jack, and "By default, this is assigned to 'CC 1 (Modulation Wheel)', though you can
+  select another source" (manual p. 21) of the MIDI MOD jack. Either jack can instead be driven by
+  any number at all - "Selects which MIDI CC# is the source of the control voltage sent out
+  Cascadia's MIDI CC jack" (manual p. 109), over the full `(0 - 127)` - or by channel pressure. So these two
+  are what a Cascadia answers to **as it leaves the factory**, and a consumer offering them should
+  say as much rather than present them as fixtures. `akai/mpc_key_37` carries its single control on
+  exactly this footing.
+
+  **SENDING EITHER OF THEM TO A NEW CASCADIA MOVES A VOLTAGE THAT IS CONNECTED TO NOTHING.** Four
+  of the eight jacks are patched internally when the instrument arrives and four are not, and the
+  two that carry controller data are in the second group: the manual gives a DEFAULT ROUTING for
+  pitch, velocity, gate and trigger, and none for the MIDI CC, MIDI MOD, MIDI LFO or MIDI CLK
+  jacks. **So controller 1 and controller 2 are audible only after somebody patches a cable**, and
+  a panel that offers them without saying so promises a sound that will not arrive.
+
+  **THE FIFTH NUMBER IS ADVICE AND IS DELIBERATELY NOT A CONTROL.** For expressive play the maker
+  says to teach the MIDI CC jack controller 74: "CC Number = 74 Sound Control 5 (MPE Timbre)"
+  (manual p. 102), and "CC74 (MPE Y/Timbre) and Pressure (MPE Z/Pressure) are learnable and output
+  from the active note" (manual p. 118). Learnable, which is the opposite of assigned. **It is also
+  the trap in the sweep that found these five**: the words `Sound Control 5` end in a digit, so a
+  pattern that accepts `control 5` reads the name of controller 74 as a mention of controller 5.
+  A number is only a controller number when the word beside it says so, and `control` does not say
+  so.
+
+  **EVERY CONTROL BELOW IS `receives`, AND ONE SENTENCE SETTLES IT FOR ALL OF THEM.** "If enabled
+  in the Intellijel Config app, the MIDI OUT jack transmits Cascadia's internal MIDI Tap Clock (as
+  generated by Cascadia)" (manual p. 78). A clock, and nothing else: no sentence in any of the four
+  editions names a controller, a note or a program this instrument sends. The DIN output is
+  otherwise a repeater - "All MIDI data appearing at the MIDI IN [14.G] jack is transmitted out
+  this jack" (manual p. 78), with the qualification that "MIDI data arriving at the USB MIDI [14.J]
+  port is not thru'd" (manual p. 78), which is a fact about a cable rather than about this
+  instrument's own messages. `dreadbox/artemis` reached the same direction at the previous rank by
+  inference from its settings and said it was the one judgement not resting on a sentence. **This
+  one rests on a sentence.**
+
+  **THE DOCUMENT IS THREE FIRMWARE RELEASES BEHIND THE INSTRUMENT, AND THAT WAS CHECKED RATHER
+  THAN ASSUMED HARMLESS.** The manual's cover reads `Firmware Version: 1.4.1 | Revision:
+  2026.04.13`, while the maker's firmware index gives `1.4.4.0` (firmware_index) and the product
+  page prints the same number at the end of its Firmware row (product_page). The three releases in
+  between are a USB product identifier, a velocity timing fix and an LFO freeze (changelog), and
+  **not one of them touches anything recorded here** - which is why the model above names the
+  current firmware rather than the manual's.
+
+  **THE PITCH BEND RANGE IS CONTRADICTED INSIDE ONE DOCUMENT, AND THE CHANGELOG DECIDES IT.** The
+  configuration chapter prints `Pitch Bend Range (1 - 24)`, which "Sets the max number of semitones
+  that an incoming MIDI Pitch Bend message will affect the MIDI PITCH" (manual p. 106). Twelve
+  sheets later the same manual says "TWEAK: Pitch Bend Range (Sensitivity) max increased from 24 to
+  96" (manual p. 118). **The second one is firmware 1.4.0.0's release note, printed with its
+  version heading removed** directly above a change log whose newest entry is 1.4.1, so it reads as
+  though it were current; every line of that block is in the changelog's 1.4.0.0 entry, including
+  its misspelling of `Ableton` as `Albeton`, which is what proves the match rather than suggests
+  it. The manual's own 1.4 entry lists that release's features and drops both of its
+  tweaks, which is how the stale table went unnoticed. **So the maximum is 96 and the table is
+  out of date** - but no edition anywhere prints the shipped value, so `pitch_bend` records that
+  the range is settable and not what it is. In the MPE modes it is a separate setting again, whose
+  default the changelog does give as 48.
+
+  **AND THE TAP CLOCK OVER USB HAS TWO ANSWERS IN EVERY EDITION, SO NEITHER IS CARRIED.** Of the
+  USB port: "Tap Clock output is enabled, by default, in the factory settings" (manual p. 78). Of
+  the same port's `Off` setting: "Cascadia does not send its own internal Tap Tempo MIDI Clock to
+  the USB MIDI port. This is the default setting" (manual p. 113). Both sentences are in the
+  current edition, in the edition before it, in the one before that and in the first
+  (manual_1_3, manual_1_2, manual_1_1), so there is no moment at which one replaced the other.
+  **`clock: both` does not rest on either**: it rests on the DIN output, whose entry in the
+  configuration chapter has never carried a default marker in any of the four, leaving sheet 78's
+  sentence about it uncontradicted. What a consumer should do about USB is check the instrument.
+
+  **CLOCK GOES BOTH WAYS AND THE INSTRUMENT DECIDES WHICH WITHOUT BEING ASKED.** "By default,
+  Cascadia is set to power on using Tap (Auto Detect MIDI) mode" (manual p. 20), and "if you send
+  MIDI Clock into Cascadia, then it will automatically switch over to MIDI clock mode" (manual
+  p. 20). So it answers to an incoming clock, generates one of its own, and the arrival of MIDI is
+  itself the switch. "This is the factory default" (manual p. 112) of that automatic mode.
+
+  **WHAT THIS MAKER CALLS A MIDI MODE IS NOT WHAT MIDI CALLS ONE**, and `midi.mode` is omitted for
+  that reason rather than for want of looking. The configuration chapter's `MIDI Mode` offers Mono,
+  Dual Mono, MPE (Lower Zone) and MPE (Upper Zone) (manual p. 105), with "standard Mono mode
+  (factory default)" (manual p. 119) - and the front panel calls the first of the four `Single`
+  where the chapter calls it `Mono`. None of them is a reception mode in the sense the
+  specification means, and no sheet of the four editions names one or uses the word `omni`.
+
+  **DUAL MONO BUYS A SECOND VOICE WITH THE TWO CONTROLLER JACKS.** "Cascadia works as a 2-voice
+  synth, and responds to two independent MIDI channels" (manual p. 105), the second channel's
+  "pitch appearing on the MIDI CC output jack" (manual p. 100) and its gate on the MIDI MOD jack,
+  "thus disabling these two jacks as MOD sources on the first channel" (manual p. 100). So the
+  two controllers below and the second voice are alternatives, not additions - which is the
+  sharpest thing in this definition for anybody writing a panel, because nothing in the format can
+  express it.
+
+  **IT ANSWERS TO MPE WHILE SOUNDING ONE NOTE, AND `per_voice_channels` IS LEFT UNRECORDED AS A
+  RESULT.** "Although a monophonic instrument, Cascadia is capable of responding to MPE data"
+  (manual p. 101), across up to fifteen member channels, with pitch on bend, timbre on a learned
+  controller and pressure on channel aftertouch. **In this corpus that field means the voices are
+  spread across channels, one note to a channel** - which is what `modal/carbon8m` and
+  `waldorf/iridium` set it for. One voice cannot be spread, so `true` would misdescribe the
+  instrument and `false` would hide the feature. `moog/messenger` left the same field unrecorded on
+  the same kind of machine, and consistency with it is deliberate. "Cascadia is a monophonic device
+  per MIDI Channel" (manual p. 106).
+
+  **VELOCITY ARRIVES AND A PANEL SWITCH DECIDES WHETHER IT DOES ANYTHING.** "MIDI VEL OUT - CV
+  output with a range of 0V - 5V. The voltage is proportional to the velocity of the last played
+  MIDI note" (manual p. 21), and that output is one of the four patched at the factory: "If nothing
+  is patched into the CTRL IN [4.B] jack, then MIDI VELOCITY [1.E] is used" (manual p. 32) by
+  envelope A. But the switch beside that jack has three positions, and at one of them "The envelope
+  ignore any signal present at the CTRL IN jack, and always outputs a full (+5V) envelope" (manual
+  p. 32) - the maker's own missing letter. The manual even names the failure this field exists to
+  explain: "it will have no audible effect until a higher voltage is patched into the jack" (manual
+  p. 32). **No edition prints which position that switch ships in**, so `gated` is recorded, and
+  `gated_by` is empty because the thing doing the gating is a switch with no controller number of
+  its own. `erica_synths/perkons_hd_01` is the precedent for both halves of that.
+
+  **AFTERTOUCH IS CHANNEL PRESSURE, SAID TWICE AND IN THOSE WORDS.** "The MIDI CC jack outputs a
+  voltage derived from Channel Aftertouch, rather than from a MIDI CC value" (manual p. 109), and
+  the MIDI MOD jack's chapter says the same of itself. No form of polyphonic aftertouch or key
+  pressure appears anywhere in 122 sheets.
+
+  CHECKED ABSENCES, AND WHAT WAS SWEPT FOR EACH. Every sheet of the current edition was searched
+  with its text squashed, and **every hit was read rather than counted**, which for two of the
+  terms is the whole of the work:
+
+  - **Program change: nothing.** `program`, `patch change` and `bank select` return no hit at all
+    in 122 sheets, so `program_change` records both halves as false. This instrument has no
+    presets to change to.
+  - **System exclusive: nothing**, for `sysex`, `system exclusive` and `exclusive`. Firmware
+    arrives over USB through a bootloader, not as a dump.
+  - **NRPN and RPN: nothing**, nor `registered parameter`. Nor any `LSB`, `14-bit` or `high
+    resolution`, so no control below has a fine half.
+  - **Transport: eight hits and not one of them a MIDI message.** `start`, `stop` and `continue`
+    name real messages and are also ordinary English, and here they are all the English -
+    "start rerouting signals" (manual p. 7), "continue to repeat" (manual p. 97), and six more of
+    the same. **A count would
+    have reported eight transport mentions in a manual that has none**, which is why
+    `transport: none` is a checked absence and not a guess.
+  - **Local control: one hit, and it is the regulatory notice** on the inside cover about "local
+    laws and regulations" (manual p. 2).
+  - **A pedal: thirty-three hits and none of them over MIDI.** The jack is an "EXPRESSION PEDAL
+    input and level control" (manual p. 55), a control voltage input, and the rest are effects
+    pedals in the patch examples. There is no sustain controller here.
+  - **Note off: two hits, both the panic function** - a long press on the pitch button "triggers a
+    MIDI 'All Notes Off' message" (manual p. 17). That is a channel mode message, which this
+    format refuses as a control in any case. Nothing anywhere mentions release velocity, so
+    `note_off: false`.
+  - **MIDI time code and machine control: nothing.**
+
+  NOT RECORDED: the note range. The manual maps "MIDI note 0 (C-2)" (manual p. 17) to the bottom of the pitch
+  output and note 120 to the top, over "a 10 octave range" (manual p. 17) - but a note above 120
+  is not thereby silent, which is what this field would claim, and no sheet says what becomes of
+  one. The same sheet also gives that top voltage as a figure its own range contradicts, which is
+  a third self-contradiction and the only one that changes nothing here.
+
+sources:
+  manual:
+    kind: manual
+    title: Cascadia Manual
+    edition: v1.4, for firmware 1.4.1
+    dated: 2026-04-13
+    landing: "https://intellijel.com/shop/desktop/cascadia/"
+    url: "https://intellijel.com/downloads/manuals/cascadia_manual_v1.4_2026.04.13.pdf"
+    sha256: 21a6b2159fb3e97aa51d8977eb364b27fe34c4d3b9d1e475a20061f1ccfa9d80
+    retrieved: 2026-10-06
+    page_offset: 0
+    # **122 sheets, and 121 of them print a folio equal to their own sheet number**, so a page
+    # cited here and a page of the file are the same page. Only the cover is unnumbered.
+    # It is the one edition of the four with no creation stamp in the file at all, and the one
+    # exported by Google Docs rather than printed from a browser.
+  manual_1_3:
+    kind: manual
+    title: Cascadia Manual
+    edition: v1.3, for firmware 1.3
+    dated: 2023-12-18
+    landing: "https://intellijel.com/shop/desktop/cascadia/"
+    url: "https://intellijel.com/downloads/manuals/cascadia_manual_v1.3_2023.12.18.pdf"
+    sha256: a5b8e40ee2cb3e5656a9b4b989087ae6ddcf7125ec0d30358e6f90bdc28bf5c5
+    retrieved: 2026-10-06
+    # 117 sheets. Cited for what it has and has not got: both halves of the clock contradiction,
+    # and no mention of the raised bend range.
+  manual_1_2:
+    kind: manual
+    title: Cascadia Manual
+    edition: v1.2, for firmware 1.2
+    dated: 2023-10-15
+    landing: "https://intellijel.com/shop/desktop/cascadia/"
+    url: "https://intellijel.com/downloads/manuals/cascadia_manual_v1.2_2023.10.15.pdf"
+    sha256: f8388f46aef16346281f3c3d3c0a997d1276886c6be1ca3ee4525440012f090b
+    retrieved: 2026-10-06
+    # 112 sheets, and the second of three confirmations.
+  manual_1_1:
+    kind: manual
+    title: Cascadia Manual
+    edition: v1.1, the first, which names no firmware on its cover
+    dated: 2023-04-18
+    landing: "https://intellijel.com/shop/desktop/cascadia/"
+    url: "https://intellijel.com/downloads/manuals/cascadia_manual_v1.1_2023.04.18.pdf"
+    sha256: 85a3f84ecd33d4fe9ea506f256c70ae5339c00ba3dbd838645d0686e40a1dea0
+    retrieved: 2026-10-06
+    # 110 sheets, and the only edition whose cover prints a revision date and no firmware version.
+    # It is what makes the clock contradiction as old as the instrument rather than recent.
+  changelog:
+    kind: release_notes
+    title: Cascadia changelog, from the Intellijel Firmware Updater
+    landing: "https://intellijel.github.io/firmware/"
+    url: "https://intellijel.github.io/firmware/docs/Cascadia.html"
+    sha256: 4765ca4511d1b75d4c42e3aeadf40d2fe283046ba5b3af73fe909cdbfd799c66
+    retrieved: 2026-10-06
+    paginated: false
+    # **Fourteen versions, 1.1.0.0 to 1.4.4.0, each with its date.** Cited by source key.
+    # Served from the maker's own public firmware repository, and it is what the updater shows a
+    # person choosing a version - so it is published documentation rather than a found artefact.
+    # Saved as served and as text; **the digest above is the text copy**, which is the one the
+    # citation checker reads.
+  firmware_index:
+    kind: specification
+    title: Intellijel Firmware Updater product index
+    landing: "https://intellijel.github.io/firmware/"
+    url: "https://intellijel.github.io/firmware/modules.json"
+    sha256: dcdd1541110eea30831fe49ebbcd188fe610327f2b89098e06a7819c3b2d49fb
+    retrieved: 2026-10-06
+    paginated: false
+    # **The maker's machine-readable statement of which firmware is current**, and the reason the
+    # model above can name one the manual does not: the Cascadia's entry reads
+    # `{"name": "Cascadia", "prefix": "Cascadia", "version": "1.4.4.0", "beta": ""}`, with the
+    # matching binary in the same repository. An empty `beta` says it is not a pre-release.
+    # No maker's program was installed to learn this; it is the data one of them reads.
+  product_page:
+    kind: product_page
+    title: Cascadia Desktop Semi-Modular Synth
+    landing: "https://intellijel.com/shop/desktop/cascadia/"
+    url: "https://intellijel.com/shop/desktop/cascadia/"
+    sha256: 60938b5ace8beee5707ea7022693874856a863b09a585e94b5f9b409493e07f4
+    retrieved: 2026-10-06
+    paginated: false
+    # Cited by source key, for the printed name and for the four editions of the manual it lists
+    # with a date against each. Saved as served and as text; **the digest above is the text
+    # copy**, which is the one the citation checker reads.
+    # **Its address under `/shop/eurorack/` answers with a redirect to `/shop/desktop/`**, so the
+    # maker files this among desktop instruments rather than modules - checked first, because a
+    # house that sells mostly modules is where that question goes wrong.
+
+midi:
+  # 1 to 16, set by holding the pitch button and playing something - "the next MIDI channel
+  # message received at Cascadia's MIDI input will set the MIDI channel" (manual p. 17) - or from
+  # the maker's configuration program. In the MPE modes the channel setting disappears and up to
+  # fifteen member channels are used instead.
+  channels: [1, 16]
+  # Answers to an incoming clock and generates one of its own. **Rests on the DIN output alone**;
+  # see the account for the USB port, about which this manual says two different things.
+  clock: both
+  # A checked absence, and the one that could not have been established by counting hits.
+  transport: none
+  # **The field this whole instrument turns on.** Two jacks take whichever controller their owner
+  # teaches them, over the full 0 to 127, so there is no factory map to publish - the reading
+  # `teenage_engineering/op_1` established and `waldorf/iridium` carries alongside fifteen
+  # published controls, as this one does alongside four.
+  control_change: learned
+  nrpn: none
+  sysex: false
+  program_change:
+    receives: false
+    sends: false
+
+voice:
+  addressing: pitches
+  # One voice, which the manual says twice and in two ways. Two in Dual Mono mode, and the account
+  # explains what that costs.
+  polyphony: 1
+  voicing_modes: [1, 2]
+  velocity:
+    # It arrives, and whether it is audible depends on a three-position panel switch whose shipped
+    # position no edition prints. See the account - the manual itself describes the silence this
+    # value exists to explain.
+    note_on: gated
+    note_off: false
+  aftertouch: channel
+  pitch_bend:
+    # **Settable, and the shipped value is nowhere printed in four editions.** The maximum is
+    # contradicted inside the current one, which the account settles; the default is simply absent.
+    programmable: true
+
+groups:
+  # One group, because the maker's panel has one section that a controller reaches, and it is
+  # printed `MIDI / CV` above the eight jacks these four controllers work through.
+  midi_cv: MIDI / CV
+
+controls:
+
+  # THE TWO FIXED CONTROLLERS ------------------------------------------------
+  # Not learnable and not reassignable, unlike everything else this instrument answers to.
+
+  # Exact values rather than bands: the manual gives 127 and 0 and says nothing about anything
+  # between them, so `choices` is the honest shape. A band would invent a boundary at 64.
+  portamento:          {label: Portamento Control, cc: 65, choices: {"off": 0, "on": 127}, direction: receives, group: midi_cv}
+  # 0 to about 1.1 seconds across the full range. No `unit`, because the range is in controller
+  # values and not in seconds, and the seconds are in the account where they can be explained.
+  portamento_time:     {label: Portamento Time MSB, cc: 5, direction: receives, group: midi_cv}
+
+  # THE TWO FACTORY ASSIGNMENTS ----------------------------------------------
+  # Each is the default source for one jack and can be changed to any controller in 0 to 127, or
+  # to channel pressure. Each drives a jack that is patched to nothing until somebody patches it.
+  # In Dual Mono mode both stop being controller destinations altogether.
+
+  midi_cc_output:      {label: MIDI CC Output, cc: 2, direction: receives, group: midi_cv}
+  midi_mod_output:     {label: MIDI MOD Output, cc: 1, direction: receives, group: midi_cv}

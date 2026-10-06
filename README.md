@@ -169,6 +169,7 @@ self-contained YAML file, and you share it by sending it.
 | `erica_synths/hexdrums` | Erica Synths HexDrums: ten voices on ten consecutive notes and no controllers at all - the one instrument here whose maker says it chose not to have any, and says why |
 | `erica_synths/perkons_hd_01` | Erica Synths PĒRKONS HD-01: 44 controls off two pages of a manual reached through a news item, whose numbers a player can rewrite in a file on the SD card |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |
+| `intellijel/cascadia` | Intellijel Cascadia: four controllers, and four is all there are - a semi-modular whose MIDI becomes a voltage at eight jacks, two of them driven by whichever controller its owner last taught it |
 | `korg/drumlogue` | Korg drumlogue: 66 controls out of the first of its manual's **two** complete implementation charts - the alternate map shares 67 of its numbers and 65 of those mean something else |
 | `korg/electribe` | Korg electribe: 18 controls out of a plain text file that prints every number twice, with sixteen parts on one MIDI channel and no way given of choosing one |
 | `korg/kronos` | Korg KRONOS: 72 controls, every one travelling both ways, out of a MIDI document that is prose rather than a chart - and 28 of them switched off on a new instrument until somebody loads them |

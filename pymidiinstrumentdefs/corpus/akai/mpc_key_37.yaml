@@ -1,0 +1,195 @@
+# **ONE CONTROL, AND IT IS A FACTORY ASSIGNMENT THE PLAYER CAN CHANGE TO ANY OTHER NUMBER.** The
+# modulation wheel sends controller 1 until somebody sets it otherwise: "Mod Wheel: Use this field
+# to select the MIDI function for the keyboard modulation wheel. Select Disable, Default - CC 001:
+# Modulation, or CC 000-126." (guide p. 103). That is the only controller number this maker
+# publishes for this machine, and `control_change: learned` is what says the rest are the owner's.
+#
+# **THIS IS THE THIRD DEFINITION OUT OF ONE DOCUMENT, AND THE FIRST OF THE THREE TO FIND ANYTHING
+# IN IT.** `akai/mpc_live` and `akai/mpc_sample` both carry no controls at all. The guide is 530
+# sheets about an operating system that runs on fourteen machines - its own release notes name
+# them - and the MPC Live's definition established how it tells them apart. **What is new here is
+# that this machine has a keybed**, and the guide has a screen for it that the others' definitions
+# had no reason to read.
+#
+# **SO EVERY FIELD BELOW THAT IS NOT THE MPC LIVE'S COMES OFF TWO SHEETS**, 102 and 103, headed
+# `Keyboard Control` and scoped in their first sentence: "The keyboard control screen allows you
+# to edit the functions of the keybed on MPC Key 61, Key 37, and Key 37 G2." (guide p. 102).
+# That sentence is what makes the aftertouch, the velocity and the channel below statements about
+# this box rather than about MPCs.
+#
+# **AND THE MACHINE IT IS NOT IS NAMED ON THE SAME SHEETS.** There is an `MPC Key 37` and an `MPC
+# Key 37 G2`, the guide gives each its own hardware chapter and its own specification table, and
+# the release notes list both separately among fourteen. This definition is the first of them.
+# **The two differ in MIDI**: the G2 has `Ableton Live Control Mode` and a USB-C port that can act
+# as a host for MIDI controllers, and this machine has neither.
+#
+# **THE GUIDE CONTRADICTS ITSELF ABOUT THIS MACHINE'S KEYBED, WHICH IS WORTH KNOWING BEFORE
+# TRUSTING IT ON ANYTHING SMALLER.** Its hardware chapter calls the keybed "37-key semi-weighted,
+# velocity-sensitive" (guide p. 376); its specification table calls the same keybed "37
+# synth-action keys with aftertouch" (guide p. 482). Semi-weighted and synth-action are different
+# things, and a reader cannot tell from this document which this instrument has. Nothing below
+# depends on it - but the aftertouch and the velocity do come from these same two sheets'
+# neighbourhood, so the disagreement is recorded rather than passed over.
+
+definition: 1
+
+model:
+  manufacturer: Akai Professional
+  name: MPC Key 37
+  # **THE OPERATING SYSTEM'S VERSION, NOT THE MACHINE'S**, which is what this maker numbers: the
+  # guide is `v3.9` and the latest release notes are `3.9.1`, whose compatibility line names this
+  # machine among fourteen. There is no firmware number for an MPC Key 37 as such.
+  firmware: "3.9.1"
+  # 37 keys, 16 pads, a 7-inch touchscreen, DIN MIDI in and out, and CV/Gate outputs. A standalone
+  # workstation that is also a controller for this maker's desktop software.
+  # Checked 2026-10-06.
+
+source: >-
+  **THREE DOCUMENTS, ALL THREE SHARED WITH TWO OTHER DEFINITIONS, AND NONE OF THEM IS ABOUT THIS
+  MACHINE.** The `MPC Standalone OS` user guide describes an operating system running on fourteen
+  machines; the two sets of release notes name all fourteen in their compatibility lines. So the
+  work here was scoping rather than transcription: deciding which of 530 sheets' statements are
+  about an MPC Key 37.
+
+  `akai/mpc_live` reads the same guide and sets out how it tells its machines apart - in five
+  places, of which only one can be searched for. **That account is not repeated here**, and a
+  reader of this definition should read it, because it is the reason to doubt any statement in
+  this document that does not name a machine.
+
+  **WHAT IS NEW HERE IS THE KEYBED.** Two sheets, 102 and 103, are headed `Keyboard Control` and
+  open by naming the three machines they cover, this one among them. They give the aftertouch, the
+  note-on velocity, the keyboard's own MIDI channel, the pitch wheel's and modulation wheel's
+  assignments, and a local-off setting - **none of which the two definitions before this one had
+  any reason to read**, because neither of their machines has keys.
+
+  **AND ONE CONTROLLER NUMBER IS PUBLISHED**, which is one more than either of them found. See the
+  comment above the definition.
+
+  WHAT THE PROGRAM CHANGE FIELD CANNOT SEND. A track's outgoing program change takes "a value from
+  1-127" (guide p. 54), so **this machine cannot send one of the 128 numbers a program change can
+  carry** - which is a fact about the field rather than about the format, and is recorded here
+  because nothing below holds it.
+
+  NOT RECORDED: the note range and the polyphony, neither given for this machine anywhere in the
+  guide or its specification table. NRPN and system exclusive, **neither word anywhere in 530
+  sheets or in either set of release notes** - which is the silence the MPC Live's definition
+  established and this one inherits rather than re-proving. And `program_change.presets`, for the
+  reason that definition gives: what a program change selects here is a sequence or a track rather
+  than a preset.
+
+sources:
+  guide:
+    kind: manual
+    title: MPC Standalone OS User Guide
+    edition: v3.9
+    landing: "https://www.akaipro.com/mpc-manuals/"
+    url: "https://cdn.inmusicbrands.com/Software/15JM26PSBC/MPC%20Standalone%20OS%20-%20User%20Guide%20-%20v3.9.pdf"
+    sha256: b0630c574556ed080cb5fb3133352cca4e1dcc92282f78317c0c8f88f9f0090b
+    retrieved: 2026-10-04
+    # **530 SHEETS ABOUT FOURTEEN MACHINES, AND THIS ONE IS NAMED ON 48 OF THEM** - 32 of
+    # those apart from the `MPC Key 37 G2`, which is itself named on 43. Its own
+    # hardware chapter is sheets 374 to 377, its specification table sheet 482, and the keyboard
+    # control screen that settles most of this definition is sheets 102 and 103.
+    # **The same file `akai/mpc_live` and `akai/mpc_sample` cite**, retrieved on 2026-10-04 for
+    # the first of them and not fetched again: one document, three citers, one digest.
+    # Its folio is its own sheet number, so a locator needs no offset.
+    page_offset: 0
+  notes_3_9_1:
+    kind: release_notes
+    title: MPC 3.9.1 Release Notes
+    edition: "3.9.1"
+    landing: "https://www.akaipro.com/mpc-manuals/"
+    url: "https://cdn.inmusicbrands.com/Software/MPC/MVSU391APC/MPC%203.9.1%20-%20Release%20Notes.pdf"
+    sha256: 593cb2064df3387eb5461b027ab8a4f6f17c69bb538e8ab2dfaf39ca85ec5899
+    retrieved: 2026-10-04
+    paginated: false
+    # Two sheets. **Cited for the firmware version and for the compatibility line that names
+    # fourteen machines**, this one and the G2 among them as separate entries.
+  notes_3_9:
+    kind: release_notes
+    title: MPC 3.9 Release Notes
+    edition: "3.9"
+    landing: "https://www.akaipro.com/mpc-manuals/"
+    url: "https://cdn.inmusicbrands.com/Software/MPC/MVSU39APC/MPC%203.9%20Release%20Notes.pdf"
+    sha256: f6b2a7f6a8caa1e9014449f28357c53bd24493d1e3bea13be7ab4e4440a9acc1
+    retrieved: 2026-10-04
+    # Thirteen sheets. **Cited for what separates this machine from the one that shares its
+    # name**: sheet 9 is headed `MPC One G2 & MPC Key 37 G2 - Device-Specific Enhancements` and
+    # gives the G2 a USB-C host mode and an Ableton Live Control Mode this machine does not have.
+    # Sheet 12 carries the one fix that names this machine: "MPC Key 61/MPC Key 37: Keyboard
+    # Control settings now persist after shutdown and new project." (notes_3_9 p. 12).
+    page_offset: 0
+
+midi:
+  # **ESTABLISHED FOR THIS MACHINE'S KEYBED RATHER THAN INHERITED**: "MIDI Channel: This
+  # determines which MIDI channel (1-16) the keyboard input will use to receive messages." (guide
+  # p. 102), on a sheet whose first sentence names this machine. The keyboard's outgoing channel
+  # is a second setting of the same kind on the same sheet.
+  channels: [1, 16]
+  # NOT RECORDED, the mode: there is no implementation chart in any of the three documents.
+  # **BOTH, AND EITHER DIRECTION CAN BE SWITCHED OFF OR SET TO SOMETHING THAT IS NOT MIDI.** It
+  # receives by a setting with four values - whether the machine "receives MIDI Clock information
+  # (MIDI Clock), MIDI Time Code information (MTC), communication from Ableton Link, or none of
+  # these (Off)" (guide p. 57) - and sends per port: "When Sync is enabled, the MIDI output port
+  # will send MIDI sync messages according to the type set under Sync Send" (guide p. 63).
+  # **Two of the four choices either way are not MIDI clock at all**, which no field here holds.
+  clock: both
+  program_change:
+    # Both ways. Received: "This determines what an incoming MIDI program change message will
+    # change: a Sequence or Track" (guide p. 64). Sent: "To select a MIDI program change value for
+    # the track to send" (guide p. 54) - and see the account for the range that field accepts.
+    receives: true
+    sends: true
+    # NOT RECORDED, the preset count: what a program change selects here is a sequence or a track,
+    # which is a setting rather than a number of presets.
+  # **EVERY OTHER CONTROLLER NUMBER IS THE OWNER'S.** "You can use the MIDI Learn function to
+  # assign external MIDI controllers to various parameters in your specific MPC project" (guide
+  # p. 320), and the assignments are saved with the project rather than with the instrument. So
+  # the one control below is a factory default and not a fixed fact, which is what this word says.
+  control_change: learned
+  # NOT RECORDED: NRPN and system exclusive. Neither word is anywhere in the 530 sheets or in
+  # either set of release notes - a silence `akai/mpc_live` established by enumeration, and one
+  # this definition inherits rather than re-proving.
+
+voice:
+  addressing: pitches
+  # NOT RECORDED, the note range. 37 keys with a transposition "up to 36 semitones up or down"
+  # (guide p. 102) says what the keybed reaches, not what the engine answers to, and no document
+  # gives the second.
+  # NOT RECORDED, the polyphony: the specification table for this machine (guide p. 482) gives
+  # converters, connectors and key counts and no voice count at all.
+  velocity:
+    # **RECEIVED, AND THE PLAYER CAN MAKE IT A CONSTANT**: "Note On Velocity: This determines the
+    # incoming velocity of note on messages. For velocity that is responsive to your playing,
+    # select As played. Alternatively, you can set a fixed velocity for all note on messages, at
+    # 12%, 18%, 25%, 31%, 37%, 43%, Half, 56%, 62%, 68%, 75%, 81%, 87%, 93% or Full velocity."
+    # (guide p. 102). **So fifteen fixed values or the one that was played**, which is a thing
+    # this field cannot say - and `akai/mpc_live` records nothing here, because its machine has
+    # pads and no keyboard control screen.
+    note_on: received
+  # **CHANNEL, AND THE MAKER NAMES THE KIND IN A BRACKET**: "Aftertouch (Channel Pressure): This
+  # determines whether aftertouch is enabled (As Played) or not (Disable)." (guide p. 102). That
+  # bracket is the whole reason this field can be filled: the specification table says only "37
+  # synth-action keys with aftertouch" (guide p. 482), which is the case this corpus has an open
+  # question about, and this sheet settles it.
+  aftertouch: channel
+  pitch_bend:
+    # Settable, with no range published - "Range Up/Range Down: Use these sliders to set the range
+    # of the pitch bend in semitones." (guide p. 103) and a Global Pitch Bend switch that
+    # overrides every program's own. `akai/mpc_live` reads the same pair and records the same
+    # thing.
+    # **AND THE WHEEL CAN BE MADE TO SEND SOMETHING ELSE ENTIRELY**: "Pitch Bend: Use this field
+    # to select the MIDI function for the keyboard pitch wheel. Select Disable, Default - Pitch
+    # Bend, or CC 000-126." (guide p. 103) - so a pitch wheel set to a controller number sends no
+    # pitch bend at all, which this field cannot say.
+    programmable: true
+
+groups:
+  wheels: Wheels
+
+controls:
+
+  # **THE ONLY CONTROLLER NUMBER THIS MAKER PUBLISHES FOR THIS MACHINE**, and it is a default
+  # rather than a fixture - see `midi.control_change` above. It travels one way: the wheel sends
+  # it, and nothing in any of the three documents says the machine answers to it.
+  modulation: {label: Mod Wheel, cc: 1, direction: transmits, group: wheels}

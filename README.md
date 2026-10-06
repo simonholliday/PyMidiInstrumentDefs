@@ -132,6 +132,7 @@ self-contained YAML file, and you share it by sending it.
 |------|------------|
 | `ableton/move` | Ableton Move: no controls, because its maker states the absence - "MIDI CC, and MIDI mapping are not supported" - and the one controller it sends is All Sound Off on stop; built against its own manual, which is three years of releases out of date and says nothing about being so |
 | `access/virus_ti` | Access Virus TI: four controls, because the maker's two manuals publish no control map at all - the 2006 one says the list is on its website and the 2013 one deletes even that sentence |
+| `akai/mpc_key_37` | Akai MPC Key 37: one controller number, which is the mod wheel's factory default - the third definition out of one 530-sheet guide about fourteen machines, and the first to find anything in it |
 | `akai/mpc_live` | Akai Professional MPC Live: no controls either, because one user guide covers ten machines and every controller number in it is one the owner assigns |
 | `akai/mpc_sample` | Akai Professional MPC Sample: no controls at all, because its maker publishes no controller number and the absence is proved rather than assumed |
 | `arturia/astrolab` | Arturia AstroLab: 36 controls off a table that gives a direction for every row in both directions - and a Section column that cannot be read as a grouping, because the rows are in controller-number order |

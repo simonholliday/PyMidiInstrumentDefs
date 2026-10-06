@@ -148,6 +148,7 @@ class TestBundledCorpus:
 		assert pymidiinstrumentdefs.available([CORPUS]) == [
 			"ableton/move",
 			"access/virus_ti",
+			"akai/mpc_key_37",
 			"akai/mpc_live",
 			"akai/mpc_sample",
 			"arturia/astrolab",
@@ -14181,3 +14182,170 @@ class TestNymphes:
 		assert "**A first reading of this definition recorded the clock as unmentioned**" in flat
 		assert "**An absence is a claim about every page, so it is the one kind of statement" \
 			" that has to be swept for rather than noticed.**" in flat
+
+
+class TestMpcKey37:
+
+	"""The third definition out of one guide, and the first of the three to find anything.
+
+	Akai's MPC Standalone OS guide runs to 530 sheets and describes fourteen
+	machines.  `akai/mpc_live` and `akai/mpc_sample` both read it and carried no
+	controls at all.  This machine has a keybed, and the guide has two sheets
+	about keybeds that neither of them had any reason to read.
+	"""
+
+	def test_one_control_and_it_is_a_factory_default (self) -> None:
+		"""Which is exactly what `control_change: learned` means beside a control."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+
+		assert len(key_37.controls) == 1
+		assert key_37.controls["modulation"].cc == 1
+		assert key_37.controls["modulation"].direction == "transmits"
+		assert key_37.midi.control_change == "learned"
+
+		said = prose_of("akai", "mpc_key_37")
+
+		assert "Mod Wheel: Use this field to select the MIDI function for the keyboard" \
+			" modulation wheel. Select Disable, Default - CC 001: Modulation, or CC 000-126." \
+			in said
+
+		flat = " ".join(said.split())
+
+		assert "**ONE CONTROL, AND IT IS A FACTORY ASSIGNMENT THE PLAYER CAN CHANGE TO ANY OTHER" \
+			" NUMBER.**" in flat
+
+		# **THE TWO BEFORE IT CARRY NOTHING**, which is what makes one number worth a definition.
+		for name in ("akai/mpc_live", "akai/mpc_sample"):
+			assert not pymidiinstrumentdefs.load(name, [CORPUS]).controls
+
+	def test_three_definitions_cite_one_document_with_one_digest (self) -> None:
+		"""A mismatch would mean one of them is reading a different file."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert key_37.sources["guide"].sha256 == live.sources["guide"].sha256
+		assert key_37.sources["guide"].edition == "v3.9"
+		assert str(key_37.sources["guide"].retrieved) == "2026-10-04"
+
+		flat = " ".join(prose_of("akai", "mpc_key_37").split())
+
+		assert "one document, three citers, one digest" in flat
+
+		# And the definition sends a reader to the sibling's scoping account rather than
+		# repeating it, which is the thing that makes any statement here trustworthy.
+		assert "**That account is not repeated here**" in flat
+
+	def test_the_keybed_sheets_are_what_this_definition_adds (self) -> None:
+		"""Scoped by their own first sentence, which names this machine."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+
+		said = prose_of("akai", "mpc_key_37")
+
+		assert "The keyboard control screen allows you to edit the functions of the keybed on" \
+			" MPC Key 61, Key 37, and Key 37 G2." in said
+
+		# The three fields that sentence makes statements about this box rather than about MPCs.
+		assert key_37.midi.channels == (1, 16)
+		assert key_37.voice is not None
+		assert key_37.voice.aftertouch == "channel"
+		assert key_37.voice.velocity is not None
+		assert key_37.voice.velocity.note_on == "received"
+
+		# **AND THE SIBLING RECORDS NONE OF THEM**, because its machine has no keys.
+		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
+
+		assert live.voice is not None
+		assert live.voice.aftertouch is None
+		assert live.voice.velocity is None
+
+	def test_the_maker_names_the_kind_of_aftertouch_in_a_bracket (self) -> None:
+		"""Which is the whole reason that field can be filled at all."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+
+		assert key_37.voice is not None
+		assert key_37.voice.aftertouch == "channel"
+
+		said = prose_of("akai", "mpc_key_37")
+
+		assert "Aftertouch (Channel Pressure): This determines whether aftertouch is enabled (As" \
+			" Played) or not (Disable)." in said
+		assert "37 synth-action keys with aftertouch" in said
+
+		flat = " ".join(said.split())
+
+		assert "That bracket is the whole reason this field can be filled" in flat
+
+	def test_the_machine_it_is_not_is_named_on_the_same_sheets (self) -> None:
+		"""There is an MPC Key 37 and an MPC Key 37 G2, and they differ in MIDI."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+
+		assert key_37.model.name == "MPC Key 37"
+
+		flat = " ".join(prose_of("akai", "mpc_key_37").split())
+
+		assert "**AND THE MACHINE IT IS NOT IS NAMED ON THE SAME SHEETS.**" in flat
+		assert "**The two differ in MIDI**: the G2 has `Ableton Live Control Mode` and a USB-C" \
+			" port that can act as a host for MIDI controllers, and this machine has neither." \
+			in flat
+
+	def test_the_guide_contradicts_itself_about_this_machines_keybed (self) -> None:
+		"""Recorded because the fields below come from the same neighbourhood."""
+		said = prose_of("akai", "mpc_key_37")
+
+		assert "37-key semi-weighted, velocity-sensitive" in said
+		assert "37 synth-action keys with aftertouch" in said
+
+		flat = " ".join(said.split())
+
+		assert "Semi-weighted and synth-action are different things, and a reader cannot tell" \
+			" from this document which this instrument has." in flat
+
+	def test_fifteen_fixed_velocities_or_the_one_that_was_played (self) -> None:
+		"""A thing the velocity field cannot say, so the definition says it."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+
+		assert key_37.voice is not None
+		assert key_37.voice.velocity is not None
+		assert key_37.voice.velocity.note_on == "received"
+
+		said = prose_of("akai", "mpc_key_37")
+
+		assert "Alternatively, you can set a fixed velocity for all note on messages, at 12%," \
+			" 18%, 25%, 31%, 37%, 43%, Half, 56%, 62%, 68%, 75%, 81%, 87%, 93% or Full" \
+			" velocity." in said
+
+		flat = " ".join(said.split())
+
+		assert "**So fifteen fixed values or the one that was played**" in flat
+
+	def test_it_cannot_send_one_of_the_128_program_numbers (self) -> None:
+		"""A fact about the field rather than about the format, so the account holds it."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+
+		assert key_37.midi.program_change is not None
+		assert key_37.midi.program_change.sends is True
+		assert key_37.midi.program_change.presets is None
+
+		said = prose_of("akai", "mpc_key_37")
+
+		assert "a value from 1-127" in said
+
+		flat = " ".join(said.split())
+
+		assert "**this machine cannot send one of the 128 numbers a program change can carry**" \
+			in flat
+
+	def test_two_of_its_four_clock_choices_are_not_midi_clock (self) -> None:
+		"""Which no field here holds, so the definition names them."""
+		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
+
+		assert key_37.midi.clock == "both"
+
+		said = prose_of("akai", "mpc_key_37")
+
+		assert "receives MIDI Clock information (MIDI Clock), MIDI Time Code information (MTC)," \
+			" communication from Ableton Link, or none of these (Off)" in said
+
+		flat = " ".join(said.split())
+
+		assert "**Two of the four choices either way are not MIDI clock at all**" in flat

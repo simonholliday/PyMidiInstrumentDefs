@@ -1,0 +1,312 @@
+# **A COMPLETE IMPLEMENTATION CHART ON ONE SHEET, AND IT IS FIVE FIRMWARE RELEASES OLD.** The
+# chart prints `Version: 1.11` and `Date: Nov. 18, 2014`; the update document on the same page
+# carries this instrument up to 1.60. **So the chart is where the 50 controller numbers come from
+# and it is not where this instrument's MIDI ends**: the update's last sheet is a MIDI section the
+# chart has no row for.
+#
+# **THAT SECTION ADDS EIGHT NOTES THAT ARE NOT DRUMS**, each toggling an effect pattern rather
+# than striking anything: `C0 ACCENT PATTERN ALL ON/OFF`, `D0 REVERB PATTERN ALL ON/OFF`, `E0
+# DELAY PATTERN ALL ON/OFF`, `F0 EXT. IN PATTERN ALL ON/OFF`, and the same four again as
+# `ALL MUTE` at `G0`, `A0`, `B0` and `C1` (update p. 5). **They are given as note names and never
+# as numbers**, and no document here states which octave convention this maker is using, so they
+# are recorded and not carried: `C0` is 12 under one common convention and 24 under another, and
+# a definition that picked one would be inventing the difference.
+#
+# **ELEVEN INSTRUMENTS, SEVENTEEN NOTES, AND NOT A GAP BETWEEN THEM.** The chart's note table
+# gives six of the eleven two numbers each - bass drum 35 and 36, snare 38 and 40, low tom 41 and
+# 43, closed hi-hat 42 and 44, mid tom 45 and 47, high tom 48 and 50 - so **every number from 35
+# to 51 sounds something**,
+# which is rare among the drum machines here. `voices` holds one note per instrument and takes the
+# higher of each pair, for a reason the maker gives rather than for tidiness: those are the eleven
+# that survive when the expansion board below is fitted.
+#
+# **AND FITTING THAT BOARD CHANGES THE MAP.** With a `7X7-TR8 Drum Machine Expansion` installed,
+# each instrument answers to one note instead of two and the numbers freed up become new
+# instruments: 35 is a second bass drum, 40 a second snare, 56 a cow bell and 54 a tambourine
+# (chart). **This definition carries the instrument as sold**, which is the ruling
+# `roland/ju_06a` set at rank 87 and `korg/drumlogue` followed at 93: where a maker publishes two
+# maps, carry the one in force by default.
+#
+# **AND THE CHART NAMES ITS INSTRUMENTS AFTER A MACHINE THE STOCK TR-8 CANNOT BE.** Its own
+# footnote says so: "The instrument names are for the 707. These names will differ depending on
+# the instrument set that's selected." (chart) - and the TR-707's sounds are part of that same
+# expansion. So the eleven labels below are the maker's, and a reader whose TR-8 is playing its
+# 808 or 909 set will see different names on the panel for the same numbers.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TR-8
+  # **1.60, FROM THE UPDATE DOCUMENT, WHICH IS FIVE RELEASES PAST THE CHART.** The chart describes
+  # 1.11 and says so on its face; the update covers 1.10, 1.12, 1.20, 1.50 and 1.60 and is the
+  # newest thing this maker publishes for the instrument. Nothing after 1.60 is offered.
+  firmware: "1.60"
+  # A drum machine, discontinued - and **its support page is not the empty shell this maker's
+  # discontinued pages usually are**: four documents, each on a GUID page of the kind a current
+  # product gets. `roland/tr_909` had to go to the US manual archive instead, so that habit does
+  # not hold for every discontinued Roland.
+  # Checked 2026-10-06.
+
+source: >-
+  **FOUR DOCUMENTS, AND THE MIDI IS IN TWO OF THEM.** The `MIDI Implementation Chart` is one A4
+  sheet and gives every field below but three. The `TR-8 Update` is five sheets of release notes
+  whose **last sheet is a MIDI section** - the eight effect notes, the three scatter controllers
+  and a setting that decides whether transport messages are obeyed at all, all on update p. 5.
+
+  **TWO OF THE FOUR HAVE NO PAGE TO TURN TO**, which is why most of what is cited below is cited
+  by name: the chart is a single sheet and the manual is a single A3 sheet of 17,395 characters.
+  Only the update and the Serato guide are paginated, so `update p. 5` is the one locator in this
+  account and the rest name their document.
+
+  THE OTHER TWO ARE CITED AND HOLD NOTHING. The owner's manual is **one A3 sheet carrying 17,395
+  characters**, which is this maker's fold-out poster format; it gives the channel setting, the
+  clock source and the kit count and no controller number. The `Roland TR / Serato DJ Pro
+  Connection Guide` is three sheets about a DJ application and names no MIDI message at all.
+
+  **WHAT THE CHART SETTLES THAT NOTHING ELSE DOES.** That `Mode 4` is the default both ways -
+  OMNI OFF, MONO, which is an odd thing for an eleven-voice drum machine and is what the row says.
+  That after touch and pitch bend are crossed in all four boxes. That system exclusive is crossed
+  both ways. That program change is **received and never sent**, over `1-15`. And that three of
+  the fifty controllers are received and never transmitted.
+
+  **AND THE INSTRUMENT ANSWERS ON ONE CHANNEL OR ALL OF THEM.** The chart gives `10` as the
+  default and `1-16, OFF` as the range, marked `Memorized`; the manual adds the state between
+  them: "ONn (OMNI) MIDI messages of all channels are received. The MIDI transmit channel will be
+  10." (manual). **So an omni TR-8 still transmits on 10**, which no field here holds.
+
+  NOT RECORDED: the polyphony. The manual says its eleven instruments are collectively called a
+  `kit` and that "The TR-8 has 16 kits." (manual), and nothing says how many sound at once - though eleven
+  instruments each with one voice is the likeliest reading, it is a reading.
+
+sources:
+  chart:
+    kind: chart
+    title: TR-8 MIDI Implementation Chart
+    edition: "02"
+    dated: 2014-11-18
+    landing: "https://www.roland.com/global/support/by_product/tr-8/owners_manuals/74ef884e-67df-4868-8830-f99c15f31aee/"
+    url: "https://static.roland.com/assets/media/pdf/TR-8_MIDI_Imple_Chart_e02_W.pdf"
+    sha256: 706fa2014f70f0b1d770fcbfb47524deef428960356fcdbe321f10492c4dfecb
+    retrieved: 2026-10-06
+    # **ONE SHEET, AND IT PRINTS THE FIRMWARE IT DESCRIBES ON ITS OWN FACE**: `Model: TR-8 Date:
+    # Nov. 18, 2014 Version: 1.11`. That is what makes the gap to 1.60 a fact rather than a guess.
+    # Read by coordinate: the flat text runs every number, then every transmitted mark, then every
+    # recognized mark, then every name, so `20 o o BD TUNE` appears nowhere in it. The four
+    # columns sit at x=188, 197, 317 and 438 and the rows are keyed by height.
+    # **Two rows of the note-number footnote fall in the same bands** and read as controls 36 and
+    # 40 with no marks - the `BASS DRUM 2` and `SNARE DRUM 2` lines. They are dropped by requiring
+    # a mark, which is the thing a control row has and a footnote row has not.
+    paginated: false
+  update:
+    kind: release_notes
+    title: TR-8 Update
+    edition: "05"
+    dated: 2018-07-25
+    landing: "https://www.roland.com/global/support/by_product/tr-8/owners_manuals/02ac96e9-a099-45d3-8686-acfc48179292/"
+    url: "https://static.roland.com/assets/media/pdf/TR-8_update_eng05_W.pdf"
+    sha256: 96329875d609b011298a23268347f89b1fa69b9438b685bdfc112b3da615e7ae
+    retrieved: 2026-10-06
+    # **FIVE SHEETS, AND THE LAST ONE IS A MIDI SECTION THE CHART HAS NO ROW FOR.** The eight
+    # effect notes, the scatter controllers restated as numbers, a note that nothing is
+    # transmitted when the channel is `OFF`, and the transport switch below.
+    # It runs newest first - 1.60 on sheet 1 down to 1.10 on sheets 4 and 5 - so **the oldest
+    # release is the one next to the MIDI section**, and a reader who stops at sheet 1 misses it.
+    # That is rank 94's lesson in a new shape: a document is not its first sheet either.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: TR-8 Owner's Manual
+    edition: "02"
+    dated: 2014-02-28
+    landing: "https://www.roland.com/global/support/by_product/tr-8/owners_manuals/e61b4dc1-ae73-48b3-8bf5-b74b7186061a/"
+    url: "https://static.roland.com/assets/media/pdf/TR-8_e02_W.pdf"
+    sha256: fc0ac9145d7354300b95d5e8664f8cfd206d1e9bbaac73734483b719102f383c
+    retrieved: 2026-10-06
+    # **ONE A3 SHEET, 1,191 BY 842 POINTS, CARRYING 17,395 CHARACTERS** - the whole manual as a
+    # fold-out poster, which is this maker's format for an instrument of this size. So a locator
+    # here is the document rather than a page, and it is cited by name.
+    # Cited for the channel setting with its omni state, the clock source, the MIDI thru switch
+    # and the kit count. **It carries no controller number at all** - every one of the fifty is
+    # the chart's.
+    paginated: false
+  serato_guide:
+    kind: manual
+    title: Roland TR / Serato DJ Pro Connection Guide
+    edition: "01"
+    dated: 2019-02-14
+    landing: "https://www.roland.com/global/support/by_product/tr-8/owners_manuals/3cf86dbe-91e8-4462-8857-a049fba5b274/"
+    url: "https://static.roland.com/assets/media/pdf/TR_serato_eng01_W.pdf"
+    sha256: cbc944f0fd238a72d45aa40697607369af8842b94b12c0a831cdcab18d8a78bc
+    retrieved: 2026-10-06
+    # **CITED FOR AN ABSENCE, AND IT IS THE FOURTH OF FOUR.** Three sheets about connecting this
+    # maker's drum machines to a DJ application, and **no MIDI message of any kind is named in
+    # it** - no controller number, no note, no clock. Opened because a connection guide between
+    # two devices is somewhere a map could have been, and read in full so that the count of four
+    # documents is a list rather than a search.
+    page_offset: 0
+  manuals_page:
+    kind: download_page
+    title: "Owner's Manuals | TR-8 | Roland"
+    landing: "https://www.roland.com/global/support/by_product/tr-8/owners_manuals/"
+    url: "https://www.roland.com/global/support/by_product/tr-8/owners_manuals/"
+    sha256: 4435239dab4dd5e8b2fd62bd16d4746143c9c35ea5518e3427638e23aa654bdb
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being four, and for the page existing at all.** This instrument is
+    # discontinued, and this maker's discontinued pages are usually empty shells - `roland/tr_909`
+    # had to be built from the US manual archive for exactly that reason. This one is a current
+    # product's page in every respect: four documents, each behind a GUID that prints its file
+    # address twice. **So that habit is not a rule**, and the next discontinued Roland is worth
+    # checking before assuming.
+    # Two of the four are titled without a language prefix and two with `[English]`, which is this
+    # maker's way of marking a document that exists in one language only.
+    # The digest is of the extraction, which pairs each document with its GUID page and the
+    # file that page serves; the served markup is saved beside it as `.html`, whose own
+    # digest is 4adfa288e88a56e6f1a041c212e817a08cdfecb0897ad7c3e6070529bda5f396. One page, cited by name.
+
+midi:
+  # `10` by default and `1-16, OFF` either way, marked `Memorized` (chart) - and the manual gives
+  # the third state: "ONn (OMNI) MIDI messages of all channels are received. The MIDI transmit
+  # channel will be 10." (manual). **An omni TR-8 still transmits on 10**, and switching the
+  # channel off stops it transmitting entirely: "No MIDI messages are transmitted out when the
+  # MIDI channel is set to OFF." (update p. 5).
+  channels: [1, 16]
+  # **FOUR, WHICH IS OMNI OFF AND MONO**, default and the only value either way (chart). An odd
+  # row for an eleven-voice drum machine, and it is what the chart says.
+  mode: 4
+  # **RECEIVED BY DEFAULT AND SENT, WITH A SETTING THAT NARROWS WHAT IS OBEYED.** The chart marks
+  # Clock as answered both ways, and the manual gives the source: `AUTO` means "If MIDI clock is
+  # being input to the MIDI IN connector or the USB port, the TR-8's tempo will automatically
+  # synchronize to MIDI clock (default)." (manual), against `INTERNAL`.
+  clock: both
+  # **SENT AS START AND STOP, RECEIVED AS ALL THREE** (chart): continue is crossed in the
+  # transmitted column and marked in the recognized one, where the footnote says "The same
+  # processing will be carried out as when Start is received." (chart). **And whether any of them
+  # is obeyed is a power-on setting**: `ON` means "Only MIDI clock is received" (update p. 5)
+  # and `OFF`, the default, "MIDI clock, play, and stop messages are received" (update p. 5).
+  transport: both
+  program_change:
+    # **RECEIVED AND NEVER SENT**, crossed in the transmitted column (chart).
+    receives: true
+    sends: false
+    # `1-15` in the True Number row (chart), which is the pattern count rather than a kit count -
+    # the manual gives sixteen kits and sixteen patterns, and this row reaches fifteen of them.
+    presets: 15
+  # Crossed in all four boxes of its row (chart), so nothing here is addressed by system
+  # exclusive. **That is a checked absence rather than a silence**, which is what a chart is for.
+  sysex: false
+  # NOT RECORDED, NRPN: the chart has no row for it and no document mentions it.
+
+voice:
+  # Its notes name drums, and the chart's True Voice row is struck through rather than filled.
+  addressing: voices
+  # **EVERY NUMBER FROM 35 TO 51 SOUNDS SOMETHING**, because six of the eleven instruments answer
+  # to two numbers each - see the comment above the definition. That is seventeen notes with no
+  # gap, which `korg/drumlogue` and `korg/volca_beats` cannot manage over spans of twenty and
+  # forty.
+  note_range: [35, 51]
+  # NOT RECORDED, the polyphony. Eleven instruments and no statement of how many sound at once.
+  velocity:
+    # Both ways with the status byte given: `o 9nH` transmitted and recognized (chart).
+    note_on: both
+    # And note off is sent as a note on with a velocity of nothing - `o 9nH v=00` transmitted -
+    # while a real note off is recognized (chart).
+    note_off: true
+  # **NONE, AND THE CHART CROSSES BOTH KINDS IN BOTH DIRECTIONS**: key's and channel's, transmitted
+  # and recognized (chart). A checked absence rather than a silence.
+  aftertouch: none
+  # NOT RECORDED as a depth, because there is none: pitch bend is crossed both ways (chart), so
+  # this instrument has no pitch bend at all rather than an unpublished range.
+  voices:
+    # **THE ELEVEN, AT THE HIGHER NUMBER OF EACH PAIR** - see the comment above the definition for
+    # why that one and not the other. The names are the chart's and are the TR-707's, which the
+    # chart's own footnote says will differ with the instrument set.
+    bass_drum: 36
+    rim_shot: 37
+    snare_drum: 38
+    hand_clap: 39
+    closed_hi_hat: 42
+    low_tom: 43
+    open_hi_hat: 46
+    mid_tom: 47
+    crash_cymbal: 49
+    high_tom: 50
+    ride_cymbal: 51
+
+groups:
+  performance: Performance
+  external: External input
+  effects: Delay and reverb
+  instruments: Instrument parameters
+  scatter: Scatter
+
+controls:
+
+  # **FIFTY NUMBERS OFF ONE CHART, AND FORTY-SEVEN OF THEM TRAVEL BOTH WAYS.** The three that do
+  # not are the scatter controls, crossed in the transmitted column and marked in the recognized
+  # one - so a TR-8 can be told to scatter and will never tell anybody that it is. The update
+  # document restates the same three as numbers (update p. 5), which is the only place in either
+  # document that a controller number appears outside the chart.
+  # The instrument parameters are three or five per instrument and the stems are the maker's:
+  # `BD`, `SD`, `LT`, `MT`, `HT`, `RS`, `HC`, `CH`, `OH`, `CC`, `RC`.
+
+  # performance (2)
+  shuffle:  {label: SHUFFLE, cc: 9, group: performance}
+  accent:   {label: ACCENT, cc: 71, group: performance}
+
+  # external (2)
+  external_in_level:       {label: EXTERNAL IN LEVEL, cc: 12, group: external}
+  external_in_side_chain:  {label: EXTERNAL IN SIDE CHAIN, cc: 13, group: external}
+
+  # effects (6)
+  delay_level:     {label: DELAY LEVEL, cc: 16, group: effects}
+  delay_time:      {label: DELAY TIME, cc: 17, group: effects}
+  delay_feedback:  {label: DELAY FEEDBACK, cc: 18, group: effects}
+  reverb_time:     {label: REVERB TIME, cc: 89, group: effects}
+  reverb_gate:     {label: REVERB GATE, cc: 90, group: effects}
+  reverb_level:    {label: REVERB LEVEL, cc: 91, group: effects}
+
+  # instruments (37)
+  bd_tune:    {label: BD TUNE, cc: 20, group: instruments}
+  bd_attack:  {label: BD ATTACK, cc: 21, group: instruments}
+  bd_comp:    {label: BD COMP, cc: 22, group: instruments}
+  bd_decay:   {label: BD DECAY, cc: 23, group: instruments}
+  bd_level:   {label: BD LEVEL, cc: 24, group: instruments}
+  sd_tune:    {label: SD TUNE, cc: 25, group: instruments}
+  sd_snappy:  {label: SD SNAPPY, cc: 26, group: instruments}
+  sd_comp:    {label: SD COMP, cc: 27, group: instruments}
+  sd_decay:   {label: SD DECAY, cc: 28, group: instruments}
+  sd_level:   {label: SD LEVEL, cc: 29, group: instruments}
+  lt_tune:    {label: LT TUNE, cc: 46, group: instruments}
+  lt_decay:   {label: LT DECAY, cc: 47, group: instruments}
+  lt_level:   {label: LT LEVEL, cc: 48, group: instruments}
+  mt_tune:    {label: MT TUNE, cc: 49, group: instruments}
+  mt_decay:   {label: MT DECAY, cc: 50, group: instruments}
+  mt_level:   {label: MT LEVEL, cc: 51, group: instruments}
+  ht_tune:    {label: HT TUNE, cc: 52, group: instruments}
+  ht_decay:   {label: HT DECAY, cc: 53, group: instruments}
+  ht_level:   {label: HT LEVEL, cc: 54, group: instruments}
+  rs_tune:    {label: RS TUNE, cc: 55, group: instruments}
+  rs_decay:   {label: RS DECAY, cc: 56, group: instruments}
+  rs_level:   {label: RS LEVEL, cc: 57, group: instruments}
+  hc_tune:    {label: HC TUNE, cc: 58, group: instruments}
+  hc_decay:   {label: HC DECAY, cc: 59, group: instruments}
+  hc_level:   {label: HC LEVEL, cc: 60, group: instruments}
+  ch_tune:    {label: CH TUNE, cc: 61, group: instruments}
+  ch_decay:   {label: CH DECAY, cc: 62, group: instruments}
+  ch_level:   {label: CH LEVEL, cc: 63, group: instruments}
+  oh_tune:    {label: OH TUNE, cc: 80, group: instruments}
+  oh_decay:   {label: OH DECAY, cc: 81, group: instruments}
+  oh_level:   {label: OH LEVEL, cc: 82, group: instruments}
+  cc_tune:    {label: CC TUNE, cc: 83, group: instruments}
+  cc_decay:   {label: CC DECAY, cc: 84, group: instruments}
+  cc_level:   {label: CC LEVEL, cc: 85, group: instruments}
+  rc_tune:    {label: RC TUNE, cc: 86, group: instruments}
+  rc_decay:   {label: RC DECAY, cc: 87, group: instruments}
+  rc_level:   {label: RC LEVEL, cc: 88, group: instruments}
+
+  # scatter (3)
+  scatter_type:   {label: SCATTER TYPE, cc: 68, direction: receives, group: scatter}
+  scatter_depth:  {label: SCATTER DEPTH, cc: 69, direction: receives, group: scatter}
+  scatter_sw:     {label: SCATTER SW, cc: 70, direction: receives, group: scatter}

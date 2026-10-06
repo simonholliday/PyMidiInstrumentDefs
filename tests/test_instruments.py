@@ -239,6 +239,7 @@ class TestBundledCorpus:
 			"roland/tr8s",
 			"roland/tr_1000",
 			"roland/tr_6s",
+			"roland/tr_8",
 			"roland/tr_909",
 			"sequential/fourm",
 			"sequential/prophet_5",
@@ -14349,3 +14350,190 @@ class TestMpcKey37:
 		flat = " ".join(said.split())
 
 		assert "**Two of the four choices either way are not MIDI clock at all**" in flat
+
+
+class TestTR8:
+
+	"""A complete chart five firmware releases old, and an update that carries on from it.
+
+	The chart prints the version it describes on its own face - 1.11 - and the
+	update document on the same page carries this instrument to 1.60.  So the
+	chart is where the fifty controller numbers are and it is not where this
+	instrument's MIDI ends.
+	"""
+
+	def test_fifty_controls_and_three_it_obeys_without_reporting (self) -> None:
+		"""The scatter controls are crossed transmitted and marked recognized."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert len(tr_8.controls) == 50
+		assert len(tr_8.groups) == 5
+
+		directions = collections.Counter(
+			control.direction for control in tr_8.controls.values())
+
+		assert directions == {"both": 47, "receives": 3}
+
+		for name, number in (("scatter_type", 68), ("scatter_depth", 69), ("scatter_sw", 70)):
+			assert tr_8.controls[name].cc == number
+			assert tr_8.controls[name].direction == "receives"
+			assert tr_8.controls[name].group == "scatter"
+
+		flat = " ".join(prose_of("roland", "tr_8").split())
+
+		assert "so a TR-8 can be told to scatter and will never tell anybody that it is" in flat
+
+	def test_the_chart_is_five_firmware_releases_old (self) -> None:
+		"""And the update document's last sheet is a MIDI section it has no row for."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert tr_8.model.firmware == "1.60"
+		assert str(tr_8.sources["chart"].dated) == "2014-11-18"
+
+		said = prose_of("roland", "tr_8")
+
+		assert "Model: TR-8 Date: Nov. 18, 2014 Version: 1.11" in said
+
+		flat = " ".join(said.split())
+
+		assert "**A COMPLETE IMPLEMENTATION CHART ON ONE SHEET, AND IT IS FIVE FIRMWARE RELEASES" \
+			" OLD.**" in flat
+		assert "**So the chart is where the 50 controller numbers come from and it is not where" \
+			" this instrument's MIDI ends**" in flat
+
+		# **AND THE MIDI SECTION IS NEXT TO THE OLDEST RELEASE**, which is the trap.
+		assert "**the oldest release is the one next to the MIDI section**, and a reader who" \
+			" stops at sheet 1 misses it" in flat
+
+	def test_eight_notes_that_are_not_drums_and_are_not_carried (self) -> None:
+		"""Given as names, never as numbers, with no octave convention stated."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert tr_8.voice is not None
+		assert set(tr_8.voice.voices.values()) == {36, 37, 38, 39, 42, 43, 46, 47, 49, 50, 51}
+
+		said = prose_of("roland", "tr_8")
+
+		assert "C0 ACCENT PATTERN ALL ON/OFF" in said
+
+		flat = " ".join(said.split())
+
+		assert "**THAT SECTION ADDS EIGHT NOTES THAT ARE NOT DRUMS**" in flat
+		assert "**They are given as note names and never as numbers**" in flat
+		assert "`C0` is 12 under one common convention and 24 under another, and a definition" \
+			" that picked one would be inventing the difference" in flat
+
+	def test_eleven_instruments_over_seventeen_notes_with_no_gap (self) -> None:
+		"""Because five of the eleven answer to two numbers each."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert tr_8.voice is not None
+		assert tr_8.voice.note_range == (35, 51)
+		assert len(tr_8.voice.voices) == 11
+
+		# Eleven voices named, seventeen notes in the range, and every one of them sounds.
+		for note in range(35, 52):
+			assert tr_8.voice.plays_note(note)
+
+		assert not tr_8.voice.plays_note(34)
+		assert not tr_8.voice.plays_note(52)
+
+		flat = " ".join(prose_of("roland", "tr_8").split())
+
+		assert "**ELEVEN INSTRUMENTS, SEVENTEEN NOTES, AND NOT A GAP BETWEEN THEM.**" in flat
+		assert "so **every number from 35 to 51 sounds something**" in flat
+
+	def test_an_expansion_board_changes_the_map_and_the_stock_one_is_carried (self) -> None:
+		"""Which is the ruling the JU-06A set and the drumlogue followed."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		# The four numbers the expansion takes over are not voices here.
+		assert 35 not in tr_8.voice.voices.values()
+		assert 40 not in tr_8.voice.voices.values()
+		assert 54 not in tr_8.voice.voices.values()
+		assert 56 not in tr_8.voice.voices.values()
+
+		flat = " ".join(prose_of("roland", "tr_8").split())
+
+		assert "**AND FITTING THAT BOARD CHANGES THE MAP.**" in flat
+		assert "**This definition carries the instrument as sold**" in flat
+
+		# The two rulings it follows, both in this corpus.
+		assert "`roland/ju_06a` set at rank 87 and `korg/drumlogue` followed at 93" in flat
+
+	def test_the_chart_names_its_drums_after_a_machine_this_one_cannot_be (self) -> None:
+		"""Its own footnote says the names depend on the selected instrument set."""
+		said = prose_of("roland", "tr_8")
+
+		assert "The instrument names are for the 707. These names will differ depending on the" \
+			" instrument set that's selected." in said
+
+		flat = " ".join(said.split())
+
+		assert "**AND THE CHART NAMES ITS INSTRUMENTS AFTER A MACHINE THE STOCK TR-8 CANNOT" \
+			" BE.**" in flat
+
+	def test_a_discontinued_rolands_page_is_not_always_an_empty_shell (self) -> None:
+		"""Which the TR-909 needed the US manual archive for, and this one does not."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert len(tr_8.sources) == 5
+
+		flat = " ".join(prose_of("roland", "tr_8").split())
+
+		assert "**So that habit is not a rule**, and the next discontinued Roland is worth" \
+			" checking before assuming." in flat
+
+		# The sibling that needed the archive, so the pair is assertable rather than asserted.
+		tr_909 = " ".join((pymidiinstrumentdefs.load("roland/tr_909", [CORPUS]).source or "").split())
+
+		assert "archive" in tr_909.lower()
+
+	def test_what_the_chart_crosses_in_every_box (self) -> None:
+		"""A checked absence rather than a silence, which is what a chart is for."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert tr_8.voice is not None
+		assert tr_8.voice.aftertouch == "none"
+		assert tr_8.voice.pitch_bend is None
+		assert tr_8.midi.sysex is False
+		assert tr_8.midi.nrpn is None
+
+		assert tr_8.midi.mode == 4
+		assert tr_8.midi.program_change is not None
+		assert tr_8.midi.program_change.receives is True
+		assert tr_8.midi.program_change.sends is False
+		assert tr_8.midi.program_change.presets == 15
+
+		flat = " ".join(prose_of("roland", "tr_8").split())
+
+		assert "**FOUR, WHICH IS OMNI OFF AND MONO**" in flat
+		assert "An odd row for an eleven-voice drum machine, and it is what the chart says." \
+			in flat
+
+	def test_an_omni_tr_8_still_transmits_on_channel_ten (self) -> None:
+		"""Which no field here holds, so the account carries it."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert tr_8.midi.channels == (1, 16)
+
+		said = prose_of("roland", "tr_8")
+
+		assert "ONn (OMNI) MIDI messages of all channels are received. The MIDI transmit channel" \
+			" will be 10." in said
+
+		flat = " ".join(said.split())
+
+		assert "**So an omni TR-8 still transmits on 10**, which no field here holds." in flat
+
+	def test_its_manual_is_one_a3_sheet (self) -> None:
+		"""This maker's fold-out poster format, so it is cited by name rather than by page."""
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		assert tr_8.sources["manual"].paginated is False
+		assert tr_8.sources["chart"].paginated is False
+
+		flat = " ".join(prose_of("roland", "tr_8").split())
+
+		assert "**ONE A3 SHEET, 1,191 BY 842 POINTS, CARRYING 17,395 CHARACTERS**" in flat
+		assert "**It carries no controller number at all**" in flat

@@ -167,6 +167,7 @@ class TestBundledCorpus:
 			"behringer/td_3",
 			"behringer/ub_xa",
 			"dirtywave/m8",
+			"dreadbox/artemis",
 			"dreadbox/nymphes",
 			"dreadbox/typhon",
 			"elektron/analog_four",
@@ -15456,3 +15457,160 @@ class TestVolcaKeys:
 		assert volca.model.firmware == "1.03"
 		assert ("\"Press a keyboard button 1-7 to specify the setting for the global parameter.\" (manual" in flat)
 		assert "the table is right and the sentence above it is not" in flat
+
+
+class TestArtemis:
+
+	"""The survey named the wrong document, and the right one is a chapter of the manual.
+
+	#2507 points at `CC List v1.1.0`, a standalone PDF.  The user's manual at
+	v1.2.0 carries the same list as its chapter 017 - with one controller the
+	standalone list has not got and four rows it disagrees about.  The firmware
+	is 1.2.0, so the named document is the superseded one.
+	"""
+
+	def test_eighty_four_controls_and_every_one_of_them_only_receives (self) -> None:
+		"""The instrument has a MIDI out and every MIDI switch it offers receives."""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		numbers = sorted(control.cc for control in artemis.controls.values()
+			if control.cc is not None)
+
+		assert len(artemis.controls) == 84
+		assert numbers[0] == 1 and numbers[-1] == 96
+		assert {control.direction for control in artemis.controls.values()} == {"receives"}
+
+		# The three rows of the maker's list that are not controls.
+		assert 0 not in numbers, "bank select is addressing machinery"
+		assert 120 not in numbers and 123 not in numbers, "120 and 123 are channel mode"
+
+	def test_the_survey_named_the_superseded_document (self) -> None:
+		"""Both lists are cited, and the account says which one the numbers came from."""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		flat = " ".join((artemis.source or "").split())
+
+		assert artemis.sources["manual"].edition == "v1.2.0"
+		assert artemis.sources["cc_list"].edition == "v1.1.0"
+		assert artemis.model.firmware == "1.2.0"
+
+		# The one controller the standalone list has not got.
+		assert artemis.controls["vco_1_tune"].cc == 77
+		assert "adds controller 77, `VCO 1 TUNE`, which the standalone list does not have" in flat
+
+		# **And the maker's own badges agree with the diff**, which is why five is five.
+		assert "Dreadbox badges exactly those five rows `new`" in flat
+
+	def test_controller_31_changes_what_every_other_controller_means (self) -> None:
+		"""A consumer that does not know where 31 stands does not know what it is setting.
+
+		Nothing in this format can express a control that re-points the rest, so
+		the account has to - and it is the first of its kind in this corpus.
+		"""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		flat = " ".join((artemis.source or "").split())
+
+		assert artemis.controls["selector"].cc == 31
+		assert artemis.controls["selector"].group == "mod_matrix"
+
+		assert ("\"Use CC 31 (Selector) to choose whether subsequent CC messages adjust a "
+			"parameter's base value or its corresponding modulation amount.\" (manual p. 74)"
+			in flat)
+		assert "you may be setting the cutoff or setting how far an envelope moves it" in flat
+
+		# And the remapping, which makes the same number mean a signed amount.
+		assert '"0 → –100", "64 → 0", "127 → +100" (manual p. 74)' in flat
+
+	def test_only_the_switches_carry_values (self) -> None:
+		"""No band boundary is printed for anything with three or more states.
+
+		The maker says only that the states are "split in the whole CC range of
+		0-127", which is a rule and not a table: thirds can be 0/42/84 or
+		0/43/85.  So the thirteen multi-state controls carry no numbers -
+		`novation/peak`'s rule, as `korg/volca_fm` applied it.
+		"""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		banded = {name for name, control in artemis.controls.items() if control.values}
+
+		assert len(banded) == 7
+		assert all(len(artemis.controls[name].values) == 2 for name in banded)
+		assert artemis.controls["sustain"].values == {"off": 0, "on": 64}
+
+		flat = " ".join((artemis.source or "").split())
+
+		assert "`novation/peak`'s rule as `korg/volca_fm` applied it" in flat
+		assert "38 `DISTORTIONS TYPE` (15)" in flat
+
+	def test_receives_is_read_off_the_settings_not_quoted (self) -> None:
+		"""It has a MIDI out, and every MIDI switch it offers is a receive switch.
+
+		That is weaker ground than a sentence, so the account says so - and
+		`receives` is the safer of the two errors a reader could make.
+		"""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		flat = " ".join((artemis.source or "").split())
+
+		assert ("\"MIDI IN/OUT MIDI DIN connector for receiving / transmitting MIDI messages "
+			"from/to an external MIDI device.\" (manual p. 9)" in flat)
+		assert "every MIDI switch it offers is a receive switch" in flat
+		assert "the safer of the two errors" in flat
+
+	def test_the_three_dreadboxes_do_not_answer_alike (self) -> None:
+		"""Checked rather than inherited, and the direction is where they part.
+
+		Both siblings mark every control `both`; this one marks every control
+		`receives`, on the strength of its own global parameters.
+		"""
+		names = ["dreadbox/artemis", "dreadbox/nymphes", "dreadbox/typhon"]
+		loaded = {name: pymidiinstrumentdefs.load(name, [CORPUS]) for name in names}
+
+		assert {c.direction for c in loaded["dreadbox/artemis"].controls.values()} == {"receives"}
+		assert {c.direction for c in loaded["dreadbox/nymphes"].controls.values()} == {"both"}
+		assert {c.direction for c in loaded["dreadbox/typhon"].controls.values()} == {"both"}
+
+		# And no two carry the same number of controls.
+		counts = sorted(len(one.controls) for one in loaded.values())
+		assert counts == [82, 84, 98]
+		assert len(set(counts)) == 3
+
+	def test_the_manual_contradicts_itself_about_the_mpe_bend_range (self) -> None:
+		"""Given twice with two answers, so neither is carried.
+
+		Which is also why `pitch_bend.semitones` is absent: the ordinary wheel is
+		settable and nothing says where it starts.
+		"""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		flat = " ".join((artemis.source or "").split())
+
+		assert artemis.voice.pitch_bend is not None
+		assert artemis.voice.pitch_bend.programmable is True
+		assert artemis.voice.pitch_bend.semitones is None
+
+		assert "`MPE PITCH WHEEL 0 to 96 semitones` in the global parameter table" in flat
+		assert '"Adjusts the range of the Pitch Wheel from 0 to 48 semitones for MPE control."' \
+			in flat
+		assert "Both cannot be right, so neither is carried" in flat
+
+	def test_five_hundred_and_twelve_presets_stated_and_audited (self) -> None:
+		"""The count is printed once and the export arithmetic gives it a second time."""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		flat = " ".join((artemis.source or "").split())
+
+		assert artemis.midi.program_change is not None
+		assert artemis.midi.program_change.presets == 512
+		assert artemis.midi.program_change.receives is True
+
+		# An in-switch and no out-switch, so what it sends is unestablished.
+		assert artemis.midi.program_change.sends is None
+
+		assert '"Active preset export will send 2 messages and Bank export will send 65 messages."' \
+			in flat
+		assert "one identifier and sixty-four presets" in flat
+
+	def test_its_system_exclusive_does_not_travel_down_its_own_din (self) -> None:
+		"""Presets and firmware both go by USB only, which the manual says twice."""
+		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
+		flat = " ".join((artemis.source or "").split())
+
+		assert artemis.midi.sysex is True
+		assert '"Mind that this only works from the USB connection, not the MIDI DIN."' in flat
+		assert "ITS SYSTEM EXCLUSIVE DOES NOT TRAVEL DOWN ITS OWN DIN SOCKET" in flat
+		assert "true of one of this instrument's two MIDI connections and not the other" in flat

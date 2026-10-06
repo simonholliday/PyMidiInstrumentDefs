@@ -1,0 +1,335 @@
+# **THE DOCUMENT THIS WORK SET OUT TO READ WAS THE WRONG ONE, AND THE RIGHT ONE IS A CHAPTER OF
+# THE MANUAL.** The obvious source is `CC List v1.1.0`, a standalone three-sheet PDF on
+# Dreadbox's support page and the only file there with MIDI in its name - and the
+# user's manual at v1.2.0 carries its own controller list as chapter 017, which has a controller
+# the standalone list does not and disagrees with it about four more. The firmware is 1.2.0. So the
+# named document is the superseded one, and **this definition is built from the manual's chapter**.
+#
+# The two lists were diffed row by row rather than compared by eye - see
+# `Notes/4658_extract_artemis.py` - and **Dreadbox's own `new` badges agree exactly with what the
+# diff found**: 31, 44, 50, 77 and 93, five rows, neither reading derived from the other.
+#
+# **ONE READER WILL NOT READ BOTH LISTS, BECAUSE THEY ALIGN THEIR VALUE CELLS DIFFERENTLY.** The
+# manual sets every value flush at one x - a one-word `0 - 100` and a fifteen-state enumeration
+# both begin at 794 - while the standalone list centres each cell, so its values start at 269, 327
+# or 375 depending on length. A fixed boundary reads the manual perfectly and clips the other;
+# PyMuPDF's table finder reads the standalone perfectly and returns nothing at all for the manual's
+# value column, whatever strategy it is given. So each is read the way its own layout allows.
+#
+# **AND A VALUE THAT NEEDS TWO LINES IS CENTRED ON ITS ROW, SO ITS FIRST LINE SITS ABOVE THAT
+# ROW'S OWN NUMBER.** A reader that folds a value-only line into the row above gives controller 30
+# the first half of 38's enumeration and leaves 44 without its own - which it did, until the lines
+# were assigned to the nearest row instead.
+
+definition: 1
+
+model:
+  manufacturer: Dreadbox
+  name: Artemis
+  # **1.2.0, AND THE MANUAL FOR IT STILL NAMES 1.1.0 IN ONE PLACE.** See the account: its global
+  # parameter table prints `FIRMWARE current firmware version (1.1.0)` in the same document that
+  # tells you to send `Artemis_1.2.0.syx`. **The version here is the file's own**: the manual is
+  # named `ARTEMIS_Manual_v1.2.0.pdf` and the update procedure inside it names that `.syx`.
+  # Dreadbox publishes no release-notes document for any Artemis firmware - what it has is a
+  # news post, which **answered 403 to two attempts spaced apart** and so is not in the
+  # library and is cited nowhere here.
+  firmware: 1.2.0
+  # Checked 2026-10-06.
+
+source: >-
+  **EIGHTY-FOUR CONTROLS, OUT OF THE MANUAL AND NOT OUT OF THE DOCUMENT NAMED FOR IT.**
+  Dreadbox publishes a standalone `CC List v1.1.0` and the user's manual carries the same list as
+  its chapter 017 - and at v1.2.0 the chapter has moved on. It adds controller 77, `VCO 1 TUNE`,
+  which the standalone list does not have at all, and it changes four more: the selector at 31
+  gains four states, `MODULATIONS TYPE` at 44 gains `BBD RESONATOR` and renames `TZ FLANGER` to
+  `ZERO FLANGER`, `DELAYS TYPE` at 50 gains `BBD PLAYGROUND` and renames `BBD` to `BBD DELAY`, and
+  `DRIVE MODE` at 93 gains `NO OSC`. The new one is the last row of the chapter, "77 VCO 1 TUNE"
+  (manual p. 79), which firmware 1.2.0 made a modulation destination. **Dreadbox badges exactly those five rows `new`**, which is a
+  second reading of the same change arrived at independently.
+
+  **CONTROLLER 31 IS NOT AN ORDINARY CONTROL AND A CONSUMER MUST BE TOLD SO.** "Use CC 31
+  (Selector) to choose whether subsequent CC messages adjust a parameter's base value or its
+  corresponding modulation amount." (manual p. 74). So every controller below means one of two
+  things depending on a mode set by another controller - and when it is set to a modulation the
+  range is re-read as a signed one: "0 → –100", "64 → 0", "127 → +100" (manual p. 74). **Send
+  `LPF CUT OFF` without knowing where 31 stands and you may be setting the cutoff or setting how
+  far an envelope moves it.** Its ten states are `BASE`, `LFO 1`, `LFO 2`, `VCA EG`, `VCF EG`,
+  `VELOCITY`, `MODWHEEL`, `AFTERTOUCH`, `KEYTRACK` and `CC74`.
+
+  **NO BAND BOUNDARY IS PRINTED FOR ANY ENUMERATED CONTROL, SO NONE IS RECORDED.** Both lists say
+  only that "All the values either numerical or enumerated are split in the whole CC range of
+  0-127" (manual p. 70) and then print state names with no numbers against them. That is a rule
+  and not a table: thirds of 0 to 127 can be written 0/42/84 or 0/43/85 and the maker has said
+  which only for the two-state controls, where the specification's own 0 and 64 settle it. So the
+  seven switches carry their two states and **the thirteen controls with three or more states
+  carry their names in this account and no numbers**, which is `novation/peak`'s rule as
+  `korg/volca_fm` applied it.
+
+  Those thirteen, with the states each one offers: 18 `LFO 1 VCO TARGET` (3), 24 and 27 the two
+  `LFO WAVE`s (8 each), 29 `LFO SYNC MODE` (4), 30 `PLAY MODE` (5), 31 `SELECTOR` (10), 38
+  `DISTORTIONS TYPE` (15), 44 `MODULATIONS TYPE` (12), 50 `DELAYS TYPE` (5), 56 `REVERBS TYPE`
+  (5), 82 `LPF TRACK` (3), 91 `SEQUENCERS PARAMETER TYPE` (3) and 93 `DRIVE MODE` (5).
+
+  **RECEIVES ONLY - AND THAT IS READ OFF THE SETTINGS, NOT QUOTED FROM A SENTENCE.** This
+  instrument has a MIDI output: "MIDI IN/OUT MIDI DIN connector for receiving / transmitting MIDI
+  messages from/to an external MIDI device." (manual p. 9). But **every MIDI switch it offers is a
+  receive switch** - `CLOCK RECEIVE`, `TRANSPORT RECEIVE`, `CC IN`, `PC IN` (manual p. 62) - and
+  the words `CC OUT` and `MIDI OUT` appear nowhere in either manual, nor does any sentence naming
+  a control this instrument transmits. So the controls below are marked `receives`, which is the
+  safer of the two errors: a consumer that does not listen for a controller it would have seen has
+  missed a feature, where one that waits for a controller that never comes is stuck. **This
+  differs from both sibling Dreadboxes**, whose controls are all `both`, so the standing maker
+  rule held again.
+
+  THE CHANNEL, WHICH HAS A THIRD SETTING. "The selection can be OMNI (responds to all MIDI
+  channels) or 1 to 16 or MPE (activates the MPE support)." (manual p. 64). In MPE the zone is
+  `LOWER for channels 1/ UPPER for channel 16` over `MPE CHANNELS 1 to 15` (manual p. 62), and
+  controller 74 is the timbre axis - "CC74 Uses MIDI CC74 as a modulation source, allowing
+  external controllers such as MPE devices to modulate any assigned parameter." (manual p. 61).
+  **There is no field for MPE in this format**, so it is here in words.
+
+  **ITS SYSTEM EXCLUSIVE DOES NOT TRAVEL DOWN ITS OWN DIN SOCKET.** Presets are exported and
+  imported as system exclusive with "a software program such as SysEx Librarian for Mac, or Bome
+  SendSX for Windows" (manual p. 66), and firmware arrives the same way as `Artemis_1.2.0.syx` -
+  and both carry the same warning: "Mind that this only works from the USB connection, not the
+  MIDI DIN." (manual p. 66). So `sysex: true` below is true of one of this instrument's two MIDI
+  connections and not the other, which no field here can say.
+
+  512 PRESETS, STATED AND THEN AUDITED. "The Artemis offers a total of 512 Preset Slots split in 8
+  banks of 64 presets each." (manual p. 11) - and the export procedure gives the same figure a
+  second way: "Active preset export will send 2 messages and Bank export will send 65 messages."
+  (manual p. 66), which is one identifier and sixty-four presets.
+
+  **NOT RECORDED, AND THE MANUAL CONTRADICTS ITSELF TWICE.** The MPE pitch wheel range is `MPE
+  PITCH WHEEL 0 to 96 semitones` in the global parameter table (manual p. 62) and "Adjusts the
+  range of the Pitch Wheel from 0 to 48 semitones for MPE control." (manual p. 64) in the prose
+  explaining that very row. Both cannot be right, so neither is carried - which is also why
+  `pitch_bend.semitones` is absent: the ordinary pitch wheel is settable "from 0 to 12 semitones"
+  (manual p. 64) and **no document says where it starts**.
+
+  NOT RECORDED: the note range, the MIDI mode, and NRPN, none of which either manual mentions. The
+  aftertouch below is `poly` and understates what is published - see that field.
+
+sources:
+  manual:
+    kind: manual
+    title: ARTEMIS Product Manual
+    edition: v1.2.0
+    dated: 2026-05-28
+    landing: "https://dreadbox-fx.com/support/"
+    url: "https://dreadbox-fx.com/wp-content/uploads/2026/05/ARTEMIS_Manual_v1.2.0.pdf"
+    sha256: a79cb986dc3a509efdf6098deff0558ef6aecaa9d1a5f2a113f85d6510466fa3
+    retrieved: 2026-10-06
+    # **81 sheets, and chapter 017 is the current controller list.** Its printed folio matches the
+    # sheet, so a page below is the sheet. Dated from the PDF's own creation stamp,
+    # `D:20260528141732+03'00'`. **Dreadbox prints no date against any file on its support
+    # page**, so a stamp inside the file is the only date evidence this definition has.
+  cc_list:
+    kind: chart
+    title: Artemis CC LIST
+    edition: v1.1.0
+    landing: "https://dreadbox-fx.com/support/"
+    url: "https://dreadbox-fx.com/wp-content/uploads/2025/08/Artemis-CC-LIST.pdf"
+    sha256: 61dc8cd8ce555506e19820b1047958362d32037c4e5e072bac143344f72a7157
+    retrieved: 2026-10-06
+    paginated: false
+    # **THE OBVIOUS DOCUMENT, AND THE SUPERSEDED ONE.** Three sheets rendered out of Google
+    # Docs. **The file carries no version in its name** - `Artemis-CC-LIST.pdf` - so it can be
+    # replaced in place without the address changing, which is why its digest is here.
+    # **That it is v1.1.0's is settled by a file and not by a page**: the v1.1.0 manual's own
+    # chapter 017 has the same 86 rows, no controller 77, and a selector matching this exactly.
+    # Cited for what it does not say.
+  manual_1_1_0:
+    kind: manual
+    title: ARTEMIS Product Manual
+    edition: v1.1.0
+    dated: 2025-09-12
+    landing: "https://dreadbox-fx.com/support/"
+    url: "https://dreadbox-fx.com/wp-content/uploads/2025/09/ARTEMIS-DIGITAL-MANUAL_12_09_2025.pdf"
+    sha256: d1c62e6d32dc1f26ae6e4d18dd5c9371a9f1c3c869073c2a40e24ae21128e03f
+    retrieved: 2026-10-06
+    # **KEPT BECAUSE IT SETTLES WHICH LIST IS WHICH.** Its own chapter 017 has 86 rows, no
+    # controller 77, and a selector matching the standalone list exactly - so that list is this
+    # edition's and not merely an old one. 81 sheets, as the current edition has.
+
+midi:
+  # "The selection can be OMNI (responds to all MIDI channels) or 1 to 16 or MPE (activates the
+  # MPE support)." (manual p. 64). The MPE setting is a third thing this field cannot hold; see
+  # the account.
+  channels: [1, 16]
+  # NOT RECORDED, the mode. Neither manual names one, though OMNI is offered as a setting.
+  # `CLOCK RECEIVE ON/ OFF` (manual p. 62), and "Turns ON/OFF the received external clock."
+  # (manual p. 64). **There is no clock out switch**, and nothing says it sends one.
+  clock: receives
+  # `TRANSPORT RECEIVE ON/OFF` (manual p. 62), and "Turns ON/OFF external Transport controls (e.g
+  # play/stop/continue)." (manual p. 64) - which is the maker naming the three messages.
+  transport: receives
+  program_change:
+    # `PC IN ON/OFF` (manual p. 62), and "PC IN Activates program change control." (manual p. 64).
+    # **An in-switch and no out-switch**, so what it sends is unestablished and `sends` is absent
+    # rather than false.
+    receives: true
+    # 512, stated and audited - see the account.
+    presets: 512
+  # **TRUE, AND OVER USB ONLY.** Presets are exported and imported as system exclusive with "a
+  # software program such as SysEx Librarian for Mac, or Bome SendSX for Windows" (manual p. 66),
+  # and the firmware arrives the same way, as `Artemis_1.2.0.syx`. Both carry the same warning:
+  # "Mind that this only works from the USB connection, not the MIDI DIN." (manual p. 66). **So an
+  # instrument whose system exclusive does not travel down its own DIN socket.**
+  sysex: true
+
+voice:
+  addressing: pitches
+  # NOT RECORDED, the note range. Neither manual gives one.
+  # "In Polyphonic mode Artemis will act as a 6-voice polyphonic synthesizer." (manual p. 59).
+  polyphony: 6
+  # **FIVE PANEL MODES OVER FOUR COUNTS**, which controller 30 selects: "In Tri mode Artemis will
+  # act as a 3-voice polyphonic synthesizer." (manual p. 59) and "In Duo mode Artemis will act as
+  # a 2-voice polyphonic synthesizer." (manual p. 59), with Unison and Mono both monophonic -
+  # "In Unison mode Artemis will act as a monophonic synthesizer" (manual p. 59) and "In Mono
+  # mode Artemis will act as a monophonic synthesizer, playing only 1 voice at a time."
+  # (manual p. 59). So Unison stacks all six on one note and Mono plays one voice and leaves
+  # five idle.
+  voicing_modes: [1, 2, 3, 6]
+  velocity:
+    # Received, and a modulation source in its own right: "VELOCITY Uses keyboard velocity as a
+    # modulation source, allowing playing dynamics to modulate any assigned parameter."
+    # (manual p. 61). Controller 95 sets how much of it reaches the amplifier, and controller 31
+    # can point every other controller at it.
+    note_on: received
+  # **`poly` UNDERSTATES WHAT IS PUBLISHED, AND THIS FIELD HAS NO BETTER WORD.** "Both Polyphonic
+  # Aftertouch and Channel Aftertouch are supported." (manual p. 61), and this field's three
+  # values across the corpus are `none`, `poly` and `channel`. `poly` is recorded because it is
+  # the stronger of the two and the one a controller should prefer; **that this instrument also
+  # answers to channel aftertouch is in this comment and nowhere a program can read it.**
+  aftertouch: poly
+  pitch_bend:
+    # "Adjusts the range of the Pitch Wheel from 0 to 12 semitones." (manual p. 64), set in the
+    # global parameters. **No document says where it starts**, so `semitones` is absent; and the
+    # MPE range is given twice with two answers, so it is not here either. See the account.
+    programmable: true
+
+groups:
+  # The manual's own chapter headings, with two for what its chapters do not cover: the modulation
+  # matrix sources, and the playing settings that sit on its PLAY MODE page.
+  vco: VCO
+  vcf: VCF
+  envelope: ENVELOPE
+  lfo: LFOs
+  effects: EFFECTS
+  sequencer: SEQUENCER
+  master_out: MASTER OUT
+  mod_matrix: MOD MATRIX
+  performance: PLAY MODE
+
+controls:
+
+  # **EIGHTY-FOUR, EVERY ONE RECEIVED, AND ALL OF THEM GOVERNED BY CONTROLLER 31.** Three rows of
+  # the manual's list are not controls: `BANK SELECT` at 0 is addressing machinery by the ruling
+  # `roland/fantom_6_7_8` set at rank 77, and `ALL SOUNDS OFF` at 120 and `ALL NOTES OFF` at 123
+  # are channel mode messages this library's validator refuses.
+  #
+  # The seven switches below carry their two states at 0 and 64. The thirteen controls with three
+  # or more states carry none, because the maker prints no boundary for them - see the account.
+
+  # vco (11)
+  vco_glide:                        {label: VCO GLIDE, cc: 5, direction: receives, group: vco}
+  vco_mix:                          {label: VCO MIX, cc: 8, direction: receives, group: vco}
+  vco_morph:                        {label: VCO MORPH, cc: 70, direction: receives, group: vco}
+  vco_sub_noise:                    {label: VCO SUB / NOISE, cc: 76, direction: receives, group: vco}
+  vco_1_tune:                       {label: VCO 1 TUNE, cc: 77, direction: receives, group: vco}
+  vco_2_tune:                       {label: VCO 2 TUNE, cc: 78, direction: receives, group: vco}
+  vco_detune:                       {label: VCO DETUNE, cc: 79, direction: receives, group: vco}
+  vco_fm_mode:                      {label: VCO FM MODE, cc: 80, values: {manual: 0, eg: 64}, direction: receives, group: vco}
+  vco_2_sync:                       {label: VCO 2 SYNC, cc: 81, values: {"off": 0, "on": 64}, direction: receives, group: vco}
+  vco_fm:                           {label: VCO FM, cc: 84, direction: receives, group: vco}
+  vco_pulse_width:                  {label: VCO PULSE WIDTH, cc: 85, direction: receives, group: vco}
+
+  # vcf (10)
+  lpf_ffm_noise_source:             {label: LPF FFM NOISE SOURCE, cc: 3, values: {vco_2: 0, noise: 64}, direction: receives, group: vcf}
+  lpf_ffm:                          {label: LPF FFM, cc: 4, direction: receives, group: vcf}
+  lpf_cut_eg_amount:                {label: LPF CUT EG AMOUNT, cc: 6, direction: receives, group: vcf}
+  hpf_cutoff:                       {label: HPF CUTOFF, cc: 16, direction: receives, group: vcf}
+  hpf_resonance:                    {label: HPF RESONANCE, cc: 17, direction: receives, group: vcf}
+  lpf_resonance:                    {label: LPF RESONANCE, cc: 71, direction: receives, group: vcf}
+  lpf_cut_off:                      {label: LPF CUT OFF, cc: 75, direction: receives, group: vcf}
+  lpf_track:                        {label: LPF TRACK, cc: 82, direction: receives, group: vcf}
+  lpf_poles:                        {label: LPF POLES, cc: 83, values: {twenty_four_db: 0, twelve_db: 64}, direction: receives, group: vcf}
+  drive_mode:                       {label: DRIVE MODE, cc: 93, direction: receives, group: vcf}
+
+  # envelope (8)
+  vca_eg_decay:                     {label: VCA EG DECAY, cc: 9, direction: receives, group: envelope}
+  vca_eg_sustain:                   {label: VCA EG SUSTAIN, cc: 11, direction: receives, group: envelope}
+  eg_attack:                        {label: EG ATTACK, cc: 12, direction: receives, group: envelope}
+  eg_decay:                         {label: EG DECAY, cc: 13, direction: receives, group: envelope}
+  eg_sustain:                       {label: EG SUSTAIN, cc: 14, direction: receives, group: envelope}
+  eg_release:                       {label: EG RELEASE, cc: 15, direction: receives, group: envelope}
+  vca_eg_release:                   {label: VCA EG RELEASE, cc: 72, direction: receives, group: envelope}
+  vca_eg_attack:                    {label: VCA EG ATTACK, cc: 73, direction: receives, group: envelope}
+
+  # lfo (12)
+  lfo_1_vco_target:                 {label: LFO 1 VCO TARGET, cc: 18, direction: receives, group: lfo}
+  lfo_1_vco_amount:                 {label: LFO 1 VCO AMOUNT, cc: 19, direction: receives, group: lfo}
+  lfo_1_vcf_amount:                 {label: LFO 1 VCF AMOUNT, cc: 20, direction: receives, group: lfo}
+  lfo_2_morph_amount:               {label: LFO 2 MORPH AMOUNT, cc: 21, direction: receives, group: lfo}
+  lfo_2_pw_amount:                  {label: LFO 2 PW AMOUNT, cc: 22, direction: receives, group: lfo}
+  lfo_1_rate:                       {label: LFO 1 RATE, cc: 23, direction: receives, group: lfo}
+  lfo_1_wave:                       {label: LFO 1 WAVE, cc: 24, direction: receives, group: lfo}
+  lfo_1_fade:                       {label: LFO 1 FADE, cc: 25, direction: receives, group: lfo}
+  lfo_2_rate:                       {label: LFO 2 RATE, cc: 26, direction: receives, group: lfo}
+  lfo_2_wave:                       {label: LFO 2 WAVE, cc: 27, direction: receives, group: lfo}
+  lfo_xmod:                         {label: LFO XMOD, cc: 28, direction: receives, group: lfo}
+  lfo_sync_mode:                    {label: LFO SYNC MODE, cc: 29, direction: receives, group: lfo}
+
+  # effects (24)
+  distortions_parameter_1:          {label: DISTORTIONS PARAMETER 1, cc: 33, direction: receives, group: effects}
+  distortions_parameter_2:          {label: DISTORTIONS PARAMETER 2, cc: 34, direction: receives, group: effects}
+  distortions_parameter_3:          {label: DISTORTIONS PARAMETER 3, cc: 35, direction: receives, group: effects}
+  distortions_parameter_4:          {label: DISTORTIONS PARAMETER 4, cc: 36, direction: receives, group: effects}
+  distortions_parameter_5:          {label: DISTORTIONS PARAMETER 5, cc: 37, direction: receives, group: effects}
+  distortions_type:                 {label: DISTORTIONS TYPE, cc: 38, direction: receives, group: effects}
+  modulations_parameter_1:          {label: MODULATIONS PARAMETER 1, cc: 39, direction: receives, group: effects}
+  modulations_parameter_2:          {label: MODULATIONS PARAMETER 2, cc: 40, direction: receives, group: effects}
+  modulations_parameter_3:          {label: MODULATIONS PARAMETER 3, cc: 41, direction: receives, group: effects}
+  modulations_parameter_4:          {label: MODULATIONS PARAMETER 4, cc: 42, direction: receives, group: effects}
+  modulations_parameter_5:          {label: MODULATIONS PARAMETER 5, cc: 43, direction: receives, group: effects}
+  modulations_type:                 {label: MODULATIONS TYPE, cc: 44, direction: receives, group: effects}
+  delays_parameter_1:               {label: DELAYS PARAMETER 1, cc: 45, direction: receives, group: effects}
+  delays_parameter_2:               {label: DELAYS PARAMETER 2, cc: 46, direction: receives, group: effects}
+  delays_parameter_3:               {label: DELAYS PARAMETER 3, cc: 47, direction: receives, group: effects}
+  delays_parameter_4:               {label: DELAYS PARAMETER 4, cc: 48, direction: receives, group: effects}
+  delays_parameter_5:               {label: DELAYS PARAMETER 5, cc: 49, direction: receives, group: effects}
+  delays_type:                      {label: DELAYS TYPE, cc: 50, direction: receives, group: effects}
+  reverbs_parameter_1:              {label: REVERBS PARAMETER 1, cc: 51, direction: receives, group: effects}
+  reverbs_parameter_2:              {label: REVERBS PARAMETER 2, cc: 52, direction: receives, group: effects}
+  reverbs_parameter_3:              {label: REVERBS PARAMETER 3, cc: 53, direction: receives, group: effects}
+  reverbs_parameter_4:              {label: REVERBS PARAMETER 4, cc: 54, direction: receives, group: effects}
+  reverbs_parameter_5:              {label: REVERBS PARAMETER 5, cc: 55, direction: receives, group: effects}
+  reverbs_type:                     {label: REVERBS TYPE, cc: 56, direction: receives, group: effects}
+
+  # sequencer (7)
+  sequencers_parameter_1:           {label: SEQUENCERS PARAMETER 1, cc: 86, direction: receives, group: sequencer}
+  sequencers_parameter_2:           {label: SEQUENCERS PARAMETER 2, cc: 87, direction: receives, group: sequencer}
+  sequencers_parameter_3:           {label: SEQUENCERS PARAMETER 3, cc: 88, direction: receives, group: sequencer}
+  sequencers_parameter_4:           {label: SEQUENCERS PARAMETER 4, cc: 89, direction: receives, group: sequencer}
+  sequencers_parameter_5:           {label: SEQUENCERS PARAMETER 5, cc: 90, direction: receives, group: sequencer}
+  sequencers_parameter_type:        {label: SEQUENCERS PARAMETER TYPE, cc: 91, direction: receives, group: sequencer}
+  bpm:                              {label: BPM, cc: 92, direction: receives, group: sequencer}
+
+  # master_out (3)
+  volume:                           {label: VOLUME, cc: 7, direction: receives, group: master_out}
+  spread:                           {label: SPREAD, cc: 10, direction: receives, group: master_out}
+  preset_level:                     {label: PRESET LEVEL, cc: 94, direction: receives, group: master_out}
+
+  # mod_matrix (4)
+  modwheel_mod_source:              {label: MODWHEEL MOD SOURCE, cc: 1, direction: receives, group: mod_matrix}
+  selector:                         {label: SELECTOR, cc: 31, direction: receives, group: mod_matrix}
+  cc74_mod_source:                  {label: CC74 MOD SOURCE, cc: 74, direction: receives, group: mod_matrix}
+  amp_velocity:                     {label: AMP VELOCITY, cc: 95, direction: receives, group: mod_matrix}
+
+  # performance (5)
+  play_mode:                        {label: PLAY MODE, cc: 30, direction: receives, group: performance}
+  sustain:                          {label: SUSTAIN, cc: 64, values: {"off": 0, "on": 64}, direction: receives, group: performance}
+  glide_mode:                       {label: GLIDE MODE, cc: 65, values: {"on": 0, auto: 64}, direction: receives, group: performance}
+  legato:                           {label: LEGATO, cc: 68, values: {"off": 0, "on": 64}, direction: receives, group: performance}
+  instability_depth:                {label: INSTABILITY DEPTH, cc: 96, direction: receives, group: performance}

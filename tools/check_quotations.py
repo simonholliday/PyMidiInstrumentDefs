@@ -197,6 +197,22 @@ FOLDED: typing.Final[dict[str, str]] = {
 	# This can only make more quotations match and never fewer: nothing a definition could
 	# type contains U+00AD, so removing it cannot create a false match.
 	"­": "",
+	# **AND A LOW LINE IS READ BACK AS AN `f`**, because some text layers put one where the
+	# page prints an `f` ligature. The Waldorf Protein's manual is the case: made in Pages and
+	# exported by Quartz, it returns `_ilter` where the page prints `filter`, `shuf_led` for
+	# `shuffled` and `over_low` for `overflow` - **226 times across its 71 sheets**, the stand-in
+	# followed only ever by `i` (197) or `l` (29), which are the two ligatures it sets.
+	# So a quotation containing any of `filter`, `defines`, `specifies`, `confirm`, `firmware`,
+	# `first`, `fixed` or `flow` could never be found in that document, and those are the words
+	# a MIDI definition quotes.
+	# **Reading it as `f` reconstructs every one of that manual's 60 affected words exactly**,
+	# which is the test this fold has to pass: `Ampli_ier` is `Amplifier` and not `Amplifiier`.
+	# Unlike the soft hyphen above, a definition *could* type a real underscore - a file name,
+	# a parameter like `OSC_1` - so this fold is not free. It is safe because `squash()` applies
+	# it to the page and to the quotation alike: `Protein_Manual.pdf` becomes `proteinfmanual`
+	# on both sides and still matches. What it costs is the ability to tell `A_B` from `AfB`,
+	# which is the hyphen's bargain and no reader of a citation is misled by it.
+	"_": "f",
 }
 
 

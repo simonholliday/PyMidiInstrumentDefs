@@ -252,6 +252,7 @@ class TestBundledCorpus:
 			"voce/electric_piano",
 			"waldorf/blofeld",
 			"waldorf/iridium",
+			"waldorf/protein",
 			"waldorf/streichfett",
 			"yamaha/dx7",
 			"yamaha/reface_cp",
@@ -2390,7 +2391,7 @@ class TestOsmose:
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
 			"asm/leviasynth", "expressive_e/osmose", "modal/carbon8m",
 			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
-			"udo_audio/super_6", "waldorf/iridium"]
+			"udo_audio/super_6", "waldorf/iridium", "waldorf/protein"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -7968,9 +7969,15 @@ class TestProphet6:
 		assert "oberheim/ob_x8" in flagged
 
 		# And the Leviasynth, whose MPE takes the channel settings away rather than
-		# sitting beside them. The Osmose's test above carries what each of the ten is.
+		# sitting beside them. The Osmose's test above carries what each of the eleven is.
 		assert "asm/leviasynth" in flagged
-		assert len(flagged) == 10
+
+		# **The Protein is the eleventh, and the only one whose channel count for MPE is the
+		# player's to set**: "Here you can determine the number of used channels for MPE
+		# purposes." So this boolean covers an instrument that takes some channels and one
+		# that takes as many as somebody says.
+		assert "waldorf/protein" in flagged
+		assert len(flagged) == 11
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -13527,3 +13534,226 @@ class TestJupiterX:
 		flat = " ".join(prose_of("roland", "jupiter_x").split())
 
 		assert "**The implementation's own version is a different number**" in flat
+
+
+class TestProtein:
+
+	"""The Waldorf whose MIDI chapter is a glossary of what MIDI is.
+
+	Most of the MIDI words in its manual are in a six-sheet glossary of general
+	terms, and three of the numbers there look exactly like this instrument's
+	own.  So the channel range, the note range and the controller range are all
+	left unrecorded, and the definition says which sentence each would have come
+	from.
+	"""
+
+	def test_the_channel_range_is_unrecorded_because_only_a_glossary_gives_one (self) -> None:
+		"""A sentence about MIDI is not a sentence about this instrument."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert protein.midi.channels is None
+		assert protein.midi.mode is None
+		assert protein.voice is not None
+		assert protein.voice.note_range is None
+
+		said = prose_of("waldorf", "protein")
+
+		assert "MIDI Channels 1 through 16 are available for this purpose." in said
+		assert "Program numbers 1 through 128 can be changed via program change messages." in said
+		assert "can be between 0 and 120." in said
+
+		flat = " ".join(said.split())
+
+		assert "**SEVENTY-ONE SHEETS, A SIX-SHEET MIDI GLOSSARY, AND NO IMPLEMENTATION.**" in flat
+		assert "**THE CHANNEL RANGE IS LEFT UNRECORDED BELOW FOR EXACTLY THAT REASON**" in flat.upper()
+
+		# **AND THE LESSON IS NAMED AS THE THIRD IN A ROW**, which is the point of keeping it.
+		assert "a glossary is not an implementation" in flat
+
+	def test_five_numbers_carried_and_ten_recorded_rather_than_listed (self) -> None:
+		"""Because the maker printed two ends and a rule, not ten numbers."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert len(protein.controls) == 5
+		assert sorted(control.cc for control in protein.controls.values()
+			if control.cc is not None) == [1, 2, 11, 64, 74]
+
+		flat = " ".join(prose_of("waldorf", "protein").split())
+
+		assert "**AND TEN MORE NUMBERS ARE NOT BELOW, BECAUSE THE MAKER PRINTED A RANGE AND NOT" \
+			" A LIST.**" in flat
+		assert "**Only 22 and 31 are printed.**" in flat
+		assert "found 24, 28 and 30 on no page" in flat
+
+		# The gate that decided it, named so the next reader does not argue it again.
+		assert "which is `elektron/tonverk`'s gate at rank 88" in flat
+
+		# And none of the five names a parameter - every one is a modulation source.
+		assert {control.group for control in protein.controls.values()} == {"modulation"}
+
+	def test_control_change_is_empty_because_it_is_both_things_the_field_names (self) -> None:
+		"""Fixed sources in the matrix, and MIDI learn for everything else."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert protein.midi.control_change is None
+		assert not protein.midi.refuses_control_change
+
+		said = prose_of("waldorf", "protein")
+
+		assert "Protein allows you to map its parameters to incoming MIDI control change data." \
+			in said
+		assert "If no MIDI CC mapping was made, Nothing Mapped is displayed." in said
+
+		flat = " ".join(said.split())
+
+		assert "**`control_change` IS LEFT EMPTY BECAUSE IT HOLDS ONE WORD AND THIS INSTRUMENT" \
+			" IS BOTH THINGS.**" in flat
+
+		# The six that do use `learned` all carry nothing, which is why writing it here would
+		# have said the five above are defaults somebody can change.
+		for name in ("akai/mpc_live", "arturia/drumbrute_impact", "dirtywave/m8",
+				"roland/d_50", "synthstrom_audible/deluge", "teenage_engineering/op_1"):
+			other = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			assert other.midi.control_change == "learned"
+			assert not other.controls
+
+	def test_its_four_layers_take_channels_in_one_mode_of_four (self) -> None:
+		"""So a consumer trusting the channels without the mode addresses nothing."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert list(protein.parts) == ["layer"]
+		assert protein.parts["layer"].count == 4
+		assert protein.parts["layer"].channel_offset == 0
+		assert protein.parts["layer"].channel is None
+
+		said = prose_of("waldorf", "protein")
+
+		assert "Based on the determined MIDI Receive Channel in the Settings, the select MIDI" \
+			" Channel triggers Layer A, the next MIDI channel Layer B and so on." in said
+
+		flat = " ".join(said.split())
+
+		assert "**THESE PARTS EXIST IN ONE MODE OF FOUR, WHICH IS AN OPEN QUESTION ON THE" \
+			" FORMAT FROM THE OTHER SIDE.**" in flat
+		assert "**IN THE OTHER THREE MODES ALL FOUR ANSWER ON THE ONE CHANNEL.**" in flat
+
+	def test_eight_voices_shared_which_the_ob_x8_could_not_say (self) -> None:
+		"""One figure is true here and would have been false there."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert protein.voice is not None
+		assert protein.voice.polyphony == 8
+		assert protein.voice.polyphony_shared is True
+		assert protein.voice.voicing_modes == (1, 8)
+
+		said = prose_of("waldorf", "protein")
+
+		assert "Keep in mind that all 4 layers share the maximum of 8 voices." in said
+
+		# **THE CONTRAST THAT MAKES THE FIGURE WORTH HAVING**, asserted against the sibling.
+		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
+
+		assert ob_x8.voice.polyphony is None
+		assert all(part.polyphony == 4 for part in ob_x8.parts.values())
+
+		flat = " ".join(said.split())
+
+		assert "**That sentence is why this definition can carry a figure where" \
+			" `oberheim/ob_x8` could not**" in flat
+
+	def test_the_specification_is_stale_and_the_changelog_dates_it (self) -> None:
+		"""One statement superseded, which is not two contradicting each other."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert protein.midi.program_change is not None
+		assert protein.midi.program_change.presets == 360
+		assert protein.midi.program_change.receives is None
+
+		said = prose_of("waldorf", "protein")
+
+		assert "Capacity of 250 patch memory slots" in said
+		assert "Increased preset storage from 250 to 360" in said
+		assert "Recognizing MIDI Bank Select (LSB aka CC32) messages to choose from all 360" \
+			" slots" in said
+
+		flat = " ".join(said.split())
+
+		assert "**That is not two statements contradicting each other**" in flat
+		assert "**it is one statement superseded by a dated one**" in flat
+
+		# **AND THE MESSAGE THAT IS NAMED IS NOT A PROGRAM CHANGE**, so that field stays empty.
+		assert "**AND THE ONLY STATEMENT ABOUT CHOOSING A PRESET OVER MIDI NAMES BANK SELECT" \
+			" RATHER THAN PROGRAM CHANGE**" in flat
+		assert "**An inference is not a citation**" in flat
+
+	def test_the_document_that_settles_most_is_the_one_the_page_does_not_name (self) -> None:
+		"""A bare address in the body of an answer about something else."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert "changelog" in protein.sources
+		assert protein.model.firmware == "1.02"
+
+		said = prose_of("waldorf", "protein")
+
+		assert "Changelog - Protein Firmware 1.02 (January 2026)" in said
+		assert "New OS versions are available in your “my waldorf” account under Hardware & OS" \
+			" Updates. Here is the changelog:" in said
+
+		flat = " ".join(said.split())
+
+		assert "**AND THE DOCUMENT THAT SETTLES THE MOST IS THE ONE THE DOWNLOADS PAGE DOES NOT" \
+			" NAME.**" in flat
+
+	def test_its_text_layer_loses_the_f_ligature_and_the_checker_folds_it_back (self) -> None:
+		"""So the words a reader sees on the page are the words a definition can quote."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+		flat = " ".join(prose_of("waldorf", "protein").split())
+
+		assert "**ITS TEXT LAYER PUTS A LOW LINE WHERE THE PAGE PRINTS AN `f` LIGATURE**, 226" \
+			" times" in flat
+		assert "`tools/check_quotations.py` now reads a low line back as an `f`" in flat
+
+		# And the quotations that only work because of it are in the file, so a change to the
+		# fold fails here as well as in the checker.
+		said = prose_of("waldorf", "protein")
+
+		assert "Legato: Same as Mono, but when you play legato, only the first note that was" \
+			" played triggers the envelopes." in said
+		assert "You can also use Select to define the Vel Amnt (Velocity Amount), so that the" \
+			" volume will be affected by keyboard velocity." in said
+
+	def test_the_german_edition_is_a_revision_behind_and_omits_nothing (self) -> None:
+		"""Which is what rank 95's instrument needed comparing with."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert "german_manual" in protein.sources
+		assert protein.sources["german_manual"].edition == "1"
+		assert protein.sources["manual"].edition == "2"
+
+		flat = " ".join(prose_of("waldorf", "protein").split())
+
+		assert "**CITED FOR A COMPARISON RATHER THAN FOR A FACT, AND IT IS THE REASSURING" \
+			" ONE.**" in flat
+		assert "**every MIDI fact the English edition has**" in flat
+
+		# The instrument it is being compared with, and what it did instead.
+		hexdrums = " ".join((pymidiinstrumentdefs.load(
+			"erica_synths/hexdrums", [CORPUS]).source or "").split())
+
+		assert "THE JAPANESE EDITION IS CITED FOR AN ABSENCE" in hexdrums
+
+	def test_it_sends_no_clock_although_it_has_a_sequencer (self) -> None:
+		"""An absence a consumer may be surprised by rather than a silence."""
+		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
+
+		assert protein.midi.clock == "receives"
+		assert protein.midi.transport is None
+
+		said = prose_of("waldorf", "protein")
+
+		assert "Determines how Protein reacts to incoming MIDI Clock messages." in said
+
+		flat = " ".join(said.split())
+
+		assert "**Nothing in any document says it sends one**" in flat

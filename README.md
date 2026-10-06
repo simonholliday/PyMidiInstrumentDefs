@@ -236,6 +236,7 @@ self-contained YAML file, and you share it by sending it.
 | `voce/electric_piano` | Voce ELECTRIC PIANO: 16 or 32 voices, depending on the chorus |
 | `waldorf/blofeld` | Waldorf Blofeld: a chart with a row for all 128 controller numbers, seventeen of which are not controls - and one manual covering a Desktop with no MIDI out and a Keyboard with one |
 | `waldorf/iridium` | Waldorf Iridium: no control map at all - almost every parameter is reached by MIDI learn, so what is here is the fifteen controller numbers the maker fixes, out of a manual two product pages serve as the same bytes |
+| `waldorf/protein` | Waldorf Protein: fifteen fixed modulation sources and MIDI learn for everything else, out of a manual whose MIDI chapter is a glossary of what MIDI is |
 | `waldorf/streichfett` | Waldorf Streichfett: controls whose values are exact numbers, not bands |
 | `yamaha/dx7` | Yamaha DX7: sends one set of controllers and answers to another, out of a 1983 manual that only exists as a scan |
 | `yamaha/reface_cp` | Yamaha reface CP: 18 controls out of the same data list as the reface DX, and the only one of its four instruments with a sostenuto and a soft pedal - it does no program change at all, where its sibling does |

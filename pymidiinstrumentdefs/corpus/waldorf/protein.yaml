@@ -1,0 +1,377 @@
+# **SEVENTY-ONE SHEETS, A SIX-SHEET MIDI GLOSSARY, AND NO IMPLEMENTATION.** Most of the MIDI words
+# in this manual are in a glossary of general synthesis and MIDI terms - sheets 62 to 67, between
+# `Aftertouch` and `Wavetable`, with `Coffee Filter` among them - and **not one sentence of it is
+# about this instrument.** It is MIDI education: what a controller is, what a channel is for, what
+# a program change does.
+#
+# **SO THE NUMBERS IN IT ARE NOT THIS INSTRUMENT'S, AND THREE OF THEM LOOK EXACTLY AS IF THEY
+# WERE.** The glossary says a controller number "can be between 0 and 120." (manual p. 63), that
+# "MIDI Channels 1 through 16 are available for this purpose." (manual p. 65), and that "Program
+# numbers 1 through 128 can be changed via program change messages." (manual p. 65). A reader
+# taking those for the Protein's own would record a channel range, a controller range and a preset
+# count, all from a page explaining MIDI to a beginner. **The channel range is left unrecorded
+# below for exactly that reason**: those words are the only `1 through 16` anywhere in 71 sheets,
+# and this instrument's own settings pages never give a range.
+#
+# **THIS IS THE JD-XI'S LESSON IN A NEW SHAPE.** Rank 94 gave *a page is not a page's first
+# screen*; rank 96 found a maker's tone map in the document its sibling had cited for an absence.
+# This one gives **a glossary is not an implementation** - and it is harder to catch than either,
+# because the words are right, the page number is right, and the sentence is about MIDI.
+#
+# WHAT THIS INSTRUMENT ACTUALLY ANSWERS TO IS FIVE PRINTED NUMBERS, TEN MORE INSIDE A PRINTED
+# RANGE, AND ANYTHING ELSE A PLAYER TEACHES IT. All fifteen are modulation sources rather than
+# parameters - four are named with their numbers on one sheet (manual p. 56), one more where MPE
+# is explained (manual p. 53), and the last ten are a row reading `CC22...CC31` whose interior
+# the maker never prints, so they are recorded and not listed. Everything else is learned: "Protein allows you
+# to map its parameters to incoming MIDI control change data." (manual p. 55), and until somebody
+# does, "If no MIDI CC mapping was made, Nothing Mapped is displayed." (manual p. 55).
+#
+# **`control_change` IS LEFT EMPTY BECAUSE IT HOLDS ONE WORD AND THIS INSTRUMENT IS BOTH THINGS.**
+# `learned` is what six definitions here use for an instrument whose map the player makes, and all
+# six carry no controls at all; writing it would say the five below are factory defaults
+# somebody can change, which they are not - they are fixed sources in the modulation matrix. The
+# field has no word for a maker that publishes some numbers and leaves the rest to MIDI learn.
+#
+# **AND THE DOCUMENT THAT SETTLES THE MOST IS THE ONE THE DOWNLOADS PAGE DOES NOT NAME.** Four
+# things are offered there; three are labelled `manual`, `Specifications` and `SysEx Drop Tool`,
+# and the fourth is a bare address in the body of an answer about something else: "New OS versions
+# are available in your “my waldorf” account under Hardware & OS Updates. Here is the changelog:"
+# (downloads_page). That changelog is **the only document that gives this instrument's
+# firmware version, the only one that says a controller number is recognised for anything, and the
+# only one with the right preset count.** A reader who took the labelled three would have none of
+# those.
+
+definition: 1
+
+model:
+  manufacturer: Waldorf
+  name: Protein
+  # **1.02, FROM THE ONE DOCUMENT THAT STATES A VERSION AT ALL** - "Changelog - Protein Firmware
+  # 1.02 (January 2026)" (changelog), which is also where 1.01 and its December 2025 changes
+  # are. The manual names no firmware and the specification sheet names none; the instrument shows
+  # its own at startup, which 1.02 added.
+  # **THE FIRMWARE ITSELF IS BEHIND A LOGIN** - the downloads page says new versions "are
+  # available in your “my waldorf” account under Hardware & OS Updates" (downloads_page) -
+  # so what is public is the account of what changed rather than the thing that changed.
+  firmware: "1.02"
+  # A desktop module with no keyboard: its manual has a section called `Playing Notes without a
+  # keyboard` (manual p. 13), and the specification sheet's connections are audio, headphones,
+  # MIDI and USB (specifications p. 2). The Microwave lineage, which its own specification claims
+  # in the first line: "Two oscillators based on unique Waldorf Microwave ASIC chip."
+  # (specifications p. 1).
+  # Checked 2026-10-06.
+
+source: >-
+  **FOUR DOCUMENTS, ONE OF WHICH THE DOWNLOADS PAGE DOES NOT NAME, AND THE MIDI IS SPREAD ACROSS
+  THREE OF THEM.** See the comment above the definition for the glossary trap and for which
+  document settles what.
+
+  WHERE EACH FACT COMES FROM, BECAUSE NO ONE DOCUMENT HOLDS THEM. The manual (71 sheets, `Rev. 2,
+  January 2026`) has the settings on p. 51, the sync and MPE settings on p. 52, the MPE mapping
+  and its one controller number on p. 53, the learn procedure on p. 55 and **fourteen of the
+  the modulation sources on p. 56**, in the Source column of its modulation table; the layers are on
+  p. 18, the shared voices on p. 16, the pitch bend on p. 26, the keyboard tracking reference on
+  p. 29, the velocity on p. 32, the sysex dumps on p. 20 and the glossary on pp. 62 to 67. The
+  changelog (1 sheet) has the firmware, the preset count and the one controller number recognised
+  for choosing a preset. The specification sheet (2 sheets) has the voice count and the layer
+  modes in the maker's own summary. **And the German manual is cited for a comparison rather than
+  for a fact.**
+
+  **THE SPECIFICATION SHEET IS STALE AND THE CHANGELOG PROVES IT, WHICH IS WHY `presets` IS 360
+  AND NOT 250.** The specification says "Capacity of 250 patch memory slots" (specifications
+  p. 2); firmware 1.01 "Increased preset storage from 250 to 360" (changelog) and 1.02 added
+  "Recognizing MIDI Bank Select (LSB aka CC32) messages to choose from all 360 slots"
+  (changelog). **That is not two statements contradicting each other** - the rule `novation/peak`
+  established, where neither is carried - **it is one statement superseded by a dated one**, and
+  the dates are in the documents: the specification sheet was made on 17 November 2025 and 1.01
+  shipped in December. So the later figure is carried and the earlier is recorded here, because a
+  consumer reading the maker's own specification page today is told 250.
+
+  **AND THE ONLY STATEMENT ABOUT CHOOSING A PRESET OVER MIDI NAMES BANK SELECT RATHER THAN PROGRAM
+  CHANGE**, so `program_change.receives` is left unrecorded while `presets` is not. CC 32 alone
+  cannot reach 360 slots and program change must be received too - but the documents never say so,
+  and the only page that discusses program change is the glossary. **An inference is not a
+  citation**, so the count is recorded, the message that is named is recorded in a comment, and
+  the one that must also be true is not claimed.
+
+  HOW ITS DOCUMENTS ARE ADDRESSED, WHICH IS THE HABIT THIS MAKER DOES KEEP. Every file comes from
+  a share on the maker's own Nextcloud - `downloads.waldorfmusic.com/cloud/index.php/s/<token>` -
+  and `waldorf/blofeld` and `waldorf/iridium` are reached the same way, so **three Waldorfs in
+  this corpus and one arrangement.** Two differences worth having: **the share serves a `.zip`
+  rather than the file**, each holding one folder and one or two PDFs, and **the token says nothing
+  about what it serves**, so the four here are told apart only by what comes back.
+
+  NOT RECORDED: the channel range, for the reason in the comment above - the only `1 through 16`
+  in 71 sheets is the glossary's. The mode, there being no implementation chart in any document.
+  The transport, which **no document mentions in any spelling**. The note range, whose only
+  statement is the glossary's "between 0 and 127" (manual p. 65) about MIDI in general. NRPN, which appears
+  nowhere at all - not even as a glossary entry, which is a silence and not a checked absence. And
+  `control_change`, for the reason in the comment: this instrument is both of the things that
+  field has words for.
+
+sources:
+  manual:
+    kind: manual
+    title: Protein Manual
+    edition: "2"
+    dated: 2026-01-01
+    landing: "https://waldorfmusic.com/faq-protein/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/yp32Jd7SPTfZ6Q5/download"
+    sha256: db4fff259aa33c936fa507de9af951898695d02bb2beac097a723e442b33fc48
+    retrieved: 2026-10-06
+    # **71 sheets, of which six are a glossary of general MIDI and synthesis terms** - sheets 62
+    # to 67 - and this instrument's own MIDI is on sheets 51 to 53 and 55 to 57. The folio is the
+    # sheet number, printed at the foot of each page as `Protein Manual <n>`, so no offset.
+    # **ITS TEXT LAYER PUTS A LOW LINE WHERE THE PAGE PRINTS AN `f` LIGATURE**, 226 times: it
+    # returns `_ilter` for `filter`, `shuf_led` for `shuffled` and `over_low` for `overflow`, the
+    # stand-in followed only ever by `i` or `l`. Made in Pages and exported by Quartz, which is
+    # where that comes from. **So a search of this document for `defines` or `specifies` or
+    # `firmware` finds nothing**, and `tools/check_quotations.py` now reads a low line back as an
+    # `f` so that the words a reader sees on the page are the words a definition can quote.
+    # Its own body says `Rev. 2, January 2026` (manual p. 3) while the file was made on 8 September 2026,
+    # so the revision is the document's and the date on it is not the file's. Served inside a
+    # `.zip` beside the German edition.
+    page_offset: 0
+  changelog:
+    kind: release_notes
+    title: Changelog - Protein
+    dated: 2026-01-15
+    landing: "https://waldorfmusic.com/faq-protein/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/FwQP632ba84cDLx/download"
+    sha256: 6e269488ded610f3e89f37901853e41843fa66369ce44d4cffe1b0d2b6788b66
+    retrieved: 2026-10-06
+    # **ONE SHEET, AND IT SETTLES THREE THINGS NO OTHER DOCUMENT DOES**: the firmware version, the
+    # preset count, and that a controller number is recognised for choosing a preset. See the
+    # account above for why it is also the one the downloads page does not name.
+    # It covers 1.02 and 1.01 only - **nothing about 1.00**, so what the instrument shipped with
+    # is unpublished. Made on the same day the downloads page's answer naming it is dated.
+    # One of its 1.02 fixes is a MIDI fault worth a consumer's attention: "MIDI note-off and
+    # pitch-bend messages leak between layers in MIDI split mode." (changelog).
+    paginated: false
+  specifications:
+    kind: specification
+    title: Waldorf Protein Specifications
+    dated: 2025-11-17
+    landing: "https://waldorfmusic.com/faq-protein/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/fnm9gdPKzkCaxn6/download"
+    sha256: f09a056be41b07ad4581dd3b944bdcd7bdb922553b0e69e3fffa74fb35679974
+    retrieved: 2026-10-06
+    # Two sheets, and **cited for the voice count and for being out of date.** "8 voice
+    # polyphony" (specifications p. 1) and "4 timbral layers" (specifications p. 1) are what the
+    # definition rests on; its preset count
+    # is superseded, which the account above sets out.
+    # It also names the layer modes in the maker's summary - "Stacked, round robin and MIDI-split
+    # layer-modes." (specifications p. 1) - **where the manual calls the first of those
+    # `Layered`** (manual
+    # p. 18). One instrument, two names for one mode, in two documents by one maker.
+    page_offset: 0
+  german_manual:
+    kind: manual
+    title: Protein Bedienungsanleitung
+    edition: "1"
+    dated: 2025-11-01
+    landing: "https://waldorfmusic.com/faq-protein/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/yp32Jd7SPTfZ6Q5/download"
+    sha256: 6c08357f1cb380eb891cdaf5efdc277166b89620c4fc7e2eae83b0c9a9093e19
+    retrieved: 2026-10-06
+    # **CITED FOR A COMPARISON RATHER THAN FOR A FACT, AND IT IS THE REASSURING ONE.** Rank 95's
+    # instrument had a translation that omitted its whole MIDI implementation, so this pair was
+    # checked the same way: 72 sheets against the English 71, `Rev. 1, November 2025` against
+    # `Rev. 2, January 2026`, and **every MIDI fact the English edition has** - CC 74 on its sheet
+    # 54, the modulation sources on 57, MPE across five sheets, its own glossary at 63.
+    # So this is a translation one revision behind that leaves nothing out, which is what the
+    # other case needed comparing with. It arrives in the same `.zip` as the English manual.
+    page_offset: 0
+  downloads_page:
+    kind: download_page
+    title: FAQ / Downloads | Protein | Waldorf Music
+    landing: "https://waldorfmusic.com/protein/"
+    url: "https://waldorfmusic.com/faq-protein/"
+    sha256: d6e2a030b2990f3be8d191a99d63ed3ad90244559b99c8b0cfe22ad8797a335f
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being four and for one of them being unnamed.** The product page at
+    # waldorfmusic.com/protein/ offers only the manual; this page is where the other three are,
+    # and it is reached by a link reading `go to protein FAQ / Downloads`.
+    # The digest is of the extraction, which pairs each share token with the words that label it -
+    # and the changelog's row has the address as its own label, because it is written into the
+    # body of an answer rather than offered as a download. The served markup is saved beside it as
+    # `.html`, whose own digest is 3dc6c2be9f96f2cf80adfc062f741c84f2747d7a10a1d716521644e12445a731.
+    # **No file address appears on it at all**: four share tokens, no file names, and the
+    # `.zip` that comes back is the only thing that says what each is.
+
+midi:
+  # NOT RECORDED, AND THIS IS THE FIELD THE GLOSSARY TRAP WOULD HAVE FILLED WRONGLY. The only
+  # statement of a channel range in 71 sheets is the glossary's "MIDI Channels 1 through 16 are
+  # available for this purpose." (manual p. 65), which is a sentence about MIDI and not about this
+  # instrument. Its own settings give a receive channel and a send channel with no range -
+  # "Determines the basic send and receive channel for the device." (manual p. 51) - and an omni
+  # switch that speaks of "any MIDI channel" (manual p. 51) without counting them.
+  # **So sixteen is almost certainly right and is not published**, which is the distinction this
+  # field exists to keep.
+  # NOT RECORDED, the mode: no implementation chart exists in any of the four documents, and the
+  # Mode row is where this comes from.
+  # **RECEIVES, BY A SETTING WITH TWO VALUES, AND SENDS NOTHING.** `Sync Settings Source`
+  # "Determines how Protein reacts to incoming MIDI Clock messages." (manual p. 52) - `Intern`
+  # means "Protein doesn’t react to incoming MIDI Clock" (manual p. 52) and `Extern` that it "automatically syncs
+  # to incoming MIDI Clock if it is sent by an external device like a DAW, a sequencer or a drum
+  # machine." (manual p. 52). **Nothing in any document says it sends one**, and it has a
+  # sequencer and an arpeggiator that would be worth syncing to, so this is an absence a consumer
+  # may be surprised by rather than a silence about something unlikely.
+  clock: receives
+  # NOT RECORDED, the transport: no document mentions start, stop or continue as MIDI messages.
+  program_change:
+    # **THE COUNT IS THE CHANGELOG'S AND THE MESSAGE IT NAMES IS NOT A PROGRAM CHANGE.** Firmware
+    # 1.02 added "Recognizing MIDI Bank Select (LSB aka CC32) messages to choose from all 360
+    # slots" (changelog), after 1.01 "Increased preset storage from 250 to 360" (changelog).
+    # So 360 is what a consumer can reach, and the specification sheet's 250 is a figure
+    # from before December 2025.
+    # `receives` IS LEFT UNRECORDED DELIBERATELY - see the account. Bank select LSB cannot reach
+    # 360 slots by itself, so program change must be received as well, and **no document says it
+    # is**: the only page that discusses program change at all is the glossary. Recording `true`
+    # would be carrying an inference as a citation.
+    # **AND CC 32 IS NOT AMONG THE CONTROLS BELOW**, following the ruling this corpus has applied
+    # to every Roland since rank 77: bank select addresses something rather than controlling it,
+    # so it belongs to this field rather than to that list.
+    presets: 360
+  # NOT RECORDED, AND THE REASON IS THAT THIS INSTRUMENT IS BOTH THINGS THIS FIELD HAS WORDS FOR.
+  # See the comment above the definition: a fixed set of numbers in the modulation matrix, and
+  # MIDI learn for every parameter beyond them.
+  # **BOTH WAYS, FOR WHOLE SOUNDS RATHER THAN FOR PARAMETERS.** The preset menu sends - "The
+  # active sound (as edited) will be sent as MIDI SysEx dump to the USB-C port. The dump contains
+  # multiple MIDI SysEx messages." (manual p. 20) - and receives, by a mode it is put into:
+  # "Start Receive: Puts Protein in a receive mode for multiple sound presets as MIDI SysEx dump
+  # from any external MIDI source." (manual p. 20). The specification agrees in one line:
+  # "Import- and export of patches via MIDI Sysex" (specifications p. 2).
+  # Its device id is settable and **it can be addressed as a broadcast but cannot send as one**:
+  # "Device ID 127 is a so-called broadcast ID that addresses all connected Protein units. Protein
+  # can receive this from other devices, but cannot send it itself." (manual p. 51).
+  sysex: true
+  # **MPE, AND THE NUMBER OF CHANNELS IT TAKES IS THE PLAYER'S TO SET**: "Here you can determine
+  # the number of used channels for MPE purposes." (manual p. 53). Each dimension is named with
+  # the message that carries it - the X axis "(sent as MIDI Pitch Bend)" (manual p. 53), the Y
+  # axis "(sent as MIDI CC 74)" (manual p. 53) and the Z axis "(sent as MIDI Channel
+  # Aftertouch)" (manual p. 53) - and the
+  # specification claims it in one word, "MPE Compatible" (specifications p. 2).
+  per_voice_channels: true
+
+parts:
+  layer:
+    label: Layer
+    count: 4
+    # **THESE PARTS EXIST IN ONE MODE OF FOUR, WHICH IS AN OPEN QUESTION ON THE FORMAT
+    # FROM THE OTHER SIDE.**
+    # The four layers always exist as sounds; they take channels of their own only under `Midi
+    # Split`, and the maker spells the derivation out: "Based on the determined MIDI Receive
+    # Channel in the Settings, the select MIDI Channel triggers Layer A, the next MIDI channel
+    # Layer B and so on. E.g., Receive Channel is set to 2. Incoming notes on MIDI channel 2
+    # triggers Layer A, notes on MIDI channel 3 triggers layer B, notes on MIDI channel 4 triggers
+    # Layer C and notes on MIDI channel 5 triggers Layer D." (manual p. 18). That is exactly what
+    # `channel_offset` means - consecutive from a base that moves - so it is recorded that way.
+    # **IN THE OTHER THREE MODES ALL FOUR ANSWER ON THE ONE CHANNEL.** `Layered` plays them
+    # together, `Round Robin` takes "each incoming note triggers the next active layer in
+    # ascending order repeatedly" (manual p. 18) and `Random Robin` is "Same as Round Robin, but in random order."
+    # (manual p. 18), and Single Mode selects one by a button. **So a consumer that trusts
+    # these channels without knowing the mode will address three layers that are not listening.**
+    # Where the OB-X8 at rank 70 could not state its polyphony because its parts were conditional,
+    # this instrument can: its voices are shared in every mode, which the next field records.
+    channel_offset: 0
+    addressing: pitches
+    receives: [notes, controls]
+    # NOT RECORDED, a per-part polyphony, and here that is a fact rather than a gap - see
+    # `voice.polyphony_shared`.
+
+voice:
+  addressing: pitches
+  # NOT RECORDED. The only note range in any document is the glossary's, about MIDI rather than
+  # about this instrument: a note's "pitch is derived from the note number, which lies between 0
+  # and 127." (manual p. 65). What this instrument says about note numbers is one reference point,
+  # for keyboard tracking - "The reference note for Keytrack is C3, note number 60." (manual
+  # p. 29) - which fixes a note name to a number and says nothing about what sounds.
+  # **EIGHT, SHARED, AND THE MANUAL SAYS THE SHARING OUT LOUD.** "8 voice polyphony"
+  # (specifications p. 1) with "4
+  # timbral layers" (specifications p. 1), and "Keep in mind that all 4 layers share the maximum
+  # of 8 voices." (manual p. 16). **That sentence is why this definition can carry a figure where
+  # `oberheim/ob_x8` could not**: its parts take four voices each in split mode and neither half
+  # can borrow, so a single figure would have been false there and is true here.
+  polyphony: 8
+  polyphony_shared: true
+  # Three per layer, and two of the three are one voice: "Poly: The corresponding Layer uses all
+  # available voices." (manual p. 17), "Mono: Only the last played note sounds."
+  # (manual p. 17) and "Legato: Same as Mono, but
+  # when you play legato, only the first note that was played triggers the envelopes." (manual
+  # p. 17). **So this field's two numbers are three of the maker's modes** - legato and mono are
+  # both monophonic and differ in what they retrigger, which no field here holds.
+  voicing_modes: [1, 8]
+  velocity:
+    # Received, with its depth a per-sound setting rather than a global one: "You can also use
+    # Select to define the Vel Amnt (Velocity Amount), so that the volume will be affected by
+    # keyboard velocity." (manual p. 32), with "With a setting of 0, velocity will have no
+    # effect on the volume." (manual p. 32). It is also a modulation source in its own right (manual p. 56).
+    note_on: received
+    # **AND SO IS RELEASE VELOCITY**, which few instruments here read: `Rel Velo` is "MIDI note
+    # release velocity" (manual p. 56), one of the modulation sources.
+    note_off: true
+  # **BOTH KINDS ARE MODULATION SOURCES**, so this takes the stronger word as the three Rolands
+  # before it did: `Ch Press` is "MIDI channel pressure" (manual p. 56) and `Poly AT` is "MIDI polyphonic
+  # pressure" (manual p. 56), and the specification claims the second in one line,
+  # "Poly-aftertouch capable" (specifications p. 1).
+  # **Under MPE the pressure axis arrives as channel aftertouch and drives the polyphonic
+  # source**, which is how MPE works and which the manual states: the Z axis "(sent as MIDI
+  # Channel Aftertouch) – this controls the Poly Aftertouch (Poly AT) modulation assignments."
+  # (manual p. 53).
+  aftertouch: poly
+  pitch_bend:
+    # **SETTABLE PER OSCILLATOR, WHICH IS UNUSUAL, AND NO FACTORY DEPTH IS GIVEN.** "Determines
+    # the intensity of the pitch bend (from 0 to 12 semitones) via MIDI pitch bend messages in
+    # semitones for the corresponding oscillator." (manual p. 26) - so one oscillator can bend and
+    # the other hold, and `semitones` would be a single figure for a thing this instrument has two
+    # of. Unrecorded for that reason as well as for the absent default.
+    # **AND UNDER MPE IT IS A DIFFERENT NUMBER ENTIRELY**: per-note bend uses "the standard MPE
+    # range of +/-48 semitones" (manual p. 53), which is four times the largest value the setting
+    # above offers, and the manual gives the way to turn it off - "To disable this per-note Pitch
+    # bend effect, set the Pitch Bend parameter in Glide screen to 0." (manual p. 52).
+    programmable: true
+
+groups:
+  modulation: Modulation sources with a fixed number
+
+controls:
+
+  # **FIVE NUMBERS CARRIED AND TEN MORE RECORDED BELOW, AND NOT ONE OF THEM NAMES A
+  # PARAMETER.** Every control below is a
+  # modulation *source*: a number arrives, and what it reaches is whatever the sound's eight-slot
+  # modulation matrix routes it to. The maker publishes the slot rather than the destination,
+  # which is `elektron/tonverk`'s case at rank 88 - its data entry knobs are marked `(machine
+  # dependent)` and carried under the generic name the appendix prints, because that is the only
+  # name there is. **There is nothing here to decline.**
+  # The labels are the maker's own words from the Source column, so a reader of this list is
+  # reading what the modulation matrix will show them.
+
+  # Named sources ─────────────────────────────────────────
+  mod_wheel:        {label: Mod Wheel, cc: 1, group: modulation}
+  # **THE MAKER MISPRINTS THIS ONE'S NUMBER AND IT IS STILL LEGIBLE**: the row reads `Breath MIDI
+  # breath control (cCC #2)` (manual p. 56), with a leading lower-case `c` on `CC` that none of
+  # the other four rows has. Carried as 2, which is what the digits say and what breath control
+  # is; the typo is recorded rather than tidied away.
+  breath:           {label: Breath, cc: 2, group: modulation}
+  expression:       {label: Expression, cc: 11, group: modulation}
+  pedal:            {label: Pedal, cc: 64, group: modulation}
+  # The one of the five that is not on p. 56: it is named where MPE is explained, as the
+  # message the Y axis arrives on, and its destination is set by the `MPE Y` source.
+  mpe_y:            {label: MPE Y, cc: 74, group: modulation}
+
+  # **AND TEN MORE NUMBERS ARE NOT BELOW, BECAUSE THE MAKER PRINTED A RANGE AND NOT A LIST.**
+  # The source table carries one further row - `CC22...CC31 MIDI CC22 to CC31` (manual p. 56) -
+  # one row, one description, and ten numbers a player can route to anything the modulation
+  # matrix reaches. **Only 22 and 31 are printed.**
+  # Expanding it was the first thing tried and `tools/check_citations.py` refused it, rightly:
+  # it looks for every number a definition claims in the documents that definition cites, and
+  # found 24, 28 and 30 on no page. **The manual publishes two ends and a rule, not ten numbers**,
+  # which is `elektron/tonverk`'s gate at rank 88 - 329 of its generated numbers were refused the
+  # same way - and rank 86's allowance for a printed run does not stretch to this one, where the
+  # interior is eight numbers long rather than one.
+  # **So the fact is here and not in the list, because no field holds a range of controller
+  # numbers.** `nrpn_range` is the nearest thing the format has and it means a range of values
+  # rather than of addresses, so it is not it. A consumer that wants one of the eight has the
+  # maker's own sentence above and this definition's word that nothing else was found.

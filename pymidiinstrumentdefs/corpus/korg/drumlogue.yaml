@@ -1,0 +1,368 @@
+# **TWO WHOLE MIDI IMPLEMENTATION CHARTS, FOR TWO MODES, ON FACING PAGES - AND 65 OF THE 67
+# NUMBERS THEY SHARE MEAN DIFFERENT THINGS.** Pages 60 and 61 of the owner's manual are each a
+# complete chart, and each ends by naming the other: p. 60 is headed `SINGLE Ch.` and says "This
+# is the factory default implementation." (manual p. 60), while p. 61 says "This is an alternate
+# implementation selectable via MIDI Global settings." (manual p. 61).
+#
+# **THEY ARE NOT A CHART AND A CONTINUATION.** In the default mode all eleven parts answer on one
+# channel, notes 36 to 55 address them, and the controller map is flat - which is the map below.
+# In the alternate mode **each part has a channel of its own**, notes run 0 to 127, and the same
+# controller number means a different thing on each channel: controller 20 is `BD TUNE` on the
+# first part's channel and part of `DELAY PARAM 9-16` on the effects channel. Counted rather than
+# described: the two maps share **67** controller numbers, **65** of those name a different
+# parameter in each, and the alternate gives **46** of its numbers more than one meaning.
+#
+# **THE DEFAULT IS CARRIED AND THE ALTERNATE IS IN PROSE**, which is `roland/ju_06a`'s ruling at
+# rank 87 from the same position - one file, two charts, two states the instrument can be in. The
+# reason to prefer the default here is the maker's own word for it, and the reason not to merge
+# them is that **the alternate cannot be merged**: 46 of its numbers would need two meanings at
+# once.
+#
+# AND THE SETTING THAT CHOOSES BETWEEN THEM IS ONE LINE OF THE GLOBAL CHAPTER: "CH [1...16, 1-12,
+# 2-13...5-16, 6-1..16-11] Sets the MIDI channel used for MIDI sending/receiving. In addition to
+# single channels 1 to 16, you can assign 11 parts to different MIDI channels" (manual p. 47). So
+# a drumlogue is one of the two instruments these charts describe depending on a number somebody
+# set, and **a definition for the alternate mode would be a different definition** - eleven parts
+# with channels of their own and a map that collides with this one.
+#
+# **THERE IS NO SEPARATE MIDI IMPLEMENTATION, AND THAT IS NOW THE EXPECTED CASE FOR THIS MAKER.**
+# Korg publishes thirteen documents for this instrument and not one is called an implementation;
+# the charts are pages of the owner's manual. **That is the third Korg in four ranks whose chart
+# is not where its name would put it** - `korg/kronos` had its in an operation guide's appendices
+# 884 printed pages from the implementation it summarised, and `korg/ms_20_mini` has its on p. 2
+# of a four-page manual while its 2.2 KB implementation carries no chart at all. By now this is
+# the first place to look rather than the last.
+#
+# **EVERY ONE OF THE 66 CONTROLS BELOW IS GATED BY A GLOBAL SWITCH, IN EACH DIRECTION
+# SEPARATELY.** The chart footnotes all of them: "*2 : When the GLOBAL setting MIDI RX CC is ON,
+# the drumlogue will receive signals; and when the GLOBAL setting MIDI TX CC is ON, the drumlogue
+# will transmit signals." (manual p. 60). The Global chapter gives both switches and a third for
+# the transport, each `[OFF, ON]`. The format has no field for a condition on a whole map, so it
+# is said here - and a consumer offering these numbers to a drumlogue that has not been told to
+# listen will find all 66 of them silent.
+#
+# ITS NOTES ADDRESS DRUMS AND DO NOTHING ELSE. "*1 : Note numbers correspond to the following
+# parts, 36: BD, 37: RS, 39: CP, 40: SD, 42: CH, 45: LT, 46: OH, 50: HT, 52: SP1, 53: SP2, 55:
+# MULTI" (manual p. 60), with the remark that settles what the rest of the byte does: "Pitch is
+# unaffected by the note number." (manual p. 60). **Eleven voices over a span of twenty**, which
+# is not contiguous - 38, 41, 43, 44, 47 to 49, 51 and 54 do nothing.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: drumlogue
+  # **FIRMWARE 1.1.0, AND IT CHANGED NOTHING BELOW.** The owner's manual is edition `E4`, dated
+  # 2025-02-26, and the newest system Korg publishes is 1.1.0 from January 2023. Its five new
+  # features are **all panel operations** - a solo function and a solo latch, a mute latch, a
+  # shift latch and a display change - and the word `MIDI` appears in it only in a link to the
+  # downloads page. So the map is the map, and that is a checked absence rather than an
+  # assumption.
+  # The charts date themselves 16 May 2022 at version 1.01, which is before the firmware and
+  # is the chart's own version rather than the instrument's.
+  # Checked 2026-10-06.
+
+source: >-
+  **The drumlogue Owner's Manual, 62 sheets, whose last two pages are two complete MIDI
+  Implementation Charts for two modes of the same instrument.** Every number below comes from
+  p. 60, the one its maker calls the factory default; p. 61 is read, counted and recorded in
+  prose. See the comment above the definition.
+
+  **THIRTEEN DOCUMENTS AND NOT ONE IS A MIDI IMPLEMENTATION.** Korg's downloads page lists the
+  owner's manual in four languages, a quick start guide in two, a precautions sheet, the 1.1.0
+  new-features note in five languages and a Chinese RoHS notice. The English owner's manual, the
+  quick start guide and the new-features note are in the library; the rest are translations of
+  those three and a safety sheet, whose digests are in the provenance record.
+
+  **THE QUICK START GUIDE AND THE PRECAUTIONS SHEET CARRY NO CONTROLLER NUMBER**, which is worth
+  saying because the guide is the larger file of the two: 8 sheets in five languages, and its
+  only MIDI content is the rear-panel description. Nothing below rests on either.
+
+  WHY THE DEFAULT MAP RATHER THAN THE ALTERNATE, IN ONE MORE SENTENCE THAN THE COMMENT ABOVE.
+  Three reasons, in descending order of weight. **The maker calls it the default**, in those
+  words. **The alternate cannot be held by this format at all without parts**, because 46 of its
+  numbers mean more than one thing. And **the default is the map a drumlogue out of the box
+  answers to**, which is what a consumer reading a definition is most often holding.
+
+  **ITS MASTER VOLUME IS THE ONLY FOURTEEN-BIT CONTROL, AND THE CHART WRITES IT AS THE
+  SPECIFICATION DOES.** `7, 39 MASTER VOLUME MSB, LSB` - controller 39 being the least
+  significant half of controller 7. So that row is one control below rather than two, which is
+  the one place the count of controls differs from the count of assignments the chart prints.
+
+  THE CHART'S READING ORDER IS LOST AND ITS CELLS ARE READ BY COORDINATE. The flat text runs
+  every row label, then every controller number, then every parameter name, then every mark - so
+  no row of it can be matched as a string, and `Control Change 20, 21, 22, 23, 24 O O BD TUNE,
+  DRIVE, ATTACK, DECAY, LEVEL` appears nowhere in it. `Notes/4622_extract_drumlogue.py` reads
+  both sheets by coordinate and asserts every cell the fields below rest on.
+
+  **AND ITS PARAMETER NAMES ARE A PREFIX AND A COMMA LIST**, which is how the chart saves room:
+  `BD TUNE, DRIVE, ATTACK, DECAY, LEVEL` is five controls and only the first carries the part's
+  name. The script distributes the prefix, so every label below is one a reader would recognise
+  on the panel rather than a bare `DRIVE` that could belong to any of eleven parts.
+
+  NOT RECORDED: the polyphony, which no document states. The eleven parts' own parameters beyond
+  what the chart gives numbers for - the panel has more knobs than the map has controllers. The
+  alternate map's 137 assignments. The sequencer, its patterns and its sixteen steps. And the
+  SYNC IN and SYNC OUT jacks, which carry a pulse rather than a message and have four settings
+  between them.
+
+sources:
+  manual:
+    kind: manual
+    title: drumlogue Owner's Manual
+    edition: E4
+    dated: 2025-02-26
+    landing: "https://www.korg.com/us/support/download/manual/0/894/4937/"
+    url: "https://cdn.korg.com/us/support/download/files/80a6d5b73745d72446e2a6bf06f0a569.pdf"
+    sha256: e2118f0b071d3c0b694b0aab2af545d61a53a56ad843770a24acd7d878b235dd
+    retrieved: 2026-10-06
+    # **62 sheets, and the two MIDI Implementation Charts are the last two.** Encrypted with
+    # 128-bit AES and an empty password, as this maker's PDFs are.
+    # Its folio is its own sheet number, printed at the head of each page, so a locator needs
+    # no offset - the charts are sheets 60 and 61 and print 60 and 61.
+    # **A PANEL DIAGRAM'S LABELS ARE IN THE TEXT LAYER OF EVERY PAGE**, some 300 words of
+    # `EXPAND SHRINK GROOVE QUEUE` and the rest, appended to whatever that page says. It is a
+    # vector illustration repeated as a running header, and a reader of the extracted text
+    # meets it on all 62 sheets. Harmless once known and confusing until then.
+    page_offset: 0
+  guide:
+    kind: quick_start
+    title: drumlogue Quick Start Guide
+    dated: 2022-11-09
+    landing: "https://www.korg.com/us/support/download/manual/0/894/4942/"
+    url: "https://cdn.korg.com/us/support/download/files/1fb21b2141bb6d090defb254905f4163.pdf"
+    sha256: 49960a9354f2ad9830779af05d409039e65562ce70feffcd49faa01754ec67c1
+    retrieved: 2026-10-06
+    # 8 sheets in five languages, **cited for an absence**: it carries no controller number and
+    # no chart row, and its only MIDI content is the rear-panel description. It is in the
+    # library because the definition's claim that the charts are the whole of this instrument's
+    # published map rests on every document having been read.
+    page_offset: 0
+  release_note:
+    kind: release_notes
+    title: New features in system version 1.1.0
+    edition: 1.1.0
+    dated: 2023-01-23
+    landing: "https://www.korg.com/us/support/download/manual/0/894/4977/"
+    url: "https://cdn.korg.com/us/support/download/files/c3d75ed84da3b2ef3031892eac95b9b2.pdf"
+    sha256: da13e0f03cfe838fdd91cae0f06b670e5de16eec199f9b99704997a08f236913
+    retrieved: 2026-10-06
+    # Two sheets. **Cited for an absence, and it is the newest system Korg publishes**: its five
+    # new features are a solo function and a solo latch, a mute latch, a shift latch and a
+    # display change - **all panel operations** - and the word `MIDI` appears in it only inside
+    # a link to the downloads page. So nothing in the map below moved, which is checked rather
+    # than assumed.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: "Downloads | drumlogue | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/0/894/"
+    sha256: 2d4c8d224441e075358c902841185f0f2fca5ddbbcc5e1a9e98a9553b484a77a
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being thirteen, and for none of them being a MIDI implementation.**
+    # That second half is the point: a reader who goes looking for this instrument's
+    # implementation document will not find one, and the charts are pages 60 and 61 of the
+    # owner's manual instead.
+    # As with every Korg here, the page carries no file address: each document is reached
+    # through a licence-agreement page that carries it instead, so none of the URLs above is on
+    # this page. The digest is of the extraction; the served bytes are saved beside it as
+    # `.html`, whose own digest is
+    # 01ee0239355ff72e0c8dd0e85be418704737431b60d9cdc573723d387c9be1f1. One page, cited as p. 1.
+
+midi:
+  # The chart's Basic Channel row: 1 to 16 either way, as a default and as changed, with
+  # `Memorized` in the remarks - so the number survives a power cycle.
+  # **AND THE SAME SETTING IS WHAT CHOOSES BETWEEN THE TWO CHARTS**, its values running past 16
+  # into eleven-part spans. See the comment above the definition.
+  channels: [1, 16]
+  # The chart's Mode row, recognised. Its Messages row is crossed in both columns, so the mode
+  # cannot be set over MIDI.
+  mode: 3
+  # **BOTH WAYS, AND RECEPTION DEPENDS ON A SETTING WITH FOUR VALUES.** The chart circles Clock
+  # in both columns under a footnote: "*5 : When the GLOBAL setting CLOCK SOURCE is INT, the
+  # drumlogue will not receive signals. The drumlogue will receive signals when set to AUTO."
+  # (manual p. 60). The setting itself is `SOURCE [AUTO, INT., USB, MIDI]` (manual p. 49), which
+  # distinguishes the two sockets as well as the two directions.
+  clock: both
+  # The same: Commands circled both ways under the same footnote. **And the transport has a
+  # filter of its own**, separate from the control change and program change ones - `TRANSP
+  # (MIDI TRANSPORT) [OFF, ON] A filter to receive MIDI transport messages such as MIDI
+  # start/stop.` (manual p. 48), with a transmitting twin.
+  transport: both
+  program_change:
+    # Circled both ways with `(0-127)` in each cell, and its True Number row gives 0 to 127.
+    receives: true
+    sends: true
+    # **A HUNDRED AND TWENTY-EIGHT, WHICH THE CHART STATES RATHER THAN IMPLIES**: the True
+    # Number row is the row for exactly this and it reads 0-127, so a program change reaches
+    # every program this instrument has and there are no banks.
+    presets: 128
+    # AND IT IS GATED LIKE THE CONTROLS ARE: "*3 : When the GLOBAL setting MIDI RX PRG CHG is
+    # ON, the drumlogue will receive signals; and when the GLOBAL setting MIDI TX PRG CHG is ON,
+    # the drumlogue will transmit signals." (manual p. 60).
+  # A CHECKED ABSENCE. The word NRPN is on none of the manual's 62 sheets nor in any of the other
+  # twelve documents, and controllers 98 and 99 are among the numbers the charts leave unused.
+  nrpn: none
+  # Circled in both columns, with a footnote naming what else travels: "*4 : In addition to Korg
+  # exclusive messages, Inquiry is supported." (manual p. 60).
+  sysex: true
+
+voice:
+  # **ITS NOTES NAME DRUMS RATHER THAN PITCHES**, which the chart says twice over - once by
+  # listing the eleven and once by saying what the number does not do. See the voices below.
+  addressing: voices
+  # The chart's Note Number row and its True voice row both give 36 to 55, transmitted and
+  # recognised. **The span is twenty and only eleven of it sounds**; the nine numbers between
+  # the named ones do nothing, which is a fact about a drum machine's map rather than a gap in
+  # this reading.
+  note_range: [36, 55]
+  velocity:
+    # **RECEIVED AS A REAL FIGURE AND SENT AS A CONSTANT.** The chart's Note On row is circled
+    # recognised at `9n, V=1-127` and **crossed transmitted at `9n, V=64`** - so an incoming
+    # velocity does something and the panel's own buttons send 64 whatever they are struck
+    # like, there being no pads on this instrument to strike.
+    note_on: received
+    # Crossed in both columns, with `8n, V=64` printed beside the cross on the transmitted side.
+    note_off: false
+  # A CHECKED ABSENCE, BOTH KINDS AND BOTH DIRECTIONS - four crossed cells. It has no keyboard.
+  aftertouch: none
+  # NOT RECORDED, the pitch bend, and it is a checked absence rather than a gap: the chart
+  # crosses it in both columns. On an instrument whose notes do not carry pitch there is nothing
+  # for a bend to bend.
+  # NOT RECORDED, the polyphony: no document states how many of the eleven parts can sound at
+  # once, and `CHOKE` on the panel suggests the answer is not simply eleven.
+  voices:
+    # **THE ELEVEN PARTS AND THE NOTE THAT PLAYS EACH**, from the chart's own footnote, in the
+    # order the footnote prints them rather than in number order - which is the order of the
+    # panel's buttons.
+    bd: 36
+    rs: 37
+    cp: 39
+    sd: 40
+    ch: 42
+    lt: 45
+    oh: 46
+    ht: 50
+    sp1: 52
+    sp2: 53
+    multi: 55
+
+groups:
+  # **ONE GROUP PER PART, WHICH IS THIS INSTRUMENT'S OWN DIVISION RATHER THAN A CHOICE.** The
+  # chart's control change block is written part by part - five rows for the bass drum, five for
+  # the snare, three for each hat - and the panel has a button for each. So the grouping is read
+  # off the document and off the hardware at once.
+  # The multi part gets one group for its three sound sources, because they share a slot: a
+  # drumlogue plays a VPM voice or a noise voice or a user-loaded synth there, not all three.
+  master: Master
+  bass_drum: Bass drum
+  snare_drum: Snare drum
+  low_tom: Low tom
+  high_tom: High tom
+  closed_hat: Closed hat
+  open_hat: Open hat
+  rim_shot: Rim shot
+  clap: Clap
+  sample_1: Sample 1
+  sample_2: Sample 2
+  multi: The multi part - VPM, noise and the user synth
+  delay: Delay
+  reverb: Reverb
+
+controls:
+
+  # Master ──────────────────────────────────────────────
+  master_volume:                 {label: MASTER VOLUME, cc: 7, lsb: 39, group: master}
+
+  # Bass drum ───────────────────────────────────────────
+  bd_tune:                       {label: BD TUNE, cc: 20, group: bass_drum}
+  bd_drive:                      {label: BD DRIVE, cc: 21, group: bass_drum}
+  bd_attack:                     {label: BD ATTACK, cc: 22, group: bass_drum}
+  bd_decay:                      {label: BD DECAY, cc: 23, group: bass_drum}
+  bd_level:                      {label: BD LEVEL, cc: 24, group: bass_drum}
+
+  # Snare drum ──────────────────────────────────────────
+  sd_tune:                       {label: SD TUNE, cc: 25, group: snare_drum}
+  sd_snap_lv:                    {label: SD SNAP.LV, cc: 26, group: snare_drum}
+  sd_snap_dec:                   {label: SD SNAP.DEC, cc: 27, group: snare_drum}
+  sd_decay:                      {label: SD DECAY, cc: 28, group: snare_drum}
+  sd_level:                      {label: SD LEVEL, cc: 29, group: snare_drum}
+
+  # Low tom ─────────────────────────────────────────────
+  lt_tune:                       {label: LT TUNE, cc: 46, group: low_tom}
+  lt_detune:                     {label: LT DETUNE, cc: 47, group: low_tom}
+  lt_decay:                      {label: LT DECAY, cc: 48, group: low_tom}
+  lt_level:                      {label: LT LEVEL, cc: 49, group: low_tom}
+
+  # High tom ────────────────────────────────────────────
+  ht_tune:                       {label: HT TUNE, cc: 50, group: high_tom}
+  ht_detune:                     {label: HT DETUNE, cc: 51, group: high_tom}
+  ht_decay:                      {label: HT DECAY, cc: 52, group: high_tom}
+  ht_level:                      {label: HT LEVEL, cc: 53, group: high_tom}
+
+  # Closed hat ──────────────────────────────────────────
+  ch_tune:                       {label: CH TUNE, cc: 61, group: closed_hat}
+  ch_decay:                      {label: CH DECAY, cc: 62, group: closed_hat}
+  ch_level:                      {label: CH LEVEL, cc: 63, group: closed_hat}
+
+  # Open hat ────────────────────────────────────────────
+  oh_tune:                       {label: OH TUNE, cc: 80, group: open_hat}
+  oh_decay:                      {label: OH DECAY, cc: 81, group: open_hat}
+  oh_level:                      {label: OH LEVEL, cc: 82, group: open_hat}
+
+  # Rim shot ────────────────────────────────────────────
+  rs_tune:                       {label: RS TUNE, cc: 55, group: rim_shot}
+  rs_decay:                      {label: RS DECAY, cc: 56, group: rim_shot}
+  rs_level:                      {label: RS LEVEL, cc: 57, group: rim_shot}
+
+  # Clap ────────────────────────────────────────────────
+  cp_tune:                       {label: CP TUNE, cc: 58, group: clap}
+  cp_decay:                      {label: CP DECAY, cc: 59, group: clap}
+  cp_level:                      {label: CP LEVEL, cc: 60, group: clap}
+
+  # Sample 1 ────────────────────────────────────────────
+  sp1_tune:                      {label: SP1 TUNE, cc: 102, group: sample_1}
+  sp1_attack:                    {label: SP1 ATTACK, cc: 103, group: sample_1}
+  sp1_decay:                     {label: SP1 DECAY, cc: 104, group: sample_1}
+  sp1_level:                     {label: SP1 LEVEL, cc: 105, group: sample_1}
+
+  # Sample 2 ────────────────────────────────────────────
+  sp2_tune:                      {label: SP2 TUNE, cc: 106, group: sample_2}
+  sp2_attack:                    {label: SP2 ATTACK, cc: 107, group: sample_2}
+  sp2_decay:                     {label: SP2 DECAY, cc: 108, group: sample_2}
+  sp2_level:                     {label: SP2 LEVEL, cc: 109, group: sample_2}
+
+  # The multi part: VPM, noise and the user synth ───────
+  user_synth_param_1:            {label: USER SYNTH PARAM 1, cc: 16, group: multi}
+  user_synth_param_2:            {label: USER SYNTH PARAM 2, cc: 17, group: multi}
+  user_synth_param_3:            {label: USER SYNTH PARAM 3, cc: 18, group: multi}
+  user_synth_param_4:            {label: USER SYNTH PARAM 4, cc: 19, group: multi}
+  multi_level:                   {label: MULTI LEVEL, cc: 54, group: multi}
+  vpm_note:                      {label: VPM NOTE, cc: 110, group: multi}
+  vpm_index:                     {label: VPM INDEX, cc: 111, group: multi}
+  vpm_ratio:                     {label: VPM RATIO, cc: 112, group: multi}
+  vpm_eg:                        {label: VPM EG, cc: 113, group: multi}
+  vpm_attack:                    {label: VPM ATTACK, cc: 114, group: multi}
+  vpm_release:                   {label: VPM RELEASE, cc: 115, group: multi}
+  noise_color:                   {label: NOISE COLOR, cc: 116, group: multi}
+  noise_attack:                  {label: NOISE ATTACK, cc: 117, group: multi}
+  noise_release:                 {label: NOISE RELEASE, cc: 118, group: multi}
+  noise_peak:                    {label: NOISE PEAK, cc: 119, group: multi}
+
+  # Delay ───────────────────────────────────────────────
+  delay_param_1:                 {label: DELAY PARAM 1, cc: 12, group: delay}
+  delay_param_2:                 {label: DELAY PARAM 2, cc: 13, group: delay}
+  delay_param_3:                 {label: DELAY PARAM 3, cc: 14, group: delay}
+  delay_return:                  {label: DELAY RETURN, cc: 44, group: delay}
+  delay_reverb_send:             {label: DELAY REVERB SEND, cc: 45, group: delay}
+  delay_level:                   {label: DELAY LEVEL, cc: 92, group: delay}
+
+  # Reverb ──────────────────────────────────────────────
+  reverb_return:                 {label: REVERB RETURN, cc: 83, group: reverb}
+  reverb_param_1:                {label: REVERB PARAM 1, cc: 85, group: reverb}
+  reverb_param_2:                {label: REVERB PARAM 2, cc: 86, group: reverb}
+  reverb_param_3:                {label: REVERB PARAM 3, cc: 87, group: reverb}
+  reverb_param_4:                {label: REVERB PARAM 4, cc: 89, group: reverb}
+  reverb_level:                  {label: REVERB LEVEL, cc: 91, group: reverb}

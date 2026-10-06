@@ -177,6 +177,7 @@ class TestBundledCorpus:
 			"elektron/tonverk",
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
+			"korg/drumlogue",
 			"korg/electribe",
 			"korg/kronos",
 			"korg/m1",
@@ -12841,3 +12842,131 @@ class TestMS20Mini:
 		flat = " ".join(prose_of("korg", "ms_20_mini").split())
 
 		assert "no memory, no firmware, and a channel that cannot be changed" in flat
+
+
+class TestDrumlogue:
+
+	"""Two complete implementation charts for two modes, on facing pages.
+
+	**And 65 of the 67 controller numbers they share mean different things**, so the two
+	cannot be merged and the factory default is the one carried.
+	"""
+
+	def test_it_carries_the_first_of_two_whole_charts (self) -> None:
+		"""Which its maker calls the factory default, in those words."""
+		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
+
+		assert len(drumlogue.controls) == 66
+		assert len(drumlogue.groups) == 14
+
+		said = prose_of("korg", "drumlogue")
+
+		assert "This is the factory default implementation." in said
+		assert "This is an alternate implementation selectable via MIDI Global settings." in said
+
+		flat = " ".join(said.split())
+
+		# **Counted rather than described**, which is the point of reading both.
+		assert "share **67** controller numbers, **65** of those name a different parameter" \
+			" in each" in flat
+		assert "the alternate gives **46** of its numbers more than one meaning" in flat
+
+		# And the reason they cannot be merged is that 46 would need two meanings at once.
+		assert "the alternate cannot be merged" in flat
+
+	def test_its_chart_is_in_the_manual_as_the_pattern_now_predicts (self) -> None:
+		"""The third Korg in four ranks whose chart is not where its name would put it."""
+		flat = " ".join(prose_of("korg", "drumlogue").split())
+
+		assert "THERE IS NO SEPARATE MIDI IMPLEMENTATION, AND THAT IS NOW THE EXPECTED CASE" \
+			" FOR THIS MAKER." in flat
+		assert "the third Korg in four ranks whose chart is not where its name would put it" \
+			in flat
+
+		# Which the two it follows are named in, so the pattern is traceable.
+		assert "`korg/kronos`" in flat and "`korg/ms_20_mini`" in flat
+
+	def test_every_one_of_its_controls_is_gated_by_a_global_switch (self) -> None:
+		"""In each direction separately, and the format has no field for it."""
+		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
+
+		said = prose_of("korg", "drumlogue")
+
+		assert "When the GLOBAL setting MIDI RX CC is ON, the drumlogue will receive signals;" \
+			" and when the GLOBAL setting MIDI TX CC is ON, the drumlogue will transmit" \
+			" signals." in said
+
+		flat = " ".join(said.split())
+
+		assert "The format has no field for a condition on a whole map" in flat
+		assert "will find all 66 of them silent" in flat
+
+	def test_its_notes_name_drums_and_carry_no_pitch (self) -> None:
+		"""Eleven voices over a span of twenty, nine of which do nothing."""
+		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
+
+		assert drumlogue.voice is not None
+		assert drumlogue.voice.addressing == "voices"
+		assert drumlogue.voice.note_range == (36, 55)
+		assert len(drumlogue.voice.voices) == 11
+		assert drumlogue.voice.voices["bd"] == 36
+		assert drumlogue.voice.voices["multi"] == 55
+
+		said = prose_of("korg", "drumlogue")
+
+		assert "Pitch is unaffected by the note number." in said
+
+		# **The span is twenty and only eleven of it sounds.**
+		assert sorted(drumlogue.voice.voices.values()) == [36, 37, 39, 40, 42, 45, 46, 50,
+			52, 53, 55]
+
+	def test_its_master_volume_is_its_one_fourteen_bit_control (self) -> None:
+		"""And it is why the control count differs from the chart's assignment count."""
+		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
+
+		volume = drumlogue.controls["master_volume"]
+
+		assert volume.cc == 7
+		assert volume.lsb == 39
+		assert volume.is_14_bit is True
+
+		assert [key for key, control in drumlogue.controls.items() if control.is_14_bit] \
+			== ["master_volume"]
+
+	def test_it_receives_a_velocity_and_sends_a_constant (self) -> None:
+		"""Because it has buttons rather than pads, so there is nothing to strike harder."""
+		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
+
+		assert drumlogue.voice is not None and drumlogue.voice.velocity is not None
+		assert drumlogue.voice.velocity.note_on == "received"
+		assert drumlogue.voice.velocity.note_off is False
+
+		flat = " ".join(prose_of("korg", "drumlogue").split())
+
+		assert "RECEIVED AS A REAL FIGURE AND SENT AS A CONSTANT." in flat
+		assert "there being no pads on this instrument to strike" in flat
+
+	def test_its_firmware_changed_nothing_in_the_map (self) -> None:
+		"""Five new features in 1.1.0 and all of them panel operations."""
+		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
+
+		assert "release_note" in drumlogue.sources
+		assert drumlogue.sources["release_note"].edition == "1.1.0"
+
+		flat = " ".join(prose_of("korg", "drumlogue").split())
+
+		assert "all panel operations" in flat
+		assert "the word `MIDI` appears in it only inside a link to the downloads page" in flat
+
+	def test_its_program_change_count_is_stated_rather_than_implied (self) -> None:
+		"""The chart's True Number row is the row for exactly that."""
+		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
+
+		assert drumlogue.midi is not None and drumlogue.midi.program_change is not None
+		assert drumlogue.midi.program_change.presets == 128
+		assert drumlogue.midi.program_change.receives is True
+		assert drumlogue.midi.program_change.sends is True
+
+		flat = " ".join(prose_of("korg", "drumlogue").split())
+
+		assert "the True Number row is the row for exactly this and it reads 0-127" in flat

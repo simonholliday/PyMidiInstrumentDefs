@@ -163,6 +163,7 @@ self-contained YAML file, and you share it by sending it.
 | `elektron/tonverk` | Elektron Tonverk: 242 controls over sixteen tracks in four kinds, where one controller number can name a different parameter on each kind - and 343 more numbers its appendix generates by a rule rather than printing |
 | `erica_synths/perkons_hd_01` | Erica Synths PĒRKONS HD-01: 44 controls off two pages of a manual reached through a news item, whose numbers a player can rewrite in a file on the SD card |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |
+| `korg/drumlogue` | Korg drumlogue: 66 controls out of the first of its manual's **two** complete implementation charts - the alternate map shares 67 of its numbers and 65 of those mean something else |
 | `korg/electribe` | Korg electribe: 18 controls out of a plain text file that prints every number twice, with sixteen parts on one MIDI channel and no way given of choosing one |
 | `korg/kronos` | Korg KRONOS: 72 controls, every one travelling both ways, out of a MIDI document that is prose rather than a chart - and 28 of them switched off on a new instrument until somebody loads them |
 | `korg/m1` | Korg M1: four controls, because everything else about this 1988 workstation is reached by system exclusive - read by eye out of a 138-page scan with no text in it at all |

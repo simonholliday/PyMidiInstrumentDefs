@@ -175,6 +175,7 @@ class TestBundledCorpus:
 			"elektron/octatrack",
 			"elektron/syntakt",
 			"elektron/tonverk",
+			"erica_synths/hexdrums",
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
 			"korg/drumlogue",
@@ -594,9 +595,9 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Fifteen definitions carry no controls, for five different reasons.
+		"""Eighteen definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a sixteenth
+		Pinned here because the count has gone stale in notes twice: a nineteenth
 		cannot be added without saying which kind it is.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
@@ -615,17 +616,28 @@ class TestAbsences:
 		for the usual reason, somebody looked and found none, and the looking was at
 		an enumeration rather than at a chart's crossed box.
 
-		**AND THE MS-20 MINI'S IS THE STRONGEST OF THE SEVEN.**  Korg wrote down what
-		the socket accepts rather than what it refuses: *"The only MIDI messages that
-		can be received at the MIDI IN connector are note messages (Velocity is
-		disabled) on MIDI channel 1 (fixed)."*  A crossed box says a thing is not
-		recognised; a sentence naming everything that is recognised says the same and
-		settles two further fields while it is there.
+		**AND THE MS-20 MINI'S IS THE STRONGEST OF THE ESTABLISHED ONES.**  Korg wrote
+		down what the socket accepts rather than what it refuses: *"The only MIDI
+		messages that can be received at the MIDI IN connector are note messages
+		(Velocity is disabled) on MIDI channel 1 (fixed)."*  A crossed box says a thing
+		is not recognised; a sentence naming everything that is recognised says the
+		same and settles two further fields while it is there.
+
+		**BUT THE HEXDRUMS'S IS THE ONLY ONE OF THE EIGHT THAT RECORDS A DECISION
+		RATHER THAN AN ABSENCE.**  Every other ``none`` here is something somebody
+		established - a crossed box, an enumeration that numbered seven kinds of
+		message and put no controller among them, a sentence naming everything the
+		socket accepts.  Erica Synths instead say why there is nothing to find:
+		*"There is no MIDI CC implementation for parameter control, however, since the
+		parameters aren't digitally mapped.  This is intentional to allow for a more
+		traditional drum machine workflow."*  That rules out the possibility every
+		other member of this set leaves open - that a map exists and nobody has found
+		it - so a consumer can act on it with more confidence than on any of them.
 		"""
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 17
+		assert len(empty) == 18
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -635,7 +647,8 @@ class TestAbsences:
 			kinds.setdefault(key, set()).add(name)
 
 		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/td_3",
-			"korg/ms_20_mini", "moog/labyrinth", "roland/tr_909", "vermona/drm1_mkiv"}
+			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
+			"vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact",
 			"dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
 			"teenage_engineering/op_1"}
@@ -8600,8 +8613,9 @@ class TestPerkonsHD01:
 
 		assert "AND 1.2 IS STILL THE NEWEST" in said
 
-	def test_it_is_the_first_erica_synths_instrument_here (self) -> None:
-		"""No habits of this maker were known before it."""
+	def test_it_was_the_first_erica_synths_instrument_here_and_taught_nothing_reusable (self) \
+			-> None:
+		"""No habits of this maker were known before it - and the next one broke them."""
 		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
 
 		assert perkons.model.manufacturer == "Erica Synths"
@@ -8609,7 +8623,17 @@ class TestPerkonsHD01:
 
 		erica = sorted(path.stem for path in (CORPUS / "erica_synths").glob("*.yaml"))
 
-		assert erica == ["perkons_hd_01"]
+		assert erica == ["hexdrums", "perkons_hd_01"]
+
+		# **THIS MAKER CHANGED HOW IT PUBLISHES BETWEEN THE TWO**, which is the whole value of
+		# having learned its habits here: the PĒRKONS's manual sits at a direct address naming
+		# the file, and the HexDrums's arrives from a download controller that takes a product
+		# id and a file id and names the file only in a header. So the lesson a reader should
+		# take from either definition is about that instrument, not about Erica Synths.
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
+
+		assert "erp.ericasynths.lv/media/PERKONS" in (perkons.sources["manual"].url or "")
+		assert "/service/file/download/" in (hexdrums.sources["manual"].url or "")
 
 
 class TestMiniNova:
@@ -13116,3 +13140,143 @@ class TestJDXi:
 		assert "CITED FOR AN ABSENCE AND QUOTED FOR NOTHING, AND ITS NAME IS WHY IT WAS" \
 			" CHECKED." in flat
 		assert "51 sheets, 31,811 words, and **not one controller number**" in flat
+
+
+class TestHexdrums:
+
+	"""No controllers, and the one maker here that says it chose not to have any.
+
+	Every other ``control_change: none`` in this corpus is an absence somebody
+	established.  This one is a decision somebody explains, which is a stronger claim
+	and the reason this definition is worth having at all.
+	"""
+
+	def test_its_maker_says_why_there_are_no_controllers (self) -> None:
+		"""Which no other definition in this corpus can say."""
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
+
+		assert not hexdrums.controls
+		assert hexdrums.midi.control_change == "none"
+		assert not hexdrums.midi.stated_none
+
+		said = prose_of("erica_synths", "hexdrums")
+
+		assert "There is no MIDI CC implementation for parameter control, however, since the" \
+			" parameters aren't digitally mapped. This is intentional to allow for a more" \
+			" traditional drum machine workflow." in said
+
+		# **THE DISTINCTION THE DEFINITION DRAWS IS THE POINT OF IT**, so it is asserted
+		# rather than left to a reader to notice that this `none` is unlike the other seven.
+		flat = " ".join(said.split())
+
+		assert "Eight definitions in this corpus carry that field and in the other seven it" \
+			" records **an absence somebody established**" in flat
+		assert "This one records **a decision somebody explains**" in flat
+
+	def test_ten_voices_over_ten_consecutive_notes (self) -> None:
+		"""So every note in its range sounds something, which drum machines rarely manage."""
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
+
+		assert hexdrums.voice is not None
+		assert hexdrums.voice.addressing == "voices"
+		assert hexdrums.voice.note_range == (36, 45)
+
+		assert hexdrums.voice.voices == {"bd1": 36, "bd2": 37, "machine": 38, "snare": 39,
+			"clap": 40, "rimshot": 41, "oh": 42, "ch": 43, "crash": 44, "ride": 45}
+
+		# Ten voices over ten numbers, with nothing in between - which is the claim, so it
+		# is checked rather than read off the dictionary above.
+		notes = sorted(hexdrums.voice.voices.values())
+
+		assert notes == list(range(36, 46))
+		assert len(set(notes)) == len(notes)
+
+		for note in notes:
+			assert hexdrums.voice.plays_note(note)
+
+		assert not hexdrums.voice.plays_note(35)
+		assert not hexdrums.voice.plays_note(46)
+
+	def test_its_manual_asks_for_a_chart_it_does_not_contain (self) -> None:
+		"""And the definition says so rather than recording a mode it never found."""
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
+
+		assert hexdrums.midi.mode is None
+
+		said = prose_of("erica_synths", "hexdrums")
+
+		assert "The DIN5 MIDI in receives trigger note messages and MIDI clock. Please refer" \
+			" to the MIDI implementation chart in the manual." in said
+
+		flat = " ".join(said.split())
+
+		assert "**THE MANUAL ASKS FOR A CHART IT DOES NOT CONTAIN.**" in flat
+		assert "and there is no chart: no Basic Channel row, no True Voice row, no `o` and" \
+			" `x`." in flat
+
+	def test_the_japanese_edition_has_none_of_it_and_the_reason_is_marked_an_inference (self) \
+			-> None:
+		"""The obvious reading is that a maker dropped a section, and the dates say otherwise."""
+		flat = " ".join(prose_of("erica_synths", "hexdrums").split())
+
+		assert "**AND THE JAPANESE EDITION HAS NONE OF IT, BECAUSE IT IS FOUR WEEKS OLDER.**" \
+			in flat
+		assert "`MIDI IMPLEMENTATION` is on none of the Japanese edition's pages and not one" \
+			" of the numbers 36 to 45 is anywhere in it" in flat
+
+		# **THE HEADING IS WHAT DECIDES IT**, so it is asserted rather than left in a list of
+		# evidence: a dropped section leaves its heading behind.
+		assert "**its sheet 27 is headed for the sample upload alone**" in flat
+		assert "A translator who drops a section leaves the heading behind; a translator" \
+			" working from a manual that has no such section has no heading to translate." \
+			in flat
+
+		# **AND THE DEFINITION DOES NOT STATE THE INFERENCE AS A FACT**, which is the whole
+		# discipline here - this is the second instrument in two ranks where one more reading
+		# stopped the corpus accusing a maker of something.
+		assert "**Neither document says so, so that is an inference and is marked as one**" \
+			in flat
+		assert "the earlier English edition it would have been made from is not published, so" \
+			" nobody can settle it" in flat
+
+		# What is *not* an inference, and is the part a reader of that edition is owed.
+		assert "**WHAT A JAPANESE READER FINDS IS NOTHING EITHER WAY, AND THAT PART IS NOT AN" \
+			" INFERENCE.**" in flat
+
+		# **CITED FOR AN ABSENCE AND DELIBERATELY NOT KEPT**, which a reader needs told,
+		# because every other document this corpus rests on is in the library.
+		assert "28.8 MB for a remark about what a translation does not contain is not worth" \
+			" the library's weight" in flat
+
+	def test_what_it_leaves_empty_and_why_that_is_not_the_same_as_none (self) -> None:
+		"""The word for velocity appears nowhere in 28 sheets, so the field says nothing."""
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
+
+		assert hexdrums.voice is not None
+		assert hexdrums.voice.velocity is None
+		assert hexdrums.voice.polyphony is None
+		assert hexdrums.midi.program_change is None
+		assert hexdrums.midi.sysex is None
+		assert hexdrums.midi.transport is None
+
+		# And the one thing it does settle in both directions, each by its own setting.
+		assert hexdrums.midi.clock == "both"
+		assert hexdrums.midi.channels == (1, 16)
+
+		flat = " ".join(prose_of("erica_synths", "hexdrums").split())
+
+		assert "**not declared absent**, so the fields are empty rather than `none`" in flat
+
+	def test_its_documents_are_addressed_by_a_file_id_rather_than_a_name (self) -> None:
+		"""So the address says nothing about what comes back, which is worth recording."""
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
+
+		manual = hexdrums.sources["manual"].url or ""
+
+		assert "/service/file/download/product_id/1009/file_id/608/" in manual
+		assert not manual.endswith(".pdf")
+
+		flat = " ".join(prose_of("erica_synths", "hexdrums").split())
+
+		assert "**the file name arrives only in a `content-disposition` header**" in flat
+		assert "the firmware and the manual are told apart only by what comes back" in flat

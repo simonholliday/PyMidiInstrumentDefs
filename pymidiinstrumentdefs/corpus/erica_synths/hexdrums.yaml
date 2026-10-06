@@ -1,0 +1,206 @@
+# **NO CONTROLS, AND THIS IS THE ONLY INSTRUMENT HERE WHOSE MAKER SAYS WHY IT CHOSE NOT TO HAVE
+# ANY.** "There is no MIDI CC implementation for parameter control, however, since the parameters
+# aren't digitally mapped. This is intentional to allow for a more traditional drum machine
+# workflow." (manual p. 27).
+#
+# **Every other `control_change: none` in this corpus is an absence somebody checked.** This one
+# is a decision somebody explains: the knobs are wired to the circuit rather than read by a
+# processor, and the maker says the omission is deliberate and says what it is for. A consumer
+# reading this definition is not looking at a page nobody read; it is looking at a drum machine
+# whose designer decided its parameters would not be addressable.
+#
+# WHAT IT DOES ANSWER TO IS TEN NOTES, ONE PER VOICE. "The voices can be triggered by MIDI notes,
+# the implementation is as follows:" (manual p. 27) and then ten pairs, 36 to 45 with no gaps -
+# which is unusual, most drum machines here leaving holes. Eight of the ten voices are analogue
+# and two are sample-based, and nothing in the note number does anything but choose one.
+#
+# **AND THE SECTION THAT SAYS ALL THAT IS HALFWAY DOWN A PAGE ABOUT SOMETHING ELSE.** Sheet 27 is
+# headed `USER SAMPLE UPLOAD AND MIDI IMPLEMENTATION` and spends 1,966 characters on sample
+# upload before reaching `MIDI IMPLEMENTATION`. **That is the second instrument in two ranks whose
+# map was below the fold of a page about another subject** - `roland/jd_xi` at rank 94 had its
+# control change list 6,138 characters into a page of system exclusive addresses, and a reading of
+# that page's opening nearly recorded the maker as having printed a stale cross-reference. Here
+# the instruction to look is on sheet 5 and the thing to look at is on sheet 27, and neither is
+# where a search for `MIDI Implementation Chart` would land, because this instrument has no chart.
+#
+# **THE MANUAL ASKS FOR A CHART IT DOES NOT CONTAIN.** "The DIN5 MIDI in receives trigger note
+# messages and MIDI clock. Please refer to the MIDI implementation chart in the manual." (manual
+# p. 5) - and there is no chart: no Basic Channel row, no True Voice row, no `o` and `x`. What
+# sheet 27 has instead is ten lines and a sentence, which says more than a chart would and is not
+# the thing sheet 5 points at.
+#
+# **AND THE JAPANESE EDITION HAS NONE OF IT, BECAUSE IT IS FOUR WEEKS OLDER.** Erica Synths
+# publishes this manual in two languages, and the pair first read as a maker that translated 28
+# sheets and dropped the one section a MIDI definition is built from: `MIDI IMPLEMENTATION` is on
+# none of the Japanese edition's pages and not one of the numbers 36 to 45 is anywhere in it.
+# **The dates say something better, and so does a heading.** That edition's creation date is 17
+# October 2025 against the English one's 16 February 2026, the downloads page dates the two 21
+# January 2026 and 16 February 2026 - and **its sheet 27 is headed for the sample upload alone**,
+# where the English sheet 27 is headed `USER SAMPLE UPLOAD AND MIDI IMPLEMENTATION`. A translator
+# who drops a section leaves the heading behind; a translator working from a manual that has no
+# such section has no heading to translate. So the likeliest reading is that this instrument's
+# MIDI implementation was written into the February revision and the translation predates it.
+# **Neither document says so, so that is an inference and is marked as one** - and the earlier
+# English edition it would have been made from is not published, so nobody can settle it.
+#
+# **WHAT A JAPANESE READER FINDS IS NOTHING EITHER WAY, AND THAT PART IS NOT AN INFERENCE.** Their
+# sheet 5 carries the same instruction to consult the MIDI implementation table in this manual,
+# and their manual has no such table. Checked by normalising that edition's text and listing every
+# number under 128 in it: 1 to 18, 20, 24, 25, 32, 48, 50, 64, 75, 90 and 120, and none of the ten
+# this definition rests on.
+
+definition: 1
+
+model:
+  manufacturer: Erica Synths
+  name: HexDrums
+  # **FIRMWARE 1.0.2**, which the product page offers as a `Firmware 1.0.2. Maintenance update`
+  # dated 30 January 2026 - and **what it offers is the firmware itself rather than a note about
+  # it**: a UF2 image of 491,008 bytes, installed by the `DFU Firmware update` entry in the
+  # configuration menu. There are no release notes, so **what 1.0.2 changed is not published**.
+  # The manual is newer than the firmware: its own creation date is 16 February 2026, which is
+  # the date the product page prints beside it and makes it **the newest document any instrument
+  # in this corpus is built from**.
+  # An Erica Synths and Hexinverter collaboration, which its own acknowledgement names: this is
+  # the Mutant Drum lineage in a desktop box.
+  # Checked 2026-10-06.
+
+source: >-
+  **The HexDrums User Manual, 28 sheets, dated 16 February 2026** - and it is the whole of what
+  this instrument's maker publishes in prose. The product page offers three downloads: this, its
+  Japanese translation, and a firmware image.
+
+  **THE MAP IS TEN LINES AND A SENTENCE, AND BOTH ARE HALFWAY DOWN p. 27.** See the comment
+  above the definition for where and why that matters. The ten lines on p. 27 are the note numbers; the
+  sentence is the reason there is nothing else.
+
+  WHY `control_change: none` IS DIFFERENT HERE FROM EVERYWHERE ELSE IT APPEARS. Eight definitions
+  in this corpus carry that field and in the other seven it records **an absence somebody
+  established** - a chart's crossed boxes, an enumeration that did not mention a control change, a
+  maker's list of what its socket accepts. This one records **a decision somebody explains**. That
+  is a stronger claim and a different one, and a consumer can act on it with more confidence: not
+  that no controller was found, but that the designer chose the parameters would not be
+  addressable and said so.
+
+  **THE JAPANESE EDITION IS CITED FOR AN ABSENCE AND IS NOT IN THIS LIBRARY.** 28.8 MB for a
+  remark about what a translation does not contain is not worth the library's weight, so its
+  digest and the address that serves it are in the provenance record beside the English manual,
+  and `Notes/4626_extract_hexdrums.py` fetches it to recheck rather than trusting a note. **It is
+  recorded because the obvious reading of it is the wrong one**: that edition is four weeks older
+  than the English manual and its p. 27 is headed for the sample upload alone, which points at a
+  section added to the English manual after the translation was made rather than a section dropped
+  from it. See the comment above the definition for what decides that and for why it is still an
+  inference.
+
+  HOW ITS DOCUMENTS ARE ADDRESSED, WHICH IS NOT BY A FILE NAME. Erica Synths serves these through
+  a download controller - `/service/file/download/product_id/1009/file_id/608/` - and **the file
+  name arrives only in a `content-disposition` header**. So the address says nothing about what it
+  serves, the served type is `application/octet-stream` whatever the file is, and **the firmware
+  and the manual are told apart only by what comes back**: one is a PDF and one is a UF2 image.
+  `erica_synths/perkons_hd_01` found its manual at a direct `erp.ericasynths.lv/media/` address
+  instead, so this maker has changed how it publishes between that instrument and this one.
+
+  NOT RECORDED: the velocity, which **the word for does not appear once in 28 sheets** - the
+  manual calls what arrives `trigger note messages` (manual p. 5), which suggests the note is a
+  trigger and nothing more, and suggesting is not saying. The transport: the manual's START and
+  STOP are panel keys and no MIDI transport message is mentioned anywhere. Program change and
+  system exclusive, likewise unmentioned - and unlike the controllers, **not declared absent**, so
+  the fields are empty rather than `none`. The mode, for want of the chart sheet 5 asks for. And
+  the polyphony, which no page gives.
+
+sources:
+  manual:
+    kind: manual
+    title: HexDrums User Manual
+    dated: 2026-02-16
+    landing: "https://www.ericasynths.lv/hexdrums-3562/"
+    url: "https://www.ericasynths.lv/service/file/download/product_id/1009/file_id/608/"
+    sha256: f1ccad2db9d6652b317a73b8ec41bc3aeef6ddb2202fd00825df558655d9bf04
+    retrieved: 2026-10-06
+    # **28 sheets, and its MIDI implementation is the bottom half of sheet 27.** No chart, no
+    # folio on any page, so a locator here is the file's sheet.
+    # Served through a download controller rather than at a file name: the address above carries
+    # a product id and a file id and nothing else, and `HexDrums_manual_Feb2026.pdf` arrives in
+    # a `content-disposition` header. Not encrypted. Made in Adobe Illustrator, whose creation
+    # date is the 16 February 2026 the product page prints.
+    page_offset: 0
+  product_page:
+    kind: download_page
+    title: Hexdrums - Erica Synths
+    landing: "https://www.ericasynths.lv/hexdrums-3562/"
+    url: "https://www.ericasynths.lv/hexdrums-3562/"
+    sha256: 75473240336461876592a9d596f41971435471ba6f22668db200973acd63cb7f
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being three, and for what the third of them is.** A manual in
+    # English, the same manual in Japanese, and a firmware image - **no release notes, no
+    # specification sheet, no separate MIDI document.** So the English manual is the whole of
+    # what this instrument has, and that is a list rather than a search.
+    # It is a shop page, so its markup carries no file address at all: the three downloads are
+    # controller URLs. The digest is of the extraction, which pairs each file id with its label
+    # and date; the served bytes are saved beside it as `.html`, whose own digest is
+    # 2d5423bde9338966287a458a492b0791837a0fecdcc9ce09e2d39433ad8bc2eb. One page, cited as p. 1.
+
+midi:
+  # `MIN MIDI in` offers a choice "between OFF ... OMNI ... and 1 - 16 representing the
+  # individual MIDI channels" (manual p. 24), and `MOT MIDI out` one "between OFF ... THR ...
+  # and 1 - 16 representing the MIDI channels" (manual p. 24). So sixteen either way - **and three things this field cannot hold**:
+  # that either direction can be switched off entirely, that the input can be set to omni, and
+  # that **the output can be set to act as a thru**, passing on what arrives at the input.
+  channels: [1, 16]
+  # NOT RECORDED, for want of the chart. Sheet 5 asks the reader to "refer to the MIDI
+  # implementation chart in the manual" (manual p. 5) and there is none - what sheet 27 has is
+  # ten note numbers and a sentence, and no Mode row.
+  # **BOTH, AND EACH DIRECTION HAS A SETTING OF ITS OWN WITH THREE VALUES.** It receives one by
+  # being told to: `CLK Clock source` selects "between INT - internal clock, MID - MIDI clock and
+  # EXT - external analog clock" (manual p. 23). And it sends one, with a distinction worth
+  # having: `MCK MIDI clock` selects "between OFF - no MIDI clock messages are transmitted, ON -
+  # MIDI clock messages are transmitted when the sequencer is playing and CON - MIDI clock
+  # messages are transmitted continuously" (manual p. 24). The manual states the pair plainly as
+  # well - its input "receives trigger note messages and MIDI clock" (manual p. 5) and its
+  # "MIDI Out outputs trigger and MIDI clock messages" (manual p. 5).
+  clock: both
+  # NOT RECORDED, the transport. The manual's START and STOP are panel keys - "The three keys on
+  # the bottom left are for starting and stopping sequences and saving patterns." (manual p. 15) -
+  # and **no MIDI start, stop or continue message is mentioned anywhere in 28 sheets**. So what
+  # it does with one is not published, which is not the same as its doing nothing.
+  # NOT RECORDED EITHER: program change and system exclusive, neither mentioned. **And unlike the
+  # controllers these are not declared absent**, which is the distinction worth keeping: sheet 27
+  # says there is no control change implementation and says why, and says nothing about these.
+  # SOMEBODY DECIDED THERE WOULD BE NONE, AND WROTE DOWN WHY. "There is no MIDI CC implementation
+  # for parameter control, however, since the parameters aren't digitally mapped. This is
+  # intentional to allow for a more traditional drum machine workflow." (manual p. 27).
+  # **That is the only instance of this field in the corpus that records a decision rather than
+  # an absence**, and it is a stronger statement than any chart could make: not that no
+  # controller was found, but that the parameters are not the kind of thing a controller could
+  # reach, by design.
+  control_change: none
+
+voice:
+  # Its notes name drums and nothing else - ten of them, one per voice.
+  addressing: voices
+  # **TEN VOICES OVER TEN CONSECUTIVE NUMBERS, WHICH IS RARE HERE.** Most drum machines in this
+  # corpus leave gaps - `korg/drumlogue` has eleven voices over a span of twenty and
+  # `korg/volca_beats` ten over forty. This one runs 36 to 45 with nothing in between, so every
+  # note in the span sounds something.
+  note_range: [36, 45]
+  # NOT RECORDED, the velocity, and the reason is worth stating: **the word does not appear once
+  # in 28 sheets.** The manual calls what arrives "trigger note messages" (manual p. 5), which
+  # suggests the note is a trigger and the rest of the message is not read - and suggesting is
+  # not saying, on an instrument whose maker was willing to write a sentence about what it does
+  # not implement.
+  # NOT RECORDED, the polyphony. Ten voices sound; how many at once is nowhere.
+  voices:
+    # **THE TEN, IN THE ORDER SHEET 27 PRINTS THEM**, which is down one column and then the
+    # other rather than in number order - the manual sets them in two columns and a reader of
+    # the extracted text meets them interleaved.
+    bd1: 36
+    bd2: 37
+    machine: 38
+    snare: 39
+    clap: 40
+    rimshot: 41
+    oh: 42
+    ch: 43
+    crash: 44
+    ride: 45

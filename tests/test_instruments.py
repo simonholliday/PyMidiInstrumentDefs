@@ -153,6 +153,7 @@ class TestBundledCorpus:
 			"akai/mpc_sample",
 			"arturia/astrolab",
 			"arturia/drumbrute_impact",
+			"arturia/microbrute",
 			"arturia/microfreak",
 			"arturia/minifreak",
 			"arturia/polybrute",
@@ -15070,3 +15071,231 @@ class TestVolcaSample:
 			assert "/867/" not in (source.url or "")
 
 		assert any("/370/" in (source.landing or "") for source in volca.sources.values())
+
+
+class TestMicroBrute:
+
+	"""The controller table is in a document the maker does not publish.
+
+	Fifty sheets of user manual print no controller number at all.  All
+	thirteen are on one sheet of the *MicroBrute Connection* manual, which is
+	not on the downloads page: it ships inside the Connection software archive,
+	and the only reason to look there is a sentence on the manual's sheet 48.
+
+	The archive's executable was not run.  Reading a document out of an archive
+	is not installing a maker's software.
+	"""
+
+	def test_thirteen_controls_none_of_which_is_a_knob (self) -> None:
+		"""102 to 114, every one of them a setting of the editor rather than a panel control."""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+		numbers = sorted(control.cc for control in brute.controls.values()
+			if control.cc is not None)
+
+		assert len(brute.controls) == 13
+		assert numbers == [102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]
+
+		# Nothing leaves by the socket, because there is only one and it is an input.
+		assert {control.direction for control in brute.controls.values()} == {"receives"}
+
+		# **And not one of them is the front panel.** An analogue monosynth's knobs answer to
+		# nothing, so a consumer looking for a cutoff here will not find one.
+		labels = " ".join(control.label.lower() for control in brute.controls.values())
+
+		for knob in ("cutoff", "resonance", "attack", "decay", "sustain", "release",
+				"glide", "metalizer", "ultrasaw"):
+			assert knob not in labels
+
+	def test_the_two_rows_of_that_table_that_are_not_controls (self) -> None:
+		"""Fifteen rows, thirteen controls: an RPN and a channel mode message.
+
+		The pitch bend range is reached by ``RPN 06`` and so belongs under
+		``voice.pitch_bend``; ``Local ON/OFF`` is controller 122, which this
+		library's validator refuses by the ruling `roland/fantom_6_7_8` set.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+
+		assert brute.voice.pitch_bend is not None
+		assert brute.voice.pitch_bend.semitones == 2
+		assert brute.voice.pitch_bend.programmable is True
+
+		assert 122 not in {control.cc for control in brute.controls.values()}
+
+		# **Refused by name, not merely left out.** Adding it back is an error.
+		body = ("definition: 1\nmodel: {name: X}\n"
+			"controls: {local: {label: Local ON/OFF, cc: 122}}\n")
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "channel mode message" in str(raised.value)
+
+	def test_velocity_is_sent_and_not_received_which_the_format_cannot_say (self) -> None:
+		"""``note_on`` has four values and this instrument is none of them.
+
+		It transmits velocity over USB and does not recognise it.  ``ignored`` is
+		the true half; the half with no field is written into the account, so the
+		fact is not lost even though nothing can switch on it.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+		flat = " ".join((brute.source or "").split())
+
+		assert brute.voice.velocity is not None
+		assert brute.voice.velocity.note_on == "ignored"
+
+		# Two documents say it, and the account quotes the plainer one.
+		assert ("The MicroBrute does not receive or respond to velocity but it does send it."
+			in flat)
+		assert "it transmits and does not recognise" in flat
+
+		# **And it carries a parameter governing something it will never hear**: the curve of
+		# the velocity it sends.
+		assert brute.controls["velocity_curve"].cc == 112
+
+	def test_monophonic_although_one_sentence_says_fully_polyphonic (self) -> None:
+		"""The polyphonic sentence is about the keyboard sending chords elsewhere.
+
+		"The keyboard can also be used as a fully polyphonic MIDI controller for
+		other devices via the rear panel USB jack."  What the instrument *sounds*
+		is settled by the note-priority paragraph instead: one of two notes.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+		flat = " ".join((brute.source or "").split())
+
+		assert brute.voice.polyphony == 1
+		assert "fully polyphonic MIDI controller" in flat
+		assert "One of two notes is one note." in flat
+
+		# The behaviour it rests on is a control as well as a sentence.
+		assert brute.controls["note_priority"].cc == 111
+		assert set(brute.controls["note_priority"].values) == {"last", "low", "high"}
+
+	def test_every_absence_is_absent_rather_than_guessed (self) -> None:
+		"""Six fields are unset because sixty-five sheets never raise them.
+
+		An unset field says nobody has established it, which is a different
+		claim from ``none`` and from ``false``.  `korg/volca_sample` could say
+		``program_change: {receives: false}`` because a chart crossed the box;
+		nothing here crosses anything.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+
+		assert brute.midi.mode is None
+		assert brute.midi.transport is None
+		assert brute.midi.program_change is None
+		assert brute.midi.sysex is None
+		assert brute.voice.aftertouch is None
+		assert brute.voice.note_range is None
+
+		# What *is* established, over either socket.
+		assert brute.midi.clock == "receives"
+		assert brute.midi.channels == (1, 16)
+
+	def test_the_transport_absence_is_the_one_a_counting_sweep_gets_wrong (self) -> None:
+		"""`Start` occurs twenty-nine times across the two documents and never as a message.
+
+		"Quick Start", "start playing notes", "restart", "the LFO will start on
+		power up".  A sweep that counted hits would have reported transport as
+		documented, which is why the account says the hits were read.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+		flat = " ".join((brute.source or "").split())
+
+		assert brute.midi.transport is None
+		assert "not once as a MIDI message" in flat
+		assert "would have reported transport and bank select as documented here" in flat
+		assert "all that is published is that it follows a clock" in flat
+
+	def test_the_channel_settings_are_exact_and_the_rest_are_banded (self) -> None:
+		"""Two shapes in one table, because the maker prints two kinds of value.
+
+		``1 to 16, 17=All`` means those numbers exactly; ``0 to 41 = Reset``
+		means a band whose low end is what this format records.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+
+		receive = brute.controls["receive_channel"]
+		assert receive.choices["channel_1"] == 1
+		assert receive.choices["all"] == 17
+		assert receive.range == (1, 17)
+		assert not receive.values
+
+		# Send Channel has no omni setting, which is the asymmetry the table shows.
+		send = brute.controls["send_channel"]
+		assert "all" not in send.choices
+		assert send.range == (1, 16)
+
+		# The other eleven are bands.
+		for name, control in brute.controls.items():
+			if name in ("receive_channel", "send_channel"):
+				continue
+
+			assert control.values, f"{name} should be banded"
+			assert not control.choices, f"{name} should not be exact"
+
+		assert brute.controls["seq_retrig"].values == {"reset": 0, "legato": 42, "none": 84}
+
+	def test_a_document_on_an_instruments_page_is_not_about_that_instrument (self) -> None:
+		"""The MIDI Control Center manual sits on this page and never names this instrument.
+
+		`arturia/drumbrute_impact` cites it legitimately.  This definition cannot,
+		and the reason is in the library beside the file rather than only here.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		assert "mcc_manual" in impact.sources
+		assert not any("mcc" in key for key in brute.sources)
+
+		# This instrument's editor document is the 2013 one, and its address is an archive.
+		assert (brute.sources["connection"].url or "").endswith("MicroBrute_1_0_3_2_win.zip")
+		assert brute.sources["connection"].edition == "1.0.3"
+
+	def test_the_seven_arturias_do_not_answer_alike (self) -> None:
+		"""The largest single-maker group here, and the standing rule still holds.
+
+		Two instruments by one maker are not a habit.  These seven disagree about
+		how many controls they have, about velocity, and about whether the panel
+		is addressable at all.
+		"""
+		names = ["arturia/astrolab", "arturia/drumbrute_impact", "arturia/microbrute",
+			"arturia/microfreak", "arturia/minifreak", "arturia/polybrute",
+			"arturia/polybrute_12"]
+		loaded = {name: pymidiinstrumentdefs.load(name, [CORPUS]) for name in names}
+
+		counts = {name: len(one.controls) for name, one in loaded.items()}
+
+		# **No two of the seven carry the same number of controls.**
+		assert counts == {
+			"arturia/astrolab": 36,
+			"arturia/drumbrute_impact": 0,
+			"arturia/microbrute": 13,
+			"arturia/microfreak": 21,
+			"arturia/minifreak": 42,
+			"arturia/polybrute": 74,
+			"arturia/polybrute_12": 75,
+		}
+
+		# And none of the others omits a mode either, which is this maker's one constant.
+		assert all(one.midi.mode is None for one in loaded.values())
+
+	def test_the_firmware_is_four_versions_past_the_documented_one (self) -> None:
+		"""The controller table describes 1.0.3.2 and Arturia serves 1.0.4.114.
+
+		The only release note this instrument has is the first one, and it says
+		nothing about MIDI.  So the span between them is undocumented, which the
+		account states rather than papering over.
+		"""
+		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
+
+		assert brute.model.firmware == "1.0.4.114"
+		assert brute.sources["connection"].edition == "1.0.3"
+		assert brute.sources["release_note"].dated == "2013-11-08"
+
+		# The span nobody has spoken for is stated in the account, which ships.
+		flat = " ".join((brute.source or "").split())
+
+		assert brute.sources["connection"].dated == "2013-11-12"
+		assert "publishes no release notes at all" in flat
+		assert "whether those four years changed any of these numbers is a thing nobody has said" \
+			in flat

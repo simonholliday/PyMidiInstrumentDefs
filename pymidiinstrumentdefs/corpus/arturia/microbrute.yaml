@@ -1,0 +1,308 @@
+# **THE USER'S MANUAL NEVER PRINTS A CONTROLLER NUMBER, AND THE DOCUMENT THAT DOES IS NOT
+# PUBLISHED.** Fifty sheets of manual name no controller at all. All thirteen are on one sheet of
+# the *MicroBrute Connection* manual, which is not on Arturia's downloads page: it ships **inside
+# the Connection software archive**, and the only reason to look there is one sentence on sheet 48
+# of the manual - "The "MicroBrute Connection" software and its dedicated User's Manual are freely
+# downloadable from the ARTURIA website" (manual p. 48). **A manual that promises a second
+# document is a lead, and the download page is not the only place a maker keeps one.**
+#
+# **AND THE EDITOR DOCUMENT ARTURIA SHIPS TODAY IS FOR OTHER INSTRUMENTS.** The downloads page
+# offers the MIDI Control Center manual beside this instrument's files, and that manual names
+# DrumBrute, BeatStep, KeyStep, MatrixBrute, KeyLab and MiniLab in thirty sheets and **never names
+# the MicroBrute**. So `arturia/drumbrute_impact` cites it legitimately and this definition cannot:
+# a document offered on an instrument's own page is not thereby about that instrument.
+#
+# **NOTHING LEAVES BY THE SOCKET, BECAUSE THERE IS ONLY ONE AND IT IS AN INPUT.** The connector
+# list gives "MIDI Input................................Standard MIDI DIN-5" (manual p. 12) and no
+# output, and in fifty sheets the words `MIDI Out` occur exactly once - describing the socket on
+# somebody else's box, "your external MIDI device's MIDI Out connector" (manual p. 46). So every
+# control below is `direction: receives`.
+#
+# **WHAT IT DOES SEND, IT SENDS OVER USB, AND THE FORMAT HAS NO WORD FOR THE ONE CASE THAT
+# MATTERS.** Two documents agree that velocity travels out and not in: "The MicroBrute will send
+# velocity as a USB controller. It does not have internal velocity routing and does not respond to
+# velocity however." (manual p. 32), and more plainly, "The MicroBrute does not receive or respond
+# to velocity but it does send it." (connection p. 8). `voice.velocity.note_on` can say `received`,
+# `both`, `gated` or `ignored`; **this instrument is none of those** - it transmits and does not
+# recognise. `ignored` is recorded below because it is the true half, and the half the format
+# cannot hold is written down here.
+#
+# **THE SENTENCE THAT WOULD SET THE POLYPHONY WRONG IS ABOUT THE KEYBOARD, NOT THE SYNTHESIZER.**
+# "The keyboard can also be used as a fully polyphonic MIDI controller for other devices via the
+# rear panel USB jack." (manual p. 42) - an analogue monosynth whose keys send chords to something
+# else. What the instrument sounds is settled by a different sentence: "Low Note priority means if
+# two notes are played at the same time, the lower note on the keyboard is prioritized and played."
+# (connection p. 8). One of two notes is one note.
+#
+# **AND THE ABSENCES HERE WERE READ, NOT COUNTED** - the account below quotes the ordinary-English
+# hits with their pages, so this note is only about the machinery.
+# `Notes/4655_extract_microbrute.py` reads every occurrence of `Start`, `Stop`, `Continue`, `Local`
+# and `Bank` and asserts how many are MIDI messages rather than how many there are, and its
+# reader is **proved against seventeen hand-made sentences, seven of them real messages** - not by
+# watching it pass on this document set, where the answer it should give is zero.
+#
+# The one it is allowed to find is `Local`, once, in the controller table: its test leans towards
+# saying yes, because a false yes only makes an absence harder to claim while a false no would let
+# one through.
+
+definition: 1
+
+model:
+  manufacturer: Arturia
+  name: MicroBrute
+  # **1.0.4.114, AND WHAT IT CHANGED IS NOT PUBLISHED.** The downloads page serves
+  # `MicroBrute_Firmware_Update_1_0_4_114.mbf`, dated 2017, with no release notes beside it. The
+  # only release note Arturia ships for this instrument is inside the 2013 Connection archive and
+  # describes the version before it - "First Public Release" (release_note), listing three known
+  # issues, none about MIDI. **So the controller table below is documented against 1.0.3.2 and the
+  # current firmware is four years later**, and whether those four years changed anything is a
+  # thing nobody has said. The same shape as `korg/volca_fm`.
+  firmware: 1.0.4.114
+  # Checked 2026-10-06.
+
+source: >-
+  **THE CONTROLLERS ARE IN A DOCUMENT THAT SHIPS INSIDE A SOFTWARE ARCHIVE.** Thirteen numbers,
+  102 to 114, all on connection p. 13 under the heading `Changing parameters via MIDI CCs` - and
+  that manual is not a download on Arturia's page for this instrument. It is a file in
+  `MicroBrute_1_0_3_2_win.zip`, found because the user's manual names it (manual p. 48). The
+  archive's other two files are the firmware and a release note; its executable was not run.
+
+  **THE TABLE WAS READ BY COORDINATE AND ITS FIFTEEN ROWS ARE NOT FIFTEEN CONTROLS.** Two of them
+  are not controller numbers: the pitch bend range is reached by `RPN 06` and is recorded under
+  `voice.pitch_bend`, and `Local ON/OFF` is controller 122, inside the Channel Mode range this
+  library's validator refuses - the ruling `roland/fantom_6_7_8` set and every maker since has
+  met. **And Arturia's own value text for that row is missing a word**: it prints `0 = or 127`,
+  where the two state names should be. That is the document's typo and not a bad read, which the
+  extraction script asserts by checking the row still says neither `On` nor `Off`.
+
+  **WHAT THE THIRTEEN ARE FOR, WHICH IS NOT WHAT A PANEL CONTROL IS FOR.** Not one of them is a
+  knob on the front of the instrument - no cutoff, no resonance, no envelope. They are the
+  thirteen settings of the editor, reachable by controller so a sequencer can change them: "The
+  MicroBrute allows you simple access to all the parameters found in the editor via easy to use
+  MIDI CCs." (connection p. 13). The groups below are that editor's own four section headings.
+  **And they do not persist**: "When parameters are changed using CCs, changes will be lost after
+  a restart. To write changes to internal memory you have to use the editor." (connection p. 13) -
+  so a consumer offering these should say they are for the session, not for the instrument.
+
+  **ONE MIDI SOCKET, AND IT IS AN INPUT, SO NOTHING LEAVES BY DIN.** The connector list gives
+  "MIDI Input................................Standard MIDI DIN-5" (manual p. 12) and no output,
+  and "The MIDI In jack lets your MicroBrute be controlled from other MIDI devices." (manual
+  p. 46). In fifty sheets the words `MIDI Out` occur exactly once, describing the socket on
+  somebody else's box - "your external MIDI device's MIDI Out connector" (manual p. 46). So every
+  control here is `direction: receives`, and a consumer can stop waiting for this instrument to
+  report anything over a cable. **What it does send, it sends over USB**: the keyboard's notes,
+  "a fully polyphonic MIDI controller for other devices via the rear panel USB jack" (manual
+  p. 42), and velocity.
+
+  **VELOCITY GOES OUT AND NOT IN, AND THIS FORMAT HAS NO WORD FOR THAT.** "The MicroBrute does not
+  receive or respond to velocity but it does send it." (connection p. 8), which the user's manual
+  says twice in its own words: "The MicroBrute will send velocity as a USB controller. It does not
+  have internal velocity routing and does not respond to velocity however." (manual p. 32).
+  `voice.velocity.note_on` can be `received`, `both`, `gated` or `ignored`, and **this instrument
+  is none of the four** - it transmits and does not recognise. `ignored` is recorded because it is
+  the true half: send this instrument a velocity and nothing will happen. The other half is here
+  in words because no field can hold it, and **controller 112 sets the curve of the velocity it
+  sends** - a parameter governing something it will never hear.
+
+  **AND IT IS MONOPHONIC, THOUGH ONE SENTENCE READS LIKE THE OPPOSITE.** That `fully polyphonic
+  MIDI controller` is the keyboard sending chords out of the USB socket, not the synthesiser
+  sounding them. What it sounds is settled elsewhere: "Low Note priority means if two notes are
+  played at the same time, the lower note on the keyboard is prioritized and played." (connection
+  p. 8). One of two notes is one note. The word for it appears in neither document, so
+  `polyphony: 1` rests on that behaviour rather than on a label - and controller 111 is the choice
+  of which single note wins.
+
+  THE CHANNELS, WHICH FACE OPPOSITE WAYS. "Receive Channel - this sets the channel that the
+  MicroBrute will receive MIDI data on. You can choose individual channels or ALL channels."
+  (connection p. 5) and "Transmit Channel - this sets the MIDI channel that the MicroBrute will
+  send MIDI data on via USB." (connection p. 5). So one setting governs the DIN input and the
+  other governs what the keyboard sends out of the USB socket, and both are controller-addressable
+  - 102 taking `17=All` for omni and 103 taking only `1 to 16`.
+
+  THE PITCH BEND, GIVEN THREE TIMES AND AGREEING EVERY TIME. "The Range of the Pitch bend defaults
+  to 2 semitones." (manual p. 42); "The default pitch-bend range is set to +/- two semi-tones but
+  it can be set to range from 1 semi-tone to 1octave +/-." (connection p. 7); and the `RPN 06` row
+  with `1 to 12` (connection p. 13). Two documents, three statements, one answer - which is rarer
+  in this corpus than a contradiction.
+
+  **NOT RECORDED, AND EACH ONE IS A CHECKED ABSENCE OVER A NAMED SET OF SHEETS** - fifty of
+  manual and fifteen of connection, squashed so a term broken across a line still matches. The
+  words `Program Change`, `aftertouch`, `System Exclusive`, `SysEx`, `Song Position` and `Omni`
+  appear nowhere in either. So this definition says nothing about preset changes, aftertouch or
+  system exclusive: it is not that they are refused, it is that in sixty-five sheets the maker
+  never raises them. **The firmware arrives as a `.mbf` file over USB and no document says how**,
+  which is the one place system exclusive would be expected and is not found.
+
+  **NOT RECORDED, THE TRANSPORT - AND IT IS THE ABSENCE A COUNTING SWEEP GETS WRONG.** `Start`
+  appears twenty-nine times across the two documents and `Stop`, `Continue`, `Local` and `Bank`
+  between them twelve more, and **not once as a MIDI message**. Every one is ordinary English:
+  "Now start playing notes on the keyboard." (manual p. 23); "the LFO will start on power up"
+  (connection p. 7); "The sequence will continue playing from the place where it stopped."
+  (connection p. 5); "Please consult a local electrician" (manual p. 9); and "a price that will
+  not break the bank" (manual p. 8), which is the manual's only `Bank`. A sweep that counted hits
+  instead of reading them would have reported transport and bank select as documented here. So
+  what the sequencer does on receiving Start or Stop is unestablished: all that is published is
+  that it follows a clock.
+
+  **AND THE THIRTEEN ARE DOCUMENTED AGAINST A FIRMWARE FOUR VERSIONS OLD.** The Connection manual
+  describes 1.0.3.2, from November 2013; Arturia's current MicroBrute firmware is 1.0.4.114, from
+  2017, and **publishes no release notes at all**. The only release note this instrument has is
+  the first one, which says "First Public Release" (release_note) and nothing about MIDI. So
+  whether those four years changed any of these numbers is a thing nobody has said, and a
+  consumer should treat them as the best published account rather than as a current one.
+
+  NOT RECORDED, the MIDI mode. No document names one, which is why `midi.mode` is absent - as it
+  is from all six other Arturias here. The instrument is monophonic and can be set to receive on
+  all channels, and the specification's word for that is Omni, which neither document uses.
+
+  **NOT RECORDED, THE MODULATION WHEEL - AND THAT IS THE POINT.** The manual names it fifteen
+  times and the words `CC 1` and `CC#1` appear in neither document. Its switch routes it to the
+  filter cutoff or the LFO depth inside the instrument: "It sets the overall amount of modulation
+  signal sent to targets selected by the MOD Wheel switch." (manual p. 42). **A wheel on a panel
+  is not a controller number**, and nothing published says this one sends or answers to one.
+
+sources:
+  manual:
+    kind: manual
+    title: MicroBrute EN Manual
+    edition: "1.1.0"
+    dated: 2019-05-09
+    landing: "https://www.arturia.com/support/downloads-manuals/product/microbrute"
+    url: "https://www.arturia.com/api/download/products/microbrute/manual/MicroBrute_Manual_1_1_0_EN.pdf"
+    sha256: f53c242634771600e39b76afb68066de8bd79e28a6cdf48feaa104502c7613e9
+    retrieved: 2026-10-06
+    # Fifty sheets, a text layer throughout, and **no controller number anywhere in it**. Its
+    # printed folio matches the sheet, so a page below is the sheet. The downloads page prints
+    # the German word `Versionen` beside it on the English page, which is the maker's own slip
+    # and not a sign of the wrong file.
+  connection:
+    kind: manual
+    title: MICROBRUTE connection Manual
+    edition: "1.0.3"
+    dated: 2013-11-12
+    landing: "https://www.arturia.com/support/downloads-manuals/product/microbrute"
+    url: "https://www.arturia.com/api/download/products/microbrute/firmware/MicroBrute_1_0_3_2_win.zip"
+    sha256: 26a3e3420b8ecc1a19960aa7ce13b12991e698ccba622fca9604fab799772f06
+    retrieved: 2026-10-06
+    # **THE DIGEST IS THE PDF'S, AND THE ADDRESS IS THE ARCHIVE IT CAME OUT OF**, because Arturia
+    # publishes no address for this document at all. Fifteen sheets; its own title block reads
+    # `MICROBRUTE_connection-Manual_v1.0.2x` while the file is named `v1.0.3`, so the edition
+    # above is the filename's. Sheet 13 is the controller table and is the only sheet in either
+    # document that carries a controller number.
+  release_note:
+    kind: release_notes
+    title: Arturia MicroBrute Firmware Update V1.0.3.2 and Connection Software
+    dated: 2013-11-08
+    landing: "https://www.arturia.com/support/downloads-manuals/product/microbrute"
+    url: "https://www.arturia.com/api/download/products/microbrute/firmware/MicroBrute_1_0_3_2_win.zip"
+    sha256: f2ebda5fa8511ec987ee0d540296e20b9848a15e6d177a9e80587f6a4a73fd2b
+    retrieved: 2026-10-06
+    paginated: false
+    # 846 bytes of plain text out of the same archive, cited by source key because it has no
+    # page to turn to. "First Public Release" (release_note), and three known issues about
+    # Windows 8.1 and the LFO retrigger. **Nothing about MIDI**, and it is the only release note
+    # this instrument has: the 2017 firmware four versions later has none.
+  downloads_page:
+    kind: download_page
+    title: MicroBrute Downloads & Manuals - Arturia
+    landing: "https://www.arturia.com/support/downloads-manuals/product/microbrute"
+    url: "https://www.arturia.com/support/downloads-manuals/product/microbrute"
+    sha256: c5a6b8267c5236286fef06ccaed75af8c7bf4e44a96ba2d8c584f32b95e08d0b
+    retrieved: 2026-10-06
+    paginated: false
+    # Saved as served and as text; **the digest above is the text copy**, which is the one the
+    # citation checker reads. It is also served identically at
+    # `arturia.com/products/hardware-synths/microbrute/resources`, the address shape every other
+    # Arturia here cites - the same file list inside the product-page wrapper.
+    # Every download is a plain `href` under `/api/download/`, with no `data-path` attribute and
+    # no address in a query string, which is **not** how Korg or Roland arrange theirs.
+
+midi:
+  # "You can choose individual channels or ALL channels." (connection p. 5) for what it receives,
+  # and "You can choose any of the 16 MIDI channels." (connection p. 5) for what it sends. The
+  # controller table gives both as numbers: `1 to 16, 17=All` and `1 to 16` (connection p. 13).
+  channels: [1, 16]
+  # NOT RECORDED, the mode. See the account - no document names one.
+  # **RECEIVES, ON EITHER SOCKET.** "The Rate knob acts differently if MicroBrute detects an
+  # external MIDI clock on the MIDI Input or USB connector:" (manual p. 44), and the editor makes
+  # it a setting with three states - "MIDI will select an external MIDI clock source."
+  # (connection p. 8), which is controller 108 below. It sends no clock, having no output socket
+  # and no sentence claiming it.
+  clock: receives
+  # NOT RECORDED, the transport. **This is the absence that a counting sweep gets wrong**: the
+  # words Start, Stop and Continue occur thirty-two times across the two documents and not one of
+  # them is a MIDI message. So nothing here says whether the sequencer answers to Start or Stop -
+  # only that it follows a clock.
+  # NOT RECORDED, program change, system exclusive and NRPN. None of the three is named in either
+  # document; see the account for the sheet counts that absence rests on.
+
+voice:
+  addressing: pitches
+  # NOT RECORDED, the note range. The keyboard is two octaves shifted over six by the Octave
+  # buttons, and "Middle C with the octave set to 0 = MIDI note 60 on the MicroBrute."
+  # (connection p. 12) fixes where it sits - but **what it answers to is a different question**,
+  # and the manual only hints at it: a full-sized keyboard is suggested "if you want a wider
+  # playing range" (manual p. 46), which says the received range is wider than the keyboard and
+  # not what it is.
+  # **ONE NOTE AT A TIME, AND THE PROOF IS THE NOTE PRIORITY SETTING.** "Low Note priority means
+  # if two notes are played at the same time, the lower note on the keyboard is prioritized and
+  # played." (connection p. 8) - a choice of which single note sounds. The word `monophonic`
+  # appears in neither document, so this rests on the behaviour rather than the label, and the
+  # sentence that reads like a contradiction is about the keyboard as a controller; see above.
+  polyphony: 1
+  velocity:
+    # **IGNORED - AND IT TRANSMITS VELOCITY ALL THE SAME**, which this field cannot say. "The
+    # MicroBrute does not receive or respond to velocity but it does send it." (connection p. 8),
+    # which the user's manual states twice over in its own words (manual p. 32). The transmitted
+    # curve is a setting of its own, controller 112 below, with three shapes - so the instrument
+    # carries a parameter governing something it will never hear.
+    note_on: ignored
+  # NOT RECORDED, aftertouch. The word appears nowhere in either document, and the manual's list
+  # of what the keyboard offers for expressiveness closes without it: velocity, transposition,
+  # pitch bend, modulation wheel and the sequencer (manual p. 32).
+  pitch_bend:
+    # Two semitones by default and settable from one to twelve, which two documents say three
+    # times between them; see the account.
+    semitones: 2
+    # Over MIDI as well as in the editor, by `RPN 06` with a value of `1 to 12`
+    # (connection p. 13).
+    programmable: true
+
+groups:
+  # The editor's own four section headings, in its order - which is also the order the controller
+  # table runs in, so these group labels are the maker's and not this corpus's.
+  midi_settings: MIDI Settings
+  sequencer: Sequencer settings
+  module: Module Settings
+  keyboard: Keyboard Parameters
+
+controls:
+
+  # **THIRTEEN, EVERY ONE RECEIVED, AND NOT ONE OF THEM A KNOB.** The instrument's panel is
+  # analogue and answers to nothing; these thirteen are the editor's settings, exposed so that a
+  # sequencer can reach them, and they revert at the next power-up unless the editor writes them.
+  # Each one's bands below are the table's own, which gives a low and a high for every state; the
+  # low is what this format records.
+
+  # MIDI Settings (2) - **the only two of the thirteen whose values are exact and not banded.**
+  # `1 to 16, 17=All` and `1 to 16` (connection p. 13) mean the numbers as written, so these take
+  # `choices`; the other eleven print a low and a high for each state and take `values`.
+  receive_channel:     {label: Receive Channel, cc: 102, choices: {channel_1: 1, channel_2: 2, channel_3: 3, channel_4: 4, channel_5: 5, channel_6: 6, channel_7: 7, channel_8: 8, channel_9: 9, channel_10: 10, channel_11: 11, channel_12: 12, channel_13: 13, channel_14: 14, channel_15: 15, channel_16: 16, all: 17}, range: [1, 17], direction: receives, group: midi_settings}
+  send_channel:        {label: Send Channel, cc: 103, choices: {channel_1: 1, channel_2: 2, channel_3: 3, channel_4: 4, channel_5: 5, channel_6: 6, channel_7: 7, channel_8: 8, channel_9: 9, channel_10: 10, channel_11: 11, channel_12: 12, channel_13: 13, channel_14: 14, channel_15: 15, channel_16: 16}, range: [1, 16], direction: receives, group: midi_settings}
+
+  # Sequencer settings (5)
+  seq_retrig:          {label: Seq Retrig, cc: 104, values: {reset: 0, legato: 42, none: 84}, direction: receives, group: sequencer}
+  seq_play_mode:       {label: Seq Play Mode, cc: 105, values: {hold: 0, note_on: 64}, direction: receives, group: sequencer}
+  next_seq_mode:       {label: Next Seq Mode, cc: 106, values: {end: 0, instant_reset: 42, instant_continuous: 84}, direction: receives, group: sequencer}
+  seq_step_size:       {label: Seq Step Size, cc: 107, values: {quarter: 0, eighth: 30, sixteenth: 60, thirty_second: 90}, direction: receives, group: sequencer}
+  seq_step_gate_mode:  {label: Seq Step/Gate Mode, cc: 114, values: {clk: 0, gate_tap: 64}, direction: receives, group: sequencer}
+
+  # Module Settings (4)
+  sync_source:         {label: Sync Source, cc: 108, values: {auto: 0, int: 42, ext: 84}, direction: receives, group: module}
+  env_legato_mode:     {label: Env Legato Mode, cc: 109, values: {"off": 0, "on": 64}, direction: receives, group: module}
+  lfo_retrig_mode:     {label: LFO Retrig Mode, cc: 110, values: {"off": 0, "on": 64}, direction: receives, group: module}
+  gate_length:         {label: Gate Length, cc: 113, values: {short: 0, med: 42, long: 84}, direction: receives, group: module}
+
+  # Keyboard Parameters (2)
+  note_priority:       {label: Note Priority, cc: 111, values: {last: 0, low: 42, high: 84}, direction: receives, group: keyboard}
+  velocity_curve:      {label: Velocity Curve, cc: 112, values: {lin: 0, log: 42, anti_log: 84}, direction: receives, group: keyboard}

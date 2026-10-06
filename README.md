@@ -221,6 +221,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
 | `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |
 | `roland/sp_404mkii` | Roland SP-404MKII: 27 controls, seven of which the implementation chart publishes only inside a footnote - and one controller number that selects a different effect on each of three channel groups, so the same value means three things |
+| `roland/tb_3` | Roland TB-3: thirteen controls off a one-sheet chart, seven of them confirmed by a second document that was written about system exclusive - the only controller numbers in this corpus published twice |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `roland/tr_6s` | Roland TR-6S: 34 controls, 33 of which are the TR-8S's - and one the TR-8S has not, named BEAT and explained nowhere |

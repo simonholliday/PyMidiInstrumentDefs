@@ -237,6 +237,7 @@ class TestBundledCorpus:
 			"roland/mc_707",
 			"roland/s_1",
 			"roland/sp_404mkii",
+			"roland/tb_3",
 			"roland/tr8s",
 			"roland/tr_1000",
 			"roland/tr_6s",
@@ -14707,3 +14708,114 @@ class TestVolcaFM:
 		# The two that made it worth opening, both in this corpus.
 		assert "`roland/jd_xi` at rank 94 found nothing and `roland/jupiter_x` at 96 found a" \
 			" whole second map" in flat
+
+
+class TestTB3:
+
+	"""The first definition here whose controller numbers a second document confirms.
+
+	Roland publishes three documents for the TB-3 and two of them are about MIDI
+	and nothing else.  The chart gives all thirteen controller numbers.  The
+	six-sheet MIDI Implementation is a system-exclusive document with no
+	controller table at all - and its ``Controller`` address block names seven of
+	those same numbers beside the addresses that reach the same parameters.
+
+	**All seven agree**, which is why this class asserts them one by one: the
+	usual trouble with a number published twice is that the two disagree, and
+	#4243's rule would then make this definition carry neither.
+	"""
+
+	def test_thirteen_controls_and_the_bank_select_row_is_not_one (self) -> None:
+		"""Fourteen rows on the chart, and the first is addressing machinery."""
+		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
+		numbers = sorted(control.cc for control in tb_3.controls.values()
+			if control.cc is not None)
+
+		assert len(tb_3.controls) == 13
+		assert numbers == [1, 11, 12, 13, 16, 17, 68, 69, 71, 74, 102, 103, 104]
+
+		# The row the Fantom ruling sets aside: `0, 32` against "CC#0: Bank Number, CC#32: 0".
+		assert 0 not in numbers and 32 not in numbers
+
+	def test_seven_numbers_are_confirmed_by_the_system_exclusive_document (self) -> None:
+		"""The second document reaches the same parameters and prints their numbers."""
+		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
+		by_number = {control.cc: control for control in tb_3.controls.values()}
+
+		confirmed = {74: "CUTOFF", 71: "RESONANCE", 16: "ACCENT", 17: "EFFECT",
+			12: "(ENV MOD) PAD X", 13: "(ENV MOD) PAD Y", 104: "TUNING"}
+
+		for cc, label in confirmed.items():
+			assert by_number[cc].label == label
+
+		# And the account says so, naming each as the second document prints it.
+		flat = " ".join((tb_3.source or "").split())
+
+		for quoted in ("CUTOFF (CC# 74)", "RESONANCE (CC# 71)", "ACCENT (CC# 16)",
+				"EFFECT (CC# 17)", "ENV MOD X (CC# 12)", "ENV MOD Y (CC# 13)",
+				"TUNING (CC# 104)"):
+			assert quoted in flat
+
+	def test_the_two_scatter_controls_are_received_and_never_sent (self) -> None:
+		"""The same two numbers the TR-8 refuses to transmit, for the same two parameters."""
+		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
+		receives = sorted(control.cc for control in tb_3.controls.values()
+			if control.direction == "receives" and control.cc is not None)
+
+		assert receives == [68, 69]
+
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+		tr_8_receives = sorted(control.cc for control in tr_8.controls.values()
+			if control.direction == "receives" and control.cc is not None)
+
+		# **THE TR-8 REFUSES A THIRD, WHICH THE TB-3 HAS NO ROW FOR**, so this is the same
+		# habit and not the same list.
+		assert tr_8_receives == [68, 69, 70]
+
+	def test_the_pad_leaves_by_three_different_routes (self) -> None:
+		"""X as pitch bend, Y as a controller, and pressure as another controller."""
+		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
+
+		assert tb_3.controls["pad_z"].cc == 1
+		assert tb_3.controls["xy_play_pad_y"].cc == 11
+
+		# **AND THAT IS WHY AFTERTOUCH IS NONE WHILE THE MANUAL NAMES AFTERTOUCH.** The
+		# chart crosses both kinds in both directions; the manual has a "Pad Aftertouch
+		# Sensitivity" setting. Pad pressure travels as controller 1, so both are true.
+		assert tb_3.voice.aftertouch == "none"
+		assert "pad pressure leaves this instrument as controller 1" in \
+			" ".join((tb_3.source or "").split()).lower()
+
+	def test_it_answers_to_two_more_octaves_than_it_plays (self) -> None:
+		"""The one row on this chart where the two columns differ by more than a mark."""
+		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
+
+		assert tb_3.voice.note_range == (12, 108)
+
+		flat = " ".join((tb_3.source or "").split())
+
+		assert "IT ANSWERS TO TWO MORE OCTAVES THAN IT PLAYS" in flat
+		assert "`12-84` transmitted against `12-108` in the `Recognized` column" in flat
+
+	def test_it_ships_on_channel_two_and_says_so_twice (self) -> None:
+		"""Both documents give the default, and an omni TB-3 still transmits on it."""
+		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
+
+		assert tb_3.midi.channels == (1, 16)
+		assert tb_3.midi.mode == 4
+		assert tb_3.midi.sysex is True
+		assert tb_3.midi.program_change is not None
+		assert tb_3.midi.program_change.receives is True
+		assert tb_3.midi.program_change.sends is False
+
+	def test_the_pitch_bend_block_is_left_out_although_it_has_pitch_bend (self) -> None:
+		"""Marked in both columns, with no depth published - so neither field can be filled."""
+		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
+
+		assert tb_3.voice.pitch_bend is None
+
+		# `roland/tr_8` leaves the same block out for the opposite reason, and this file says so.
+		flat = " ".join((tb_3.source or "").split())
+
+		assert "the `pitch_bend` block is left out entirely" in flat
+		assert "`roland/tr_8` leaves it out for the opposite reason" in flat

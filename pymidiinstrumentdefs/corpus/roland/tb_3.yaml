@@ -1,0 +1,244 @@
+# **THE FIRST INSTRUMENT HERE WHOSE CONTROLLER NUMBERS ARE PUBLISHED TWICE.** Roland offers three
+# documents for the TB-3 and two of them are about MIDI and nothing else: a one-sheet
+# `MIDI Implementation Chart`, which gives all thirteen controller numbers, and a six-sheet
+# `MIDI Implementation`, which has no controller table at all.
+#
+# **BUT THE SECOND ONE NAMES SEVEN OF THE SAME NUMBERS ANYWAY.** It is a system-exclusive
+# document, and its `Controller` address block prints each parameter's controller number beside
+# the SysEx address that reaches the same parameter. **All seven agree with the chart**, and the
+# account below quotes each of the seven at the page it is on rather than repeating them here.
+# Nothing else in this corpus has had a second document, written for another purpose, restate a
+# controller number at all - and the usual trouble with a number given twice is that the two
+# disagree - and this corpus carries neither number when that happens, saying what both were.
+#
+# **AND THE CHART HAS TO BE READ BY COORDINATE, WHERE A FLAT READING LOSES A BOX.** Its text layer
+# runs every number, then every transmitted mark, then every recognized mark, then every name, so
+# `74 o o CUTOFF` appears nowhere in it. A flat count of the marks comes to 27 where fourteen rows
+# need 28, because one row's two glyphs and its name sit a point apart in the layer.
+# `Notes/4647_extract_tb_3.py` measures the three columns from the chart's own heading row and
+# reads 28, which is the rule `roland/tr_8` set at rank 101.
+#
+# **ITS MANUAL NAMES AFTERTOUCH AND ITS CHART CROSSES AFTERTOUCH IN ALL FOUR BOXES, AND BOTH ARE
+# TRUE.** The manual has a `Pad Aftertouch Sensitivity` setting that "Adjusts the sensitivity of
+# the pad to pressure (aftertouch)." (manual); the chart crosses key's and channel's, transmitted
+# and recognized. The resolution is in the controller table rather than in either statement:
+# **pad pressure leaves this instrument as controller 1, `PAD Z`.** So the pad is pressure
+# sensitive, nothing aftertouch-shaped goes down the wire, and a reader who presses the pad and
+# watches the wire still sees something move. Recorded here because a reader meeting the manual's
+# sentence alone would expect `aftertouch: channel` and be wrong.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TB-3
+  # **1.10, WHICH BOTH MIDI DOCUMENTS DECLARE ON THEIR OWN FACES** - the chart as
+  # "Model TB-3 Date: Jul. 25, 2014 Version: 1.10" (chart) and the implementation as
+  # "Model: TB-3 Date: Jul. 04, 2014 Version: 1.10" (implementation p. 1), three weeks apart at
+  # the same version.
+  # Nothing later is offered, and unlike `roland/tr_8` there is no update document carrying the
+  # instrument past its chart.
+  firmware: "1.10"
+  # A synthesizer, discontinued - and its support page is the live-product shape, three documents
+  # each behind a GUID of its own, not the empty shell `roland/tr_909` had to work around.
+  # Checked 2026-10-06.
+
+source: >-
+  **THREE DOCUMENTS, AND THE TWO THAT MATTER ARE ABOUT MIDI AND NOTHING ELSE.** The
+  `MIDI Implementation Chart` is one A4 sheet and settles every field below except two. The
+  `MIDI Implementation` is six sheets of system exclusive, and **its `Controller` address block
+  restates seven of the thirteen controller numbers** beside the addresses that reach the same
+  parameters. All seven agree with the chart, which is the only corroboration of a controller
+  number by a second document anywhere in this corpus:
+
+  "CUTOFF (CC# 74)" (implementation p. 2); "RESONANCE (CC# 71)" (implementation p. 2);
+  "ACCENT (CC# 16)" (implementation p. 2); "EFFECT (CC# 17)" (implementation p. 2);
+  "ENV MOD X (CC# 12)" (implementation p. 2); "ENV MOD Y (CC# 13)" (implementation p. 2);
+  "TUNING (CC# 104)" (implementation p. 2).
+
+  **THE CHART AND THE MANUAL HAVE NO PAGE TO TURN TO**, being one sheet each, so what is cited
+  from them is cited by document name; only the implementation is paginated, and its seven
+  controller numbers are all on p. 2.
+
+  **THE CHART IS READ BY COORDINATE AND NOT BY ITS TEXT ORDER.** The flat layer gives every
+  number, then every transmitted mark, then every mark in the `Recognized` column, then every
+  name, and comes to
+  27 marks where fourteen rows need 28. The columns are at x=201 `Transmitted`, x=322
+  `Recognized` and x=442 `Remarks`, measured from the heading row itself, and
+  `Notes/4647_extract_tb_3.py` asserts all fourteen rows against that geometry.
+
+  **WHAT THE MANUAL ALONE SETTLES** is the channel default and the clock source: "Specifies the
+  MIDI transmit/receive channel." (manual), at "(default: C 2)" (manual), and `AUTO`, which
+  means "If MIDI
+  clock is being input to the MIDI IN connector or the USB port, the TB-3's tempo will
+  automatically synchronize to MIDI clock." (manual).
+
+  **THE MANUAL NAMES AFTERTOUCH AND THE CHART CROSSES IT IN ALL FOUR BOXES, AND BOTH ARE TRUE.**
+  The manual carries a `Pad Aftertouch Sensitivity` setting that "Adjusts the sensitivity of the
+  pad to pressure (aftertouch)." (manual), while the chart crosses key's and channel's,
+  transmitted and recognised. Neither is wrong, because the resolution is in the controller
+  table: **pad pressure leaves this instrument as controller 1**, `PAD Z`, and not as an
+  aftertouch message. So the pad is pressure sensitive, `aftertouch` is `none`, and anybody who
+  presses the pad and watches the wire still sees something move. A reader meeting the manual's
+  sentence by itself would expect `aftertouch: channel` and be wrong, which is why it is here
+  rather than only in a comment.
+
+  **IT ANSWERS TO TWO MORE OCTAVES THAN IT PLAYS**, which is the one row on this chart where the
+  two columns differ by more than a mark: `12-84` transmitted against `12-108` in the `Recognized` column, with
+  the True Voice row struck through transmitted, and the remark "C0-C6 12-84" (chart).
+  `note_range` carries the received span, because this field says what the instrument answers to.
+
+  **AND IT HAS A PITCH BEND THAT NO FIELD HERE CAN HOLD.** The chart marks it in both columns and
+  names the axis it comes from, "(XY PLAY) PAD X" (chart), so the bend is a finger position on a
+  touch pad rather than a wheel - but no document gives a depth or says whether a depth can be
+  set, so the `pitch_bend` block is left out entirely. `roland/tr_8` leaves it out for the
+  opposite reason: its chart crosses pitch bend in all four boxes.
+
+sources:
+  chart:
+    kind: midi implementation chart
+    title: TB-3 MIDI Implementation Chart
+    edition: "1.10"
+    dated: 2014-07-25
+    landing: https://www.roland.com/global/support/by_product/tb-3/owners_manuals/bb6b9667-089a-452d-bc4a-d774a86b8b1b/
+    url: https://static.roland.com/assets/media/pdf/TB-3_MI_2.pdf
+    sha256: 22f19568e19a0f77719604dc9abb4cddd933e9dc71315223171c5efea63c3be5
+    retrieved: 2026-10-06
+    paginated: false
+  implementation:
+    kind: midi implementation
+    title: TB-3 MIDI Implementation
+    edition: "1.10"
+    dated: 2014-07-04
+    landing: https://www.roland.com/global/support/by_product/tb-3/owners_manuals/5f88fccf-c0e9-4c72-938c-82cc6813e175/
+    url: https://static.roland.com/assets/media/pdf/TB-3_MI_1.pdf
+    sha256: 691ec88de3202127c70a8a45109c88ec05ae84ae728888de44ce721f94be778f
+    retrieved: 2026-10-06
+  manual:
+    kind: owner's manual
+    title: TB-3 Owner's Manual
+    dated: 2014-03-13
+    landing: https://www.roland.com/global/support/by_product/tb-3/owners_manuals/79d75dae-d3f6-4790-97fa-dbca6112c1ba/
+    url: https://static.roland.com/assets/media/pdf/TB-3_OM.pdf
+    sha256: e57d219112cdb5e9a2a5229dfbf02cfc861fdeebdb9ca5cbc4be4c7482d14252
+    retrieved: 2026-10-06
+    paginated: false
+
+midi:
+  # **TWO BY DEFAULT, WHICH IS AN ODD NUMBER TO SHIP ON** and is what both documents say: the
+  # chart prints `2` in the transmitted and recognized default boxes and marks the row
+  # "Memorized", and the manual gives "(default: C 2)" (manual). "1-16, OFF" either way (chart),
+  # and the manual gives the third state: "MIDI messages of all channels are received. The MIDI
+  # transmit channel will be 2." (manual) - so an omni TB-3 still transmits on 2, exactly as an
+  # omni TR-8 still transmits on 10.
+  channels: [1, 16]
+  # **FOUR, WHICH IS OMNI OFF AND MONO**, default and the only value either way (chart). The same
+  # row `roland/tr_8` carries, and here it suits the instrument: a bass line synthesizer.
+  mode: 4
+  # **BOTH WAYS ON THE CHART, AND THE MANUAL NAMES THE SETTING THAT CHOOSES.** Clock is marked in
+  # both columns; the manual's `MIDI Clock Source` is `AUTO`, "If MIDI clock is being input to the
+  # MIDI IN connector or the USB port, the TB-3's tempo will automatically synchronize to MIDI
+  # clock." (manual), against `INTERNAL`, and "If MIDI clock is being simultaneously input from
+  # the MIDI IN connector and from the USB port, the USB port takes priority." (manual).
+  clock: both
+  # **SENT AS START AND STOP, RECEIVED AS ALL THREE** (chart) - continue is crossed transmitted
+  # and marked in the `Recognized` column, with the footnote "The same processing will be carried out as when
+  # Start is received." (chart). The manual says the same from the other end: "It can also receive
+  # MIDI Start (FA) and MIDI Stop (FC) to start/stop itself." (manual), and never mentions
+  # continue, which is the half the chart adds.
+  transport: both
+  program_change:
+    # **RECEIVED AND NEVER SENT**, crossed in the transmitted column (chart).
+    receives: true
+    sends: false
+    # `0-127` in the True Number row (chart). A count of what a program change can select, not a
+    # count of patterns the panel reaches.
+    presets: 128
+  # **RECEIVED AND NEVER SENT** - crossed transmitted and marked in the `Recognized` column (chart) - and the whole
+  # six-sheet `MIDI Implementation` is what it receives: a model ID of "00H 00H 7BH"
+  # (implementation p. 2), parameter addresses for the controller block, the patch, and eleven
+  # effects.
+  sysex: true
+  # NOT RECORDED, NRPN: no document mentions it. Swept across all eight sheets of all three
+  # documents rather than noticed on one, which is rank 99's rule.
+
+voice:
+  # Notes sound pitches on one monophonic bass line, not one drum per number.
+  addressing: pitches
+  # **12 TO 108 RECEIVED, 12 TO 84 SENT** (chart), which is the one row here where the two columns
+  # differ by more than a mark. The True Voice row is struck through transmitted and gives
+  # `12-108` recognized, and the remark reads "C0-C6 12-84" (chart) - so the span this instrument
+  # plays from its own pad is two octaves narrower than the span it answers to. The received
+  # range is recorded, because this field says what the instrument answers to.
+  note_range: [12, 108]
+  # NOT RECORDED, the polyphony. **`Mode 4` is OMNI OFF and MONO and that is a statement about
+  # channel mode rather than a count of voices**, and neither "monophonic" nor "polyphony"
+  # appears anywhere in the three documents. A bass line synthesizer is very likely one voice and
+  # no document here says so.
+  velocity:
+    # Both ways, with the status bytes given: "o 9nH v=64,127" (chart) transmitted, and marked
+    # in the recognized column. **The two transmitted values are the pad's two states** rather
+    # than a range.
+    note_on: both
+    # A real note off, sent and recognized - `o 8nH v=64` (chart) - where `roland/tr_8` sends a note
+    # on with a velocity of nothing instead.
+    note_off: true
+  # **NONE, AND THE CHART CROSSES BOTH KINDS IN BOTH DIRECTIONS**: key's and channel's,
+  # transmitted and recognized (chart). **The manual's `Pad Aftertouch Sensitivity` is not a
+  # contradiction of this** - see the comment above the definition. Pad pressure leaves the
+  # instrument as controller 1.
+  aftertouch: none
+  # NOT RECORDED, the pitch bend, **although this instrument has one**: the chart marks it in both
+  # columns and names the axis it comes from, "(XY PLAY) PAD X" (chart), so its pitch bend is a
+  # finger position on a touch pad rather than a wheel. No document gives a depth for it and
+  # neither says whether the depth can be set, so there is nothing here that either field of this
+  # block could carry without inventing it. `roland/tr_8` leaves the same block out for the
+  # opposite reason - its chart crosses pitch bend in all four boxes.
+
+groups:
+  pad: XY pad
+  filter: Filter
+  pattern: Pattern
+  scatter: Scatter
+  tone: Tone
+
+controls:
+
+  # **THIRTEEN NUMBERS OFF ONE CHART, SEVEN OF THEM CONFIRMED BY A SECOND DOCUMENT, AND ELEVEN OF
+  # THE THIRTEEN TRAVEL BOTH WAYS.** The two that do not are the scatter controls, crossed in the
+  # transmitted column and marked in the recognized one (chart) - **so a TB-3 can be told to
+  # scatter and will never tell anybody that it is.** That is the same pair of numbers, 68 and 69,
+  # that `roland/tr_8` refuses to transmit for the same two parameters, which is as close to a
+  # maker's habit as this corpus has caught Roland in.
+  #
+  # **THE FOURTEENTH ROW OF THE CHART IS NOT A CONTROL.** `0, 32` carries footnote `*1`,
+  # "CC#0: Bank Number, CC#32: 0" (chart) - bank select, which is addressing machinery and not a
+  # parameter, by the ruling `roland/fantom_6_7_8` set at rank 77 and every Roland since has
+  # followed.
+  #
+  # The pad is three axes and they leave by three different routes: X as pitch bend, Y as
+  # controller 11, and pressure as controller 1. The names in brackets are the chart's own and
+  # say which of the pad's two modes each axis belongs to.
+
+  # pad (4)
+  pad_z:          {label: PAD Z, cc: 1, group: pad}
+  xy_play_pad_y:  {label: (XY PLAY) PAD Y, cc: 11, group: pad}
+  env_mod_pad_x:  {label: (ENV MOD) PAD X, cc: 12, group: pad}
+  env_mod_pad_y:  {label: (ENV MOD) PAD Y, cc: 13, group: pad}
+
+  # tone (3)
+  accent:         {label: ACCENT, cc: 16, group: tone}
+  effect:         {label: EFFECT, cc: 17, group: tone}
+  tuning:         {label: TUNING, cc: 104, group: tone}
+
+  # filter (2) - both restated by the system-exclusive document; see the account above
+  resonance:      {label: RESONANCE, cc: 71, group: filter}
+  cutoff:         {label: CUTOFF, cc: 74, group: filter}
+
+  # pattern (2)
+  pattern_slide:  {label: PATTERN SLIDE, cc: 102, group: pattern}
+  pattern_accent: {label: PATTERN ACCENT, cc: 103, group: pattern}
+
+  # scatter (2) - received and never sent
+  scatter_type:   {label: SCATTER TYPE, cc: 68, group: scatter, direction: receives}
+  scatter_depth:  {label: SCATTER DEPTH, cc: 69, group: scatter, direction: receives}

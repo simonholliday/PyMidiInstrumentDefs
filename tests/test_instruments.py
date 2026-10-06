@@ -201,6 +201,7 @@ class TestBundledCorpus:
 			"korg/volca_beats",
 			"korg/volca_drum",
 			"korg/volca_fm",
+			"korg/volca_keys",
 			"korg/volca_sample",
 			"korg/wavestate",
 			"make_noise/zero_coast",
@@ -14579,12 +14580,22 @@ class TestVolcaFM:
 
 		assert url is not None and url.endswith(".txt")
 
-		# **AND IT IS THE ONLY ONE**, which is what makes the claim worth asserting.
+		# **AND IT IS STILL THE FIRST**, which is the claim its account makes. It was the only
+		# one until rank 107, when `korg/volca_keys` arrived with the same arrangement from the
+		# same maker - so the list is asserted whole rather than as a count, and a third will
+		# show up here rather than passing unnoticed.
 		elsewhere = [name for name in pymidiinstrumentdefs.available([CORPUS])
 			for source in pymidiinstrumentdefs.load(name, [CORPUS]).sources.values()
 			if source.kind == "implementation" and (source.url or "").endswith(".txt")]
 
-		assert elsewhere == ["korg/volca_fm"]
+		assert elsewhere == ["korg/volca_fm", "korg/volca_keys"]
+
+		# **`First` here means first into this corpus, not first published** - and the two run
+		# opposite ways, which is why it is worth saying. The volca keys' implementation is from
+		# 2013 and this one from 2016; the volca fm was written at rank 102 and the keys at 107.
+		keys = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+
+		assert str(keys.sources["implementation"].dated) < str(volca.sources["implementation"].dated)
 
 		flat = " ".join(prose_of("korg", "volca_fm").split())
 
@@ -15299,3 +15310,149 @@ class TestMicroBrute:
 		assert "publishes no release notes at all" in flat
 		assert "whether those four years changed any of these numbers is a thing nobody has said" \
 			in flat
+
+
+class TestVolcaKeys:
+
+	"""A second chart whose marks are artwork, and a row a sibling could not settle.
+
+	`korg/volca_sample` met a release note reading "Fixed MIDI Song Position
+	Pointer." against a chart that crossed song position in both columns, and
+	could only record the doubt.  This instrument has the same release note,
+	dated the same day - and here the chart circles the row and the
+	implementation lays the message out.
+	"""
+
+	def test_sixteen_controls_and_every_one_of_them_only_receives (self) -> None:
+		"""34 crosses stand in the chart's Transmitted column and not one circle."""
+		volca = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+		numbers = sorted(control.cc for control in volca.controls.values()
+			if control.cc is not None)
+
+		assert len(volca.controls) == 16
+		assert numbers == [5, 11, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+		assert {control.direction for control in volca.controls.values()} == {"receives"}
+
+	def test_the_song_position_row_this_definition_can_settle (self) -> None:
+		"""Three documents agree where the volca sample's two could not.
+
+		Both instruments took the same firmware fix on the same day.  The
+		difference is what their charts say: this one circles the row.
+		"""
+		keys = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+		sample = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+		flat = " ".join((keys.source or "").split())
+
+		assert keys.midi.transport == "receives"
+		assert '"pppp : 0~15 = STEP 1 ~ STEP 16" (implementation)' in flat
+		assert "recorded the doubt rather than resolving it" in flat
+
+		# The sibling it corrects is still carrying its own doubt, deliberately.
+		assert "enough to doubt a row and not enough" in " ".join((sample.source or "").split())
+
+	def test_the_two_documents_disagree_about_two_footnotes_so_neither_gate_is_kept (self) -> None:
+		"""The chart gates pitch bend and song position; the implementation gates neither.
+
+		They agree the messages are answered to, so nothing is in doubt - but a
+		gate that two documents describe differently is a gate this corpus does
+		not record.
+		"""
+		volca = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+		flat = " ".join((volca.source or "").split())
+
+		assert "Both say the messages are answered to and they cannot both be right about when" \
+			in flat
+		assert "neither account is carried" in flat
+
+		# Pitch bend is answered to and no range is published, so the block is absent.
+		assert volca.voice.pitch_bend is None
+		assert "it is answered to and cannot say how far" in flat
+
+	def test_the_controller_with_no_knob_is_in_no_group (self) -> None:
+		"""Expression exists only as a message, so it belongs to no panel section.
+
+		"Cannot be changed with machine operations; can only be changed with
+		MIDI." is the chart's own footnote on it.
+		"""
+		volca = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+
+		assert volca.controls["expression"].cc == 11
+		assert volca.controls["expression"].group is None
+
+		# And it is the only one, the other fifteen sitting in the manual's five sections.
+		ungrouped = [name for name, control in volca.controls.items() if control.group is None]
+		assert ungrouped == ["expression"]
+		assert sorted(volca.groups) == ["delay", "eg", "lfo", "vcf", "vco"]
+
+	def test_the_five_volcas_still_do_not_answer_alike (self) -> None:
+		"""Five now, and the maker rule has never held across them.
+
+		Checked rather than inherited, which is the standing rule: these five
+		disagree about velocity, about system exclusive, about program change,
+		about the channel span and about polyphony.
+		"""
+		names = ["korg/volca_bass", "korg/volca_drum", "korg/volca_fm", "korg/volca_keys",
+			"korg/volca_sample"]
+		loaded = {name: pymidiinstrumentdefs.load(name, [CORPUS]) for name in names}
+
+		# Velocity: three answers across five instruments.
+		velocities = {name: one.voice.velocity.note_on if one.voice.velocity else None
+			for name, one in loaded.items()}
+		assert velocities == {
+			"korg/volca_bass": "received",
+			"korg/volca_drum": "received",
+			"korg/volca_fm": "ignored",
+			"korg/volca_keys": "received",
+			"korg/volca_sample": "ignored",
+		}
+
+		# System exclusive: the two with a text implementation disagree about it.
+		assert loaded["korg/volca_fm"].midi.sysex is True
+		assert loaded["korg/volca_keys"].midi.sysex is False
+
+		# What all five share: nothing leaves any of them.
+		for one in loaded.values():
+			assert {control.direction for control in one.controls.values()} == {"receives"}
+
+	def test_both_gates_are_open_when_the_instrument_arrives (self) -> None:
+		"""Two global parameters stand between MIDI and this instrument, and both default on.
+
+		Which is the opposite of `dreadbox/nymphes`, whose controls are off until
+		somebody turns them on - the same kind of switch, set the other way.
+		"""
+		volca = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+		flat = " ".join((volca.source or "").split())
+
+		assert "MIDI RX ShortMessage is set to ON" in flat
+		assert "marks the factory setting with an asterisk: `*On`" in flat
+		assert "opposite of `dreadbox/nymphes`" in flat
+
+		assert len(nymphes.controls) == 82
+
+	def test_six_voice_modes_over_two_counts (self) -> None:
+		"""One controller's bands are the whole voicing story, as on the volca fm."""
+		volca = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+		fm = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert list(volca.controls["voice_mode"].values) == ["poly", "unison", "octave",
+			"fifth", "unison_ring", "poly_ring"]
+		assert volca.voice.polyphony == 3
+		assert volca.voice.voicing_modes == (1, 3)
+
+		# The same pair, reached from a different document.
+		assert fm.voice.voicing_modes == (1, 3)
+		assert fm.voice.polyphony == 3
+
+	def test_the_manual_contradicts_itself_about_its_own_table (self) -> None:
+		"""Firmware 1.03 added an eighth global parameter and only the table was updated.
+
+		The release note asked for the manuals to be downloaded again, and they
+		were changed - in one of the two places that needed it.
+		"""
+		volca = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
+		flat = " ".join((volca.source or "").split())
+
+		assert volca.model.firmware == "1.03"
+		assert ("\"Press a keyboard button 1-7 to specify the setting for the global parameter.\" (manual" in flat)
+		assert "the table is right and the sentence above it is not" in flat

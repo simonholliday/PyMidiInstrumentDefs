@@ -1,0 +1,274 @@
+# **THE SECOND CHART IN THIS CORPUS WHOSE MARKS ARE ALL ARTWORK, AND ITS OWN LEGEND GIVES IT
+# AWAY.** The legend prints ": Yes" and ": No" with the symbols missing, because every circle and
+# every cross on the sheet - 67 of them, and the two in the legend - is a vector drawing the text
+# extractor has nothing to say about. A text reading gives all sixteen controller numbers and not
+# one direction. `korg/volca_sample` met this at rank 105; this chart is laid out differently and
+# fails the same way.
+#
+# **AND THE MARKS HAD TO BE PUT ON THE RIGHT ROWS, WHICH IS A SEPARATE PROBLEM.** Every mark sits
+# 3.6 to 5.6 points below its own row's text baseline while the rows are 10.2 points apart, so a
+# nearest-baseline rule is a coin toss between the right row and the one beneath it - and when it
+# was tried it quietly lost four marks and put three on the wrong rows. The reader in
+# `Notes/4657_extract_volca_keys.py` takes the row **above** each mark instead, refuses any mark
+# that matches no single row, and refuses any box that would take two. Then the sheet was rendered
+# and looked at.
+#
+# **THE TWO DOCUMENTS DISAGREE TWICE, AND BOTH TIMES ABOUT A FOOTNOTE RATHER THAN A FACT.** The
+# chart gates pitch bend behind `MIDI RX ShortMessage` and song position behind `MIDI Clock src`;
+# the implementation gives neither message any footnote at all. **They agree that both are
+# answered to**, so nothing below is in doubt - but no gate is recorded for either, because two
+# documents that contradict each other leave nothing to carry.
+#
+# **ONE ROW SETTLES A QUESTION ANOTHER DEFINITION HAD TO LEAVE OPEN.** `korg/volca_sample` at rank
+# 105 found a 2019 release note saying that instrument's song position pointer had been fixed,
+# against a chart that crossed song position in both columns, and could only record the doubt. **The volca keys has the
+# same release note, dated the same day** - and here the chart circles the row and the
+# implementation lays the message out. So Korg fixed song position across the volca line in one
+# pass, and on this instrument it is published twice over.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: volca keys
+  # **1.03, AND THE MANUAL PROVES ITSELF CURRENT FOR IT** - and contradicts itself doing so; see
+  # the account, which is where that belongs because a reader of this definition will go to that
+  # manual for the two settings everything below is gated by.
+  firmware: "1.03"
+  # Checked 2026-10-06.
+
+source: >-
+  **SIXTEEN CONTROLLERS, GIVEN TWICE AND AGREEING EXACTLY.** The implementation is a 3.9 KB text
+  file - 5, 11, and 40 to 53 - and the chart's Control Change block lists the same sixteen in the
+  same order. The two were compared number by number rather than read from one and assumed of the
+  other, which is what `korg/volca_fm` established at rank 102 when its two copies disagreed.
+
+  **NOTHING IS TRANSMITTED, AND THE MAKER SAYS WHY IN ONE LINE.** "No message is transmitted. (The
+  volca keys is not equipped with a MIDI Out jack.)" (implementation). The chart says it a second
+  way: **34 crosses in the Transmitted column and not one circle**, on every row it has. So every
+  control below is `direction: receives`, and a consumer can stop wondering what this instrument
+  reports - it has nowhere to report to. The same sentence, about a different volca, is in
+  `korg/volca_fm`.
+
+  **THE MARKS ARE NOT IN THE CHART'S TEXT LAYER**, so none of that came from reading it as text.
+  Its circles and crosses are vector drawings, and so are the two in its own legend - which is
+  the tell, because the legend extracts as ": Yes" and ": No" with the symbols gone. Read as
+  shapes against that legend, by the same code, and then rendered and looked at.
+
+  **EVERY ONE OF THE SIXTEEN IS BEHIND A GLOBAL SWITCH THAT IS ON WHEN THE INSTRUMENT ARRIVES.**
+  "*1: Received when global parameter MIDI RX ShortMessage is set to ON." (chart), and the
+  manual's global parameter table marks the factory setting with an asterisk: `*On`. **The clock
+  has a second switch set the same way**, `MIDI Clock Src` defaulting to `*Auto`. This is the
+  volca fm's arrangement exactly, and the opposite of `dreadbox/nymphes`, whose eighty-two
+  controls are off until somebody turns them on.
+
+  **AND THE MANUAL CONTRADICTS ITSELF ABOUT THOSE SETTINGS, WHICH MATTERS BECAUSE THAT IS WHERE A
+  READER WILL GO TO CHANGE THEM.** Firmware 1.03 added an eighth global parameter - "Support for
+  setting sync unit in global parameter." (release_note) - and the manual's table duly has eight
+  rows, ending `Sync input/output unit`. **The instruction printed above that table still says
+  seven**: "Press a keyboard button 1-7 to specify the setting for the global parameter." (manual
+  p. 1). The release note asked for the manuals to be downloaded again and they were changed, in
+  one of the two places that needed it. So the table is right and the sentence above it is not.
+
+  **CONTROLLER 11 HAS NO KNOB, WHICH IS WHY IT IS IN NO GROUP.** "*3: Cannot be changed with
+  machine operations; can only be changed with MIDI." (chart) - so EXPRESSION exists only as a
+  message. The other fifteen are grouped by the manual's own five panel sections, VCO, VCF, EG,
+  LFO and DELAY, and this one belongs to none of them because there is nothing on the panel to
+  put it beside.
+
+  TWO CONTROLLERS ARE CHOICES RATHER THAN AMOUNTS, and the implementation gives both their bands
+  in hexadecimal and decimal together. Controller 40 is the VOICE knob's six modes, which the
+  manual explains: "POLY: Up to three chords of the sawtooth wave can be played." (manual p. 1),
+  "UNISON: The sawtooth wave is produced at the same pitch by the three VCOs." (manual p. 1), and
+  "POLY RING: Up to three chords are played with ring modulation applied to the square wave."
+  (manual p. 1). Controller 41 is the octave footage, 32' down to 1'.
+
+  **SONG POSITION IS ANSWERED TO, WHICH IS WORTH SAYING BECAUSE A SIBLING COULD NOT SAY IT.** The
+  implementation gives the message - `F2`, with "pppp : 0~15 = STEP 1 ~ STEP 16" (implementation)
+  - and the chart circles the row. `korg/volca_sample` met the identical release note, "Fixes MIDI
+  Song Position Pointer." (release_note), against a chart that crossed the row, and recorded the
+  doubt rather than resolving it. Here three documents agree.
+
+  **NOT RECORDED, THE PITCH BEND RANGE.** The chart circles it and the implementation lists `En`
+  among the channel messages, and **no document gives a range or a setting for it** - so this
+  definition says it is answered to and cannot say how far. The same gap `korg/volca_fm` has.
+
+  **NOT RECORDED, EITHER OF THE TWO GATES THE DOCUMENTS DISAGREE ABOUT.** The chart footnotes
+  pitch bend `*1` and song position `*2`, making each conditional on a global parameter; the
+  implementation footnotes neither, putting `*1` only on the notes and the sixteen controllers and
+  its own clock footnote only on the four realtime messages. **Both say the messages are answered
+  to and they cannot both be right about when**, so neither account is carried.
+
+  NOT RECORDED: NRPN, which neither document mentions. The aftertouch, program change and system
+  exclusive below are checked absences and not silences - crossed in both columns on the chart,
+  and absent from an implementation whose whole contents are four sections long.
+
+sources:
+  implementation:
+    kind: implementation
+    title: volca keys MIDI Implementation
+    edition: Revision 0.01
+    dated: 2013-06-23
+    landing: "https://www.korg.com/us/support/download/manual/0/138/2739/"
+    url: "https://cdn.korg.com/us/support/download/files/348ad7bac64b8a64d3d72d2092a7f989.txt"
+    sha256: 4b1622423f9f4b11e6b35e3f3d743b8c882b66507e354c126e07d5ea3a3eb67c
+    retrieved: 2026-10-06
+    paginated: false
+    # **3.9 KB of plain text with tables drawn in `+--+` and `|`**, legible exactly as typed - the
+    # second such file here after `korg/volca_fm`'s. Four sections and no more: transmitted data,
+    # channel messages, system common, system realtime.
+    # The address is a 32-character hash and **the name arrives in the query string**:
+    # `response-content-disposition=attachment;filename*=UTF-8''volca_keys_MIDIimp.txt`, which is
+    # this maker's arrangement for every file on every one of its downloads pages.
+    # It spells `FB` Continue as `Contiune`, which is carried as printed wherever it is quoted.
+  chart:
+    kind: chart
+    title: volca keys MIDI Implementation Chart
+    edition: Ver. 1.02
+    dated: 2013-06-10
+    landing: "https://www.korg.com/us/support/download/manual/0/138/1971/"
+    url: "https://cdn.korg.com/us/support/download/files/d9a276cdfce7ff88c32a38ba6f3ba8aa.pdf"
+    sha256: 8ce1f4022e433457abffcc1e326514482ec1d4c4b381ab7644f80e33e68b8676
+    retrieved: 2026-10-06
+    paginated: false
+    # **ONE SHEET, AND ITS MARKS ARE NOT IN ITS TEXT LAYER** - see the account. Not encrypted,
+    # unlike three of the four other Korg charts in this library.
+    # Its three vertical rules at x 192, 292 and 391 are what divides Function from Transmitted
+    # from Recognized from Remarks, and they are measured rather than assumed, because a mark can
+    # sit anywhere between two rules: the velocity row's circle is pushed left of centre to make
+    # room for the message format printed beside it.
+  manual:
+    kind: owner's manual
+    title: volca keys Owner's Manual
+    edition: EFGSCJ3
+    landing: "https://www.korg.com/us/support/download/manual/0/138/1970/"
+    url: "https://cdn.korg.com/us/support/download/files/3cd22056ae227511e90ddca28530f6de.pdf"
+    sha256: c1e962e9b3310b510897e0b9e1954c21b9dcdff438af0811ba7f647d8bad92cf
+    retrieved: 2026-10-06
+    # **TWO FOLD-OUT SHEETS, 728 BY 515 MILLIMETRES, AND NEITHER PRINTS A FOLIO**, so a page in a
+    # citation is a sheet of the file. All six languages of `EFGSCJ` are on both, and **every
+    # passage cited here is on sheet 1**, which carries the English.
+    # Its specification list names only the headphone, SYNC IN and SYNC OUT jacks and **omits the
+    # MIDI IN jack it describes two columns away**. Nothing below rests on that list.
+  release_note:
+    kind: release_notes
+    title: volca keys release notes, version 1.03
+    dated: 2019-08-20
+    landing: "https://www.korg.com/us/support/download/software/0/138/4366/"
+    url: "https://cdn.korg.com/us/support/download/files/d4f1a1ce6b141cf27a588fb37480f667.zip"
+    sha256: c3b6dfe4586bc06ef209a5794bdb4c40e5ac96158d9e99fd15b25ea8c2bd6077
+    retrieved: 2026-10-06
+    paginated: false
+    # **THE DIGEST IS THE TEXT FILE'S AND THE ADDRESS IS THE ARCHIVE IT CAME OUT OF**, because
+    # Korg publishes no address for it: it is `release_note_e.txt`, 211 bytes, inside
+    # `volcakeys_updater_0103.zip`. The updater page prints the same two sentences, so this file
+    # is the citable copy of something the page also says.
+    # **The firmware itself is a 25 MB WAV played into the SYNC IN jack** - this maker's way with
+    # a volca, an audio bootloader rather than a sysex dump, which is consistent with the system
+    # exclusive row being crossed in both columns.
+
+midi:
+  # "Keyboard buttons 1 to 16 correspond to the MIDI channels 1 to 16." (manual p. 1), set by
+  # holding MEMORY while switching on, and the chart gives `1 - 16` in both the Default and
+  # Changed rows of the Recognized column, marked `Memorized`.
+  channels: [1, 16]
+  # `3` in the chart's Mode row - OMNI OFF, POLY - with the Transmitted box crossed and Mode
+  # Messages crossed both ways.
+  mode: 3
+  # **RECEIVES ONLY, BECAUSE THERE IS NOWHERE TO SEND FROM.** The chart circles Clock in the
+  # Recognized column and crosses it transmitted, under a footnote that makes it a setting: "*2:
+  # Not received when global parameter MIDI Clock src is set to Internal; received when set to
+  # Auto." (chart) - and the manual marks `Auto` as the factory default.
+  clock: receives
+  # **RECEIVES, UNDER THE SAME SETTING.** The chart circles its System Real Time `Command` row,
+  # and the implementation names the three: `FA` Start, `FB` Contiune - the maker's own spelling -
+  # and `FC` Stop. Song position too, which is the next field's story and this definition's one
+  # correction to a sibling.
+  transport: receives
+  program_change:
+    # **Crossed in both boxes** (chart), and the implementation's channel message table has no
+    # `Cn` row at all. So this instrument changes no preset over MIDI, which is a checked absence
+    # twice over. It has no presets to change: its one sequence lives in memory.
+    receives: false
+    sends: false
+  # **FALSE, AND CHECKED TWICE.** Crossed in both columns (chart), and the implementation has no
+  # system exclusive section - its whole contents are transmitted data, channel messages, system
+  # common and system realtime. **Which is where `korg/volca_fm` differs**, that one accepting
+  # Yamaha DX7 bulk data; so the two volcas with text implementations disagree here.
+  sysex: false
+
+voice:
+  addressing: pitches
+  # `0 - 127` in both the Note Number and True Voice rows of the Recognized column (chart), so
+  # nothing is out of range.
+  note_range: [0, 127]
+  # "Sound generators: 3 VCOs (saw, square), 1 EG, 1 VCF (12dB/oct LPF), 1 VCA, 1 LFO"
+  # (manual p. 1), and the VOICE knob's first mode says what that means for playing: "POLY: Up to
+  # three chords of the sawtooth wave can be played." (manual p. 1).
+  polyphony: 3
+  # **SIX MODES OVER TWO COUNTS**, which is what this field's two numbers are. POLY and POLY RING
+  # sound three; UNISON, OCTAVE, FIFTH and UNISON RING spend all three oscillators on one note -
+  # "UNISON: The sawtooth wave is produced at the same pitch by the three VCOs." (manual p. 1).
+  # The same pair `korg/volca_fm` carries, reached a different way.
+  voicing_modes: [1, 3]
+  velocity:
+    # **ANSWERED TO**, which is the circle in the chart's Velocity Note On box with the message
+    # format printed beside it: `9n, V=1 - 127`. **And this is where the volcas part company** -
+    # `korg/volca_fm` crosses that box and its own implementation says in four words that
+    # velocity is not used, and `korg/volca_sample` crosses it too. So three sibling instruments, two answers.
+    note_on: received
+    # Crossed (chart), so release velocity does nothing - while the message itself is received:
+    # the implementation lists `8n kk vv Note Off vv=0~127` and `9n kk 00` as a note off. **The
+    # row is about the velocity byte, not about the message.**
+    note_off: false
+  # Crossed in all four boxes - polyphonic and monophonic, in both of the chart's columns (chart)
+  # - and absent from the implementation. A checked absence rather than a silence.
+  aftertouch: none
+  # NOT RECORDED, the pitch bend. Circled in the Recognized column (chart) and `En` is in the
+  # implementation's channel messages, and **no document gives a range or a setting for it**, so
+  # this definition cannot say how far it bends, only that it does.
+
+groups:
+  # The manual's own five panel sections. Controller 11 is in none of them, having no knob.
+  vco: VCO
+  vcf: VCF
+  eg: EG
+  lfo: LFO
+  delay: DELAY
+
+controls:
+
+  # **SIXTEEN NUMBERS OFF TWO DOCUMENTS THAT AGREE, AND EVERY ONE OF THEM RECEIVED ONLY.** The
+  # chart's Transmitted column is 34 crosses deep with no circle anywhere in it, and the
+  # implementation says why in a sentence: there is no MIDI Out jack.
+  #
+  # The two choices below have the implementation's own bands, which it prints in hexadecimal and
+  # decimal together; the decimal low end of each is what this format records.
+
+  # VCO (5)
+  octave:           {label: OCTAVE, cc: 41, values: {thirty_two_foot: 0, sixteen_foot: 22, eight_foot: 44, four_foot: 66, two_foot: 88, one_foot: 110}, direction: receives, group: vco}
+  voice_mode:       {label: VOICE, cc: 40, values: {poly: 0, unison: 13, octave: 38, fifth: 63, unison_ring: 88, poly_ring: 113}, direction: receives, group: vco}
+  detune:           {label: DETUNE, cc: 42, direction: receives, group: vco}
+  portamento:       {label: PORTAMENTO, cc: 5, direction: receives, group: vco}
+  vco_eg_int:       {label: VCO EG INT, cc: 43, direction: receives, group: vco}
+
+  # VCF (2)
+  cutoff:           {label: CUTOFF, cc: 44, direction: receives, group: vcf}
+  vcf_eg_int:       {label: VCF EG INT, cc: 45, direction: receives, group: vcf}
+
+  # EG (3)
+  eg_attack:        {label: EG ATTACK, cc: 49, direction: receives, group: eg}
+  eg_decay_release: {label: EG DECAY/RELEASE, cc: 50, direction: receives, group: eg}
+  eg_sustain:       {label: EG SUSTAIN, cc: 51, direction: receives, group: eg}
+
+  # LFO (3)
+  lfo_rate:         {label: LFO RATE, cc: 46, direction: receives, group: lfo}
+  lfo_pitch_int:    {label: LFO PITCH INT, cc: 47, direction: receives, group: lfo}
+  lfo_cutoff_int:   {label: LFO CUTOFF INT, cc: 48, direction: receives, group: lfo}
+
+  # DELAY (2)
+  delay_time:       {label: DELAY TIME, cc: 52, direction: receives, group: delay}
+  delay_feedback:   {label: DELAY FEEDBACK, cc: 53, direction: receives, group: delay}
+
+  # And the one with no panel section, because it has no panel control - see the account.
+  expression:       {label: EXPRESSION, cc: 11, direction: receives}

@@ -1,10 +1,12 @@
 """Tests for pymidiinstrumentdefs — reading what a particular model does."""
 
 import collections
+import dataclasses
 import pathlib
 import re
 
 import pytest
+import yaml
 
 import pymidiinstrumentdefs
 
@@ -226,6 +228,7 @@ class TestBundledCorpus:
 			"roland/jd_xi",
 			"roland/ju_06a",
 			"roland/juno_106",
+			"roland/jupiter_x",
 			"roland/mc_101",
 			"roland/mc_707",
 			"roland/s_1",
@@ -532,6 +535,36 @@ class TestBundledCorpus:
 		assert matriarch.controls["arp_mode"].band("seq") == (43, 84)
 		assert matriarch.controls["arp_pattern"].value_for("random") == 106
 		assert matriarch.controls["arp_range"].name_for(0) == "one"
+
+	def test_no_definition_carries_a_source_key_the_format_does_not_have (self) -> None:
+		"""Because a mistyped one is dropped in silence, with every gate still green.
+
+		**Found by writing one.**  `roland/jupiter_x` was written with `version` on five
+		of its sources where the field is `edition`, and nothing objected: the file
+		loaded, the validator passed, both checkers passed, and the editions were
+		simply not there.  It was caught only because a test read one of them back.
+
+		So `dated` written as `date`, or `sha256` as `sha`, would ship a source with no
+		date or no digest and look exactly like a source that has none - which is the
+		distinction this corpus is most careful about everywhere else.  This test is
+		the guard the loader does not provide.
+		"""
+		known = {field.name for field in dataclasses.fields(pymidiinstrumentdefs.Source)}
+		stray: dict[str, list[str]] = {}
+
+		for path in bundled():
+			raw = yaml.safe_load(path.read_text(encoding = "utf-8")) or {}
+
+			for name, block in (raw.get("sources") or {}).items():
+				if not isinstance(block, dict):
+					continue
+
+				for key in block:
+					if key not in known:
+						stray.setdefault(key, []).append(
+							f"{path.parent.name}/{path.stem}:{name}")
+
+		assert stray == {}, f"source keys the format ignores: {stray}"
 
 
 class TestAbsences:
@@ -13280,3 +13313,217 @@ class TestHexdrums:
 
 		assert "**the file name arrives only in a `content-disposition` header**" in flat
 		assert "the firmware and the manual are told apart only by what comes back" in flat
+
+
+class TestJupiterX:
+
+	"""The Roland whose implementation holds none of its tone parameters.
+
+	Eight Rolands had established that a document named an implementation is where
+	this maker's numbers are.  This one divides the work the other way round, and
+	the same number means different things depending on which model a part holds -
+	a setting rather than a channel, which no field in this format can say.
+	"""
+
+	def test_its_implementation_holds_only_the_performance_controls (self) -> None:
+		"""22 of the 35 numbers it names, the rest being machinery or channel mode."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert len(jupiter.controls) == 22
+		assert len(jupiter.groups) == 4
+
+		# Every one answers to a controller number, so the list below is the whole map.
+		assert all(control.cc is not None for control in jupiter.controls.values())
+
+		assert sorted(control.cc for control in jupiter.controls.values()
+				if control.cc is not None) == [
+			1, 4, 5, 7, 10, 11, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78, 84, 91, 93]
+
+		# **THE FANTOM RULING, STILL HOLDING NINE RANKS ON.** None of the addressing machinery
+		# the implementation also names is here, and nor is a channel mode message.
+		numbers = {control.cc for control in jupiter.controls.values()}
+
+		assert not numbers & {0, 32, 6, 38, 98, 99, 100, 101}
+		assert not numbers & set(range(120, 128))
+
+	def test_the_tone_map_is_in_the_parameter_guide_and_is_not_carried (self) -> None:
+		"""Which inverts what the JD-Xi one rank earlier established about this maker."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**THE DOCUMENT NAMED FOR THIS INSTRUMENT'S MIDI IS NOT WHERE ITS CONTROLLERS" \
+			" ARE, AND EIGHT ROLANDS HAD TAUGHT THE OPPOSITE.**" in flat
+		assert "the Parameter Guide carries a `CC#` column on nine of its 75 sheets, one table" \
+			" per model**, holding 156 more rows over 46 distinct numbers" in flat
+
+		# **AND THE JD-XI'S LESSON IS CORRECTED RATHER THAN LEFT TO CONTRADICT THIS ONE.**
+		assert "So rank 94's lesson was about the JD-Xi and not about Roland" in flat
+
+		# The reason those 156 rows are not below: the meaning turns on a setting.
+		assert "21 of the 46 numbers name more than one parameter across those tables" in flat
+		assert "That is **not** the collision the `part` field exists for." in flat
+		assert "so the meaning turns on what somebody loaded, not on where the message arrived" \
+			in flat
+
+		# And it is cited for that, so a reader can go and look.
+		assert "parameter_guide" in jupiter.sources
+		assert "jd_800" in jupiter.sources
+
+	def test_one_control_is_transmitted_and_never_received (self) -> None:
+		"""Because this maker prints two prose halves rather than a chart's two columns."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		directions = collections.Counter(
+			control.direction for control in jupiter.controls.values())
+
+		assert directions == {"receives": 15, "both": 6, "transmits": 1}
+
+		assert jupiter.controls["foot_type"].cc == 4
+		assert jupiter.controls["foot_type"].direction == "transmits"
+
+		# **AND THE SIBLING WITH THE SAME LIST RECORDS NO DIRECTION AT ALL**, which is the
+		# comparison worth pinning: the difference is in the reading, not in the instruments.
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert all(control.direction == "both" for control in fantom.controls.values())
+
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**One control is transmitted and never received**" in flat
+
+	def test_its_clock_rests_entirely_on_a_document_about_parameters (self) -> None:
+		"""The 90-sheet implementation never mentions a timing clock byte."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert jupiter.midi.clock == "both"
+		assert jupiter.midi.transport is None
+
+		said = prose_of("roland", "jupiter_x")
+
+		assert "Sync Mode AUTO, INT, MIDI, USB COM, USB MEM" in said
+		assert "Specifies the connector from which MIDI clock messages etc. are output." in said
+
+		flat = " ".join(said.split())
+
+		assert "`F8H` appears on none of the implementation's 90 sheets." in flat
+		assert "**So this field rests entirely on a document whose title is about parameters**" \
+			in flat
+
+	def test_nrpn_is_empty_because_the_document_disagrees_with_itself (self) -> None:
+		"""Three sentences say it exists and the enumeration gives no way to select one."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert jupiter.midi.nrpn is None
+
+		# Not `none`, which would say somebody established that it answers to no NRPN.
+		assert jupiter.midi.nrpn != "none"
+
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**THE IMPLEMENTATION CONTRADICTS ITSELF ABOUT NRPN, SO `nrpn` IS LEFT EMPTY" \
+			" RATHER THAN SET TO `none`.**" in flat
+		assert "the enumeration that gives every controller number it receives gives no 98 and" \
+			" no 99" in flat
+
+		# **THE RULE IS BORROWED RATHER THAN INVENTED**, and the definition says whose it is.
+		assert "which is the rule `novation/peak` and `novation/circuit_tracks` established" \
+			" for `default` and which has not been applied to this field before" in flat
+
+	def test_its_two_documents_complete_each_other_about_aftertouch (self) -> None:
+		"""Which is the opposite of the NRPN case, and the definition distinguishes them."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert jupiter.voice is not None
+		assert jupiter.voice.aftertouch == "poly"
+
+		said = prose_of("roland", "jupiter_x")
+
+		assert "Rx Poly Pres OFF, ON Specifies whether polyphonic aftertouch is received (ON)" \
+			" or not received (OFF)." in said
+
+		flat = " ".join(said.split())
+
+		assert "**The implementation's silence is not a denial**" in flat
+		assert "so the two documents complete each other here rather than disagreeing, which" \
+			" is the opposite of the NRPN case above" in flat
+
+		# Following the chain of three Rolands that chose the stronger word.
+		for name in ("roland/mc_707", "roland/fantom_6_7_8", "roland/jd_xi"):
+			assert pymidiinstrumentdefs.load(name, [CORPUS]).voice.aftertouch == "poly"
+
+	def test_five_parts_in_two_kinds_and_a_polyphony_the_maker_will_not_give (self) -> None:
+		"""Four take any model, the fifth takes only a drum kit."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert list(jupiter.parts) == ["part", "drum"]
+		assert jupiter.parts["part"].count == 4
+		assert jupiter.parts["part"].channel == "assigned"
+		assert jupiter.parts["part"].addressing == "pitches"
+		assert jupiter.parts["drum"].count == 1
+		assert jupiter.parts["drum"].addressing == "voices"
+
+		assert jupiter.voice is not None
+		assert jupiter.voice.polyphony is None
+		assert jupiter.voice.polyphony_shared is True
+
+		said = prose_of("roland", "jupiter_x")
+
+		assert "It differs depending on the type and combination of models. As an example, if" \
+			" the JUPITER-8 is assigned to all four parts, the maximum simultaneous polyphony" \
+			" will be 32 voices (up to eight voices per part)." in said
+		assert "No, a drum kit can be used only with PART R. It cannot be used with parts 1-4." \
+			in said
+
+		# **A SHARED POOL IS A FACT WHERE THE FIGURE IS NOT**, which is the KRONOS's pairing.
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		assert kronos.voice.polyphony is None
+		assert kronos.voice.polyphony_shared is True
+
+	def test_no_chart_in_any_of_its_eleven_documents (self) -> None:
+		"""Which is why the mode is unrecorded rather than guessed."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert jupiter.midi.mode is None
+
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**AND THERE IS NO CHART IN ANY OF THE ELEVEN DOCUMENTS.**" in flat
+		assert "no Basic Channel row, no True Voice row, on any of the 377 sheets" in flat
+
+	def test_the_model_id_is_printed_two_ways_in_one_document (self) -> None:
+		"""Three statements say 65H and two say 52H, and the definition counts them."""
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**Three statements say 65H and two say 52H**" in flat
+
+		# Said because of what it costs a reader, not as a complaint about the maker.
+		assert "a sysex implementer reading sheet 5 alone would address a device that is not" \
+			" there" in flat
+
+	def test_the_owners_manual_names_the_wrong_product_once (self) -> None:
+		"""On 25 sheets it is the X's; in one explanation it is the Xm's."""
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**IT NAMES THE JUPITER-X ON 25 OF ITS 31 SHEETS AND THE JUPITER-Xm ON EXACTLY" \
+			" ONE**" in flat
+		assert "the setting is this instrument's, and the Parameter Guide, which is titled for" \
+			" both, prints the same words" in flat
+
+	def test_every_translation_of_its_manual_is_two_releases_behind (self) -> None:
+		"""Which a reader of one would have no way to tell from inside it."""
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**each of them `Ver. 1.5 and later` against the English one's `Ver. 3.0 and" \
+			" later`**" in flat
+
+	def test_the_firmware_floor_is_not_the_implementations_own_version (self) -> None:
+		"""One is a claim about the instrument and the other about the document."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert jupiter.model.firmware == "3.0"
+		assert jupiter.sources["implementation"].edition == "1.06"
+
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "**The implementation's own version is a different number**" in flat

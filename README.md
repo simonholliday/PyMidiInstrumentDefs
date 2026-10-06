@@ -212,6 +212,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/jd_xi` | Roland JD-Xi: 57 controls over four parts on four fixed channels, 21 of them addressed by NRPN rather than by a controller number - the first Roland here whose NRPN is more than a crossed box |
 | `roland/ju_06a` | Roland JU-06A: 39 controls off one page of an implementation chart whose other page is a second whole map - fifteen numbers in both and eleven of them meaning something else |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
+| `roland/jupiter_x` | Roland JUPITER-X: 22 controls out of a 90-sheet implementation that holds none of its tone parameters - those are in the Parameter Guide, one table per model, where 21 numbers name more than one thing |
 | `roland/mc_101` | Roland MC-101: 28 controls over four tracks and a fifth MIDI channel that makes no sound, from a chart its maker publishes in numbered editions - of which the middle one is missing, so one firmware step was never printed |
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
 | `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |

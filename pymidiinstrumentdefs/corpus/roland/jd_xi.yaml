@@ -1,0 +1,390 @@
+# **FOUR PARTS ON FOUR FIXED CHANNELS, AND ONLY THE OWNER'S MANUAL SAYS WHICH.** "The MIDI
+# transmit/receive channels are channel 1 for the Digital Synth 1 part, channel 2 for the Digital
+# Synth 2 part, channel 10 for the Drum part, and channel 3 for the Analog Synth part." (manual
+# p. 15). **No document in the set offers a setting for any of them** - the only channel parameter
+# in 97 sheets is a `Program Control Channel (0 - 16)` (implementation p. 9), which is where
+# program changes arrive and not where a part listens.
+#
+# **SO THE SAME CONTROLLER MEANS DIFFERENT THINGS ON DIFFERENT CHANNELS.** Controller 102 is the
+# first partial's cutoff on channels 1 and 2, the whole analog tone's cutoff on channel 3, and
+# nothing at all on channel 10. The parts below carry that, which is what `part` is for and what
+# eight Elektron definitions here already do.
+#
+# **ITS MAP IS IN TWO PLACES AND THE SECOND IS WHERE THE FIRST SAYS IT IS.** The chart gives 22
+# groups of controller numbers, and three of them - 12 to 18, 83, and 102 to 119 - carry no name
+# at all, only "*4 Refer to Control Change Message List (p. 14) about function of each controller
+# number." (implementation p. 17). That list is section 6 of sheet 14, **6,138 characters into a
+# page that opens with the tail of a system exclusive address map**. A first reading of that
+# page's beginning found no list and was one sentence away from recording that Roland had printed
+# a stale cross-reference. **A page is not a page's first screen.**
+#
+# **TWENTY-ONE OF THE FIFTY-SEVEN CONTROLS BELOW ARE ADDRESSED BY NRPN RATHER THAN BY A CONTROLLER
+# NUMBER**, which makes this the first Roland here with `nrpn: supported` - `roland/fantom_6_7_8`
+# and the rest have `none`. The list gives each as a most and a least significant byte, and every
+# one of them has a most significant byte of nought, so the address below is the least significant
+# byte as printed.
+#
+# **AND NINE OF THE FIFTY-SEVEN NUMBERS ARE NOT PRINTED AS NUMBERS ANYWHERE.** The maker
+# writes its runs as spans - `Cutoff | 1 - 3 | 102 - 104` (implementation p. 14) is three
+# partials and three controllers - so the inside of each run is **the interior of a printed
+# range** rather than a printed number. The citation checker reports exactly that and calls
+# it a weaker check, which it is: **48 of the 57 are found as numbers and nine are found
+# inside a span**. That is reading a table rather than generating numbers - the run is three
+# long and the rule is in the row, where `elektron/tonverk`'s refused 329 had neither - but a
+# reader deserves to know that nine of these rest on arithmetic.
+#
+# **AND THE DRUM PART'S PARAMETERS ARE A RULE RATHER THAN A LIST, SO THEY ARE NOT CARRIED.** Four
+# of them, each addressed by the note number: `Cutoff | 36 - 72 | NRPN MSB:89, LSB:Note`
+# (implementation p. 14) and the same shape for Resonance at 92, Level at 64 and Envelope at 119.
+# **That is 148 addresses stated as four rules**, and enumerating them would put numbers in this
+# corpus that no page prints one by one - which is `elektron/tonverk`'s lesson at rank 86, where
+# 329 generated numbers were refused by the gate and the gate was right.
+#
+# ITS CHART MISSPELLS THREE OF ITS OWN NAMES. The chart writes `Vibrate rate`, `Vibrate depth` and
+# `Vibrate delay` (implementation p. 17) where the data reception section three sheets earlier
+# writes "Vibrato Rate" (implementation p. 2), "Vibrato Depth" (implementation p. 2) and "Vibrato
+# Delay" (implementation p. 2). The labels below take the correct spelling, and the script asserts
+# both spellings so that a corrected re-issue fails there rather than leaving this paragraph
+# stale.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: JD-Xi
+  # **FIRMWARE 1.50, WHICH IS THE NEWEST ROLAND PUBLISHES AND IS NOT WHAT THE IMPLEMENTATION
+  # DESCRIBES.** The implementation dates itself "Date: May 1, 2015" (implementation p. 1) at
+  # "Version: 1.00" (implementation p. 1), and two supplementary manuals follow it - one for
+  # 1.10 and one for 1.50. **Both were read and neither adds, removes or renumbers a controller**:
+  # 1.10 is a
+  # pattern-shift and a vocoder addition, 1.50 a set of sequencer and arpeggio changes. So the
+  # map is the map, and that is a checked absence rather than an assumption.
+  # Checked 2026-10-06.
+
+source: >-
+  **Roland's MIDI Implementation for this instrument, 18 sheets**, which is this maker's proper
+  document of that name and the same shape as `roland/fantom_6_7_8`'s: reception, transmission, a
+  parameter address map, a Control Change Message List, and two implementation charts.
+
+  **FIVE DOCUMENTS, ALL ENGLISH, AND SEVEN MORE THAT ARE TRANSLATIONS OF ONE OF THEM.** Roland's
+  manuals page lists twelve: the owner's manual in eight languages, a Parameter Guide, this
+  implementation, and supplementary manuals for firmware 1.10 and 1.50. The five English ones are
+  in the library and all five were read - 97 sheets between them.
+
+  **TWO CHARTS, AND THEY ARE TWO SECTIONS OF ONE INSTRUMENT RATHER THAN TWO COMPETING MAPS.**
+  Sheet 17 is the chart for the Sound Source Section and sheet 18 for the Sequencer section, which
+  is `roland/fantom_6_7_8`'s arrangement and not `korg/drumlogue`'s - the drumlogue's two charts
+  were the same instrument twice over and 65 of their shared numbers disagreed. These two do not
+  overlap: the sound source's control change block names 22 groups and the sequencer's names
+  `0-119` wholesale, because a sequencer records whatever arrives. **The fields below are the
+  sound source's except where the sequencer's chart is the only one that circles a row**, which is
+  the clock and the transport.
+
+  WHY `presets` IS UNRECORDED THOUGH THE DOCUMENT COUNTS BANKS. The chart gives "Program No.1-128"
+  (implementation p. 17) against its True Number row, and the reception section then lists sixteen
+  bank-select combinations reaching four user banks of 64, four preset banks of 64 and eight extra
+  banks of 64. **Multiplying those out would give a figure no page prints**, which is the same
+  ruling `roland/fantom_6_7_8` made for the same maker: 1 to 128 is what one bank holds, and bank
+  select chooses the bank.
+
+  **AND THE SAME RULING KEEPS EIGHT NUMBERS OUT OF THE MAP.** Bank Select (0 and 32), Data Entry
+  (6 and 38), the NRPN selects (98 and 99) and the RPN selects (100 and 101) are all named by the
+  chart and none is a parameter of this instrument: they are how MIDI addresses things. Bank
+  Select's work is under `program_change` and the registered parameters under `pitch_bend`. Eight
+  more are the channel mode messages, 120 to 127, which this format refuses as controls by design.
+
+  THE REGISTERED PARAMETERS, OF WHICH THERE ARE THREE AND ONE REACHES A FIELD. "00H, 00H mmH, llH
+  Pitch Bend Sensitivity mm: 00H - 18H (0 - 24 semitones)" (implementation p. 3), "00H, 01H mmH,
+  llH Channel Fine Tuning" (implementation p. 3) and "00H, 02H mmH, llH Channel Coarse Tuning"
+  (implementation p. 3). The first is `pitch_bend.programmable`; the other two are a tuning and a
+  transpose, which this format does not hold.
+
+  NOT RECORDED: the polyphony, which no document states. The 51-sheet Parameter Guide's whole
+  contents, which is a panel reference and carries no controller number - **checked, because its
+  name suggests otherwise**. The drum part's 148 NRPN addresses, for the reason above. And the
+  sequencer's own behaviour, of which the chart's footnotes give three sentences worth reading if
+  somebody ever records into it: a note-off is recorded for each sounding note before an all-notes
+  -off, and the all-notes-off itself is not recorded.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: JD-Xi MIDI Implementation
+    edition: "1.00"
+    dated: 2015-05-01
+    landing: "https://www.roland.com/global/support/by_product/jd-xi/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JD-Xi_MIDI_Imple_e01_W.pdf"
+    sha256: aa516bd31d972c3a7cbfe4f952712f09c9a8856a2c1d854e2f8b7c67ed6bb4a3
+    retrieved: 2026-10-06
+    # **18 sheets, and every one prints its own folio** - checked on all 18 rather than
+    # sampled, so a locator here is the printed number.
+    # Its two charts are sheets 17 and 18, for the Sound Source and Sequencer sections. Its
+    # **Control Change Message List is section 6 of sheet 14**, below a system exclusive
+    # address map and 6,138 characters into the page - which is where the chart's `*4` footnote
+    # says it is and not where a reading of that page's opening would find it.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: JD-Xi Owner's Manual
+    edition: eng07
+    landing: "https://www.roland.com/global/support/by_product/jd-xi/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JD-Xi_eng07_W.pdf"
+    sha256: b06cf33c4124f4a443ce8154f9df875d373f6dbaf745a63811b4402af1296cae
+    retrieved: 2026-10-06
+    # 22 sheets. **Cited for one sentence and it is the load-bearing one**: the four parts'
+    # channels, which the implementation never gives. It also states the clock and transport in
+    # prose, which the two charts give between them in marks.
+    page_offset: 0
+  parameter_guide:
+    kind: manual
+    title: JD-Xi Parameter Guide
+    edition: e01
+    landing: "https://www.roland.com/global/support/by_product/jd-xi/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JD-Xi_ParameterGuide_e01_W.pdf"
+    sha256: 08a8825e91d98bad0451f0717f1e932f780d6ac4819beaf8e40ee68a8e1269b2
+    retrieved: 2026-10-06
+    # **CITED FOR AN ABSENCE AND QUOTED FOR NOTHING, AND ITS NAME IS WHY IT WAS CHECKED.** 51
+    # sheets, 31,811 words, and **not one controller number** - neither `CC#` nor `Controller
+    # number` nor `Control Change` appears anywhere in it. It is a panel reference: every
+    # parameter of every tone, by the knob that reaches it. On this maker's other instruments a
+    # document called a Parameter Guide is where the numbers are, so the absence is worth
+    # recording rather than leaving a reader to search 51 sheets for themselves.
+    page_offset: 0
+  supplement_1_10:
+    kind: firmware_addendum
+    title: JD-Xi Version 1.10 Supplementary Manual
+    edition: "1.10"
+    landing: "https://www.roland.com/global/support/by_product/jd-xi/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JD-Xi_v110_e01_W.pdf"
+    sha256: d4882d89095a38fb6c7e22f28528075f7121ecf6865307e1f075fcd68dc06b57
+    retrieved: 2026-10-06
+    # Two sheets. **Cited for an absence**: it adds a pattern shift and a vocoder, and **no
+    # controller number**.
+    page_offset: 0
+  supplement_1_50:
+    kind: firmware_addendum
+    title: JD-Xi Version 1.50 Supplementary Manual
+    edition: "1.50"
+    landing: "https://www.roland.com/global/support/by_product/jd-xi/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JD-Xi_Leaflet_V150_e01_W.pdf"
+    sha256: 674418bd41513fdb8f9f88466e3dbe0ecb165b094f261bc2c247ad63f0eea131
+    retrieved: 2026-10-06
+    # Four sheets, and **the newest firmware Roland publishes for this instrument**. Cited for
+    # an absence: sequencer and arpeggio changes, and **no controller number**. So the map the
+    # 2015 implementation prints is still the map, which is checked across both supplements
+    # rather than assumed from their titles.
+    page_offset: 0
+  manuals_page:
+    kind: web_page
+    title: "Roland - Support - JD-Xi - Owner's Manuals"
+    landing: "https://www.roland.com/global/support/by_product/jd-xi/owners_manuals/"
+    url: "https://www.roland.com/global/support/by_product/jd-xi/owners_manuals/"
+    sha256: 8f561e37f12917da7e0954ce48542e6d82c66df097344d2939039b7e2d80de27
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being twelve**, which is what makes five English documents the whole
+    # of what this maker publishes in English rather than five that were found.
+    # **This is the working half of Roland's two arrangements**, which `roland/tr_909` learned
+    # the hard way at rank 88: for a product still made, this page carries its documents as
+    # GUIDs in the markup, each needing a fetch of its own; for a discontinued one the same page
+    # is an empty shell and the route is the US manual archive. **And each GUID page prints its
+    # file's address twice, once escaped** - met by `roland/ju_06a` at rank 87 - so a naive match
+    # returns two addresses for one file.
+    # The digest is of the extraction; the served bytes are saved beside it as `.html`, whose
+    # own digest is b3e7b13231c643be017e2c140b26687d233c070ceeb47e0d64756dc7cabd393b. One page,
+    # cited as p. 1.
+
+midi:
+  # The sound source chart's Basic Channel row: 1 to 16 as a default and as changed, both ways.
+  # **AND THAT IS ABOUT THE INSTRUMENT RATHER THAN ABOUT ITS PARTS**, whose four channels are
+  # fixed at 1, 2, 3 and 10 - see the parts below and the comment above the definition.
+  # The sequencer's chart says something different in the same row, and it is worth knowing:
+  # "Basic Channel Default Changed All channel x All channel 1-16 There is not specific basic
+  # channel" (implementation p. 18). A sequencer records every channel.
+  channels: [1, 16]
+  # "Mode Default Messages Altered Mode 3 x ************** Mode 3 Mode 3, 4(M=1) *2"
+  # (implementation p. 17) - mode 3 as the default both ways, with mode 4 also recognised and a
+  # footnote on what happens to its voice count: "*2 Recognized as M=1 even if M1."
+  # (implementation p. 17).
+  mode: 3
+  # **BOTH, AND THE TWO CHARTS DIVIDE IT BETWEEN THEM** - which is `roland/fantom_6_7_8`'s case
+  # exactly. The sound source's chart crosses Clock transmitted and circles it recognised; the
+  # sequencer's circles both: "System Real Time :Clock :Commands o o o *1 o *1" (implementation
+  # p. 18). The owner's manual says the whole of it in one sentence: "The JD-Xi can transmit and
+  # receive MIDI clock (F8) messages to synchronize its tempo." (manual p. 15).
+  clock: both
+  # The same division, and the same sentence continues: "It can also send and receive MIDI start
+  # (FA) and MIDI stop (FC) messages to start or stop." (manual p. 15).
+  transport: both
+  program_change:
+    # "Program Change : True Number o *1 ************** o *1 0-127 Program No.1-128"
+    # (implementation p. 17). The `*1` is the footnote that applies to nine of this chart's
+    # rows: "*1 o x is selectable (using System Exclusive Messages)." (implementation p. 17) -
+    # so each of them can be switched off, and the sysex map carries `Receive Program Change`
+    # and `Receive Bank Select` as the switches.
+    receives: true
+    sends: true
+    # NOT RECORDED, the preset count. See the account: 1 to 128 is one bank and sixteen
+    # bank-select combinations choose among sixteen banks, so a total would be arithmetic this
+    # document does not do.
+  # **SUPPORTED, AND THIS IS THE FIRST ROLAND HERE THAT IS.** The implementation devotes a
+  # section to it and then lists the parameters: 21 of the controls below are addressed this way
+  # rather than by a controller number. Its own description of the mechanism is worth a reader's
+  # time - "Once an NRPN parameters has been specified, all Data Entry messages received on that
+  # channel will modify the value of that parameter." (implementation p. 2) - because it means a
+  # consumer must send the address and then the value, and should send an RPN null afterwards:
+  # "To prevent accidents, it is recomended that you set RPN Null (RPN Number = 7FH/7FH) when
+  # you have finished setting the value of the desired parameter." (implementation p. 2), typo
+  # and all.
+  nrpn: supported
+  # Circled in both columns of both charts. Sheets 9 to 14 are a Parameter Address Map, which is
+  # the bulk of the document, and the transmitted side carries a condition: `*3 Transmitted only
+  # when "Transmitted Edit Data" is ON or RQ1is received.` (implementation p. 17) - a
+  # sentence with a quotation inside it, given as an identifier rather than requoted.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # The chart's recognised Note Number and its True Voice row both give 0 to 127 - the
+  # instrument saying it sounds every note it answers to. **What it sends is narrower and is a
+  # fact about the keys**: 0 to 108 transmitted, for a 37-key keyboard with a transpose.
+  note_range: [0, 127]
+  velocity:
+    # "Velocity Note On Note Off o o o o" (implementation p. 17) - circled in all four cells, so
+    # both a striking and a release velocity travel in both directions.
+    note_on: received
+    note_off: true
+  # **BOTH KINDS RECEIVED, NEITHER TRANSMITTED, AND EACH CAN BE SWITCHED OFF.** The chart's
+  # After Touch rows cross both transmitted cells and circle both recognised ones, each under
+  # the `*1` footnote - and the sysex map names the switches, `Receive Polyphonic Key Pressure`
+  # and `Receive Channel Press`. `poly` is the stronger of the two words this field holds, which
+  # follows `roland/mc_707` and `roland/fantom_6_7_8`.
+  aftertouch: poly
+  pitch_bend:
+    # Circled both ways under the `*1` footnote, and settable over the first of the three
+    # registered parameters - 0 to 24 semitones. The document gives no factory depth, so
+    # `semitones` is unrecorded and what is recorded is that it can be set.
+    programmable: true
+
+parts:
+  # **FOUR PARTS ON FOUR FIXED CHANNELS, EXPRESSED AS OFFSETS FROM ONE BECAUSE THAT IS WHAT THIS
+  # FORMAT HAS.** The channels are 1, 2, 3 and 10, stated by the owner's manual and settable
+  # nowhere. `channel_offset` says a part's channel is derived from a base and cannot be set on
+  # its own; the second half of that is exactly right here and the first half is a fiction, there
+  # being no base to derive from because the base never moves. **The numbers a consumer sends
+  # are right** - 1 + 0, 1 + 1, 1 + 2, 1 + 9 - and the fiction is recorded here rather than left
+  # for somebody to find. One for the format specification's list of what it cannot say.
+  digital_synth:
+    label: Digital Synth
+    count: 2
+    channel_offset: 0
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # **TWO PARTS WITH ONE MAP**, on channels 1 and 2. Each is a SuperNATURAL Synth Tone of
+    # three partials, and the 27 controls carrying this part are the three partials' nine
+    # parameters - so a consumer addresses partial 2's cutoff on either channel with the same
+    # controller, 103.
+  analog_synth:
+    label: Analog Synth
+    channel_offset: 2
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # **ONE TONE WITH ONE PARTIAL, TAKING THE FIRST ADDRESS OF EACH OF THE DIGITAL PART'S RUNS.**
+    # So controller 102 is this part's whole cutoff where it is the first partial's on channels
+    # 1 and 2 - the collision the `part` field exists for. It has one parameter the digital tone
+    # has no counterpart for, a pulse width at NRPN 37.
+  drum:
+    label: Drum
+    channel_offset: 9
+    addressing: voices
+    receives: [notes, controls, program_change]
+    # **ITS PARAMETERS ARE NOT CARRIED, AND THAT IS A DECISION RATHER THAN A GAP.** Four of
+    # them, each addressed by the note it belongs to: `Cutoff | 36 - 72 | NRPN MSB:89, LSB:Note`
+    # (implementation p. 14) and the same shape for Resonance at 92, Level at 64 and Envelope at
+    # 119. **148 addresses stated as four rules**, and no page prints one of them. See the
+    # comment above the definition.
+    # Its 33 drum kits are reached by bank select 086/064 and program 001-033.
+
+groups:
+  # **THE MIDI SPECIFICATION'S OWN SECTIONS FOR THE FIFTEEN IT NAMES**, which is what
+  # `roland/fantom_6_7_8` does for the same maker's flat list - every one of those fifteen is a
+  # standard assignment under its standard name. The other three groups are this instrument's own
+  # divisions, because the Control Change Message List is written that way: a table per sound
+  # engine and one for the effects.
+  continuous: Continuous controllers
+  switch: Switches and pedals
+  sound: Sound controllers
+  effects: Program effects
+  partial: The digital synth's three partials
+  analog: The analog synth
+
+controls:
+
+  # Continuous controllers ────────────────────────────────
+  modulation:                       {label: Modulation, cc: 1, group: continuous}
+  portamento_time:                  {label: Portamento Time, cc: 5, group: continuous}
+  volume:                           {label: Volume, cc: 7, group: continuous}
+  panpot:                           {label: Panpot, cc: 10, group: continuous}
+  expression:                       {label: Expression, cc: 11, group: continuous}
+
+  # Switches and pedals ───────────────────────────────────
+  hold_1:                           {label: Hold 1, cc: 64, group: switch}
+  portamento:                       {label: Portamento, cc: 65, group: switch}
+
+  # Sound controllers ─────────────────────────────────────
+  resonance:                        {label: Resonance, cc: 71, group: sound}
+  release_time:                     {label: Release Time, cc: 72, group: sound}
+  attack_time:                      {label: Attack Time, cc: 73, group: sound}
+  cutoff:                           {label: Cutoff, cc: 74, group: sound}
+  decay_time:                       {label: Decay Time, cc: 75, group: sound}
+  vibrato_rate:                     {label: Vibrato Rate, cc: 76, group: sound}
+  vibrato_depth:                    {label: Vibrato Depth, cc: 77, group: sound}
+  vibrato_delay:                    {label: Vibrato Delay, cc: 78, group: sound}
+
+  # Program effects ───────────────────────────────────────
+  reverb:                           {label: Reverb, cc: 12, group: effects}
+  delay:                            {label: Delay, cc: 13, group: effects}
+  effect_1:                         {label: Effect 1, cc: 14, group: effects}
+  effect_2:                         {label: Effect 2, cc: 15, group: effects}
+  vocoder_level:                    {label: "Vocoder (Level)", cc: 83, group: effects}
+
+  # The digital synth's three partials ────────────────────
+  partial_1_cutoff:                 {label: Partial 1 Cutoff, cc: 102, part: digital_synth, group: partial}
+  partial_2_cutoff:                 {label: Partial 2 Cutoff, cc: 103, part: digital_synth, group: partial}
+  partial_3_cutoff:                 {label: Partial 3 Cutoff, cc: 104, part: digital_synth, group: partial}
+  partial_1_resonance:              {label: Partial 1 Resonance, cc: 105, part: digital_synth, group: partial}
+  partial_2_resonance:              {label: Partial 2 Resonance, cc: 106, part: digital_synth, group: partial}
+  partial_3_resonance:              {label: Partial 3 Resonance, cc: 107, part: digital_synth, group: partial}
+  partial_1_level:                  {label: Partial 1 Level, cc: 117, part: digital_synth, group: partial}
+  partial_2_level:                  {label: Partial 2 Level, cc: 118, part: digital_synth, group: partial}
+  partial_3_level:                  {label: Partial 3 Level, cc: 119, part: digital_synth, group: partial}
+  partial_1_lfo_rate:               {label: Partial 1 LFO Rate, cc: 16, part: digital_synth, group: partial}
+  partial_2_lfo_rate:               {label: Partial 2 LFO Rate, cc: 17, part: digital_synth, group: partial}
+  partial_3_lfo_rate:               {label: Partial 3 LFO Rate, cc: 18, part: digital_synth, group: partial}
+  partial_1_envelope:               {label: Partial 1 Envelope, nrpn: 124, part: digital_synth, group: partial}
+  partial_2_envelope:               {label: Partial 2 Envelope, nrpn: 125, part: digital_synth, group: partial}
+  partial_3_envelope:               {label: Partial 3 Envelope, nrpn: 126, part: digital_synth, group: partial}
+  partial_1_lfo_shape:              {label: Partial 1 LFO Shape, nrpn: 3, part: digital_synth, group: partial}
+  partial_2_lfo_shape:              {label: Partial 2 LFO Shape, nrpn: 4, part: digital_synth, group: partial}
+  partial_3_lfo_shape:              {label: Partial 3 LFO Shape, nrpn: 5, part: digital_synth, group: partial}
+  partial_1_lfo_pitch_depth:        {label: Partial 1 LFO Pitch Depth, nrpn: 15, part: digital_synth, group: partial}
+  partial_2_lfo_pitch_depth:        {label: Partial 2 LFO Pitch Depth, nrpn: 16, part: digital_synth, group: partial}
+  partial_3_lfo_pitch_depth:        {label: Partial 3 LFO Pitch Depth, nrpn: 17, part: digital_synth, group: partial}
+  partial_1_lfo_filter_depth:       {label: Partial 1 LFO Filter Depth, nrpn: 18, part: digital_synth, group: partial}
+  partial_2_lfo_filter_depth:       {label: Partial 2 LFO Filter Depth, nrpn: 19, part: digital_synth, group: partial}
+  partial_3_lfo_filter_depth:       {label: Partial 3 LFO Filter Depth, nrpn: 20, part: digital_synth, group: partial}
+  partial_1_lfo_amp_depth:          {label: Partial 1 LFO Amp Depth, nrpn: 21, part: digital_synth, group: partial}
+  partial_2_lfo_amp_depth:          {label: Partial 2 LFO Amp Depth, nrpn: 22, part: digital_synth, group: partial}
+  partial_3_lfo_amp_depth:          {label: Partial 3 LFO Amp Depth, nrpn: 23, part: digital_synth, group: partial}
+
+  # The analog synth ──────────────────────────────────────
+  analog_cutoff:                    {label: Analog Cutoff, cc: 102, part: analog_synth, group: analog}
+  analog_resonance:                 {label: Analog Resonance, cc: 105, part: analog_synth, group: analog}
+  analog_level:                     {label: Analog Level, cc: 117, part: analog_synth, group: analog}
+  analog_lfo_rate:                  {label: Analog LFO Rate, cc: 16, part: analog_synth, group: analog}
+  analog_envelope:                  {label: Analog Envelope, nrpn: 124, part: analog_synth, group: analog}
+  analog_lfo_shape:                 {label: Analog LFO Shape, nrpn: 3, part: analog_synth, group: analog}
+  analog_lfo_pitch_depth:           {label: Analog LFO Pitch Depth, nrpn: 15, part: analog_synth, group: analog}
+  analog_lfo_filter_depth:          {label: Analog LFO Filter Depth, nrpn: 18, part: analog_synth, group: analog}
+  analog_lfo_amp_depth:             {label: Analog LFO Amp Depth, nrpn: 21, part: analog_synth, group: analog}
+  analog_pulse_width:               {label: Analog Pulse Width, nrpn: 37, part: analog_synth, group: analog}

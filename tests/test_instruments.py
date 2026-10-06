@@ -222,6 +222,7 @@ class TestBundledCorpus:
 			"pwm/malevolent",
 			"roland/d_50",
 			"roland/fantom_6_7_8",
+			"roland/jd_xi",
 			"roland/ju_06a",
 			"roland/juno_106",
 			"roland/mc_101",
@@ -12970,3 +12971,148 @@ class TestDrumlogue:
 		flat = " ".join(prose_of("korg", "drumlogue").split())
 
 		assert "the True Number row is the row for exactly this and it reads 0-127" in flat
+
+
+class TestJDXi:
+
+	"""Four parts on four fixed channels, and the first Roland here with real NRPNs.
+
+	The same controller means different things on different channels, which is what the
+	``part`` field is for and what this instrument needs more than most.
+	"""
+
+	def test_its_four_parts_sit_on_fixed_channels (self) -> None:
+		"""Stated by the owner's manual and settable nowhere in 97 sheets."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		assert list(jd_xi.parts) == ["digital_synth", "analog_synth", "drum"]
+		assert jd_xi.parts["digital_synth"].count == 2
+		assert jd_xi.parts["digital_synth"].channel_offset == 0
+		assert jd_xi.parts["analog_synth"].channel_offset == 2
+		assert jd_xi.parts["drum"].channel_offset == 9
+
+		said = prose_of("roland", "jd_xi")
+
+		assert "The MIDI transmit/receive channels are channel 1 for the Digital Synth 1 part," \
+			" channel 2 for the Digital Synth 2 part, channel 10 for the Drum part, and" \
+			" channel 3 for the Analog Synth part." in said
+
+		# **And the format cannot say they are absolute rather than derived**, which the
+		# definition records rather than glossing.
+		flat = " ".join(said.split())
+
+		assert "the first half is a fiction, there being no base to derive from because the" \
+			" base never moves" in flat
+
+	def test_the_same_controller_means_two_things_on_two_channels (self) -> None:
+		"""Which is what the part field is for, and eight Elektrons here already do."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		assert jd_xi.controls["partial_1_cutoff"].cc == 102
+		assert jd_xi.controls["partial_1_cutoff"].part == "digital_synth"
+		assert jd_xi.controls["analog_cutoff"].cc == 102
+		assert jd_xi.controls["analog_cutoff"].part == "analog_synth"
+
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "Controller 102 is the first partial's cutoff on channels 1 and 2, the whole" \
+			" analog tone's cutoff on channel 3, and nothing at all on channel 10." in flat
+
+	def test_it_is_the_first_roland_here_with_real_nrpns (self) -> None:
+		"""Twenty-one of its 57 controls are addressed that way."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert jd_xi.midi is not None and fantom.midi is not None
+		assert jd_xi.midi.nrpn == "supported"
+		assert fantom.midi.nrpn == "none"
+
+		by_nrpn = [key for key, control in jd_xi.controls.items() if control.nrpn is not None]
+
+		assert len(by_nrpn) == 21
+		assert len(jd_xi.controls) == 57
+
+		# Every one has a most significant byte of nought, so the address is the printed LSB.
+		addresses = [jd_xi.controls[key].nrpn for key in by_nrpn]
+
+		assert all(address is not None and address < 128 for address in addresses)
+
+	def test_its_drum_parameters_are_a_rule_and_are_not_carried (self) -> None:
+		"""148 addresses stated as four rules, which is rank 86's lesson applied."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		assert jd_xi.parts["drum"].addressing == "voices"
+
+		# **Nothing carries the drum part**, because what it would carry is arithmetic.
+		assert not [key for key, control in jd_xi.controls.items() if control.part == "drum"]
+
+		said = prose_of("roland", "jd_xi")
+
+		assert "Cutoff | 36 - 72 | NRPN MSB:89, LSB:Note" in said
+
+		flat = " ".join(said.split())
+
+		assert "148 addresses stated as four rules" in flat
+		assert "`elektron/tonverk`'s lesson at rank 86" in flat
+
+	def test_it_says_which_of_its_numbers_rest_on_arithmetic (self) -> None:
+		"""Nine of 57, which the citation checker reports and the definition repeats."""
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "AND NINE OF THE FIFTY-SEVEN NUMBERS ARE NOT PRINTED AS NUMBERS ANYWHERE." in flat
+		assert "48 of the 57 are found as numbers and nine are found inside a span" in flat
+
+		# And it distinguishes that from generating numbers, which is the line it did not cross.
+		assert "That is reading a table rather than generating numbers" in flat
+
+	def test_the_list_the_chart_points_at_is_where_it_says (self) -> None:
+		"""And a first reading of that page's opening concluded otherwise."""
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "Refer to Control Change Message List (p. 14) about function of each controller" \
+			" number." in flat
+		assert "6,138 characters into a page that opens with the tail of a system exclusive" \
+			" address map" in flat
+
+		# **The lesson, stated so the next reader does not repeat it.**
+		assert "A page is not a page's first screen." in flat
+
+	def test_its_two_charts_are_two_sections_not_two_maps (self) -> None:
+		"""Unlike the drumlogue's, which were the same instrument twice over."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		assert jd_xi.midi is not None
+		assert jd_xi.midi.clock == "both"
+		assert jd_xi.midi.transport == "both"
+
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "`roland/fantom_6_7_8`'s arrangement and not `korg/drumlogue`'s" in flat
+
+		# And the clock is both because the two charts divide it between them.
+		assert "The JD-Xi can transmit and receive MIDI clock (F8) messages to synchronize its" \
+			" tempo." in prose_of("roland", "jd_xi")
+
+	def test_its_chart_misspells_three_of_its_own_names (self) -> None:
+		"""And the labels take the spelling the reception section uses."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		for key, label in (("vibrato_rate", "Vibrato Rate"),
+				("vibrato_depth", "Vibrato Depth"), ("vibrato_delay", "Vibrato Delay")):
+			assert jd_xi.controls[key].label == label
+
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "`Vibrate rate`, `Vibrate depth` and `Vibrate delay`" in flat
+
+	def test_its_parameter_guide_carries_no_number_and_was_checked (self) -> None:
+		"""Because on this maker's other instruments a Parameter Guide is where they are."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		assert "parameter_guide" in jd_xi.sources
+
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "CITED FOR AN ABSENCE AND QUOTED FOR NOTHING, AND ITS NAME IS WHY IT WAS" \
+			" CHECKED." in flat
+		assert "51 sheets, 31,811 words, and **not one controller number**" in flat

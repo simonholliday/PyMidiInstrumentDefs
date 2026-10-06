@@ -1,0 +1,290 @@
+# **TWO CONTROLLERS, AND THE MAKER COUNTS THEM FOR YOU.** The manual's Appendix A opens "There
+# are 2 MIDI CC functions that the Neutron supports" (manual p. 27) and then lists both: the
+# modulation wheel on controller 1, with a least significant half on controller 33, and the
+# damper pedal on controller 64. **No other controller number is written anywhere in 34 pages** -
+# the three hex values `0x01`, `0x21` and `0x40` are the only ones the manual contains - so two
+# is the whole map rather than two somebody noticed.
+#
+# **EVERYTHING ELSE THIS INSTRUMENT ANSWERS TO IS SYSTEM EXCLUSIVE**, and there is a great deal
+# of it: a Global Setting table running over two pages with some forty commands, from the MIDI
+# channel and the pitch bend range to each oscillator's autoglide and the order of the five LFO
+# shapes. Several of its defaults are read below, because they are the only published statement
+# of what this instrument does on power-up. **None of them is a controller number** and this
+# format holds no parameter addresses, so none of them is a control.
+#
+# **SO THIS DEFINITION IS MOSTLY A SET OF ABSENCES, AND EVERY ONE IS CHECKED AGAINST EVERY PAGE
+# OF EVERY DOCUMENT.** That is the rule `korg/kronos` cost at rank 89, where a chart turned out
+# to be printed in the appendices of an operation guide 884 pages from the implementation it
+# summarised, after this corpus had written the instrument up as having none. **Behringer
+# publishes six documents for this instrument and all six were fetched and read** - the manual,
+# three quick start guides, and release notes for the firmware and for the editor, 112 sheets
+# between them. **Not one of them contains the words `Basic Channel`, `True Voice`,
+# `Implementation Chart`, `Recognized` or `Transmitted`**, so there is no MIDI Implementation
+# Chart for this instrument anywhere its maker publishes; and not one contains `Program Change`,
+# `NRPN` or `Bank Select`.
+#
+# **AND ONE FIELD IS LEFT OUT BECAUSE FILLING IT WOULD MISLEAD.** The manual gives a note range
+# and then says what happens outside it: "The supported MIDI note range is 24 (C1) to 96 (C7)
+# inclusive." (manual p. 13), "Notes outside of this range will still trigger the Neutron."
+# (manual p. 13), "MIDI notes 0-23 will trigger note 24 (C1) note." (manual p. 13) and "MIDI
+# notes 97-127 will trigger note 96 (C7)." (manual p. 13). **This format's `note_range` means a
+# note outside it is silent** - its own documentation says so, and a panel built on it would grey
+# those notes out. Every note from 0 to 127 sounds on a Neutron. So the field is empty and the
+# span is here instead, which is the first time this corpus has met an instrument that clamps.
+#
+# THE TWO SOCKETS ARE IN AND THRU, AND THE SPECIFICATIONS SAY OTHERWISE. "MIDI THRU - The 5-pin
+# MIDI DIN connector is used to pass through MIDI data received at the MIDI INPUT." (manual
+# p. 9), where the specifications say "MIDI In/Out (soft Thru) 5-pin DIN/ 16 channels" (manual
+# p. 25). **There is no MIDI OUT socket**: what leaves the DIN is what arrived at the IN. The USB
+# port is the only two-way connection - "The Neutron will display in your DAW as a
+# class-compliant USB MIDI device, capable of sending and receiving MIDI information." (manual
+# p. 9) - and what it sends is a system exclusive reply, since there is no controller in the map
+# this instrument transmits.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: NEUTRON
+  # The newest firmware Behringer publishes is **2.0.3**, dated 9 December 2022 - and **its own
+  # only change is to the editor application**, "Updated App to work on macOS 12.2.1 Monterey"
+  # (release_note p. 1), so **2.0.2 is the last firmware that altered the instrument**. The
+  # manual states a requirement rather than an edition, "All features in this manual require
+  # software version V2.0.X or higher in order to function correctly." (manual p. 13).
+  # Checked 2026-10-06.
+
+source: >-
+  **The NEUTRON User Manual, which is the only document of the six that carries a controller
+  number**, and its Appendix A counts them: two. See the comment above the definition for what
+  that leaves, which is a large system exclusive table and a set of absences.
+
+  **ALL SIX DOCUMENTS BEHRINGER PUBLISHES WERE FETCHED AND READ, AND THREE ARE NOT SAVED HERE.**
+  The manual, the worldwide quick start guide and the firmware release note are in the library
+  because the definition cites them. The Chinese and Japanese quick start guides and the editor's
+  release note are **cited for an absence and quoted for nothing**: between them they carry no
+  controller number, no chart row, and nothing this definition rests on. Saving ten megabytes to
+  support one sentence would buy nothing, so their digests are recorded in the provenance beside
+  the manual and `Notes/4615_extract_neutron.py` fetches them to recheck the absence rather than
+  taking a note's word for it. **The product page is cited for the count being six**, which is
+  what makes it the whole of what this maker publishes rather than six that were found.
+
+  WHY THE ABSENCES ARE WORTH THIS MUCH TROUBLE. A reader meeting an instrument with two
+  controllers wants to know whether that is the instrument or the reading. Here it is the
+  instrument, and the evidence is of three kinds: the maker **counts** them, the manual writes no
+  other controller number in 34 pages, and the chart that would list the rest **does not exist in
+  any of the 112 sheets this maker publishes**. The last of those is checked the way rank 89
+  taught - against every page, not against the pages about MIDI.
+
+  WHAT THE SYSTEM EXCLUSIVE TABLE SETTLES, WHICH IS MOST OF THE FIELDS BELOW. The channel, "Set
+  MIDI channel (*) F0 00 20 32 28 ID 0A 00 MM F7 MM = 0-F --> MIDI channel 1-16" (manual p. 27);
+  the pitch bend range and its factory depth, "Set Pitch Bend Range (*) F0 00 20 32 28 ID 0A 03
+  MM F7 MM = 0-24 (semitones). Default:2" (manual p. 27); the voicing, "Set Paraphonic Mode F0 00
+  20 32 28 ID 0A 0F MM F7 MM = 0-Monophonic, 1-Paraphonic. Default:0-Monophonic" (manual p. 27);
+  and the note span, "Set Min MIDI note F0 00 20 32 28 ID 0A 0C MM F7 MM = MIDI note number.
+  Default:24" (manual p. 27) with its companion "Set Max MIDI note F0 00 20 32 28 ID 0A 0D MM F7
+  MM = MIDI note number. Default:96" (manual p. 27). **A sysex command is how this instrument is
+  configured, and the defaults are the only published statement of what it does out of the box.**
+
+  **AND A SECOND WAY TO SET THE CHANNEL, WHICH TURNS THE FIRST ONE OFF.** Four DIP switches on
+  the rear panel select it - "MIDI CHANNEL SELECTION. Move the four dip switches to select the
+  incoming MIDI channel for the synthesizer." (manual p. 9) - and setting it by system exclusive
+  instead has a consequence the table states: "Note: using this command to set the MIDI channel
+  will automatically disable the DIP switches on the back panel (which will persist across power
+  cycles)" (manual p. 27). So an instrument that stops answering to its own switches is doing
+  what it was told, and a reader who has met that will not open it up.
+
+  **WHAT VELOCITY AND AFTERTOUCH DO HERE IS NOT WHAT THEY USUALLY DO.** Neither reaches a fixed
+  destination. Both are **modulation sources the player chooses**, "Set VCF mod src F0 00 20 32
+  28 ID 0A 12 MM F7 MM = 0-Disabled, 1-aftertouch, 2-modwheel, 3-velocity" (manual p. 27), with
+  the filter's default being Disabled; and both are **options for a control voltage jack**, "Set
+  ASSIGN out F0 00 20 32 28 ID 0A 04 MM F7 MM = 0-OSC 1 CV, 1-OSC 2 CV, 2-'Note On' velocity,
+  3-Modwheel, 4-Aftertouch. Default:0" (manual p. 27). So this instrument's answer to a velocity
+  is a voltage on a socket, which is a thing a semi-modular can do and this format has no field
+  for.
+
+  NOT RECORDED, THE AFTERTOUCH, because no page says which kind. It is a modulation source and an
+  assignable output in the two tables above and nowhere else, and the manual's glossary gives
+  only the generic sense - "Aftertouch is MIDI data sent when pressure is applied to a keyboard
+  after the key has been struck, and while it is being held down or sustained." (manual p. 30).
+  Channel pressure is the likely reading for a monophonic instrument and it is a reading rather
+  than a statement, so the field is empty.
+
+  NOT RECORDED, THE TRANSPORT, and this is deliberately not `none`. **The words Start, Stop and
+  Continue appear on none of the 112 sheets**, which establishes that nothing is published about
+  them rather than that the instrument ignores them. `nrpn: none` below is a different case and
+  says `none` for a reason: the absence of the word is backed by a complete alternative, because
+  the system exclusive table **is** this instrument's parameter mechanism and it is exhaustive.
+  An absence with nothing positive behind it is left empty.
+
+  NOT RECORDED, THE MODE, for want of the chart that would carry it, and the absence of that
+  chart is the checked one above. NOT RECORDED EITHER: program change, which no page mentions and
+  which has nothing to select - **this instrument has no patch memory at all**, its Global
+  Settings being global rather than a patch, and `behringer/model_d` leaves the field out from the
+  same position; the key priority, three states with a default of last-note, which no field holds;
+  the note priority of paraphonic mode, four states rather than three; and the forty-odd system
+  exclusive parameters.
+
+  **AND NOTHING IN THE MAP EVER MOVED, ACROSS THE WHOLE 2.0 SERIES.** The firmware release note
+  lists four MIDI-related fixes and **not one controller**: "Fix to one shot LFO mode" (release_note
+  p. 1), "Sustain pedal fix: Releasing the sustain pedal now stops all notes, including those that
+  still have a key held" (release_note p. 1), "Note priority has been restored for paraphonic
+  mode" (release_note p. 1), and "MIDI note-on messages with a velocity of zero now stop the
+  appropriate playing note, no longer resulting in stuck notes" (release_note p. 1). The last of
+  those is worth a reader's attention in its own right: **a note-on of velocity nought is a
+  note-off on this instrument, and was not before 2.0.2.**
+
+sources:
+  manual:
+    kind: manual
+    title: NEUTRON User Manual
+    edition: for software version V2.0.X or higher
+    landing: "https://www.behringer.com/en/products/0718-AAB"
+    url: "https://cdn-media.empowertribe.com/9e763d12ad384405af454c86c4f7042d/NEUTRON_M_EN.pdf"
+    sha256: baddb72ad69cd3538b51d1718e2f7569b1c2600f1fba800414e34f0bcf049672
+    retrieved: 2026-10-06
+    # **The only document of the six that carries a controller number**, and the only one with
+    # the system exclusive table. 34 pages, and **all but its two covers print their own folio**,
+    # checked on every one of them rather than sampled, so a locator here is the printed number.
+    # Its Appendix A is p. 27 and the Global Setting table runs from there to p. 28.
+    page_offset: 0
+  guide:
+    kind: quick_start
+    title: NEUTRON Quick Start Guide
+    landing: "https://www.behringer.com/en/products/0718-AAB"
+    url: "https://cdn-media.empowertribe.com/046210219b1940bb9302eb4ddc26712f/QSG_BE_0718-AAB_NEUTRON_WW.pdf"
+    sha256: 851e975150d97327a4155af2c856eafcc48984bb02ca82fcdfa5b407d21e0130
+    retrieved: 2026-10-06
+    # 47 sheets in ten languages, and **cited for an absence and for a corroboration**. The
+    # absence: it is one of the six documents in which no chart row appears. The corroboration:
+    # **it prints the specifications a second time** and its MIDI line is word for word the
+    # manual's, "MIDI In/Out (soft Thru) 5-pin DIN/ 16 channels" (guide p. 42) - so the one
+    # statement in these documents that is loose about the sockets is loose in both of them,
+    # which makes it the maker's wording rather than a typesetting slip.
+    # Its table is a subset of the manual's, 236 words against 660, and otherwise differs only
+    # in spacing. **It is a two-up booklet whose sheets carry two folios each** - the
+    # specifications sheet prints `82 83` - so it is cited by its file page rather than by a
+    # printed number, and the specifications are sheet 42.
+    page_offset: 0
+  release_note:
+    kind: release_notes
+    title: Behringer NEUTRON Firmware Version 2.0.3
+    edition: 2.0.3
+    dated: 2022-12-09
+    landing: "https://www.behringer.com/en/products/0718-AAB"
+    url: "https://cdn-media.empowertribe.com/bb1476382aac4bfc97467e4b46555002/Release-Notes_BE_0718-AAB_NEUTRON-Firmware-Update_v2-0-3_2022-12-15_Rev-1.pdf"
+    sha256: 99058417166802b4bcdf62224d84403e31e9e7b4d1dd4a36e8e797417d444356
+    retrieved: 2026-10-06
+    # Five sheets, the last two a troubleshooting appendix, and **no folio on any of them** - the
+    # footers read `page 2 of 5` and so on, so this is cited by its file page. Everything the
+    # definition takes from it is on sheet 1.
+    # **Cited for two things, one of them an absence**: the newest firmware and the fact that
+    # its own only change is to the editor; and that across the whole 2.0 series not one
+    # controller was added, dropped or renumbered.
+    page_offset: 0
+  product_page:
+    kind: download_page
+    title: "NEUTRON | Behringer"
+    landing: "https://www.behringer.com/en/products/0718-AAB"
+    url: "https://www.behringer.com/en/products/0718-AAB"
+    sha256: 2382206ae340d2a7618e2c0efaa74e58cbccc6fe4b29aaf34dcc440c3ca312b2
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being six**, which is what makes six documents the whole of what
+    # this maker publishes rather than six that happened to be found. It lists the manual, three
+    # quick start guides and two release notes, plus the editor for both platforms.
+    # As with the other Behringers here, the documents are served from `cdn-media.empowertribe.com`
+    # under a 32-character path that carries no version and no date, so **the address is no
+    # guide to what a file is** and the digest is the only identifier. The digest above is of
+    # the extraction; the served bytes are saved beside it as `.html`, whose own digest is
+    # 51269fbabdfe12ee598ea7a55c0d33198d7f6da2bc8c729e185b7fa4abad7086. Its one page is cited
+    # as p. 1.
+
+midi:
+  # "MIDI CHANNEL SELECTION. Move the four dip switches to select the incoming MIDI channel for
+  # the synthesizer." (manual p. 9), with sixteen settings printed beside the switches, and the
+  # specifications agree: "MIDI In/Out (soft Thru) 5-pin DIN/ 16 channels" (manual p. 25).
+  channels: [1, 16]
+  # NOT RECORDED, for want of the chart row that would carry it - **and the absence of that
+  # chart is checked rather than assumed**, across all six documents and 112 sheets. See the
+  # comment above the definition.
+  # RECEIVES AND DOES NOT SEND, and the manual says what it does and does not do with it: "The
+  # LFO will sync to the beat when receiving MIDI clock (it does nothing with MIDI time code)."
+  # (manual p. 13). A rate control then picks the division, from four bars to a sixty-fourth.
+  # It sends none, having no sequencer and no MIDI OUT.
+  clock: receives
+  # NOT RECORDED, the transport, and deliberately not `none`. See the account: the words Start,
+  # Stop and Continue are on none of the 112 sheets, which says nothing is published rather than
+  # that the instrument ignores them.
+  # NOT RECORDED, program change: no page mentions it and this instrument has no patch memory
+  # for one to select. `behringer/model_d` leaves the field out from the same position.
+  # **A CHECKED ABSENCE WITH SOMETHING POSITIVE BEHIND IT, which is why this one says `none`.**
+  # The word NRPN is on none of the 112 sheets, and the reason is not an omission: **this
+  # instrument's parameter mechanism is system exclusive and the table of it is exhaustive**,
+  # running to some forty commands over two pages. There is no non-registered parameter because
+  # there is no need of one.
+  nrpn: none
+  # Abundantly. Two pages of Global Setting and Calibration commands, a software version request
+  # and reply, and an editor application that talks to the instrument over USB.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # NOT RECORDED, THE NOTE RANGE, AND THIS IS THE INTERESTING FIELD ON THIS INSTRUMENT. The
+  # manual gives a span of 24 to 96 and then says a note outside it is **clamped rather than
+  # silenced**. This format's `note_range` means silence outside it, so recording 24 to 96 here
+  # would tell a consumer that notes 0 to 23 do nothing, where the maker says they all play C1.
+  # The span is in the account above instead. **The first instrument in this corpus that clamps.**
+  # MONOPHONIC AS IT SHIPS, AND PARAPHONIC IS A SETTING: "Set Paraphonic Mode F0 00 20 32 28 ID
+  # 0A 0F MM F7 MM = 0-Monophonic, 1-Paraphonic. Default:0-Monophonic" (manual p. 27). What
+  # paraphonic means here is two oscillators taking two pitches from one filter and one
+  # amplifier, which the panel guide puts plainly - and the poly-chain section counts it: "Note
+  # that a Neutron in Paraphonic mode will handle 2 notes." (manual p. 14).
+  polyphony: 1
+  paraphonic: true
+  voicing_modes: [1, 2]
+  velocity:
+    # RECEIVED, AND WHAT IT REACHES IS THE PLAYER'S CHOICE rather than a fixed destination - the
+    # filter, as one of four modulation sources, or the assignable control voltage jack. See the
+    # account. Nothing here is gated by it, and it is not routed anywhere by default.
+    note_on: received
+    # NOT RECORDED, release velocity: no page mentions it. What the release note does say about
+    # a note off is that **a note-on of velocity nought became one in 2.0.2**.
+  # NOT RECORDED, THE AFTERTOUCH KIND, although aftertouch is plainly received - it is one of the
+  # filter's four modulation sources and one of the assignable output's five options. No page
+  # says whether that is channel pressure or polyphonic. Channel is the likely reading for a
+  # monophonic instrument and a reading is not a statement. See the account.
+  pitch_bend:
+    # "Set Pitch Bend Range (*) F0 00 20 32 28 ID 0A 03 MM F7 MM = 0-24 (semitones). Default:2"
+    # (manual p. 27), and the manual's own summary of the editor's options agrees: "Set pitch
+    # bend range Select the pitch bend range from 0 to +/-24 semitones (two octaves)." (manual
+    # p. 14). So the factory depth is two semitones and it can be set to anything up to 24.
+    semitones: 2
+    programmable: true
+
+groups:
+  # Two controls, so two groups would be one each and a reader learns nothing from either. The
+  # MIDI specification's own sections are used, which is what `roland/fantom_6_7_8` does where a
+  # map is the standard assignment - and these two are: controller 1 is Modulation and controller
+  # 64 is the damper pedal, under the specification's names and at the specification's numbers.
+  continuous: Continuous controllers
+  switch: Switches and pedals
+
+controls:
+
+  # Continuous controllers ──────────────────────────────────
+  # **THE ONLY FOURTEEN-BIT CONTROL IN THIS DEFINITION**, and the manual prints both halves:
+  # "Modulation wheel or lever - MIDI CC 0x01 (MSB) & MIDI CC 0x21 (LSB)" (manual p. 27), which
+  # is 1 and 33. Sending the coarse half alone is still a legal message.
+  # AND IT GOES TO A SOCKET AS WELL AS TO THE SOUND: "This is routed to the assign out when
+  # selected as the assign out option" (manual p. 27).
+  modulation:                   {label: Modulation, cc: 1, lsb: 33, group: continuous}
+
+  # Switches and pedals ────────────────────────────────────
+  # "Damper Pedal on/off (Sustain) - MIDI CC 0x40" (manual p. 27), which is 64. **No threshold
+  # is published**, so no bands are recorded: the manual names the two states in its label and
+  # gives no number for either, and inventing 0 and 64 would put a figure here that no page
+  # carries.
+  # WHAT IT DOES ON RELEASE CHANGED IN 2.0.2, and the release note is the only place it is
+  # described: "Releasing the sustain pedal now stops all notes, including those that still have
+  # a key held" (release_note p. 1).
+  sustain:                      {label: Damper Pedal on/off (Sustain), cc: 64, group: switch}

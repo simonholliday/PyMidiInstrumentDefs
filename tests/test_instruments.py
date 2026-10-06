@@ -157,6 +157,7 @@ class TestBundledCorpus:
 			"asm/hydrasynth_explorer",
 			"asm/leviasynth",
 			"behringer/model_d",
+			"behringer/neutron",
 			"behringer/pro_800",
 			"behringer/td_3",
 			"behringer/ub_xa",
@@ -12426,3 +12427,133 @@ class TestKRONOS:
 		archive = kronos.sources["implementation"].url
 
 		assert archive is not None and archive.endswith(".zip")
+
+
+class TestNeutron:
+
+	"""Two controllers, counted by the maker, with everything else system exclusive.
+
+	And the first instrument here that **clamps** a note outside its stated range rather
+	than ignoring it, which is why it records no range at all.
+	"""
+
+	def test_the_maker_counts_its_two_controllers (self) -> None:
+		"""Which is what makes two the whole map rather than two somebody noticed."""
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert len(neutron.controls) == 2
+		assert neutron.controls["modulation"].cc == 1
+		assert neutron.controls["sustain"].cc == 64
+
+		said = prose_of("behringer", "neutron")
+
+		assert "There are 2 MIDI CC functions that the Neutron supports" in said
+
+		# And no other controller number is written anywhere in the manual, which is the
+		# second of the three kinds of evidence the account sets out.
+		flat = " ".join(said.split())
+
+		assert "No other controller number is written anywhere in 34 pages" in flat
+
+	def test_its_modulation_control_is_fourteen_bit (self) -> None:
+		"""The maker prints both halves, as hex, on one line."""
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		modulation = neutron.controls["modulation"]
+
+		assert modulation.cc == 1
+		assert modulation.lsb == 33
+		assert modulation.is_14_bit is True
+
+		said = prose_of("behringer", "neutron")
+
+		assert "Modulation wheel or lever - MIDI CC 0x01 (MSB) & MIDI CC 0x21 (LSB)" in said
+
+	def test_it_records_no_note_range_because_it_clamps (self) -> None:
+		"""A note outside 24 to 96 plays the nearest end, where this field means silence."""
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert neutron.voice is not None
+		assert neutron.voice.note_range is None
+
+		# So every note is playable, which is what the maker describes.
+		assert all(neutron.voice.plays_note(note) for note in (0, 23, 24, 96, 97, 127))
+
+		said = prose_of("behringer", "neutron")
+
+		assert "The supported MIDI note range is 24 (C1) to 96 (C7) inclusive." in said
+		assert "MIDI notes 0-23 will trigger note 24 (C1) note." in said
+
+		flat = " ".join(said.split())
+
+		assert "The first instrument in this corpus that clamps." in flat
+
+	def test_its_absences_are_checked_against_every_document (self) -> None:
+		"""Which is the rule the KRONOS cost at rank 89, applied rather than restated."""
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert neutron.midi is not None
+		assert neutron.midi.mode is None
+		assert neutron.midi.program_change is None
+
+		flat = " ".join(prose_of("behringer", "neutron").split())
+
+		assert "Behringer publishes six documents for this instrument and all six were" \
+			" fetched and read" in flat
+		assert "112 sheets" in flat
+
+		# And the product page is what makes six the whole of it.
+		assert "cited for the count being six" in flat
+
+	def test_it_distinguishes_an_absence_with_evidence_from_one_without (self) -> None:
+		"""`nrpn: none` has a positive behind it; the transport has nothing, so it is empty."""
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert neutron.midi is not None
+		assert neutron.midi.nrpn == "none"
+		assert neutron.midi.transport is None
+
+		flat = " ".join(prose_of("behringer", "neutron").split())
+
+		assert "this is deliberately not `none`" in flat
+		assert "An absence with nothing positive behind it is left empty." in flat
+
+		# What stands behind `nrpn: none` is a complete alternative mechanism.
+		assert "the system exclusive table **is** this instrument's parameter mechanism and" \
+			" it is exhaustive" in flat
+
+	def test_velocity_and_aftertouch_reach_a_socket (self) -> None:
+		"""Neither has a fixed destination here, which is what a semi-modular can do."""
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert neutron.voice is not None
+		assert neutron.voice.velocity is not None
+		assert neutron.voice.velocity.note_on == "received"
+
+		# **The aftertouch kind is unrecorded although aftertouch plainly arrives**, because
+		# no page says which kind it is.
+		assert neutron.voice.aftertouch is None
+
+		flat = " ".join(prose_of("behringer", "neutron").split())
+
+		assert "this instrument's answer to a velocity is a voltage on a socket" in flat
+		assert "Channel is the likely reading for a monophonic instrument and a reading is" \
+			" not a statement." in flat
+
+	def test_it_is_monophonic_until_told_otherwise (self) -> None:
+		"""Paraphonic is a system exclusive setting, and it handles two notes."""
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert neutron.voice is not None
+		assert neutron.voice.polyphony == 1
+		assert neutron.voice.paraphonic is True
+		assert neutron.voice.voicing_modes == (1, 2)
+
+		said = prose_of("behringer", "neutron")
+
+		assert "Note that a Neutron in Paraphonic mode will handle 2 notes." in said
+
+		# And its pitch bend depth is published, which is unusual enough to check.
+		assert neutron.voice.pitch_bend is not None
+		assert neutron.voice.pitch_bend.semitones == 2
+		assert neutron.voice.pitch_bend.programmable is True

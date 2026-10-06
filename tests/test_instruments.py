@@ -248,6 +248,7 @@ class TestBundledCorpus:
 			"waldorf/streichfett",
 			"yamaha/dx7",
 			"yamaha/reface_cp",
+			"yamaha/reface_cs",
 			"yamaha/reface_dx",
 		]
 
@@ -12557,3 +12558,153 @@ class TestNeutron:
 		assert neutron.voice.pitch_bend is not None
 		assert neutron.voice.pitch_bend.semitones == 2
 		assert neutron.voice.pitch_bend.programmable is True
+
+
+class TestRefaceCS:
+
+	"""The third reface here, out of a Data List that covers all four of them.
+
+	Four sections, four charts, and **no two of the charts are the same chart** - which is
+	why this definition reads all four rather than trusting a sibling's reading.
+	"""
+
+	def test_it_reuses_the_documents_its_siblings_saved (self) -> None:
+		"""One file, one digest, three definitions citing it."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+		dx = pymidiinstrumentdefs.load("yamaha/reface_dx", [CORPUS])
+		cp = pymidiinstrumentdefs.load("yamaha/reface_cp", [CORPUS])
+
+		# **The same three files at the same three digests**, saved once under the DX.
+		for key in ("dl", "supplement", "reference"):
+			assert cs.sources[key].sha256 == dx.sources[key].sha256
+			assert cs.sources[key].sha256 == cp.sources[key].sha256
+
+		flat = " ".join(prose_of("yamaha", "reface_cs").split())
+
+		assert "ALL THREE DOCUMENTS WERE ALREADY IN THIS LIBRARY AND NONE WAS FETCHED AGAIN." \
+			in flat
+
+		# And the document's shape is what makes reading one model's part of it safe.
+		assert "no sheet names two models" in flat
+
+	def test_seventeen_of_its_controls_answer_only_while_a_setting_is_on (self) -> None:
+		"""And four work whatever it is set to, which the chart gives cell by cell."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+
+		assert len(cs.controls) == 21
+
+		always = {1, 7, 11, 64}
+		carried = {control.cc for control in cs.controls.values()}
+
+		assert always <= carried
+		assert len(carried - always) == 17
+
+		said = prose_of("yamaha", "reface_cs")
+
+		assert "Transmitted and recognized Control Change Number and Value, when MIDI" \
+			" control is on." in said
+		assert "MIDI Control off, ON" in said
+
+		# Two of the four are received and never sent, stated twice in two ways.
+		assert [key for key, control in cs.controls.items()
+			if control.direction == "receives"] == ["modulation", "volume"]
+
+	def test_its_pedal_sends_one_of_two_things_and_never_both (self) -> None:
+		"""One socket, one setting, and the factory value picks expression."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+
+		assert cs.controls["expression"].cc == 11
+		assert cs.controls["sustain_switch"].cc == 64
+
+		# Both travel both ways, because that is what the chart says of each.
+		assert cs.controls["expression"].direction == "both"
+		assert cs.controls["sustain_switch"].direction == "both"
+
+		said = prose_of("yamaha", "reface_cs")
+
+		assert "*3 Transmitted if Foot Volume / Sustain switch is Foot Volume." in said
+		assert "*4 Transmitted if Foot Volume / Sustain switch is Sustain." in said
+		assert "Factory default setting: Foot Volume" in said
+
+		# **And it can transmit a half-damper value it cannot use**, which is the detail
+		# worth keeping.
+		assert "Half-damper playing has no effect on the sound of the reface CS." in said
+
+	def test_it_does_clock_where_two_of_its_siblings_do_not (self) -> None:
+		"""And the reason is a block in its system overview that they lack."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+		cp = pymidiinstrumentdefs.load("yamaha/reface_cp", [CORPUS])
+
+		assert cs.midi is not None and cp.midi is not None
+		assert (cs.midi.clock, cs.midi.transport) == ("both", "both")
+		assert (cp.midi.clock, cp.midi.transport) == ("none", "none")
+
+		said = prose_of("yamaha", "reface_cs")
+
+		assert "Looper Play/Rec (LPR PLAY/REC)" in said
+		assert "so it has an internal clock to switch back to" in \
+			" ".join(said.split()).lower()
+
+	def test_its_mode_is_unrecorded_for_the_familys_reason (self) -> None:
+		"""The chart gives two different defaults, and this field holds one number."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+
+		assert cs.midi is not None
+		assert cs.midi.mode is None
+
+		flat = " ".join(prose_of("yamaha", "reface_cs").split())
+
+		assert "two different defaults" in flat
+
+		# And the row under it is where the family divides, which is the kind of thing
+		# somebody carries across by mistake.
+		assert '*2 "m" is always treated as "1" regardless of its actual value.' in flat
+		assert "Four charts in one document, and no two of them are the same chart." in flat
+
+	def test_it_does_no_program_change_where_the_dx_does (self) -> None:
+		"""The warning its sibling left, which applies equally here."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+		dx = pymidiinstrumentdefs.load("yamaha/reface_dx", [CORPUS])
+
+		assert cs.midi is not None and cs.midi.program_change is not None
+		assert cs.midi.program_change.receives is False
+		assert cs.midi.program_change.sends is False
+
+		# The DX is the one of the four that does.
+		assert dx.midi is not None and dx.midi.program_change is not None
+		assert dx.midi.program_change.receives is True
+
+	def test_its_pitch_bend_is_settable_where_the_cps_is_not (self) -> None:
+		"""The same system address, reserved on one instrument and used on the other."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+		cp = pymidiinstrumentdefs.load("yamaha/reface_cp", [CORPUS])
+
+		assert cs.voice is not None and cs.voice.pitch_bend is not None
+		assert cs.voice.pitch_bend.programmable is True
+		assert cs.voice.pitch_bend.semitones == 12
+
+		assert cp.voice is not None and cp.voice.pitch_bend is not None
+		assert cp.voice.pitch_bend.programmable is False
+
+		said = prose_of("yamaha", "reface_cs")
+
+		assert "Pitch Bend Range -24 - +24 (semitones)" in said
+		assert "Factory default setting: 12 semitones (one octave)" in said
+
+	def test_it_records_neither_polyphony_nor_voicing_modes (self) -> None:
+		"""Because one of the pair is known and that is not enough to list them."""
+		cs = pymidiinstrumentdefs.load("yamaha/reface_cs", [CORPUS])
+
+		assert cs.voice is not None
+		assert cs.voice.polyphony is None
+		assert cs.voice.voicing_modes == ()
+
+		said = prose_of("yamaha", "reface_cs")
+
+		# The portamento control is what shows it has both modes.
+		assert cs.controls["portamento"].values == {"poly": 0, "mono": 1}
+		assert "Mono with Portamento Time 1 - 127" in said
+
+		flat = " ".join(said.split())
+
+		assert "no document in the family states n" in flat

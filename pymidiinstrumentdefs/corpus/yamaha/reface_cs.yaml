@@ -1,0 +1,290 @@
+# **THE THIRD REFACE HERE, AND THE DOCUMENTS WERE ALREADY IN THE LIBRARY.** Yamaha publishes one
+# Data List for all four of them, and `yamaha/reface_dx` and `yamaha/reface_cp` are built from it
+# already - so this definition cites the same three files at the same three digests, saved once
+# under the DX. That is `novation/summit`'s arrangement for a shared addendum: one file, one
+# digest, several definitions citing it.
+#
+# **AND THE DOCUMENT MAKES THAT SAFE, BECAUSE IT IS FOUR SELF-CONTAINED SECTIONS RATHER THAN ONE
+# INTERLEAVED ONE.** The reface CS has sheets 2 to 5, the DX 6 to 10, the CP 11 to 14 and the YC
+# 15 to 19; every sheet prints its model's name in its own header, and **no sheet names two
+# models**. So the four can be read apart without the risk the DX's definition had to check for.
+# Each ends with a MIDI Implementation Chart of its own.
+#
+# **TWENTY-ONE CONTROLS, OF WHICH SEVENTEEN ANSWER ONLY WHILE A SETTING IS ON.** The Control
+# Change table's own heading says so - "Transmitted and recognized Control Change Number and
+# Value, when MIDI control is on." (dl p. 4) - and the chart footnotes the same seventeen
+# `*1 Transmitted and recognized if MIDI control mode is on.` (dl p. 5). The setting is a system
+# parameter, `00 00 0E`, printed as "MIDI Control off, ON" (dl p. 4). The other four - modulation,
+# volume, expression and the sustain switch - work whatever it is set to.
+#
+# **ITS PEDAL SOCKET HAS TWO FUNCTIONS AND SENDS ONLY ONE OF THEM AT A TIME.** The chart marks
+# controller 11 transmitted with `*3 Transmitted if Foot Volume / Sustain switch is Foot Volume.`
+# and controller 64 with `*4 Transmitted if Foot Volume / Sustain switch is Sustain.` (dl p. 5) -
+# **one socket, one setting, and the two are exclusive**. Out of the box it is the first of them:
+# "Factory default setting: Foot Volume" (supplement p. 12). Both are carried as travelling both
+# ways, because that is what the chart says of each; which one a given instrument sends is a
+# setting and belongs to its owner.
+#
+# **AND IT CAN TRANSMIT A HALF-DAMPER VALUE IT CANNOT USE.** The sustain switch sends 0 or 127
+# with the factory pedal setting - "When Sustain is set to 'FC4/5,' operating the foot switch
+# transmits only values of 0 (off) or 127 (on)." (dl p. 2) - and the full range with the other,
+# whose own note is the interesting half: "Half-damper playing has no effect on the sound of the
+# reface CS." (supplement p. 12). So a continuous pedal on this instrument is a controller for
+# something else to listen to.
+#
+# WHAT SEPARATES IT FROM ITS SIBLINGS, READ OFF TWO SYSTEM OVERVIEWS. The CS's is headed
+# "(4) SYSTEM OVERVIEW (Keyboard (KBD), Looper Play/Rec (LPR PLAY/REC) and Tone Generator (TG))"
+# (dl p. 3) where the CP's names only a keyboard and a tone generator - **so the CS has a third
+# block its sibling lacks, and it is a looper.** That is the structural reason this definition has
+# `clock: both` and `transport: both` where `yamaha/reface_cp` has `none` for each: the two
+# refaces with a looper answer to a clock and send one, and the two without cross all four cells.
+# **A family difference worth stating rather than discovering twice.**
+
+definition: 1
+
+model:
+  manufacturer: Yamaha
+  name: reface CS
+  # **FIRMWARE 1.30**, which is what the library path says and what the supplementary manual
+  # describes: nine new functions for this instrument, among them the pitch bend range and the
+  # two channel settings this definition records. The Data List is edition `b0` and dates its
+  # own chart "Date :31-MAR-2016" (dl p. 5) with "Version : 1.1" (dl p. 5) - **a chart
+  # version of its own, one step ahead of the three siblings' 1.0**, which is this document's way
+  # of saying the CS's
+  # chart was reissued for that firmware and theirs were not.
+  # The system exclusive Model ID is `03H` (dl p. 2), which is how an instrument answering a
+  # device inquiry proves it is this one rather than another reface.
+  # Checked 2026-10-06.
+
+source: >-
+  **The reface CS/DX/CP/YC Data List, sheets 2 to 5**, which carry this instrument's data format,
+  its Control Change table and its MIDI Implementation Chart. Every number below comes from
+  sheet 4 or sheet 2, and every direction from the chart on sheet 5.
+
+  **ALL THREE DOCUMENTS WERE ALREADY IN THIS LIBRARY AND NONE WAS FETCHED AGAIN.** They are saved
+  under `Library/yamaha/reface_dx/1.30/`, cited by `yamaha/reface_dx` and `yamaha/reface_cp`
+  before this, and their digests were checked against what those two definitions record before
+  anything here was written. See the comment above the definition for why reading one model's
+  section out of a four-model document is safe here.
+
+  **THE REFERENCE MANUAL IS NOT A SOURCE FOR THIS INSTRUMENT**, although it is for the DX and is
+  in the same library directory. Its eleven sheets are about Edit mode on the reface DX - "By
+  using Edit mode on the reface DX, you can m[ake]" (reference) is how its second sheet
+  opens - and it says nothing about the CS. Recorded so the next reader knows it was looked
+  at rather than missed.
+
+  SEVENTEEN OF THE TWENTY-ONE ARE CONDITIONAL, AND FOUR ARE NOT. See the comment above. The four
+  that always work are the MIDI specification's own - controller 1, 7, 11 and 64 - and the
+  seventeen that are not are this instrument's panel, from its oscillator type to its effect rate.
+  **The definition cannot express the condition**, so it is stated here and in the controls'
+  comments; a consumer offering all twenty-one on a new instrument would find seventeen of them
+  silent until somebody turned the setting on.
+
+  **TWO OF THE FOUR ARE RECEIVED AND NEVER SENT**, which the chart gives cell by cell: controller
+  1, Modulation Wheel, and controller 7, Main Volume, are crossed transmitted and circled
+  recognised (dl p. 5). The data format agrees from the other side, listing them under
+  `*RECEIVED CONTROL NUMBER` and not under `*TRANSMITTED CONTROL NUMBER` (dl p. 2) - which is the
+  rare case of a document stating a direction twice in two different ways.
+
+  WHY THE SELECTOR VALUES ARE THE ONES THE INSTRUMENT SENDS RATHER THAN THE BANDS IT HEARS. The
+  table gives both for each of the three five-way switches: an exact value transmitted and a
+  range recognised, so `OSC TYPE` sends 0, 32, 64, 95 or 127 and answers to 0-25, 26-51, 52-76,
+  77-102 or 103-127. **The exact values are recorded**, which is `yamaha/reface_cp`'s choice for
+  the same table shape from the same document, and is the one a consumer sending a value needs.
+  What it costs is the display case: a value of 40 arriving is `FILTER` and nothing above says so.
+
+  NOT RECORDED, THE MODE, AND THE CHART IS WHY. It gives **two different defaults** - 3
+  transmitted and 1 recognised - and this field holds one number. That is `yamaha/reface_dx`'s
+  ruling from the identical row, and it holds for all four refaces. The recognised side is the
+  one a reader would want and it is the one the supplement explains: "Factory default setting:
+  All" (supplement p. 9) for the receive channel, which is mode 1 by another name.
+
+  AND THE FAMILY DIVIDES ON THE ROW UNDER IT, which is worth recording because it is the kind of
+  thing somebody carries across by mistake. The CS and the DX recognise mode messages `1 - 4`
+  with the footnote `*2 "m" is always treated as "1" regardless of its actual value.` (dl p. 5);
+  the CP and the YC recognise `1,3` instead. **Four charts in one document, and no two of them
+  are the same chart.**
+
+  NOT RECORDED: the nine functions the 1.30 firmware added, of which only two reach this format -
+  the pitch bend range and the channels. The other seven are a master tuning, a master transpose,
+  a `Quantize Mode`, a `Guide / Click Sound Switch`, the pedal switch above and the
+  pedal-type selection, and all are set by holding a key at power-on. NOT RECORDED EITHER: the
+  system exclusive
+  parameters, two tables of them totalling 54 bytes, among which `Volume` carries a note worth a
+  reader's time - "This parameter can be set only via MIDI." (dl p. 4) - because there is no
+  volume knob on this instrument at all.
+
+sources:
+  dl:
+    kind: midi_implementation
+    title: reface CS/DX/CP/YC Data List
+    edition: "b0"
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/7/794817/reface_en_dl_b0.pdf"
+    sha256: 705182642a7be012570805c9686e1eac58bd2b9fa8584f91d33414929e1a85e9
+    retrieved: 2026-10-05
+    # **Saved once for this family and cited by three definitions**, under the DX because that
+    # is where it was first read. The digest above was checked against the copy on disk and
+    # against what `yamaha/reface_dx` and `yamaha/reface_cp` record, so all three agree.
+    # 19 sheets, four self-contained sections. **This instrument's are 2 to 5** and every one
+    # of them prints `reface CS` in its own header; no sheet names two models. Its folio is its
+    # own sheet number, printed `reface Data List <n>` in the footer.
+    # Its chart dates itself 31 March 2016 at version 1.1, where the other three charts in the
+    # same document are version 1.0 - **so this one was reissued and theirs were not**.
+    page_offset: 0
+  supplement:
+    kind: manual
+    title: reface Version 1.30 Supplementary Manual
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/0/960060/v130_Manual_en.pdf"
+    sha256: 8d00416aff1ad50178fa3db56a1d7d215cd849a793d971987eb0d4c8989873bd
+    retrieved: 2026-10-05
+    # 28 sheets, partitioned by model as the Data List is, and **this instrument has ten of
+    # them, sheets 3 to 12** - more than any of its siblings, because the 1.30 firmware gave the
+    # CS nine new functions where it gave the DX two.
+    # **Cited for three factory defaults and for nothing else**: the pitch bend range, the
+    # receive channel, and which of the pedal's two functions is in effect on a new instrument.
+    # **It contains no controller number at all** - neither `CC` nor `Control Change` appears
+    # anywhere in its 28 sheets - so nothing in the map below rests on it.
+    page_offset: 0
+  reference:
+    kind: manual
+    title: reface Reference Manual
+    landing: "https://usa.yamaha.com/support/manuals/index.html?l=en&c=music_production&k=reface"
+    url: "https://usa.yamaha.com/files/download/other_assets/7/438827/reface_en_rm_a0.pdf"
+    sha256: 78db93bfa3d3fd293b9c9865a236b0df3e74840e00f85d44c314a5941684541d
+    retrieved: 2026-10-05
+    paginated: false
+    # **CITED FOR AN ABSENCE AND QUOTED FOR NOTHING.** Eleven sheets, all of them about Edit
+    # mode on the reface DX, and **it says nothing about this instrument**. It is in the same
+    # library directory as the two documents above and is a source for `yamaha/reface_dx`, so a
+    # reader finding it there could reasonably expect it to be one here. It is not, and this is
+    # where that is written down.
+
+midi:
+  # The chart's Basic Channel row: 1 transmitted by default, 1 to 16 recognised by default, and
+  # 1 to 16 either way once changed. **The two settings are not symmetrical**, as the system
+  # table shows - "MIDI transmit channel 1 - 16, off" (dl p. 4) and "MIDI receive channel
+  # 1 - 16, All" (dl p. 4) - so it can be told to answer on every channel and to say nothing on any.
+  # Both arrived with this firmware, at "Factory default setting: Channel 1" (supplement p. 8)
+  # for the one and "Factory default setting: All" (supplement p. 9) for the other.
+  channels: [1, 16]
+  # NOT RECORDED: the chart gives two different defaults, 3 transmitted and 1 recognised. See
+  # the account, and `yamaha/reface_dx`, which drew the same line from the same row.
+  # **BOTH WAYS, AND UNLIKE TWO OF ITS SIBLINGS.** The chart circles Clock in both columns where
+  # `yamaha/reface_cp`'s and the YC's cross it, and the reason is a block in the system overview
+  # those two do not have - a looper. The data format says what receiving one does: "When
+  # received via MIDI IN or USB-MIDI IN, the instrument automatically switches to external
+  # synchronization. If no signal is received for 3 seconds, it switches back to the internal
+  # clock." (dl p. 2). **So it has an internal clock to switch back to**, which is the whole of
+  # why this row differs across the family.
+  clock: both
+  # The same: Commands circled in both columns, where the CP and the YC cross them. Start,
+  # Continue and Stop are each given a status byte of their own in the data format (dl p. 2).
+  transport: both
+  program_change:
+    # **A CHECKED ABSENCE BOTH WAYS, AND THE ONE THING IN THIS FAMILY MOST LIKELY TO BE CARRIED
+    # ACROSS BY MISTAKE.** The chart crosses Prog Change in both columns and its True # row as
+    # well, and the data format has no program change section. **The DX does program change over
+    # four banks of eight; this instrument, the CP and the YC do none at all** - which is
+    # `yamaha/reface_cp`'s warning, repeated here because it applies equally.
+    receives: false
+    sends: false
+  # A CHECKED ABSENCE. Neither registered nor non-registered parameters appear anywhere in the
+  # three documents, and controllers 98 to 101 are among the numbers the Control Change table
+  # leaves unused. The pitch bend range, which is what a registered parameter would usually
+  # carry, is a system exclusive address here instead.
+  nrpn: none
+  # Parameter change, bulk dump, dump request and parameter request, with the Model ID `03H`
+  # (dl p. 2) that distinguishes this instrument from its siblings. Two parameter tables, a
+  # system one of 32 bytes and a tone generator one of 22.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # The chart's recognised Note Number and its True voice row both give 0 to 127, which is the
+  # instrument saying it sounds every note it answers to. **What it sends is narrower and is a
+  # fact about the keys**: 24 to 108 transmitted, with `Transpose` in the remarks column, for a
+  # keyboard of 37.
+  note_range: [0, 127]
+  # NOT RECORDED, THE POLYPHONY, AND NOR ARE THE VOICING MODES - which needs saying, because
+  # one of them is known and that is not enough. The Control Change table's `PORTAMENTO` control
+  # offers `Poly 0` against `Mono with Portamento Time 1 - 127` (dl p. 4), so **this instrument
+  # is polyphonic and can be made monophonic**, and `voicing_modes` would hold that pair. But
+  # the pair is `[1, n]` and **no document in the family states n**: the Data List gives no
+  # voice count, the supplement gives none, and the Reference Manual is about another model.
+  # Listing `[1]` alone would say it is monophonic only, which is the opposite of what the
+  # portamento control shows. So both fields are empty and the fact is here.
+  velocity:
+    # The chart circles Note ON in both columns, transmitted `9nH,v=1-127` and recognised
+    # `v=1-127`.
+    note_on: received
+    # **AND NO RELEASE VELOCITY EITHER WAY.** The chart crosses Note OFF in both columns, and the
+    # data format says of the note off message that velocity is `v: ignored` (dl p. 2) - which is
+    # the same pair of statements `yamaha/reface_cp` found for itself.
+    note_off: false
+  # A CHECKED ABSENCE, BOTH KINDS AND BOTH DIRECTIONS - four crossed cells in the chart, Key's
+  # and Ch's against Transmitted and Recognized. It is a 37-key instrument with no pressure
+  # sensing at all.
+  aftertouch: none
+  pitch_bend:
+    # **RECEIVED, SENT, AND SETTABLE - WHICH IS WHAT SEPARATES IT FROM THE CP.** The chart
+    # circles Pitch Bend in both columns, and the system table carries the range at address
+    # `00 00 0F`, printed as "Pitch Bend Range -24 - +24 (semitones)" (dl p. 4). The same
+    # address is `reserved` on the CP, which is why that definition records `programmable:
+    # false`.
+    # The factory depth is a whole octave, which the supplement states and the Data List does
+    # not: "Factory default setting: 12 semitones (one octave)" (supplement p. 6).
+    semitones: 12
+    programmable: true
+
+controls:
+  # **THE FOUR THAT WORK WHATEVER `MIDI Control` IS SET TO**, from the data format on sheet 2
+  # rather than from the Control Change table. Two are received and never transmitted, which the
+  # chart confirms cell by cell and the data format repeats by listing them under
+  # `*RECEIVED CONTROL NUMBER` alone.
+  modulation:                    {label: MODULATION, cc: 1, direction: receives}
+  volume:                        {label: VOLUME, cc: 7, direction: receives}
+  # **AND THESE TWO SHARE ONE SOCKET AND EXCLUDE EACH OTHER.** The chart marks both transmitted,
+  # each under a footnote naming the setting that makes it so - and the setting has two values,
+  # so an instrument sends one of them and never both. Out of the box it is this one.
+  expression:                    {label: EXPRESSION, cc: 11}
+  # What it sends depends on the pedal as well as on the switch: 0 or 127 with the factory
+  # `FC4/5`, continuous with `FC3` - and half-damper does nothing to this instrument's own
+  # sound, so the finer values are for something else to read. No bands are declared for it
+  # because the received side takes the full range.
+  sustain_switch:                {label: SUSTAIN SWITCH, cc: 64}
+
+  # **AND THE SEVENTEEN THAT ANSWER ONLY WHILE `MIDI Control` IS ON**, which is the table's own
+  # heading and the chart's footnote `*1`. The maker's own printed names, brackets and all.
+  # The three five-way switches carry the values this instrument transmits; see the account for
+  # why those rather than the ranges it recognises.
+  lfo_assign:                    {label: LFO ASSIGN, cc: 78,
+    choices: {"off": 0, "amp": 32, "filter": 64, "pitch": 95, "osc": 127}}
+  lfo_depth:                     {label: LFO DEPTH, cc: 77}
+  lfo_speed:                     {label: LFO SPEED, cc: 76}
+  # **NOT A SELECTOR BUT A BAND AND A VALUE IN ONE CONTROL**: nought is polyphonic, and anything
+  # above it is monophonic with that much portamento time. So these are bands rather than exact
+  # values, which is the one place this instrument's table differs in shape from the CP's.
+  portamento:                    {label: PORTAMENTO, cc: 20,
+    values: {"poly": 0, "mono": 1}}
+  osc_type:                      {label: OSC TYPE, cc: 80,
+    choices: {"multi_saw": 0, "pulse": 32, "oscillator_sync": 64, "ring_modulation": 95,
+      "frequency_modulation": 127}}
+  osc_texture:                   {label: OSC TEXTURE, cc: 81}
+  osc_mod:                       {label: OSC MOD (modulation), cc: 82}
+  filter_cutoff:                 {label: FILTER CUTOFF, cc: 74}
+  filter_resonance:              {label: FILTER RESONANCE, cc: 71}
+  # The table prints this one with an en dash between the two envelopes it balances, which is
+  # written here as a hyphen because that is what this corpus prints.
+  eg_balance:                    {label: EG FEG - AEG (balance), cc: 83}
+  eg_attack:                     {label: EG A (attack time), cc: 73}
+  eg_decay:                      {label: EG D (decay time), cc: 75}
+  eg_sustain:                    {label: EG S (sustain level), cc: 79}
+  eg_release:                    {label: EG R (release time), cc: 72}
+  effect_type:                   {label: EFFECT TYPE, cc: 17,
+    choices: {"dist": 0, "cho_fla": 32, "phaser": 64, "delay": 95, "off": 127}}
+  effect_depth:                  {label: EFFECT DEPTH, cc: 18}
+  # Its own note says what the rate means, which is a different thing in each effect: "DIST:
+  # tone" (dl p. 4), "CHO/FLA, PHASER: rate" (dl p. 4) and "DELAY: delay time" (dl p. 4).
+  effect_rate:                   {label: EFFECT RATE, cc: 19}

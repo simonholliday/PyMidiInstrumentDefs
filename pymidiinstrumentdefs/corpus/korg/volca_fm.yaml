@@ -1,0 +1,291 @@
+# **NOTHING LEAVES THIS INSTRUMENT, AND ITS MAKER SAYS WHY IN ONE LINE.** "No message is
+# transmitted. (The volca fm is not equipped with a MIDI Out jack.)" (implementation). So every
+# control below is `direction: receives`, every box in the chart's Transmitted column is crossed,
+# and a consumer can stop wondering what this instrument reports: it has nowhere to report to.
+#
+# **ITS IMPLEMENTATION IS A TEXT FILE, WHICH IS THE FIRST IN THIS CORPUS.** 25 KB of ASCII with
+# CRLF line endings, laid out in drawn tables - so no extraction, no ligature, no coordinate
+# reading, and every value table legible as the maker typed it. The three other Korgs here had
+# theirs in a PDF, and two had no implementation document at all.
+#
+# **AND A VALUE TABLE IN IT DOES NOT AGREE WITH ITSELF.** Each control's bands are given twice
+# over, in hexadecimal and in decimal, and for two controls the two columns disagree:
+#
+#   **ARP DIV's decimal column is coherent and its hexadecimal has two typos.** The decimals run
+#   0 to 127 with no gap and no overlap; `18 (24) ~ 22 (35)` and `23 (36) ~ 2E (46)` have hex ends
+#   one out either side of a boundary the decimals place cleanly. So the decimals are carried.
+#
+#   **ARP TYPE's columns are both incoherent, so neither is carried.** Four of its ten rows have a
+#   hexadecimal low end that is not its decimal - `40 (58)`, `50 (74)`, `60 (90)`, `74 (104)` -
+#   and **the decimal column overlaps itself**: the ninth row ends at 115 and the tenth begins at
+#   104. There is no reading of that table that is a partition of 0 to 127, so this file records
+#   ten band names and no numbers for them, which is `novation/peak`'s rule.
+#
+# **ONE NUMBER MEANS TWO THINGS AND THE TWO DOCUMENTS DISAGREE ABOUT WHICH IS WHICH.** Controller
+# 40 is listed twice in one row of the implementation, as `TRANSPOSE` under one footnote and
+# `OCTAVE` under another, the choice resting on a panel setting: one state spans -3 to +3 and the
+# other -36 to +36. **The manual says the switch turns the slider to semitone units when it is
+# on; the implementation gives the on state the narrower span.** Those cannot both be right, so
+# the label below is the chart's single row and the rest is written down here.
+#
+# **AND EVERY ONE OF THE ELEVEN IS BEHIND A GLOBAL SWITCH THAT IS ON WHEN THE INSTRUMENT ARRIVES.**
+# The chart's footnote is "Received when global parameter MIDI RX ShortMessage is set to ON."
+# (chart) and the manual marks that setting's factory default with an asterisk: `*On`. **Which is
+# the opposite of `dreadbox/nymphes` at rank 99**, whose eighty-two controls are off until
+# somebody turns them on - the same kind of switch, set the other way.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: volca fm
+  # **1.07, AND WHAT IT CHANGED IS NOT PUBLISHED.** The updater's instructions settle the number -
+  # "If the current system is version 1.07, the display will be lit as shown. Your volca fm is
+  # already up to date." (firmware_update p. 2) - and there are no release notes for it or for
+  # any version before it. **The MIDI documents are from April 2016 and this firmware is from
+  # August 2019**, so whether three years changed anything below is a thing nobody has said.
+  # **The firmware arrives as two WAV files played into the SYNC IN jack**, which is this maker's
+  # way with a volca: an audio bootloader rather than a sysex dump or a USB drive.
+  firmware: "1.07"
+  # Checked 2026-10-06.
+
+source: >-
+  **SEVEN DOCUMENTS ON ONE DOWNLOADS PAGE, AND THE MIDI IS IN TWO OF THEM.** The `MIDI
+  Implementation` is a 25 KB text file and gives every field below but two; the `MIDI
+  Implementation Chart` is one sheet and gives the mode, the note range and the crossed boxes.
+
+  **TWO OF THE SEVEN HAVE NO PAGE TO TURN TO**, the implementation being one text file and the
+  chart one sheet, so both are cited by name; the manual is paginated and its English is on
+  manual pp. 1 and 3, which is where most of what is not in those two comes from.
+
+  **THE CHART'S MARKS ARE NOT IN ITS TEXT LAYER.** Its circles and crosses are a font the
+  extractor drops, and so are the symbols in its own legend - so a reading of the text alone has
+  every row's label and none of its answers. It was read from a rendering instead, which is what
+  `arturia/drumbrute_impact`, `korg/microkorg2` and `dreadbox/nymphes` declare `pictured_pages`
+  for; here the numbers are all in the text file, so the chart is cited for what it says in words
+  and the rendering settled the marks.
+
+  WHAT THE OTHER FIVE ARE FOR. The owner's manual gives the polyphony, the voice modes, the
+  channel setting and the eight global parameters with their factory defaults. The `Parameter
+  List Guide` is **two sheets with no text layer at all** - 1,888 and 615 vector drawings - and is
+  the panel's edit-mode parameter list, with display abbreviations and value ranges and **no
+  controller number anywhere**. The firmware instructions give the version. And a RoHS notice in
+  Chinese and a system updater complete the page.
+
+  **ITS SYSTEM EXCLUSIVE IS ANOTHER MAKER'S.** "Received only YAMAHA DX7 bulk data." (chart), and
+  the implementation lays the message out: `43` is the Yamaha identifier, with one voice or
+  thirty-two, and two tables of DX7 voice parameters after it. **So a Korg that accepts a
+  Yamaha dump and publishes Yamaha's format**, which is the only instrument here to do so.
+
+  NOT RECORDED: the pitch bend depth. The chart marks pitch bend as answered to and **no document
+  gives a range or a setting for it**, so this definition says it is answered to and cannot say
+  how far. And the aftertouch, crossed in all four boxes (chart) - which is `none` below and is a
+  checked absence rather than a silence.
+
+sources:
+  implementation:
+    kind: implementation
+    title: volca fm MIDI Implementation
+    edition: Revision 1.01
+    dated: 2016-04-07
+    landing: "https://www.korg.com/us/support/download/manual/0/558/2963/"
+    url: "https://cdn.korg.com/us/support/download/files/0207c8fd6dbe9f8203952a1d65e90389.txt"
+    sha256: d4f090f48013dfd5989baaf76991613ab43f39965956211c4c0ce174d0d7bfa8
+    retrieved: 2026-10-06
+    paginated: false
+    # **A TEXT FILE, WHICH NO OTHER DEFINITION HERE IS BUILT FROM.** ASCII with CRLF endings,
+    # tables drawn in `+--+` and `|`, and every value table legible exactly as typed. It opens
+    # `KORG volca fm MIDI Implementation Revision 1.01 (2016.4.07)`.
+    # The address is a 32-character hash and **the name arrives in the query string**:
+    # `response-content-disposition=attachment;filename*=UTF-8''volca_fm_MIDIImp.txt`. So the
+    # address says nothing about what it serves, which is this maker's arrangement for every file
+    # on every one of its downloads pages.
+  chart:
+    kind: chart
+    title: volca fm MIDI Implementation Chart
+    edition: E1 01
+    dated: 2016-04-07
+    landing: "https://www.korg.com/us/support/download/manual/0/558/2974/"
+    url: "https://cdn.korg.com/us/support/download/files/0ee40bc9fbbb72aa51d519df2af5697d.pdf"
+    sha256: b981253f14119a93f619e8917d3e640f4812a0047d054a427476901bf1878925
+    retrieved: 2026-10-06
+    paginated: false
+    # **ONE SHEET, AND ITS MARKS ARE NOT IN ITS TEXT LAYER** - see the account. Read from a
+    # rendering, which settled every crossed box below.
+    # It is the only one of the four Korg charts in this library that is not encrypted.
+  manual:
+    kind: manual
+    title: volca fm Owner's Manual
+    edition: EFGSCJ5
+    dated: 2016-04-06
+    landing: "https://www.korg.com/us/support/download/manual/0/558/2903/"
+    url: "https://cdn.korg.com/us/support/download/files/f160e38a8112b463f6546dad35091bd5.pdf"
+    sha256: 3ffeddc660de8a7a2756e605e9c7fc32465c04ebb9afbdea861ecc76556c2183
+    retrieved: 2026-10-06
+    # **EIGHT SHEETS IN FIVE LANGUAGES**, English on sheets 1 and 3. Cited for the polyphony, the
+    # voice modes, the channel setting and **the eight global parameters with their factory
+    # defaults marked by an asterisk** - which is the only place the state of the switch that
+    # gates every control below is given.
+    # `EFGSCJ5` is the fifth edition of the five-language set, from the file name.
+    page_offset: 0
+  parameter_list:
+    kind: parameter_guide
+    title: volca fm Parameter List
+    edition: v1
+    dated: 2016-04-06
+    landing: "https://www.korg.com/us/support/download/manual/0/558/2975/"
+    url: "https://cdn.korg.com/us/support/download/files/beeb177b34c36fe56e585763c40da579.pdf"
+    sha256: 6d00d23e96320a0f9afa652afb96df0e5861566108c458ff0195507e40bb8f64
+    retrieved: 2026-10-06
+    paginated: false
+    # **CITED FOR AN ABSENCE, AND IT IS THE DOCUMENT A READER WOULD TRY SECOND.** Two sheets with
+    # **no text layer at all** - 1,888 and 615 vector drawings between them - carrying the panel's
+    # edit-mode parameter list: every DX7 voice parameter with its display abbreviation and value
+    # range, and **not one controller number**. Read from a rendering to establish that.
+    # A name like `Parameter List` is where `roland/jd_xi` at rank 94 found nothing and
+    # `roland/jupiter_x` at 96 found a whole second map, so it was opened rather than assumed.
+  firmware_update:
+    kind: manual
+    title: volca fm System Firmware Update Instructions
+    edition: "0107"
+    dated: 2019-08-20
+    landing: "https://www.korg.com/us/support/download/software/0/558/3012/"
+    url: "https://cdn.korg.com/us/support/download/files/860ff6b98057a1cb0dccd37034794d82.zip"
+    sha256: 7e461d717e2ca47211f862bbd1205fc4b0f0016effebdbc76561eaa7b69259e0
+    retrieved: 2026-10-06
+    # **FOUR SHEETS INSIDE THE UPDATER ARCHIVE, AND THEY ARE INSTRUCTIONS AND NOT NOTES.** They
+    # give the version number and the procedure and **say nothing whatever about what 1.07
+    # changed**. The digest is of the PDF inside the `.zip`, whose own digest is
+    # 6084b74b621682557748420e8c7fb42f649932d7d180e18ccd359ab26dfc53d2 and which also holds a
+    # Japanese copy and the two WAV files that are the firmware.
+    page_offset: 0
+  downloads_page:
+    kind: download_page
+    title: "Downloads | volca fm | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/product/0/558/"
+    url: "https://www.korg.com/us/support/download/product/0/558/"
+    sha256: 03f0a22ba68c8671ccccb9f8e530e58cf654d8e409c3314275fc77c29737d099
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being seven, and for this instrument having an implementation at
+    # all.** Three of the four Korgs before it in this corpus had their chart in the owner's
+    # manual rather than in a document called an implementation, and two had no implementation
+    # document whatever. **This one has both, and the implementation is the richer of the two.**
+    # **No file address appears on this page**: each document is reached through a
+    # licence-agreement page of its own at `/us/support/download/manual/0/558/<id>/`, and only
+    # those carry the `cdn.korg.com` address. Every Korg in this library works that way.
+    # The digest is of the extraction, which pairs each download with its licence page and the
+    # address that page gives; the served markup is saved beside it as `.html`, whose own digest
+    # is 054c3c5d5e48a7fbe050eae349f3fcaf8c217a3f5b686f81c2f8f3309f576eb8.
+
+midi:
+  # `1 - 16` in both the Default and Changed rows of the Recognized column, marked `Memorized`
+  # (chart), and the manual gives the mechanism: "Keyboard buttons 1 to 16 correspond to the MIDI
+  # channels 1 to 16." (manual p. 3), set by holding MEMORY while switching on.
+  channels: [1, 16]
+  # `3` in the chart's Mode row - OMNI OFF, POLY - with the Transmitted box crossed and Messages
+  # crossed both ways (chart).
+  mode: 3
+  # **RECEIVES ONLY, BECAUSE THERE IS NOWHERE TO SEND FROM.** Clock is crossed transmitted and
+  # marked in the `Recognized` column (chart) under a footnote that makes it a setting: "Not
+  # received when global
+  # parameter MIDI Clock src is set to Internal; received when set to Auto." (chart) - and the
+  # manual marks `Auto` as the factory default.
+  clock: receives
+  # **RECEIVES, AND THE SAME SETTING GATES IT.** The implementation lists `FA` Start, `FB`
+  # Continue and `FC` Stop under the same footnote as the clock, and **song position too**: `F2`
+  # with "pppp : 0~15 = STEP 1 ~ STEP 16" (implementation), which is a sixteen-step sequencer
+  # being told where to stand.
+  transport: receives
+  program_change:
+    # **Crossed in both boxes** (chart), so this instrument changes no preset over MIDI - which
+    # is a checked absence and not a silence. Its sixteen memories are reached from the panel.
+    receives: false
+    sends: false
+  # **TRUE, AND THE FORMAT IS ANOTHER MAKER'S** - see the account. "Received only YAMAHA DX7 bulk
+  # data." (chart).
+  sysex: true
+  # NOT RECORDED, NRPN: the chart has no row for it and the implementation does not mention it.
+
+voice:
+  addressing: pitches
+  # `0 - 127` in both the Note Number and True Voice rows of the Recognized column (chart), so
+  # nothing is out of range.
+  note_range: [0, 127]
+  # "This digital synthesizer uses a 3-voice, 6-operator FM (Frequency Modulation) sound engine."
+  # (manual p. 3), and the specification says it twice: "FM sound sources (6 operators (maximum
+  # of 3 simultaneous notes))" (manual p. 1).
+  polyphony: 3
+  # Three panel modes and two counts: "FUNC + MONO: One note at a time can be played." (manual
+  # p. 3) and "FUNC + UNISON: All three voices will sound in unison, operating as a mono synth."
+  # (manual p. 3). **So unison is monophonic as well**, and this field's two numbers are the
+  # maker's three modes.
+  voicing_modes: [1, 3]
+  velocity:
+    # **IGNORED, AND THE MAKER SAYS SO IN THREE WORDS**: "Velocity is not used." (implementation).
+    # The chart crosses the Note On row and prints the message format beside the cross -
+    # `9n, V=1 - 127` - which is what it answers to rather than what it does with it.
+    # **And there is a controller for velocity instead**: number 41, which sets a global velocity
+    # the panel also has a slider for.
+    note_on: ignored
+  # Crossed in all four boxes - polyphonic and monophonic, in both of the chart's columns
+  # (chart).
+  aftertouch: none
+  # NOT RECORDED, the pitch bend. It is marked as answered to (chart) and the implementation
+  # lists
+  # `En` among the channel messages, and **no document gives a range or a setting for it** - so
+  # this definition cannot say how far it bends, only that it does.
+
+groups:
+  performance: Performance
+  envelope: Envelopes
+  lfo: LFO
+  synthesis: Synthesis
+  arpeggiator: Arpeggiator
+
+controls:
+
+  # **ELEVEN NUMBERS, 40 TO 50, AND EVERY ONE OF THEM TRAVELS ONE WAY.** The chart crosses the
+  # whole Transmitted column because there is no MIDI Out jack to transmit from. All eleven are
+  # gated by `MIDI RX ShortMessage`, which the manual says is on at the factory.
+  # The labels are the chart's. **The implementation abbreviates one of them** - `ALGTM` where
+  # the chart writes `ALGORITHM` - and the panel is screen-printed `ALGORITHM`, so that is the
+  # one carried.
+
+  # Performance ───────────────────────────────────────────
+  # **ONE NUMBER, TWO MEANINGS, AND THE TWO DOCUMENTS DISAGREE** - see the comment above the
+  # definition. The chart gives it one row and one name, which is what this entry carries.
+  transpose:         {label: TRANSPOSE, cc: 40, direction: receives, group: performance}
+  velocity:          {label: VELOCITY, cc: 41, direction: receives, group: performance}
+
+  # Envelopes ─────────────────────────────────────────────
+  # All four map 0-127 onto -63 to +63, which is the maker's own bipolar reading of the byte.
+  modulator_attack:  {label: MODULATOR ATTACK, cc: 42, direction: receives, group: envelope}
+  modulator_decay:   {label: MODULATOR DECAY, cc: 43, direction: receives, group: envelope}
+  carrier_attack:    {label: CARRIER ATTACK, cc: 44, direction: receives, group: envelope}
+  carrier_decay:     {label: CARRIER DECAY, cc: 45, direction: receives, group: envelope}
+
+  # LFO ───────────────────────────────────────────────────
+  # Both map 0-127 onto 0 to 99.
+  lfo_rate:          {label: LFO RATE, cc: 46, direction: receives, group: lfo}
+  lfo_pitch_depth:   {label: LFO PITCH DEPTH, cc: 47, direction: receives, group: lfo}
+
+  # Synthesis ─────────────────────────────────────────────
+  # 0-127 onto 0 to 32, which is the DX7's algorithm count.
+  algorithm:         {label: ALGORITHM, cc: 48, direction: receives, group: synthesis}
+
+  # Arpeggiator ───────────────────────────────────────────
+  # **TEN BANDS AND NO NUMBERS FOR THEM**, because the table giving them does not agree with
+  # itself - see the comment above the definition. The ten the maker names, in order: `OFF`,
+  # `RISE1`, `RISE2`, `RISE3`, `FALL1`, `FALL2`, `FALL3`, `RAND1`, `RAND2`, `RAND3`.
+  arp_type:          {label: ARP TYPE, cc: 49, direction: receives, group: arpeggiator}
+  # **AND ELEVEN THAT DO HAVE NUMBERS**, from the decimal column of a table whose hexadecimal has
+  # two typos in it. The decimals partition 0 to 127 exactly.
+  # **The maker prints them as ratios** - `1/12`, `1/8`, `1/4`, `1/3`, `1/2`, `2/3`, `1/1`, `3/2`,
+  # `2/1`, `3/1`, `4/1` - which this format's value names cannot be, so each is written out. They
+  # are rates against the step rather than note lengths, which is why they are not `quarter_note`
+  # and its kind.
+  arp_div:           {label: ARP DIV, cc: 50, direction: receives, group: arpeggiator,
+                      values: {one_twelfth: 0, one_eighth: 12, one_quarter: 24, one_third: 36,
+                               one_half: 47, two_thirds: 59, one: 70, three_halves: 82,
+                               two: 94, three: 105, four: 117}}

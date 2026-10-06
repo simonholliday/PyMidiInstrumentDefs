@@ -199,6 +199,7 @@ class TestBundledCorpus:
 			"korg/volca_bass",
 			"korg/volca_beats",
 			"korg/volca_drum",
+			"korg/volca_fm",
 			"korg/wavestate",
 			"make_noise/zero_coast",
 			"modal/carbon8m",
@@ -14537,3 +14538,172 @@ class TestTR8:
 
 		assert "**ONE A3 SHEET, 1,191 BY 842 POINTS, CARRYING 17,395 CHARACTERS**" in flat
 		assert "**It carries no controller number at all**" in flat
+
+
+class TestVolcaFM:
+
+	"""Eleven controls that only travel inwards, and a value table that disagrees with itself.
+
+	Its maker says why nothing leaves in one line - there is no MIDI Out jack -
+	and its implementation is the first in this corpus that is a plain text file.
+	"""
+
+	def test_nothing_leaves_and_the_maker_says_why (self) -> None:
+		"""So every control is receive-only and the chart's whole column is crossed."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert len(volca.controls) == 11
+		assert all(control.direction == "receives" for control in volca.controls.values())
+		assert volca.midi.clock == "receives"
+		assert volca.midi.transport == "receives"
+
+		said = prose_of("korg", "volca_fm")
+
+		assert "No message is transmitted. (The volca fm is not equipped with a MIDI Out jack.)" \
+			in said
+
+		flat = " ".join(said.split())
+
+		assert "**NOTHING LEAVES THIS INSTRUMENT, AND ITS MAKER SAYS WHY IN ONE LINE.**" in flat
+		assert "a consumer can stop wondering what this instrument reports: it has nowhere to" \
+			" report to" in flat
+
+	def test_its_implementation_is_the_first_text_file_in_the_corpus (self) -> None:
+		"""Which is why there is no extraction, no ligature and no coordinate reading here."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+		url = volca.sources["implementation"].url
+
+		assert url is not None and url.endswith(".txt")
+
+		# **AND IT IS THE ONLY ONE**, which is what makes the claim worth asserting.
+		elsewhere = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			for source in pymidiinstrumentdefs.load(name, [CORPUS]).sources.values()
+			if source.kind == "implementation" and (source.url or "").endswith(".txt")]
+
+		assert elsewhere == ["korg/volca_fm"]
+
+		flat = " ".join(prose_of("korg", "volca_fm").split())
+
+		assert "**ITS IMPLEMENTATION IS A TEXT FILE, WHICH IS THE FIRST IN THIS CORPUS.**" in flat
+
+	def test_one_value_table_is_carried_and_one_is_not (self) -> None:
+		"""Because one column is coherent and the other table has neither."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		# ARP DIV's decimals partition 0 to 127 exactly, so they are carried.
+		bands = volca.controls["arp_div"].values
+
+		assert bands == {"one_twelfth": 0, "one_eighth": 12, "one_quarter": 24, "one_third": 36,
+			"one_half": 47, "two_thirds": 59, "one": 70, "three_halves": 82, "two": 94,
+			"three": 105, "four": 117}
+
+		# **AND ARP TYPE CARRIES NOTHING**, because no reading of its table is a partition.
+		assert not volca.controls["arp_type"].values
+		assert not volca.controls["arp_type"].choices
+
+		flat = " ".join(prose_of("korg", "volca_fm").split())
+
+		assert "**ARP DIV's decimal column is coherent and its hexadecimal has two typos.**" in flat
+		assert "**ARP TYPE's columns are both incoherent, so neither is carried.**" in flat
+		assert "**the decimal column overlaps itself**: the ninth row ends at 115 and the tenth" \
+			" begins at 104" in flat
+
+		# The ten names are recorded even though the numbers are not.
+		assert "`OFF`, `RISE1`, `RISE2`, `RISE3`, `FALL1`, `FALL2`, `FALL3`, `RAND1`, `RAND2`," \
+			" `RAND3`" in flat
+
+	def test_one_number_means_two_things_and_the_documents_disagree (self) -> None:
+		"""So the label is the chart's single row and the rest is written down."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert volca.controls["transpose"].cc == 40
+		assert volca.controls["transpose"].label == "TRANSPOSE"
+
+		flat = " ".join(prose_of("korg", "volca_fm").split())
+
+		assert "**ONE NUMBER MEANS TWO THINGS AND THE TWO DOCUMENTS DISAGREE ABOUT WHICH IS" \
+			" WHICH.**" in flat
+		assert "**The manual says the switch turns the slider to semitone units when it is on;" \
+			" the implementation gives the on state the narrower span.**" in flat
+
+	def test_its_global_switch_is_on_where_the_nymphes_is_off (self) -> None:
+		"""The same kind of switch, set the other way, two ranks apart."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		said = prose_of("korg", "volca_fm")
+
+		assert "Received when global parameter MIDI RX ShortMessage is set to ON." in said
+
+		flat = " ".join(said.split())
+
+		assert "**Which is the opposite of `dreadbox/nymphes` at rank 99**" in flat
+
+		# The sibling that is set the other way, so the pair is assertable.
+		assert "CC : In = OFF, out=OFF" in prose_of("dreadbox", "nymphes")
+
+	def test_a_korg_that_accepts_a_yamaha_dump (self) -> None:
+		"""And publishes the other maker's format to go with it."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert volca.midi.sysex is True
+
+		said = prose_of("korg", "volca_fm")
+
+		assert "Received only YAMAHA DX7 bulk data." in said
+
+		flat = " ".join(said.split())
+
+		assert "**ITS SYSTEM EXCLUSIVE IS ANOTHER MAKER'S.**" in flat
+		assert "which is the only instrument here to do so" in flat
+
+	def test_three_voices_and_a_velocity_it_does_not_use (self) -> None:
+		"""With a controller for velocity instead of the byte it ignores."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert volca.voice is not None
+		assert volca.voice.polyphony == 3
+		assert volca.voice.voicing_modes == (1, 3)
+		assert volca.voice.velocity is not None
+		assert volca.voice.velocity.note_on == "ignored"
+		assert volca.voice.aftertouch == "none"
+		assert volca.voice.pitch_bend is None
+
+		said = prose_of("korg", "volca_fm")
+
+		assert "Velocity is not used." in said
+		assert "This digital synthesizer uses a 3-voice, 6-operator FM (Frequency Modulation)" \
+			" sound engine." in said
+
+		flat = " ".join(said.split())
+
+		assert "**And there is a controller for velocity instead**: number 41" in flat
+
+	def test_what_its_firmware_changed_is_not_published (self) -> None:
+		"""Instructions, not notes - and the MIDI documents are three years older."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert volca.model.firmware == "1.07"
+		assert str(volca.sources["implementation"].dated) == "2016-04-07"
+		assert str(volca.sources["firmware_update"].dated) == "2019-08-20"
+
+		flat = " ".join(prose_of("korg", "volca_fm").split())
+
+		assert "**1.07, AND WHAT IT CHANGED IS NOT PUBLISHED.**" in flat
+		assert "so whether three years changed anything below is a thing nobody has said" in flat
+		assert "**The firmware arrives as two WAV files played into the SYNC IN jack**" in flat
+
+	def test_the_parameter_list_is_a_picture_and_carries_no_number (self) -> None:
+		"""Opened because its name is where two Rolands put opposite things."""
+		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert "parameter_list" in volca.sources
+		assert volca.sources["parameter_list"].pictured_pages == ()
+
+		flat = " ".join(prose_of("korg", "volca_fm").split())
+
+		assert "**no text layer at all** - 1,888 and 615 vector drawings between them" in flat
+		assert "**not one controller number**" in flat
+
+		# The two that made it worth opening, both in this corpus.
+		assert "`roland/jd_xi` at rank 94 found nothing and `roland/jupiter_x` at 96 found a" \
+			" whole second map" in flat

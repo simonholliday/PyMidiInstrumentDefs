@@ -165,6 +165,7 @@ class TestBundledCorpus:
 			"behringer/td_3",
 			"behringer/ub_xa",
 			"dirtywave/m8",
+			"dreadbox/nymphes",
 			"dreadbox/typhon",
 			"elektron/analog_four",
 			"elektron/analog_rytm_mkii",
@@ -2409,7 +2410,7 @@ class TestOsmose:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
-			"asm/leviasynth", "expressive_e/osmose", "modal/carbon8m",
+			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "modal/carbon8m",
 			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
 			"udo_audio/super_6", "waldorf/iridium", "waldorf/protein"]
 
@@ -7742,20 +7743,27 @@ class TestDeclaringAPicturedPage:
 
 	"""A source can say which of its pages publish their numbers only as an image."""
 
-	def test_two_instruments_declare_one_and_each_for_its_own_reason (self) -> None:
-		"""Two pages in this corpus publish their numbers only as a picture, not one.
+	def test_three_instruments_declare_one_and_each_for_its_own_reason (self) -> None:
+		"""Four pages in this corpus publish their numbers only as a picture, not one.
 
-		Listed by name so that a third has to be added here deliberately: the declaration
+		Listed by name so that a fourth has to be added here deliberately: the declaration
 		switches off the strongest check this corpus has, for the pages it names, so it
 		should never spread quietly.
 
-		**The two got there differently**, which is worth knowing before declaring a third.
-		The DrumBrute Impact's page 99 gives its drum map as a *screenshot of the maker's
-		own editor*, in a manual of otherwise ordinary text.  The microKORG2's page 133 is
-		a MIDI Implementation Chart whose **type was converted to outlines** when the manual
-		was made - 2,362 vector drawings and 79 characters where a reader sees a full page
-		of numbers.  A picture of a screen and a page of outlined type look identical to a
-		text search and need the same declaration.
+		**The three got there differently**, which is worth knowing before declaring a
+		fourth.  The DrumBrute Impact's page 99 gives its drum map as a *screenshot of the
+		maker's own editor*, in a manual of otherwise ordinary text.  The microKORG2's page
+		133 is a MIDI Implementation Chart whose **type was converted to outlines** when the
+		manual was made - 2,362 vector drawings and 79 characters where a reader sees a full
+		page of numbers.  **The Nymphes's two are the plainest case and the largest**: its
+		`8. CC List` is a PNG on each of two sheets, 13 characters of text between them, and
+		82 controller numbers inside the images.
+
+		A screenshot, a page of outlined type and a flat PNG look identical to a text search
+		and need the same declaration.  **The Nymphes is also the first whose pictures are
+		pinned by digest** - `Notes/4635_extract_nymphes.py` checks both images, so a redrawn
+		table fails rather than letting a reading of the old one stand.  That is worth
+		copying for any fourth.
 		"""
 		declared = {
 			name: {key: source.pictured_pages
@@ -7766,6 +7774,7 @@ class TestDeclaringAPicturedPage:
 
 		assert {name: pages for name, pages in declared.items() if pages} == {
 			"arturia/drumbrute_impact": {"manual": (99,)},
+			"dreadbox/nymphes": {"manual": (22, 23)},
 			"korg/microkorg2": {"manual": (133,)},
 		}
 
@@ -7997,7 +8006,10 @@ class TestProphet6:
 		# purposes." So this boolean covers an instrument that takes some channels and one
 		# that takes as many as somebody says.
 		assert "waldorf/protein" in flagged
-		assert len(flagged) == 11
+
+		# The twelfth, whose MPE is a state of its channel menu rather than a setting beside it.
+		assert "dreadbox/nymphes" in flagged
+		assert len(flagged) == 12
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -13963,3 +13975,209 @@ class TestEdge:
 		flat = " ".join(prose_of("behringer", "edge").split())
 
 		assert "**IT NUMBERS SOME OF ITS SHEETS AND NOT OTHERS**" in flat
+
+
+class TestNymphes:
+
+	"""82 controls read off two pages that are pictures, and all of them start switched off.
+
+	Its maker publishes the controller list as an image, so the text layer of
+	those two sheets holds thirteen characters between them - and a factory reset
+	leaves control change reception off, which no field in this format can say.
+	"""
+
+	def test_its_controller_list_is_a_picture_and_the_file_says_so (self) -> None:
+		"""So the citation checker reports plainly that it cannot look for 68 numbers."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		assert len(nymphes.controls) == 82
+		assert len(nymphes.groups) == 7
+		assert nymphes.sources["manual"].pictured_pages == (22, 23)
+
+		flat = " ".join(prose_of("dreadbox", "nymphes").split())
+
+		assert "**AND THE LIST ITSELF IS A PICTURE.**" in flat
+		assert "the table is an image, so a search of this manual for `LPF Cutoff` or `Reverb" \
+			" Mix` finds nothing" in flat
+
+		# **THE ONLY OTHER DEFINITION THAT DECLARES PICTURED PAGES**, so the pair is worth
+		# asserting together: a reader comparing them sees what the field is for.
+		declared = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
+			for source in pymidiinstrumentdefs.load(name, [CORPUS]).sources.values()
+			if source.pictured_pages)
+
+		assert "dreadbox/nymphes" in declared
+
+	def test_every_control_is_off_until_somebody_turns_it_on (self) -> None:
+		"""Which is the first thing a reader of this definition needs to know."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		assert nymphes.controls
+		assert nymphes.midi.control_change is None
+
+		said = prose_of("dreadbox", "nymphes")
+
+		assert "CC : In = OFF, out=OFF" in said
+
+		flat = " ".join(said.split())
+
+		assert "**EIGHTY-TWO CONTROLS, AND EVERY ONE OF THEM IS OFF WHEN THE INSTRUMENT LEAVES" \
+			" THE FACTORY.**" in flat
+		assert "**No field in this format says that**" in flat
+
+	def test_four_numbers_are_out_of_sequence_and_the_maker_prints_them_in_bold (self) -> None:
+		"""Because 64 and 68 were already the standard's, which the maker kept."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		for name, number in (("mod_source_reverb_size_depth", 86),
+				("mod_source_reverb_decay_depth", 87),
+				("mod_source_reverb_filter_depth", 88),
+				("mod_source_reverb_mix_depth", 89)):
+			assert nymphes.controls[name].cc == number
+			assert nymphes.controls[name].group == "modulation"
+
+		# The two it kept at the standard's numbers, which is why the four had to move.
+		assert nymphes.controls["sustain_pedal"].cc == 64
+		assert nymphes.controls["legato"].cc == 68
+
+		flat = " ".join(prose_of("dreadbox", "nymphes").split())
+
+		assert "**FOUR OF ITS NUMBERS ARE SET OUT OF SEQUENCE AND THE MAKER PRINTS THEM IN" \
+			" BOLD.**" in flat
+
+	def test_the_seven_numbers_it_skips_are_mostly_ones_this_corpus_refuses (self) -> None:
+		"""Six of the seven, and the seventh is the one place the maker crossed the standard."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		used = {control.cc for control in nymphes.controls.values()}
+		skipped = [n for n in range(1, 90) if n not in used]
+
+		assert skipped == [2, 6, 38, 65, 66, 67, 69]
+
+		# **AND THE ONE IT DID CROSS**, which a consumer sending bank select would meet.
+		assert nymphes.controls["mod_source_osc_level_depth"].cc == 32
+
+		flat = " ".join(prose_of("dreadbox", "nymphes").split())
+
+		assert "CC 32 is `Mod Source OSC Level Depth` here and bank select LSB in the standard," \
+			" so a controller sending bank select to a Nymphes moves a modulation depth." in flat
+
+	def test_its_manual_cannot_count_its_own_pages (self) -> None:
+		"""So a locator here is the file's sheet, which is what eighteen of them print anyway."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		assert nymphes.sources["manual"].page_offset == 0
+		assert nymphes.sources["manual"].paginated is not False
+
+		flat = " ".join(prose_of("dreadbox", "nymphes").split())
+
+		assert "**THE MANUAL CANNOT COUNT ITS OWN PAGES.**" in flat
+		assert "two sheets claim page 10, no sheet claims page 1, and the last three run one" \
+			" behind" in flat
+
+	def test_the_two_documents_that_settle_most_are_inside_a_firmware_archive (self) -> None:
+		"""And the support page that offers it does not say what is in it."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		assert "v2_notes" in nymphes.sources
+		assert "v2_1_notes" in nymphes.sources
+		for key in ("v2_notes", "v2_1_notes"):
+			url = nymphes.sources[key].url
+
+			assert url is not None and url.endswith(".zip")
+
+		said = prose_of("dreadbox", "nymphes")
+
+		assert "Polyphonic Aftertouch is implemented, so that Nymphes can respond to a keyboard/" \
+			" controller that allows this feature." in said
+		assert "Pitch wheel : +/-3 semitones" in said
+
+		flat = " ".join(said.split())
+
+		assert "**The support page offers the archive and does not say what is in it.**" in flat
+
+	def test_the_makers_pages_refused_and_the_shared_copy_is_cited (self) -> None:
+		"""Three times, spaced apart, nothing varied - while its uploads served fine."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
+
+		# **ONE DOCUMENT, TWO CITERS, AND THE SAME DIGEST** - which is what makes this honest
+		# rather than a shortcut.
+		assert nymphes.sources["support_page"].sha256 == typhon.sources["support_page"].sha256
+		assert str(nymphes.sources["support_page"].retrieved) == "2026-10-03"
+		assert str(nymphes.sources["manual"].retrieved) == "2026-10-06"
+
+		flat = " ".join(prose_of("dreadbox", "nymphes").split())
+
+		assert "**AND THE MAKER'S OWN PAGES REFUSED THIS MACHINE.**" in flat
+		assert "three times, spaced apart, with nothing varied between attempts" in flat
+		assert "**Every file it names was fetched fresh and answered 200**" in flat
+
+	def test_its_channel_can_be_set_further_by_midi_than_by_its_own_knob (self) -> None:
+		"""A player with no MIDI source to hand reaches only channels 1 to 7."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		assert nymphes.midi.channels == (1, 16)
+		assert nymphes.midi.per_voice_channels is True
+
+		said = prose_of("dreadbox", "nymphes")
+
+		assert "Send any MIDI message (channel 1 to 16) or use the rotary to select from channel" \
+			" 1 to 7." in said
+		assert "Nymphes can now be set to any MIDI channel (except of 1 to 7) with the use of" \
+			" MIDI learn." in said
+
+		flat = " ".join(said.split())
+
+		assert "**So a player with no MIDI source to hand can only reach channels 1 to 7**" in flat
+
+	def test_six_voices_spent_four_ways_and_an_aftertouch_that_is_both (self) -> None:
+		"""Polyphonic for sixteen destinations and monophonic for the rest."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		assert nymphes.voice is not None
+		assert nymphes.voice.polyphony == 6
+		assert nymphes.voice.voicing_modes == (1, 2, 3, 6)
+		assert nymphes.voice.aftertouch == "poly"
+		assert nymphes.voice.pitch_bend is not None
+		assert nymphes.voice.pitch_bend.semitones == 3
+		assert nymphes.voice.pitch_bend.programmable is True
+
+		flat = " ".join(prose_of("dreadbox", "nymphes").split())
+
+		assert "**this instrument's aftertouch is polyphonic for some destinations and" \
+			" monophonic for the rest.**" in flat
+
+		# **AND THE FACTORY BEND DEPTH IS ONLY IN THE RELEASE NOTES**, which is why they are cited.
+		assert "**A FACTORY DEPTH THAT ONLY THE RELEASE NOTES GIVE.**" in flat
+
+	def test_its_documents_disagree_about_which_way_its_socket_points (self) -> None:
+		"""And the definition carries neither, because no field records that."""
+		flat = " ".join(prose_of("dreadbox", "nymphes").split())
+
+		assert "WHAT ITS OWN DOCUMENTS DISAGREE ABOUT, WHICH IS WHICH WAY ITS SOCKET POINTS." \
+			in flat
+		assert "the connection diagram on the same document's sheet 4 labels the hardware jack" \
+			" `MIDI IN`**" in flat
+		assert "a reader buying the included DIN5 adapter should know the document says both" \
+			" things" in flat
+
+	def test_the_clock_was_recorded_as_absent_until_the_sweep_caught_it (self) -> None:
+		"""An absence is a claim about every page, so it is swept for rather than noticed."""
+		nymphes = pymidiinstrumentdefs.load("dreadbox/nymphes", [CORPUS])
+
+		assert nymphes.midi.clock == "receives"
+		assert nymphes.midi.transport is None
+
+		said = prose_of("dreadbox", "nymphes")
+
+		# The sentence that was missed, eleven sheets before anything else about MIDI.
+		assert "BPM (where the rate can sync to midi clock)" in said
+		assert "When the Rate is set to BPM , but no clock is send, it automatically works on" \
+			" low rate mode." in said
+
+		flat = " ".join(said.split())
+
+		assert "**A first reading of this definition recorded the clock as unmentioned**" in flat
+		assert "**An absence is a claim about every page, so it is the one kind of statement" \
+			" that has to be swept for rather than noticed.**" in flat

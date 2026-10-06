@@ -213,6 +213,15 @@ FOLDED: typing.Final[dict[str, str]] = {
 	# on both sides and still matches. What it costs is the ability to tell `A_B` from `AfB`,
 	# which is the hyphen's bargain and no reader of a citation is misled by it.
 	"_": "f",
+	# **AND THE LATIN LIGATURES ARE SPELT OUT**, because a typesetter's `ﬁ` is one character and
+	# the `fi` a definition types is two, so a quotation containing `specifics`, `off`, `flow` or
+	# `efficient` could never be found in a document that sets them as ligatures.
+	# **37 documents in this library do** - 611 occurrences in their first thirty sheets alone,
+	# the volca bass's manual 116 of them and the Nymphes's release notes 23 - and each character
+	# has exactly one reading, so this fold is simply a decomposition rather than a bargain.
+	# Like the soft hyphen above it can only make more quotations match and never fewer: nothing
+	# a definition could reasonably type is U+FB00 to U+FB06.
+	"ﬀ": "ff", "ﬁ": "fi", "ﬂ": "fl", "ﬃ": "ffi", "ﬄ": "ffl", "ﬅ": "st", "ﬆ": "st",
 }
 
 

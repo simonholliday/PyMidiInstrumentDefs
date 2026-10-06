@@ -1,0 +1,345 @@
+# **EIGHTY-TWO CONTROLS, AND EVERY ONE OF THEM IS OFF WHEN THE INSTRUMENT LEAVES THE FACTORY.**
+# The reset that restores the factory state sets `CC : In = OFF, out=OFF` (v2_notes p. 5), and
+# nothing else in any document says otherwise. So a consumer who sends any of the numbers below to
+# a new Nymphes gets nothing until they go into a menu and turn reception on. **No field in this
+# format says that**, and it is the first thing a reader of this definition needs to know.
+#
+# **AND THE LIST ITSELF IS A PICTURE.** Printed pages 21 and 22 are headed `8. CC List` and carry
+# thirteen characters of text between them: the table is an image, so a search of this manual for
+# `LPF Cutoff` or `Reverb Mix` finds nothing and a reader of its text layer would conclude the
+# instrument publishes no controller numbers at all. `pictured_pages` is the field that says so,
+# and the numbers below were read off the rendered pages rather than extracted.
+#
+# **THE MANUAL CANNOT COUNT ITS OWN PAGES.** Sheet 1 prints `10`, sheets 2 to 19 print 2 to 19,
+# sheet 20 prints `10` a second time, and sheets 21 to 23 print 20 to 22 - **so two sheets claim
+# page 10, no sheet claims page 1, and the last three run one behind.** Sheet 20 is the
+# preset import and export section, which was plainly added after the rest and took its neighbour's
+# number with it. No single offset can describe that, so this document is cited by name rather
+# than by page.
+#
+# **FOUR OF ITS NUMBERS ARE SET OUT OF SEQUENCE AND THE MAKER PRINTS THEM IN BOLD.** The
+# modulation targets run 31 to 63 and then jump to **86, 87, 88 and 89** for the four reverb
+# depths, which are the only rows in either page set in bold italic. The reason is visible in the
+# table: 64 and 68 were already taken by the sustain pedal and legato, which the maker kept at the
+# numbers the MIDI standard gives them, so the reverb targets had nowhere to go in sequence.
+#
+# **AND THE MAKER SKIPPED SEVEN NUMBERS BETWEEN 1 AND 89, SIX OF THEM FOR A REASON THIS CORPUS
+# RECOGNISES.** 2 is breath, 6 and 38 are the data entry pair this corpus has refused as
+# addressing machinery since rank 77, and 65, 66, 67 and 69 are the standard's other pedals -
+# portamento, sostenuto, soft and hold 2. **So the maker worked around the standard everywhere
+# except one place**: CC 32 is `Mod Source OSC Level Depth` here and bank select LSB in the
+# standard, so a controller sending bank select to a Nymphes moves a modulation depth.
+#
+# WHAT ITS OWN DOCUMENTS DISAGREE ABOUT, WHICH IS WHICH WAY ITS SOCKET POINTS. The key features
+# say `MIDI in/out over USB or via MIDI out via DIN5` (manual) and **the connection diagram on the
+# same document's sheet 4 labels the hardware jack `MIDI IN`**, with a MIDI controller drawn into
+# it. One of those is wrong and the definition carries neither, because no field here records
+# which way a socket points - but a reader buying the included DIN5 adapter should know the
+# document says both things.
+
+definition: 1
+
+model:
+  manufacturer: Dreadbox
+  name: Nymphes
+  # **2.1, AND THE CC LIST IN THE MANUAL IS LABELLED V2.0** - its contents page reads `8. CC List
+  # V2.o`, with a letter `o` where a zero belongs. The v2.1 release notes change four things and
+  # none of them is a controller number, so the list below describes both.
+  firmware: "2.1"
+  # A six-voice desktop module, analogue but for its reverb, USB powered. Its manual's file is
+  # served as `Nymhes_User_Manual.pdf` - **the maker misspells the instrument in the file name**,
+  # which is why a search of the support page's markup for `Nymphes` does not find it.
+  # Checked 2026-10-06.
+
+source: >-
+  **FOUR DOCUMENTS, AND THE TWO THAT SETTLE THE MOST ARE INSIDE A FIRMWARE ARCHIVE.** The user
+  manual carries the controller list as a picture; the v2 release notes carry MPE, polyphonic
+  aftertouch, the factory reset values and the fact that control change is off by default; the
+  v2.1 fixes carry four changes including the one exception to that default; and the support page
+  is where all three are found.
+
+  **THE CONTROL LIST WAS READ OFF RENDERED PAGES, NOT EXTRACTED.** See the comment above the
+  definition. The table is on manual pp. 22 and 23 - the file's sheets, which print 21 and 22 -
+  and `Notes/4635_extract_nymphes.py` renders both and asserts the thirteen characters of text
+  they hold between them, so a later session that finds a text layer there knows the file changed
+  rather than that this reading was lazy.
+
+  **AND THE MAKER'S OWN PAGES REFUSED THIS MACHINE.** `dreadbox-fx.com/support/` and the Nymphes
+  product page both returned `403 - Forbidden` on 2026-10-06, three times, spaced apart, with
+  nothing varied between attempts - while the same host served every `wp-content/uploads` file
+  without complaint. So the support page cited here is **the copy retrieved on 2026-10-03 for
+  `dreadbox/typhon`**, which is already in this library with its digest, and the manual, the
+  firmware archive and its two release notes were fetched fresh from the addresses that copy
+  names.
+
+  **SIX OF THE SEVEN NUMBERS THE MAKER SKIPPED ARE ONES THIS CORPUS WOULD HAVE REFUSED ANYWAY.**
+  See the comment above. The seventh thing worth knowing is that "CC 120 and 123 got implemented"
+  (v2_notes p. 4) for all sounds off and all notes off - **channel mode messages, which the
+  validator refuses**, so neither is among the 82 below and both are recorded here.
+
+  **AND ONE ABSENCE IN THIS DEFINITION WAS WRONG UNTIL THE SWEEP CAUGHT IT.** The clock was
+  written up as unmentioned, on the reasoning that an instrument whose LFOs offer a `BPM` rate
+  must sync to something and no document said what. It does say: the fourth LFO rate setting is
+  "BPM (where the rate can sync to midi clock)" (manual p. 13), eleven sheets before anything
+  else about MIDI. **An absence is a claim about every page, so it is the one kind of statement
+  that has to be swept for rather than noticed.**
+
+  NOT RECORDED: the transport, NRPN and the note range, none of which appears in any spelling in
+  any of the four documents. And the mode, there being no implementation chart - though omni is
+  what a factory reset leaves it in, `Midi channel=OMNI/Mp=OFF` (v2_notes p. 5).
+
+sources:
+  manual:
+    kind: manual
+    title: Nymphes Owner's Manual
+    landing: "https://dreadbox-fx.com/support/"
+    url: "https://dreadbox-fx.com/wp-content/uploads/2025/04/Nymhes_User_Manual.pdf"
+    sha256: 2f321e1a883c54abdf87cb7373ce48e934887d403c69d8951228bb7ac9ed941d
+    retrieved: 2026-10-06
+    # **23 SHEETS, AND IT CANNOT COUNT THEM, SO A LOCATOR HERE IS THE FILE'S SHEET.** Sheets 2 to
+    # 19 print 2 to 19 and agree with it; sheet 1 prints `10`, sheet 20 prints `10` a second time,
+    # and sheets 21 to 23 print 20 to 22. **No offset describes that**, so the sheet is what is
+    # cited - which is the printed folio for eighteen of the twenty-three and is at least a thing
+    # a reader can turn to for all of them.
+    # **ITS CONTROLLER LIST IS A PICTURE**, on the sheets declared below: between them they hold
+    # thirteen characters of text, which is the heading and two folios.
+    # Made in Serif Affinity Publisher, created 27 September 2023 and modified 13 March 2024, by
+    # an author the file names. The maker misspells the instrument in the file name.
+    pictured_pages: [22, 23]
+  v2_notes:
+    kind: release_notes
+    title: Nymphes Firmware v2
+    landing: "https://dreadbox-fx.com/support/"
+    url: "https://dreadbox-fx.com/wp-content/uploads/2025/04/Nymphes-Firmware-Update-V2.1.zip"
+    sha256: 9d68a73abe7c5ad3466ea7bde13deda96f5ec5c03c2f9ff0c63ba234191a8b4d
+    retrieved: 2026-10-06
+    # **FIVE SHEETS INSIDE A FIRMWARE ARCHIVE, AND THEY SETTLE MORE MIDI THAN THE MANUAL DOES.**
+    # MPE, polyphonic aftertouch, the list of targets that answer per note, the sysex format, the
+    # channel learn, **the factory reset values** - and the one that matters most to a consumer,
+    # that control change is off until somebody turns it on.
+    # The digest is of the PDF inside the `.zip`; the archive itself is
+    # 07ed9bd9f2d265f1beaebf33dafb2ea38e1a1869a14e3868e17ff54a74eba912 and also holds the
+    # firmware as a `.syx`, two bootloader guides and the v2.1 notes. **The support page offers
+    # the archive and does not say what is in it.**
+    # Created 16 February 2022. Its folio is its own sheet number, so no offset.
+    page_offset: 0
+  v2_1_notes:
+    kind: release_notes
+    title: V2.1 Firmware Update Fixes
+    landing: "https://dreadbox-fx.com/support/"
+    url: "https://dreadbox-fx.com/wp-content/uploads/2025/04/Nymphes-Firmware-Update-V2.1.zip"
+    sha256: d1a8347967ec6261288d83c9968a7647e24c54a0612f93606cd548c152299b86
+    retrieved: 2026-10-06
+    paginated: false
+    # One sheet, four lines, and **two of them are MIDI**: that the sustain pedal is no longer
+    # gated by the control change switch, and that a sysex dump can now be asked for rather than
+    # only offered. From the same archive. Created 17 March 2022. No folio.
+  support_page:
+    kind: download_page
+    title: Support - Dreadbox Synthesizers
+    landing: "https://dreadbox-fx.com/"
+    url: "https://dreadbox-fx.com/support/"
+    sha256: f409d99302ca01fc9e7d277c68738599ce6b34529489c784b2d965b5a2186112
+    retrieved: 2026-10-03
+    paginated: false
+    # **THE SAME FILE `dreadbox/typhon` CITES, AND THE DATE IS NOT THIS INSTRUMENT'S.** This page
+    # refused three requests from here on 2026-10-06 - `403 - Forbidden`, spaced apart, nothing
+    # varied - so what is cited is the copy that instrument's work retrieved three days earlier,
+    # already in this library with its digest. **Every file it names was fetched fresh and
+    # answered 200**, so the refusal is of pages and not of uploads.
+    # Cited for what this maker offers for this instrument: `Factory Presets`, `Firmware` and
+    # `User Manual`, and **no separate MIDI document of any kind**. Another instrument on the same
+    # page, the Artemis, has a `CC List v1.1.0` of its own - so this maker does publish one
+    # separately when it chooses, and for the Nymphes it has not.
+
+midi:
+  # **SIXTEEN, BY TWO MECHANISMS THAT REACH DIFFERENT NUMBERS.** The menu's rotary stops at seven
+  # - "Send any MIDI message (channel 1 to 16) or use the rotary to select from channel 1 to 7."
+  # (manual) - and the release notes put it the other way round: "Nymphes can now be set to any
+  # MIDI channel (except of 1 to 7) with the use of MIDI learn." (v2_notes p. 3). **So a player
+  # with no MIDI source to hand can only reach channels 1 to 7**, which is a thing this field
+  # cannot say.
+  channels: [1, 16]
+  # NOT RECORDED, the mode: there is no implementation chart, and what the documents give instead
+  # is a state - "Midi channel=OMNI/Mp=OFF" (v2_notes p. 5) after a factory reset - rather than a
+  # number.
+  # **RECEIVES, AND THE ONLY DOCUMENT THAT SAYS SO SAYS IT INSIDE A SENTENCE ABOUT AN LFO.**
+  # Both LFOs offer four rate settings, the fourth being "BPM (where the rate can sync to midi
+  # clock)" (manual p. 13) - and the same paragraph gives what happens without one: "When the
+  # Rate is set to BPM , but no clock is send, it automatically works on low rate mode." (manual
+  # p. 13), stray space and `is send` as printed.
+  # **A first reading of this definition recorded the clock as unmentioned**, on the reasoning
+  # that an instrument with a `BPM` LFO type must sync to something and no document said what.
+  # The absence sweep in `Notes/4635_extract_nymphes.py` found the sentence. So the field is
+  # `receives` rather than empty, and nothing anywhere says it sends one.
+  clock: receives
+  # NOT RECORDED, the transport, which **is** unmentioned in any spelling in any of the four.
+  program_change:
+    # Both ways, each switchable, and the switches are one menu item: `PROGRAM CHANGE In: Off/On
+    # Out: Off/On` (manual). The v2.1 fixes add a second effect to the outgoing one: "CC Out
+    # messages on the external Program Change were added to aid the use of CC editors."
+    # (v2_1_notes).
+    receives: true
+    sends: true
+    # **98, WHICH IS EVERY SLOT RATHER THAN A BANK**: "98 Presets Memory (49 user and 49 factory)"
+    # (manual). The sysex format addresses them as a page, a bank of seven and a preset of seven -
+    # 7 x 7 user and 7 x 7 factory - so program change alone reaches all of them.
+    presets: 98
+  # **TRUE, AND THE MAKER PUBLISHES THE FORMAT RATHER THAN ONLY THE FACT.** Preset import and
+  # export, with the message laid out byte by byte and a manufacturer ID given as part of it
+  # (v2_notes p. 3). The v2.1 fixes add the other direction: "Sysex Dump Request added: F0 00 21
+  # 35 06 02 F7" (v2_1_notes).
+  # **And the preset body is Protobuf**, which the maker says and does not document: "The rest
+  # sysex numbers are preset specifics following Google Protobuf format." (v2_notes p. 3), with an
+  # email address for anybody who wants the rest.
+  sysex: true
+  # "This option lets you set the midi channel that Nymphes will respond to or enable MPE
+  # support." (manual), and the release notes give the procedure and what it costs: **under MPE
+  # the pitch wheel's range changes**, `From 0 to 48 semitones (On MPE)` against 0 to 12
+  # otherwise (manual).
+  per_voice_channels: true
+
+voice:
+  addressing: pitches
+  # NOT RECORDED. No document gives a note range.
+  # **SIX, AND FIVE OF ITS SIX PLAY MODES TAKE FEWER.** "6 voices of Polyphony" (manual), and the
+  # mode table on the same document gives the rest: POLY 6, UNI A 1, UNI B 1, TRI 3, DUO 2,
+  # MONO 1 - **a voice count and an oscillators-per-note count for each**, so the instrument
+  # spends its six voices either on six notes or on one thick one.
+  polyphony: 6
+  # The four distinct counts that table gives, which is what this field holds.
+  voicing_modes: [1, 2, 3, 6]
+  velocity:
+    # Received, as one of four assignable modulation sources: "This lets you use keyboard velocity
+    # (how hard you strike a note on a keyboard) to modulate any of the 28 slider parameters,
+    # assuming your keyboard controller has velocity sensitive keys." (manual). **What it does
+    # without an assignment is not said**, so this records that the byte is read and not that it
+    # reaches the amplifier.
+    note_on: received
+  # **POLYPHONIC, STATED IN SO MANY WORDS, AND WITH THE LIMIT STATED BESIDE IT**: "Polyphonic
+  # Aftertouch is implemented, so that Nymphes can respond to a keyboard/ controller that allows
+  # this feature. Please note that not all targets are polyphonic. That means, some of them will
+  # still have a monophonic response." (manual). The release notes list the sixteen that do
+  # answer per note (v2_notes p. 2), which is a thing no field here holds: **this instrument's
+  # aftertouch is polyphonic for some destinations and monophonic for the rest.**
+  aftertouch: poly
+  pitch_bend:
+    # **A FACTORY DEPTH THAT ONLY THE RELEASE NOTES GIVE.** The manual's global setting is a range
+    # - `PITCH WHEEL From 0 to 12 semitones` - and the value a factory reset restores is in the
+    # notes: "Pitch wheel : +/-3 semitones" (v2_notes p. 5). So three is what a new instrument
+    # bends, and twelve is as far as it can be set.
+    semitones: 3
+    programmable: true
+
+groups:
+  performance: Performance controls
+  oscillator: Oscillator
+  filter: Filter
+  envelope: Envelopes
+  lfo: Low frequency oscillators
+  reverb: Reverb
+  modulation: Modulation source and its depths
+
+controls:
+
+  # **EVERY NUMBER BELOW WAS READ OFF A RENDERED PAGE**, because the table is an image - see the
+  # comment above the definition and the `pictured_pages` declaration on the manual.
+  # The groups here are this corpus's, not the maker's: the table separates its rows with heavy
+  # rules into blocks that mix a filter parameter with a glide and an amplifier level, so grouping
+  # by what each control does serves a reader better than reproducing the printing.
+
+  # performance (7)
+  mod_wheel:       {label: Mod Wheel, cc: 1, group: performance}
+  glide:           {label: Glide, cc: 5, group: performance}
+  amp_level:       {label: AMP level, cc: 7, group: performance}
+  chord_selector:  {label: Chord Selector, cc: 16, group: performance}
+  play_mode:       {label: Play Mode, cc: 17, choices: {"poly": 0, "uni_a": 1, "uni_b": 2, "tri": 3, "duo": 4, "mono": 5}, group: performance}
+  sustain_pedal:   {label: Sustain Pedal, cc: 64, group: performance}
+  legato:          {label: legato, cc: 68, choices: {"off": 0, "on": 1}, group: performance}
+
+  # oscillator (8)
+  osc_level:        {label: OSC level, cc: 9, group: oscillator}
+  sub_level:        {label: Sub level, cc: 10, group: oscillator}
+  noise_level:      {label: Noise level, cc: 11, group: oscillator}
+  pulse_width:      {label: Pulse Width, cc: 12, group: oscillator}
+  lfo_pitch_depth:  {label: LFO Pitch Depth, cc: 13, group: oscillator}
+  eg_pitch_depth:   {label: EG Pitch Depth, cc: 14, group: oscillator}
+  detune:           {label: Detune, cc: 15, group: oscillator}
+  osc_wave:         {label: OSC Wave, cc: 70, group: oscillator}
+
+  # filter (6)
+  lpf_eg_depth:      {label: LPF EG depth, cc: 3, group: filter}
+  lpf_tracking:      {label: LPF Tracking, cc: 4, group: filter}
+  lfo_cutoff_depth:  {label: LFO Cutoff Depth, cc: 8, group: filter}
+  resonance:         {label: Resonance, cc: 71, group: filter}
+  lpf_cutoff:        {label: LPF Cutoff, cc: 74, group: filter}
+  hpf_cutoff:        {label: HPF Cutoff, cc: 81, group: filter}
+
+  # envelope (8)
+  amp_eg_release:     {label: AMP EG Release, cc: 72, group: envelope}
+  amp_eg_attack:      {label: AMP EG Attack, cc: 73, group: envelope}
+  filter_eg_attack:   {label: Filter EG Attack, cc: 79, group: envelope}
+  filter_eg_decay:    {label: Filter EG Decay, cc: 80, group: envelope}
+  filter_eg_sustain:  {label: Filter EG Sustain, cc: 82, group: envelope}
+  filter_eg_release:  {label: Filter EG Release, cc: 83, group: envelope}
+  amp_eg_decay:       {label: AMP EG Decay, cc: 84, group: envelope}
+  amp_eg_sustain:     {label: AMP EG Sustain, cc: 85, group: envelope}
+
+  # lfo (12)
+  lfo_1_rate:      {label: LFO 1 Rate, cc: 18, group: lfo}
+  lfo_1_wave:      {label: LFO 1 Wave, cc: 19, group: lfo}
+  lfo_1_delay:     {label: LFO 1 Delay, cc: 20, group: lfo}
+  lfo_1_fade:      {label: LFO 1 Fade, cc: 21, group: lfo}
+  lfo_1_type:      {label: LFO 1 Type, cc: 22, choices: {"bpm": 0, "low": 1, "high": 2, "track": 3}, group: lfo}
+  lfo_1_key_sync:  {label: LFO 1 Key Sync, cc: 23, choices: {"off": 0, "on": 1}, group: lfo}
+  lfo_2_rate:      {label: LFO 2 Rate, cc: 24, group: lfo}
+  lfo_2_wave:      {label: LFO 2 Wave, cc: 25, group: lfo}
+  lfo_2_delay:     {label: LFO 2 Delay, cc: 26, group: lfo}
+  lfo_2_fade:      {label: LFO 2 Fade, cc: 27, group: lfo}
+  lfo_2_type:      {label: LFO 2 Type, cc: 28, choices: {"bpm": 0, "low": 1, "high": 2, "track": 3}, group: lfo}
+  lfo_2_key_sync:  {label: LFO 2 Key Sync, cc: 29, choices: {"off": 0, "on": 1}, group: lfo}
+
+  # reverb (4)
+  reverb_size:    {label: Reverb Size, cc: 75, group: reverb}
+  reverb_decay:   {label: Reverb Decay, cc: 76, group: reverb}
+  reverb_filter:  {label: Reverb Filter, cc: 77, group: reverb}
+  reverb_mix:     {label: Reverb Mix, cc: 78, group: reverb}
+
+  # modulation (37)
+  mod_source_selector:                    {label: Mod Source Selector, cc: 30, choices: {"lfo_2": 0, "mod_wheel": 1, "velocity": 2, "aftertouch": 3}, group: modulation}
+  mod_source_osc_wave_depth:              {label: Mod Source OSC Wave Depth, cc: 31, group: modulation}
+  mod_source_osc_level_depth:             {label: Mod Source OSC Level Depth, cc: 32, group: modulation}
+  mod_source_sub_level_depth:             {label: Mod Source Sub Level Depth, cc: 33, group: modulation}
+  mod_source_noise_level_depth:           {label: Mod Source Noise Level Depth, cc: 34, group: modulation}
+  mod_source_lfo_pitch_depth_depth:       {label: Mod Source LFO Pitch Depth Depth, cc: 35, group: modulation}
+  mod_source_pulsewidth_depth:            {label: Mod Source PulseWidth Depth, cc: 36, group: modulation}
+  mod_source_glide_depth:                 {label: Mod Source Glide Depth, cc: 37, group: modulation}
+  mod_source_detune_depth:                {label: Mod Source Detune Depth, cc: 39, group: modulation}
+  mod_source_chord_selector_depth:        {label: Mod Source Chord Selector Depth, cc: 40, group: modulation}
+  mod_source_eg_pitch_depth_depth:        {label: Mod Source EG Pitch Depth Depth, cc: 41, group: modulation}
+  mod_source_lpf_cutoff_depth:            {label: Mod Source LPF Cutoff Depth, cc: 42, group: modulation}
+  mod_source_resonance_depth:             {label: Mod Source Resonance Depth, cc: 43, group: modulation}
+  mod_source_lpf_eg_depth_depth:          {label: Mod Source LPF EG Depth Depth, cc: 44, group: modulation}
+  mod_source_hpf_cutoff_depth:            {label: Mod Source HPF Cutoff Depth, cc: 45, group: modulation}
+  mod_source_lpf_tracking_depth:          {label: Mod Source LPF Tracking Depth, cc: 46, group: modulation}
+  mod_source_lpf_cutoff_lfo_depth_depth:  {label: Mod Source LPF Cutoff LFO Depth Depth, cc: 47, group: modulation}
+  mod_source_filter_eg_attack_depth:      {label: Mod Source Filter EG Attack Depth, cc: 48, group: modulation}
+  mod_source_filter_eg_decay_depth:       {label: Mod Source Filter EG Decay Depth, cc: 49, group: modulation}
+  mod_source_filter_eg_sustain_depth:     {label: Mod Source Filter EG Sustain Depth, cc: 50, group: modulation}
+  mod_source_filter_eg_release_depth:     {label: Mod Source Filter EG Release Depth, cc: 51, group: modulation}
+  mod_source_filter_amp_attack_depth:     {label: Mod Source Filter AMP Attack Depth, cc: 52, group: modulation}
+  mod_source_filter_amp_decay_depth:      {label: Mod Source Filter AMP Decay Depth, cc: 53, group: modulation}
+  mod_source_filter_amp_sustain_depth:    {label: Mod Source Filter AMP Sustain Depth, cc: 54, group: modulation}
+  mod_source_filter_amp_release_depth:    {label: Mod Source Filter AMP Release Depth, cc: 55, group: modulation}
+  mod_source_lfo_1_rate_depth:            {label: Mod Source LFO 1 Rate Depth, cc: 56, group: modulation}
+  mod_source_lfo_1_wave_depth:            {label: Mod Source LFO 1 Wave Depth, cc: 57, group: modulation}
+  mod_source_lfo_1_delay_depth:           {label: Mod Source LFO 1 Delay Depth, cc: 58, group: modulation}
+  mod_source_lfo_1_fade_depth:            {label: Mod Source LFO 1 Fade Depth, cc: 59, group: modulation}
+  mod_source_lfo_2_rate_depth:            {label: Mod Source LFO 2 Rate Depth, cc: 60, group: modulation}
+  mod_source_lfo_2_wave_depth:            {label: Mod Source LFO 2 Wave Depth, cc: 61, group: modulation}
+  mod_source_lfo_2_delay_depth:           {label: Mod Source LFO 2 Delay Depth, cc: 62, group: modulation}
+  mod_source_lfo_2_fade_depth:            {label: Mod Source LFO 2 Fade Depth, cc: 63, group: modulation}
+  mod_source_reverb_size_depth:           {label: Mod Source Reverb Size Depth, cc: 86, group: modulation}
+  mod_source_reverb_decay_depth:          {label: Mod Source Reverb Decay Depth, cc: 87, group: modulation}
+  mod_source_reverb_filter_depth:         {label: Mod Source Reverb Filter Depth, cc: 88, group: modulation}
+  mod_source_reverb_mix_depth:            {label: Mod Source Reverb Mix Depth, cc: 89, group: modulation}

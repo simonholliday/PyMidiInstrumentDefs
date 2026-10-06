@@ -158,6 +158,7 @@ class TestBundledCorpus:
 			"arturia/polybrute_12",
 			"asm/hydrasynth_explorer",
 			"asm/leviasynth",
+			"behringer/edge",
 			"behringer/model_d",
 			"behringer/neutron",
 			"behringer/pro_800",
@@ -629,9 +630,9 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Eighteen definitions carry no controls, for five different reasons.
+		"""Nineteen definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a nineteenth
+		Pinned here because the count has gone stale in notes twice: a twentieth
 		cannot be added without saying which kind it is.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
@@ -671,7 +672,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 18
+		assert len(empty) == 19
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -688,8 +689,27 @@ class TestAbsences:
 			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
-		# And the three that record no word at all, for two opposite reasons.
-		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent", "behringer/ub_xa"}
+		# And the four that record no word at all, for three different reasons now.
+		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent", "behringer/ub_xa",
+			"behringer/edge"}
+
+		# **THE EDGE IS THE FOURTH AND IT IS THE MALEVOLENT'S REASON, NOT THE UB-Xa's.**
+		# Everything its maker publishes for it is a quick start guide, and a quick start
+		# guide that lists no controller is not an instrument that has none - which is the
+		# ruling `pwm/malevolent` set and `behringer/td_3` had to earn its way out of.
+		# **The same maker, the same kind of document, and the opposite answer**, which is
+		# the pair worth asserting together: the TD-3's guide carries a table of MIDI
+		# messages and its sibling's copy of that table carries a controller, so the
+		# absence there is informative. The EDGE's guides have no such table at all.
+		edge = " ".join((pymidiinstrumentdefs.load("behringer/edge", [CORPUS]).source or "").split())
+		td_3 = " ".join((pymidiinstrumentdefs.load("behringer/td_3", [CORPUS]).source or "").split())
+
+		assert "**FOUR DOCUMENTS AND ALL FOUR ARE THE SAME QUICK START GUIDE.**" in edge
+		assert "A QUICK START GUIDE THAT LISTS NO CONTROLLER IS NOT THE SAME AS AN INSTRUMENT" \
+			" THAT HAS NONE" in td_3
+
+		assert pymidiinstrumentdefs.load("behringer/td_3", [CORPUS]).midi.control_change == "none"
+		assert pymidiinstrumentdefs.load("behringer/edge", [CORPUS]).midi.control_change is None
 
 		# **TWO OF THOSE CLAIM NOTHING BECAUSE NOBODY HAS ESTABLISHED ANYTHING. THE THIRD
 		# CLAIMS NOTHING BECAUSE THERE IS NO WORD FOR WHAT WAS ESTABLISHED.** Only one of
@@ -13757,3 +13777,189 @@ class TestProtein:
 		flat = " ".join(said.split())
 
 		assert "**Nothing in any document says it sends one**" in flat
+
+
+class TestEdge:
+
+	"""No controls, and the one definition that says so from a list rather than a search.
+
+	Everything this maker publishes for this instrument is a quick start guide, and
+	the product page embeds its own list of what that is: six items, four of them
+	the same guide.  So the absence of a manual is a fact read off a page rather
+	than a failure to find one.
+	"""
+
+	def test_it_does_not_say_none_and_the_sibling_does (self) -> None:
+		"""Same maker, same kind of document, opposite answer - and the reason is exact."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+		td_3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert not edge.controls
+		assert edge.midi.control_change is None
+		assert not edge.midi.refuses_control_change
+
+		assert not td_3.controls
+		assert td_3.midi.control_change == "none"
+		assert td_3.midi.refuses_control_change
+
+		flat = " ".join(prose_of("behringer", "edge").split())
+
+		assert "**NO CONTROLS, AND THIS FILE DELIBERATELY DOES NOT SAY `none`.**" in flat
+		assert "**The EDGE's guides have no table of MIDI messages at all**, in either edition," \
+			" so there is nothing for a controller to be missing from." in flat
+
+	def test_there_is_no_manual_and_that_is_read_off_a_list (self) -> None:
+		"""The page carries its own download list, so this is a count rather than a search."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		assert list(edge.sources) == ["guide", "older_guide", "product_page"]
+
+		flat = " ".join(prose_of("behringer", "edge").split())
+
+		assert "it has six items: four quick start guides and two builds of an application" \
+			in flat
+
+		# **THE SIBLING THAT PROVES THE MAKER WOULD HAVE PUBLISHED ONE**, one letter away in
+		# the product code, with its two controllers coming out of exactly that document.
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert "manual" in neutron.sources
+		assert neutron.sources["manual"].title == "NEUTRON User Manual"
+		assert len(neutron.controls) == 2
+
+		assert "**So this maker does publish a manual when there is one to publish, and for" \
+			" this instrument it has not.**" in flat
+
+	def test_two_of_the_six_are_the_same_guide_four_years_apart (self) -> None:
+		"""And only the newer one is labelled as the one to take."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		assert edge.sources["guide"].edition == "V 2.0"
+		assert edge.sources["older_guide"].edition == "V 1.0"
+		assert str(edge.sources["guide"].dated) == "2025-01-22"
+		assert str(edge.sources["older_guide"].dated) == "2021-11-15"
+
+		flat = " ".join(prose_of("behringer", "edge").split())
+
+		assert "A reader clicking the third item gets the 2021 edition." in flat
+		assert "**No MIDI was added or removed between the two editions.**" in flat
+
+	def test_the_two_covers_describe_different_instruments (self) -> None:
+		"""And the page that serves the newer one still advertises what it dropped."""
+		flat = " ".join(prose_of("behringer", "edge").split())
+
+		assert "**`Semi-Modular` and `16-Voice Poly Chain` are gone from the newer one**" in flat
+		assert "So the page and the document it offers do not agree about what this instrument" \
+			" is." in flat
+
+	def test_the_poly_chain_is_documented_nowhere_but_a_picture (self) -> None:
+		"""Which is why a monophonic instrument's polyphony reads one."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		assert edge.voice is not None
+		assert edge.voice.polyphony == 1
+
+		said = prose_of("behringer", "edge")
+
+		assert "Number of voices Monophonic" in said
+		assert "Turns red if poly mode is activated." in said
+
+		flat = " ".join(said.split())
+
+		assert "**There is no prose about it anywhere in either edition**" in flat
+		assert "A consumer cannot be told from these documents how to do the thing the page" \
+			" sells." in flat
+
+		# **AND THE POLY CHAIN IS NOT THIS INSTRUMENT'S POLYPHONY**, which the field would
+		# otherwise be read as saying.
+		assert "the poly chain is sixteen monophonic EDGEs passing MIDI along a THRU, each" \
+			" playing a note" in flat
+
+	def test_the_spanish_label_on_that_diagram_is_a_plastics_term (self) -> None:
+		"""In both editions, four years apart."""
+		flat = " ".join(prose_of("behringer", "edge").split())
+
+		assert "**AND THE SPANISH LABEL ON THAT DIAGRAM READS `Sistema de cadena de" \
+			" polietileno`**" in flat
+		assert "a Spanish reader looking for the poly chain section is looking for a plastics" \
+			" term" in flat
+
+	def test_its_channel_has_two_mechanisms_and_no_word_on_which_wins (self) -> None:
+		"""Dip switches on the rear panel, and an application this corpus does not run."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		assert edge.midi.channels == (1, 16)
+		assert edge.midi.mode is None
+
+		said = prose_of("behringer", "edge")
+
+		assert "A MIDI channel from 1 to 16 is selectable using the dip switches." in said
+		assert "The SYNTHTRIBE application allows you to select the MIDI channel number and to" \
+			" set and adjust various parameters of the EDGE to suit your preferences." in said
+
+		flat = " ".join(said.split())
+
+		assert "**Two mechanisms for one setting and no word on which wins.**" in flat
+
+		# **AND THE APPLICATION IS WHERE THE CONTROLLERS WOULD BE, AND IT WAS NOT RUN.**
+		assert "vendor software is not installed to read a specification" in flat
+
+	def test_it_takes_a_clock_it_will_not_follow_above_300_bpm (self) -> None:
+		"""Which no field here holds, so the definition says it."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		assert edge.midi.clock == "receives"
+		assert edge.midi.transport is None
+
+		said = prose_of("behringer", "edge")
+
+		assert "TEMPO – Tempo can be set from 10 to 10,000 when set to internal (INT). Via MIDI" \
+			" and USB the range is 10- 300 BPM." in said
+
+		flat = " ".join(said.split())
+
+		assert "**So a clock above 300 BPM is something this instrument will not follow**" in flat
+
+		# And nothing says what its output socket sends, so nothing records transmission.
+		assert "MIDI OUT / THRU – MIDI DIN can be used as an output or a thru." in said
+		assert "**What it puts out is never stated**" in flat
+
+	def test_the_word_velocity_is_in_it_seven_times_and_never_about_midi (self) -> None:
+		"""Which is why that field is empty on an instrument whose panel says VELOCITY."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		assert edge.voice is not None
+		assert edge.voice.velocity is None
+		assert edge.voice.aftertouch is None
+		assert edge.voice.pitch_bend is None
+		assert edge.voice.note_range is None
+
+		said = prose_of("behringer", "edge")
+
+		assert "VEL – These 8 controls adjust the velocity of each." in said
+		assert "Velocity 0 V to 5 V" in said
+
+		flat = " ".join(said.split())
+
+		assert "**So the word appears seven times in this document and never once about a MIDI" \
+			" message.**" in flat
+
+	def test_its_guide_prints_two_pages_to_a_sheet_as_the_siblings_does (self) -> None:
+		"""So a locator is arithmetic rather than a page turn, and the format holds it."""
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		assert edge.sources["guide"].pages_per_sheet == 2
+		assert edge.sources["guide"].page_offset == 1
+
+		td_3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert td_3.sources["guide"].pages_per_sheet == 2
+		assert td_3.sources["guide"].page_offset == 1
+
+		# **AND THE OLDER EDITION NUMBERS ONLY SOME OF ITS SHEETS**, so it has no page to
+		# turn to at all and is cited by name.
+		assert edge.sources["older_guide"].paginated is False
+
+		flat = " ".join(prose_of("behringer", "edge").split())
+
+		assert "**IT NUMBERS SOME OF ITS SHEETS AND NOT OTHERS**" in flat

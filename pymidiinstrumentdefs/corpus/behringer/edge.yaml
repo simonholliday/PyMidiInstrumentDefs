@@ -1,0 +1,190 @@
+# **NO CONTROLS, AND THIS FILE DELIBERATELY DOES NOT SAY `none`.** Everything this maker publishes
+# for this instrument is a quick start guide, and **a quick start guide that lists no controller
+# is not the same as an instrument that has none** - which is `pwm/malevolent`'s ruling and is the
+# one that applies here. `behringer/td_3` does say `none` out of the same kind of document, and
+# the difference is exact: **its guide carries a table of MIDI messages and the sibling TD-3-MO's
+# copy of that table carries a controller**, so the absence there is informative. **The EDGE's
+# guides have no table of MIDI messages at all**, in either edition, so there is nothing for a
+# controller to be missing from.
+#
+# **AND THERE IS NO USER MANUAL, WHICH WAS ESTABLISHED FROM A LIST RATHER THAN A SEARCH.** The
+# product page embeds its own download list and it has six items: four quick start guides and two
+# builds of an application. `behringer/neutron`, whose product code is one letter away, has a
+# `NEUTRON User Manual` on its page - and that is where its two controllers come from. **So this
+# maker does publish a manual when there is one to publish, and for this instrument it has not.**
+#
+# **TWO OF THE SIX ARE BOTH CALLED `Quick Start Guide`, BOTH MULTI-LANGUAGE, AND FOUR YEARS
+# APART.** One is `V 1.0`, 35 sheets, made 15 November 2021; the other is `V 2.0`, 50 sheets, made
+# 22 January 2025. Only the second is labelled `Quick Start Guide, All Languages`, and nothing on
+# the page says the first is older. A reader clicking the third item gets the 2021 edition.
+#
+# **AND THE TWO COVERS DESCRIBE DIFFERENT INSTRUMENTS.** V 1.0 reads `Analog Semi-Modular
+# Percussion Synthesizer with 2 Oscillators, Multi-Mode Filter, Dual 8-Step Sequencer and 16-Voice
+# Poly Chain`; V 2.0 reads `Analog Percussion Synthesizer with 2 Oscillators, Multi-Mode Filter
+# and Dual 8-Step Sequencer`. **`Semi-Modular` and `16-Voice Poly Chain` are gone from the newer
+# one** - and the product page that serves it still advertises both, word for word as V 1.0 had
+# them. So the page and the document it offers do not agree about what this instrument is.
+#
+# **THE POLY CHAIN IS WHY THAT MATTERS, AND IT IS DOCUMENTED NOWHERE BUT A PICTURE.** Both guides
+# carry a connection diagram headed `Poly Chain System` in ten languages, showing MIDI IN to MIDI
+# THRU to MIDI THRU between three EDGEs. **There is no prose about it anywhere in either edition**
+# - no channel rule, no setup, no mention of how sixteen monophonic instruments divide a chord -
+# and the only other appearance of the word is a panel note that the power LED "Turns red if poly
+# mode is activated." (guide p. 20). A consumer cannot be told from these documents how to do the
+# thing the page sells.
+#
+# **AND THE SPANISH LABEL ON THAT DIAGRAM READS `Sistema de cadena de polietileno`** - a
+# polyethylene chain - in **both** editions, four years apart. So a Spanish reader looking for the
+# poly chain section is looking for a plastics term.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: EDGE
+  # NOT RECORDED, the firmware, and **it is not published anywhere**: the guide says to let the
+  # application find it - "The app looks for the latest firmware file which can then be downloaded
+  # and used to update the EDGE." (guide p. 22) - and the download list offers the application and
+  # no firmware. So what version an EDGE runs is something only the application knows.
+  # `V 2.0` and `V 1.0` on the two guides' covers are **the documents' versions**, not the
+  # instrument's, which is why neither is here.
+  # A desktop module with no keyboard, monophonic, and the page sells it as a companion to this
+  # maker's CRAVE. Product code `0718-ABM`.
+  # Checked 2026-10-06.
+
+source: >-
+  **FOUR DOCUMENTS AND ALL FOUR ARE THE SAME QUICK START GUIDE.** See the comment above the
+  definition for what that costs. Two are multi-language editions four years apart, two are
+  Chinese and Japanese editions of the older one, and **none of them carries a table of MIDI
+  messages.**
+
+  WHAT THE NEWER GUIDE DOES SETTLE, WHICH IS FOUR THINGS. The channel range, twice over: "A MIDI
+  channel from 1 to 16 is selectable using the dip switches." (guide p. 20) and "MIDI In / Out /
+  Thru 2 x 5-pin DIN / 16 channels" (guide p. 86). That it is monophonic: "Number of voices
+  Monophonic" (guide p. 86). That it takes a clock: "CLOCK – Clock can be set to MIDI, USB or INT
+  / EXT." (guide p. 20). And what its sockets are for: "MIDI IN – This MIDI DIN input can be used
+  to play sounds via an external MIDI device and also allow MIDI clock to be used." (guide p. 20).
+
+  **ITS CHANNEL IS SET BY DIP SWITCHES AND ALSO BY AN APPLICATION**, which is a thing worth a
+  consumer's attention: the switches are on the rear panel, and "The SYNTHTRIBE application allows
+  you to select the MIDI channel number and to set and adjust various parameters of the EDGE to
+  suit your preferences." (guide p. 23). **Two mechanisms for one setting and no word on which
+  wins.** The application is two executables on the download list and **was not run**: vendor
+  software is not installed to read a specification, so whatever parameters it adjusts are not
+  recorded here - and they are the likeliest place this instrument's controller numbers would be.
+
+  WHAT IT SAYS ABOUT ITS OUTPUT SOCKET AND NOTHING MORE: "MIDI OUT / THRU – MIDI DIN can be used
+  as an output or a thru." (guide p. 20). **What it puts out is never stated** - not notes, not
+  clock, not anything - so `clock` records reception only and nothing records transmission.
+
+  NOT RECORDED, AND EACH FOR A REASON RATHER THAN BY OMISSION. **The controllers**, for the ruling
+  in the comment above. **The note range and the velocity**: the guide's eight `VEL` controls are
+  the sequencer's own per-step levels and its `Velocity` figures are patch-bay voltages, so the
+  word appears seven times in this document and never once about a MIDI message. **The mode**,
+  there being no chart. **The transport**: `Play / stop` is a patch-bay input taking "more than
+  3.2 V" (guide p. 86) and no MIDI transport message is named. **Program change, system exclusive
+  and NRPN**, none of which appears in any spelling in any of the four documents.
+
+sources:
+  guide:
+    kind: quick_start
+    title: Quick Start Guide EDGE
+    edition: V 2.0
+    dated: 2025-01-22
+    landing: "https://www.behringer.com/en/products/0718-ABM"
+    url: "https://cdn-media.empowertribe.com/8bde2c594a4e4e35b07fe00fff6290c8/QSG_BE_0718-ABM_EDGE_WW.pdf"
+    sha256: 16c55eebf1224560eb249101b87aa4868d2e63c2af1346e6e8b1106256f75006
+    retrieved: 2026-10-06
+    # **50 sheets carrying 97 printed pages, two to a sheet**, so `pages_per_sheet: 2` with an
+    # offset of one and a citation to p. 20 is the left half of the file's eleventh sheet - which
+    # is `behringer/td_3`'s arrangement exactly, from the same maker.
+    # **Twelve languages, and everything this instrument answers to is on three printed pages**:
+    # 20 and 21 carry the numbered panel list, 23 the getting-started section. The other English
+    # pages are safety notices, connection diagrams, a blank patch sheet and the specifications.
+    # The one of the four whose file name carries the product code.
+    page_offset: 1
+    pages_per_sheet: 2
+  older_guide:
+    kind: quick_start
+    title: Quick Start Guide EDGE
+    edition: V 1.0
+    dated: 2021-11-15
+    landing: "https://www.behringer.com/en/products/0718-ABM"
+    url: "https://cdn-media.empowertribe.com/eb9d38bc2f1645859332a6c89247fd61/QSG_BE_EDGE_A5_WW.pdf"
+    sha256: 27f42445186a033ddb2fccfc7f63b2634d9e56f21be8a4b74398b1ddaa7fc580
+    retrieved: 2026-10-06
+    paginated: false
+    # **CITED FOR TWO THINGS AND NO FACT BELOW IS READ FROM IT**: that its cover claims a
+    # `Semi-Modular` instrument with a `16-Voice Poly Chain` where the newer cover claims neither,
+    # and that the Spanish mistranslation on the poly chain diagram is in both.
+    # 35 sheets against the newer 50, the extra fifteen being Swedish and Polish sections of their
+    # own and a patch sheet. **No MIDI was added or removed between the two editions.**
+    # **IT NUMBERS SOME OF ITS SHEETS AND NOT OTHERS** - the safety pages print folios and the
+    # panel, diagram and compliance sheets print none - so there is no page to turn to and this is
+    # cited by name. The newer edition numbers all of its.
+  product_page:
+    kind: product_page
+    title: "EDGE | Behringer"
+    landing: "https://www.behringer.com/en/products/0718-ABM"
+    url: "https://www.behringer.com/en/products/0718-ABM"
+    sha256: 41fd55ecd933dd2691fbc1bca3b67073ff77612243c74f6dcce8f7295c81d16f
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being six, for there being no manual among them, and for still
+    # advertising what the newer guide dropped.** Its own words are `Analog Semi-Modular
+    # Percussion Synthesizer with 2 Oscillators, Multi-Mode Filter, Dual 8-Step Sequencer and
+    # 16-Voice Poly Chain`, which is V 1.0's cover and not V 2.0's.
+    # **The list is embedded in the page as its own data rather than as links**, with a title, a
+    # type, a version, a language and an operating system for each - so what this maker publishes
+    # for a product is a list this corpus can read rather than a search it has to trust. Four
+    # items are typed `Manual` and every one of them is a quick start guide.
+    # The digest is of the extraction, which pairs each item with what it serves; the served
+    # markup is saved beside it as `.html`, whose own digest is 8d634f1a32f7f91f9113255eb912c2b04a0db4bfda8e017268e938dd796d3080.
+    # Files come from `cdn-media.empowertribe.com/<32 hex>/<name>` and **the path carries no
+    # version, no date and no product code** except where the file name happens to, which is this
+    # maker's arrangement across all five of its instruments here.
+
+midi:
+  # Twice over, and the second is a specification rather than a panel note: "A MIDI channel from 1
+  # to 16 is selectable using the dip switches." (guide p. 20) and "MIDI In / Out / Thru 2 x 5-pin
+  # DIN / 16 channels" (guide p. 86).
+  # **AND THE SWITCHES ARE NOT THE ONLY WAY TO SET IT** - see the account for the application that
+  # also does, and for what this field cannot say about two mechanisms disagreeing.
+  channels: [1, 16]
+  # NOT RECORDED, the mode. There is no implementation chart in any of the four documents.
+  # **RECEIVES, BY A SETTING WITH THREE VALUES, AND NOTHING SAYS IT SENDS ONE.** "CLOCK – Clock
+  # can be set to MIDI, USB or INT / EXT." (guide p. 20), and the input is for it: "MIDI IN – This
+  # MIDI DIN input can be used to play sounds via an external MIDI device and also allow MIDI
+  # clock to be used." (guide p. 20). What arrives is read against a division setting - "SCALE –
+  # This sets the timing of the sequencer against the incoming MIDI or USB CLOCK." (guide p. 20) -
+  # and it is read as a tempo in a narrower range than the instrument's own: "TEMPO – Tempo can be
+  # set from 10 to 10,000 when set to internal (INT). Via MIDI and USB the range is 10- 300 BPM."
+  # (guide p. 20). **So a clock above 300 BPM is something this instrument will not follow**,
+  # which no field here holds.
+  clock: receives
+  # NOT RECORDED, the transport: `Play / stop` is a patch-bay input and no MIDI transport message
+  # is named. NOT RECORDED EITHER: program change, system exclusive and NRPN, none of which
+  # appears in any spelling in any of the four documents.
+  # NOT RECORDED, THE CONTROLLERS, AND NOT DECLARED ABSENT - see the comment above the definition.
+  # The application that "allows you to select the MIDI channel number and to set and adjust
+  # various parameters of the EDGE" (guide p. 23) is where they would be, and it is software this
+  # corpus does not run.
+
+voice:
+  addressing: pitches
+  # NOT RECORDED. Nothing in any of the four documents gives a note range, and the only note
+  # numbers anywhere are absent entirely - the word `note` appears in this guide as a German and
+  # Swedish word and in `8-Step` sequencer prose.
+  # **ONE, STATED AS A WORD RATHER THAN A FIGURE**: "Number of voices Monophonic" (guide p. 86).
+  # **AND THE PAGE SELLS SIXTEEN OF THEM CHAINED TOGETHER**, which is not sixteen voices of this
+  # instrument and is why this field reads one: the poly chain is sixteen monophonic EDGEs passing
+  # MIDI along a THRU, each playing a note. See the comment above the definition for how little is
+  # published about it.
+  polyphony: 1
+  # NOT RECORDED, the velocity. The guide's eight `VEL` controls are the sequencer's own per-step
+  # levels - "VEL – These 8 controls adjust the velocity of each." (guide p. 20) - and its
+  # `Velocity` entries in the specifications are patch-bay voltages, "Velocity 0 V to 5 V"
+  # (guide p. 86) in and "Velocity 0 to +5 V" (guide p. 86) out. **So the word appears seven
+  # times in this
+  # document and never once about a MIDI message.**
+  # NOT RECORDED: aftertouch and pitch bend, neither mentioned anywhere.

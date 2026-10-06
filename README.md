@@ -220,6 +220,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/mc_101` | Roland MC-101: 28 controls over four tracks and a fifth MIDI channel that makes no sound, from a chart its maker publishes in numbered editions - of which the middle one is missing, so one firmware step was never printed |
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
 | `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |
+| `roland/sh_4d` | Roland SH-4d: 32 controls off the first of three whole implementation charts its manual prints, where the other two cross control change entirely - so these are the four tone parts' controls and the rhythm part answers to none of them |
 | `roland/sp_404mkii` | Roland SP-404MKII: 27 controls, seven of which the implementation chart publishes only inside a footnote - and one controller number that selects a different effect on each of three channel groups, so the same value means three things |
 | `roland/tb_3` | Roland TB-3: thirteen controls off a one-sheet chart, seven of them confirmed by a second document that was written about system exclusive - the only controller numbers in this corpus published twice |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |

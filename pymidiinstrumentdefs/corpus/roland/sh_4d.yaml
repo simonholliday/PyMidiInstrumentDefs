@@ -1,0 +1,254 @@
+# **THREE WHOLE IMPLEMENTATION CHARTS, AND THEY ARE NOT ALTERNATIVES.** `roland/ju_06a` and
+# `korg/drumlogue` each met a maker printing two maps where only one is in force at a time, and
+# the ruling there was to carry the one in force by default. **This instrument needs the opposite
+# treatment**: its manual prints `MIDI implementation chart (Tone)` (manual p. 240),
+# `MIDI implementation chart (Rhythm)` (manual p. 241) and
+# `MIDI implementation chart (SYSTEM)` (manual p. 242), and **all three are in force at once**,
+# because they describe three kinds of destination inside one instrument - four tone parts, one
+# rhythm part, and the control channel that changes patterns.
+#
+# **AND ONLY THE TONE CHART HAS ANY CONTROL CHANGE AT ALL.** The rhythm chart reads
+# "Control Change x x" (manual p. 241) and the SYSTEM chart "ControlChange x x"
+# (manual p. 242). So the thirty-two controls below are the tone parts' controls, and **a reader
+# addressing the rhythm part gets nothing from them** - a fact about this instrument that a
+# single-chart definition could not state.
+#
+# **THE INSTRUMENT'S ONLY WAY OF SENDING CONTROLLER 1 IS TILTING THE BOX.** Controller 1 and
+# channel pressure both carry footnote "*1 Can be transmitted from D-MOTION only"
+# (manual p. 241), and D-MOTION is the motion sensor: its three choices are "AFT Channel
+# aftertouch" (manual p. 72), "MOD Modulation (CC#01)" (manual p. 72) and "PIT Pitch bend"
+# (manual p. 72). There is no
+# modulation wheel on this instrument, so that footnote is the whole of how those messages leave
+# it.
+#
+# **AND ONE FOOTNOTE IS CARRIED WITHOUT BEING RESOLVED.** "*2 Channel Key Pressure and all
+# Control Change messages except for CC#0 and CC#32 are recognized depending on settings of
+# MATRIX" (manual p. 241) - MATRIX being the modulation matrix, whose sources include "as well as
+# external MIDI signals like control change messages" (manual p. 44). **Whether that gates the
+# thirty-two named rows or adds further numbers to them is nowhere stated.** The table is
+# unambiguous about which number means what, so the numbers are carried and the footnote is
+# quoted whole rather than interpreted.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: SH-4d
+  # **2.00, WHICH IS THE VERSION THE SUPPORT PAGE PUTS IN THE MANUAL'S OWN TITLE** -
+  # `[English] SH-4d Owner's Manual (Version 2.00)` - and the newest system program offered for
+  # the instrument is `SH-4d System Program ( Ver.2.00 )`, so the manual and the firmware agree.
+  # The manual's own last sheet says "SH-4d Owner's Manual 03" (manual p. 244), which is the
+  # document's revision and not the instrument's.
+  firmware: "2.00"
+  # A synthesizer, **still made**. Checked 2026-10-06.
+
+source: >-
+  **A 244-SHEET OWNER'S MANUAL AND NO SEPARATE MIDI DOCUMENT AT ALL.** Roland gave `roland/tb_3`
+  a one-sheet chart and a six-sheet MIDI Implementation of its own; for this instrument the
+  support page offers a quick start in eight languages and this manual, and nothing else. **The
+  MIDI is sheets 240 to 243**, and the printed folio is the file sheet throughout.
+
+  **THREE WHOLE CHARTS, IN FORCE AT THE SAME TIME**, one per kind of destination:
+  "MIDI implementation chart (Tone)" (manual p. 240),
+  "MIDI implementation chart (Rhythm)" (manual p. 241) and
+  "MIDI implementation chart (SYSTEM)" (manual p. 242). **Only the first has any control change**
+  - the other two cross the whole row - so every control below belongs to a tone part.
+
+  **THE THIRTY-TWO ROWS ARE READ BY COORDINATE**, from the chart's own heading row at x=167
+  `Transmitted`, x=296 `Recognized` and x=426 `Remarks`, because the footnote markers sit beside
+  the marks and a flat reading joins them to the wrong row. **Twelve of the thirty-two carry the
+  name the MIDI standard gives that number** - 1 modulation, 7 level, 10 pan, 64 hold, 65 and 84
+  portamento, 66 sostenuto, 71 resonance, 72 release, 73 attack, 74 cutoff, 75 decay - which is
+  the cheapest check there is that the rows were paired with the right names rather than one off.
+
+  **THE BANK NUMBERS ARE PUBLISHED AND WHAT THEY SELECT IS NOT.** Every bank and program row of
+  the tone and rhythm charts carries footnote "*3 See Sound List" (manual p. 241), and
+  `Sound List` appears on sheets 241 and 242 and nowhere else in the 244 - that is, only in the
+  footnotes naming it. No sound list is offered on the support page. So a reader can address bank
+  87 program 12 and has nothing published that says what will sound, which is the shape
+  `roland/tr_909` met with a leaflet.
+
+  **AND THE PITCH BEND RANGE WAS NEARLY RECORDED AS ABSENT, BECAUSE THIS MAKER WRITES IT AS ONE
+  WORD.** A search of all 244 sheets for `Bend Range` returns nothing; the parameter is
+  "BendRange Up 0-48 Sets how much the pitch changes (in semitones) when the [PITCH +] button is
+  pressed." (manual p. 43), with "BendRange Dw 0-48" (manual p. 43) beside it. A sweep that drops
+  everything but letters and digits finds it at once, and an exact search does not. **So an
+  absence has to be swept for with the text squashed**, which is the same fault as a ligature or
+  a low line standing in for a letter.
+
+  **AND WHAT THAT PARAMETER GOVERNS IS NOT FULLY SAID.** Both sentences describe the panel's
+  `[PITCH +]` and `[PITCH -]` buttons, and the tone chart marks Pitch Bend in both columns
+  without naming a depth. Nothing states whether a received pitch bend message bends by the same
+  amount. `programmable: true` is carried because a settable bend range plainly exists; no
+  `semitones` figure is carried, because 0-48 is the setting's range and no document gives the
+  value in force.
+
+sources:
+  manual:
+    kind: owner's manual
+    title: SH-4d Owner's Manual (Version 2.00)
+    edition: "2.00"
+    dated: 2025-05-01
+    landing: https://www.roland.com/global/support/by_product/sh-4d/owners_manuals/b2979f16-8760-4c12-926c-f27e4b94a47c/
+    url: https://static.roland.com/assets/media/pdf/SH-4d_eng03_W.pdf
+    sha256: f711a31d0688162b944ca8053d1b684fc3dc0803b8e686a6763ebe14ad20993d
+    retrieved: 2026-10-06
+  quick_start:
+    kind: quick start guide
+    title: SH-4d Quick Start
+    dated: 2022-09-09
+    landing: https://www.roland.com/global/support/by_product/sh-4d/owners_manuals/ca28d4e1-c09e-41ee-8ad9-90286dd7b8d3/
+    url: https://static.roland.com/assets/media/pdf/SH-4d_QuickStart_eng01_W.pdf
+    sha256: 9976e01bacef487cf4a68df0fa0b166588e2b974a22b637d9972c287aa2f84ca
+    retrieved: 2026-10-06
+    paginated: false
+
+midi:
+  # `1-16` in both default boxes of the tone and rhythm charts, and "1-16, OFF" in the SYSTEM
+  # chart's (manual p. 242) - the OFF belonging to the control channel, which can be switched off
+  # so that nothing changes patterns from outside.
+  channels: [1, 16]
+  # **THREE, WHICH IS OMNI OFF AND POLY**, and the only value in all three charts either way
+  # (manual pp. 240, 241, 242). **This maker's answer divides by what the instrument is**: of the
+  # Rolands here that declare a mode at all, the polyphonic and multitimbral ones say 3 and the
+  # drum machines say 4 - with `roland/tb_3` on the drum machines' side, which is the odd one,
+  # being a monophonic bass line.
+  mode: 3
+  # Marked both ways in all three charts, and the manual names the setting that chooses: `Sync
+  # Mode` takes "AUTO, INT, MIDI, USB" (manual p. 77), with the note that "If a plug is connected
+  # to the EXT CLK IN jack, this unit always operates in sync with the signals received from the
+  # EXT CLK IN jack, regardless of the Sync Mode setting on this unit." (manual p. 77) - so a
+  # cable in one socket overrides the MIDI setting entirely.
+  clock: both
+  # **SENT AS START AND STOP, RECEIVED AS ALL THREE** in all three charts: continue is crossed
+  # transmitted and marked in the recognized column, with "Same process as Start."
+  # (manual p. 242).
+  transport: both
+  program_change:
+    # Marked both ways in all three charts, over `PC 0-127`, and the manual gives switches for
+    # each direction: "Tx PC OFF, ON Specifies whether program change messages will be
+    # transmitted (ON) or not be transmitted (OFF)." (manual p. 78).
+    receives: true
+    sends: true
+    # `0-127` in the PC row of all three charts. **What those programs are is not published** -
+    # see the account above. The specification counts "SOUND PTACH: 256" (manual p. 85) - the
+    # maker's own typo for patch, quoted as printed - and "PATTERN: 128" (manual p. 85), and
+    # neither is the
+    # count this field holds: a program change reaches 128 at a time within a bank.
+    presets: 128
+  # **CROSSED BOTH WAYS IN ALL THREE CHARTS** (manual pp. 241, 242), so nothing in this
+  # instrument is addressed by system exclusive. A checked absence in three places rather than a
+  # silence, and unusual for a current Roland.
+  sysex: false
+  # NOT RECORDED, NRPN: neither `NRPN` nor `RPN` nor `Registered Parameter` appears on any of the
+  # 244 sheets, swept with the text squashed rather than searched for exactly - which is what
+  # found the bend range this definition nearly recorded as absent.
+
+parts:
+  # **FIVE PARTS, EACH ON A CHANNEL OF ITS OWN CHOOSING**, which the specification states as
+  # "Parts 5 parts (Tone part: 4, Rhythm part: 1)" (manual p. 85) and the settings confirm one by
+  # one: "Part 1 Ch 1-16 Specifies the MIDI receive channel for part 1." (manual p. 77) through
+  # part 4, and "Part R Ch 1-16 Specifies the MIDI receiving channel for part R."
+  # (manual p. 77).
+  tone:
+    label: Tone part
+    count: 4
+    channel: assigned
+  rhythm:
+    label: Rhythm part
+    count: 1
+    channel: assigned
+
+voice:
+  addressing: pitches
+  # `0-127` in all three charts, with the SYSTEM chart adding "transfer to selected part"
+  # (manual p. 242) - so a note arriving on the control channel plays whichever part is selected
+  # on the panel rather than a fixed one.
+  note_range: [0, 127]
+  # **SIXTY, AND SHARED BETWEEN THE FIVE PARTS BY A SETTING.** "Maximum Polyphony 60 voices
+  # (varies according to the sound generator load)" (manual p. 85), and `Voice Reserve` lets each
+  # part claim some: "Specifies how polyphony resources are allocated to each part. The track is
+  # given priority for the specified number of voices." (manual p. 68), over `1-60` per part.
+  polyphony: 60
+  polyphony_shared: true
+  velocity:
+    # Marked both ways in all three charts.
+    note_on: both
+    # **AND NOTE-OFF VELOCITY IS CROSSED BOTH WAYS IN ALL THREE** (manual pp. 240, 241, 242), so
+    # a note off from this instrument carries no velocity of its own.
+    note_off: false
+  # **CHANNEL, AND IT IS THE TONE PART'S ALONE.** The tone chart marks `Channel Key Pressure`
+  # both ways (manual p. 240) - transmitted only from the motion sensor, by footnote `*1` - while
+  # **the rhythm chart crosses it in both columns** (manual p. 241) and the SYSTEM chart marks
+  # `After Touch` received only, "transfer to selected part" (manual p. 242). This field holds
+  # the tone part's, which is the only one that sends anything.
+  aftertouch: channel
+  pitch_bend:
+    # **SETTABLE, AND THE DEPTH IN FORCE IS NOT PUBLISHED.** `BendRange Up` and `BendRange Dw`
+    # each take `0-48` semitones (manual p. 43). See the account above for why no `semitones`
+    # figure is carried and for how nearly this was recorded as having no bend range at all.
+    programmable: true
+
+groups:
+  amp: Amplifier
+  filter: Filter
+  lfo: LFO
+  pedal: Pedals and portamento
+  slider: Sliders
+  tone: Tone
+
+controls:
+
+  # **THIRTY-TWO NUMBERS OFF THE TONE CHART, TWENTY-EIGHT OF THEM BOTH WAYS.** The four that are
+  # crossed in the transmitted column are 64, 65, 66 and 84 - the two pedals, the portamento
+  # switch and portamento control - **which are the four this instrument has no panel control
+  # for**, so it can be told and cannot tell. Every one of the four is a standard MIDI assignment
+  # rather than one of this maker's parameters.
+  #
+  # Controller 1 is marked transmitted, and footnote `*1` narrows that to the motion sensor
+  # alone; its reception, and every other number's here, carries footnote `*2` about the
+  # modulation matrix. Both are set out above the definition.
+
+  # tone (3)
+  modulation:        {label: Modulation Wheel, cc: 1, group: tone}
+  pitch:             {label: PITCH, cc: 21, group: tone}
+  timbre:            {label: TIMBRE, cc: 77, group: tone}
+
+  # amp (6)
+  amp_level:         {label: AMP LEVEL (Pattern Part Level), cc: 7, group: amp}
+  amp_pan:           {label: AMP PAN (Pattern Part Pan), cc: 10, group: amp}
+  amp_sustain:       {label: AMP SUSTAIN, cc: 31, group: amp}
+  amp_release:       {label: AMP RELEASE, cc: 72, group: amp}
+  amp_attack:        {label: AMP ATTACK, cc: 73, group: amp}
+  amp_decay:         {label: AMP DECAY, cc: 75, group: amp}
+
+  # lfo (5) - the maker's own naming puts the amplifier's LFO depth in this group
+  lfo_amp:           {label: LFO AMP, cc: 80, group: lfo}
+  lfo_rate:          {label: LFO RATE, cc: 16, group: lfo}
+  lfo_pitch:         {label: LFO PITCH, cc: 18, group: lfo}
+  lfo_filter:        {label: LFO FILTER, cc: 19, group: lfo}
+  lfo_fade:          {label: LFO FADE, cc: 20, group: lfo}
+
+  # filter (10)
+  filter_sustain:    {label: FILTER SUSTAIN, cc: 28, group: filter}
+  filter_release:    {label: FILTER RELEASE, cc: 29, group: filter}
+  filter_resonance:  {label: FILTER RESONANCE, cc: 71, group: filter}
+  filter_cutoff:     {label: FILTER CUTOFF, cc: 74, group: filter}
+  filter_kbd:        {label: FILTER KBD, cc: 78, group: filter}
+  filter_hpf:        {label: FILTER HPF, cc: 79, group: filter}
+  filter_env:        {label: FILTER ENV, cc: 81, group: filter}
+  filter_attack:     {label: FILTER ATTACK, cc: 82, group: filter}
+  filter_decay:      {label: FILTER DECAY, cc: 83, group: filter}
+  filter_drive:      {label: FILTER DRIVE, cc: 90, group: filter}
+
+  # pedal (4) - all four received and never sent
+  hold_pedal:        {label: Hold Pedal, cc: 64, group: pedal, direction: receives}
+  porta_sw:          {label: Porta Sw, cc: 65, group: pedal, direction: receives}
+  sostenuto:         {label: Sostenuto, cc: 66, group: pedal, direction: receives}
+  portamento_control: {label: Portamento Control, cc: 84, group: pedal, direction: receives}
+
+  # slider (4)
+  slider_1:          {label: SLIDER 1, cc: 85, group: slider}
+  slider_2:          {label: SLIDER 2, cc: 86, group: slider}
+  slider_3:          {label: SLIDER 3, cc: 87, group: slider}
+  slider_4:          {label: SLIDER 4, cc: 88, group: slider}

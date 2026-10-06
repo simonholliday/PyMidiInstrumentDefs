@@ -236,6 +236,7 @@ class TestBundledCorpus:
 			"roland/mc_101",
 			"roland/mc_707",
 			"roland/s_1",
+			"roland/sh_4d",
 			"roland/sp_404mkii",
 			"roland/tb_3",
 			"roland/tr8s",
@@ -14819,3 +14820,144 @@ class TestTB3:
 
 		assert "the `pitch_bend` block is left out entirely" in flat
 		assert "`roland/tr_8` leaves it out for the opposite reason" in flat
+
+
+class TestSH4D:
+
+	"""Three whole implementation charts, and only one of them has any control change.
+
+	`roland/ju_06a` at rank 87 and `korg/drumlogue` at 93 each met a maker
+	printing two maps where only one is in force at a time, and the ruling was
+	to carry the default.  **This instrument needs the opposite treatment**: its
+	three charts describe three kinds of destination inside one machine - four
+	tone parts, one rhythm part, and the control channel - and all three hold at
+	once.
+
+	So the thirty-two controls are the tone parts' controls, and that is a fact
+	a single-chart definition could not have stated.
+	"""
+
+	def test_thirty_two_controls_and_four_of_them_cannot_be_sent (self) -> None:
+		"""The four crossed transmitted are the four with no panel control."""
+		sh_4d = pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS])
+		numbers = sorted(control.cc for control in sh_4d.controls.values()
+			if control.cc is not None)
+
+		assert len(sh_4d.controls) == 32
+		assert numbers == [1, 7, 10, 16, 18, 19, 20, 21, 28, 29, 31, 64, 65, 66, 71, 72, 73,
+			74, 75, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 90]
+
+		receives = sorted(control.cc for control in sh_4d.controls.values()
+			if control.direction == "receives" and control.cc is not None)
+
+		assert receives == [64, 65, 66, 84]
+
+		# All four are standard MIDI assignments rather than this maker's parameters.
+		assert sh_4d.controls["hold_pedal"].label == "Hold Pedal"
+		assert sh_4d.controls["sostenuto"].label == "Sostenuto"
+		assert sh_4d.controls["portamento_control"].label == "Portamento Control"
+
+	def test_twelve_rows_carry_the_number_the_standard_gives_them (self) -> None:
+		"""The cheapest check that the chart's rows were paired with the right names.
+
+		The chart gives numbers in one column and names in another, so an off-by-one
+		pairing is the error to fear.  Twelve of the thirty-two are numbers the MIDI
+		standard itself assigns, and all twelve carry a name that matches - which no
+		shifted reading could manage.
+		"""
+		sh_4d = pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS])
+		by_number = {control.cc: control.label for control in sh_4d.controls.values()}
+
+		standard = {1: "Modulation", 7: "LEVEL", 10: "PAN", 64: "Hold", 65: "Porta",
+			66: "Sostenuto", 71: "RESONANCE", 72: "RELEASE", 73: "ATTACK", 74: "CUTOFF",
+			75: "DECAY", 84: "Portamento"}
+
+		for cc, word in standard.items():
+			assert word.lower() in by_number[cc].lower()
+
+	def test_five_parts_each_on_a_channel_of_its_own_choosing (self) -> None:
+		"""Four tone parts and one rhythm part, which is what the specification counts."""
+		sh_4d = pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS])
+
+		assert sorted(sh_4d.parts) == ["rhythm", "tone"]
+		assert sh_4d.parts["tone"].count == 4
+		assert sh_4d.parts["rhythm"].count == 1
+		assert sh_4d.parts["tone"].channel == "assigned"
+		assert sh_4d.parts["rhythm"].channel == "assigned"
+
+		# Sixty voices, shared, with a per-part reserve.
+		assert sh_4d.voice.polyphony == 60
+		assert sh_4d.voice.polyphony_shared is True
+
+	def test_the_account_says_only_one_of_three_charts_has_control_change (self) -> None:
+		"""Because every control here belongs to a tone part and the rhythm part has none."""
+		flat = " ".join(
+			(pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS]).source or "").split())
+
+		assert "THREE WHOLE CHARTS, IN FORCE AT THE SAME TIME" in flat
+		assert "Only the first has any control change" in flat
+
+		# And each chart is cited at the sheet it begins on.
+		for quoted in ('"MIDI implementation chart (Tone)" (manual p. 240)',
+				'"MIDI implementation chart (Rhythm)" (manual p. 241)',
+				'"MIDI implementation chart (SYSTEM)" (manual p. 242)'):
+			assert quoted in flat
+
+	def test_this_makers_mode_divides_by_what_the_instrument_is (self) -> None:
+		"""Mode 3 for the polyphonic Rolands, Mode 4 for the drum machines.
+
+		Asserted because the first reading of this file claimed the SH-4d was the
+		first Roland here to say Mode 3, and it is the seventh.  The real pattern is
+		more useful than the wrong claim was: **of the Rolands that declare a mode,
+		the polyphonic and multitimbral ones say 3 and the drum machines say 4** -
+		and `roland/tb_3` sits with the drum machines while being a monophonic bass
+		line, which is the one that does not follow from the instrument.
+		"""
+		modes = {}
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			if name.startswith("roland/"):
+				modes[name] = pymidiinstrumentdefs.load(name, [CORPUS]).midi.mode
+
+		assert modes["roland/sh_4d"] == 3
+
+		three = sorted(name for name, mode in modes.items() if mode == 3)
+		four = sorted(name for name, mode in modes.items() if mode == 4)
+
+		assert three == ["roland/fantom_6_7_8", "roland/jd_xi", "roland/ju_06a",
+			"roland/mc_101", "roland/mc_707", "roland/s_1", "roland/sh_4d"]
+		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
+
+		# Three of the four are drum machines; the TB-3 is the exception worth knowing.
+		assert pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS]).midi.sysex is False
+
+	def test_the_bend_range_was_nearly_recorded_as_absent (self) -> None:
+		"""This maker writes `BendRange` as one word, so an exact search finds nothing.
+
+		The absence sweep squashes the text to letters and digits, and that is what
+		found it.  Had it not, this definition would have shipped saying the
+		instrument publishes no bend range, which is false.
+		"""
+		sh_4d = pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS])
+
+		assert sh_4d.voice.pitch_bend is not None
+		assert sh_4d.voice.pitch_bend.programmable is True
+
+		# No figure is carried, because 0-48 is the setting's range and not a value in force.
+		assert sh_4d.voice.pitch_bend.semitones is None
+
+		flat = " ".join((sh_4d.source or "").split())
+
+		assert "BECAUSE THIS MAKER WRITES IT AS ONE WORD" in flat
+		assert "an absence has to be swept for with the text squashed" in flat
+
+	def test_the_sound_list_its_footnotes_name_is_not_published (self) -> None:
+		"""The bank numbers are published and what they select is not."""
+		flat = " ".join(
+			(pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS]).source or "").split())
+
+		assert "THE BANK NUMBERS ARE PUBLISHED AND WHAT THEY SELECT IS NOT." in flat
+		assert '"*3 See Sound List" (manual p. 241)' in flat
+
+		# The same shape as the TR-909's unpublished leaflet, and this file says so.
+		assert "roland/tr_909" in flat

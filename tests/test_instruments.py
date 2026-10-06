@@ -177,6 +177,7 @@ class TestBundledCorpus:
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
 			"korg/electribe",
+			"korg/kronos",
 			"korg/m1",
 			"korg/microkorg",
 			"korg/microkorg2",
@@ -12195,3 +12196,233 @@ class TestVirusTI:
 
 		assert "IT IS AN INSTRUMENT WHOSE MAP IS NOT" in said
 		assert "A third-party map exists; it is not evidence and nothing from it is here" in said
+
+
+class TestKRONOS:
+
+	"""The first instrument here whose maker publishes an implementation and no chart.
+
+	Which costs this corpus the chart's `Mode` row and gains it two separate lists of
+	messages, one for each direction, read against each other instead.
+	"""
+
+	def test_every_control_travels_both_ways (self) -> None:
+		"""Seventy-two of them, and not one needs a direction - which is unusual."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		assert len(kronos.controls) == 72
+		assert all(control.direction == "both" for control in kronos.controls.values())
+
+		said = prose_of("korg", "kronos")
+
+		assert "Nothing this instrument sends is something it will not answer to." in said
+
+		# The fourteen numbers that are in one table only are exactly the addressing
+		# machinery and the channel mode messages, which is why none of them is here.
+		carried = {control.cc for control in kronos.controls.values()}
+
+		assert not carried & {0, 32, 6, 38, 96, 97, 100, 101}
+		assert not carried & set(range(120, 128))
+
+	def test_its_chart_is_in_the_appendices_of_another_document (self) -> None:
+		"""And two of this definition's fields are rows nothing else here carries.
+
+		The MIDI archive's four pages are prose tables with no Basic Channel, Mode or True
+		Voice row, and the Parameter Guide reprints those same four pages. The chart is
+		printed p. 296 of the Operation Guide, after the specifications.
+		"""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		assert kronos.midi is not None
+		assert kronos.voice is not None
+
+		# **Both of these were written up as unrecorded before that page was found.**
+		assert kronos.midi.mode == 3
+		assert kronos.voice.note_range == (0, 127)
+
+		said = prose_of("korg", "kronos")
+		flat = " ".join(said.split())
+
+		assert "printed p. 296 of the Operation Guide" in flat
+		assert "Mode 3: OMNI OFF, POLY" in said
+		assert "A claim that a maker published no chart has to be checked against every page" \
+			" of every document, not against the documents about MIDI." in flat
+
+		# And the mode still cannot be changed over MIDI, which the chart does not say and
+		# the implementation does: the four mode messages arrive and drop the notes.
+		assert "THE MODE CANNOT BE CHANGED OVER MIDI" in flat
+		assert "as All Notes Off" in said
+
+	def test_its_nrpn_absence_is_about_parameters_not_controllers (self) -> None:
+		"""The chart carries 98 and 99; nothing in five documents says what they select."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		assert kronos.midi is not None
+		assert kronos.midi.nrpn == "none"
+
+		flat = " ".join(prose_of("korg", "kronos").split())
+
+		# They are the only numbers the chart has that the implementation does not.
+		assert "they are the only numbers the chart carries that the prose tables do not" in flat
+		assert "THERE IS NOTHING FOR THEM TO SELECT" in flat
+
+		# And the registered three are received, which is a different thing.
+		assert "r = 0 : Pitch Bend Sensitivity ( Bend Range )" in flat
+		assert kronos.voice is not None
+		assert kronos.voice.pitch_bend is not None
+		assert kronos.voice.pitch_bend.programmable is True
+
+	def test_the_chart_leaves_eight_more_numbers_assignable (self) -> None:
+		"""Which the implementation prints, so both are carried and the difference is said."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		carried = {control.cc for control in kronos.controls.values()}
+
+		assert {17, 19, 20, 21, 85, 86, 87, 88} <= carried
+
+		flat = " ".join(prose_of("korg", "kronos").split())
+
+		assert "Realtime Knobs 5-8 VJS Assign" in flat
+		assert "the implementation says where those eight sit and the chart says they go" \
+			" anywhere" in flat
+
+	def test_twenty_eight_of_its_numbers_are_off_on_a_new_instrument (self) -> None:
+		"""The KARMA controls, the pads and the Vector Joystick - a loadable default.
+
+		The sharpest case in this corpus of a maker printing controller numbers that are
+		not in effect until somebody turns them on.
+		"""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		settable = set(range(22, 32)) | set(range(102, 120)) | {14}
+
+		assert settable <= {control.cc for control in kronos.controls.values()}
+		assert len(settable) == 29
+
+		said = prose_of("korg", "kronos")
+
+		assert "As shipped from the factory, for simplicity, all KARMA and Pad" \
+			" assignments are set to Off." in said
+		assert "a set of recommended CC assignments which can be loaded in a single step" in said
+
+		# And the two tables disagree about exactly one of them, which the guide settles.
+		assert "CC 14 carries that" in said
+		assert "the transmitted table" in said and "missing a mark" in said
+
+	def test_its_polyphony_is_a_property_of_the_program (self) -> None:
+		"""Nine engines, nine figures from 40 to 200, and a processor they share."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		assert kronos.voice is not None
+		assert kronos.voice.polyphony is None
+
+		# **But the pool being shared is recorded even though the pool has no size**, which
+		# is a thing worth saying about sixteen parts.
+		assert kronos.voice.polyphony_shared is True
+
+		said = prose_of("korg", "kronos")
+
+		assert "KRONOS dynamically allocates the voice processing power between the" \
+			" engines as necessary." in said
+		assert "the first instrument here whose polyphony is a property of the program" \
+			" rather than of the model" in " ".join(said.split()).lower()
+
+	def test_its_aftertouch_asymmetry_is_stated_in_words (self) -> None:
+		"""The keyboard sends one kind; the instrument answers to both."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		assert kronos.voice is not None
+		assert kronos.voice.aftertouch == "poly"
+
+		said = prose_of("korg", "kronos")
+
+		assert "keyboard transmits only channel after touch" in said
+		assert "it can receive polyphonic after touch to control individual notes" in said
+
+		# And one of the four keyboards generates none at all, which is about that model's
+		# hardware rather than about what any of them answers to.
+		assert "KRONOS2-88LS keyboard does not generate aftertouch" in said
+
+	def test_its_sixteen_parts_are_one_set_under_two_names (self) -> None:
+		"""Timbres in Combination mode, Tracks in Sequencer mode, sixteen either way."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		assert list(kronos.parts) == ["timbre"]
+
+		timbre = kronos.parts["timbre"]
+
+		assert timbre.count == 16
+		assert timbre.channel == "assigned"
+		assert timbre.receives == ("notes", "controls", "program_change")
+
+		said = prose_of("korg", "kronos")
+
+		assert "each of the 16 Timbres or Tracks in Combi and Sequence modes" in said
+		assert "Combination Number of Timbres 16 Maximum" in said
+
+	def test_one_map_covers_every_kronos_and_that_is_checked (self) -> None:
+		"""Seven products, three generations, and a 2025 archive compared against this one."""
+		said = prose_of("korg", "kronos")
+
+		assert "KRONOS 61/73/88 KRONOS X 61/73/88 KRONOS 2 61/73/88/PLATINUM/LS/GOLD" in said
+		assert "six of them offer the identical implementation archive" in said
+
+		flat = " ".join(said.split())
+
+		assert "the same 88 controller numbers with the same status bytes" in flat
+
+		# And nothing moved across the firmware, which is checked as an absence rather
+		# than inferred from a changelog that reads harmless.
+		assert "do not appear in it once" in flat
+
+	def test_three_of_its_numbers_reach_one_channel_only (self) -> None:
+		"""Which this format cannot say, so the definition says it in prose instead."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		for key, number in (("all_insert_fx", 92), ("master_fx", 94), ("total_fx", 95)):
+			assert kronos.controls[key].cc == number
+			assert kronos.controls[key].group == "effects"
+			# **They carry no part, because the part they belong to is the instrument.**
+			assert kronos.controls[key].part is None
+
+		said = prose_of("korg", "kronos")
+
+		assert "g : Always Global Channel No. (0 - 15)" in said
+		assert "there is no part for the instrument itself" in said
+
+		# Their received cells are malformed, so no band was invented for them.
+		assert all(not kronos.controls[key].values
+			for key in ("all_insert_fx", "master_fx", "total_fx"))
+		assert "inventing the threshold would put a number in this corpus that no page" \
+			" carries" in " ".join(said.split())
+
+	def test_it_records_three_faults_in_the_makers_own_tables (self) -> None:
+		"""Crossed effect sends, a typo, and three cells that did not typeset."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		# The lower number is the second send and the higher is the first.
+		assert kronos.controls["send_2_level"].cc == 91
+		assert kronos.controls["send_1_level"].cc == 93
+
+		# And the label spells the word the received table gets wrong.
+		assert kronos.controls["filter_eg_intensity"].label == "Filter EG Intensity"
+
+		said = prose_of("korg", "kronos")
+
+		assert "The effect sends are crossed" in said
+		assert "Filter EG Intencity" in said
+
+	def test_its_implementation_arrives_as_an_archive (self) -> None:
+		"""A first for this library, and the digest recorded is the document inside it."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+
+		said = prose_of("korg", "kronos")
+
+		assert "the first archive this library has had to open to reach a controller" \
+			" number" in " ".join(said.split())
+
+		# The archive's own digest is recorded in the source's comment, so the extracted
+		# copy cannot quietly become a different file from the download.
+		archive = kronos.sources["implementation"].url
+
+		assert archive is not None and archive.endswith(".zip")

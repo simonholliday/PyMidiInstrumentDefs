@@ -1,0 +1,533 @@
+# **FIVE DOCUMENTS, AND THE ONE PAGE THAT SETTLES THE MOST IS IN THE LAST PLACE ANYBODY WOULD
+# LOOK.** What Korg publishes as this instrument's MIDI document is four pages of prose tables
+# headed `1.TRANSMITTED DATA` and `2.RECOGNIZED RECEIVE DATA`, listing every message by its
+# status byte with the physical control that sends it named in brackets. That is where all 72
+# numbers below come from, and **because it is two separate lists rather than two columns of one
+# row, the direction of every number is the maker saying so rather than a box left blank**: all
+# 74 numbers common to both lists travel both ways.
+#
+# **BUT THERE IS ALSO AN ORDINARY MIDI IMPLEMENTATION CHART, and it is printed p. 296 of the
+# Operation Guide** - in the appendices, after the specifications, 884 printed pages from the
+# implementation it summarises, in a different document from any of the four the MIDI archive
+# holds, and in the one document of the five whose own MIDI chapter says only to consult the
+# Parameter Guide. It carries the rows the prose tables have no counterpart for, and two of them
+# are fields: `mode` is its Mode row and `note_range` its True Voice row. Both were written up
+# here as unrecorded, with a paragraph each explaining that the row did not exist, before the
+# page was found. **A claim that a maker published no chart has to be checked against every page
+# of every document, not against the documents about MIDI.**
+#
+# **ONE MAP, SEVEN PRODUCTS, THREE GENERATIONS AND TEN KEYBOARDS - AND THAT IS CHECKED.** Korg's
+# own downloads index lists seven products whose name begins KRONOS, and **six of them offer the
+# identical implementation archive**, the same document number at the same date and size. The
+# seventh offers a larger archive published in 2025, which was fetched and compared: **it carries
+# the same 88 controller numbers with the same status bytes**, adding only system exclusive
+# parameter files for the nine voice engines. The 3.1.3 release note settles it from the other
+# side, its heading naming "KRONOS 61/73/88 KRONOS X 61/73/88 KRONOS 2 61/73/88/PLATINUM/LS/GOLD"
+# (release_note p. 1) as one system. So this definition is every KRONOS, which is this maker's
+# arrangement rather than a convenience here.
+#
+# **TWENTY-EIGHT OF THE SEVENTY-TWO NUMBERS BELOW ARE OFF ON A NEW INSTRUMENT.** The
+# implementation prints the KARMA sliders, the KARMA switches, the eight pads and the Vector
+# Joystick's two axes with controller numbers, footnoted `When CC# by "CC Default" is assigned to
+# the KARMA Controllers, Vector Joystick X, Y and Pads in Global Mode` (implementation p. 2). The
+# Parameter Guide is blunter: "As shipped from the factory, for simplicity, all KARMA and Pad
+# assignments are set to Off." (guide p. 793), and "the KRONOS has a set of recommended CC
+# assignments which can be loaded in a single step" (guide p. 793). **So these twenty-eight are a
+# recommendation the player loads with one menu command, not a factory state** - they are carried
+# because they are the maker's published numbers and because a player who runs that command gets
+# exactly these, and the condition is said here rather than left for somebody to discover.
+#
+# The chart is a third witness and the plainest of the three: "Valid if assigned as a MIDI
+# control change in Global P2 Controller. The number shown here is the CC default assignment."
+# (operation p. 296). **And it leaves eight more numbers out altogether** - 17, 19, 20 and 21 for
+# the knob modulation sources and 85 to 88 for the Vector Joystick's four directions, which the
+# implementation prints as rows of their own. In their place the chart has one row reading
+# "Realtime Knobs 5-8 VJS Assign" (operation p. 296) against a span of 0 to 119. That is not a
+# contradiction: the implementation says where those eight sit and the chart says they go
+# anywhere. They are carried below because a definition that dropped them would leave a player
+# with no number to start from.
+#
+# AND THE TWO TABLES DISAGREE ABOUT EXACTLY ONE OF THEM, WHICH IS AN OMISSION. CC 14 carries that
+# footnote where it is received and not where it is transmitted. The guide puts it with the rest -
+# "KARMA ON/OFF [Off, MIDI CC#00...119] This assigns a control change message to the KARMA ON/OFF
+# switch. When assigned to a CC, the default is CC#14." (guide p. 793) - so the transmitted table
+# is missing a mark, and the count above reads 28 rather than 27 on the guide's authority.
+#
+# **THE POLYPHONY IS NINE FIGURES AND A SENTENCE ABOUT SHARING A PROCESSOR, SO IT IS NOT
+# RECORDED.** The specifications give a maximum for each of nine synth engines and none for the
+# instrument: 140 voices for the HD-1, 80 for the AL-1, 200 for the CX-3, 40 each for the STR-1
+# and MS-20EX, 180 for the PolysixEX, 52 for the MOD-7, 100 for the SGX-2 and 104 for the EP-1.
+# Then the reason there is no single number: "KRONOS dynamically allocates the voice processing
+# power between the engines as necessary. The quoted maximum numbers of voices apply when 100% of
+# the voice processing power is devoted to a single engine." (operation p. 290). **This is the
+# first instrument here whose polyphony is a property of the program rather than of the model.**
+#
+# THE KEYBOARD SENDS ONE KIND OF AFTERTOUCH AND THE INSTRUMENT ANSWERS TO BOTH, IN WORDS RATHER
+# THAN MARKS. "The KRONOS's keyboard transmits only channel after touch; it does not transmit
+# polyphonic after touch." (guide p. 787), and then: "since the KRONOS does support polyphonic
+# after touch as an Alternate Modulation Source (AMS), it can receive polyphonic after touch to
+# control individual notes" (guide p. 787). A chart would have said that with four marks; this
+# says it in two sentences, and `aftertouch: poly` records the stronger of the two as this corpus
+# already does for the MC-707 and the FANTOM.
+#
+# **AND THE CHART SAYS IT A FOURTH TIME, MOST SHARPLY OF ALL.** Its Aftertouch rows are circled
+# in both directions for both kinds, which on its own would say the keyboard sends polyphonic
+# pressure - and then its remark takes that back: "Polyphonic aftertouch transmitted"
+# (operation p. 296) and, on the line under it, "only as sequence data (88LS)"
+# (operation p. 296). So what leaves this instrument as polyphonic pressure
+# was recorded into its sequencer by something else. **Which is the case for reading the prose
+# beside a chart rather than the marks alone**: the marks here are not wrong, and by themselves
+# they are misleading.
+#
+# **AND ONE OF THE FOUR KEYBOARDS GENERATES NO AFTERTOUCH AT ALL.** The specifications table
+# prints "KRONOS2-88LS LS Semi-Weighted Yes No" (operation p. 290) against Yes and Yes for the
+# other three, and the guide repeats it: "The KRONOS2-88LS keyboard does not generate aftertouch"
+# (guide p. 765). That is about one keyboard's hardware and not about what the instrument answers
+# to, which is why the field above is unchanged by it - but a player holding that model and
+# finding nothing sent is meeting a specification rather than a fault.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: KRONOS
+  # **THE NAME IS THE FAMILY'S AND THAT IS DELIBERATE.** The implementation is headed "KRONOS
+  # MIDI IMPLEMENTATION" (implementation p. 1) with no generation in it, and the Parameter Guide
+  # heads its reprint "Messages transmitted and received by the KRONOS" (guide p. 1157). Korg's
+  # downloads index divides the same instrument into KRONOS, KRONOS (2011), KRONOS (2014),
+  # KRONOS LS, KRONOS Platinum, KRONOS TITANIUM and KRONOS X; the release note divides it again
+  # into KRONOS, KRONOS X and KRONOS 2; and the specifications name the keyboards KRONOS2-61,
+  # KRONOS2-73, KRONOS2-88 and KRONOS2-88LS. **Four naming schemes from one maker for one map.**
+  # NOT RECORDED, which firmware this describes, because the two documents disagree about having
+  # one. The specifications state "System KRONOS System Version 3.1" (operation p. 290); the
+  # Parameter Guide, published two and a half years later, states no version anywhere and its
+  # file name carries an edition rather than a firmware. The newest system Korg published is
+  # 3.1.3, and see the source account for why that does not matter to the map.
+  # Checked 2026-10-06.
+
+source: >-
+  Korg's **MIDI Implementation for this instrument, which arrives as a ZIP and is the first
+  archive this library has had to open to reach a controller number**. The download is 464.7 KB
+  and holds eighteen entries: one four-page PDF, which is where every number below comes from;
+  twelve plain-text system exclusive parameter maps, of which `Global.txt` alone is 3.6 MB; and a
+  `.DS_Store` somebody left in. **Only the PDF carries controller numbers.** The text files are
+  parameter address maps for system exclusive, which this format does not hold.
+
+  **AND SEPARATELY, ONE PAGE OF THE OPERATION GUIDE, WHICH IS AN ORDINARY CHART.** See the
+  comment above the definition for where it is and why it was nearly missed. It is what `mode`
+  and `note_range` rest on, it witnesses the twenty-eight assignable numbers a third time, and it
+  carries controllers 98 and 99, which are the only numbers in any of these documents that the
+  implementation omits. **Its marks are drawn and not lettered** - a circle is curve segments and
+  a cross is straight lines, with a legend at the foot of the page that proves the test, exactly
+  as `korg/volca_bass`'s chart from the same maker does - and its labels and its values sit in
+  separate text blocks, so a row of it cannot be matched as a string. Both were read by
+  coordinate.
+
+  **THE SAME FOUR PAGES ARE REPRINTED INSIDE A 1,187-PAGE PARAMETER GUIDE**, at its printed
+  pp. 1157-1160, and that is checked rather than assumed: the reprint carries every one of the 88
+  numbers. So a reader who has the guide and not the archive has the implementation anyway, and
+  every quotation from either is findable in the other.
+
+  THE SEVENTY-TWO NUMBERS CARRIED, AND THE SIXTEEN NOT. The document names 88 controller numbers
+  across its two tables. **Eight are how MIDI addresses things rather than parameters of this
+  instrument**: Bank Select (0 and 32), Data Entry (6 and 38), Data Increment and Decrement (96
+  and 97) and the RPN selects (100 and 101). Bank Select's work is recorded under
+  `program_change` and the registered parameters under `pitch_bend`. **Eight more are the channel
+  mode messages**, 120 to 127, which this format refuses as controls by design and which are
+  described below. That is the same line `roland/fantom_6_7_8` drew from the same position.
+
+  **AND EVERY ONE OF THE SEVENTY-TWO TRAVELS BOTH WAYS.** Not one number below needs a
+  `direction`, which is unusual enough to state: 74 of the 88 are in both tables, and the
+  fourteen that are in one are exactly the addressing machinery and the channel mode messages.
+  **Nothing this instrument sends is something it will not answer to.**
+
+  THREE NUMBERS REACH ONE CHANNEL ONLY AND THE FORMAT CANNOT SAY SO. The document gives most rows
+  the status `Bn`, glossed "n : MIDI Channel No. (0 - 15)"
+  (implementation p. 1) and "Usually Global Channel" (implementation p. 1), with each timbre's
+  or track's channel in Combination and Sequencer modes - but gives three the status
+  `Bg`, glossed "g : Always Global Channel No. (0 - 15)" (implementation p. 1). Those three are
+  controllers 92, 94 and 95, the effect off-switches, and they ignore which timbre is playing. A
+  control is placed by its `part` here and there is no part for the instrument itself, so they
+  are ordinary controls above and the restriction is recorded only here.
+
+  **CONTROLLERS 0 TO 119 ARE ALL ASSIGNABLE, WHICH IS A DIFFERENT FACT FROM THE MAP.** Beside its
+  numbered rows the transmitted table carries eight that name a span instead - "Control
+  (cc)=0-119 ( Knob = MIDI CC#00-119 )" (implementation p. 1) and the same for the Vector CC, the
+  KARMA real-time controls, the pads, External mode and KARMA generated-effect data, with the
+  KARMA CC offset limited to 0-95. The received table answers with one: "Control data ( for Seq.
+  recording (cc) = 0-119 )" (implementation p. 3). **So the knobs and pads can be set to any
+  controller a player likes**, and the numbers above are where the panel sits by default rather
+  than a boundary.
+
+  THREE SMALL FAULTS IN THE MAKER'S OWN TABLES, RECORDED BECAUSE EACH COSTS A READER SOMETHING.
+  **The effect sends are crossed**: controller 91, which the specification calls Effect 1 Depth,
+  reaches "Send 2 Level control" (implementation p. 3) and controller 93, Effect 3
+  Depth, reaches "Send 1 Level control" (implementation p. 3) - so a player who assumes the
+  lower number is the first send has it backwards. **`Filter EG Intencity` is a typo** for
+  intensity, in the received table, where the transmitted table abbreviates past the point of
+  spelling it; the label above gives it correctly. And **the received cells for controllers 92,
+  94 and 95 are malformed**, printing
+  `00/00 (00/000)` where the transmitted cells print `00/7F (00/127)` and the sense plainly wants
+  the latter. No band is recorded for those three, because inventing the threshold would put a
+  number in this corpus that no page carries.
+
+  WHERE THE PAGE NUMBERS COME FROM. The implementation prints its own folio 1 to 4. The Parameter
+  Guide's folio runs fourteen sheets behind its file, checked on 1,175 of its 1,187 pages, and
+  the Operation Guide's eight behind, checked on 297 of its 305 - so a locator here is the number
+  printed on the page.
+
+  **AND NOTHING IN THE MAP MOVED ACROSS THE FIRMWARE THIS INSTRUMENT EVER RAN**, which is checked
+  as an absence rather than inferred from a changelog that reads harmless. The 3.1.3 release note
+  covers the whole 3.1 series over nine pages. It names MIDI ten times under two `MIDI Bug fixes`
+  headings, every one of them a stuck note or an incorrect answer to a Universal System
+  Exclusive message - and **the words `CC#`, `Control Change` and `controller number` do not
+  appear in it once**. So no controller was added, dropped or renumbered.
+
+  HOW THE DOCUMENTS WERE REACHED, WHICH IS NOT BY A LINK. This maker's downloads page carries no
+  file address at all: each document is reached through an intermediate licence-agreement page,
+  and only those carry the `cdn.korg.com` address. That was first met by `korg/volca_bass` and
+  holds here for all 24 documents this product lists. **Korg also encrypts its PDFs**, with an
+  empty password - the implementation with 128-bit RC4 and the guides with AES - so a tool that
+  refuses one is meeting a setting rather than a fault, which `korg/volca_drum` already records.
+
+  NOT RECORDED: the preset count, because program change reaches three different things here and
+  the field holds one number. The specifications give "User memory programs 2,560"
+  (operation p. 293), "User memory combinations 1,792" (operation p. 293) and "128 set lists,
+  128 slots per set list" (operation p. 293), and which a
+  program change selects depends on the mode the instrument is in. NOT RECORDED EITHER: the
+  polyphony and the note range, both for the reasons above; the velocity curves, of which the
+  keyboard has eight and the aftertouch eight more; and the system exclusive parameter addresses,
+  which fill 11 MB of the archive and have no field in this format.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: KRONOS MIDI IMPLEMENTATION
+    dated: 2012-03-26
+    landing: "https://www.korg.com/us/support/download/manual/0/424/4593/"
+    url: "https://cdn.korg.com/us/support/download/files/faea29c515edd20f9da1ad76ae00fa4a.zip"
+    sha256: bb0d831f1ef5ae26cbc6a874dc242c330e5a1f725313e723f33f87395706954f
+    retrieved: 2026-10-06
+    # **THE DIGEST ABOVE IS THE PDF, NOT THE DOWNLOAD.** The address serves a ZIP whose own
+    # digest is 1d28540640db82f0d86fc4fd886f7bff68b65adbc5d543444961b5984af84a74, 475,829
+    # bytes, holding eighteen entries; this is the four-page PDF inside it, 44,353 bytes, and
+    # the two are checked against each other so the extracted copy cannot drift from the
+    # download. Both are in the library.
+    # The document dates itself 26 March 2012 on its first line and was created in its present
+    # form on 24 September 2014. Encrypted with 128-bit RC4 and an empty password, as this
+    # maker's PDFs are. Its folio is its own page number, 1 to 4.
+    # **IT IS AN IMPLEMENTATION AND NOT A CHART**, so it has no Basic Channel, Mode or True
+    # Voice row. The chart is a page of the Operation Guide, dated 2016. 4. 20 and versioned
+    # Ver.1.10 in its own corner - **four years newer than this and a version of nothing else
+    # here**, which is a sixth date in a family that already had five.
+    page_offset: 0
+  guide:
+    kind: manual
+    title: KRONOS Parameter Guide
+    edition: E11
+    dated: 2019-05-17
+    landing: "https://www.korg.com/us/support/download/manual/0/424/2011/"
+    url: "https://cdn.korg.com/us/support/download/files/74a6c3cb0399c4d733d5730cd4c4e7f8.pdf"
+    sha256: ca5153899469790a89b8784844428846386089e1b98deffdd42c530d629a5683
+    retrieved: 2026-10-06
+    # **1,187 pages, which is the largest document this library holds.** It reprints the whole
+    # MIDI implementation at its printed pp. 1157-1160, checked to carry all 88 numbers, and it
+    # is the only place the factory state of the assignable controllers is stated. Its folio
+    # runs fourteen sheets behind the file, checked on 1,175 of its pages - the twelve that
+    # disagree are plates with no folio. Its edition is in its file name and names no firmware.
+    page_offset: 14
+  operation:
+    kind: manual
+    title: KRONOS Operation Guide
+    edition: E10
+    dated: 2016-12-22
+    landing: "https://www.korg.com/us/support/download/manual/0/424/2010/"
+    url: "https://cdn.korg.com/us/support/download/files/2fd1d54ad1f6f5e32caa8f5cd622e565.pdf"
+    sha256: 0cb2784ca72d462356521e51914f90980b538b29a24c25045d57805146ef227d
+    retrieved: 2026-10-06
+    # 305 pages, and cited for two separate things that happen to share a binding.
+    # **ITS APPENDICES HOLD THE ONLY MIDI IMPLEMENTATION CHART THIS INSTRUMENT HAS**, printed
+    # p. 296, dated 2016. 4. 20 and versioned Ver.1.10 in its own corner. Its marks are drawn
+    # rather than lettered and its cells are read by coordinate; see the account above.
+    # And the specifications, printed pp. 290-295: the nine engines and their voice counts, the
+    # four keyboards and which of them generates aftertouch, the sixteen timbres, the three
+    # preset counts and the system version.
+    # Its folio runs eight sheets behind the file, checked on 297 of its 305.
+    page_offset: 8
+  release_note:
+    kind: release_notes
+    title: Release Note for OS v3.1.3
+    edition: 3.1.3
+    dated: 2019-02-25
+    landing: "https://www.korg.com/us/support/download/manual/0/424/4238/"
+    url: "https://cdn.korg.com/us/support/download/files/ae0b70caf8367e1b76f4f3c7fac51d22.pdf"
+    sha256: f5c561215323cd12162974e01a3bbf3dc0c073e55e2445fde0ea72c61c4e1e60
+    retrieved: 2026-10-06
+    # **CITED FOR TWO THINGS, ONE OF THEM AN ABSENCE.** Its heading names every model one
+    # system covers, which is what makes this definition's scope the maker's; and in nine
+    # pages covering the whole 3.1 series it never once names a controller, which is what
+    # makes the map's stability a checked absence rather than a guess. Nine sheets, the last
+    # blank, and no folio on any of them.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: "Downloads | KRONOS (2014) | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/0/424/"
+    sha256: 34fc8ddf540334370826c4abd3a2400c7ce5acc471716037736bdcc3bf57401c
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for what this maker publishes and for how it has to be fetched.** 24 documents,
+    # of which one is the MIDI implementation; and **not one file address among them**, because
+    # each document is reached through a licence-agreement page that carries the address
+    # instead - so none of the four URLs above is on this page at all. As with
+    # `korg/volca_bass`, the digest is of the extraction and the served bytes are saved beside
+    # it as `.html`, whose own digest is
+    # 01d50cfea5cf7bc936dda0c4e4e0a0c5eb6cec0d048abc01df8d7ba4297faf91.
+    # ITS ONE PAGE IS CITED AS p. 1. **And the claim it carries that no single page could** -
+    # that six more products offer this identical archive and a seventh offers a 2025 one with
+    # the same map - rests on the other seven pages of this maker's index, which were fetched
+    # and read and are not saved here one by one.
+
+midi:
+  # "Basic MIDI Channel (Global MIDI Channel) [1...16]" (guide p. 781), and each of the sixteen
+  # timbres takes one of its own - see the part below. A timbre may also be set to `Gch`, which
+  # is not a seventeenth channel but an instruction to follow the global one.
+  channels: [1, 16]
+  # **FROM THE CHART'S MODE ROW, WHICH IS THE ROW THE PROSE TABLES HAVE NO COUNTERPART FOR.**
+  # Its received cell reads `3`, and its legend spells that out: "Mode 3: OMNI OFF, POLY"
+  # (operation p. 296). Korg labels the row's first line `Memorized` where a standard chart says
+  # `Default`, which is the same word it puts against the basic channel - so both survive a
+  # power cycle rather than reverting.
+  # AND THE MODE CANNOT BE CHANGED OVER MIDI, which is a thing the chart does not say and the
+  # implementation does. The four mode messages arrive - controllers 124 and 125, Omni Mode Off
+  # and On, 126, Mono Mode On, and 127, Poly mode On - and each is glossed "as All Notes Off"
+  # (implementation p. 3). So the instrument answers to them by dropping its notes and staying
+  # in mode 3. The transmitted table carries no mode message of any kind.
+  mode: 3
+  # Transmitted "F8 Timing Clock ( Always in Prog/Combi/Seq mode )" (implementation p. 2) when
+  # "MIDI Clock in Global mode is Internal" (implementation p. 2), and received "F8 Timing
+  # Clock ( Tempo, AMS & FX Dmod Src )" (implementation p. 4) when it is "External MIDI"
+  # (implementation p. 4). So both, and which one depends on a setting rather than on the
+  # sockets.
+  clock: both
+  # Start, Continue and Stop are in both tables - transmitted from the sequencer's own buttons or
+  # by triggering KARMA, received as "Seq Start & KARMA Control" (implementation p. 4) and its
+  # two fellows. Active sensing travels both ways as well.
+  transport: both
+  program_change:
+    # "Cn pp (pp) Program Change ( Prog/Combi/Set List change )" (implementation p. 1) and the
+    # same row in the received table. Bank Select MSB and LSB accompany it in both directions,
+    # and the document spends the better part of two pages mapping banks to numbers - twice
+    # over, because "Bank Map in Global mode" (implementation p. 4) offers a Korg layout and a
+    # GM(2) layout that address the same banks through different MSBs.
+    receives: true
+    sends: true
+    # NOT RECORDED, the preset count: program change reaches programs, combinations or set list
+    # slots depending on the mode, and those are 2,560, 1,792 and 128 by 128. See the account.
+  # **A CHECKED ABSENCE, AND THE TWO DOCUMENTS DISAGREE ABOUT WHETHER TO MENTION IT.**
+  # Controllers 98 and 99 are the NRPN selects. The implementation's two tables omit them
+  # entirely - they are the only numbers the chart carries that the prose tables do not - while
+  # the chart prints "98, 99, 100, 101" (operation p. 296) in one row against
+  # "NRPN (LSB, MSB), RPN (LSB, MSB)" (operation p. 296), crossed when transmitted and circled
+  # when received.
+  # **SO THE TWO CONTROLLERS ARRIVE AND THERE IS NOTHING FOR THEM TO SELECT.** Not one
+  # non-registered parameter is named in any of the five documents - the chart's own footnote
+  # for that row defines only the registered three, "RPN (LSB,MSB)=00,00: Pitch bend range,
+  # 01,00: Fine tune, 02,00: Coarse tune" (operation p. 296) - and the 11 MB of parameter
+  # addresses in the MIDI archive are system exclusive, not NRPN. A consumer given `supported`
+  # here would have an address space and no address in it, so this says `none` and says why:
+  # somebody looked, in five documents, and found no parameter rather than no controller.
+  # THE REGISTERED THREE ARE RECEIVED AND ARE RECORDED WHERE THIS FORMAT HAS A FIELD FOR THEM.
+  # The implementation footnotes them a second time and one at a time: "r = 0 : Pitch Bend
+  # Sensitivity ( Bend Range )" (implementation p. 4), "= 1 : Fine Tune ( Detune )"
+  # (implementation p. 4) and "= 2 : Coarse Tune ( Transpose )" (implementation p. 4), reached
+  # through controllers 100 and 101. The first is under `pitch_bend` below; the other two are
+  # a master tuning and a transpose, which this format does not hold.
+  nrpn: none
+  # Sections 1-4 and 2-4 of the implementation, and eleven megabytes of parameter address maps
+  # in the archive beside it. Worth knowing that the factory filter has it switched off:
+  # "Enable Exclusive [Off, On] ... Normally you will leave this unchecked." (guide p. 787).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # **FROM THE CHART'S TRUE VOICE ROW**, which gives 0 to 127 against the Note Number row's own
+  # 0 to 127 (operation p. 296) - the instrument saying it sounds every note it answers to.
+  # THE IMPLEMENTATION COULD NOT HAVE GIVEN THIS, and what it gives instead is worth keeping,
+  # because it is about the keys rather than about the instrument. Its transmitted table
+  # footnotes three different spans, one per keyboard - "kk = 24 - 108 : KRONOS 61Keys (61Keys +
+  # Transpose)" (implementation p. 1), "= 16 - 112 : KRONOS 73Keys (73keys + Transpose)"
+  # (implementation p. 1), "= 09 - 120 : KRONOS 88Keys (88keys + Transpose)" (implementation
+  # p. 1) and "= 00 - 127 : Sequencer and KARMA Module" (implementation p. 1) - and its received
+  # table prints no note limit anywhere. The chart reconciles the four: "All note numbers 0-127
+  # can be transmitted by the KARMA function or as sequence data" (operation p. 296). So the span
+  # below is what any KRONOS answers to and what any of them can send; which notes its own keys
+  # reach is a fact about the keyboard somebody bought.
+  note_range: [0, 127]
+  # NOT RECORDED, the polyphony. See the comment above the definition: nine engines, nine
+  # figures from 40 to 200, and a processor the engines share.
+  # **THE SIXTEEN TIMBRES DRAW ON ONE POOL, WHICH IS RECORDED EVEN THOUGH THE POOL HAS NO SIZE.**
+  # The guide tells a player short of voices to "Use the Max # of Notes setting to limit the
+  # polyphony of specific Timbres or Tracks, leaving more power for other sounds." (guide p. 12),
+  # which is only advice if the voices are shared; and the specifications say the processor is
+  # divided between the engines as they need it. So no timbre has voices it can count on, and
+  # this field says so without pretending to a figure the maker does not give.
+  polyphony_shared: true
+  velocity:
+    # "9n kk (kk) vv (vv) Note On (vv) = 1-127" (implementation p. 3) in the received table.
+    note_on: received
+    # **AND THE KEYBOARD SENDS A RELEASE VELOCITY, WHICH IS RARE.** The transmitted table reads
+    # "Note Off(vv)=1-64 ( Key Off )" (implementation p. 1), so a real figure travels rather
+    # than a constant - except from the sequencer, where "(vv) = 64 is always transmitted at
+    # Sequencer playback" (implementation p. 2). The received table takes the full span,
+    # "Note Off (vv) = 0-127" (implementation p. 3), and its own footnote adds that those
+    # values "are not recorded in Sequencer" (implementation p. 4).
+    note_off: true
+  # BOTH KINDS, AND THE DOCUMENTS SAY SO IN FOUR PLACES. Polyphonic key pressure is in both of
+  # the implementation's tables, received as an alternate modulation source (implementation
+  # p. 3) and transmitted as sequence data; channel pressure is in both as well, and the chart
+  # circles all four cells. The guide then draws the line the tables do not: the keyboard
+  # transmits channel pressure only, while the instrument receives polyphonic pressure to control
+  # individual notes. `poly` is the stronger of the two words this field holds, which follows the
+  # MC-707 and the FANTOM. See the comment above the definition for the quotations.
+  aftertouch: poly
+  pitch_bend:
+    # "En bb (bb) bb (bb) Bender Change" (implementation p. 3) in both tables, and settable over
+    # the first of the three registered parameters: "r = 0 : Pitch Bend Sensitivity ( Bend
+    # Range )" (implementation p. 4). The document gives no span for it and no factory depth, so
+    # `semitones` is unrecorded and what is recorded is that it can be set.
+    programmable: true
+
+parts:
+  timbre:
+    label: Timbre
+    count: 16
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # **SIXTEEN UNDER TWO NAMES, WHICH IS KORG'S OWN FRAMING AND NOT THIS CORPUS'S TIDYING.**
+    # The Operation Guide says it twice, 190 printed pages apart: the control surface reaches
+    # "each of the 16 Timbres or Tracks in Combi and Sequence modes" (operation p. 1), and
+    # "Each of the 16 Timbres or Tracks has its own Key Sync parameter." (operation p. 191). The
+    # specifications agree - "Combination Number of Timbres 16 Maximum" (operation p. 293) - so
+    # this is one set of sixteen called Timbres in Combination mode and Tracks in Sequencer
+    # mode, rather than two sets of sixteen.
+    # EACH TAKES A CHANNEL OF ITS OWN: "MIDI Channel [01...16, Gch] Sets the MIDI transmit/
+    # receive channel for each timbre." (guide p. 469) in Combination mode, and "Specifies the
+    # MIDI channel that the MIDI track will use to transmit and receive musical data." (guide
+    # p. 578) in Sequencer mode.
+    # A TIMBRE NEED NOT SOUND ANYTHING, as the FANTOM's zones need not: "Status [Off, INT, EXT,
+    # EX2] This sets whether the Timbre controls the internal sounds, or external MIDI devices."
+    # (guide p. 429). A track adds `BTH` to that list and so can do both at once, which is the
+    # one behaviour that distinguishes the two names. Nothing in this format marks a part doing
+    # one job from the same part doing the other.
+  # NOT RECORDED AS PARTS: the sixteen audio tracks of Sequencer mode, which take no notes; and
+  # the drum track and the eight pads, each of which has a transmitting channel of its own
+  # without being addressable from outside.
+
+groups:
+  # **THE DOCUMENT PRINTS ONE FLAT LIST AND GIVES IT NO GROUPING AT ALL**, so these are
+  # functional sections rather than a maker's headings. Where the map is the MIDI specification's
+  # own assignment the specification's section is used, as `roland/fantom_6_7_8` does; where it
+  # is not - and for half these numbers the specification has no name at all, only a bracket
+  # naming a KARMA slider or a pad - the instrument's own controller families are used instead.
+  continuous: Continuous controllers
+  switch: Switches and pedals
+  sound: Sound controllers
+  assignable: Assignable knobs, switches and the ribbon
+  vector: The Vector Joystick
+  effects: Effect controls, sends and switches
+  karma: KARMA
+  pads: The eight pads
+
+controls:
+
+  # Continuous controllers ──────────────────────────────────
+  modulation_1:                {label: Modulation 1 (Joystick +Y), cc: 1, group: continuous}
+  modulation_2:                {label: Modulation 2 (Joystick -Y), cc: 2, group: continuous}
+  foot_pedal:                  {label: Foot Pedal, cc: 4, group: continuous}
+  portamento_time:             {label: Portamento Time, cc: 5, group: continuous}
+  volume:                      {label: Volume, cc: 7, group: continuous}
+  post_ifx_panpot:             {label: Post IFX Panpot, cc: 8, group: continuous}
+  panpot:                      {label: Panpot, cc: 10, group: continuous}
+  expression:                  {label: Expression, cc: 11, group: continuous}
+
+  # Switches and pedals ─────────────────────────────────────
+  hold_1:                      {label: Hold 1 (Damper), cc: 64, group: switch}
+  portamento:                  {label: Portamento Off/On, cc: 65, values: {"off": 0, "on": 64}, group: switch}
+  sostenuto:                   {label: Sostenuto Off/On, cc: 66, values: {"off": 0, "on": 64}, group: switch}
+  soft_pedal:                  {label: Soft Pedal, cc: 67, group: switch}
+
+  # Sound controllers ───────────────────────────────────────
+  sustain_level:               {label: Sustain Level, cc: 70, group: sound}
+  resonance:                   {label: Resonance, cc: 71, group: sound}
+  release_time:                {label: Release Time, cc: 72, group: sound}
+  attack_time:                 {label: Attack Time, cc: 73, group: sound}
+  filter_cutoff:               {label: Filter Cutoff, cc: 74, group: sound}
+  decay_time:                  {label: Decay Time, cc: 75, group: sound}
+  lfo_1_speed:                 {label: LFO1 Speed, cc: 76, group: sound}
+  lfo_1_pitch_depth:           {label: LFO1 Pitch Depth, cc: 77, group: sound}
+  lfo_1_delay:                 {label: LFO1 Delay, cc: 78, group: sound}
+  filter_eg_intensity:         {label: Filter EG Intensity, cc: 79, group: sound}
+
+  # Assignable knobs, switches and the ribbon ───────────────
+  ribbon_controller:           {label: Ribbon Controller, cc: 16, group: assignable}
+  knob_mod_5:                  {label: Knob Mod5, cc: 17, group: assignable}
+  value_slider:                {label: Value Slider, cc: 18, group: assignable}
+  knob_mod_6:                  {label: Knob Mod6, cc: 19, group: assignable}
+  knob_mod_7:                  {label: Knob Mod7, cc: 20, group: assignable}
+  knob_mod_8:                  {label: Knob Mod8, cc: 21, group: assignable}
+  sw_1:                        {label: SW1, cc: 80, group: assignable}
+  sw_2:                        {label: SW2, cc: 81, group: assignable}
+  foot_switch:                 {label: Foot Switch, cc: 82, group: assignable}
+  multi_purpose_ctrl_8:        {label: Multi Purpose Ctrl8, cc: 83, group: assignable}
+
+  # The Vector Joystick ─────────────────────────────────────
+  vector_mod_plus_x:           {label: Vector Mod +X, cc: 85, group: vector}
+  vector_mod_minus_x:          {label: Vector Mod -X, cc: 86, group: vector}
+  vector_mod_plus_y:           {label: Vector Mod +Y, cc: 87, group: vector}
+  vector_mod_minus_y:          {label: Vector Mod -Y, cc: 88, group: vector}
+  vector_joystick_x:           {label: Vector Joystick X, cc: 118, group: vector}
+  vector_joystick_y:           {label: Vector Joystick Y, cc: 119, group: vector}
+
+  # Effect controls, sends and switches ─────────────────────
+  fx_control_1:                {label: FX Control 1, cc: 12, group: effects}
+  fx_control_2:                {label: FX Control 2, cc: 13, group: effects}
+  send_2_level:                {label: Send 2 Level, cc: 91, group: effects}
+  all_insert_fx:               {label: All Insert FX Off/On, cc: 92, group: effects}
+  send_1_level:                {label: Send 1 Level, cc: 93, group: effects}
+  master_fx:                   {label: Master FX1/2 Off/On, cc: 94, group: effects}
+  total_fx:                    {label: Total FX1/2 Off/On, cc: 95, group: effects}
+
+  # KARMA ───────────────────────────────────────────────────
+  karma_on_off:                {label: KARMA ON/OFF, cc: 14, group: karma}
+  karma_slider_1:              {label: KARMA Slider1, cc: 22, group: karma}
+  karma_slider_2:              {label: KARMA Slider2, cc: 23, group: karma}
+  karma_slider_3:              {label: KARMA Slider3, cc: 24, group: karma}
+  karma_slider_4:              {label: KARMA Slider4, cc: 25, group: karma}
+  karma_slider_5:              {label: KARMA Slider5, cc: 26, group: karma}
+  karma_slider_6:              {label: KARMA Slider6, cc: 27, group: karma}
+  karma_slider_7:              {label: KARMA Slider7, cc: 28, group: karma}
+  karma_slider_8:              {label: KARMA Slider8, cc: 29, group: karma}
+  karma_scene:                 {label: KARMA SCENE, cc: 30, choices: {scene_1: 0, scene_2: 1, scene_3: 2, scene_4: 3, scene_5: 4, scene_6: 5, scene_7: 6, scene_8: 7}, group: karma}
+  karma_latch:                 {label: KARMA LATCH, cc: 31, group: karma}
+  karma_sw_1:                  {label: KARMA SW1, cc: 102, values: {"off": 0, "on": 64}, group: karma}
+  karma_sw_2:                  {label: KARMA SW2, cc: 103, values: {"off": 0, "on": 64}, group: karma}
+  karma_sw_3:                  {label: KARMA SW3, cc: 104, values: {"off": 0, "on": 64}, group: karma}
+  karma_sw_4:                  {label: KARMA SW4, cc: 105, values: {"off": 0, "on": 64}, group: karma}
+  karma_sw_5:                  {label: KARMA SW5, cc: 106, values: {"off": 0, "on": 64}, group: karma}
+  karma_sw_6:                  {label: KARMA SW6, cc: 107, values: {"off": 0, "on": 64}, group: karma}
+  karma_sw_7:                  {label: KARMA SW7, cc: 108, values: {"off": 0, "on": 64}, group: karma}
+  karma_sw_8:                  {label: KARMA SW8, cc: 109, values: {"off": 0, "on": 64}, group: karma}
+
+  # The eight pads ──────────────────────────────────────────
+  pad_1:                       {label: Pad1, cc: 110, range: [1, 127], group: pads}
+  pad_2:                       {label: Pad2, cc: 111, range: [1, 127], group: pads}
+  pad_3:                       {label: Pad3, cc: 112, range: [1, 127], group: pads}
+  pad_4:                       {label: Pad4, cc: 113, range: [1, 127], group: pads}
+  pad_5:                       {label: Pad5, cc: 114, range: [1, 127], group: pads}
+  pad_6:                       {label: Pad6, cc: 115, range: [1, 127], group: pads}
+  pad_7:                       {label: Pad7, cc: 116, range: [1, 127], group: pads}
+  pad_8:                       {label: Pad8, cc: 117, range: [1, 127], group: pads}
+

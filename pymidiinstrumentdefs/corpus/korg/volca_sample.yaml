@@ -1,0 +1,227 @@
+# **ITS CHART CONTAINS NOT ONE `o` AND NOT ONE `x`.** Every tick and every cross on this
+# instrument's only MIDI document is vector artwork rather than text, so a reader that extracts
+# the text layer gets the row labels, the eleven controller numbers and the remarks - and
+# **nothing at all about which direction any of them travels**. `dreadbox/nymphes` met a page
+# that was entirely a picture and declared it with `pictured_pages`; this is narrower and worse,
+# because the page looks perfectly readable and is silently missing the only column that matters.
+#
+# **SO THE MARKS WERE READ AS SHAPES AND THEN LOOKED AT.** A circle is drawn with curves and a
+# cross with straight lines only, and the chart prints its own key in the same two shapes - a
+# circle beside "Yes" and a cross beside "No" (chart). `Notes/4651_extract_volca_sample.py` reads
+# the key with the same code as the table, so neither is assumed; and the table was rendered at
+# three times and at six and read by eye before any of this was written down.
+#
+# **THE EFFECT: 29 CROSSES IN THE TRANSMITTED COLUMN AND NOT ONE CIRCLE.** This instrument sends
+# nothing whatever, which its connector list confirms without ever naming a MIDI OUT:
+# "Connectors: (Headphone) jack (ø3.5mm stereo mini-phone jack), SYNC IN jack" (manual_2 p. 1) and no
+# more. The jack it has is an in: "MIDI IN jack This jack is where you can connect an external
+# MIDI device to control the sound generator of the volca sample." (manual_2 p. 1).
+#
+# **AND THE SURVEY POINTED AT A DIFFERENT MACHINE.** The ranking's source for this instrument is
+# Korg's product 867, which is the **volca sample2** - a later model with two charts and a
+# plain-text MIDI implementation. The original volca sample is product 370 and has one chart and
+# no implementation at all. Nothing here is taken from the sample2's documents.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: volca sample
+  # **1.42, FROM THE SYSTEM UPDATER, WHICH IS FIVE YEARS NEWER THAN THE CHART.** The chart says
+  # "Ver.: 1.00" (chart) and is dated 2014; the newest system program Korg offers is 1.42, dated
+  # 2019. See the account for the one row that is known to have moved between them.
+  firmware: "1.42"
+  # A sampler, **still made**. Checked 2026-10-06.
+
+source: >-
+  **ONE CHART, AND ITS MARKS ARE DRAWINGS RATHER THAN TEXT.** Every tick and cross on it is
+  vector artwork, so extracting the text gives the eleven controller numbers and none of their
+  directions. They were read as shapes - a circle is drawn with curves, a cross with straight
+  lines - against the chart's own printed key, and then the table was rendered and read by eye.
+  **29 crosses stand in the Transmitted column and not one circle**, and every one of the eleven
+  controllers carries a circle in the `Recognized` column.
+
+  **THE TWO MANUAL PARTS PRINT NO PAGE NUMBER**, being fold-outs of two sheets each carrying
+  five languages side by side, so a locator below is the file's own sheet rather than a printed
+  folio - which is the ruling `dreadbox/nymphes` needed for the same reason. Everything taken
+  from part 1 is on its second sheet and everything from part 2 on its first. The chart and the
+  updater page are one sheet each and are cited by name alone.
+
+  **SO EVERYTHING HERE IS RECEIVED AND NOTHING IS SENT**, which the manual settles twice over
+  without naming a MIDI OUT at all: "An external MIDI device can be connected to the MIDI IN jack
+  of the volca sample to control the audio source of the volca sample." (manual_1 p. 2), and the
+  specification lists "Connectors: (Headphone) jack (ø3.5mm stereo mini-phone jack), SYNC IN
+  jack" (manual_2 p. 1) and no other. `korg/volca_fm` and `korg/volca_drum` are the same shape for the
+  same reason.
+
+  **THE VELOCITY CELL HOLDS A CROSS AND A MESSAGE FORMAT TOGETHER**, which reads like a
+  contradiction and is not: the cross says the velocity is not acted on, and "9n, V=1 - 127"
+  (chart) says what the note-on message looks like. **This corpus can show the two shapes carry
+  meaning rather than decorating the page**, out of the same maker's own charts: the identical
+  row is a circle on the volca drum's chart and a cross on the volca fm's, and the volca fm's
+  implementation says in three words why - velocity is not used there either. So `ignored` is
+  what the cross means, and it is read off this chart's key rather than borrowed from a sibling.
+
+  **AND THE CHART IS FIVE YEARS OLDER THAN THE FIRMWARE, WITH ONE ROW KNOWN TO HAVE MOVED.** It
+  is "Ver.: 1.00" (chart), dated 2014. The newest system updater is 1.42, dated 2019, and its
+  release note reads "Fixed MIDI Song Position Pointer." (updater) - **while the chart crosses
+  Song Position in both columns**. A thing that was fixed is a thing that exists, so the chart is
+  out of date on at least that row. Nothing here claims song position is unsupported, and nothing
+  here claims it works: one sentence on a download page is enough to doubt a row and not enough
+  to replace it. `roland/tr_8` met the same shape with a whole update document to read instead.
+
+  **WHAT THE TWO FOOTNOTES DO, AND WHAT THEY DO NOT.** "*1: Received when global parameter MIDI
+  RX ShortMessage is set to ON." (chart) hangs on all eleven controllers, and "*2: Not received
+  when global parameter MIDI Clock src is set to Internal; received when set to Auto." (chart)
+  hangs on the clock rows. **Both parameters ship in the state that lets MIDI through**: the
+  manual's global table gives "Step7 MIDI RX ShortMessage *On St.on Off St.oF" (manual_2 p. 1) and
+  "Step6 MIDI Clock Src *Auto CL.At Internal CL.In" (manual_2 p. 1), where the asterisk is that
+  table's own mark for the factory default.
+
+sources:
+  chart:
+    kind: midi implementation chart
+    title: volca sample MIDI Implementation Chart
+    edition: "1.00"
+    dated: 2014-09-18
+    landing: https://www.korg.com/us/support/download/manual/0/370/2004/
+    url: https://cdn.korg.com/us/support/download/files/9bdc4997e44b7e96e771f612e06a90e5.pdf
+    sha256: 76b9bd10f0acf2dcae37172b6d8ea21f4c5ef205efa06d95d2e638e6c6223baf
+    retrieved: 2026-10-06
+    paginated: false
+  manual_1:
+    kind: owner's manual
+    title: volca sample Owner's Manual 1 of 2
+    dated: 2015-06-01
+    landing: https://www.korg.com/us/support/download/manual/0/370/2002/
+    url: https://cdn.korg.com/us/support/download/files/volca_sample_OM_EFGSC1.pdf
+    sha256: 4ceb0e900fc60a2ac857f08a3d3af77b7bea0076b736eae161b78d700ee40de4
+    retrieved: 2026-10-06
+  manual_2:
+    kind: owner's manual
+    title: volca sample Owner's Manual 2 of 2
+    dated: 2015-06-01
+    landing: https://www.korg.com/us/support/download/manual/0/370/2003/
+    url: https://cdn.korg.com/us/support/download/files/volca_sample_OM_EFGSC2.pdf
+    sha256: 0a5c60226f804756dba99e6b5c22549975862d9ef4d6743a1e8356f5d805fc3b
+    retrieved: 2026-10-06
+  updater:
+    kind: download page
+    title: volca sample System Updater 1.42
+    edition: "1.42"
+    dated: 2019-09-10
+    landing: https://www.korg.com/us/support/download/software/0/370/1475/
+    url: https://www.korg.com/us/support/download/software/0/370/1475/
+    sha256: 035021a7b9c363bbd38d5f080c6c3607b72e25331bc95a82396dff1e8de94e73
+    retrieved: 2026-10-06
+    paginated: false
+
+midi:
+  # **THE TEN PARTS ARE ON CHANNELS 1 TO 10 AND NOTHING SETS A BASE.** The chart crosses Basic
+  # Channel in the Recognized column and stars it in the Transmitted one, and says what it means
+  # instead in the Velocity row's remark: "n=0 - 9 (Channel 1 - 10 = Parts 1 - 10)" (chart). So
+  # the base is 1 and cannot be anything else, and the part below - ten instances from an offset
+  # of 0 - is what puts them on 1 to 10. **This is `korg/volca_drum`'s settled reading applied to
+  # the same maker's same row**: the cross means the player cannot change it, not that there is
+  # none, because a device whose recognised mode is 3 and which answers on ten channels has a
+  # basic channel.
+  channels: [1, 1]
+  # `3` in the Recognized column of the Mode row - OMNI OFF, POLY - with the Transmitted box
+  # crossed and Messages crossed both ways (chart).
+  mode: 3
+  # Crossed transmitted and circled recognized, under footnote `*2` (chart). The instrument has
+  # no MIDI OUT, so nothing it does travels outward; SYNC OUT is a 3.5 mm pulse jack and not MIDI.
+  clock: receives
+  # The System Real Time Command row is crossed transmitted and circled recognized, under the
+  # same footnote (chart). **Song Position is crossed in both columns and that row is the one the
+  # 2019 firmware note calls into question** - see the account.
+  transport: receives
+  program_change:
+    # Crossed in both columns (chart), so this instrument neither answers to a program change nor
+    # sends one. `korg/volca_drum` answers to them; this one does not, which is the second thing
+    # the two siblings disagree about.
+    receives: false
+    sends: false
+  # Crossed in both columns (chart): a checked absence rather than a silence.
+  sysex: false
+  # NOT RECORDED, NRPN: neither `NRPN` nor `RPN` nor `Registered Parameter` appears on the chart
+  # or in either manual part, swept with the text squashed.
+
+parts:
+  # **TEN PARTS ON TEN CHANNELS, WITH NOTHING TO SET**: "n=0 - 9 (Channel 1 - 10 = Parts 1 - 10)"
+  # (chart), and from the player's side "Selecting a part: FUNC button + step buttons 1 to 10"
+  # (manual_2 p. 1). They are one part with ten instances rather than ten parts, because the chart
+  # gives them one map between them and the channel is the only thing that tells them apart -
+  # which is exactly how `korg/volca_drum` records its six.
+  part:
+    label: Part
+    count: 10
+    channel_offset: 0
+    # A note reaches the part whose channel carried it and the note number means nothing: the
+    # chart recognises 0 to 127 and remarks "Each sound does not correspond to a note number."
+    # (chart). So this is a part that takes notes and has no note map, which is what `none` says.
+    addressing: none
+    receives: [notes, controls]
+
+voice:
+  addressing: none
+  # `0 - 127` in the Recognized column, with the Transmitted column starred and True Voice
+  # starred in both (chart).
+  note_range: [0, 127]
+  # **EIGHT, SHARED ACROSS THE TEN PARTS**: "Sound generators: PCM sound sources (maximum of 8
+  # simultaneous notes), digital reverb, analog isolator" (manual_2 p. 1). Ten parts over eight notes,
+  # so the parts cannot all sound at once.
+  polyphony: 8
+  polyphony_shared: true
+  velocity:
+    # **IGNORED, AND THE CROSS IS WHAT SAYS SO.** The Note On row is crossed in both columns with
+    # the message format printed beside the cross - "9n, V=1 - 127" (chart) - which is what the
+    # instrument answers to rather than what it does with it. See the account for why that cross
+    # is readable: the same row is a circle on one sibling's chart and a cross on another's.
+    note_on: ignored
+    # Crossed in both columns (chart).
+    note_off: false
+  # Crossed in all four boxes - polyphonic and monophonic, transmitted and recognized (chart).
+  aftertouch: none
+  # NOT RECORDED, the pitch bend, because there is none: the chart crosses it in both columns, so
+  # there is no range to state and no block to state it in. `korg/volca_fm` differs here - its
+  # chart marks pitch bend as answered to - which is the third thing these siblings disagree
+  # about.
+
+groups:
+  sample: Sample
+  tone: Tone
+  pitch_eg: Pitch envelope
+  amp_eg: Amplifier envelope
+  mix: Level and pan
+
+controls:
+
+  # **ELEVEN NUMBERS, ALL RECEIVED AND NONE SENT**, each carrying footnote `*1`: "Received when
+  # global parameter MIDI RX ShortMessage is set to ON." (chart). **That parameter ships On**
+  # (manual_2 p. 1), so these work out of the box and a player can switch all eleven off at once,
+  # which is a thing no other instrument in this corpus has a single switch for.
+  #
+  # Two of the eleven are the numbers the MIDI standard assigns - 7 for level and 10 for pan -
+  # and the other nine are this maker's own, running 40 to 48 with no gap.
+
+  # mix (2)
+  level:              {label: LEVEL, cc: 7, group: mix, direction: receives}
+  pan:                {label: PAN, cc: 10, group: mix, direction: receives}
+
+  # sample (3)
+  sample_start_point: {label: SAMPLE START POINT, cc: 40, group: sample, direction: receives}
+  sample_length:      {label: SAMPLE LENGTH, cc: 41, group: sample, direction: receives}
+  speed:              {label: SPEED, cc: 43, group: sample, direction: receives}
+
+  # tone (1)
+  hi_cut:             {label: HI CUT, cc: 42, group: tone, direction: receives}
+
+  # pitch_eg (3)
+  pitch_eg_int:       {label: PITCH EG INT, cc: 44, group: pitch_eg, direction: receives}
+  pitch_eg_attack:    {label: PITCH EG ATTACK, cc: 45, group: pitch_eg, direction: receives}
+  pitch_eg_decay:     {label: PITCH EG DECAY, cc: 46, group: pitch_eg, direction: receives}
+
+  # amp_eg (2)
+  amp_eg_attack:      {label: AMP EG ATTACK, cc: 47, group: amp_eg, direction: receives}
+  amp_eg_decay:       {label: AMP EG DECAY, cc: 48, group: amp_eg, direction: receives}

@@ -200,6 +200,7 @@ class TestBundledCorpus:
 			"korg/volca_beats",
 			"korg/volca_drum",
 			"korg/volca_fm",
+			"korg/volca_sample",
 			"korg/wavestate",
 			"make_noise/zero_coast",
 			"modal/carbon8m",
@@ -14961,3 +14962,111 @@ class TestSH4D:
 
 		# The same shape as the TR-909's unpublished leaflet, and this file says so.
 		assert "roland/tr_909" in flat
+
+
+class TestVolcaSample:
+
+	"""A chart whose ticks and crosses are drawings, so the text layer loses the directions.
+
+	`dreadbox/nymphes` met pages that were entirely pictures and declared them
+	with ``pictured_pages``.  This is narrower and worse: the page extracts
+	perfectly - row labels, controller numbers, remarks - and is silently missing
+	the only column that says which way anything travels.
+
+	The marks were read as shapes against the chart's own printed key, and then
+	the table was rendered and looked at.
+	"""
+
+	def test_eleven_controls_and_every_one_of_them_only_receives (self) -> None:
+		"""29 crosses stand in the Transmitted column of that chart and not one circle."""
+		volca = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+		numbers = sorted(control.cc for control in volca.controls.values()
+			if control.cc is not None)
+
+		assert len(volca.controls) == 11
+		assert numbers == [7, 10, 40, 41, 42, 43, 44, 45, 46, 47, 48]
+		assert {control.direction for control in volca.controls.values()} == {"receives"}
+
+	def test_ten_parts_on_ten_channels_with_no_note_map (self) -> None:
+		"""One part with ten instances, which is how the volca drum records its six."""
+		volca = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+
+		assert list(volca.parts) == ["part"]
+		assert volca.parts["part"].count == 10
+		assert volca.parts["part"].channel_offset == 0
+		assert volca.parts["part"].addressing == "none"
+		assert volca.voice.addressing == "none"
+
+		# Ten parts over eight notes, so they cannot all sound at once.
+		assert volca.voice.polyphony == 8
+		assert volca.voice.polyphony_shared is True
+
+	def test_the_velocity_cross_is_readable_because_its_siblings_differ (self) -> None:
+		"""The same chart row is a circle on one sibling and a cross on another.
+
+		That is what makes the cross readable as a statement rather than as
+		decoration, and it is settled out of this maker's own charts rather than
+		borrowed from a sibling's reading.
+		"""
+		volca = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+		drum = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+		fm = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		assert volca.voice.velocity is not None
+		assert volca.voice.velocity.note_on == "ignored"
+		assert fm.voice.velocity is not None
+		assert fm.voice.velocity.note_on == "ignored"
+
+		# **AND THE ONE THAT DIFFERS**, which is the whole argument.
+		assert drum.voice.velocity is not None
+		assert drum.voice.velocity.note_on == "received"
+
+	def test_the_three_volcas_do_not_answer_alike (self) -> None:
+		"""Checked rather than inherited, because this maker's habits have not held.
+
+		Rank 102 found Korg's arrangements differing across the volcas, and the
+		standing rule is that two instruments by one maker are not a habit.  These
+		three disagree about velocity, about program change and about pitch bend.
+		"""
+		volca = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+		drum = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+		fm = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
+
+		# Program change: the drum answers to one, this does not.
+		assert volca.midi.program_change is not None
+		assert volca.midi.program_change.receives is False
+		assert drum.midi.program_change is not None
+		assert drum.midi.program_change.receives is True
+
+		# Pitch bend: the fm is marked as answering to it, this one is crossed.
+		assert volca.voice.pitch_bend is None
+		assert drum.voice.pitch_bend is None
+
+		# What all three share: nothing leaves them.
+		for one in (volca, drum, fm):
+			directions = {control.direction for control in one.controls.values()}
+
+			assert directions == {"receives"}
+
+	def test_the_chart_is_older_than_the_firmware_and_one_row_is_doubted (self) -> None:
+		"""A 2019 release note fixes a message the 2014 chart crosses in both columns."""
+		volca = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+		flat = " ".join((volca.source or "").split())
+
+		assert volca.model.firmware == "1.42"
+		assert '"Fixed MIDI Song Position Pointer." (updater)' in flat
+		assert "enough to doubt a row and not enough" in flat
+
+		# The chart's own edition is recorded as what it is, five years earlier.
+		assert volca.sources["chart"].edition == "1.00"
+		assert volca.sources["updater"].edition == "1.42"
+
+	def test_the_survey_pointed_at_the_other_machine (self) -> None:
+		"""Product 867 is the volca sample2; this instrument is product 370."""
+		volca = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+
+		for source in volca.sources.values():
+			assert "/867/" not in (source.landing or "")
+			assert "/867/" not in (source.url or "")
+
+		assert any("/370/" in (source.landing or "") for source in volca.sources.values())

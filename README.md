@@ -177,7 +177,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
 | `korg/modwave_mk_ii` | Korg modwave mk II: one manual covers three models, and the only difference is the voice count - with a chart whose two direction columns had to be proved rather than read in order |
 | `korg/monologue` | Korg monologue: 24 controls out of an implementation printed twice, one direction each, where two numbers are received only and one control's bands are the footnote the maker forgot |
-| `korg/ms_20_mini` | Korg MS-20 mini: no controls, because the only MIDI this 1978 reissue accepts is notes on channel 1 with velocity disabled - and the maker says exactly that in one sentence |
+| `korg/ms_20_mini` | Korg MS-20 mini: no controls, because the only MIDI this 1978 reissue accepts is notes on MIDI channel 1 with velocity disabled - and the maker says exactly that in one sentence |
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
 | `korg/volca_bass` | Korg volca bass: 12 controls that only arrive, from an instrument with no MIDI Out jack - and three of them reach parameters its panel cannot, two of which its owner's manual never names |
@@ -214,7 +214,7 @@ self-contained YAML file, and you share it by sending it.
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |
-| `roland/jd_xi` | Roland JD-Xi: 57 controls over four parts on four fixed channels, 21 of them addressed by NRPN rather than by a controller number - the first Roland here whose NRPN is more than a crossed box |
+| `roland/jd_xi` | Roland JD-Xi: 57 controls over four parts on four fixed MIDI channels, 21 of them addressed by NRPN rather than by a controller number - the first Roland here whose NRPN is more than a crossed box |
 | `roland/ju_06a` | Roland JU-06A: 39 controls off one page of an implementation chart whose other page is a second whole map - fifteen numbers in both and eleven of them meaning something else |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
 | `roland/jupiter_x` | Roland JUPITER-X: 22 controls out of a 90-sheet implementation that holds none of its tone parameters - those are in the Parameter Guide, one table per model, where 21 numbers name more than one thing |
@@ -222,7 +222,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/mc_707` | Roland MC-707: three editions of one chart served from one path, a control channel that makes no sound, and an effect send two documents put on two different numbers |
 | `roland/s_1` | Roland S-1: 54 controls out of two tables that each hold half the answer - a chart with ranges and no names, a list with names and no directions - and two of them told apart only by a drawn waveform |
 | `roland/sh_4d` | Roland SH-4d: 32 controls off the first of three whole implementation charts its manual prints, where the other two cross control change entirely - so these are the four tone parts' controls and the rhythm part answers to none of them |
-| `roland/sp_404mkii` | Roland SP-404MKII: 27 controls, seven of which the implementation chart publishes only inside a footnote - and one controller number that selects a different effect on each of three channel groups, so the same value means three things |
+| `roland/sp_404mkii` | Roland SP-404MKII: 27 controls, seven of which the implementation chart publishes only inside a footnote - and one controller number that selects a different effect on each of three buses, so the same value means three things |
 | `roland/tb_3` | Roland TB-3: thirteen controls off a one-sheet chart, seven of them confirmed by a second document that was written about system exclusive - the only controller numbers in this corpus published twice |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |

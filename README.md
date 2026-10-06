@@ -172,6 +172,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/minilogue_xd` | Korg minilogue xd: 58 controls and 61 NRPNs, out of a document that inverts two of them between sending and receiving |
 | `korg/modwave_mk_ii` | Korg modwave mk II: one manual covers three models, and the only difference is the voice count - with a chart whose two direction columns had to be proved rather than read in order |
 | `korg/monologue` | Korg monologue: 24 controls out of an implementation printed twice, one direction each, where two numbers are received only and one control's bands are the footnote the maker forgot |
+| `korg/ms_20_mini` | Korg MS-20 mini: no controls, because the only MIDI this 1978 reissue accepts is notes on channel 1 with velocity disabled - and the maker says exactly that in one sentence |
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
 | `korg/volca_bass` | Korg volca bass: 12 controls that only arrive, from an instrument with no MIDI Out jack - and three of them reach parameters its panel cannot, two of which its owner's manual never names |

@@ -186,6 +186,7 @@ class TestBundledCorpus:
 			"korg/minilogue_xd",
 			"korg/modwave_mk_ii",
 			"korg/monologue",
+			"korg/ms_20_mini",
 			"korg/multi_poly",
 			"korg/opsix",
 			"korg/volca_bass",
@@ -611,11 +612,18 @@ class TestAbsences:
 		that came in the box and that Roland does not publish.  So the field is right
 		for the usual reason, somebody looked and found none, and the looking was at
 		an enumeration rather than at a chart's crossed box.
+
+		**AND THE MS-20 MINI'S IS THE STRONGEST OF THE SEVEN.**  Korg wrote down what
+		the socket accepts rather than what it refuses: *"The only MIDI messages that
+		can be received at the MIDI IN connector are note messages (Velocity is
+		disabled) on MIDI channel 1 (fixed)."*  A crossed box says a thing is not
+		recognised; a sentence naming everything that is recognised says the same and
+		settles two further fields while it is there.
 		"""
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 16
+		assert len(empty) == 17
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -625,7 +633,7 @@ class TestAbsences:
 			kinds.setdefault(key, set()).add(name)
 
 		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/td_3",
-			"moog/labyrinth", "roland/tr_909", "vermona/drm1_mkiv"}
+			"korg/ms_20_mini", "moog/labyrinth", "roland/tr_909", "vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact",
 			"dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
 			"teenage_engineering/op_1"}
@@ -12708,3 +12716,128 @@ class TestRefaceCS:
 		flat = " ".join(said.split())
 
 		assert "no document in the family states n" in flat
+
+
+class TestMS20Mini:
+
+	"""No controls, and the strongest form of that claim this corpus has.
+
+	The maker has written down what the socket accepts, and a control change is not among
+	it - which is a different thing from a chart's crossed box and from an unread page.
+	"""
+
+	def test_one_sentence_settles_three_of_its_fields (self) -> None:
+		"""What arrives, that velocity does nothing, and that the channel is fixed."""
+		mini = pymidiinstrumentdefs.load("korg/ms_20_mini", [CORPUS])
+
+		assert len(mini.controls) == 0
+		assert mini.midi is not None
+		assert mini.midi.control_change == "none"
+		assert mini.midi.channels == (1, 1)
+
+		assert mini.voice is not None and mini.voice.velocity is not None
+		assert mini.voice.velocity.note_on == "ignored"
+
+		said = prose_of("korg", "ms_20_mini")
+
+		assert "The only MIDI messages that can be received at the MIDI IN connector are note" \
+			" messages (Velocity is disabled) on MIDI channel 1 (fixed)." in said
+
+		# Which is the strongest form of this field: not a crossed box, not an unread page.
+		assert "THE STRONGEST FORM OF THAT FIELD THIS CORPUS HAS" in said
+
+	def test_its_channel_is_fixed_and_three_documents_say_so (self) -> None:
+		"""A span of one, which a consumer offering a channel chooser should know."""
+		mini = pymidiinstrumentdefs.load("korg/ms_20_mini", [CORPUS])
+
+		assert mini.midi is not None
+		assert mini.midi.channels == (1, 1)
+
+		said = prose_of("korg", "ms_20_mini")
+
+		# The sentence, the chart's crossed Changed row, and the hard-coded status bytes.
+		assert "(fixed)" in said
+		assert "crosses its Changed row" in said
+		assert "`80`, `90` and `B0` rather than `8n`, `9n` and `Bn`" in said
+
+	def test_its_keyboard_sends_one_velocity_for_every_note (self) -> None:
+		"""Crossed in both velocity rows, with the constant printed beside the cross."""
+		mini = pymidiinstrumentdefs.load("korg/ms_20_mini", [CORPUS])
+
+		assert mini.voice is not None and mini.voice.velocity is not None
+		assert mini.voice.velocity.note_on == "ignored"
+		assert mini.voice.velocity.note_off is False
+
+		flat = " ".join(prose_of("korg", "ms_20_mini").split())
+
+		assert "`9n, v=64` and `8n, v=64`" in flat
+		assert "this keyboard sends the same velocity for every note it has ever played" in flat
+
+	def test_its_note_range_is_right_where_the_neutrons_had_to_be_empty (self) -> None:
+		"""Because an out-of-range note here sounds nothing, and on the NEUTRON it sounds."""
+		mini = pymidiinstrumentdefs.load("korg/ms_20_mini", [CORPUS])
+		neutron = pymidiinstrumentdefs.load("behringer/neutron", [CORPUS])
+
+		assert mini.voice is not None and neutron.voice is not None
+
+		# **The same field, two instruments, and the difference is what happens outside.**
+		assert mini.voice.note_range == (12, 91)
+		assert neutron.voice.note_range is None
+
+		assert [mini.voice.plays_note(note) for note in (11, 12, 91, 92)] \
+			== [False, True, True, False]
+
+		said = prose_of("korg", "ms_20_mini")
+
+		assert "If a Note On message with a note number of 92 or more is received, the message" \
+			" will become invalid, and the sound being produced will stop." in said
+
+		flat = " ".join(said.split())
+
+		assert "The field turns on whether an out-of-range note sounds something, not on" \
+			" whether the maker printed a range." in flat
+
+	def test_its_chart_is_in_the_owners_manual_not_the_implementation (self) -> None:
+		"""The second time in four instruments that the chart has moved."""
+		mini = pymidiinstrumentdefs.load("korg/ms_20_mini", [CORPUS])
+
+		assert mini.midi is not None
+		assert mini.midi.mode == 3
+
+		flat = " ".join(prose_of("korg", "ms_20_mini").split())
+
+		assert "THE CHART IS NOT IN THE DOCUMENT CALLED AN IMPLEMENTATION" in flat
+		assert "the second time in four instruments that the chart has been somewhere other" \
+			" than the document named for it" in flat
+
+	def test_three_of_its_five_documents_are_a_1978_instruments (self) -> None:
+		"""And Korg's own list of differences is what says they cannot carry MIDI."""
+		flat = " ".join(prose_of("korg", "ms_20_mini").split())
+
+		assert "Equipped with MIDI IN connector and USB port" in flat
+		assert "so **the original has neither**" in flat
+
+		# **And the limit on the search is stated rather than hidden.**
+		assert "two of the three are scans with no text layer at all" in flat
+		assert "for those two a text search proves nothing" in flat
+
+	def test_it_cannot_be_configured_over_midi_in_any_way (self) -> None:
+		"""No sysex, no program change, no clock, no transport, and nothing to configure."""
+		mini = pymidiinstrumentdefs.load("korg/ms_20_mini", [CORPUS])
+
+		assert mini.midi is not None
+		assert mini.midi.sysex is False
+		assert mini.midi.clock == "none"
+		assert mini.midi.transport == "none"
+		assert mini.midi.nrpn == "none"
+		assert mini.midi.program_change is not None
+		assert mini.midi.program_change.receives is False
+		assert mini.midi.program_change.sends is False
+
+		assert mini.voice is not None
+		assert mini.voice.aftertouch == "none"
+		assert mini.voice.pitch_bend is None
+
+		flat = " ".join(prose_of("korg", "ms_20_mini").split())
+
+		assert "no memory, no firmware, and a channel that cannot be changed" in flat

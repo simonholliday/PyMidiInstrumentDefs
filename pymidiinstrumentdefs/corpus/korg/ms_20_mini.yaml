@@ -1,0 +1,227 @@
+# **NO CONTROLS, AND THE MAKER SAYS WHY IN ONE SENTENCE.** "The only MIDI messages that can be
+# received at the MIDI IN connector are note messages (Velocity is disabled) on MIDI channel 1
+# (fixed)." (manual p. 3). That is three facts in a line - what arrives, that velocity does
+# nothing, and that the channel cannot be changed - and it is the whole of this instrument's MIDI
+# apart from the channel mode messages and active sensing.
+#
+# **SO `control_change: none` HERE IS THE STRONGEST FORM OF THAT FIELD THIS CORPUS HAS.** It is
+# not a chart's crossed box and not an unread page: the maker has written down what the socket
+# accepts, and a control change is not among it. The implementation agrees from the other side -
+# its received table lists note off, note on and six channel mode messages, and nothing else.
+#
+# **THE CHANNEL IS FIXED, AND THREE DOCUMENTS SAY SO IN THREE DIFFERENT WAYS.** The sentence
+# above says "(fixed)". **The chart's Basic Channel row gives 1 either way and then crosses its
+# Changed row** (manual p. 2), which is a chart saying the number cannot be set. And **the
+# implementation writes its status bytes as `80`, `90` and `B0` rather than `8n`, `9n` and `Bn`**
+# - a hard-coded nought where every other Korg implementation in this library prints a variable.
+# The chart's remarks column spells the same thing twice more, `n=0`.
+#
+# **VELOCITY IS DISABLED ON THE WAY IN AND CONSTANT ON THE WAY OUT.** The chart crosses both
+# velocity rows received, which is what "Velocity is disabled" (manual p. 3) means in marks; and
+# on the
+# transmitted side it crosses them too and then prints what the keyboard actually sends beside
+# the cross - `9n, v=64` and `8n, v=64`. **So this keyboard sends the same velocity for every
+# note it has ever played**, which is a 1978 design faithfully reproduced.
+#
+# **AND AN OUT-OF-RANGE NOTE DOES TWO DIFFERENT THINGS AT THE TWO ENDS.** The chart's True Voice
+# row gives 12 to 91 against a received Note Number of 0 to 127, and the manual says what the
+# difference is: "If a Note On message with a note number of 92 or more is received, the message
+# will become invalid, and the sound being produced will stop. It will also be invalid if a note
+# number is 11 or less; however, the sound will continue to be produced." (manual p. 3).
+# **Above the range it acts as a note off; below it, nothing happens at all.** Neither sounds, so
+# `note_range` is right here - which is worth saying because it was wrong for the instrument
+# before this one. `behringer/neutron` at rank 90 clamps an out-of-range note to the nearest end,
+# so every note sounds on it and the field had to be left empty. **The field turns on whether an
+# out-of-range note sounds something, not on whether the maker printed a range.**
+#
+# IT TRANSMITS ONLY OVER USB, WHICH IS A FACT ABOUT ITS SOCKETS. Among the ways Korg lists the
+# MS-20 mini as differing from the 1978 original: "Equipped with MIDI IN connector and USB port"
+# (manual p. 2). **There is no MIDI OUT**, so the chart footnotes its one transmitted row
+# `*1: Transmitted only with a USB connection.` (manual p. 2) - and what travels that way is
+# notes at a constant velocity.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: MS-20 mini
+  # NOT RECORDED, the firmware, and nothing here is updatable: there is no system exclusive, no
+  # updater on the downloads page and no firmware anywhere in the five documents. The two
+  # version numbers in evidence belong to documents rather than to the instrument - the
+  # implementation calls itself "Revision 1.0 (2012.10.25)" (implementation) and the chart
+  # "Version: 1.0" (manual p. 2), both dated 25 October 2012.
+  # Checked 2026-10-06.
+
+source: >-
+  **Korg's MIDI Implementation for this instrument, which is 2,212 bytes of plain text** - the
+  smallest MIDI document in this library - and **the four-page Owner's Manual, whose second page
+  carries the MIDI Implementation Chart**.
+
+  **THE CHART IS NOT IN THE DOCUMENT CALLED AN IMPLEMENTATION, AND THAT IS WHY ALL FIVE WERE
+  READ.** The implementation is two tables of status bytes with no chart rows in it at all; the
+  chart is on a page of the owner's manual, between a German introduction and a French one.
+  **That is the second time in four instruments that the chart has been somewhere other than the
+  document named for it** - `korg/kronos` at rank 89 had its in the appendices of an operation
+  guide, 884 printed pages from the implementation it summarised, and this corpus wrote that
+  instrument up as having none before the page was found. The rule from it is applied here rather
+  than restated: every page of every document this maker publishes was read.
+
+  **FIVE DOCUMENTS, AND THREE OF THEM ARE ABOUT A DIFFERENT INSTRUMENT.** The downloads page
+  lists an MS-20 Original Owner's Manual, MS-20 Original Setting Examples and an MS-20 Patch
+  Book - 54 MB of reprints of the **1978** MS-20's paperwork. They cannot describe this
+  instrument's MIDI, and that is Korg's own statement rather than an inference from the date:
+  among the ways it lists the MS-20 mini as differing from the original is "Equipped with MIDI IN
+  connector and USB port" (manual p. 2), so **the original has neither**. The reprints are there
+  because "We recommend reading the reprint of the original Owner's Manual for in depth
+  descriptions of the various controls and their functions." (manual p. 2) - the panel is the
+  1978 panel, and only what is new is in the new manual.
+
+  AND THEY WERE CHECKED ANYWAY, WITH ONE LIMIT WORTH STATING. All three were fetched and
+  searched: none contains `Basic Channel`, `True Voice`, `Implementation Chart`, `Recognized`,
+  `Transmitted`, `MIDI`, `Control Change` or `Program Change`. **But two of the three are scans
+  with no text layer at all** - 44 pages and 32 pages, zero words between them - so for those two
+  a text search proves nothing and what carries the claim is the sentence above. The Patch Book
+  has 453 words and is genuinely searched. Their digests are in the provenance record beside the
+  implementation; they are not in this library, because 54 MB of a 1978 panel's documentation
+  supports one sentence of this definition.
+
+  WHAT THE TWO MIDI DOCUMENTS DISAGREE ABOUT, WHICH IS NOTHING. Every row of the chart has a
+  counterpart in the implementation's tables and every one agrees. The implementation adds the
+  keyboard's span, `*1 : kk = 48 ~ 84 (37Keys)` (implementation), which the chart gives as its
+  transmitted Note Number; the chart adds the True Voice row, the fixed velocity values and the
+  USB footnote, which the implementation has no column for. **Two documents, one map, and between
+  them they say more than either does alone.**
+
+  NOT RECORDED: the mode. The chart's Mode row crosses its transmitted cell and gives 3
+  recognised, which is this format's figure - but **its Messages row is crossed in both columns**,
+  so the mode cannot be set over MIDI at all, and the six channel mode messages the
+  implementation lists are each glossed as an all-notes-off. `mode: 3` is recorded on the
+  recognised cell, and what it does not mean is that 1, 2 and 4 are available.
+
+  NOT RECORDED EITHER: the polyphony, which no document states and which is one by construction -
+  the manual's own title block reads "[MONOPHONIC SYNTHESIZER]" (manual p. 2) and the chart's
+  model line is under it, but that is a category rather than a voice count, so the field is left
+  to a reader who counts the oscillators. The patch panel, which is this instrument's real
+  interface and has no MIDI at all. And the trigger input, named in the auto-power-off condition
+  beside MIDI - "Sound is produced with the keyboard; Note On via MIDI IN or USB MIDI; input to
+  TRIG IN" (manual p. 3) - which is how a 1978 synthesiser was sequenced, and still is.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: MS-20 mini MIDI Implementation
+    edition: Revision 1.0 (2012.10.25)
+    landing: "https://www.korg.com/us/support/download/manual/0/134/2704/"
+    url: "https://cdn.korg.com/us/support/download/files/101a221ca3d129867ac35c4e59f307c7.txt"
+    sha256: 8351db34e822da1935f37cced4780d65bd17bec7f4fdb59fd917ba1e766e385a
+    retrieved: 2026-10-06
+    # **2,212 bytes, which is the smallest MIDI document in this library** - `korg/volca_bass`'s
+    # 3,397-byte text file was the previous smallest and is from the same maker.
+    # **No pages.** It is laid out as ASCII-art tables with `+---+---+` rules, so a locator
+    # against it names the source and nothing else.
+    # **It writes its status bytes as `80`, `90` and `B0`** where every other Korg
+    # implementation here prints `8n`, `9n` and `Bn` - a hard-coded channel rather than a
+    # variable one, which is the third of three statements that this instrument's channel is
+    # fixed.
+    # It carries no chart. The chart is on p. 2 of the owner's manual.
+  manual:
+    kind: manual
+    title: MS-20 mini Owner's Manual
+    dated: 2015-06-01
+    landing: "https://www.korg.com/us/support/download/manual/0/134/1955/"
+    url: "https://cdn.korg.com/us/support/download/files/49526bcf3eaca9f3d7e9585a53aca430.pdf"
+    sha256: c5b9ea4f1b0c9e327e252ea6ebd099adffdb615342558cb4ef6e2dfc8ba2768f
+    retrieved: 2026-10-06
+    # **Four sheets in four languages, and the MIDI Implementation Chart is on the second.**
+    # 6 MB for four pages, because they are large-format and image-heavy. Encrypted with
+    # 128-bit AES and an empty password, as this maker's PDFs are.
+    # **The chart's cells were read by coordinate**, because a chart set across a multi-language
+    # sheet comes out of the text layer in no useful order: its marks arrive as one run of
+    # `X`s and `O`s after all of its row labels.
+    # Its own page numbers are not printed, so a locator here is the file's sheet. The English
+    # text is on sheets 2 and 3; sheet 1 is a cover and sheet 4 the panel diagram.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: "Downloads | MS-20 mini | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/0/134/"
+    sha256: ac24f0a0914a5b502cc301c6133f45d60f9fafdae9a2db6ba91b69e7f752e013
+    retrieved: 2026-10-06
+    paginated: false
+    # **Cited for the count being five**, which is what makes five the whole of what this maker
+    # publishes rather than five that were found - and three of the five are the 1978
+    # instrument's paperwork. **No updater is offered**, which is why no firmware is recorded.
+    # As with `korg/volca_bass` and `korg/kronos`, the page carries no file address at all: each
+    # document is reached through a licence-agreement page that carries it instead, so neither
+    # URL above is on this page. The digest is of the extraction; the served bytes are saved
+    # beside it as `.html`, whose own digest is
+    # 1a24dfb6a0cf341aaa6d723cbb00226d1988d083ad5dd4207321dcd7a659740e. One page, cited as p. 1.
+
+midi:
+  # **FIXED, AND SAID THREE WAYS.** "on MIDI channel 1 (fixed)" (manual p. 3); the chart's Basic
+  # Channel row gives 1 transmitted and 1 recognised and then **crosses its Changed row** (manual
+  # p. 2), with `n=0` in the remarks against both velocity rows; and the implementation writes
+  # `80`, `90` and `B0` rather than `8n`, `9n` and `Bn`.
+  # **So this field holds a span of one**, which is unusual enough to point at: a consumer
+  # offering a channel chooser for this instrument is offering a choice it does not have.
+  channels: [1, 1]
+  # The chart's Mode row, recognised. **And its Messages row is crossed in both columns**, so the
+  # mode cannot be set over MIDI: the implementation's six channel mode messages - 124 and 125
+  # for omni, 126 and 127 for mono and poly - are each glossed "(All Note OFF)" (implementation).
+  mode: 3
+  # A CHECKED ABSENCE. The chart crosses Clock in both columns, and the implementation's system
+  # realtime table **has exactly one row in it**, active sensing. There is no sequencer here and
+  # no clock to send.
+  clock: none
+  # The same: Commands crossed both ways, and nothing in the implementation's one-row table.
+  transport: none
+  program_change:
+    # A CHECKED ABSENCE BOTH WAYS - crossed in the chart, with its True Number row hatched, and
+    # absent from both of the implementation's tables. **There is nothing to select**: this
+    # instrument has no memory at all, its sound being whatever its knobs and patch cables are
+    # set to.
+    receives: false
+    sends: false
+  # A checked absence. Neither registered nor non-registered parameters appear in either
+  # document, and with no controller numbers at all there is nothing for them to address.
+  nrpn: none
+  # **CROSSED IN BOTH COLUMNS OF THE CHART, AND THE IMPLEMENTATION HAS NO SECTION FOR IT.** So
+  # this instrument cannot be configured over MIDI in any way - which is consistent with its
+  # having nothing to configure: no memory, no firmware, and a channel that cannot be changed.
+  sysex: false
+  # SOMEBODY LOOKED AND FOUND NONE, in the plainest terms this field has had. "The only MIDI
+  # messages that can be received at the MIDI IN connector are note messages (Velocity is
+  # disabled) on MIDI channel 1 (fixed)." (manual p. 3), and the implementation's received table
+  # lists note off, note on and six channel mode messages. **The chart's Control Change row is
+  # crossed transmitted and circled received, against the number 120 and the remark "All sound
+  # off" (manual p. 2)** - so the one control change it answers to is a channel mode message,
+  # which this format
+  # refuses as a control by design.
+  control_change: none
+
+voice:
+  addressing: pitches
+  # **FROM THE CHART'S TRUE VOICE ROW, AND IT MEANS WHAT THIS FIELD MEANS.** 12 to 91 against a
+  # received Note Number of 0 to 127 (manual p. 2) - so it answers to every note and sounds a
+  # span of eighty. What happens outside is in the comment above the definition and is two
+  # different things at the two ends; **neither of them sounds**, which is what makes the field
+  # right here where it had to be left empty for the instrument before this one.
+  note_range: [12, 91]
+  # NOT RECORDED, the polyphony. See the account: the manual's title block reads "[MONOPHONIC
+  # SYNTHESIZER]" (manual p. 2), which is a category rather than a voice count.
+  velocity:
+    # **DISABLED, IN THE MAKER'S OWN WORD**, and crossed in both of the chart's velocity rows on
+    # the received side. This is what `ignored` is for: the byte arrives because the message
+    # carries it and nothing is done with it.
+    note_on: ignored
+    # Likewise crossed both ways. **And the keyboard's own velocity is a constant**: the chart
+    # prints `9n, v=64` and `8n, v=64` beside the crossed transmitted cells, so every note this
+    # instrument has ever sent carried 64.
+    note_off: false
+  # A CHECKED ABSENCE, BOTH KINDS AND BOTH DIRECTIONS - four crossed cells in the chart, and the
+  # implementation has no row for either. A 37-key keyboard from a 1978 design.
+  aftertouch: none
+  # NOT RECORDED, the pitch bend, and it is a checked absence rather than a gap: the chart
+  # crosses it in both columns and the implementation lists no `En` status byte. **This
+  # instrument's pitch is bent by a knob and a patch cable**, which is what it was built for.

@@ -252,6 +252,7 @@ class TestBundledCorpus:
 			"roland/tr_8",
 			"roland/tr_909",
 			"sequential/fourm",
+			"sequential/prophet_10",
 			"sequential/prophet_5",
 			"sequential/prophet_6",
 			"sequential/take_5",
@@ -7849,6 +7850,7 @@ class TestPresetCounts:
 			"modal/carbon8m": 500,
 			"moog/sub_37": 256,
 			"moog/subsequent_37": 256,
+			"sequential/prophet_10": 400,
 			"sequential/prophet_5": 400,
 			"sequential/prophet_6": 1000,
 			"sequential/take_5": 256,
@@ -8047,8 +8049,8 @@ class TestProphet6:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
 
 		assert preferred == ["elektron/digitone_ii", "groove_synthesis/third_wave", "oberheim/ob_x8", "oberheim/teo_5",
-			"sequential/fourm", "sequential/prophet_5", "sequential/prophet_6",
-			"sequential/take_5"]
+			"sequential/fourm", "sequential/prophet_10", "sequential/prophet_5",
+			"sequential/prophet_6", "sequential/take_5"]
 
 	def test_one_file_covers_the_keyboard_and_the_module (self) -> None:
 		"""The maker treats them as one instrument, and says so on its own download page."""
@@ -11256,6 +11258,173 @@ class TestProphet5:
 		assert prophet.midi.sysex is True
 
 		assert "not as a no, as nothing at all" in " ".join((prophet.source or "").split())
+
+
+class TestProphet10:
+
+	"""The 2020 instrument, which answers to the Prophet-5's implementation and has ten voices.
+
+	**THE NAME ALONE IDENTIFIES NOTHING HERE EITHER**: the Prophet-10 of the early 1980s is not
+	this instrument, and nothing in this corpus describes it.
+	"""
+
+	def test_ten_voices_and_nine_with_a_plug_in_the_gate_in_jack (self) -> None:
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert prophet.voice.polyphony == 10
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "The Prophet-10 is a ten-voice, polyphonic analog synthesizer" in account
+		assert "its keyboard polyphony is reduced to 9 voices" in account
+
+	def test_the_implementation_never_names_it_and_three_things_say_it_is_its (self) -> None:
+		"""A documentation page, the instrument's own guide, and one operating system for both."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert prophet.sources["implementation"].title == "Prophet-5 MIDI Implementation"
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "THE IMPLEMENTATION NEVER NAMES THE PROPHET-10" in account
+		assert "For a list of Prophet-10 CCs and NRPNs, see the Prophet-10 Support page at " \
+			"Sequential.com" in account
+		assert "the latest operating system for the Prophet-5 and Prophet-10 keyboards and " \
+			"desktop modules" in account
+
+	def test_its_guide_is_the_prophet_5s_edited_and_four_sentences_were_not (self) -> None:
+		"""The sibling's guide is held and cited for what the two say differently."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert prophet.sources["sibling_guide"].title == "Prophet-5 User's Guide"
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "the two differ in twenty-one places" in prose_of("sequential", "prophet_10")
+		assert "The envelopes of the fifth voice are triggered by the gate in signal" in account
+		assert "may cause the Prophet-5 to respond unpredictably" in account
+		assert "(now you can stack 1-5 voices)" in account
+
+	def test_it_is_bi_timbral_and_no_part_is_recorded (self) -> None:
+		"""OS 2.0 gave it two layers and no published word says how a sender reaches the second."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert not prophet.parts
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "becomes bi-timbral and allows you to play two different sounds/programs at " \
+			"once" in account
+		assert "nothing published says how" in account
+
+	def test_the_nrpns_are_left_out_to_keep_it_the_prophet_5s (self) -> None:
+		"""Two definitions of one document should never disagree about it."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert prophet.midi.nrpn == "preferred"
+		assert not any(control.nrpn for control in prophet.controls.values())
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "THE NRPN TABLE IS NOT RECORDED, AND THAT IS TO KEEP THIS FILE THE PROPHET-5'S" \
+			in account
+		assert "a question for both files at once" in account
+
+	def test_the_firmware_is_on_the_makers_operating_system_page (self) -> None:
+		"""Saved as text, which is a source with no pages to turn to."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert prophet.model.firmware == "2.1.0"
+		assert prophet.sources["os"].paginated is False
+		assert "The current version of the OS is Main 2.1.0" in prose_of("sequential", "prophet_10")
+
+	def test_two_ranges_the_guide_gives_differently_are_carried_as_the_implementation_prints (
+		self) -> None:
+		"""Unison detune and resonance: recorded, and neither resolved."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert prophet.controls["unison_detune"].range == (0, 7)
+		assert prophet.controls["resonance"].range == (0, 120)
+
+		account = " ".join((prophet.source or "").split())
+
+		assert "A setting of 0 is minimum detuning. A setting of 8 is maximum detuning" in account
+		assert "the resonance parameter has an internal value range of 0 to 127" in account
+
+	def test_bank_select_names_four_factory_banks_where_the_guide_has_five_groups (self) -> None:
+		account = " ".join(
+			(pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS]).source or "").split())
+
+		assert "AND BANK SELECT NAMES FIVE USER BANKS AND ONLY FOUR FACTORY ONES" in account
+		assert "6 - 9 select factory banks 1 - 4" in account
+
+	def test_the_unison_rows_count_to_ten (self) -> None:
+		"""On a document named for a five-voice instrument, and nothing says what each value means."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert prophet.controls["unison_voice_count"].range == (0, 10)
+		assert "AND THE IMPLEMENTATION'S UNISON ROWS COUNT TO TEN" in " ".join(
+			(prophet.source or "").split())
+
+
+class TestTheTwoProphets:
+
+	"""The Prophet-5 and the Prophet-10 are one MIDI implementation, established not assumed.
+
+	Sequential offers one file under both instruments, byte for byte; the Prophet-10's guide
+	sends its reader to it; and the two guides differ in twenty-one places with the model names
+	masked, every one of them the voice count or the front matter.
+
+	So the two definitions carry the same controls, and these tests say so out loud: if somebody
+	corrects one of them, the failure is the reminder to look at the other. **A difference found
+	in a document is a reason to change these tests**, not a reason to doubt them - but it should
+	be a document that changes them.
+	"""
+
+	def test_they_carry_the_same_controls (self) -> None:
+		"""Every name, number, range, direction and group of all 64."""
+		five = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+		ten = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		def surface (definition: pymidiinstrumentdefs.definition.Definition) -> dict[str, object]:
+			return {
+				name: (control.label, control.cc, control.lsb, control.nrpn,
+					tuple(control.values.items()), control.range, control.nrpn_range,
+					control.unit, control.direction, control.group)
+				for name, control in definition.controls.items()
+			}
+
+		assert surface(five) == surface(ten)
+		assert len(ten.controls) == 64
+		assert five.groups == ten.groups
+
+	def test_they_cite_one_implementation_and_describe_one_firmware (self) -> None:
+		five = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+		ten = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert five.sources["implementation"].sha256 == ten.sources["implementation"].sha256
+		assert five.model.firmware == ten.model.firmware == "2.1.0"
+
+	def test_they_agree_on_everything_but_the_voice_count (self) -> None:
+		"""Which is the one thing the two guides are edited to say differently."""
+		five = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+		ten = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		for field in ("aftertouch", "velocity", "pitch_bend"):
+			assert getattr(five.voice, field) == getattr(ten.voice, field), field
+
+		assert five.midi == ten.midi
+
+		assert five.voice.polyphony == 5
+		assert ten.voice.polyphony == 10
+
+	def test_each_is_named_as_its_own_guide_names_it (self) -> None:
+		five = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+		ten = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
+
+		assert five.model.name == "Prophet-5"
+		assert ten.model.name == "Prophet-10"
+		assert five.model.manufacturer == ten.model.manufacturer == "Sequential"
 
 
 class TestMicroKORG2:

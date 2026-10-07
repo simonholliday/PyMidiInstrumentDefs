@@ -1,0 +1,459 @@
+# THE PROPHET-10 HAS NO MIDI DOCUMENT OF ITS OWN, AND THAT IS THE MAKER'S ARRANGEMENT RATHER THAN
+# A GAP. Sequential's documentation page has a Prophet-5 section and a Prophet-10 section, and the
+# Prophet-10's offers the Prophet-5 MIDI Implementation - the same file, byte for byte. Its own
+# User's Guide sends a reader to the support page for the list, and that page offers that file.
+# So the 64 controls below are read from the document the Prophet-5's definition was written
+# from, and they are the Prophet-5's field for field. A test says so, so that correcting either
+# file sends somebody to look at the other.
+#
+# THIS IS THE 2020 INSTRUMENT AND NOT THE 1980s ONE. Sequential's Prophet-10 of 2020 is a MIDI
+# instrument; the Prophet-10 of the early 1980s is not this, and nothing here describes it. The
+# guide's foreword gives the history: the original Prophet-5 was designed so that a second voice
+# card made it a ten-voice synthesizer, and few of those survive.
+#
+# WHAT IS THE PROPHET-10's OWN IS IN ITS OWN GUIDE, and it is the voice count. Compared word for
+# word with the Prophet-5's guide, with the model names masked, the two differ in twenty-one
+# places, and every one is the number of voices, the edition, the credits, the foreword or a
+# document number. Not one is about MIDI.
+#
+# AND SINCE OS 2.0 IT IS BI-TIMBRAL, WHICH NOTHING PUBLISHED TELLS A MIDI SENDER HOW TO REACH. The
+# implementation is older than that release, and the addendum that introduces two layers never
+# mentions a channel. See the source account.
+
+definition: 1
+
+model:
+  manufacturer: Sequential
+  name: Prophet-10
+  # "The current version of the OS is Main 2.1.0" (os), on Sequential's operating system page for
+  # both machines, and the package it serves holds one main image for both, named for the
+  # Prophet-5. The 2.1.0 addendum agrees: "The newest version of the OS is Main 2.1.0"
+  # (addendum_2_1_0 p. 1). The MIDI Implementation is version 1.4 of March 2021 and predates both
+  # 2.0 and 2.1.0. Checked 2026-10-07.
+  firmware: "2.1.0"
+
+source: >-
+  Prophet-5 MIDI Implementation, version 1.4, 13 pages, which Sequential offers under the
+  Prophet-10 as well: the globals that gate everything on p. 1, the received messages on p. 2, the
+  transmitted messages on p. 3, the 59 controller numbers on pp. 4 and 5, the NRPN format on
+  p. 6, the NRPN tables on pp. 8 and 9, and the system exclusive layouts on pp. 10 to 13.
+  Prophet-10 User's Guide 1.4, 80 sheets: the instrument on p. 1, the rear panel on p. 3, the USB
+  port on p. 4, the programs on p. 6, the globals on pp. 13, 14 and 16, the pitch wheel on p. 37,
+  the aftertouch on p. 38, unison on p. 40 and voice assignment on p. 45. Prophet-5/10 OS 2.0
+  Addendum, for the layers it adds, and OS 2.1.0 Addendum, for what is current. Sequential's
+  operating system page and documentation page, saved as text. Prophet-5 User's Guide 1.3, cited
+  for one thing only, which is what the Prophet-10's guide says that it does not.
+
+  ONE DOCUMENT FOR TWO INSTRUMENTS, AND THREE THINGS SAY SO RATHER THAN THE DOCUMENT ITSELF. THE
+  IMPLEMENTATION NEVER NAMES THE PROPHET-10 - swept over all thirteen pages, with the text
+  squashed so that no hyphen or line break could hide it, and it is not there; nor is a layer, a
+  split or a stack. What settles it is outside it. The documentation page has two sections and
+  offers the same "MIDI Implementation 1.4" (listing) in both, the same file by its address. The
+  Prophet-10's guide says "For a list of Prophet-10 CCs and NRPNs, see the Prophet-10 Support
+  page at Sequential.com" (guide p. 13), and that page is where the file is. And the operating
+  system is one release for both: "the latest operating system for the Prophet-5 and Prophet-10
+  keyboards and desktop modules" (os).
+
+  AND THE IMPLEMENTATION'S UNISON ROWS COUNT TO TEN. UNISON VOICE COUNT is printed `0-10` on p. 5,
+  eleven values, and the NRPN table gives UNISON NOTE a span of ten numbers on p. 9 - on a
+  document named for a five-voice instrument. Unison on this one stacks "as many as ten voices"
+  (guide p. 40). The implementation does not say what each value means, and nothing here says it
+  either.
+
+  SIXTY-FOUR CONTROLLER NUMBERS, FROM TWO TABLES THAT DO DIFFERENT JOBS. Fifty-nine are the
+  parameter map, "Additional Continuous Controllers Transmitted/Received" (pp. 4-5), each with the
+  maker's own name and its own range. Five more are performance controllers that the received and
+  transmitted message tables name instead (pp. 2-3): the mod wheel, the breath controller, the
+  foot controller, bank select and the damper pedal.
+
+  THE TWO MESSAGE TABLES ARE TWO LISTS, SO A NUMBER IN ONE AND NOT THE OTHER IS ONE-WAY. Measured
+  over both: only the breath controller is, "Breath Controller: When assigned to Pedal/CV" (p. 3),
+  transmitted and never received. Everything else that appears at all appears in both.
+
+  THE LABELS ARE THE MAKER'S OWN WORDS IN THE MAKER'S OWN CAPITALS, TYPOS INCLUDED. Controller 15
+  is printed "OSC A SAW ON/FF" (p. 4), which is ON/OFF with a letter missing - and it is printed
+  that way in the NRPN table as well (p. 8), so it is what this maker calls the thing rather than
+  a slip in one place. Nothing here tidies it.
+
+  AND NRPN IS THE PREFERRED METHOD, WHICH THE MAKER SAYS IN BOTH DOCUMENTS. "NRPNs are the
+  preferred method of parameter transmission, since they cover the complete range of all
+  parameters, while CCs are limited to a range of 128" (guide p. 13), and the implementation
+  says the same on its first page. "Param Xmit: Off, CC, NRn" (guide p. 13) and "Param Rcv: Off,
+  CC, NRn" (guide p. 14) are globals, so a parameter change is CC or NRPN or nothing, and never
+  both at once. The controller table says the condition itself: "They are transmitted when Param
+  Xmit is set to CC, and recognized/received when Param Rcv is set to CC" (p. 4).
+
+  THE NRPN TABLE IS NOT RECORDED, AND THAT IS TO KEEP THIS FILE THE PROPHET-5'S. It holds 71
+  numbered parameters and three more given as spans, from 0 to 4109 (pp. 8-9), and the Prophet-5's
+  definition, written from the same file, records none of them, because the controller table and
+  the NRPN table number the same parameters differently - controller 3 and NRPN 0 are both OSC A
+  FREQUENCY - and some parameters are in only one. Two definitions that disagreed about one
+  document would be worse than either, so whether these two should carry the NRPNs is a question
+  for both files at once. What the two tables do agree about is every range they share: 50
+  parameter names are printed in both, and not one range differs. What they do not agree about
+  is one destination: the controller table has `PRESSURE FILTER` and `PRESSURE LFO` (p. 5), the
+  NRPN table `AFTERTOUCH > FILTER` and `AFTERTOUCH > AMP` (p. 8), and the guide's aftertouch
+  switch chooses "the Filter cutoff and/or the LFO amount" (guide p. 38).
+
+  TWO NUMBERS ARE REFUSED BY THE VALIDATOR AND ARE LEFT OUT RATHER THAN DROPPED SILENTLY.
+  Controller 123 is "All Notes Off: Clear all MIDI notes" (p. 2) and controller 121 is "Reset All
+  Controllers: Clears all MIDI controllers to 0, MIDI volume to maximum" (p. 2). Both are
+  received; both are channel mode messages, which this corpus does not record as controls.
+
+  AND ONE ROW IS LEFT OUT BECAUSE THE DOCUMENT SAYS TWO THINGS ABOUT IT. The transmitted table's
+  fourth controller row is named "Expression: When assigned to Pedal/CV" (p. 3) and its second
+  byte is printed `0000 1101`, which is 13. Expression is controller 11. There is no third
+  statement anywhere to settle which the maker meant - the received table has no Expression row at
+  all - so neither number is recorded.
+
+  THE DOCUMENT HAS SIX MORE DEFECTS AND NONE OF THEM IS RESOLVED HERE, because resolving one would
+  be inventing a number the maker has not published.
+
+  The first is a second typo in a parameter name: NRPN 41 is printed "VELOCTIY > FILTER" (p. 8)
+  where NRPN 42 beside it spells the word correctly.
+
+  The second is the one a reader would actually be hurt by. This instrument's system exclusive
+  identity is given two ways. The device inquiry reply gives `0011 0011` on p. 10 as the family
+  byte; the three request and dump chapters give `0011 0001` on pp. 11, 12 and 13, in nine
+  separate rows. 51 against 49, and nothing in the document says which - nor whether the
+  Prophet-10 answers with either.
+
+  The third: the RPN reset message is given the wrong controller numbers. The received NRPN
+  chapter prints `0010 0101` and `0010 0100` on p. 7 for the registered parameter number's two
+  halves, which are 37 and 36. They are 101 and 100. Every NRPN controller number on the same two
+  pages is right, so it is these two rows and not the chapter.
+
+  The fourth: nothing in the document says how to save the edit buffer. The table headed Save
+  Edit Buffer (p. 12) is byte for byte the Request Program Dump of the page before, command byte
+  and all.
+
+  The fifth: a program is addressed three incompatible ways. "Bank Number, 0 - 7" (p. 11) with
+  "Program Number, 0 - 127" (p. 11); "Group Number: 0 - 9" (p. 12) with "Program Number: 0 -
+  39" (p. 12); and the
+  received program change's own banks on p. 2.
+
+  The sixth: the NRPN tables are headed "Control NRPN Data" (p. 9) and introduced with "It is
+  received and transmitted but not saved as part of a program" (p. 9) - over the parameters the
+  document later says are saved, "The 128 'packed' parameter bytes in the program dump follow the
+  order of the NRPN list" (p. 13).
+
+  THE SYSTEM EXCLUSIVE CHAPTER IS FOUR LAYOUTS, not a mention. A universal device inquiry, a
+  request program dump, a program data dump and a global parameters data dump, each byte by byte
+  (pp. 10-13), and a global chooses the port they travel on.
+
+  TEN VOICES, AND NINE WITH A PLUG IN THE GATE IN JACK. "The Prophet-10 is a ten-voice, polyphonic
+  analog synthesizer with analog voltage-controlled oscillators, filters, and amplifiers" (guide
+  p. 1). And "Whenever a ¼ inch connector is inserted into the rear-panel gate in jack on the
+  Prophet-10, its keyboard polyphony is reduced to 9 voices" (guide p. 3), which no field here can
+  make depend on what is plugged in.
+
+  THE GUIDE IS THE PROPHET-5'S EDITED, AND SOME SENTENCES WERE NOT. The gate in jack gates "a
+  single voice on the Prophet-5" (guide p. 3); MIDI In and USB together "may cause the Prophet-5
+  to respond unpredictably" (guide p. 4); the pedal mode "Sets the Prophet-5's response to an
+  expression connected to either the amp jack or filter jack" (guide p. 15), and "Either type can
+  be used with the Prophet-5" (guide p. 16). Osc B in lo freq mode "creates five separate
+  modulation LFOs since Osc B on each of the Prophet-10's ten voices" (guide p. 34) is the edit
+  made halfway through a sentence. And unison is "as many as ten voices" (guide p. 40) in one
+  chapter and "(now you can stack 1-5 voices)" (guide p. 45) in the next. The ten is what the
+  instrument does and the rest is the Prophet-5's guide showing through.
+
+  SO WHICH VOICE THE GATE IN JACK TAKES IS NOT SETTLED. "The envelopes of the fifth voice are
+  triggered by the gate in signal" (guide p. 3), and "voice 5 is no longer available to play from
+  the keyboard" (guide p. 55). Both are the Prophet-5's guide word for word, so whether the
+  Prophet-10's jack takes its fifth voice or the sentences were never edited is not something the
+  documents can say.
+
+  SINCE OS 2.0 IT IS BI-TIMBRAL, AND NOTHING SAYS HOW MIDI REACHES THE SECOND LAYER. "With this OS,
+  the Prophet-10 (or a Prophet-5 with a voice expansion card) becomes bi-timbral and allows you to
+  play two different sounds/programs at once" (addendum_2_0 p. 1), as "Layer A and Layer B"
+  (addendum_2_0 p. 2). Stacked, "the 10-voice Prophet-10 functions as a 5-voice instrument"
+  (addendum_2_0 p. 3); split, "with five voices available on Layer A and five voices on Layer B"
+  (addendum_2_0 p. 5); and a global "limits available polyphony to five voices" (addendum_2_0
+  p. 8) on request. **The addendum's only mention of MIDI is the cable an owner updates the
+  operating system through**, and so is the 2.1.0 addendum's: not a channel, not a controller,
+  not a program change. The implementation is six months older than the layers. So no part is
+  recorded here, because a part is something a sender addresses, and nothing published says how.
+
+  IT RECEIVES POLYPHONIC KEY PRESSURE AND ITS OWN KEYBOARD SENDS CHANNEL PRESSURE, which the one
+  field here cannot say twice. The received table has "Polyphonic Key Pressure" (p. 2) and
+  "Channel Pressure" (p. 2); the transmitted table has "Channel Pressure" (p. 3) and no polyphonic
+  row at all. And "The Prophet-10 provides monophonic (or 'channel') aftertouch, which means that
+  applying pressure to any key within a chord will apply modulation to all notes currently held"
+  (guide p. 38). `aftertouch: poly` records what it answers to, which is what the field is for,
+  and this paragraph is the rest of it.
+
+  VELOCITY ARRIVES AND IS IGNORED ON NOTE OFF. "Note Off. Velocity is ignored" (p. 2) and "Note
+  On. Note off if vvvvvvv = 0" (p. 2), and what it transmits on note off is a literal `0000000`
+  (p. 3). Two global curves shape what the keyboard produces, "Vel Response: 0-6" (guide p. 16) and
+  "AT Response: 0-7" (guide p. 16), and neither says anything about what an incoming velocity does.
+
+  THE BEND RANGE IS PER PROGRAM AND THE PANEL AND THE CONTROLLER COUNT IT DIFFERENTLY. "A setting
+  of 1 equals a semitone. A setting of 12 equals an octave" (guide p. 37). Controller 70 is
+  "PITCH WHEEL RANGE" (p. 5) with a range of `0-11` - twelve values either way, by one, and the
+  implementation does not say that the controller's 0 is the panel's 1.
+
+  TWO MORE RANGES THE GUIDE GIVES DIFFERENTLY, CARRIED AS THE IMPLEMENTATION PRINTS THEM. Controller
+  114 is `UNISON DETUNE` over `0-7` (p. 5), eight values, and the guide says "A setting of 0 is
+  minimum detuning. A setting of 8 is maximum detuning" (guide p. 40), nine. Controller 31 is
+  `RESONANCE` over `0-120` (p. 4), and the guide's example of the pot modes says "the resonance
+  parameter has an internal value range of 0 to 127" (guide p. 14). The ranges below are what a
+  message carries, by the implementation's word; neither document says how the other's numbers
+  map onto them.
+
+  FOUR HUNDRED PROGRAMS, AND A PROGRAM CHANGE REACHES FORTY OF THEM. "The Prophet-10 contains a
+  total of 400 programs. 200 are permanent 'Factory' programs and 200 are 'User' programs" (guide
+  p. 6). The implementation's received table gives "Program change, 0-39" (p. 2) and bank select
+  picks the rest: "Bank Select: 1 - 5 select user banks 1 - 5; 6 - 9 select factory banks 1 - 4"
+  (p. 2). And that program change row contradicts itself: after the 0-39 it enumerates four spans
+  of eight, naming Banks 1, 2, 4 and 5 - thirty-two values across four banks, where the number
+  before it is forty and the bank selector cycles through five. 40 is the figure the row states
+  outright, and nothing here resolves the rest.
+
+  AND BANK SELECT NAMES FIVE USER BANKS AND ONLY FOUR FACTORY ONES, where the guide's selector
+  "increments and cycles through Groups 1-5" (guide p. 6) in either set of 200. As printed, no
+  value reaches a fifth factory group, and the transmitted table says only "Bank Select: 1 - 5"
+  (p. 3). Neither document says that what the implementation calls a bank of forty is what the
+  guide calls a group.
+
+  THE USB PORT IS NAMED THREE WAYS. "Under Mac OS, 'Prophet-5/10' will appear as a MIDI port"
+  (guide p. 4), and under Windows the same page says it is installed as `Prophet-10.`; the
+  operating system page says "a MIDI port named 'Prophet-5' or 'Prophet-10'" (os). Which a given
+  computer shows is not something these documents settle.
+
+  NOT RECORDED: the clock and the transport. The words clock, start, stop, continue, song
+  position and active sensing appear nowhere in the thirteen pages of the implementation - not as
+  a no, as nothing at all. This instrument has no sequencer and no arpeggiator.
+
+  NOT RECORDED: anything the two addenda add beyond the layers - a high note priority, a layer
+  link, per-program velocity and aftertouch amounts and filter Q compensation (2.1.0), and poly
+  unison, a five-voice limit and round robin allocation (2.0). Neither addendum gives a number
+  for anything it adds, so the tables above are what is published and are known to be
+  incomplete for the instrument as it ships. One of them visibly so: the guide names four key
+  priorities, "low, last, low retrigger, last retrigger" (guide p. 45), and controller 71,
+  `RETRIGGER AND UNISON ASSIGN`, has four values (p. 5) - in which order is not said - and 2.1.0
+  adds another, "High Note gives note priority to the highest note played, with a retrigger
+  option" (addendum_2_1_0 p. 3), which no value reaches.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: Prophet-5 MIDI Implementation
+    edition: "1.4"
+    dated: 2021-03-11
+    landing: "https://sequential.com/support/download/prophet-5-10-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/03/Prophet-5-MIDI-Implementation-1.4.pdf"
+    sha256: 5b86f304689a958a3cdd7f2e53a7c4c12be05da6edf09fb7597a794630dd219a
+    retrieved: 2026-10-07
+    # 13 pages, printed page = file page. Offered under the Prophet-10's section of the
+    # documentation page as well as the Prophet-5's, and fetched again for this definition: the
+    # same bytes the Prophet-5's was written from. The date is the PDF's own creation date; the
+    # document prints none.
+    page_offset: 0
+  guide:
+    kind: manual
+    title: Prophet-10 User's Guide
+    edition: "1.4"
+    dated: 2021-02-24
+    landing: "https://sequential.com/support/download/prophet-5-10-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/02/Prophet-10-Users-Guide-1.4.pdf"
+    sha256: 7c285bcf76cd198a19056aff7491a751e935cb081dfc7c586d845b47a1bcd488
+    retrieved: 2026-10-07
+    # 80 sheets, of which printed p. 1 is sheet 12. The front matter is numbered in roman
+    # numerals, viii to xi on sheets 8 to 11, so the offset was measured on every sheet.
+    page_offset: 11
+  addendum_2_0:
+    kind: firmware_addendum
+    title: Prophet-5/10 OS 2.0 Addendum
+    edition: "2.0"
+    dated: 2021-09-07
+    landing: "https://sequential.com/support/download/prophet-5-10-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/09/Prophet-OS-2.0-Addendum.pdf"
+    sha256: ca6316c065d81b3eea5bf22fc1f3f9450c05af8ab65d5fcc5a6f6e70909bccff
+    retrieved: 2026-10-07
+    # Nine pages, cited for the layers. Written for this instrument more than for the other: it
+    # names the Prophet-10 sixteen times, and the Prophet-5 in its title, its first sentence, as
+    # the machine a voice limit emulates, and twice as one "with a voice expansion card"
+    # (addendum_2_0 p. 1). Its PDF title is `Prophet-10 OS 1.5.6. Addendum`, another version's,
+    # so a file's metadata is not evidence of what it is.
+    page_offset: 0
+  addendum_2_1_0:
+    kind: firmware_addendum
+    title: Prophet-5/10 OS 2.1.0 Addendum
+    edition: "2.1.0"
+    dated: 2025-05-03
+    landing: "https://sequential.com/support/download/prophet-5-10-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2025/05/Prophet-OS-2.1.0-Addendum_b.pdf"
+    sha256: 7c63fb252b2f217bbc57b9cf3a3b509fd3906e9b433b849943026931fe08e434
+    retrieved: 2026-10-07
+    # Four pages, cited for which operating system is current and for saying nothing about MIDI.
+    page_offset: 0
+  os:
+    kind: download_page
+    title: Prophet-5/10 Operating System - Sequential
+    landing: "https://sequential.com/support/download/prophet-5-10-operating-system/"
+    url: "https://sequential.com/support/download/prophet-5-10-operating-system/"
+    sha256: 6eb22bede93282d0de3733cb6d4244a26076365b16e0895814d950cb04e3d33b
+    retrieved: 2026-10-07
+    paginated: false
+    # The page's visible text; as served it hashes to
+    # 4f60b8d7ed66ccec543252de75b8996690be77bd170baa1ba44d4adf6b72839c.
+  listing:
+    kind: download_page
+    title: Prophet-5/10 Documentation - Sequential
+    landing: "https://sequential.com/support/download/prophet-5-10-documentation/"
+    url: "https://sequential.com/support/download/prophet-5-10-documentation/"
+    sha256: 444e73d3bf72873ecd90fc2aa75a7ae8c1b8575ea88a71ed7e3277dcdd3204ab
+    retrieved: 2026-10-07
+    paginated: false
+    # The page's visible text; as served it hashes to
+    # 91c740a7c6274c59cedeb8257d5d20c77378deec708af2338f239e19268188eb. Its two sections link one
+    # implementation, at one address, four times between them.
+  sibling_guide:
+    kind: manual
+    title: Prophet-5 User's Guide
+    edition: "1.3"
+    dated: 2021-02-24
+    landing: "https://sequential.com/support/download/prophet-5-10-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/02/Prophet-5-Users-Guide-1.3.pdf"
+    sha256: 98868eee47d805d60eadb006cbc7ec58eec5a5d4736e86e30958182230cd4215
+    retrieved: 2026-10-04
+    # Cited for one thing and nothing else: what the Prophet-10's guide says that it does not.
+    # Compared word for word with the model names masked, the two differ in twenty-one places,
+    # and not one of them is about MIDI.
+    page_offset: 11
+
+midi:
+  # "MIDI Channel: ALL, 1…16—Selects which MIDI channel to send and receive data, 1 to 16"
+  # (guide p. 13), where ALL receives on every channel at once.
+  channels: [1, 16]
+  # THE MAKER'S OWN WORD, in both documents. The numbers are not recorded; see the source account.
+  nrpn: preferred
+  program_change:
+    # "Program change, 0-39" (p. 2) is received and "Program change" (p. 3) transmitted.
+    receives: true
+    sends: true
+    # 200 factory and 200 user (guide p. 6), and a program change reaches forty of them at a time.
+    presets: 400
+  # Four layouts given byte by byte on printed pp. 10 to 13, and a global that chooses the port.
+  sysex: true
+  # NOT RECORDED: clock and transport. Neither word appears anywhere in the implementation.
+
+voice:
+  # Ten (guide p. 1), and nine with a plug in the gate in jack (guide p. 3). Five when two layers
+  # are stacked, five a layer when split, and five on request - see the source account.
+  polyphony: 10
+  velocity:
+    # "Note On. Note off if vvvvvvv = 0" (p. 2) is received.
+    note_on: received
+    # "Note Off. Velocity is ignored" (p. 2), and what it sends is a literal zero (p. 3).
+    note_off: false
+  # IT RECEIVES POLYPHONIC KEY PRESSURE AND ITS KEYBOARD SENDS CHANNEL PRESSURE. This field says
+  # what it answers to; the source account has both halves.
+  aftertouch: poly
+  pitch_bend:
+    # "A setting of 1 equals a semitone. A setting of 12 equals an octave" (guide p. 37), chosen
+    # per program. Controller 70 counts the same twelve values from 0 to 11.
+    semitones: 12
+    programmable: true
+
+groups:
+  # The maker's own leading words, which is all the implementation gives: it prints no heading
+  # over any of its 59 rows. Seventeen rows that begin with none of them are placed by the User's
+  # Guide's own chapters, one row at a time - the Prophet-5's division exactly, because the two
+  # guides have the same chapters under the same headings.
+  osc_a: OSC A
+  osc_b: OSC B
+  poly_mod: POLY MOD
+  lfo: LFO
+  filter: FILTER
+  envelope: ENVELOPE
+  unison: UNISON
+  pressure: PRESSURE
+  performance: Performance
+  global: Global
+
+controls:
+
+  # OSC A ───────────────────────────────────────────────────
+  osc_a_frequency:                     {label: OSC A FREQUENCY, cc: 3, range: [0, 120], group: osc_a}
+  osc_a_saw_on_ff:                     {label: OSC A SAW ON/FF, cc: 15, range: [0, 1], group: osc_a}
+  osc_a_square_on_off:                 {label: OSC A SQUARE ON/OFF, cc: 20, range: [0, 1], group: osc_a}
+  osc_a_pulse_width:                   {label: OSC A PULSE WIDTH, cc: 21, range: [0, 120], group: osc_a}
+  osc_sync_on_off:                     {label: OSC SYNC ON/OFF, cc: 23, range: [0, 1], group: osc_a}
+  osc_a_level:                         {label: OSC A LEVEL, cc: 27, range: [0, 120], group: osc_a}
+
+  # OSC B ───────────────────────────────────────────────────
+  osc_b_frequency:                     {label: OSC B FREQUENCY, cc: 9, range: [0, 120], group: osc_b}
+  osc_b_fine_tune:                     {label: OSC B FINE TUNE, cc: 14, group: osc_b}
+  osc_b_pulse_width:                   {label: OSC B PULSE WIDTH, cc: 22, range: [0, 120], group: osc_b}
+  osc_b_low_freq_on_off:               {label: OSC B LOW FREQ ON/OFF, cc: 24, range: [0, 1], group: osc_b}
+  osc_b_keyboard_on_off:               {label: OSC B KEYBOARD ON/OFF, cc: 25, range: [0, 1], group: osc_b}
+  osc_b_level:                         {label: OSC B LEVEL, cc: 28, range: [0, 120], group: osc_b}
+  osc_b_saw_on_off:                    {label: OSC B SAW ON/OFF, cc: 30, range: [0, 1], group: osc_b}
+  osc_b_tri_on_off:                    {label: OSC B TRI ON/OFF, cc: 52, range: [0, 1], group: osc_b}
+  osc_b_square_on_off:                 {label: OSC B SQUARE ON/OFF, cc: 116, range: [0, 1], group: osc_b}
+
+  # POLY MOD ────────────────────────────────────────────────
+  poly_mod_filt_env_amount:            {label: POLY MOD FILT ENV AMOUNT, cc: 59, group: poly_mod}
+  poly_mod_osc_b_amount:               {label: POLY MOD OSC B AMOUNT, cc: 60, range: [0, 120], group: poly_mod}
+  poly_mod_freq_a_on_off:              {label: POLY MOD FREQ A ON/OFF, cc: 61, range: [0, 1], group: poly_mod}
+  poly_mod_pw_on_off:                  {label: POLY MOD PW ON/OFF, cc: 62, range: [0, 1], group: poly_mod}
+  poly_mod_filter_on_off:              {label: POLY MOD FILTER ON/OFF, cc: 63, range: [0, 1], group: poly_mod}
+
+  # LFO ─────────────────────────────────────────────────────
+  lfo_frequency:                       {label: LFO FREQUENCY, cc: 46, range: [0, 120], group: lfo}
+  lfo_initial_amount:                  {label: LFO INITIAL AMOUNT, cc: 47, range: [0, 120], group: lfo}
+  lfo_source_mix:                      {label: LFO SOURCE MIX, cc: 53, range: [0, 120], group: lfo}
+  lfo_freq_a_on_off:                   {label: LFO FREQ A ON/OFF, cc: 54, range: [0, 1], group: lfo}
+  lfo_freq_b_on_off:                   {label: LFO FREQ B ON/OFF, cc: 55, range: [0, 1], group: lfo}
+  lfo_freq_pw_a_on_off:                {label: LFO FREQ PW A ON/OFF, cc: 56, range: [0, 1], group: lfo}
+  lfo_freq_pw_b_on_off:                {label: LFO FREQ PW B ON/OFF, cc: 57, range: [0, 1], group: lfo}
+  lfo_filter_on_off:                   {label: LFO FILTER ON/OFF, cc: 58, range: [0, 1], group: lfo}
+  lfo_saw_on_off:                      {label: LFO SAW ON/OFF, cc: 117, range: [0, 1], group: lfo}
+  lfo_tri_on_off:                      {label: LFO TRI ON/OFF, cc: 118, range: [0, 1], group: lfo}
+  lfo_square_on_off:                   {label: LFO SQUARE ON/OFF, cc: 119, range: [0, 1], group: lfo}
+
+  # FILTER ──────────────────────────────────────────────────
+  resonance:                           {label: RESONANCE, cc: 31, range: [0, 120], group: filter}
+  filter_keyboard_track_off_half_full: {label: FILTER KEYBOARD TRACK OFF/HALF/FULL, cc: 35, range: [0, 2], group: filter}
+  filter_rev_select:                   {label: FILTER REV SELECT, cc: 41, range: [0, 1], group: filter}
+  cutoff:                              {label: CUTOFF, cc: 73, range: [0, 120], group: filter}
+  brightness:                          {label: BRIGHTNESS, cc: 74, group: filter}
+
+  # ENVELOPE ────────────────────────────────────────────────
+  envelope_filter_amount:              {label: ENVELOPE FILTER AMOUNT, cc: 89, range: [0, 120], group: envelope}
+  envelope_filter_velocity_on_off:     {label: ENVELOPE FILTER VELOCITY ON/OFF, cc: 90, range: [0, 1], group: envelope}
+  envelope_vca_velocity_on_off:        {label: ENVELOPE VCA VELOCITY ON/OFF, cc: 102, range: [0, 1], group: envelope}
+  attack_filter:                       {label: ATTACK FILTER, cc: 103, range: [0, 120], group: envelope}
+  attack_vca:                          {label: ATTACK VCA, cc: 104, range: [0, 120], group: envelope}
+  decay_filter:                        {label: DECAY FILTER, cc: 105, range: [0, 120], group: envelope}
+  decay_vca:                           {label: DECAY VCA, cc: 106, range: [0, 120], group: envelope}
+  sustain_filter:                      {label: SUSTAIN FILTER, cc: 107, range: [0, 120], group: envelope}
+  sustain_vca:                         {label: SUSTAIN VCA, cc: 108, range: [0, 120], group: envelope}
+  release_filter:                      {label: RELEASE FILTER, cc: 109, range: [0, 120], group: envelope}
+  release_vca:                         {label: RELEASE VCA, cc: 110, range: [0, 120], group: envelope}
+  release_on_off:                      {label: RELEASE ON/OFF, cc: 111, range: [0, 1], group: envelope}
+
+  # UNISON ──────────────────────────────────────────────────
+  retrigger_and_unison_assign:         {label: RETRIGGER AND UNISON ASSIGN, cc: 71, range: [0, 3], group: unison}
+  unison_on_off:                       {label: UNISON ON/OFF, cc: 112, range: [0, 1], group: unison}
+  unison_voice_count:                  {label: UNISON VOICE COUNT, cc: 113, range: [0, 10], group: unison}
+  unison_detune:                       {label: UNISON DETUNE, cc: 114, range: [0, 7], group: unison}
+
+  # PRESSURE ────────────────────────────────────────────────
+  pressure_filter:                     {label: PRESSURE FILTER, cc: 86, range: [0, 1], group: pressure}
+  pressure_lfo:                        {label: PRESSURE LFO, cc: 87, range: [0, 1], group: pressure}
+
+  # Performance ─────────────────────────────────────────────
+  mod_wheel:                           {label: Mod Wheel, cc: 1, group: performance}
+  breath_controller:                   {label: Breath Controller, cc: 2, direction: transmits, group: performance}
+  foot_controller:                     {label: Foot Controller, cc: 4, group: performance}
+  bank_select:                         {label: Bank Select, cc: 32, group: performance}
+  damper_pedal:                        {label: Damper pedal, cc: 64, group: performance}
+  pitch_wheel_range:                   {label: PITCH WHEEL RANGE, cc: 70, range: [0, 11], group: performance}
+
+  # Global ──────────────────────────────────────────────────
+  master_volume:                       {label: MASTER VOLUME, cc: 7, range: [0, 120], group: global}
+  glide_rate:                          {label: GLIDE RATE, cc: 26, range: [0, 120], group: global}
+  noise_level:                         {label: NOISE LEVEL, cc: 29, range: [0, 120], group: global}
+  vintage:                             {label: VINTAGE, cc: 85, group: global}

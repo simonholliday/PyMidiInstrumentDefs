@@ -153,6 +153,7 @@ class TestBundledCorpus:
 			"akai/mpc_live_iii",
 			"akai/mpc_sample",
 			"arturia/astrolab",
+			"arturia/drumbrute",
 			"arturia/drumbrute_impact",
 			"arturia/microbrute",
 			"arturia/microfreak",
@@ -649,11 +650,12 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Twenty definitions carry no controls, for five different reasons.
+		"""Twenty-one definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a twenty-first
-		cannot be added without saying which kind it is. The twentieth was
-		`akai/mpc_live_iii`, `learned` for its predecessor's reason from its own guide.
+		Pinned here because the count has gone stale in notes twice: a twenty-second
+		cannot be added without saying which kind it is. The twenty-first was
+		`arturia/drumbrute`, `learned` for the DrumBrute Impact's reason from its own
+		manual.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
 		Its maker claims "comprehensive MIDI implementation" and publishes no part of
@@ -692,7 +694,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 20
+		assert len(empty) == 21
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -704,8 +706,8 @@ class TestAbsences:
 		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
 			"vermona/drm1_mkiv"}
-		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "arturia/drumbrute_impact",
-			"dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
+		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "arturia/drumbrute",
+			"arturia/drumbrute_impact", "dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
 			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
@@ -7764,8 +7766,8 @@ class TestDeclaringAPicturedPage:
 
 	"""A source can say which of its pages publish their numbers only as an image."""
 
-	def test_three_instruments_declare_one_and_each_for_its_own_reason (self) -> None:
-		"""Four pages in this corpus publish their numbers only as a picture, not one.
+	def test_four_instruments_declare_one_and_each_for_its_own_reason (self) -> None:
+		"""Six pages in this corpus publish their numbers only as a picture, not one.
 
 		Listed by name so that a fourth has to be added here deliberately: the declaration
 		switches off the strongest check this corpus has, for the pages it names, so it
@@ -7785,6 +7787,12 @@ class TestDeclaringAPicturedPage:
 		pinned by digest** - `Notes/4635_extract_nymphes.py` checks both images, so a redrawn
 		table fails rather than letting a reading of the old one stand.  That is worth
 		copying for any fourth.
+
+		**And the fourth is the DrumBrute Impact's predecessor, with the same editor's
+		screenshot in two editions of its manual.**  Version 1.2's page 73 is a crop of
+		the whole window that version 1.0.0 prints on its page 70, so the two declarations
+		name one picture twice - which is why both are declared, and why neither edition
+		corroborates the other.  Its pictures are pinned by digest as the Nymphes's are.
 		"""
 		declared = {
 			name: {key: source.pictured_pages
@@ -7794,6 +7802,7 @@ class TestDeclaringAPicturedPage:
 		}
 
 		assert {name: pages for name, pages in declared.items() if pages} == {
+			"arturia/drumbrute": {"first_manual": (70,), "manual": (73,)},
 			"arturia/drumbrute_impact": {"manual": (99,)},
 			"dreadbox/nymphes": {"manual": (22, 23)},
 			"korg/microkorg2": {"manual": (133,)},
@@ -17043,3 +17052,133 @@ class TestMpcLiveIII:
 		assert live.sources["guide"].edition == "v3.9"
 		assert live.sources["release_notes"].sha256 == \
 			pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).sources["release_notes"].sha256
+
+
+class TestDrumBrute:
+
+	"""The first DrumBrute: its drum notes are one picture, and its program change is in the
+	release notes and in no manual."""
+
+	def test_seventeen_notes_run_unbroken_from_36 (self) -> None:
+		"""The run is what checks a transcription made by eye: one note for each of the
+		seventeen instruments the manual counts, with no gap and no repeat."""
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert drumbrute.voice.addressing == "voices"
+		assert len(drumbrute.voice.voices) == 17
+		assert sorted(drumbrute.voice.voices.values()) == list(range(36, 53))
+
+		# The editor's own order, left to right and top to bottom, is the note order.
+		assert list(drumbrute.voice.voices)[:3] == ["kick1", "kick2", "snare"]
+		assert list(drumbrute.voice.voices)[-1] == "zap"
+
+		account = " ".join((drumbrute.source or "").split())
+
+		assert "there are actually 17 separate instruments available from the 12 pads" in account
+
+	def test_the_numbers_are_defaults_and_the_drum_map_is_one_picture (self) -> None:
+		"""Both editions print it, and version 1.2's is a crop of version 1.0.0's, so the two
+		do not corroborate each other."""
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert drumbrute.voice.note_map == "learned"
+		assert drumbrute.sources["manual"].pictured_pages == (73,)
+		assert drumbrute.sources["first_manual"].pictured_pages == (70,)
+
+		account = " ".join((drumbrute.source or "").split())
+
+		assert "The settings shown are the default MIDI note number values for each instrument, " \
+			"but you can set them to any note number between 0-127." in account
+		assert "the two editions do not corroborate each other" in account
+
+	def test_it_publishes_no_controller_number_at_all (self) -> None:
+		"""The touch strip and the three transport buttons answer to numbers the player sets."""
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert drumbrute.controls == {}
+		assert drumbrute.midi.control_change == "learned"
+		assert drumbrute.midi.nrpn == "none"
+
+		account = " ".join((drumbrute.source or "").split())
+
+		assert "No controller map: DrumBrute, MatrixBrute" in account
+		assert "MIDI CC allows you to change Control Change number." in account
+
+	def test_the_transport_numbers_in_the_pictures_are_one_units_settings (self) -> None:
+		"""Version 1.0.0 prints the whole window, on firmware older than any Arturia lists.
+
+		**The template the window's title names does not cover them**, which the first
+		draft of this definition got wrong and the second reader caught: the manual says a
+		template holds no Device Settings, and the transport, the channel and the drum map
+		are all Device Settings.
+		"""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS]).source or "").split())
+
+		assert "firmware `0.9.8.0`, older than any version Arturia lists" in account
+		assert "\"A Template does not contain the Device Settings.\" (manual p. 56)" in account
+		assert "a saved template" not in account.lower()
+
+	def test_program_change_is_received_and_only_the_release_notes_say_so (self) -> None:
+		"""Firmware 1.1.0.0 added it, and neither edition of the manual mentions it."""
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert drumbrute.midi.program_change is not None
+		assert drumbrute.midi.program_change.receives is True
+		assert drumbrute.midi.program_change.sends is None
+		assert drumbrute.midi.program_change.presets == 64
+
+		account = " ".join((drumbrute.source or "").split())
+
+		assert "Use Program Change to switch patterns, and Bank MSB to switch Bank" in account
+		assert "Neither edition of the manual names program change, bank select or song select" \
+			in account
+
+	def test_clock_both_ways_and_transport_only_out (self) -> None:
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert drumbrute.midi.clock == "both"
+		assert drumbrute.midi.transport == "sends"
+
+	def test_what_no_page_states_is_left_unset (self) -> None:
+		"""The channel range is a picture, and no page says what received velocity does."""
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert drumbrute.midi.channels is None
+		assert drumbrute.midi.mode is None
+		assert drumbrute.midi.sysex is None
+		assert drumbrute.voice.velocity is None
+		assert drumbrute.voice.polyphony is None
+		assert drumbrute.voice.aftertouch is None
+		assert drumbrute.voice.pitch_bend is None
+
+	def test_the_impacts_map_cannot_stand_in_for_this_one (self) -> None:
+		"""A different machine: five instruments share a name and none shares a note."""
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+		impact = pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS])
+
+		shared = set(drumbrute.voice.voices) & set(impact.voice.voices)
+
+		assert shared == {"cl_hat", "op_hat", "tom_h", "tom_l", "cymbal"}
+		assert all(drumbrute.voice.voices[name] != impact.voice.voices[name] for name in shared)
+
+		# What the two do share is the shape of the answer.
+		assert (drumbrute.midi.control_change, drumbrute.midi.transport, drumbrute.voice.note_map) \
+			== (impact.midi.control_change, impact.midi.transport, impact.voice.note_map)
+
+	def test_it_describes_1_2_1_0_through_manual_1_2 (self) -> None:
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert drumbrute.model.firmware == "1.2.1.0"
+		assert drumbrute.sources["manual"].edition == "1.2"
+		assert drumbrute.sources["first_manual"].edition == "1.0.0"
+
+		assert drumbrute.sources["manual"].page_offset == 5
+		assert drumbrute.sources["first_manual"].page_offset == 0
+		assert drumbrute.sources["mcc_manual"].page_offset == 4
+		assert drumbrute.sources["release_notes"].paginated is False
+		assert drumbrute.sources["downloads_page"].paginated is False
+
+		# The editor's manual is the very file the DrumBrute Impact holds.
+		assert drumbrute.sources["mcc_manual"].sha256 == \
+			pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS]).sources["mcc_manual"].sha256

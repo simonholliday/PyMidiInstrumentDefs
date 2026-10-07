@@ -1,0 +1,275 @@
+definition: 1
+
+# THE DRUM MAP IS A PICTURE, AND THE ONLY ONE OF THREE THAT ITS PAGE CALLS A DEFAULT. The manual's
+# text names no note number and no controller number. It describes the MIDI Control Center
+# editor's Device Settings in prose and shows them as screenshots, so the seventeen notes below
+# were read by eye from the image and checked by the run they make: 36 to 52 with no gap, one for
+# each of the seventeen instruments the manual counts. The transport numbers and the global channel
+# in the other two pictures are one unit's settings at one moment, and none of them is carried.
+#
+# PROGRAM CHANGE IS IN THE RELEASE NOTES AND IN NEITHER EDITION OF THE MANUAL. Firmware 1.1.0.0
+# added it, with bank select and song select, and neither edition mentions any of the three. So the
+# release notes are a source here in their own right, not a footnote to the manual.
+
+model:
+  manufacturer: Arturia
+  name: DrumBrute
+  # THE NEWEST OF THREE, AND THE MANUAL WAS WRITTEN AFTER IT. The downloads page lists 1.2.1.0 of
+  # 2017-02-15 as the latest. The manual's version 1.2 is dated 3 March 2017 and names no firmware,
+  # but it describes all five of firmware 1.2.0.0's new features, which its version 1.0.0 describes
+  # none of. 1.2.1.0 changes one thing: "Local Control is forced to On after firmware update"
+  # (release_notes).
+  firmware: "1.2.1.0"
+
+source: >-
+  User Manual version 1.2 of 2017-03-03, 81 pages: the drum map at p. 73, which is a picture; the
+  Device Settings chapter at pp. 69-73 for the channel, the pads, the sequencer, Local Control, the
+  touch strip and the transport; the touch strip again at p. 23; All Notes Off at p. 24; the
+  instruments at p. 14; the pattern memory at p. 19; synchronisation at pp. 51-52. Version 1.0.0,
+  its own "15th of October 2016 edition" (first_manual p. 2), because what it lacks shows which
+  firmware version 1.2 describes, and because it prints whole the editor window two of version 1.2's
+  pictures come from. The release notes for all three firmware versions, which are the only
+  documents that say this machine answers to program change. The MIDI Control Center manual, for
+  what it says about this machine, and the downloads page.
+
+  THERE IS NO MIDI IMPLEMENTATION CHART AND NO CONTROLLER MAP. Arturia publishes neither, and the
+  editor's own manual lists the DrumBrute under "No controller map: DrumBrute, MatrixBrute"
+  (mcc_manual p. 20). So there is no `controls` block below, and its absence is the finding rather
+  than an omission.
+
+  TWO THINGS SEND CONTROL CHANGE ON NUMBERS THE PLAYER CHOOSES, AND ONE OF THEM ALSO RECEIVES. The
+  touch strip "will sends a Control Change each time you touch it (except when setting a step repeat
+  value) and will be activated each time the corresponding Control Change is sent to the Drumbrute"
+  (manual p. 72), and "MIDI CC allows you to change Control Change number." (manual p. 72). The
+  three transport buttons send one each when they are set to send controllers at all: "You can
+  define the MIDI channel and CC number for each of the three main Transport commands independently.
+  All three must transmit the same type of MIDI information, though: MMC, MIDI CC or both." (manual
+  p. 73). A number the player assigns is not a property of the model, so `control_change: learned`
+  says so, as it does for the DrumBrute Impact. The controllers with fixed meanings that the release
+  notes add are two paragraphs below.
+
+  THE TOUCH STRIP'S VALUES ARE FIXED, AND THE MANUAL CONTRADICTS ITSELF ABOUT THEM. Its list, given
+  on two pages, is OFF 0-24 sending 0, 1/4 25-49 sending 25, 1/8 50-74 sending 50, 1/16 75-99
+  sending 75, and `1/32 = 100=127 (sends 100)` (manual pp. 23 and 72). Page 23 then says "sending
+  values between 25 and 49 (on the right Control Change) will activate 1/8" (manual p. 23) and
+  "Touching the strip on 1/8 will send value 25." (manual p. 23), both of which the list gives to
+  1/4. Nothing here carries either, because the controller number itself is the player's.
+
+  THE MESSAGES WITH FIXED MEANINGS ARE NAMED WITHOUT NUMBERS, AND MOSTLY ONLY IN THE RELEASE NOTES.
+  Firmware 1.1.0.0 added "Use Program Change to switch patterns, and Bank MSB to switch Bank"
+  (release_notes), "Use Midi Song Select to switch Songs" (release_notes) and "MIDI Control Change
+  implementation for Local control On/Off for pads, All Notes Off, All Sounds Off" (release_notes).
+  They name Song Position Pointer twice - "Song Position Pointer now handles the Song length in Song
+  mode." (release_notes) and, in 1.2.0.0, "Better handling of Song Position Pointer messages"
+  (release_notes) - and do not say in which direction it travels. Neither edition of the manual
+  names program change, bank select or song select on any page. Bank select's number is printed
+  nowhere, so it is not carried; Local Control, All Notes Off and All Sounds Off are channel mode
+  messages, whose numbers belong to the MIDI specification rather than to this instrument, and which
+  this format refuses as controls. The manual adds two things: pressing Stop three times "will then
+  send an All Notes Off command over MIDI" (manual p. 24), and "Incoming All Notes Off and All
+  Sounds Off messages are echoed on MIDI port" (manual p. 24), a sentence that stops there. The same
+  release also lists "MIDI loopback removal (Does not echo Midi In anymore)" (release_notes). The
+  manual is the later document and does not say whether those two messages are the exception to that
+  or not.
+
+  THE TRANSPORT NUMBERS AND THE CHANNEL IN THE PICTURES ARE ONE UNIT'S SETTINGS, NOT DEFAULTS.
+  Version 1.2 shows Play, Stop and Rec on channel 2 with controllers 54, 51 and 0, and a global
+  channel of 10, and calls none of it a default. Version 1.0.0 prints whole the window that the
+  transport picture comes from, and its device panel reads firmware `0.9.8.0`, older than any
+  version Arturia lists; the channel picture is a separate crop, which version 1.0.0 also prints
+  (first_manual p. 68). The window's title names a template, `Analog forum*`, and that says nothing
+  about these values: "A Template does not contain the Device Settings." (manual p. 56). So they are
+  the Device Settings of whichever unit was connected when the window was captured, on early
+  firmware, and nothing here carries them. The DrumBrute Impact's manual of 2018 prints version
+  1.2's transport and channel pictures, byte for byte.
+
+  THE DRUM MAP IS ONE PICTURE, PRINTED IN BOTH EDITIONS. "The settings shown are the default MIDI
+  note number values for each instrument, but you can set them to any note number between 0-127."
+  (manual p. 73), and version 1.0.0 says the same in the same words (first_manual p. 70). By pixel
+  comparison, version 1.2's picture is the same capture as version 1.0.0's window, re-encoded under
+  a different colour profile, so the two editions do not corroborate each other: the numbers rest on
+  one picture and the sentence beside it. That sentence is taken at its word. The picture's own
+  check is arithmetic: seventeen fields read left to right and top to bottom run 36 to 52 with no
+  gap and no repeat, and "there are actually 17 separate instruments available from the 12 pads"
+  (manual p. 14). Version 1.0.0 counts "16 separate instruments available from the 12 pads"
+  (first_manual p. 19) against the seventeen fields of its own picture, and version 1.2 corrects it.
+
+  THE MANUAL NEVER STATES THE MIDI CHANNEL RANGE. Its whole prose on the channel is "Use the
+  pull-down menu to select the Global MIDI Channel for DrumBrute." (manual p. 69), and the pull-down
+  is a picture showing 10 selected and three of its entries. So `channels` is left out rather than
+  assumed. The touch strip's "Send/Receive channel is the Global MIDI Channel." (manual p. 72), each
+  transport command has its own, and no sentence says which channel the drum notes use.
+
+  WHAT LEAVES THE INSTRUMENT CAN BE SWITCHED OFF, WHICH MATTERS BEFORE DIAGNOSING SILENCE. The pads'
+  notes have four settings - "The available options are Off (no MIDI note data sent), USB&MIDI, USB
+  and MIDI." (manual p. 70) - and the sequencer's the same: "You can choose whether the sequencer
+  will send MIDI note data or not." (manual p. 71). With Local Control off, "Pressing a pad or
+  playing a sequence will not produce a sound but will send messages on the MIDI Out port" (manual
+  p. 72).
+
+  NO PAGE SAYS WHAT AN INCOMING NOTE'S VELOCITY DOES. "The 12 velocity-sensitive pads are used to
+  input note data into a pattern." (manual p. 14), the editor sets each sequencer event "to a value
+  between 1 and 127" (manual p. 65), and the Accent Velocity Threshold "sets the MIDI velocity value
+  for the Accents you add when editing a pattern." (manual p. 70). The one hint at what velocity
+  does to the sound treats it as two states, in a list of what randomness changes: "The velocity of
+  note events (Accent on/off)" (manual p. 34). None of it says what a received velocity does. The
+  DrumBrute Impact's manual adds a sentence about reception to the Accent Velocity Threshold;
+  neither DrumBrute edition has it. So `velocity` is left out: the format records reception, and
+  nothing establishes it here.
+
+  NOT MENTIONED ON ANY PAGE OF EITHER EDITION OR IN ANY RELEASE NOTE: system exclusive, NRPN, RPN,
+  aftertouch, pressure, pitch bend, omni and MIDI thru. Something like system exclusive exists and
+  is never named: "Each time you connect the Drumbrute, the device settings are automatically send
+  from device to Midi Control Center." (manual p. 69), and the editor can "send a single pattern to
+  DrumBrute" (manual p. 57). That is a protocol with no published message, so `sysex` is left unset.
+  Nor does any page say how many instruments sound at once. "Some instrument channels are shared by
+  two instruments." (manual p. 14), and "You can roll multiple instruments at the same time by
+  pressing multiple pads." (manual p. 23), and neither is a count.
+
+midi:
+  # BOTH WAYS. As master "MIDI clock messages are sent to MIDI out, USB MIDI, and the Clock output."
+  # (manual p. 51); as slave it follows "an external clock when one of the other three Sync LEDS
+  # are lit (USB, MIDI or CLK)" (manual p. 52), and "DrumBrute will pass the synchronization
+  # messages it receives from the external source to its USB, MIDI and Clock outputs." (manual p.
+  # 52).
+  clock: both
+  # SENDS TRANSPORT, AND NO SENTENCE SAYS IT RECEIVES ANY. The transport buttons drive "external
+  # MIDI devices using standard MIDI messages or MIDI Machine Control (MMC)" (manual p. 7), and it
+  # "will always remotely start a gear (or a DAW) which is in Slave mode" (manual p. 73). Firmware
+  # 1.1.0.0 fixed "MIDI Start and Continue now properly handled" (release_notes) among fixes for
+  # running as a slave, which suggests reception and does not say it. The DrumBrute Impact records
+  # the same on weaker evidence for reception: its release notes have no such line.
+  transport: sends
+  program_change:
+    # "Use Program Change to switch patterns, and Bank MSB to switch Bank" (release_notes). No
+    # document says whether it sends one, so `sends` is left out.
+    receives: true
+    # "DrumBrute holds 64 patterns, arranged in four banks of 16 patterns each." (manual p. 19).
+    # So a program change reaches the 64 with Bank MSB beside it, if the scheme is the obvious
+    # one of sixteen to a bank: **which program number reaches which pattern is published
+    # nowhere**, nor which bank number reaches which bank. Its songs - "The internal memory of the
+    # DrumBrute holds 16 songs" (manual p. 25) - are selected by Song Select instead, which no
+    # field here holds.
+    presets: 64
+  # The touch strip's controller and the three transport controllers are the player's to choose,
+  # and the maker publishes no number for any of them. Bank MSB, Local Control, All Notes Off and
+  # All Sounds Off are received too, by the release notes, with meanings the MIDI specification
+  # fixes and numbers no document here prints. See the account above.
+  control_change: learned
+  # A checked absence: neither word appears in either edition of the manual or in any of the three
+  # release notes.
+  nrpn: none
+
+voice:
+  # Seventeen instruments on seventeen note numbers, each a drum rather than a pitch.
+  addressing: voices
+  # THE NUMBERS ARE DEFAULTS AND THE PAGE SAYS SO, adding "you can set them to any note number
+  # between 0-127" (manual p. 73). They are changed in the editor over USB, so a machine in front
+  # of you may answer to anything. The DrumBrute Impact's arrangement, and the same flag. Incoming
+  # notes play the instrument - "its own drum sounds may be played from a MIDI keyboard" (manual p.
+  # 5) - and the map governs what is recorded from outside: "You can also record using an external
+  # MIDI/USB source, but the only steps that will be recorded are the ones that correspond to the
+  # current drum note mapping." (manual p. 30).
+  note_map: learned
+  # THE NAMES ARE THE EDITOR'S OWN, as its drum map labels each field.
+  voices:
+    kick1: 36
+    kick2: 37
+    snare: 38
+    clap: 39
+    rim: 40
+    claves: 41
+    cl_hat: 42
+    op_hat: 43
+    conga_h: 44
+    tom_h: 45
+    conga_l: 46
+    tom_l: 47
+    cymbal: 48
+    rev_cymb: 49
+    maracas: 50
+    tamb: 51
+    zap: 52
+
+# NO CONTROLS BLOCK: see midi.control_change above. The same shape as the DrumBrute Impact's.
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual DrumBrute
+    edition: "1.2"
+    dated: 2017-03-03
+    landing: "https://www.arturia.com/support/downloads-manuals/product/drumbrute"
+    url: "https://www.arturia.com/api/download/products/drumbrute/manual/DrumBrute_Manual_1_2_EN.pdf"
+    sha256: a99bb127724647b2e9fed8150ff01303e3a3a82380d62bef014dfd15f3a9e84c
+    retrieved: 2026-10-07
+    # 81 pages by PyMuPDF and by pypdf; **`file` says 4**, misreading Prince's output as it does the
+    # DrumBrute Impact's manual, where it says 6. The edition and date are the colophon's own, on a
+    # sheet before the printed numbering starts. **OFFSET +5**, checked on every numbered sheet:
+    # printed 4 is file 9.
+    page_offset: 5
+    # **PRINTED PAGE 73 PUBLISHES ITS NUMBERS ONLY AS A PICTURE**, which is why the citation gate
+    # finds none of the seventeen note numbers on it. The drum map is a raster screenshot of the
+    # editor; the page's prose says what it shows and gives no number. Page 69's channel picture is
+    # not declared, because nothing here rests on what it shows.
+    pictured_pages: [73]
+  first_manual:
+    kind: manual
+    title: DrumBrute User's Manual
+    edition: "1.0.0"
+    dated: 2016-10-15
+    landing: "https://www.arturia.com/support/downloads-manuals/product/drumbrute"
+    url: "https://www.arturia.com/api/download/products/drumbrute/manual/DrumBrute_Manual_1_0_0_EN.pdf"
+    sha256: 9d22d3b28bef00e284fc693043271b4904725a6c1d4ec460bc9388dfcd34eefa
+    retrieved: 2026-10-07
+    # Listed only behind the downloads page's `Show all versions`, which is client-side; its entry
+    # is in the page's own data. **Dated by its own second page**, "15th of October 2016 edition"
+    # (first_manual p. 2); the download entry says 2016-10-25, the day the PDF was made. Typeset in
+    # Word where version 1.2 is Prince, A4 where version 1.2 is not, 74 pages, and **`file` says
+    # 8**. Every numbered page prints its own sheet number.
+    page_offset: 0
+    # The whole editor window, which version 1.2 crops: the drum map and the transport settings in
+    # one screenshot, with the template name and the firmware revision that say whose they are.
+    pictured_pages: [70]
+  release_notes:
+    kind: release_notes
+    title: DrumBrute release notes
+    edition: 1.2.1.0
+    dated: 2017-02-15
+    landing: "https://www.arturia.com/support/downloads-manuals/product/drumbrute"
+    url: "https://www.arturia.com/api/content/resources/release_notes?resource_id=3274"
+    sha256: fa5b5c4dce8e3a09530db5ef95ab7b7fcfa58c934e8d3d5d69c7e7f2acd38b15
+    retrieved: 2026-10-07
+    paginated: false
+    # Arturia serves release notes from an API rather than as files, so this is the text rendered
+    # from the JSON by a written-down procedure anybody can repeat. **All three versions were
+    # fetched** - 1.2.1.0, 1.2.0.0 and 1.1.0.0 - and each contains the ones before it, but for one
+    # word: 1.1.0.0's own notes spell it `Contol Change`, and the later two correct it.
+  mcc_manual:
+    kind: manual
+    title: User Manual MIDI Control Center
+    edition: "1.0"
+    dated: 2017-06-21
+    landing: "https://www.arturia.com/support/downloads-manuals/product/drumbrute"
+    url: "https://www.arturia.com/api/download/products/mcc/manual/MIDI_Control_Center_Manual_1_0_EN.pdf"
+    sha256: 32ab28633af162978205422d2ab1610773fe160ff42b15bd8ab778554ba94b44
+    retrieved: 2026-10-07
+    # A manual for the editor rather than for any one product, and it names the DrumBrute on three
+    # pages - including that the editor offers no controller map for it. 30 pages; **`file` says
+    # 4**. **OFFSET +4**: sheets 1 to 5 carry no number and sheet 6 prints 2.
+    page_offset: 4
+  downloads_page:
+    kind: download_page
+    title: "DrumBrute – Downloads & Manuals | Arturia"
+    landing: "https://www.arturia.com/"
+    url: "https://www.arturia.com/support/downloads-manuals/product/drumbrute"
+    sha256: b22ff26401abf9e4e73e70bdce6bd0488b7f5993c98a21bb09d026f22f1f6208
+    retrieved: 2026-10-07
+    paginated: false
+    # The only published list of what exists for this instrument. **The text copy is what is pinned
+    # here**, because it is what the citation checker reads. The older versions are not in it: they
+    # are in the HTML saved beside it, whose digest its provenance record gives, as a Nuxt payload -
+    # a flat array whose objects' values are indices into the same array - holding three firmware
+    # versions, each with notes, and two English manuals. Nothing on the page is a MIDI
+    # implementation or a chart. The product's own resources tab, fetched the same day and recorded
+    # there too, links the same eleven download addresses as this page.

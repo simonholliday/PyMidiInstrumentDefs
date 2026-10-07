@@ -11,6 +11,7 @@ citation as wrong is worse than no tool, because its output stops being read.
 """
 
 import importlib.util
+import os
 import pathlib
 import typing
 
@@ -715,3 +716,33 @@ class TestATrailingCommentIsProseToo:
 
 		assert unlocated == []
 		assert short == []
+
+
+class TestHowManyCoresTheSweepTakes:
+
+	"""The whole-corpus sweep reads 413 manuals for text, which is why it is worth sharing out.
+
+	Reading a PDF for text saturates a core, so a sweep over every definition would
+	otherwise take the machine over for the length of it. These are the rules that decide
+	how much of it to use, and the one that matters is the floor: a machine reporting one
+	core, or a number asked for that makes no sense, must still check everything rather
+	than refuse to start.
+	"""
+
+	def test_a_number_asked_for_is_what_is_used (self) -> None:
+		"""Passing --jobs is how somebody sharing the machine dials it down."""
+		assert tool.cores_to_use(3) == 3
+
+	def test_one_is_allowed_because_it_is_the_reference_path (self) -> None:
+		"""--jobs 1 is the single-process code every release so far has run."""
+		assert tool.cores_to_use(1) == 1
+
+	def test_zero_and_below_are_floored_rather_than_refused (self) -> None:
+		"""A typo in a flag should slow the sweep down, never stop it checking."""
+		assert tool.cores_to_use(0) == 1
+		assert tool.cores_to_use(-4) == 1
+
+	def test_the_default_leaves_room_to_work (self) -> None:
+		"""Two cores are kept free, so a gate run does not take over the machine."""
+		assert tool.cores_to_use(None) >= 1
+		assert tool.cores_to_use(None) <= max(1, (os.cpu_count() or 1) - 2)

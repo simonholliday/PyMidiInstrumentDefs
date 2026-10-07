@@ -87,7 +87,12 @@ drifts, and the drift here had already cost five wrong citations in definitions 
 months earlier - three of them quotations saying something the maker had not said.
 """
 
+import argparse
+import concurrent.futures
+import contextlib
+import functools
 import hashlib
+import io
 import logging
 import os
 import pathlib
@@ -334,6 +339,19 @@ def library_index (root: pathlib.Path) -> dict[str, pathlib.Path]:
 	return index
 
 
+# **A SMALL CACHE, BECAUSE THE REPEATS ARE NEIGHBOURS RATHER THAN SCATTERED.**  Extracting a
+# document's text is the expensive part of a run, and 19 of the corpus's 432 source entries
+# name a document another definition has already read - the reface Data List serves three
+# instruments, one Korg chart serves four.  Those siblings sort next to each other, so the
+# second reading is nearly always within a few definitions of the first and a handful of
+# entries catches it.  Deliberately not unbounded: holding all 413 documents' page text at
+# once is a lot of memory for a 4% saving, and that is what the measurement said it is worth.
+#
+# **Safe only because nothing mutates what this returns**, which was checked rather than
+# assumed: `Document.printed` indexes the list, `Document.where` iterates it, and `documents`
+# only asks whether any page has text.  A caller that edited a page in place would be editing
+# every later caller's copy of it, so if one ever needs to, this returns a tuple instead.
+@functools.lru_cache(maxsize = 8)
 def pages_of (path: pathlib.Path) -> list[str]:
 
 	"""Each page of the document as text, or one entry for a file with no pages."""
@@ -365,7 +383,10 @@ class Document (typing.NamedTuple):
 		and printed page 60 are both on file page 30.
 		"""
 
-		at = self.source.file_page(number)
+		# Annotated rather than inferred: `source` is the loader's own object and arrives
+		# untyped here, so without this the page number is `Any`, and indexing a list with
+		# `Any` makes the text this returns `Any` too - which mypy reports and is right to.
+		at: int | None = self.source.file_page(number)
 
 		if at is None or not 1 <= at <= len(self.pages):
 			return None
@@ -1001,9 +1022,75 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 			**coverage)
 
 
+# Where a worker keeps the library index between tasks.  It is handed over once when the
+# worker starts rather than with each definition: the index is one entry per readable document
+# and there are 492 of them, so sending it alongside all 125 tasks is pure copying.
+HELD_INDEX: dict[str, pathlib.Path] = {}
+
+
+def remember_index (index: dict[str, pathlib.Path]) -> None:
+
+	"""Keep the library index where this worker's own checks can find it."""
+
+	global HELD_INDEX
+
+	HELD_INDEX = index
+
+
+def check_captured (work: tuple[str, pathlib.Path]) -> tuple[str, Tally]:
+
+	"""Check one definition and hand back what it would have printed, instead of printing it.
+
+	A worker cannot print to the terminal directly, because several definitions are being
+	checked at once and their lines would interleave into something nobody can read.  So
+	each worker's output is held as text and the parent prints them in the order they were
+	submitted - which is what makes a run on six cores produce the same report, line for
+	line, as a run on one.
+	"""
+
+	name, path = work
+
+	held = io.StringIO()
+
+	with contextlib.redirect_stdout(held):
+		tally = check(name, path, HELD_INDEX)
+
+	return held.getvalue(), tally
+
+
+def cores_to_use (asked: int | None) -> int:
+
+	"""How many processes to check with: what was asked for, or two short of every core.
+
+	Two are left free on purpose.  Reading a manual for text is the expensive part of this
+	check and it saturates a core, so a sweep over the whole corpus would otherwise take
+	the machine over - and the question that prompted this arrived while a test suite was
+	running in another checkout.  A gate worth running often is one that leaves room to
+	work while it runs.
+	"""
+
+	if asked is not None:
+		return max(1, asked)
+
+	return max(1, (os.cpu_count() or 1) - 2)
+
+
 def main (argv: list[str]) -> int:
 
 	"""Check every definition named, or every bundled one."""
+
+	parser = argparse.ArgumentParser(
+		description = "Check that every passage a definition quotes is printed on the page it cites.",
+		epilog = "The library of documents is $PYMIDIINSTRUMENTDEFS_LIBRARY.")
+
+	parser.add_argument("names", nargs = "*",
+		help = "definition names; the default is every bundled one")
+
+	parser.add_argument("--jobs", "-j", type = int, default = None, metavar = "N",
+		help = "check N definitions at once; the default leaves two cores free, "
+			"and 1 is the single-process path every release so far has used")
+
+	parsed = parser.parse_args(argv[1:])
 
 	root = os.environ.get("PYMIDIINSTRUMENTDEFS_LIBRARY")
 
@@ -1015,7 +1102,40 @@ def main (argv: list[str]) -> int:
 	print(f"{len(index)} readable documents in {root}")
 
 	corpus = pathlib.Path(pymidiinstrumentdefs.__file__).parent / "corpus"
-	wanted = argv[1:] or pymidiinstrumentdefs.available([corpus])
+	wanted = parsed.names or pymidiinstrumentdefs.available([corpus])
+	work = [(name, corpus / f"{name}.yaml") for name in wanted]
+
+	for name, path in work:
+		if not path.exists():
+			print(f"\n{name}\n    no such definition")
+			return 2
+
+	cores = cores_to_use(parsed.jobs)
+
+	# **To the error stream, so that the report itself stays comparable between runs.**  The
+	# whole point of the ordering above is that one core and six produce the same lines; a
+	# progress note naming the number of cores would be the one line that differs, and
+	# diffing two runs is how this tool's parallel path is proved correct.
+	print(f"checking {len(work)} definition(s) on {cores} core(s)", file = sys.stderr)
+
+	if cores == 1:
+		# **Kept as its own path rather than one worker through the capture**, because that is
+		# what makes it a reference: it is the code every release before this ran, printing as
+		# it goes, and a parallel run is correct exactly when its output matches this one's.
+		tallies = [check(name, path, index) for name, path in work]
+
+	else:
+		with concurrent.futures.ProcessPoolExecutor(max_workers = cores,
+			initializer = remember_index, initargs = (index,)) as pool:
+
+			tallies = []
+
+			# `map` yields in the order the work was submitted, however the workers finish, so
+			# the report reads the same as a single-process one even though it was not built
+			# in that order.
+			for text, tally in pool.map(check_captured, work):
+				print(text, end = "")
+				tallies.append(tally)
 
 	total = Tally()
 	failed: list[str] = []
@@ -1023,14 +1143,7 @@ def main (argv: list[str]) -> int:
 	unlocated_in: list[str] = []
 	unpairable_in: list[str] = []
 
-	for name in wanted:
-		path = corpus / f"{name}.yaml"
-
-		if not path.exists():
-			print(f"\n{name}\n    no such definition")
-			return 2
-
-		tally = check(name, path, index)
+	for name, tally in zip(wanted, tallies):
 		total = Tally(*(running + one for running, one in zip(total, tally)))
 
 		# Any of the three is a failure, so any of the three names the definition.  A locator

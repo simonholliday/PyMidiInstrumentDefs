@@ -167,6 +167,7 @@ class TestBundledCorpus:
 			"behringer/model_d",
 			"behringer/neutron",
 			"behringer/pro_800",
+			"behringer/rd_9",
 			"behringer/td_3",
 			"behringer/ub_xa",
 			"dirtywave/m8",
@@ -652,12 +653,13 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Twenty-one definitions carry no controls, for five different reasons.
+		"""Twenty-two definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a twenty-second
+		Pinned here because the count has gone stale in notes twice: a twenty-third
 		cannot be added without saying which kind it is. The twenty-first was
 		`arturia/drumbrute`, `learned` for the DrumBrute Impact's reason from its own
-		manual.
+		manual, and the twenty-second is `behringer/rd_9`, `none` for the Model D's
+		reason: a whole user manual searched, not a quick start guide.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
 		Its maker claims "comprehensive MIDI implementation" and publishes no part of
@@ -696,7 +698,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 21
+		assert len(empty) == 22
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -705,7 +707,7 @@ class TestAbsences:
 			key = "stated_none" if definition.midi.stated_none else definition.midi.control_change
 			kinds.setdefault(key, set()).add(name)
 
-		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/td_3",
+		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/rd_9", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
 			"vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "arturia/drumbrute",
@@ -734,6 +736,15 @@ class TestAbsences:
 
 		assert pymidiinstrumentdefs.load("behringer/td_3", [CORPUS]).midi.control_change == "none"
 		assert pymidiinstrumentdefs.load("behringer/edge", [CORPUS]).midi.control_change is None
+
+		# **THE RD-9 TAKES THE MODEL D'S ROUTE, NOT THE EDGE'S.** Thirty-eight pages that set
+		# channels, map notes, follow a start message and dump SysEx, and never name a controller:
+		# a whole manual searched, which is what the Model D's `none` rests on. The EDGE stays
+		# unset because quick start guides are all its maker publishes.
+		rd_9 = " ".join((pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS]).source or "").split())
+
+		assert "WHICH IS THE MODEL D'S ROUTE TO `none`." in rd_9
+		assert pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS]).midi.control_change == "none"
 
 		# **TWO OF THOSE CLAIM NOTHING BECAUSE NOBODY HAS ESTABLISHED ANYTHING. THE THIRD
 		# CLAIMS NOTHING BECAUSE THERE IS NO WORD FOR WHAT WAS ESTABLISHED.** Only one of
@@ -17374,3 +17385,71 @@ class TestLMDrum:
 		assert (lm.sources["guide"].page_offset, lm.sources["guide"].pages_per_sheet) == (1, 2)
 		assert lm.sources["guide"].file_page(18) == lm.sources["guide"].file_page(19) == 10
 		assert lm.sources["product_page"].paginated is False
+
+
+class TestRD9:
+
+	"""Eleven drums, ten at once, a start message and a SysEx dump - and no controller named anywhere."""
+
+	def test_eleven_drums_on_eleven_default_notes (self) -> None:
+		rd9 = pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS])
+
+		assert rd9.voice.addressing == "voices"
+		assert list(rd9.voice.voices.values()) == [36, 38, 45, 47, 50, 37, 39, 49, 51, 46, 42]
+		assert rd9.voice.voices["rim_shot"] == 37 and rd9.voice.voices["closed_hat"] == 42
+
+		# Changed on the instrument's own MAP page, as the LM DRUM's are, so unflagged like it.
+		assert rd9.voice.note_map is None
+		assert pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS]).voice.note_map is None
+
+	def test_ten_sound_at_once (self) -> None:
+		"""A count of what sounds at once, stated alike in both documents."""
+		rd9 = pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS])
+
+		assert rd9.voice.polyphony == 10
+		assert len(rd9.voice.voices) == 11
+		account = " ".join((rd9.source or "").split())
+
+		assert "\"Number of simultaneous voices 10\" (manual p. 33)" in account
+		# Not a contradiction like the LM DRUM's, which leaves its polyphony out.
+		assert pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS]).voice.polyphony is None
+
+	def test_a_whole_manual_names_no_controller (self) -> None:
+		"""A search of every page, the Model D's route to `none` rather than the EDGE's unset field."""
+		rd9 = pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS])
+
+		assert rd9.controls == {}
+		assert rd9.midi.control_change == "none" and rd9.midi.refuses_control_change
+		assert pymidiinstrumentdefs.load("behringer/model_d", [CORPUS]).midi.control_change == "none"
+		assert (rd9.midi.program_change, rd9.midi.nrpn) == (None, None)
+
+	def test_clock_and_a_start_message_are_received (self) -> None:
+		rd9 = pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS])
+
+		assert (rd9.midi.clock, rd9.midi.transport) == ("receives", "receives")
+		assert rd9.midi.channels == (1, 16) and rd9.midi.sysex is True
+		assert rd9.voice.velocity is not None and rd9.voice.velocity.note_on == "received"
+		account = " ".join((rd9.source or "").split())
+
+		assert "A MIDI start message is required in order for playback to start.\" (manual p. 19)" in account
+		# The manual claims to send clock and names no port; the page's copy of that paragraph
+		# names the RD-8 once.
+		assert "\"The RD-9 can also send and receive clock information with highly accurate timing to sync " \
+			"it to the outside world.\" (manual p. 6)" in account
+		assert "\"the RD-8 lets you control external synths\" (product_page)" in account
+
+	def test_the_settings_table_slips_a_row (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS]).source or "").split())
+
+		assert "THE SETTINGS TABLE ON P. 21 SLIPS A ROW." in account
+		assert "`USB TX Channel` beside \"Set the USB MIDI receive channel.\" (manual p. 21)" in account
+
+	def test_no_firmware_is_named_and_the_guide_is_two_pages_to_a_sheet (self) -> None:
+		rd9 = pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS])
+
+		assert rd9.model.firmware is None
+		assert set(rd9.sources) == {"manual", "guide", "product_page"}
+		assert (rd9.sources["manual"].page_offset, rd9.sources["manual"].pages_per_sheet) == (0, 1)
+		assert (rd9.sources["guide"].page_offset, rd9.sources["guide"].pages_per_sheet) == (1, 2)
+		assert rd9.sources["guide"].file_page(51) == 26
+		assert rd9.sources["product_page"].paginated is False

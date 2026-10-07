@@ -1,0 +1,199 @@
+definition: 1
+
+# ELEVEN DRUMS ON ELEVEN NOTES, TEN VOICES AT ONCE, AND NOT ONE CONTROLLER. The manual's MAP page
+# gives each drum a default note, and its specifications say ten voices sound together. It describes
+# the MIDI and USB settings, the clock, a start message and a SysEx dump, and in 38 pages never
+# names a control change - the search `behringer/model_d` rests its `none` on, so this says `none`
+# too. The reason, and why it is not the EDGE's unset field, is in the account.
+
+model:
+  manufacturer: Behringer
+  name: RD-9
+  # NOT RECORDED. Neither document names a firmware version, and the product page lists none: the
+  # manual says how to read the version off the display and how to update it, and names none. What
+  # it describes is "The manual is based on the initial software release." (manual p. 5).
+
+source: >-
+  User Manual V 1.0, 38 pages: the panel's DUMP button and SYNC section at p. 7, the MIDI sockets
+  and the hi-hat output at p. 9, the MIDI channel, the hats and accent at p. 10, the SysEx dump at
+  p. 11, the MIDI and USB settings at p. 16, the MAP page and its default notes at p. 17,
+  synchronisation at p. 19, the Parameters chapter at pp. 21-28, DAW control at p. 29, and the
+  specifications at pp. 33-34. The Quick Start Guide V 4.0, for its DUMP line and its
+  specifications. And Behringer's product page, for its claim to send clock and for counts that
+  disagree with the manual.
+
+  NO CONTROLLER IS NAMED IN A WHOLE MANUAL, WHICH IS THE MODEL D'S ROUTE TO `none`. No page of the
+  manual, and no half-page of the guide, names a control change, a controller number, NRPN, program
+  change or bank select, swept with the text reduced to letters and digits and every hit read. This
+  is a 38-page user manual with a chapter of MIDI and USB settings, a chapter on DAW control and a
+  glossary that defines MIDI clock and MIDI messages, not a quick start guide, so its silence is the
+  evidence `behringer/model_d` rests its `none` on - a search of a 44-page manual - rather than the
+  short-document silence `behringer/edge` leaves unset. Neither document prints a MIDI
+  implementation chart, so this is the weaker of the two routes `behringer/td_3` names, a search
+  rather than an enumeration.
+
+  THE NOTES ARE DEFAULTS, SET ON THE INSTRUMENT. "The map function allows you to change the MIDI
+  notes that trigger the RD-9 voices either via the USB or MIDI ports." (manual p. 17), and "The
+  default numbers are listed in the table below." (manual p. 17): eleven rows, from Bass Drum 36 to
+  Closed Hat 42. "The DATA knob can be used to adjust the number from 0-127." (manual p. 17), and
+  "The MIDI map is set globally and is the same for all songs and patterns." (manual p. 17). The DAW
+  chapter sends a reader back to it: "This allows complex programming from your computer using the
+  note numbers as described in section 11.4 MAP." (manual p. 29). No page says the RD-9 sends these
+  notes. The map is changed on the instrument itself, so `note_map` is left unset, as
+  `behringer/lm_drum` leaves its own.
+
+  THE SPECIFICATIONS SAY TEN VOICES SOUND TOGETHER. "Number of simultaneous voices 10" (manual p.
+  33), and the guide's specifications say the same (guide p. 51), against eleven sounds and eleven
+  notes. `behringer/lm_drum` leaves its polyphony out because its two counts disagree and neither
+  says how many sound at once; this one is a count of simultaneity, stated alike in both documents,
+  so `polyphony` is 10. The manual uses voice for other counts too - "Level control for the 9 voices
+  plus Accent." (manual p. 8) and "Each of the 12 voices can be set to a different Polymeter"
+  (manual p. 18) - and none of them is a count of what sounds at once. Which two sounds share a
+  voice is not stated. The nearest is the hats: "(75) HI HAT INDIVIDUAL OUTPUT – Unbalanced output
+  of the Hi Hat." (manual p. 9) is one output for both, and "the closed hat voice cuts the OPEN HAT
+  voice" (manual p. 10).
+
+  VELOCITY IS RECEIVED. "Accent can also be programmed via MIDI or USB with a high velocity value,
+  in a DAW or via MIDI any velocity value can be used in order for crescendos to be programmed."
+  (manual p. 10). No threshold is printed, and whether the instrument sends velocity, or any note,
+  is not stated.
+
+  THE CHANNELS ARE SET PER PORT, AND NO DEFAULT IS STATED. On the MIDI page: "Choose the MIDI
+  channel from 1-16, All or Out (The Output setting follows the MIDI OUT setting in the next step
+  below) for the incoming MIDI IN port." (manual p. 16), then "Select the MIDI OUT channel from
+  1-16." (manual p. 16), and the USB page offers the same two (manual p. 16). The Parameters chapter
+  gives the receive channel as `1 – 16` (manual p. 21), without All or Out. The two chapters also
+  disagree about what is forwarded: "Turn on FORWARD TO USB to send the MIDI output of the unit to
+  the USB OUT." (manual p. 16) against "Set MIDI in to send to USB Thru." (manual p. 21), and
+  "FORWARD TO MIDI sends the USB MIDI output of the unit to the MIDI OUT." (manual p. 16) against
+  "Send the USB MIDI in to the MIDI thru port." (manual p. 21) - the instrument's own output in one,
+  what arrives at its input in the other. `SOFT THRU` turns the MIDI OUT into a second thru, and
+  "DEVICE ID sets the units ID from 1-16. This is helpful when dealing with multiple units via
+  SysEx." (manual p. 16).
+
+  CLOCK IS FOLLOWED, AND SENDING IS CLAIMED WITHOUT A PORT. The Parameters chapter's `Clock Source`
+  setting offers `INT, MIDI, USB or CLK` (manual p. 21), the panel calling the last TRIG, and "MIDI
+  – The sync is taken from the MIDI IN port. A MIDI start message is required in order for playback
+  to start." (manual p. 19). For USB, "A message is required in order for playback to start."
+  (manual p. 19), naming none. So a start message is received over MIDI, and `transport` says so; no
+  page names stop, continue or song position as a MIDI message. The manual's feature chapter says
+  "The RD-9 can also send and receive clock information with highly accurate timing to sync it to
+  the outside world." (manual p. 6), and the product page rewrites that paragraph and keeps the
+  sentence (product_page), naming the RD-8 once where the manual names the RD-9: "the RD-8 lets you
+  control external synths" (product_page). The sentence names no port, and the RD-9 has analogue
+  sync jacks as well as MIDI. The panel description says only that in the internal mode "The unit is
+  the sync master." (manual p. 7), and no page says a MIDI clock leaves the MIDI or USB port. So
+  `clock` is `receives`, and the claim to send is recorded here rather than carried.
+
+  MIDI TIME CODE IS NAMED FOR DAW SYNC, AND THE FORMAT HAS NO FIELD FOR IT. "The 2nd way is to use
+  Midi Time Code (MTC) to sync the RD-9 to your project." (manual p. 29), with a worked example for
+  one DAW in which "On the RD-9 select USB from the Sync options." (manual p. 29).
+
+  SYSTEM EXCLUSIVE CARRIES THE DUMPS. "Instead of saving, the DUMP control will output the selection
+  as a SysEx message." (manual p. 11), and "This information can be saved and loaded by a
+  third-party program or sent to another RD-9." (manual p. 11), which implies an RD-9 takes a dump
+  in; no page says how. What a dump holds is given two ways: "(14) DUMP – Performs a MIDI SysEx Dump
+  of pattern, song or settings." (manual p. 7), and "DUMP – Performs a MIDI SysEx Dump of
+  pattern/song." (guide p. 15). The Parameters chapter describes "three different types of data
+  files used by the RD-9" (manual p. 21), and gives a pattern's step bits for "power users wishing
+  to implement their own editors" (manual p. 27); no SysEx header or command is published.
+
+  THE SETTINGS TABLE ON P. 21 SLIPS A ROW. From `USB TX Channel` down, each setting's name stands a
+  row above its own description: `USB TX Channel` beside "Set the USB MIDI receive channel." (manual
+  p. 21), `Voice Note Mappings (1 - 11)` beside "Send the USB MIDI in to the MIDI thru port."
+  (manual p. 21), and the trigger assignment's description and values on a row with no name. No
+  field rests on that table.
+
+  THE PRODUCT PAGE'S VISIBLE TEXT DISAGREES WITH THE MANUAL FOUR TIMES, AND ITS OWN FEATURE LIST
+  AGREES WITH THE MANUAL. It says "The 64-step sequencer can store up to 64 patterns and 16 songs"
+  (product_page) where the specifications say `16 songs, 16 patterns each` (manual p. 34); "11
+  independent analog outputs" (product_page) where `Voice out` is ten jacks (manual p. 33); "The
+  RD-9 has 33 knobs and 58 buttons" (product_page) where the manual has "The RD-9 has 37 knobs and
+  58 buttons" (manual p. 6); and that the "original drum sounds come with their own tuning, level,
+  attack and decay controls" (product_page) where the rim shot and clap have a level alone (manual
+  p. 33). The feature list in the page's script payload, which its visible text leaves out, gives
+  256 patterns and ten outputs, as the manual's specifications and the guide's do (guide p. 51).
+
+  NOT NAMED AS A MIDI MESSAGE ON ANY PAGE OF THE MANUAL OR ANY HALF-PAGE OF THE GUIDE: control
+  change, NRPN, RPN, program change, bank select, song select, song position, continue, stop, pitch
+  bend, aftertouch, omni, local control and all notes off.
+
+midi:
+  # "Choose the MIDI channel from 1-16, All or Out" (manual p. 16). No default is stated.
+  channels: [1, 16]
+  # "MIDI – The sync is taken from the MIDI IN port." (manual p. 19), and the USB setting from the
+  # USB port. The manual's claim to send clock as well names no port: see the account.
+  clock: receives
+  # "A MIDI start message is required in order for playback to start." (manual p. 19). Nothing
+  # else is named, and nothing says one is sent.
+  transport: receives
+  # A CHECKED ABSENCE, by a search of every page of a 38-page manual: the Model D's route. See the
+  # account.
+  control_change: none
+  # Dumps out, which another RD-9 can take (manual p. 11). No message is published.
+  sysex: true
+
+voice:
+  # Eleven drums on eleven notes, each a drum rather than a pitch.
+  addressing: voices
+  # "Number of simultaneous voices 10" (manual p. 33), and the guide agrees (guide p. 51).
+  polyphony: 10
+  velocity:
+    # "via MIDI any velocity value can be used in order for crescendos to be programmed" (manual
+    # p. 10). Sending is not stated.
+    note_on: received
+  # THE MANUAL'S DEFAULTS, changed on the MAP page (manual p. 17), so a machine in front of you may
+  # answer to others. In the table's order and with its names.
+  voices:
+    bass_drum: 36
+    snare_drum: 38
+    low_tom: 45
+    mid_tom: 47
+    hi_tom: 50
+    rim_shot: 37
+    clap: 39
+    crash: 49
+    ride: 51
+    open_hat: 46
+    closed_hat: 42
+
+# NO CONTROLS BLOCK: see midi.control_change above. The same shape as `behringer/model_d`.
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual RHYTHM DESIGNER RD-9
+    edition: V 1.0
+    landing: "https://www.behringer.com/en/products/0704-AAB"
+    url: "https://cdn-media.empowertribe.com/861ab611896c48b480e218397fe354c0/M_BE_P0DG6_RD-9_EN.pdf"
+    sha256: e979ca96d5ee72b7b2fb63596a3ce36c7bd808ec4b3d29faa721a25fded17dee
+    retrieved: 2026-10-07
+    # 38 pages, by PyMuPDF and by pypdf; **`file` says 57**. Pp. 2-37 print their own numbers and
+    # the covers none. English throughout. Made with InDesign on 2022-01-07. Its file name carries
+    # `P0DG6`, where the page's product code is `0704-AAB`.
+    page_offset: 0
+  guide:
+    kind: manual
+    title: Quick Start Guide RD-9
+    edition: V 4.0
+    landing: "https://www.behringer.com/en/products/0704-AAB"
+    url: "https://cdn-media.empowertribe.com/bb232a41ee954b81bd079976af3914db/QSG_BE_0704-AAB_RD-9_WW.pdf"
+    sha256: 4aa6f4a9545f2b63e6a44af3e57aab8571ba702034d322c65df4824d9a65c96b
+    retrieved: 2026-10-07
+    # 29 sheets: the cover and the back are single pages and the 27 between carry two printed pages
+    # each, so p. 51 is the right half of sheet 26. Made with InDesign on 2023-04-20. It names no
+    # note, channel or controller; cited for its DUMP line and its specifications.
+    page_offset: 1
+    pages_per_sheet: 2
+  product_page:
+    kind: product_page
+    title: "RD-9 | Behringer"
+    landing: "https://www.behringer.com/en/products/0704-AAB"
+    url: "https://www.behringer.com/en/products/0704-AAB"
+    sha256: 72eb22d216da270eeffd01f4a808e43b2c27f2894bb78636952500925d7a63b8
+    retrieved: 2026-10-07
+    paginated: false
+    # The visible text of the page. Its download list, in the script payload of the HTML saved
+    # beside it, offers the guide in three editions, this manual and the app, and no firmware. The
+    # sha256 is of the visible text; the page as served hashes to
+    # e282020d9ab75d8bbe6cfa30ee41ecbf6f1fe42713f053f2640eb07f789586ba.

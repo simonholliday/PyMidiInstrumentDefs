@@ -152,6 +152,7 @@ class TestBundledCorpus:
 			"akai/mpc_live",
 			"akai/mpc_live_iii",
 			"akai/mpc_sample",
+			"akai/mpc_xl",
 			"arturia/astrolab",
 			"arturia/drumbrute",
 			"arturia/drumbrute_impact",
@@ -653,10 +654,11 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Twenty-two definitions carry no controls, for five different reasons.
+		"""Twenty-three definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a twenty-third
-		cannot be added without saying which kind it is. The twenty-first was
+		Pinned here because the count has gone stale in notes twice: a twenty-fourth
+		cannot be added without saying which kind it is. The twenty-third is
+		`akai/mpc_xl`, `learned` from the MPC Live III's own book. The twenty-first was
 		`arturia/drumbrute`, `learned` for the DrumBrute Impact's reason from its own
 		manual, and the twenty-second is `behringer/rd_9`, `none` for the Model D's
 		reason: a whole user manual searched, not a quick start guide.
@@ -698,7 +700,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 22
+		assert len(empty) == 23
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -710,7 +712,7 @@ class TestAbsences:
 		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/rd_9", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
 			"vermona/drm1_mkiv"}
-		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "arturia/drumbrute",
+		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl", "arturia/drumbrute",
 			"arturia/drumbrute_impact", "dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
 			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
@@ -17453,3 +17455,53 @@ class TestRD9:
 		assert (rd9.sources["guide"].page_offset, rd9.sources["guide"].pages_per_sheet) == (1, 2)
 		assert rd9.sources["guide"].file_page(51) == 26
 		assert rd9.sources["product_page"].paginated is False
+
+
+class TestMpcXl:
+
+	"""The MPC Live III's book read for the other machine it covers: the same answers, another panel."""
+
+	def test_every_field_is_its_siblings_because_the_book_is_the_same (self) -> None:
+		"""One guide, one firmware, one ruling on 1 and 11 - so one set of fields."""
+		xl = pymidiinstrumentdefs.load("akai/mpc_xl", [CORPUS])
+		live = pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS])
+
+		assert not xl.controls and xl.midi.control_change == "learned"
+		assert xl.midi == live.midi
+		assert xl.voice == live.voice
+		assert xl.model.firmware == live.model.firmware == "3.9.1"
+		assert {key: source.sha256 for key, source in xl.sources.items()} == \
+			{key: source.sha256 for key, source in live.sources.items()}
+
+	def test_the_one_machine_only_setting_is_its_footswitches (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("akai/mpc_xl", [CORPUS]).source or "").split())
+
+		assert "THE SCOPING WAS ENUMERATED, NOT SAMPLED." in account
+		assert "\"Footswitch 1 & Footswitch 2 (MPC XL only): These determine how connected footswitches " \
+			"will work.\" (guide p. 65)" in account
+
+	def test_its_own_ports_four_midi_outputs_and_eight_cv (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("akai/mpc_xl", [CORPUS]).source or "").split())
+
+		assert "\"(4) 5-pin MIDI outputs\" (guide p. 543)" in account
+		assert "\"(2) 5-pin MIDI inputs\" (guide p. 543)" in account
+		assert "\"(8) Stereo 1/8” (3.5 mm) CV/Gate outputs\" (guide p. 543)" in account
+		assert "This connection allows MPC XL to send and receive MIDI and audio data to and from your " \
+			"computer." in account
+
+	def test_the_mmc_appendix_names_its_outputs_and_not_its_inputs (self) -> None:
+		"""MIDI Out A fits this machine's A-D; MIDI In A does not fit its 1/2."""
+		account = " ".join((pymidiinstrumentdefs.load("akai/mpc_xl", [CORPUS]).source or "").split())
+
+		assert "connect your MPC’s MIDI Out A to the MIDI input of your external device." in account
+		assert "connect your MPC’s MIDI In A to the MIDI output of your external device." in account
+		assert "where this machine's inputs are `MIDI In 1/2` (guide p. 396)" in account
+
+	def test_1_and_11_are_recorded_and_not_carried_as_in_both_siblings (self) -> None:
+		xl = pymidiinstrumentdefs.load("akai/mpc_xl", [CORPUS])
+		account = " ".join((xl.source or "").split())
+
+		assert "to control the MIDI CC1 modulation control" in account
+		assert "enable Expression messages (MIDI CC #11) from external MIDI controllers" in account
+		assert not pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).controls
+		assert xl.voice.aftertouch is None and xl.voice.velocity is None

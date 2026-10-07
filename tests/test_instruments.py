@@ -238,6 +238,7 @@ class TestBundledCorpus:
 			"pwm/malevolent",
 			"roland/d_50",
 			"roland/fantom_6_7_8",
+			"roland/jd_800",
 			"roland/jd_xi",
 			"roland/ju_06a",
 			"roland/juno_106",
@@ -15279,6 +15280,9 @@ class TestSH4D:
 		Boutique, whose chart says Mode 3 in both columns. So the pattern is the
 		TR-8's, the TR-8S's and the TR-6S's rather than drum machines', and the
 		next Roland is worth reading before assuming either.
+
+		The JD-800 of 1991 is the oldest Roland here to declare one, and it says Mode 3
+		as a polyphonic synthesizer, with Mode 4 recognised for its solo key.
 		"""
 		modes = {}
 
@@ -15291,7 +15295,7 @@ class TestSH4D:
 		three = sorted(name for name, mode in modes.items() if mode == 3)
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
-		assert three == ["roland/fantom_6_7_8", "roland/jd_xi", "roland/ju_06a",
+		assert three == ["roland/fantom_6_7_8", "roland/jd_800", "roland/jd_xi", "roland/ju_06a",
 			"roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1", "roland/sh_4d",
 			"roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
@@ -17182,3 +17186,104 @@ class TestDrumBrute:
 		# The editor's manual is the very file the DrumBrute Impact holds.
 		assert drumbrute.sources["mcc_manual"].sha256 == \
 			pymidiinstrumentdefs.load("arturia/drumbrute_impact", [CORPUS]).sources["mcc_manual"].sha256
+
+
+class TestJD800:
+
+	"""A 1991 Roland read by eye from two scans: three charts, and the one row where they differ."""
+
+	def test_seven_controls_with_the_charts_names_and_directions (self) -> None:
+		"""Seven are recognised and four are sent; breath, portamento time and portamento only arrive."""
+		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
+
+		numbers = {control.cc: control for control in jd.controls.values() if control.cc is not None}
+
+		assert sorted(numbers) == [1, 2, 5, 7, 10, 64, 65]
+		assert {cc for cc, control in numbers.items() if control.direction == "receives"} == {2, 5, 65}
+		assert {cc for cc, control in numbers.items() if control.direction == "both"} == {1, 7, 10, 64}
+		assert numbers[64].label == "Hold 1" and numbers[5].label == "Portamento time"
+
+		# The registered parameters' carriers and the mode messages are not carried.
+		assert not {6, 38, 100, 101, 121} & set(numbers)
+
+	def test_pan_is_the_one_row_where_the_single_and_parts_charts_differ (self) -> None:
+		"""Only Multi mode's five synth parts receive it, and the prose says why.
+
+		The special part's chart differs from theirs in more than pan, which the first draft
+		of this file missed and the second reader caught.
+		"""
+		account = " ".join((pymidiinstrumentdefs.load("roland/jd_800", [CORPUS]).source or "").split())
+
+		assert "PAN IS THE ONE PLACE THE SINGLE AND PARTS CHARTS DIFFER, AND THE PROSE SAYS WHY." in account
+		assert "\"In SINGLE mode, this message is ignored.\" (reference p. 285)" in account
+		assert "\"It is not possible to specify overall pan for the Special Part.\" (reference p. 170)" \
+			in account
+
+	def test_the_special_parts_chart_is_misprinted_and_read_by_its_remarks (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("roland/jd_800", [CORPUS]).source or "").split())
+
+		assert "`1, 2, 7, 10, 64, 100, 101, 38, 6, 121`" in account
+		assert "the numbers 5 and 65 are not printed" in account
+
+	def test_a_program_change_reaches_128_patches_half_on_a_card (self) -> None:
+		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
+
+		assert jd.midi.program_change is not None
+		assert (jd.midi.program_change.receives, jd.midi.program_change.sends) == (True, True)
+		assert jd.midi.program_change.presets == 128
+
+		# And the Reference's own table of the mapping is misprinted where the guide's is not.
+		account = " ".join((jd.source or "").split())
+
+		assert "it prints BANK across the top and NUMBER down the side (reference p. 211)" in account
+		assert "its sixth row reads `42 42 43` where the guide's reads `41 42 43`" in account
+
+	def test_twenty_four_tones_shared_by_every_part (self) -> None:
+		"""A voice is a tone, so a four-tone patch plays six notes."""
+		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
+
+		assert jd.voice.polyphony == 24
+		assert jd.voice.voicing_modes == (6, 8, 12, 24)
+		assert jd.voice.polyphony_shared is True
+		account = " ".join((jd.source or "").split())
+
+		assert "\"24 (Tones) divided by 4 (Tones per note) equals 6 (notes).\" (guide p. 124)" in account
+		assert "\"By turning unneeded Parts off, you can conserve notes for those Parts which are " \
+			"sounding.\" (guide p. 137)" in account
+
+	def test_five_synth_parts_and_a_special_part (self) -> None:
+		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
+
+		assert set(jd.parts) == {"part", "special"}
+		assert jd.parts["part"].count == 5 and jd.parts["part"].channel == "assigned"
+		assert jd.parts["part"].addressing == "pitches"
+
+		# A tone on each key, chosen by the player, so the special part's addressing is unrecorded.
+		assert jd.parts["special"].count == 1 and jd.parts["special"].addressing is None
+
+	def test_the_rest_of_the_chart (self) -> None:
+		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
+
+		assert jd.midi.channels == (1, 16) and jd.midi.mode == 3
+		assert (jd.midi.clock, jd.midi.transport) == ("none", "none")
+		assert jd.midi.nrpn == "none" and jd.midi.sysex is True
+
+		assert jd.voice.note_range == (0, 127)
+		assert jd.voice.velocity is not None
+		assert (jd.voice.velocity.note_on, jd.voice.velocity.note_off) == ("both", True)
+		assert jd.voice.aftertouch == "channel"
+		assert jd.voice.pitch_bend is not None and jd.voice.pitch_bend.programmable is True
+		assert jd.voice.pitch_bend.semitones is None
+
+	def test_both_documents_are_scans_cited_by_sheet (self) -> None:
+		"""Chapter folios such as V-53 fit no locator, so every locator is a sheet of the file."""
+		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
+
+		assert set(jd.sources) == {"reference", "guide", "archive"}
+		assert jd.sources["reference"].page_offset == jd.sources["guide"].page_offset == 0
+		assert jd.sources["archive"].paginated is False
+		assert jd.model.firmware is None
+
+		# The archive the TR-909 and the JUNO-106 cite.
+		assert jd.sources["archive"].url == \
+			pymidiinstrumentdefs.load("roland/tr_909", [CORPUS]).sources["archive"].url

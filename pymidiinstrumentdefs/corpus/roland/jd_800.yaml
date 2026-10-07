@@ -1,0 +1,221 @@
+definition: 1
+
+# READ BY EYE FROM TWO SCANS. Roland serves the JD-800's two owner's manuals as page images with no
+# text at all, so every number below was read off a rendered sheet and no tool here can check a
+# quotation in them. The manuals print chapter-relative folios - `V-53`, `III-17` - which no locator
+# in this format can hold, so every locator below is a sheet of the file, and each source says how a
+# printed folio becomes a sheet.
+#
+# THREE CHARTS, ONE FOR EACH WAY THE INSTRUMENT IS PLAYED: Single mode, Multi mode's five synth
+# parts, and Multi mode's special part. The first two agree on everything this file carries but
+# pan, which only the five synth parts receive. The special part's differs further: notes 36 to 96,
+# no note-off velocity, program change 0 to 1, no portamento, and Mode 3 only.
+
+model:
+  manufacturer: Roland
+  name: JD-800
+  # NOT RECORDED: a firmware version. Neither manual names one. The implementation and its three
+  # charts are each `Version : 1.00`, of `Feb. 1 1991` (reference p. 285) and of `Feb. 1. 1991`
+  # (reference p. 297), which is the document's version and not the instrument's.
+
+source: >-
+  Owner's Manual II (Reference), printing code `'91-3`, 316 sheets, a scan: how the instrument is
+  organised at sheets 9 and 13, the polyphony at sheet 145, the MIDI implementation at sheets 285 to
+  296, its three charts at sheets 297, 299 and 301, the specifications at sheet 303, the MIDI
+  chapter of Section III at sheets 204 to 218, external control at sheet 201, and Multi mode at
+  sheets 165 to 174. Owner's Manual I (User's Guide), of the same printing, 146 sheets, a scan: its
+  chapter About MIDI at sheets 107 to 140, for the polyphony and to audit the Reference. And
+  Roland's manual archive page, which links both.
+
+  ROLAND LINKS BOTH MANUALS FROM ITS MANUAL ARCHIVE, THOUGH THE PRODUCT HAS NO SUPPORT PAGE. The
+  archive lists "JD-800 Owner’s Manual" (archive) and "JD-800 Users Guide" (archive), the landing
+  page `roland/tr_909` and `roland/juno_106` already cite. The support address the product would
+  have returns Roland's generic page with no product named.
+
+  SEVEN PERFORMANCE CONTROLLERS ARE RECOGNISED AND FOUR SENT, BESIDES DATA ENTRY, RPN AND THE MODE
+  MESSAGES. The Single mode chart circles 1 Modulation, 5 Portamento time and 65 Portamento as
+  recognised, and marks 2 Breath, 7 Volume and 64 Hold 1 with its footnote `*1`, which says each can
+  be changed manually and is memorised (reference p. 297); 10 Pan is recognised only in the chart
+  for parts 1 to 5 (reference p. 299). Modulation, Volume, Pan and Hold 1 are sent - "JD-800
+  transmits this message when the modulation lever is operated or when the pedal is operated with
+  Ext control set as MOD." (reference p. 288), and the same for the pedal at VOL and PAN and for the
+  hold pedal. Breath is received only: "Breath messages can only be received by the JD-800, not
+  transmitted." (reference p. 216), and it is converted rather than obeyed, "to modulation,
+  aftertouch or volume message according to the settings of Rx breath" (reference p. 285). Data
+  Entry 6 and 38 and RPN 100 and 101 are recognised too and are how the two registered parameters
+  travel, so they are not carried; Reset All Controllers and the mode messages are the MIDI
+  specification's own.
+
+  PAN IS THE ONE PLACE THE SINGLE AND PARTS CHARTS DIFFER, AND THE PROSE SAYS WHY. "This message is
+  used to localize tone sources in multi mode" (reference p. 285) and "In SINGLE mode, this message
+  is ignored." (reference p. 285); the Single mode chart crosses Pan as recognised and the parts'
+  chart circles it. The external control page says the same of the pedal: set to PAN it has `no
+  effect` in Single mode and sets `Part pan` in Multi (reference p. 201). The special part's chart
+  crosses Pan as well, and Multi mode says why: "It is not possible to specify overall pan for the
+  Special Part." (reference p. 170).
+
+  THE SPECIAL PART'S CHART IS MISPRINTED, AND ITS MARKS ARE READ BY ITS REMARKS. Its control change
+  rows print the numbers `1, 2, 7, 10, 64, 100, 101, 38, 6, 121` in a column that does not match its
+  remarks: 7 stands beside Portamento time, 10 beside Data Entry and 64 beside Pan, while Volume and
+  Hold 1 have no number and `38, 6` has neither marks nor a name (reference p. 301). The marks line
+  up with the remarks, the rows for Portamento time and Portamento are blank, and the numbers 5 and
+  65 are not printed. That is consistent with the special setup, whose common settings are only a
+  bender range and an aftertouch bend sensitivity (reference p. 174), though no page says the
+  special part ignores portamento. The pan comment below rests on this reading and on page 170.
+
+  PROGRAM CHANGE REACHES 128 PATCHES, HALF OF THEM ON A CARD. "64 patches can be stored internally
+  and an additional 64 patches can be stored on a separately sold DATA card for a combined total of
+  128." (reference p. 9), and program numbers `00H` to `7FH` run from patch `I-11` to `C-88`
+  (reference p. 287). In the special part a program change of 0 or 1 chooses the internal or the
+  card setup instead (reference p. 287). THE REFERENCE'S OWN TABLE OF THE MAPPING IS WRONG TWICE: it
+  prints BANK across the top and NUMBER down the side (reference p. 211), the transpose of the
+  User's Guide's table (guide p. 113) and of the implementation, where `01H` is `I-12` (reference p.
+  287) - bank 1 number 2, by the guide's "For example, if you press BANK 4 and then NUMBER 7, Patch
+  I-47 will be selected." (guide p. 32); and its sixth row reads `42 42 43` where the guide's reads
+  `41 42 43`. Read the guide's table, not the Reference's. The blind second reader found the
+  transposition.
+
+  TWENTY-FOUR VOICES ARE TWENTY-FOUR TONES, NOT NOTES. The specifications give `24 voices`
+  (reference p. 303), a patch combines one to four tones (reference p. 9), and "The JD-800 is able
+  to produce up to 24 Tones simultaneously." (reference p. 145), above a table of 24, 12, 8 and 6
+  notes for one to four tones. The User's Guide does the same sum - "24 (Tones) divided by 4 (Tones
+  per note) equals 6 (notes)." (guide p. 124) - under advice for "a multi-part ensemble" (guide p.
+  124). THE PARTS SHARE THE TWENTY-FOUR, which is what the guide says when it sets receive channels:
+  "By turning unneeded Parts off, you can conserve notes for those Parts which are sounding." (guide
+  p. 137).
+
+  AFTERTOUCH IS CHANNEL ONLY, BOTH WAYS. "Only channel aftertouch messages (Dn) are received and
+  transmitted. Polyphonic aftertouch messages (An) cannot be received or transmitted." (reference p.
+  214). Aftertouch has a send and a receive switch, `Tx A-touch` and `Rx Atouch` on the display
+  (reference pp. 213 and 214); program change has a three-way send setting and a receive switch;
+  volume has a receive switch and breath a receive selector of eight settings (reference p. 216).
+
+  SYSTEM EXCLUSIVE CARRIES THE WHOLE INSTRUMENT. Roland's ID, model ID `3DH`, request and data set
+  messages, and a parameter address map over seven areas (reference pp. 290 to 296). With `Tx edit
+  data` on, moving a slider sends its parameter as an exclusive message (reference p. 218). The
+  device ID follows a unit number of 17 to 32, set to 17 at power-up (reference p. 206).
+
+  NOT RECORDED, AND WHY: the firmware, which neither manual names; the special part's addressing,
+  because it plays a tone of the player's choosing on each key from 36 to 96 - a factory Setup List
+  names each key (reference p. 314), and every name and tone can be changed; and a pitch bend range,
+  which is a patch's Bender Range, settable over RPN 0 to twelve semitones at most: "Upper limit of
+  the setting is 0CH (12)" (reference p. 286).
+
+midi:
+  # One to sixteen, each, for the basic channel, default and changed, in all three charts (reference
+  # pp. 297, 299 and 301). Single mode receives on one, its `Rx channel` (reference p. 209); each
+  # Multi part has its own, below.
+  channels: [1, 16]
+  # Mode 3 by default, Mode 4 recognised as well (reference p. 297): "Normally, the JD-800 will
+  # receive data in mode 3, but when you press SOLO it will receive data in mode 4." (guide p. 116).
+  # The Single and parts charts cross Mode Messages as transmitted, while the implementation
+  # sends OMNI OFF and POLY "when power-up or mode change" (reference p. 289) - a contradiction
+  # about messages this format does not carry.
+  mode: 3
+  # Clock and Commands are crossed in both columns of all three charts (reference pp. 297, 299 and
+  # 301).
+  clock: none
+  transport: none
+  program_change:
+    # Marked by footnote in both columns of all three charts, each direction its own setting:
+    # "Tx program chg" (reference p. 210) and "Rx program change" (reference p. 212).
+    receives: true
+    sends: true
+    # Sixty-four internal and sixty-four on a card; see the account.
+    presets: 128
+  # The implementation lists every control change it recognises, and the only parameter numbers
+  # among them are registered ones: "JD-800 can recognize two RPNs: pitch bend sensitivity (RPN#0)
+  # and fine tune (RPN#1)." (reference p. 286). No non-registered parameter appears.
+  nrpn: none
+  # "The JD-800 can transmit/receive patch parameters, etc. using exclusive messages." (reference
+  # p. 290).
+  sysex: true
+
+parts:
+  # "In Multi mode, the JD-800 functions as 5 Synth Parts and a Special Part." (reference p. 13).
+  # Single mode is the instrument as one part on its Rx channel; the parts are what Multi mode
+  # adds.
+  part:
+    label: Part
+    count: 5
+    # "Each Part will play in response to the MIDI channel it receives." (reference p. 168), over 1
+    # to 16 with OFF beside it, and the factory channels are 01 to 05 for parts 1 to 5.
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+  special:
+    label: Special Part
+    # Factory channel 10 (reference p. 168). "In the Special Part, you can create a Tone for each
+    # key" (reference p. 174), and its chart recognises notes 36 to 96 and program changes 0 to 1
+    # (reference p. 301), which choose the internal or the card setup (reference p. 287).
+    channel: assigned
+    receives: [notes, controls, program_change]
+
+voice:
+  addressing: pitches
+  # 0 to 127 recognised in the Single and parts charts (reference pp. 297, 299); the keyboard sends
+  # 24 to 108, which is its 61 keys and the transpose range.
+  note_range: [0, 127]
+  # Twenty-four tones, and a patch uses one to four of them for each note; see the account.
+  polyphony: 24
+  voicing_modes: [6, 8, 12, 24]
+  polyphony_shared: true
+  velocity:
+    # Circled both ways in every chart (reference pp. 297, 299, 301).
+    note_on: both
+    # Sent over 1 to 127; received under a footnote, "Used for retriger velocity in solo
+    # (Mode4)." (reference p. 297), and not received by the special part (reference p. 301).
+    note_off: true
+  aftertouch: channel
+  pitch_bend:
+    # Bender Range is a patch parameter, and RPN 0 sets it over MIDI (reference p. 286).
+    programmable: true
+
+controls:
+  modulation:      {label: Modulation, cc: 1}
+  breath:          {label: Breath, cc: 2, direction: receives}
+  portamento_time: {label: Portamento time, cc: 5, direction: receives}
+  volume:          {label: Volume, cc: 7}
+  # Received by Multi mode's five synth parts only, not in Single mode and not by the special part
+  # (reference pp. 285, 299, 301 and 170); see the account.
+  pan:             {label: Pan, cc: 10}
+  hold_1:          {label: Hold 1, cc: 64}
+  # "Being made functionable only in solo mode, changes the Portamento Switch in respective patch
+  # parameters." (reference p. 285).
+  portamento:      {label: Portamento, cc: 65, direction: receives}
+
+sources:
+  reference:
+    kind: manual
+    title: JD-800 Owner's Manual II (Reference)
+    dated: 1991-03
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "http://cdn.roland.com/assets/media/pdf/JD-800_OM.pdf"
+    sha256: 408e203798ffd831ddf9c4209c6e1c059c99abda8f516bb6cf8c10c9fad98e6e
+    retrieved: 2026-10-07
+    # A SCAN: 316 sheets, each one 1-bit image, and not a character of text. The date is the
+    # printing code on the back cover, `'91-3-E3-21D`, beside part number `26045450`.
+    # **CITED BY SHEET**: the book prints chapter folios, and a locator here is a sheet of the
+    # file. To turn a printed folio into a sheet: II-n is sheet 160 + n, III-n is sheet 194 + n,
+    # and V-n is sheet 232 + n - so the MIDI implementation's V-53 is sheet 285. `file` says 0
+    # pages.
+    page_offset: 0
+  guide:
+    kind: manual
+    title: JD-800 Owner's Manual I (User's Guide)
+    dated: 1991-03
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "http://cdn.roland.com/assets/media/pdf/JD-800_UG.pdf"
+    sha256: ba7448087aa9604c8640cae31d44d999cfc91794399f660387aafd08c5e1398d
+    retrieved: 2026-10-07
+    # A SCAN: 146 sheets, no text. Back cover `26045446 '91-3-E3-21D`, the same printing as the
+    # Reference. Cited by sheet: its chapter V folio V-n is sheet 106 + n.
+    page_offset: 0
+  archive:
+    kind: download_page
+    title: Roland - Support - Manual Archive
+    landing: "https://www.roland.com/us/support/"
+    url: "https://www.roland.com/us/support/manual_archive/"
+    sha256: aa08cc61d2b474998265e8e0c893154f7145dfdb48d2726e8478c90e2558b499
+    retrieved: 2026-10-07
+    paginated: false

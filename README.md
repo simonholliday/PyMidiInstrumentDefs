@@ -222,6 +222,7 @@ self-contained YAML file, and you share it by sending it.
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |
+| `roland/jd_800` | Roland JD-800: seven controls read by eye from two scanned 1991 manuals, whose three implementation charts agree on everything but pan - and the special part's chart prints its controller numbers against the wrong names |
 | `roland/jd_xi` | Roland JD-Xi: 57 controls over four parts on four fixed MIDI channels, 21 of them addressed by NRPN rather than by a controller number - the first Roland here whose NRPN is more than a crossed box |
 | `roland/ju_06a` | Roland JU-06A: 39 controls off one page of an implementation chart whose other page is a second whole map - fifteen numbers in both and eleven of them meaning something else |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |

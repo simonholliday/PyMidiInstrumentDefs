@@ -185,6 +185,7 @@ class TestBundledCorpus:
 			"erica_synths/hexdrums",
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
+			"groove_synthesis/third_wave",
 			"intellijel/cascadia",
 			"korg/drumlogue",
 			"korg/electribe",
@@ -2423,7 +2424,7 @@ class TestOsmose:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
-			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "modal/carbon8m",
+			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "groove_synthesis/third_wave", "modal/carbon8m",
 			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
 			"udo_audio/super_6", "waldorf/iridium", "waldorf/protein"]
 
@@ -8022,7 +8023,10 @@ class TestProphet6:
 
 		# The twelfth, whose MPE is a state of its channel menu rather than a setting beside it.
 		assert "dreadbox/nymphes" in flagged
-		assert len(flagged) == 12
+		# The thirteenth, whose MPE is a global setting and which, like this one, answers to MPE
+		# and sends none: "the 3rd Wave doesn't output MPE from its own keyboard".
+		assert "groove_synthesis/third_wave" in flagged
+		assert len(flagged) == 13
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -8042,7 +8046,7 @@ class TestProphet6:
 		preferred = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
 
-		assert preferred == ["elektron/digitone_ii", "oberheim/ob_x8", "oberheim/teo_5",
+		assert preferred == ["elektron/digitone_ii", "groove_synthesis/third_wave", "oberheim/ob_x8", "oberheim/teo_5",
 			"sequential/fourm", "sequential/prophet_5", "sequential/prophet_6",
 			"sequential/take_5"]
 
@@ -15775,6 +15779,133 @@ class TestArtemis:
 		assert "true of one of this instrument's two MIDI connections and not the other" in flat
 
 
+class TestThirdWave:
+
+	"""A synthesizer with two maps a setting chooses between, from a specification covering three models."""
+
+	# The rows the NRPN table prints and this definition leaves out, each for a reason its own row
+	# gives: the part-select bitmap, six deprecated, three wavetable selectors and 24 song steps
+	# that pack two numbers into one, three unused, eleven of sequence data, five the desktop's,
+	# the one not settable, and two the 8M's.
+	NRPN_LEFT_OUT = sorted([0, 48, 51, 52, 53, 54, 75, 102, 103, 104, 345, 346, 347,
+		*range(354, 365), *range(371, 395), 424, 425, 426, 427, 428, 444, 458, 459])
+
+	def test_two_maps_and_neither_control_carries_both (self) -> None:
+		"""101 by controller from the keyboard's table and 413 by NRPN, never paired."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		by_cc = [control for control in wave.controls.values() if control.cc is not None]
+		by_nrpn = [control for control in wave.controls.values() if control.nrpn is not None]
+
+		assert len(wave.controls) == 514
+		assert len(by_cc) == 101 and len(by_nrpn) == 413
+		assert not [control for control in wave.controls.values() if control.cc is not None and control.nrpn is not None]
+		assert wave.midi.nrpn == "preferred"
+
+		said = prose_of("groove_synthesis", "third_wave")
+
+		assert "TWO MAPS FOR ONE INSTRUMENT, AND A SETTING CHOOSES WHICH IS LIVE" in said
+
+	def test_every_row_of_both_tables_is_accounted_for (self) -> None:
+		"""Four controller rows and 56 NRPN rows left out, each for a reason; nothing else."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		numbers = {control.cc for control in wave.controls.values() if control.cc is not None}
+		nrpns = {control.nrpn for control in wave.controls.values() if control.nrpn is not None}
+
+		# Bank select, and the three filter controllers 1.9a moved to 9, 37 and 39.
+		assert not numbers & {32, 65, 66, 67}
+		assert {2, 9, 37, 39} <= numbers
+
+		assert len(self.NRPN_LEFT_OUT) == 56
+		assert nrpns == set(range(0, 469)) - set(self.NRPN_LEFT_OUT)
+
+		# The row filed under `Mutli` is carried with the others of its kind.
+		assert 253 in nrpns
+		assert next(control for control in wave.controls.values() if control.nrpn == 253).group == "multi"
+
+	def test_the_groups_are_the_makers_own (self) -> None:
+		"""The controller table's column heading, and the NRPN table's categories."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		assert wave.groups == {"panel": "3rd Wave Control", "single": "Single", "multi": "Multi", "global": "Global"}
+
+		counts = collections.Counter(control.group for control in wave.controls.values())
+
+		assert counts == {"panel": 101, "single": 129, "multi": 269, "global": 15}
+
+	def test_a_button_is_pressed_from_64 (self) -> None:
+		"""">= 64 is pressed, <= 63 is off" on every button the controller table names."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		buttons = [control for control in wave.controls.values() if control.values]
+
+		assert len(buttons) == 29
+		assert all(control.values == {"off": 0, "pressed": 64} for control in buttons)
+		assert wave.controls["sustain_pedal"].values == {"off": 0, "pressed": 64}
+
+	def test_the_two_tables_disagree_about_effect_2 (self) -> None:
+		"""Fourteen types with the shimmer reverb by controller, thirteen without it by NRPN."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		by_cc = next(control for control in wave.controls.values() if control.cc == 110)
+		by_nrpn = next(control for control in wave.controls.values() if control.nrpn == 231)
+
+		assert by_cc.range == (0, 13) and "shimmer_reverb" in by_cc.choices
+		assert by_nrpn.range == (0, 12) and "shimmer_reverb" not in by_nrpn.choices
+
+	def test_the_firmware_is_the_newest_and_was_found_by_search (self) -> None:
+		"""2.0c, whose one change is editor system exclusive; 2.0a's three are in the specification."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		assert wave.model.firmware == "2.0c"
+		assert wave.sources["release_notes"].edition == "2.0c"
+		assert wave.sources["spec"].edition == "v2.0"
+		assert wave.sources["manual"].edition == "1.9"
+
+	def test_four_parts_in_a_mode_and_none_declared (self) -> None:
+		"""Multitimbral mode is a setting with no stated default, so the file describes one channel."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		assert wave.parts == {}
+		assert wave.voice is not None and wave.voice.polyphony == 24
+		assert wave.midi.per_voice_channels is True
+
+		said = prose_of("groove_synthesis", "third_wave")
+
+		assert "The 3rd Wave is 4-part multitimbral" in said
+		assert "multi-parts 1-2 on a given program" in said
+
+	def test_what_is_not_recorded (self) -> None:
+		"""Velocity, aftertouch, receiving program change, the presets, the mode and the bend depth."""
+		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
+
+		assert wave.voice is not None
+		assert wave.voice.velocity is None
+		assert wave.voice.aftertouch is None
+		assert wave.voice.pitch_bend is not None
+		assert wave.voice.pitch_bend.programmable is True
+		assert wave.voice.pitch_bend.semitones is None
+		assert wave.midi.program_change is not None
+		assert wave.midi.program_change.sends is True
+		assert wave.midi.program_change.receives is None
+		assert wave.midi.program_change.presets is None
+		assert wave.midi.mode is None
+		assert wave.midi.sysex is True
+		assert wave.midi.transport == "receives"
+
+	def test_the_first_groove_synthesis_and_the_thirty_second_maker (self) -> None:
+		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("groove_synthesis/")]
+
+		assert names == ["groove_synthesis/third_wave"]
+
+		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
+
+		assert len(makers) == 32
+		assert "GROOVE SYNTHESIS IS THE THIRTY-SECOND MAKER HERE" in prose_of("groove_synthesis", "third_wave")
+
+
 class TestCascadia:
 
 	"""Four controllers, and four is the whole of what this maker publishes.
@@ -15949,7 +16080,7 @@ class TestCascadia:
 		assert "`true` would misdescribe the instrument and `false` would hide the feature" in flat
 
 		# **AND NOT ONE INSTRUMENT THAT SETS THE FLAG IS MONOPHONIC**, which is the whole
-		# distinction: twelve set it, and none of the twelve records one voice. So this
+		# distinction: thirteen set it, and none of the thirteen records one voice. So this
 		# would have been the first, and the field's meaning here cannot stretch to it.
 		setters = {}
 
@@ -15959,7 +16090,7 @@ class TestCascadia:
 			if other.midi is not None and other.midi.per_voice_channels is True:
 				setters[name] = other
 
-		assert len(setters) == 12
+		assert len(setters) == 13
 		assert "modal/carbon8m" in setters and "waldorf/iridium" in setters
 		assert [name for name, other in setters.items() if other.voice.polyphony == 1] == []
 
@@ -16012,10 +16143,12 @@ class TestCascadia:
 
 		assert "Intellijel is the thirty-first maker here and its first instrument." in comments
 
-		# Thirty-one makers, counted rather than claimed.
+		# Thirty-one makers when it arrived. **The current count is asserted with the newest
+		# maker** - `TestThirdWave` - so this claim was narrowed when the corpus grew rather than
+		# deleted: Intellijel is still one maker of the thirty-one that came before Groove Synthesis.
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers) == 31
+		assert len(makers - {"groove_synthesis"}) == 31
 
 
 class TestMontage:

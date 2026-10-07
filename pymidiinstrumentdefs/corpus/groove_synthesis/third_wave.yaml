@@ -1,0 +1,757 @@
+# TWO MAPS FOR ONE INSTRUMENT, AND A SETTING CHOOSES WHICH IS LIVE. The maker's MIDI specification
+# gives the keyboard a controller table of its knobs and buttons, and every model one NRPN table of
+# every setting a program holds. A global setting picks controllers, NRPNs or neither, each
+# direction on its own, and the keyboard's manual calls NRPNs the preferred method. Both maps are
+# carried below, as separate controls, because the two tables name different things: the controller
+# table names a panel's controls - "Wave env time 2/5 pot" (spec p. 3) and the like - and the NRPN table
+# names a program's parameters, and nothing in either pairs a row with a row of the other.
+#
+# THE SPECIFICATION COVERS THREE INSTRUMENTS AND THIS IS ONE OF THEM. The 24-voice keyboard, the
+# 24-voice desktop module and the 8-voice desktop each get a controller table of their own, and the
+# three differ. This file is the keyboard's: it takes the keyboard's table, and every row of the
+# shared NRPN table that its own description does not give to another model.
+
+definition: 1
+
+model:
+  manufacturer: Groove Synthesis
+  name: 3rd Wave
+  # THE NEWEST THE MAKER LISTS, ESTABLISHED BY WHAT EACH RELEASE CHANGED. The support page offers
+  # "OS Version 2.0c, released Sep 10, 2026." (support) for both 24-voice models. Each of 2.0a's
+  # three MIDI changes is in the specification by name - the per-part NRPN offset, the shimmer
+  # reverb, the expanded controller maps of the other two models - and 2.0c's one change is "for
+  # upcoming editor / librarian" (release_notes), which touches nothing recorded here.
+  firmware: "2.0c"
+
+source: >-
+  The maker's "3rd Wave MIDI CC + SysEx Spec v2.0" (spec p. 1), published as a document linked
+  from its support page and read as the PDF that document exports, 75 pages: the keyboard's
+  controller table is spec pp. 3-8 and the NRPN table spec pp. 18-39. The export prints no page
+  numbers, so it is cited by the file's own pages. Beside it, the keyboard's own manual, version
+  1.9, for the voices, the parts, the MIDI settings and MPE (pp. 1, 9, 98, 103-104 and 112-113);
+  the notes for every firmware release from 1.0 to 2.0c; and the support page that lists them.
+
+  READ TWICE, IN TWO RENDERINGS, BEFORE ANYTHING WAS CARRIED. The maker's document exports as a PDF
+  and as plain text, and both came back byte for byte the same on a second fetch. Both tables were
+  read from each - the PDF by its ruled grid, the text by its cells - and the two agree on every row
+  of both, but for one cell where the PDF wraps `in-tempo-sync` in the middle of a word. **And a
+  second reader, working blind from the PDF alone by a different method, agrees with both on every
+  row**; most of the disagreements recorded below are that reader's finding.
+
+  TWO MAPS, AND A SETTING CHOOSES. The specification's global settings say a `MIDI param send`
+  and a `MIDI para receive` setting each choose "MIDI CC, MIDI nrpn, or off" (spec p. 2), and the
+  manual's own list of the settings calls NRPN "the preferred method" (manual p. 113).
+  **The NRPN table says the receiving setting's third value is something else**: "0: off, 1: CC, 2:
+  CC+NRPN" (spec p. 38). The prose, the manual and the table do not agree about whether the
+  instrument can take both at once, and nothing here depends on which is right.
+
+  THE CONTROLLER TABLE NAMES KNOBS, AND THE MAKER SAYS WHY. "originally the MIDI CC implementation
+  was designed to map physical controls on the synth" (spec p. 2), and "In later releases there has
+  been a shift to expose more parameters over MIDI CC instead of using them to map knobs and
+  buttons." (spec p. 2) - for the two desktop models, whose tables grew in 2.0a. **The keyboard's did
+  not**: its 101 rows are its panel's controls.
+
+  EVERY ROW OF BOTH TABLES IS ACCOUNTED FOR. The keyboard's controller table prints 101 rows and a
+  sub-table of four "New in version 1.9a (remapped CC 65, 66, 67 to prevent conflicts)" (spec p. 8).
+  **Four are not carried**: 32, "MIDI bank select" (spec p. 4), which is how a program is addressed
+  rather than a parameter of one; and 65, 66 and 67, the low-pass filter's cutoff, resonance and
+  envelope amount, which the main table still prints marked "changed in version 1.9, see below"
+  (spec p. 5) and which 1.9a moved to 9, 37 and 39. What 65 to 67 do on this firmware is not stated.
+  So 101 controls come from that table. The NRPN table prints 469 rows, 0 to 468 without a gap, and
+  413 are carried. **The 56 not carried each say why in their own row**: the part-select bitmap at
+  0; eleven rows of sequence data, a stream of commands rather than a parameter; 27 whose value
+  packs two numbers into one, which a single range cannot describe - the three oscillators'
+  wavetable selectors and 24 song steps; six marked deprecated; three marked `not used currently`;
+  five "used only on Desktop module" (spec p. 37); two the 8M's own; and 444, filed as `Not
+  settable` and "used internally for saving presets via SysEx" (spec p. 37).
+
+  THE MULTI-PART ROWS ARE ADDRESSED THROUGH THE PART BEING EDITED, AND THE FORMAT HAS NO WORD FOR
+  THAT. 269 of the carried rows are of the category whose "program contains 4 separate values for a
+  multi-part setting, one for each of its 4 parts" (spec p. 18), and a value sent to one of them
+  reaches whichever parts NRPN 0 has chosen: "Use NRPN #0 to change the active part that you are
+  editing for multi-part settings." (spec p. 18). Since 2.0a a global setting can give each part
+  numbers of its own instead - "In this mode it adds 1000 for each part to the NRPN number" (spec
+  p. 18) - so part 2's copy of NRPN 255 is 1255. **The numbers below are the table's**, which are part
+  1's in that mode and the edited part's otherwise; the three further copies are not written out.
+  One of these rows is filed under `Mutli` (spec p. 29), NRPN 253, and is carried as the others.
+
+  FOUR PARTS ON FOUR CHANNELS, IN A MODE, AND NO PARTS DECLARED HERE. "The 3rd Wave is 4-part
+  multitimbral" (manual p. 9), and a global setting puts each part on a channel of its own. Neither
+  document says whether that setting is on when the instrument leaves the factory, so this file
+  describes the instrument on its one MIDI channel and declares no parts. **And the manual
+  contradicts itself about the count**: the setting "allows independent MIDI control of multi-parts
+  1-2 on a given program" (manual p. 112), and the four settings that follow it give parts 1 to 4 a
+  channel each.
+
+  GROOVE SYNTHESIS IS THE THIRTY-SECOND MAKER HERE AND THIS IS ITS FIRST INSTRUMENT, so nothing in
+  this account leans on a habit of the maker's, and nothing should be taken from it for the next.
+
+  THIRTY OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES. It
+  makes 32 to 63 the fine halves of 0 to 31, and the keyboard's table gives thirty of them
+  parameters of their own. **Three will meet a sender of fourteen-bit values**: 33 is Oscillator
+  2's wave offset where a fourteen-bit modulation wheel sends its fine half, 34 is Oscillator 2's
+  level beside breath control on 2, and 39 is the low-pass filter's envelope amount beside volume
+  on 7. That is a fact about the MIDI specification set beside this table, not the maker's.
+
+  WHAT THE DOCUMENTS DISAGREE ABOUT, recorded and not resolved:
+
+  **One worked example against the NRPN table.** The specification's example of a program dump
+  sends "MSB for param 254 (osc 1 level)" (spec p. 50), and its bytes make 254; the table gives
+  254 to the third oscillator's fine tuning and puts the first oscillator's level at 255. The table
+  is carried as printed - it is the maker's listing, it runs 0 to 468 without a gap, and two
+  readings agree on every row of it - and nothing in the documents settles which is wrong. If it
+  is the table, the fault is at or before 253, the one row filed under `Mutli`.
+
+  **The modulation sources.** The list of them is "Mod Source values (0-29 values)" (spec p. 39) and
+  runs to MIDI breath control at 29 (spec p. 40); the sixteen NRPN rows that choose a source give
+  `0-26` (spec p. 26), which stops before the three sources the latest releases added. The rows'
+  ranges are carried as printed.
+
+  **Smaller ones.** The metronome's volume is `0-100` by NRPN (spec p. 20) and "Range 0-127"
+  in the manual (manual p. 99). The MIDI in and out cables can be set off by NRPN (spec p. 39),
+  where the manual offers "MIDI In Cable: (usb+midi, usb, midi)" (manual p. 112). The pitch
+  wheel's destination is a `Single` row, one value for the program, where the notes' changes since
+  version 1.0 say it became "settable per part" (release_notes).
+
+  **Banks.** "The 3rd Wave has 500 presets divided into 5 banks of 100 presets." (manual p. 1), and
+  the bank select controller the table names runs `0-3` (spec p. 4) - four of the five. The system
+  exclusive messages index banks `0-4` (spec p. 48).
+
+  **Effect 2's types.** The controller table lists fourteen, 0 to 13, ending with the shimmer reverb
+  2.0a added (spec p. 7); the NRPN table's row for the same choice runs `0-12` and stops before it
+  (spec p. 28). Both are carried as printed.
+
+  **The modulation destinations.** The list of them runs "Mod destination values (0-126)" (spec
+  p. 41); the controller table gives the LFO's destination `0-117` (spec p. 4) and the third and
+  fourth envelopes' a cell reading only `117` (spec p. 6). The first is carried as printed and the
+  second with no range at all.
+
+  **The pressure curves.** NRPN 39 names nine, from `pressure off` to `fatar` (spec p. 20); the
+  manual's list of the same setting differs in places - `Hard 2` and `Hard 3` where the table has
+  `hard` and `hard 2`, and `Fatar Default` (manual p. 98). The choices below are the table's,
+  because the control is the table's.
+
+  WHAT IS NOT RECORDED, each for a stated reason. **Velocity and aftertouch**: both are modulation
+  sources (spec p. 40), and neither document says whether incoming note velocity is used or which
+  kind of pressure the keyboard sends - though the notes' changes since version 1.0 fix "clearing polyaftertouch values"
+  (release_notes) from controllers that send it. **Receiving program change**: the manual says only that "The
+  3rd Wave can send MIDI Program Change messages." (manual p. 103), and so the 500 presets are in
+  this account rather than in a field that would claim the instrument answers to one; the
+  only hint the other way is a "fix for midi program change via midi din" (release_notes), which
+  names no direction. **The pitch
+  bend's depth**: it is settable from 0 to 24 semitones up and down per program (NRPNs 36 and 37),
+  and no default is given. **A mode** and **a note range**: there is no implementation chart.
+
+
+sources:
+  spec:
+    kind: midi_implementation
+    title: 3rd Wave MIDI CC + SysEx Spec v2.0
+    edition: v2.0
+    dated: "2026-09-10"
+    landing: "https://groovesynthesis.com/support/"
+    url: "https://docs.google.com/document/d/1s2u8hfVNfOSYvnMlD52nWcRQJ5-0IUAyDC80ESRla78/export?format=pdf"
+    sha256: 60b4a96ea7b13ba5cb907065476686a7df05a124e9dd4da0fc49ddfe869885ee
+    retrieved: 2026-10-07
+    # A DOCUMENT PUBLISHED AS A LINK TO AN EDITABLE PAGE, read as the PDF it exports. Fetched
+    # twice, the same bytes both times; 75 pages, no folio on any, so each is cited as the file's
+    # own page and nothing is added. "Last updated September 10, 2026" (spec p. 1). The plain-text
+    # export of the same document, read alongside it and agreeing on every row of both tables,
+    # hashes to e4156f74192e828bc7d4b71b16a119c5afe3aabb701ac356795ad067605046fd and is not cited:
+    # a text source is searched whole, which would let every number here pass the citation check.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: 3rd Wave User Manual
+    edition: "1.9"
+    dated: "2025-11"
+    landing: "https://groovesynthesis.com/support/"
+    url: "https://groovesynthesis.com/downloads/3WAVE/pdf/3rd%20Wave%20Keyboard%20User%20Manual%20v1.9.pdf"
+    sha256: a4e4b1ebc85e2d2c28c29a00d23c3ee6aa498b0c29607b9de851c51e47b705e8
+    retrieved: 2026-10-07
+    # `Version 1.9 November, 2025` on its second sheet, which prints no folio; 137 sheets, and each prints a folio nine
+    # below its sheet.
+    page_offset: 9
+  release_notes:
+    kind: release_notes
+    title: 3rd Wave OS version 2.0
+    edition: 2.0c
+    landing: "https://groovesynthesis.com/support/"
+    url: "https://groovesynthesis.com/firmware/readme_2_0c.txt"
+    sha256: 7b7762fb5236ba692ef5ce3b27b335e57878360b2bf19a6d9a8bc2c5e12989a7
+    retrieved: 2026-10-07
+    paginated: false
+    # Every release from 1.0 to 2.0c, newest first, in one plain-text file.
+  support:
+    kind: download_page
+    title: "Support – Groove Synthesis"
+    landing: "https://groovesynthesis.com/support/"
+    url: "https://groovesynthesis.com/support/"
+    sha256: ab68b493dbda244d95d8f62cd97c0f3fdbeae403acbdcbfd9021af93d4450d40
+    retrieved: 2026-10-07
+    paginated: false
+    # The page's visible text; as served it hashes to
+    # eff49c2e4ad6b1a1310ed58215f20f590157614751bdc5bd83f326b4ec5c45c9.
+
+midi:
+  # "MIDI In Channel: (All, 1…16)" (manual p. 112), where All is every channel at once.
+  channels: [1, 16]
+  # "MIDI clock mode" (spec p. 39) is off, in, out or in-tempo-sync, so it can be sent or followed.
+  clock: both
+  # "MIDI start/stop sequence - If on, MIDI start messages will star the internal sequencer"
+  # (spec p. 2), and no document says the instrument sends either.
+  transport: receives
+  program_change:
+    # Sent, behind "MIDI Send Program Change" (manual p. 112); receiving is not stated. See the
+    # source account for the 500 presets.
+    sends: true
+  # Pages of it: program import and export, wavetables, samples, a device inquiry (spec pp. 47-75).
+  sysex: true
+  # "NRPNs are the preferred method." (manual p. 113).
+  nrpn: preferred
+  # "The 3rd Wave responds to MIDI Polyphonic Expression (MPE)." (manual p. 104), in a mode a global
+  # setting turns on, and "the 3rd Wave doesn’t output MPE from its own keyboard" (manual p. 104).
+  per_voice_channels: true
+
+voice:
+  # "Because the 3rd Wave has 24 voices of polyphony, multi-parts equally divide the 24 voices"
+  # (manual p. 9) - so twelve each with two parts active, six each with four.
+  polyphony: 24
+  pitch_bend:
+    # "Pitch bend range up, 0-24 semitones" (spec p. 19) and down the same, per program.
+    programmable: true
+
+groups:
+  # THE MAKER'S OWN DIVISIONS. The controller table's own column heading for what it lists, and the
+  # NRPN table's category names, which the specification defines (spec p. 18).
+  panel: 3rd Wave Control
+  single: Single
+  multi: Multi
+  global: Global
+
+controls:
+  # ──── panel - the keyboard's controller table, spec pp. 3-8 ────
+
+  mod_wheel:                                           {label: "Mod wheel", cc: 1, group: panel}
+  breath_control:                                      {label: "Breath control", cc: 2, group: panel}
+  wave_flow_button:                                    {label: "Wave flow button", cc: 3, values: {"off": 0, "pressed": 64}, group: panel}
+  volume:                                              {label: "Volume", cc: 7, group: panel}
+  lpf_cutoff:                                          {label: "LPF cutoff", cc: 9, group: panel}
+  wave_env_time_2_5_pot:                               {label: "Wave env time 2/5 pot", cc: 12, group: panel}
+  wave_env_time_3_6_pot:                               {label: "Wave env time 3/6 pot", cc: 13, group: panel}
+  wave_env_pos_1_4_enc:                                {label: "Wave env pos 1/4 enc", cc: 14, range: [0, 63], group: panel}
+  wave_env_pos_2_5_enc:                                {label: "Wave env pos 2/5 enc", cc: 15, range: [0, 63], group: panel}
+  wave_env_pos_3_6_enc:                                {label: "Wave env pos 3/6 enc", cc: 16, range: [0, 63], group: panel}
+  wave_env_4_6_trigger_button:                         {label: "Wave env 4-6 trigger button", cc: 17, values: {"off": 0, "pressed": 64}, group: panel}
+  wave_env_osc1_enable_disable_button:                 {label: "Wave env osc1 enable/disable button", cc: 18, values: {"off": 0, "pressed": 64}, group: panel}
+  wave_env_osc2_enable_disable_button:                 {label: "Wave env osc2 enable/disable button", cc: 19, values: {"off": 0, "pressed": 64}, group: panel}
+  wave_env_osc3_enable_disable_button:                 {label: "Wave env osc3 enable/disable button", cc: 20, values: {"off": 0, "pressed": 64}, group: panel}
+  wave_env_on_button:                                  {label: "Wave env on button", cc: 21, values: {"off": 0, "pressed": 64}, group: panel}
+  wave_surfer_encoder:                                 {label: "Wave surfer encoder", cc: 22, range: [0, 126], group: panel}
+  wave_surfer_reset_button:                            {label: "Wave surfer reset button", cc: 23, values: {"off": 0, "pressed": 64}, group: panel}
+  oscillator_1_pitch:                                  {label: "Oscillator 1 pitch", cc: 24, group: panel}
+  oscillator_1_fine:                                   {label: "Oscillator 1 fine", cc: 25, group: panel}
+  oscillator_1_wavetable:                              {label: "Oscillator 1 wavetable", cc: 26, group: panel}
+  oscillator_1_wave_offset:                            {label: "Oscillator 1 wave offset", cc: 27, range: [0, 63], group: panel}
+  oscillator_1_level:                                  {label: "Oscillator 1 level", cc: 28, group: panel}
+  oscillator_2_pitch:                                  {label: "Oscillator 2 pitch", cc: 29, group: panel}
+  oscillator_2_fine:                                   {label: "Oscillator 2 fine", cc: 30, group: panel}
+  oscillator_2_wavetable:                              {label: "Oscillator 2 wavetable", cc: 31, group: panel}
+  oscillator_2_wave_offset:                            {label: "Oscillator 2 wave offset", cc: 33, range: [0, 63], group: panel}
+  oscillator_2_level:                                  {label: "Oscillator 2 level", cc: 34, group: panel}
+  oscillator_3_pitch:                                  {label: "Oscillator 3 pitch", cc: 35, group: panel}
+  oscillator_3_fine:                                   {label: "Oscillator 3 fine", cc: 36, group: panel}
+  lpf_resonance_cc_37:                                 {label: "LPF resonance", cc: 37, group: panel}
+  lpf_env_amount:                                      {label: "LPF env amount", cc: 39, group: panel}
+  oscillator_3_wavetable:                              {label: "Oscillator 3 wavetable", cc: 40, group: panel}
+  oscillator_3_wave_offset:                            {label: "Oscillator 3 wave offset", cc: 41, range: [0, 63], group: panel}
+  oscillator_3_level:                                  {label: "Oscillator 3 level", cc: 42, group: panel}
+  lfo_1_enable_button:                                 {label: "LFO 1 enable button", cc: 43, values: {"off": 0, "pressed": 64}, group: panel}
+  lfo_2_enable_button:                                 {label: "LFO 2 enable button", cc: 44, values: {"off": 0, "pressed": 64}, group: panel}
+  lfo_3_enable_button:                                 {label: "LFO 3 enable button", cc: 45, values: {"off": 0, "pressed": 64}, group: panel}
+  lfo_4_enable_button:                                 {label: "LFO 4 enable button", cc: 46, values: {"off": 0, "pressed": 64}, group: panel}
+  lfo_rate:                                            {label: "LFO rate", cc: 47, group: panel}
+  lfo_amount:                                          {label: "LFO amount", cc: 48, group: panel}
+  lfo_waveshape:                                       {label: "LFO waveshape", cc: 49, range: [0, 8], choices: {"triangle": 0, "sawtooth": 1, "reverse_sawtooth": 2, "square": 3, "pulse_1": 4, "pulse_2": 5, "pulse_3": 6, "random": 7, "sine": 8}, group: panel}
+  lfo_destination:                                     {label: "LFO destination", cc: 50, range: [0, 117], group: panel}
+  lfo_delay:                                           {label: "LFO delay", cc: 51, group: panel}
+  tempo:                                               {label: "Tempo", cc: 52, group: panel}
+  sequencer_swing_cc_53:                               {label: "Sequencer swing", cc: 53, range: [0, 100], group: panel}
+  sequencer_quantize:                                  {label: "Sequencer quantize", cc: 54, range: [0, 6], group: panel}
+  sequencer_record:                                    {label: "Sequencer record", cc: 55, values: {"off": 0, "pressed": 64}, group: panel}
+  sequencer_play:                                      {label: "Sequencer play", cc: 56, values: {"off": 0, "pressed": 64}, group: panel}
+  svf_bandpass_button:                                 {label: "SVF bandpass button", cc: 57, values: {"off": 0, "pressed": 64}, group: panel}
+  svf_mode_cc_58:                                      {label: "SVF mode", cc: 58, group: panel}
+  svf_cutoff:                                          {label: "SVF cutoff", cc: 59, group: panel}
+  svf_resonance_cc_60:                                 {label: "SVF resonance", cc: 60, group: panel}
+  svf_env_amount:                                      {label: "SVF env amount", cc: 61, group: panel}
+  svf_velocity_cc_62:                                  {label: "SVF velocity", cc: 62, group: panel}
+  lpf_saturation_cc_63:                                {label: "LPF saturation", cc: 63, group: panel}
+  sustain_pedal:                                       {label: "Sustain pedal", cc: 64, values: {"off": 0, "pressed": 64}, group: panel}
+  lpf_velocity_cc_68:                                  {label: "LPF velocity", cc: 68, group: panel}
+  hold_button:                                         {label: "Hold button", cc: 69, values: {"off": 0, "pressed": 64}, group: panel}
+  filter_env_attack:                                   {label: "Filter env attack", cc: 70, group: panel}
+  filter_env_decay:                                    {label: "Filter env decay", cc: 71, group: panel}
+  filter_env_sustain:                                  {label: "Filter env sustain", cc: 72, group: panel}
+  filter_env_release:                                  {label: "Filter env release", cc: 73, group: panel}
+  amp_env_decay:                                       {label: "Amp env decay", cc: 75, group: panel}
+  amp_env_sustain:                                     {label: "Amp env sustain", cc: 76, group: panel}
+  amp_env_release:                                     {label: "Amp env release", cc: 77, group: panel}
+  arp_on_button:                                       {label: "Arp on button", cc: 78, values: {"off": 0, "pressed": 64}, group: panel}
+  arp_mode_cc_79:                                      {label: "Arp mode", cc: 79, range: [0, 4], choices: {"up": 0, "down": 1, "up_down": 2, "assign": 3, "random": 4}, group: panel}
+  arp_range_cc_80:                                     {label: "Arp range", cc: 80, range: [0, 2], choices: {"octave_1": 0, "octave_2": 1, "octave_3": 2}, group: panel}
+  env_3_enable_button:                                 {label: "Env 3 enable button", cc: 81, values: {"off": 0, "pressed": 64}, group: panel}
+  env_4_enable_button:                                 {label: "Env 4 enable button", cc: 82, values: {"off": 0, "pressed": 64}, group: panel}
+  env_3_4_attack:                                      {label: "Env 3/4 attack", cc: 83, group: panel}
+  env_3_4_decay:                                       {label: "Env 3/4 decay", cc: 84, group: panel}
+  env_3_4_sustain:                                     {label: "Env 3/4 sustain", cc: 85, group: panel}
+  env_3_4_release:                                     {label: "Env 3/4 release", cc: 86, group: panel}
+  env_3_4_destination:                                 {label: "Env 3/4 destination", cc: 87, group: panel}
+  env_3_4_amount:                                      {label: "Env 3/4 amount", cc: 88, group: panel}
+  env_3_4_velocity:                                    {label: "Env 3/4 velocity", cc: 89, group: panel}
+  multi_part_mode_button:                              {label: "Multi-part mode button", cc: 90, values: {"off": 0, "pressed": 64}, group: panel}
+  part_1_button:                                       {label: "Part 1 button", cc: 91, values: {"off": 0, "pressed": 64}, group: panel}
+  part_2_button:                                       {label: "Part 2 button", cc: 92, values: {"off": 0, "pressed": 64}, group: panel}
+  part_3_button:                                       {label: "Part 3 button", cc: 93, values: {"off": 0, "pressed": 64}, group: panel}
+  part_4_button:                                       {label: "Part 4 button", cc: 94, values: {"off": 0, "pressed": 64}, group: panel}
+  effect1_on_button:                                   {label: "Effect1 on button", cc: 95, values: {"off": 0, "pressed": 64}, group: panel}
+  effect1_clock_sync_button:                           {label: "Effect1 clock sync button", cc: 102, values: {"off": 0, "pressed": 64}, group: panel}
+  effect1_type:                                        {label: "Effect1 type", cc: 103, range: [0, 8], choices: {"bypass": 0, "bbd_delay": 1, "stereo_delay": 2, "chorus": 3, "phaser": 4, "flanger": 5, "distortion": 6, "leslie_speaker": 7, "ring_mod": 8}, group: panel}
+  effect1_mix:                                         {label: "Effect1 mix", cc: 104, group: panel}
+  effect1_param1:                                      {label: "Effect1 param1", cc: 105, group: panel}
+  effect1_param2:                                      {label: "Effect1 param2", cc: 106, group: panel}
+  effect1_param3:                                      {label: "Effect1 param3", cc: 107, group: panel}
+  effect2_on_button:                                   {label: "Effect2 on button", cc: 108, values: {"off": 0, "pressed": 64}, group: panel}
+  effect2_clock_sync_button:                           {label: "Effect2 clock sync button", cc: 109, values: {"off": 0, "pressed": 64}, group: panel}
+  effect2_type:                                        {label: "Effect2 type", cc: 110, range: [0, 13], choices: {"bypass": 0, "bbd_delay": 1, "stereo_delay": 2, "echoplex": 3, "chorus": 4, "phaser": 5, "flanger": 6, "distortion": 7, "leslie_speaker": 8, "ring_mod": 9, "room_reverb": 10, "hall_reverb": 11, "plate_reverb": 12, "shimmer_reverb": 13}, group: panel}
+  effect2_mix:                                         {label: "Effect2 mix", cc: 111, group: panel}
+  effect2_param1:                                      {label: "Effect2 param1", cc: 112, group: panel}
+  effect2_param2:                                      {label: "Effect2 param2", cc: 113, group: panel}
+  effect2_param3:                                      {label: "Effect2 param3", cc: 114, group: panel}
+  unison_on_off:                                       {label: "Unison on/off", cc: 115, values: {"off": 0, "pressed": 64}, group: panel}
+  pan_spread_cc_116:                                   {label: "Pan spread", cc: 116, group: panel}
+  wave_env_time_1_4_pot:                               {label: "Wave env time 1/4 pot", cc: 117, group: panel}
+  amp_env_attack:                                      {label: "Amp env attack", cc: 118, group: panel}
+  unison_detune:                                       {label: "Unison Detune", cc: 119, group: panel}
+
+  # ──── single - NRPN category Single, spec pp. 18-39 ────
+
+  program_name_character_1:                            {label: "Program name character 1", nrpn: 1, group: single}
+  program_name_character_2:                            {label: "Program name character 2", nrpn: 2, group: single}
+  program_name_character_3:                            {label: "Program name character 3", nrpn: 3, group: single}
+  program_name_character_4:                            {label: "Program name character 4", nrpn: 4, group: single}
+  program_name_character_5:                            {label: "Program name character 5", nrpn: 5, group: single}
+  program_name_character_6:                            {label: "Program name character 6", nrpn: 6, group: single}
+  program_name_character_7:                            {label: "Program name character 7", nrpn: 7, group: single}
+  program_name_character_8:                            {label: "Program name character 8", nrpn: 8, group: single}
+  program_name_character_9:                            {label: "Program name character 9", nrpn: 9, group: single}
+  program_name_character_10:                           {label: "Program name character 10", nrpn: 10, group: single}
+  program_name_character_11:                           {label: "Program name character 11", nrpn: 11, group: single}
+  program_name_character_12:                           {label: "Program name character 12", nrpn: 12, group: single}
+  program_name_character_13:                           {label: "Program name character 13", nrpn: 13, group: single}
+  program_name_character_14:                           {label: "Program name character 14", nrpn: 14, group: single}
+  program_name_character_15:                           {label: "Program name character 15", nrpn: 15, group: single}
+  program_name_character_16:                           {label: "Program name character 16", nrpn: 16, group: single}
+  program_name_character_17:                           {label: "Program name character 17", nrpn: 17, group: single}
+  program_name_character_18:                           {label: "Program name character 18", nrpn: 18, group: single}
+  program_name_character_19:                           {label: "Program name character 19", nrpn: 19, group: single}
+  program_name_character_20:                           {label: "Program name character 20", nrpn: 20, group: single}
+  program_name_character_21:                           {label: "Program name character 21", nrpn: 21, group: single}
+  program_name_character_22:                           {label: "Program name character 22", nrpn: 22, group: single}
+  program_name_character_23:                           {label: "Program name character 23", nrpn: 23, group: single}
+  program_name_character_24:                           {label: "Program name character 24", nrpn: 24, group: single}
+  program_name_character_25:                           {label: "Program name character 25", nrpn: 25, group: single}
+  program_name_character_26:                           {label: "Program name character 26", nrpn: 26, group: single}
+  program_name_character_27:                           {label: "Program name character 27", nrpn: 27, group: single}
+  program_name_character_28:                           {label: "Program name character 28", nrpn: 28, group: single}
+  program_name_character_29:                           {label: "Program name character 29", nrpn: 29, group: single}
+  program_name_character_30:                           {label: "Program name character 30", nrpn: 30, group: single}
+  program_name_character_31:                           {label: "Program name character 31", nrpn: 31, group: single}
+  program_name_character_32:                           {label: "Program name character 32", nrpn: 32, group: single}
+  tempo_bpm:                                           {label: "Tempo bpm", nrpn: 33, range: [20, 240], group: single}
+  compressor_off_on:                                   {label: "Compressor off / on", nrpn: 34, range: [0, 1], group: single}
+  pitch_wheel_destination:                             {label: "Pitch wheel destination", nrpn: 35, range: [0, 126], group: single}
+  pitch_bend_range_up:                                 {label: "Pitch bend range up", nrpn: 36, range: [0, 24], group: single}
+  pitch_bend_range_down:                               {label: "Pitch bend range down", nrpn: 37, range: [0, 24], group: single}
+  velocity_strength:                                   {label: "Velocity strength", nrpn: 38, range: [0, 5], choices: {"velocity_off": 0, "light": 1, "medium": 2, "heavy": 3, "half_at_84": 4, "piano": 5}, group: single}
+  pressure_curve:                                      {label: "Pressure curve", nrpn: 39, range: [0, 8], choices: {"pressure_off": 0, "normal": 1, "sparse": 2, "hard": 3, "hard_2": 4, "sparse_2": 5, "light": 6, "light_2": 7, "fatar": 8}, group: single}
+  metronome_type:                                      {label: "Metronome type", nrpn: 40, range: [0, 3], choices: {"off": 0, "pulse": 1, "block": 2, "noise": 3}, group: single}
+  metronome_volume:                                    {label: "Metronome volume", nrpn: 41, range: [0, 100], group: single}
+  metronome_clicks_accented:                           {label: "Metronome clicks accented", nrpn: 42, range: [1, 24], group: single}
+  metronome_clicks_no_accent:                          {label: "Metronome clicks no accent", nrpn: 43, range: [1, 24], group: single}
+  wave_env_4_6_button_select:                          {label: "Wave Env 4-6 button select", nrpn: 44, range: [0, 1], group: single}
+  wave_env_osc_1_button_select:                        {label: "Wave Env osc 1 button select", nrpn: 45, range: [0, 1], group: single}
+  wave_env_osc_2_button_select:                        {label: "Wave Env osc 2 button select", nrpn: 46, range: [0, 1], group: single}
+  wave_env_osc_3_button_select:                        {label: "Wave Env osc 3 button select", nrpn: 47, range: [0, 1], group: single}
+  lfo_button_select:                                   {label: "LFO button select", nrpn: 49, range: [0, 3], group: single}
+  env3_4_button_select:                                {label: "Env3/4 button select", nrpn: 50, range: [0, 1], group: single}
+  count_keyboard_split_points:                         {label: "Count keyboard split points", nrpn: 55, range: [0, 3], group: single}
+  keyboard_split_select_in_ui:                         {label: "Keyboard split select in UI", nrpn: 56, range: [0, 3], group: single}
+  keyboard_split_voice_sharing_disable_enable:         {label: "Keyboard split voice sharing disable / enable", nrpn: 57, range: [0, 1], group: single}
+  keyboard_split_note_1:                               {label: "Keyboard split note 1", nrpn: 58, group: single}
+  keyboard_split_note_2:                               {label: "Keyboard split note 2", nrpn: 59, group: single}
+  keyboard_split_note_3:                               {label: "Keyboard split note 3", nrpn: 60, group: single}
+  parts_enabled_keyboard_section_1:                    {label: "Parts enabled, keyboard section 1", nrpn: 61, range: [0, 15], group: single}
+  parts_enabled_keyboard_section_2:                    {label: "Parts enabled, keyboard section 2", nrpn: 62, range: [0, 15], group: single}
+  parts_enabled_keyboard_section_3:                    {label: "Parts enabled, keyboard section 3", nrpn: 63, range: [0, 15], group: single}
+  parts_enabled_keyboard_section_4:                    {label: "Parts enabled, keyboard section 4", nrpn: 64, range: [0, 15], group: single}
+  part_1_edit_enable:                                  {label: "Part 1 edit enable", nrpn: 65, range: [0, 1], choices: {"not_editing_part_1": 0, "editing_part_1": 1}, group: single}
+  part_2_edit_enable:                                  {label: "Part 2 edit enable", nrpn: 66, range: [0, 1], group: single}
+  part_3_edit_enable:                                  {label: "Part 3 edit enable", nrpn: 67, range: [0, 1], group: single}
+  part_4_edit_enable:                                  {label: "Part 4 edit enable", nrpn: 68, range: [0, 1], group: single}
+  part_viewing:                                        {label: "Part viewing", nrpn: 69, range: [0, 3], group: single}
+  sequencer_param_record:                              {label: "Sequencer param record", nrpn: 74, range: [0, 1], group: single}
+  sequencer_swing_nrpn_76:                             {label: "Sequencer swing", nrpn: 76, range: [0, 100], group: single}
+  sequencer_selected_pattern_index:                    {label: "Sequencer selected pattern index", nrpn: 77, range: [0, 23], group: single}
+  sequencer_measures_sequence_1:                       {label: "Sequencer measures sequence 1", nrpn: 78, range: [1, 32], group: single}
+  sequencer_measures_sequence_2:                       {label: "Sequencer measures sequence 2", nrpn: 79, range: [1, 32], group: single}
+  sequencer_measures_sequence_3:                       {label: "Sequencer measures sequence 3", nrpn: 80, range: [1, 32], group: single}
+  sequencer_measures_sequence_4:                       {label: "Sequencer measures sequence 4", nrpn: 81, range: [1, 32], group: single}
+  sequencer_measures_sequence_5:                       {label: "Sequencer measures sequence 5", nrpn: 82, range: [1, 32], group: single}
+  sequencer_measures_sequence_6:                       {label: "Sequencer measures sequence 6", nrpn: 83, range: [1, 32], group: single}
+  sequencer_measures_sequence_7:                       {label: "Sequencer measures sequence 7", nrpn: 84, range: [1, 32], group: single}
+  sequencer_measures_sequence_8:                       {label: "Sequencer measures sequence 8", nrpn: 85, range: [1, 32], group: single}
+  sequencer_measures_sequence_9:                       {label: "Sequencer measures sequence 9", nrpn: 86, range: [1, 32], group: single}
+  sequencer_measures_sequence_10:                      {label: "Sequencer measures sequence 10", nrpn: 87, range: [1, 32], group: single}
+  sequencer_measures_sequence_11:                      {label: "Sequencer measures sequence 11", nrpn: 88, range: [1, 32], group: single}
+  sequencer_measures_sequence_12:                      {label: "Sequencer measures sequence 12", nrpn: 89, range: [1, 32], group: single}
+  sequencer_measures_sequence_13:                      {label: "Sequencer measures sequence 13", nrpn: 90, range: [1, 32], group: single}
+  sequencer_measures_sequence_14:                      {label: "Sequencer measures sequence 14", nrpn: 91, range: [1, 32], group: single}
+  sequencer_measures_sequence_15:                      {label: "Sequencer measures sequence 15", nrpn: 92, range: [1, 32], group: single}
+  sequencer_measures_sequence_16:                      {label: "Sequencer measures sequence 16", nrpn: 93, range: [1, 32], group: single}
+  sequencer_measures_sequence_17:                      {label: "Sequencer measures sequence 17", nrpn: 94, range: [1, 32], group: single}
+  sequencer_measures_sequence_18:                      {label: "Sequencer measures sequence 18", nrpn: 95, range: [1, 32], group: single}
+  sequencer_measures_sequence_19:                      {label: "Sequencer measures sequence 19", nrpn: 96, range: [1, 32], group: single}
+  sequencer_measures_sequence_20:                      {label: "Sequencer measures sequence 20", nrpn: 97, range: [1, 32], group: single}
+  sequencer_measures_sequence_21:                      {label: "Sequencer measures sequence 21", nrpn: 98, range: [1, 32], group: single}
+  sequencer_measures_sequence_22:                      {label: "Sequencer measures sequence 22", nrpn: 99, range: [1, 32], group: single}
+  sequencer_measures_sequence_23:                      {label: "Sequencer measures sequence 23", nrpn: 100, range: [1, 32], group: single}
+  sequencer_measures_sequence_24:                      {label: "Sequencer measures sequence 24", nrpn: 101, range: [1, 32], group: single}
+  output_routing_main_out:                             {label: "Output routing, main out", nrpn: 365, range: [0, 15], group: single}
+  output_routing_stereo_output_2:                      {label: "Output routing, stereo output 2", nrpn: 366, range: [0, 15], group: single}
+  output_routing_stereo_output_3:                      {label: "Output routing, stereo output 3", nrpn: 367, range: [0, 15], group: single}
+  output_routing_stereo_output_4:                      {label: "Output routing, stereo output 4", nrpn: 368, range: [0, 15], group: single}
+  sequencer_song_mode_off_on:                          {label: "Sequencer song mode off/on", nrpn: 369, range: [0, 1], group: single}
+  sequencer_song_mode_loop_off_on:                     {label: "Sequencer song mode loop off/on", nrpn: 370, range: [0, 1], group: single}
+  unison_off_on_part_1:                                {label: "Unison off/on part 1", nrpn: 397, range: [0, 1], group: single}
+  unison_off_on_part_2:                                {label: "Unison off/on part 2", nrpn: 398, range: [0, 1], group: single}
+  unison_off_on_part_3:                                {label: "Unison off/on part 3", nrpn: 399, range: [0, 1], group: single}
+  unison_off_on_part_4:                                {label: "Unison off/on part 4", nrpn: 400, range: [0, 1], group: single}
+  unison_voice_count_part_1:                           {label: "Unison voice count part 1", nrpn: 401, range: [1, 24], group: single}
+  unison_voice_count_part_2:                           {label: "Unison voice count part 2", nrpn: 402, range: [1, 24], group: single}
+  unison_voice_count_part_3:                           {label: "Unison voice count part 3", nrpn: 403, range: [1, 24], group: single}
+  unison_voice_count_part_4:                           {label: "Unison voice count part 4", nrpn: 404, range: [1, 24], group: single}
+  unison_key_assign_part_1:                            {label: "Unison key assign part 1", nrpn: 405, range: [0, 5], choices: {"last": 0, "low": 1, "high": 2, "last_no_retrigger": 3, "low_no_retrigger": 4, "high_no_retrigger": 5}, group: single}
+  unison_key_assign_part_2:                            {label: "Unison key assign part 2", nrpn: 406, range: [0, 5], group: single}
+  unison_key_assign_part_3:                            {label: "Unison key assign part 3", nrpn: 407, range: [0, 5], group: single}
+  unison_key_assign_part_4:                            {label: "Unison key assign part 4", nrpn: 408, range: [0, 5], group: single}
+  unison_detune_part_1:                                {label: "Unison detune part 1", nrpn: 409, group: single}
+  unison_detune_part_2:                                {label: "Unison detune part 2", nrpn: 410, group: single}
+  unison_detune_part_3:                                {label: "Unison detune part 3", nrpn: 411, group: single}
+  unison_detune_part_4:                                {label: "Unison detune part 4", nrpn: 412, group: single}
+  unison_legato_part_1:                                {label: "Unison legato part 1", nrpn: 416, range: [0, 2], choices: {"off": 0, "on": 1, "legato_slide": 2}, group: single}
+  unison_legato_part_2:                                {label: "Unison legato part 2", nrpn: 417, range: [0, 2], choices: {"off": 0, "on": 1, "legato_slide": 2}, group: single}
+  unison_legato_part_3:                                {label: "Unison legato part 3", nrpn: 418, range: [0, 2], choices: {"off": 0, "on": 1, "legato_slide": 2}, group: single}
+  unison_legato_part_4:                                {label: "Unison legato part 4", nrpn: 419, range: [0, 2], choices: {"off": 0, "on": 1, "legato_slide": 2}, group: single}
+  unison_poly_mode_part_1:                             {label: "Unison poly mode part 1", nrpn: 429, range: [0, 6], group: single}
+  unison_poly_mode_part_2:                             {label: "Unison poly mode part 2", nrpn: 430, range: [0, 6], group: single}
+  unison_poly_mode_part_3:                             {label: "Unison poly mode part 3", nrpn: 431, range: [0, 6], group: single}
+  unison_poly_mode_part_4:                             {label: "Unison poly mode part 4", nrpn: 432, range: [0, 6], group: single}
+  mpe_y_config:                                        {label: "MPE Y config", nrpn: 433, range: [0, 1], choices: {"unipolar": 0, "bipolar": 1}, group: single}
+  sequencer_play_mode:                                 {label: "Sequencer play mode", nrpn: 434, range: [0, 1], choices: {"accompany": 0, "transpose": 1}, group: single}
+  hold_off_on_part_1:                                  {label: "Hold off/on part 1", nrpn: 435, range: [0, 1], group: single}
+  hold_off_on_part_2:                                  {label: "Hold off/on part 2", nrpn: 436, range: [0, 1], group: single}
+  hold_off_on_part_3:                                  {label: "Hold off/on part 3", nrpn: 437, range: [0, 1], group: single}
+  hold_off_on_part_4:                                  {label: "Hold off/on part 4", nrpn: 438, range: [0, 1], group: single}
+  sequencer_quantization:                              {label: "Sequencer quantization", nrpn: 460, range: [0, 6], group: single}
+  tempo_bpm_in_decimal_multiplied_by_10:               {label: "Tempo bpm in decimal multiplied by 10", nrpn: 468, range: [200, 2400], group: single}
+
+  # ──── multi - NRPN category Multi, one value per part, spec pp. 18-39 ────
+
+  arpeggiator_off_on:                                  {label: "Arpeggiator off / on", nrpn: 70, range: [0, 1], group: multi}
+  arp_mode_nrpn_71:                                    {label: "Arp mode", nrpn: 71, range: [0, 4], choices: {"up": 0, "down": 1, "up_down": 2, "assign": 3, "random": 4}, group: multi}
+  arp_range_nrpn_72:                                   {label: "Arp range", nrpn: 72, range: [0, 2], choices: {"octave_1": 0, "octaves_2": 1, "octaves_3": 2}, group: multi}
+  arp_note_value:                                      {label: "Arp note value", nrpn: 73, range: [0, 12], group: multi}
+  osc1_wave_offset:                                    {label: "Osc1 wave offset", nrpn: 105, range: [0, 63], group: multi}
+  osc2_wave_offset:                                    {label: "Osc2 wave offset", nrpn: 106, range: [0, 63], group: multi}
+  osc3_wave_offset:                                    {label: "Osc3 wave offset", nrpn: 107, range: [0, 63], group: multi}
+  osc1_note_reset:                                     {label: "Osc1 note reset", nrpn: 108, range: [0, 1], group: multi}
+  osc2_note_reset:                                     {label: "Osc2 note reset", nrpn: 109, range: [0, 1], group: multi}
+  osc3_note_reset:                                     {label: "Osc3 note reset", nrpn: 110, range: [0, 1], group: multi}
+  svf_bandpass_disable_enable:                         {label: "SVF bandpass disable / enable", nrpn: 111, range: [0, 1], group: multi}
+  resonance_compensation_disable_enable:               {label: "Resonance compensation disable / enable", nrpn: 112, range: [0, 1], group: multi}
+  filter_envelope_delay:                               {label: "Filter envelope delay", nrpn: 113, group: multi}
+  amp_envelope_delay:                                  {label: "Amp envelope delay", nrpn: 114, group: multi}
+  envelope_3_delay:                                    {label: "Envelope 3 delay", nrpn: 115, group: multi}
+  envelope_4_delay:                                    {label: "Envelope 4 delay", nrpn: 116, group: multi}
+  filter_envelope_attack:                              {label: "Filter envelope attack", nrpn: 117, group: multi}
+  amp_envelope_attack:                                 {label: "Amp envelope attack", nrpn: 118, group: multi}
+  envelope_3_attack:                                   {label: "Envelope 3 attack", nrpn: 119, group: multi}
+  envelope_4_attack:                                   {label: "Envelope 4 attack", nrpn: 120, group: multi}
+  filter_envelope_decay:                               {label: "Filter envelope decay", nrpn: 121, group: multi}
+  amp_envelope_decay:                                  {label: "Amp envelope decay", nrpn: 122, group: multi}
+  envelope_3_decay:                                    {label: "Envelope 3 decay", nrpn: 123, group: multi}
+  envelope_4_decay:                                    {label: "Envelope 4 decay", nrpn: 124, group: multi}
+  filter_envelope_release:                             {label: "Filter envelope release", nrpn: 125, group: multi}
+  amp_envelope_release:                                {label: "Amp envelope release", nrpn: 126, group: multi}
+  envelope_3_release:                                  {label: "Envelope 3 release", nrpn: 127, group: multi}
+  envelope_4_release:                                  {label: "Envelope 4 release", nrpn: 128, group: multi}
+  lpf_envelope_amount:                                 {label: "LPF envelope amount", nrpn: 129, range: [0, 254], group: multi}
+  amp_envelope_amount:                                 {label: "Amp envelope amount", nrpn: 130, range: [0, 254], group: multi}
+  envelope_3_amount:                                   {label: "Envelope 3 amount", nrpn: 131, range: [0, 254], group: multi}
+  envelope_4_amount:                                   {label: "Envelope 4 amount", nrpn: 132, range: [0, 254], group: multi}
+  svf_envelope_amount:                                 {label: "SVF envelope amount", nrpn: 133, range: [0, 254], group: multi}
+  wave_env_osc_1_time_1:                               {label: "Wave env osc 1, time 1", nrpn: 134, group: multi}
+  wave_env_osc_2_time_1:                               {label: "Wave env osc 2, time 1", nrpn: 135, group: multi}
+  wave_env_osc_3_time_1:                               {label: "Wave env osc 3, time 1", nrpn: 136, group: multi}
+  wave_env_osc_1_time_2:                               {label: "Wave env osc 1, time 2", nrpn: 137, group: multi}
+  wave_env_osc_2_time_2:                               {label: "Wave env osc 2, time 2", nrpn: 138, group: multi}
+  wave_env_osc_3_time_2:                               {label: "Wave env osc 3, time 2", nrpn: 139, group: multi}
+  wave_env_osc_1_time_3:                               {label: "Wave env osc 1, time 3", nrpn: 140, group: multi}
+  wave_env_osc_2_time_3:                               {label: "Wave env osc 2, time 3", nrpn: 141, group: multi}
+  wave_env_osc_3_time_3:                               {label: "Wave env osc 3, time 3", nrpn: 142, group: multi}
+  wave_env_osc_1_time_4:                               {label: "Wave env osc 1, time 4", nrpn: 143, group: multi}
+  wave_env_osc_2_time_4:                               {label: "Wave env osc 2, time 4", nrpn: 144, group: multi}
+  wave_env_osc_3_time_4:                               {label: "Wave env osc 3, time 4", nrpn: 145, group: multi}
+  wave_env_osc_1_time_5:                               {label: "Wave env osc 1, time 5", nrpn: 146, group: multi}
+  wave_env_osc_2_time_5:                               {label: "Wave env osc 2, time 5", nrpn: 147, group: multi}
+  wave_env_osc_3_time_5:                               {label: "Wave env osc 3, time 5", nrpn: 148, group: multi}
+  wave_env_osc_1_time_6:                               {label: "Wave env osc 1, time 6", nrpn: 149, group: multi}
+  wave_env_osc_2_time_6:                               {label: "Wave env osc 2, time 6", nrpn: 150, group: multi}
+  wave_env_osc_3_time_6:                               {label: "Wave env osc 3, time 6", nrpn: 151, group: multi}
+  wave_env_release_point_osc_1:                        {label: "Wave env release point, osc 1", nrpn: 152, range: [1, 6], group: multi}
+  wave_env_release_point_osc_2:                        {label: "Wave env release point, osc 2", nrpn: 153, range: [1, 6], group: multi}
+  wave_env_release_point_osc_3:                        {label: "Wave env release point, osc 3", nrpn: 154, range: [1, 6], group: multi}
+  wave_env_loop_start_point_osc_1:                     {label: "Wave env loop start point, osc 1", nrpn: 155, range: [1, 6], group: multi}
+  wave_env_loop_start_point_osc_2:                     {label: "Wave env loop start point, osc 2", nrpn: 156, range: [1, 6], group: multi}
+  wave_env_loop_start_point_osc_3:                     {label: "Wave env loop start point, osc 3", nrpn: 157, range: [1, 6], group: multi}
+  waveform_interpolation_disable_enable:               {label: "Waveform interpolation disable / enable", nrpn: 158, range: [0, 1], group: multi}
+  wave_envelope_disable_enable:                        {label: "Wave envelope disable / enable", nrpn: 159, range: [0, 1], group: multi}
+  envelope_shape:                                      {label: "Envelope shape", nrpn: 160, range: [0, 1], choices: {"exponential": 0, "ppg_style": 1}, group: multi}
+  lfo1_frequency:                                      {label: "LFO1 frequency", nrpn: 161, range: [0, 255], group: multi}
+  lfo2_frequency:                                      {label: "LFO2 frequency", nrpn: 162, range: [0, 255], group: multi}
+  lfo3_frequency:                                      {label: "LFO3 frequency", nrpn: 163, range: [0, 255], group: multi}
+  lfo4_frequency:                                      {label: "LFO4 frequency", nrpn: 164, range: [0, 255], group: multi}
+  lfo1_sync_note_value:                                {label: "LFO1 sync note value", nrpn: 165, range: [0, 16], group: multi}
+  lfo2_sync_note_value:                                {label: "LFO2 sync note value", nrpn: 166, range: [0, 16], group: multi}
+  lfo3_sync_note_value:                                {label: "LFO3 sync note value", nrpn: 167, range: [0, 16], group: multi}
+  lfo4_sync_note_value:                                {label: "LFO4 sync note value", nrpn: 168, range: [0, 16], group: multi}
+  lfo1_shape:                                          {label: "LFO1 shape", nrpn: 169, range: [0, 8], choices: {"triangle": 0, "sawtooth": 1, "reverse_sawtooth": 2, "square": 3, "pulse_1": 4, "pulse_2": 5, "pulse_3": 6, "random": 7, "sine": 8}, group: multi}
+  lfo2_shape:                                          {label: "LFO2 shape", nrpn: 170, range: [0, 8], group: multi}
+  lfo3_shape:                                          {label: "LFO3 shape", nrpn: 171, range: [0, 8], group: multi}
+  lfo4_shape:                                          {label: "LFO4 shape", nrpn: 172, range: [0, 8], group: multi}
+  lfo1_sync:                                           {label: "LFO1 sync", nrpn: 173, range: [0, 1], group: multi}
+  lfo2_sync:                                           {label: "LFO2 sync", nrpn: 174, range: [0, 1], group: multi}
+  lfo3_sync:                                           {label: "LFO3 sync", nrpn: 175, range: [0, 1], group: multi}
+  lfo4_sync:                                           {label: "LFO4 sync", nrpn: 176, range: [0, 1], group: multi}
+  lfo1_note_reset:                                     {label: "LFO1 note reset", nrpn: 177, range: [0, 1], group: multi}
+  lfo2_note_reset:                                     {label: "LFO2 note reset", nrpn: 178, range: [0, 1], group: multi}
+  lfo3_note_reset:                                     {label: "LFO3 note reset", nrpn: 179, range: [0, 1], group: multi}
+  lfo4_note_reset:                                     {label: "LFO4 note reset", nrpn: 180, range: [0, 1], group: multi}
+  mod_1_source:                                        {label: "Mod #1 source", nrpn: 181, range: [0, 26], group: multi}
+  mod_2_source:                                        {label: "Mod #2 source", nrpn: 182, range: [0, 26], group: multi}
+  mod_3_source:                                        {label: "Mod #3 source", nrpn: 183, range: [0, 26], group: multi}
+  mod_4_source:                                        {label: "Mod #4 source", nrpn: 184, range: [0, 26], group: multi}
+  mod_5_source:                                        {label: "Mod #5 source", nrpn: 185, range: [0, 26], group: multi}
+  mod_6_source:                                        {label: "Mod #6 source", nrpn: 186, range: [0, 26], group: multi}
+  mod_7_source:                                        {label: "Mod #7 source", nrpn: 187, range: [0, 26], group: multi}
+  mod_8_source:                                        {label: "Mod #8 source", nrpn: 188, range: [0, 26], group: multi}
+  mod_9_source:                                        {label: "Mod #9 source", nrpn: 189, range: [0, 26], group: multi}
+  mod_10_source:                                       {label: "Mod #10 source", nrpn: 190, range: [0, 26], group: multi}
+  mod_11_source:                                       {label: "Mod #11 source", nrpn: 191, range: [0, 26], group: multi}
+  mod_12_source:                                       {label: "Mod #12 source", nrpn: 192, range: [0, 26], group: multi}
+  mod_13_source:                                       {label: "Mod #13 source", nrpn: 193, range: [0, 26], group: multi}
+  mod_14_source:                                       {label: "Mod #14 source", nrpn: 194, range: [0, 26], group: multi}
+  mod_15_source:                                       {label: "Mod #15 source", nrpn: 195, range: [0, 26], group: multi}
+  mod_16_source:                                       {label: "Mod #16 source", nrpn: 196, range: [0, 26], group: multi}
+  mod_1_destination:                                   {label: "Mod #1 destination", nrpn: 197, range: [0, 126], group: multi}
+  mod_2_destination:                                   {label: "Mod #2 destination", nrpn: 198, range: [0, 126], group: multi}
+  mod_3_destination:                                   {label: "Mod #3 destination", nrpn: 199, range: [0, 126], group: multi}
+  mod_4_destination:                                   {label: "Mod #4 destination", nrpn: 200, range: [0, 126], group: multi}
+  mod_5_destination:                                   {label: "Mod #5 destination", nrpn: 201, range: [0, 126], group: multi}
+  mod_6_destination:                                   {label: "Mod #6 destination", nrpn: 202, range: [0, 126], group: multi}
+  mod_7_destination:                                   {label: "Mod #7 destination", nrpn: 203, range: [0, 126], group: multi}
+  mod_8_destination:                                   {label: "Mod #8 destination", nrpn: 204, range: [0, 126], group: multi}
+  mod_9_destination:                                   {label: "Mod #9 destination", nrpn: 205, range: [0, 126], group: multi}
+  mod_10_destination:                                  {label: "Mod #10 destination", nrpn: 206, range: [0, 126], group: multi}
+  mod_11_destination:                                  {label: "Mod #11 destination", nrpn: 207, range: [0, 126], group: multi}
+  mod_12_destination:                                  {label: "Mod #12 destination", nrpn: 208, range: [0, 126], group: multi}
+  mod_13_destination:                                  {label: "Mod #13 destination", nrpn: 209, range: [0, 126], group: multi}
+  mod_14_destination:                                  {label: "Mod #14 destination", nrpn: 210, range: [0, 126], group: multi}
+  mod_15_destination:                                  {label: "Mod #15 destination", nrpn: 211, range: [0, 126], group: multi}
+  mod_16_destination:                                  {label: "Mod #16 destination", nrpn: 212, range: [0, 126], group: multi}
+  lfo_1_destination:                                   {label: "LFO#1 destination", nrpn: 213, range: [0, 126], group: multi}
+  lfo_2_destination:                                   {label: "LFO#2 destination", nrpn: 214, range: [0, 126], group: multi}
+  lfo_3_destination:                                   {label: "LFO#3 destination", nrpn: 215, range: [0, 126], group: multi}
+  lfo_4_destination:                                   {label: "LFO#4 destination", nrpn: 216, range: [0, 126], group: multi}
+  envelope_3_destination:                              {label: "Envelope #3 destination", nrpn: 217, range: [0, 126], group: multi}
+  envelope_4_destination:                              {label: "Envelope #4 destination", nrpn: 218, range: [0, 126], group: multi}
+  osc_1_wave_env_destination:                          {label: "Osc #1 wave env destination", nrpn: 219, range: [0, 126], group: multi}
+  osc_2_wave_env_destination:                          {label: "Osc #2 wave env destination", nrpn: 220, range: [0, 126], group: multi}
+  osc_3_wave_env_destination:                          {label: "Osc #3 wave env destination", nrpn: 221, range: [0, 126], group: multi}
+  mod_wheel_destination:                               {label: "Mod wheel destination", nrpn: 222, range: [0, 126], group: multi}
+  keyboard_velocity_destination:                       {label: "Keyboard velocity destination", nrpn: 223, range: [0, 126], group: multi}
+  pressure_destination:                                {label: "Pressure destination", nrpn: 224, range: [0, 126], group: multi}
+  footswitch_destination:                              {label: "Footswitch destination", nrpn: 225, range: [0, 126], group: multi}
+  effect_1_disable_enable:                             {label: "Effect #1 disable / enable", nrpn: 226, range: [0, 1], group: multi}
+  effect_1_type:                                       {label: "Effect #1 type", nrpn: 227, range: [0, 8], choices: {"bypass": 0, "bbd_delay": 1, "stereo_delay": 2, "chorus": 3, "phaser": 4, "flanger": 5, "distortion": 6, "leslie_speaker": 7, "ring_mod": 8}, group: multi}
+  effect_1_sync:                                       {label: "Effect #1 sync", nrpn: 228, range: [0, 1], group: multi}
+  effect_1_sync_note_value:                            {label: "Effect #1 sync note value", nrpn: 229, range: [0, 12], group: multi}
+  effect_2_disable_enable:                             {label: "Effect #2 disable / enable", nrpn: 230, range: [0, 1], group: multi}
+  effect_2_type:                                       {label: "Effect #2 type", nrpn: 231, range: [0, 12], choices: {"bypass": 0, "bbd_delay": 1, "stereo_delay": 2, "echoplex": 3, "chorus": 4, "phaser": 5, "flanger": 6, "distortion": 7, "leslie_speaker": 8, "ring_mod": 9, "room_reverb": 10, "hall_reverb": 11, "plate_reverb": 12}, group: multi}
+  effect_2_sync:                                       {label: "Effect #2 sync", nrpn: 232, range: [0, 1], group: multi}
+  effect_2_sync_note_value:                            {label: "Effect #2 sync note value", nrpn: 233, range: [0, 12], group: multi}
+  osc_1_wave_envelope_loop_disable_enable:             {label: "Osc #1 wave envelope loop disable / enable", nrpn: 234, range: [0, 1], group: multi}
+  osc_2_wave_envelope_loop_disable_enable:             {label: "Osc #2 wave envelope loop disable / enable", nrpn: 235, range: [0, 1], group: multi}
+  osc_3_wave_envelope_loop_disable_enable:             {label: "Osc #3 wave envelope loop disable / enable", nrpn: 236, range: [0, 1], group: multi}
+  osc_1_sync_disable_enable:                           {label: "Osc #1 sync disable / enable", nrpn: 237, range: [0, 1], group: multi}
+  osc_2_sync_disable_enable:                           {label: "Osc #2 sync disable / enable", nrpn: 238, range: [0, 1], group: multi}
+  osc_3_sync_disable_enable:                           {label: "Osc #3 sync disable / enable", nrpn: 239, range: [0, 1], group: multi}
+  lpf_velocity_to_envelope_mode:                       {label: "LPF velocity to envelope mode", nrpn: 240, range: [0, 2], choices: {"off": 0, "multiply": 1, "add": 2}, group: multi}
+  wavetable_interpolation_disable_enable:              {label: "Wavetable interpolation disable / enable", nrpn: 241, range: [0, 1], group: multi}
+  glide_mode:                                          {label: "Glide mode", nrpn: 242, range: [0, 2], choices: {"off": 0, "fix_rate": 1, "fix_time": 2}, group: multi}
+  svf_velocity_to_envelope_mode:                       {label: "SVF velocity to envelope mode", nrpn: 243, range: [0, 2], choices: {"off": 0, "multiply": 1, "add": 2}, group: multi}
+  osc_1_pitch_enable_disable:                          {label: "Osc #1 pitch enable / disable", nrpn: 244, range: [0, 1], group: multi}
+  osc_2_pitch_enable_disable:                          {label: "Osc #2 pitch enable / disable", nrpn: 245, range: [0, 1], group: multi}
+  osc_3_pitch_enabel_disable:                          {label: "Osc #3 pitch enabel / disable", nrpn: 246, range: [0, 1], group: multi}
+  upper_wavetable_disable_enable:                      {label: "Upper wavetable disable / enable", nrpn: 247, range: [0, 1], group: multi}
+  wave_envelope_amount:                                {label: "Wave envelope amount", nrpn: 248, group: multi}
+  osc_1_frequency:                                     {label: "Osc #1 frequency", nrpn: 249, group: multi}
+  osc_2_frequency:                                     {label: "Osc #2 frequency", nrpn: 250, group: multi}
+  osc_3_frequency:                                     {label: "Osc #3 frequency", nrpn: 251, group: multi}
+  osc_1_fine_50_to_50:                                 {label: "Osc #1 fine -50 to 50", nrpn: 252, range: [0, 100], group: multi}
+  osc_2_fine_50_to_50:                                 {label: "Osc #2 fine -50 to 50", nrpn: 253, range: [0, 100], group: multi}
+  osc_3_fine_50_to_50:                                 {label: "Osc #3 fine -50 to 50", nrpn: 254, range: [0, 100], group: multi}
+  osc_1_level:                                         {label: "Osc #1 level", nrpn: 255, group: multi}
+  osc_2_level:                                         {label: "Osc #2 level", nrpn: 256, group: multi}
+  osc_3_level:                                         {label: "Osc #3 level", nrpn: 257, group: multi}
+  osc_1_pulse_width:                                   {label: "Osc #1 pulse width", nrpn: 258, group: multi}
+  osc_2_pulse_width:                                   {label: "Osc #2 pulse width", nrpn: 259, group: multi}
+  osc_3_pulse_width:                                   {label: "Osc #3 pulse width", nrpn: 260, group: multi}
+  osc_1_fm_amount:                                     {label: "Osc #1 FM amount", nrpn: 261, group: multi}
+  osc_2_fm_amount:                                     {label: "Osc #2 FM amount", nrpn: 262, group: multi}
+  osc_3_fm_amount:                                     {label: "Osc #3 FM amount", nrpn: 263, group: multi}
+  pan_spread_nrpn_264:                                 {label: "Pan spread", nrpn: 264, group: multi}
+  wave_env_osc_1_position_1:                           {label: "Wave env, osc 1, position 1", nrpn: 265, range: [0, 63], group: multi}
+  wave_env_osc_2_position_1:                           {label: "Wave env, osc 2, position 1", nrpn: 266, range: [0, 63], group: multi}
+  wave_env_osc_3_position_1:                           {label: "Wave env osc 3, position 1", nrpn: 267, range: [0, 63], group: multi}
+  wave_env_osc_1_position_2:                           {label: "Wave env, osc 1, position 2", nrpn: 268, range: [0, 63], group: multi}
+  wave_env_osc_2_position_2:                           {label: "Wave env, osc 2, position 2", nrpn: 269, range: [0, 63], group: multi}
+  wave_env_osc_3_position_2:                           {label: "Wave env osc 3, position 2", nrpn: 270, range: [0, 63], group: multi}
+  wave_env_osc_1_position_3:                           {label: "Wave env, osc 1, position 3", nrpn: 271, range: [0, 63], group: multi}
+  wave_env_osc_2_position_3:                           {label: "Wave env, osc 2, position 3", nrpn: 272, range: [0, 63], group: multi}
+  wave_env_osc_3_position_3:                           {label: "Wave env osc 3, position 3", nrpn: 273, range: [0, 63], group: multi}
+  wave_env_osc_1_position_4:                           {label: "Wave env, osc 1, position 4", nrpn: 274, range: [0, 63], group: multi}
+  wave_env_osc_2_position_4:                           {label: "Wave env, osc 2, position 4", nrpn: 275, range: [0, 63], group: multi}
+  wave_env_osc_3_position_4:                           {label: "Wave env osc 3, position 4", nrpn: 276, range: [0, 63], group: multi}
+  wave_env_osc_1_position_5:                           {label: "Wave env, osc 1, position 5", nrpn: 277, range: [0, 63], group: multi}
+  wave_env_osc_2_position_5:                           {label: "Wave env, osc 2, position 5", nrpn: 278, range: [0, 63], group: multi}
+  wave_env_osc_3_position_5:                           {label: "Wave env osc 3, position 5", nrpn: 279, range: [0, 63], group: multi}
+  wave_env_osc_1_position_6:                           {label: "Wave env, osc 1, position 6", nrpn: 280, range: [0, 63], group: multi}
+  wave_env_osc_2_position_6:                           {label: "Wave env, osc 2, position 6", nrpn: 281, range: [0, 63], group: multi}
+  wave_env_osc_3_position_6:                           {label: "Wave env osc 3, position 6", nrpn: 282, range: [0, 63], group: multi}
+  lpf_cutoff_frequency:                                {label: "LPF cutoff frequency", nrpn: 283, group: multi}
+  lpf_resonance_nrpn_284:                              {label: "LPF resonance", nrpn: 284, group: multi}
+  lpf_key_amount:                                      {label: "LPF key amount", nrpn: 285, group: multi}
+  svf_cutoff_frequency:                                {label: "SVF cutoff frequency", nrpn: 286, group: multi}
+  svf_resonance_nrpn_287:                              {label: "SVF resonance", nrpn: 287, group: multi}
+  svf_key_amount:                                      {label: "SVF key amount", nrpn: 288, group: multi}
+  svf_mode_nrpn_289:                                   {label: "SVF Mode", nrpn: 289, group: multi}
+  env_3_velocity:                                      {label: "Env 3 velocity", nrpn: 290, group: multi}
+  env_4_velocity:                                      {label: "Env 4 velocity", nrpn: 291, group: multi}
+  lfo1_delay:                                          {label: "LFO1 delay", nrpn: 292, group: multi}
+  lfo2_delay:                                          {label: "LFO2 delay", nrpn: 293, group: multi}
+  lfo3_delay:                                          {label: "LFO3 delay", nrpn: 294, group: multi}
+  lfo4_delay:                                          {label: "LFO4 delay", nrpn: 295, group: multi}
+  mod_1_amount:                                        {label: "Mod #1 amount", nrpn: 296, range: [0, 254], group: multi}
+  mod_2_amount:                                        {label: "Mod #2 amount", nrpn: 297, range: [0, 254], group: multi}
+  mod_3_amount:                                        {label: "Mod #3 amount", nrpn: 298, range: [0, 254], group: multi}
+  mod_4_amount:                                        {label: "Mod #4 amount", nrpn: 299, range: [0, 254], group: multi}
+  mod_5_amount:                                        {label: "Mod #5 amount", nrpn: 300, range: [0, 254], group: multi}
+  mod_6_amount:                                        {label: "Mod #6 amount", nrpn: 301, range: [0, 254], group: multi}
+  mod_7_amount:                                        {label: "Mod #7 amount", nrpn: 302, range: [0, 254], group: multi}
+  mod_8_amount:                                        {label: "Mod #8 amount", nrpn: 303, range: [0, 254], group: multi}
+  mod_9_amount:                                        {label: "Mod #9 amount", nrpn: 304, range: [0, 254], group: multi}
+  mod_10_amount:                                       {label: "Mod #10 amount", nrpn: 305, range: [0, 254], group: multi}
+  mod_11_amount:                                       {label: "Mod #11 amount", nrpn: 306, range: [0, 254], group: multi}
+  mod_12_amount:                                       {label: "Mod #12 amount", nrpn: 307, range: [0, 254], group: multi}
+  mod_13_amount:                                       {label: "Mod #13 amount", nrpn: 308, range: [0, 254], group: multi}
+  mod_14_amount:                                       {label: "Mod #14 amount", nrpn: 309, range: [0, 254], group: multi}
+  mod_15_amount:                                       {label: "Mod #15 amount", nrpn: 310, range: [0, 254], group: multi}
+  mod_16_amount:                                       {label: "Mod #16 amount", nrpn: 311, range: [0, 254], group: multi}
+  lfo1_amount:                                         {label: "LFO1 amount", nrpn: 312, range: [0, 254], group: multi}
+  lfo2_amount:                                         {label: "LFO2 amount", nrpn: 313, range: [0, 254], group: multi}
+  lfo3_amount:                                         {label: "LFO3 amount", nrpn: 314, range: [0, 254], group: multi}
+  lfo4_amount:                                         {label: "LFO4 amount", nrpn: 315, range: [0, 254], group: multi}
+  osc_1_wave_env_dest_amount:                          {label: "Osc 1 wave env dest amount", nrpn: 316, range: [0, 254], group: multi}
+  osc_2_wave_env_dest_amount:                          {label: "Osc 2 wave env dest amount", nrpn: 317, range: [0, 254], group: multi}
+  osc_3_wave_env_dest_amount:                          {label: "Osc 3 wave env dest amount", nrpn: 318, range: [0, 254], group: multi}
+  mod_wheel_amount:                                    {label: "Mod wheel amount", nrpn: 319, range: [0, 254], group: multi}
+  keyboard_velocity_amount:                            {label: "Keyboard velocity amount", nrpn: 320, range: [0, 254], group: multi}
+  pressure_amount:                                     {label: "Pressure amount", nrpn: 321, range: [0, 254], group: multi}
+  footswitch_amount:                                   {label: "Footswitch amount", nrpn: 322, range: [0, 254], group: multi}
+  effects_1_mix:                                       {label: "Effects 1 mix", nrpn: 323, group: multi}
+  effect_1_param_1:                                    {label: "Effect 1 param 1", nrpn: 324, range: [0, 255], group: multi}
+  effect_1_param_2:                                    {label: "Effect 1 param 2", nrpn: 325, range: [0, 255], group: multi}
+  effect_1_param_3:                                    {label: "Effect 1 param 3", nrpn: 326, range: [0, 255], group: multi}
+  effect_2_mix:                                        {label: "Effect 2 mix", nrpn: 327, group: multi}
+  effect_2_param_1:                                    {label: "Effect 2 param 1", nrpn: 328, range: [0, 255], group: multi}
+  effect_2_param_2:                                    {label: "Effect 2 param 2", nrpn: 329, range: [0, 255], group: multi}
+  effect_2_param_3:                                    {label: "Effect 2 param 3", nrpn: 330, range: [0, 255], group: multi}
+  filter_envelope_sustain:                             {label: "Filter envelope sustain", nrpn: 331, group: multi}
+  amp_envelope_sustain:                                {label: "Amp envelope sustain", nrpn: 332, group: multi}
+  env_3_sustain:                                       {label: "Env 3 sustain", nrpn: 333, group: multi}
+  env_4_sustain:                                       {label: "Env 4 sustain", nrpn: 334, group: multi}
+  lpf_velocity_nrpn_335:                               {label: "LPF velocity", nrpn: 335, group: multi}
+  svf_velocity_nrpn_336:                               {label: "SVF velocity", nrpn: 336, group: multi}
+  osc1_key_to_waves:                                   {label: "Osc1 key to waves", nrpn: 337, group: multi}
+  osc2_key_to_waves:                                   {label: "Osc2 key to waves", nrpn: 338, group: multi}
+  osc3_key_to_waves:                                   {label: "Osc3 key to waves", nrpn: 339, group: multi}
+  lpf_saturation_nrpn_340:                             {label: "LPF saturation", nrpn: 340, group: multi}
+  glide_rate:                                          {label: "Glide rate", nrpn: 341, group: multi}
+  part_volume:                                         {label: "Part volume", nrpn: 342, range: [0, 216], group: multi}
+  amp_envelope_velocity:                               {label: "Amp envelope velocity", nrpn: 343, group: multi}
+  circuit_drift:                                       {label: "Circuit drift", nrpn: 344, range: [0, 255], group: multi}
+  effects_2_param_4:                                   {label: "Effects 2 param 4", nrpn: 348, range: [0, 255], group: multi}
+  effects_2_param_5:                                   {label: "Effects 2 param 5", nrpn: 349, range: [0, 255], group: multi}
+  effects_2_param_6:                                   {label: "Effects 2 param 6", nrpn: 350, range: [0, 255], group: multi}
+  audio_in_mix:                                        {label: "Audio in mix", nrpn: 351, group: multi}
+  part_pan:                                            {label: "Part pan", nrpn: 352, group: multi}
+  part_tuning:                                         {label: "Part tuning", nrpn: 353, range: [0, 100], group: multi}
+  state_variable_filter_resonance_compensation_off_on: {label: "State variable filter resonance compensation off/on", nrpn: 395, range: [0, 1], group: multi}
+  wave_surfer_value:                                   {label: "Wave surfer value", nrpn: 396, range: [0, 126], group: multi}
+  oscillator_1_reverse_key_to_waves_off_on:            {label: "Oscillator 1 reverse key to waves off/on", nrpn: 413, range: [0, 1], group: multi}
+  oscillator_2_reverse_key_to_waves_off_on:            {label: "Oscillator 2 reverse key to waves off/on", nrpn: 414, range: [0, 1], group: multi}
+  oscillator_3_reverse_key_to_waves_off_on:            {label: "Oscillator 3 reverse key to waves off/on", nrpn: 415, range: [0, 1], group: multi}
+  arp_latch_mode:                                      {label: "Arp latch mode", nrpn: 420, range: [0, 1], choices: {"normal": 0, "chord": 1}, group: multi}
+  mpe_pitch_bend_range_in_semitones:                   {label: "MPE pitch bend range in semitones", nrpn: 421, range: [24, 96], group: multi}
+  arp_transpose:                                       {label: "Arp transpose", nrpn: 422, range: [0, 24], group: multi}
+  free_running_oscillators_off_on:                     {label: "Free running oscillators off/on", nrpn: 423, range: [0, 1], group: multi}
+  envelope_retrigger_mode:                             {label: "Envelope retrigger mode", nrpn: 439, range: [0, 1], choices: {"retrigger_from_0": 0, "retrigger_from_last_val": 1}, group: multi}
+  low_pass_filter_envelope_repeat_off_on:              {label: "Low pass filter envelope repeat off/on", nrpn: 440, range: [0, 1], group: multi}
+  amp_envelope_repeat_off_on:                          {label: "Amp envelope repeat off/on", nrpn: 441, range: [0, 1], group: multi}
+  envelope_3_repeat_off_on:                            {label: "Envelope 3 repeat off/on", nrpn: 442, range: [0, 1], group: multi}
+  envelope_4_repeat_off_on:                            {label: "Envelope 4 repeat off/on", nrpn: 443, range: [0, 1], group: multi}
+  lfo1_fine_amount:                                    {label: "LFO1 fine amount", nrpn: 454, range: [0, 254], group: multi}
+  lfo2_fine_amount:                                    {label: "LFO2 fine amount", nrpn: 455, range: [0, 254], group: multi}
+  lfo3_fine_amount:                                    {label: "LFO3 fine amount", nrpn: 456, range: [0, 254], group: multi}
+  lfo4_fine_amount:                                    {label: "LFO4 fine amount", nrpn: 457, range: [0, 254], group: multi}
+  effects_2_param_7:                                   {label: "Effects 2 param 7", nrpn: 466, range: [0, 255], group: multi}
+
+  # ──── global - NRPN category Global, spec pp. 37-39 ────
+
+  midi_sysex_enable:                                   {label: "MIDI SysEx enable", nrpn: 445, range: [0, 1], group: global}
+  midi_param_send:                                     {label: "MIDI param send", nrpn: 446, range: [0, 2], group: global}
+  midi_param_receive:                                  {label: "MIDI param receive", nrpn: 447, range: [0, 2], group: global}
+  midi_send_program_change:                            {label: "MIDI send program change", nrpn: 448, range: [0, 1], group: global}
+  midi_multitimbral_mode_enable:                       {label: "MIDI multitimbral mode enable", nrpn: 449, range: [0, 1], group: global}
+  midi_multitimbral_channel_part_1:                    {label: "MIDI multitimbral channel part 1", nrpn: 450, range: [0, 15], group: global}
+  midi_multitimbral_channel_part_2:                    {label: "MIDI multitimbral channel part 2", nrpn: 451, range: [0, 15], group: global}
+  midi_multitimbral_channel_part_3:                    {label: "MIDI multitimbral channel part 3", nrpn: 452, range: [0, 15], group: global}
+  midi_multitimbral_channel_part_4:                    {label: "MIDI multitimbral channel part 4", nrpn: 453, range: [0, 15], group: global}
+  midi_mpe_mode_enable:                                {label: "MIDI MPE mode enable", nrpn: 461, range: [0, 1], group: global}
+  midi_include_part_in_nrpn:                           {label: "MIDI include part in NRPN", nrpn: 462, range: [0, 1], group: global}
+  midi_clock_mode:                                     {label: "MIDI clock mode", nrpn: 463, range: [0, 3], choices: {"off": 0, "in": 1, "out": 2, "in_tempo_sync": 3}, group: global}
+  midi_in_cable:                                       {label: "MIDI in cable", nrpn: 464, range: [0, 3], choices: {"usb_midi": 0, "usb": 1, "midi": 2, "off": 3}, group: global}
+  midi_out_cable:                                      {label: "MIDI out cable", nrpn: 465, range: [0, 3], choices: {"usb_midi": 0, "usb": 1, "midi": 2, "off": 3}, group: global}
+  midi_start_stop_sequence:                            {label: "MIDI start/stop sequence", nrpn: 467, range: [0, 1], group: global}

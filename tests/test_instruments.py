@@ -240,6 +240,7 @@ class TestBundledCorpus:
 			"roland/jupiter_x",
 			"roland/mc_101",
 			"roland/mc_707",
+			"roland/p_6",
 			"roland/s_1",
 			"roland/sh_4d",
 			"roland/sp_404mkii",
@@ -9370,6 +9371,161 @@ class TestS1:
 		assert "No firmware number appears anywhere in it" in said
 
 
+class TestP6:
+
+	"""A Roland whose chart names no controller number and whose list names forty."""
+
+	# The forty numbers the control change list prints a parameter for, in the list's order.
+	LIST = [3, 7, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 28, 29, 30,
+		68, 71, 72, 73, 74, 75, 76, 77, 78, 79, 84, 85, 86, 87, 88, 89, 90, 91, 92]
+
+	def test_forty_controls_from_the_list_and_none_from_the_chart (self) -> None:
+		"""The chart's one Control Change row points at the list, which is the only place a number is."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert len(p6.controls) == 40
+		assert sorted(control.cc for control in p6.controls.values() if control.cc is not None) == self.LIST
+		assert {control.direction for control in p6.controls.values()} == {"both"}
+
+		said = prose_of("roland", "p_6")
+
+		assert "THE CHART POINTS AT THE LIST AND NAMES NOTHING ITSELF" in said
+		assert "every control below is `both` on the strength of that one row" in said
+
+	def test_the_dashes_and_the_elisions_are_not_carried (self) -> None:
+		"""Four rows print a dash for their parameter and seven print a colon for numbers left out."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		numbers = {control.cc for control in p6.controls.values()}
+
+		assert not numbers & {0, 11, 22, 27}
+
+		said = prose_of("roland", "p_6")
+
+		assert "four that print a dash in place of one - 0, 11, 22 and 27" in said
+
+	def test_the_groups_are_the_sections_each_entry_cites (self) -> None:
+		"""Every list entry cites the page its parameter is set on, and the page's section is the group."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert p6.groups == {"voice": "VOICE", "filter": "FILTER", "mixer": "MIXER",
+			"lo_fi": "Lo-Fi", "delay_reverb": "DELAY/REVERB"}
+
+		counts = collections.Counter(control.group for control in p6.controls.values())
+
+		assert counts == {"voice": 21, "filter": 6, "mixer": 7, "lo_fi": 2, "delay_reverb": 4}
+
+		# The one name its own page does not print: p. 12 calls it the [LO-Fi] button.
+		assert p6.controls["lo_fi_switch"].label == "Lo-Fi Switch"
+		assert "That page never calls it a switch." in prose_of("roland", "p_6")
+
+	def test_four_channels_each_settable (self) -> None:
+		"""Granular sampler, sample pads, auto and pattern, with the chart's four defaults."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert list(p6.parts) == ["granular", "sample_pads", "auto", "pattern"]
+		assert all(part.channel == "assigned" for part in p6.parts.values())
+		assert p6.parts["granular"].receives == ("notes", "controls")
+		assert p6.parts["sample_pads"].receives == ("notes",)
+		assert p6.parts["auto"].receives == ("notes", "controls")
+		assert p6.parts["pattern"].receives == ("program_change",)
+		assert p6.midi.channels == (1, 16)
+
+	def test_the_controllers_moved_channel_in_the_firmware_it_describes (self) -> None:
+		"""1.01 took them on the auto channel alone; 1.02 on the granular sampler's as well."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert p6.model.firmware == "1.02"
+		assert p6.sources["release_notes"].edition == "Ver.1.02"
+		assert {control.part for control in p6.controls.values()} == {"granular"}
+		assert p6.parts["auto"].takes("controls")
+
+		said = prose_of("roland", "p_6")
+
+		assert "For ver. 1.01, this data is received only when the receive channel is set to 15 (auto)." in said
+		assert "Changed the MIDI CC so that it can be received by both Auto Channel and Granular Ch." in said
+
+	def test_a_note_picks_a_pad_on_one_channel_and_a_pitch_on_another (self) -> None:
+		"""The sample pads read a note as a pad, the auto channel as a pitch, and nothing says how the granular one reads it."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert p6.parts["sample_pads"].addressing == "voices"
+		assert p6.parts["auto"].addressing == "pitches"
+		assert p6.parts["granular"].addressing is None
+
+		# Only the two ends of the pads' span are printed, so no pad is given a note.
+		assert p6.voice is not None
+		assert p6.voice.voices == {}
+		assert p6.voice.note_range is None
+
+		said = prose_of("roland", "p_6")
+
+		assert "Which note reaches which pad between those two ends is not printed anywhere" in said
+
+	def test_each_part_that_sounds_has_voices_of_its_own (self) -> None:
+		"""Sixteen for the sample pads and four for the granular sampler, stated where each is true."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert p6.voice is not None
+		assert p6.voice.polyphony is None
+		assert p6.voice.polyphony_shared is False
+		assert p6.parts["sample_pads"].polyphony == 16
+		assert p6.parts["granular"].polyphony == 4
+		assert p6.parts["auto"].polyphony is None
+		assert p6.parts["pattern"].polyphony is None
+
+	def test_nine_stepped_parameters_stay_continuous (self) -> None:
+		"""Each chooses between named settings on the instrument, and no value is tied to any of them."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		stepped = ["sample", "filter_type", "auto_pan", "grain_shape", "start_mode",
+			"t_env_mode", "amp_switch", "output_bus_select", "lo_fi_switch"]
+
+		for name in stepped:
+			control = p6.controls[name]
+
+			assert control.kind == "continuous", name
+			assert control.range == (0, 127), name
+
+		assert all(not control.values and not control.choices for control in p6.controls.values())
+
+	def test_the_checked_absences (self) -> None:
+		"""From the chart's own rows, and a sweep of 152 pages squashed to letters and digits."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert p6.midi.sysex is False
+		assert p6.midi.nrpn == "none"
+		assert p6.midi.mode == 3
+		assert p6.midi.clock == "both"
+		assert p6.midi.transport == "both"
+		assert p6.voice is not None
+		assert p6.voice.aftertouch == "none"
+		assert p6.voice.pitch_bend is None
+		assert p6.voice.velocity is not None
+		assert p6.voice.velocity.note_on == "received"
+		assert p6.voice.velocity.note_off is False
+
+	def test_continue_is_received_and_does_what_start_does (self) -> None:
+		"""The chart prints that inside the received column's cell, under its o, and not among the remarks."""
+		said = prose_of("roland", "p_6")
+
+		assert "under the `o`, inside the column headed `Recognized`" in said
+
+	def test_sixty_four_patterns_and_a_channel_of_their_own (self) -> None:
+		"""The S-1 gives its program changes a channel of their own too, and the same sixty-four."""
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert p6.midi.program_change is not None
+		assert p6.midi.program_change.presets == 64
+		assert p6.midi.program_change.receives is True
+		assert p6.midi.program_change.sends is True
+
+		assert s1.midi.program_change is not None
+		assert s1.midi.program_change.presets == p6.midi.program_change.presets
+		assert s1.parts["pattern"].receives == p6.parts["pattern"].receives == ("program_change",)
+
+
 class TestPolyBrute12:
 
 	"""The sibling of an instrument already here, whose chart turns out to be the same chart."""
@@ -14942,7 +15098,7 @@ class TestSH4D:
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
 		assert three == ["roland/fantom_6_7_8", "roland/jd_xi", "roland/ju_06a",
-			"roland/mc_101", "roland/mc_707", "roland/s_1", "roland/sh_4d"]
+			"roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1", "roland/sh_4d"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
 
 		# Three of the four are drum machines; the TB-3 is the exception worth knowing.

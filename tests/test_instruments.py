@@ -271,6 +271,7 @@ class TestBundledCorpus:
 			"yamaha/reface_cp",
 			"yamaha/reface_cs",
 			"yamaha/reface_dx",
+			"yamaha/seqtrak",
 		]
 
 	def test_the_readme_qualifies_a_channel_that_could_be_read_two_ways (self) -> None:
@@ -16004,24 +16005,28 @@ class TestMontage:
 		assert '"[SW1] Complies with Part Receive Switch. The MIDI Receive Channel complies ' \
 			'with the Part number."' in flat
 
-	def test_mode_three_is_named_which_no_other_yamaha_here_does (self) -> None:
-		"""Four Yamahas were already here and not one of them names a reception mode."""
+	def test_mode_three_is_named_which_the_four_older_yamahas_do_not (self) -> None:
+		"""Four Yamahas were already here and not one of them names a reception mode.
+
+		**This test was called `..._which_no_other_yamaha_here_does` and that stopped being
+		true at rank 110**, when `yamaha/seqtrak` arrived naming mode 3 outright and the
+		assertion failed.  It is renamed rather than relaxed: the claim worth keeping is
+		about the four that came before, which is the maker-rule point, and the fact that
+		two of six now name a mode is asserted in `TestSeqtrak`.
+		"""
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
 
 		assert montage.midi.mode == 3
 
-		others = [name for name in pymidiinstrumentdefs.available([CORPUS])
-			if name.startswith("yamaha/") and name != "yamaha/montage_6_7_8"]
+		older = ["yamaha/dx7", "yamaha/reface_cp", "yamaha/reface_cs", "yamaha/reface_dx"]
 
-		assert sorted(others) == ["yamaha/dx7", "yamaha/reface_cp", "yamaha/reface_cs",
-			"yamaha/reface_dx"]
-
-		for name in others:
+		for name in older:
 			assert pymidiinstrumentdefs.load(name, [CORPUS]).midi.mode is None, name
 
-		# The one thing all five do share, which the maker rule says proves nothing.
-		for name in others + ["yamaha/montage_6_7_8"]:
-			assert pymidiinstrumentdefs.load(name, [CORPUS]).midi.sysex is True, name
+		# The one thing every Yamaha here shares, which the maker rule says proves nothing.
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			if name.startswith("yamaha/"):
+				assert pymidiinstrumentdefs.load(name, [CORPUS]).midi.sysex is True, name
 
 	def test_every_received_message_sits_behind_a_switch_with_no_printed_default (self) -> None:
 		"""The chart's footnote names a switch and never says which way it points."""
@@ -16072,3 +16077,181 @@ class TestMontage:
 
 		assert fantom.model.name == "FANTOM-6/7/8"
 		assert "roland/fantom_6_7_8" in flat
+
+
+class TestSeqtrak:
+
+	"""The numbers are in one document and the names are in another.
+
+	Yamaha's Data List carries the implementation chart, which lists sixteen cells of
+	controller numbers and names three of them only as model-specific, with a footnote
+	pointing at "the manual".  The User Guide's section 18.3 names thirty-seven
+	controllers and says nothing about which way any of them travels.  Neither document
+	is sufficient, and the Data List's own MIDI Data Table - which is where rank 109
+	taught us to look - is a system exclusive address map with no controller names in it.
+	"""
+
+	def test_forty_controls_reconciled_from_two_documents (self) -> None:
+		"""37 named in the User Guide, plus 3 the chart carries and no table names."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+		numbers = sorted(control.cc for control in seqtrak.controls.values()
+			if control.cc is not None)
+
+		assert len(seqtrak.controls) == 40
+		assert numbers == [5, 7, 10, 11, 20, 21, 23, 24, 25, 26, 27, 28, 29,
+			64, 65, 66, 71, 73, 74, 75, 91, 94,
+			102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
+			116, 117, 118, 119]
+
+		# **The three the chart has and 18.3 has not**: standard controllers the instrument
+		# answers to with no model-specific parameter published behind them.
+		for standard in (11, 64, 66):
+			assert standard in numbers, standard
+
+		# Ten numbers the chart names are addressing machinery or channel mode, and the
+		# ruling at rank 77 and the Fantom's keep them out.
+		for machinery in (0, 32, 6, 38, 96, 97, 100, 101, 126, 127):
+			assert machinery not in numbers, machinery
+
+		# 72 is absent because the chart writes `71,73-75` rather than `71-75`.
+		assert 72 not in numbers
+
+	def test_five_are_received_only_and_two_of_them_on_two_documents_word (self) -> None:
+		"""The chart crosses their transmitted column; the guide says so in prose for two."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+		receives = sorted(control.cc for control in seqtrak.controls.values()
+			if control.direction == "receives" and control.cc is not None)
+
+		assert receives == [11, 23, 24, 64, 66]
+
+		# MUTE and SOLO are the pair the User Guide also states, which is the account's point.
+		assert seqtrak.controls["mute"].cc == 23
+		assert seqtrak.controls["solo"].cc == 24
+		assert "receive only" in (seqtrak.source or "")
+
+		both = [control for control in seqtrak.controls.values() if control.direction == "both"]
+
+		assert len(both) == 35
+
+	def test_the_two_switches_take_different_conventions (self) -> None:
+		"""One is given exact values and the other halves of the range, two sheets apart."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		# Exact values: 0 is off and 1 is on, and nothing says what 2 to 127 do.
+		assert seqtrak.controls["portamento_switch"].choices == {"off": 0, "on": 1}
+		assert seqtrak.controls["portamento_switch"].values == {}
+
+		# Bands: 0 to 63 off, 64 to 127 on.
+		assert seqtrak.controls["mute"].values == {"off": 0, "on": 64}
+		assert seqtrak.controls["mute"].choices == {}
+
+	def test_eleven_tracks_on_eleven_channels_that_cannot_be_moved (self) -> None:
+		"""Four groups, because that is how both documents group the eleven."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.midi.channels == (1, 11)
+		assert sorted(seqtrak.parts) == ["drum", "dx", "sampler", "synth"]
+
+		# The counts sum to the eleven channels, and the offsets lay them out in order.
+		assert [(part.count, part.channel_offset) for name, part in
+			sorted(seqtrak.parts.items(), key = lambda pair: pair[1].channel_offset or 0)] == \
+			[(7, 0), (2, 7), (1, 9), (1, 10)]
+
+		assert sum(part.count for part in seqtrak.parts.values()) == 11
+
+	def test_the_part_specific_controls_name_their_part (self) -> None:
+		"""Where a control reaches one group only, the control says which."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.controls["drum_pitch"].part == "drum"
+
+		fm = [name for name, control in seqtrak.controls.items() if control.part == "dx"]
+
+		assert sorted(fm) == ["fm_algorithm", "fm_modulation_amount",
+			"fm_modulator_feedback", "fm_modulator_frequency"]
+
+		# **The arpeggio and portamento controls reach two groups**, synth and DX, which a
+		# single `part` field cannot say - so they name none and the account says it instead.
+		for spanning in ("arp_type", "arp_gate", "arp_speed", "portamento_time"):
+			assert seqtrak.controls[spanning].part is None, spanning
+
+	def test_aftertouch_is_none_without_needing_a_judgement (self) -> None:
+		"""One chart, crossed in all four boxes - where its sibling had two that disagreed."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.voice.aftertouch == "none"
+
+		# The MONTAGE is the contrast: two charts, and `channel` chosen between them.
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+
+		assert montage.voice.aftertouch == "channel"
+
+	def test_polyphony_is_unrecorded_because_two_engines_have_no_sum (self) -> None:
+		"""128 voices and 8, and no third number anywhere - rank 109's situation exactly."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
+
+		assert seqtrak.voice.polyphony is None
+		assert montage.voice.polyphony is None
+
+		# The reason is in the account rather than left as a silence.
+		assert "no sum" in (seqtrak.source or "")
+
+	def test_bend_is_programmable_and_ships_at_two_semitones (self) -> None:
+		"""Its maker publishes a default where `roland/jd_xi`'s publishes none."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.voice.pitch_bend is not None
+		assert seqtrak.voice.pitch_bend.semitones == 2
+		assert seqtrak.voice.pitch_bend.programmable is True
+
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		assert jd_xi.voice.pitch_bend is not None
+		assert jd_xi.voice.pitch_bend.semitones is None
+		assert jd_xi.voice.pitch_bend.programmable is True
+
+	def test_nrpn_is_a_checked_absence_and_sysex_is_not (self) -> None:
+		"""Not one occurrence in 272 sheets, swept with the whitespace taken out."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.midi.nrpn == "none"
+		assert seqtrak.midi.sysex is True
+		assert seqtrak.midi.mode == 3
+		assert seqtrak.midi.clock == "both"
+		assert seqtrak.midi.transport == "both"
+
+	def test_the_sixth_yamaha_and_the_maker_rule_held_again (self) -> None:
+		"""All six say sysex, and this one is the second to name a mode or carry parts."""
+		names = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			if name.startswith("yamaha/")]
+
+		assert len(names) == 6
+
+		loaded = {name: pymidiinstrumentdefs.load(name, [CORPUS]) for name in names}
+
+		# The one thing all six agree on.
+		assert all(one.midi.sysex is True for one in loaded.values())
+
+		# **Only two of the six name a reception mode, and only two have parts** - this one
+		# and the MONTAGE. A Yamaha Data List is not one shape.
+		with_mode = sorted(name for name, one in loaded.items() if one.midi.mode is not None)
+		with_parts = sorted(name for name, one in loaded.items() if one.parts)
+
+		assert with_mode == ["yamaha/montage_6_7_8", "yamaha/seqtrak"]
+		assert with_parts == ["yamaha/montage_6_7_8", "yamaha/seqtrak"]
+
+	def test_the_firmware_comes_from_inside_both_documents (self) -> None:
+		"""Where rank 109's Data List named no version at all, this one names it twice."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.model.firmware == "2.00"
+		assert seqtrak.model.revision == "D0"
+		assert sorted(seqtrak.sources) == ["data_list", "downloads_page", "user_guide"]
+
+	def test_the_drumkit_disagreement_is_carried_rather_than_reduced (self) -> None:
+		"""The specification names five track types; both MIDI tables name four."""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert "DRUMKIT" in (seqtrak.source or "")
+		assert len(seqtrak.parts) == 4

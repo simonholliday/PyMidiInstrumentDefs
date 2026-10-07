@@ -1,0 +1,341 @@
+# **THE CONTROLLER MAP IS NOT IN THE DATA LIST, WHICH IS WHERE RANK 109 TAUGHT ME TO LOOK.** The
+# MONTAGE established that Yamaha publishes no standalone MIDI implementation and that its MIDI
+# data format, data table and implementation chart sit in the Data List. All three are here too,
+# promised on the contents page at 111, 117 and 162 - and **sheets 117 to 161 are a system
+# exclusive address map**, not a controller table. `Parameter Base Address`, `Bulk Dump Block`,
+# `Top Address`, addresses and sizes. The only places `Control Change` appears in those
+# forty-five sheets are the switches deciding whether control changes are transmitted at all.
+#
+# **SO THE NUMBERS AND THE NAMES ARE IN DIFFERENT DOCUMENTS, AND NEITHER IS SUFFICIENT ALONE.**
+# The chart gives sixteen cells of controller numbers and the direction each travels, and names
+# three of those cells only `Model-Specific *2`, where `*2` says to refer to the manual. The
+# User Guide's section 18.3 names all thirty-seven with their channels and ranges and says
+# nothing about direction. This definition is built from both, which is why both are cited.
+#
+# **THE COUNT RECONCILES TO FORTY THREE WAYS, AND NOT ONE OF THEM IS A HAND COUNT.** The chart's
+# sixteen cells expand to fifty controller numbers; ten of those are addressing machinery or
+# channel mode, which the ruling at rank 77 and the Fantom's at rank 101 both exclude; forty
+# remain. The User Guide's three tables name thirty-seven, every one of them on the chart, and
+# the three the chart has that 18.3 does not are 11, 64 and 66 - Expression, Sustain Switch and
+# Sostenuto, standard controllers with no model-specific parameter behind them. 37 + 3 = 40.
+# **And midi.guide's independent figure for this instrument is 40.** Three sources agreeing, two
+# of them not Yamaha's.
+#
+# **UNLIKE THE MONTAGE'S, THIS DATA LIST NAMES ITS FIRMWARE.** Its cover reads `For OS V2.00` and
+# the User Guide says the same in prose, so the firmware comes from inside both documents rather
+# than from a download page's label. **The maker rule held a thirteenth time by failing**: a
+# Yamaha Data List was expected to behave as the MONTAGE's did, and in this one respect it does
+# the opposite. What did repeat is the trap: the chart stamps `Version : 1.0` and
+# `Date :26-SEP-2023` on itself inside an edition published 01/2026 for OS V2.00.
+#
+# **THE CHART WAS READ GEOMETRICALLY AND THE METHOD RANK 109 USED DOES NOT WORK ON IT.** Its four
+# columns have no clear vertical gutter, because the Remarks column's footnotes and the mode
+# legend span across them, so measuring the widest clear band finds only the right margin. It was
+# read by clustering its 331 words onto baselines with a two-point tolerance instead - rank 108's
+# rule - which gives 53 rows and puts every cell in its own. A flat reading interleaves the two
+# value columns and is unusable.
+#
+# **AND THE TRACK NAMES ARE NOT QUOTED ANYWHERE BELOW, ON PURPOSE.** The track table's cells are
+# three separate columns, and a label reassembled across columns is not a quotation - which is
+# exactly what the gate caught twice in `yamaha/montage_6_7_8`. The eleven names are described
+# rather than quoted, and only whole cells are quoted.
+
+definition: 1
+
+model:
+  manufacturer: Yamaha
+  name: SEQTRAK
+  # **STATED ON THE COVER OF BOTH DOCUMENTS, NOT INFERRED FROM A LABEL.** The Data List's cover
+  # reads `For OS V2.00` and the User Guide's says the functions it describes are for OS V2.00.
+  # Rank 109 had to reach for a sibling document and the newest updater to name a firmware at
+  # all; here two documents say it outright.
+  firmware: "2.00"
+  # The edition of both documents, from each colophon and matching each filename. The Data List
+  # prints `Published 01/2026 YJ-D0`; the User Guide is served as `..._En_D0.pdf`. The Safety
+  # Guide is at C0 and the Quick Operation Guide at B1 on the same page, so a reader matching
+  # revisions across the whole download page will think something is stale when nothing is.
+  revision: D0
+  # Checked 2026-10-07.
+
+source: >-
+  **ELEVEN TRACKS, EACH ON ITS OWN FIXED CHANNEL, AND THAT IS WHAT MAKES EVERY CONTROLLER BELOW
+  MEAN SOMETHING.** The Data List's track table gives eleven named tracks and the MIDI channel
+  each answers on, in that order: seven drum tracks on channels 1 to 7, two synth tracks on 8
+  and 9, an FM track on 10 and a sampler on 11. The names are the maker's - a kick, a snare, a
+  clap, two hats, two percussion tracks, two synths, the DX and the sampler - and they are
+  described here rather than quoted, because each sits in its own column of that table and words
+  joined across columns are not words the page prints. The implementation chart agrees from the
+  other side: its Basic Channel row reads `1 - 11`, and its Changed row is crossed, so **no
+  channel on this instrument can be moved.**
+
+  **THE CONTROLLER'S CHANNEL IS THEREFORE WHICH TRACK IT REACHES**, and the User Guide's own
+  `AVAILABLE ON` column says which tracks each controller has any effect on. Those spans are
+  exactly the track table's groups, arrived at independently: the drum pitch controller is given
+  for channels 1 to 7, the mono/poly/chord and arpeggio controllers for 8 to 10, and the four FM
+  controllers for channel 10 alone. Two documents reaching the same layout from different
+  directions is the strongest thing said about this instrument's addressing.
+
+  **FORTY CONTROLLER NUMBERS ARE PUBLISHED AND THE TWO DOCUMENTS DIVIDE THE WORK.** The
+  implementation chart lists the numbers and whether each travels, and names three of its cells
+  only as model-specific, with a footnote reading "Please refer to the manual." (data_list
+  p. 162). The manual it means is the User Guide, whose "18.3 MIDI Control Change Parameters"
+  (user_guide p. 100) names thirty-seven of the forty with a channel span and a value range for
+  each. The remaining three - Expression at 11, Sustain Switch at 64 and Sostenuto at 66 - are on
+  the chart and in no table, which is to say the instrument answers to them and Yamaha publishes
+  no model-specific parameter behind them.
+
+  **FIVE OF THE FORTY ARE RECEIVE-ONLY, AND ON TWO OF THEM TWO DOCUMENTS AGREE.** The chart
+  crosses the transmitted column for 11, 23, 24, 64 and 66 while circling all five as recognised.
+  For 23 and 24 the User Guide says the same thing in prose - "MUTE and SOLO are receive only"
+  (user_guide p. 101) - which is a chart written to describe message flow and a guide written to
+  tell an owner what to expect, arriving at one fact without either deriving from the other. The
+  other thirty-five travel both ways.
+
+  **THE TWO SWITCHES AMONG THEM USE DIFFERENT CONVENTIONS, WHICH IS THE MAKER'S DOING AND NOT A
+  TRANSCRIPTION ERROR.** The portamento switch at 65 is given exact values, 0 for off and 1 for
+  on, so it carries `choices`; the mute at 23 is given halves of the range, 0 to 63 off and 64 to
+  127 on, so it carries `values`. Both are in the same section two sheets apart. Nothing says
+  what 2 to 127 do to the portamento switch, which is why a band would be an invention.
+
+  **TRANSMISSION SHIPS SWITCHED OFF, WHICH THE CHART DOES NOT TELL YOU AND THE SYSTEM EXCLUSIVE
+  TABLE DOES.** The chart circles the control change rows in both columns with no footnote, while
+  the parameter table gives a transmit switch for each port - legacy MIDI, USB MIDI and Bluetooth
+  - whose control change bit defaults to off. So the instrument is capable of sending these
+  controllers and will not do so until an owner turns it on. Both statements are true and the
+  directions below record the capability, which is what a reader needs in order to know the
+  message exists at all.
+
+  **PITCH BEND IS PROGRAMMABLE TWO WAYS WITH TWO DIFFERENT REACHES, AND SHIPS AT THE CONVENTIONAL
+  TWO SEMITONES.** The registered parameter sets it symmetrically: "PITCH BEND SENSITIVITY 00H -
+  18H (0 - 24 semitones)" (data_list p. 115). The system exclusive parameters set the upper and
+  lower bounds separately and reach further, over `-48 - +24` each, defaulting to plus two and
+  minus two - and they are "Not available for DX track" (data_list p. 142), so the FM track takes
+  the registered parameter and not those. `roland/jd_xi` records no depth
+  because its maker published none; this maker publishes a default, so it is here.
+
+  **POLYPHONY IS NOT RECORDED, FOR THE REASON RANK 109 MET IN THE SAME WORDS.** The specification
+  gives "AWM2: 128, FM: 8" (user_guide p. 98) - two engines, two figures, and no sum anywhere in
+  either document. Ten of the eleven tracks are served by the first and the DX track by the
+  second, so neither number is true of the instrument and no third number is published.
+
+  **AND WHAT THE COMPANION APP ADDS IS SOUNDS, NOT CONTROLLERS**, which had to be established
+  before this map could be taken as complete. The specification gives the preset counts and notes
+  that they "Can be added from the SEQTRAK app" (user_guide p. 98) under the sounds heading and
+  nowhere near the MIDI sections. The controller map does not grow.
+
+  **ONE DISAGREEMENT IS CARRIED RATHER THAN SETTLED.** The specification lists this instrument's
+  track types as "DRUM, DRUMKIT, SYNTH, DX, SAMPLER" (user_guide p. 98) - five - while the track
+  table names four groups and the controller tables' own `AVAILABLE ON` column names the same
+  four. **DRUMKIT appears in neither MIDI table.** Nothing below rests on it, and it is said here
+  rather than quietly reduced to four, because an owner who meets a DRUMKIT track needs to know
+  the MIDI documentation does not mention one.
+
+  **FOUR ABSENCES, EACH READ RATHER THAN COUNTED.** Both documents were swept with the whitespace
+  and hyphens taken out, which is what finds a maker's own typography: there is no NRPN and
+  nothing non-registered anywhere in either; aftertouch appears once in 272 sheets and it is the
+  chart's own row label, crossed in all four boxes; nothing describes polyphonic pressure; and
+  the only MPE-shaped hits are the letters inside ordinary words.
+
+sources:
+  data_list:
+    kind: data_list
+    title: SEQTRAK Data List
+    edition: YJ-D0
+    dated: 2026-01
+    landing: "https://usa.yamaha.com/products/music_production/music-production-studios/seqtrak/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/5/2226075/SEQTRAK_data_list_En_D0.pdf"
+    sha256: 471b46a23e5361fff082ef6f4d149cd98c3cefaf1225d1f9b0281fc96e0eaa42
+    retrieved: 2026-10-07
+    # **PRINTED PAGE EQUALS FILE PAGE, CHECKED ON ALL 161 SHEETS THAT CARRY A FOLIO.** The only
+    # sheet whose bare numbers are not its own folio is the cover, where they are the contents
+    # entries. 163 sheets in all.
+    page_offset: 0
+  user_guide:
+    kind: manual
+    title: SEQTRAK User Guide
+    edition: D0
+    dated: 2026-01
+    landing: "https://usa.yamaha.com/products/music_production/music-production-studios/seqtrak/downloads.html"
+    url: "https://usa.yamaha.com/files/download/other_assets/9/2227389/SEQTRAK_user_guide_En_D0.pdf"
+    sha256: 88ecb7f86154297ee2464beb8e184106370ade7f44e47f862866636e49127651
+    retrieved: 2026-10-07
+    # **THE ONLY DOCUMENT IN THIS CORPUS WHOSE PAGINATION IS PROVABLE ON EVERY SHEET WITHOUT
+    # EXCEPTION**: all 109 carry a header reading `SEQTRAK User Guide` followed by the sheet's own
+    # number, so there is no sheet to argue about.
+    page_offset: 0
+  downloads_page:
+    kind: download_page
+    title: SEQTRAK Mobile Music Ideastation Manuals - Yamaha USA
+    landing: "https://usa.yamaha.com/products/music_production/music-production-studios/seqtrak/downloads.html"
+    url: "https://usa.yamaha.com/products/music_production/music-production-studios/seqtrak/downloads.html"
+    sha256: 19d192c6980e5f5edbd1abe358da98f9b534f027bcc0389cf78898fb8727a311
+    retrieved: 2026-10-07
+    paginated: false
+    # Cited for the edition letters and for which documents exist. **The product path needs the
+    # hyphens**: `music_production/music-production-studios/seqtrak/` is the instrument, while
+    # `/music_production/seqtrak/` redirects to a category listing that answers 200 and is not
+    # this instrument - the failure that is hardest to notice. This fetch took no redirect.
+    # **And no two rows serve one file here, which was checked rather than assumed** after rank
+    # 109 found two of the MONTAGE's rows behind the same bytes: all seven rows have their own
+    # path, and the two documents fetched differ in size and hash and match the sizes the page
+    # prints. The digest is of the text the page renders to, which is what a reader can search;
+    # the HTML as served is beside it in the library at `759da116`.
+
+midi:
+  # `1 - 11` in the chart's Basic Channel row, with the Changed row crossed in both columns - so
+  # eleven channels, one per track, and not one of them settable.
+  channels: [1, 11]
+  # Default 3 recognised, and `3,4(m=1)` under Mode Messages, where the chart's own footnote
+  # reads `*1 m is always treated as "1" regardless of its value.` - so mode 4 collapses to one
+  # voice. Nothing is transmitted: that column is crossed.
+  mode: 3
+  # Both ways, each gated by a setting the chart names: `*4 If clock out is on and SEQTRAK uses
+  # the internal clock.` transmitting, `*5 If MIDI sync is "MIDI(Auto)".` receiving.
+  clock: both
+  # The chart's System Real Time Commands row, circled both ways.
+  transport: both
+  # **NOT ONE OCCURRENCE IN 272 SHEETS**, swept with the whitespace and hyphens taken out so that
+  # a stacked or hyphenated spelling could not hide. The chart's `96,97` and `100,101` are the
+  # registered parameters, which are addressing and not controls.
+  nrpn: none
+  sysex: true
+  # Circled both ways with the chart's `*3 If switch is on.` against each, and the parameter table
+  # gives the switch - `Receive/Transmit Program Change`, which ships on.
+  program_change:
+    receives: true
+    sends: true
+
+voice:
+  addressing: pitches
+  note_range: [0, 127]
+  # **NOT RECORDED, AND THE REASON IS PUBLISHED RATHER THAN MISSING.** See the account: two
+  # engines, 128 voices and 8, and no sum in either document. `yamaha/montage_6_7_8` is
+  # unrecorded for the same reason.
+  velocity:
+    note_on: both
+    note_off: false
+  # **CROSSED IN ALL FOUR BOXES** - key's and channel's, transmitted and recognised - and the word
+  # appears once in either document, as that row's own label. No ambiguity at all, where
+  # `yamaha/montage_6_7_8` had two charts answering differently and needed a judgement.
+  aftertouch: none
+  pitch_bend:
+    # Plus two and minus two, the defaults of the two system exclusive parameters that set the
+    # bounds separately.
+    semitones: 2
+    programmable: true
+
+parts:
+  # **ELEVEN TRACKS ON ELEVEN FIXED CHANNELS, GROUPED THE WAY BOTH DOCUMENTS GROUP THEM.** The
+  # Data List's track table gives a Track Group for each of the eleven, and the User Guide's
+  # `AVAILABLE ON` column names those same four groups against each controller - so the grouping
+  # is the maker's twice over rather than this file's invention.
+  #
+  # **`channel_offset` CARRIES THE SAME FICTION IT CARRIES IN `roland/jd_xi`**, and for the same
+  # reason: the field says a part's channel is derived from a base and cannot be set on its own.
+  # The second half is exactly right - the chart crosses the Changed row - and the first half is
+  # a fiction, there being no base to derive from because the base never moves. The numbers a
+  # consumer sends are right, 1 through 11, and the fiction is recorded here rather than left for
+  # somebody to find. One for the format specification's list of what it cannot say.
+  drum:
+    label: Drum
+    count: 7
+    channel_offset: 0
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # Channels 1 to 7: a kick, a snare, a clap, two hats and two percussion tracks, each its own
+    # track with its own name in the maker's table. **The only part the drum pitch controller
+    # reaches**, which is how the group's span is confirmed from the controller side.
+  synth:
+    label: Synth
+    count: 2
+    channel_offset: 7
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # Channels 8 and 9. These and the DX part are the three the portamento, arpeggio and
+    # mono/poly/chord controllers are given for, which is why those controllers span 8 to 10 and
+    # name two groups rather than one - something `Control.part` cannot say, so it is said here.
+  dx:
+    label: DX
+    channel_offset: 9
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # Channel 10, the four-operator FM track, and **the only part the four FM controllers reach**.
+    # Also the one part the system exclusive bend-range parameters exclude.
+  sampler:
+    label: SAMPLER
+    channel_offset: 10
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # Channel 11. Named in capitals because that is how both the track table and the controller
+    # tables' `AVAILABLE ON` column print it.
+
+groups:
+  mix: Mix
+  envelope: Envelope
+  filter: Filter
+  eq: EQ
+  send: Send
+  portamento: Portamento
+  arpeggio: Arpeggio
+  voicing: Voicing
+  fm: FM
+  effect: Effect
+
+controls:
+  # ---- 18.3.1 Sound Design parameters, all eleven tracks unless the account says otherwise ----
+  track_volume:        {label: TRACK VOLUME, cc: 7, group: mix}
+  # **1 to 127, not 0 to 127**, which is what the maker prints for this one row and for no other.
+  track_pan:           {label: TRACK PAN, cc: 10, range: [1, 127], group: mix}
+  attack_time:         {label: ATTACK TIME, cc: 73, group: envelope}
+  decay_release_time:  {label: DECAY/RELEASE TIME, cc: 75, group: envelope}
+  filter_cutoff:       {label: FILTER CUTOFF, cc: 74, group: filter}
+  filter_resonance:    {label: FILTER RESONANCE, cc: 71, group: filter}
+  eq_high_gain:        {label: EQ - HIGH GAIN, cc: 20, range: [40, 88], group: eq}
+  eq_low_gain:         {label: EQ - LOW GAIN, cc: 21, range: [40, 88], group: eq}
+  reverb_send:         {label: REVERB SEND, cc: 91, group: send}
+  delay_send:          {label: DELAY SEND, cc: 94, group: send}
+  # Drum tracks only, channels 1 to 7.
+  drum_pitch:          {label: DRUM PITCH, cc: 25, range: [40, 88], part: drum, group: voicing}
+  # Synth and DX only, channels 8 to 10. Exact values, not bands.
+  mono_poly_chord:     {label: MONO/POLY/CHORD, cc: 26, choices: {mono: 0, poly: 1, chord: 2}, group: voicing}
+  # Synth and DX only. 0 switches it off rather than setting the shortest time.
+  portamento_time:     {label: PORTAMENTO TIME, cc: 5, group: portamento}
+  # **EXACT VALUES WHERE THE MUTE TWO SHEETS LATER TAKES BANDS** - see the account.
+  portamento_switch:   {label: PORTAMENTO SWITCH, cc: 65, choices: {"off": 0, "on": 1}, group: portamento}
+  arp_type:            {label: ARP TYPE, cc: 27, range: [0, 16], group: arpeggio}
+  arp_gate:            {label: ARP GATE, cc: 28, group: arpeggio}
+  arp_speed:           {label: ARP SPEED, cc: 29, range: [0, 9], group: arpeggio}
+  # The DX track alone, channel 10.
+  fm_algorithm:        {label: FM ALGORITHM, cc: 116, part: dx, group: fm}
+  fm_modulation_amount: {label: FM MODULATION AMOUNT, cc: 117, part: dx, group: fm}
+  fm_modulator_frequency: {label: FM MODULATOR FREQUENCY, cc: 118, part: dx, group: fm}
+  fm_modulator_feedback: {label: FM MODULATOR FEEDBACK, cc: 119, part: dx, group: fm}
+
+  # ---- 18.3.2 Effect parameters: assigned-parameter slots, so what each one does depends on
+  # ---- which effect type the track or the master bus is using.
+  master_effect_1_parameter_1: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 1, cc: 102, group: effect}
+  master_effect_1_parameter_2: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 2, cc: 103, group: effect}
+  master_effect_1_parameter_3: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 3, cc: 104, group: effect}
+  master_effect_2_parameter:   {label: MASTER EFFECT 2 - ASSIGNED PARAMETER, cc: 105, group: effect}
+  master_effect_3_parameter:   {label: MASTER EFFECT 3 - ASSIGNED PARAMETER, cc: 106, group: effect}
+  single_effect_parameter_1:   {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, group: effect}
+  single_effect_parameter_2:   {label: SINGLE EFFECT - ASSIGNED PARAMETER 2, cc: 108, group: effect}
+  single_effect_parameter_3:   {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, group: effect}
+  send_reverb_parameter_1:     {label: SEND REVERB - ASSIGNED PARAMETER 1, cc: 110, group: effect}
+  send_reverb_parameter_2:     {label: SEND REVERB - ASSIGNED PARAMETER 2, cc: 111, group: effect}
+  send_reverb_parameter_3:     {label: SEND REVERB - ASSIGNED PARAMETER 3, cc: 112, group: effect}
+  send_delay_parameter_1:      {label: SEND DELAY - ASSIGNED PARAMETER 1, cc: 113, group: effect}
+  send_delay_parameter_2:      {label: SEND DELAY - ASSIGNED PARAMETER 2, cc: 114, group: effect}
+  send_delay_parameter_3:      {label: SEND DELAY - ASSIGNED PARAMETER 3, cc: 115, group: effect}
+
+  # ---- 18.3.3 Mute/Solo, receive only on two documents' word ----
+  mute: {label: MUTE, cc: 23, values: {"off": 0, "on": 64}, direction: receives, group: mix}
+  # 0 is off and 1 to 11 each name a track, so the value is a track number rather than a level.
+  solo: {label: SOLO, cc: 24, range: [0, 11], direction: receives, group: mix}
+
+  # ---- On the chart and in no table: the instrument answers to these and Yamaha publishes no
+  # ---- model-specific parameter behind them. In no group, because there is no panel control to
+  # ---- group them with - `korg/volca_keys` records its controller 11 the same way.
+  expression:      {label: Expression, cc: 11, direction: receives}
+  sustain_switch:  {label: Sustain Switch, cc: 64, direction: receives}
+  sostenuto:       {label: Sostenuto, cc: 66, direction: receives}

@@ -163,6 +163,7 @@ class TestBundledCorpus:
 			"asm/hydrasynth_explorer",
 			"asm/leviasynth",
 			"behringer/edge",
+			"behringer/lm_drum",
 			"behringer/model_d",
 			"behringer/neutron",
 			"behringer/pro_800",
@@ -17287,3 +17288,89 @@ class TestJD800:
 		# The archive the TR-909 and the JUNO-106 cite.
 		assert jd.sources["archive"].url == \
 			pymidiinstrumentdefs.load("roland/tr_909", [CORPUS]).sources["archive"].url
+
+
+class TestLMDrum:
+
+	"""A drum machine whose two documents number six controllers differently, and the later one is carried."""
+
+	def test_seventeen_controls_all_received (self) -> None:
+		"""The filter cutoff on 74 and a tuning for every drum on 75 to 90, the manual's names."""
+		lm = pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS])
+
+		numbers = {control.cc: control for control in lm.controls.values() if control.cc is not None}
+
+		assert sorted(numbers) == list(range(74, 91))
+		assert {control.direction for control in numbers.values()} == {"receives"}
+		assert numbers[74].label == "Filter Cutoff" and numbers[74].group == "analog_filter"
+		assert numbers[75].label == "Bass Drum Tuning" and numbers[90].label == "Claps Tuning"
+		assert {numbers[cc].group for cc in range(75, 91)} == {"tune"}
+
+	def test_the_guide_gives_six_of_the_numbers_to_other_drums (self) -> None:
+		"""The guide's 75 is the snare and the manual's the bass drum; the account says which wins and why."""
+		account = " ".join((pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS]).source or "").split())
+
+		assert "the guide's 75 is \"Snare Tuning\" (guide p. 18)" in account
+		assert "\"Enhanced Mode (on (default)/off) – allows tuning on all samples regardless of whether " \
+			"they have a dedicated tuning control.\" (manual p. 24)" in account
+		# And the sentence in the manual that still describes the old list.
+		assert "\"These controls are used to tune the snares, toms and congas and set the hi-hat decay." in account
+
+	def test_sixteen_drum_notes_are_defaults_used_both_ways (self) -> None:
+		lm = pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS])
+
+		assert lm.voice.addressing == "voices"
+		assert len(lm.voice.voices) == 16
+		assert (lm.voice.voices["bass_drum"], lm.voice.voices["snare_drum"], lm.voice.voices["cabasa"]) == (36, 40, 69)
+
+		# Changed in the instrument's own menu, which `roland/tr8s` and `elektron/machinedrum` leave unflagged.
+		assert lm.voice.note_map is None
+		assert pymidiinstrumentdefs.load("roland/tr8s", [CORPUS]).voice.note_map is None
+		assert pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS]).voice.note_map is None
+		account = " ".join((lm.source or "").split())
+
+		assert "Note that the same note is used both for TX and Rx." in account
+
+	def test_each_drum_plays_at_pitch_on_a_channel_of_its_own (self) -> None:
+		"""With Chromatic MIDI In on, sixteen parts on channels the player can change."""
+		lm = pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS])
+
+		assert set(lm.parts) == {"chromatic"}
+		chromatic = lm.parts["chromatic"]
+
+		assert (chromatic.count, chromatic.channel, chromatic.addressing) == (16, "assigned", "pitches")
+		assert chromatic.receives == ("notes",)
+
+	def test_the_rest_of_the_midi (self) -> None:
+		lm = pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS])
+
+		assert lm.midi.channels == (1, 16)
+		assert (lm.midi.clock, lm.midi.transport, lm.midi.program_change) == ("receives", None, None)
+		assert lm.midi.sysex is True and lm.midi.nrpn is None and lm.midi.mode is None
+
+		assert lm.voice.velocity is not None and lm.voice.velocity.note_on == "received"
+		assert (lm.voice.aftertouch, lm.voice.pitch_bend, lm.voice.polyphony) == (None, None, None)
+
+	def test_the_voice_count_is_given_twice_and_carried_neither_way (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS]).source or "").split())
+
+		assert "\"Number of voices 15\" (guide p. 68)" in account
+		assert "\"With 16-voice architecture\" (product_page)" in account
+
+	def test_the_firmware_is_the_manuals_and_not_the_newest (self) -> None:
+		lm = pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS])
+
+		assert lm.model.firmware == "1.1.5"
+		assert lm.sources["manual"].edition == "V1.1" and lm.sources["guide"].edition == "V 0.0"
+		account = " ".join((lm.source or "").split())
+
+		assert "names `LM DRUM Release Notes 1.1.7`" in account
+
+	def test_the_guide_is_two_pages_to_a_sheet (self) -> None:
+		lm = pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS])
+
+		assert set(lm.sources) == {"manual", "guide", "product_page"}
+		assert (lm.sources["manual"].page_offset, lm.sources["manual"].pages_per_sheet) == (0, 1)
+		assert (lm.sources["guide"].page_offset, lm.sources["guide"].pages_per_sheet) == (1, 2)
+		assert lm.sources["guide"].file_page(18) == lm.sources["guide"].file_page(19) == 10
+		assert lm.sources["product_page"].paginated is False

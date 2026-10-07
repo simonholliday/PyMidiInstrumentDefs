@@ -1,0 +1,251 @@
+definition: 1
+
+# SEVENTEEN CONTROLLERS, AND THE QUICK START GUIDE GIVES SIX OF THEIR NUMBERS TO OTHER DRUMS. The
+# manual, for firmware 1.1.5, gives 74 to the filter cutoff and 75 to 90 to the tuning of all
+# sixteen drums. The Quick Start Guide of 2023 agrees on 74 and gives 75 to 80 to the six drums
+# with a tune knob, so its 75 is the snare where the manual's is the bass drum. The manual is the
+# later document and names its firmware; the guide's list is in the account.
+#
+# SIXTEEN DRUMS ON SIXTEEN NOTES, AND EACH DRUM ALSO ON A CHANNEL OF ITS OWN. With Chromatic MIDI
+# In switched on, an external keyboard plays each drum at pitch on its own channel, 1 to 16 as the
+# manual's table gives them. That is the `chromatic` part below; the note map is the instrument's.
+
+model:
+  manufacturer: Behringer
+  name: LM DRUM
+  # THE FIRMWARE THE MANUAL NAMES, AND NOT THE NEWEST. Its cover reads "V1.1 (Firmware 1.1.5
+  # January 2025)" (manual p. 1). The product page also lists release notes for 1.1.7, at an
+  # address that did not resolve on 2026-10-07, so whether 1.1.7 moved a number is not known.
+  firmware: "1.1.5"
+
+source: >-
+  User Manual V1.1, 32 pages, the manual proper in English at pp. 17-30: the MIDI, USB and SYNC
+  menus at pp. 17-18, the SysEx dump at pp. 19-20, the MIDI Map sub-menu and its default notes and
+  the Options sub-menu at p. 24, the filter cutoff's controller at p. 25, the tune controls'
+  controllers at p. 26, and the sockets, real-time recording and chromatic playing at p. 27. The
+  Quick Start Guide V 0.0, for its menus, its controller list, its note table and its
+  specifications. And Behringer's product page, for the voice count, the pads and the pattern
+  memory, and for the list of what Behringer publishes.
+
+  THE CONTROLLERS ARE THE MANUAL'S, AND THE GUIDE'S ARE OLDER. The manual sets out two: "The filter
+  cutoff can also be set using MIDI continuous controller #74." (manual p. 25), and a table of
+  sixteen tunings running from 75 "Bass Drum Tuning" (manual p. 26) to 90 "Claps Tuning" (manual p.
+  26). The guide says "The LM DRUM responds to the following MIDI CCs:" (guide p. 18) and lists
+  seven on that page: 74 for the filter cutoff, as the manual has it, then 75 to 80 for the snare,
+  the hi, mid and lo toms and the hi and lo congas, in that order - the six drums with a tune knob
+  on the panel. So 75 to 80 name a different drum in each: the guide's 75 is "Snare Tuning" (guide
+  p. 18) and the manual's is the bass drum. The manual names its firmware on its cover and the guide
+  names none, and the manual was made in June 2025 and the guide in October 2023, so this file
+  carries the manual's seventeen. The manual also describes an option the guide never mentions,
+  "Enhanced Mode (on (default)/off) – allows tuning on all samples regardless of whether they have a
+  dedicated tuning control." (manual p. 24), which would account for every drum having a controller;
+  no page says so, and none says what 75 to 90 do to a drum without a knob when it is off. The
+  manual introduces its table with a sentence about the panel's knobs - "These controls are used to
+  tune the snares, toms and congas and set the hi-hat decay. Apart from hi-hat decay this can also
+  be achieved using the following MIDI continuous controllers:" (manual p. 26) - and the table then
+  lists all sixteen drums, most of which have no knob.
+
+  ALL SEVENTEEN ARE RECEIVED, AND NO PAGE SAYS ANY IS SENT. Neither document says received in so
+  many words. The guide's word is that the instrument responds to them, and the manual says the
+  cutoff "can also be set using" (manual p. 25) a controller and that tuning "can also be achieved
+  using" (manual p. 26) them, both of which describe what an incoming controller does. So every
+  control below is `direction: receives`.
+
+  THE NOTES ARE DEFAULTS, AND ONE SET SERVES BOTH DIRECTIONS. "The MIDI Map sub-menu allows the MIDI
+  note assigned to each drum to be re-assigned. Note that the same note is used both for TX and Rx.
+  The defaults are:" (manual p. 24), and the table names 36 C1 the bass drum. The guide's table has
+  the same sixteen rows and says "The individual drum voices of the LM DRUM can be triggered over
+  MIDI IN or recorded over MIDI OUT." (guide p. 18). The map is changed on the instrument itself, so
+  `note_map` is left unset - the state of `roland/tr8s` and `elektron/machinedrum`, whose maps are
+  changed on the instrument too - and `learned` is what this corpus uses for maps set by MIDI learn
+  or in an editor on a computer. Which the format should say for a map the instrument's own menu
+  changes is open on the tracker.
+
+  EACH DRUM CAN ALSO BE PLAYED AT PITCH ON A CHANNEL OF ITS OWN. "This can also be achieved using an
+  external MIDI keyboard by switching Chromatic MIDI on in the options sub-menu. When using an
+  external keyboard the chromatic voices respond to the following MIDI channels." (manual p. 27),
+  then a table running Bass Drum 1, Snare Drum 2, Sidestick 3 and on to Claps 16 - not the order of
+  the note map. "Note that the Rx channels can be changed in the MIDI Map menu, or by using the
+  SynthTribe app." (manual p. 27). So the table's channels are where a voice starts rather than
+  fixed, though it does not call them defaults; nor does any page give the option's own default, say
+  which notes a chromatic voice answers to, or say what becomes of the drum map's own channel while
+  the option is on.
+
+  THE CHANNELS ARE SET PER PORT, AND NO DEFAULT IS STATED. MIDI: "RX Channel – choose between All, 1
+  – 16 or Out, which matches the RX channel to that selected for TX." (manual p. 17) and "TX Channel
+  – choose between, 1 – 16 or Off, which disables transmission of MIDI messages." (manual p. 17).
+  USB has the same two, its transmit channel adding All (manual p. 18), and the guide gives both
+  ports "Tx channel (1-16, all, off)" (guide p. 16). `Forward to USB` and `Soft Thru` on the MIDI
+  menu and `Forward to MIDI` on the USB menu pass messages between the ports. The screen pictured
+  beside the MIDI menu reads `RX CHANNEL ALL` and `TX CHANNEL 1` (manual p. 17); no sentence calls
+  either a default, and a screenshot is one unit's settings, so neither is carried.
+
+  CLOCK IS FOLLOWED, AND NO PAGE SAYS ONE IS SENT. "MIDI – the LM DRUM will synchronize to MIDI
+  clock on the MIDI In socket." (manual p. 18) and "USB – the LM DRUM will synchronize to MIDI clock
+  on the USB socket." (manual p. 18). The trigger rate setting "does not affect MIDI or USB clocks,
+  which will always be set to 24 ppqn." (manual p. 18), which describes a clock without saying it
+  leaves the instrument. No English page of either document names start, stop, continue or song
+  position as a MIDI message - every start, stop and continue there is a button, a setting or
+  ordinary English - so `transport` is left out.
+
+  VELOCITY IS RECEIVED, AND AT THE PRINTED DEFAULT IT CHOOSES A SAMPLE. For the six drums with more
+  than one sample, "the setting of Velocity Threshold determines the velocity level at which the
+  sample switches from first to second then third where appropriate when using an external MIDI
+  controller." (manual p. 24), and the setting reads "Velocity THD (Threshold) (range 4 – 127,
+  default 110 or off)" (manual p. 24). Those variants have no notes of their own. With the threshold
+  off, "each sample will respond to MIDI velocity over the range available from an external MIDI
+  controller." (manual p. 24), and when recording from pads or an external source "The drums are
+  recorded with velocity as played." (manual p. 27). Whether the notes it sends carry the pads'
+  velocity is not stated: "Velo Sensitive Pad" (manual p. 24) sets whether the pads are velocity
+  sensitive at all, and its default is off.
+
+  HOW MANY DRUMS SOUND AT ONCE IS GIVEN TWICE, DIFFERENTLY. The guide's specifications say "Number
+  of voices 15" (guide p. 68); the product page says "With 16-voice architecture" (product_page);
+  both note tables have sixteen rows. The pictures suggest why. The voice outputs drawn in the guide
+  (guide p. 17) are sixteen jacks, one of them `CLICK` and one a single `HI HAT`; on the manual's
+  panel the click has a pan and a level fader but no select button (manual p. 26), and one hi-hat
+  button serves both hats: "if the closed hat is selected the button will light in red, open in
+  white" (manual p. 18). That would make fifteen drums and a click - though the guide's own
+  specifications print `Select x 16` (guide p. 68) against the fifteen buttons drawn. It is a
+  reading of pictures and not a statement, and a voice count is not a polyphony, so `polyphony` is
+  left out. The page's "16 velocity-sensitive drum pads with after touch" (product_page) is about
+  the pads: no English page of either document says aftertouch or pressure is sent or received.
+
+  SYSTEM EXCLUSIVE CARRIES THE BACKUPS. "The dump button initiates a SysEx dump to a suitable piece
+  of software" (manual p. 19), of a pattern, a song or the global settings (manual p. 20), and the
+  About page advises backing up "either to SynthTribe or a SysEx app" (manual p. 25) before a
+  factory restore. No message is published, and no page says how a dump is sent back.
+
+  NOT NAMED AS A MIDI MESSAGE ON ANY ENGLISH PAGE OF EITHER DOCUMENT: program change, bank select,
+  song select, start, stop, continue, song position, pitch bend, aftertouch, NRPN, RPN, omni, local
+  control and all notes off. Each was swept for with the text reduced to letters and digits, and
+  every hit for an ordinary word read. The product page says "Up to 8 songs and 128 patterns can be
+  stored on LM DRUM" (product_page), and nothing says a program change reaches one, so
+  `program_change` is left out.
+
+  THE NEWEST FIRMWARE'S NOTES CANNOT BE READ. The product page's download list, in the script
+  payload its visible text leaves out, names `LM DRUM Release Notes 1.1.7` and links a MediaValet
+  gallery whose host did not resolve on 2026-10-07; Music Tribe's files on MediaValet's own CDN
+  answered with errors, another product's notes included. And the manual's own picture names two
+  other numbers: a screenshot reading `MCU1:V1.0.5` and `MCU2:V1.0.4`, above the sentence "The About
+  sub-menu shows the current firmware version for each of the two MCUs" (manual p. 25). Nothing says
+  how those relate to the release the cover names, so they are recorded and not read. This file
+  describes firmware 1.1.5, as its manual says it does.
+
+midi:
+  # "RX Channel – choose between All, 1 – 16 or Out" (manual p. 17). No default is stated.
+  channels: [1, 16]
+  # "MIDI – the LM DRUM will synchronize to MIDI clock on the MIDI In socket." (manual p. 18),
+  # and the same for USB. No page says it sends clock: see the account.
+  clock: receives
+  # The SysEx dump at pp. 19-20 and the backup advice at p. 25. No message is published.
+  sysex: true
+
+voice:
+  # Sixteen drums on sixteen notes, each a drum rather than a pitch, sent and received alike.
+  addressing: voices
+  velocity:
+    # "each sample will respond to MIDI velocity" (manual p. 24). Sending is not stated.
+    note_on: received
+  # THE MANUAL'S DEFAULTS, which the MIDI Map sub-menu changes (manual p. 24), so a machine in
+  # front of you may answer to others. Named as the table names them; the guide's table matches.
+  voices:
+    bass_drum: 36
+    sidestick: 37
+    snare_drum: 40
+    closed_hi_hat: 42
+    open_hi_hat: 46
+    crash_cymbal: 49
+    ride_cymbal: 51
+    hi_tom: 50
+    mid_tom: 47
+    lo_tom: 45
+    cabasa: 69
+    tambourine: 54
+    hi_conga: 63
+    lo_conga: 64
+    cowbell: 56
+    claps: 39
+
+parts:
+  chromatic:
+    # ONE PER DRUM, EACH ON ITS OWN CHANNEL, ONLY WITH CHROMATIC MIDI IN SWITCHED ON. Bass Drum 1
+    # to Claps 16 as the table prints them, each changeable in the MIDI Map menu (manual p. 27).
+    # Played from a keyboard, a note here is a pitch of that drum.
+    label: Chromatic voice
+    count: 16
+    channel: assigned
+    addressing: pitches
+    receives: [notes]
+
+groups:
+  # The manual's own panel headings: ANALOG FILTER for the cutoff, and the TUNE row of the MASTER
+  # section, whose knobs the tuning controllers stand in for and extend.
+  analog_filter: Analog Filter
+  tune: Tune
+
+controls:
+  # "The filter cutoff can also be set using MIDI continuous controller #74." (manual p. 25)
+  filter_cutoff:        {label: Filter Cutoff, cc: 74, direction: receives, group: analog_filter}
+
+  # The manual's table at p. 26, in its order and with its names.
+  bass_drum_tuning:     {label: Bass Drum Tuning, cc: 75, direction: receives, group: tune}
+  snare_drum_tuning:    {label: Snare Drum Tuning, cc: 76, direction: receives, group: tune}
+  sidestick_tuning:     {label: Sidestick Tuning, cc: 77, direction: receives, group: tune}
+  closed_hi_hat_tuning: {label: Closed Hi Hat Tuning, cc: 78, direction: receives, group: tune}
+  open_hi_hat_tuning:   {label: Open Hi Hat Tuning, cc: 79, direction: receives, group: tune}
+  high_tom_tuning:      {label: High Tom Tuning, cc: 80, direction: receives, group: tune}
+  mid_tom_tuning:       {label: Mid Tom Tuning, cc: 81, direction: receives, group: tune}
+  low_tom_tuning:       {label: Low Tom Tuning, cc: 82, direction: receives, group: tune}
+  ride_cymbal_tuning:   {label: Ride Cymbal Tuning, cc: 83, direction: receives, group: tune}
+  crash_cymbal_tuning:  {label: Crash Cymbal Tuning, cc: 84, direction: receives, group: tune}
+  cabasa_tuning:        {label: Cabasa Tuning, cc: 85, direction: receives, group: tune}
+  tambourine_tuning:    {label: Tambourine Tuning, cc: 86, direction: receives, group: tune}
+  high_conga_tuning:    {label: High Conga Tuning, cc: 87, direction: receives, group: tune}
+  low_conga_tuning:     {label: Low Conga Tuning, cc: 88, direction: receives, group: tune}
+  cowbell_tuning:       {label: Cowbell Tuning, cc: 89, direction: receives, group: tune}
+  claps_tuning:         {label: Claps Tuning, cc: 90, direction: receives, group: tune}
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual LM DRUM
+    edition: V1.1
+    landing: "https://www.behringer.com/en/products/0704-AAC"
+    url: "https://cdn-media.empowertribe.com/6cbc2af46e57456390b458f64031d091/M_BE_0704-AAC_LM%20DRUM_WW.pdf"
+    sha256: bafea895b7aa688763c6cc83e2f129d1d9954ecdd22658e73db76124f384e5e6
+    retrieved: 2026-10-07
+    # 32 pages: pp. 2-31 print their own numbers and the two covers none, so the cover is p. 1 by
+    # position. pp. 3-16 are notices in eleven languages and the manual proper is English, pp.
+    # 17-30. The edition and firmware are the cover's. Made with InDesign on 2025-06-17. Listed on
+    # the product page as `Manual, All Languages`.
+    page_offset: 0
+  guide:
+    kind: manual
+    title: Quick Start Guide LM DRUM
+    edition: V 0.0
+    landing: "https://www.behringer.com/en/products/0704-AAC"
+    url: "https://cdn-media.empowertribe.com/386716155510425b94df18d5843b765e/QSG_BE_0704-AAC_LM%20DRUM_WW.pdf"
+    sha256: 4af1830d0cd28afd75d787b44d76093550d4f69723f2715edd95e24f28347f1e
+    retrieved: 2026-10-07
+    # 37 sheets: the cover and the back are single pages and the 35 between carry two printed pages
+    # each, so sheet 10 prints 18 and 19. The cover prints no number and is p. 1 by position. Made
+    # with InDesign on 2023-10-19, it counts "100 Drum Sounds" (guide p. 1) on its cover where the
+    # manual counts 109, and names no firmware. Cited for its older controller list, its note
+    # table, its menus and its specifications. The citation checker reads whole sheets, so it
+    # cannot tell p. 18 from p. 19; the reading script reads each half.
+    page_offset: 1
+    pages_per_sheet: 2
+  product_page:
+    kind: product_page
+    title: "LM DRUM | Behringer"
+    landing: "https://www.behringer.com/en/products/0704-AAC"
+    url: "https://www.behringer.com/en/products/0704-AAC"
+    sha256: 03dc4b5458143fa58740002e432703aabb62f707dc11c7a29c52ad6d5b6dc2e1
+    retrieved: 2026-10-07
+    paginated: false
+    # The visible text of the page, which never uses the word MIDI. Cited for the voice count, the
+    # pads and the pattern memory. The list of downloads and the feature list are in the page's
+    # script payload, in the HTML saved beside it, and are described rather than quoted. The
+    # sha256 is of the visible text; the page as served hashes to
+    # 6381167163a706bb11d42f4b0c225ef409e5783a860052d166fbd2b8a84cf254.

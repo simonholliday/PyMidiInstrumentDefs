@@ -1,0 +1,272 @@
+# **THIS DEFINITION CARRIES NO CONTROLS, WHICH IS PARTLY A FINDING AND PARTLY A CHOICE.** The
+# finding: Akai's 545-page user guide for this instrument and the MPC XL contains no NRPN, no RPN,
+# no system exclusive, no implementation chart and no control map, and its maps are the owner's,
+# saved with the project rather than with the instrument: "These assignments will be saved with your
+# MPC project." (guide p. 358). The choice: **the guide does give two numbers an effect, the MIDI
+# specification's own 1 and 11**, modulation and expression, each where the owner switches it on or
+# sets its depth - and those are recorded in the account rather than carried, as the committed
+# `akai/mpc_live` carries none from a guide with the same passages. The account says so plainly.
+#
+# **TWO MACHINES IN ONE GUIDE**, and it marks the difference plainly: a parenthetical, `(MPC Live
+# III only)` or `(MPC XL only)`, or a sentence that names one machine. Every such sentence that
+# touches MIDI was read, and none changes what this instrument does over MIDI.
+#
+# **THE COMMITTED `akai/mpc_live` IS ITS PREDECESSOR AND NOT A SOURCE.** It was read from the
+# Standalone OS guide, which covers ten other machines and says this one has a user guide of its
+# own. Nothing below is taken from it.
+
+definition: 1
+
+model:
+  manufacturer: Akai Professional
+  name: MPC Live III
+  # THE FIRMWARE IS THE OPERATING SYSTEM, AND THE GUIDE IS ONE PATCH BEHIND IT. Akai's firmware
+  # page offers 3.9.1 for its `Gen 2` machines, this one first among them with the MPC XL, the MPC
+  # Key 37 G2 and the MPC One G2, and its release notes page lists nothing newer. The 3.9.1 notes
+  # list this machine among fourteen names the release is for, and their only change is "Internal
+  # improvements and maintenance updates to support future enhancements and improve overall system
+  # stability." (release_notes p. 1), so the v3.9 guide still describes the shipping machine.
+  # Checked 2026-10-07.
+  firmware: "3.9.1"
+
+source: >-
+  MPC Live III, MPC XL User Guide, 545 pages, the edition Akai names v3.9, every sheet but the first
+  and last printing its own number. Cited throughout; the pages that carry the weight are the
+  introduction on p. 6, a track's MIDI routing and outgoing program change on pp. 54 and 55, the
+  note map presets on pp. 83 and 129, every MIDI preference on pp. 64 to 66, the arpeggiator's
+  modifiers on p. 87, the touch strip on pp. 102 to 105, a keygroup's LFO and modulation on pp. 263
+  and 266, the track's controller filter on p. 296, the Q-Link macro list on p. 341, the Q-Link
+  modes on p. 346, MIDI Learn on p. 358, MIDI Control Mode on pp. 368 to 372, this machine's panels
+  on pp. 380 and 386, the glossary on pp. 398 and 400, MIDI Machine Control on p. 533 and this
+  machine's specification on pp. 539 and 540. MPC 3.9.1 and MPC 3.9 Release Notes, for which
+  firmware the guide describes and which machines each release is for. And the page data behind
+  three of Akai's own pages - its MPC manuals, its MPC firmware downloads and its MPC release notes
+  - which is what those pages are built from in the browser.
+
+  TWO MACHINES, AND THE BOOK SAYS SO IN ITS FIRST SENTENCE. "This user guide explains how to create
+  music using the MPC 3 operating system on the second-generation standalone MPC Live III and MPC
+  XL, the latest advancement from Akai Professional." (guide p. 6). It also says what it leaves out:
+  "Please note this manual does not cover using MPC Live III and MPC XL as a controller for MPC 3
+  software." (guide p. 6). Akai's manuals page links this one file for both machines.
+
+  THE SCOPING WAS ENUMERATED, NOT SAMPLED. Parentheticals naming one machine: `(MPC Live III only)`
+  seven times and `(MPC Live III Only)` twice, `(MPC XL only)` once, and seven that give each
+  machine its own control for one action - the data dial `(MPC Live III)` against the Enter button
+  `(MPC XL)`. Then every sentence naming one machine and not the other was filtered for words about
+  MIDI, clock, notes, channels, aftertouch, velocity, pitch, programs, CV, footswitches and USB, and
+  the fifteen candidates were read. **The only one that withholds an input from this machine is the
+  footswitch**: "Footswitch 1 & Footswitch 2 (MPC XL only): These determine how connected
+  footswitches will work." (guide p. 65), and this machine's connections list none. The rest give
+  the two machines different buttons for the same thing, or describe each one's own panel.
+
+  AND ONE UNSCOPED PROCEDURE FITS NEITHER MACHINE AS THE GUIDE DESCRIBES THEM. The MIDI Machine
+  Control appendix says to "connect your MPC’s MIDI Out A to the MIDI input of your external
+  device." (guide p. 533), to "Tap the Send Port 1 field" (guide p. 533) on a `Sync tab` - perhaps
+  the preferences' `MIDI / Sync` - and names a `MIDI In A`. This machine's panel calls its sockets
+  plain `MIDI Out` (guide p. 386); the MPC XL's has "MIDI Out A–D" (guide p. 396) but `MIDI In 1/2`
+  (guide p. 396); and no other page has a Send Port field or a MIDI In A.
+
+  THE MAPS ARE THE OWNER'S, IN BOTH DIRECTIONS. Inward: "You can use the MIDI Learn function to
+  assign external MIDI controllers to various parameters in your specific MPC project" (guide p.
+  358), and "These assignments will be saved with your MPC project." (guide p. 358). Outward, in
+  MIDI Control Mode: "You can use MIDI Control Mode on MPC to customize what MIDI messages are sent
+  from certain controls on your hardware." (guide p. 368), each button, knob and axis having a "CC
+  Number: This determines what MIDI Control Change number the button will send to the software."
+  (guide p. 370) - and "The edits you make in MIDI Control Mode will be retained with the current
+  MPC project." (guide p. 368). So apart from the two numbers below, which number reaches which
+  parameter is not a property of the instrument, and `midi.control_change` records that.
+
+  AND THE MACHINE OFFERS CONTROLS IT DOES NOT HAVE. "The Control field menu will show many more
+  hardware controls than are actually available on your MPC." (guide p. 369), because "the list
+  includes all possible controls from all current MPC models (MPC X, MPC Live, etc.)." (guide p.
+  369). So a reading taken off this instrument's screen would over-include in the same way a reading
+  of the other machine's sentences would.
+
+  THREE TIMES THE GUIDE SAYS A FIXED MAP EXISTS AND DOES NOT PRINT IT. The Q-Links' MIDI mode: "the
+  Q-Links are fixed to a selection of MIDI performance controls, allowing you to control modulation,
+  pitch bend, sustain and other common MIDI messages as you play." (guide p. 346) - fixed, named by
+  function, not one number given. The list of parameters a Q-Link macro can take offers, for a MIDI
+  track, "Standard MIDI control change assignments" (guide p. 341), which defers to the MIDI
+  specification rather than enumerating. And the pad note map's third preset is "Classic MPC (the
+  default MIDI note map of classic MPCs)" (guide p. 129), whose numbers are never printed.
+
+  BUT IT DOES GIVE TWO NUMBERS AN EFFECT, 1 AND 11, ON FOUR PAGES - RECORDED HERE AND NOT CARRIED.
+  Two are about what arrives. The arpeggiator's modifiers "enable Expression messages (MIDI CC #11)
+  from external MIDI controllers to modify the arpeggiator" (guide p. 87), and likewise "Modulation
+  messages (MIDI CC #1) from external MIDI controllers to modify the arpeggiator." (guide p. 87);
+  and a keygroup's LFO has a knob "to adjust how much control mod wheel data (MIDI CC1) has over the
+  LFO." (guide p. 263). Two are about what the touch strip produces, "to control the MIDI CC1
+  modulation control" (guide p. 104) and "to control the MIDI CC11 expression control" (guide p.
+  105), with nothing saying that leaves by a port. **So this instrument does answer to two fixed
+  numbers**, the MIDI specification's own modulation and expression. They are not carried as
+  controls, and that is a choice rather than a finding, made for two reasons: each effect is one the
+  owner switches on or sets the depth of - the arpeggiator's boxes, the LFO's knob - and the
+  committed `akai/mpc_live`, whose guide has the same arpeggiator, touch strip and LFO passages,
+  carries none. Whether both files should carry them is left open rather than settled by one file.
+
+  THE ONE LIST OF CONTROLLER NUMBERS IS A FILTER, NOT A MAP. "MIDI CC Filter: Check these boxes to
+  allow the listed MIDI Control Change messages to pass through the track." (guide p. 296), and it
+  lists 1, 2, 3, 4, 5, 7, 10, 11, 64, 65, 66, 67 and 68 under the MIDI specification's own names. It
+  says which messages a track forwards, not what this instrument does with one. **And it numbers
+  four things that are not control changes**: "CC128 Pitchbend CC130 Program Change CC129 Channel
+  Pressure CC131 Aftertouch" (guide p. 296), numbers above the 127 a control change can carry, used
+  as labels.
+
+  NO NOTE MAP IS PUBLISHED, AND THE PADS' NOTES ARE THE OWNER'S. "Edit Pad Note Map function lets
+  you assign specific MIDI notes to your MPC pads." (guide p. 129), with three presets: "Chromatic
+  C1 (an ascending chromatic scale, beginning with C1), Chromatic C-2 (an ascending chromatic scale,
+  beginning with C- 2), or Classic MPC (the default MIDI note map of classic MPCs)." (guide p. 129).
+  No preset is named as the default and nothing says which a new track loads, so `voices` holds
+  nothing. Pad Perform's own note map, forty-six pages earlier, offers the same three names with the
+  second spelled otherwise: "You can also choose from three Custom presets: Chromatic C1, Chromatic
+  C2, or Classic MPC." (guide p. 83).
+
+  CLOCK TRAVELS BOTH WAYS, AND THE SETTINGS HAVE MORE POSITIONS THAN THIS FORMAT HOLDS. Receive has
+  four: "Receive: This determines whether MPC receives MIDI Clock information (MIDI Clock), MIDI
+  Time Code information (MIDI Time Code (MTC)), communication from Ableton Link (Ableton Link), or
+  none of these (Off)." (guide p. 65). Send has three: "Send: This determines whether MPC sends MIDI
+  Clock information (MIDI Clock), MIDI Time Code information (MIDI Time Code (MTC)), or neither
+  (Off)." (guide p. 65). And: "Audio recording is disabled when receiving MIDI Clock sync." (guide
+  p. 65).
+
+  IT SENDS AND ANSWERS TO MIDI MACHINE CONTROL, which no field here records. "MPC can send and
+  receive MIDI Machine Control (MMC) messages, a standard protocol for transport controls." (guide
+  p. 533), with a switch for each direction in the preferences (guide p. 65).
+
+  PROGRAM CHANGE GOES BOTH WAYS AND REACHES TWO DIFFERENT THINGS. "Program Change: This determines
+  what an incoming MIDI program change message will change: a Sequence or Track." (guide p. 65). And
+  a track sends one: "To select a MIDI program change value for the track to send, check the Program
+  Change box to enable program changes" (guide p. 55).
+
+  AND THE TWO RANGES THE GUIDE GIVES FOR A PROGRAM CHANGE DISAGREE. A track's is "enter a value from
+  1–127" (guide p. 55); the glossary says "Programs 1–128 can be changed via program change
+  messages." (guide p. 400). The second is 128 programs counted from one; the first is one short of
+  it. **So no preset count is recorded**: what an incoming one selects is a setting with two
+  positions, and the guide counts neither sequences nor tracks as a program change range.
+
+  IT CAN BE TOLD TO IGNORE ALL NOTES OFF. "Filter ‘All Notes Off’ CC: When enabled, 'All Notes Off'
+  ('MIDI panic') messages will be ignored." (guide p. 65). No default is given.
+
+  A TRACK TAKES ONE CHANNEL OR ANY, AND SENDS ON ONE. "MIDI Input Channel: Sets the MIDI Channel
+  from which to receive MIDI data. Select Any to receive from any MIDI channel, or select 1–16."
+  (guide p. 54). The output channel's entry repeats the last sentence word for word - "Select Any to
+  receive from any MIDI channel, or select 1–16." (guide p. 54) - under "Sets the MIDI Channel to
+  send MIDI data to" (guide p. 54), which is a copying slip rather than a second statement about
+  reception.
+
+  AFTERTOUCH AND VELOCITY ARE LEFT UNSET, AND NOT BECAUSE NOTHING IS SAID. The pads send them, at
+  the owner's choice: in MIDI Control Mode each pad's aftertouch is "Off: The pad will not send any
+  aftertouch messages." (guide p. 369), "Channel: If you press multiple pads that have this setting,
+  the aftertouch messages they send will be identical." (guide p. 369), or "Poly: If you press
+  multiple pads, the aftertouch message each pad sends will be independent from the others." (guide
+  p. 369); and "When set to Off, pressing the pad will send a note at full-level (127) always."
+  (guide p. 369). **And the instrument does things with them when they arrive**, every one of them a
+  setting: the arpeggiator's boxes "enable Channel Pressure messages from external MIDI controllers
+  to modify the arpeggiator" (guide p. 87), a keygroup's "Aftertouch To Cut 1/2 determines how much
+  a connected MIDI keyboard’s aftertouch data affects the filter cutoff." (guide p. 266) and
+  "Pressure To Filter determines how much a connected MIDI device’s channel pressure data affects
+  the filter envelope." (guide p. 266), and a layer has "the controls for sample offset and layer
+  velocity range" (guide p. 227). The fields are left unset to match `akai/mpc_live`, whose guide
+  has the same kind of passages, and whether both should record them goes with the question of 1 and
+  11. The pads themselves are "(16) velocity- and pressure-sensitive pads with 3D-sensing
+  technology" (guide p. 540), and their X/Y position is recorded as an event type of its own (guide
+  p. 66), for which no MIDI message is named.
+
+  TWO MIDI INPUTS, TWO MIDI OUTPUTS, USB AND CV. The specification lists "(2) 5-pin MIDI inputs"
+  (guide p. 540) and "(2) 5-pin MIDI outputs" (guide p. 540), and "(4) Stereo 1/8” (3.5 mm) CV/Gate
+  outputs" (guide p. 540). The USB-C port carries MIDI too: "This connection allows MPC Live III to
+  send/receive MIDI and audio data to/from your computer." (guide p. 386), and the USB-A ports take
+  "standard MIDI controllers" (guide p. 386). Nothing here records a port, so a channel number in
+  this definition does not say which socket it arrives on. **The CV outputs are a difference from
+  the first MPC Live**, whose committed definition records none in that machine's connections list.
+
+  THE GLOSSARY EXPLAINS MIDI AND IS NOT A MAP. Pages 398 to 401 explain MIDI itself - that a
+  controller number "can range from 0 to 127" (guide p. 398), what a program change is. They say a
+  little about this machine - "MPC Live III and MPC XL support full 24-bit resolution." (guide p.
+  398) - and nothing about which number does what.
+
+  AND THE ABLETON CONTROL MAPS ARE NOT MIDI MAPS. Pages 534 and 535 give this machine's buttons,
+  knobs and pads their functions in Ableton Live Control Mode - launch a clip, nudge the phase - and
+  name no MIDI message or number.
+
+  CHECKED AND ABSENT, with the text reduced to letters and digits and swept across all 545 pages and
+  both sets of release notes: NRPN, system exclusive, implementation chart, bank select, MIDI
+  Polyphonic Expression and omni appear nowhere, and RPN only as the letters of `arp note repeat`
+  run together. The sweep was proved able to find something on a dozen phrases certainly present.
+  **The guide's screens are images** - the MIDI Control Mode pages carry two or three each - so a
+  default number shown on a screen would be invisible to any search, and nothing here claims more
+  than that the words are not in the text.
+
+  NOT RECORDED: polyphony, which no page states for the machine - the warp algorithm speaks of
+  "voices of the polyphonic limit" (guide p. 223) without a number; the range the pitch bend fields
+  take; aftertouch, velocity and the note map, for the reasons above; and system exclusive and NRPN,
+  which are silence rather than a checked absence of a published statement.
+
+sources:
+  guide:
+    kind: manual
+    title: MPC Live III, MPC XL User Guide
+    edition: v3.9
+    dated: 2026-06-10
+    landing: "https://www.akaipro.com/mpc-manuals/"
+    url: "https://cdn.inmusicbrands.com/Software/15JM26PSBC/MPC%20Live%20III%2C%20MPC%20XL%20-%20User%20Guide%20-%20v3.9.pdf"
+    sha256: 572b67019186d88dcdede7ada57765835c9211d36dc7f1aec330e06fd8033278
+    retrieved: 2026-10-07
+    # 545 pages, printed page = file page, measured on every sheet: only the cover and the last
+    # sheet print no number. Linked for both machines by Akai's manuals page and by its firmware
+    # page, each as page data the browser builds the page from. The date is the PDF's modification
+    # date; its creation date is 2026-01-08. Made with Acrobat PDFMaker 25 for Word.
+    page_offset: 0
+  release_notes:
+    kind: release_notes
+    title: MPC 3.9.1 Release Notes
+    edition: "3.9.1"
+    dated: 2026-07-24
+    landing: "https://www.akaipro.com/mpc-release-notes"
+    url: "https://cdn.inmusicbrands.com/Software/MPC/MVSU391APC/MPC%203.9.1%20-%20Release%20Notes.pdf"
+    sha256: 593cb2064df3387eb5461b027ab8a4f6f17c69bb538e8ab2dfaf39ca85ec5899
+    retrieved: 2026-10-07
+    # Two pages, the same bytes `akai/mpc_live` cites. Its compatibility list gives fourteen names,
+    # this machine among them, and the word MIDI is not in it.
+    page_offset: 0
+  earlier_release_notes:
+    kind: release_notes
+    title: MPC 3.9 Release Notes
+    edition: "3.9"
+    dated: 2026-06-15
+    landing: "https://www.akaipro.com/mpc-release-notes"
+    url: "https://cdn.inmusicbrands.com/Software/15JM26PSBC/MPC%203.9%20Release%20Notes.pdf"
+    sha256: f6b2a7f6a8caa1e9014449f28357c53bd24493d1e3bea13be7ab4e4440a9acc1
+    retrieved: 2026-10-07
+    # Thirteen pages, cited for nothing: held because it is the release the guide describes.
+    page_offset: 0
+
+midi:
+  # A track takes "Any" channel or one of 1-16 for its input and one of 1-16 for its output
+  # (p. 54), and every MIDI Control Mode control chooses one of `(1–16)` (p. 369).
+  channels: [1, 16]
+  # THE MAPS ARE THE OWNER'S, by MIDI Learn inward and MIDI Control Mode outward, and both are saved
+  # with the project (pp. 358, 368). The two numbers the guide gives an effect, 1 and 11, are in the
+  # account and not carried - a choice, explained there.
+  control_change: learned
+  # Clock both ways, and either direction may be switched off; MIDI Time Code is the other choice of
+  # both settings, and Ableton Link one more of Receive's (p. 65).
+  clock: both
+  program_change:
+    # "This determines what an incoming MIDI program change message will change: a Sequence or
+    # Track" (p. 65).
+    receives: true
+    # "To select a MIDI program change value for the track to send" (p. 55).
+    sends: true
+    # NOT RECORDED: presets. See the source account.
+  # NOT RECORDED: sysex and nrpn - neither word is anywhere in 545 pages or in either set of release
+  # notes, which is silence rather than a checked absence.
+
+voice:
+  pitch_bend:
+    # "Range Down / Range Up: Use these fields to determine the range of pitch bends in semitones."
+    # (p. 66), with a Global Pitch Bend switch that overrides every track's own. THE RANGE THOSE
+    # FIELDS TAKE IS NOT PUBLISHED, so `semitones` holds nothing.
+    programmable: true
+  # NOT RECORDED: polyphony, aftertouch, velocity, the note map and the addressing. See the source
+  # account for each.

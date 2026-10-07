@@ -150,6 +150,7 @@ class TestBundledCorpus:
 			"access/virus_ti",
 			"akai/mpc_key_37",
 			"akai/mpc_live",
+			"akai/mpc_live_iii",
 			"akai/mpc_sample",
 			"arturia/astrolab",
 			"arturia/drumbrute_impact",
@@ -648,10 +649,11 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Nineteen definitions carry no controls, for five different reasons.
+		"""Twenty definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a twentieth
-		cannot be added without saying which kind it is.
+		Pinned here because the count has gone stale in notes twice: a twenty-first
+		cannot be added without saying which kind it is. The twentieth was
+		`akai/mpc_live_iii`, `learned` for its predecessor's reason from its own guide.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
 		Its maker claims "comprehensive MIDI implementation" and publishes no part of
@@ -690,7 +692,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 19
+		assert len(empty) == 20
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -702,7 +704,7 @@ class TestAbsences:
 		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
 			"vermona/drm1_mkiv"}
-		assert kinds["learned"] == {"akai/mpc_live", "arturia/drumbrute_impact",
+		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "arturia/drumbrute_impact",
 			"dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
 			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
@@ -16933,3 +16935,111 @@ class TestTR08:
 		assert tr_08.voice.aftertouch == "none"
 		assert tr_08.voice.pitch_bend is None
 		assert tr_08.voice.polyphony is None
+
+
+class TestMpcLiveIII:
+
+	"""The first MPC Live's answer again, read from a different book that covers two machines.
+
+	**NOTHING HERE IS TAKEN FROM `akai/mpc_live`**: that file was read from the Standalone OS guide,
+	which covers ten other machines and sends this one to a guide of its own, read here.
+	"""
+
+	def test_it_carries_no_controls_and_the_numbers_are_the_owners_both_ways (self) -> None:
+		"""MIDI Learn inward, MIDI Control Mode outward, and both saved with the project."""
+		live = pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS])
+
+		assert not live.controls
+		assert live.midi.control_change == "learned"
+
+		account = " ".join((live.source or "").split())
+
+		assert "These assignments will be saved with your MPC project." in account
+		assert "The edits you make in MIDI Control Mode will be retained with the current MPC " \
+			"project." in account
+
+	def test_the_guide_covers_two_machines_and_the_scoping_was_enumerated (self) -> None:
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS]).source or "").split())
+
+		assert "on the second-generation standalone MPC Live III and MPC XL" in account
+		assert "THE SCOPING WAS ENUMERATED, NOT SAMPLED." in account
+
+		# The one MIDI-related input the guide withholds from this machine.
+		assert "Footswitch 1 & Footswitch 2 (MPC XL only)" in account
+
+	def test_one_unscoped_passage_is_written_for_the_other_machine (self) -> None:
+		"""The MMC appendix names sockets and a field this machine's pages do not have."""
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS]).source or "").split())
+
+		assert "connect your MPC’s MIDI Out A to the MIDI input of your external device." in account
+		assert "AND ONE UNSCOPED PROCEDURE FITS NEITHER MACHINE AS THE GUIDE DESCRIBES THEM." in account
+
+	def test_three_times_it_says_a_fixed_map_exists_and_four_pages_name_1_and_11 (self) -> None:
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS]).source or "").split())
+
+		assert "the Q-Links are fixed to a selection of MIDI performance controls" in account
+		assert "Standard MIDI control change assignments" in account
+		assert "Classic MPC (the default MIDI note map of classic MPCs)" in account
+
+		# And the two fixed numbers it does name, 1 and 11, recorded and not carried.
+		assert "to control the MIDI CC1 modulation control" in account
+		assert "enable Expression messages (MIDI CC #11) from external MIDI controllers" in account
+		assert "**So this instrument does answer to two fixed numbers**" in account
+		assert "that is a choice rather than a finding" in account
+
+	def test_the_one_list_of_numbers_is_a_filter_and_four_are_not_control_changes (self) -> None:
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS]).source or "").split())
+
+		assert "CC128 Pitchbend CC130 Program Change CC129 Channel Pressure CC131 Aftertouch" \
+			in account
+		assert "It says which messages a track forwards, not what this instrument does with one." \
+			in account
+
+	def test_program_change_both_ways_and_two_ranges_neither_the_protocols (self) -> None:
+		live = pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS])
+
+		assert live.midi.program_change is not None
+		assert (live.midi.program_change.receives, live.midi.program_change.sends) == (True, True)
+		assert live.midi.program_change.presets is None
+
+		account = " ".join((live.source or "").split())
+
+		assert "enter a value from 1–127" in account
+		assert "Programs 1–128 can be changed via program change messages." in account
+
+	def test_clock_both_ways_and_aftertouch_and_velocity_left_unset_on_purpose (self) -> None:
+		live = pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS])
+
+		assert live.midi.clock == "both"
+		assert live.midi.channels == (1, 16)
+		assert live.midi.sysex is None and live.midi.nrpn is None
+		assert live.voice.polyphony is None
+		assert live.voice.aftertouch is None and live.voice.velocity is None
+		assert "AFTERTOUCH AND VELOCITY ARE LEFT UNSET, AND NOT BECAUSE NOTHING IS SAID." in " ".join(
+			(live.source or "").split())
+		assert not live.voice.voices
+
+		assert live.voice.pitch_bend is not None
+		assert live.voice.pitch_bend.programmable is True
+		assert live.voice.pitch_bend.semitones is None
+
+	def test_two_midi_ports_each_way_and_cv_which_the_first_mpc_live_has_not (self) -> None:
+		account = " ".join(
+			(pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS]).source or "").split())
+
+		assert "(2) 5-pin MIDI inputs" in account
+		assert "(2) 5-pin MIDI outputs" in account
+		assert "CV/Gate outputs" in account
+		assert "**The CV outputs are a difference from the first MPC Live**" in account
+
+	def test_it_describes_3_9_1_through_the_v3_9_guide (self) -> None:
+		live = pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS])
+
+		assert live.model.firmware == "3.9.1"
+		assert live.sources["guide"].edition == "v3.9"
+		assert live.sources["release_notes"].sha256 == \
+			pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).sources["release_notes"].sha256

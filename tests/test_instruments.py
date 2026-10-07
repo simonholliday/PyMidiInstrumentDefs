@@ -207,6 +207,7 @@ class TestBundledCorpus:
 			"korg/volca_keys",
 			"korg/volca_sample",
 			"korg/wavestate",
+			"korg/wavestation",
 			"make_noise/zero_coast",
 			"modal/carbon8m",
 			"moog/dfam",
@@ -6450,12 +6451,14 @@ class TestEP133KOII:
 		assert ep.midi.mode == 1
 		assert ep.midi.channels == (1, 16)
 
-		# Every other definition that records a mode records omni off.
-		others = [pymidiinstrumentdefs.load(name, [CORPUS]).midi.mode
-			for name in pymidiinstrumentdefs.available([CORPUS])
-			if name != "teenage_engineering/ep_133_ko_ii"]
+		# **IT WAS THE FIRST AND IS NO LONGER THE ONLY ONE.** The Korg Wavestation records mode 1
+		# too, from its guide's own "When shipped, the Wavestation is set to MIDI Omni mode" - so
+		# the claim this test made, that every other definition records omni off, became untrue
+		# when the corpus grew, and it is narrowed to what is still true rather than dropped.
+		omni_on = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
+			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.mode == 1)
 
-		assert 1 not in [mode for mode in others if mode is not None]
+		assert omni_on == ["korg/wavestation", "teenage_engineering/ep_133_ko_ii"]
 
 	def test_what_the_chart_marks_and_what_it_refuses_to (self) -> None:
 		"""Aftertouch is a printed no; the true voice row is a dash, so no voice count."""
@@ -7847,6 +7850,7 @@ class TestPresetCounts:
 			"korg/minilogue": 200,
 			"korg/minilogue_xd": 500,
 			"korg/opsix": 500,
+			"korg/wavestation": 150,
 			"modal/carbon8m": 500,
 			"moog/sub_37": 256,
 			"moog/subsequent_37": 256,
@@ -16713,3 +16717,90 @@ class TestSeqtrak:
 
 		assert "DRUMKIT" in (seqtrak.source or "")
 		assert len(seqtrak.parts) == 4
+
+
+class TestWavestation:
+
+	"""The 1990 keyboard, read by eye from three scans, and not the 2020 wavestate.
+
+	**NO GATE CAN CHECK A NUMBER IN THIS FILE**: every document Korg serves for it is a scan with
+	no text layer, so these tests pin what two readers agreed the scans say.
+	"""
+
+	def test_it_was_read_by_eye_and_says_so (self) -> None:
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert set(wavestation.sources) == {"player", "reference", "addendum", "listing"}
+		assert "EVERY FIGURE HERE WAS READ BY EYE" in " ".join((wavestation.source or "").split())
+
+	def test_eight_controls_from_two_lists_that_differ_by_one (self) -> None:
+		"""The chart has no row for controller 7; both appendices and three other pages do."""
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert {control.cc for control in wavestation.controls.values()} == {0, 1, 4, 7, 16, 17, 32, 64}
+		assert wavestation.controls["volume"].direction == "both"
+
+		account = " ".join((wavestation.source or "").split())
+
+		assert "This parameter has always responded to MIDI Volume (Controller #7); now, MIDI " \
+			"Volume may be transmitted as well" in account
+		assert "VOLUME allows the pedal to control the Part volume level as well as transmit MIDI " \
+			"Controller 7" in account
+
+	def test_the_registered_parameter_machinery_is_left_out_by_name (self) -> None:
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert not {6, 38, 100, 101} & {control.cc for control in wavestation.controls.values()}
+		assert "Pitch bend range, Master fine tune" in " ".join((wavestation.source or "").split())
+
+	def test_bank_select_is_received_in_one_half_and_sent_in_both (self) -> None:
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		lsb = wavestation.controls["bank_select_lsb"]
+		msb = wavestation.controls["bank_select_msb"]
+
+		assert (lsb.cc, lsb.direction, dict(lsb.values)) == (32, "both", {"ram1_ram2": 0, "rom_card": 1})
+		assert (msb.cc, msb.direction, msb.range) == (0, "transmits", (0, 0))
+
+	def test_the_assignable_controllers_are_not_recorded (self) -> None:
+		"""Two modulation sources set to any of 1 to 95, and no page names their factory setting."""
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert 2 not in {control.cc for control in wavestation.controls.values()}
+		assert "no page says those are the factory settings" in " ".join(
+			(wavestation.source or "").split())
+
+	def test_it_ships_in_omni_and_multi_mode_has_sixteen_channels (self) -> None:
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert wavestation.midi.mode == 1
+
+		multiset = wavestation.parts["multiset"]
+
+		assert (multiset.count, multiset.channel_offset) == (16, 0)
+		assert multiset.receives == ("notes", "controls", "program_change")
+		assert wavestation.parts["fx_control"].receives == ("controls",)
+
+	def test_thirty_two_voices_spent_one_two_or_four_a_note (self) -> None:
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert wavestation.voice.polyphony == 32
+		assert wavestation.voice.voicing_modes == (8, 16, 32)
+		assert wavestation.voice.polyphony_shared is True
+
+	def test_it_answers_to_both_aftertouches_and_takes_clock_for_one_thing (self) -> None:
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert wavestation.voice.aftertouch == "poly"
+		assert wavestation.midi.clock == "receives"
+		assert wavestation.midi.transport == "none"
+		assert "Used for Wave Sequence Sync function" in " ".join(
+			(wavestation.source or "").split())
+
+	def test_it_describes_software_3_0_from_the_addendum (self) -> None:
+		"""The newest version any Korg document names; Korg publishes no operating system for it."""
+		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
+
+		assert wavestation.model.firmware == "3.0"
+		assert wavestation.sources["addendum"].title == "Wavestation Version 3 Addendum"
+		assert "Wavestation software version 3.0" in prose_of("korg", "wavestation")

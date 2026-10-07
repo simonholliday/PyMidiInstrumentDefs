@@ -1,0 +1,297 @@
+# THE WAVESTATION KEYBOARD OF 1990, AND NOT THE 2020 WAVESTATE, which is `korg/wavestate`, nor the
+# A/D and SR rack modules, which Korg gives support pages of their own. Korg also files here a
+# document it calls the EX Owner's Manual; "EX" is on its cover and nowhere inside, and what is
+# inside is the addendum for software 3.0 on this keyboard.
+#
+# EVERY NUMBER BELOW WAS READ BY EYE, AND NO GATE CAN CHECK ONE OF THEM. All four documents Korg
+# still serves for it are pure scans: one 1-bit image a sheet, not one character of text. So the
+# citation and quotation tools report them as unreadable rather than as checked, and what stands
+# behind each figure is two readers rendering the sheets with two different engines and agreeing.
+#
+# A REAL MIDI IMPLEMENTATION, IN TWO PLACES THAT DO NOT QUITE AGREE. The Player's Guide ends on a
+# MIDI Implementation Chart and the Reference Guide carries three appendices - received data,
+# transmitted data, system exclusive. The appendices name controller 7 both ways and the chart has
+# no row for it; the 1991 addendum settles it. See the source account.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: Wavestation
+  # "Wavestation software version 3.0" (addendum p. 16), the newest version any Korg document
+  # names. Korg's support page for the instrument offers four manuals and no operating system,
+  # and nothing on korg.com names a later one; searched 2026-10-07. The two 1990 guides name no
+  # software version at all - the chart's "Version : 1.0" (player p. 66) sits beside its date,
+  # and the page does not say whether it numbers the chart or the software. The addendum says what
+  # 3.0 changed about MIDI, and that is folded in below.
+  firmware: "3.0"
+
+source: >-
+  Korg Wavestation Player's Guide, 74 sheets: the banks and Performances on p. 3, the Patches on p.
+  4, MIDI on pp. 19 to 26, the specifications on p. 60 and the MIDI Implementation Chart on p. 66.
+  Korg Wavestation Reference Guide, 128 sheets: the foot pedals on p. 60, the global settings on pp.
+  61 and 62, MIDI on pp. 69 to 78, the Performance Parts on pp. 85 to 87, the Performance Select
+  page and its map on pp. 88 to 90, and Appendices 1 to 3 - received data on pp. 106 and 107,
+  transmitted data on pp. 108 and 109, the system exclusive format from p. 110. Wavestation Version
+  3 Addendum, 41 sheets, for what software 3.0 changed. All three are scans from Korg's own download
+  page for the instrument.
+
+  EVERY FIGURE HERE WAS READ BY EYE. The documents have no text layer, so nothing in them can be
+  searched, extracted or checked by a machine. Two readers rendered the sheets with two different
+  engines and read the same tables; where they disagreed the sheet was read again at a higher
+  resolution. The quotations below are therefore transcriptions, and the quotation tool reports them
+  as unchecked rather than as found.
+
+  THE CHART AND THE APPENDICES ARE TWO LISTS OF THE SAME CONTROLLERS, AND THEY DIFFER BY ONE. The
+  chart, "Date: 1 Aug, 1990" (player p. 66), gives eleven controller rows and a twelfth, "1-95
+  Controls" (player p. 66), marked as received and `Assignable`. The received and transmitted
+  appendices list the same controllers and one more: controller 7, `Volume`, in both directions
+  (reference pp. 106 and 108). (Bank select is in a section of its own in each, and the received one
+  leaves out controller 0, as the chart's cross does.) Three other statements side with the
+  appendices. The foot pedal page: "VOLUME allows the pedal to control the Part volume level as well
+  as transmit MIDI Controller 7" (reference p. 60). The multimode setup's Level: "Its function is
+  equivalent to a MIDI Volume Control (7)" (reference p. 78). And the 1991 addendum: "This parameter
+  has always responded to MIDI Volume (Controller #7); now, MIDI Volume may be transmitted as well"
+  (addendum p. 10). So controller 7 is recorded, both ways, and the chart's silence is the outlier.
+  **The addendum is not consistent with itself about it either**: its own summary says "Multiset
+  channels now send and receive the MIDI Volume controller" (addendum p. 1), with "and" underlined,
+  while p. 10 says reception was always there.
+
+  EIGHT CONTROLS, AND FOUR MORE NUMBERS LEFT OUT FOR WHAT THEY ARE. Recorded: modulation wheel 1,
+  foot control 4, volume 7, the joystick's two axes on 16 and 17, the sustain switch 64, and bank
+  select on 32 with controller 0 sent before it. Left out: 6 and 38 are data entry and 100 and 101
+  select a registered parameter, and they travel together, "Only received with registered parameter
+  select" (reference p. 106), for "Pitch bend range, Master fine tune" (reference p. 106). That is
+  RPN 0 and RPN 1, and with the data entry pair they are how those two settings arrive, not controls
+  of their own. All Notes Off and Reset All Controllers are received - "Only recognized if not in
+  OMNI mode and the All Notes Off parameter is enabled" (reference p. 107), so not at all as it
+  ships - and they are channel mode messages, which this corpus does not record as controls.
+
+  TWO MORE CONTROLLERS ARE THE PLAYER'S TO CHOOSE, AND THEY ARE NOT RECORDED. "Wavestation
+  modulation can be controlled by two additional MIDI controllers" (player p. 23), MIDI Controller 1
+  and 2, each set on the MIDI page to any number - "The value range is 1 - 95" (player p. 23) -
+  which is the chart's `1-95 Controls` row. Both guides' screenshots of that page show `MODULATION
+  WHEEL` and `BREATH CONTROLLER`, and no page says those are the factory settings. **Nor are the
+  screenshots evidence of the software as shipped**: one names a Patch "RAM2 49 CHOIR, FEMALE"
+  (reference p. 85), where a bank's Patches are "Bank, number 00 - 34 or ALL" (reference p. 91). So
+  a breath controller may well move a Wavestation, and nothing here can say it does. What either one
+  changes is a matter of routing: the two settings "define the MIDI controllers available for the
+  modulation matrix and effects modulation" (reference p. 70).
+
+  THE SUSTAIN SWITCH IS READ AS TWO HALVES AND SENT AS TWO VALUES. Received: "0 - 63: off, 64 - 127:
+  on" (reference p. 106); transmitted: "0:off, 127: on" (reference p. 108). The values below are the
+  bands it answers to, which contain what it sends.
+
+  BANK SELECT REACHES TWO PAIRS OF BANKS, AND A PROGRAM CHANGE THE FIFTY IN EACH. "RAM1 and RAM2
+  correspond to Controller #32, value 0. ROM and CARD correspond to Controller #32, value of 1"
+  (player p. 24), and a program change picks within the pair: 0 to 49 the first bank, 50 to 99 the
+  second. "In other words, MIDI program changes 0 - 99 select Performances in RAM1 and RAM2" (player
+  p. 24). It receives only the second half of bank select, and sends both - controller 0 always as
+  0, then controller 32: "The Wavestation itself always sends these messages along with Program
+  Changes" (player p. 24). A Performance Select Map can replace all of that with a table of the
+  player's own, which is off by default. **What a program change from 100 to 127 does without the
+  map, and what a bank select above 1 does, no page says.** So this is not the usual two-byte bank
+  select and a sender should not treat it as one: the first byte is ignored on arrival, and the
+  second names two banks at once.
+
+  FOUR MIDI MODES, AND THE ONE IT SHIPS IN IS OMNI. "When shipped, the Wavestation is set to MIDI
+  Omni mode" (player p. 19), which is mode 1. The chart's `Recognized` column under Default lists
+  `1, 3, 4` on p. 66 - the modes it can be set to, not a second default - and its Messages row is
+  crossed: mode messages change nothing. POLY "receives on the Basic Channel" (player p. 22); MONO
+  spreads one instrument over consecutive channels for a guitar controller; and MULTI is the fourth,
+  below.
+
+  MULTI GIVES EACH OF THE SIXTEEN CHANNELS A PERFORMANCE OF ITS OWN. "MULTI mode enables the
+  Wavestation to receive multi-timbrally, one Performance per channel" (reference p. 77), each
+  channel switched on or off, levelled and given a Performance in one of sixteen stored setups. "In
+  MULTI, you can still play a 17th Performance from the Wavestation keyboard" (player p. 22), and
+  "In MULTI and MONO modes, the local keyboard and incoming MIDI have separate controllers" (player
+  p. 21). **What each channel takes is stated by what is excluded**: data entry and the registered
+  parameter are "Only received on the basic channel if in MULTI mode" (reference p. 106), and the
+  controllers recorded here are not. "In MULTI mode the Wavestation responds to Performance
+  selections in each channel" (reference p. 77). So each part receives notes, controllers and
+  program changes. A further channel, set per setup, takes effects modulation: "This is the MIDI
+  channel that will receive controller data for effects modulation sources" (reference p. 77). The
+  controls below name no part, because which channel carries them depends on the mode, which this
+  format cannot say.
+
+  IT ANSWERS TO BOTH KINDS OF AFTERTOUCH AND ITS KEYBOARD SENDS ONE. "Monophonic and polyphonic
+  aftertouch are recognized but may or may not have an obvious effect, depending on the specific
+  Patches which are programmed into the current Performance" (player p. 19) and "Channel aftertouch
+  is transmitted" (player p. 19). The chart agrees: key aftertouch crossed transmitted and marked
+  received, channel aftertouch marked both ways (player p. 66). `aftertouch: poly` records what it
+  answers to. The keyboard itself has only the one kind to give: "Aftertouch pressure sensing is
+  monophonic" (player p. 7).
+
+  THIRTY-TWO VOICES, AND A PATCH SPENDS ONE, TWO OR FOUR ON EACH NOTE. "32 voices including
+  individual filters, amps, LFOs, and envelopes" (player p. 60), and "Each patch can have 1, 2, or 4
+  voices" (player p. 4) - "using fewer oscillators allows you to play more keys (voices)
+  simultaneously" (player p. 44). So a single Part playing one patch gets thirty-two, sixteen or
+  eight notes, and layered Parts get fewer between them: "The Wavestation can play up to 32 keys
+  simultaneously, depending on the current Performance" (player p. 7). **No page says that the Parts
+  of a Performance and the channels of a multimode setup draw on one pool of voices**; thirty-two is
+  the instrument's figure and the file assumes they share it. Wave sequences may spend more: "The
+  actual number depends on how much crossfading you have defined" (player p. 55).
+
+  THE CLOCK IS RECEIVED AND DRIVES ONE THING. "Used for Wave Sequence Sync function" (reference p.
+  107), and only when a global setting says so: "MIDI means that Wave Sequences sync to MIDI clocks"
+  (reference p. 62). Nothing is transmitted, and the chart crosses Commands, Song Position and Song
+  Select both ways (player p. 66): there is no transport.
+
+  THE BEND RANGE IS A GLOBAL SETTING THAT A PATCH MAY OVERRIDE. "Each Patch can select this global
+  setting or use its own bend depth parameter" (reference p. 62), from OFF through twelve intervals
+  to OCTAVE. Twelve semitones is therefore the most, and it is per patch. A sender can also set it
+  by registered parameter, which is why controllers 100 and 101 are there.
+
+  A HUNDRED AND FIFTY PERFORMANCES, AND TWO HUNDRED WITH A CARD. "There are 50 Performances in each
+  bank, so you have a minimum of 150 Performances available - 200 if a Performance Card is in use"
+  (player p. 3). 150 is recorded because it is what every Wavestation has.
+
+  ONE NOTE PARAMETER SPLITS NOTES BETWEEN TWO INSTRUMENTS. The MIDI Receive page's Note setting is
+  ALL, EVEN or ODD, so two Wavestations can share a part and double the voices; the addendum's
+  version: "Setting one instrument to EVEN and the other to ODD causes each to ignore half of the
+  MIDI notes" (addendum p. 12). ALL is normal, and that is what the note range below assumes.
+
+  SYSTEM EXCLUSIVE IS ITS WHOLE EDITOR. A Korg header with "Wavestation Device Id" (reference p.
+  110), message types for parameter changes and every kind of dump and request, and a global that
+  decides whether parameter changes are sent or recognised at all, off by default. The 3.0 addendum
+  lists the parameter numbers and says "Parameters 380-404 are ignored by the Wavestation Keyboard"
+  (addendum p. 37) - they are the A/D rack's. **And 3.0 renumbers the parameters between FX_MOD4 and
+  BANK_COPY_TYPE**: they are 273 to 345 in 1990 (reference p. 124) and 274 to 346 in 3.0 (addendum
+  p. 36), where a new FX_MOD3 takes 273. So a parameter change means different things to the two,
+  and an editor has to know which it is talking to.
+
+  NOT RECORDED: `nrpn`. The chart has no NRPN row and neither appendix names controller 98 or 99;
+  the only parameter numbers it takes over controllers are the two registered ones above.
+
+  NOT RECORDED: what 3.0 added beyond the controllers. Its key and velocity zones "may now be
+  entered over MIDI" (addendum p. 10) by playing notes into the page that sets them - though the
+  1990 guide already says "Key and velocity amounts may also be entered from the keyboard, or over
+  MIDI" (player p. 32) - the local keyboard can be transposed, and the Performance Select Map can be
+  sent as a system exclusive dump. Nothing in it adds or renumbers a controller.
+
+sources:
+  player:
+    kind: manual
+    title: KORG Wavestation Player's Guide
+    landing: "https://www.korg.com/us/support/download/product/1/224/"
+    url: "https://cdn.korg.com/us/support/download/files/f4c983bf145ca8cb221c7b68e72b7a2f.pdf"
+    sha256: fcfdabd42b3f166b095e9881a84a3d0aaff3a8d768764de35930649ed61d3f59
+    retrieved: 2026-10-07
+    # 74 sheets, a scan with no text. Printed page plus eight is the sheet: the front matter runs
+    # in roman numerals to viii on sheet 8. The chart is the last sheet, dated 1 Aug 1990. Korg's
+    # download page lists it as "WAVESTATION/Player's Guide" (listing), dated `2015.06.01`, which
+    # is when it was put up.
+    page_offset: 8
+  reference:
+    kind: manual
+    title: KORG Wavestation Reference Guide
+    landing: "https://www.korg.com/us/support/download/product/1/224/"
+    url: "https://cdn.korg.com/us/support/download/files/35566497cc1a5d25500b5bf4338cd574.pdf"
+    sha256: 8f5d9bca0a32cd321666b76db3be895276e378309f4da29fcdf6bcb7baefbfe7
+    retrieved: 2026-10-07
+    # 128 sheets, a scan with no text. Printed page plus three is the sheet; the contents pages
+    # are iii and iv. Its back cover prints `1990 0205 ETH`.
+    page_offset: 3
+  addendum:
+    kind: firmware_addendum
+    title: Wavestation Version 3 Addendum
+    edition: "3.0"
+    landing: "https://www.korg.com/us/support/download/product/1/224/"
+    url: "https://cdn.korg.com/us/support/download/files/3e1fd957fb23f707926b7b0ec54606e4.pdf"
+    sha256: 2556e56edca4c0895829ef2aa7b4d8b2c3188d53481df2ef3133e76e05cf5173
+    retrieved: 2026-10-07
+    # 41 sheets, a scan with no text. KORG LISTS IT AS THE "WAVESTATION/EX Owner's Manual"
+    # (listing) and its cover says `EX by Dan Phillips`; every page inside is headed "Wavestation
+    # Version 3 Addendum" (addendum p. 1), and it is about software 3.0 on any Wavestation
+    # keyboard, with or without the expansion. Printed page plus three is the sheet. Back cover
+    # `1991 0308 ETH`.
+    page_offset: 3
+  listing:
+    kind: download_page
+    title: "Downloads | WAVESTATION | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/product/1/224/"
+    url: "https://www.korg.com/us/support/download/product/1/224/"
+    sha256: d01dc7ba6aaec119abbaf19b31fa6d53b5ec755d2b528bfd22b1f462306b0ea4
+    retrieved: 2026-10-07
+    paginated: false
+    # The page's visible text. It heads the model "（sold out）" and offers four manuals and no
+    # software: the two guides, the addendum and a voice name list.
+
+midi:
+  # The chart's Basic Channel Default is `1 - 16` both ways, remarked `Memorized` (player p. 66).
+  channels: [1, 16]
+  # OMNI, mode 1: "When shipped, the Wavestation is set to MIDI Omni mode" (player p. 19). The
+  # chart's `Recognized` default is a list of three modes; see the source account.
+  mode: 1
+  # Received for wave sequence sync when a global says so, never sent (player p. 66).
+  clock: receives
+  # Commands, song position and song select are crossed both ways (player p. 66).
+  transport: none
+  program_change:
+    # `0 - 127` both ways (player p. 66), "Program number within current bank" (reference p. 106).
+    receives: true
+    sends: true
+    # 150 in the three internal banks, 200 with a card (player p. 3).
+    presets: 150
+  # A Korg header and a Wavestation device byte (reference p. 110).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # 32 voices (player p. 60), and a patch takes 1, 2 or 4 of them for each note (player p. 4).
+  # Thirty-two notes is the most and is reached only with one-voice patches; see the account.
+  polyphony: 32
+  voicing_modes: [8, 16, 32]
+  # One pool for every Part of a Performance and every channel of a multimode setup - assumed,
+  # because no page says it; see the account.
+  polyphony_shared: true
+  # The chart's Note Number is `0 - 127` received, true voice the same (player p. 66).
+  note_range: [0, 127]
+  velocity:
+    # "O (9N, v=1~127)" (player p. 66), both ways.
+    note_on: received
+    # Crossed both ways (player p. 66); a key off's velocity is `Ignored` (reference p. 106).
+    note_off: false
+  # Received, both kinds; the keyboard sends channel aftertouch. See the source account.
+  aftertouch: poly
+  pitch_bend:
+    # OFF to OCTAVE globally, and each patch may set its own (reference pp. 53 and 62).
+    semitones: 12
+    programmable: true
+
+parts:
+  # **SIXTEEN CHANNELS, A PERFORMANCE EACH, IN MULTI MODE ONLY.** `channel_offset` carries the
+  # fiction it carries in `roland/jd_xi` and `yamaha/seqtrak`: the field says a part's channel is
+  # derived from a base, and in MULTI mode the basic channel is "ignored in favor of the Multi-Mode
+  # Setups" (reference p. 69) - each setup row is a channel, 1 to 16, and cannot be moved. The
+  # numbers a consumer sends are right, and the fiction is recorded here.
+  multiset:
+    label: Multiset channel
+    count: 16
+    channel_offset: 0
+    addressing: pitches
+    receives: [notes, controls, program_change]
+  # The channel a multimode setup reads effects modulation from, set per setup, or KBD for the
+  # local keyboard (reference pp. 77 and 78).
+  fx_control:
+    label: FX Control Channel
+    channel: assigned
+    receives: [controls]
+
+controls:
+  # Every one of these is read both ways unless it says otherwise: listed in the received data
+  # (reference p. 106) and the transmitted data (reference p. 108), and marked both ways on the
+  # chart (player p. 66) - controller 7 excepted, which the chart does not list.
+  modulation_wheel: {label: Modulation Wheel, cc: 1}
+  foot_control:     {label: Foot Control, cc: 4}
+  volume:           {label: Volume, cc: 7}
+  joy_stick_x_axis: {label: Joy stick (X-axis), cc: 16}
+  joy_stick_y_axis: {label: Joy stick (Y-axis), cc: 17}
+  sustain_switch:   {label: Sustain Switch, cc: 64, values: {"off": 0, "on": 64}}
+  # Received as well as sent: "0 = RAM1/RAM2" (reference p. 107) and "1 = ROM/CARD" (reference
+  # p. 107), the same again on p. 109.
+  bank_select_lsb:  {label: Bank Select LSB, cc: 32, range: [0, 1], values: {ram1_ram2: 0, rom_card: 1}}
+  # Sent and never received, `Always 0` (reference p. 109), and crossed under `Recognized` on the
+  # chart (player p. 66).
+  bank_select_msb:  {label: Bank Select MSB, cc: 0, range: [0, 0], direction: transmits}

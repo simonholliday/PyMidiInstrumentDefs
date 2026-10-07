@@ -191,6 +191,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/volca_keys` | Korg volca keys: sixteen controls, all received, and a chart whose ticks and crosses are drawings - its own legend prints `: Yes` and `: No` with the symbols missing |
 | `korg/volca_sample` | Korg volca sample: eleven controls off a chart whose ticks and crosses are drawings rather than text, so the only column that matters is invisible to a reader that extracts the page |
 | `korg/wavestate` | Korg wavestate: 41 of its 50 controller numbers are defaults a player can reassign, and its maker publishes no control-change chart |
+| `korg/wavestation` | Korg Wavestation: eight controls read by eye from three scans, from a chart and two appendices that disagree only about controller 7, which a 1991 addendum settles; sixteen channels in its multi mode |
 | `make_noise/zero_coast` | Make Noise 0-COAST: 19 controllers off a list whose maker says most of them are ignored unless the instrument is in a particular mode - and one row of which is not text at all but a drawing |
 | `modal/carbon8m` | Modal CARBON8M: 106 controls, and a voice count set per patch |
 | `moog/dfam` | Moog DFAM: no MIDI at all, and the file says so |

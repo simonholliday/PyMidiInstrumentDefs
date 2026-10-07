@@ -1,0 +1,424 @@
+# **ROLAND DOES PUBLISH A MIDI IMPLEMENTATION CHART FOR THIS INSTRUMENT**, as the last of ten
+# documents on its Owner's Manuals page, and it is the whole control map: one A3 sheet with the
+# chart on the left and, on the right, two note tables and a list naming all thirty-eight
+# controllers. Neither edition of the two-sheet manual names a controller number.
+#
+# **THE CONTROLLER NUMBERS ARE THE TR-8's, AND ELEVEN OF THEM CARRY ANOTHER NAME.** Every one of
+# the thirty-eight is among the fifty the committed `roland/tr_8` carries. Eight differ there only
+# in the instrument's code: 58 to 60 are `HC` there and `CP` here, 84 and 85 `CC` and `CY`, and 86
+# to 88 `RC` and `CB`, the cowbell. Two name another parameter of the same drum - 21 is `BD ATTACK`
+# there and `BD TONE` here, 25 `SD TUNE` against `SD TONE` - and 83 differs in both, `CC TUNE`
+# against `CY TONE`. A consumer feeding a TR-08 the TR-8's map would offer twelve controls this
+# chart does not list, and reach the cowbell with the three numbers the TR-8 gives to `RC`.
+#
+# **AND THE MANUAL ROLAND LISTS IS THE ONE WITH THE CURRENT FIRMWARE'S MIDI SETTINGS.** Edition 04
+# has the two MIDI additions the notes for system program 1.07 name - MIDI and USB as clock
+# sources, and a soft thru switch - and the edition 03 Roland still serves has neither. 1.08, the
+# newest, changed only its number.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TR-08
+  # **1.08, THE ONLY SYSTEM PROGRAM ROLAND OFFERS, AND IT CHANGED NOTHING.** Its notes read "The
+  # version number has been updated due to management-related circumstances. Product
+  # specifications are unaffected." (release_notes). The last release that changed anything was
+  # 1.07, of January 2019, and the manual cited below is the edition that describes it - see the
+  # source account. The chart is older still, dated August 2017 and marked `Version 1.00`, which it
+  # does not say is its own revision or a system program's; neither release contradicts a row of
+  # it. Checked 2026-10-07.
+  firmware: "1.08"
+
+source: >-
+  MIDI Implementation Chart, one A3 sheet cited as p. 1: the chart, both note tables and the control
+  change list, which is every controller and note number below. Owner's Manual, edition 04, two A3
+  sheets cited as p. 1 and p. 2: the channel, clock and thru settings and what each panel control
+  is. Edition 03 of the same manual, which Roland no longer lists, for what 1.07 added. The Serato
+  connection guide and the preset track list, the other two documents Roland lists. And Roland's own
+  three pages for this instrument: its owner's manuals, its updates, and the notes for system
+  program 1.08.
+
+  NEITHER THE CHART NOR EITHER MANUAL PRINTS A PAGE NUMBER, and nor does the Serato guide, whose
+  `01` at the foot of its first sheet is its edition. So every locator below is a sheet counted from
+  one. The track list numbers its four sheets, and its numbers are the sheets'. The manual is two
+  sheets of A3, each carrying the text of a small booklet.
+
+  THIRTY-EIGHT CONTROLLERS, ALL OF THEM BOTH WAYS. The chart's Control Change row gives four ranges,
+  `20–29`, `46–63`, `71` and `80–88`, each `o` in both columns, and points at the list: "For
+  details, refer to 'Control change list.'" (chart p. 1). The list names every number in those
+  ranges and no other, so the chart and the list are thirty-eight numbers twice over and agree.
+
+  THE LABELS ARE THE LIST'S OWN WORDS IN ITS OWN CAPITALS, `BD TUNE` and the like: a two-letter
+  instrument code and a parameter, except 71, which is `ACCENT` alone. The codes are the manual's
+  own, expanded in its entry for the select switch: "AC (ACCENT), BD (BASS DRUM), SD (SNARE DRUM),
+  LT (LOW TOM), MT (MID TOM), HT (HI TOM), RS (RIM SHOT), CP (HAND CLAP), CB (COWBELL), CY (CYMBAL),
+  OH (OPEN HIHAT), CH (CLS’D HIHAT)" (manual p. 1). **That expansion is where the twelve group
+  labels come from**, in its spelling and its capitals.
+
+  AND ALL BUT THREE PARAMETERS ARE ONES THE MANUAL GIVES THAT INSTRUMENT. `LEVEL` is on all eleven:
+  "You can use 11 different instruments (BD–CH) in a pattern." (manual p. 1), and "Use the [LEVEL]
+  knob of each instrument to adjust the volume balance" (manual p. 1). `TONE` is on exactly the
+  three the knob names: "In the case of the bass drum and snare drum, this adjusts the tension of
+  the head. In the case of the cymbal, this adjusts the character of the sound." (manual p. 1).
+  `SNAPPY` is the snare's alone. `COMP` is on the two the menu's compression reaches: "Adjusts the
+  level of compression applied to BD and SD." (manual p. 2). That reads as one value for the pair,
+  where the gain beside it is chosen drum by drum - "Use the [2]–[12] buttons to select the
+  instrument." (manual p. 2) - **and the list gives each drum a number of its own**, so whether 22
+  and 27 move one setting or two is not said. `TUNE` is on the menu's six - "This can be set for BD,
+  RS, CP, CB, OH, and CH." (manual p. 2) - and the three toms, whose `[TUNING]` knob "Adjusts the
+  pitch of a tom or conga." (manual p. 1). `DECAY` is on the menu's eight - "This can be set for SD,
+  LT, MT, HT, RS, CP, CB, and CH." (manual p. 2) - and on three more, the bass drum, the open hi-hat
+  and the cymbal, which are presumably the panel's DECAY knob. **No text gives those three a decay
+  at all**: the knob's entry names no instrument, and the panel drawing's labels are part of an
+  image. **What has no number** is the rest of the menu's sound settings: pan, gain, the bass drum's
+  type, the hi-hat link and the level knob's curve.
+
+  AND THE HI-HAT LINK MAY SILENCE TWO OF THEM. "If this is On, the settings of OH and CH (Tune and
+  Level settings) are linked." (manual p. 2), and "When they are linked, the settings for CH are
+  ignored" (manual p. 2). So while the link is on, 61 and 63, `CH TUNE` and `CH LEVEL`, would seem
+  to change nothing; no page says so of MIDI.
+
+  FIVE PANEL POSITIONS SERVE TWO INSTRUMENTS EACH, AND THE LIST NAMES ONLY ONE. The instrument
+  select switch's entry pairs the low, mid and high congas with the three toms, the claves with the
+  rim shot and the maracas with the hand clap, and "It is not possible to play or write both of
+  these instruments simultaneously." (manual p. 1). The list's codes are the toms', the rim shot's
+  and the clap's. So whether 46, `LT TUNE`, retunes the low conga when the switch is on it is not
+  said, and nor is whether a note can sound both of a pair at once: **the note tables give all
+  sixteen instruments a number of their own**, and the page does not say whether that sentence
+  applies to notes arriving over MIDI.
+
+  TWO NOTE TABLES, ONE SENT AND ONE ANSWERED TO. The chart's Note Number row reads `*1` transmitted
+  against `*2` recognised, and the two tables on the right are headed `*1` and `*2`. Each lists the
+  same sixteen instruments. **Seven answer to two numbers and send one**: bass drum 35 and 36, snare
+  38 and 40, closed hi-hat 42 and 44, low tom 41 and 43, mid tom 45 and 47, high tom 48 and 50, and
+  cowbell 51 and 56. The number sent is one of the pair, and not always the higher - the snare sends
+  38 and the closed hi-hat 42. `voices` below holds the transmitted table, every number of which is
+  also answered to. Twenty-three numbers are answered to in all: every one from 35 to 51, then 56,
+  62, 63, 64, 70 and 75. **So no note range is recorded**, because 35 to 75 would claim eighteen
+  numbers the table does not have.
+
+  THE CHART'S FOOTNOTE MARKS EACH DO TWO JOBS, AND ONE OF THEM IS EXPLAINED NOWHERE. `*1` heads the
+  transmitted note table and is also printed in the Remarks of the Mode row's Default and Messages
+  lines, where no note on the sheet says what it means. `*2` heads the recognised note table and
+  also qualifies four Aux rows, which is the one note the sheet prints: "*2 The same processing will
+  be carried out as when All Notes Off is received." (chart p. 1). The mode below is read from the
+  cells, which are plain.
+
+  MODE 3, AND NOTHING OVER MIDI CHANGES IT. Default `Mode 3` in both columns and Messages `x`. Omni
+  Mode Off, Omni Mode On, Mono Mode On and Poly Mode On are `x` transmitted and `o` recognised, each
+  with that `*2`: each is processed as an All Notes Off would be, and none of them changes the mode.
+
+  ONE CHANNEL, WHICH MAY BE SWITCHED OFF. The Basic Channel row gives `1` as the default both ways,
+  remarked `Memorized`, and `1–16, OFF` as the range. The manual's menu says "Specifies the MIDI
+  transmit/receive channel." (manual p. 2); edition 03 had said the range in words, "Specifies the
+  MIDI transmit/receive channel (1–16, OFF)." (manual_eng03 p. 2).
+
+  CLOCK BOTH WAYS, AND A SETTING DECIDES WHETHER INCOMING CLOCK IS FOLLOWED. Clock, Start, Continue
+  and Stop are `o` in both columns, and so is Song Position. Since 1.07 the menu has four sources:
+  automatic, internal, the MIDI IN connector alone and the USB port alone. Internal follows neither
+  port: "Use this setting if you don’t want to synchronize with an external device." (manual p. 2).
+  Of the automatic one: "If MIDI clock is input simultaneously from the MIDI IN connector and the
+  USB port, the USB port takes priority." (manual p. 2). **No document says which source is the
+  default**, nor which port sends clock, beyond the Serato guide's word that MIDI OUT syncs other
+  instruments. The USB port carries MIDI as well as audio: "It can be used to transfer USB MIDI and
+  USB audio data." (manual p. 1).
+
+  SOFT THRU, FROM 1.07, AND NO DEFAULT FOR IT EITHER. "Specifies whether data received from the MIDI
+  IN connector will be retransmitted from the MIDI OUT connector (On) or will not be retransmitted
+  (OFF)." (manual p. 2). It speaks of the two MIDI connectors and of nothing arriving by USB.
+
+  HOW THE MANUAL WAS SHOWN TO DESCRIBE 1.07. Roland's notes for that release name two MIDI
+  additions, "USB and MIDI have been added as MIDI clock sources." (release_notes) and "A function
+  enabling switching soft thru on and off has been added." (release_notes), and support for Serato
+  DJ Pro besides. Edition 03, made in August 2017 by its own metadata, has two clock sources and no
+  thru switch. Edition 04, the one Roland links, has four, the switch, and the rule for when both
+  ports carry clock; the rest of what differs drops a range restated in brackets or changes a word's
+  case, and neither edition describes the Serato sync. So edition 04 is the manual for 1.07's MIDI
+  settings, although its own metadata dates it September 2018, four months before the release.
+
+  NO PROGRAM CHANGE AND NO SYSTEM EXCLUSIVE, BOTH CROSSED BOTH WAYS. Song Select is crossed too, so
+  the chart offers no message that chooses one of the 256 rhythm patterns or the twelve tracks: "The
+  TR-08 has 256 rhythm patterns, and two variations (A and B) for each rhythm pattern." (manual p.
+  1).
+
+  THREE AUX MESSAGES ARE SENT WITH A REMARK NOTHING EXPLAINS. All Sound Off, Reset All Controllers
+  and All Notes Off are `o` both ways, each remarked "Transmitted: MIDI OFFLINE" (chart p. 1), and
+  neither the sheet nor either manual says what offline means here. Active Sensing is `o` both ways;
+  Local On/Off and System Reset are `x` both ways.
+
+  VELOCITY IS MARKED BOTH WAYS AND NO PAGE SAYS WHAT IT DOES. The chart's two Velocity rows, Note On
+  and Note Off, are `o` in all four cells. Neither edition of the manual uses the word velocity.
+  What it has is an accent: a knob, which "Adjusts the strength of the accent." (manual p. 1), and a
+  position on the select switch, `AC`, whose steps are written into a pattern as a drum's are - but
+  no note number. Controller 71, `ACCENT`, is presumably the knob, so it sets the accent's strength
+  rather than accenting a step. Whether a received velocity changes the sound, or an accented step
+  is sent louder, is not said.
+
+  THE SERATO GUIDE NAMES THIS INSTRUMENT AND SPEAKS OF CLOCK. "Roland TR-8S, TR-8, TR-08, and TR-09
+  drum machines are now sync compatible with Serato DJ Pro via USB." (serato_guide p. 1), and "the
+  MIDI OUT port on the TR-8S, TR-8, TR-08, and TR-09 allows synchronization of other external
+  sequencer-based instruments" (serato_guide p. 1). Its section for this machine says "Update your
+  TR-08 to Ver.1.07 or later." (serato_guide p. 3). It names no controller, note or exclusive
+  message. And it sends the reader to a heading neither edition of the manual has - "refer to
+  'Device Connections - Micro USB Port' in the owner’s manual" (serato_guide p. 3) - while the SYNC
+  mode it switches on with the menu button is in neither edition either. The preset track list is
+  four sheets of track credits - number, tempo, genre, author and a web address - beside artwork
+  with no text, and the word MIDI is not in it.
+
+  CHECKED AND ABSENT: both aftertouches and pitch bend, each `x` in both columns; and Song Select
+  and Tune Request. Swept across both editions of the manual with the text reduced to letters and
+  digits, none of NRPN, exclusive, program change, bank select, control change, velocity,
+  aftertouch, pitch bend, polyphony, omni or offline appears.
+
+  NOT RECORDED: the polyphony, which no document states; NRPN, which the chart has no row for and no
+  document mentions, a silence rather than a checked absence; values, bands or defaults for any
+  control, none of which any document gives; and how a controller's 0 to 127 lands on the menu's own
+  ranges, -128 to 127 for tune and decay and 0 to 100 for compression, which no document gives
+  either.
+
+sources:
+  chart:
+    kind: midi_implementation
+    title: TR-08 MIDI Implementation Chart
+    edition: eng01
+    dated: 2017-08-08
+    landing: "https://www.roland.com/global/support/by_product/tr-08/owners_manuals/2be349fb-d601-4526-bd80-5b8c67fc0001/"
+    url: "https://static.roland.com/assets/media/pdf/TR-08_MIDI_Imple_Chart_eng01_W.pdf"
+    sha256: 471f0496c6edd0b676ecdf4d0a75ffcc19122b7ce4e1ff42c83f6ef44a835c8d
+    retrieved: 2026-10-07
+    # **ONE A3 SHEET, CITED AS p. 1.** The date is the one printed on it, above `Version 1.00`;
+    # the edition is the one in the file name. Its rules run down every column and across between
+    # groups of rows, never between the lines of a group, so the lines come from the words'
+    # heights - and the controller ranges
+    # are printed in the FUNCTION column, right-aligned against the rule beside their marks, which
+    # is the TR-6S's trap.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: TR-08 Owner's Manual
+    edition: eng04
+    dated: 2018-09-20
+    landing: "https://www.roland.com/global/support/by_product/tr-08/owners_manuals/01258fa0-10e5-4667-b4b6-e7ffeedf9e70/"
+    url: "https://static.roland.com/assets/media/pdf/TR-08_eng04_W.pdf"
+    sha256: 9ed638d4286916e7bc548e0c303a567f34d818c490b4e68888acdaa0248e0c7d
+    retrieved: 2026-10-07
+    # **TWO A3 SHEETS, NEITHER NUMBERED, CITED AS p. 1 AND p. 2.** The date is the PDF's own
+    # creation date, because the document states none; the server's last-modified header reads
+    # 2026, presumably because the file was uploaded again. The edition Roland links, and the
+    # one that describes 1.07 - see the source account.
+    page_offset: 0
+  manual_eng03:
+    kind: manual
+    title: TR-08 Owner's Manual
+    edition: eng03
+    dated: 2017-08-25
+    landing: "https://www.roland.com/global/support/by_product/tr-08/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/TR-08_eng03_W.pdf"
+    sha256: c5c04b0dca2e7825039b1a7d838084f6a103dcbfc32b30956347d57f32306e55
+    retrieved: 2026-10-07
+    # **THE EARLIER EDITION, HELD TO SHOW WHAT EDITION 04 ADDED.** Roland's list links edition 04
+    # only; this file is still served at its own name, and editions 01, 02 and 05 answer 403. Two
+    # sheets, cited as p. 1 and p. 2; the date is its own creation date. Nothing below is read from
+    # it but the comparison and the channel range it states in words.
+    page_offset: 0
+  serato_guide:
+    kind: manual
+    title: Roland TR / Serato DJ Pro Connection Guide
+    edition: "01"
+    dated: 2019-02-14
+    landing: "https://www.roland.com/global/support/by_product/tr-08/owners_manuals/3cf86dbe-91e8-4462-8857-a049fba5b274/"
+    url: "https://static.roland.com/assets/media/pdf/TR_serato_eng01_W.pdf"
+    sha256: cbc944f0fd238a72d45aa40697607369af8842b94b12c0a831cdcab18d8a78bc
+    retrieved: 2026-10-07
+    # Three sheets covering four of this maker's drum machines; this one's section is the third.
+    # The date is the PDF's own creation date.
+    page_offset: 0
+  track_list:
+    kind: data_list
+    title: TR-08 Preset Track List
+    edition: eng01
+    dated: 2017-08-28
+    landing: "https://www.roland.com/global/support/by_product/tr-08/owners_manuals/0b582068-f284-41da-ab38-2b8b3b1cb38d/"
+    url: "https://static.roland.com/assets/media/pdf/TR-08_TrackList_eng01_W.pdf"
+    sha256: fe209ddb37e57a432b02a6efbe8e790d49f36dc106548c7b84404db7312f5641
+    retrieved: 2026-10-07
+    # **CITED FOR AN ABSENCE**: four sheets of preset track credits, read so that the ten documents
+    # on the manuals page are a list rather than a search. Seven of the ten are the manual in seven
+    # languages.
+    page_offset: 0
+  manuals_page:
+    kind: download_page
+    title: "Roland - Support - TR-08 - Owner's Manuals"
+    landing: "https://www.roland.com/global/support/by_product/tr-08/owners_manuals/"
+    url: "https://www.roland.com/global/support/by_product/tr-08/owners_manuals/"
+    sha256: 478ba96651353df94219626ec6186c6babe14481e1d0d5f92f88081025659a00
+    retrieved: 2026-10-07
+    paginated: false
+    # Ten documents, the chart the last of them. The page as served hashes to
+    # 448a90605fd67c59287b584fe8076ca3eb3492f6724bd66cdb50a237b80a1c19.
+  updates:
+    kind: download_page
+    title: "Roland - Support - TR-08 - Updates & Drivers"
+    landing: "https://www.roland.com/global/support/by_product/tr-08/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/tr-08/updates_drivers/"
+    sha256: c231f90fbaf9df8ba97501a4dfaa144070d7ac15dadd2839aaf884258f16a0ff
+    retrieved: 2026-10-07
+    paginated: false
+    # One system program, 1.08, and eight USB drivers. The page as served hashes to
+    # ec6dc40336a77cdf95a1d8380b62c39f07f39a445fe583efdd24b0fecab310c6.
+  release_notes:
+    kind: release_notes
+    title: TR-08 System Program ( Ver.1.08 )
+    # The newest Roland had published when this was read, dated NOV 2021 in its own history, which
+    # runs back through 1.07, 1.06 and 1.03.
+    edition: Ver.1.08
+    dated: 2021-11
+    landing: "https://www.roland.com/global/support/by_product/tr-08/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/tr-08/updates_drivers/81093310-c3d5-4fdd-a3d1-66155672fd12/"
+    sha256: 435245e4d9d1b20bcb8e1c10f9b9c519c03295a19a5a8cbbfeff73d1fdd0ea5e
+    retrieved: 2026-10-07
+    paginated: false
+    # The page as served hashes to
+    # ede0e918dc6e1c931c74f5e30075a53fdacb95b0d5549972f5f288071387df38.
+
+midi:
+  # `1` by default both ways, remarked `Memorized`, and `1–16, OFF` either way (chart p. 1).
+  channels: [1, 16]
+  # Default `Mode 3` in both columns (chart p. 1), with Messages `x`: the four mode messages are
+  # each received as an All Notes Off, and none changes the mode.
+  mode: 3
+  # Clock `o` in both columns (chart p. 1). Since 1.07 the source may be either port alone,
+  # automatic with USB taking priority, or internal, which follows neither. No document says which
+  # is the default.
+  clock: both
+  # Start, Continue and Stop all `o` in both columns (chart p. 1), and Song Position too.
+  transport: both
+  program_change:
+    # Crossed in both columns (chart p. 1), with the True Number row starred out.
+    receives: false
+    sends: false
+  # Crossed in both columns (chart p. 1): a checked absence.
+  sysex: false
+  # NOT RECORDED: nrpn. The chart has no row for it and neither manual mentions it.
+
+voice:
+  # Notes name instruments: the chart's True Voice row is starred out in its Transmitted cell and
+  # empty in its Recognized one, and the note tables give each instrument its own numbers.
+  addressing: voices
+  # NOT RECORDED: note_range. Twenty-three numbers are answered to - 35 to 51, then 56, 62, 63, 64,
+  # 70 and 75 - and a single range would claim the eighteen between them.
+  # NOT RECORDED: polyphony, which no document states.
+  velocity:
+    # Note On `o` in both columns (chart p. 1). No page says what a received velocity does.
+    note_on: both
+    # And Note Off `o` in both (chart p. 1).
+    note_off: true
+  # Key's and Channel's both `x` in both columns (chart p. 1), as is pitch bend, so this
+  # instrument has neither.
+  aftertouch: none
+  # **THE TRANSMITTED TABLE, `*1`** (chart p. 1): one number for each of the sixteen instruments,
+  # in its own order and its own names, and every one of them is also in the recognised table.
+  # Seven instruments answer to a second number as well - see the source account. The names are
+  # the chart's, which spell some instruments otherwise than the groups do: `high_tom` and
+  # `cow_bell` here, `HI TOM` and `COWBELL` there.
+  voices:
+    bass_drum: 36
+    rim_shot: 37
+    snare_drum: 38
+    hand_clap: 39
+    closed_hi_hat: 42
+    low_tom: 43
+    open_hi_hat: 46
+    mid_tom: 47
+    cymbal: 49
+    high_tom: 50
+    cow_bell: 56
+    high_conga: 62
+    mid_conga: 63
+    low_conga: 64
+    maracas: 70
+    claves: 75
+
+groups:
+  # The select switch's own expansion of each code (manual p. 1), in its order. `accent` is the
+  # switch's `AC`.
+  accent: ACCENT
+  bd: BASS DRUM
+  sd: SNARE DRUM
+  lt: LOW TOM
+  mt: MID TOM
+  ht: HI TOM
+  rs: RIM SHOT
+  cp: HAND CLAP
+  cb: COWBELL
+  cy: CYMBAL
+  oh: OPEN HIHAT
+  ch: CLS’D HIHAT
+
+controls:
+
+  # **THIRTY-EIGHT NUMBERS OFF ONE LIST, EVERY ONE BOTH WAYS**, grouped by the instrument its code
+  # names. The list prints them in number order; they are in the select switch's order here.
+
+  # ACCENT ────────────────────────────────────────────────────
+  accent:    {label: ACCENT, cc: 71, group: accent}
+
+  # BASS DRUM ─────────────────────────────────────────────────
+  bd_tune:   {label: BD TUNE, cc: 20, group: bd}
+  bd_tone:   {label: BD TONE, cc: 21, group: bd}
+  bd_comp:   {label: BD COMP, cc: 22, group: bd}
+  bd_decay:  {label: BD DECAY, cc: 23, group: bd}
+  bd_level:  {label: BD LEVEL, cc: 24, group: bd}
+
+  # SNARE DRUM ────────────────────────────────────────────────
+  sd_tone:   {label: SD TONE, cc: 25, group: sd}
+  sd_snappy: {label: SD SNAPPY, cc: 26, group: sd}
+  sd_comp:   {label: SD COMP, cc: 27, group: sd}
+  sd_decay:  {label: SD DECAY, cc: 28, group: sd}
+  sd_level:  {label: SD LEVEL, cc: 29, group: sd}
+
+  # LOW TOM ───────────────────────────────────────────────────
+  lt_tune:   {label: LT TUNE, cc: 46, group: lt}
+  lt_decay:  {label: LT DECAY, cc: 47, group: lt}
+  lt_level:  {label: LT LEVEL, cc: 48, group: lt}
+
+  # MID TOM ───────────────────────────────────────────────────
+  mt_tune:   {label: MT TUNE, cc: 49, group: mt}
+  mt_decay:  {label: MT DECAY, cc: 50, group: mt}
+  mt_level:  {label: MT LEVEL, cc: 51, group: mt}
+
+  # HI TOM ────────────────────────────────────────────────────
+  ht_tune:   {label: HT TUNE, cc: 52, group: ht}
+  ht_decay:  {label: HT DECAY, cc: 53, group: ht}
+  ht_level:  {label: HT LEVEL, cc: 54, group: ht}
+
+  # RIM SHOT ──────────────────────────────────────────────────
+  rs_tune:   {label: RS TUNE, cc: 55, group: rs}
+  rs_decay:  {label: RS DECAY, cc: 56, group: rs}
+  rs_level:  {label: RS LEVEL, cc: 57, group: rs}
+
+  # HAND CLAP ─────────────────────────────────────────────────
+  cp_tune:   {label: CP TUNE, cc: 58, group: cp}
+  cp_decay:  {label: CP DECAY, cc: 59, group: cp}
+  cp_level:  {label: CP LEVEL, cc: 60, group: cp}
+
+  # COWBELL ───────────────────────────────────────────────────
+  cb_tune:   {label: CB TUNE, cc: 86, group: cb}
+  cb_decay:  {label: CB DECAY, cc: 87, group: cb}
+  cb_level:  {label: CB LEVEL, cc: 88, group: cb}
+
+  # CYMBAL ────────────────────────────────────────────────────
+  cy_tone:   {label: CY TONE, cc: 83, group: cy}
+  cy_decay:  {label: CY DECAY, cc: 84, group: cy}
+  cy_level:  {label: CY LEVEL, cc: 85, group: cy}
+
+  # OPEN HIHAT ────────────────────────────────────────────────
+  oh_tune:   {label: OH TUNE, cc: 80, group: oh}
+  oh_decay:  {label: OH DECAY, cc: 81, group: oh}
+  oh_level:  {label: OH LEVEL, cc: 82, group: oh}
+
+  # CLS’D HIHAT ───────────────────────────────────────────────
+  ch_tune:   {label: CH TUNE, cc: 61, group: ch}
+  ch_decay:  {label: CH DECAY, cc: 62, group: ch}
+  ch_level:  {label: CH LEVEL, cc: 63, group: ch}

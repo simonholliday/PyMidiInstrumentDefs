@@ -232,6 +232,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/sp_404mkii` | Roland SP-404MKII: 27 controls, seven of which the implementation chart publishes only inside a footnote - and one controller number that selects a different effect on each of three buses, so the same value means three things |
 | `roland/tb_3` | Roland TB-3: thirteen controls off a one-sheet chart, seven of them confirmed by a second document that was written about system exclusive - the only controller numbers in this corpus published twice |
 | `roland/tr8s` | Roland TR-8S: eleven voices of four controls, and two it only sends |
+| `roland/tr_08` | Roland TR-08: 38 controls off a one-sheet chart, every number one the TR-8 uses and eleven of them under another name - 86 to 88 reach this machine's cowbell where the TR-8 has `RC` - and sixteen instruments over twenty-three notes that no single range describes |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `roland/tr_6s` | Roland TR-6S: 34 controls, 33 of which are the TR-8S's - and one the TR-8S has not, named BEAT and explained nowhere |
 | `roland/tr_8` | Roland TR-8: 50 controls off a chart five firmware releases old, eleven instruments over seventeen contiguous notes, and three controls it obeys and never reports |

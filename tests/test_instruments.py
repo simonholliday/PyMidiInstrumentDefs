@@ -248,6 +248,7 @@ class TestBundledCorpus:
 			"roland/sp_404mkii",
 			"roland/tb_3",
 			"roland/tr8s",
+			"roland/tr_08",
 			"roland/tr_1000",
 			"roland/tr_6s",
 			"roland/tr_8",
@@ -15262,6 +15263,11 @@ class TestSH4D:
 		the polyphonic and multitimbral ones say 3 and the drum machines say 4** -
 		and `roland/tb_3` sits with the drum machines while being a monophonic bass
 		line, which is the one that does not follow from the instrument.
+
+		**And `roland/tr_08` broke it from the other side**: a drum machine, a
+		Boutique, whose chart says Mode 3 in both columns. So the pattern is the
+		TR-8's, the TR-8S's and the TR-6S's rather than drum machines', and the
+		next Roland is worth reading before assuming either.
 		"""
 		modes = {}
 
@@ -15275,7 +15281,8 @@ class TestSH4D:
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
 		assert three == ["roland/fantom_6_7_8", "roland/jd_xi", "roland/ju_06a",
-			"roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1", "roland/sh_4d"]
+			"roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1", "roland/sh_4d",
+			"roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
 
 		# Three of the four are drum machines; the TB-3 is the exception worth knowing.
@@ -16804,3 +16811,125 @@ class TestWavestation:
 		assert wavestation.model.firmware == "3.0"
 		assert wavestation.sources["addendum"].title == "Wavestation Version 3 Addendum"
 		assert "Wavestation software version 3.0" in prose_of("korg", "wavestation")
+
+
+class TestTR08:
+
+	"""The Boutique TR-808, off a one-sheet chart.
+
+	Roland lists it last among ten documents. It gives thirty-eight controllers, all of them
+	numbers the TR-8 uses, eleven of them under another name.
+	"""
+
+	def test_thirty_eight_controls_all_both_ways (self) -> None:
+		"""Four ranges on the chart, and the list names every number in them."""
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		numbers = sorted(control.cc for control in tr_08.controls.values() if control.cc is not None)
+
+		assert numbers == list(range(20, 30)) + list(range(46, 64)) + [71] + list(range(80, 89))
+		assert {control.direction for control in tr_08.controls.values()} == {"both"}
+
+		account = " ".join((tr_08.source or "").split())
+
+		assert "THIRTY-EIGHT CONTROLLERS, ALL OF THEM BOTH WAYS." in account
+
+	def test_the_groups_are_the_select_switch_spelled_out (self) -> None:
+		"""Twelve groups, each the manual's own expansion of a two-letter code."""
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		assert len(tr_08.groups) == 12
+		assert tr_08.groups["ch"] == "CLS’D HIHAT"
+		assert tr_08.groups["accent"] == "ACCENT"
+
+		for name, control in tr_08.controls.items():
+			assert control.group == ("accent" if name == "accent" else name.split("_")[0]), name
+
+	def test_the_numbers_are_the_tr_8s_and_eleven_carry_another_name (self) -> None:
+		"""Every number is the TR-8's; 86 to 88 are its `RC` and this machine's cowbell."""
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
+
+		here = {control.cc: control.label
+			for control in tr_08.controls.values() if control.cc is not None}
+		there = {control.cc: control.label
+			for control in tr_8.controls.values() if control.cc is not None}
+
+		assert set(here) <= set(there)
+		assert sorted(set(there) - set(here)) == [9, 12, 13, 16, 17, 18, 68, 69, 70, 89, 90, 91]
+
+		renamed = {cc: (there[cc], here[cc]) for cc in here if here[cc] != there[cc]}
+
+		assert sorted(renamed) == [21, 25, 58, 59, 60, 83, 84, 85, 86, 87, 88]
+		assert renamed[86] == ("RC TUNE", "CB TUNE")
+		assert renamed[21] == ("BD ATTACK", "BD TONE")
+
+		flat = " ".join(prose_of("roland", "tr_08").split())
+
+		assert "**THE CONTROLLER NUMBERS ARE THE TR-8's, AND ELEVEN OF THEM CARRY ANOTHER NAME.**" in flat
+
+	def test_two_note_tables_and_the_sent_one_is_carried (self) -> None:
+		"""Sixteen instruments; seven answer to a second number; no single range covers them."""
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		assert tr_08.voice is not None
+		assert tr_08.voice.addressing == "voices"
+		assert len(tr_08.voice.voices) == 16
+		assert tr_08.voice.voices["snare_drum"] == 38
+		assert tr_08.voice.voices["cow_bell"] == 56
+		assert tr_08.voice.note_range is None
+
+		account = " ".join((tr_08.source or "").split())
+
+		assert "**Seven answer to two numbers and send one**" in account
+		assert "**So no note range is recorded**, because 35 to 75 would claim eighteen numbers" \
+			" the table does not have." in account
+
+	def test_mode_3_on_one_channel_and_the_mode_messages_change_nothing (self) -> None:
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		assert tr_08.midi.mode == 3
+		assert tr_08.midi.channels == (1, 16)
+		assert "*2 The same processing will be carried out as when All Notes Off is received." \
+			in " ".join((tr_08.source or "").split())
+
+	def test_clock_and_transport_both_and_no_program_change (self) -> None:
+		"""256 patterns and none of them reachable over MIDI."""
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		assert tr_08.midi.clock == "both"
+		assert tr_08.midi.transport == "both"
+		assert tr_08.midi.program_change is not None
+		assert (tr_08.midi.program_change.receives, tr_08.midi.program_change.sends) == (False, False)
+		assert tr_08.midi.program_change.presets is None
+		assert tr_08.midi.sysex is False
+
+	def test_the_footnote_marks_each_do_two_jobs (self) -> None:
+		account = " ".join((prose_of("roland", "tr_08")).split())
+
+		assert "THE CHART'S FOOTNOTE MARKS EACH DO TWO JOBS, AND ONE OF THEM IS EXPLAINED NOWHERE." \
+			in account
+
+	def test_it_describes_1_08_through_the_manual_for_1_07 (self) -> None:
+		"""Edition 04 adds exactly what 1.07 added; 1.08 changed only its number."""
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		assert tr_08.model.firmware == "1.08"
+		assert tr_08.sources["manual"].edition == "eng04"
+		assert tr_08.sources["manual_eng03"].edition == "eng03"
+		assert tr_08.sources["chart"].page_offset == 0
+
+		said = " ".join(prose_of("roland", "tr_08").split())
+
+		assert "USB and MIDI have been added as MIDI clock sources." in said
+		assert "Product specifications are unaffected." in said
+		assert "So edition 04 is the manual for 1.07's MIDI settings" in said
+
+	def test_velocity_both_ways_and_neither_bend_nor_aftertouch (self) -> None:
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		assert tr_08.voice is not None and tr_08.voice.velocity is not None
+		assert (tr_08.voice.velocity.note_on, tr_08.voice.velocity.note_off) == ("both", True)
+		assert tr_08.voice.aftertouch == "none"
+		assert tr_08.voice.pitch_bend is None
+		assert tr_08.voice.polyphony is None

@@ -243,6 +243,7 @@ class TestBundledCorpus:
 			"roland/fantom_6_7_8",
 			"roland/jd_08",
 			"roland/jd_800",
+			"roland/jd_xa",
 			"roland/jd_xi",
 			"roland/ju_06a",
 			"roland/juno_106",
@@ -15317,7 +15318,7 @@ class TestSH4D:
 		three = sorted(name for name, mode in modes.items() if mode == 3)
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
-		assert three == ["roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xi",
+		assert three == ["roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xa", "roland/jd_xi",
 			"roland/ju_06a", "roland/jx_08", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1",
 			"roland/sh_4d", "roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
@@ -17978,3 +17979,70 @@ class TestProphetX:
 		assert set(px.sources) == {"guide", "os_2_0", "os_2_2", "os_readme", "documentation_page", "os_page"}
 		assert (px.sources["guide"].page_offset, px.sources["guide"].pages_per_sheet) == (15, 2)
 		assert px.sources["guide"].file_page(144) == 80
+
+
+class TestJDXA:
+
+	"""Eight sound parts of two kinds on channels of their own, and a map in which one number means two things."""
+
+	def test_three_kinds_of_part_each_assigned_a_channel (self) -> None:
+		xa = pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS])
+
+		assert list(xa.parts) == ["analog", "digital", "program"]
+		assert (xa.parts["analog"].count, xa.parts["digital"].count, xa.parts["program"].count) == (4, 4, 1)
+		assert all(part.channel == "assigned" for part in xa.parts.values())
+		assert xa.parts["analog"].polyphony is None and xa.parts["digital"].polyphony is None
+		assert xa.parts["program"].receives == ("controls", "program_change")
+		assert not [control for control in xa.controls.values() if control.part is None]
+
+	def test_the_same_number_means_different_things_on_the_two_kinds (self) -> None:
+		"""103, 112 and 115 are fine adjustments and a drive on an analogue part, the second partial on a digital one."""
+		xa = pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS])
+
+		def named (part: str, cc: int) -> list[str]:
+			return [control.label for control in xa.controls.values() if control.part == part and control.cc == cc]
+
+		assert (named("analog", 103), named("digital", 103)) == (["FILTER Cutoff Fine"], ["Partial 2 FILTER Cutoff"])
+		assert (named("analog", 115), named("digital", 115)) == (["FILTER Drive"], ["Partial 2 FILTER HPF Cutoff"])
+		assert named("digital", 25) == [] and named("analog", 18) == []
+
+	def test_the_received_controllers_are_here_once_for_each_kind (self) -> None:
+		xa = pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS])
+
+		received = [control for control in xa.controls.values() if control.group == "controllers"]
+		assert {control.cc for control in received if control.part == "analog"} == {1, 7, 10, 11, 64, 65, 71, 72, 73, 74, 75, 91}
+		assert {control.cc for control in received if control.part == "digital"} == {1, 7, 10, 11, 64, 65, 71, 72, 73, 74, 75, 76, 77, 78, 91}
+		assert len(received) == 12 + 15
+		assert {control.direction for control in received if control.cc in (7, 10, 65, 71, 76, 91)} == {"receives"}
+		assert xa.controls["digital_vibrato_rate"].label == "Vibrato Rate"
+
+	def test_eighty_eight_nrpns_by_their_least_significant_byte (self) -> None:
+		xa = pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS])
+
+		assert sum(1 for control in xa.controls.values() if control.nrpn is not None) == 88
+		assert xa.controls["analog_osc1_pwm_depth"].nrpn == 31
+		assert [xa.controls[f"partial_{n}_amp_pan"].nrpn for n in (1, 2, 3)] == [100, 101, 102]
+		assert xa.midi.nrpn == "supported"
+
+	def test_the_rest_of_the_implementation (self) -> None:
+		xa = pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS])
+
+		assert len(xa.controls) == 176
+		assert (xa.midi.channels, xa.midi.mode, xa.midi.clock, xa.midi.transport) == ((1, 16), 3, "both", "both")
+		assert xa.midi.program_change is not None and xa.midi.program_change.presets == 256
+		assert xa.voice.aftertouch == "poly" and xa.voice.note_range == (0, 127)
+		assert xa.voice.pitch_bend is not None and xa.voice.pitch_bend.programmable is True
+
+	def test_the_structure_diagram_is_read_from_the_drawing (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS]).source or "").split())
+
+		assert "The structure diagram gives the analogue parts default channels 1 to 4 and the digital parts 5 to 8 (manual p. 19)" in account
+		assert "no page of the three documents says what controller 90 does" in account
+
+	def test_firmware_and_sources (self) -> None:
+		xa = pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS])
+
+		assert xa.model.firmware == "1.55"
+		assert set(xa.sources) == {"implementation", "parameter_guide", "manual", "supplement_1_50", "system_program",
+			"manuals_page", "updates", "specifications"}
+		assert xa.sources["manual"].file_page(19) == 19

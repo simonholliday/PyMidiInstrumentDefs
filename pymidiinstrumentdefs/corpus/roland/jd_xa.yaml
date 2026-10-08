@@ -1,0 +1,535 @@
+definition: 1
+
+# ONE HUNDRED AND SEVENTY-SIX CONTROLS ON THREE KINDS OF PART, AND HOW TO READ THEM. The four
+# analogue parts and the four digital parts each listen on a channel of their own, and the same
+# controller number means different things on the two kinds: 103 is an analogue part's filter cutoff
+# fine and a digital part's second partial cutoff. So every control names its part - `analog`,
+# `digital` or `program` - and a consumer sends it on that part's channel.
+#
+# THE CONTROLLERS THE PARTS RECEIVE ARE HERE ONCE FOR EACH KIND, as `analog_` and `digital_`,
+# because a control naming no part would mean a base channel, and no part's channel here derives
+# from one: each is a setting of its own. Three, 76 to 78, are the digital parts' alone.
+
+model:
+  manufacturer: Roland
+  name: JD-XA
+  # THE NEWEST SYSTEM PROGRAM IS 1.55, OF MARCH 2025, AND THE IMPLEMENTATION IS 1.00, OF MAY 2015.
+  # Roland's history of the system program lists 1.10, 1.50, 1.52, 1.54 and 1.55 (system_program):
+  # 1.52 and 1.54 change only the version number, 1.55 the Auto Off default, 1.50 the preload
+  # programs, a copy function and bug fixes, and 1.10 adds librarian support and fixes, one of them
+  # a MIDI fact - "When LFO Tempo Sync is set to ON, no control change is output even when the LFO
+  # Rate knob is turned." (system_program). None adds, removes or renumbers a controller. Checked
+  # 2026-10-08.
+  firmware: "1.55"
+
+source: >-
+  Roland's MIDI Implementation for the JD-XA, version 1.00 of May 13, 2015, 22 pages: what the sound
+  source receives and sends (pp. 1 to 6), the sequencer's messages (pp. 6 to 8), the system
+  exclusive address map, and two charts, the sound source's (p. 21) and the sequencer's (p. 22). The
+  Parameter Guide, 76 pages, whose CC Assignments (pp. 68 to 73) are the map the chart sends a
+  reader to. The Owner's Manual, edition eng02, for the parts (pp. 4 and 5), the MIDI settings
+  (p. 13) and the structure diagram that gives each part's default channel (p. 19). The Version 1.50
+  Supplementary Manual. Roland's page for the newest system program, with its version history; its
+  owner's manuals and updates pages; and the product's specifications page.
+
+  THREE KINDS OF PART, AND EACH TAKES A CHANNEL OF ITS OWN. Four analogue parts, four digital parts
+  and the program. The structure diagram gives the analogue parts default channels 1 to 4 and the
+  digital parts 5 to 8 (manual p. 19), and each part's channel is a setting: "Specifies the MIDI
+  channel of each part." (parameter_guide p. 3). Program changes and the program's own controllers
+  arrive on a channel of their own, Prog Ctrl Ch, which "Specifies the MIDI receive channel on which
+  program change messages to switch programs or control change messages that control parameters of
+  the entire program are received from an external MIDI device." (manual p. 13); no page gives its
+  default. So the parts below are three, each assigned a channel, and every control names one.
+
+  THE MAP IS THE PARAMETER GUIDE'S CC ASSIGNMENTS, AND THE CHART SAYS SO. The sound source chart
+  circles 12 to 31, 80 to 83 and 102 to 119 both ways, under a footnote that sends the reader to the
+  Parameter Guide's CC Assignments "about function of each controller number." (implementation
+  p. 21). Those pages give a table for the analogue parts and one for the digital parts, besides the
+  program's and the MIDI control parts', and they speak only of what a panel control outputs: that
+  the same controller numbers are received rests on the chart, and for the NRPNs on the
+  implementation's own sentence, below. The channel is the part's: "Even for the same controller,
+  the MIDI channel that is output will change depending on the part that you select."
+  (parameter_guide p. 68). An analogue part's panel edits LFO1 or LFO2, and its pitch envelope
+  select has three settings, `OSC1+2, OSC1, OSC2` (implementation p. 18), and "The MIDI messages
+  that are output will also change depending on the LFO1/2 and PITCH ENV1/2 selection."
+  (parameter_guide p. 68), so each LFO and each oscillator's envelope has numbers of its own, 50
+  rows in all; no page says what is sent with both oscillators selected. A digital part is three
+  partials, and "The MIDI messages that are output will also change depending on the partial 1/2/3
+  selection." (parameter_guide p. 70): its 91 rows are portamento time and thirty parameters, each
+  three consecutive numbers, one for each partial. Eight more rows are the program's, and "The
+  channel follows the system parameter" (parameter_guide p. 69), Prog Ctrl Ch.
+
+  THE SAME NUMBER MEANS DIFFERENT THINGS ON THE TWO KINDS OF PART. On an analogue part 103 is
+  `FILTER Cutoff Fine`, 112 `FILTER KF Fine` and 115 `FILTER Drive`; on a digital part they are the
+  second partial's cutoff, key follow and high-pass cutoff (parameter_guide pp. 68 to 71). Cross
+  Mod, 25, and the mixer's 29 to 31 are analogue only, and so are NRPNs 37 and 38, the two pitch
+  envelopes' velocity sensitivity; a digital part's third partial has numbers no analogue part uses,
+  among them 18, 21, 24 and 28.
+
+  NRPNS, AND EVERY ONE HAS A MOST SIGNIFICANT BYTE OF 0. 88 of the controls are addressed by NRPN,
+  and the CC Assignments print each as a most and a least significant byte -
+  `NRPN MSB: 0, LSB: 31 (OSC1 PWM Depth)` (parameter_guide p. 68) - so the address recorded is the
+  least significant byte as printed, as `roland/jd_xi` records its own. The implementation sends a
+  reader to the same pages for both directions: "For more about the NRPN that JD-XA receive, refer
+  to Parameter Guide" (implementation p. 2) and "For more about the NRPN that JD-XA transmit, refer
+  to Parameter Guide" (implementation p. 5). It asks a sender to close each one: "it is recomended
+  that you set RPN Null (RPN Number = 7FH/7FH) when you have finished setting the value of the
+  desired parameter." (implementation p. 2), spelling as printed.
+
+  THE CONTROLLERS THE PARTS RECEIVE ARE HERE ONCE FOR EACH KIND. The reception section lists
+  Modulation, Portamento Time, Volume, Panpot, Expression, Hold 1, Portamento, the sound controllers
+  71 to 78 and the reverb send, 91 (implementation pp. 1 and 2), and five of them are under a part's
+  own switches: "Not received when the Rx Mod parameter (PART EDIT:PART MIDI) is OFF."
+  (implementation p. 1), and likewise for volume, pan, expression and hold, where the switch is set
+  "For each MIDI channel" (parameter_guide p. 3). So they reach whichever part listens on the
+  channel they arrive on. A control naming no part would mean a base channel, and no part's channel
+  here derives from one, so each is recorded once for the analogue parts and once for the digital
+  parts. Three are the digital parts' alone: Vibrato Rate, Vibrato Depth and Vibrato Delay are each
+  "Not received on the Analog part." (implementation p. 2). The sound controllers set an offset from
+  the tone's own value rather than the value itself - "vv = Cutoff value (relative change):
+  00H–40H–7FH (-64–0–+63)" (implementation p. 2), stored as `Part Cutoff Offset (CC# 74)`
+  (implementation p. 12) - so 64 is the tone's own setting. The chart writes `Vibrate rate`,
+  `Vibrate depth` and `Vibrate delay` (implementation p. 21), as the JD-Xi's chart does; the labels
+  take the reception section's spelling.
+
+  DIRECTIONS ARE THE SOUND SOURCE CHART'S, BUT FOR ONE. Its transmitted column crosses 7, 10, 65, 71
+  to 78 and the RPN selectors (implementation p. 21), and the transmission section names only bank
+  select, modulation, portamento time, data entry, expression, hold 1 and the NRPN selectors
+  (implementation p. 5), so those are received only: the part does not send them itself. The chart's
+  last two rows are another matter: `MIDI CONTROL` sends 1 to 31 and 33 to 127, and `Pedal, Wheel` 1
+  to 31, 33 to 95 and 102 to 119, each by a player's assignment (implementation p. 21), which is a
+  setting and not a parameter of the part. The one is the reverb send, 91, recorded as received only
+  against the chart: the chart circles `90,91` transmitted under the CC Assignments footnote
+  (implementation p. 21), and the only controller 91 those pages print is a MIDI control part's
+  default (parameter_guide p. 72), not a part's reverb send. 90 is circled both ways, and no page of
+  the three documents says what controller 90 does.
+
+  PROGRAM CHANGE ON THE PROGRAM CONTROL CHANNEL, AND THE BANKS. A program change is received on Prog
+  Ctrl Ch and sent, on a channel no page gives: "These messages are transmitted when Program is
+  selected." (implementation p. 5), each direction under a switch, Rx Prog Chg and Tx Prog Chg
+  (manual p. 13). Bank select is 0 and 32: a most significant byte of 85 with 0 or 1 reaches the
+  internal programs, `INT:A01 - P16`, and with 32 or 33 the programs on a USB flash drive
+  (implementation p. 1). The preset count is the internal user memory's, `Internal: 256` under User
+  Program Memory (specifications), sixteen banks of sixteen, A01 to P16, and the 1.50 supplement's
+  preloads are as many: "The preload program sounds have been refreshed; now 256 sounds are
+  provided." (supplement_1_50 p. 1). A USB flash drive holds another 256 (specifications), which are
+  not counted.
+
+  CLOCK AND TRANSPORT BOTH WAYS, BY THE SEQUENCER. The sound source chart circles clock received and
+  crosses the start and stop commands (implementation p. 21); the sequencer's chart circles both in
+  both columns, each mark one that "o x is selectable." (implementation p. 22). Sync Mode is MASTER,
+  REMOTE or SLAVE, and in REMOTE "The JD-XA will obey start, and stop messages from another device,
+  but the JD-XA’s own tempo setting is used as the playback tempo." (manual p. 13); Sync Output
+  "Specifies whether clock, start, and stop messages are transmitted to another device" (manual
+  p. 13).
+
+  ONE VOICE FOR EACH ANALOGUE PART, AND 64 FOR THE FOUR DIGITAL PARTS TOGETHER. "Each analog part is
+  monophonic." (manual p. 4), and Poly Stack "Lets you use the four analog parts as one four-voice
+  poly part." (manual p. 5). The specifications give "Analog Part: 4 voices" (specifications) and
+  "Digital Part: 64 voices (varies according to the sound generator load)" (specifications). Neither
+  is recorded as a number. A part's own polyphony needs the instrument to say whether its parts
+  share their voices. Here each analogue part has its one voice, and the digital parts' 64 is a
+  figure for the four together, whose engine the page calls "four-part, 64-voice digital"
+  (specifications), and no page says how they divide it. This format can say shared or not shared
+  for a whole instrument only, so it is said here instead.
+
+  THE MIDI CONTROL PARTS ARE WHAT THE JD-XA SENDS TO OTHER INSTRUMENTS, AND ARE NOT RECORDED. With
+  MIDI CTRL on, keyboard performance and panel operations are sent "on eight channels (channels 9–16
+  by default)" (manual p. 11), and "MIDI CTRL lets you assign controllers to the knobs and sliders"
+  (parameter_guide p. 72); the CC Assignments print the assignments' default values (parameter_guide
+  pp. 72 and 73). They are settings for controlling something else, not anything the JD-XA answers
+  to.
+
+  NOT RECORDED, AND WHY: Prog Ctrl Ch's default, which no page gives; the MIDI control parts, above;
+  controller 90, which no page explains; 68, which the address map names beside a part's legato
+  switch, `Part Legato Switch (CC# 68)` (implementation p. 12), and which neither the reception
+  section nor the chart lists; a polyphony for the digital parts, above; the system exclusive
+  address map's parameters, which this format does not carry; the channel mode messages, 120 to 127,
+  which this format refuses as controls; and the sequencer's chart, which is a recorder's and not
+  the sound source's, except for its clock and transport.
+
+midi:
+  # The sound source chart's Basic Channel row: 1 to 16 as a default and as changed, both ways, and
+  # `Memorized` (implementation p. 21). Each part's own channel is in the parts below.
+  channels: [1, 16]
+  # Mode 3 as the default both ways, and modes 3 and 4 recognized, mode 4 with a footnote,
+  # "Recognized as M=1 even if" (implementation p. 21), that prints `M1` with no comparison sign, as
+  # `roland/jd_xi`'s chart does. The reception section treats MONO and POLY only as all notes off
+  # (implementation p. 3).
+  mode: 3
+  # Received by the sound source in slave mode (implementation p. 3) and sent by the sequencer when
+  # Sync Output is on (implementation p. 8); the sequencer's chart circles both (implementation
+  # p. 22).
+  clock: both
+  # Start, continue and stop received in slave and remote modes (implementation p. 7), and start and
+  # stop sent when Sync Output is on (implementation p. 8).
+  transport: both
+  program_change:
+    # Received on Prog Ctrl Ch under Rx Prog Chg, and sent under Tx Prog Chg (manual p. 13) on a
+    # channel no page gives; see the account.
+    receives: true
+    sends: true
+    # `Internal: 256` (specifications), INT:A01 to P16; see the account.
+    presets: 256
+  # 88 controls are NRPNs, both ways (implementation pp. 2 and 5).
+  nrpn: supported
+  # Circled both ways (implementation p. 21): an identity request received and its reply sent, three
+  # universal realtime messages received - master volume, fine and coarse tuning (implementation
+  # p. 4) - and Roland's data request received and data set both ways. The transmitted mark carries
+  # a footnote that it is sent only when the edit data setting is on or a data request arrives
+  # (implementation p. 21).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # The chart's recognized Note Number, 0 to 127; it prints 0 to 126 transmitted (implementation
+  # p. 21), where the transmission section gives 0 to 127 (implementation p. 5), for a 49-key
+  # keyboard (specifications).
+  note_range: [0, 127]
+  velocity:
+    # Note on and note off velocity circled both ways (implementation p. 21), so it answers to
+    # velocity and sends it.
+    note_on: both
+    note_off: true
+  # Polyphonic key pressure received, under a part's Rx PolyPress switch (implementation p. 1), and
+  # channel pressure both ways (implementation p. 21); `poly` follows `roland/jd_xi`.
+  aftertouch: poly
+  pitch_bend:
+    # Settable by the first registered parameter, "00H–18H (0–24 semitones)" (implementation p. 2).
+    programmable: true
+
+parts:
+  # Every part is given its channel by a setting, so none derives one from a base: there is no base
+  # channel on this instrument to derive from.
+  analog:
+    label: Analog Part
+    count: 4
+    # Channels 1 to 4 by default, read from the structure diagram (manual p. 19), whose text layer
+    # gives the numbers in another order; settable, "Specifies the MIDI channel of each part."
+    # (parameter_guide p. 3).
+    channel: assigned
+    addressing: pitches
+    # Notes and controllers on the part's channel; program changes go to Prog Ctrl Ch instead.
+    receives: [notes, controls]
+    # NOT RECORDED, a polyphony, though "Each analog part is monophonic." (manual p. 4): see the
+    # account. With Poly Stack on, the four play as one four-voice part (manual p. 5).
+  digital:
+    label: Digital Part
+    count: 4
+    # Channels 5 to 8 by default (manual p. 19), each a setting like the analogue parts'.
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls]
+    # NOT RECORDED, a polyphony: "Digital Part: 64 voices (varies according to the sound generator
+    # load)" (specifications) is a figure for the four together; see the account.
+  program:
+    label: Program Control
+    # Prog Ctrl Ch, `1–16` (manual p. 13), with no default printed.
+    channel: assigned
+    receives: [controls, program_change]
+
+groups:
+  # THE SECTIONS THE CC ASSIGNMENTS PRINT, by the start of each parameter's own name, with the
+  # program's parameters, which they print as a section of their own; and one more, the controllers
+  # the implementation's reception section lists for the parts.
+  controllers: Controllers
+  portamento: Portamento
+  lfo: LFO
+  oscillator: Oscillators
+  pitch_envelope: Pitch Envelope
+  mixer: Mixer
+  filter: Filter
+  amp: Amp
+  program: Program Parameters
+
+controls:
+
+  # THE ANALOGUE PARTS: the controllers the implementation receives on a part's channel
+  # (implementation pp. 1 and 2).
+  analog_modulation:                      {label: Modulation, cc: 1, part: analog, group: controllers}
+  analog_volume:                          {label: Volume, cc: 7, direction: receives, part: analog, group: controllers}
+  analog_panpot:                          {label: Panpot, cc: 10, direction: receives, part: analog, group: controllers}
+  analog_expression:                      {label: Expression, cc: 11, part: analog, group: controllers}
+  analog_hold_1:                          {label: Hold 1, cc: 64, values: {"off": 0, "on": 64}, part: analog, group: controllers}
+  analog_portamento:                      {label: Portamento, cc: 65, values: {"off": 0, "on": 64}, direction: receives, part: analog, group: controllers}
+  analog_resonance:                       {label: Resonance, cc: 71, direction: receives, part: analog, group: controllers}
+  analog_release_time:                    {label: Release Time, cc: 72, direction: receives, part: analog, group: controllers}
+  analog_attack_time:                     {label: Attack time, cc: 73, direction: receives, part: analog, group: controllers}
+  analog_cutoff:                          {label: Cutoff, cc: 74, direction: receives, part: analog, group: controllers}
+  analog_decay_time:                      {label: Decay Time, cc: 75, direction: receives, part: analog, group: controllers}
+  analog_reverb_send_level:               {label: Reverb Send Level, cc: 91, direction: receives, part: analog, group: controllers}
+
+  # THE ANALOGUE PARTS' CC ASSIGNMENTS (parameter_guide pp. 68 and 69), both ways.
+  analog_porta_time:                      {label: Porta Time, cc: 5, part: analog, group: portamento}
+  analog_lfo1_rate:                       {label: LFO1 Rate, cc: 16, part: analog, group: lfo}
+  analog_lfo2_rate:                       {label: LFO2 Rate, cc: 17, part: analog, group: lfo}
+  analog_lfo1_fade_time:                  {label: LFO1 Fade Time, nrpn: 6, part: analog, group: lfo}
+  analog_lfo2_fade_time:                  {label: LFO2 Fade Time, nrpn: 7, part: analog, group: lfo}
+  analog_lfo1_pitch_depth:                {label: LFO1 Pitch Depth, nrpn: 9, part: analog, group: lfo}
+  analog_lfo2_pitch_depth:                {label: LFO2 Pitch Depth, nrpn: 10, part: analog, group: lfo}
+  analog_lfo1_filter_depth:               {label: LFO1 Filter Depth, nrpn: 12, part: analog, group: lfo}
+  analog_lfo2_filter_depth:               {label: LFO2 Filter Depth, nrpn: 13, part: analog, group: lfo}
+  analog_lfo1_amp_depth:                  {label: LFO1 Amp Depth, nrpn: 15, part: analog, group: lfo}
+  analog_lfo2_amp_depth:                  {label: LFO2 Amp Depth, nrpn: 16, part: analog, group: lfo}
+  analog_osc1_pitch:                      {label: OSC1 Pitch, cc: 19, part: analog, group: oscillator}
+  analog_osc1_fine:                       {label: OSC1 Fine, cc: 22, part: analog, group: oscillator}
+  analog_osc1_pwm_depth:                  {label: OSC1 PWM Depth, nrpn: 31, part: analog, group: oscillator}
+  analog_osc1_pw:                         {label: OSC1 PW, nrpn: 28, part: analog, group: oscillator}
+  analog_cross_mod:                       {label: Cross Mod, cc: 25, part: analog, group: oscillator}
+  analog_osc2_pitch:                      {label: OSC2 Pitch, cc: 20, part: analog, group: oscillator}
+  analog_osc2_fine:                       {label: OSC2 Fine, cc: 23, part: analog, group: oscillator}
+  analog_osc2_pwm_depth:                  {label: OSC2 PWM Depth, nrpn: 32, part: analog, group: oscillator}
+  analog_osc2_pw:                         {label: OSC2 PW, nrpn: 29, part: analog, group: oscillator}
+  analog_o1_pitch_env_depth:              {label: O1 PITCH ENV Depth, cc: 26, part: analog, group: pitch_envelope}
+  analog_o2_pitch_env_depth:              {label: O2 PITCH ENV Depth, cc: 27, part: analog, group: pitch_envelope}
+  analog_o1_pitch_env_velo_sens:          {label: O1 PITCH ENV Velo Sens, nrpn: 37, part: analog, group: pitch_envelope}
+  analog_o2_pitch_env_velo_sens:          {label: O2 PITCH ENV Velo Sens, nrpn: 38, part: analog, group: pitch_envelope}
+  analog_o1_pitch_env_attack:             {label: O1 PITCH ENV Attack, nrpn: 43, part: analog, group: pitch_envelope}
+  analog_o2_pitch_env_attack:             {label: O2 PITCH ENV Attack, nrpn: 44, part: analog, group: pitch_envelope}
+  analog_o1_pitch_env_decay:              {label: O1 PITCH ENV Decay, nrpn: 46, part: analog, group: pitch_envelope}
+  analog_o2_pitch_env_decay:              {label: O2 PITCH ENV Decay, nrpn: 47, part: analog, group: pitch_envelope}
+  analog_mixer_osc1_level:                {label: MIXER OSC1 Level, cc: 29, part: analog, group: mixer}
+  analog_mixer_osc2_level:                {label: MIXER OSC2 Level, cc: 30, part: analog, group: mixer}
+  analog_mixer_aux_level:                 {label: MIXER AUX Level, cc: 31, part: analog, group: mixer}
+  analog_filter_hpf_cutoff:               {label: FILTER HPF Cutoff, cc: 114, part: analog, group: filter}
+  analog_filter_drive:                    {label: FILTER Drive, cc: 115, part: analog, group: filter}
+  analog_filter_cutoff:                   {label: FILTER Cutoff, cc: 102, part: analog, group: filter}
+  analog_filter_cutoff_fine:              {label: FILTER Cutoff Fine, cc: 103, part: analog, group: filter}
+  analog_filter_resonance:                {label: FILTER Resonance, cc: 105, part: analog, group: filter}
+  analog_filter_key_follow:               {label: FILTER Key Follow, cc: 111, part: analog, group: filter}
+  analog_filter_kf_fine:                  {label: FILTER KF Fine, cc: 112, part: analog, group: filter}
+  analog_filter_env_depth:                {label: FILTER ENV Depth, cc: 108, part: analog, group: filter}
+  analog_filter_env_velo_sens:            {label: FILTER ENV Velo Sens, nrpn: 58, part: analog, group: filter}
+  analog_filter_env_attack:               {label: FILTER ENV Attack, nrpn: 70, part: analog, group: filter}
+  analog_filter_env_decay:                {label: FILTER ENV Decay, nrpn: 73, part: analog, group: filter}
+  analog_filter_env_sustain:              {label: FILTER ENV Sustain, nrpn: 76, part: analog, group: filter}
+  analog_filter_env_release:              {label: FILTER ENV Release, nrpn: 79, part: analog, group: filter}
+  analog_amp_level:                       {label: AMP Level, cc: 117, part: analog, group: amp}
+  analog_amp_level_v_sens:                {label: AMP Level V-Sens, nrpn: 85, part: analog, group: amp}
+  analog_amp_env_attack:                  {label: AMP ENV Attack, nrpn: 88, part: analog, group: amp}
+  analog_amp_env_decay:                   {label: AMP ENV Decay, nrpn: 91, part: analog, group: amp}
+  analog_amp_env_sustain:                 {label: AMP ENV Sustain, nrpn: 94, part: analog, group: amp}
+  analog_amp_env_release:                 {label: AMP ENV Release, nrpn: 97, part: analog, group: amp}
+
+  # THE DIGITAL PARTS: the same controllers, and 76 to 78, which the analogue parts do not receive.
+  digital_modulation:                     {label: Modulation, cc: 1, part: digital, group: controllers}
+  digital_volume:                         {label: Volume, cc: 7, direction: receives, part: digital, group: controllers}
+  digital_panpot:                         {label: Panpot, cc: 10, direction: receives, part: digital, group: controllers}
+  digital_expression:                     {label: Expression, cc: 11, part: digital, group: controllers}
+  digital_hold_1:                         {label: Hold 1, cc: 64, values: {"off": 0, "on": 64}, part: digital, group: controllers}
+  digital_portamento:                     {label: Portamento, cc: 65, values: {"off": 0, "on": 64}, direction: receives, part: digital, group: controllers}
+  digital_resonance:                      {label: Resonance, cc: 71, direction: receives, part: digital, group: controllers}
+  digital_release_time:                   {label: Release Time, cc: 72, direction: receives, part: digital, group: controllers}
+  digital_attack_time:                    {label: Attack time, cc: 73, direction: receives, part: digital, group: controllers}
+  digital_cutoff:                         {label: Cutoff, cc: 74, direction: receives, part: digital, group: controllers}
+  digital_decay_time:                     {label: Decay Time, cc: 75, direction: receives, part: digital, group: controllers}
+  digital_vibrato_rate:                   {label: Vibrato Rate, cc: 76, direction: receives, part: digital, group: controllers}
+  digital_vibrato_depth:                  {label: Vibrato Depth, cc: 77, direction: receives, part: digital, group: controllers}
+  digital_vibrato_delay:                  {label: Vibrato Delay, cc: 78, direction: receives, part: digital, group: controllers}
+  digital_reverb_send_level:              {label: Reverb Send Level, cc: 91, direction: receives, part: digital, group: controllers}
+
+  # THE DIGITAL PARTS' CC ASSIGNMENTS (parameter_guide pp. 70 and 71), both ways: portamento, and
+  # thirty parameters for each of three partials.
+  digital_porta_time:                     {label: Porta Time, cc: 5, part: digital, group: portamento}
+  partial_1_lfo_rate:                     {label: Partial 1 LFO Rate, cc: 16, part: digital, group: lfo}
+  partial_2_lfo_rate:                     {label: Partial 2 LFO Rate, cc: 17, part: digital, group: lfo}
+  partial_3_lfo_rate:                     {label: Partial 3 LFO Rate, cc: 18, part: digital, group: lfo}
+  partial_1_lfo_fade_time:                {label: Partial 1 LFO Fade Time, nrpn: 6, part: digital, group: lfo}
+  partial_2_lfo_fade_time:                {label: Partial 2 LFO Fade Time, nrpn: 7, part: digital, group: lfo}
+  partial_3_lfo_fade_time:                {label: Partial 3 LFO Fade Time, nrpn: 8, part: digital, group: lfo}
+  partial_1_lfo_pitch_depth:              {label: Partial 1 LFO Pitch Depth, nrpn: 9, part: digital, group: lfo}
+  partial_2_lfo_pitch_depth:              {label: Partial 2 LFO Pitch Depth, nrpn: 10, part: digital, group: lfo}
+  partial_3_lfo_pitch_depth:              {label: Partial 3 LFO Pitch Depth, nrpn: 11, part: digital, group: lfo}
+  partial_1_lfo_filter_depth:             {label: Partial 1 LFO Filter Depth, nrpn: 12, part: digital, group: lfo}
+  partial_2_lfo_filter_depth:             {label: Partial 2 LFO Filter Depth, nrpn: 13, part: digital, group: lfo}
+  partial_3_lfo_filter_depth:             {label: Partial 3 LFO Filter Depth, nrpn: 14, part: digital, group: lfo}
+  partial_1_lfo_amp_depth:                {label: Partial 1 LFO Amp Depth, nrpn: 15, part: digital, group: lfo}
+  partial_2_lfo_amp_depth:                {label: Partial 2 LFO Amp Depth, nrpn: 16, part: digital, group: lfo}
+  partial_3_lfo_amp_depth:                {label: Partial 3 LFO Amp Depth, nrpn: 17, part: digital, group: lfo}
+  partial_1_lfo_pan_depth:                {label: Partial 1 LFO Pan Depth, nrpn: 18, part: digital, group: lfo}
+  partial_2_lfo_pan_depth:                {label: Partial 2 LFO Pan Depth, nrpn: 19, part: digital, group: lfo}
+  partial_3_lfo_pan_depth:                {label: Partial 3 LFO Pan Depth, nrpn: 20, part: digital, group: lfo}
+  partial_1_osc_pitch:                    {label: Partial 1 OSC Pitch, cc: 19, part: digital, group: oscillator}
+  partial_2_osc_pitch:                    {label: Partial 2 OSC Pitch, cc: 20, part: digital, group: oscillator}
+  partial_3_osc_pitch:                    {label: Partial 3 OSC Pitch, cc: 21, part: digital, group: oscillator}
+  partial_1_osc_detune:                   {label: Partial 1 OSC Detune, cc: 22, part: digital, group: oscillator}
+  partial_2_osc_detune:                   {label: Partial 2 OSC Detune, cc: 23, part: digital, group: oscillator}
+  partial_3_osc_detune:                   {label: Partial 3 OSC Detune, cc: 24, part: digital, group: oscillator}
+  partial_1_osc_pwm_depth:                {label: Partial 1 OSC PWM Depth, nrpn: 31, part: digital, group: oscillator}
+  partial_2_osc_pwm_depth:                {label: Partial 2 OSC PWM Depth, nrpn: 32, part: digital, group: oscillator}
+  partial_3_osc_pwm_depth:                {label: Partial 3 OSC PWM Depth, nrpn: 33, part: digital, group: oscillator}
+  partial_1_osc_pw:                       {label: Partial 1 OSC PW, nrpn: 28, part: digital, group: oscillator}
+  partial_2_osc_pw:                       {label: Partial 2 OSC PW, nrpn: 29, part: digital, group: oscillator}
+  partial_3_osc_pw:                       {label: Partial 3 OSC PW, nrpn: 30, part: digital, group: oscillator}
+  partial_1_pitch_env_depth:              {label: Partial 1 PITCH ENV Depth, cc: 26, part: digital, group: pitch_envelope}
+  partial_2_pitch_env_depth:              {label: Partial 2 PITCH ENV Depth, cc: 27, part: digital, group: pitch_envelope}
+  partial_3_pitch_env_depth:              {label: Partial 3 PITCH ENV Depth, cc: 28, part: digital, group: pitch_envelope}
+  partial_1_pitch_env_attack:             {label: Partial 1 PITCH ENV Attack, nrpn: 43, part: digital, group: pitch_envelope}
+  partial_2_pitch_env_attack:             {label: Partial 2 PITCH ENV Attack, nrpn: 44, part: digital, group: pitch_envelope}
+  partial_3_pitch_env_attack:             {label: Partial 3 PITCH ENV Attack, nrpn: 45, part: digital, group: pitch_envelope}
+  partial_1_pitch_env_decay:              {label: Partial 1 PITCH ENV Decay, nrpn: 46, part: digital, group: pitch_envelope}
+  partial_2_pitch_env_decay:              {label: Partial 2 PITCH ENV Decay, nrpn: 47, part: digital, group: pitch_envelope}
+  partial_3_pitch_env_decay:              {label: Partial 3 PITCH ENV Decay, nrpn: 48, part: digital, group: pitch_envelope}
+  partial_1_filter_hpf_cutoff:            {label: Partial 1 FILTER HPF Cutoff, cc: 114, part: digital, group: filter}
+  partial_2_filter_hpf_cutoff:            {label: Partial 2 FILTER HPF Cutoff, cc: 115, part: digital, group: filter}
+  partial_3_filter_hpf_cutoff:            {label: Partial 3 FILTER HPF Cutoff, cc: 116, part: digital, group: filter}
+  partial_1_filter_cutoff:                {label: Partial 1 FILTER Cutoff, cc: 102, part: digital, group: filter}
+  partial_2_filter_cutoff:                {label: Partial 2 FILTER Cutoff, cc: 103, part: digital, group: filter}
+  partial_3_filter_cutoff:                {label: Partial 3 FILTER Cutoff, cc: 104, part: digital, group: filter}
+  partial_1_filter_resonance:             {label: Partial 1 FILTER Resonance, cc: 105, part: digital, group: filter}
+  partial_2_filter_resonance:             {label: Partial 2 FILTER Resonance, cc: 106, part: digital, group: filter}
+  partial_3_filter_resonance:             {label: Partial 3 FILTER Resonance, cc: 107, part: digital, group: filter}
+  partial_1_filter_key_follow:            {label: Partial 1 FILTER Key Follow, cc: 111, part: digital, group: filter}
+  partial_2_filter_key_follow:            {label: Partial 2 FILTER Key Follow, cc: 112, part: digital, group: filter}
+  partial_3_filter_key_follow:            {label: Partial 3 FILTER Key Follow, cc: 113, part: digital, group: filter}
+  partial_1_filter_env_depth:             {label: Partial 1 FILTER ENV Depth, cc: 108, part: digital, group: filter}
+  partial_2_filter_env_depth:             {label: Partial 2 FILTER ENV Depth, cc: 109, part: digital, group: filter}
+  partial_3_filter_env_depth:             {label: Partial 3 FILTER ENV Depth, cc: 110, part: digital, group: filter}
+  partial_1_filter_env_velo_sens:         {label: Partial 1 FILTER ENV Velo Sens, nrpn: 58, part: digital, group: filter}
+  partial_2_filter_env_velo_sens:         {label: Partial 2 FILTER ENV Velo Sens, nrpn: 59, part: digital, group: filter}
+  partial_3_filter_env_velo_sens:         {label: Partial 3 FILTER ENV Velo Sens, nrpn: 60, part: digital, group: filter}
+  partial_1_filter_env_attack:            {label: Partial 1 FILTER ENV Attack, nrpn: 70, part: digital, group: filter}
+  partial_2_filter_env_attack:            {label: Partial 2 FILTER ENV Attack, nrpn: 71, part: digital, group: filter}
+  partial_3_filter_env_attack:            {label: Partial 3 FILTER ENV Attack, nrpn: 72, part: digital, group: filter}
+  partial_1_filter_env_decay:             {label: Partial 1 FILTER ENV Decay, nrpn: 73, part: digital, group: filter}
+  partial_2_filter_env_decay:             {label: Partial 2 FILTER ENV Decay, nrpn: 74, part: digital, group: filter}
+  partial_3_filter_env_decay:             {label: Partial 3 FILTER ENV Decay, nrpn: 75, part: digital, group: filter}
+  partial_1_filter_env_sustain:           {label: Partial 1 FILTER ENV Sustain, nrpn: 76, part: digital, group: filter}
+  partial_2_filter_env_sustain:           {label: Partial 2 FILTER ENV Sustain, nrpn: 77, part: digital, group: filter}
+  partial_3_filter_env_sustain:           {label: Partial 3 FILTER ENV Sustain, nrpn: 78, part: digital, group: filter}
+  partial_1_filter_env_release:           {label: Partial 1 FILTER ENV Release, nrpn: 79, part: digital, group: filter}
+  partial_2_filter_env_release:           {label: Partial 2 FILTER ENV Release, nrpn: 80, part: digital, group: filter}
+  partial_3_filter_env_release:           {label: Partial 3 FILTER ENV Release, nrpn: 81, part: digital, group: filter}
+  partial_1_amp_pan:                      {label: Partial 1 AMP Pan, nrpn: 100, part: digital, group: amp}
+  partial_2_amp_pan:                      {label: Partial 2 AMP Pan, nrpn: 101, part: digital, group: amp}
+  partial_3_amp_pan:                      {label: Partial 3 AMP Pan, nrpn: 102, part: digital, group: amp}
+  partial_1_amp_level:                    {label: Partial 1 AMP Level, cc: 117, part: digital, group: amp}
+  partial_2_amp_level:                    {label: Partial 2 AMP Level, cc: 118, part: digital, group: amp}
+  partial_3_amp_level:                    {label: Partial 3 AMP Level, cc: 119, part: digital, group: amp}
+  partial_1_amp_level_v_sens:             {label: Partial 1 AMP Level V-Sens, nrpn: 85, part: digital, group: amp}
+  partial_2_amp_level_v_sens:             {label: Partial 2 AMP Level V-Sens, nrpn: 86, part: digital, group: amp}
+  partial_3_amp_level_v_sens:             {label: Partial 3 AMP Level V-Sens, nrpn: 87, part: digital, group: amp}
+  partial_1_amp_env_attack:               {label: Partial 1 AMP ENV Attack, nrpn: 88, part: digital, group: amp}
+  partial_2_amp_env_attack:               {label: Partial 2 AMP ENV Attack, nrpn: 89, part: digital, group: amp}
+  partial_3_amp_env_attack:               {label: Partial 3 AMP ENV Attack, nrpn: 90, part: digital, group: amp}
+  partial_1_amp_env_decay:                {label: Partial 1 AMP ENV Decay, nrpn: 91, part: digital, group: amp}
+  partial_2_amp_env_decay:                {label: Partial 2 AMP ENV Decay, nrpn: 92, part: digital, group: amp}
+  partial_3_amp_env_decay:                {label: Partial 3 AMP ENV Decay, nrpn: 93, part: digital, group: amp}
+  partial_1_amp_env_sustain:              {label: Partial 1 AMP ENV Sustain, nrpn: 94, part: digital, group: amp}
+  partial_2_amp_env_sustain:              {label: Partial 2 AMP ENV Sustain, nrpn: 95, part: digital, group: amp}
+  partial_3_amp_env_sustain:              {label: Partial 3 AMP ENV Sustain, nrpn: 96, part: digital, group: amp}
+  partial_1_amp_env_release:              {label: Partial 1 AMP ENV Release, nrpn: 97, part: digital, group: amp}
+  partial_2_amp_env_release:              {label: Partial 2 AMP ENV Release, nrpn: 98, part: digital, group: amp}
+  partial_3_amp_env_release:              {label: Partial 3 AMP ENV Release, nrpn: 99, part: digital, group: amp}
+
+  # THE PROGRAM PARAMETERS (parameter_guide pp. 69, 71 and 73), on the program control channel, both
+  # ways.
+  tfx1_select:                            {label: TFX1 Select, cc: 80, part: program, group: program}
+  tfx1_ctrl:                              {label: TFX1 Ctrl, cc: 14, part: program, group: program}
+  tfx2_select:                            {label: TFX2 Select, cc: 81, part: program, group: program}
+  tfx2_ctrl:                              {label: TFX2 Ctrl, cc: 15, part: program, group: program}
+  reverb_level:                           {label: Reverb Level, cc: 12, part: program, group: program}
+  delay_level:                            {label: Delay Level, cc: 13, part: program, group: program}
+  delay_time:                             {label: Delay Time, cc: 82, part: program, group: program}
+  mic_level:                              {label: MIC Level, cc: 83, part: program, group: program}
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: JD-XA MIDI Implementation
+    edition: "1.00"
+    dated: 2015-05-13
+    landing: "https://www.roland.com/global/support/by_product/jd-xa/owners_manuals/281945df-64ce-4065-90e4-09ff3240de0a/"
+    url: "https://static.roland.com/assets/media/pdf/JD-XA_MIDI_Imple_e01_W.pdf"
+    sha256: 1ade5057f6111baea11646b252018f29344626340bc0a26a227c83ae4826a59c
+    retrieved: 2026-10-08
+    # 22 pages, and each prints its own number first, so a locator is the printed number. Its two
+    # charts are each headed only `SYNTHESIZER`, and are told apart by what they say: p. 21 is the
+    # sound source's, and p. 22 the sequencer's - its Basic Channel row reads "There is not specific
+    # basic channel" (implementation p. 22) and its footnotes are about recording.
+    page_offset: 0
+  parameter_guide:
+    kind: parameter_guide
+    title: JD-XA Parameter Guide
+    edition: e01
+    landing: "https://www.roland.com/global/support/by_product/jd-xa/owners_manuals/5aed2c5e-9b97-4948-bbf7-d524bf6890cf/"
+    url: "https://static.roland.com/assets/media/pdf/JD-XA_ParameterGuide_e01_W.pdf"
+    sha256: a2430691b8f69fb63c2949769da6a4bd2a1ee6ef3042763a0261b923ace8ca70
+    retrieved: 2026-10-08
+    # 76 pages, all but the contents page printing their own number first. The CC Assignments are
+    # pp. 68 to 73: the analogue part, the digital part, the MIDI control parts and, on each spread,
+    # the program's eight. PyMuPDF reads a control character after the selector on several of their
+    # lines, where pypdf and PDFium read none; a reading with PyMuPDF has to strip it.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: JD-XA Owner's Manual
+    edition: eng02
+    landing: "https://www.roland.com/global/support/by_product/jd-xa/owners_manuals/1d13d32e-43e7-47c4-9000-b96d3a48f321/"
+    url: "https://static.roland.com/assets/media/pdf/JD-XA_eng02_W.pdf"
+    sha256: d9ae7ce07e82c50c5f2cc35b46ccbb9239cf854499f43fabf733ca05e6abb321
+    retrieved: 2026-10-08
+    # The edition is the file name's; the manual prints none. 19 sheets. Sheets 2 to 17 print their
+    # own numbers; the structure diagram, which the manual places "inside the front cover" (manual
+    # p. 11), is the file's last sheet, unnumbered and twice as wide, cited as p. 19. ITS TEXT LAYER
+    # PUTS THE DEFAULT CHANNELS NEXT TO THE WRONG PARTS: it lists `Default MIDI Channel` 16, 14, 15
+    # and 13 directly before the four analogue parts' labels, where the drawing gives the analogue
+    # parts 1 to 4. The channels were read from the rendered page, and the reading script asserts
+    # them by where each label sits.
+    page_offset: 0
+  supplement_1_50:
+    kind: firmware_addendum
+    title: JD-XA Version 1.50 Supplementary Manual
+    edition: "1.50"
+    landing: "https://www.roland.com/global/support/by_product/jd-xa/owners_manuals/5f92d63f-97f7-48c5-8c56-f29dcd73e2b7/"
+    url: "https://static.roland.com/assets/media/pdf/JD-XA_V150_e01_W.pdf"
+    sha256: 20bef5460904dc1c8dc4dc6cf68be5afbd347e5a664879319b6ad7948e646b9e
+    retrieved: 2026-10-08
+    # One page, unnumbered, cited as p. 1, and printed only with its year, 2016: refreshed preload
+    # programs and a copy function, and no controller number.
+    page_offset: 0
+  system_program:
+    kind: release_notes
+    title: "JD-XA System Program ( Ver.1.55 )"
+    edition: "1.55"
+    dated: 2025-03
+    landing: "https://www.roland.com/global/support/by_product/jd-xa/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/jd-xa/updates_drivers/035850ea-71ac-4b80-a753-505c74f159e1/"
+    sha256: 7c8b2418cd333b7e691d62a8ed485bc143a23ab5217334bf20047c40b0af7fb4
+    retrieved: 2026-10-08
+    paginated: false
+    # The version history from 1.10 to 1.55. The page as served hashes to
+    # 91548ee25b4085e200c83e420dde9bf54497c9fd89f1da535f0fb574597ad1f2; the download, by the page's
+    # account one update file, was not fetched.
+  manuals_page:
+    kind: download_page
+    title: "Roland - Support - JD-XA - Owner's Manuals"
+    landing: "https://www.roland.com/global/support/by_product/jd-xa/owners_manuals/"
+    url: "https://www.roland.com/global/support/by_product/jd-xa/owners_manuals/"
+    sha256: 2cc48fdfa8b16137128f31157de713426338cb72d3caef11f676983f687726fa
+    retrieved: 2026-10-08
+    paginated: false
+    # Ten documents: the owner's manual in seven languages, the 1.50 supplement, the Parameter Guide
+    # and the MIDI Implementation, the last three in English only. The page as served hashes to
+    # 9df549271237990d4451ac2718a17639c50486869d4d618caf91c46bedd85098.
+  updates:
+    kind: download_page
+    title: "Roland - Support - JD-XA - Updates & Drivers"
+    landing: "https://www.roland.com/global/support/by_product/jd-xa/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/jd-xa/updates_drivers/"
+    sha256: 839997908c65d3d16334c8802a1013ae0c8dee78f2500ee5d617ce2c4e5cf2e2
+    retrieved: 2026-10-08
+    paginated: false
+    # The system program, 1.55, drivers and the librarian. The page as served hashes to
+    # 65218d33574067d4e4c3fa419b14ffaa4f537ac846b52b8116cd2c15ba4b824a.
+  specifications:
+    kind: product_page
+    title: "Roland - JD-XA | Analog/Digital Crossover Synthesizer"
+    landing: "https://www.roland.com/global/products/jd-xa/specifications/"
+    url: "https://www.roland.com/global/products/jd-xa/specifications/"
+    sha256: ac1b1ce7597c8e90491629d999a787cd08bd542f11c9b719a6afc2fa0cdb23b1
+    retrieved: 2026-10-08
+    paginated: false
+    # Cited for the digital parts' 64 voices, which no manual gives, the analogue parts' four, the
+    # user program memory and the 49 keys. The page as served hashes to
+    # 6025af9094a91c0fc72b03df6670ae4c6e9be86a78845927c4addf6b86fb5ca8.

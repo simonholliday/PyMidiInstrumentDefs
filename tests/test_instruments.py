@@ -246,6 +246,7 @@ class TestBundledCorpus:
 			"roland/ju_06a",
 			"roland/juno_106",
 			"roland/jupiter_x",
+			"roland/jx_8p",
 			"roland/mc_101",
 			"roland/mc_707",
 			"roland/p_6",
@@ -17505,3 +17506,97 @@ class TestMpcXl:
 		assert "enable Expression messages (MIDI CC #11) from external MIDI controllers" in account
 		assert not pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS]).controls
 		assert xl.voice.aftertouch is None and xl.voice.velocity is None
+
+
+class TestJX8P:
+
+	"""A 1985 Roland read by eye from a scan: five controllers behind four function switches."""
+
+	def test_five_controls_with_the_charts_names_and_directions (self) -> None:
+		"""Four travel both ways; volume only arrives."""
+		jx = pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS])
+
+		numbers = {control.cc: control for control in jx.controls.values() if control.cc is not None}
+
+		assert sorted(numbers) == [1, 5, 7, 64, 65]
+		assert {cc for cc, control in numbers.items() if control.direction == "receives"} == {7}
+		assert numbers[65].label == "Portamento Switch" and numbers[5].label == "Portamento Time"
+
+		# Hold and portamento switch on at 1, as the implementation prints them, not at 64.
+		assert numbers[64].values == numbers[65].values == {"off": 0, "on": 1}
+
+		# No page ties a control to a controller number; the account says which are evident.
+		account = " ".join((jx.source or "").split())
+
+		assert "NO PAGE SAYS WHICH CONTROL SENDS WHICH CONTROLLER." in account
+
+	def test_every_controller_is_behind_a_function_switch_that_ships_on (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS]).source or "").split())
+
+		assert "\"*1 Transmitted if the corresponding function switch is ON.\" (manual p. 28)" in account
+		assert "\"*3 Received if the corresponding function switch is ON.\" (manual p. 28)" in account
+		assert "Every one is ON from the factory, as are rows 12 to 14 for program change, aftertouch " \
+			"and pitch bend (manual p. 25)" in account
+
+		# Four rows for five controllers: the one portamento row would govern both 5 and 65.
+		assert "FIVE CONTROLLERS, BEHIND FOUR SWITCHES." in account
+		assert "the manual never pairs a row with a message" in account
+
+		# And the table's own footnote says only half of it.
+		assert "\"ON = Sent, OFF = Not Sent\" (manual p. 25)" in account
+
+	def test_a_program_change_reaches_128_with_the_last_range_misprinted (self) -> None:
+		jx = pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS])
+
+		assert jx.midi.program_change is not None
+		assert (jx.midi.program_change.receives, jx.midi.program_change.sends) == (True, True)
+		assert jx.midi.program_change.presets == 128
+
+		account = " ".join((jx.source or "").split())
+
+		assert "\"95 - 127 : Preset #2\" (manual p. 28)" in account
+
+	def test_six_voices_and_three_key_modes (self) -> None:
+		jx = pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS])
+
+		assert jx.voice.polyphony == 6 and jx.voice.voicing_modes == (1, 3, 6)
+		account = " ".join((jx.source or "").split())
+
+		assert "\"6 Voice Synthesizer with Dynamics, After Touch\" (manual p. 27)" in account
+		assert "\"the JX-8P becomes 3 voice synthesizer\" (manual p. 9)" in account
+
+	def test_no_mode_because_the_chart_gives_two_and_a_switch_does_not_say (self) -> None:
+		"""Mode 1, 3 and memorised; ON from the factory, and no page says which mode ON is."""
+		jx = pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS])
+
+		assert jx.midi.mode is None
+		account = " ".join((jx.source or "").split())
+
+		assert "\"This sets the JX-8P's mode.\" (manual p. 25)" in account
+
+	def test_the_rest_of_the_chart (self) -> None:
+		jx = pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS])
+
+		assert jx.midi.channels == (1, 16)
+		assert (jx.midi.clock, jx.midi.transport) == ("none", "none")
+		assert jx.midi.nrpn == "none" and jx.midi.sysex is True
+
+		assert jx.voice.note_range == (0, 127)
+		assert jx.voice.velocity is not None
+		assert (jx.voice.velocity.note_on, jx.voice.velocity.note_off) == ("both", False)
+		assert jx.voice.aftertouch == "channel"
+		assert jx.voice.pitch_bend is not None and jx.voice.pitch_bend.programmable is True
+		assert jx.voice.pitch_bend.semitones is None
+
+	def test_a_scan_cited_by_sheet_from_the_archive (self) -> None:
+		"""From sheet 5 to 27 the printed page is the sheet; the implementation prints none."""
+		jx = pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS])
+
+		assert set(jx.sources) == {"manual", "archive"}
+		assert jx.sources["manual"].page_offset == 0
+		assert jx.sources["archive"].paginated is False
+		assert jx.model.firmware is None
+
+		# The archive the JD-800, the TR-909 and the JUNO-106 cite.
+		assert jx.sources["archive"].url == \
+			pymidiinstrumentdefs.load("roland/jd_800", [CORPUS]).sources["archive"].url

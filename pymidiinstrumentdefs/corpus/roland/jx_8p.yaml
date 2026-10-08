@@ -1,0 +1,246 @@
+definition: 1
+
+# READ BY EYE FROM A SCAN. Roland serves the JX-8P's owner's manual as page images with no text at
+# all, so every number below was read off a rendered sheet and no tool here can check a quotation in
+# it. Every locator below is a sheet of the file. From sheet 5 to sheet 27 the printed page number
+# is the sheet's own; the sheets before them and the MIDI implementation and chart after them print
+# no page number.
+#
+# FIVE CONTROLLERS, BEHIND FOUR SWITCHES. The MIDI function table has four on/off switches for the
+# five controllers, and others for program change, aftertouch, pitch bend, active sensing and system
+# exclusive; the implementation sends and receives each controller only while its switch is on.
+# Every controller's switch is on as the instrument leaves the factory.
+
+model:
+  manufacturer: Roland
+  name: JX-8P
+  # NOT RECORDED: a firmware version. The manual names none, and states no date or edition for
+  # itself. The back cover prints `10661`, and `UPC 10661` beside its barcode (manual p. 34).
+
+source: >-
+  Owner's Manual, 34 sheets, a scan: the contents at sheet 3, the panel at sheet 4, the features and
+  connections at pp. 5 and 6, the performance controls and key modes at pp. 8 and 9, the patch chain
+  at p. 10, the tone parameters at pp. 14 to 18, the MIDI functions at pp. 24 and 25, the
+  specifications at p. 27, the MIDI implementation on sheets 28 and 29, its chart on sheet 31, and
+  the back cover on sheet 34. And Roland's manual archive page, which links it.
+
+  ROLAND LINKS THE MANUAL FROM ITS MANUAL ARCHIVE. The archive lists "JX-8P Owner’s Manual"
+  (archive), on the page `roland/jd_800`, `roland/juno_106` and `roland/tr_909` already cite. It
+  also lists a "PG-800 Owner’s Manual" (archive) for the optional programmer, which plugs into its
+  own 6-pin socket rather than into MIDI (manual p. 6) and is not read here. The JX-8P has MIDI In,
+  Out and Thru: "MIDI Connectors × 3" (manual p. 27).
+
+  FIVE CONTROLLERS, BEHIND FOUR SWITCHES. The chart marks 1 Modulation, 5 Portamento Time, 64 Hold
+  and 65 Portamento Switch with an asterisk both ways, and 7 Volume with an asterisk as recognised
+  and a cross as transmitted (manual p. 31); its Notes row says an asterisk can be set to yes or no
+  by hand and is memorised. The implementation says what sets it: every controller it sends carries
+  "*1 Transmitted if the corresponding function switch is ON." (manual p. 28) and every one it
+  receives "*3 Received if the corresponding function switch is ON." (manual p. 28). The function
+  table's rows for them are 15 to 18 - `MOD,WHEEL`, `PORTAMENT`, `HOLD` and `VOLUME` on the display
+  - so if the one portamento row is the corresponding switch, it governs both 5 and 65; the manual
+  never pairs a row with a message. Every one is ON from the factory, as are rows 12 to 14 for
+  program change, aftertouch and pitch bend (manual p. 25).
+
+  THE TABLE'S OWN FOOTNOTE SAYS HALF OF WHAT ITS SWITCHES DO. It reads "ON = Sent, OFF = Not Sent"
+  (manual p. 25), where the implementation gates reception by the same switches (manual p. 28), and
+  the table gives a switch to Volume, which the chart crosses as transmitted (manual p. 31) and the
+  transmitted list leaves out (manual p. 28). Read the implementation.
+
+  CHANGING THEM: the Edit button's MIDI page, a function number from "the Tone Selector buttons 1 to
+  9" (manual p. 25), and the Edit Knob for its value. The change is kept only by writing it: "Set
+  the Protect Switch on the JX-8P to OFF." (manual p. 25), then the Write button, which shows
+  `WRITTEN MIDI` (manual p. 25).
+
+  NO PAGE SAYS WHICH CONTROL SENDS WHICH CONTROLLER. The evident sources are the hold pedal,
+  "Connect the damper pedal DP-2 (optional), and the Hold effect can be turned on by pressing the
+  pedal." (manual p. 6), and the portamento switch and knob: "The portamento effect will be on by
+  setting the Portamento Switch to ON." (manual p. 9), and "The time needed for a sound to change
+  from a pitch to the other can be altered by using the Portamento Time Knob" (manual p. 9). For
+  modulation there is none: the panel has no wheel (manual p. 4), its function row is named
+  `Modulation Wheel` and described as "LFO Switch On/Off" (manual p. 25) while the implementation
+  carries 1 over 0 to 127 (manual p. 28), and the bender lever adds vibrato through the LFO:
+  "Pushing this lever forward will result in vibrato effect." (manual p. 8). Aftertouch can add
+  vibrato too (manual p. 8).
+
+  PROGRAM CHANGE REACHES 128 PATCH PROGRAMS, A QUARTER OF THEM ON A CARTRIDGE. The implementation
+  maps 0 to 31 to the internal memory, 32 to 63 to the cartridge, 64 to 95 to `Preset #1` and the
+  rest to `Preset #2`, in both its transmitted and its recognised lists (manual p. 28), and the
+  recognised list adds "When the memory cartridge is not connected, 32 thru 63 are ignored." (manual
+  p. 28). So 96 answer without a cartridge, and 64 of the 128 are the factory's: the specifications
+  give 64 preset, 32 internal and 32 cartridge patch programs (manual p. 27). BOTH LISTS PRINT THE
+  LAST RANGE AS "95 - 127 : Preset #2" (manual p. 28), which overlaps the range above it by one; it
+  must be 96 to 127. The panel names its two preset banks `P` and `-P`, each of 32 (manual p. 8),
+  and no page says which is `Preset #1`, or that a bank's first tone is the first program number of
+  its range.
+
+  SIX VOICES, AND THE KEY MODE DIVIDES THEM. The specifications say "6 Voice Synthesizer with
+  Dynamics, After Touch" (manual p. 27). Poly "turns the JX-8P to a 6 voice polyphonic synthesizer"
+  (manual p. 9); in Unison "two sound modules are assigned to each key" (manual p. 9) and "the JX-8P
+  becomes 3 voice synthesizer" (manual p. 9); Solo "turns the JX-8P to a single voice synthesizer"
+  (manual p. 9). Each has a second form, chosen by whether the button's indicator is lit or
+  flashing, and the patch parameters number all six, Poly-1 to Solo-2 (manual p. 29). The key mode
+  is a patch setting: each patch in the Patch Chain can keep a tone with its own "Key Mode, After
+  Touch, Bender Range, Portamento ON/Off, Bend LFO Depth, Unison Detune and Portamento time" (manual
+  p. 10).
+
+  NOTES 36 TO 96 ARE SENT AND 0 TO 127 RECEIVED. The keyboard's 61 keys send 36 to 96 (manual
+  pp. 27, 28), and a released key is sent as a note on of velocity 0, where both kinds of note off
+  are received (manual p. 28). The chart recognises 0 to 127 with a true voice of 21 to 108 (manual
+  p. 31), and "Note numbers outside of the range 21 - 108 are transposed to the nearest octave
+  inside this range." (manual p. 28).
+
+  VELOCITY IS SENT AND RECEIVED, AND NO SWITCH TURNS IT OFF. Note-on velocity is circled as sent and
+  marked with an asterisk as recognised (manual p. 31), but no function row switches it. Function
+  23, `DYNAMICS`, "adjusts the intensity of the Dynamics effect caused by velocity sensitivity. At
+  99, the effect is its maximum, and no effect at zero." (manual p. 25), at 99 from the factory -
+  though it does not say whether it acts on the keys, on notes received, or both - and each tone has
+  four Dynamics Range settings of its own, for DCO, DCO-2, VCF and VCA (manual pp. 15 to 18).
+  Note-off velocity is crossed both ways.
+
+  WHAT AFTERTOUCH DOES IS THE PATCH'S. Channel aftertouch is sent and received; the After Touch
+  buttons choose vibrato, brilliance or volume, and "More than one effect cannot be obtained at a
+  time." (manual p. 8), and the patch parameter `AFTER TOUCH SELECT` stores the choice (manual
+  p. 29).
+
+  SYSTEM EXCLUSIVE CARRIES TONES AND PATCHES, AND IS NOT SENT AS THE INSTRUMENT LEAVES THE FACTORY.
+  Function 26, `EXCLUSIVE`, is OFF from the factory: "When this Function is turned on, the JX-8P
+  sends the Exclusive Message for connecting itself to a computer and other MIDI devices." (manual
+  p. 25). It sends a whole tone, 59 values - a ten-character name and 49 parameter slots, five of
+  them undefined - when a tone button is pressed, and the parameters that change as they change; a
+  whole patch, nine values, when a patch chain button is pressed, and its parameters as they change
+  (manual pp. 28 and 29). Every message is under Roland's ID and the format type `0010 0001` (manual
+  p. 28). It recognises those and a program number message, which can "Write data to memory with the
+  program #" (manual p. 29) - and no page says whether the Protect Switch stops that. The chart
+  marks exclusive with an asterisk both ways (manual p. 31). This file carries none of the parameter
+  map.
+
+  THE MODE MESSAGES AND LOCAL CONTROL ARE THE MIDI SPECIFICATION'S OWN, AND NOT CARRIED. It receives
+  local off and on, all notes off, and omni off, omni on, mono and poly: "Mode Messages (123 - 127)
+  are also recognized as ALL NOTES OFF. MONO ON messages are ignored." (manual p. 28). It sends all
+  notes off, omni off, omni on and poly on, with no footnote to say a switch governs them (manual
+  p. 28). Function 24, `LOCAL`, disconnects the keyboard from the sound, and function 22, `MODE
+  SEND`, OFF from the factory, is described as "When this Function is on, even if the receiver is
+  not able to set the mode on its own, the JX-8P can send the mode it selects to the receiver."
+  (manual p. 25). Active sensing is sent and received behind function 25, `ACTI SENS`, ON from the
+  factory (manual pp. 25 and 28), so as it leaves the factory the JX-8P sends it and listens for it.
+
+  TWO MORE FAULTS, IN WHAT THIS FILE DOES NOT CARRY. The implementation's list of tone parameters
+  names both 15 and 22 `DCO-1 ENV MOD DEPTH` (manual p. 28), where the manual's parameter table has
+  a DCO-1 and a DCO-2 Envelope Depth (manual p. 15) and parameter 22 sits among DCO-2's. And it
+  calls the LFO's third waveform `Triangle Wave` (manual p. 29), where the parameter table shows
+  `SINE` (manual p. 18). The first reading of this manual missed the second; the blind second reader
+  found both.
+
+  NOT RECORDED, AND WHY: the firmware and the date, which the manual never states; the mode, because
+  the chart's default is `Mode 1, 3` both ways and `memorized` (manual p. 31) - a stored setting
+  rather than one default - and while function 21, `POLY OMNI`, is ON from the factory, its only
+  description is "This sets the JX-8P's mode." (manual p. 25), which does not say which mode ON is;
+  and a pitch bend range, which is a patch's: "The maximum effect of the bender can be optional with
+  the Bend Range Switch" (manual p. 8), at "Major 2nd, Minor 3rd, Major 3rd, and Perfect 5th."
+  (manual p. 8), with no default stated.
+
+  AND ONE DOCUMENT THE MANUAL POINTS TO THAT ROLAND DOES NOT SERVE. The contents page asks the
+  reader to read "the separate volume" (manual p. 3), which it calls MIDI, before the manual, and
+  the accessories include a "MIDI Guide Book" (manual p. 27). The archive lists no such volume, and
+  nothing in the manual says whether it is about the JX-8P or about MIDI in general.
+
+midi:
+  # Function 11, `MIDI CH`, "MIDI Channel Selection" (manual p. 25), 1 to 16 and 1 from the factory.
+  # It is one setting, and the chart gives 1 to 16 as default and changed in both columns, and
+  # `memorized` (manual p. 31). The exclusive messages' unit number is the same channel (manual
+  # p. 28).
+  channels: [1, 16]
+
+  # NOT RECORDED: the mode. See the account.
+
+  # Clock and Commands are crossed both ways on the chart, as are Song Pos, Song Sel and Tune
+  # (manual p. 31).
+  clock: none
+  transport: none
+  program_change:
+    # An asterisk both ways on the chart (manual p. 31), behind function 12, `P,CHANGE`, which is ON
+    # from the factory (manual p. 25).
+    receives: true
+    sends: true
+    # The 128 program numbers: 64 factory presets, 32 internal and 32 on a cartridge, so 96 without
+    # one. See the account.
+    presets: 128
+  # The implementation lists every control change it sends and every one it recognises: 1, 5, 64 and
+  # 65 sent, those and 7 received, and the channel mode messages (manual p. 28). None is 98 to 101,
+  # 6 or 38, so no registered or non-registered parameter number travels.
+  nrpn: none
+  # Sent and recognised; see the account.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # Received 0 to 127 and transposed by octaves into 21 to 108; the keys send 36 to 96. See the
+  # account.
+  note_range: [0, 127]
+  # "6 Voice Synthesizer with Dynamics, After Touch" (manual p. 27). Unison makes three voices of
+  # the six and Solo one (manual p. 9), and the key mode is a patch's.
+  polyphony: 6
+  voicing_modes: [1, 3, 6]
+  velocity:
+    # Circled as sent and marked with an asterisk as recognised, `v = 1-127` (manual p. 31). Note
+    # off is crossed both ways, and an incoming note off is read as "Note OFF, velocity ignored"
+    # (manual p. 28).
+    note_on: both
+    note_off: false
+  # `Key's` crossed both ways and `Ch's` an asterisk both ways (manual p. 31), behind function 13,
+  # `A,TOUCH` (manual p. 25).
+  aftertouch: channel
+  pitch_bend:
+    # The Bend Range Switch, kept in each patch (manual pp. 8, 10), and sent and received as patch
+    # parameter 0, `BEND RANGE`: 2, 3, 4 or 7 semitones (manual p. 29). No default is stated, nor
+    # whether the range applies to a bend received. Both lists print a bend's first data byte, the
+    # fine half, as `0000 0000` (manual p. 28): the JX-8P sends only the coarse half, and the list
+    # does not say what it does with a fine half it receives.
+    programmable: true
+
+controls:
+  # Each travels only while its function switch is on; see the account. The names are the chart's
+  # Remarks (manual p. 31).
+  modulation:      {label: Modulation, cc: 1}
+  # The evident source is the Portamento Time Knob (manual p. 9); no page says so.
+  portamento_time: {label: Portamento Time, cc: 5}
+  # Recognised only: crossed as transmitted on the chart, and absent from the transmitted list
+  # (manual pp. 28 and 31).
+  volume:          {label: Volume, cc: 7, direction: receives}
+  # Bands, both ways: `Hold ON xxxxxxx = 1 - 127` against `Hold OFF` with a third byte of 0 (manual
+  # p. 28), so any value from 1 is on rather than from the usual 64. The manual does not say which
+  # value the JX-8P sends for on. The evident source is the hold pedal (manual p. 6).
+  hold:
+    label: Hold
+    cc: 64
+    values: {"off": 0, "on": 1}
+  # Bands, both ways: `Portamento ON xxxxxxx = 1 - 127` and `Portamento OFF` at 0 (manual p. 28),
+  # with no value stated for what it sends. The evident source is the Portamento Switch (manual
+  # p. 9).
+  portamento:
+    label: Portamento Switch
+    cc: 65
+    values: {"off": 0, "on": 1}
+
+sources:
+  manual:
+    kind: manual
+    title: JX-8P Owner's Manual
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "http://cdn.roland.com/assets/media/pdf/JX-8P_OM.pdf"
+    sha256: a69079a36e5f6c906be68fdb55b66bb632c5b712b7bf9e18386e91983751ebd4
+    retrieved: 2026-10-08
+    # A SCAN: 34 sheets, each one 1-bit image, and not a character of text. No edition or date is
+    # printed; the back cover carries `10661`. **CITED BY SHEET**, with page_offset 0: from sheet 5
+    # to sheet 27 the printed page is the sheet. Sheet 4 is the panel description, which the
+    # contents calls page 3, and sheets 1 to 4 and 28 to 34 print no page number, so the MIDI
+    # implementation is sheets 28 and 29 and its chart sheet 31. Sheets 2, 32 and 33 are blank.
+    page_offset: 0
+  archive:
+    kind: download_page
+    title: Roland - Support - Manual Archive
+    landing: "https://www.roland.com/us/support/"
+    url: "https://www.roland.com/us/support/manual_archive/"
+    sha256: aa08cc61d2b474998265e8e0c893154f7145dfdb48d2726e8478c90e2558b499
+    retrieved: 2026-10-08
+    paginated: false

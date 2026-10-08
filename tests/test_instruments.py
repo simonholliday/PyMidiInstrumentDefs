@@ -273,6 +273,7 @@ class TestBundledCorpus:
 			"teenage_engineering/op_1",
 			"teenage_engineering/op_1_field",
 			"teenage_engineering/op_xy",
+			"teenage_engineering/op_z",
 			"udo_audio/super_6",
 			"vermona/drm1_mkiv",
 			"voce/electric_piano",
@@ -17798,3 +17799,91 @@ class TestJX08:
 			"release_notes"}
 		assert jx.sources["reference"].page_offset == 0
 		assert jx.sources["chart_html"].paginated is False
+
+
+class TestOPZ:
+
+	"""A web guide whose one table of controller numbers is what the OP-Z receives."""
+
+	def test_fifty_three_controls_every_one_received (self) -> None:
+		"""Eighteen parameters twice, absolute and relative, then system, track and ui rows."""
+		opz = pymidiinstrumentdefs.load("teenage_engineering/op_z", [CORPUS])
+
+		assert len(opz.controls) == 53
+		assert {control.direction for control in opz.controls.values()} == {"receives"}
+
+		absolute = sorted(c.cc for c in opz.controls.values() if c.group == "parameters" and c.cc is not None)
+		relative = [c for c in opz.controls.values() if c.group == "parameters_relative"]
+		assert absolute == list(range(1, 19))
+		assert sorted(c.cc for c in relative if c.cc is not None) == list(range(32, 50))
+		assert all(c.choices == {"n1": 1, "n127": 127} for c in relative)
+
+		# Nothing says what a knob sends before the player sets it.
+		account = " ".join((opz.source or "").split())
+
+		assert "\"incoming midi table\" (midi)" in account
+		assert "no page prints those numbers before the player sets them" in account
+
+	def test_the_channel_column_decides_which_controls_reach_a_track (self) -> None:
+		opz = pymidiinstrumentdefs.load("teenage_engineering/op_z", [CORPUS])
+
+		parted = {c.cc for c in opz.controls.values() if c.part == "track"}
+		unparted = sorted(c.cc for c in opz.controls.values() if c.part is None and c.cc is not None)
+
+		assert len([c for c in opz.controls.values() if c.part == "track"]) == 44
+		assert {50, 51, 53, 54, 60, 61, 62, 63} <= parted
+		assert unparted == [52, 55, 56, 57, 102, 102, 103, 103, 103]
+
+		# 103 three times, for three things; 102 twice, on what the table calls channels 0 and 1.
+		assert opz.controls["select_pattern"].range == (0, 15)
+		assert opz.controls["next_pattern"].choices == {"triggered": 16}
+		assert opz.controls["previous_pattern"].choices == {"triggered": 17}
+		assert (opz.controls["active_track"].range, opz.controls["parameter_page"].range) == ((0, 15), (0, 3))
+
+	def test_one_part_of_sixteen_tracks_with_no_addressing_and_polyphony_per_track (self) -> None:
+		opz = pymidiinstrumentdefs.load("teenage_engineering/op_z", [CORPUS])
+
+		assert set(opz.parts) == {"track"}
+		track = opz.parts["track"]
+		assert (track.count, track.channel, track.receives) == (16, "assigned", ("notes", "controls"))
+		assert opz.voice.polyphony is None and track.polyphony is None
+		# Only tracks 5 to 8 play pitches; the drum tracks are kits, so no addressing is claimed.
+		assert track.addressing is None and opz.voice.addressing is None
+
+		account = " ".join((opz.source or "").split())
+
+		assert "\"each track in this group has a two note polyphony per step.\" (tracks)" in account
+		assert "Note: this doesn't affect the number of notes per step, which is still four.\" (reference)" in account
+		assert "\"they are all sample based and consist of 24 different sounds across the musical keyboard.\" (tracks)" \
+			in account
+
+	def test_program_change_selects_patterns_both_ways (self) -> None:
+		opz = pymidiinstrumentdefs.load("teenage_engineering/op_z", [CORPUS])
+
+		assert opz.midi.program_change is not None
+		assert (opz.midi.program_change.receives, opz.midi.program_change.sends) == (True, True)
+		assert opz.midi.program_change.presets is None
+
+		account = " ".join((opz.source or "").split())
+
+		assert "\"each of the 10 projects holds 16 pattern.\" (project)" in account
+
+	def test_clock_both_ways_transport_received_and_what_is_not_recorded (self) -> None:
+		opz = pymidiinstrumentdefs.load("teenage_engineering/op_z", [CORPUS])
+
+		assert (opz.midi.clock, opz.midi.transport) == ("both", "receives")
+		assert opz.midi.nrpn is None and opz.midi.sysex is None and opz.midi.mode is None
+		assert opz.voice.velocity is None and opz.voice.aftertouch is None and opz.voice.pitch_bend is None
+
+		account = " ".join((opz.source or "").split())
+
+		assert "\"pass incoming midi start/continue/stop to other ports\" (os_updates)" in account
+
+	def test_firmware_and_sources (self) -> None:
+		"""The guide is numbered to the newest OS, 1.2.45."""
+		opz = pymidiinstrumentdefs.load("teenage_engineering/op_z", [CORPUS])
+
+		assert (opz.model.manufacturer, opz.model.name, opz.model.firmware) == \
+			("teenage engineering", "OP-Z", "1.2.45")
+		assert len(opz.sources) == 15
+		assert all(source.paginated is False for source in opz.sources.values())

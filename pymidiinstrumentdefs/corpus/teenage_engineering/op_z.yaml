@@ -1,0 +1,486 @@
+definition: 1
+
+# FIFTY-THREE CONTROLS, AND EVERY ONE IS RECORDED AS SOMETHING THE OP-Z RECEIVES. The guide prints
+# one table of controller numbers, headed `incoming midi table`, and no other page prints a
+# controller number. The OP-Z does send controllers, under numbers the player sets, parameter by
+# parameter and track by track, and no page prints what they are before anybody has set them - so
+# every control below is `direction: receives`, and none should be read as what a knob sends.
+#
+# THE SAME NUMBER MAY DO DIFFERENT THINGS ON DIFFERENT TRACKS. A row whose channel column reads 1-16
+# reaches the track on that channel, and the table's parameter names follow the bass, lead, chord
+# and module pages; the guide gives other tracks other controls, and no page says what a row does
+# there.
+
+model:
+  # The maker writes its own name in lower case throughout, as `teenage_engineering/op_xy` records.
+  manufacturer: teenage engineering
+  # SPELLED WITH A HYPHEN, AS `teenage_engineering/op_xy` IS. The maker writes it both ways: counted
+  # across the documents cited below, "OP-Z" with a hyphen appears 86 times and "OP–Z" with an en
+  # dash 55. The hyphen is also the spelling a reader types and the one this definition's name,
+  # `op_z`, already uses.
+  name: OP-Z
+  # THE GUIDE IS NUMBERED TO THE NEWEST OS. Its front page reads `v.1.2.45` (guide_index), and the
+  # OS updates page lists 1.2.45, dated 2022.03.31, as the newest of its releases (os_updates).
+  # Checked 2026-10-08.
+  firmware: "1.2.45"
+
+source: >-
+  The OP-Z's online guide, v.1.2.45, a website of 24 numbered sections, cited by the section number
+  each page prints in its own heading: the hardware at 1, the parameter pages at 4, the track button
+  at 5, projects at 7, the mixer at 8, tempo at 9, the tracks at 11, tape at 13, usb at 20, midi at
+  21, the app at 23 and the reference at 24. Every other section was saved and searched too. And the
+  maker's OS updates page, whose release notes carry several MIDI facts the guide does not, and its
+  product page.
+
+  ONE TABLE OF CONTROLLER NUMBERS, AND IT IS WHAT THE OP-Z RECEIVES. Section 21.6 is headed
+  "incoming midi table" (midi), and no other page prints a controller number. Section 21 opens, at
+  21.1: "each of the OP-Z's 16 tracks can both send and receive midi. the outgoing cc values of each
+  parameter on each track can be assigned a custom control number." (midi). The configuration file,
+  `midi.json`, gives `parameter_cc_out`, from 0 to 255, as "set outgoing cc value per parameter per
+  track" (midi), and the app does the same: "select a parameter indicator and use the touch pad to
+  edit the midi control change number it sends out." (app). So the parameters' values are sent,
+  under numbers the player assigns - but no page prints those numbers before the player sets them,
+  or says what an outgoing number above 127 means, and every control below is therefore recorded as
+  received only. The notes to 1.2.38 add that a knob sends even on a muted track: "allow sending cc
+  from knobs on muted track" (os_updates).
+
+  SIXTEEN TRACKS, EACH ON A CHANNEL OF ITS OWN. "OP-Z is a 16-track sequencer. it features eight
+  audio tracks and eight control tracks." (tracks), and "in parallel, all 16 tracks can also send
+  and receive midi, each on its own channel." (tracks). Tracks 1 to 4 are kick, snare, perc and
+  sample, 5 to 8 bass, lead, arp and chord, and 9 to 16 fx1, fx2, tape, master, perform, module,
+  lights and motion (tracks). The player sets each track's channel - "set midi channel 1–16 for
+  selected track" (midi) - but the guide three times calls it the outgoing or send channel: "the
+  outgoing channel of each track can also be customized." (midi), `track_channels`, "set outgoing
+  channel per track" (midi), and "it is also possible to assign the midi cc values and midi send
+  channels for each track." (midi). No page says whether what arrives follows it, or gives a track's
+  channel before it is set. A setting sends channel 1 to whichever track is selected: "any incoming
+  midi on channel 1 is redirected to the currently active track" (midi). And with no module fitted,
+  "the module track can act as a midi track with 16 independent midi CC values." (tracks), with no
+  numbers given for them.
+
+  NOTES ARRIVE, AND NO PAGE SAYS WHAT AN INCOMING NOTE DOES ON MOST TRACKS. No page names a note
+  message. That notes arrive rests on the notes to 1.1.23, "allow programming steps with external
+  controller" (os_updates), on the redirect above, on a MIDI keyboard among the supported devices,
+  `korg microkey air 25` (usb), and on the notes to 1.1.27, "improved usb midi throughput (reduce
+  risk of lost notes)" (os_updates). Only the synth tracks, 5 to 8, are described as playing
+  pitches. The drum tracks are kits: "they are all sample based and consist of 24 different sounds
+  across the musical keyboard." (tracks). On the control tracks the keys do other things - on tape,
+  "the white keys are used to choose from which part of the buffer playback begins." (tape). All of
+  that is said of the built-in keys, and no page says how an incoming note maps onto a kit's 24
+  sounds or onto a control track. A part holds one way of addressing notes, so none is recorded.
+
+  THE TABLE'S CHANNEL COLUMN SAYS WHAT A ROW REACHES. Where it reads `1-16`, the channel picks the
+  track, and those controls name the `track` part below. Where it reads `any`, the row reaches the
+  whole instrument on any channel. Three rows read neither: select pattern, `1-10`, and the two `ui`
+  rows, `0` and `1` (midi). `0` is no MIDI channel, and `1` is one fixed channel rather than a
+  track's; no page explains either. The table counts programs and patterns from 0, and if its `ui`
+  column does too, `0` and `1` are channels 1 and 2 - a possibility, not a finding. The table's
+  sections are parameters, system, track, other and real time, and ui, and the groups below are
+  named after them.
+
+  THE PARAMETER ROWS FOLLOW THE PARAMETER PAGES' ORDER, IN THEIR OWN WORDS. The first sixteen,
+  `parameter 1` to `volume` (midi), follow dial by dial the parameter pages' chart for bass, lead,
+  chord and module, whose words differ: the chart's `param 1`, `filter`, `lfo amount` and `level`
+  are the table's `parameter 1`, `filter cutoff`, `lfo depth` and `volume` (parameter_pages). The
+  last two, `portamento` and `note style`, are the track button's own parameters (track). The chart
+  gives the drum tracks `pitch` and `reverse` in the first two places, the arp track arp controls in
+  place of the lfo, and the fx, tape, master, motion and lights tracks fewer or different controls
+  (parameter_pages). No page says outright what a parameter row reaches on such a track. The tape
+  section comes closest: it lists speed coarse, speed fine, filter and resonance, and adds "pro-tip:
+  sending midi cc simultaneously to parameters 1 and 2 can result in some cool scratching effects."
+  (tape).
+
+  EIGHTEEN PARAMETERS TWICE: ONCE ABSOLUTE AND ONCE RELATIVE. Each parameter row gives an absolute
+  number, 1 to 18 over 0 to 127, and a relative one, 32 to 49, whose range reads `1, 127` (midi);
+  system's `TRACK GAIN (RELATIVE)`, 51, reads the same. No page says which of 1 and 127 raises a
+  value and which lowers it, so the relative controls carry the two values as choices named for
+  themselves, `n1` and `n127`, with the `n` that `novation/circuit` puts before a name that starts
+  with a digit (`n4ths`). The table prints each parameter's name once, against both numbers, so the
+  relative controls' labels add `, relative` to it.
+
+  PATTERNS BY CONTROLLER 103, AND 102 ON TWO FIXED CHANNELS. The table gives 103 three times: select
+  pattern, `0-15` on channels `1-10`; next pattern, `16`, and previous pattern, `17`, on any (midi).
+  The notes to 1.2.8 add a controller for it - "add cc for changing/switching to next/prev pattern."
+  (os_updates) - and link to the whole table. The `ui` rows give 102 twice, active track `0-15` on
+  channel `0` and parameter page `0-3` on channel `1` (midi), and the notes to 1.2.12 appear to name
+  them: "disregard 'channel_one_to_active' setting when processing incoming UI group CC messages"
+  (os_updates). Mute reads `0-1`, and the notes to 1.2.20 widen it: "change track mute cc to treat
+  value 127 as mute (in addition to 1)" (os_updates); the control keeps the table's range, within
+  which 1 mutes in every release, and no page says what 2 to 126 do. Mute group's `0-9` fits "each
+  project holds 10 mute groups." (mixer). What muting does to MIDI is in the mixer section: "tracks
+  that are lit are active, playing audio and sending midi information by default. tracks that are
+  unlit are muted." (mixer), while the audio mute "will mute only the track audio but not the
+  outgoing midi." (mixer).
+
+  PROGRAM CHANGE SELECTS PATTERNS, NOT SOUNDS, BOTH WAYS. "each of the 10 projects holds 16
+  pattern." (project), so 160 patterns. A setting decides how: on, "use bank 1–16 / program 1–16 to
+  set active pattern" (midi); off, "pattern 1–16 is activated with bank 1 / program 1–128 and bank 2
+  / program 1–32" (midi), where `midi.json`'s description of the same setting reads "pattern 1–160"
+  (midi), and 128 and 32 make 160. The table's two program change rows read `0-15` on channels
+  `1-10` and `0-127` on channels `1, 2` (midi). So the settings count programs from 1 and the table
+  from 0, and the settings speak of a bank where the table gives a channel. No page says whether a
+  bank is a bank select message, and the table gives 32, the MIDI specification's bank select LSB,
+  to `parameter 1` in its relative column (midi). Another setting reads "enable program change
+  in/out" (midi), and the notes to 1.1.12 confirm the OP-Z sends one: "outgoing program change had
+  inverted “alt_program_change” setting" (os_updates). Since 1.2.14 one takes effect at once:
+  "switch pattern immediately on incoming program change (instead of waiting until next step)"
+  (os_updates). What it reaches is a pattern, so no preset count is recorded.
+
+  CLOCK BOTH WAYS, TRANSPORT RECEIVED. Two settings enable `incoming midi clock` and `outgoing midi
+  clock` (midi); "sending midi clock to OP-Z will automatically activate the external sync mode."
+  (tempo), but "by default, incoming midi clock is disabled, this can be configured in the midi
+  settings." (tempo). The notes to 1.2.5 send clock on its own: "send clock out if enabled even
+  though midi out is disabled" (os_updates). Start, stop and continue each have a row in the table,
+  and song pointer and sense read `not used` (midi). The notes to 1.1.23 pass transport on - "pass
+  incoming midi start/continue/stop to other ports" (os_updates) - and also "improve midi continue
+  behaviour (works better with OP-1)" (os_updates) without saying in which direction. No page says
+  that pressing play sends a start; relaying what came in is not originating it, as
+  `teenage_engineering/op_xy` rules on the same kind of note.
+
+  PITCH BEND BOTH WAYS, AND NO RANGE. The table gives pitch bend on channels `1-16` (midi), and the
+  notes to 1.2.38 send it: "send pitch bend on correct midi channel when remapped" (os_updates). No
+  page states a bend range or a setting for one, so the bend field is not recorded, and the part's
+  `receives` has no word for pitch bend.
+
+  POLYPHONY IS STATED FOR TRACKS 1 TO 8, AND PER STEP. The drum tracks: "each track in this group
+  has a two note polyphony per step." (tracks). Bass is monophonic, lead "the polyphony for this
+  track is three, meaning maximum three notes per step." (tracks), arp monophonic, and chord four,
+  which a setting in `general.json` raises - the one place the guide tells voices from notes per
+  step: "increases the chord track polyphony from four to six notes. Note: this doesn't affect the
+  number of notes per step, which is still four." (reference). No polyphony is given for the control
+  tracks. One part carries the sixteen tracks because each is reached on its own channel, and a part
+  holds one polyphony, so the figures are here and in no field.
+
+  MIDI IS SWITCHED ON AND OFF BY EIGHT SETTINGS, AND ONE DEFAULT IS PRINTED. Holding the tempo and
+  screen buttons, keys 1 to 8 toggle channel one to active, incoming midi, outgoing midi, midi clock
+  in, midi clock out, alt program change, midi echo and program change, and a track key mutes all
+  MIDI on its track (midi); `midi.json` holds the same, with `track_enable`, "enable midi per track"
+  (midi). The only default printed is clock in's, off (tempo), so a sender whose messages are
+  ignored should check every one of them. The gesture moved in 1.2.38: "move midi settings to SCREEN
+  + TEMPO" (os_updates).
+
+  WHERE MIDI TRAVELS. The one wired MIDI port is "usb-c port for charging, file transfers and midi."
+  (hardware), and it is a host too: "OP-Z has usb host functionality that allows you to connect usb
+  devices directly into the usb-c port." (usb). As a host it has limits: "the OP-Z can provide a
+  maximum of 100 mA which is not enough for some midi devices." (usb), and "some devices present
+  themselves as more than one midi device, which currently is not supported by the OP-Z." (usb); the
+  notes to 1.1.27 add "now supporting two midi devices when using a powered USB hub" (os_updates).
+  The product page adds "wireless communication over ble" (product_page), and the notes to 1.2.45
+  name MIDI over it: "reduced ble midi jitter" (os_updates). MIDI is passed between them:
+  `midi.json`'s echo adds "+ midi through to other ports" (midi), and transport is passed on as
+  above.
+
+  MORE THINGS STATED TWO WAYS, NONE IN A FIELD, ALL FOUND BY THE BLIND SECOND READER. Midi echo is
+  "echo incoming midi back on same port" (midi) among the settings, where `midi.json` adds the
+  through. External sync "is indicated by four green leds showing the current tempo when tempo
+  button is held." (midi), and in the tempo section "this is indicated by the track leds 1-16
+  blinking green, in groups of four." (tempo). And three numbers no page maps onto what they set:
+  61, `TRACK STEP LENGTH`, reads `1-16` (midi), where the track section sets a multiplier, "note:
+  setting the multiplier to 9 makes the track 16 times longer." (track); 56, tempo, reads `0-127`
+  against "values between 40 – 200 bpm can be used." (tempo); and 57, swing, reads `0-127` against
+  "no swing is a 50% setting." (tempo).
+
+  NOT RECORDED, AND WHY. System exclusive: the one mention is in the notes to 1.1.12, "occasional
+  crash when recieving midi identity request on startup" (os_updates), and a crash that stopped
+  happening is not a statement that the OP-Z answers, as `teenage_engineering/op_xy` rules. NRPN: 98
+  to 101 are not in the incoming table, 6 and 38, the data entry pair, are envelope decay and
+  envelope sustain's relative number there, and no page names NRPN or RPN - but what goes out is the
+  player's choice of number from 0 to 255, which no page explains, so nothing is claimed for it. No
+  page says that MIDI velocity is sent or received - the guide's velocity is a sequencer step's -
+  and none states aftertouch, a note range or a MIDI mode; the `poly` and `mono` of the track button
+  are note styles (track). The words `aftertouch`, `nrpn` and `sysex` appear on no page saved.
+
+midi:
+  # From the table's channel column, which gives 1-16 for every row that names a track (midi).
+  channels: [1, 16]
+  # Two settings, `midi clock in` and `midi clock out` (midi); incoming clock is off until set.
+  clock: both
+  # Start, stop and continue are rows of the incoming table (midi), and a release note relays them;
+  # nothing says the OP-Z originates one. See the account.
+  transport: receives
+  program_change:
+    # It selects a pattern, not a sound, so `presets` is not recorded; see the account.
+    receives: true
+    sends: true
+
+parts:
+  # ONE PART OF SIXTEEN, AS `teenage_engineering/op_xy` HAS. The guide divides the tracks into a
+  # drum group, a synth group and control tracks, but "in parallel, all 16 tracks can also send and
+  # receive midi, each on its own channel." (tracks), and the table's track rows reach a track by
+  # its channel. What a row does on a track whose controls differ is not published - see the
+  # account.
+  track:
+    label: Track
+    count: 16
+    # "set midi channel 1–16 for selected track" (midi), which the guide calls the outgoing channel;
+    # no page gives a default, or says whether incoming MIDI follows it.
+    channel: assigned
+    receives: [notes, controls]
+
+voice:
+  # NOT RECORDED: addressing, because only tracks 5 to 8 play pitches - the drum tracks are kits of
+  # 24 sounds across the keys, and the control tracks' keys do other things - and polyphony, which
+  # the guide states per track and per step. See the account.
+
+groups:
+  # NAMED AFTER THE INCOMING TABLE'S OWN SECTIONS (midi): parameters, split here by the table's two
+  # column headings, absolute and relative; system; track; and ui. The table's `OTHER / REAL TIME`
+  # section holds no controller.
+  parameters: Parameters
+  parameters_relative: Parameters (relative)
+  system: System
+  track: Track
+  ui: UI
+
+controls:
+
+  # **FIFTY-THREE ROWS OF THE INCOMING MIDI TABLE** (midi), every one recorded as received only. The
+  # labels are the table's own, in its own case; the relative parameters add `, relative` to the
+  # name the table prints once against both numbers.
+
+  # PARAMETERS, ABSOLUTE: 0 to 127, on the track's channel ─────────────────────────────────────
+  parameter_1:                {label: parameter 1, cc: 1, part: track, group: parameters, direction: receives}
+  parameter_2:                {label: parameter 2, cc: 2, part: track, group: parameters, direction: receives}
+  filter_cutoff:              {label: filter cutoff, cc: 3, part: track, group: parameters, direction: receives}
+  filter_resonance:           {label: filter resonance, cc: 4, part: track, group: parameters, direction: receives}
+  envelope_attack:            {label: envelope attack, cc: 5, part: track, group: parameters, direction: receives}
+  envelope_decay:             {label: envelope decay, cc: 6, part: track, group: parameters, direction: receives}
+  envelope_sustain:           {label: envelope sustain, cc: 7, part: track, group: parameters, direction: receives}
+  envelope_release:           {label: envelope release, cc: 8, part: track, group: parameters, direction: receives}
+  lfo_depth:                  {label: lfo depth, cc: 9, part: track, group: parameters, direction: receives}
+  lfo_speed:                  {label: lfo speed, cc: 10, part: track, group: parameters, direction: receives}
+  lfo_target:                 {label: lfo target, cc: 11, part: track, group: parameters, direction: receives}
+  lfo_shape:                  {label: lfo shape, cc: 12, part: track, group: parameters, direction: receives}
+  fx_1_send:                  {label: fx 1 send, cc: 13, part: track, group: parameters, direction: receives}
+  fx_2_send:                  {label: fx 2 send, cc: 14, part: track, group: parameters, direction: receives}
+  pan:                        {label: pan, cc: 15, part: track, group: parameters, direction: receives}
+  volume:                     {label: volume, cc: 16, part: track, group: parameters, direction: receives}
+  portamento:                 {label: portamento, cc: 17, part: track, group: parameters, direction: receives}
+  note_style:                 {label: note style, cc: 18, part: track, group: parameters, direction: receives}
+
+  # PARAMETERS, RELATIVE: `1, 127`, and no page says which raises and which lowers ─────────────
+  parameter_1_relative:       {label: "parameter 1, relative", cc: 32, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  parameter_2_relative:       {label: "parameter 2, relative", cc: 33, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  filter_cutoff_relative:     {label: "filter cutoff, relative", cc: 34, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  filter_resonance_relative:  {label: "filter resonance, relative", cc: 35, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  envelope_attack_relative:   {label: "envelope attack, relative", cc: 36, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  envelope_decay_relative:    {label: "envelope decay, relative", cc: 37, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  envelope_sustain_relative:  {label: "envelope sustain, relative", cc: 38, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  envelope_release_relative:  {label: "envelope release, relative", cc: 39, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  lfo_depth_relative:         {label: "lfo depth, relative", cc: 40, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  lfo_speed_relative:         {label: "lfo speed, relative", cc: 41, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  lfo_target_relative:        {label: "lfo target, relative", cc: 42, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  lfo_shape_relative:         {label: "lfo shape, relative", cc: 43, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  fx_1_send_relative:         {label: "fx 1 send, relative", cc: 44, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  fx_2_send_relative:         {label: "fx 2 send, relative", cc: 45, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  pan_relative:               {label: "pan, relative", cc: 46, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  volume_relative:            {label: "volume, relative", cc: 47, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  portamento_relative:        {label: "portamento, relative", cc: 48, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+  note_style_relative:        {label: "note style, relative", cc: 49, choices: {n1: 1, n127: 127}, part: track, group: parameters_relative, direction: receives}
+
+  # SYSTEM: the track's channel for 50, 51, 53 and 54; channels 1-10 or any for the rest ───────
+  track_gain:                 {label: track gain, cc: 50, part: track, group: system, direction: receives}
+  track_gain_relative:        {label: TRACK GAIN (RELATIVE), cc: 51, choices: {n1: 1, n127: 127}, part: track, group: system, direction: receives}
+  # The table gives this row `any` for both its channel and its range.
+  reset_track_gains:          {label: reset track gains, cc: 52, group: system, direction: receives}
+  # `0-1` in the table, within which 1 mutes; since 1.2.20 127 mutes too, and no page says what 2 to
+  # 126 do. See the account.
+  mute:                       {label: mute, cc: 53, range: [0, 1], part: track, group: system, direction: receives}
+  audio_mute:                 {label: audio mute, cc: 54, range: [0, 1], part: track, group: system, direction: receives}
+  mute_group:                 {label: mute group, cc: 55, range: [0, 9], group: system, direction: receives}
+  # 0 to 127 in the table, over a tempo the guide sets from 40 to 200 bpm (tempo); no page maps one
+  # onto the other, nor swing's 0 to 127 onto its percentage, whose 50 is no swing.
+  tempo:                      {label: tempo, cc: 56, group: system, direction: receives}
+  swing:                      {label: swing, cc: 57, group: system, direction: receives}
+  # THREE ROWS ON 103 (midi). Select pattern is on channels 1 to 10, and next and previous on any
+  # channel.
+  select_pattern:             {label: select pattern, cc: 103, range: [0, 15], group: system, direction: receives}
+  next_pattern:               {label: next pattern, cc: 103, choices: {triggered: 16}, group: system, direction: receives}
+  previous_pattern:           {label: previous pattern, cc: 103, choices: {triggered: 17}, group: system, direction: receives}
+
+  # TRACK: on the track's channel ──────────────────────────────────────────────────────────────
+  track_step_count:           {label: TRACK STEP COUNT, cc: 60, range: [1, 16], part: track, group: track, direction: receives}
+  track_step_length:          {label: TRACK STEP LENGTH, cc: 61, range: [1, 16], part: track, group: track, direction: receives}
+  quantize:                   {label: quantize, cc: 62, part: track, group: track, direction: receives}
+  note_length:                {label: note length, cc: 63, part: track, group: track, direction: receives}
+
+  # UI: TWO ROWS ON 102, on what the table calls channels 0 and 1; see the account ─────────────
+  # Printed on channel `0`, which is no MIDI channel.
+  active_track:               {label: active track, cc: 102, range: [0, 15], group: ui, direction: receives}
+  # Printed on channel `1`, one fixed channel rather than a track's.
+  parameter_page:             {label: parameter page, cc: 102, range: [0, 3], group: ui, direction: receives}
+
+sources:
+  midi:
+    kind: manual
+    title: "OP-Z guide, section 21: midi"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/midi"
+    sha256: 40a771fd2ae22a47b79a9cc2046be2a4cbc347556ade07a13f11c5381a8b4708
+    retrieved: 2026-10-08
+    paginated: false
+    # The section every control comes from: its settings, its configuration file and, at 21.6, the
+    # incoming midi table. The table is built of page elements rather than an HTML table, and its
+    # text copy drops the empty cells, so the reading script reads the page as served, which hashes
+    # to 065b9c9dfdf2e4eecd866e0e267fd8c1eb9f37ddb984c3296e9f90dfe5449a5c.
+  tracks:
+    kind: manual
+    title: "OP-Z guide, section 11: tracks"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/tracks"
+    sha256: 1396afca46d62e8edf5729359bbde4c523ccbe58679823101ed0121abd629af3
+    retrieved: 2026-10-08
+    paginated: false
+    # The sixteen tracks, their channels and each track's polyphony. The page as served hashes to
+    # ef6ba82b04578353183784cb61cfa936ac09561b50a96627ab6a43f953e5e793.
+  parameter_pages:
+    kind: manual
+    title: "OP-Z guide, section 4: parameter pages"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/parameter-pages"
+    sha256: fc310eda2879b2a31a9d5253fb8d6d53c8bac92d198c3f979a2227511cc59488
+    retrieved: 2026-10-08
+    paginated: false
+    # The chart of what each dial does on each kind of track. The page as served hashes to
+    # 10418c43834ff5c69b323a786a801b1081152f2ee38313e2b54b6318109860d0.
+  project:
+    kind: manual
+    title: "OP-Z guide, section 7: project"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/project"
+    sha256: ba883257be98aec5942ba9af62d9ca663ae50481352c447801a4c955dabe2bd9
+    retrieved: 2026-10-08
+    paginated: false
+    # Ten projects of sixteen patterns. The page as served hashes to
+    # 9bd555dc4feab5dc0308676fd4984cce61f1d0a5c5f7b006da92bda00b719896.
+  mixer:
+    kind: manual
+    title: "OP-Z guide, section 8: mixer"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/mixer"
+    sha256: 74fdd92ea1fde5f9f194e45b259d2174cb6fb8cb8b23ee2de99b062ae3896c00
+    retrieved: 2026-10-08
+    paginated: false
+    # What muting a track does to its MIDI, and the ten mute groups. The page as served hashes to
+    # 4ce2b64bd41550c7752a344a5c5b12d444fcfd0b96a5da88f7c28c7cf7f41280.
+  tempo:
+    kind: manual
+    title: "OP-Z guide, section 9: tempo"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/tempo"
+    sha256: b17d835cde03e3f276e51c943269040958c32b00045d6c00292c97e58ebc768d
+    retrieved: 2026-10-08
+    paginated: false
+    # External sync, and the tempo's range. The page as served hashes to
+    # 8b3e047f0b6730227a77412b24ff9144b4f1863bddc2dad33325c31ca4333185.
+  track:
+    kind: manual
+    title: "OP-Z guide, section 5: track"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/track"
+    sha256: 4af154e71b92274652f947efd6f52f34c8b9411f1a59519f172c6363d51c4f8b
+    retrieved: 2026-10-08
+    paginated: false
+    # The step length's multiplier. The page as served hashes to
+    # 36339fe8679647eeddd489024e5c5e8f127d45a4c9a8533c29f3276497b294eb.
+  tape:
+    kind: manual
+    title: "OP-Z guide, section 13: tape"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/tape"
+    sha256: 656591d21d07c3143009041c3d321127f3a37976c3baf860f79ce002e399a2b5
+    retrieved: 2026-10-08
+    paginated: false
+    # The one page that mentions sending controllers to a non-synth track's parameters. The page as
+    # served hashes to fd90f2c520816d36bcede41248a84d0a9fb268cb977161230e56e83537f80af2.
+  usb:
+    kind: manual
+    title: "OP-Z guide, section 20: usb"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/usb"
+    sha256: 0fe8bfa8d1a2db1057dfd58f51745b038a2fda83d9334b067aca27943cd4ae03
+    retrieved: 2026-10-08
+    paginated: false
+    # USB MIDI, and the port as a host. The page as served hashes to
+    # 0531ed77f19a32e07334ce4d84b115ca92ea2fddef5b3be4400c6ab1d622ba12.
+  app:
+    kind: manual
+    title: "OP-Z guide, section 23: OP-Z app"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/app"
+    sha256: 48d0d0c995110de8ebb1d53b96d1348858dd71c4b7f114f43f8dc1fd766a4705
+    retrieved: 2026-10-08
+    paginated: false
+    # Section 23.9, where the outgoing controller numbers are set. The page as served hashes to
+    # dbab524c748e6d2fafe0883355825dd8c3db2f548fbe8e41be61f839afb481a5.
+  reference:
+    kind: manual
+    title: "OP-Z guide, section 24: reference"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/reference"
+    sha256: bcb312db4b2fa5b5ed3786214e13969de287c2d7c56bdacabaf5be2a998137db
+    retrieved: 2026-10-08
+    paginated: false
+    # `general.json`'s setting for the chord track's polyphony. The page as served hashes to
+    # dae30aa01bd70bbcdcaca8a6f0c7b307d64b4155f313839f92918ca587bdcc23.
+  hardware:
+    kind: manual
+    title: "OP-Z guide, section 1: hardware overview"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides/op-z"
+    url: "https://teenage.engineering/guides/op-z/hardware-overview"
+    sha256: 997de46699c6fd9e55fd8af7517788fdbfe56e789b141c00d9463f92bf08d1bd
+    retrieved: 2026-10-08
+    paginated: false
+    # The ports. The page as served hashes to
+    # 6a612037c890817e3ed75d535da2affbaad99dd3171fd36222bc736f0750bf5a.
+  guide_index:
+    kind: manual
+    title: "OP-Z portable synthesizer user guide"
+    edition: "v.1.2.45"
+    landing: "https://teenage.engineering/guides"
+    url: "https://teenage.engineering/guides/op-z"
+    sha256: 34558422b400e5102e5eda247cce5496dd1bf9a1c3511d7d0856631fee573caf
+    retrieved: 2026-10-08
+    paginated: false
+    # The guide's front page, cited for its version. Its index lists sections by number and title in
+    # an order that extracts misaligned, so no section number here came from it: each was read from
+    # its page's own heading, as at `teenage_engineering/op_xy`. The page as served hashes to
+    # 22ca1b3dc32440046bc77e9d06e4ac939dcfd150fdfa761d36dc2cf15acfa7e0.
+  os_updates:
+    kind: release_notes
+    title: "OP–Z OS updates"
+    edition: "1.2.45"
+    dated: 2022-03-31
+    landing: "https://teenage.engineering/downloads"
+    url: "https://teenage.engineering/downloads/op-z"
+    sha256: 63f801e60075739df799cc1fca55a7dc0fa505e3f1b916d2b6971f2788abd52c
+    retrieved: 2026-10-08
+    paginated: false
+    # Releases from 1.1.12 to 1.2.45, each with its notes, and the only document here that says
+    # pitch bend is sent, that MIDI travels over ble, or that a knob sends on a muted track. Its
+    # text prints the older versions, from 1.2.31 down, split across two lines, `1.2` and `.31`, so
+    # a note is placed by the version and date printed above it; in the page as served each
+    # release's download link names its version too. The page as served hashes to
+    # 98b92f08193fc5040f178a2c1ca478c51d1ec6f8d6776e13d2c16c0e240219db.
+  product_page:
+    kind: product_page
+    title: "OP–Z"
+    landing: "https://teenage.engineering/products"
+    url: "https://teenage.engineering/products/op-z"
+    sha256: 91593918d95980333cc378195804f6b90f6e6dc83c3ecdae664cad0e976d6703
+    retrieved: 2026-10-08
+    paginated: false
+    # Cited for its hardware features, which name ble beside the usb-c port's host and device roles.
+    # The page as served hashes to c6040c203927dedb806eb4c7931a2a7be19951818e19284614d7af201a1b3c6d.

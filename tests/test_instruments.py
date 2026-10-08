@@ -241,6 +241,7 @@ class TestBundledCorpus:
 			"pwm/malevolent",
 			"roland/d_50",
 			"roland/fantom_6_7_8",
+			"roland/jd_08",
 			"roland/jd_800",
 			"roland/jd_xi",
 			"roland/ju_06a",
@@ -15298,6 +15299,7 @@ class TestSH4D:
 
 		The JD-800 of 1991 is the oldest Roland here to declare one, and it says Mode 3
 		as a polyphonic synthesizer, with Mode 4 recognised for its solo key.
+		Its Boutique recreation, the JD-08, says Mode 3 on both of its charts.
 		"""
 		modes = {}
 
@@ -15310,8 +15312,8 @@ class TestSH4D:
 		three = sorted(name for name, mode in modes.items() if mode == 3)
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
-		assert three == ["roland/fantom_6_7_8", "roland/jd_800", "roland/jd_xi", "roland/ju_06a",
-			"roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1", "roland/sh_4d",
+		assert three == ["roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xi",
+			"roland/ju_06a", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1", "roland/sh_4d",
 			"roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
 
@@ -17600,3 +17602,93 @@ class TestJX8P:
 		# The archive the JD-800, the TR-909 and the JUNO-106 cite.
 		assert jx.sources["archive"].url == \
 			pymidiinstrumentdefs.load("roland/jd_800", [CORPUS]).sources["archive"].url
+
+
+class TestJD08:
+
+	"""A Boutique JD-800 whose 85 controllers are in a chart inside its Reference Manual."""
+
+	def test_eighty_five_controls_off_the_part_chart (self) -> None:
+		"""63 both ways, 18 received only, and the four palette sliders sent only."""
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		numbers = {control.cc: control for control in jd.controls.values() if control.cc is not None}
+
+		assert len(numbers) == 85
+		directions = [control.direction for control in numbers.values()]
+		assert (directions.count("both"), directions.count("receives"), directions.count("transmits")) == \
+			(63, 18, 4)
+		assert {cc for cc, control in numbers.items() if control.direction == "transmits"} == {68, 69, 70, 71}
+
+		# The chart's own spelling is the label, and 72 is the one controller with a range printed.
+		assert numbers[9].label == "TVF RESONANSE"
+		assert numbers[72].range == (0, 108)
+		assert all(control.range == (0, 127) for cc, control in numbers.items() if cc != 72)
+
+		# No parameter numbers travel, and bank select is the program change's, not a control.
+		assert not {0, 6, 32, 38, 98, 99, 100, 101} & set(numbers)
+
+		# Effect B's seven are on the chart for both parts, and can be heard on Part A only.
+		account = " ".join((jd.source or "").split())
+
+		assert "\"Effect B is only enabled for PART A.\" (reference p. 36)" in account
+
+	def test_two_parts_and_a_system_channel (self) -> None:
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		assert set(jd.parts) == {"part", "system"}
+		assert jd.parts["part"].count == 2 and jd.parts["part"].channel == "assigned"
+		assert jd.parts["part"].receives == ("notes", "controls", "program_change")
+		assert jd.parts["system"].receives == ("notes", "program_change")
+
+		account = " ".join((jd.source or "").split())
+
+		assert "\"Selects the step sequencer pattern.\" (reference p. 62)" in account
+		assert "\"Transmits/receives between the selected part and the system.\" (reference p. 62)" in account
+
+	def test_program_change_reaches_256_patches_by_bank (self) -> None:
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		assert jd.midi.program_change is not None
+		assert (jd.midi.program_change.receives, jd.midi.program_change.sends) == (True, True)
+		assert jd.midi.program_change.presets == 256
+
+		account = " ".join((jd.source or "").split())
+
+		assert "\"letting you save a total of 4 x 8 x 8 = 256 patches.\" (reference p. 15)" in account
+		assert "no page maps a number to a group, bank and patch" in account
+
+	def test_the_rest_of_the_chart (self) -> None:
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		assert jd.midi.channels == (1, 16) and jd.midi.mode == 3
+		assert (jd.midi.clock, jd.midi.transport) == ("both", "both")
+		assert jd.midi.nrpn == "none" and jd.midi.sysex is False
+
+		assert jd.voice.note_range == (0, 127)
+		assert jd.voice.velocity is not None
+		assert (jd.voice.velocity.note_on, jd.voice.velocity.note_off) == ("both", False)
+		assert jd.voice.aftertouch == "poly"
+		assert jd.voice.pitch_bend is not None and jd.voice.pitch_bend.programmable is True
+		assert jd.voice.pitch_bend.semitones is None
+
+	def test_what_no_page_says (self) -> None:
+		"""No polyphony, no factory channel, and no word on which layer a controller reaches."""
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		assert jd.voice.polyphony is None and jd.voice.voicing_modes == ()
+		account = " ".join((jd.source or "").split())
+
+		assert "NO PAGE SAYS WHICH LAYER A RECEIVED CONTROLLER CHANGES." in account
+		assert "No page gives a factory channel for any of the three" in account
+		assert "ONE CONTROLLER HAS A RANGE PRINTED IN THE CHART, AND IT DOES NOT FIT ITS LIST." in account
+
+	def test_firmware_and_sources (self) -> None:
+		"""1.03 changed nothing but its number, as the TR-08's 1.08 did."""
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		assert jd.model.firmware == "1.03"
+		assert set(jd.sources) == {"reference", "chart_html", "quick_start", "manuals_page", "updates",
+			"release_notes"}
+		assert jd.sources["reference"].page_offset == 0
+		assert jd.sources["chart_html"].paginated is False

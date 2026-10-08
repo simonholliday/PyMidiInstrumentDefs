@@ -247,6 +247,7 @@ class TestBundledCorpus:
 			"roland/ju_06a",
 			"roland/juno_106",
 			"roland/jupiter_x",
+			"roland/jx_08",
 			"roland/jx_8p",
 			"roland/mc_101",
 			"roland/mc_707",
@@ -15299,7 +15300,9 @@ class TestSH4D:
 
 		The JD-800 of 1991 is the oldest Roland here to declare one, and it says Mode 3
 		as a polyphonic synthesizer, with Mode 4 recognised for its solo key.
-		Its Boutique recreation, the JD-08, says Mode 3 on both of its charts.
+		Its Boutique recreation, the JD-08, says Mode 3 on both of its charts, and so
+		does the JX-08 - though the JX-8P it recreates gives two defaults, Mode 1 and
+		3, so `roland/jx_8p` records none.
 		"""
 		modes = {}
 
@@ -15313,8 +15316,8 @@ class TestSH4D:
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
 		assert three == ["roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xi",
-			"roland/ju_06a", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1", "roland/sh_4d",
-			"roland/tr_08"]
+			"roland/ju_06a", "roland/jx_08", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1",
+			"roland/sh_4d", "roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
 
 		# Three of the four are drum machines; the TB-3 is the exception worth knowing.
@@ -17692,3 +17695,106 @@ class TestJD08:
 			"release_notes"}
 		assert jd.sources["reference"].page_offset == 0
 		assert jd.sources["chart_html"].paginated is False
+
+
+class TestJX08:
+
+	"""A Boutique JX-8P whose 49 controllers are in a chart inside its Reference Manual."""
+
+	def test_forty_nine_controls_off_the_part_chart (self) -> None:
+		"""42 both ways and 7 received only; nothing is sent only."""
+		jx = pymidiinstrumentdefs.load("roland/jx_08", [CORPUS])
+
+		numbers = {control.cc: control for control in jx.controls.values() if control.cc is not None}
+
+		assert len(numbers) == 49
+		directions = [control.direction for control in numbers.values()]
+		assert (directions.count("both"), directions.count("receives"), directions.count("transmits")) == \
+			(42, 7, 0)
+		assert {cc for cc, control in numbers.items() if control.direction == "receives"} == \
+			{1, 5, 7, 11, 41, 64, 91}
+
+		# The chart's own spelling is the label, and no range is printed for any controller.
+		assert numbers[21].label == "DCO-1 ENEV MOD"
+		assert all(control.range == (0, 127) for control in numbers.values())
+
+		# No parameter numbers travel, and bank select is the program change's, not a control.
+		assert not {0, 6, 10, 32, 38, 98, 99, 100, 101} & set(numbers)
+
+	def test_two_names_printed_twice_are_told_apart_by_number (self) -> None:
+		"""The chart prints DCO-1 RANGE on 20 and 47 and PORTAMENTO TIME on 5 and 117."""
+		jx = pymidiinstrumentdefs.load("roland/jx_08", [CORPUS])
+
+		assert (jx.controls["dco1_range_20"].cc, jx.controls["dco1_range_47"].cc) == (20, 47)
+		assert jx.controls["dco1_range_20"].label == jx.controls["dco1_range_47"].label == "DCO-1 RANGE"
+		assert (jx.controls["portamento_time_5"].cc, jx.controls["portamento_time_117"].cc) == (5, 117)
+		assert jx.controls["portamento_time_5"].label == jx.controls["portamento_time_117"].label == \
+			"PORTAMENTO TIME"
+		assert jx.controls["portamento_time_5"].direction == "receives"
+		assert jx.controls["portamento_time_117"].direction == "both"
+
+		account = " ".join((jx.source or "").split())
+
+		assert "no row is named for DCO-1's TUNE" in account
+
+	def test_two_parts_and_a_system_channel (self) -> None:
+		jx = pymidiinstrumentdefs.load("roland/jx_08", [CORPUS])
+
+		assert set(jx.parts) == {"part", "system"}
+		assert jx.parts["part"].count == 2 and jx.parts["part"].channel == "assigned"
+		assert jx.parts["part"].receives == ("notes", "controls", "program_change")
+		assert jx.parts["system"].receives == ("notes", "program_change")
+
+		account = " ".join((jx.source or "").split())
+
+		assert "\"Selects the step sequencer pattern.\" (reference p. 64)" in account
+		assert "\"Transmits/receives between the selected part and the system.\" (reference p. 64)" in account
+
+	def test_program_change_reaches_256_patches_by_bank (self) -> None:
+		jx = pymidiinstrumentdefs.load("roland/jx_08", [CORPUS])
+
+		assert jx.midi.program_change is not None
+		assert (jx.midi.program_change.receives, jx.midi.program_change.sends) == (True, True)
+		assert jx.midi.program_change.presets == 256
+
+		account = " ".join((jx.source or "").split())
+
+		assert "\"letting you save a total of 4 x 8 x 8 = 256 patches.\" (reference p. 16)" in account
+		assert "no page maps a number to a group, bank and patch" in account
+
+	def test_the_rest_of_the_chart (self) -> None:
+		jx = pymidiinstrumentdefs.load("roland/jx_08", [CORPUS])
+
+		assert jx.midi.channels == (1, 16) and jx.midi.mode == 3
+		assert (jx.midi.clock, jx.midi.transport) == ("both", "both")
+		assert jx.midi.nrpn == "none" and jx.midi.sysex is False
+
+		assert jx.voice.note_range == (0, 127)
+		assert jx.voice.velocity is not None
+		assert (jx.voice.velocity.note_on, jx.voice.velocity.note_off) == ("both", False)
+		assert jx.voice.aftertouch == "poly"
+		assert jx.voice.pitch_bend is not None and jx.voice.pitch_bend.programmable is True
+		assert jx.voice.pitch_bend.semitones is None
+
+	def test_what_no_page_says (self) -> None:
+		"""No polyphony, no factory channel, and no word on what a value means."""
+		jx = pymidiinstrumentdefs.load("roland/jx_08", [CORPUS])
+
+		assert jx.voice.polyphony is None and jx.voice.voicing_modes == ()
+		account = " ".join((jx.source or "").split())
+
+		assert "No page gives a factory channel for any of the three" in account
+		assert "NO RANGE IS PRINTED FOR ANY CONTROLLER, AND NO PAGE SAYS HOW A VALUE MAPS ONTO ITS " \
+			"PARAMETER." in account
+		assert "THE ENVELOPE SECTION'S TABLE LEAVES OUT A SLIDER ITS PICTURE SHOWS." in account
+
+	def test_firmware_and_sources (self) -> None:
+		"""1.03 changed nothing but its number, and it is the JD-08's own file."""
+		jx = pymidiinstrumentdefs.load("roland/jx_08", [CORPUS])
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		assert jx.model.firmware == jd.model.firmware == "1.03"
+		assert set(jx.sources) == {"reference", "chart_html", "quick_start", "manuals_page", "updates",
+			"release_notes"}
+		assert jx.sources["reference"].page_offset == 0
+		assert jx.sources["chart_html"].paginated is False

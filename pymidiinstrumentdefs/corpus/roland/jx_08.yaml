@@ -1,0 +1,394 @@
+definition: 1
+
+# FORTY-NINE CONTROLLERS, FROM A CHART IN THE MANUAL ITSELF. Roland's Owner's Manuals page lists no
+# separate MIDI implementation for the JX-08, and its manual carries two charts of its own, one for
+# the two parts and one for the system channel. The HTML edition of the manual prints the same 49
+# controller rows, cell for cell.
+#
+# TWO NAMES ARE EACH PRINTED TWICE. The chart names both 20 and 47 `DCO-1 RANGE`, and both 5 and 117
+# `PORTAMENTO TIME`. This file keeps the chart's names and tells each pair apart by number, because
+# the maker's words do not tell them apart.
+
+model:
+  manufacturer: Roland
+  name: JX-08
+  # **1.03, THE NEWEST SYSTEM PROGRAM, AND IT CHANGED NOTHING.** Its page reads "The version number
+  # has been updated due to management-related circumstances." (release_notes) and "Product
+  # specifications are unaffected." (release_notes), dated NOV 2025; the release before it, 1.02 of
+  # NOV 2021, fixed `Minor bugs.` (release_notes). Its download is `jd08jx08_sys_v103.zip`, holding
+  # the update program `BQ6_UPA_up.bin` (release_notes), and `roland/jd_08`'s release page names the
+  # same two files. The manual's PDF was created in June 2022 and its charts are dated `Oct. 13,
+  # 2021`, `Version: 1.00` (reference pp. 62 and 64), which they do not say is a system program's.
+  # Checked 2026-10-08.
+  firmware: "1.03"
+
+source: >-
+  The manual Roland lists as the JX-08 Reference Manual, which calls itself "JX-08 Owner’s Manual"
+  (reference p. 66) on its back, edition `1.00`, 66 pages: the panel at pp. 3 to 14, patches and
+  parts at pp. 16 to 20, the sound modes at pp. 22 and 23, patterns at p. 26, the sequencer's motion
+  recording and settings at pp. 33 and 34, the part, keyboard, MIDI and system settings at pp. 38 to
+  42, the factory patches at pp. 59 to 61, the Part chart at pp. 62 and 63, the System chart at
+  p. 64 and the specifications at p. 65. The HTML edition's Part chart, read against the PDF's. The
+  Quick Start, read for an absence. And Roland's Owner's Manuals and Updates & Drivers pages for the
+  JX-08, with the system program's own page.
+
+  THE SURVEY BEHIND THIS CORPUS SAID ROLAND PUBLISHES NO MIDI IMPLEMENTATION CHART FOR THE JX-08,
+  AND ITS MANUAL CARRIES TWO, BEFORE ITS SPECIFICATIONS, AS THE JD-08'S DOES. "MIDI Implementation
+  Chart (Part)" (reference p. 62) and "MIDI Implementation Chart (System)" (reference p. 64), each
+  `Date: Oct. 13, 2021` and `Version: 1.00`. The Owner's Manuals page lists seven Quick Starts and
+  the Reference Manual twice, as PDF and as HTML, and no separate MIDI implementation
+  (manuals_page); `JX-08_reference_eng02_W.pdf` and every other name tried answered 403. The HTML
+  edition's Part chart has the same 49 controller rows as the PDF's, number, marks and name
+  (chart_html).
+
+  TWO PARTS AND A SYSTEM CHANNEL, EACH WITH A CHANNEL OF ITS OWN. "The JX-08 features two sound
+  generator parts" (reference p. 18), and "You can select separate patches for parts A and B."
+  (reference p. 16); they sound together in DUAL mode, or on either side of a split point in SPLIT
+  mode (reference pp. 19 and 20), and no page says whether either mode applies to notes that arrive
+  over MIDI. "Sets the MIDI transmitting/receiving channel for PART A." (reference p. 41), and the
+  same for PART B, each 1 to 16; and the system's, 1 to 16 or OFF, where the parts have no OFF:
+  "Pattern selection (program change messages) is output using this channel." (reference p. 41). The
+  system channel is also the one an external keyboard plays on: "Use the MIDI channel you set here
+  when using an external MIDI keyboard in place of the K-25m." (reference p. 41), and another
+  setting names the connector it arrives at - off, MIDI or USB - which "Normally you will leave this
+  “OFF.”" (reference p. 41). Such a keyboard can play the arpeggio: "To play chords using an
+  external MIDI keyboard connected to this unit, set the MIDI receive and transmit channels
+  beforehand." (reference p. 25). MIDI travels at the MIDI connectors and at the USB port, of which
+  the manual says "This is used to transfer USB MIDI and USB audio." (reference p. 14), and which
+  needs a driver: "You must install the USB driver if you want to connect this unit to your
+  computer." (reference p. 14). The Part chart, by its title, covers the two parts. The System chart
+  takes no control change, selects a pattern by program change, "Selects the step sequencer
+  pattern." (reference p. 64), and passes notes, velocity and aftertouch on: "Transmits/receives
+  between the selected part and the system." (reference p. 64). It also recognises pitch bend, and
+  no page says what that bends. No page gives a factory channel for any of the three, or says what
+  the system channel's OFF does. The manual calls middle C `C4` (reference p. 8), and no page gives
+  its note number.
+
+  FORTY-NINE CONTROLLERS: 42 BOTH WAYS AND 7 RECEIVED ONLY. The seven received only are the
+  modulation wheel on 1, portamento time on 5, `PATTERN PART LEVEL` on 7, expression on 11, `BEND
+  PITCH` on 41, the hold pedal on 64 and the reverb's send level on 91 (reference pp. 62 and 63);
+  none is sent only. The specifications list no pedal jack among the connectors (reference p. 65),
+  so expression and the hold pedal arrive only as MIDI. What the manual says goes out on a part's
+  channel is what is played and the patch chosen: "What you play on the keyboard for PART A (note
+  and control change messages) as well as patch selections (program change messages) are output
+  using this channel." (reference p. 41); no page says whether the sequencer's, the arpeggio's or
+  the step buttons' notes go out too. A pattern can hold the panel's movements, "The movement of the
+  knobs and sliders (MOTION) can also be recorded in the pattern." (reference p. 33), and a
+  sequencer setting, `CC`, decides whether they are played out: "When this is on, the unit outputs
+  the control change messages (MOTION) recorded in a pattern." (reference p. 34), on a channel no
+  page names. No page says that moving a knob or slider sends its controller, though 42 of the 49
+  are marked as sent. The part's level has a setting of its own, "Adjusts the part volume."
+  (reference p. 38), which "You can adjust this parameter for each pattern." (reference p. 38), and
+  no page pairs it with 7. There is no controller for the part's pan, "Sets the pan position for
+  each part." (reference p. 38), and 10 is not on the chart.
+
+  TWO NAMES ARE PRINTED TWICE, AND ONE SOUND CONTROL, DCO-1'S TUNE, HAS NO ROW. The chart prints
+  `DCO-1 RANGE` against 20 and 47, and `PORTAMENTO TIME` against 5 and 117 (reference pp. 62 and
+  63), and the HTML edition prints the same (chart_html). The DCO section's picture shows DCO-1 with
+  an LFO slider, a TUNE knob, a RANGE switch and a WAVE FORM switch (reference p. 6), and no row is
+  named for DCO-1's TUNE; DCO-2's TUNE knob, whose scale runs -1OCT to +1OCT (reference p. 6), is
+  the nearest match for 87, `DCO-2 COARSE 1OCT`. No page says what either of 20 and 47 is, so both
+  are kept under the chart's name, as `dco1_range_20` and `dco1_range_47`. Of the portamento pair, 5
+  is received only and 117 travels both ways (reference pp. 62 and 63), and the panel has one
+  portamento knob (reference p. 11); they are `portamento_time_5` and `portamento_time_117`. The
+  effects' buttons, which "Turns the chorus effects I, II on and off." (reference p. 12) and "Turns
+  reverb on/off." (reference p. 12), and the two buttons that choose which envelope the sliders edit
+  (reference p. 10) have no row either.
+
+  THE ENVELOPE SECTION'S TABLE LEAVES OUT A SLIDER ITS PICTURE SHOWS. The table lists ATTACK, DECAY
+  and RELEASE sliders and a KEY FOLLOW switch (reference p. 10), and the picture above it shows a
+  SUSTAIN slider between DECAY and RELEASE; the chart has a sustain for each envelope, 85 and 102
+  (reference pp. 62 and 63). The two envelopes share the section's sliders, chosen with two buttons:
+  "Selects the envelope to edit." (reference p. 10).
+
+  NO RANGE IS PRINTED FOR ANY CONTROLLER, AND NO PAGE SAYS HOW A VALUE MAPS ONTO ITS PARAMETER. The
+  chart gives numbers and names only (reference pp. 62 and 63), so those that set a choice are left
+  continuous here, their states named only on the panel's pages - among them the LFO's three
+  waveforms (reference p. 5), the DCOs' ranges, waveforms, cross modulation and envelope mode
+  (reference p. 6), the mixer's envelope choice (reference p. 7), the HPF slider's 0 to 3 and the
+  VCF's envelope mode (reference p. 8), the VCA's two modes (reference p. 9), the envelopes' key
+  follow, 0 to 3 (reference p. 10), the portamento button (reference p. 11) and the sound modes.
+  Those are four, `Unison solo` (reference p. 23) among them, where 119's name, `SOLO/POLY/UNISON`,
+  gives three, as the page before them does (reference p. 22). The depths the part settings give
+  modulation and aftertouch each run -63 to 63 (reference p. 39), and no controller is named for any
+  of them. The labels are the chart's Remarks with trailing spaces removed; its spelling `DCO-1 ENEV
+  MOD` is kept.
+
+  PROGRAM CHANGE REACHES 256 PATCHES, BY BANK. "letting you save a total of 4 x 8 x 8 = 256
+  patches." (reference p. 16), in groups A to D, banks 1 to 8 and numbers 1 to 8, all of them user
+  memories (reference p. 65); the factory filled 143, A.11 to C.27: "This is a list of the patches
+  stored in this unit by factory default." (reference p. 59). The Part chart gives `LSB` 0, `MSB`
+  `0–1` and `PC` `0–127` both ways (reference p. 63), so a bank select of 0 or 1 and a program of 0
+  to 127 reach them - but no page maps a number to a group, bank and patch. Bank select is given
+  only there: 0 and 32 are not among the chart's controllers (reference pp. 62 and 63). The system
+  channel's program change instead selects one of 128 patterns (reference pp. 26 and 64), and "A
+  pattern can contain patch numbers for parts A and B, as well as the recorded sequence data."
+  (reference p. 26).
+
+  CLOCK AND TRANSPORT BOTH WAYS, AND NO SONG POSITION. On the System chart Clock, Start and Stop are
+  circled both ways and Continue is received only: "Works the same as “start.”" (reference p. 64).
+  The Part chart circles Clock and Commands both ways without that distinction, and Song Position is
+  crossed both ways on both charts (reference pp. 63 and 64). Which port the sequencer follows is a
+  MIDI setting - automatic, internal, MIDI or USB - and which port sends clock another - off, MIDI,
+  USB or all (reference p. 41); neither has a default stated, and the automatic choice
+  "Automatically detects the signal inputted to the jack." (reference p. 41) without naming the
+  jack. The EXT CLK IN jack takes pulses: "You can make the steps of the sequencer advance in sync
+  with the clock (pulse) that’s inputted." (reference p. 13). A soft thru setting re-sends what
+  arrives at MIDI IN "as-is from the MIDI OUT connector." (reference p. 41).
+
+  PITCH BEND AND AFTERTOUCH ARE RECEIVED, NOT SENT. Pitch bend and polyphonic aftertouch are crossed
+  as transmitted and circled as recognised, and channel aftertouch crossed both ways, on both charts
+  (reference pp. 62 and 64). The bend range is a part setting of 2, 3, 4 or 7 semitones, "Sets the
+  variable pitch range for the pitch bend." (reference p. 39), with no default stated, and no page
+  says whether 41, `BEND PITCH`, sets it. Three part settings send aftertouch to the LFO, the
+  low-pass filter and what the page calls the tone, each "only enabled when a product featuring
+  aftertouch is connected" (reference p. 39), and no page names such a product. Another part setting
+  "Adjusts the depth of the modulation effect." (reference p. 39), and no page pairs it with 1.
+
+  MODE 3, AND THREE OF THE FOUR MODE MESSAGES ARE ALL NOTES OFF ON A PART'S CHANNEL. Mode 3 is the
+  default both ways on both charts (reference pp. 62 and 64). On a part's channel, omni off, omni on
+  and mono "Works the same as “all notes off.”" (reference p. 63), poly is crossed both ways, and
+  all sound off, reset all controllers and all notes off are received. Mono is also circled as
+  transmitted (reference p. 63), the one mode message the chart marks as sent, and no page says when
+  it is. The system channel takes none of them (reference p. 64). Local control is crossed. Active
+  sensing is circled both ways on both charts.
+
+  SYSTEM EXCLUSIVE IS CROSSED BOTH WAYS ON BOTH CHARTS (reference pp. 63 and 64), and no other page
+  mentions it, so it is recorded as absent, as `roland/jd_08`'s is.
+
+  FIVE MORE FAULTS, NONE IN A FIELD, ALL FOUND BY THE BLIND SECOND READER. The System chart's
+  aftertouch row carries the remark "Transmits/receives between the selected part and the system."
+  (reference p. 64) over a cross for transmitted, as the JD-08's does. The DCO section's table
+  describes one LFO slider, one TUNE knob and one RANGE switch for both oscillators - "Sets the
+  octave for DCO-1 and DCO-2." (reference p. 6) - where its picture gives each oscillator its own.
+  The same table calls the waveform selector a knob, "This knob sets the waveform." (reference
+  p. 6), where the picture shows a switch on each oscillator. The VCA's LEVEL slider is printed
+  `0–100` (reference p. 9), where its picture's scale runs 0 to 10 as its neighbours' do. And a part
+  setting expands `VCO CUTOFF FREQ` (reference p. 38) on an instrument with DCOs and a VCF.
+
+  NOT RECORDED, AND WHY: the polyphony, which no page states for the sound generator - the one
+  figure, "8 notes (Polyphonic)" (reference p. 65), sits in the specifications' Step Sequencer row
+  beneath `64 steps`, and the page does not say whose figure it is; the voicing, a choice of solo,
+  poly, unison and unison solo with no count for any (reference p. 23); and a default bend range.
+  The Quick Start holds no MIDI map at all (quick_start).
+
+midi:
+  # 1 to 16 for each part and 1 to 16 or OFF for the system, default and changed alike (reference
+  # pp. 62 and 64); see the account.
+  channels: [1, 16]
+  # Default `Mode 3` in both columns of both charts (reference pp. 62 and 64).
+  mode: 3
+  # Clock circled both ways on both charts; Start and Stop both ways, Continue received (reference
+  # p. 64).
+  clock: both
+  transport: both
+  program_change:
+    # `PC` `0–127` both ways, with a bank select of 0 or 1 (reference p. 63); see the account.
+    receives: true
+    sends: true
+    presets: 256
+  # None of 98 to 101, 6 or 38 is on the Part chart (reference pp. 62 and 63), and no page mentions
+  # NRPN or RPN, so no registered or non-registered parameter number travels. The chart is not a
+  # complete list - it gives bank select under program change without listing 0 or 32 - but nothing
+  # on any page points to a parameter number.
+  nrpn: none
+  # Crossed both ways on both charts (reference pp. 63 and 64).
+  sysex: false
+
+parts:
+  part:
+    label: Part
+    # PART A and PART B, "Sets the MIDI transmitting/receiving channel for PART A." (reference
+    # p. 41), each 1 to 16.
+    count: 2
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+  system:
+    label: System
+    # 1 to 16 or OFF (reference p. 41). Notes on it reach the selected part, a program change
+    # selects a pattern, and it is the external keyboard's channel; it also takes pitch bend and
+    # polyphonic aftertouch, which no field here holds. The System chart crosses control change
+    # (reference p. 64).
+    channel: assigned
+    addressing: pitches
+    receives: [notes, program_change]
+
+voice:
+  addressing: pitches
+  # 0 to 127 both ways, and a true voice of 0 to 127 (reference p. 62).
+  note_range: [0, 127]
+  # NOT RECORDED: polyphony. See the account.
+  velocity:
+    # Note On circled both ways, Note Off crossed both ways (reference p. 62).
+    note_on: both
+    note_off: false
+  # `Key’s` crossed as sent and circled as received, `Channel’s` crossed both ways (reference
+  # p. 62).
+  aftertouch: poly
+  pitch_bend:
+    # Received only (reference p. 62). The range is a part setting of 2, 3, 4 or 7 semitones
+    # (reference p. 39), with no default stated.
+    programmable: true
+
+groups:
+  # ONE GROUP FOR EACH SECTION OF THE PANEL, named as its pages title them, title-cased (reference
+  # pp. 5 to 12). The DCO section serves two oscillators and the envelope section two envelopes, and
+  # the chart's names say which for all but the DCOs' cross modulation and envelope mode, 59 and 60.
+  # 91 is under Effects by its name: the reverb's settings are reached by long-pressing its button
+  # (reference p. 12) and include "Adjusts the amount of reverb." (reference p. 58), which no page
+  # pairs with 91. **Six controllers get no group** - the wheel, the part's level, expression, `BEND
+  # PITCH`, the hold pedal and the sound mode - because inventing one would invent a grouping the
+  # maker does not have.
+  lfo: LFO
+  dco: DCO-1/DCO-2
+  mixer: Mixer
+  vcf: VCF
+  vca: VCA
+  env: Envelope-1/2
+  porta: Portamento
+  fx: Effects
+
+controls:
+
+  # **FORTY-NINE NUMBERS OFF THE PART CHART** (reference pp. 62 and 63), labelled with its Remarks.
+  # No range is printed for any of them; see the account.
+
+  # PERFORMANCE: wheel, part level, expression, BEND PITCH, hold pedal and sound mode ──────────
+  modulation_wheel:           {label: Modulation Wheel, cc: 1, direction: receives}
+  pattern_part_level:         {label: PATTERN PART LEVEL, cc: 7, direction: receives}
+  expression:                 {label: Expression, cc: 11, direction: receives}
+  bend_pitch:                 {label: BEND PITCH, cc: 41, direction: receives}
+  hold_pedal:                 {label: Hold Pedal, cc: 64, direction: receives}
+  solo_poly_unison:           {label: SOLO/POLY/UNISON, cc: 119}
+
+  # LFO ────────────────────────────────────────────────────────────────────────────────────────
+  lfo_delay_time:             {label: LFO DELAY TIME, cc: 27, group: lfo}
+  lfo_rate:                   {label: LFO RATE, cc: 29, group: lfo}
+  lfo_waveform:               {label: LFO WAVEFORM, cc: 35, group: lfo}
+
+  # DCO-1/DCO-2: 20 and 47 are both printed DCO-1 RANGE; see the account ───────────────────────
+  dco1_range_20:              {label: DCO-1 RANGE, cc: 20, group: dco}
+  dco1_env_mod:               {label: DCO-1 ENEV MOD, cc: 21, group: dco}
+  dco2_lfo:                   {label: DCO-2 LFO, cc: 25, group: dco}
+  dco1_lfo:                   {label: DCO-1 LFO, cc: 26, group: dco}
+  dco1_waveform:              {label: DCO-1 WAVEFORM, cc: 46, group: dco}
+  dco1_range_47:              {label: DCO-1 RANGE, cc: 47, group: dco}
+  dco2_fine_tune:             {label: DCO-2 FINE TUNE, cc: 56, group: dco}
+  dco_cross_mod:              {label: DCO CROSS MOD, cc: 59, group: dco}
+  dco_env_mode:               {label: DCO ENVELOPE MODE, cc: 60, group: dco}
+  dco2_waveform:              {label: DCO-2 WAVEFORM, cc: 61, group: dco}
+  dco2_range:                 {label: DCO-2 RANGE, cc: 62, group: dco}
+  dco2_env:                   {label: DCO-2 ENV, cc: 63, group: dco}
+  dco2_coarse_1oct:           {label: DCO-2 COARSE 1OCT, cc: 87, group: dco}
+
+  # MIXER ──────────────────────────────────────────────────────────────────────────────────────
+  dco1_level:                 {label: DCO-1 LEVEL, cc: 16, group: mixer}
+  dco2_level:                 {label: DCO-2 LEVEL, cc: 17, group: mixer}
+  mixer_env:                  {label: MIXER ENV, cc: 18, group: mixer}
+  mixer_env_mode:             {label: MIXER ENVELOPE MODE, cc: 19, group: mixer}
+
+  # VCF ────────────────────────────────────────────────────────────────────────────────────────
+  vcf_cutoff:                 {label: VCF CUTOFF, cc: 3, group: vcf}
+  vcf_resonance:              {label: VCF RESONANCE, cc: 9, group: vcf}
+  vcf_lfo_depth:              {label: VCF LFO DEPTH, cc: 28, group: vcf}
+  filter_hpf:                 {label: FILTER HPF, cc: 79, group: vcf}
+  vcf_env:                    {label: VCF ENV, cc: 81, group: vcf}
+  vcf_key_follow:             {label: VCF KEY FOLLOW, cc: 82, group: vcf}
+  vcf_env_mode:               {label: VCF ENVELOPE MODE, cc: 84, group: vcf}
+
+  # VCA ────────────────────────────────────────────────────────────────────────────────────────
+  amp_env_mode:               {label: AMP ENVELOPE MODE, cc: 109, group: vca}
+  amp_level:                  {label: AMP LEVEL, cc: 110, group: vca}
+
+  # ENVELOPE-1/2 ───────────────────────────────────────────────────────────────────────────────
+  env1_attack:                {label: ENVELOPE1 ATTACK, cc: 83, group: env}
+  env1_decay:                 {label: ENV1 DECAY, cc: 80, group: env}
+  env1_sustain:               {label: ENVELOPE1 SUSTAIN, cc: 85, group: env}
+  env1_release:               {label: ENVELOPE1 RELEASE, cc: 86, group: env}
+  env1_key_follow:            {label: ENVELOPE1 KEY FOLLOW, cc: 104, group: env}
+  env2_attack:                {label: ENVELOPE2 ATTACK, cc: 89, group: env}
+  env2_decay:                 {label: ENVELOPE2 DECAY, cc: 90, group: env}
+  env2_sustain:               {label: ENVELOPE2 SUSTAIN, cc: 102, group: env}
+  env2_release:               {label: ENVELOPE2 RELEASE, cc: 103, group: env}
+  env2_key_follow:            {label: ENVELOPE2 KEY FOLLOW, cc: 105, group: env}
+
+  # PORTAMENTO: 5 and 117 are both printed PORTAMENTO TIME; see the account ────────────────────
+  portamento_time_5:          {label: PORTAMENTO TIME, cc: 5, direction: receives, group: porta}
+  portamento_time_117:        {label: PORTAMENTO TIME, cc: 117, group: porta}
+  portamento_sw:              {label: PORTAMENTO SW, cc: 118, group: porta}
+
+  # EFFECTS ────────────────────────────────────────────────────────────────────────────────────
+  reverb_send_level:          {label: Reverb Send Level, cc: 91, direction: receives, group: fx}
+
+sources:
+  reference:
+    kind: manual
+    title: JX-08 Owner’s Manual
+    edition: eng01
+    dated: 2022-06
+    landing: "https://www.roland.com/global/support/by_product/jx-08/owners_manuals/667c8067-8458-44ae-a18f-a63ba7049956/"
+    url: "https://static.roland.com/assets/media/pdf/JX-08_reference_eng01_W.pdf"
+    sha256: 9a8c545e9c23cc2dd837f11fab8712552a1a485cc46835a9cb32c98628f9b82e
+    retrieved: 2026-10-08
+    # **ROLAND LISTS IT AS THE `JX-08 Reference Manual` AND IT CALLS ITSELF `Owner’s Manual`**, on
+    # its cover and back; the back prints `1.00`, and the file name says `eng01`. Pages 2 to 66 each
+    # print their own number, which is their page in the file; the cover prints none. The date is
+    # the PDF's own creation date, 2022-06-29: the document prints no date but `© 2021`, and its
+    # charts are dated Oct. 13, 2021. The edition is the only one served.
+    page_offset: 0
+  chart_html:
+    kind: midi_implementation
+    title: "JX-08 Reference Manual (HTML): MIDI Implementation Chart (Part)"
+    landing: "https://www.roland.com/global/support/by_product/jx-08/owners_manuals/3f630dd8-b625-42ac-b295-5b551078a2a0/"
+    url: "https://static.roland.com/manuals/jx-08_reference/eng/17811750.html"
+    sha256: f2e97aa85e7e136ae8a1c2ad36824162700f7a7c56eb79e399c600fdb245136c
+    retrieved: 2026-10-08
+    paginated: false
+    # The HTML edition's page for the Part chart, served with a Last-Modified of 2022-03-16, read to
+    # check the PDF's rows against a second rendering. The page as served hashes to
+    # 55e4799cc0e312b788a51b5c366a32978b7c0c6c10dbfb2cec6d630a96573b50.
+  quick_start:
+    kind: manual
+    title: JX-08 Quick Start
+    edition: eng01
+    dated: 2021-06
+    landing: "https://www.roland.com/global/support/by_product/jx-08/owners_manuals/57687e51-f25c-4c74-b8f9-342066c5be4a/"
+    url: "https://static.roland.com/assets/media/pdf/JX-08_quick_eng01_W.pdf"
+    sha256: 1f7a77cb3d7dc2fa6315bcdee5bd09de7254e80ea2524592c59e5e11596ffba3
+    retrieved: 2026-10-08
+    # **CITED FOR AN ABSENCE**: one sheet of panel descriptions, with no MIDI map. The date is its
+    # own creation date.
+    page_offset: 0
+  manuals_page:
+    kind: download_page
+    title: "Roland - Support - JX-08 - Owner's Manuals"
+    landing: "https://www.roland.com/global/support/by_product/jx-08/owners_manuals/"
+    url: "https://www.roland.com/global/support/by_product/jx-08/owners_manuals/"
+    sha256: faef8ced5be813fe6a6261a0445f1c542fa8c1b09a6436dbef70fdaeac62acbf
+    retrieved: 2026-10-08
+    paginated: false
+    # Nine documents: seven Quick Starts and the Reference Manual as HTML and as PDF. The page as
+    # served hashes to f96e0adc893ed5faa9d21972b888c7da0165ed5d202bd92f5a8af32b5eb7cfd4.
+  updates:
+    kind: download_page
+    title: "Roland - Support - JX-08 - Updates & Drivers"
+    landing: "https://www.roland.com/global/support/by_product/jx-08/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/jx-08/updates_drivers/"
+    sha256: aa49cbbdfcc356212faf11559c93311fc41a5d772e138fc122a6d7c78428dbf6
+    retrieved: 2026-10-08
+    paginated: false
+    # One system program, 1.03, and five USB drivers. The page as served hashes to
+    # 864799d72f5e50679c0555f1f9e629ae5c7eb0f1fcbd670ffc5e4d971e4add2f.
+  release_notes:
+    kind: release_notes
+    title: JX-08 System Program ( Ver.1.03 )
+    edition: Ver.1.03
+    dated: 2025-11
+    landing: "https://www.roland.com/global/support/by_product/jx-08/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/jx-08/updates_drivers/a94741aa-3a83-498e-97e9-4b6c0243b050/"
+    sha256: 077a6a1add95791b609371edf8d73f2a61570d852f8ad301b49ad36cb5cfa46a
+    retrieved: 2026-10-08
+    # The newest Roland had published when this was read; its history runs back to 1.02. The page as
+    # served hashes to c09a80560bcd5c128340f3865208f1757122c8c38417a330a4f039fbae1045c6.
+    paginated: false

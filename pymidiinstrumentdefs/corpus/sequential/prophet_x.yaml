@@ -1,0 +1,936 @@
+definition: 1
+
+# FIVE HUNDRED AND NINETY-EIGHT CONTROLS, AND HOW TO READ THEM. A parameter can be sent two ways,
+# chosen in the Global menu: as a controller, from a table of 87 numbers, or as an NRPN, which the
+# maker calls "the preferred method" (guide p. 140). The NRPN table gives every program parameter
+# two numbers, one for each of the two layers, where the controller table gives one, so the two are
+# not paired here: a controller and an NRPN for the same parameter are separate controls.
+#
+# EVERY PROGRAM PARAMETER IS HERE TWICE, as `_layer_a` and `_layer_b`, because the NRPN table prints
+# two numbers on every row, 2048 apart. Outside Multi Mode, no page says which layer a controller
+# reaches.
+
+model:
+  manufacturer: Sequential
+  name: Prophet X
+  # THE NEWEST OS, AND IT POSTDATES THE GUIDE. The OS file's own readme reads "Prophet X OS Main
+  # v.2.2.2.0.0 Feb-2-2022" (os_readme), a year after the guide's `Version 1.3` of `Feb, 2021`. The
+  # readme lists no changes, the OS page carries none, and the two addenda describe features "not
+  # covered in the main User’s Guide" (os_2_2 p. 1) without a controller or an NRPN among them;
+  # nothing published says the MIDI appendix changed. Checked 2026-10-08.
+  firmware: "2.2.2.0.0"
+
+source: >-
+  The Prophet X User's Guide, Version 1.3, February 2021, 88 sheets, all but four of which carry two
+  printed pages, cited by printed page: the sound banks at p. 4, layers at pp. 9 to 13, the
+  sequencer's MIDI transport at p. 68, the pitch bend range at p. 80, the Global Settings at pp. 122
+  to 128, the alternative tunings at p. 132, and Appendix E, the MIDI implementation, at pp. 140 to
+  156. The OS 2.0 and 2.2 addenda. The readme inside the newest OS file, 2.2.2.0.0. And Sequential's
+  documentation and operating system pages for the Prophet X.
+
+  ONE APPENDIX HOLDS EVERY NUMBER. Appendix E prints the received and transmitted channel messages
+  (pp. 141 to 143), a table of controller numbers (p. 144), the NRPN format (pp. 145 and 146), a
+  global table (p. 147), a program table (pp. 148 to 151), one control NRPN and the system exclusive
+  messages (pp. 152 to 156). It is not the whole story: its own list of the globals that affect MIDI
+  (guide p. 140) leaves out Multi Mode and Local Control, which are in the Global Settings (guide
+  pp. 123 and 124). Neither addendum adds a controller or an NRPN. Both describe features "not
+  covered in the main User’s Guide" (os_2_2 p. 1), which means an earlier edition: guide 1.3 is the
+  newer, and already carries OS 2.0's 64 alternative tunings (guide p. 132). The documentation page
+  lists the guide, the two addenda and a factory preset list (documentation_page).
+
+  A PARAMETER TRAVELS AS A CONTROLLER OR AS AN NRPN, AND A GLOBAL CHOOSES WHICH. A global, MIDI
+  Param Send, is off, CC or NRPN: "Changes to the values of front panel controls are transmitted via
+  MIDI as Continuous Controllers (CC) or Non-Registered Parameter Number (NRPN)." (guide p. 140);
+  MIDI Param Receive has the same three, and "NRPNs are the preferred method of parameter
+  transmission, since they cover the complete range of all parameters, while CCs are limited to a
+  range of 128." (guide p. 140). The controller table's numbers "are transmitted when MIDI Param
+  Send is set to CC, and recognized/received when MIDI Param Receive is set to CC." (guide p. 144),
+  and the NRPNs "are transmitted when MIDI Parameter Send is set to NRPN in globals, and received
+  when MIDI Parameter Receive is set to NRPN in globals." (guide p. 145). The synth also takes NRPN
+  data increment and decrement, and the RPN reset (guide p. 145).
+
+  THE NRPN PAGES MISPRINT TWO THINGS A SENDER NEEDS. The received list prints the RPN reset under
+  `0010 0101` and `0010 0100` (guide p. 146), controllers 37 and 36, where MIDI's registered
+  parameter number controllers are 101 and 100. And p. 145 says that when a number or a value is
+  broken into two seven-bit bytes, "in most cases the MSB will be zero or one, and never more than
+  two" (guide p. 145), which the tables do not bear out: layer A's numbers reach 409, an MSB of 3,
+  layer B's start at 2048, an MSB of 16, the globals' run from 4102, an MSB of 32, and the program
+  table's values reach 999, an MSB of 7.
+
+  THE CONTROLLERS AND THE NRPNS ARE NOT PAIRED. `sequential/take_5`, `sequential/prophet_6` and
+  `sequential/fourm` put a controller and an NRPN on one control where their tables give one
+  parameter, and `sequential/prophet_6` does so where its two tables name it differently. Here the
+  controller table gives one number for a parameter where the NRPN table gives one for each layer,
+  and outside Multi Mode no page says which layer a controller reaches - so the 90 controllers are
+  controls of their own, and so is every NRPN.
+
+  TWO LAYERS, AND THE PROGRAM TABLE NUMBERS BOTH. "The two layers are referred to as Layer A and
+  Layer B." (guide p. 9); they stack or split, and the edit layer b button chooses which the panel
+  edits (guide pp. 10 to 13). The program table's 241 rows each give a layer A number, 0 to 409, a
+  layer B number 2048 higher, a name, printed under the heading `Value`, and a range, printed under
+  `Description` (guide pp. 148 to 151), so each row is two controls here, its label the name with
+  `, layer A` or `, layer B`. A global, Multi Mode, puts the layers on two channels: "When Multi
+  Mode is on, the Prophet X responds to MIDI data on two consecutive MIDI channels" (guide p. 123),
+  so "Layer A (voices 1-4) will respond to MIDI channel 1 and Layer B (voices 5-8) will respond to
+  MIDI channel 2." (guide p. 124) for a base channel of 1, or voices 1 to 8 and 9 to 16 in 16-voice
+  mode (guide p. 124). While it is on, the channel says which layer a controller reaches. No part is
+  recorded for that, because it holds only while Multi Mode is on and no page gives its default.
+
+  EIGHTY-SEVEN CONTROLLERS, AND FIVE FAULTS AROUND THEM. The controller table has 88 rows and 87
+  numbers (guide p. 144): 62 is printed twice, `Clock Divide` both times. Controller 8 is
+  `Sub Oscillator`, and no other page of the guide names a sub oscillator. The transmitted list
+  prints `Expression: When assigned to Pedal/CV` against `0000 1101` (guide p. 143), which is 13 -
+  the controller table's `A/B Mode` - where the Global Settings give the expression controller as
+  `Exp CC11` (guide p. 125). Volume, 7, is on the transmitted list twice, for a pedal and for the
+  volume knob (guide p. 143). And five numbers on the received and transmitted lists are not in the
+  controller table. Three are here as well: 2 `Breath Controller`, transmitted only, 4
+  `Foot Controller` and 74 `Brightness` (guide pp. 142 and 143). The other two are received only,
+  123 `All Notes Off` and 121 `Reset All Controllers` (guide p. 142), channel mode messages, which
+  this corpus does not record as controls; `sequential/prophet_5` says the same of the same two.
+
+  THE GLOBAL TABLE DISAGREES WITH ITSELF IN THREE ROWS, AND WITH THE GLOBAL SETTINGS IN MORE. Its 25
+  rows (guide p. 147) match the global dump's "50 nibbles (LS then MS) for 25 Global parameters"
+  (guide p. 155). MIDI Out Select is printed `0-2` over four named values, 0 to 3, and Sustain
+  Polarity `0-1` over four; the controls here hold the values the rows name. MIDI Clock Mode is
+  printed `0-4` and names four. Against the Global Settings: the clock modes are five, the fifth
+  slave no s/s, which the row does not name (guide p. 122); Local Control has a third value,
+  `Key/Wheels Off` (guide p. 124), and the SysEx cable a third, `None` (guide p. 123), which their
+  rows have no number for; Master Fine is `-50…+50` (guide p. 122) where its row is `0-50`; and
+  Sustain Polarity is `Normal, Reversed` (guide p. 127). Since OS 2.0 Sustain Arp has a third mode
+  too, `arp hold mom` (os_2_0 p. 5), where its row is `0-1`. Each is noted on its control. And three
+  rows carry markers: MIDI Param Send and Local Control are marked `*`, "Controller received, but
+  not transmitted." (guide p. 147), and MIDI Param Receive `†`, "Controller transmitted, but ignored
+  when received." (guide p. 147); all three are recorded as marked.
+
+  1024 PROGRAMS, FOUR ADD-ON BANKS, AND THE PAGES NUMBER THE BANKS THREE WAYS. "The Prophet X
+  contains a total of 1024 programs." (guide p. 4), and "Each bank has 128 programs" (guide p. 4),
+  four user banks and four factory banks. Four more, A1 to A4, are add-on banks: "Programs included
+  with sample expansion libraries from sound developers will load here." (guide p. 4), and they are
+  outside that count. Bank select is controller 32 alone; no controller list or table has 0. It is
+  received as "1 - 4 select user banks 1 - 4; 5 - 8 select factory banks 1 - 4; 9 - 12 select add-on
+  banks 1 - 4 others ignored" (guide p. 142), so a bank select of 0 is ignored, and transmitted as
+  `Bank Select: 0 - 9` (guide p. 143). A program change is received as "0-127 for Programs 1-127
+  within current Bank" (guide p. 141) and transmitted as "0-127 for Programs 00-128 within current
+  Bank" (guide p. 142). The system exclusive request names banks 0 to 7 and programs 0 to 127 (guide
+  p. 153), and the program dump banks 0 to 9 and programs 0 to 99 (guide p. 154), each bank number
+  in a byte printed `0000 00vv`, two bits wide, which holds 0 to 3. MIDI Prog Enable decides whether
+  a program change is answered (guide p. 141), and by the Global Settings whether one is sent too:
+  the synth "will transmit them (when prompted) to the MIDI Out." (guide p. 123).
+
+  CLOCK BOTH WAYS, AND TRANSPORT RECEIVED. MIDI Clock Mode is off, master, slave, slave thru or
+  slave no s/s, the last of which "Receives MIDI Clock but does not respond to MIDI Start or Stop
+  command." (guide p. 140), and MIDI Clock Cable chooses whether clock is received at the MIDI port
+  or over USB (guide p. 140). The sequencer starts and stops "using MIDI start/stop messages sent
+  from a DAW or other MIDI device." (guide p. 68). The implementation's real-time table lists only
+  the timing clock (guide p. 141), and no page says the Prophet X sends a start or a stop.
+
+  NOTES, PRESSURE AND BEND. Note off is received with "Velocity is ignored" (guide p. 141) and sent
+  with a velocity of 0 (guide p. 142). Polyphonic key pressure and channel pressure are received
+  (guide p. 141), and channel pressure alone is sent (guide p. 142). Pitch bend travels both ways
+  (guide pp. 141 and 142), and its range is set up and down separately, each up to 12 semitones
+  (guide p. 80), 0 to 12 in the program table (guide p. 151). Since OS 2.0 the arpeggiator and
+  sequencer send notes too, while a global the addendum calls both `midi arp notes` and
+  `midi arp+seq` is on (os_2_0 pp. 5 and 6): "The arpeggiator and sequencer now output MIDI note
+  numbers." (os_2_0 p. 5). The MIDI channel is 1 to 16 or All: "All receives on all 16 channels."
+  (guide p. 140).
+
+  EIGHT VOICES, SIXTEEN OR THIRTY-TWO. "The Prophet X is an 8-voice stereo/16-voice mono,
+  bi-timbral, hybrid digital/analog synthesizer" (guide p. 1), and "Polyphony is halved in Stack
+  mode" (guide p. 10). OS 2.0 adds a third: "Prophet X OS version 2.0 adds a new 32-voice
+  performance mode" (os_2_0 p. 3). Sixteen voices is a program parameter, `16Voices` in the program
+  table, 0 or 1 (guide p. 151); the 32-voice mode is entered by holding the 16 voice button down
+  (os_2_0 p. 4), and no table gives it a number. So `voicing_modes` holds 8, 16 and 32, and no
+  polyphony is recorded as the default.
+
+  SYSTEM EXCLUSIVE BOTH WAYS. The Prophet X answers a device inquiry, "always responds if 0vvvvvvv =
+  0111 1111" (guide p. 152), sends program, edit buffer, global and sample name dumps when asked
+  (guide pp. 153 and 154), and sends program, bank and playlist dumps from the Global menu (guide
+  p. 128). Every one of the eleven messages on pp. 152 to 155 starts `1111 0000`, and two also end
+  with it, in the place of the end of exclusive: the request for sample names (guide p. 153) and the
+  playlist dump (guide p. 155). The other nine end `1111 0111`. The program dump is "4096 bytes
+  expanded to 4683 MIDI bytes" (guide p. 154), and the page on the packing says "it takes 4690 MIDI
+  bytes to transmit 4683 Program data bytes." (guide p. 156), so the two disagree about what 4683
+  counts. And the global table speaks of "the global data sent and received on global parameter
+  dumps" (guide p. 147), where "The Global Parameters Data Dump is not recognized when received."
+  (guide p. 155).
+
+  NOT RECORDED, AND WHY: a MIDI mode, which no page names; a default for any global but Local
+  Control's and Mono/Stereo's, the two the Global Settings give (guide p. 124), which are recorded -
+  the third default the guide gives, "standard, chromatic western tuning." (guide p. 132), has no
+  number in the Alt. Tunings row, and Filter Pedal Mode's "default operation of controlling filter
+  cutoff" (guide p. 125) does not say which of its two filter settings, `LPF Full` or `LPF Half`;
+  and the polyphony default above.
+
+midi:
+  # "MIDI Channel: All, 1…16" (guide p. 140); All receives on every channel.
+  channels: [1, 16]
+  # Sent in master mode and received in the slave modes (guide p. 140).
+  clock: both
+  # Start and stop are received (guide p. 68), and no page says they are sent.
+  transport: receives
+  program_change:
+    # Received when MIDI Prog Enable is on (guide p. 141), and transmitted (guide p. 142), which the
+    # Global Settings put under the same switch (guide p. 123); see the account.
+    receives: true
+    sends: true
+    # The maker's count, the user and factory banks (guide p. 4); the four add-on banks are not in
+    # it.
+    presets: 1024
+  # "NRPNs are the preferred method of parameter transmission" (guide p. 140).
+  nrpn: preferred
+  # Device inquiry and dumps (guide pp. 152 to 155).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "Note number 0-127" (guide p. 141), received, and the same range transmitted (guide p. 142).
+  note_range: [0, 127]
+  # Eight voices in stereo, sixteen in mono and, since OS 2.0, thirty-two in the performance mode
+  # (guide p. 1) (os_2_0 p. 3). Sixteen is a program parameter (guide p. 151) and thirty-two is
+  # entered from the panel (os_2_0 p. 4), so no default is recorded.
+  voicing_modes: [8, 16, 32]
+  velocity:
+    # Note on both ways; note off received with its velocity ignored and sent with 0 (guide pp. 141
+    # and 142).
+    note_on: both
+    note_off: false
+  # Polyphonic key pressure received, as `sequential/prophet_5` records it; channel pressure is
+  # received and sent too (guide pp. 141 and 142).
+  aftertouch: poly
+  pitch_bend:
+    # Up and down set separately, up to 12 semitones each (guide p. 80), 0 to 12 in the program
+    # table (guide p. 151).
+    programmable: true
+
+groups:
+  # THE GUIDE'S CHAPTER 2 SECTIONS (guide pp. 14 to 85) and its Global Settings (guide pp. 122 to
+  # 128), assigned by the section that describes each parameter. Eleven controls no section
+  # describes are left ungrouped; one of them, Split Point, is described with the layers (guide
+  # p. 12), outside Chapter 2, and pictured in a menu in the Unison section (guide p. 74).
+  sample_playback: Sample Playback
+  oscillators: Oscillators
+  mixer: Mixer
+  filter: Filter
+  filter_envelope: Filter Envelope
+  amplifier_envelope: Amplifier Envelope
+  auxiliary_envelopes: Auxiliary Envelopes
+  lfos: Low Frequency Oscillators
+  modulation: Modulation
+  effects: Effects
+  arpeggiator: Arpeggiator
+  sequencer: Sequencer
+  clock: Clock
+  unison: Unison
+  volume: Master Volume/Program Volume
+  glide: Glide
+  voice_mode_16: 16-Voice Mode
+  wheels: Pitch and Mod Wheels
+  touch_sliders: Touch Sliders
+  globals: Global Settings
+
+controls:
+
+  # THE ADDITIONAL CC TABLE (guide p. 144), both ways when MIDI Param Send and Receive are set to
+  # CC.
+  mod_wheel:                              {label: Mod Wheel, cc: 1, group: wheels}
+  bpm:                                    {label: BPM, cc: 3, group: clock}
+  glide_mode:                             {label: Glide Mode, cc: 5, group: glide}
+  master_volume:                          {label: Master Volume, cc: 7, group: volume}
+  # No other page of the guide names a sub oscillator; see the account.
+  sub_oscillator:                         {label: Sub Oscillator, cc: 8}
+  # Described with the amplifier envelope, beside Prog Volume (guide p. 46).
+  pan_spread:                             {label: Pan Spread, cc: 10, group: amplifier_envelope}
+  voice_volume:                           {label: Voice Volume, cc: 12, group: volume}
+  # The transmitted list prints `Expression` against 0000 1101, which is 13; see the account.
+  ab_mode:                                {label: A/B Mode, cc: 13}
+  slider_1_position:                      {label: Slider 1 Position, cc: 14, group: touch_sliders}
+  slider_2_position:                      {label: Slider 2 Position, cc: 15, group: touch_sliders}
+  fx_1_on_off:                            {label: FX 1 On/Off, cc: 16, group: effects}
+  fx_1_select:                            {label: FX 1 Select, cc: 17, group: effects}
+  fx_1_mix:                               {label: FX 1 Mix, cc: 18, group: effects}
+  fx_1_param_1:                           {label: FX 1 Param 1, cc: 19, group: effects}
+  fx_1_param_2:                           {label: FX 1 Param 2, cc: 20, group: effects}
+  fx_1_param_3:                           {label: FX 1 Param 3, cc: 21, group: effects}
+  fx_2_on_off:                            {label: FX 2 On/Off, cc: 22, group: effects}
+  fx_2_select:                            {label: FX 2 Select, cc: 23, group: effects}
+  fx_2_mix:                               {label: FX 2 Mix, cc: 24, group: effects}
+  fx_2_param_1:                           {label: FX 2 Param 1, cc: 25, group: effects}
+  fx_2_param_2:                           {label: FX 2 Param 2, cc: 26, group: effects}
+  fx_2_param_3:                           {label: FX 2 Param 3, cc: 27, group: effects}
+  voice_mode_16:                          {label: "16 Voice Mode", cc: 28, group: voice_mode_16}
+  split_point:                            {label: Split Point, cc: 29}
+  bank_select:                            {label: Bank Select, cc: 32}
+  amp_env_amount:                         {label: Amp Env Amount, cc: 40, group: amplifier_envelope}
+  velocity_to_amp_env:                    {label: Velocity to Amp Env, cc: 41, group: amplifier_envelope}
+  amp_env_delay:                          {label: Amp Env Delay, cc: 42, group: amplifier_envelope}
+  amp_env_attack:                         {label: Amp Env Attack, cc: 43, group: amplifier_envelope}
+  amp_env_decay:                          {label: Amp Env Decay, cc: 44, group: amplifier_envelope}
+  amp_env_sustain:                        {label: Amp Env Sustain, cc: 45, group: amplifier_envelope}
+  amp_env_release:                        {label: Amp Env Release, cc: 46, group: amplifier_envelope}
+  filter_env_amount:                      {label: Filter Env Amount, cc: 47, group: filter_envelope}
+  velocity_to_filter_env:                 {label: Velocity to Filter Env, cc: 48, group: filter_envelope}
+  filter_env_delay:                       {label: Filter Env Delay, cc: 49, group: filter_envelope}
+  filter_env_attack:                      {label: Filter Env Attack, cc: 50, group: filter_envelope}
+  filter_env_decay:                       {label: Filter Env Decay, cc: 51, group: filter_envelope}
+  filter_env_sustain:                     {label: Filter Env Sustain, cc: 52, group: filter_envelope}
+  filter_env_release:                     {label: Filter Env Release, cc: 53, group: filter_envelope}
+  inst_1_glide_amount:                    {label: Inst. 1 Glide Amount, cc: 54, group: sample_playback}
+  inst_2_glide_amount:                    {label: Inst. 2 Glide Amount, cc: 55, group: sample_playback}
+  osc_1_glide_amount:                     {label: Osc 1 Glide Amount, cc: 56, group: oscillators}
+  osc_2_glide_amount:                     {label: Osc 2 Glide Amount, cc: 57, group: oscillators}
+  arpeggiator_on_off:                     {label: Arpeggiator On/Off, cc: 58, group: arpeggiator}
+  arpeggiator_mode:                       {label: Arpeggiator Mode, cc: 59, group: arpeggiator}
+  arpeggiator_range:                      {label: Arpeggiator Range, cc: 60, group: arpeggiator}
+  arpeggiator_relatch:                    {label: Arpeggiator Relatch, cc: 61, group: arpeggiator}
+  # Printed twice, `Clock Divide` both times (guide p. 144).
+  clock_divide:                           {label: Clock Divide, cc: 62, group: clock}
+  arpeggiator_repeats:                    {label: Arpeggiator Repeats, cc: 63, group: arpeggiator}
+  sustain_pedal:                          {label: Sustain Pedal, cc: 64}
+  glide_on_off:                           {label: Glide On/Off, cc: 65, group: glide}
+  inst_1_freq:                            {label: Inst 1 Freq, cc: 66, group: sample_playback}
+  inst_1_fine_tune:                       {label: Inst 1 Fine Tune, cc: 67, group: sample_playback}
+  inst_1_level:                           {label: Inst 1 Level, cc: 68, group: sample_playback}
+  inst1_pan:                              {label: Inst1Pan, cc: 69, group: sample_playback}
+  inst1_loop_on_off:                      {label: Inst1LoopOnOff, cc: 70, group: sample_playback}
+  inst1_reverse:                          {label: Inst1Reverse, cc: 71, group: sample_playback}
+  inst_2_freq:                            {label: Inst 2 Freq, cc: 72, group: sample_playback}
+  inst_2_fine_tune:                       {label: Inst 2 Fine Tune, cc: 73, group: sample_playback}
+  inst_2_level:                           {label: Inst 2 Level, cc: 75, group: sample_playback}
+  inst2_pan:                              {label: Inst2Pan, cc: 76, group: sample_playback}
+  inst2_loop_on_off:                      {label: Inst2LoopOnOff, cc: 77, group: sample_playback}
+  inst2_reverse:                          {label: Inst2Reverse, cc: 78, group: sample_playback}
+  osc_2_to_1_sync:                        {label: "Osc 2 -> 1 Sync", cc: 79, group: oscillators}
+  osc_1_freq:                             {label: Osc 1 Freq, cc: 80, group: oscillators}
+  osc_1_fine_freq:                        {label: Osc 1 Fine Freq, cc: 81, group: oscillators}
+  osc_1_level:                            {label: Osc 1 Level, cc: 82, group: oscillators}
+  osc_1_shape:                            {label: Osc 1 Shape, cc: 83, group: oscillators}
+  osc_1_shape_mod:                        {label: Osc 1 Shape Mod, cc: 84, group: oscillators}
+  osc1_pan:                               {label: Osc1Pan, cc: 85, group: oscillators}
+  osc_2_freq:                             {label: Osc 2 Freq, cc: 86, group: oscillators}
+  osc_2_fine_freq:                        {label: Osc 2 Fine Freq, cc: 87, group: oscillators}
+  osc_2_level:                            {label: Osc 2 Level, cc: 88, group: oscillators}
+  osc_2_shape:                            {label: Osc 2 Shape, cc: 89, group: oscillators}
+  osc_2_shape_mod:                        {label: Osc 2 Shape Mod, cc: 90, group: oscillators}
+  osc2_pan:                               {label: Osc2Pan, cc: 91, group: oscillators}
+  osc_slop:                               {label: OscSlop, cc: 92, group: oscillators}
+  hack:                                   {label: Hack, cc: 93, group: mixer}
+  decimate:                               {label: Decimate, cc: 94, group: mixer}
+  filter_frequency:                       {label: Filter Frequency, cc: 102, group: filter}
+  resonance:                              {label: Resonance, cc: 103, group: filter}
+  filter_key_amount:                      {label: Filter Key Amount, cc: 104, group: filter}
+  filter_drive:                           {label: Filter Drive, cc: 105, group: filter}
+  lowpass_stereo_split:                   {label: LowpassStereoSplit, cc: 106, group: filter}
+  unison_on_off:                          {label: Unison On/Off, cc: 116, group: unison}
+  unison_detune:                          {label: Unison Detune, cc: 117, group: unison}
+  unison_mode:                            {label: Unison Mode, cc: 118, group: unison}
+
+  # THREE MORE OFF THE RECEIVED AND TRANSMITTED CONTROLLER LISTS (guide pp. 142 and 143).
+  foot_controller:                        {label: Foot Controller, cc: 4}
+  brightness:                             {label: Brightness, cc: 74}
+  # Transmitted `When assigned to Pedal/CV` (guide p. 143), and not on the received list (guide
+  # p. 142), though the Global Settings name Breath among the controllers MIDI Control Enable lets
+  # the synth respond to (guide p. 123). A modulation source (guide p. 55).
+  breath_controller:                      {label: Breath Controller, cc: 2, direction: transmits, group: modulation}
+
+  # THE PROGRAM TABLE (guide pp. 148 to 151): each row twice, layer A and layer B, 2048 apart.
+  inst1_freq_layer_a:                     {label: "Inst1Freq, layer A", nrpn: 0, range: [0, 120], group: sample_playback}
+  inst1_freq_layer_b:                     {label: "Inst1Freq, layer B", nrpn: 2048, range: [0, 120], group: sample_playback}
+  inst1_freq_fine_layer_a:                {label: "Inst1FreqFine, layer A", nrpn: 1, range: [0, 100], group: sample_playback}
+  inst1_freq_fine_layer_b:                {label: "Inst1FreqFine, layer B", nrpn: 2049, range: [0, 100], group: sample_playback}
+  inst1_level_layer_a:                    {label: "Inst1Level, layer A", nrpn: 2, range: [0, 127], group: sample_playback}
+  inst1_level_layer_b:                    {label: "Inst1Level, layer B", nrpn: 2050, range: [0, 127], group: sample_playback}
+  inst1_key_on_off_layer_a:               {label: "Inst1KeyOnOff, layer A", nrpn: 4, range: [0, 1], group: sample_playback}
+  inst1_key_on_off_layer_b:               {label: "Inst1KeyOnOff, layer B", nrpn: 2052, range: [0, 1], group: sample_playback}
+  inst1_loop_on_off_layer_a:              {label: "Inst1LoopOnOff, layer A", nrpn: 5, range: [0, 1], group: sample_playback}
+  inst1_loop_on_off_layer_b:              {label: "Inst1LoopOnOff, layer B", nrpn: 2053, range: [0, 1], group: sample_playback}
+  inst1_loop_mode_layer_a:                {label: "Inst1LoopMode, layer A", nrpn: 6, range: [0, 2], group: sample_playback}
+  inst1_loop_mode_layer_b:                {label: "Inst1LoopMode, layer B", nrpn: 2054, range: [0, 2], group: sample_playback}
+  inst1_start_layer_a:                    {label: "Inst1Start, layer A", nrpn: 7, range: [0, 999], group: sample_playback}
+  inst1_start_layer_b:                    {label: "Inst1Start, layer B", nrpn: 2055, range: [0, 999], group: sample_playback}
+  inst1_end_layer_a:                      {label: "Inst1End, layer A", nrpn: 9, range: [0, 999], group: sample_playback}
+  inst1_end_layer_b:                      {label: "Inst1End, layer B", nrpn: 2057, range: [0, 999], group: sample_playback}
+  inst1_size_layer_a:                     {label: "Inst1Size, layer A", nrpn: 11, range: [0, 999], group: sample_playback}
+  inst1_size_layer_b:                     {label: "Inst1Size, layer B", nrpn: 2059, range: [0, 999], group: sample_playback}
+  inst1_pitched_size_layer_a:             {label: "Inst1PitchedSize, layer A", nrpn: 13, range: [0, 999], group: sample_playback}
+  inst1_pitched_size_layer_b:             {label: "Inst1PitchedSize, layer B", nrpn: 2061, range: [0, 999], group: sample_playback}
+  inst1_center_layer_a:                   {label: "Inst1Center, layer A", nrpn: 15, range: [0, 999], group: sample_playback}
+  inst1_center_layer_b:                   {label: "Inst1Center, layer B", nrpn: 2063, range: [0, 999], group: sample_playback}
+  inst1_edit_sample_layer_a:              {label: "Inst1EditSample, layer A", nrpn: 17, range: [0, 1], group: sample_playback}
+  inst1_edit_sample_layer_b:              {label: "Inst1EditSample, layer B", nrpn: 2065, range: [0, 1], group: sample_playback}
+  inst1_stretch_on_layer_a:               {label: "Inst1StretchOn, layer A", nrpn: 18, range: [0, 1], group: sample_playback}
+  inst1_stretch_on_layer_b:               {label: "Inst1StretchOn, layer B", nrpn: 2066, range: [0, 1], group: sample_playback}
+  inst1_stretch_vel_layer_a:              {label: "Inst1StretchVel, layer A", nrpn: 19, range: [0, 127], group: sample_playback}
+  inst1_stretch_vel_layer_b:              {label: "Inst1StretchVel, layer B", nrpn: 2067, range: [0, 127], group: sample_playback}
+  inst1_stretch_note_layer_a:             {label: "Inst1StretchNote, layer A", nrpn: 20, range: [0, 127], group: sample_playback}
+  inst1_stretch_note_layer_b:             {label: "Inst1StretchNote, layer B", nrpn: 2068, range: [0, 127], group: sample_playback}
+  inst1_glide_rate_layer_a:               {label: "Inst1GlideRate, layer A", nrpn: 24, range: [0, 127], group: sample_playback}
+  inst1_glide_rate_layer_b:               {label: "Inst1GlideRate, layer B", nrpn: 2072, range: [0, 127], group: sample_playback}
+  inst1_reverse_layer_a:                  {label: "Inst1Reverse, layer A", nrpn: 25, range: [0, 1], group: sample_playback}
+  inst1_reverse_layer_b:                  {label: "Inst1Reverse, layer B", nrpn: 2073, range: [0, 1], group: sample_playback}
+  inst1_filter_tone_layer_a:              {label: "Inst1Filter(Tone), layer A", nrpn: 26, range: [0, 127], group: sample_playback}
+  inst1_filter_tone_layer_b:              {label: "Inst1Filter(Tone), layer B", nrpn: 2074, range: [0, 127], group: sample_playback}
+  inst1_sample_vel_layer_a:               {label: "Inst1SampleVel, layer A", nrpn: 28, range: [0, 1], group: sample_playback}
+  inst1_sample_vel_layer_b:               {label: "Inst1SampleVel, layer B", nrpn: 2076, range: [0, 1], group: sample_playback}
+  inst1_sync_size_layer_a:                {label: "Inst1SyncSize, layer A", nrpn: 29, range: [0, 15], group: sample_playback}
+  inst1_sync_size_layer_b:                {label: "Inst1SyncSize, layer B", nrpn: 2077, range: [0, 15], group: sample_playback}
+  inst1_x_fade_rate_layer_a:              {label: "Inst1XFadeRate, layer A", nrpn: 31, range: [0, 255], group: sample_playback}
+  inst1_x_fade_rate_layer_b:              {label: "Inst1XFadeRate, layer B", nrpn: 2079, range: [0, 255], group: sample_playback}
+  inst1_pan_layer_a:                      {label: "Inst1Pan, layer A", nrpn: 32, range: [0, 127], group: sample_playback}
+  inst1_pan_layer_b:                      {label: "Inst1Pan, layer B", nrpn: 2080, range: [0, 127], group: sample_playback}
+  inst1_bypass_layer_a:                   {label: "Inst1Bypass, layer A", nrpn: 33, range: [0, 1], group: sample_playback}
+  inst1_bypass_layer_b:                   {label: "Inst1Bypass, layer B", nrpn: 2081, range: [0, 1], group: sample_playback}
+  inst1_select_layer_a:                   {label: "Inst1Select, layer A", nrpn: 35, range: [0, 99], group: sample_playback}
+  inst1_select_layer_b:                   {label: "Inst1Select, layer B", nrpn: 2083, range: [0, 99], group: sample_playback}
+  inst1_category_layer_a:                 {label: "Inst1Category, layer A", nrpn: 36, range: [0, 16], group: sample_playback}
+  inst1_category_layer_b:                 {label: "Inst1Category, layer B", nrpn: 2084, range: [0, 16], group: sample_playback}
+  inst2_freq_layer_a:                     {label: "Inst2Freq, layer A", nrpn: 65, range: [0, 120], group: sample_playback}
+  inst2_freq_layer_b:                     {label: "Inst2Freq, layer B", nrpn: 2113, range: [0, 120], group: sample_playback}
+  inst2_freq_fine_layer_a:                {label: "Inst2FreqFine, layer A", nrpn: 66, range: [0, 100], group: sample_playback}
+  inst2_freq_fine_layer_b:                {label: "Inst2FreqFine, layer B", nrpn: 2114, range: [0, 100], group: sample_playback}
+  inst2_level_layer_a:                    {label: "Inst2Level, layer A", nrpn: 67, range: [0, 127], group: sample_playback}
+  inst2_level_layer_b:                    {label: "Inst2Level, layer B", nrpn: 2115, range: [0, 127], group: sample_playback}
+  inst2_key_on_off_layer_a:               {label: "Inst2KeyOnOff, layer A", nrpn: 69, range: [0, 1], group: sample_playback}
+  inst2_key_on_off_layer_b:               {label: "Inst2KeyOnOff, layer B", nrpn: 2117, range: [0, 1], group: sample_playback}
+  inst2_loop_on_off_layer_a:              {label: "Inst2LoopOnOff, layer A", nrpn: 70, range: [0, 1], group: sample_playback}
+  inst2_loop_on_off_layer_b:              {label: "Inst2LoopOnOff, layer B", nrpn: 2118, range: [0, 1], group: sample_playback}
+  inst2_loop_mode_layer_a:                {label: "Inst2LoopMode, layer A", nrpn: 71, range: [0, 2], group: sample_playback}
+  inst2_loop_mode_layer_b:                {label: "Inst2LoopMode, layer B", nrpn: 2119, range: [0, 2], group: sample_playback}
+  inst2_start_layer_a:                    {label: "Inst2Start, layer A", nrpn: 72, range: [0, 999], group: sample_playback}
+  inst2_start_layer_b:                    {label: "Inst2Start, layer B", nrpn: 2120, range: [0, 999], group: sample_playback}
+  inst2_end_layer_a:                      {label: "Inst2End, layer A", nrpn: 74, range: [0, 999], group: sample_playback}
+  inst2_end_layer_b:                      {label: "Inst2End, layer B", nrpn: 2122, range: [0, 999], group: sample_playback}
+  inst2_size_layer_a:                     {label: "Inst2Size, layer A", nrpn: 76, range: [0, 999], group: sample_playback}
+  inst2_size_layer_b:                     {label: "Inst2Size, layer B", nrpn: 2124, range: [0, 999], group: sample_playback}
+  inst2_pitched_size_layer_a:             {label: "Inst2PitchedSize, layer A", nrpn: 78, range: [0, 999], group: sample_playback}
+  inst2_pitched_size_layer_b:             {label: "Inst2PitchedSize, layer B", nrpn: 2126, range: [0, 999], group: sample_playback}
+  inst2_center_layer_a:                   {label: "Inst2Center, layer A", nrpn: 80, range: [0, 999], group: sample_playback}
+  inst2_center_layer_b:                   {label: "Inst2Center, layer B", nrpn: 2128, range: [0, 999], group: sample_playback}
+  inst2_edit_sample_layer_a:              {label: "Inst2EditSample, layer A", nrpn: 82, range: [0, 1], group: sample_playback}
+  inst2_edit_sample_layer_b:              {label: "Inst2EditSample, layer B", nrpn: 2130, range: [0, 1], group: sample_playback}
+  inst2_stretch_on_layer_a:               {label: "Inst2StretchOn, layer A", nrpn: 83, range: [0, 1], group: sample_playback}
+  inst2_stretch_on_layer_b:               {label: "Inst2StretchOn, layer B", nrpn: 2131, range: [0, 1], group: sample_playback}
+  inst2_stretch_vel_layer_a:              {label: "Inst2StretchVel, layer A", nrpn: 84, range: [0, 127], group: sample_playback}
+  inst2_stretch_vel_layer_b:              {label: "Inst2StretchVel, layer B", nrpn: 2132, range: [0, 127], group: sample_playback}
+  inst2_stretch_note_layer_a:             {label: "Inst2StretchNote, layer A", nrpn: 85, range: [0, 127], group: sample_playback}
+  inst2_stretch_note_layer_b:             {label: "Inst2StretchNote, layer B", nrpn: 2133, range: [0, 127], group: sample_playback}
+  inst2_glide_rate_layer_a:               {label: "Inst2GlideRate, layer A", nrpn: 89, range: [0, 127], group: sample_playback}
+  inst2_glide_rate_layer_b:               {label: "Inst2GlideRate, layer B", nrpn: 2137, range: [0, 127], group: sample_playback}
+  inst2_reverse_layer_a:                  {label: "Inst2Reverse, layer A", nrpn: 90, range: [0, 1], group: sample_playback}
+  inst2_reverse_layer_b:                  {label: "Inst2Reverse, layer B", nrpn: 2138, range: [0, 1], group: sample_playback}
+  inst2_filter_tone_layer_a:              {label: "Inst2Filter(Tone), layer A", nrpn: 91, range: [0, 127], group: sample_playback}
+  inst2_filter_tone_layer_b:              {label: "Inst2Filter(Tone), layer B", nrpn: 2139, range: [0, 127], group: sample_playback}
+  inst2_sample_vel_layer_a:               {label: "Inst2SampleVel, layer A", nrpn: 93, range: [0, 1], group: sample_playback}
+  inst2_sample_vel_layer_b:               {label: "Inst2SampleVel, layer B", nrpn: 2141, range: [0, 1], group: sample_playback}
+  inst2_sync_size_layer_a:                {label: "Inst2SyncSize, layer A", nrpn: 94, range: [0, 15], group: sample_playback}
+  inst2_sync_size_layer_b:                {label: "Inst2SyncSize, layer B", nrpn: 2142, range: [0, 15], group: sample_playback}
+  inst2_x_fade_rate_layer_a:              {label: "Inst2XFadeRate, layer A", nrpn: 96, range: [0, 255], group: sample_playback}
+  inst2_x_fade_rate_layer_b:              {label: "Inst2XFadeRate, layer B", nrpn: 2144, range: [0, 255], group: sample_playback}
+  inst2_pan_layer_a:                      {label: "Inst2Pan, layer A", nrpn: 97, range: [0, 127], group: sample_playback}
+  inst2_pan_layer_b:                      {label: "Inst2Pan, layer B", nrpn: 2145, range: [0, 127], group: sample_playback}
+  inst2_bypass_layer_a:                   {label: "Inst2Bypass, layer A", nrpn: 98, range: [0, 1], group: sample_playback}
+  inst2_bypass_layer_b:                   {label: "Inst2Bypass, layer B", nrpn: 2146, range: [0, 1], group: sample_playback}
+  inst2_select_layer_a:                   {label: "Inst2Select, layer A", nrpn: 100, range: [0, 99], group: sample_playback}
+  inst2_select_layer_b:                   {label: "Inst2Select, layer B", nrpn: 2148, range: [0, 99], group: sample_playback}
+  inst2_category_layer_a:                 {label: "Inst2Category, layer A", nrpn: 101, range: [0, 16], group: sample_playback}
+  inst2_category_layer_b:                 {label: "Inst2Category, layer B", nrpn: 2149, range: [0, 16], group: sample_playback}
+  osc1_freq_layer_a:                      {label: "Osc1Freq, layer A", nrpn: 135, range: [0, 120], group: oscillators}
+  osc1_freq_layer_b:                      {label: "Osc1Freq, layer B", nrpn: 2183, range: [0, 120], group: oscillators}
+  osc1_fine_freq_layer_a:                 {label: "Osc1FineFreq, layer A", nrpn: 136, range: [0, 100], group: oscillators}
+  osc1_fine_freq_layer_b:                 {label: "Osc1FineFreq, layer B", nrpn: 2184, range: [0, 100], group: oscillators}
+  osc1_level_layer_a:                     {label: "Osc1Level, layer A", nrpn: 137, range: [0, 127], group: oscillators}
+  osc1_level_layer_b:                     {label: "Osc1Level, layer B", nrpn: 2185, range: [0, 127], group: oscillators}
+  osc1_shape_layer_a:                     {label: "Osc1Shape, layer A", nrpn: 138, range: [0, 4], group: oscillators}
+  osc1_shape_layer_b:                     {label: "Osc1Shape, layer B", nrpn: 2186, range: [0, 4], group: oscillators}
+  osc1_shape_mod_layer_a:                 {label: "Osc1ShapeMod, layer A", nrpn: 139, range: [0, 127], group: oscillators}
+  osc1_shape_mod_layer_b:                 {label: "Osc1ShapeMod, layer B", nrpn: 2187, range: [0, 127], group: oscillators}
+  osc1_glide_rate_layer_a:                {label: "Osc1GlideRate, layer A", nrpn: 140, range: [0, 127], group: oscillators}
+  osc1_glide_rate_layer_b:                {label: "Osc1GlideRate, layer B", nrpn: 2188, range: [0, 127], group: oscillators}
+  osc1_note_reset_layer_a:                {label: "Osc1NoteReset, layer A", nrpn: 141, range: [0, 1], group: oscillators}
+  osc1_note_reset_layer_b:                {label: "Osc1NoteReset, layer B", nrpn: 2189, range: [0, 1], group: oscillators}
+  osc1_key_on_off_layer_a:                {label: "Osc1KeyOnOff, layer A", nrpn: 142, range: [0, 1], group: oscillators}
+  osc1_key_on_off_layer_b:                {label: "Osc1KeyOnOff, layer B", nrpn: 2190, range: [0, 1], group: oscillators}
+  osc1_pan_layer_a:                       {label: "Osc1Pan, layer A", nrpn: 143, range: [0, 127], group: oscillators}
+  osc1_pan_layer_b:                       {label: "Osc1Pan, layer B", nrpn: 2191, range: [0, 127], group: oscillators}
+  osc2_freq_layer_a:                      {label: "Osc2Freq, layer A", nrpn: 148, range: [0, 120], group: oscillators}
+  osc2_freq_layer_b:                      {label: "Osc2Freq, layer B", nrpn: 2196, range: [0, 120], group: oscillators}
+  osc2_fine_freq_layer_a:                 {label: "Osc2FineFreq, layer A", nrpn: 149, range: [0, 100], group: oscillators}
+  osc2_fine_freq_layer_b:                 {label: "Osc2FineFreq, layer B", nrpn: 2197, range: [0, 100], group: oscillators}
+  osc2_level_layer_a:                     {label: "Osc2Level, layer A", nrpn: 150, range: [0, 127], group: oscillators}
+  osc2_level_layer_b:                     {label: "Osc2Level, layer B", nrpn: 2198, range: [0, 127], group: oscillators}
+  osc2_shape_layer_a:                     {label: "Osc2Shape, layer A", nrpn: 151, range: [0, 4], group: oscillators}
+  osc2_shape_layer_b:                     {label: "Osc2Shape, layer B", nrpn: 2199, range: [0, 4], group: oscillators}
+  osc2_shape_mod_layer_a:                 {label: "Osc2ShapeMod, layer A", nrpn: 152, range: [0, 127], group: oscillators}
+  osc2_shape_mod_layer_b:                 {label: "Osc2ShapeMod, layer B", nrpn: 2200, range: [0, 127], group: oscillators}
+  osc2_glide_rate_layer_a:                {label: "Osc2GlideRate, layer A", nrpn: 153, range: [0, 127], group: oscillators}
+  osc2_glide_rate_layer_b:                {label: "Osc2GlideRate, layer B", nrpn: 2201, range: [0, 127], group: oscillators}
+  osc2_note_reset_layer_a:                {label: "Osc2NoteReset, layer A", nrpn: 154, range: [0, 1], group: oscillators}
+  osc2_note_reset_layer_b:                {label: "Osc2NoteReset, layer B", nrpn: 2202, range: [0, 1], group: oscillators}
+  osc2_key_on_off_layer_a:                {label: "Osc2KeyOnOff, layer A", nrpn: 155, range: [0, 1], group: oscillators}
+  osc2_key_on_off_layer_b:                {label: "Osc2KeyOnOff, layer B", nrpn: 2203, range: [0, 1], group: oscillators}
+  osc2_pan_layer_a:                       {label: "Osc2Pan, layer A", nrpn: 156, range: [0, 127], group: oscillators}
+  osc2_pan_layer_b:                       {label: "Osc2Pan, layer B", nrpn: 2204, range: [0, 127], group: oscillators}
+  osc_slop_layer_a:                       {label: "OscSlop, layer A", nrpn: 161, range: [0, 127], group: oscillators}
+  osc_slop_layer_b:                       {label: "OscSlop, layer B", nrpn: 2209, range: [0, 127], group: oscillators}
+  osc_2_to_1_sync_layer_a:                {label: "Osc21Sync, layer A", nrpn: 162, range: [0, 1], group: oscillators}
+  osc_2_to_1_sync_layer_b:                {label: "Osc21Sync, layer B", nrpn: 2210, range: [0, 1], group: oscillators}
+  hack_layer_a:                           {label: "Hack, layer A", nrpn: 167, range: [0, 15], group: mixer}
+  hack_layer_b:                           {label: "Hack, layer B", nrpn: 2215, range: [0, 15], group: mixer}
+  decimate_layer_a:                       {label: "Decimate, layer A", nrpn: 168, range: [0, 127], group: mixer}
+  decimate_layer_b:                       {label: "Decimate, layer B", nrpn: 2216, range: [0, 127], group: mixer}
+  glide_on_off_layer_a:                   {label: "GlideOnOff, layer A", nrpn: 169, range: [0, 1], group: glide}
+  glide_on_off_layer_b:                   {label: "GlideOnOff, layer B", nrpn: 2217, range: [0, 1], group: glide}
+  glide_mode_layer_a:                     {label: "GlideMode, layer A", nrpn: 170, range: [0, 3], group: glide}
+  glide_mode_layer_b:                     {label: "GlideMode, layer B", nrpn: 2218, range: [0, 3], group: glide}
+  lowpass_freq_layer_a:                   {label: "LowpassFreq, layer A", nrpn: 172, range: [0, 164], group: filter}
+  lowpass_freq_layer_b:                   {label: "LowpassFreq, layer B", nrpn: 2220, range: [0, 164], group: filter}
+  lowpass_resonance_layer_a:              {label: "LowpassResonance, layer A", nrpn: 173, range: [0, 255], group: filter}
+  lowpass_resonance_layer_b:              {label: "LowpassResonance, layer B", nrpn: 2221, range: [0, 255], group: filter}
+  lowpass_drive_layer_a:                  {label: "LowpassDrive, layer A", nrpn: 174, range: [0, 127], group: filter}
+  lowpass_drive_layer_b:                  {label: "LowpassDrive, layer B", nrpn: 2222, range: [0, 127], group: filter}
+  lowpass_key_amount_layer_a:             {label: "LowpassKeyAmount, layer A", nrpn: 175, range: [0, 127], group: filter}
+  lowpass_key_amount_layer_b:             {label: "LowpassKeyAmount, layer B", nrpn: 2223, range: [0, 127], group: filter}
+  lowpass_stereo_split_layer_a:           {label: "LowpassStereoSplit, layer A", nrpn: 176, range: [0, 164], group: filter}
+  lowpass_stereo_split_layer_b:           {label: "LowpassStereoSplit, layer B", nrpn: 2224, range: [0, 164], group: filter}
+  program_volume_layer_a:                 {label: "Program Volume, layer A", nrpn: 180, range: [0, 127], group: volume}
+  program_volume_layer_b:                 {label: "Program Volume, layer B", nrpn: 2228, range: [0, 127], group: volume}
+  pan_spread_layer_a:                     {label: "PanSpread, layer A", nrpn: 181, range: [0, 127], group: amplifier_envelope}
+  pan_spread_layer_b:                     {label: "PanSpread, layer B", nrpn: 2229, range: [0, 127], group: amplifier_envelope}
+  fx1_on_off_layer_a:                     {label: "FX1OnOff, layer A", nrpn: 182, range: [0, 1], group: effects}
+  fx1_on_off_layer_b:                     {label: "FX1OnOff, layer B", nrpn: 2230, range: [0, 1], group: effects}
+  fx1_select_layer_a:                     {label: "FX1Select, layer A", nrpn: 183, range: [0, 12], group: effects}
+  fx1_select_layer_b:                     {label: "FX1Select, layer B", nrpn: 2231, range: [0, 12], group: effects}
+  fx1_mix_layer_a:                        {label: "FX1Mix, layer A", nrpn: 184, range: [0, 127], group: effects}
+  fx1_mix_layer_b:                        {label: "FX1Mix, layer B", nrpn: 2232, range: [0, 127], group: effects}
+  fx1_param1_layer_a:                     {label: "FX1Param1, layer A", nrpn: 185, range: [0, 255], group: effects}
+  fx1_param1_layer_b:                     {label: "FX1Param1, layer B", nrpn: 2233, range: [0, 255], group: effects}
+  fx1_param2_layer_a:                     {label: "FX1Param2, layer A", nrpn: 186, range: [0, 255], group: effects}
+  fx1_param2_layer_b:                     {label: "FX1Param2, layer B", nrpn: 2234, range: [0, 255], group: effects}
+  fx1_param3_layer_a:                     {label: "FX1Param3, layer A", nrpn: 187, range: [0, 255], group: effects}
+  fx1_param3_layer_b:                     {label: "FX1Param3, layer B", nrpn: 2235, range: [0, 255], group: effects}
+  fx1_sync_layer_a:                       {label: "FX1Sync, layer A", nrpn: 188, range: [0, 1], group: effects}
+  fx1_sync_layer_b:                       {label: "FX1Sync, layer B", nrpn: 2236, range: [0, 1], group: effects}
+  fx1_sync_rate_layer_a:                  {label: "FX1SyncRate, layer A", nrpn: 189, range: [0, 10], group: effects}
+  fx1_sync_rate_layer_b:                  {label: "FX1SyncRate, layer B", nrpn: 2237, range: [0, 10], group: effects}
+  fx2_on_off_layer_a:                     {label: "FX2OnOff, layer A", nrpn: 192, range: [0, 1], group: effects}
+  fx2_on_off_layer_b:                     {label: "FX2OnOff, layer B", nrpn: 2240, range: [0, 1], group: effects}
+  fx2_select_layer_a:                     {label: "FX2Select, layer A", nrpn: 193, range: [0, 12], group: effects}
+  fx2_select_layer_b:                     {label: "FX2Select, layer B", nrpn: 2241, range: [0, 12], group: effects}
+  fx2_mix_layer_a:                        {label: "FX2Mix, layer A", nrpn: 194, range: [0, 127], group: effects}
+  fx2_mix_layer_b:                        {label: "FX2Mix, layer B", nrpn: 2242, range: [0, 127], group: effects}
+  fx2_param1_layer_a:                     {label: "FX2Param1, layer A", nrpn: 195, range: [0, 255], group: effects}
+  fx2_param1_layer_b:                     {label: "FX2Param1, layer B", nrpn: 2243, range: [0, 255], group: effects}
+  fx2_param2_layer_a:                     {label: "FX2Param2, layer A", nrpn: 196, range: [0, 255], group: effects}
+  fx2_param2_layer_b:                     {label: "FX2Param2, layer B", nrpn: 2244, range: [0, 255], group: effects}
+  fx2_param3_layer_a:                     {label: "FX2Param3, layer A", nrpn: 197, range: [0, 255], group: effects}
+  fx2_param3_layer_b:                     {label: "FX2Param3, layer B", nrpn: 2245, range: [0, 255], group: effects}
+  fx2_sync_layer_a:                       {label: "FX2Sync, layer A", nrpn: 198, range: [0, 1], group: effects}
+  fx2_sync_layer_b:                       {label: "FX2Sync, layer B", nrpn: 2246, range: [0, 1], group: effects}
+  fx2_sync_rate_layer_a:                  {label: "FX2SyncRate, layer A", nrpn: 199, range: [0, 10], group: effects}
+  fx2_sync_rate_layer_b:                  {label: "FX2SyncRate, layer B", nrpn: 2247, range: [0, 10], group: effects}
+  env_filter_amt_layer_a:                 {label: "EnvFilterAmt, layer A", nrpn: 202, range: [0, 254], group: filter_envelope}
+  env_filter_amt_layer_b:                 {label: "EnvFilterAmt, layer B", nrpn: 2250, range: [0, 254], group: filter_envelope}
+  env_filter_vel_on_off_layer_a:          {label: "EnvFilterVelOn/Off, layer A", nrpn: 203, range: [0, 1], group: filter_envelope}
+  env_filter_vel_on_off_layer_b:          {label: "EnvFilterVelOn/Off, layer B", nrpn: 2251, range: [0, 1], group: filter_envelope}
+  env_filter_delay_layer_a:               {label: "EnvFilterDelay, layer A", nrpn: 204, range: [0, 127], group: filter_envelope}
+  env_filter_delay_layer_b:               {label: "EnvFilterDelay, layer B", nrpn: 2252, range: [0, 127], group: filter_envelope}
+  env_filter_att_layer_a:                 {label: "EnvFilterAtt, layer A", nrpn: 205, range: [0, 127], group: filter_envelope}
+  env_filter_att_layer_b:                 {label: "EnvFilterAtt, layer B", nrpn: 2253, range: [0, 127], group: filter_envelope}
+  env_filter_dec_layer_a:                 {label: "EnvFilterDec, layer A", nrpn: 206, range: [0, 127], group: filter_envelope}
+  env_filter_dec_layer_b:                 {label: "EnvFilterDec, layer B", nrpn: 2254, range: [0, 127], group: filter_envelope}
+  env_filter_sus_layer_a:                 {label: "EnvFilterSus, layer A", nrpn: 207, range: [0, 127], group: filter_envelope}
+  env_filter_sus_layer_b:                 {label: "EnvFilterSus, layer B", nrpn: 2255, range: [0, 127], group: filter_envelope}
+  env_filter_rel_layer_a:                 {label: "EnvFilterRel, layer A", nrpn: 208, range: [0, 127], group: filter_envelope}
+  env_filter_rel_layer_b:                 {label: "EnvFilterRel, layer B", nrpn: 2256, range: [0, 127], group: filter_envelope}
+  env_filter_loop_on_off_layer_a:         {label: "EnvFilterLoopOn/Off, layer A", nrpn: 209, range: [0, 1], group: filter_envelope}
+  env_filter_loop_on_off_layer_b:         {label: "EnvFilterLoopOn/Off, layer B", nrpn: 2257, range: [0, 1], group: filter_envelope}
+  env_vca_amt_layer_a:                    {label: "EnvVCAAmt, layer A", nrpn: 214, range: [0, 127], group: amplifier_envelope}
+  env_vca_amt_layer_b:                    {label: "EnvVCAAmt, layer B", nrpn: 2262, range: [0, 127], group: amplifier_envelope}
+  env_vca_vel_on_off_layer_a:             {label: "EnvVCAVelOn/Off, layer A", nrpn: 215, range: [0, 1], group: amplifier_envelope}
+  env_vca_vel_on_off_layer_b:             {label: "EnvVCAVelOn/Off, layer B", nrpn: 2263, range: [0, 1], group: amplifier_envelope}
+  env_vca_delay_layer_a:                  {label: "EnvVCADelay, layer A", nrpn: 216, range: [0, 127], group: amplifier_envelope}
+  env_vca_delay_layer_b:                  {label: "EnvVCADelay, layer B", nrpn: 2264, range: [0, 127], group: amplifier_envelope}
+  env_vca_att_layer_a:                    {label: "EnvVCAAtt, layer A", nrpn: 217, range: [0, 127], group: amplifier_envelope}
+  env_vca_att_layer_b:                    {label: "EnvVCAAtt, layer B", nrpn: 2265, range: [0, 127], group: amplifier_envelope}
+  env_vca_dec_layer_a:                    {label: "EnvVCADec, layer A", nrpn: 218, range: [0, 127], group: amplifier_envelope}
+  env_vca_dec_layer_b:                    {label: "EnvVCADec, layer B", nrpn: 2266, range: [0, 127], group: amplifier_envelope}
+  env_vca_sus_layer_a:                    {label: "EnvVCASus, layer A", nrpn: 219, range: [0, 127], group: amplifier_envelope}
+  env_vca_sus_layer_b:                    {label: "EnvVCASus, layer B", nrpn: 2267, range: [0, 127], group: amplifier_envelope}
+  env_vca_rel_layer_a:                    {label: "EnvVCARel, layer A", nrpn: 220, range: [0, 127], group: amplifier_envelope}
+  env_vca_rel_layer_b:                    {label: "EnvVCARel, layer B", nrpn: 2268, range: [0, 127], group: amplifier_envelope}
+  env_vca_loop_on_off_layer_a:            {label: "EnvVCALoopOn/Off, layer A", nrpn: 221, range: [0, 1], group: amplifier_envelope}
+  env_vca_loop_on_off_layer_b:            {label: "EnvVCALoopOn/Off, layer B", nrpn: 2269, range: [0, 1], group: amplifier_envelope}
+  env3_amt_layer_a:                       {label: "Env3Amt, layer A", nrpn: 226, range: [0, 254], group: auxiliary_envelopes}
+  env3_amt_layer_b:                       {label: "Env3Amt, layer B", nrpn: 2274, range: [0, 254], group: auxiliary_envelopes}
+  env3_vel_on_off_layer_a:                {label: "Env3VelOn/Off, layer A", nrpn: 227, range: [0, 1], group: auxiliary_envelopes}
+  env3_vel_on_off_layer_b:                {label: "Env3VelOn/Off, layer B", nrpn: 2275, range: [0, 1], group: auxiliary_envelopes}
+  env3_delay_layer_a:                     {label: "Env3Delay, layer A", nrpn: 228, range: [0, 127], group: auxiliary_envelopes}
+  env3_delay_layer_b:                     {label: "Env3Delay, layer B", nrpn: 2276, range: [0, 127], group: auxiliary_envelopes}
+  env3_att_layer_a:                       {label: "Env3Att, layer A", nrpn: 229, range: [0, 127], group: auxiliary_envelopes}
+  env3_att_layer_b:                       {label: "Env3Att, layer B", nrpn: 2277, range: [0, 127], group: auxiliary_envelopes}
+  env3_dec_layer_a:                       {label: "Env3Dec, layer A", nrpn: 230, range: [0, 127], group: auxiliary_envelopes}
+  env3_dec_layer_b:                       {label: "Env3Dec, layer B", nrpn: 2278, range: [0, 127], group: auxiliary_envelopes}
+  env3_sus_layer_a:                       {label: "Env3Sus, layer A", nrpn: 231, range: [0, 127], group: auxiliary_envelopes}
+  env3_sus_layer_b:                       {label: "Env3Sus, layer B", nrpn: 2279, range: [0, 127], group: auxiliary_envelopes}
+  env3_rel_layer_a:                       {label: "Env3Rel, layer A", nrpn: 232, range: [0, 127], group: auxiliary_envelopes}
+  env3_rel_layer_b:                       {label: "Env3Rel, layer B", nrpn: 2280, range: [0, 127], group: auxiliary_envelopes}
+  env3_loop_on_off_layer_a:               {label: "Env3LoopOn/Off, layer A", nrpn: 233, range: [0, 1], group: auxiliary_envelopes}
+  env3_loop_on_off_layer_b:               {label: "Env3LoopOn/Off, layer B", nrpn: 2281, range: [0, 1], group: auxiliary_envelopes}
+  env4_amt_layer_a:                       {label: "Env4Amt, layer A", nrpn: 238, range: [0, 254], group: auxiliary_envelopes}
+  env4_amt_layer_b:                       {label: "Env4Amt, layer B", nrpn: 2286, range: [0, 254], group: auxiliary_envelopes}
+  env4_vel_on_off_layer_a:                {label: "Env4VelOn/Off, layer A", nrpn: 239, range: [0, 1], group: auxiliary_envelopes}
+  env4_vel_on_off_layer_b:                {label: "Env4VelOn/Off, layer B", nrpn: 2287, range: [0, 1], group: auxiliary_envelopes}
+  env4_delay_layer_a:                     {label: "Env4Delay, layer A", nrpn: 240, range: [0, 127], group: auxiliary_envelopes}
+  env4_delay_layer_b:                     {label: "Env4Delay, layer B", nrpn: 2288, range: [0, 127], group: auxiliary_envelopes}
+  env4_att_layer_a:                       {label: "Env4Att, layer A", nrpn: 241, range: [0, 127], group: auxiliary_envelopes}
+  env4_att_layer_b:                       {label: "Env4Att, layer B", nrpn: 2289, range: [0, 127], group: auxiliary_envelopes}
+  env4_dec_layer_a:                       {label: "Env4Dec, layer A", nrpn: 242, range: [0, 127], group: auxiliary_envelopes}
+  env4_dec_layer_b:                       {label: "Env4Dec, layer B", nrpn: 2290, range: [0, 127], group: auxiliary_envelopes}
+  env4_sus_layer_a:                       {label: "Env4Sus, layer A", nrpn: 243, range: [0, 127], group: auxiliary_envelopes}
+  env4_sus_layer_b:                       {label: "Env4Sus, layer B", nrpn: 2291, range: [0, 127], group: auxiliary_envelopes}
+  env4_rel_layer_a:                       {label: "Env4Rel, layer A", nrpn: 244, range: [0, 127], group: auxiliary_envelopes}
+  env4_rel_layer_b:                       {label: "Env4Rel, layer B", nrpn: 2292, range: [0, 127], group: auxiliary_envelopes}
+  env4_loop_on_off_layer_a:               {label: "Env4LoopOn/Off, layer A", nrpn: 245, range: [0, 1], group: auxiliary_envelopes}
+  env4_loop_on_off_layer_b:               {label: "Env4LoopOn/Off, layer B", nrpn: 2293, range: [0, 1], group: auxiliary_envelopes}
+  env3_dest_layer_a:                      {label: "Env3Dest, layer A", nrpn: 250, range: [0, 88], group: auxiliary_envelopes}
+  env3_dest_layer_b:                      {label: "Env3Dest, layer B", nrpn: 2298, range: [0, 88], group: auxiliary_envelopes}
+  env4_dest_layer_a:                      {label: "Env4Dest, layer A", nrpn: 251, range: [0, 88], group: auxiliary_envelopes}
+  env4_dest_layer_b:                      {label: "Env4Dest, layer B", nrpn: 2299, range: [0, 88], group: auxiliary_envelopes}
+  lfo1_freq_layer_a:                      {label: "LFO1Freq, layer A", nrpn: 252, range: [0, 255], group: lfos}
+  lfo1_freq_layer_b:                      {label: "LFO1Freq, layer B", nrpn: 2300, range: [0, 255], group: lfos}
+  lfo1_amt_layer_a:                       {label: "LFO1Amt, layer A", nrpn: 253, range: [0, 254], group: lfos}
+  lfo1_amt_layer_b:                       {label: "LFO1Amt, layer B", nrpn: 2301, range: [0, 254], group: lfos}
+  lfo1_shape_layer_a:                     {label: "LFO1Shape, layer A", nrpn: 254, range: [0, 4], group: lfos}
+  lfo1_shape_layer_b:                     {label: "LFO1Shape, layer B", nrpn: 2302, range: [0, 4], group: lfos}
+  lfo1_sync_layer_a:                      {label: "LFO1Sync, layer A", nrpn: 255, range: [0, 1], group: lfos}
+  lfo1_sync_layer_b:                      {label: "LFO1Sync, layer B", nrpn: 2303, range: [0, 1], group: lfos}
+  lfo1_dest_layer_a:                      {label: "LFO1Dest, layer A", nrpn: 256, range: [0, 88], group: lfos}
+  lfo1_dest_layer_b:                      {label: "LFO1Dest, layer B", nrpn: 2304, range: [0, 88], group: lfos}
+  lfo1_freq_sync_layer_a:                 {label: "LFO1FreqSync, layer A", nrpn: 257, range: [0, 15], group: lfos}
+  lfo1_freq_sync_layer_b:                 {label: "LFO1FreqSync, layer B", nrpn: 2305, range: [0, 15], group: lfos}
+  lfo1_slew_layer_a:                      {label: "LFO1Slew, layer A", nrpn: 258, range: [0, 127], group: lfos}
+  lfo1_slew_layer_b:                      {label: "LFO1Slew, layer B", nrpn: 2306, range: [0, 127], group: lfos}
+  lfo1_wave_reset_layer_a:                {label: "LFO1WaveReset, layer A", nrpn: 259, range: [0, 1], group: lfos}
+  lfo1_wave_reset_layer_b:                {label: "LFO1WaveReset, layer B", nrpn: 2307, range: [0, 1], group: lfos}
+  lfo1_phase_layer_a:                     {label: "LFO1Phase, layer A", nrpn: 260, range: [0, 127], group: lfos}
+  lfo1_phase_layer_b:                     {label: "LFO1Phase, layer B", nrpn: 2308, range: [0, 127], group: lfos}
+  lfo2_freq_layer_a:                      {label: "LFO2Freq, layer A", nrpn: 264, range: [0, 255], group: lfos}
+  lfo2_freq_layer_b:                      {label: "LFO2Freq, layer B", nrpn: 2312, range: [0, 255], group: lfos}
+  lfo2_amt_layer_a:                       {label: "LFO2Amt, layer A", nrpn: 265, range: [0, 254], group: lfos}
+  lfo2_amt_layer_b:                       {label: "LFO2Amt, layer B", nrpn: 2313, range: [0, 254], group: lfos}
+  lfo2_shape_layer_a:                     {label: "LFO2Shape, layer A", nrpn: 266, range: [0, 4], group: lfos}
+  lfo2_shape_layer_b:                     {label: "LFO2Shape, layer B", nrpn: 2314, range: [0, 4], group: lfos}
+  lfo2_sync_layer_a:                      {label: "LFO2Sync, layer A", nrpn: 267, range: [0, 1], group: lfos}
+  lfo2_sync_layer_b:                      {label: "LFO2Sync, layer B", nrpn: 2315, range: [0, 1], group: lfos}
+  lfo2_dest_layer_a:                      {label: "LFO2Dest, layer A", nrpn: 268, range: [0, 88], group: lfos}
+  lfo2_dest_layer_b:                      {label: "LFO2Dest, layer B", nrpn: 2316, range: [0, 88], group: lfos}
+  lfo2_freq_sync_layer_a:                 {label: "LFO2FreqSync, layer A", nrpn: 269, range: [0, 15], group: lfos}
+  lfo2_freq_sync_layer_b:                 {label: "LFO2FreqSync, layer B", nrpn: 2317, range: [0, 15], group: lfos}
+  lfo2_slew_layer_a:                      {label: "LFO2Slew, layer A", nrpn: 270, range: [0, 127], group: lfos}
+  lfo2_slew_layer_b:                      {label: "LFO2Slew, layer B", nrpn: 2318, range: [0, 127], group: lfos}
+  lfo2_wave_reset_layer_a:                {label: "LFO2WaveReset, layer A", nrpn: 271, range: [0, 1], group: lfos}
+  lfo2_wave_reset_layer_b:                {label: "LFO2WaveReset, layer B", nrpn: 2319, range: [0, 1], group: lfos}
+  lfo2_phase_layer_a:                     {label: "LFO2Phase, layer A", nrpn: 272, range: [0, 127], group: lfos}
+  lfo2_phase_layer_b:                     {label: "LFO2Phase, layer B", nrpn: 2320, range: [0, 127], group: lfos}
+  lfo3_freq_layer_a:                      {label: "LFO3Freq, layer A", nrpn: 276, range: [0, 255], group: lfos}
+  lfo3_freq_layer_b:                      {label: "LFO3Freq, layer B", nrpn: 2324, range: [0, 255], group: lfos}
+  lfo3_amt_layer_a:                       {label: "LFO3Amt, layer A", nrpn: 277, range: [0, 254], group: lfos}
+  lfo3_amt_layer_b:                       {label: "LFO3Amt, layer B", nrpn: 2325, range: [0, 254], group: lfos}
+  lfo3_shape_layer_a:                     {label: "LFO3Shape, layer A", nrpn: 278, range: [0, 4], group: lfos}
+  lfo3_shape_layer_b:                     {label: "LFO3Shape, layer B", nrpn: 2326, range: [0, 4], group: lfos}
+  lfo3_sync_layer_a:                      {label: "LFO3Sync, layer A", nrpn: 279, range: [0, 1], group: lfos}
+  lfo3_sync_layer_b:                      {label: "LFO3Sync, layer B", nrpn: 2327, range: [0, 1], group: lfos}
+  lfo3_dest_layer_a:                      {label: "LFO3Dest, layer A", nrpn: 280, range: [0, 88], group: lfos}
+  lfo3_dest_layer_b:                      {label: "LFO3Dest, layer B", nrpn: 2328, range: [0, 88], group: lfos}
+  lfo3_freq_sync_layer_a:                 {label: "LFO3FreqSync, layer A", nrpn: 281, range: [0, 15], group: lfos}
+  lfo3_freq_sync_layer_b:                 {label: "LFO3FreqSync, layer B", nrpn: 2329, range: [0, 15], group: lfos}
+  lfo3_slew_layer_a:                      {label: "LFO3Slew, layer A", nrpn: 282, range: [0, 127], group: lfos}
+  lfo3_slew_layer_b:                      {label: "LFO3Slew, layer B", nrpn: 2330, range: [0, 127], group: lfos}
+  lfo3_note_reset_layer_a:                {label: "LFO3NoteReset, layer A", nrpn: 283, range: [0, 1], group: lfos}
+  lfo3_note_reset_layer_b:                {label: "LFO3NoteReset, layer B", nrpn: 2331, range: [0, 1], group: lfos}
+  lfo3_phase_layer_a:                     {label: "LFO3Phase, layer A", nrpn: 284, range: [0, 127], group: lfos}
+  lfo3_phase_layer_b:                     {label: "LFO3Phase, layer B", nrpn: 2332, range: [0, 127], group: lfos}
+  lfo4_freq_layer_a:                      {label: "LFO4Freq, layer A", nrpn: 288, range: [0, 255], group: lfos}
+  lfo4_freq_layer_b:                      {label: "LFO4Freq, layer B", nrpn: 2336, range: [0, 255], group: lfos}
+  lfo4_amt_layer_a:                       {label: "LFO4Amt, layer A", nrpn: 289, range: [0, 254], group: lfos}
+  lfo4_amt_layer_b:                       {label: "LFO4Amt, layer B", nrpn: 2337, range: [0, 254], group: lfos}
+  lfo4_shape_layer_a:                     {label: "LFO4Shape, layer A", nrpn: 290, range: [0, 4], group: lfos}
+  lfo4_shape_layer_b:                     {label: "LFO4Shape, layer B", nrpn: 2338, range: [0, 4], group: lfos}
+  lfo4_sync_layer_a:                      {label: "LFO4Sync, layer A", nrpn: 291, range: [0, 1], group: lfos}
+  lfo4_sync_layer_b:                      {label: "LFO4Sync, layer B", nrpn: 2339, range: [0, 1], group: lfos}
+  lfo4_dest_layer_a:                      {label: "LFO4Dest, layer A", nrpn: 292, range: [0, 88], group: lfos}
+  lfo4_dest_layer_b:                      {label: "LFO4Dest, layer B", nrpn: 2340, range: [0, 88], group: lfos}
+  lfo4_freq_sync_layer_a:                 {label: "LFO4FreqSync, layer A", nrpn: 293, range: [0, 15], group: lfos}
+  lfo4_freq_sync_layer_b:                 {label: "LFO4FreqSync, layer B", nrpn: 2341, range: [0, 15], group: lfos}
+  lfo4_slew_layer_a:                      {label: "LFO4Slew, layer A", nrpn: 294, range: [0, 127], group: lfos}
+  lfo4_slew_layer_b:                      {label: "LFO4Slew, layer B", nrpn: 2342, range: [0, 127], group: lfos}
+  lfo4_note_reset_layer_a:                {label: "LFO4NoteReset, layer A", nrpn: 295, range: [0, 1], group: lfos}
+  lfo4_note_reset_layer_b:                {label: "LFO4NoteReset, layer B", nrpn: 2343, range: [0, 1], group: lfos}
+  lfo4_phase_layer_a:                     {label: "LFO4Phase, layer A", nrpn: 296, range: [0, 127], group: lfos}
+  lfo4_phase_layer_b:                     {label: "LFO4Phase, layer B", nrpn: 2344, range: [0, 127], group: lfos}
+  mod1_source_layer_a:                    {label: "Mod1Source, layer A", nrpn: 300, range: [0, 28], group: modulation}
+  mod1_source_layer_b:                    {label: "Mod1Source, layer B", nrpn: 2348, range: [0, 28], group: modulation}
+  mod2_source_layer_a:                    {label: "Mod2Source, layer A", nrpn: 301, range: [0, 28], group: modulation}
+  mod2_source_layer_b:                    {label: "Mod2Source, layer B", nrpn: 2349, range: [0, 28], group: modulation}
+  mod3_source_layer_a:                    {label: "Mod3Source, layer A", nrpn: 302, range: [0, 28], group: modulation}
+  mod3_source_layer_b:                    {label: "Mod3Source, layer B", nrpn: 2350, range: [0, 28], group: modulation}
+  mod4_source_layer_a:                    {label: "Mod4Source, layer A", nrpn: 303, range: [0, 28], group: modulation}
+  mod4_source_layer_b:                    {label: "Mod4Source, layer B", nrpn: 2351, range: [0, 28], group: modulation}
+  mod5_source_layer_a:                    {label: "Mod5Source, layer A", nrpn: 304, range: [0, 28], group: modulation}
+  mod5_source_layer_b:                    {label: "Mod5Source, layer B", nrpn: 2352, range: [0, 28], group: modulation}
+  mod6_source_layer_a:                    {label: "Mod6Source, layer A", nrpn: 305, range: [0, 28], group: modulation}
+  mod6_source_layer_b:                    {label: "Mod6Source, layer B", nrpn: 2353, range: [0, 28], group: modulation}
+  mod7_source_layer_a:                    {label: "Mod7Source, layer A", nrpn: 306, range: [0, 28], group: modulation}
+  mod7_source_layer_b:                    {label: "Mod7Source, layer B", nrpn: 2354, range: [0, 28], group: modulation}
+  mod8_source_layer_a:                    {label: "Mod8Source, layer A", nrpn: 307, range: [0, 28], group: modulation}
+  mod8_source_layer_b:                    {label: "Mod8Source, layer B", nrpn: 2355, range: [0, 28], group: modulation}
+  mod9_source_layer_a:                    {label: "Mod9Source, layer A", nrpn: 308, range: [0, 28], group: modulation}
+  mod9_source_layer_b:                    {label: "Mod9Source, layer B", nrpn: 2356, range: [0, 28], group: modulation}
+  mod10_source_layer_a:                   {label: "Mod10Source, layer A", nrpn: 309, range: [0, 28], group: modulation}
+  mod10_source_layer_b:                   {label: "Mod10Source, layer B", nrpn: 2357, range: [0, 28], group: modulation}
+  mod11_source_layer_a:                   {label: "Mod11Source, layer A", nrpn: 310, range: [0, 28], group: modulation}
+  mod11_source_layer_b:                   {label: "Mod11Source, layer B", nrpn: 2358, range: [0, 28], group: modulation}
+  mod12_source_layer_a:                   {label: "Mod12Source, layer A", nrpn: 311, range: [0, 28], group: modulation}
+  mod12_source_layer_b:                   {label: "Mod12Source, layer B", nrpn: 2359, range: [0, 28], group: modulation}
+  mod13_source_layer_a:                   {label: "Mod13Source, layer A", nrpn: 312, range: [0, 28], group: modulation}
+  mod13_source_layer_b:                   {label: "Mod13Source, layer B", nrpn: 2360, range: [0, 28], group: modulation}
+  mod14_source_layer_a:                   {label: "Mod14Source, layer A", nrpn: 313, range: [0, 28], group: modulation}
+  mod14_source_layer_b:                   {label: "Mod14Source, layer B", nrpn: 2361, range: [0, 28], group: modulation}
+  mod15_source_layer_a:                   {label: "Mod15Source, layer A", nrpn: 314, range: [0, 28], group: modulation}
+  mod15_source_layer_b:                   {label: "Mod15Source, layer B", nrpn: 2362, range: [0, 28], group: modulation}
+  mod16_source_layer_a:                   {label: "Mod16Source, layer A", nrpn: 315, range: [0, 28], group: modulation}
+  mod16_source_layer_b:                   {label: "Mod16Source, layer B", nrpn: 2363, range: [0, 28], group: modulation}
+  mod1_amt_layer_a:                       {label: "Mod1Amt, layer A", nrpn: 316, range: [0, 254], group: modulation}
+  mod1_amt_layer_b:                       {label: "Mod1Amt, layer B", nrpn: 2364, range: [0, 254], group: modulation}
+  mod2_amt_layer_a:                       {label: "Mod2Amt, layer A", nrpn: 317, range: [0, 254], group: modulation}
+  mod2_amt_layer_b:                       {label: "Mod2Amt, layer B", nrpn: 2365, range: [0, 254], group: modulation}
+  mod3_amt_layer_a:                       {label: "Mod3Amt, layer A", nrpn: 318, range: [0, 254], group: modulation}
+  mod3_amt_layer_b:                       {label: "Mod3Amt, layer B", nrpn: 2366, range: [0, 254], group: modulation}
+  mod4_amt_layer_a:                       {label: "Mod4Amt, layer A", nrpn: 319, range: [0, 254], group: modulation}
+  mod4_amt_layer_b:                       {label: "Mod4Amt, layer B", nrpn: 2367, range: [0, 254], group: modulation}
+  mod5_amt_layer_a:                       {label: "Mod5Amt, layer A", nrpn: 320, range: [0, 254], group: modulation}
+  mod5_amt_layer_b:                       {label: "Mod5Amt, layer B", nrpn: 2368, range: [0, 254], group: modulation}
+  mod6_amt_layer_a:                       {label: "Mod6Amt, layer A", nrpn: 321, range: [0, 254], group: modulation}
+  mod6_amt_layer_b:                       {label: "Mod6Amt, layer B", nrpn: 2369, range: [0, 254], group: modulation}
+  mod7_amt_layer_a:                       {label: "Mod7Amt, layer A", nrpn: 322, range: [0, 254], group: modulation}
+  mod7_amt_layer_b:                       {label: "Mod7Amt, layer B", nrpn: 2370, range: [0, 254], group: modulation}
+  mod8_amt_layer_a:                       {label: "Mod8Amt, layer A", nrpn: 323, range: [0, 254], group: modulation}
+  mod8_amt_layer_b:                       {label: "Mod8Amt, layer B", nrpn: 2371, range: [0, 254], group: modulation}
+  mod9_amt_layer_a:                       {label: "Mod9Amt, layer A", nrpn: 324, range: [0, 254], group: modulation}
+  mod9_amt_layer_b:                       {label: "Mod9Amt, layer B", nrpn: 2372, range: [0, 254], group: modulation}
+  mod10_amt_layer_a:                      {label: "Mod10Amt, layer A", nrpn: 325, range: [0, 254], group: modulation}
+  mod10_amt_layer_b:                      {label: "Mod10Amt, layer B", nrpn: 2373, range: [0, 254], group: modulation}
+  mod11_amt_layer_a:                      {label: "Mod11Amt, layer A", nrpn: 326, range: [0, 254], group: modulation}
+  mod11_amt_layer_b:                      {label: "Mod11Amt, layer B", nrpn: 2374, range: [0, 254], group: modulation}
+  mod12_amt_layer_a:                      {label: "Mod12Amt, layer A", nrpn: 327, range: [0, 254], group: modulation}
+  mod12_amt_layer_b:                      {label: "Mod12Amt, layer B", nrpn: 2375, range: [0, 254], group: modulation}
+  mod13_amt_layer_a:                      {label: "Mod13Amt, layer A", nrpn: 328, range: [0, 254], group: modulation}
+  mod13_amt_layer_b:                      {label: "Mod13Amt, layer B", nrpn: 2376, range: [0, 254], group: modulation}
+  mod14_amt_layer_a:                      {label: "Mod14Amt, layer A", nrpn: 329, range: [0, 254], group: modulation}
+  mod14_amt_layer_b:                      {label: "Mod14Amt, layer B", nrpn: 2377, range: [0, 254], group: modulation}
+  mod15_amt_layer_a:                      {label: "Mod15Amt, layer A", nrpn: 330, range: [0, 254], group: modulation}
+  mod15_amt_layer_b:                      {label: "Mod15Amt, layer B", nrpn: 2378, range: [0, 254], group: modulation}
+  mod16_amt_layer_a:                      {label: "Mod16Amt, layer A", nrpn: 331, range: [0, 254], group: modulation}
+  mod16_amt_layer_b:                      {label: "Mod16Amt, layer B", nrpn: 2379, range: [0, 254], group: modulation}
+  mod1_dest_layer_a:                      {label: "Mod1Dest, layer A", nrpn: 332, range: [0, 88], group: modulation}
+  mod1_dest_layer_b:                      {label: "Mod1Dest, layer B", nrpn: 2380, range: [0, 88], group: modulation}
+  mod2_dest_layer_a:                      {label: "Mod2Dest, layer A", nrpn: 333, range: [0, 88], group: modulation}
+  mod2_dest_layer_b:                      {label: "Mod2Dest, layer B", nrpn: 2381, range: [0, 88], group: modulation}
+  mod3_dest_layer_a:                      {label: "Mod3Dest, layer A", nrpn: 334, range: [0, 88], group: modulation}
+  mod3_dest_layer_b:                      {label: "Mod3Dest, layer B", nrpn: 2382, range: [0, 88], group: modulation}
+  mod4_dest_layer_a:                      {label: "Mod4Dest, layer A", nrpn: 335, range: [0, 88], group: modulation}
+  mod4_dest_layer_b:                      {label: "Mod4Dest, layer B", nrpn: 2383, range: [0, 88], group: modulation}
+  mod5_dest_layer_a:                      {label: "Mod5Dest, layer A", nrpn: 336, range: [0, 88], group: modulation}
+  mod5_dest_layer_b:                      {label: "Mod5Dest, layer B", nrpn: 2384, range: [0, 88], group: modulation}
+  mod6_dest_layer_a:                      {label: "Mod6Dest, layer A", nrpn: 337, range: [0, 88], group: modulation}
+  mod6_dest_layer_b:                      {label: "Mod6Dest, layer B", nrpn: 2385, range: [0, 88], group: modulation}
+  mod7_dest_layer_a:                      {label: "Mod7Dest, layer A", nrpn: 338, range: [0, 88], group: modulation}
+  mod7_dest_layer_b:                      {label: "Mod7Dest, layer B", nrpn: 2386, range: [0, 88], group: modulation}
+  mod8_dest_layer_a:                      {label: "Mod8Dest, layer A", nrpn: 339, range: [0, 88], group: modulation}
+  mod8_dest_layer_b:                      {label: "Mod8Dest, layer B", nrpn: 2387, range: [0, 88], group: modulation}
+  mod9_dest_layer_a:                      {label: "Mod9Dest, layer A", nrpn: 340, range: [0, 88], group: modulation}
+  mod9_dest_layer_b:                      {label: "Mod9Dest, layer B", nrpn: 2388, range: [0, 88], group: modulation}
+  mod10_dest_layer_a:                     {label: "Mod10Dest, layer A", nrpn: 341, range: [0, 88], group: modulation}
+  mod10_dest_layer_b:                     {label: "Mod10Dest, layer B", nrpn: 2389, range: [0, 88], group: modulation}
+  mod11_dest_layer_a:                     {label: "Mod11Dest, layer A", nrpn: 342, range: [0, 88], group: modulation}
+  mod11_dest_layer_b:                     {label: "Mod11Dest, layer B", nrpn: 2390, range: [0, 88], group: modulation}
+  mod12_dest_layer_a:                     {label: "Mod12Dest, layer A", nrpn: 343, range: [0, 88], group: modulation}
+  mod12_dest_layer_b:                     {label: "Mod12Dest, layer B", nrpn: 2391, range: [0, 88], group: modulation}
+  mod13_dest_layer_a:                     {label: "Mod13Dest, layer A", nrpn: 344, range: [0, 88], group: modulation}
+  mod13_dest_layer_b:                     {label: "Mod13Dest, layer B", nrpn: 2392, range: [0, 88], group: modulation}
+  mod14_dest_layer_a:                     {label: "Mod14Dest, layer A", nrpn: 345, range: [0, 88], group: modulation}
+  mod14_dest_layer_b:                     {label: "Mod14Dest, layer B", nrpn: 2393, range: [0, 88], group: modulation}
+  mod15_dest_layer_a:                     {label: "Mod15Dest, layer A", nrpn: 346, range: [0, 88], group: modulation}
+  mod15_dest_layer_b:                     {label: "Mod15Dest, layer B", nrpn: 2394, range: [0, 88], group: modulation}
+  mod16_dest_layer_a:                     {label: "Mod16Dest, layer A", nrpn: 347, range: [0, 88], group: modulation}
+  mod16_dest_layer_b:                     {label: "Mod16Dest, layer B", nrpn: 2395, range: [0, 88], group: modulation}
+  mod_wheel_amt_layer_a:                  {label: "ModWheelAmt, layer A", nrpn: 348, range: [0, 254], group: modulation}
+  mod_wheel_amt_layer_b:                  {label: "ModWheelAmt, layer B", nrpn: 2396, range: [0, 254], group: modulation}
+  mod_wheel_dest_layer_a:                 {label: "ModWheelDest, layer A", nrpn: 349, range: [0, 88], group: modulation}
+  mod_wheel_dest_layer_b:                 {label: "ModWheelDest, layer B", nrpn: 2397, range: [0, 88], group: modulation}
+  pressure_amt_layer_a:                   {label: "PressureAmt, layer A", nrpn: 350, range: [0, 254], group: modulation}
+  pressure_amt_layer_b:                   {label: "PressureAmt, layer B", nrpn: 2398, range: [0, 254], group: modulation}
+  pressure_dest_layer_a:                  {label: "PressureDest, layer A", nrpn: 351, range: [0, 88], group: modulation}
+  pressure_dest_layer_b:                  {label: "PressureDest, layer B", nrpn: 2399, range: [0, 88], group: modulation}
+  breath_amt_layer_a:                     {label: "BreathAmt, layer A", nrpn: 352, range: [0, 254], group: modulation}
+  breath_amt_layer_b:                     {label: "BreathAmt, layer B", nrpn: 2400, range: [0, 254], group: modulation}
+  breath_dest_layer_a:                    {label: "BreathDest, layer A", nrpn: 353, range: [0, 88], group: modulation}
+  breath_dest_layer_b:                    {label: "BreathDest, layer B", nrpn: 2401, range: [0, 88], group: modulation}
+  velocity_amt_layer_a:                   {label: "VelocityAmt, layer A", nrpn: 354, range: [0, 254], group: modulation}
+  velocity_amt_layer_b:                   {label: "VelocityAmt, layer B", nrpn: 2402, range: [0, 254], group: modulation}
+  velocity_dest_layer_a:                  {label: "VelocityDest, layer A", nrpn: 355, range: [0, 88], group: modulation}
+  velocity_dest_layer_b:                  {label: "VelocityDest, layer B", nrpn: 2403, range: [0, 88], group: modulation}
+  foot_amt_layer_a:                       {label: "FootAmt, layer A", nrpn: 356, range: [0, 254], group: modulation}
+  foot_amt_layer_b:                       {label: "FootAmt, layer B", nrpn: 2404, range: [0, 254], group: modulation}
+  foot_dest_layer_a:                      {label: "FootDest, layer A", nrpn: 357, range: [0, 88], group: modulation}
+  foot_dest_layer_b:                      {label: "FootDest, layer B", nrpn: 2405, range: [0, 88], group: modulation}
+  unison_on_off_layer_a:                  {label: "UnisonOnOff, layer A", nrpn: 358, range: [0, 1], group: unison}
+  unison_on_off_layer_b:                  {label: "UnisonOnOff, layer B", nrpn: 2406, range: [0, 1], group: unison}
+  unison_detune_layer_a:                  {label: "UnisonDetune, layer A", nrpn: 359, range: [0, 16], group: unison}
+  unison_detune_layer_b:                  {label: "UnisonDetune, layer B", nrpn: 2407, range: [0, 16], group: unison}
+  unison_mode_layer_a:                    {label: "UnisonMode, layer A", nrpn: 360, range: [0, 16], group: unison}
+  unison_mode_layer_b:                    {label: "UnisonMode, layer B", nrpn: 2408, range: [0, 16], group: unison}
+  key_mode_layer_a:                       {label: "KeyMode, layer A", nrpn: 371, range: [0, 5], group: unison}
+  key_mode_layer_b:                       {label: "KeyMode, layer B", nrpn: 2419, range: [0, 5], group: unison}
+  pitchbend_range_layer_a:                {label: "PitchbendRange, layer A", nrpn: 372, range: [0, 12], group: wheels}
+  pitchbend_range_layer_b:                {label: "PitchbendRange, layer B", nrpn: 2420, range: [0, 12], group: wheels}
+  pitchbend_range_down_layer_a:           {label: "PitchbendRangeDown, layer A", nrpn: 373, range: [0, 12], group: wheels}
+  pitchbend_range_down_layer_b:           {label: "PitchbendRangeDown, layer B", nrpn: 2421, range: [0, 12], group: wheels}
+  bpm_layer_a:                            {label: "BPM, layer A", nrpn: 386, range: [30, 250], group: clock}
+  bpm_layer_b:                            {label: "BPM, layer B", nrpn: 2434, range: [30, 250], group: clock}
+  clock_divide_layer_a:                   {label: "ClockDivide, layer A", nrpn: 387, range: [0, 12], group: clock}
+  clock_divide_layer_b:                   {label: "ClockDivide, layer B", nrpn: 2435, range: [0, 12], group: clock}
+  arp_on_off_layer_a:                     {label: "ArpOnOff, layer A", nrpn: 388, range: [0, 1], group: arpeggiator}
+  arp_on_off_layer_b:                     {label: "ArpOnOff, layer B", nrpn: 2436, range: [0, 1], group: arpeggiator}
+  arp_mode_layer_a:                       {label: "ArpMode, layer A", nrpn: 389, range: [0, 4], group: arpeggiator}
+  arp_mode_layer_b:                       {label: "ArpMode, layer B", nrpn: 2437, range: [0, 4], group: arpeggiator}
+  arp_range_layer_a:                      {label: "ArpRange, layer A", nrpn: 390, range: [0, 3], group: arpeggiator}
+  arp_range_layer_b:                      {label: "ArpRange, layer B", nrpn: 2438, range: [0, 3], group: arpeggiator}
+  arp_repeats_layer_a:                    {label: "ArpRepeats, layer A", nrpn: 391, range: [0, 3], group: arpeggiator}
+  arp_repeats_layer_b:                    {label: "ArpRepeats, layer B", nrpn: 2439, range: [0, 3], group: arpeggiator}
+  arp_relatch_layer_a:                    {label: "ArpRelatch, layer A", nrpn: 393, range: [0, 1], group: arpeggiator}
+  arp_relatch_layer_b:                    {label: "ArpRelatch, layer B", nrpn: 2441, range: [0, 1], group: arpeggiator}
+  ab_mode_layer_a:                        {label: "ABModet, layer A", nrpn: 407, range: [0, 2]}
+  ab_mode_layer_b:                        {label: "ABModet, layer B", nrpn: 2455, range: [0, 2]}
+  voice_mode_16_layer_a:                  {label: "16Voices, layer A", nrpn: 408, range: [0, 1], group: voice_mode_16}
+  voice_mode_16_layer_b:                  {label: "16Voices, layer B", nrpn: 2456, range: [0, 1], group: voice_mode_16}
+  split_point_layer_a:                    {label: "SplitPoint, layer A", nrpn: 409, range: [0, 120]}
+  split_point_layer_b:                    {label: "SplitPoint, layer B", nrpn: 2457, range: [0, 120]}
+
+  # THE GLOBAL TABLE (guide p. 147), with the values its rows name.
+  master_coarse_tune:                     {label: Master Coarse Tune, nrpn: 4140, range: [0, 24], group: globals}
+  # Printed `0-50`, where the Global Settings give `-50…+50` (guide p. 122); recorded as printed.
+  master_fine_tune:                       {label: Master Fine Tune, nrpn: 4141, range: [0, 50], group: globals}
+  # 0 is `All` (guide p. 147).
+  midi_channel:                           {label: MIDI Channel, nrpn: 4142, range: [0, 16], group: globals}
+  # Printed `0-4` with four values named, 0 to 3 (guide p. 147); p. 140 lists a fifth mode, Slave No
+  # S/S, and no page gives it a number.
+  midi_clock_mode:                        {label: MIDI Clock Mode, nrpn: 4143, range: [0, 4], choices: {"off": 0, "master": 1, "slave": 2, "slave_thru": 3}, group: globals}
+  midi_clock_cable:                       {label: MIDI Clock Cable, nrpn: 4144, range: [0, 1], choices: {"midi_port": 0, "usb": 1}, group: globals}
+  # Marked `*`, "Controller received, but not transmitted." (guide p. 147).
+  midi_param_send:                        {label: MIDI Param Send, nrpn: 4145, range: [0, 2], choices: {"nrpn": 0, "cc": 1, "off": 2}, direction: receives, group: globals}
+  # Marked `†`, "Controller transmitted, but ignored when received." (guide p. 147).
+  midi_param_receive:                     {label: MIDI Param Receive, nrpn: 4102, range: [0, 2], choices: {"nrpn": 0, "cc": 1, "off": 2}, direction: transmits, group: globals}
+  midi_control_enable:                    {label: MIDI Control Enable, nrpn: 4103, range: [0, 1], choices: {"off": 0, "on": 1}, group: globals}
+  # The Global Settings give a third value, `None` (guide p. 123), which this row has no number for.
+  midi_sys_ex_cable:                      {label: MIDI SysEx Cable, nrpn: 4104, range: [0, 1], choices: {"midi": 0, "usb": 1}, group: globals}
+  # Printed `0-2` over four named values, 0 to 3 (guide p. 147); the range here holds the four.
+  midi_out_select:                        {label: MIDI Out Select, nrpn: 4105, range: [0, 3], choices: {"off": 0, "midi": 1, "usb": 2, "midi_usb": 3}, group: globals}
+  # Marked `*` (guide p. 147). The Global Settings give a third value, `Key/Wheels Off` (guide
+  # p. 124), which this row has no number for, and on is the default: "When on (the default)" (guide
+  # p. 124).
+  local_control:                          {label: Local Control, nrpn: 4107, range: [0, 1], choices: {"off": 0, "on": 1}, default: 1, direction: receives, group: globals}
+  pot_mode:                               {label: Pot Mode, nrpn: 4109, range: [0, 2], choices: {"relative": 0, "passthru": 1, "jump": 2}, group: globals}
+  seq_pedal_mode:                         {label: Seq Pedal Mode, nrpn: 4111, range: [0, 3], choices: {"normal": 0, "trigger": 1, "gate": 2, "trigger_gate": 3}, group: globals}
+  # Printed `0-1` over four named values, 0 to 3 (guide p. 147); the range here holds the four. The
+  # Global Settings give two, `Normal, Reversed` (guide p. 127).
+  sustain_polarity:                       {label: Sustain Polarity, nrpn: 4124, range: [0, 3], choices: {"normally_open": 0, "normally_closed": 1, "sustain_open_sequencer_closed": 2, "sustain_closed_sequencer_open": 3}, group: globals}
+  velocity_curve:                         {label: Velocity Curve, nrpn: 4113, range: [0, 7], group: globals}
+  pressure_curve:                         {label: Pressure Curve, nrpn: 4114, range: [0, 3], group: globals}
+  # Stereo by default: "The Prophet X defaults to stereo operation." (guide p. 124).
+  mono_stereo:                            {label: Mono/Stereo, nrpn: 4115, range: [0, 1], choices: {"stereo": 0, "mono": 1}, default: 0, group: globals}
+  alt_tunings:                            {label: Alt. Tunings, nrpn: 4116, range: [0, 64], group: globals}
+  midi_prog_enable:                       {label: MIDI Prog Enable, nrpn: 4118, range: [0, 1], choices: {"off": 0, "on": 1}, group: globals}
+  multi_mode:                             {label: Multi Mode, nrpn: 4119, range: [0, 1], choices: {"off": 0, "on": 1}, group: globals}
+  screen_saver:                           {label: Screen Saver, nrpn: 4120, range: [0, 1], choices: {"off": 0, "on": 1}, group: globals}
+  b_outputs:                              {label: B Outputs, nrpn: 4121, range: [0, 1], group: globals}
+  filter_pedal_mode:                      {label: Filter Pedal Mode, nrpn: 4122, range: [0, 4], group: globals}
+  # Since OS 2.0 there is a third mode, `arp hold mom` (os_2_0 p. 5), which this row has no number
+  # for.
+  sustain_arp:                            {label: Sustain/Arp, nrpn: 4125, range: [0, 1], group: globals}
+  layer_a_b_switch:                       {label: Layer A/B Switch, nrpn: 4190, range: [0, 1], group: globals}
+
+  # THE CONTROL TABLE (guide p. 152): received and transmitted, not saved with a program.
+  seq_play_stop:                          {label: Seq Play/Stop, nrpn: 4188, range: [0, 1], group: sequencer}
+
+sources:
+  guide:
+    kind: manual
+    title: "Prophet X User’s Guide"
+    edition: "1.3"
+    dated: 2021-02
+    landing: "https://sequential.com/support/download/prophet-x-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/02/Prophet-X-Users-Guide-1.3.pdf"
+    sha256: fca6c50034d4f8e6d3829be8395fedb702ab7718df747eb8eaa36ac557f901a5
+    retrieved: 2026-10-08
+    # TWO PRINTED PAGES TO A SHEET, AS ON `behringer/pro_800`: sheets 9 to 87 each carry an even
+    # page on the left and the next odd page on the right, and sheet 8 carries page 1 alone, so
+    # `pages_per_sheet: 2` with an offset of 15. The title page reads `Version 1.3` and `Feb, 2021`;
+    # the PDF's own title is `Prophet X User's Guide 1.2` and its creation date 2019-04-10.
+    page_offset: 15
+    pages_per_sheet: 2
+  os_2_0:
+    kind: manual
+    title: "Prophet X/XL OS 2.0 Addendum"
+    edition: "2.0"
+    dated: 2018-11
+    landing: "https://sequential.com/support/download/prophet-x-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2018/11/Prophet-X-OS-v2.0-Addendum.pdf"
+    sha256: a027b92f9f26a96ba1bd82f67e72266e12e0e755649da50e7d526d3dc3a3d2a9
+    retrieved: 2026-10-08
+    # The 32-voice mode, the arpeggiator's and sequencer's MIDI notes and the third Sustain Arp
+    # mode. Twelve pages, each numbered, so printed page and page of the file are one.
+  os_2_2:
+    kind: manual
+    title: "Prophet X OS 2.2 Addendum"
+    edition: "2.2"
+    dated: 2020-02
+    landing: "https://sequential.com/support/download/prophet-x-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2020/02/Prophet-X-OS-v2.2-Addendum.pdf"
+    sha256: de88901e67293afbd84d9373eaf4ae7892692b46393c16ae7299b33a4f1cbbbd
+    retrieved: 2026-10-08
+    # Cited for what it does not add. Four pages, each numbered. Its PDF title still reads `Prophet
+    # X OS 2.0 Addendum`.
+  os_readme:
+    kind: release_notes
+    title: "Prophet X OS Main v.2.2.2.0.0"
+    edition: "2.2.2.0.0"
+    dated: 2022-02-02
+    landing: "https://sequential.com/support/download/prophet-x-operating-system/"
+    url: "https://sequential.com/wp-content/uploads/2022/02/Prophet_X_OS_2.2.2.0.0README.zip"
+    sha256: 07966a59b9c2e6959f5655a48a34adc62d53860875ad1429e9a97faeb38e3202
+    retrieved: 2026-10-08
+    paginated: false
+    # The readme inside the OS file, saved on its own; the zip it came from hashes to
+    # 02b8592ef62425122e4101a1bffedaaf2f717fe0d0bf50b540e48c15364e3478 and also holds the OS itself,
+    # which is not kept.
+  documentation_page:
+    kind: download_page
+    title: "Prophet X Documentation - Sequential"
+    landing: "https://sequential.com/support/download/prophet-x-documentation/"
+    url: "https://sequential.com/support/download/prophet-x-documentation/"
+    sha256: 33f8a2ec02443200c6e66a82097534b586e6c67fb7c31a9ae302a396257a216f
+    retrieved: 2026-10-08
+    paginated: false
+    # The guide, the two addenda and a factory preset list. The page as served hashes to
+    # 17626c4fb5f736ad68e2aa7d874e16886a736e4c101ffbd608710e52d6f94800.
+  os_page:
+    kind: download_page
+    title: "Prophet X Operating System - Sequential"
+    landing: "https://sequential.com/support/download/prophet-x-operating-system/"
+    url: "https://sequential.com/support/download/prophet-x-operating-system/"
+    sha256: 40c910351cd8404b20c29f74d62d6dba9a6053349724579861b8c9a9dba1e72a
+    retrieved: 2026-10-08
+    paginated: false
+    # The newest OS file, which the page labels `Operating System v2.2.2.0` and its own readme calls
+    # 2.2.2.0.0, and how to install it. The page as served hashes to
+    # 5b4dad8b2387e4378bea21395c7e2e81bfdb6804eebc0cf7d861a553d76012e3.

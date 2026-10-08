@@ -266,6 +266,7 @@ class TestBundledCorpus:
 			"sequential/prophet_10",
 			"sequential/prophet_5",
 			"sequential/prophet_6",
+			"sequential/prophet_x",
 			"sequential/take_5",
 			"soma/pulsar_23",
 			"synthstrom_audible/deluge",
@@ -8085,7 +8086,7 @@ class TestProphet6:
 
 		assert preferred == ["elektron/digitone_ii", "groove_synthesis/third_wave", "oberheim/ob_x8", "oberheim/teo_5",
 			"sequential/fourm", "sequential/prophet_10", "sequential/prophet_5",
-			"sequential/prophet_6", "sequential/take_5"]
+			"sequential/prophet_6", "sequential/prophet_x", "sequential/take_5"]
 
 	def test_one_file_covers_the_keyboard_and_the_module (self) -> None:
 		"""The maker treats them as one instrument, and says so on its own download page."""
@@ -17887,3 +17888,93 @@ class TestOPZ:
 			("teenage engineering", "OP-Z", "1.2.45")
 		assert len(opz.sources) == 15
 		assert all(source.paginated is False for source in opz.sources.values())
+
+
+class TestProphetX:
+
+	"""A guide whose NRPN table numbers every program parameter twice, once for each layer."""
+
+	def test_eighty_seven_controllers_and_three_more (self) -> None:
+		"""62 is printed twice; 2, 4 and 74 are on the controller lists and not in the table."""
+		px = pymidiinstrumentdefs.load("sequential/prophet_x", [CORPUS])
+
+		numbers = {control.cc: control for control in px.controls.values() if control.cc is not None}
+
+		assert len(numbers) == 90
+		assert numbers[62].label == "Clock Divide" and numbers[8].label == "Sub Oscillator"
+		assert numbers[2].direction == "transmits"
+		assert all(control.direction == "both" for cc, control in numbers.items() if cc != 2)
+
+		# Controllers and NRPNs are not paired: outside Multi Mode no page says which layer a controller reaches.
+		assert not [control for control in px.controls.values() if control.cc is not None and control.nrpn is not None]
+
+		# 121 and 123 are received, and are channel mode messages rather than controls.
+		assert not {121, 123} & set(numbers)
+		account = " ".join((px.source or "").split())
+		assert "123 `All Notes Off` and 121 `Reset All Controllers` (guide p. 142)" in account
+
+	def test_every_program_parameter_twice_2048_apart (self) -> None:
+		px = pymidiinstrumentdefs.load("sequential/prophet_x", [CORPUS])
+
+		layer_a = {name[:-len("_layer_a")]: control for name, control in px.controls.items() if name.endswith("_layer_a")}
+		layer_b = {name[:-len("_layer_b")]: control for name, control in px.controls.items() if name.endswith("_layer_b")}
+
+		assert len(layer_a) == len(layer_b) == 241 and set(layer_a) == set(layer_b)
+		pairs = [(layer_a[key].nrpn, layer_b[key].nrpn) for key in layer_a]
+		assert all(a is not None and b == a + 2048 for a, b in pairs)
+		assert px.controls["inst1_freq_layer_a"].label == "Inst1Freq, layer A"
+		assert px.controls["lowpass_freq_layer_b"].range == (0, 164)
+
+	def test_the_globals_and_their_markers (self) -> None:
+		"""25 globals; the ranges of three disagree with the values their rows name."""
+		px = pymidiinstrumentdefs.load("sequential/prophet_x", [CORPUS])
+
+		globals_ = [control for control in px.controls.values() if control.group == "globals"]
+		assert len(globals_) == 25
+
+		by_nrpn = {control.nrpn: control for control in globals_}
+		assert (by_nrpn[4145].direction, by_nrpn[4102].direction) == ("receives", "transmits")
+		assert by_nrpn[4105].range == (0, 3) and by_nrpn[4124].range == (0, 3)
+
+		# The two defaults the Global Settings give, and no others.
+		assert {control.name: control.default for control in px.controls.values() if control.default is not None} == \
+			{"local_control": 1, "mono_stereo": 0}
+
+		account = " ".join((px.source or "").split())
+
+		assert "THE GLOBAL TABLE DISAGREES WITH ITSELF IN THREE ROWS, AND WITH THE GLOBAL SETTINGS IN MORE." in account
+
+	def test_the_misprints_a_sender_needs (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("sequential/prophet_x", [CORPUS]).source or "").split())
+
+		assert "`0010 0101` and `0010 0100` (guide p. 146), controllers 37 and 36" in account
+		assert "\"in most cases the MSB will be zero or one, and never more than two\" (guide p. 145)" in account
+		assert "the request for sample names (guide p. 153) and the playlist dump (guide p. 155)" in account
+
+	def test_the_rest_of_the_implementation (self) -> None:
+		px = pymidiinstrumentdefs.load("sequential/prophet_x", [CORPUS])
+
+		assert px.midi.channels == (1, 16) and px.midi.mode is None
+		assert (px.midi.clock, px.midi.transport) == ("both", "receives")
+		assert px.midi.nrpn == "preferred" and px.midi.sysex is True
+		assert px.midi.program_change is not None and px.midi.program_change.presets == 1024
+
+		assert px.voice.voicing_modes == (8, 16, 32) and px.voice.polyphony is None
+		assert px.voice.aftertouch == "poly"
+		assert px.voice.velocity is not None and px.voice.velocity.note_off is False
+		assert px.voice.pitch_bend is not None and px.voice.pitch_bend.programmable is True
+
+	def test_the_pages_number_the_banks_three_ways (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("sequential/prophet_x", [CORPUS]).source or "").split())
+
+		assert "\"The Prophet X contains a total of 1024 programs.\" (guide p. 4)" in account
+		assert "`Bank Select: 0 - 9` (guide p. 143)" in account
+
+	def test_firmware_and_sources (self) -> None:
+		"""The newest OS is a year newer than the guide, and nothing says the MIDI changed."""
+		px = pymidiinstrumentdefs.load("sequential/prophet_x", [CORPUS])
+
+		assert px.model.firmware == "2.2.2.0.0"
+		assert set(px.sources) == {"guide", "os_2_0", "os_2_2", "os_readme", "documentation_page", "os_page"}
+		assert (px.sources["guide"].page_offset, px.sources["guide"].pages_per_sheet) == (15, 2)
+		assert px.sources["guide"].file_page(144) == 80

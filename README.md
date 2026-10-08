@@ -250,6 +250,7 @@ self-contained YAML file, and you share it by sending it.
 | `sequential/prophet_10` | Sequential Prophet-10: the Prophet-5's 64 controls, because its maker offers the Prophet-5's implementation for it, read again from the same file; ten voices, and since OS 2.0 two layers that nothing published says how to reach over MIDI |
 | `sequential/prophet_5` | Sequential Prophet-5: 64 controls off a real MIDI implementation, which is also the Prophet-10's and is older than two of the instrument's own operating systems |
 | `sequential/prophet_6` | Sequential Prophet-6 keyboard and desktop module: 113 controls, most reachable by CC and by finer NRPN, from an appendix its maker prints three times over - twice in the English manual and once again in the German - with no two printings agreeing |
+| `sequential/prophet_x` | Sequential Prophet X: 598 controls, because its NRPN table gives every one of 241 program parameters a number for each of its two layers - and its 90 controllers are not paired with them, since no page says which layer a controller reaches |
 | `sequential/take_5` | Sequential Take 5: 170 controls, most reachable by CC and by finer NRPN |
 | `soma/pulsar_23` | Soma Pulsar-23: every note and controller assigned by MIDI learn |
 | `synthstrom_audible/deluge` | Synthstrom Audible Deluge: no fixed controller or note map at all, read from both of the guidebooks its maker publishes - one per display edition - whose last chapter turns out to be a reprint of a user-written guide |

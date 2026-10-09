@@ -245,6 +245,7 @@ class TestBundledCorpus:
 			"roland/jd_800",
 			"roland/jd_xa",
 			"roland/jd_xi",
+			"roland/jp_8000",
 			"roland/ju_06a",
 			"roland/juno_106",
 			"roland/jupiter_x",
@@ -15319,7 +15320,7 @@ class TestSH4D:
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
 		assert three == ["roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xa", "roland/jd_xi",
-			"roland/ju_06a", "roland/jx_08", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1",
+			"roland/jp_8000", "roland/ju_06a", "roland/jx_08", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1",
 			"roland/sh_4d", "roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
 
@@ -18046,3 +18047,75 @@ class TestJDXA:
 		assert set(xa.sources) == {"implementation", "parameter_guide", "manual", "supplement_1_50", "system_program",
 			"manuals_page", "updates", "specifications"}
 		assert xa.sources["manual"].file_page(19) == 19
+
+
+class TestJP8000:
+
+	"""Two parts and a performance channel, and forty knobs whose numbers depend on a mode."""
+
+	def test_two_parts_of_one_kind_and_a_performance_channel (self) -> None:
+		jp = pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS])
+
+		assert list(jp.parts) == ["part", "performance"]
+		assert (jp.parts["part"].count, jp.parts["performance"].count) == (2, 1)
+		assert all(part.channel == "assigned" for part in jp.parts.values())
+		assert jp.parts["part"].receives == ("notes", "controls", "program_change")
+		assert jp.parts["performance"].receives == ("controls", "program_change")
+		assert (jp.voice.polyphony, jp.voice.polyphony_shared) == (8, True)
+		assert not [control for control in jp.controls.values() if control.part is None]
+
+	def test_forty_knobs_at_mode2_factory_numbers (self) -> None:
+		"""Twelve of the forty travel as system exclusive in MODE1, and MODE2 gives them 20 to 31."""
+		jp = pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS])
+
+		knobs = [control for control in jp.controls.values() if control.group not in ("controller", "control_change")]
+		assert len(knobs) == 40 and len({control.cc for control in knobs}) == 40
+		assert set(range(20, 32)) <= {control.cc for control in knobs}
+		assert all(control.direction == "both" for control in knobs)
+		assert jp.controls["cutoff_frequency"].cc == 74 and jp.controls["amp_level"].cc == 7
+		assert jp.controls["osc2_pulse_width"].label == "OSC2 Pulse Width"
+
+	def test_the_ribbon_sends_breath_and_channel_pressure (self) -> None:
+		jp = pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS])
+
+		assert (jp.controls["ribbon_controller_down"].cc, jp.voice.aftertouch) == (2, "channel")
+		account = " ".join((jp.source or "").split())
+		assert "\"The JP-8000's keyboard does not implement Channel Pressure.\" (manual p. 118)" in account
+
+	def test_seven_controllers_the_setting_list_leaves_alone (self) -> None:
+		jp = pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS])
+
+		fixed = {control.cc: control.direction for control in jp.controls.values()
+			if control.group == "control_change" and control.cc != 0}
+		assert fixed == {1: "both", 10: "both", 11: "both", 64: "both", 65: "receives", 68: "receives", 84: "both"}
+		assert jp.controls["hold_1"].values == {"off": 0, "on": 64}
+
+	def test_bank_select_reaches_a_patch_or_a_performance (self) -> None:
+		jp = pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS])
+
+		banks = sorted((control.part, control.choices["user"], control.choices["preset"])
+			for control in jp.controls.values() if control.cc == 0)
+		assert banks == [("part", 80, 81), ("performance", 80, 81)]
+		assert jp.midi.program_change is not None and jp.midi.program_change.presets == 256
+
+	def test_the_rest_of_the_implementation (self) -> None:
+		jp = pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS])
+
+		assert len(jp.controls) == 50
+		assert (jp.midi.channels, jp.midi.mode, jp.midi.clock, jp.midi.transport) == ((1, 16), 3, "receives", "receives")
+		assert (jp.midi.nrpn, jp.midi.sysex) == ("none", True)
+		assert jp.voice.note_range == (0, 127) and jp.voice.voicing_modes == (1, 8)
+		assert jp.voice.velocity is not None and (jp.voice.velocity.note_on, jp.voice.velocity.note_off) == ("both", True)
+
+	def test_no_page_gives_the_factory_edit_mode (self) -> None:
+		account = " ".join((pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS]).source or "").split())
+
+		assert "No page gives the factory value of the edit mode, or of the edit switch" in account
+		assert "the only numbers among the forty that the implementation's list of control changes has no entry for" in account
+
+	def test_firmware_and_sources (self) -> None:
+		jp = pymidiinstrumentdefs.load("roland/jp_8000", [CORPUS])
+
+		assert jp.model.firmware is None
+		assert set(jp.sources) == {"manual", "manuals_page", "updates", "readme"}
+		assert jp.sources["manual"].file_page(116) == 116

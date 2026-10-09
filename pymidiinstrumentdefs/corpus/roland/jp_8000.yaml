@@ -1,0 +1,382 @@
+definition: 1
+
+# READ BY EYE FROM A SCAN. Roland serves the JP-8000's owner's manual as page images with no text at
+# all, so every number below was read off a rendered sheet and no tool here can check a quotation in
+# it. The printed page number is the sheet's own wherever the book prints one.
+#
+# TWO PARTS, EACH ON A CHANNEL OF ITS OWN, AND FORTY KNOBS WHOSE NUMBERS A MODE SETS. The Upper and
+# Lower parts each play a whole patch on a channel the performance sets, and a third channel selects
+# performances. The knobs' controller numbers are MODE2's factory setting; in MODE1 twelve of them
+# travel as system exclusive instead, and no page says which mode the instrument leaves the factory
+# in.
+
+model:
+  manufacturer: Roland
+  name: JP-8000
+  # NOT RECORDED: a firmware version. The manual names no system version; its implementation and its
+  # chart are each headed `Version: 1.00` and dated (manual pp. 117 and 128), which the pages do not
+  # say is the system's. Roland's newest operating system is 1.05, "This is the latest operating
+  # system available for the JP-8000 Music Synthesizer." (updates), and its readme says how to
+  # install it and how to recalibrate the bender and ribbon, and names no change of any kind
+  # (readme). So nothing says whether the manual describes 1.05 or an earlier system. Checked
+  # 2026-10-09.
+
+source: >-
+  Owner's Manual, 138 sheets, a scan: the organisation, the parts and the performances at pp. 48 and
+  49, the ribbon at p. 66, mono at p. 70, the modulation lever at p. 73, the performance and system
+  settings at pp. 85 to 90, the standard settings at p. 92, the MIDI chapter at pp. 93 to 98, MIDI
+  in general at p. 107, the parameter lists at pp. 112 to 115, the Transmit/Receive Setting List at
+  p. 116, the MIDI implementation at pp. 117 to 127, its chart at p. 128 and the specifications at
+  p. 129. Roland's support pages for the instrument, its manuals and its updates. And the readme in
+  Roland's update archive for operating system 1.05.
+
+  A SCAN, CITED BY PAGE. Every one of the 138 sheets is one 1-bit image. Wherever a page number is
+  printed it is the sheet's own, which the first reading checked on thirty sheets and the second on
+  every numbered sheet, pp. 2 to 133, so the manual is cited with no offset. Sheet 137 is blank. The
+  book names no edition: the last page of distributors says "As of October, 28, 1996" (manual
+  p. 136) and prints `01014512` and `'96-11-E3-11S(D)` beneath it, and the back cover `71451034`
+  (manual p. 138).
+
+  TWO PARTS, EACH ON A CHANNEL OF ITS OWN. "On the JP-8000, two Patches are always selected, and you
+  can choose to play just one or both Patches." (manual p. 49), one on the Upper part and one on the
+  Lower, and the specifications give "2 (Upper/Lower)" (manual p. 129). Each part's channel is a
+  performance's Part MIDI CH, `1-16, OFF` (manual p. 86), and "On the JP-8000, the transmit channel
+  and the receive channel are shared." (manual p. 107). The only part-channel figures the book
+  prints are the standard settings a temporary performance is initialised to, the Upper part on 1
+  and the Lower on 2 (manual p. 92). The two are recorded as one kind of part with a count of two,
+  because each holds a whole patch of the same parameters (manual pp. 49 and 112). The controls
+  below are each part's on the reading of p. 107's sentence above, and of Volume and Panpot acting
+  on `each Part` (manual p. 117): no page says which channel a knob's controller is sent on, or that
+  one received on the Lower part's channel edits the Lower patch. Program change on a part's channel
+  selects its patch (manual p. 94).
+
+  AND A THIRD CHANNEL SELECTS PERFORMANCES. The Performance Control Channel, `1-16, OFF`: "This
+  selects the MIDI channel on which MIDI Program Change messages will be transmitted and received to
+  select Performances." (manual p. 89). "If you set the Part MIDI channel to the same MIDI channel
+  as the Performance Control channel (p.89), Performance selections will take priority" (manual
+  p. 86).
+
+  TWO MORE CHANNELS, NOT RECORDED AS PARTS. The Remote Control Channel, `1-16, ALL, OFF`, takes a
+  keyboard in place of the JP-8000's own: "By setting the Remote Control Channel to the transmit
+  channel of an external MIDI device, you can use the keyboard and controllers of the external MIDI
+  device in exactly the same way as the keyboard and controllers of the JP-8000 itself." (manual
+  p. 89), which includes its arpeggiator and pattern recording (manual pp. 95 and 117). The Trigger
+  Source Channel, `1-16`, takes the notes that start envelopes when Individual Trigger is on, and in
+  Split sends the Lower part's notes for them (manual pp. 88 and 117), on 15 in the standard
+  settings (manual p. 92). Neither is a part: what arrives on them acts as the JP-8000's own
+  keyboard and triggers do, through the key mode, the panel and the arpeggiator, which this format
+  has no way to describe.
+
+  FORTY KNOBS, TWO MODES, AND NO PAGE SAYS WHICH IS THE FACTORY'S. The edit mode governs every
+  slider and knob but Volume and Tempo (manual p. 89), and the Transmit/Receive Setting List gives
+  the forty a column for each mode, and the ribbon's two halves an entry in MODE2's alone, headed
+  `MODE1` and `MODE2 (Factory Setting)` (manual p. 116). "MODE1: Editing data of the sliders/knobs
+  will be transmitted and received using the prescribed MIDI messages." (manual p. 89), and in MODE2
+  "you can specify the MIDI messages that will be used to transmit and receive editing data."
+  (manual p. 89), with the warning "Be aware that this mode uses MIDI in a non-standard way."
+  (manual p. 89). The implementation sets the condition: "Tx/Rx Setting (p.89) is effective when
+  Tx/Rx Edit SW (p.90) is ON and Tx/Rx Edit Mode (p.89) is MODE2." (manual p. 117). **The chapter on
+  recording to a sequencer says the opposite** of the switch: `Turn this OFF.` (manual p. 97), then
+  "When you move a controller or playback a Motion, control change messages or exclusive messages
+  will be transmitted and recorded on the external sequencer." (manual p. 97). No page reconciles
+  the two. MODE1 gives 28 of the forty a controller number and twelve `EXCLUSIVE`, and wherever
+  MODE1 has a number MODE2's factory setting has the same one, so **the controls below carry MODE2's
+  factory numbers**, and the twelve marked below travel as system exclusive in MODE1. **No page
+  gives the factory value of the edit mode, or of the edit switch** - nor of the Program Change,
+  Exclusive Receive and MIDI Sync switches, or of the performance and remote channels: the system
+  parameters' list gives each setting's values and no default (manual p. 115), and the standard
+  settings are a patch's and a performance's (manual p. 92). In MODE2 every number is a setting:
+  "Tx/Rx settings can be made for controller numbers 1 to 31 and 33 to 95." (manual p. 117).
+
+  THE TWELVE ARE EXACTLY THE ONES AMONG THE FORTY THE IMPLEMENTATION DOES NOT NAME. MODE2 gives
+  MODE1's twelve exclusive knobs controllers 20 to 31 (manual p. 116), and those twelve are the only
+  numbers among the forty that the implementation's list of control changes has no entry for (manual
+  pp. 117 and 118). Every number MODE1 uses is in that list, and the setting list writes a name
+  before each number, mostly the list's: `GENERAL1:CC16`, `SOUND-CTL5:CC74`, `EFFECT-CTL1:CC12`
+  (manual p. 116) against General Purpose Controller 1, Sound Controller 5 and Effect Control 1
+  (manual pp. 117 and 118). For 92 to 95 it writes `TREMOLO`, `CHORUS`, `SELESTE` and `PHASER`
+  (manual p. 116), where the list has Effects Depth 2-5 (manual p. 118). So what a number does is
+  what the setting gives it, and with the edit switch on, a number assigned to a parameter loses the
+  meaning the list gives it: "those control changes will not have their normal function but will
+  function in the same way as JP-8000 knob movements for those Patch parameters." (manual p. 117).
+  Volume, 7, is the plainest case: "Volume mesages are used to adjust the volume balance of each
+  Part." (manual p. 117), and both modes give the Amp section's LEVEL `VOLUME:CC07` (manual p. 116).
+
+  THE ADDRESS MAP AGREES. Its block for the same settings has 42 entries, the forty and the ribbon's
+  two, each set to `OFF, CC#1-31, AFTER, CC#33-95, SYSEX` and the ribbon's without SYSEX (manual
+  p. 122). Its names are its own: where the setting list has OSC2's `PULSE WIDTH` and `PWM DEPTH` it
+  has `OSC2 Control1` and `OSC2 Control2`, in the same order, and it spells `Oscillaator Balance`
+  and `Tone Control Base`. The labels below are the parameter list's full names (manual pp. 112 and
+  113).
+
+  SEVEN CONTROLLERS THE SETTING LIST DOES NOT ASSIGN. The implementation also lists 1 Modulation, 10
+  Panpot, 11 Expression, 64 Hold1, 65 Portamento, 68 Legato Footswitch and 84 Portamento Control
+  (manual pp. 117 and 118). The control pedal's Pedal Assign is
+  `OFF, MODULATION: CC01, PANPOT: CC10, EXPRESSION: CC11, LFO 1 RATE-RIBBON DOWN` (manual p. 85),
+  and its first setting is "MODULATION: CC01: The same change will occur as when the Modulation
+  lever is moved." (manual p. 74). The only other page to put a number beside the lever or the hold
+  pedal says "Modulation (CC#1), Pan (CC#10), Expression (CC#11), and Hold (CC#64) can be controlled
+  via pedals or the modulation lever" (manual p. 107); no page says in so many words what the lever
+  or the hold pedal sends. Those four are recorded both ways on that reading. The arpeggiator and
+  pattern player send 84 (manual p. 120). No factory assignment and no fixed control sends 65 or 68:
+  the instrument has a hold pedal jack and a control pedal jack and no other pedal jack (manual
+  p. 129), and Pedal Assign offers neither (manual p. 85). A knob given 65 or 68 in MODE2 would send
+  it, but as that knob's parameter rather than as a portamento or legato switch, so those two are
+  recorded as received only.
+
+  THE RIBBON. Its two halves are settings of their own, and "Ribbon controller Transmit/Receive
+  Settings are valid regardless of whether Edit Transmit/Receive Mode is set to MODE 1 or MODE"
+  (manual p. 116) - the footnote stops there - and its own page says "The Transmit/Receive Setting
+  of the ribbon controller is always valid, regardless of whether the Edit Transmit/Receive mode is
+  set to MODE1 or MODE2." (manual p. 89). **The channel pressure section puts it under the knobs'
+  condition instead**: "The Tx/Rx Setting (p.89) is effective when Tx/Rx Edit SW (p.90) is ON and
+  Tx/Rx Edit Mode (p.89) is MODE2. You can assign Channel Pressure messages to the Ribbon
+  Controller." (manual p. 118). Its right half, UP, is `AFTERTOUCH`, channel pressure, and its left,
+  DOWN, `BREATH:CC02` (manual pp. 89 and 116), which the implementation's reset values call the
+  defaults too (manual p. 119). "The JP-8000's keyboard does not implement Channel Pressure."
+  (manual p. 118), so at the factory settings the channel pressure this instrument sends is the
+  ribbon's right half, and pressure it receives moves that half (manual p. 118). In MODE2 a knob can
+  be given aftertouch instead (manual pp. 89 and 107).
+
+  PROGRAMS: 256 PATCHES AND 128 PERFORMANCES. 128 user and 128 preset patches, and 64 user and 64
+  preset performances (manual p. 129). Bank select's MSB is 80 for the user banks and 81 for the
+  presets, its LSB 0, and program change takes 0 to 127 for a patch and 0 to 63 for a performance
+  (manual p. 117). The Program Change switch is `OFF`, `PC` or `BANK SEL + PC` (manual p. 90), and
+  bank select is "Not received and transmitted when the Tx/Rx Program Change SW is OFF or PC."
+  (manual p. 117). `presets` counts the patches; a performance is a pair of them with settings of
+  its own (manual p. 49), as `asm/leviasynth` counts its singles and not its multis.
+
+  EIGHT VOICES, SHARED. "The JP-8000's sound source is able to produce up to 8 notes (voices) at
+  once." (manual p. 48), and the specifications give `8 Voices` (manual p. 129). In Dual and Split a
+  performance's Voice Assign divides them between the Lower and Upper parts, `6-2` to `2-6` (manual
+  p. 85), and each patch's Mono switch plays one: "When this is Off, up to 8 notes can be played
+  simultaneously." (manual p. 70).
+
+  CLOCK, TRANSPORT AND SONG POSITION ARE RECEIVED ONLY. The chart crosses every system realtime row
+  as transmitted, and as recognised circles Clock with the footnote "O x is selectable." (manual
+  p. 128), circles Start and Stop, and crosses Commands (manual p. 128). The implementation lists
+  clock, start, continue and stop, each with "This message will be received if the MIDI Sync SW is
+  ON." (manual p. 120), where the chart has no row for continue. The chart also circles song
+  position as recognised (manual p. 128); this format has no field for it, and the implementation
+  does not describe it.
+
+  WHAT IS NOT CARRIED, AND THE MISPRINTS IN IT. The system exclusive map (manual pp. 121 to 127).
+  The registered parameters, bend sensitivity and master fine tuning, and data entry, 6 and 38,
+  which carries their values (manual pp. 117 and 118). Bank select's LSB, 0 in every row. And the
+  misprints, none of which changes a field: the MIDI chapter's table gives the user performances
+  `51H/00H` (manual p. 94), the presets' bank, where the implementation gives them 80 (manual
+  p. 117); the system parameters' list gives the Program Change switch `ON, PC, BANK SEL + PC`
+  (manual p. 115) where its own page gives `OFF` (manual p. 90); the setting list spells Effects
+  Depth 4 `SELESTE` and leaves its footnote unfinished (manual p. 116); the implementation prints
+  Effects Depth 2-5's third byte as `kkH`, its mark for a note number (manual p. 118); and the
+  address map's two spellings above.
+
+midi:
+  # The chart's basic channel, `1-16` default and changed in both columns (manual p. 128): each
+  # part's channel and the performance channel are settings of their own. See the account.
+  channels: [1, 16]
+  # `Mode 3` the default both ways; recognised as `Mode 3, 4 (M=1)`, with "Recognized as M=1 even if
+  # M≠1." (manual p. 128). Mono and poly turn the Mono switch on and off (manual p. 119), and omni
+  # off and poly are sent on every channel at start-up (manual p. 120).
+  mode: 3
+  # Received only, behind the MIDI Sync switch. See the account.
+  clock: receives
+  transport: receives
+  program_change:
+    # Circled both ways with "O x is selectable." (manual p. 128), the Program Change switch (manual
+    # p. 90).
+    receives: true
+    sends: true
+    # 128 user and 128 preset patches (manual p. 129); the 128 performances are not added in. See
+    # the account.
+    presets: 256
+  # The only parameter numbers the implementation names are registered: "This device receives the
+  # following RPNs." (manual p. 118) - bend sensitivity, master fine tuning and null. No
+  # non-registered parameter appears, and no setting can give a knob 98 or 99, since the settings
+  # stop at 95 (manual p. 117).
+  nrpn: none
+  # Circled both ways (manual p. 128): data request and data set, under Roland's ID and the model ID
+  # `00H 06H` (manual p. 119). Data set is not received while the Exclusive Receive switch is off
+  # (manual p. 120), and p. 90 gives that switch the decision when the edit switch is off (manual
+  # p. 90).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # Recognised 0 to 127, and sent 12 to 108 (manual p. 128) from 49 keys (manual p. 129).
+  note_range: [0, 127]
+  # Eight in all, which the parts draw on together (manual p. 48). In Dual and Split a performance's
+  # Voice Assign divides them between the parts (manual p. 85), which is a setting of the player's;
+  # no page says how they are shared when both parts' channels are played in Single.
+  polyphony: 8
+  polyphony_shared: true
+  voicing_modes: [1, 8]
+  velocity:
+    # Circled both ways for note on and for note off (manual p. 128).
+    note_on: both
+    note_off: true
+  # `Ch's` circled both ways and `Key's` crossed (manual p. 128). The keyboard sends none; at the
+  # factory settings the ribbon's right half does, and pressure received moves it. See the account.
+  aftertouch: channel
+  pitch_bend:
+    # Bend Range Up and Down, 0 to 24 semitones each, are a patch's (manual p. 113), and bend
+    # sensitivity received as a registered parameter sets both: "The Bend Range up parameter, Bend
+    # Range Down parameter will also be changed." (manual p. 118). It reaches half as far: "Up to 1
+    # octave can be specified in semitone steps." (manual p. 118).
+    programmable: true
+
+parts:
+  # The Upper and Lower parts. See the account.
+  part:
+    label: Upper and Lower Part
+    count: 2
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+  # The Performance Control Channel: bank select and program change select a performance.
+  performance:
+    label: Performance Control
+    channel: assigned
+    receives: [controls, program_change]
+
+groups:
+  lfo1: LFO1
+  osc_common: OSC Common
+  osc1: OSC1
+  osc2: OSC2
+  filter: Filter
+  amp: Amp
+  tone_control: Tone Control
+  chorus: Chorus
+  delay: Delay
+  keyboard: Keyboard
+  lfo2: LFO2
+  controller: Controller
+  control_change: Control Change
+
+controls:
+
+  # THE FORTY KNOBS AND SLIDERS, at MODE2's factory numbers (manual p. 116) under the parameter
+  # list's names (manual pp. 112 and 113). Those marked MODE1 EXCLUSIVE travel as system exclusive
+  # in MODE1.
+  lfo1_rate:                  {label: LFO1 Rate, cc: 16, part: part, group: lfo1}
+  # MODE1 EXCLUSIVE.
+  lfo1_fade:                  {label: LFO1 Fade, cc: 20, part: part, group: lfo1}
+
+  osc_balance:                {label: Oscillator Balance, cc: 8, part: part, group: osc_common}
+  cross_modulation_depth:     {label: Cross Modulation Depth, cc: 70, part: part, group: osc_common}
+  osc_lfo1_depth:             {label: Oscillator LFO1 Depth, cc: 18, part: part, group: osc_common}
+  # MODE1 EXCLUSIVE, these three.
+  osc_envelope_depth:         {label: Oscillator Envelope Depth, cc: 25, part: part, group: osc_common}
+  osc_envelope_attack:        {label: Oscillator Envelope Attack Time, cc: 26, part: part, group: osc_common}
+  osc_envelope_decay:         {label: Oscillator Envelope Decay Time, cc: 27, part: part, group: osc_common}
+
+  osc1_control_1:             {label: OSC1 Control 1, cc: 4, part: part, group: osc1}
+  osc1_control_2:             {label: OSC1 Control 2, cc: 76, part: part, group: osc1}
+
+  # MODE1 EXCLUSIVE.
+  osc2_range:                 {label: OSC2 Range, cc: 21, part: part, group: osc2}
+  osc2_fine_wide:             {label: OSC2 Fine Tune/Wide, cc: 77, part: part, group: osc2}
+  osc2_pulse_width:           {label: OSC2 Pulse Width, cc: 78, part: part, group: osc2}
+  osc2_pwm_depth:             {label: OSC2 PWM Depth, cc: 79, part: part, group: osc2}
+
+  cutoff_frequency:           {label: Cutoff Frequency, cc: 74, part: part, group: filter}
+  resonance:                  {label: Resonance, cc: 71, part: part, group: filter}
+  # MODE1 EXCLUSIVE.
+  cutoff_key_follow:          {label: Cutoff Frequency Key Follow, cc: 30, part: part, group: filter}
+  filter_lfo1_depth:          {label: Filter LFO1 Depth, cc: 19, part: part, group: filter}
+  filter_envelope_depth:      {label: Filter Envelope Depth, cc: 81, part: part, group: filter}
+  filter_attack:              {label: Filter Envelope Attack Time, cc: 82, part: part, group: filter}
+  filter_decay:               {label: Filter Envelope Decay Time, cc: 83, part: part, group: filter}
+  # MODE1 EXCLUSIVE, these two.
+  filter_sustain:             {label: Filter Envelope Sustain Level, cc: 28, part: part, group: filter}
+  filter_release:             {label: Filter Envelope Release Time, cc: 29, part: part, group: filter}
+
+  # `VOLUME:CC07` in both modes: the implementation's Volume. See the account.
+  amp_level:                  {label: Amplifier Level, cc: 7, part: part, group: amp}
+  # The Amp section's `LFO1 DEPTH/PAN` (manual p. 116).
+  amp_lfo1_depth:             {label: Amplifier LFO1 Depth, cc: 80, part: part, group: amp}
+  amp_attack:                 {label: Amplifier Envelope Attack Time, cc: 73, part: part, group: amp}
+  amp_decay:                  {label: Amplifier Envelope Decay Time, cc: 75, part: part, group: amp}
+  # MODE1 EXCLUSIVE.
+  amp_sustain:                {label: Amplifier Envelope Sustain Level, cc: 31, part: part, group: amp}
+  amp_release:                {label: Amplifier Envelope Release Time, cc: 72, part: part, group: amp}
+
+  tone_control_bass:          {label: Tone Control Bass, cc: 92, part: part, group: tone_control}
+  tone_control_treble:        {label: Tone Control Treble, cc: 95, part: part, group: tone_control}
+
+  chorus_level:               {label: Chorus Level, cc: 93, part: part, group: chorus}
+
+  delay_time:                 {label: Delay Time, cc: 12, part: part, group: delay}
+  delay_feedback:             {label: Delay Feedback, cc: 13, part: part, group: delay}
+  delay_level:                {label: Delay Level, cc: 94, part: part, group: delay}
+
+  portamento_time:            {label: Portamento Time, cc: 5, part: part, group: keyboard}
+
+  lfo2_rate:                  {label: LFO2 Rate, cc: 17, part: part, group: lfo2}
+  # MODE1 EXCLUSIVE, these three.
+  pitch_lfo2_depth:           {label: Pitch LFO2 Depth, cc: 22, part: part, group: lfo2}
+  filter_lfo2_depth:          {label: Filter LFO2 Depth, cc: 23, part: part, group: lfo2}
+  amp_lfo2_depth:             {label: Amp LFO2 Depth, cc: 24, part: part, group: lfo2}
+
+  # THE RIBBON'S LEFT HALF, DOWN, `BREATH:CC02` at the factory (manual p. 116), and in either mode
+  # (manual p. 89). Its right half is channel pressure, under voice.aftertouch.
+  ribbon_controller_down:     {label: Ribbon Controller Down, cc: 2, part: part, group: controller}
+
+  # THE SEVEN THE SETTING LIST DOES NOT ASSIGN, under the implementation's names (manual pp. 117 and
+  # 118). See the account for their directions.
+  modulation:                 {label: Modulation, cc: 1, part: part, group: control_change}
+  panpot:                     {label: Panpot, cc: 10, part: part, group: control_change}
+  expression:                 {label: Expression, cc: 11, part: part, group: control_change}
+  # Bands: "00H-3FH (0 - 63 : OFF), 40H-7FH (64 - 127 : ON)" (manual p. 117), for these three.
+  hold_1:                     {label: Hold1, cc: 64, values: {"off": 0, "on": 64}, part: part, group: control_change}
+  portamento:                 {label: Portamento, cc: 65, values: {"off": 0, "on": 64}, direction: receives, part: part, group: control_change}
+  legato_footswitch:          {label: Legato Footswitch, cc: 68, values: {"off": 0, "on": 64}, direction: receives, part: part, group: control_change}
+  # The value is a note number: "A Note On message received immediately after a Portamento control
+  # will be sounded with the pitch changing smoothly from the source note number." (manual p. 118).
+  portamento_control:         {label: Portamento Control, cc: 84, part: part, group: control_change}
+
+  # BANK SELECT'S MSB, 80 for the user bank and 81 for the presets, LSB 0 (manual p. 117): a patch
+  # on a part's channel, a performance on the performance channel.
+  bank_select:                {label: Bank Select, cc: 0, choices: {user: 80, preset: 81}, range: [80, 81], part: part, group: control_change}
+  performance_bank_select:    {label: Bank Select, cc: 0, choices: {user: 80, preset: 81}, range: [80, 81], part: performance, group: control_change}
+
+sources:
+  manual:
+    kind: manual
+    title: JP-8000 Owner's Manual
+    landing: "https://www.roland.com/global/support/by_product/jp-8000/owners_manuals/"
+    url: "https://static.roland.com/assets/media/pdf/JP-8000_OM.pdf"
+    sha256: 047e31bfa636ff000819c960fa22d0c0fafab053e5a486323ce423ce518a78c8
+    retrieved: 2026-10-09
+    # A SCAN: 138 sheets, each one 1-bit image, and not a character of text. No edition is printed;
+    # see the account. The printed page is the sheet wherever one is printed, so page_offset is 0.
+    page_offset: 0
+  manuals_page:
+    kind: download_page
+    title: "Roland - Support - JP-8000 - Owner's Manuals"
+    landing: "https://www.roland.com/global/support/by_product/jp-8000/"
+    url: "https://www.roland.com/global/support/by_product/jp-8000/owners_manuals/"
+    sha256: 000540f9ec374ee6e652ed9ec5ddacea1f6ac58015dd26bf06fdb99e56f028c4
+    retrieved: 2026-10-09
+    paginated: false
+  updates:
+    kind: download_page
+    title: "Roland - Support - JP-8000 - Updates & Drivers"
+    landing: "https://www.roland.com/global/support/by_product/jp-8000/"
+    url: "https://www.roland.com/global/support/by_product/jp-8000/updates_drivers/"
+    sha256: f2d7c5fe068d4d341a3cd911da80d30ff5f2be16fa1aabbd192ab54f1a8b3f37
+    retrieved: 2026-10-09
+    paginated: false
+  readme:
+    kind: release_notes
+    title: JP-8000 Software Update Procedure
+    edition: "1.05"
+    landing: "https://www.roland.com/global/support/by_product/jp-8000/updates_drivers/ed5d25d9-77b3-49f9-9d0e-be7ec209aab7/"
+    url: "https://static.roland.com/assets/media/zip/JP800015.zip"
+    sha256: 7842c17b5d5ecca2bea8130d459326fa2cfcc848f687eaa5b4f06432c997e719
+    retrieved: 2026-10-09
+    # The `readme.txt` in the archive the landing page offers for the PC, beside eight standard MIDI
+    # files the readme has sent to the instrument from a sequencer; the digest is the readme's, and
+    # the edition is the landing page's. The readme names no version and no change.
+    paginated: false

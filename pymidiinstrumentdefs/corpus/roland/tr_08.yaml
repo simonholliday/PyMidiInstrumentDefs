@@ -166,15 +166,15 @@ source: >-
   four sheets of track credits - number, tempo, genre, author and a web address - beside artwork
   with no text, and the word MIDI is not in it.
 
-  CHECKED AND ABSENT: both aftertouches and pitch bend, each `x` in both columns; and Song Select
-  and Tune Request. Swept across both editions of the manual with the text reduced to letters and
-  digits, none of NRPN, exclusive, program change, bank select, control change, velocity,
-  aftertouch, pitch bend, polyphony, omni or offline appears.
+  CHECKED AND ABSENT: both aftertouches and pitch bend, each `x` in both columns; Song Select and
+  Tune Request; and NRPN, because the chart's Control Change row names every number the instrument
+  uses and an NRPN needs four that are not among them. Swept across both editions of the manual
+  with the text reduced to letters and digits, none of NRPN, exclusive, program change, bank
+  select, control change, velocity, aftertouch, pitch bend, polyphony, omni or offline appears.
 
-  NOT RECORDED: the polyphony, which no document states; NRPN, which the chart has no row for and no
-  document mentions, a silence rather than a checked absence; values, bands or defaults for any
-  control, none of which any document gives; and how a controller's 0 to 127 lands on the menu's own
-  ranges, -128 to 127 for tune and decay and 0 to 100 for compression, which no document gives
+  NOT RECORDED: the polyphony, which no document states; values, bands or defaults for any
+  control, none of which any document gives; and how a controller's 0 to 127 lands on the menu's
+  own ranges, -128 to 127 for tune and decay and 0 to 100 for compression, which no document gives
   either.
 
 sources:
@@ -300,7 +300,11 @@ midi:
     sends: false
   # Crossed in both columns (chart p. 1): a checked absence.
   sysex: false
-  # NOT RECORDED: nrpn. The chart has no row for it and neither manual mentions it.
+  # The chart's Control Change row names every number this instrument sends and recognises,
+  # `20–29`, `46–63`, `71` and `80–88` (chart p. 1), and an NRPN needs 98, 99, 6 and 38, none of
+  # which is among them. So this is a checked absence and not an assumed one, as for
+  # `roland/juno_106`.
+  nrpn: none
 
 voice:
   # Notes name instruments: the chart's True Voice row is starred out in its Transmitted cell and

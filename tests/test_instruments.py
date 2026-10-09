@@ -16959,6 +16959,17 @@ class TestTR08:
 		assert tr_08.midi.program_change.presets is None
 		assert tr_08.midi.sysex is False
 
+	def test_nrpn_is_a_checked_absence (self) -> None:
+		"""The chart's Control Change row names every number, and none an NRPN needs.
+
+		Left unrecorded until 2026-10-09, while `roland/jd_800`, `roland/juno_106` and
+		`roland/jd_08` read the same kind of chart as `none`.
+		"""
+		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
+
+		assert tr_08.midi.nrpn == "none"
+		assert not {control.cc for control in tr_08.controls.values()} & {6, 38, 98, 99, 100, 101}
+
 	def test_the_footnote_marks_each_do_two_jobs (self) -> None:
 		account = " ".join((prose_of("roland", "tr_08")).split())
 

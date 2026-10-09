@@ -1,11 +1,11 @@
-# **THIS DEFINITION CARRIES NO CONTROLS, WHICH IS PARTLY A FINDING AND PARTLY A CHOICE.** The
-# finding: Akai's 545-page user guide for this instrument and the MPC XL contains no NRPN, no RPN,
-# no system exclusive, no implementation chart and no control map, and its maps are the owner's,
-# saved with the project rather than with the instrument: "These assignments will be saved with your
-# MPC project." (guide p. 358). The choice: **the guide does give two numbers an effect, the MIDI
-# specification's own 1 and 11**, modulation and expression, each where the owner switches it on or
-# sets its depth - and those are recorded in the account rather than carried, as the committed
-# `akai/mpc_live` carries none from a guide with the same passages. The account says so plainly.
+# **TWO CONTROLS, BOTH RECEIVED: THE ONLY CONTROLLER NUMBERS THE GUIDE GIVES AN EFFECT.** Akai's
+# 545-page user guide for this instrument and the MPC XL contains no NRPN, no RPN, no system
+# exclusive, no implementation chart and no control map, and its maps are the owner's, saved with
+# the project rather than with the instrument: "These assignments will be saved with your MPC
+# project." (guide p. 358). **But it gives two numbers an effect, the MIDI specification's own 1
+# and 11**, modulation and expression, each where the owner switches it on or sets its depth, and
+# those two are carried, as `akai/mpc_xl` carries them from this guide and `akai/mpc_live` from
+# the same passages in its own.
 #
 # **TWO MACHINES IN ONE GUIDE**, and it marks the difference plainly: a parenthetical, `(MPC Live
 # III only)` or `(MPC XL only)`, or a sentence that names one machine. Every such sentence that
@@ -62,9 +62,10 @@ source: >-
   AND ONE UNSCOPED PROCEDURE FITS NEITHER MACHINE AS THE GUIDE DESCRIBES THEM. The MIDI Machine
   Control appendix says to "connect your MPC’s MIDI Out A to the MIDI input of your external
   device." (guide p. 533), to "Tap the Send Port 1 field" (guide p. 533) on a `Sync tab` - perhaps
-  the preferences' `MIDI / Sync` - and names a `MIDI In A`. This machine's panel calls its sockets
-  plain `MIDI Out` (guide p. 386); the MPC XL's has "MIDI Out A–D" (guide p. 396) but `MIDI In 1/2`
-  (guide p. 396); and no other page has a Send Port field or a MIDI In A.
+  the preferences' `MIDI / Sync` - and names a `MIDI In A`. This machine's panel text calls its
+  sockets plain `MIDI In` and `MIDI Out` (guide p. 386), though the drawing above it letters the
+  second output B and numbers the second input 2; the MPC XL's has "MIDI Out A–D" (guide p. 396)
+  but `MIDI In 1/2` (guide p. 396); and no other page has a Send Port field or a MIDI In A.
 
   THE MAPS ARE THE OWNER'S, IN BOTH DIRECTIONS. Inward: "You can use the MIDI Learn function to
   assign external MIDI controllers to various parameters in your specific MPC project" (guide p.
@@ -74,7 +75,7 @@ source: >-
   Number: This determines what MIDI Control Change number the button will send to the software."
   (guide p. 370) - and "The edits you make in MIDI Control Mode will be retained with the current
   MPC project." (guide p. 368). So apart from the two numbers below, which number reaches which
-  parameter is not a property of the instrument, and `midi.control_change` records that.
+  parameter is not a property of the instrument.
 
   AND THE MACHINE OFFERS CONTROLS IT DOES NOT HAVE. "The Control field menu will show many more
   hardware controls than are actually available on your MPC." (guide p. 369), because "the list
@@ -90,7 +91,7 @@ source: >-
   specification rather than enumerating. And the pad note map's third preset is "Classic MPC (the
   default MIDI note map of classic MPCs)" (guide p. 129), whose numbers are never printed.
 
-  BUT IT DOES GIVE TWO NUMBERS AN EFFECT, 1 AND 11, ON FOUR PAGES - RECORDED HERE AND NOT CARRIED.
+  BUT IT DOES GIVE TWO NUMBERS AN EFFECT, 1 AND 11, ON FOUR PAGES, AND BOTH ARE CARRIED.
   Two are about what arrives. The arpeggiator's modifiers "enable Expression messages (MIDI CC #11)
   from external MIDI controllers to modify the arpeggiator" (guide p. 87), and likewise "Modulation
   messages (MIDI CC #1) from external MIDI controllers to modify the arpeggiator." (guide p. 87);
@@ -98,11 +99,12 @@ source: >-
   LFO." (guide p. 263). Two are about what the touch strip produces, "to control the MIDI CC1
   modulation control" (guide p. 104) and "to control the MIDI CC11 expression control" (guide p.
   105), with nothing saying that leaves by a port. **So this instrument does answer to two fixed
-  numbers**, the MIDI specification's own modulation and expression. They are not carried as
-  controls, and that is a choice rather than a finding, made for two reasons: each effect is one the
-  owner switches on or sets the depth of - the arpeggiator's boxes, the LFO's knob - and the
-  committed `akai/mpc_live`, whose guide has the same arpeggiator, touch strip and LFO passages,
-  carries none. Whether both files should carry them is left open rather than settled by one file.
+  numbers**, the MIDI specification's own modulation and expression, and both are carried,
+  received only. Each effect is one the owner switches on or sets the depth of - the arpeggiator's
+  boxes, the LFO's knob - but the number is fixed. `control_change` holds one word for a whole
+  instrument, and this one is both kinds at once, so the field is left unset, as
+  `teenage_engineering/op_1_field` leaves it; `akai/mpc_live` carries the same two from a guide
+  with the same arpeggiator and LFO passages.
 
   THE ONE LIST OF CONTROLLER NUMBERS IS A FILTER, NOT A MAP. "MIDI CC Filter: Check these boxes to
   allow the listed MIDI Control Change messages to pass through the track." (guide p. 296), and it
@@ -136,7 +138,13 @@ source: >-
   PROGRAM CHANGE GOES BOTH WAYS AND REACHES TWO DIFFERENT THINGS. "Program Change: This determines
   what an incoming MIDI program change message will change: a Sequence or Track." (guide p. 65). And
   a track sends one: "To select a MIDI program change value for the track to send, check the Program
-  Change box to enable program changes" (guide p. 55).
+  Change box to enable program changes" (guide p. 55). **AND A TRACK SENDS A BANK CHANGE WITH IT**:
+  "Once enabled, you can also select a MIDI bank change value by checking the Bank Change box to
+  enable bank changes, and then use the MIDI Bank MSB and MIDI Bank LSB fields to set the bank
+  change values." (guide p. 55), and a MIDI track's fields include "Bank LSB and Bank MSB fields to
+  select the messages for Least Significant Byte and Most Significant Byte (respectively) that the
+  track sends out." (guide p. 123). No range and no controller number is printed for either, and no
+  page says an incoming one does anything, so it is recorded here and not carried.
 
   AND THE TWO RANGES THE GUIDE GIVES FOR A PROGRAM CHANGE DISAGREE. A track's is "enter a value from
   1–127" (guide p. 55); the glossary says "Programs 1–128 can be changed via program change
@@ -154,23 +162,27 @@ source: >-
   send MIDI data to" (guide p. 54), which is a copying slip rather than a second statement about
   reception.
 
-  AFTERTOUCH AND VELOCITY ARE LEFT UNSET, AND NOT BECAUSE NOTHING IS SAID. The pads send them, at
-  the owner's choice: in MIDI Control Mode each pad's aftertouch is "Off: The pad will not send any
-  aftertouch messages." (guide p. 369), "Channel: If you press multiple pads that have this setting,
-  the aftertouch messages they send will be identical." (guide p. 369), or "Poly: If you press
-  multiple pads, the aftertouch message each pad sends will be independent from the others." (guide
-  p. 369); and "When set to Off, pressing the pad will send a note at full-level (127) always."
-  (guide p. 369). **And the instrument does things with them when they arrive**, every one of them a
-  setting: the arpeggiator's boxes "enable Channel Pressure messages from external MIDI controllers
-  to modify the arpeggiator" (guide p. 87), a keygroup's "Aftertouch To Cut 1/2 determines how much
-  a connected MIDI keyboard’s aftertouch data affects the filter cutoff." (guide p. 266) and
-  "Pressure To Filter determines how much a connected MIDI device’s channel pressure data affects
-  the filter envelope." (guide p. 266), and a layer has "the controls for sample offset and layer
-  velocity range" (guide p. 227). The fields are left unset to match `akai/mpc_live`, whose guide
-  has the same kind of passages, and whether both should record them goes with the question of 1 and
-  11. The pads themselves are "(16) velocity- and pressure-sensitive pads with 3D-sensing
-  technology" (guide p. 540), and their X/Y position is recorded as an event type of its own (guide
-  p. 66), for which no MIDI message is named.
+  AFTERTOUCH AND VELOCITY ARE RECORDED FROM WHAT THE INSTRUMENT DOES WITH THEM WHEN THEY ARRIVE. The
+  pads send them, at the owner's choice: in MIDI Control Mode each pad's aftertouch is "Off: The pad
+  will not send any aftertouch messages." (guide p. 369), "Channel: If you press multiple pads that
+  have this setting, the aftertouch messages they send will be identical." (guide p. 369), or "Poly:
+  If you press multiple pads, the aftertouch message each pad sends will be independent from the
+  others." (guide p. 369); and "When set to Off, pressing the pad will send a note at full-level
+  (127) always." (guide p. 369). **And the instrument does things with them when they arrive**, each
+  a setting, and keeps the two kinds of pressure apart: the arpeggiator's boxes "enable Aftertouch
+  messages from the pads or external MIDI controllers to modify the arpeggiator" (guide p. 87) and
+  "enable Channel Pressure messages from external MIDI controllers to modify the arpeggiator"
+  (guide p. 87), and a keygroup's "Aftertouch To Cut 1/2 determines how much a connected MIDI
+  keyboard’s aftertouch data affects the filter cutoff." (guide p. 266) and "Pressure To Filter
+  determines how much a connected MIDI device’s channel pressure data affects the filter envelope."
+  (guide p. 266). So `aftertouch` is `poly`, **which is a reading**: the guide never says polyphonic
+  or key pressure, but it sets Aftertouch beside Channel Pressure as a kind of its own, and `poly`
+  is this format's word for the other kind. An incoming note's velocity is used too - "Use the
+  Velocity Scaling field to apply scaling to the incoming velocity." (guide p. 218), and a track's
+  "Velocity Range: This determines the Velocity Min and Velocity Max that passes MIDI."
+  (guide p. 296) - so `note_on` is `both`. The pads themselves are "(16) velocity- and
+  pressure-sensitive pads with 3D-sensing technology" (guide p. 540), and their X/Y position is
+  recorded as an event type of its own (guide p. 66), for which no MIDI message is named.
 
   TWO MIDI INPUTS, TWO MIDI OUTPUTS, USB AND CV. The specification lists "(2) 5-pin MIDI inputs"
   (guide p. 540) and "(2) 5-pin MIDI outputs" (guide p. 540), and "(4) Stereo 1/8” (3.5 mm) CV/Gate
@@ -190,16 +202,17 @@ source: >-
   name no MIDI message or number.
 
   CHECKED AND ABSENT, with the text reduced to letters and digits and swept across all 545 pages and
-  both sets of release notes: NRPN, system exclusive, implementation chart, bank select, MIDI
-  Polyphonic Expression and omni appear nowhere, and RPN only as the letters of `arp note repeat`
-  run together. The sweep was proved able to find something on a dozen phrases certainly present.
+  both sets of release notes: NRPN, system exclusive, implementation chart, the words bank select,
+  MIDI Polyphonic Expression and omni appear nowhere, and RPN only as the letters of
+  `arp note repeat` run together. The sweep was proved able to find something on a dozen phrases
+  certainly present.
   **The guide's screens are images** - the MIDI Control Mode pages carry two or three each - so a
   default number shown on a screen would be invisible to any search, and nothing here claims more
   than that the words are not in the text.
 
   NOT RECORDED: polyphony, which no page states for the machine - the warp algorithm speaks of
   "voices of the polyphonic limit" (guide p. 223) without a number; the range the pitch bend fields
-  take; aftertouch, velocity and the note map, for the reasons above; and system exclusive and NRPN,
+  take; the note map, for the reasons above; and system exclusive and NRPN,
   which are silence rather than a checked absence of a published statement.
 
 sources:
@@ -245,10 +258,10 @@ midi:
   # A track takes "Any" channel or one of 1-16 for its input and one of 1-16 for its output
   # (p. 54), and every MIDI Control Mode control chooses one of `(1–16)` (p. 369).
   channels: [1, 16]
-  # THE MAPS ARE THE OWNER'S, by MIDI Learn inward and MIDI Control Mode outward, and both are saved
-  # with the project (pp. 358, 368). The two numbers the guide gives an effect, 1 and 11, are in the
-  # account and not carried - a choice, explained there.
-  control_change: learned
+  # NOT RECORDED, AND ON PURPOSE: two numbers are fixed, 1 and 11, carried below, and every other
+  # is the owner's, by MIDI Learn inward and MIDI Control Mode outward, both saved with the project
+  # (pp. 358, 368). One word cannot say both, so `control_change` is left unset, as
+  # `teenage_engineering/op_1_field` leaves it.
   # Clock both ways, and either direction may be switched off; MIDI Time Code is the other choice of
   # both settings, and Ableton Link one more of Receive's (p. 65).
   clock: both
@@ -263,10 +276,23 @@ midi:
   # notes, which is silence rather than a checked absence.
 
 voice:
+  velocity:
+    # Sent by the pads, and an incoming note's is scaled and filtered (pp. 218, 296 and 369); see
+    # the account.
+    note_on: both
+  # Both kinds are received, the arpeggiator and a keygroup taking each (pp. 87 and 266), and
+  # `poly` is the stronger; see the account.
+  aftertouch: poly
   pitch_bend:
     # "Range Down / Range Up: Use these fields to determine the range of pitch bends in semitones."
     # (p. 66), with a Global Pitch Bend switch that overrides every track's own. THE RANGE THOSE
     # FIELDS TAKE IS NOT PUBLISHED, so `semitones` holds nothing.
     programmable: true
-  # NOT RECORDED: polyphony, aftertouch, velocity, the note map and the addressing. See the source
-  # account for each.
+  # NOT RECORDED: polyphony, the note map and the addressing. See the source account for each.
+
+controls:
+  # THE TWO NUMBERS THE GUIDE GIVES AN EFFECT, received only: the arpeggiator's modifiers (p. 87)
+  # and, for 1, a keygroup's LFO (p. 263). Each works where the owner switches it on or turns it
+  # up; see the account.
+  modulation_wheel:   {label: Mod Wheel, cc: 1, direction: receives}
+  expression:         {label: Expression, cc: 11, direction: receives}

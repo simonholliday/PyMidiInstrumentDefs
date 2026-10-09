@@ -12,7 +12,8 @@ held to.
 
 **One promise runs through all of it: every number in a definition can be traced to
 a document its maker published, and to the place in that document where it appears.**
-Nothing here is remembered, inferred, or copied from another database.
+Nothing here is remembered or copied from another database, and where a definition infers
+anything from what a document does say, it says so and why.
 
 ## 1. Find what the maker published
 
@@ -78,10 +79,42 @@ the difference between a definition that holds up and one that does not.
 
 - Community databases such as MIDI Guide, and `.midnam` files.
 - Working code that drives the same machine.
-- Copies on third-party sites — for a discontinued instrument this may be the only
-  copy left, and it is still not the maker's: check it against anything else you can
-  find, and say in your citation that it is a third-party copy.
+- Documents a third party wrote: a reviewer's table, a retailer's summary, somebody's own
+  chart. **A third party's copy of the maker's own manual is a different thing**, and the
+  next paragraphs say when it can carry a definition.
 - Forum posts and videos.
+
+**A third party's copy of the maker's own manual can stand in for the maker's.** Where the
+maker is gone, or no longer serves the manual that holds the MIDI map, a copy somebody
+else keeps - an enthusiast's scan, a retailer's download, a support mirror - may carry a
+definition, because what it holds is still the maker's document. Four conditions come with
+it:
+
+- **Label it.** Say in the source that it is a third-party copy: whose copy it is, where
+  you fetched it, and why no copy from the maker was used - the maker is gone, or its link
+  is dead, with the address and the date.
+- **Compare it.** Look for a second, independent copy and compare the two, and check every
+  number the copy shares with anything the maker does still serve: a quick start guide,
+  release notes, a specifications page.
+- **Read it twice**, by eye where it is a scan, with a blind second reading checking every
+  number and every quotation.
+- **Replace it when you can.** If the maker's own copy comes back, cite that instead.
+
+**Another model's document can give a number only where your instrument's own document
+says the two share an engine.** A Novation Summit's guide calls it a two-part instrument
+*"built around a dual implementation of Peak's synth core"*, and it prints the numbers of
+one modulation matrix slot where the Peak's manual numbers all sixteen. That sentence is
+what would let the Peak's manual supply the other fifteen. Believing two instruments are
+related is not enough: the maker has to say so, in the document about the instrument you
+are writing for. It lets a definition carry a number its own documents do not print, which
+is why the condition is narrow. Where it is met:
+
+- cite the other model's document in `sources` like any other, and say in the account that
+  it describes another instrument (until the format has a field for that);
+- state the inference in the account, with what supports it - for the Summit, the two
+  documents give the same parameter names, ranges and defaults, and the same numbers for
+  the one slot both print;
+- and expect the citation check to read that document like any other.
 
 **A web page changes without warning, so save what you read.** A product page is
 the maker's word, but unlike a PDF it serves different bytes to everyone and can be
@@ -280,7 +313,8 @@ above were found exactly that way.
 **Name it by its path.** `corpus/moog/matriarch.yaml` loads as `moog/matriarch`. Both
 halves match `[a-z][a-z0-9_]*`. The folder is the maker's short name — `moog`, not
 `moog_music` — while `model.manufacturer` is free text, spelled the way the maker
-prints it.
+prints it. A maker whose name begins with a digit is spelled out as it is said, so
+1010music's folder would be `ten_ten_music`.
 
 **Transcribe from the maker's document; never import and ship.** The importer that
 reads `.midnam` files is a good way to *start* your own definition and a poor place to
@@ -312,6 +346,14 @@ voice:
   addressing: none
   polyphony: 1
 ```
+
+**For `nrpn`, a chart that lists every controller number is a search of every page.** An
+NRPN travels on controllers 98 and 99, with its value on 6 and 38, and its registered
+counterpart, the RPN, travels on 100 and 101 with the same two for its value. So where a
+MIDI implementation chart lists every controller number the instrument uses, and 6, 38 and
+98 to 101 are not among them, the chart has said that the instrument takes no NRPN, and
+`midi.nrpn: none` records it. Say in a comment beside it which numbers the chart does
+list, so a reader can see the absence was checked rather than assumed.
 
 **Put a blank line between the topics of your `source` account.** It is a folded
 scalar, so a single line break becomes a space and the whole account arrives as one
@@ -384,6 +426,15 @@ model.
 `channels` is the range the instrument can be set to. Anything the format cannot yet
 express goes in a comment, never in an invented field.
 
+**Bank select is in the MIDI specification too, and it is carried anyway, wherever the
+maker numbers it.** CC 0 and CC 32 choose a bank of programs rather than shaping a sound,
+and they go in as controls all the same, with the maker's labels and ranges:
+
+```yaml
+  bank_select_msb: {label: Bank select MSB, cc: 0, group: system}
+  bank_select_lsb: {label: Bank select LSB, cc: 32, group: system}
+```
+
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
 section answers one channel above its strings. A Voce plays three parts across three
@@ -423,12 +474,21 @@ parts:
   solo:    {channel_offset: 1, receives: [notes], addressing: pitches}
 ```
 
-Four rules worth holding on to:
+Five rules worth holding on to:
 
 - **A control naming no part is on the base channel.** In a file that declares parts there
   is no single part to fall back on, so that is what leaving `part` off means. It is a real
   case rather than a tidy default: a Streichfett's balance, effects and performance controls
   are all of that kind.
+- **So where there is no base channel, or every part takes the standard controllers, those
+  controllers name their part.** A Roland MC-707's eight tracks each answer on a channel
+  the player gives them, and nothing derives from a base, so a control naming no part
+  would mean a channel the instrument does not have: every one of its controls names the
+  track. And where each part receives modulation, volume, pan and the rest, one copy
+  naming no part would say they reach the base channel alone. Write them once for each
+  kind of part instead. A JUPITER-X's four parts are one kind and its drum part another,
+  so its standard controllers are written twice, and the drum part's list is shorter
+  because its documents give it fewer.
 - **`receives` is a list because one flag is not enough.** A Voce's three parts each take
   notes *and their own program change*, while its effect controls are global to all three.
   No single true-or-false can say that. Leave `receives` out where the document does not
@@ -658,12 +718,13 @@ of its own rather than a second page number in the same brackets.
 
 Some instruments — discontinued ones especially — have nothing published any more.
 The maker's site may be gone, or the current owner of the brand may host only the
-reissue's documents.
+reissue's documents. **Look for somebody else's copy of the maker's own manual
+first**: section 2 says when one can carry a definition, bundled or not.
 
-You can still write a definition. **Mark it `unverified` in its own source line**, say
-exactly what you did use — a measurement from your own unit, a third-party copy of a
-manual, a photographed chart from the box — and keep it beside your own project, where
-it will load in preference to anything bundled.
+Where there is no such copy, you can still write a definition. **Mark it `unverified` in
+its own source line**, say exactly what you did use - a measurement from your own unit, a
+photographed chart from the box, a table somebody else drew up - and keep it beside your
+own project, where it will load in preference to anything bundled.
 
 What it cannot do is join the bundled set, because that set makes a promise about
 provenance it could not keep on your behalf.

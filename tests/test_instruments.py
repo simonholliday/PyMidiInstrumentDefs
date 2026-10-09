@@ -16758,8 +16758,20 @@ class TestSeqtrak:
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 
 		assert seqtrak.model.firmware == "2.00"
-		assert seqtrak.model.revision == "D0"
 		assert sorted(seqtrak.sources) == ["data_list", "downloads_page", "user_guide"]
+
+	def test_d0_is_the_documents_edition_and_not_a_hardware_revision (self) -> None:
+		"""Yamaha sells no SEQTRAK D0: the letters are the edition of both documents.
+
+		Recorded as the model's revision until v0.1.17, which put "D0" after the
+		name wherever a reader shows a revision beside it, as it rightly does for
+		the DRM1 MkIV.
+		"""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.model.revision is None
+		assert seqtrak.sources["data_list"].edition == "YJ-D0"
+		assert seqtrak.sources["user_guide"].edition == "D0"
 
 	def test_the_drumkit_disagreement_is_carried_rather_than_reduced (self) -> None:
 		"""The specification names five track types; both MIDI tables name four."""

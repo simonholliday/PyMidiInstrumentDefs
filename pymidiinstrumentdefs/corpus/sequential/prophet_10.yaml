@@ -2,7 +2,7 @@
 # A GAP. Sequential's documentation page has a Prophet-5 section and a Prophet-10 section, and the
 # Prophet-10's offers the Prophet-5 MIDI Implementation - the same file, byte for byte. Its own
 # User's Guide sends a reader to the support page for the list, and that page offers that file.
-# So the 64 controls below are read from the document the Prophet-5's definition was written
+# So the 85 controls below are read from the document the Prophet-5's definition was written
 # from, and they are the Prophet-5's field for field. A test says so, so that correcting either
 # file sends somebody to look at the other.
 #
@@ -83,17 +83,21 @@ source: >-
   both at once. The controller table says the condition itself: "They are transmitted when Param
   Xmit is set to CC, and recognized/received when Param Rcv is set to CC" (p. 4).
 
-  THE NRPN TABLE IS NOT RECORDED, AND THAT IS TO KEEP THIS FILE THE PROPHET-5'S. It holds 71
-  numbered parameters and three more given as spans, from 0 to 4109 (pp. 8-9), and the Prophet-5's
-  definition, written from the same file, records none of them, because the controller table and
-  the NRPN table number the same parameters differently - controller 3 and NRPN 0 are both OSC A
-  FREQUENCY - and some parameters are in only one. Two definitions that disagreed about one
-  document would be worse than either, so whether these two should carry the NRPNs is a question
-  for both files at once. What the two tables do agree about is every range they share: 50
-  parameter names are printed in both, and not one range differs. What they do not agree about
-  is one destination: the controller table has `PRESSURE FILTER` and `PRESSURE LFO` (p. 5), the
-  NRPN table `AFTERTOUCH > FILTER` and `AFTERTOUCH > AMP` (p. 8), and the guide's aftertouch
-  switch chooses "the Filter cutoff and/or the LFO amount" (guide p. 38).
+  THE NRPN TABLE IS CARRIED, AS IN THE PROPHET-5'S DEFINITION, AND AN NRPN SITS BESIDE A CONTROLLER
+  ONLY WHERE THE MAKER PRINTS THE SAME NAME IN BOTH TABLES. It holds 71 numbered parameters and
+  three more given as spans, from 0 to 4109 (pp. 8-9), and the controller table and the NRPN table
+  number the same parameters differently - controller 3 and NRPN 0 are both OSC A FREQUENCY. So 50
+  controls carry both numbers, exactly where the two tables print the same name, and what the two
+  tables agree about is every range those 50 share: not one differs. Seven more NRPNs sit in the
+  places the controller table gives to rows of other names - `AFTERTOUCH > FILTER` where it has
+  `PRESSURE FILTER`, and six like it - and are carried as controls of their own, because pairing two
+  different names is a reader's judgement and not the maker's, and paired by position one of them
+  would disagree with its controller about a destination: the controller table has `PRESSURE FILTER`
+  and `PRESSURE LFO` (p. 5), the NRPN table `AFTERTOUCH > FILTER` and `AFTERTOUCH > AMP` (p. 8), and
+  the guide's aftertouch switch chooses "the Filter cutoff and/or the LFO amount" (guide p. 38). The
+  fourteen global parameters are controls of their own too, 85 controls in all, field for field the
+  Prophet-5's. The three spans are not carried: `UNISON NOTE` is one row over ten numbers, 55-64
+  (p. 9), and the other two are `RESERVED`.
 
   TWO NUMBERS ARE REFUSED BY THE VALIDATOR AND ARE LEFT OUT RATHER THAN DROPPED SILENTLY.
   Controller 123 is "All Notes Off: Clear all MIDI notes" (p. 2) and controller 121 is "Reset All
@@ -192,13 +196,16 @@ source: >-
   "PITCH WHEEL RANGE" (p. 5) with a range of `0-11` - twelve values either way, by one, and the
   implementation does not say that the controller's 0 is the panel's 1.
 
-  TWO MORE RANGES THE GUIDE GIVES DIFFERENTLY, CARRIED AS THE IMPLEMENTATION PRINTS THEM. Controller
-  114 is `UNISON DETUNE` over `0-7` (p. 5), eight values, and the guide says "A setting of 0 is
-  minimum detuning. A setting of 8 is maximum detuning" (guide p. 40), nine. Controller 31 is
-  `RESONANCE` over `0-120` (p. 4), and the guide's example of the pot modes says "the resonance
-  parameter has an internal value range of 0 to 127" (guide p. 14). The ranges below are what a
-  message carries, by the implementation's word; neither document says how the other's numbers
-  map onto them.
+  FOUR MORE RANGES THE GUIDE GIVES DIFFERENTLY, CARRIED AS THE IMPLEMENTATION PRINTS THEM.
+  Controller 114 is `UNISON DETUNE` over `0-7` (p. 5), eight values, and the guide says "A setting
+  of 0 is minimum detuning. A setting of 8 is maximum detuning" (guide p. 40), nine. Controller 31
+  is `RESONANCE` over `0-120` (p. 4), and the guide's example of the pot modes says "the resonance
+  parameter has an internal value range of 0 to 127" (guide p. 14). And two of the global NRPNs:
+  `VEL RESPONSE` is printed over `0-7` (p. 9), eight values, where the guide's global is "Vel
+  Response: 0-6" (guide p. 16), seven; and `ALT TUNINGS` over `0-15` (p. 9), sixteen, where the
+  guide offers normal tuning and sixteen more (guide p. 16). The ranges below are what a message
+  carries, by the implementation's word; neither document says how the other's numbers map onto
+  them.
 
   FOUR HUNDRED PROGRAMS, AND A PROGRAM CHANGE REACHES FORTY OF THEM. "The Prophet-10 contains a
   total of 400 programs. 200 are permanent 'Factory' programs and 200 are 'User' programs" (guide
@@ -210,10 +217,11 @@ source: >-
   outright, and nothing here resolves the rest.
 
   AND BANK SELECT NAMES FIVE USER BANKS AND ONLY FOUR FACTORY ONES, where the guide's selector
-  "increments and cycles through Groups 1-5" (guide p. 6) in either set of 200. As printed, no
-  value reaches a fifth factory group, and the transmitted table says only "Bank Select: 1 - 5"
-  (p. 3). Neither document says that what the implementation calls a bank of forty is what the
-  guide calls a group.
+  "increments and cycles through Groups 1-5" (guide p. 6) in either set of 200. As printed, no bank
+  select value reaches a fifth factory group, and the transmitted table says only "Bank Select: 1 -
+  5" (p. 3). The program data dump does reach one, in the guide's own word: "Group Number: 0 - 9"
+  (p. 12) with "Program Number: 0 - 39" (p. 12), ten groups of forty. Neither document says that a
+  bank select value is a group.
 
   THE USB PORT IS NAMED THREE WAYS. "Under Mac OS, 'Prophet-5/10' will appear as a MIDI port"
   (guide p. 4), and under Windows the same page says it is installed as `Prophet-10.`; the
@@ -224,15 +232,16 @@ source: >-
   position and active sensing appear nowhere in the thirteen pages of the implementation - not as
   a no, as nothing at all. This instrument has no sequencer and no arpeggiator.
 
-  NOT RECORDED: anything the two addenda add beyond the layers - a high note priority, a layer
-  link, per-program velocity and aftertouch amounts and filter Q compensation (2.1.0), and poly
-  unison, a five-voice limit and round robin allocation (2.0). Neither addendum gives a number
-  for anything it adds, so the tables above are what is published and are known to be
-  incomplete for the instrument as it ships. One of them visibly so: the guide names four key
-  priorities, "low, last, low retrigger, last retrigger" (guide p. 45), and controller 71,
-  `RETRIGGER AND UNISON ASSIGN`, has four values (p. 5) - in which order is not said - and 2.1.0
-  adds another, "High Note gives note priority to the highest note played, with a retrigger
-  option" (addendum_2_1_0 p. 3), which no value reaches.
+  NOT RECORDED: anything the two addenda add beyond the layers - a high note priority, a layer link,
+  per-program velocity and aftertouch amounts and filter Q compensation (2.1.0), and poly unison, a
+  five-voice limit and round robin allocation (2.0). Neither addendum gives a number for anything it
+  adds, so the tables above are what is published and are known to be incomplete for the instrument
+  as it ships. One of them visibly so: the guide names four key priorities, "low, last, low
+  retrigger, last retrigger" (guide p. 45), and controller 71, `RETRIGGER AND UNISON ASSIGN`, has
+  four values (p. 5) - which value is which is not said - and NRPN 87, `RETRIGGER AND UNISON`, the
+  same four (p. 9). 2.1.0 adds two more priorities, high note and its retrigger: "High Note gives
+  note priority to the highest note played, with a retrigger option" (addendum_2_1_0 p. 3), which no
+  value reaches.
 
 sources:
   implementation:
@@ -326,7 +335,8 @@ midi:
   # "MIDI Channel: ALL, 1…16—Selects which MIDI channel to send and receive data, 1 to 16"
   # (guide p. 13), where ALL receives on every channel at once.
   channels: [1, 16]
-  # THE MAKER'S OWN WORD, in both documents. The numbers are not recorded; see the source account.
+  # THE MAKER'S OWN WORD, in both documents. 71 controls carry an NRPN, 50 of them beside a
+  # controller number; see the source account.
   nrpn: preferred
   program_change:
     # "Program change, 0-39" (p. 2) is received and "Program change" (p. 3) transmitted.
@@ -371,78 +381,91 @@ groups:
   pressure: PRESSURE
   performance: Performance
   global: Global
+  # The NRPN table's numbers from 4096, which the implementation promises as a table "for global
+  # parameters" (implementation p. 6) and prints as the end of one table.
+  global_parameters: Global parameters
 
 controls:
 
   # OSC A ───────────────────────────────────────────────────
-  osc_a_frequency:                     {label: OSC A FREQUENCY, cc: 3, range: [0, 120], group: osc_a}
-  osc_a_saw_on_ff:                     {label: OSC A SAW ON/FF, cc: 15, range: [0, 1], group: osc_a}
-  osc_a_square_on_off:                 {label: OSC A SQUARE ON/OFF, cc: 20, range: [0, 1], group: osc_a}
-  osc_a_pulse_width:                   {label: OSC A PULSE WIDTH, cc: 21, range: [0, 120], group: osc_a}
-  osc_sync_on_off:                     {label: OSC SYNC ON/OFF, cc: 23, range: [0, 1], group: osc_a}
-  osc_a_level:                         {label: OSC A LEVEL, cc: 27, range: [0, 120], group: osc_a}
+  osc_a_frequency:                     {label: OSC A FREQUENCY, cc: 3, nrpn: 0, range: [0, 120], group: osc_a}
+  osc_a_saw_on_ff:                     {label: OSC A SAW ON/FF, cc: 15, nrpn: 3, range: [0, 1], group: osc_a}
+  osc_a_square_on_off:                 {label: OSC A SQUARE ON/OFF, cc: 20, nrpn: 4, range: [0, 1], group: osc_a}
+  osc_a_pulse_width:                   {label: OSC A PULSE WIDTH, cc: 21, nrpn: 8, range: [0, 120], group: osc_a}
+  osc_sync_on_off:                     {label: OSC SYNC ON/OFF, cc: 23, nrpn: 10, range: [0, 1], group: osc_a}
+  osc_a_level:                         {label: OSC A LEVEL, cc: 27, nrpn: 14, range: [0, 120], group: osc_a}
 
   # OSC B ───────────────────────────────────────────────────
-  osc_b_frequency:                     {label: OSC B FREQUENCY, cc: 9, range: [0, 120], group: osc_b}
-  osc_b_fine_tune:                     {label: OSC B FINE TUNE, cc: 14, group: osc_b}
-  osc_b_pulse_width:                   {label: OSC B PULSE WIDTH, cc: 22, range: [0, 120], group: osc_b}
-  osc_b_low_freq_on_off:               {label: OSC B LOW FREQ ON/OFF, cc: 24, range: [0, 1], group: osc_b}
-  osc_b_keyboard_on_off:               {label: OSC B KEYBOARD ON/OFF, cc: 25, range: [0, 1], group: osc_b}
-  osc_b_level:                         {label: OSC B LEVEL, cc: 28, range: [0, 120], group: osc_b}
-  osc_b_saw_on_off:                    {label: OSC B SAW ON/OFF, cc: 30, range: [0, 1], group: osc_b}
-  osc_b_tri_on_off:                    {label: OSC B TRI ON/OFF, cc: 52, range: [0, 1], group: osc_b}
-  osc_b_square_on_off:                 {label: OSC B SQUARE ON/OFF, cc: 116, range: [0, 1], group: osc_b}
+  osc_b_frequency:                     {label: OSC B FREQUENCY, cc: 9, nrpn: 1, range: [0, 120], group: osc_b}
+  osc_b_fine_tune:                     {label: OSC B FINE TUNE, cc: 14, nrpn: 2, group: osc_b}
+  osc_b_pulse_width:                   {label: OSC B PULSE WIDTH, cc: 22, nrpn: 9, range: [0, 120], group: osc_b}
+  osc_b_low_freq_on_off:               {label: OSC B LOW FREQ ON/OFF, cc: 24, nrpn: 11, range: [0, 1], group: osc_b}
+  osc_b_keyboard_on_off:               {label: OSC B KEYBOARD ON/OFF, cc: 25, nrpn: 12, range: [0, 1], group: osc_b}
+  osc_b_level:                         {label: OSC B LEVEL, cc: 28, nrpn: 15, range: [0, 120], group: osc_b}
+  osc_b_saw_on_off:                    {label: OSC B SAW ON/OFF, cc: 30, nrpn: 5, range: [0, 1], group: osc_b}
+  osc_b_tri_on_off:                    {label: OSC B TRI ON/OFF, cc: 52, nrpn: 6, range: [0, 1], group: osc_b}
+  osc_b_square_on_off:                 {label: OSC B SQUARE ON/OFF, cc: 116, nrpn: 7, range: [0, 1], group: osc_b}
 
   # POLY MOD ────────────────────────────────────────────────
-  poly_mod_filt_env_amount:            {label: POLY MOD FILT ENV AMOUNT, cc: 59, group: poly_mod}
-  poly_mod_osc_b_amount:               {label: POLY MOD OSC B AMOUNT, cc: 60, range: [0, 120], group: poly_mod}
-  poly_mod_freq_a_on_off:              {label: POLY MOD FREQ A ON/OFF, cc: 61, range: [0, 1], group: poly_mod}
-  poly_mod_pw_on_off:                  {label: POLY MOD PW ON/OFF, cc: 62, range: [0, 1], group: poly_mod}
-  poly_mod_filter_on_off:              {label: POLY MOD FILTER ON/OFF, cc: 63, range: [0, 1], group: poly_mod}
+  poly_mod_filt_env_amount:            {label: POLY MOD FILT ENV AMOUNT, cc: 59, nrpn: 32, group: poly_mod}
+  poly_mod_osc_b_amount:               {label: POLY MOD OSC B AMOUNT, cc: 60, nrpn: 33, range: [0, 120], group: poly_mod}
+  poly_mod_freq_a_on_off:              {label: POLY MOD FREQ A ON/OFF, cc: 61, nrpn: 34, range: [0, 1], group: poly_mod}
+  poly_mod_pw_on_off:                  {label: POLY MOD PW ON/OFF, cc: 62, nrpn: 35, range: [0, 1], group: poly_mod}
+  poly_mod_filter_on_off:              {label: POLY MOD FILTER ON/OFF, cc: 63, nrpn: 36, range: [0, 1], group: poly_mod}
 
   # LFO ─────────────────────────────────────────────────────
-  lfo_frequency:                       {label: LFO FREQUENCY, cc: 46, range: [0, 120], group: lfo}
-  lfo_initial_amount:                  {label: LFO INITIAL AMOUNT, cc: 47, range: [0, 120], group: lfo}
-  lfo_source_mix:                      {label: LFO SOURCE MIX, cc: 53, range: [0, 120], group: lfo}
-  lfo_freq_a_on_off:                   {label: LFO FREQ A ON/OFF, cc: 54, range: [0, 1], group: lfo}
-  lfo_freq_b_on_off:                   {label: LFO FREQ B ON/OFF, cc: 55, range: [0, 1], group: lfo}
-  lfo_freq_pw_a_on_off:                {label: LFO FREQ PW A ON/OFF, cc: 56, range: [0, 1], group: lfo}
-  lfo_freq_pw_b_on_off:                {label: LFO FREQ PW B ON/OFF, cc: 57, range: [0, 1], group: lfo}
-  lfo_filter_on_off:                   {label: LFO FILTER ON/OFF, cc: 58, range: [0, 1], group: lfo}
-  lfo_saw_on_off:                      {label: LFO SAW ON/OFF, cc: 117, range: [0, 1], group: lfo}
-  lfo_tri_on_off:                      {label: LFO TRI ON/OFF, cc: 118, range: [0, 1], group: lfo}
-  lfo_square_on_off:                   {label: LFO SQUARE ON/OFF, cc: 119, range: [0, 1], group: lfo}
+  lfo_frequency:                       {label: LFO FREQUENCY, cc: 46, nrpn: 21, range: [0, 120], group: lfo}
+  lfo_initial_amount:                  {label: LFO INITIAL AMOUNT, cc: 47, nrpn: 22, range: [0, 120], group: lfo}
+  lfo_source_mix:                      {label: LFO SOURCE MIX, cc: 53, nrpn: 26, range: [0, 120], group: lfo}
+  lfo_freq_a_on_off:                   {label: LFO FREQ A ON/OFF, cc: 54, nrpn: 27, range: [0, 1], group: lfo}
+  lfo_freq_b_on_off:                   {label: LFO FREQ B ON/OFF, cc: 55, nrpn: 28, range: [0, 1], group: lfo}
+  lfo_freq_pw_a_on_off:                {label: LFO FREQ PW A ON/OFF, cc: 56, nrpn: 29, range: [0, 1], group: lfo}
+  lfo_freq_pw_b_on_off:                {label: LFO FREQ PW B ON/OFF, cc: 57, nrpn: 30, range: [0, 1], group: lfo}
+  lfo_filter_on_off:                   {label: LFO FILTER ON/OFF, cc: 58, nrpn: 31, range: [0, 1], group: lfo}
+  lfo_saw_on_off:                      {label: LFO SAW ON/OFF, cc: 117, nrpn: 23, range: [0, 1], group: lfo}
+  lfo_tri_on_off:                      {label: LFO TRI ON/OFF, cc: 118, nrpn: 24, range: [0, 1], group: lfo}
+  lfo_square_on_off:                   {label: LFO SQUARE ON/OFF, cc: 119, nrpn: 25, range: [0, 1], group: lfo}
 
   # FILTER ──────────────────────────────────────────────────
-  resonance:                           {label: RESONANCE, cc: 31, range: [0, 120], group: filter}
-  filter_keyboard_track_off_half_full: {label: FILTER KEYBOARD TRACK OFF/HALF/FULL, cc: 35, range: [0, 2], group: filter}
-  filter_rev_select:                   {label: FILTER REV SELECT, cc: 41, range: [0, 1], group: filter}
-  cutoff:                              {label: CUTOFF, cc: 73, range: [0, 120], group: filter}
+  resonance:                           {label: RESONANCE, cc: 31, nrpn: 18, range: [0, 120], group: filter}
+  filter_keyboard_track_off_half_full: {label: FILTER KEYBOARD TRACK OFF/HALF/FULL, cc: 35, nrpn: 19, range: [0, 2], group: filter}
+  filter_rev_select:                   {label: FILTER REV SELECT, cc: 41, nrpn: 20, range: [0, 1], group: filter}
+  cutoff:                              {label: CUTOFF, cc: 73, nrpn: 17, range: [0, 120], group: filter}
   brightness:                          {label: BRIGHTNESS, cc: 74, group: filter}
 
   # ENVELOPE ────────────────────────────────────────────────
   envelope_filter_amount:              {label: ENVELOPE FILTER AMOUNT, cc: 89, range: [0, 120], group: envelope}
   envelope_filter_velocity_on_off:     {label: ENVELOPE FILTER VELOCITY ON/OFF, cc: 90, range: [0, 1], group: envelope}
   envelope_vca_velocity_on_off:        {label: ENVELOPE VCA VELOCITY ON/OFF, cc: 102, range: [0, 1], group: envelope}
-  attack_filter:                       {label: ATTACK FILTER, cc: 103, range: [0, 120], group: envelope}
-  attack_vca:                          {label: ATTACK VCA, cc: 104, range: [0, 120], group: envelope}
-  decay_filter:                        {label: DECAY FILTER, cc: 105, range: [0, 120], group: envelope}
-  decay_vca:                           {label: DECAY VCA, cc: 106, range: [0, 120], group: envelope}
-  sustain_filter:                      {label: SUSTAIN FILTER, cc: 107, range: [0, 120], group: envelope}
-  sustain_vca:                         {label: SUSTAIN VCA, cc: 108, range: [0, 120], group: envelope}
-  release_filter:                      {label: RELEASE FILTER, cc: 109, range: [0, 120], group: envelope}
-  release_vca:                         {label: RELEASE VCA, cc: 110, range: [0, 120], group: envelope}
+  attack_filter:                       {label: ATTACK FILTER, cc: 103, nrpn: 43, range: [0, 120], group: envelope}
+  attack_vca:                          {label: ATTACK VCA, cc: 104, nrpn: 44, range: [0, 120], group: envelope}
+  decay_filter:                        {label: DECAY FILTER, cc: 105, nrpn: 45, range: [0, 120], group: envelope}
+  decay_vca:                           {label: DECAY VCA, cc: 106, nrpn: 46, range: [0, 120], group: envelope}
+  sustain_filter:                      {label: SUSTAIN FILTER, cc: 107, nrpn: 47, range: [0, 120], group: envelope}
+  sustain_vca:                         {label: SUSTAIN VCA, cc: 108, nrpn: 48, range: [0, 120], group: envelope}
+  release_filter:                      {label: RELEASE FILTER, cc: 109, nrpn: 49, range: [0, 120], group: envelope}
+  release_vca:                         {label: RELEASE VCA, cc: 110, nrpn: 50, range: [0, 120], group: envelope}
   release_on_off:                      {label: RELEASE ON/OFF, cc: 111, range: [0, 1], group: envelope}
+  # NRPN only, named otherwise than in the controller table; see the account.
+  env_filter_amount:                   {label: ENV FILTER AMOUNT, nrpn: 40, range: [0, 120], group: envelope}
+  veloctiy_filter:                     {label: VELOCTIY > FILTER, nrpn: 41, range: [0, 1], group: envelope}
+  velocity_amp:                        {label: VELOCITY > AMP, nrpn: 42, range: [0, 1], group: envelope}
+  release_switch:                      {label: RELEASE SWITCH, nrpn: 51, range: [0, 1], group: envelope}
 
   # UNISON ──────────────────────────────────────────────────
   retrigger_and_unison_assign:         {label: RETRIGGER AND UNISON ASSIGN, cc: 71, range: [0, 3], group: unison}
-  unison_on_off:                       {label: UNISON ON/OFF, cc: 112, range: [0, 1], group: unison}
-  unison_voice_count:                  {label: UNISON VOICE COUNT, cc: 113, range: [0, 10], group: unison}
-  unison_detune:                       {label: UNISON DETUNE, cc: 114, range: [0, 7], group: unison}
+  unison_on_off:                       {label: UNISON ON/OFF, cc: 112, nrpn: 52, range: [0, 1], group: unison}
+  unison_voice_count:                  {label: UNISON VOICE COUNT, cc: 113, nrpn: 53, range: [0, 10], group: unison}
+  unison_detune:                       {label: UNISON DETUNE, cc: 114, nrpn: 54, range: [0, 7], group: unison}
+  # NRPN only, named otherwise than in the controller table; see the account.
+  retrigger_and_unison:                {label: RETRIGGER AND UNISON, nrpn: 87, range: [0, 3], group: unison}
 
   # PRESSURE ────────────────────────────────────────────────
   pressure_filter:                     {label: PRESSURE FILTER, cc: 86, range: [0, 1], group: pressure}
   pressure_lfo:                        {label: PRESSURE LFO, cc: 87, range: [0, 1], group: pressure}
+  # NRPN only, named otherwise than in the controller table; see the account.
+  aftertouch_filter:                   {label: AFTERTOUCH > FILTER, nrpn: 38, range: [0, 1], group: pressure}
+  aftertouch_amp:                      {label: AFTERTOUCH > AMP, nrpn: 39, range: [0, 1], group: pressure}
 
   # Performance ─────────────────────────────────────────────
   mod_wheel:                           {label: Mod Wheel, cc: 1, group: performance}
@@ -450,10 +473,27 @@ controls:
   foot_controller:                     {label: Foot Controller, cc: 4, group: performance}
   bank_select:                         {label: Bank Select, cc: 32, group: performance}
   damper_pedal:                        {label: Damper pedal, cc: 64, group: performance}
-  pitch_wheel_range:                   {label: PITCH WHEEL RANGE, cc: 70, range: [0, 11], group: performance}
+  pitch_wheel_range:                   {label: PITCH WHEEL RANGE, cc: 70, nrpn: 86, range: [0, 11], group: performance}
 
   # Global ──────────────────────────────────────────────────
   master_volume:                       {label: MASTER VOLUME, cc: 7, range: [0, 120], group: global}
-  glide_rate:                          {label: GLIDE RATE, cc: 26, range: [0, 120], group: global}
-  noise_level:                         {label: NOISE LEVEL, cc: 29, range: [0, 120], group: global}
-  vintage:                             {label: VINTAGE, cc: 85, group: global}
+  glide_rate:                          {label: GLIDE RATE, cc: 26, nrpn: 13, range: [0, 120], group: global}
+  noise_level:                         {label: NOISE LEVEL, cc: 29, nrpn: 16, range: [0, 120], group: global}
+  vintage:                             {label: VINTAGE, cc: 85, nrpn: 37, group: global}
+
+  # Global parameters ───────────────────────────────────────
+  # NRPN only: the NRPN table's global block, from 4096 (p. 9). See the account.
+  transpose:                           {label: TRANSPOSE, nrpn: 4096, range: [0, 24], group: global_parameters}
+  midi_channel:                        {label: MIDI CHANNEL, nrpn: 4097, range: [0, 16], group: global_parameters}
+  param_xmit:                          {label: PARAM XMIT, nrpn: 4098, range: [0, 2], group: global_parameters}
+  param_rcv:                           {label: PARAM RCV, nrpn: 4099, range: [0, 2], group: global_parameters}
+  midi_control:                        {label: MIDI CONTROL, nrpn: 4100, range: [0, 1], group: global_parameters}
+  midi_sysex:                          {label: MIDI SYSEX, nrpn: 4101, range: [0, 1], group: global_parameters}
+  midi_out:                            {label: MIDI OUT, nrpn: 4102, range: [0, 3], group: global_parameters}
+  local_control:                       {label: LOCAL CONTROL, nrpn: 4103, range: [0, 2], group: global_parameters}
+  pot_mode:                            {label: POT MODE, nrpn: 4104, range: [0, 2], group: global_parameters}
+  sustain_mode:                        {label: SUSTAIN MODE, nrpn: 4105, range: [0, 1], group: global_parameters}
+  pedal_mode:                          {label: PEDAL MODE, nrpn: 4106, range: [0, 1], group: global_parameters}
+  alt_tunings:                         {label: ALT TUNINGS, nrpn: 4107, range: [0, 15], group: global_parameters}
+  vel_response:                        {label: VEL RESPONSE, nrpn: 4108, range: [0, 7], group: global_parameters}
+  aftertouch_response:                 {label: AFTERTOUCH RESPONSE, nrpn: 4109, range: [0, 7], group: global_parameters}

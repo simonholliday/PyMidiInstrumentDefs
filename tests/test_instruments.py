@@ -11162,8 +11162,9 @@ class TestProphet5:
 	def test_the_whole_implementation_arrives (self) -> None:
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
 
-		assert len(prophet.controls) == 64
-		assert len(prophet.groups) == 10
+		# 64 by controller number and 71 by NRPN, 50 of them both (#4688).
+		assert len(prophet.controls) == 85
+		assert len(prophet.groups) == 11
 
 		# 59 are the parameter table's and five are performance controllers from the message
 		# tables, which is why the performance group is the one that mixes the two.
@@ -11203,17 +11204,49 @@ class TestProphet5:
 		assert "Expression is controller 11" in account
 		assert "There is no third statement anywhere to settle which the maker meant" in account
 
-	def test_nrpn_is_the_preferred_method_and_the_numbers_are_not_recorded (self) -> None:
-		"""The maker says preferred in as many words, and the two tables do not line up."""
+	def test_nrpn_is_the_preferred_method_and_paired_only_by_identical_name (self) -> None:
+		"""The maker says preferred in as many words, and only the maker's own names pair them."""
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
 
 		assert prophet.midi.nrpn == "preferred"
-		assert not any(control.nrpn for control in prophet.controls.values())
+
+		both = [c for c in prophet.controls.values() if c.cc is not None and c.nrpn is not None]
+		only = [c for c in prophet.controls.values() if c.cc is None and c.nrpn is not None]
+
+		assert (len(both), len(only)) == (50, 21)
+		assert prophet.controls["osc_a_frequency"].nrpn == 0
+		assert prophet.controls["osc_a_saw_on_ff"].nrpn == 3
+
+		# The seven named otherwise stand apart, and their neighbours keep no NRPN.
+		assert prophet.controls["pressure_filter"].nrpn is None
+		assert prophet.controls["aftertouch_filter"].nrpn == 38
+		assert prophet.controls["veloctiy_filter"].label == "VELOCTIY > FILTER"
+
+		# And the fourteen globals run from 4096.
+		assert sorted(c.nrpn for c in only if c.nrpn is not None and c.nrpn >= 4096) \
+			== list(range(4096, 4110))
 
 		account = " ".join((prophet.source or "").split())
 
 		assert "NRPNs are the preferred method of parameter transmission" in account
 		assert "no arithmetic relates one number to the other" in account
+		assert "because pairing two different names is a reader's judgement and not the maker's" \
+			in account
+
+	def test_the_prophet_10s_observations_about_the_shared_document_are_here_too (self) -> None:
+		"""Five things the Prophet-10's reading found, and two more the globals bring (#4688)."""
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
+		account = " ".join((prophet.source or "").split())
+
+		assert "FOUR MORE RANGES THE GUIDE GIVES DIFFERENTLY" in account
+		assert "A setting of 0 is minimum detuning. A setting of 8 is maximum detuning" in account
+		assert "the resonance parameter has an internal value range of 0 to 127" in account
+		assert "AND BANK SELECT NAMES FIVE USER BANKS AND ONLY FOUR FACTORY ONES" in account
+		assert "`AFTERTOUCH > FILTER` and `AFTERTOUCH > AMP` (p. 8)" in account
+		assert "with a retrigger option\" (addendum_2_1_0 p. 3), which no value reaches" in account
+
+		assert prophet.controls["vel_response"].range == (0, 7)
+		assert prophet.controls["alt_tunings"].range == (0, 15)
 
 	def test_it_receives_poly_pressure_and_its_keyboard_sends_channel (self) -> None:
 		"""The Super 6's shape from the other side, and the one field cannot say it twice."""
@@ -11402,18 +11435,17 @@ class TestProphet10:
 			"once" in account
 		assert "nothing published says how" in account
 
-	def test_the_nrpns_are_left_out_to_keep_it_the_prophet_5s (self) -> None:
+	def test_the_nrpns_are_carried_as_the_prophet_5s (self) -> None:
 		"""Two definitions of one document should never disagree about it."""
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
 
 		assert prophet.midi.nrpn == "preferred"
-		assert not any(control.nrpn for control in prophet.controls.values())
+		assert sum(1 for control in prophet.controls.values() if control.nrpn is not None) == 71
 
 		account = " ".join((prophet.source or "").split())
 
-		assert "THE NRPN TABLE IS NOT RECORDED, AND THAT IS TO KEEP THIS FILE THE PROPHET-5'S" \
-			in account
-		assert "a question for both files at once" in account
+		assert "THE NRPN TABLE IS CARRIED, AS IN THE PROPHET-5'S DEFINITION" in account
+		assert "field for field the Prophet-5's" in account
 
 	def test_the_firmware_is_on_the_makers_operating_system_page (self) -> None:
 		"""Saved as text, which is a source with no pages to turn to."""
@@ -11467,7 +11499,7 @@ class TestTheTwoProphets:
 	"""
 
 	def test_they_carry_the_same_controls (self) -> None:
-		"""Every name, number, range, direction and group of all 64."""
+		"""Every name, number, range, direction and group of all 85."""
 		five = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
 		ten = pymidiinstrumentdefs.load("sequential/prophet_10", [CORPUS])
 
@@ -11480,7 +11512,7 @@ class TestTheTwoProphets:
 			}
 
 		assert surface(five) == surface(ten)
-		assert len(ten.controls) == 64
+		assert len(ten.controls) == 85
 		assert five.groups == ten.groups
 
 	def test_they_cite_one_implementation_and_describe_one_firmware (self) -> None:

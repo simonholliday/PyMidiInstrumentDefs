@@ -226,6 +226,7 @@ class TestBundledCorpus:
 			"moog/minitaur",
 			"moog/mother_32",
 			"moog/muse",
+			"moog/slim_phatty",
 			"moog/sub_37",
 			"moog/subharmonicon",
 			"moog/subsequent_37",
@@ -18223,3 +18224,52 @@ class TestTRITON:
 		assert triton.sources["basic_guide"].file_page(137) == 142 and triton.sources["parameter_guide"].file_page(117) == 123
 		assert triton.sources["update_guide"].file_page(11) == 14 and triton.sources["history"].file_page(6) == 6
 		assert "THE NEWEST SYSTEM, AND NOTHING SINCE THE IMPLEMENTATION MOVED THE MAP." in prose_of("korg", "triton")
+
+
+class TestSlimPhatty:
+
+	"""One table of 51 rows, 52 controls, and a manual older than the firmware Moog ships."""
+
+	def test_fifty_two_controls_from_fifty_one_rows (self) -> None:
+		slim = pymidiinstrumentdefs.load("moog/slim_phatty", [CORPUS])
+
+		assert len(slim.controls) == 52
+		numbers = sorted(cc for cc in (control.cc for control in slim.controls.values()) if cc is not None)
+		assert numbers == [1, 3, 4, 5, 6, 7, 9, 10, 11, 15, 16, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+			36, 65, 68, 69, 74, 75, 77, 88, 90, 91, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,
+			115, 116, 117, 118, 119]
+		assert all(control.direction == "both" for control in slim.controls.values())
+		assert (slim.controls["cutoff"].lsb, slim.controls["mod_wheel"].lsb) == (51, 33)
+		assert slim.controls["arp_clock_rate_fine"].cc == 36 and slim.controls["arp_clock_rate_coarse"].lsb is None
+
+	def test_stepped_settings_are_exact_values (self) -> None:
+		slim = pymidiinstrumentdefs.load("moog/slim_phatty", [CORPUS])
+
+		assert not [control for control in slim.controls.values() if control.values]
+		assert slim.controls["mod_source"].choices == {"tri": 0, "square": 16, "saw": 32, "ramp": 48, "filt_env": 64, "osc_2": 80}
+		assert len(slim.controls["filter_velocity_sens"].choices) == 17 and len(slim.controls["lfo_sync_clock_div"].choices) == 15
+		assert slim.controls["arp_range"].choices["plus_1"] == 71
+
+	def test_one_voice_mode_4_and_clock_received (self) -> None:
+		slim = pymidiinstrumentdefs.load("moog/slim_phatty", [CORPUS])
+
+		assert (slim.midi.channels, slim.midi.mode, slim.midi.clock, slim.midi.transport) == ((1, 16), 4, "receives", "receives")
+		assert slim.midi.program_change is not None
+		assert (slim.midi.program_change.receives, slim.midi.program_change.sends, slim.midi.program_change.presets) == (True, True, 100)
+		assert (slim.midi.nrpn, slim.midi.sysex) == ("none", True)
+		assert (slim.voice.polyphony, slim.voice.aftertouch, slim.voice.note_range) == (1, "none", None)
+		assert slim.voice.velocity is not None and (slim.voice.velocity.note_on, slim.voice.velocity.note_off) == ("received", False)
+
+	def test_the_manual_predates_3_1_so_87_is_left_out (self) -> None:
+		slim = pymidiinstrumentdefs.load("moog/slim_phatty", [CORPUS])
+
+		assert slim.model.firmware is None
+		assert 87 not in {control.cc for control in slim.controls.values()}
+		account = " ".join((slim.source or "").split())
+		assert "WHAT LATER SYSTEMS ADDED, AND WHY NONE OF IT IS BELOW." in account
+
+	def test_four_sources_and_a_negative_offset (self) -> None:
+		slim = pymidiinstrumentdefs.load("moog/slim_phatty", [CORPUS])
+
+		assert set(slim.sources) == {"manual", "firmware_notes", "forum_post", "downloads_list"}
+		assert slim.sources["manual"].file_page(55) == 53 and slim.sources["manual"].file_page(67) == 65

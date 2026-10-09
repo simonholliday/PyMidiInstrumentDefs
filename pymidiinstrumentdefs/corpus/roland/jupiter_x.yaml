@@ -1,6 +1,6 @@
 # **THE DOCUMENT NAMED FOR THIS INSTRUMENT'S MIDI IS NOT WHERE ITS CONTROLLERS ARE, AND EIGHT
 # ROLANDS HAD TAUGHT THE OPPOSITE.** The `JUPITER-X/Xm MIDI Implementation` runs to 90 sheets and
-# names 35 controller numbers, of which **22 are controls** and every one of those is a standard
+# names 35 controller numbers, of which **22 are carried below** and every one is a standard
 # performance control - modulation, volume, the pedals, the eight filter and envelope offsets. The
 # tone parameters are somewhere else entirely: **the Parameter Guide carries a `CC#` column on
 # nine of its 75 sheets, one table per model**, holding 156 more rows over 46 distinct numbers.
@@ -36,9 +36,9 @@
 #
 # WHAT THE IMPLEMENTATION DOES SETTLE IS THE DIRECTION OF EVERY ONE OF ITS 22, because it prints
 # reception and transmission as two separate halves rather than as a chart's two columns. **One
-# control is transmitted and never received** - `Foot Type`, CC 4 - and fifteen are received and
-# never transmitted. The Fantom's definition at rank 77 records the same maker's same list with no
-# direction on any control; this one records all three cases, because the halves are what the
+# number is in the transmission half alone** - `Foot Type`, CC 4 - and fifteen are in the
+# reception half alone. The Fantom's definition at rank 77 records the same maker's same list with
+# no direction on any control; this one records all three cases, because the halves are what the
 # document has instead of a chart.
 #
 # **AND THERE IS NO CHART IN ANY OF THE ELEVEN DOCUMENTS.** No `MIDI Implementation Chart`
@@ -70,7 +70,8 @@ source: >-
   the document whose name promised the map and not the one that held it.
 
   WHAT IS IN EACH, WHICH IS THE POINT OF LISTING THEM. The `MIDI Implementation` (90 sheets) holds
-  the 22 controls below, the system exclusive address map and nothing about the tone parameters.
+  the 22 controllers below and the system exclusive address map, and gives no tone parameter a
+  controller number.
   The `Parameter Guide` (75) holds the per-model tone tables, every `Rx` switch, and the system
   MIDI settings this definition's clock rests on. The `Reference Manual` (65) holds the models,
   the parts and the polyphony. The `Owner's Manual` (31) holds the specification. **The other
@@ -99,6 +100,18 @@ source: >-
   (implementation p. 90). **Three statements say 65H and two say 52H**, so the two are the misprint
   - which a consumer needs only because a sysex implementer reading sheet 5 alone would address a
   device that is not there.
+
+  EVERY CONTROL NAMES ITS PART, ONCE FOR THE FOUR PARTS AND ONCE FOR PART R, AND SEVEN NUMBERS
+  ARE THE FOUR PARTS' ALONE. Each part listens on a channel of its own setting, "Specifies the
+  MIDI receive channel of each part." (parameter_guide p. 6), so none derives its channel from a
+  base, and a control naming no part would mean one. The implementation's entries change the
+  part's own parameters - "The Cutoff parameter (SCENE PART EDIT: MODIFY) will change."
+  (implementation p. 2) - so a controller reaches whichever part listens on the channel it
+  arrives on. Six entries name a parameter the Parameter Guide marks `Part 1–4 only`
+  (parameter_guide p. 5) - Porta Time, Porta Sw, Legato Sw and the three vibrato offsets, which 5,
+  65, 68 and 76 to 78 change - and the entry for 84 says its glide "is determined by the Portamento
+  Time value." (implementation p. 2), the same parameter. So the four parts carry all 22 numbers
+  and Part R the other fifteen, Foot Type among them: 37 controls.
 
   NOT RECORDED: the mode, there being no chart in any of the eleven documents to carry a Mode row.
   The transport, which **no document mentions in any spelling** - the implementation's System
@@ -323,50 +336,70 @@ controls:
 
   # **THE DIRECTION ON EACH OF THESE IS READ FROM WHICH HALF OF THE DOCUMENT IT SITS IN**, because
   # this maker publishes reception and transmission as two prose sections rather than as a chart's
-  # two columns. Six are in both, fifteen only in the reception half, and one only in the
-  # transmission half. `roland/fantom_6_7_8` records the same maker's nearly identical list with
-  # no direction on any control; here the halves are what the document has instead of a chart, so
-  # all three cases are recorded.
+  # two columns. Of the 22 numbers, six are in both, fifteen only in the reception half, and one
+  # only in the transmission half. `roland/fantom_6_7_8` records the same maker's nearly identical
+  # list with no direction on any control; here the halves are what the document has instead of a
+  # chart, so all three cases are recorded.
   # Eight of them are relative rather than absolute - `00H - 40H - 7FH (-64 - 0 - +63)`, which the
   # implementation calls a "relative change" (implementation p. 2) - and **this format has no
   # word for that**, so the
   # value range is left to the default and the fact is here. A consumer sending 0 to one of these
   # lowers the parameter by 64 rather than setting it to nothing.
+  # **EACH NUMBER IS HERE ONCE FOR THE FOUR PARTS, AS `part_`, AND ONCE FOR PART R, AS `drum_`**,
+  # but for the seven Part R does not receive; see the account.
 
   # Continuous controllers ────────────────────────────────
-  modulation:                        {label: Modulation, cc: 1, group: continuous}
-  # **THE ONE CONTROL THIS INSTRUMENT SENDS AND NEVER ANSWERS TO.** It is in the transmission
-  # half (implementation p. 6) and in no entry of the reception half, which lists every other
-  # number below.
-  foot_type:                         {label: Foot Type, cc: 4, direction: transmits, group: continuous}
-  portamento_time:                   {label: Portamento Time, cc: 5, direction: receives, group: continuous}
-  volume:                            {label: Volume, cc: 7, group: continuous}
-  panpot:                            {label: Panpot, cc: 10, direction: receives, group: continuous}
-  expression:                        {label: Expression, cc: 11, group: continuous}
+  part_modulation:                   {label: Modulation, cc: 1, part: part, group: continuous}
+  # **THE ONE NUMBER ONLY THE TRANSMISSION HALF NAMES.** It is in the transmission half
+  # (implementation p. 6) and in no entry of the reception half, which lists every other number
+  # below. **And `transmits` is doubted here**: the reception half's Reset All Controllers list
+  # resets a `Foot Type` with the rest (implementation p. 4), which a number nothing receives
+  # would not need.
+  part_foot_type:                    {label: Foot Type, cc: 4, direction: transmits, part: part, group: continuous}
+  part_portamento_time:              {label: Portamento Time, cc: 5, direction: receives, part: part, group: continuous}
+  part_volume:                       {label: Volume, cc: 7, part: part, group: continuous}
+  part_panpot:                       {label: Panpot, cc: 10, direction: receives, part: part, group: continuous}
+  part_expression:                   {label: Expression, cc: 11, part: part, group: continuous}
+  drum_modulation:                   {label: Modulation, cc: 1, part: drum, group: continuous}
+  drum_foot_type:                    {label: Foot Type, cc: 4, direction: transmits, part: drum, group: continuous}
+  drum_volume:                       {label: Volume, cc: 7, part: drum, group: continuous}
+  drum_panpot:                       {label: Panpot, cc: 10, direction: receives, part: drum, group: continuous}
+  drum_expression:                   {label: Expression, cc: 11, part: drum, group: continuous}
 
   # Switches and pedals ───────────────────────────────────
-  hold_1:                            {label: Hold 1, cc: 64, group: switch}
-  portamento:                        {label: Portamento, cc: 65, group: switch}
-  sostenuto:                         {label: Sostenuto, cc: 66, direction: receives, group: switch}
-  soft:                              {label: Soft, cc: 67, direction: receives, group: switch}
-  legato_foot_switch:                {label: Legato Foot Switch, cc: 68, direction: receives, group: switch}
+  part_hold_1:                       {label: Hold 1, cc: 64, part: part, group: switch}
+  part_portamento:                   {label: Portamento, cc: 65, part: part, group: switch}
+  part_sostenuto:                    {label: Sostenuto, cc: 66, direction: receives, part: part, group: switch}
+  part_soft:                         {label: Soft, cc: 67, direction: receives, part: part, group: switch}
+  part_legato_foot_switch:           {label: Legato Foot Switch, cc: 68, direction: receives, part: part, group: switch}
   # Not a switch and filed with them because this maker files it with them: its value is a note
   # rather than a level - "kk = source note number: 00H - 7FH (0 - 127)" (implementation p. 2) -
   # and the note it names is where the next note-on slides from.
-  portamento_control:                {label: Portamento control, cc: 84, direction: receives, group: switch}
+  part_portamento_control:           {label: Portamento control, cc: 84, direction: receives, part: part, group: switch}
+  drum_hold_1:                       {label: Hold 1, cc: 64, part: drum, group: switch}
+  drum_sostenuto:                    {label: Sostenuto, cc: 66, direction: receives, part: drum, group: switch}
+  drum_soft:                         {label: Soft, cc: 67, direction: receives, part: drum, group: switch}
 
   # Sound controllers ─────────────────────────────────────
-  # These eight are the relative ones, and each names the Scene Part parameter it moves.
-  resonance:                         {label: Resonance, cc: 71, direction: receives, group: sound}
-  release_time:                      {label: Release Time, cc: 72, direction: receives, group: sound}
-  attack_time:                       {label: Attack time, cc: 73, direction: receives, group: sound}
-  cutoff:                            {label: Cutoff, cc: 74, group: sound}
-  decay_time:                        {label: Decay Time, cc: 75, direction: receives, group: sound}
-  vibrato_rate:                      {label: Vibrato Rate, cc: 76, direction: receives, group: sound}
-  vibrato_depth:                     {label: Vibrato Depth, cc: 77, direction: receives, group: sound}
-  vibrato_delay:                     {label: Vibrato Delay, cc: 78, direction: receives, group: sound}
+  # These eight numbers are the relative ones, and each names the Scene Part parameter it moves;
+  # Part R has the first five.
+  part_resonance:                    {label: Resonance, cc: 71, direction: receives, part: part, group: sound}
+  part_release_time:                 {label: Release Time, cc: 72, direction: receives, part: part, group: sound}
+  part_attack_time:                  {label: Attack time, cc: 73, direction: receives, part: part, group: sound}
+  part_cutoff:                       {label: Cutoff, cc: 74, part: part, group: sound}
+  part_decay_time:                   {label: Decay Time, cc: 75, direction: receives, part: part, group: sound}
+  part_vibrato_rate:                 {label: Vibrato Rate, cc: 76, direction: receives, part: part, group: sound}
+  part_vibrato_depth:                {label: Vibrato Depth, cc: 77, direction: receives, part: part, group: sound}
+  part_vibrato_delay:                {label: Vibrato Delay, cc: 78, direction: receives, part: part, group: sound}
+  drum_resonance:                    {label: Resonance, cc: 71, direction: receives, part: drum, group: sound}
+  drum_release_time:                 {label: Release Time, cc: 72, direction: receives, part: drum, group: sound}
+  drum_attack_time:                  {label: Attack time, cc: 73, direction: receives, part: drum, group: sound}
+  drum_cutoff:                       {label: Cutoff, cc: 74, part: drum, group: sound}
+  drum_decay_time:                   {label: Decay Time, cc: 75, direction: receives, part: drum, group: sound}
 
   # Effect send levels ────────────────────────────────────
   # Named as the implementation names them, brackets and all, which is also what the Fantom does.
-  general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, group: effects}
-  general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, direction: receives, group: effects}
+  part_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, part: part, group: effects}
+  part_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, direction: receives, part: part, group: effects}
+  drum_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, part: drum, group: effects}
+  drum_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, direction: receives, part: drum, group: effects}

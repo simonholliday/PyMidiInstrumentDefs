@@ -96,6 +96,15 @@ source: >-
   Channel CH1, CH2, CH3... CH16" which "Specifies the MIDI channel that switches scenes" (update
   p. 18). Two kinds of message reach it and nothing else does.
 
+  EVERY CONTROL BELOW NAMES THE TRACK, BECAUSE THE TRACKS ARE THE ONLY PART THAT TAKES ONE. The
+  chart's footnotes give the control channel a scene change and the Scatter Pad's notes and no
+  control change (chart p. 1), and no track's channel derives from a base: even the MIDI Rx Auto
+  Channel of Ver.1.30 passes what arrives on it to "the track selected by the [SEL] button."
+  (update p. 13). So a control naming no part would mean a channel this instrument does not have.
+  The update notes put both directions on the track: the Ver.1.80 receive switches "were added to
+  TRACK SETTING (MIDI tab)." (update p. 3), and at Ver.1.30 the numbers the knobs send were
+  "added to the track settings (MIDI tab)." (update p. 13).
+
   PROGRAM CHANGE MEANS TWO DIFFERENT THINGS ON THE TWO KINDS OF CHANNEL, which is the most
   useful thing this chart publishes: "Scene change (0-127) on control channel, Clip change
   (0-15) on track channel" (chart p. 1). Both halves check out against the reference manual - "You can assign
@@ -351,44 +360,44 @@ groups:
 
 controls:
   # CONTROLLERS ---------------------------------------------------
-  modulation:             {label: Modulation, cc: 1, direction: receives, group: controllers}
-  volume:                 {label: Volume, cc: 7, direction: receives, group: controllers}
-  panpot:                 {label: Panpot, cc: 10, direction: receives, group: controllers}
-  expression:             {label: Expression, cc: 11, direction: receives, group: controllers}
-  breath_control:         {label: Breath Control, cc: 2, direction: receives, group: controllers}
-  foot_control:           {label: Foot Control, cc: 4, direction: receives, group: controllers}
+  modulation:             {label: Modulation, cc: 1, direction: receives, part: track, group: controllers}
+  volume:                 {label: Volume, cc: 7, direction: receives, part: track, group: controllers}
+  panpot:                 {label: Panpot, cc: 10, direction: receives, part: track, group: controllers}
+  expression:             {label: Expression, cc: 11, direction: receives, part: track, group: controllers}
+  breath_control:         {label: Breath Control, cc: 2, direction: receives, part: track, group: controllers}
+  foot_control:           {label: Foot Control, cc: 4, direction: receives, part: track, group: controllers}
 
   # PORTAMENTO ----------------------------------------------------
-  portamento_time:        {label: Portamento Time, cc: 5, direction: receives, group: portamento}
-  portamento_control:     {label: Portamento control, cc: 84, direction: receives, group: portamento}
+  portamento_time:        {label: Portamento Time, cc: 5, direction: receives, part: track, group: portamento}
+  portamento_control:     {label: Portamento control, cc: 84, direction: receives, part: track, group: portamento}
 
   # PEDALS --------------------------------------------------------
-  hold_1:                 {label: Hold 1, cc: 64, direction: receives, group: pedals}
-  portamento:             {label: Portamento, cc: 65, direction: receives, group: pedals}
-  sostenuto:              {label: Sostenuto, cc: 66, direction: receives, group: pedals}
-  soft:                   {label: Soft, cc: 67, direction: receives, group: pedals}
-  legato_foot_switch:     {label: Legato Foot Switch, cc: 68, direction: receives, group: pedals}
+  hold_1:                 {label: Hold 1, cc: 64, direction: receives, part: track, group: pedals}
+  portamento:             {label: Portamento, cc: 65, direction: receives, part: track, group: pedals}
+  sostenuto:              {label: Sostenuto, cc: 66, direction: receives, part: track, group: pedals}
+  soft:                   {label: Soft, cc: 67, direction: receives, part: track, group: pedals}
+  legato_foot_switch:     {label: Legato Foot Switch, cc: 68, direction: receives, part: track, group: pedals}
 
   # TONE ----------------------------------------------------------
-  resonance:              {label: Resonance, cc: 71, direction: receives, group: tone}
-  release_time:           {label: Release Time, cc: 72, direction: receives, group: tone}
-  attack_time:            {label: Attack time, cc: 73, direction: receives, group: tone}
-  cutoff:                 {label: Cutoff, cc: 74, direction: receives, group: tone}
-  decay_time:             {label: Decay Time, cc: 75, direction: receives, group: tone}
+  resonance:              {label: Resonance, cc: 71, direction: receives, part: track, group: tone}
+  release_time:           {label: Release Time, cc: 72, direction: receives, part: track, group: tone}
+  attack_time:            {label: Attack time, cc: 73, direction: receives, part: track, group: tone}
+  cutoff:                 {label: Cutoff, cc: 74, direction: receives, part: track, group: tone}
+  decay_time:             {label: Decay Time, cc: 75, direction: receives, part: track, group: tone}
 
   # VIBRATO -------------------------------------------------------
-  vibrato_rate:           {label: Vibrato Rate, cc: 76, direction: receives, group: vibrato}
-  vibrato_depth:          {label: Vibrato Depth, cc: 77, direction: receives, group: vibrato}
-  vibrato_delay:          {label: Vibrato Delay, cc: 78, direction: receives, group: vibrato}
+  vibrato_rate:           {label: Vibrato Rate, cc: 76, direction: receives, part: track, group: vibrato}
+  vibrato_depth:          {label: Vibrato Depth, cc: 77, direction: receives, part: track, group: vibrato}
+  vibrato_delay:          {label: Vibrato Delay, cc: 78, direction: receives, part: track, group: vibrato}
 
   # KNOBS ---------------------------------------------------------
-  filter_knob:            {label: FILTER Knob, cc: 80, group: knobs}
-  mod_knob:               {label: MOD Knob, cc: 81, group: knobs}
-  fx_knob:                {label: FX Knob, cc: 82, group: knobs}
-  sound_knob:             {label: SOUND Knob, cc: 83, group: knobs}
+  filter_knob:            {label: FILTER Knob, cc: 80, part: track, group: knobs}
+  mod_knob:               {label: MOD Knob, cc: 81, part: track, group: knobs}
+  fx_knob:                {label: FX Knob, cc: 82, part: track, group: knobs}
+  sound_knob:             {label: SOUND Knob, cc: 83, part: track, group: knobs}
 
   # EFFECTS -------------------------------------------------------
-  reverb_send:            {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, group: effects}
-  chorus_send:            {label: General Purpose Effect 3 (Chorus Send Level), cc: 92, direction: receives, group: effects}
-  delay_send:             {label: Delay Send Level, cc: 93, direction: receives, group: effects}
+  reverb_send:            {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, part: track, group: effects}
+  chorus_send:            {label: General Purpose Effect 3 (Chorus Send Level), cc: 92, direction: receives, part: track, group: effects}
+  delay_send:             {label: Delay Send Level, cc: 93, direction: receives, part: track, group: effects}
 

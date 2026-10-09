@@ -18,17 +18,17 @@
 # page's beginning found no list and was one sentence away from recording that Roland had printed
 # a stale cross-reference. **A page is not a page's first screen.**
 #
-# **TWENTY-ONE OF THE FIFTY-SEVEN CONTROLS BELOW ARE ADDRESSED BY NRPN RATHER THAN BY A CONTROLLER
+# **TWENTY-ONE OF THE EIGHTY-SIX CONTROLS BELOW ARE ADDRESSED BY NRPN RATHER THAN BY A CONTROLLER
 # NUMBER**, which makes this the first Roland here with `nrpn: supported` - `roland/fantom_6_7_8`
 # and the rest have `none`. The list gives each as a most and a least significant byte, and every
 # one of them has a most significant byte of nought, so the address below is the least significant
 # byte as printed.
 #
-# **AND NINE OF THE FIFTY-SEVEN NUMBERS ARE NOT PRINTED AS NUMBERS ANYWHERE.** The maker
+# **AND NINE OF THE EIGHTY-SIX NUMBERS ARE NOT PRINTED AS NUMBERS ANYWHERE.** The maker
 # writes its runs as spans - `Cutoff | 1 - 3 | 102 - 104` (implementation p. 14) is three
 # partials and three controllers - so the inside of each run is **the interior of a printed
 # range** rather than a printed number. The citation checker reports exactly that and calls
-# it a weaker check, which it is: **48 of the 57 are found as numbers and nine are found
+# it a weaker check, which it is: **77 of the 86 are found as numbers and nine are found
 # inside a span**. That is reading a table rather than generating numbers - the run is three
 # long and the rule is in the row, where `elektron/tonverk`'s refused 329 had neither - but a
 # reader deserves to know that nine of these rest on arithmetic.
@@ -98,6 +98,22 @@ source: >-
   llH Channel Fine Tuning" (implementation p. 3) and "00H, 02H mmH, llH Channel Coarse Tuning"
   (implementation p. 3). The first is `pitch_bend.programmable`; the other two are a tuning and a
   transpose, which this format does not hold.
+
+  THE CONTROLLERS EVERY PART RECEIVES ARE HERE ONCE FOR EACH KIND OF PART. The reception section
+  lists modulation, portamento time, volume, pan, expression, hold 1, portamento and the sound
+  controllers 71 to 78 on any channel, most of them changing a parameter of the part that listens
+  there - "The Part Cutoff Offset parameter (PROG:OFFSET) will change." (implementation p. 2) -
+  and the address map gives all four parts, the drum part included, the same Program Part block,
+  which holds `Part Level (CC# 7)` and the offsets 71 to 78 (implementation pp. 8 and 10). It
+  keeps two channel mode messages from the analogue part, MONO and POLY (implementation pp. 3 and
+  4), and no other controller from any part. So each is recorded for the digital synth parts, the
+  analogue synth part and the drum part, but for portamento time on the drum part, whose entry
+  changes a tone's parameter that a drum kit does not have: 44 controls, and the controls say why.
+  In this format a control naming no part means the base channel, which here is the first digital
+  synth's alone. Two more numbers the reception section lists, 91 and 94, are not carried, because
+  the chart this definition follows has no row for them (implementation p. 17). The five program
+  effects, 12 to 15 and 83, still name no part, because the Control Change Message List gives them
+  no channel.
 
   NOT RECORDED: the polyphony, which no document states. The 51-sheet Parameter Guide's whole
   contents, which is a panel reference and carries no controller number - **checked, because its
@@ -298,12 +314,13 @@ parts:
     channel_offset: 9
     addressing: voices
     receives: [notes, controls, program_change]
-    # **ITS PARAMETERS ARE NOT CARRIED, AND THAT IS A DECISION RATHER THAN A GAP.** Four of
+    # **ITS OWN PARAMETERS ARE NOT CARRIED, AND THAT IS A DECISION RATHER THAN A GAP.** Four of
     # them, each addressed by the note it belongs to: `Cutoff | 36 - 72 | NRPN MSB:89, LSB:Note`
     # (implementation p. 14) and the same shape for Resonance at 92, Level at 64 and Envelope at
     # 119. **148 addresses stated as four rules**, and no page prints one of them. See the
     # comment above the definition.
-    # Its 33 drum kits are reached by bank select 086/064 and program 001-033.
+    # Its 33 drum kits are reached by bank select 086/064 and program 001-033. The controllers
+    # every part receives are carried for it, below, as `drum_`, all but portamento time.
 
 groups:
   # **THE MIDI SPECIFICATION'S OWN SECTIONS FOR THE FIFTEEN IT NAMES**, which is what
@@ -320,26 +337,60 @@ groups:
 
 controls:
 
+  # **THE CONTROLLERS EVERY PART RECEIVES, ONCE FOR EACH KIND OF PART**, as `digital_synth_`,
+  # `analog_synth_` and `drum_`; see the account. **The drum part has no portamento time**: its
+  # entry says "The Portamento Time parameter (TONE:COMMON) will change." (implementation p. 1),
+  # and a drum kit's common block holds only its name and its level (implementation p. 13).
+
   # Continuous controllers ────────────────────────────────
-  modulation:                       {label: Modulation, cc: 1, group: continuous}
-  portamento_time:                  {label: Portamento Time, cc: 5, group: continuous}
-  volume:                           {label: Volume, cc: 7, group: continuous}
-  panpot:                           {label: Panpot, cc: 10, group: continuous}
-  expression:                       {label: Expression, cc: 11, group: continuous}
+  digital_synth_modulation:         {label: Modulation, cc: 1, part: digital_synth, group: continuous}
+  digital_synth_portamento_time:    {label: Portamento Time, cc: 5, part: digital_synth, group: continuous}
+  digital_synth_volume:             {label: Volume, cc: 7, part: digital_synth, group: continuous}
+  digital_synth_panpot:             {label: Panpot, cc: 10, part: digital_synth, group: continuous}
+  digital_synth_expression:         {label: Expression, cc: 11, part: digital_synth, group: continuous}
+  analog_synth_modulation:          {label: Modulation, cc: 1, part: analog_synth, group: continuous}
+  analog_synth_portamento_time:     {label: Portamento Time, cc: 5, part: analog_synth, group: continuous}
+  analog_synth_volume:              {label: Volume, cc: 7, part: analog_synth, group: continuous}
+  analog_synth_panpot:              {label: Panpot, cc: 10, part: analog_synth, group: continuous}
+  analog_synth_expression:          {label: Expression, cc: 11, part: analog_synth, group: continuous}
+  drum_modulation:                  {label: Modulation, cc: 1, part: drum, group: continuous}
+  drum_volume:                      {label: Volume, cc: 7, part: drum, group: continuous}
+  drum_panpot:                      {label: Panpot, cc: 10, part: drum, group: continuous}
+  drum_expression:                  {label: Expression, cc: 11, part: drum, group: continuous}
 
   # Switches and pedals ───────────────────────────────────
-  hold_1:                           {label: Hold 1, cc: 64, group: switch}
-  portamento:                       {label: Portamento, cc: 65, group: switch}
+  digital_synth_hold_1:             {label: Hold 1, cc: 64, part: digital_synth, group: switch}
+  digital_synth_portamento:         {label: Portamento, cc: 65, part: digital_synth, group: switch}
+  analog_synth_hold_1:              {label: Hold 1, cc: 64, part: analog_synth, group: switch}
+  analog_synth_portamento:          {label: Portamento, cc: 65, part: analog_synth, group: switch}
+  drum_hold_1:                      {label: Hold 1, cc: 64, part: drum, group: switch}
+  drum_portamento:                  {label: Portamento, cc: 65, part: drum, group: switch}
 
   # Sound controllers ─────────────────────────────────────
-  resonance:                        {label: Resonance, cc: 71, group: sound}
-  release_time:                     {label: Release Time, cc: 72, group: sound}
-  attack_time:                      {label: Attack Time, cc: 73, group: sound}
-  cutoff:                           {label: Cutoff, cc: 74, group: sound}
-  decay_time:                       {label: Decay Time, cc: 75, group: sound}
-  vibrato_rate:                     {label: Vibrato Rate, cc: 76, group: sound}
-  vibrato_depth:                    {label: Vibrato Depth, cc: 77, group: sound}
-  vibrato_delay:                    {label: Vibrato Delay, cc: 78, group: sound}
+  digital_synth_resonance:          {label: Resonance, cc: 71, part: digital_synth, group: sound}
+  digital_synth_release_time:       {label: Release Time, cc: 72, part: digital_synth, group: sound}
+  digital_synth_attack_time:        {label: Attack Time, cc: 73, part: digital_synth, group: sound}
+  digital_synth_cutoff:             {label: Cutoff, cc: 74, part: digital_synth, group: sound}
+  digital_synth_decay_time:         {label: Decay Time, cc: 75, part: digital_synth, group: sound}
+  digital_synth_vibrato_rate:       {label: Vibrato Rate, cc: 76, part: digital_synth, group: sound}
+  digital_synth_vibrato_depth:      {label: Vibrato Depth, cc: 77, part: digital_synth, group: sound}
+  digital_synth_vibrato_delay:      {label: Vibrato Delay, cc: 78, part: digital_synth, group: sound}
+  analog_synth_resonance:           {label: Resonance, cc: 71, part: analog_synth, group: sound}
+  analog_synth_release_time:        {label: Release Time, cc: 72, part: analog_synth, group: sound}
+  analog_synth_attack_time:         {label: Attack Time, cc: 73, part: analog_synth, group: sound}
+  analog_synth_cutoff:              {label: Cutoff, cc: 74, part: analog_synth, group: sound}
+  analog_synth_decay_time:          {label: Decay Time, cc: 75, part: analog_synth, group: sound}
+  analog_synth_vibrato_rate:        {label: Vibrato Rate, cc: 76, part: analog_synth, group: sound}
+  analog_synth_vibrato_depth:       {label: Vibrato Depth, cc: 77, part: analog_synth, group: sound}
+  analog_synth_vibrato_delay:       {label: Vibrato Delay, cc: 78, part: analog_synth, group: sound}
+  drum_resonance:                   {label: Resonance, cc: 71, part: drum, group: sound}
+  drum_release_time:                {label: Release Time, cc: 72, part: drum, group: sound}
+  drum_attack_time:                 {label: Attack Time, cc: 73, part: drum, group: sound}
+  drum_cutoff:                      {label: Cutoff, cc: 74, part: drum, group: sound}
+  drum_decay_time:                  {label: Decay Time, cc: 75, part: drum, group: sound}
+  drum_vibrato_rate:                {label: Vibrato Rate, cc: 76, part: drum, group: sound}
+  drum_vibrato_depth:               {label: Vibrato Depth, cc: 77, part: drum, group: sound}
+  drum_vibrato_delay:               {label: Vibrato Delay, cc: 78, part: drum, group: sound}
 
   # Program effects ───────────────────────────────────────
   reverb:                           {label: Reverb, cc: 12, group: effects}

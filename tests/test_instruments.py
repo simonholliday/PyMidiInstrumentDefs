@@ -5193,6 +5193,18 @@ class TestMC707:
 		assert mc.midi.program_change is not None
 		assert mc.midi.program_change.presets == 128
 
+	def test_every_control_names_the_track (self) -> None:
+		"""The tracks are the only part that takes a controller, and none derives from a base."""
+		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
+
+		assert all(c.part == "track" for c in mc.controls.values())
+		assert "controls" not in (mc.parts["control"].receives or ())
+
+		flat = " ".join(prose_of("roland", "mc_707").split())
+
+		assert "EVERY CONTROL BELOW NAMES THE TRACK, BECAUSE THE TRACKS ARE THE ONLY PART THAT" \
+			" TAKES ONE." in flat
+
 	def test_system_exclusive_is_not_recorded_because_the_documents_disagree (self) -> None:
 		"""The chart marks it x in both columns; the reference manual has a Device ID for it."""
 		mc = pymidiinstrumentdefs.load("roland/mc_707", [CORPUS])
@@ -13525,8 +13537,29 @@ class TestJDXi:
 		assert "Controller 102 is the first partial's cutoff on channels 1 and 2, the whole" \
 			" analog tone's cutoff on channel 3, and nothing at all on channel 10." in flat
 
+	def test_the_controllers_every_part_receives_are_written_for_each_kind (self) -> None:
+		"""A control naming no part would mean the base channel, the first digital synth's alone."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		standard = [1, 5, 7, 10, 11, 64, 65, 71, 72, 73, 74, 75, 76, 77, 78]
+
+		for part in ("digital_synth", "analog_synth", "drum"):
+			numbers = sorted(control.cc for control in jd_xi.controls.values()
+				if control.part == part and control.cc in standard)
+
+			# A drum kit has no portamento time for 5 to change.
+			assert numbers == [n for n in standard if not (part == "drum" and n == 5)]
+
+		# The five program effects alone name no part: the list gives them no channel.
+		assert sorted(control.cc for control in jd_xi.controls.values()
+			if control.part is None and control.cc is not None) == [12, 13, 14, 15, 83]
+
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "THE CONTROLLERS EVERY PART RECEIVES ARE HERE ONCE FOR EACH KIND OF PART." in flat
+
 	def test_it_is_the_first_roland_here_with_real_nrpns (self) -> None:
-		"""Twenty-one of its 57 controls are addressed that way."""
+		"""Twenty-one of its 86 controls are addressed that way."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
 
@@ -13537,7 +13570,7 @@ class TestJDXi:
 		by_nrpn = [key for key, control in jd_xi.controls.items() if control.nrpn is not None]
 
 		assert len(by_nrpn) == 21
-		assert len(jd_xi.controls) == 57
+		assert len(jd_xi.controls) == 86
 
 		# Every one has a most significant byte of nought, so the address is the printed LSB.
 		addresses = [jd_xi.controls[key].nrpn for key in by_nrpn]
@@ -13550,8 +13583,12 @@ class TestJDXi:
 
 		assert jd_xi.parts["drum"].addressing == "voices"
 
-		# **Nothing carries the drum part**, because what it would carry is arithmetic.
-		assert not [key for key, control in jd_xi.controls.items() if control.part == "drum"]
+		# **None of its own parameters is carried**, because what it would carry is arithmetic:
+		# what names the drum part is the controllers every part receives, but for portamento time.
+		drum = [control for control in jd_xi.controls.values() if control.part == "drum"]
+
+		assert len(drum) == 14
+		assert all(control.nrpn is None for control in drum)
 
 		said = prose_of("roland", "jd_xi")
 
@@ -13563,11 +13600,11 @@ class TestJDXi:
 		assert "`elektron/tonverk`'s lesson at rank 86" in flat
 
 	def test_it_says_which_of_its_numbers_rest_on_arithmetic (self) -> None:
-		"""Nine of 57, which the citation checker reports and the definition repeats."""
+		"""Nine of 86, which the citation checker reports and the definition repeats."""
 		flat = " ".join(prose_of("roland", "jd_xi").split())
 
-		assert "AND NINE OF THE FIFTY-SEVEN NUMBERS ARE NOT PRINTED AS NUMBERS ANYWHERE." in flat
-		assert "48 of the 57 are found as numbers and nine are found inside a span" in flat
+		assert "AND NINE OF THE EIGHTY-SIX NUMBERS ARE NOT PRINTED AS NUMBERS ANYWHERE." in flat
+		assert "77 of the 86 are found as numbers and nine are found inside a span" in flat
 
 		# And it distinguishes that from generating numbers, which is the line it did not cross.
 		assert "That is reading a table rather than generating numbers" in flat
@@ -13604,9 +13641,10 @@ class TestJDXi:
 		"""And the labels take the spelling the reception section uses."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
 
-		for key, label in (("vibrato_rate", "Vibrato Rate"),
-				("vibrato_depth", "Vibrato Depth"), ("vibrato_delay", "Vibrato Delay")):
-			assert jd_xi.controls[key].label == label
+		for kind in ("digital_synth", "analog_synth", "drum"):
+			for key, label in (("vibrato_rate", "Vibrato Rate"),
+					("vibrato_depth", "Vibrato Depth"), ("vibrato_delay", "Vibrato Delay")):
+				assert jd_xi.controls[f"{kind}_{key}"].label == label
 
 		flat = " ".join(prose_of("roland", "jd_xi").split())
 
@@ -13779,14 +13817,14 @@ class TestJupiterX:
 		"""22 of the 35 numbers it names, the rest being machinery or channel mode."""
 		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
 
-		assert len(jupiter.controls) == 22
+		assert len(jupiter.controls) == 37
 		assert len(jupiter.groups) == 4
 
 		# Every one answers to a controller number, so the list below is the whole map.
 		assert all(control.cc is not None for control in jupiter.controls.values())
 
-		assert sorted(control.cc for control in jupiter.controls.values()
-				if control.cc is not None) == [
+		assert sorted({control.cc for control in jupiter.controls.values()
+				if control.cc is not None}) == [
 			1, 4, 5, 7, 10, 11, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78, 84, 91, 93]
 
 		# **THE FANTOM RULING, STILL HOLDING NINE RANKS ON.** None of the addressing machinery
@@ -13819,17 +13857,18 @@ class TestJupiterX:
 		assert "parameter_guide" in jupiter.sources
 		assert "jd_800" in jupiter.sources
 
-	def test_one_control_is_transmitted_and_never_received (self) -> None:
+	def test_one_number_is_in_the_transmission_half_alone (self) -> None:
 		"""Because this maker prints two prose halves rather than a chart's two columns."""
 		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
 
 		directions = collections.Counter(
-			control.direction for control in jupiter.controls.values())
+			control.direction for control in jupiter.controls.values() if control.part == "part")
 
 		assert directions == {"receives": 15, "both": 6, "transmits": 1}
 
-		assert jupiter.controls["foot_type"].cc == 4
-		assert jupiter.controls["foot_type"].direction == "transmits"
+		for key in ("part_foot_type", "drum_foot_type"):
+			assert jupiter.controls[key].cc == 4
+			assert jupiter.controls[key].direction == "transmits"
 
 		# **AND THE SIBLING WITH THE SAME LIST RECORDS NO DIRECTION AT ALL**, which is the
 		# comparison worth pinning: the difference is in the reading, not in the instruments.
@@ -13839,7 +13878,30 @@ class TestJupiterX:
 
 		flat = " ".join(prose_of("roland", "jupiter_x").split())
 
-		assert "**One control is transmitted and never received**" in flat
+		assert "**One number is in the transmission half alone**" in flat
+
+		# And the definition doubts it, because the reception half resets a Foot Type.
+		assert "**And `transmits` is doubted here**" in flat
+
+	def test_every_control_names_its_part_and_part_r_lacks_seven (self) -> None:
+		"""The four parts take all 22 numbers, and Part R lacks portamento, legato and vibrato."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		parts = collections.Counter(control.part for control in jupiter.controls.values())
+
+		assert parts == {"part": 22, "drum": 15}
+
+		four = {control.cc for control in jupiter.controls.values() if control.part == "part"}
+		drum = {control.cc for control in jupiter.controls.values() if control.part == "drum"}
+
+		# The seven whose entries name a parameter the guide marks Part 1-4 only.
+		assert drum < four
+		assert four - drum == {5, 65, 68, 76, 77, 78, 84}
+
+		flat = " ".join(prose_of("roland", "jupiter_x").split())
+
+		assert "Six entries name a parameter the Parameter Guide marks `Part 1–4 only`" in flat
+		assert "So the four parts carry all 22 numbers and Part R the other fifteen" in flat
 
 	def test_its_clock_rests_entirely_on_a_document_about_parameters (self) -> None:
 		"""The 90-sheet implementation never mentions a timing clock byte."""

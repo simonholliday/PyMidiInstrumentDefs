@@ -166,10 +166,14 @@ source: >-
   lower number is the first send has it backwards. **`Filter EG Intencity` is a typo** for
   intensity, in the received table, where the transmitted table abbreviates past the point of
   spelling it; the label above gives it correctly. And **the received cells for controllers 92,
-  94 and 95 are malformed**, printing
-  `00/00 (00/000)` where the transmitted cells print `00/7F (00/127)` and the sense plainly wants
-  the latter. No band is recorded for those three, because inventing the threshold would put a
-  number in this corpus that no page carries.
+  94 and 95 have lost a character**: they print `00/00 (00/000)` (implementation p. 3), where the
+  transmitted cells print `00/7F (00/127)`. This implementation descends from the TRITON series'
+  of 5 April 1999, which the TRITON's Parameter Guide reprints (cited by `korg/triton`) with the
+  same `Bg` rows, the same effect switches and the same `Intencity`, and there those three cells
+  read `00/≠00 (00/≠000)`: 0 is off and anything else is on. So these are most likely that cell
+  with the `≠` lost when the table was set again - a threshold of 1, and not the `00/7F` the
+  transmitted side prints. No band is recorded for those three, because the threshold would then
+  rest on another instrument's page and not on this one's.
 
   WHERE THE PAGE NUMBERS COME FROM. The implementation prints its own folio 1 to 4. The Parameter
   Guide's folio runs fourteen sheets behind its file, checked on 1,175 of its 1,187 pages, and

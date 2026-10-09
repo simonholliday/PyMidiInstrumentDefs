@@ -12886,11 +12886,14 @@ class TestKRONOS:
 		assert "g : Always Global Channel No. (0 - 15)" in said
 		assert "there is no part for the instrument itself" in said
 
-		# Their received cells are malformed, so no band was invented for them.
+		# Their received cells lost the TRITON's `≠`, and no band rests on another instrument's page.
 		assert all(not kronos.controls[key].values
 			for key in ("all_insert_fx", "master_fx", "total_fx"))
-		assert "inventing the threshold would put a number in this corpus that no page" \
-			" carries" in " ".join(said.split())
+		said = " ".join(said.split())
+		assert "they print `00/00 (00/000)`" in said
+		assert "read `00/≠00 (00/≠000)`" in said
+		assert "the threshold would then rest on another instrument's page" in said
+		assert "malformed" not in said and "plainly wants" not in said
 
 	def test_it_records_three_faults_in_the_makers_own_tables (self) -> None:
 		"""Crossed effect sends, a typo, and three cells that did not typeset."""

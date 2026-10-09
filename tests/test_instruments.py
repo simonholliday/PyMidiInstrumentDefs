@@ -6923,17 +6923,25 @@ class TestHydrasynthExplorer:
 
 	"""An ASM whose maker prints its chart twice, and puts four parameters where it should not."""
 
-	def test_one_hundred_and_ten_controls_in_twenty_nine_modules (self) -> None:
-		"""Of 117 rows the chart prints: seven are set aside and the file says why."""
+	def test_one_hundred_and_twelve_controls_in_twenty_nine_modules (self) -> None:
+		"""Of 117 rows the chart prints: five are set aside and the file says why.
+
+		Bank select, 0 and 32, was set aside too until 2026-10-09, when it was ruled a
+		control wherever the maker numbers it, as most of this corpus already had it.
+		"""
 		explorer = pymidiinstrumentdefs.load("asm/hydrasynth_explorer", [CORPUS])
 
-		assert len(explorer.controls) == 110
+		assert len(explorer.controls) == 112
 		assert len(explorer.groups) == 29
 
 		numbers = [control.cc for control in explorer.controls.values() if control.cc is not None]
 
-		assert len(numbers) == 110
-		assert len(set(numbers)) == 110
+		assert len(numbers) == 112
+		assert len(set(numbers)) == 112
+
+		assert explorer.controls["bank_select_msb"].cc == 0
+		assert explorer.controls["bank_select_lsb"].cc == 32
+		assert all(explorer.controls[name].group == "system" for name in ("bank_select_msb", "bank_select_lsb"))
 
 	def test_four_parameters_sit_on_the_channel_mode_block_and_cannot_ship (self) -> None:
 		"""The one real loss here, and the validator's own rule is what costs it.

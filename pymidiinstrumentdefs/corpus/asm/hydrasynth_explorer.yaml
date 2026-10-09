@@ -83,12 +83,14 @@ source: >-
   rows at all** on these pages - it returns each column as its own vertical run, every Module then
   every Parameter then every CC - so the words were taken with their coordinates instead.
 
-  SEVEN NUMBERS ARE NOT CARRIED, AND FOUR OF THEM ARE THE INTERESTING ONES. `Bank select MSB` (0)
-  and `Bank select LSB` (32) are how a bank is chosen rather than parameters, and their work is
-  recorded under `program_change`: "To change banks, both types of Bank Select messages and a
-  program change are needed, or else the Hydrasynth will only select patches within the current
-  bank" (p. 84). `All notes off` (123) is the specification's own message, correctly named, and
-  this format refuses it as a control because it means the same thing everywhere.
+  BANK SELECT IS CARRIED, AS IT IS WHEREVER A MAKER NUMBERS IT. `Bank select MSB` (0) and
+  `Bank select LSB` (32) are in the chart's System module, and what they do is said under
+  `program_change` too: "To change banks, both types of Bank Select messages and a program change
+  are needed, or else the Hydrasynth will only select patches within the current bank" (p. 84).
+
+  FIVE NUMBERS ARE NOT CARRIED, AND FOUR OF THEM ARE THE INTERESTING ONES. `All notes off` (123)
+  is the specification's own message, correctly named, and this format refuses it as a control
+  because it means the same thing everywhere.
 
   **AND FOUR PARAMETERS ARE PUT ON NUMBERS THE SPECIFICATION RESERVES FOR CHANNEL MODE.** The
   chart assigns `ARP Octave` to **120**, `ARP Length` to **122**, `ENV4 Release` to **124** and
@@ -102,7 +104,7 @@ source: >-
   instrument that has them" - **which is exactly what this instrument makes untrue**. The four
   are therefore published, named, numbered and absent from the controls below, which is a real
   loss and the only one here. Recorded rather than worked around, and raised where the format's
-  questions are kept. That leaves **110 of the chart's 117 rows**.
+  questions are kept. That leaves **112 of the chart's 117 rows**.
 
   THE GAPS ARE MOSTLY THE SPECIFICATION'S OWN. The chart uses 117 of the numbers between 0 and
   125 and the nine it does not are 2 and 4 (breath and foot controller), 6 and 38 (data entry),
@@ -394,9 +396,13 @@ controls:
   reverb_dry_wet:              {label: Reverb Dry/Wet, cc: 91, group: reverb}
 
   # System ────────────────────────────────────────────────
+  # Bank select is a control here as it is wherever a maker numbers it, and both halves are needed
+  # to leave the current bank - see `program_change` and the source account.
+  bank_select_msb:             {label: Bank select MSB, cc: 0, group: system}
   modulation_wheel:            {label: Modulation wheel., cc: 1, group: system}
   master_volume:               {label: Master Volume, cc: 7, group: system}
   expression_pedal:            {label: Expression pedal, cc: 11, group: system}
+  bank_select_lsb:             {label: Bank select LSB, cc: 32, group: system}
   sustain_pedal:               {label: Sustain pedal, cc: 64, group: system}
 
   # Voice ─────────────────────────────────────────────────

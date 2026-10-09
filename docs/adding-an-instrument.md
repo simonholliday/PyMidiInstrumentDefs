@@ -209,9 +209,71 @@ Reading one 2,221-line implementation twice turned up a footnote marker the docu
 never defines, a row citing a footnote from the wrong section, a value list ending in
 `128` where MIDI has no such value, two adjacent bands that overlap at their shared
 edge, and one parameter whose polarity is given one way where the instrument transmits
-it and the other way where it receives it. None of this is unusual. **Where a source
-contradicts itself, or two sources disagree, record both readings and say so in a
-comment. Never pick one silently.**
+it and the other way where it receives it. None of this is unusual. **Never pick a reading
+silently.** What a definition carries depends on the shape of the disagreement.
+
+### When a document disagrees with itself
+
+**A value is recorded where everything the document says about it agrees, or where
+something outside the disagreement settles it - and the disagreement is written down
+either way.** Five cases come up, and the question that sorts the second from the third is
+whether the two statements could both be true of the same instrument.
+
+1. **One statement that looks wrong: carry it, and doubt it in writing.** A Bass Station
+   II's guide gives its modulation wheel as CC 0, which the MIDI specification gives to
+   bank select, and that guide is the only document there is. Its definition carries 0,
+   because that is what the maker published, and says in a comment that the number is very
+   hard to believe. A definition says what the maker said and where that looks wrong; it
+   does not correct the maker.
+
+2. **Two statements that cannot both be true: carry neither, and say what both were.** A
+   Novation Peak's parameter list prints most of its defaults twice, as the number sent
+   and as the screen shows it, and the row's own range gives the arithmetic between them:
+   on a range printed `0-127 (-64 to +63)`, `64 (0)` checks out, and Glide Time's
+   `0 (60)`, on `0-127 (0 to +127)`, cannot. With its init patch table and its text as
+   further statements, 32 of its 246 controls carry no default for that reason, and the
+   file sets out each way the document failed to settle them. The two statements need not
+   sit side by side - a Circuit Tracks guide gives five defaults one way in its control
+   map and another in its patch format further on, and those five carry none either. And a
+   whole table can fail this way: a volca fm's implementation prints one control's ten
+   bands in hexadecimal and in decimal, the two disagree in four rows, and the decimal
+   column overlaps itself, so its definition names the ten bands and numbers none of them.
+
+3. **One statement narrower than the other: look outside the pair first.** An Arturia
+   PolyBrute 12's specifications list its aftertouch as *"channel aftertouch"* and, nine
+   lines further on, as *"channel or polyphonic"*. Both could be true of an instrument
+   that does both, so this is not the second case. The body of the manual settles it -
+   four of its five aftertouch modes send polyphonic aftertouch when MPE is off - so the
+   definition records polyphonic and sets out all three statements. **A third witness has
+   to be about the same thing**, not merely nearby in the same document. Where nothing
+   outside the pair settles it, carry neither, as in the second case.
+
+4. **A clause that cannot be read is damaged, not competing** - one that does not add up
+   on its own terms, such as a list that skips a member of its own sequence. A Prophet-5's
+   implementation gives its program change as 0-39, and then enumerates thirty-two values
+   across Banks 1, 2, 4 and 5, skipping Bank 3, where its bank selector cycles through
+   five. The enumeration is not a second statement of the range so much as a sentence that
+   does not hold together, so the figure the row states outright stands, and its user
+   guide's 400 programs, in groups of five banks of eight, agree with it. The definition
+   gives the reach as 40 and sets the enumeration out, so that a reader can see what was
+   set aside.
+
+5. **Two editions under one version stamp are a pair.** Roland has served two files of the
+   TR-6S's MIDI implementation chart, both printing Version 1.00 and the same date, and
+   they disagree about one note number: 58 in the earlier file, 55 in the later. A maker's
+   version stamp is not evidence that two files are the same document, and the later file
+   is not right merely for being later. So they are one document saying two things, and
+   the cases above apply to them as to any other. Cite both, so that a reader can see the
+   disagreement.
+
+**Two documents that disagree are the same problem**, and the same answers apply. The
+TR-6S's chart and its parameter guide disagree about system exclusive, and its definition
+records neither.
+
+**A document that gives a thing twice is a document you can audit, so audit it.** A maker
+who prints a value in hexadecimal and in decimal, or a default in a column and again in a
+patch table, has handed you a check that costs nothing to run, and several of the cases
+above were found exactly that way.
 
 ## 5. Write the definition
 
@@ -290,6 +352,24 @@ or lists a different number of states from the range — **keep the control cont
 and name the states in a comment. Never number states by the order a list prints them
 in. An on/off parameter printed as `0-1` stays `range: [0, 1]` unless the document
 says which number is which.
+
+**`default` is the value a control starts at, where the maker prints one** - in a default
+column, an init patch table, or the text beside a parameter:
+
+```yaml
+  voice_mode:
+    label: Voice Mode
+    nrpn: 2
+    range: [0, 4]
+    default: 3
+```
+
+Write the number that goes on the wire, which is not always the number on the screen. A
+Novation list prints `64 (0)` and never says which is which; the row's own range, printed
+`0-127 (-64 to +63)`, is what shows that 64 is sent and 0 is shown. The validator refuses
+a default outside the control's range. **Defaults are often stated twice** - in a column
+and again in an init patch table - so they are often where a document disagrees with
+itself, and section 4 says what to carry when it does.
 
 **Three kinds of fact, and only one of them belongs in your file.** Facts about the
 MIDI specification are not your instrument's parameters. The channel mode messages,
@@ -606,7 +686,7 @@ Before offering one, check that:
 - you extracted the tables twice and the two agree;
 - every row of the source is either in the file or excluded for a stated reason;
 - every `none` records what you searched for and where;
-- disagreements between sources are recorded rather than resolved silently;
+- every disagreement is carried as section 4 sorts it, and none is resolved silently;
 - the citation check below passes against your own copies of the documents;
 - `pytest` and `mypy` both pass.
 

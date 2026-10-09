@@ -1,0 +1,346 @@
+# **TWENTY-NINE CONTROLLERS, BOTH WAYS, AND TWO DOCUMENTS AGREE ON EVERY NUMBER.** Korg publishes
+# the MIDI surface twice: a plain-text implementation whose transmitted and received tables list the
+# same twenty-nine controllers under the same names, the received table adding 123, All Note Off;
+# and a one-page chart whose Control Change block lists the same twenty-nine, in the same order,
+# circled in both columns. The two were compared number by number and name by name rather than read
+# from one and assumed of the other.
+#
+# **EIGHT OF THEM CHOOSE A TYPE, AND THE IMPLEMENTATION STATES EACH ONE TWICE.** Its transmitted
+# table gives the exact values sent - `0,25,50,75,127` for the envelope's five types - and its
+# received table the bands it answers to, `0~24` up to `100~127`. **Every value sent falls in the
+# received band of the same name**, for all eight, and the bands cover 0 to 127 with no gap and no
+# overlap, which this definition's reading script asserts. So the band starts below are the received
+# bands', and a consumer that sends one of the transmitted values lands on the state it names.
+#
+# **THE IMPLEMENTATION AND THE CHART DISAGREE OUTRIGHT THREE TIMES, AND THE DOCUMENTS DIFFER IN
+# FOUR MORE PLACES THAT CAN ALL BE TRUE AT ONCE.** None of the seven changes a field below, and the
+# account sets out every one.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: NTS-1 digital kit
+  # **1.20, THE NEWEST THE MAKER PUBLISHES, AND THE MANUAL IS ITS EDITION.** The downloads page
+  # lists the System Updater at 1.20 and nothing later; the release notes' two 1.20 additions are
+  # both rows of the manual's global parameter table; and the manual's own metadata names
+  # `NTS-1 digital kit/System Updater v1.20`. Checked 2026-10-09.
+  firmware: "1.20"
+
+source: >-
+  **TWENTY-NINE CONTROLLERS, SENT AND RECEIVED, FROM TWO DOCUMENTS THAT AGREE ON EVERY NUMBER.** The
+  implementation is a 31.7 KB text file, Version 1.00 of 2021-10-04, and its transmitted and
+  received channel tables list the same twenty-nine controller numbers under the same names, the
+  received table adding 123, `All Note Off`. The chart, Version 1.00 dated 2019.6.25, lists the same
+  twenty-nine in its Control Change block, circled in both columns (chart p. 1). The marks on this
+  chart are text, so it was read by position against the three vertical rules measured off the page,
+  and then rendered and looked at.
+
+  **THE CONTROLLERS AND THE PITCH BEND ARE BEHIND ONE GLOBAL SWITCH THAT IS ON WHEN THE KIT
+  ARRIVES.** "Received when global parameter MIDI RX ShortMessage is set to ON." (chart p. 1), and
+  the implementation footnotes every controller it receives, and the pitch bend, with the same
+  parameter, which it spells `MIDI RX/short message`. The manual's global parameter table gives that
+  parameter "0: off, 1*: on" (manual p. 4), under "*: Factory default setting" (manual p. 4). The
+  same arrangement as `korg/volca_keys`, set the same way.
+
+  **EIGHT CONTROLLERS CHOOSE A TYPE, AND EACH IS GIVEN TWICE.** The implementation's transmitted
+  table prints the exact values it sends and its received table the bands it answers to, and every
+  value sent falls in the received band of the same name. The band starts are what this format
+  records. They name the oscillator's, filter's and envelope's types, the three effects' types, and
+  the arpeggiator's pattern and intervals.
+
+  **MONOPHONIC, FROM ONE OSCILLATOR.** "With a single monophonic digital oscillator, one multimode
+  filter, on EG, three LFOs, three stereo effect processors, and full arpeggiator, the NTS-1 is a
+  very powerful, flexible, fun-to-explore synth." (product_page) - `on EG` as printed. The manual's
+  specifications give one oscillator too: "Sound generator system: 1 VCO, 1 Multimode filter, 1 EG,
+  3 LFO" (manual p. 3), a VCO where the product's specifications page says `1 Digital Oscillator`
+  (specifications). And firmware 1.20 added "New global option to enable/disable legato handling of
+  incoming MIDI notes" (release_notes), which the manual's table carries as `EG Legato`. **No
+  document states a voice count**, so `polyphony: 1` reads the one monophonic oscillator as one
+  voice, which is the reading `korg/monologue` makes of the same word in its own manual.
+
+  **NOTES ARE RECEIVED OVER THE WHOLE RANGE AND SENT OVER EIGHTEEN.** The chart gives `0–127` for
+  Note Number and True Voice in its `Recognized` column and `45–62` in its `Transmitted` column
+  (chart p. 1), and the evident source of what is sent is the ribbon keyboard, though the chart does
+  not say so. Its velocity row reads `O 9n, V=1–127` received, which is the `received` below.
+
+  **NO DOCUMENT NAMES A MIDI OUT JACK.** The specifications list a "MIDI IN jack (3.5 mm TRS
+  mini-phone jack)" (manual p. 3) and a USB port, and the connectivity sheet says "The MIDI IN
+  connector of the NTS-1 digital kit can receive notes and other messages from external MIDI devices
+  and other sources." (connectivity p. 1), while the USB port is the one to "transmit and receive
+  note messages and more." (connectivity p. 1). So whatever is sent can leave only by USB - an
+  inference from the jacks, because the same sheet opens by saying the kit "uses either the USB port
+  or the MIDI IN connector to send and receive MIDI signals." (connectivity p. 1). The manual's
+  `MIDI route` setting is "0*: USB+MIDI, 1: USB" (manual p. 4) and is not explained further.
+
+  **CLOCK BOTH WAYS, TRANSPORT RECEIVED ONLY, BEHIND A SECOND SETTING.** The implementation sends
+  `F8` and receives `F8`, `FA`, `FB` and `FC`, each received one footnoted to the clock setting, and
+  the chart circles Clock in both columns and Commands in its `Recognized` column alone: "Not
+  received when global parameter MIDI Clock src is set to Internal; received when set to Auto."
+  (chart p. 1). The manual gives `MIDI clock source` as "0: internal, 1*: auto" (manual p. 4), so
+  from the factory it follows a clock that arrives.
+
+  **SYSTEM EXCLUSIVE IS HOW USER OSCILLATORS AND EFFECTS ARRIVE.** Circled in both columns, with "In
+  addition to Korg exclusive messages, Inquiry is supported." (chart p. 1), and the implementation
+  lays out the requests, the slot data and the status replies for the user modules, which the kit
+  can take because "It is compatible with the logue SDK" (manual p. 3). The manual's fifth
+  oscillator type is `User OSC`, which it says comes preloaded, printing the preloaded oscillator's
+  name in the display's own font; the implementation names that band `WAVES`.
+
+  **THE TWO DOCUMENTS DISAGREE OUTRIGHT THREE TIMES.** The implementation's transmitted realtime
+  table lists `FE` Active Sensing, and the chart crosses Active Sense in its `Transmitted` column
+  and circles it only in its `Recognized` one (chart p. 1). The chart circles All Notes Off as
+  `O (123–127)` where the implementation receives `7b`, 123, alone, as `All Note Off`. And the
+  chart's Note Number row carries the same footnote as the controllers, the `MIDI RX ShortMessage`
+  switch, where the implementation footnotes none of its note rows in either direction. **None of
+  the three reaches a field**: active sensing and the switch have none here, and the channel mode
+  messages are refused by the format. So all three are written down and none is chosen.
+
+  **AND THE DOCUMENTS DIFFER IN FOUR MORE PLACES THAT CAN ALL BE TRUE AT ONCE.** The implementation
+  footnotes every controller it sends to the same switch, by a footnote saying the message is
+  transmitted when the switch is on, where the chart's footnote speaks of reception only. Its
+  transmitted note on reads `vv=1~127` where the chart's velocity row reads `X 9n, V=64`: the chart
+  says a fixed 64, the implementation prints the message's range, and nothing describes the ribbon
+  as sensing how hard it is pressed. Its received note off reads `Note Off vv=1~127` where the chart
+  crosses Note Off in the `Recognized` column: the implementation gives the message's range, the
+  chart says the value does nothing, which is the `note_off: false` below. And the chart's `Mode 3`,
+  OMNI OFF and POLY by its own legend, sits beside a monophonic oscillator; a one-voice instrument
+  can receive in mode 3, as `korg/monologue` records.
+
+  **THE CHART IS THE OLDER DOCUMENT BY MORE THAN TWO YEARS**, and between it and the implementation
+  came 1.10, announced on the product page on `2020.03.10` (product_page), whose notes include "Fix
+  scaling issues with some MIDI CC values" (release_notes) and do not say which values. The
+  implementation, the later of the two and the only one to print values, postdates it.
+
+  **AND THE IMPLEMENTATION DISAGREES WITH ITSELF IN ITS SYSTEM EXCLUSIVE TABLES**, about nothing a
+  field here holds: its user API version reply gives the platform ID as `3` where its slot status
+  table gives `1`; its messages number the user modules `1` to `4` where that table gives `1~5`; its
+  received list includes `47` and `48`, which their own formats mark as transmitted only; its status
+  message is "Transmitted when an error occurs after receiving a system exclusive message."
+  (implementation) where five other formats send it after success too; and its transmitted list
+  gives status codes `23-2F` where its own table of them has no `25`.
+
+  **`nrpn: none` IS A CHECKED ABSENCE.** Neither document names 6, 38 or 98 to 101 anywhere: not the
+  chart's Control Change block or its Aux rows (chart p. 1), and not the implementation, whose
+  channel tables are its whole account of what is sent and received.
+
+  NOT RECORDED: the pitch bend range. The chart circles Pitch Bend in its `Recognized` column
+  (chart p. 1) and the implementation receives `En`, and no document gives a range or a setting for
+  it; the format's pitch bend field holds those two and nothing else. Nor how a particular user
+  oscillator or user effect is chosen over MIDI: the oscillator type controller has one band for the
+  user slot, and the three effect type controllers name only the built-in types and `OFF`.
+
+  NOT CARRIED: the chart's own spellings `TREMOLLO` and `Meassages`. The labels below are the
+  implementation's, which spells `TREMOLO`.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: NTS-1 digital kit MIDI Implementation
+    edition: Version 1.00
+    dated: 2021-10-04
+    landing: "https://www.korg.com/us/support/download/manual/0/832/4831/"
+    url: "https://cdn.korg.com/us/support/download/files/4ceb06b82f995bef725f6548ec8b95b0.txt"
+    sha256: ec80e429e2c0864fa58b74dcc1dec9ff0993fdcdf8aaf5822765167de3201ff3
+    retrieved: 2026-10-09
+    paginated: false
+    # **32,423 bytes of plain text with CRLF line ends, its tables drawn in `+--+` and `|`**, under
+    # thirteen headings: transmitted data, recognised data, and the system exclusive formats. The
+    # downloads page lists it as `2021.10.07 / TXT : 31.7KB`, three days after its own date. The
+    # name arrives in the query string, `NTS-1_MIDIimp.txt`, as for every file saved here.
+  chart:
+    kind: chart
+    title: MIDI Implementation Chart
+    edition: Version 1.00
+    dated: 2019-06-25
+    landing: "https://www.korg.com/us/support/download/manual/0/832/4370/"
+    url: "https://cdn.korg.com/us/support/download/files/8b4225f3349d609272fcf7ac868212cc.pdf"
+    sha256: cabd199708af2ef165e9927c38b50c0282f4cea4dfd36380070579a8ee4d3010
+    retrieved: 2026-10-09
+    # **ONE PAGE, ENCRYPTED WITH AN EMPTY PASSWORD, AND ITS MARKS ARE TEXT** - unlike
+    # `korg/volca_keys`' and `korg/volca_sample`'s, whose circles and crosses are drawings. Its
+    # three vertical rules stand at x 204.9, 295.6 and 386.3 and divide Function, `Transmitted`,
+    # `Recognized` and Remarks; every mark was assigned to a column by them and to a row by the
+    # nearest labelled line. Headed `Model: NTS-1 digital kit`; listed as
+    # `2019.09.04 / PDF : 8.7KB`.
+  manual:
+    kind: manual
+    title: NTS-1 digital kit Owner's Manual
+    edition: EFGSJ 2
+    landing: "https://www.korg.com/us/support/download/manual/0/832/4368/"
+    url: "https://cdn.korg.com/us/support/download/files/bf300d20329f73ae4d21c512be014bf3.pdf"
+    sha256: 791a5f7d2430143ba7aee4a7fa3b19e6aa4ba1717d349bb5c29bd0b932d6ea7d
+    retrieved: 2026-10-09
+    pages_per_sheet: 2
+    # **EIGHT WIDE SHEETS, TWO PRINTED PAGES TO EACH, ODD ON THE LEFT**, by the folios at the foot
+    # of each half; five languages. `Published 05/2020`. Everything cited here is on sheet 2: the
+    # specifications, the introduction and the ribbon keyboard's callout on p. 3; the global
+    # parameters, the panel's mode table, the jacks and the arpeggiator on p. 4; and the effects
+    # table, which is set across the fold, on both.
+  connectivity:
+    kind: manual
+    title: NTS-1 digital kit MIDI connectivity
+    edition: E 1
+    landing: "https://www.korg.com/us/support/download/manual/0/832/4474/"
+    url: "https://cdn.korg.com/us/support/download/files/40b4cf13fa40a3f9f821559b794dd9f5.pdf"
+    sha256: 72c0a5fe965285af22f23f68dac35454929240b6f233084800eeefb2016cd2ee
+    retrieved: 2026-10-09
+    # One page, `Published 01/2020`: the USB port, the MIDI IN connector and its TRS type A cable.
+  release_notes:
+    kind: release_notes
+    title: NTS-1 digital kit release notes
+    edition: "1.20"
+    landing: "https://www.korg.com/us/support/download/software/0/832/4458/"
+    url: "https://cdn.korg.com/us/support/download/files/d7d5f79755fdbe3fec5f30049beca726.zip"
+    sha256: 88fad91954f2c10a421440c42e0ffb9b73a925ef0a04023154ed281dfce1750f
+    retrieved: 2026-10-09
+    paginated: false
+    # **THE DIGEST IS THE TEXT FILE'S AND THE ADDRESS IS THE ARCHIVE IT CAME OUT OF**:
+    # `release_note_e.txt`, 660 bytes, inside `NTS-1_digital_kit_updater_v120_windows.zip`, which
+    # the downloads page lists as System Updater 1.20 of 2020.04.24. Three releases, 1.20, 1.10 and
+    # 1.03, and no dates.
+  downloads:
+    kind: download_page
+    title: Downloads | NTS-1 digital kit | KORG (USA)
+    landing: "https://www.korg.com/us/support/download/product/0/832/"
+    sha256: 6fcfbeb7ec0547393aca991b818d51cb7d0aeb88dc00f7d9c8c7590dfa7a12be
+    retrieved: 2026-10-09
+    paginated: false
+    # Its visible text, saved by `Tools/save_page.py`, with the HTML as fetched beside it. Product
+    # 832 is the original NTS-1 and not the mkII; it lists the System Updater at 1.20, `2020.04.24`,
+    # and the three MIDI documents with their listing dates.
+  product_page:
+    kind: product_page
+    title: NTS-1 digital kit - PROGRAMMABLE SYNTHESIZER KIT | KORG (USA)
+    landing: "https://www.korg.com/us/products/dj/nts_1/"
+    sha256: f9cb3651650d0700fb008ddf672e10574bfb8646fa208d18b0e8f2400603e967
+    retrieved: 2026-10-09
+    paginated: false
+    # Its visible text, saved by `Tools/save_page.py`; the HTML as fetched is kept beside it.
+  specifications:
+    kind: product_page
+    title: NTS-1 digital kit - PROGRAMMABLE SYNTHESIZER KIT specifications
+    landing: "https://www.korg.com/us/products/dj/nts_1/specifications.php"
+    sha256: a88fb67d89da83cc9bdb5dd68c3598ee11a7580c38018d151ae0c4e55066fd0a
+    retrieved: 2026-10-09
+    paginated: false
+    # Its visible text, as for the product page. Cited for its `1 Digital Oscillator`, where the
+    # manual's specifications say `1 VCO`; it differs from them in a few smaller ways besides.
+
+midi:
+  # `1–16` in both the Default and Change rows of both columns, marked `Memorized` (chart p. 1), and
+  # the manual's `MIDI channel` runs "0*–F: 1–16" (manual p. 4), so channel 1 from the factory.
+  channels: [1, 16]
+  # `3` in the `Recognized` column's Mode Default row (chart p. 1), OMNI OFF and POLY by its own
+  # legend, for an instrument with one monophonic oscillator - see the account, and
+  # `korg/monologue`, which records the same pair.
+  mode: 3
+  # **SENT AND RECEIVED.** The implementation sends `F8` and receives it, and the chart circles
+  # Clock in both columns (chart p. 1). Receiving it depends on `MIDI clock source`, auto from the
+  # factory.
+  clock: both
+  # **RECEIVED ONLY.** `FA` Start, `FB` Continue and `FC` Stop are in the received realtime table
+  # and not the transmitted one, and the chart crosses Commands sent and circles them received.
+  transport: receives
+  program_change:
+    # **Crossed in both columns** (chart p. 1), and neither of the implementation's channel tables
+    # has a `Cn` row. A checked absence twice over.
+    receives: false
+    sends: false
+  # **A CHECKED ABSENCE**: neither document names 6, 38 or 98 to 101 - not the chart's Control
+  # Change block, which runs `14`, `16`, `19` up to `117`, `118`, `119` (chart p. 1), nor its Aux
+  # rows, nor either of the implementation's channel tables. The rule `roland/tr_08` follows.
+  nrpn: none
+  # Circled in both columns, footnoted "In addition to Korg exclusive messages, Inquiry is
+  # supported." (chart p. 1), and laid out at length in the implementation.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # `0–127` in both the Note Number and True Voice rows of the `Recognized` column (chart p. 1).
+  note_range: [0, 127]
+  # "With a single monophonic digital oscillator" (product_page), read as one voice - see the
+  # account.
+  polyphony: 1
+  velocity:
+    # **RECEIVED**: `O 9n, V=1–127` in the `Recognized` column (chart p. 1). What it sends the chart
+    # gives as a fixed 64, `X 9n, V=64`, where the implementation prints `vv=1~127`; no document
+    # says the ribbon senses velocity. That is about what it sends, not what it answers to.
+    note_on: received
+    # Crossed in the `Recognized` column (chart p. 1), while the implementation receives
+    # `Note Off vv=1~127` and takes `9n kk 00` as a note off too. The implementation gives the
+    # message's range and the chart says the value does nothing; both can be true.
+    note_off: false
+  # Crossed in all four boxes, polyphonic and channel, in both columns (chart p. 1), and absent from
+  # the implementation. A checked absence.
+  aftertouch: none
+  # NOT RECORDED, the pitch bend. Circled received (chart p. 1) and `En` is in the implementation's
+  # received table; the format's pitch bend field holds a range and whether it can be set, and no
+  # document gives either.
+
+groups:
+  # The panel's seven buttons, which are the manual's own sections: OSC, FILTER and EG in the mode
+  # table (manual p. 4), MOD, DELAY and REVERB in the effects table (manual pp. 3-4), and ARP.
+  osc: OSC
+  filter: FILTER
+  eg: EG
+  mod: MOD
+  delay: DELAY
+  reverb: REVERB
+  arp: ARP
+
+controls:
+
+  # **TWENTY-NINE, BOTH WAYS, AS THE IMPLEMENTATION NAMES THEM.** Each control's group is the panel
+  # section the manual describes it under: the oscillator's LFO is on the OSC row of the mode table
+  # (manual p. 4) and the tremolo on the EG row, beside the knobs they share a button with.
+  #
+  # The eight stepped controls carry the received bands' starts. The values the instrument sends are
+  # those same starts, except the last state's, which it sends as `127`.
+
+  # OSC (5). The fifth type's band selects the user oscillator slot, `User OSC` in the manual's
+  # table (manual p. 4); the implementation names the band `WAVES`, after what the slot comes loaded
+  # with.
+  oscillator_type:      {label: OSCILLATOR TYPE, cc: 53, values: {saw: 0, tri: 25, sqr: 50, vpm: 75, waves: 100}, group: osc}
+  oscillator_shape:     {label: OSCILLATOR SHAPE, cc: 54, group: osc}
+  oscillator_alt:       {label: OSCILLATOR ALT, cc: 55, group: osc}
+  oscillator_lfo_rate:  {label: OSCILLATOR LFO RATE, cc: 24, group: osc}
+  oscillator_lfo_depth: {label: OSCILLATOR LFO DEPTH, cc: 26, group: osc}
+
+  # FILTER (5). The seventh type is `OFF` in the implementation and the manual's table
+  # (manual p. 4); the product page calls it an `OPEN mode`.
+  filter_type:          {label: FILTER TYPE, cc: 42, values: {lp2: 0, lp4: 18, bp2: 36, bp4: 54, hp2: 72, hp4: 90, "off": 108}, group: filter}
+  filter_cutoff:        {label: FILTER CUTOFF, cc: 43, group: filter}
+  filter_resonance:     {label: FILTER RESONANCE, cc: 44, group: filter}
+  filter_sweep_depth:   {label: FILTER SWEEP DEPTH, cc: 45, group: filter}
+  filter_sweep_rate:    {label: FILTER SWEEP RATE, cc: 46, group: filter}
+
+  # EG (5)
+  eg_type:              {label: EG TYPE, cc: 14, values: {adsr: 0, ahr: 25, ar: 50, ar_loop: 75, open: 100}, group: eg}
+  eg_attack:            {label: EG ATTACK, cc: 16, group: eg}
+  eg_release:           {label: EG RELEASE, cc: 19, group: eg}
+  tremolo_depth:        {label: TREMOLO DEPTH, cc: 20, group: eg}
+  tremolo_rate:         {label: TREMOLO RATE, cc: 21, group: eg}
+
+  # MOD (3)
+  mod_fx_type:          {label: MOD FX TYPE, cc: 88, values: {"off": 0, chorus: 25, ensemble: 50, phaser: 75, flanger: 100}, group: mod}
+  mod_fx_time:          {label: MOD FX TIME, cc: 28, group: mod}
+  mod_fx_depth:         {label: MOD FX DEPTH, cc: 29, group: mod}
+
+  # DELAY (4)
+  delay_fx_type:        {label: DELAY FX TYPE, cc: 89, values: {"off": 0, stereo: 21, mono: 42, ping_pong: 63, highpass: 84, tape: 105}, group: delay}
+  delay_fx_time:        {label: DELAY FX TIME, cc: 30, group: delay}
+  delay_fx_depth:       {label: DELAY FX DEPTH, cc: 31, group: delay}
+  delay_fx_mix:         {label: DELAY FX MIX, cc: 33, group: delay}
+
+  # REVERB (4)
+  reverb_fx_type:       {label: REVERB FX TYPE, cc: 90, values: {"off": 0, hall: 21, plate: 42, space: 63, riser: 84, submarine: 105}, group: reverb}
+  reverb_fx_time:       {label: REVERB FX TIME, cc: 34, group: reverb}
+  reverb_fx_depth:      {label: REVERB FX DEPTH, cc: 35, group: reverb}
+  reverb_fx_mix:        {label: REVERB FX MIX, cc: 36, group: reverb}
+
+  # ARP (3). The pattern length is "ARP pattern length: 1–24" (manual p. 4) on a controller that
+  # runs 0 to 127, and no document says how the one maps onto the other, so it stays continuous.
+  arp_pattern:          {label: ARP PATTERN, cc: 117, values: {up: 0, down: 12, up_down: 24, down_up: 36, conv: 48, div: 60, conv_div: 72, div_conv: 84, rand: 96, stoch: 108}, group: arp}
+  arp_intervals:        {label: ARP INTERVALS, cc: 118, values: {oct: 0, maj: 21, sus: 42, aug: 63, min: 84, dim: 105}, group: arp}
+  arp_length:           {label: ARP LENGTH, cc: 119, group: arp}

@@ -206,6 +206,7 @@ class TestBundledCorpus:
 			"korg/monologue",
 			"korg/ms_20_mini",
 			"korg/multi_poly",
+			"korg/nts_1",
 			"korg/opsix",
 			"korg/triton",
 			"korg/volca_bass",
@@ -18489,3 +18490,60 @@ class TestRD6:
 		assert rd6.model.firmware is None
 		assert set(rd6.sources) == {"guide", "release_notes", "product_page"}
 		assert rd6.sources["guide"].file_page(53) == 27 and rd6.sources["release_notes"].edition == "1.0.6"
+
+
+class TestNTS1:
+
+	"""Twenty-nine controllers both ways, off an implementation and a chart that agree about every one."""
+
+	def test_twenty_nine_controllers_both_ways (self) -> None:
+		nts = pymidiinstrumentdefs.load("korg/nts_1", [CORPUS])
+
+		assert len(nts.controls) == 29
+		numbers = sorted(control.cc for control in nts.controls.values() if control.cc is not None)
+		assert numbers == [14, 16, 19, 20, 21, 24, 26, 28, 29, 30, 31, 33, 34, 35, 36, 42, 43, 44, 45, 46, 53, 54, 55,
+			88, 89, 90, 117, 118, 119]
+		assert all(control.direction == "both" and control.part is None for control in nts.controls.values())
+		assert list(nts.groups) == ["osc", "filter", "eg", "mod", "delay", "reverb", "arp"]
+		assert (nts.controls["tremolo_rate"].group, nts.controls["oscillator_lfo_rate"].group) == ("eg", "osc")
+
+	def test_every_value_sent_names_the_state_it_is_sent_for (self) -> None:
+		"""The implementation sends each band's start and 127 for the last, and every one lands in its band."""
+		nts = pymidiinstrumentdefs.load("korg/nts_1", [CORPUS])
+
+		stepped = {name: control for name, control in nts.controls.items() if control.values}
+		assert len(stepped) == 8 and not [control for control in nts.controls.values() if control.choices]
+		for name, control in stepped.items():
+			states = list(control.values)
+			sent = list(control.values.values())[:-1] + [127]
+			assert [control.name_for(value) for value in sent] == states, name
+		assert nts.controls["filter_type"].values == {"lp2": 0, "lp4": 18, "bp2": 36, "bp4": 54, "hp2": 72,
+			"hp4": 90, "off": 108}
+		assert list(nts.controls["oscillator_type"].values) == ["saw", "tri", "sqr", "vpm", "waves"]
+
+	def test_monophonic_with_velocity_received_and_the_clock_both_ways (self) -> None:
+		nts = pymidiinstrumentdefs.load("korg/nts_1", [CORPUS])
+
+		assert (nts.midi.channels, nts.midi.mode, nts.midi.clock, nts.midi.transport) == ((1, 16), 3, "both", "receives")
+		assert nts.midi.program_change is not None
+		assert (nts.midi.program_change.receives, nts.midi.program_change.sends) == (False, False)
+		assert (nts.midi.nrpn, nts.midi.sysex, nts.midi.control_change) == ("none", True, None)
+		assert (nts.voice.polyphony, nts.voice.aftertouch, nts.voice.note_range) == (1, "none", (0, 127))
+		assert nts.voice.velocity is not None and (nts.voice.velocity.note_on, nts.voice.velocity.note_off) == ("received", False)
+
+	def test_firmware_120_and_eight_sources (self) -> None:
+		nts = pymidiinstrumentdefs.load("korg/nts_1", [CORPUS])
+
+		assert nts.model.firmware == "1.20" and nts.sources["release_notes"].edition == "1.20"
+		assert set(nts.sources) == {"implementation", "chart", "manual", "connectivity", "release_notes", "downloads",
+			"product_page", "specifications"}
+		assert nts.sources["manual"].file_page(3) == nts.sources["manual"].file_page(4) == 2
+
+	def test_the_three_disagreements_are_written_down_and_none_chosen (self) -> None:
+		nts = pymidiinstrumentdefs.load("korg/nts_1", [CORPUS])
+
+		account = " ".join((nts.source or "").split())
+		assert "**THE TWO DOCUMENTS DISAGREE OUTRIGHT THREE TIMES.**" in account
+		assert "**AND THE DOCUMENTS DIFFER IN FOUR MORE PLACES THAT CAN ALL BE TRUE AT ONCE.**" in account
+		assert "**NO DOCUMENT NAMES A MIDI OUT JACK.**" in account
+		assert "an inference from the jacks" in account

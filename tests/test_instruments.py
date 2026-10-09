@@ -9412,16 +9412,25 @@ class TestS1:
 
 		assert "TRYING THE NUMBERS FOUND AN UNLISTED EDITION, AND IT IS THE SAME DOCUMENT" in said
 
-	def test_no_firmware_is_recorded_and_none_is_published (self) -> None:
-		"""A manual version is not a firmware number, and Roland publishes neither for this one."""
-		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+	def test_the_firmware_is_on_the_updates_page_the_first_reading_missed (self) -> None:
+		"""1.02, from the Updates & Drivers page, and the manual describes what it added.
 
-		assert s1.model.firmware is None
+		Until 2026-10-09 this file said Roland published no firmware for the S-1,
+		having read only its Owner's Manuals page; `roland/p_6` found its sibling's
+		system program on the other page.
+		"""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+		p6 = pymidiinstrumentdefs.load("roland/p_6", [CORPUS])
+
+		assert s1.model.firmware == p6.model.firmware == "1.02"
 		assert s1.sources["manual"].edition == "1.02"
+		assert s1.sources["release_notes"].kind == "release_notes"
+		assert s1.sources["updates"].kind == "download_page"
 
 		said = prose_of("roland", "s_1")
 
-		assert "No firmware number appears anywhere in it" in said
+		assert "rS.Sh (Riser Shape)" in said
+		assert "No firmware number appears anywhere in it" not in said
 
 
 class TestP6:

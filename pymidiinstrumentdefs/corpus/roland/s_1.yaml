@@ -33,16 +33,26 @@ model:
   # this belongs to rather than for this instrument. **This file is the S-1 and no sibling**, and
   # the name is worth a caution of its own: a Stylophone S-1 exists and is a different instrument
   # from a different maker.
-  # The manual is "Version 1.02" (manual p. 73) and its chart is dated "Apr. 18, 2023" (manual
-  # p. 73). **No firmware number appears anywhere in it** - not on the cover, not in the menus and
-  # not in the specification - and Roland publishes no release notes for this instrument, so there
-  # is none to record. What the numbers below match is the manual of April 2023.
+  #
+  # THE NEWEST ROLAND OFFERS, AND THE ONE THE MANUAL DESCRIBES. The S-1's Updates & Drivers page,
+  # which this file first missed for its Owner's Manuals page, lists one system program, "S-1
+  # System Program (Ver 1.02)" (updates). Its update history, dated MAY 2023, adds a riser
+  # parameter "to Riser Mode to change the shape of the envelope." (release_notes), and the manual
+  # describes it as "rS.Sh (Riser Shape)" (manual p. 57). The manual marks `(Ver. 1.02)` eighteen
+  # times on twelve pages, from resetting the octave (manual p. 8) to the metronome (manual p. 58),
+  # and the chart's own "Version 1.02" (manual p. 73) agrees - which is the chart's rather than
+  # evidence on its own. Two of the notes' fixes concern MIDI: "The S-1's USB MIDI output may not
+  # be received by the PC." (release_notes), and a failure to send and receive through an MX-1
+  # with AIRA Link. Neither changes a number below. The chart is dated "Apr. 18, 2023" (manual
+  # p. 73).
+  firmware: "1.02"
 
 source: >-
   S-1 Owner's Manual, version 1.02, 75 pages: **every number below is on one of its last three**.
   Its MIDI implementation chart is p. 73 and its control change list runs from the foot of that
   page to the end of p. 75. The rest is cited for the two channels, the patterns, the polyphony and
-  the connectors. And Roland's owner's manuals page for the S-1, for what is published.
+  the connectors. And Roland's owner's manuals page for the S-1, for what is published, with its
+  updates page and the 1.02 system program's page for the firmware.
 
   ROLAND PUBLISHES THIS MANUAL AS WEB PAGES AND AS A PDF, in nine languages each, and **they are
   the same document**: the listing offers "S-1 Owner's Manual (Version 1.02) [HTML]" (downloads)
@@ -129,12 +139,34 @@ sources:
     sha256: d876cd09710e6080b473f02a050357e894345432bea2a77a08154414ab855989
     retrieved: 2026-10-04
     paginated: false
-    # Cited for what Roland publishes: the owner's manual in nine languages, as web pages and as a
-    # PDF, **all of them at version 1.02 and none newer**. No separate MIDI document, no release
-    # notes and no firmware.
+    # Cited for what Roland publishes on this page: the owner's manual in nine languages, as web
+    # pages and as a PDF, **all of them at version 1.02 and none newer**, and no separate MIDI
+    # document. The firmware and its notes are on another page, the next two sources.
     #
     # The sha256 is of the page's visible text; the page as served hashes to
     # b010e8f6690175530f6f495b5bd18df431e995e47e7ffe2aa2e266dfd79d996f.
+  updates:
+    kind: download_page
+    title: "Roland - Support - S-1 - Updates & Drivers"
+    landing: "https://www.roland.com/global/support/by_product/s-1/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/s-1/updates_drivers/"
+    sha256: 675e35a99c2d0ef6d24fec40cd20bd1a0f50fcc2fbad0ec576f7b0265b4b1c41
+    retrieved: 2026-10-09
+    paginated: false
+    # One system program, 1.02. The page as served hashes to
+    # 5b9f3db3d4c44fdc8d77c070758edf0ae25bb105589514a66e1401f45a4faadb.
+  release_notes:
+    kind: release_notes
+    title: S-1 System Program (Ver 1.02)
+    # The newest Roland had published when this was read, dated MAY 2023 in its own update history.
+    edition: Ver 1.02
+    landing: "https://www.roland.com/global/support/by_product/s-1/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/s-1/updates_drivers/a76d70fa-2daa-4af7-9f81-29901067df72/"
+    sha256: ab314905c6f0626f6fac167b6f3775ca6749170db144d5016dc4131513eeddf3
+    retrieved: 2026-10-09
+    paginated: false
+    # The page as served hashes to
+    # 347b72aa9b4d37eba1ab7f9d98d6c7ec63f004779b7ea30fd1b4f6a29d532cf0.
 
 midi:
   # The chart's Basic Channel row gives "1–16" (manual p. 73) in both columns against Changed,

@@ -16,6 +16,12 @@ definition: 1
 # of the MIDI Learn store showed one person's assignments and was recorded as a refusal. Here it
 # is four pictures out of five, and one of them - a Rec CC of 0 with its knob at the minimum,
 # between a populated 51 and 54 - looks like a cleared field rather than any factory state.
+#
+# AND THE CHANNEL AND TRANSPORT PICTURES ARE NOT THIS INSTRUMENT'S AT ALL. The ones on printed
+# pages 93 and 98 are byte for byte the pictures in version 1.2 of the DrumBrute's own manual:
+# crops of the DrumBrute's editor, the transport one from a window whose device panel reads
+# firmware `0.9.8.0`, older than any DrumBrute firmware Arturia lists (see `arturia/drumbrute`).
+# So they show one DrumBrute's settings at one moment, and not the Impact's.
 
 model:
   manufacturer: Arturia
@@ -248,8 +254,9 @@ sources:
     # manual for the editor rather than for any product, says so itself, and names no number for
     # this instrument on any of its 30 pages. It is here so that "no document states them" is
     # evidenced rather than asserted. Dated a year before this instrument existed. 30 pages by
-    # PyMuPDF; **`file` says 4**.
-    page_offset: 0
+    # PyMuPDF; **`file` says 4**. File pages 1 to 5 print no number and 6 to 30 print 2 to 26,
+    # checked on every sheet, so the offset is 4 - as `arturia/drumbrute` gives the same file.
+    page_offset: 4
   resources_page:
     kind: download_page
     title: DrumBrute Impact Resources - Arturia

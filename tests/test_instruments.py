@@ -6398,7 +6398,12 @@ class TestDrumBruteImpact:
 
 		# The largest page offset in the bundled set, and the reason front matter fills it.
 		assert impact.sources["manual"].page_offset == 5
-		assert impact.sources["mcc_manual"].page_offset == 0
+
+		# Five unnumbered sheets, then 2 to 26, as `arturia/drumbrute` gives the same file.
+		drumbrute = pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS])
+
+		assert impact.sources["mcc_manual"].sha256 == drumbrute.sources["mcc_manual"].sha256
+		assert impact.sources["mcc_manual"].page_offset == drumbrute.sources["mcc_manual"].page_offset == 4
 
 		assert impact.sources["release_notes"].paginated is False
 		assert impact.sources["resources_page"].paginated is False

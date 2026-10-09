@@ -206,6 +206,7 @@ class TestBundledCorpus:
 			"korg/ms_20_mini",
 			"korg/multi_poly",
 			"korg/opsix",
+			"korg/triton",
 			"korg/volca_bass",
 			"korg/volca_beats",
 			"korg/volca_drum",
@@ -18165,3 +18166,60 @@ class TestSR16:
 
 		assert sr.model.firmware is None and set(sr.sources) == {"manual"}
 		assert sr.sources["manual"].file_page(44) == 48
+
+
+class TestTRITON:
+
+	"""Thirty-nine controller numbers all both ways, eleven NRPNs, and sixteen tracks."""
+
+	def test_thirty_nine_controller_numbers_all_both_ways (self) -> None:
+		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
+
+		numbered = [control for control in triton.controls.values() if control.cc is not None]
+		assert sorted(cc for cc in (control.cc for control in numbered) if cc is not None) == [1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 16, 17, 18, 19,
+			20, 21, 64, 65, 66, 67, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 91, 92, 93, 94, 95]
+		assert all(control.direction == "both" for control in numbered)
+		assert not {control.cc for control in numbered} & {0, 6, 32, 38, 96, 97, 98, 99, 100, 101}
+
+	def test_eleven_nrpns_three_of_them_both_ways (self) -> None:
+		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
+
+		by_nrpn = {control.nrpn: control.direction for control in triton.controls.values() if control.nrpn is not None}
+		assert by_nrpn == {2: "both", 10: "both", 11: "both", 136: "receives", 137: "receives", 138: "receives",
+			160: "receives", 161: "receives", 227: "receives", 228: "receives", 230: "receives"}
+		assert triton.controls["arpeggiator_on_off"].values == {"off": 0, "on": 64}
+		assert triton.midi.nrpn == "supported" and len(triton.controls) == 50
+
+	def test_the_crossed_sends_and_the_three_on_the_global_channel (self) -> None:
+		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
+
+		assert (triton.controls["send_2_level"].cc, triton.controls["send_1_level"].cc) == (91, 93)
+		assert all(triton.controls[name].values == {"off": 0, "on": 1} for name in ("all_insert_fx", "master_fx_1", "master_fx_2"))
+		account = " ".join((triton.source or "").split())
+		assert "THREE NUMBERS REACH THE GLOBAL CHANNEL ONLY AND THE FORMAT CANNOT SAY SO." in account
+
+	def test_sixteen_tracks_on_sixty_two_shared_voices (self) -> None:
+		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
+
+		assert list(triton.parts) == ["track"] and triton.parts["track"].count == 16
+		assert triton.parts["track"].receives == ("notes", "controls", "program_change")
+		assert (triton.voice.polyphony, triton.voice.voicing_modes, triton.voice.polyphony_shared) == (62, (31, 62), True)
+
+	def test_the_rest_of_the_implementation_and_the_chart (self) -> None:
+		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
+
+		assert (triton.midi.channels, triton.midi.mode, triton.midi.clock, triton.midi.transport, triton.midi.sysex) == ((1, 16), 3, "both", "both", True)
+		assert triton.midi.program_change is not None
+		assert (triton.midi.program_change.receives, triton.midi.program_change.sends, triton.midi.program_change.presets) == (True, True, None)
+		assert triton.voice.note_range == (0, 127) and triton.voice.aftertouch == "poly"
+		assert triton.voice.velocity is not None and (triton.voice.velocity.note_on, triton.voice.velocity.note_off) == ("both", False)
+		assert triton.voice.pitch_bend is not None and (triton.voice.pitch_bend.programmable, triton.voice.pitch_bend.semitones) == (True, None)
+
+	def test_the_newest_system_and_six_sources (self) -> None:
+		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
+
+		assert triton.model.firmware == "2.5.3"
+		assert set(triton.sources) == {"implementation", "basic_guide", "parameter_guide", "update_guide", "history", "download_page"}
+		assert triton.sources["basic_guide"].file_page(137) == 142 and triton.sources["parameter_guide"].file_page(117) == 123
+		assert triton.sources["update_guide"].file_page(11) == 14 and triton.sources["history"].file_page(6) == 6
+		assert "THE NEWEST SYSTEM, AND NOTHING SINCE THE IMPLEMENTATION MOVED THE MAP." in prose_of("korg", "triton")

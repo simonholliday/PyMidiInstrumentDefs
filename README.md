@@ -190,6 +190,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/ms_20_mini` | Korg MS-20 mini: no controls, because the only MIDI this 1978 reissue accepts is notes on MIDI channel 1 with velocity disabled - and the maker says exactly that in one sentence |
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
+| `korg/triton` | Korg TRITON: 50 controls, the 39 controller numbers among them all travelling both ways, out of a text implementation shaped like the KRONOS's - one definition for the 61-, 76- and 88-key models, sixteen tracks, and an arpeggiator reached by NRPN |
 | `korg/volca_bass` | Korg volca bass: 12 controls that only arrive, from an instrument with no MIDI Out jack - and three of them reach parameters its panel cannot, two of which its owner's manual never names |
 | `korg/volca_beats` | Korg volca beats: 20 controls and ten parts off a plain text file, where the chart beside it draws its yes and no marks and names only seven of the ten |
 | `korg/volca_drum` | Korg volca drum: six parts on six MIDI channels, and the one of its maker's two charts that the instrument answers to out of the box |

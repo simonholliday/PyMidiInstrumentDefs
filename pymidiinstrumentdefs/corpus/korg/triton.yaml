@@ -1,0 +1,430 @@
+definition: 1
+
+# THE SHAPE OF `korg/kronos`'S IMPLEMENTATION, AND NEARLY THE SAME MAP. Korg's MIDI implementation
+# for this instrument is a text file laid out as two lists, `1.TRANSMITTED DATA` and
+# `2.RECOGNIZED RECEIVE DATA`, each naming every message by its status byte, with the control that
+# sends it or the use it is put to in brackets, as the Kronos's does. All 39 controller numbers
+# below are in both lists, so none needs a `direction`; eleven non-registered parameters are
+# recorded as well.
+
+model:
+  manufacturer: Korg
+  name: TRITON
+  # ONE DEFINITION FOR THREE KEYBOARDS, BY THE MAKER'S OWN ARRANGEMENT. The implementation footnotes
+  # the keys three ways, "kk = 24 - 108 : TRITON (61keys + Transpose)" (implementation), "= 16 -
+  # 115 : TRITON pro (76keys + Transpose)" (implementation) and "= 09 - 120 : TRITON proX (88keys +
+  # Transpose)" (implementation); the chart is headed for all three (basic_guide p. 137); and the
+  # newest system's history is headed "TRITON 'Classic' (Triton, Triton Pro, Triton Pro-x)"
+  # (history p. 1).
+  # THE NEWEST SYSTEM, AND NOTHING SINCE THE IMPLEMENTATION MOVED THE MAP. The implementation's last
+  # revision, 1.6, reads "Mofified for System version 2.5." (implementation), typo and all, followed
+  # by `Fix some mistakes.` The history runs from system 1.0.8 to 2.5.3 and gives a controller
+  # number only twice, both in fixes to MIDI filters: 66 in 1.1.0 (history p. 6) and 65 in 2.5.0
+  # (history p. 2). Neither moves a number, and nothing in 2.5.1 or 2.5.3 names one. So the map read
+  # for 2.5 is the map of 2.5.3. Checked 2026-10-09.
+  firmware: "2.5.3"
+
+source: >-
+  Korg's MIDI implementation for the TRITON series, version 1.6, a text file inside a ZIP archive:
+  the transmitted messages in section 1, the received ones in section 2, and the system exclusive
+  formats after them. Beside it, the Basic Guide, whose account of the messages is pp. 114 to 123
+  and whose MIDI Implementation Chart is p. 137; the Parameter Guide, whose Global MIDI page is
+  pp. 117 to 120 and whose appendices on the controllers are pp. 215 to 225; the Version 2.5 update
+  guide (pp. 11 and 13); and the history of systems 1.0.8 to 2.5.3 that comes with the newest
+  updater. Other pages are cited where they are used.
+
+  THE ARCHIVE HOLDS TWO TEXT FILES AND ONE OF THEM IS READ. `TRITON_MIDIimp.TXT`, 341,443 bytes in
+  3,876 lines, headed "TRITON-SERIES MIDI IMPLEMENTATION Version 1.6 (Sep.19.'02)" (implementation),
+  is where every controller and NRPN number below comes from. The other, `MIDIFX.TXT`, is the
+  effects' system exclusive parameter structure; the controllers it names are a list of modulation
+  sources, all of them numbers this map already carries.
+
+  AND THERE IS AN ORDINARY CHART, dated 12 April 1999, on p. 137 of the Basic Guide. It is what
+  `mode` and `note_range` rest on. It names every controller number the implementation does but 17,
+  19, 20 and 21, which it covers with the knobs' B-assign span of 0 to 95, and 122, which it gives
+  only by name as Local On/Off. Against the implementation's numbered rows it differs in one cell,
+  circling 6 and 38, Data Entry, as sent where the transmitted list has 6 alone, though 38 can be
+  sent through the knobs' and the sequencer's spans. And it gates Bank Select on the program change
+  filter, `*P`, where the implementation's `PB` names the bank change filter as well.
+
+  AND THE PARAMETER GUIDE REPRINTS AN OLDER EDITION OF THE IMPLEMENTATION, at its pp. 234 to 236,
+  headed "TRITON-SERIES MIDI IMPLEMENTATION 5,Apr,1999" (parameter_guide p. 234). Its controller
+  numbers are version 1.6's but for two: its transmitted list has no row for 83, and its received
+  list prints Local Control at 121, the number of Reset All Controllers on the line above it, where
+  version 1.6 prints 122. It also marks 71, 72 and 79 as sent by `Knob-1A`, as 74 is, which version
+  1.6 puts right as 2A, 4A and 3A, and gives Sostenuto and Soft both as sent by `A.SW =Porta.SW`.
+  Version 1.6 is followed throughout.
+
+  THE THIRTY-NINE NUMBERS CARRIED, AND THE EIGHTEEN NOT. The two lists name 57 controller numbers
+  between them, 44 sent and 57 received. Ten are how MIDI addresses things rather than parameters of
+  this instrument: Bank Select (0 and 32), Data Entry (6 and 38), Data Increment and Decrement (96
+  and 97), the NRPN selects (98 and 99) and the RPN selects (100 and 101). Bank Select's work is
+  under `program_change`, the first registered parameter under `pitch_bend`, and the non-registered
+  ones are controls below. Eight more are the channel mode messages, 120 to 127, which this format
+  refuses as controls by design; they are described under `midi`. That is the line `korg/kronos`
+  drew from the same position. The other 39 are in both lists, and every number the transmitted list
+  carries is in the received one too.
+
+  ALL 39 ARE AMONG `korg/kronos`'S NUMBERS, IN THE SAME GROUPS, AND SIX ARE NAMED DIFFERENTLY THERE.
+  The Kronos's 94 and 95 switch Master FX1/2 and Total FX1/2, where the TRITON's switch Master FX1
+  and Master FX2; and its 17, 19, 20 and 21 are Knob Mod5 to 8, where the TRITON's are Knob Mod1 to
+  4.
+
+  THE NUMBERS ARE WHERE EACH FUNCTION SITS, AND THE KNOBS CAN BE SET TO ANY OF 0 TO 95. Beside its
+  numbered rows the transmitted list carries "Control (cc)=0-95 ( Knob-B = MIDI CC#00-95 )"
+  (implementation); and both lists carry 0 to 101 as sequencer data, sent on playback and received
+  for recording, "Control data ( for Seq. recording (cc)=0-101 )" (implementation). The four
+  REALTIME CONTROLS knobs send 74, 71, 79 and 72 in their A mode, and "The A-mode functions of the
+  REALTIME CONTROLS are fixed." (parameter_guide p. 219); their B mode, [SW1] and [SW2] are assigned
+  per program, combination and song, and the foot switch and pedal in Global mode
+  (parameter_guide pp. 217 to 220). Each named function sends the number recorded here for it, and
+  the B mode can also be set to send any number from 0 to 95.
+
+  EVERY CONTROL ANSWERS ONLY THROUGH A GLOBAL FILTER, AND NO PAGE GIVES ITS FACTORY STATE. Every
+  control below travels as a control change enabled "when Enable Control Change in Global mode is
+  checked" (implementation), and the chart's notes say the same of the rest: "*P, *A, *C, *E:
+  Transmitted/received when Global P1: MIDI Filter (Program Change, After Touch, Control Change,
+  Exclusive) is Enable, respectively." (basic_guide p. 137). The Parameter Guide describes each box
+  and says only of the exclusive one how it is normally set.
+
+  THREE NUMBERS REACH THE GLOBAL CHANNEL ONLY AND THE FORMAT CANNOT SAY SO. Most rows carry the
+  status `Bn`, glossed "MIDI Channel No. (0 - 15) ...... Usually Global Channel." (implementation),
+  with each timbre's or track's channel in Combination, Sequencer and Song Play modes. Controllers
+  92, 94 and 95 carry `Bg`, "Always Global Channel No. (0 - 15)" (implementation): they switch the
+  insert effects and the two master effects off for the whole instrument. A control is placed by its
+  `part` here and there is no part for the instrument itself, so they are ordinary controls below
+  and the restriction is said only here.
+
+  THE EFFECT SENDS ARE CROSSED, AS THEY ARE ON THE KRONOS. Controller 91, named Effect 1 Depth in
+  both lists, is received "for Send 2 Level control" (implementation), and 93, Effect 3 Depth, "for
+  Send 1 Level control" (implementation). The Basic Guide heads them "Effect 1 depth (Send 2)
+  (CC#91) [Bn, 5B, vv]" (basic_guide p. 117), so the labels below name the send each one reaches.
+  Outside Program and Sampling modes the sends after the insert effects, like the panning there, are
+  set on the effects' own control channels: "To control the pan following IFX, sends 1/2, MFX 1/2
+  and MEQ, use the global MIDI channel in Program or Sampling mode; in Combination, Sequencer, or
+  Song Play mode, use the channel specified separately by 'Ctrl Ch'" (parameter_guide p. 117).
+
+  THE ARPEGGIATOR IS REACHED BY NRPN BOTH WAYS. Its ON/OFF key and its GATE and VELOCITY knobs send
+  three non-registered parameters, written out in full as "ARPEGGIATOR
+  ON/OFF :[ Bn,63,00,Bn,62,02,Bn,06,mm] mm = 00(Off),7F(On)" (implementation) and its two fellows,
+  and the same three are received. In Program and Combination modes they travel on the global
+  channel, and in Sequencer and Song Play modes on the control track's, which no page defines; the
+  1999 edition reads "current selected track's channel" (parameter_guide p. 234). The value is the
+  Data Entry MSB alone: "Data Entry LSB value has no effect." (implementation). Each NRPN below is
+  recorded as MSB x 128 + LSB, so 00,02 is 2 and 01,08 is 136.
+
+  AND EIGHT MORE ARE RECEIVED FOR GS AND XG SONGS. "The following NRPN messages can be received to
+  modify the sound." (basic_guide p. 123), under the Basic Guide's heading for GS and XG music data:
+  vibrato rate, depth and delay, filter cutoff and resonance, and envelope attack, decay and
+  release. No page says in which modes they are received or on which channel. And ten families more,
+  one parameter per drum note, at ten MSBs, 14 to 1E hexadecimal with 1B unused, with the note as
+  the LSB, "Only valid when Part Mode is Drum, MDrm1 - Mdrm4." (implementation). At 97 notes each
+  they would be 970 controls, so they are not recorded as controls.
+
+  WHERE THE LOCATORS COME FROM. The implementation is a text file with no pages, so a quotation from
+  it carries the source's name alone and is found by searching the file. The Basic Guide's printed
+  page is five behind its sheet on all 140 sheets that print an arabic number, the five before them
+  being the cover and front matter; the Parameter Guide's six behind on all 249, after six sheets of
+  front matter; the update guide's three behind on all 17; and the history's equal to its sheet on
+  all eight.
+
+  HOW THE DOCUMENTS WERE REACHED. As for `korg/kronos`, the downloads page carries no file address,
+  and each document is reached through a licence page that does. The history is not on the downloads
+  page at all: it is a PDF inside the 2.5.3 System Updater's archive, beside the system files
+  themselves, and its metadata titles it `Trinity 2.1.2 features`, so the title recorded is its
+  running head.
+
+  NOT RECORDED: the preset count, because program change reaches different things in different modes
+  and the field holds one number. "512 user memory combinations (512 presets)" (basic_guide p. 135),
+  "640 user memory programs (512 preset)" (basic_guide p. 135) and "256 + 9 drum ROM programs (GM2
+  sound map compatible)" (basic_guide p. 135), with a program change selecting a program or a
+  combination by mode, and the bank map choosing between two layouts of the same banks. NOT RECORDED
+  EITHER: the other two registered parameters, "= 1 : Fine Tune ( Detune )" (implementation) and
+  "= 2 : Coarse Tune ( Transpose )" (implementation), which are a tuning and a transpose this format
+  does not hold; the velocity and aftertouch curves; the drum NRPN family above; and the system
+  exclusive parameter addresses, which have no field in this format.
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: TRITON-SERIES MIDI IMPLEMENTATION
+    edition: Version 1.6
+    dated: 2002-09-19
+    landing: "https://www.korg.com/us/support/download/manual/1/214/2736/"
+    url: "https://cdn.korg.com/us/support/download/files/5de87daac02aba0c7e318480d362f5ac.zip?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27TRITON_MIDIimp.zip&response-content-type=application%2Foctet-stream%3B"
+    sha256: c236565b8676cb07d67876366c6453bee7b4986627e55d306f7c7e24daa41b38
+    retrieved: 2026-10-09
+    paginated: false
+    # THE DIGEST ABOVE IS THE TEXT FILE, NOT THE DOWNLOAD. The address serves a ZIP of 57,793 bytes
+    # whose own digest is 5b3158787722104ebef40f140265a52e587dc6fb78e47171ca492e0771fe69ee, holding
+    # two text files and their macOS shadows; this is `TRITON_MIDIimp.TXT`, ASCII with CRLF line
+    # ends, and both are in the library. Its version and date are its own first line; Korg's
+    # downloads page dates the archive 2016.01.08, when it was put up.
+  basic_guide:
+    kind: manual
+    title: Triton Basic Guide
+    edition: E 4
+    landing: "https://www.korg.com/us/support/download/manual/1/214/1647/"
+    url: "https://cdn.korg.com/us/support/download/files/6599e33b87e991b60dadb0016b8376a0.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27TRITON_BG_E4.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: bf3fccd9b6dea4f90103e571f2511072fbd3ae4bce0c0ff23af682ada9b437a2
+    retrieved: 2026-10-09
+    # 145 sheets. The title is the document's own metadata and the edition its `/Subject`, which is
+    # also the `_E4` in its file name. Its account of the messages the TRITON sends and receives is
+    # printed pp. 114 to 123, its specifications pp. 135 and 136, and its MIDI Implementation Chart
+    # p. 137.
+    page_offset: 5
+  parameter_guide:
+    kind: manual
+    title: TRITON Parameter Guide
+    landing: "https://www.korg.com/us/support/download/manual/1/214/1648/"
+    url: "https://cdn.korg.com/us/support/download/files/2a5417c6535b4fa634d48bdf66491461.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27TRITON_PG_E.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 8f564f08a8b91e3fb368a3d3c96d101fc1cc51fb7fc9836a85e2335beaf2435b
+    retrieved: 2026-10-09
+    # 255 sheets. The title is the downloads page's; the document's metadata calls it
+    # `TRITON(E)Book` and it carries no edition. Global mode's MIDI page is printed pp. 117 to 120
+    # and its appendices on the controllers pp. 215 to 225.
+    page_offset: 6
+  update_guide:
+    kind: manual
+    title: TRITON Version 2.5 Update guide
+    edition: E 1
+    landing: "https://www.korg.com/us/support/download/manual/1/214/1651/"
+    url: "https://cdn.korg.com/us/support/download/files/6d3a0c54b309b6cd57146b12c58d5725.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27TRITON_V25_E1.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 952b8e0fc36702ef5b745671e32627d5f7f094d3f2233dbca8b7fa519b6f731d
+    retrieved: 2026-10-09
+    # 21 sheets. Cited for the realtime filter system 2.5 added and for its default.
+    page_offset: 3
+  history:
+    kind: release_notes
+    title: Triton 2.5.3 History
+    edition: 2.5.3
+    landing: "https://www.korg.com/us/support/download/software/1/214/3142/"
+    url: "https://cdn.korg.com/us/support/download/files/fc143f05db960af89f9988c937e6d5d4.zip?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27TRITON_V253.zip&response-content-type=application%2Foctet-stream%3B"
+    sha256: 422b37c8a1628ca060fc6edb8b49c0bf2ac8a7d5610fcfb2666754823047673b
+    retrieved: 2026-10-09
+    # THE DIGEST ABOVE IS THE HISTORY, NOT THE DOWNLOAD. The address serves the System Updater 2.5.3
+    # archive, 1,849,758 bytes, digest
+    # 17301f248dab148beabfdc82bd73a099486ca20b8382fd1cfcbbb2955a177618, which holds the system on
+    # three disks' worth of files and two PDFs. This is `Triton_2_5_3_History.pdf`, eight pages;
+    # only it is in the library. The title is its running head.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: "Downloads | TRITON | KORG (USA)"
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/1/214/"
+    sha256: 97699371359c205d769c82c12e6d1975d598f99e0fe7aa4ff46fd43ecd6a3ca6
+    retrieved: 2026-10-09
+    paginated: false
+    # Cited for what Korg publishes for this instrument: 25 documents and 34 downloads of software,
+    # among them the implementation and the System Updater. The digest is of the visible text; the
+    # served bytes are saved beside it, digest
+    # 795439b4aa5438b3c72cd01d1a6b78da6bd20b4cdbc797d039268b43be252d0c.
+
+midi:
+  # "MIDI Channel (Global MIDI Channel) [1…16]" (parameter_guide p. 117), and each timbre of a
+  # combination and track of a song takes one of its own - see the part below. The chart's Basic
+  # Channel row is 1 to 16 both ways and remarked `Memorized` (basic_guide p. 137).
+  channels: [1, 16]
+  # From the chart's Mode row, whose received cell reads 3 under `Memorized`, with the legend "Mode
+  # 3: OMNI OFF, POLY" (basic_guide p. 137). The four mode messages are received and each is glossed
+  # "Omni Mode Off ( as All Notes Off )" (implementation) or the like, so the TRITON drops its notes
+  # and stays in mode 3; the transmitted list carries no mode message.
+  mode: 3
+  # Sent "( Always in Prog/Combi/Seq/Song Play mode )" (implementation) when "MIDI Clock in Global
+  # mode is Internal." (implementation), and received when it "is External MIDI or External PCI/F."
+  # (implementation). So both, and which one depends on a setting rather than on the sockets.
+  clock: both
+  # Start, Continue and Stop are in both lists (implementation sections 1-3 and 2-3), sent from the
+  # sequencer and received for "Seq Start & Arpeggiator Control" (implementation). Song position and
+  # song select are received only "when in Sequencer mode (External Clock)" (implementation), and
+  # "In Song Play mode, the TRITON will always synchronize to its own internal clock regardless of
+  # this setting." (parameter_guide p. 118).
+  # FROM SYSTEM 2.5 A FILTER STANDS IN FRONT OF THE RECEIVING SIDE, AND IT STARTS CLOSED. With the
+  # TRITON slaved to external clock and `Receive Ext. Realtime Commands` unchecked, "MIDI common
+  # messages and realtime messages (song position pointer, start, continue, stop) from the MIDI IN
+  # connector or To Host connector will not be received." (update_guide p. 11), though "(Song Select
+  # messages will continue to be received.)" (update_guide p. 11). Data from an older system loaded
+  # into 2.5 sets it so: "This parameter will be set to the default value (unchecked)."
+  # (update_guide p. 13). So a player whose TRITON follows clock and ignores start has that box to
+  # check.
+  transport: both
+  program_change:
+    # Sent as "Program Change ( Prog/Combi change )" (implementation) and received "( for Prog/Combi
+    # change )" (implementation), with Bank Select MSB and LSB beside it both ways, though "Simply
+    # receiving a Bank Select message will not cause the program or bank to change."
+    # (basic_guide p. 114). Nothing is changed on the edit pages (basic_guide p. 115), and "It is
+    # not possible to use MIDI program changes to select a program on a Timbre whose 'Status' is
+    # other than INT." (basic_guide p. 52). The bank layout is a setting, KORG or GM(2), and "With
+    # the factory settings, this will be GM(2)." (basic_guide p. 114).
+    receives: true
+    sends: true
+    # NOT RECORDED, the preset count: see the account.
+  # THE ARPEGGIATOR'S THREE BOTH WAYS AND EIGHT MORE RECEIVED, all listed as controls below. The
+  # chart circles 98 and 99 both ways with "LSB,MSB=02,00: Arpeggiator ON/OFF" (basic_guide p. 137)
+  # among its notes.
+  nrpn: supported
+  # Sections 1-4, 2-4 and 3 of the implementation, and most of its 3,876 lines. The filter that
+  # passes it is normally off: "Normally you will leave this unchecked." (parameter_guide p. 119).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # From the chart's True Voice row, received 0 to 127 against the Note Number row's 0 to 127
+  # (basic_guide p. 137). The keys reach less, by keyboard - see the model block - and the chart
+  # reconciles the two: "Sequencer and Arpeggiator data can transmit all note numbers 0–127"
+  # (basic_guide p. 137).
+  note_range: [0, 127]
+  # "Polyphony: 62 voices (62 oscillators) in single mode" (basic_guide p. 135) and 31 voices on the
+  # same 62 oscillators in double mode, which a program chooses: "In the case of Single the maximum
+  # polyphony is 62 notes, and in the case of Double the maximum polyphony is 31 notes."
+  # (basic_guide p. 45). The optional EXB-MOSS board adds a synthesiser of its own: "The MOSS tone
+  # generator has six-note polyphony." (parameter_guide p. 237).
+  polyphony: 62
+  voicing_modes: [31, 62]
+  # ONE POOL FOR EVERY TIMBRE AND TRACK, BY INFERENCE. The specification gives one figure, for the
+  # tone generator and in oscillators, and none for a timbre or a track, so the sixteen tracks draw
+  # on those 62 oscillators together. No page says how they are divided. The optional MOSS board's
+  # six voices are the exception: each timbre is given a share of them by a `MOSS VOICE` setting of
+  # 0 to 6 among the implementation's combination parameters, and the history speaks of the MOSS
+  # "Voice Allocation Reserve" (history p. 1).
+  polyphony_shared: true
+  velocity:
+    # "Note On (vv)=1-127" (implementation) in both lists, and `9n, V=1-127` both ways on the chart
+    # (basic_guide p. 137).
+    note_on: both
+    # "However, most instruments do not receive or transmit note-off velocity, and neither does the
+    # TRITON." (basic_guide p. 114). The transmitted list sends a fixed 40 hexadecimal, and the
+    # chart crosses Note Off both ways (basic_guide p. 137).
+    note_off: false
+  # BOTH KINDS ARE ANSWERED TO AND THE KEYBOARD SENDS ONE. "The TRITON’s keyboard transmits only
+  # channel after touch; it does not transmit polyphonic after touch." (parameter_guide p. 119), and
+  # it "can receive polyphonic after touch to control individual notes" (parameter_guide p. 119).
+  # The chart circles both kinds both ways and remarks "Polyphonic aftertouch transmitted"
+  # (basic_guide p. 137), "only as sequence data" (basic_guide p. 137). `poly` is the stronger of
+  # the two words this field holds, as `korg/kronos` records it.
+  aftertouch: poly
+  pitch_bend:
+    # In both lists, and settable over the first registered parameter, "r = 0 : Pitch Bend
+    # Sensitivity ( Bend Range )." (implementation). The document gives no factory depth; "only
+    # positive values can be set using RPN messages." (basic_guide p. 120); and a timbre or track
+    # whose bend range is set to PRG takes the program's instead: "These messages will not be
+    # received if the setting is PRG." (parameter_guide p. 56).
+    programmable: true
+
+parts:
+  # SIXTEEN TRACKS, AND A COMBINATION USES EIGHT OF THE SAME KIND. The Basic Guide puts the two side
+  # by side: from outside, MIDI can play "a combination (8-part multi-timbral performance)"
+  # (basic_guide p. 122) or "a song (using the TRITON as a 16-part multi-timbral tone generator)"
+  # (basic_guide p. 122). The specifications give the sequencer "16 timbres, 16 tracks + 1 master
+  # track" (basic_guide p. 135). The larger is recorded, the one the Basic Guide calls a
+  # multi-timbral tone generator.
+  # EACH TAKES A CHANNEL OF ITS OWN: "In Program mode (P0: Play), MIDI data is received on the
+  # global MIDI channel, but in Combination mode (P0: Play) or Sequencer mode, MIDI data is received
+  # on the MIDI channel specified for each timbre or track." (parameter_guide p. 117). A track whose
+  # status is INT or BTH receives; EXT and EX2 only send (basic_guide p. 114). A song's tracks start
+  # on channels 1 to 16 in order, "(This is the default.)" (basic_guide p. 64), and in Song Play
+  # mode they cannot move: "In Song Play mode, MIDI channels 1–16 correspond to tracks 1–16."
+  # (parameter_guide p. 101). A timbre may also follow the global channel, `Gch`
+  # (parameter_guide p. 33), and a track may not (parameter_guide p. 55).
+  track:
+    label: Track
+    count: 16
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+
+groups:
+  # THE IMPLEMENTATION'S TWO LISTS ARE FLAT AND GROUP NOTHING, so these are functional sections, the
+  # ones `korg/kronos` uses for the same numbers, with the arpeggiator and the GS parameters added.
+  continuous: Continuous controllers
+  switch: Switches and pedals
+  sound: Sound controllers
+  assignable: Assignable knobs, switches and the ribbon
+  effects: Effect controls, sends and switches
+  arpeggiator: Arpeggiator, by NRPN
+  gs_nrpn: Sound parameters received by NRPN
+
+controls:
+
+  # Continuous controllers ──────────────────────────────────
+  modulation_1:                {label: Modulation 1 (Joystick +Y), cc: 1, group: continuous}
+  modulation_2:                {label: Modulation 2 (Joystick -Y), cc: 2, group: continuous}
+  foot_pedal:                  {label: Foot Pedal, cc: 4, group: continuous}
+  portamento_time:             {label: Portamento Time, cc: 5, group: continuous}
+  volume:                      {label: Volume, cc: 7, group: continuous}
+  # Received as "Balance Control ( for Post IFX Panpot control )" (implementation), on the global
+  # channel in Program and Sampling modes and on each insert effect's own channel in the others.
+  post_ifx_panpot:             {label: Post IFX Panpot, cc: 8, group: continuous}
+  panpot:                      {label: Panpot, cc: 10, group: continuous}
+  expression:                  {label: Expression, cc: 11, group: continuous}
+
+  # Switches and pedals ─────────────────────────────────────
+  hold_1:                      {label: Hold 1 (Damper), cc: 64, group: switch}
+  # Received as "dd = 00 - 3F : Off" (implementation) and "40 - 7F : On" (implementation).
+  portamento:                  {label: Portamento Off/On, cc: 65, values: {"off": 0, "on": 64}, group: switch}
+  sostenuto:                   {label: Sostenuto Off/On, cc: 66, values: {"off": 0, "on": 64}, group: switch}
+  soft_pedal:                  {label: Soft Pedal, cc: 67, group: switch}
+
+  # Sound controllers ───────────────────────────────────────
+  # Each moves a program parameter: "A value of 64 will correspond to the value specified by the
+  # program parameter. 0 will be the minimum, and 127 will be the maximum."
+  # (parameter_guide p. 224). For the EXB-MOSS board's bank F programs "Different parameters are
+  # controlled" (parameter_guide p. 225).
+  sustain_level:               {label: Sustain Level, cc: 70, group: sound}
+  resonance_hpf:               {label: Resonance/HPF Cutoff, cc: 71, group: sound}
+  release_time:                {label: Release Time, cc: 72, group: sound}
+  attack_time:                 {label: Attack Time, cc: 73, group: sound}
+  lpf_cutoff:                  {label: LPF Cutoff, cc: 74, group: sound}
+  decay_time:                  {label: Decay Time, cc: 75, group: sound}
+  lfo_1_speed:                 {label: LFO1 Speed, cc: 76, group: sound}
+  lfo_1_pitch_depth:           {label: LFO1 Pitch Depth, cc: 77, group: sound}
+  lfo_1_delay:                 {label: LFO1 Delay, cc: 78, group: sound}
+  filter_eg_intensity:         {label: Filter EG Intensity, cc: 79, group: sound}
+
+  # Assignable knobs, switches and the ribbon ───────────────
+  ribbon_controller:           {label: Ribbon Controller, cc: 16, group: assignable}
+  knob_mod_1:                  {label: Knob Mod1, cc: 17, group: assignable}
+  # Sent only "when the program or combination number/name is selected (highlighted)."
+  # (basic_guide p. 118), in Program and Combination modes.
+  value_slider:                {label: Value Slider, cc: 18, group: assignable}
+  knob_mod_2:                  {label: Knob Mod2, cc: 19, group: assignable}
+  knob_mod_3:                  {label: Knob Mod3, cc: 20, group: assignable}
+  knob_mod_4:                  {label: Knob Mod4, cc: 21, group: assignable}
+  # The three switches send 0 and 127, and are read in two bands: "vv of 63 [3F] or less will be
+  # OFF, and 64 [3F] or greater will be ON." (basic_guide p. 118), where the second `[3F]` is a
+  # misprint for 40.
+  sw_1_mod:                    {label: SW1 Mod., cc: 80, values: {"off": 0, "on": 64}, group: assignable}
+  sw_2_mod:                    {label: SW2 Mod., cc: 81, values: {"off": 0, "on": 64}, group: assignable}
+  foot_switch:                 {label: Foot Switch, cc: 82, values: {"off": 0, "on": 64}, group: assignable}
+  multi_purpose_ctrl_8:        {label: Multi Purpose Ctrl8, cc: 83, group: assignable}
+
+  # Effect controls, sends and switches ─────────────────────
+  fx_control_1:                {label: FX Control 1, cc: 12, group: effects}
+  fx_control_2:                {label: FX Control 2, cc: 13, group: effects}
+  send_2_level:                {label: Send 2 Level, cc: 91, group: effects}
+  send_1_level:                {label: Send 1 Level, cc: 93, group: effects}
+  # Global channel only; see the account. Received as "ee = 00 : Off" (implementation) and "01 -
+  # 7F : On" (implementation), and the Basic Guide says what on means: "vv of 00 is off, and 01 or
+  # greater is the original setting." (basic_guide p. 117) - each mode's own effect switches.
+  all_insert_fx:               {label: All Insert FX Off/On, cc: 92, values: {"off": 0, "on": 1}, group: effects}
+  master_fx_1:                 {label: Master FX1 Off/On, cc: 94, values: {"off": 0, "on": 1}, group: effects}
+  master_fx_2:                 {label: Master FX2 Off/On, cc: 95, values: {"off": 0, "on": 1}, group: effects}
+
+  # Arpeggiator, by NRPN ────────────────────────────────────
+  # MSB 00 and LSB 02, 0A and 0B. Received "ON when mm is 64 [40] or greater, and OFF when 63 [3F]
+  # or less." (basic_guide p. 120).
+  arpeggiator_on_off:          {label: Arpeggiator On/Off, nrpn: 2, values: {"off": 0, "on": 64}, group: arpeggiator}
+  arpeggiator_gate:            {label: Arpeggiator Gate, nrpn: 10, group: arpeggiator}
+  arpeggiator_velocity:        {label: Arpeggiator Velocity, nrpn: 11, group: arpeggiator}
+
+  # Sound parameters received by NRPN ───────────────────────
+  # MSB 01 and LSB 08, 09, 0A, 20, 21, 63, 64 and 66, received only.
+  vibrato_rate:                {label: Vibrato Rate, nrpn: 136, direction: receives, group: gs_nrpn}
+  vibrato_depth:               {label: Vibrato Depth, nrpn: 137, direction: receives, group: gs_nrpn}
+  vibrato_delay:               {label: Vibrato Delay, nrpn: 138, direction: receives, group: gs_nrpn}
+  filter_cutoff:               {label: Filter Cutoff, nrpn: 160, direction: receives, group: gs_nrpn}
+  filter_resonance:            {label: Filter Resonance, nrpn: 161, direction: receives, group: gs_nrpn}
+  eg_attack_time:              {label: EG Attack Time, nrpn: 227, direction: receives, group: gs_nrpn}
+  eg_decay_time:               {label: EG Decay Time, nrpn: 228, direction: receives, group: gs_nrpn}
+  eg_release_time:             {label: EG Release Time, nrpn: 230, direction: receives, group: gs_nrpn}

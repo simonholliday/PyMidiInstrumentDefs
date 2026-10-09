@@ -12238,8 +12238,9 @@ class TestM1:
 		"""And a global channel that is none of them, which is what the keyboard plays on."""
 		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
 
-		assert len(m1.parts) == 8
-		assert list(m1.parts) == [f"timbre_{n}" for n in range(1, 9)]
+		# One kind of part, eight of it: written out one by one until 2026-10-09.
+		assert list(m1.parts) == ["timbre"]
+		assert m1.parts["timbre"].count == 8
 
 		for part in m1.parts.values():
 			assert part.channel == "assigned"
@@ -12643,8 +12644,10 @@ class TestVirusTI:
 		"""And a second mode where the channel is fixed to the part number."""
 		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
 
-		assert len(virus.parts) == 16
-		assert all(part.channel == "assigned" for part in virus.parts.values())
+		# One kind of part, sixteen of it: written out one by one until 2026-10-09.
+		assert list(virus.parts) == ["part"]
+		assert virus.parts["part"].count == 16
+		assert virus.parts["part"].channel == "assigned"
 
 		said = " ".join(prose_of("access", "virus_ti").split())
 

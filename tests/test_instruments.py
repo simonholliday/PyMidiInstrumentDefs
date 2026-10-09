@@ -165,6 +165,7 @@ class TestBundledCorpus:
 			"arturia/polybrute_12",
 			"asm/hydrasynth_explorer",
 			"asm/leviasynth",
+			"behringer/deepmind_12",
 			"behringer/edge",
 			"behringer/lm_drum",
 			"behringer/model_d",
@@ -18658,3 +18659,61 @@ class TestMatrixBrute:
 		account = " ".join((brute.source or "").split())
 		assert "**THE 2019 EDITION GIVES VCO 1'S `Metalizer` AS 10, AND THE CURRENT ONE AS 70.**" in account
 		assert "**THREE VOICE MODES, AND TWO PAGES DISAGREE ABOUT ONE OF THEM.**" in account
+
+
+class TestDeepMind12:
+
+	"""Two maps of one instrument from a third-party copy of its manual, joined only where they print one name."""
+
+	def test_105_controllers_and_177_nrpns_in_269_controls (self) -> None:
+		deep = pymidiinstrumentdefs.load("behringer/deepmind_12", [CORPUS])
+
+		ccs = sorted(control.cc for control in deep.controls.values() if control.cc is not None)
+		nrpns = sorted(control.nrpn for control in deep.controls.values() if control.nrpn is not None)
+		assert len(deep.controls) == 269 and len(ccs) == len(set(ccs)) == 105 and len(nrpns) == len(set(nrpns)) == 177
+		assert not set(ccs) & {3, 9, 14, 15, 22, 118, 119, 6, 38, 96, 97, 98, 99, 100, 101, *range(120, 128)}
+		assert set(nrpns) == set(range(242)) - set(range(167, 179)) - set(range(180, 192)) - set(range(193, 205)) \
+			- set(range(206, 218)) - set(range(223, 240))
+		both = {control.cc: control.nrpn for control in deep.controls.values() if control.cc is not None and control.nrpn is not None}
+		assert both == {16: 0, 18: 7, 25: 27, 26: 26, 27: 33, 28: 87, 29: 39, 30: 41, 36: 80, 51: 59, 55: 68, 59: 77, 60: 78}
+		assert all(deep.controls[name].nrpn_range == (0, 255) for name in deep.controls if deep.controls[name].cc in both)
+		assert all(control.direction == "both" and control.part is None and control.group is None
+			for control in deep.controls.values())
+
+	def test_names_printed_twice_keep_their_numbers (self) -> None:
+		"""Five labels are printed twice; each is carried as printed, and its key carries its number."""
+		deep = pymidiinstrumentdefs.load("behringer/deepmind_12", [CORPUS])
+
+		assert (deep.controls["vca_envelope_sustain_cc_40"].label, deep.controls["vca_envelope_sustain_cc_44"].label) == \
+			("VCA Envelope Sustain", "VCA Envelope Sustain")
+		assert deep.controls["vca_envelope_attack_curve_nrpn_61"].nrpn == 61
+		assert deep.controls["vca_envelope_attack_curve_cc_50"].nrpn is None
+		assert deep.controls["lfo_1_mono_mode"].range == (0, 255)
+		assert deep.controls["fx_2_output_gain"].range == deep.controls["fx_3_output_gain"].range == (0, 150)
+		assert deep.controls["bank_select_lsb"].choices == {f"bank_{c}": i for i, c in enumerate("abcdefgh")}
+		assert len([control for control in deep.controls.values() if control.choices]) == 36
+		assert deep.controls["polyphony_mode"].name_for(5) == "unison_12"
+
+	def test_twelve_voices_and_no_transport (self) -> None:
+		deep = pymidiinstrumentdefs.load("behringer/deepmind_12", [CORPUS])
+
+		assert (deep.midi.channels, deep.midi.mode, deep.midi.clock, deep.midi.transport) == ((1, 16), None, "both", None)
+		assert deep.midi.program_change is not None
+		assert (deep.midi.program_change.receives, deep.midi.program_change.sends, deep.midi.program_change.presets) == \
+			(True, True, 1024)
+		assert (deep.midi.nrpn, deep.midi.sysex, deep.midi.control_change) == ("supported", True, None)
+		assert (deep.voice.polyphony, deep.voice.voicing_modes, deep.voice.aftertouch) == (12, (), "channel")
+		assert deep.voice.velocity is not None and (deep.voice.velocity.note_on, deep.voice.velocity.note_off) == ("both", True)
+		assert deep.voice.pitch_bend is not None
+		assert (deep.voice.pitch_bend.semitones, deep.voice.pitch_bend.programmable) == (2, True)
+
+	def test_a_third_party_copy_labelled_and_compared (self) -> None:
+		deep = pymidiinstrumentdefs.load("behringer/deepmind_12", [CORPUS])
+
+		assert deep.model.firmware == "1.1.2" and deep.sources["release_notes"].edition == "1.1.2"
+		assert set(deep.sources) == {"manual", "earlier_manual", "quick_start", "release_notes"}
+		assert "adorama.com" in (deep.sources["manual"].url or "") and "juno.co.uk" in (deep.sources["earlier_manual"].url or "")
+		assert deep.sources["quick_start"].file_page(34) == 18 and deep.sources["quick_start"].file_page(43) == 22
+		account = " ".join((deep.source or "").split())
+		assert "**A THIRD-PARTY COPY OF BEHRINGER'S OWN MANUAL, BECAUSE BEHRINGER SERVES NONE.**" in account
+		assert "**THE CHART IS ONE STAMP OVER TWO EDITIONS, AND THEY DISAGREE ABOUT TRANSPORT.**" in account

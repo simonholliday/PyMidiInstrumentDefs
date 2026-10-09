@@ -1,0 +1,568 @@
+# **BEHRINGER SERVES NO COPY OF THE MANUAL THAT HOLDS THIS MAP, SO IT IS READ FROM A RETAILER'S.**
+# The DeepMind 12's own page lists quick start guides, release notes, apps and presets and no
+# manual; the one Behringer link to its User Manual, on the DeepMind 12X's page, answers 404. The
+# manual cited here is Adorama's copy of Behringer's own, compared with Juno's copy of an earlier
+# edition and cross-checked against the guide and release notes Behringer does serve. See the
+# `manual` source for the label the third-party copy needs, and replace it if Behringer's returns.
+# **269 CONTROLS CARRY 105 CONTROLLERS AND 177 NRPNS, BOTH ON ONE CONTROL ONLY THIRTEEN TIMES.** The
+# controller table and the NRPN table are two maps of one instrument that are not numbered alike and
+# mostly not named alike, so a controller carries an NRPN beside it only where the two tables print
+# one name, once each. Four more names are printed in both and twice in one, and are not paired.
+#
+# **THE TWO EDITIONS DISAGREE ABOUT TRANSPORT**, under one version stamp, so `transport` is not
+# recorded.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: DeepMind 12
+  # **1.1.2, THE NEWEST BEHRINGER PUBLISHES, AND THE MANUAL IS OLDER.** The DeepMind 12's page
+  # serves the `DeepMind Family Firmware` release notes for "Version 1.1.2 – (26 February 2018)"
+  # (release_notes p. 1), and the updater archive on the 12X's page holds
+  # `DeepMind-Firmware-v1.1.2.syx`. The manual was made in November and December 2017 and does not
+  # describe 1.1.2's Pitch Bend Mode, which the release notes add. The release notes name no
+  # controller or NRPN. Checked 2026-10-09.
+  firmware: "1.1.2"
+
+source: >-
+  **A THIRD-PARTY COPY OF BEHRINGER'S OWN MANUAL, BECAUSE BEHRINGER SERVES NONE.** The DeepMind 12's
+  product page lists six quick start guides, the 1.1.2 release notes, four app builds and two preset
+  packs, and no manual. The only link Behringer gives to the User Manual is `DeepMind Manual` on the
+  DeepMind 12X's page, and that address answered 404 `NoSuchKey` on 2026-10-07 and again on
+  2026-10-09. The guide it does serve sends the reader on: "For mapping please consult the product
+  manual." (quick_start p. 34). So the manual cited is **Adorama's copy**, fetched from Adorama's
+  site: Behringer's own typesetting, 166 pages with a text layer, made in November 2017 and last
+  changed in December. A second, independent copy, **Juno's**, turned out to be an earlier edition,
+  135 pages made in January 2017. Both carry the MIDI chapters, and **their controller tables and
+  NRPN tables are the same cell for cell**, but for the spaces its ligatures leave in the earlier
+  one's text, `Eff ects` for `Effects`. Every number the copy shares with what Behringer serves was
+  checked against that, and set out below; if Behringer's own copy returns, it replaces this one.
+
+  **THE MAP IS TWO TABLES.** The controller table, "MIDI Implementation Chart v. 2.0 Control Number
+  Information" (manual p. 133), runs over pp. 133-135 with a row for each of 128 numbers; the NRPN
+  table runs over pp. 136-139. Both were rebuilt from where each cell sits, against the column
+  headings each page prints, because the even pages are set about fifteen points to the right of the
+  odd ones. CC and NRPN are both answered to whatever the instrument is set to send: "Note: Both
+  MIDI and NRPN data is always received and actioned." (manual p. 26). What it sends is a setting
+  per port, `Off`, `Cc` or `NRPN`, where off means "Off (No controller messages will be sent)"
+  (manual p. 26), so every control below travels both ways, which is the format's default and why
+  none says so.
+
+  **105 CONTROLLERS ARE CARRIED, AND 23 ROWS ARE NOT.** Seven are empty, a dash in every column: 3,
+  9, 14, 15, 22, 118 and 119. Eight are how an NRPN or RPN travels rather than parameters. The NRPN
+  chapter's message is `B0, 63, aa, 62, bb, 06, cc, 26, dd` (manual p. 136), the parameter number on
+  99 and 98 and the value on 6 and 38; 96 and 97 are `Data Increment` and `Data Decrement`; and 100
+  and 101 select an RPN, which the chart gives `No` both ways. And 120 to 127 are the channel mode
+  messages, which this format refuses as controls. Bank select is carried, at 0 and 32, with the
+  banks the chart names: `Bank A(LSB =0)` to `Bank H (LSB =7)` (manual p. 132).
+
+  **177 NRPNS ARE NUMBERED ONE TO A ROW, FROM 0 TO 241, AND FIVE ROWS ARE SPANS.** The four effect
+  slots' twelve parameters each, 167-178, 180-191, 193-204 and 206-217, and the program name,
+  223-239, are each one row over a run of numbers (manual p. 139), and carrying them would mean
+  writing numbers the page does not print one by one, so they are not carried. Every other number
+  from 0 to 241 is.
+
+  **A CONTROLLER CARRIES AN NRPN ONLY WHERE THE TWO TABLES PRINT ONE NAME, ONCE EACH**, as for the
+  Prophets: thirteen times, from LFO 1 Rate at 16 and NRPN 0 to the Mod envelope's sustain curve at
+  60 and NRPN 78. Two of the thirteen differ only in case, `MOD Envelope` against `Mod Envelope`.
+  Every pair's NRPN is 0-255, which is the `nrpn_range` below; the controller table prints no range
+  at all, so each controller keeps the format's default of 0-127. **The tables do not line up
+  otherwise**: no arithmetic relates the two numbers, and most parameters are named differently in
+  each - `LFO 1 Delay Time` against `LFO 1 Delay / Fade`, `VCA Envelope Attack` against
+  `VCA Envelope Attack Time` - so they are carried as separate controls, because pairing two names
+  is a reader's judgement and not the maker's. Four names are printed in both tables and also twice
+  in one of them, and none of those is paired.
+
+  **FIVE NAMES ARE PRINTED TWICE, AND EACH IS CARRIED AS PRINTED.** The controller table gives
+  `VCA Envelope Sustain` to 40 and 44 and `VCA Envelope Sustain Curve` to 52 and 56; the NRPN table
+  gives `Attack Curve` twice to each envelope, at 58 and 61, 67 and 70, and 76 and 79. Each second
+  one sits where its neighbours put another parameter - 44 between the filter envelope's decay at 43
+  and release at 45, 61 where the VCA envelope's release curve would follow its sustain curve - and
+  none is corrected: a definition says what the maker printed, and these say it twice. Their keys
+  carry their numbers so that each can be told apart. The controller table's `Replaces:` remarks
+  name the standard controller each number displaces, and from 43 to 52 they name the one a row
+  below by the MIDI specification's list, which neither manual prints: 43 is given
+  `Replaces: Pan (LSB)`, which that list puts at 42. No field rests on a remark.
+
+  **ONE RANGE IS READ FROM ITS OWN NOTES, AND TWO FROM A NEIGHBOUR.** `LFO 1 Mono Mode` prints `0-1`
+  in its Range cell and, in its Notes, "Poly (0) Mono (1) or SPREAD-1(2) to SPREAD-254(255)"
+  (manual p. 136), which cannot both be true; `LFO 2 Mono Mode` prints 0-255 beside the same note,
+  and the LFO pages describe the setting for both: "POLY - All voices use an independent LFO. This
+  is the default mode." (manual p. 62), "MONO - All voices use a common LFO." (manual p. 62) and
+  "The PHASE SPREAD range is from 1-254 degrees." (manual p. 62). That page prints no value range,
+  and it describes the values the Notes number, so 0-255, the Notes' own numbering, is carried as a
+  reading it supports. `FX 2 Output Gain` and `FX 3 Output Gain` print a dash for their range,
+  between FX 1's and FX 4's 0-150, and FX 4's note reads "Output gain for FX slots 1-4"
+  (manual p. 139); 0-150 is carried for both, as a reading of that note.
+
+  **35 NRPNS CARRY THEIR NAMED VALUES**, wherever the Notes cell names every value in the range and
+  nothing else - an LFO's seven shapes, the thirteen polyphony modes, the eleven arpeggiator modes.
+  Notes that name some values and not others, such as `20 bpm (0) to 275 bpm (255)`, or that point
+  to a list printed elsewhere, such as `See Modulation Matrix Source List`, are left as ranges.
+
+  **THE CHART IS ONE STAMP OVER TWO EDITIONS, AND THEY DISAGREE ABOUT TRANSPORT.** Both print
+  `Version:1.0` and `01 September 2016` (manual p. 132; earlier_manual p. 113). The later fills in
+  with `Yes` and `No` most of what the earlier leaves as dashes, and the two agree wherever both say
+  something - except on Start, Continue and Stop: the earlier gives its `Transmit` cell as "Start:
+  Yes, Continue: Yes, Stop: Yes" (earlier_manual p. 113) and its `Recognize` cell a dash, and the
+  later gives `No` and `Yes`. Whether they are sent cannot be both, and no page outside the chart
+  mentions them, so `transport` is not recorded. Song Position Pointer is `No` sent and `Yes`
+  received in the later edition only.
+
+  **WHAT ELSE THE CHART AND THE MANUAL'S PAGES GIVE**: channels 1 to 16, `1-16` sent on the chart
+  (manual p. 132), received on one channel or all - "The CHANNEL can be ALL, or any number from
+  1-16." (manual p. 26) - and sent on one; program change both ways, a setting whose fullest option
+  is "RX-TX - Program changes will be transmitted and received." (manual p. 26); 1,024 programs,
+  "1024 Programs arranged in 8 Banks of 128 Programs." (manual p. 6); note-on and note-off velocity
+  both ways, the release velocity used only as a modulation source - "The NOTE OFF VELOCITY is only
+  available within the MOD MATRIX as a MODULATION SOURCE." (manual p. 30); channel pressure and not
+  polyphonic, "Note: The DeepMind 12 keyboard sends 'Channel Aftertouch,' meaning the MIDI message
+  created is common to all keys." (manual p. 30); pitch bend both ways, two semitones each way by
+  default - "default P.BEND RANGE+ setting is +2 (notes)." (manual p. 78), and -2 down - and each
+  direction settable from -24 to +24 on the POLY menu (manual p. 78), where NRPNs 36 and 37 print
+  0-24; and system exclusive both ways, with its own chapter from p. 140. MIDI clock is received
+  from the port the arpeggiator's CLOCK names, MIDI or USB and `MIDI(Auto)` by default, falling back
+  to the internal clock when none arrives, and sent when that is internal and `TRANSMIT-CLK` is on
+  (manual p. 58).
+
+  **CROSS-CHECKED AGAINST THE GUIDE BEHRINGER SERVES**, a `V 5.0` quick start guide, whose
+  specifications agree with the manual's on everything a field here rests on: "Presets 8 banks each
+  with 128 programs" (quick_start p. 43), "Fader Modes MIDI CC, NRPN, OFF" (quick_start p. 43) and
+  "MIDI In/Out/Thru 5-pin DIN / 16 channels" (quick_start p. 43), and twelve voices, aftertouch, and
+  note-on and note-off velocity. **They differ in two counts**: the guide gives the modulation
+  matrix "22 sources / 130 destinations" (quick_start p. 43) and its effects `34 Algorithms`, where
+  the manual's specifications give "24 sources / 132 destinations" (manual p. 131) and
+  `35 Algorithms`. The earlier edition's own specifications page agrees with the guide, "22 sources
+  / 130 destinations" (earlier_manual p. 112) and `34 Algorithms`.
+
+  **AND THE CITED EDITION'S OWN LISTS OUTGROW ITS NRPN TABLE.** Its numbered lists run sources 1-24
+  and destinations 1-132 (manual pp. 93-94), where the earlier edition's run 1-22 and 1-129
+  (earlier_manual pp. 77-78). Both editions' NRPN tables give each matrix slot's source 0-22 and
+  destination 0-129 (manual pp. 137-138) - the earlier lists' numbers and one value more, at 0. So
+  the table was not raised with the lists, and as printed it cannot reach the cited edition's last
+  two sources or last three destinations. The source list is renumbered as well as lengthened -
+  `Expression` is new at 6, where the earlier list has LFO1 - so a value names a different source in
+  each edition, and no control here names them. **The sixteen source and destination NRPNs carry the
+  ranges the table prints**, because their numbers are not in doubt and a control with no range
+  would read as 0-127; whether the ranges or the lists describe firmware 1.1.2 no document says.
+
+  **FOUR MORE DISAGREEMENTS, NONE REACHING A FIELD.** The Global Commands' `Pedal CC` lists "Foot
+  Control (CC4), Breath (CC3), Volume (CC7), Expression (CC11)" (manual p. 139), where the
+  controller table has `Breath Controller (MSB)` at 2 and a dash at 3. The chart gives every RPN
+  `No` both ways (manual p. 132), where the controller table marks 100 and 101 `Yes` both ways. And
+  the chart answers the modes with a dash and a pointer to the channel settings, where the table
+  marks 124 to 127 `Yes` both ways. And the earlier edition's modulation list gives the 3D
+  controller's axes as `CC X (114)` to `CC Z (116)` (earlier_manual p. 77), where both editions'
+  tables put them at 115-117 and the cited edition's list agrees with its table. Controllers 2 and
+  115-117 are carried as the tables print them, and 100, 101 and 124-127 are not controls.
+
+  **TWELVE VOICES, AND THE MODE THAT SHARES THEM IS A PROGRAM SETTING.** "Number of voices 12
+  analog" (manual p. 131), one to a note in Poly: "Poly - A single voice is allocated to each note."
+  (manual p. 75). The thirteen modes are NRPN 85. Poly-6 and Poly-8 give six and eight notes; the
+  mono and unison modes give voices per note and not notes, "Unison-2 - The next available two
+  voices are allocated to each note played." (manual p. 75), so the note count of each would be
+  arithmetic on twelve or a reading of the word mono, and `voicing_modes` is not recorded.
+
+  **WHAT IT SENDS, AND WHAT CHANGES IT.** The arpeggiator's notes go out only with `ARP-TO-MIDI` on,
+  "The default ARP-TO-MIDI setting is Off." (manual p. 58). An app that announces itself switches a
+  port to NRPN: the control mode is "set automatically when an app notify message is received."
+  (manual p. 139). The selected NRPN is kept for each port separately (manual p. 136). And a value
+  above 127 needs both data entry bytes, since "The Data Entry (MSB) message is optional and can be
+  ignored for switch parameters or any parameters which have a range of 0-127 or less."
+  (manual p. 136); how a 0-255 value divides between the two bytes the page does not say.
+
+  **NOT RECORDED, ALSO**: `mode`, which the chart answers with "See RX/TX CHANNEL PARAMETERS for
+  each MIDI interface" (manual p. 132); the note range, which the chart gives as `C0-C8` sent and a
+  dash received; the Global Commands, a table of global settings with ranges and no message number
+  (manual p. 139); and groups, which neither table prints - the manual's edit menus group the panel,
+  and placing 269 rows among them would be a reading on every row.
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual DeepMind 12
+    edition: 166-page edition of December 2017
+    url: "https://www.adorama.com/col/productManuals/BEDEEPMIND12.pdf"
+    sha256: 513fd668ff663598572e82da783805dda3fded88fae7cdf9a8727e28dc3b56dc
+    retrieved: 2026-10-09
+    # **A THIRD-PARTY COPY: ADORAMA'S, OF BEHRINGER'S OWN MANUAL.** Behringer's only link to it is
+    # `https://cdn-media.empowertribe.com/dfd59db2fa6dd6a8e06058730a96b010/M_BE_DeepMind-12_WW.pdf`,
+    # listed as `DeepMind Manual` on the DeepMind 12X's page, and it answered 404 `NoSuchKey` on
+    # 2026-10-07 and 2026-10-09, with and without a `behringer.com` Referer. The file is Behringer's
+    # own InDesign output, made 2017-11-22 and changed 2017-12-20 by its metadata; it prints no
+    # edition of its own, a copyright of 2017 (p. 3), and on its chart `Version:1.0` of 01 September
+    # 2016, and every page but the covers prints its file page as its folio. Replace it with
+    # Behringer's copy if that link works again.
+  earlier_manual:
+    kind: manual
+    title: User Manual DeepMind 12
+    edition: 135-page edition of January 2017
+    url: "https://www.juno.co.uk/downloads/manual/622579-01U.pdf/"
+    sha256: c73e698d8afcd7254ad1ea3532492f436fa875de7f3f6cde4b1ea202a8de2cf7
+    retrieved: 2026-10-09
+    # **A SECOND THIRD-PARTY COPY: JUNO'S**, which redirects to `imagescdn.juno.co.uk`. Found as the
+    # second, independent copy the guide asks for, and an earlier edition rather than the same file:
+    # made 2017-01-06 by its metadata. Its controller and NRPN tables are the cited copy's cell for
+    # cell; its chart is the same stamp with dashes where the later has answers, and on Start,
+    # Continue and Stop an answer the later contradicts.
+  quick_start:
+    kind: quick_start
+    title: DeepMind 12 Quick Start Guide
+    edition: V 5.0
+    landing: "https://www.behringer.com/en/products/0722-AAA"
+    url: "https://cdn-media.empowertribe.com/5cbf48531cd7410cbd51c12ecad60507/QSG_BE_0722-AAA_DEEPMIND-12_WW.pdf"
+    sha256: efc84fb25cbac968d995fce6154696a18c45e0ecf93a77634c020ea64c4b37d1
+    retrieved: 2026-10-09
+    page_offset: 1
+    pages_per_sheet: 2
+    # Behringer's own, served on the DeepMind 12's page, and the cross-check for the copies above. A
+    # single cover and then two printed pages to a sheet, even on the left, so sheet 18 carries
+    # pp. 34-35 and sheet 22 pp. 42-43. The page also serves a second `V 5.0` file,
+    # `DEEPMIND-12_QSG_WW.pdf`, whose specifications are the same.
+  release_notes:
+    kind: release_notes
+    title: DeepMind Family Firmware
+    edition: "1.1.2"
+    dated: 2018-02-26
+    landing: "https://www.behringer.com/en/products/0722-AAA"
+    url: "https://cdn-media.empowertribe.com/934a031da4df4096a45c3149e82d23e6/DeepMind_Family_Firmware_v1.1.2_Release_Notes.pdf"
+    sha256: c4ba3ce50d183f291459bcde8bf7d049f09f37110f71da3d806ced4880e49bb8
+    retrieved: 2026-10-09
+    # Four pages, `page 1 of 4` to `page 4 of 4`: 1.1.2's features and fixes, the app's, and how to
+    # update. Cited for the firmware this definition names.
+
+midi:
+  # "The CHANNEL can be ALL, or any number from 1-16." (manual p. 26) received, and "any number from
+  # 1-16, or RxCh" (manual p. 26) sent, for each of the MIDI, USB and Wi-Fi ports separately.
+  channels: [1, 16]
+  # **BOTH WAYS.** The chart has `Yes` in both columns and remarks that it sends one when its clock
+  # is internal (manual p. 132), and `TRANSMIT-CLK` is the switch for that (manual p. 58).
+  clock: both
+  program_change:
+    # A setting per port, `RX`, `TX`, `RX-TX` or `NONE` (manual p. 26); `Yes` both ways on the
+    # chart.
+    receives: true
+    sends: true
+    # Eight banks of 128, chosen by bank select's fine half; see `bank_select_lsb` below.
+    presets: 1024
+  # `Yes` both ways, "When Interface mode set to NPRN" (manual p. 132), and always received (p. 26).
+  nrpn: supported
+  # `Yes` both ways on the chart, and a chapter of its own (manual pp. 140-143).
+  sysex: true
+  # NOT RECORDED: `mode` and `transport`. See the account. `control_change` is left unset because a
+  # map is published - see the controls below.
+
+voice:
+  addressing: pitches
+  # "Number of voices 12 analog" (manual p. 131); the polyphony mode is NRPN 85 below.
+  polyphony: 12
+  velocity:
+    # Note-on and note-off velocity are both `Yes` both ways on the chart (manual p. 132).
+    note_on: both
+    note_off: true
+  # Channel pressure, said in so many words (manual p. 30), and `No` for polyphonic both ways.
+  aftertouch: channel
+  pitch_bend:
+    # Two semitones each way by default, `+2` up and `-2` down, each settable from -24 to +24 on the
+    # POLY menu's pitch page (manual p. 78); NRPNs 36 and 37 print 0-24.
+    semitones: 2
+    programmable: true
+
+controls:
+
+  # Controllers, in the table's order; thirteen carry an NRPN of the same name ─────────────────────
+  bank_select_msb:                              {label: Bank Select (MSB), cc: 0}
+  modulation_wheel_msb:                         {label: Modulation Wheel (MSB), cc: 1}
+  breath_controller_msb:                        {label: Breath Controller (MSB), cc: 2}
+  foot_controller_msb:                          {label: Foot Controller (MSB), cc: 4}
+  portamento_time_msb:                          {label: Portamento Time (MSB), cc: 5}
+  channel_volume_msb:                           {label: Channel Volume (MSB), cc: 7}
+  balance_msb:                                  {label: Balance (MSB), cc: 8}
+  pan_msb:                                      {label: Pan (MSB), cc: 10}
+  expression_msb:                               {label: Expression (MSB), cc: 11}
+  arpeggiator_rate:                             {label: Arpeggiator Rate, cc: 12}
+  arpeggiator_gate_time:                        {label: Arpeggiator Gate Time, cc: 13}
+  lfo_1_rate:                                   {label: LFO 1 Rate, cc: 16, nrpn: 0, nrpn_range: [0, 255]}
+  lfo_1_delay_time:                             {label: LFO 1 Delay Time, cc: 17}
+  lfo_2_rate:                                   {label: LFO 2 Rate, cc: 18, nrpn: 7, nrpn_range: [0, 255]}
+  lfo_2_delay_time:                             {label: LFO 2 Delay Time, cc: 19}
+  osc1_pitch_modulation:                        {label: OSC1 Pitch Modulation, cc: 20}
+  osc1_pulse_width_modulation:                  {label: OSC1 Pulse Width Modulation, cc: 21}
+  osc_2_pitch_modulation:                       {label: OSC 2 Pitch Modulation, cc: 23}
+  osc_2_tone_modulation:                        {label: OSC 2 Tone Modulation, cc: 24}
+  osc_2_pitch:                                  {label: OSC 2 Pitch, cc: 25, nrpn: 27, nrpn_range: [0, 255]}
+  osc_2_level:                                  {label: OSC 2 Level, cc: 26, nrpn: 26, nrpn_range: [0, 255]}
+  noise_level:                                  {label: Noise Level, cc: 27, nrpn: 33, nrpn_range: [0, 255]}
+  unison_detune:                                {label: Unison Detune, cc: 28, nrpn: 87, nrpn_range: [0, 255]}
+  vcf_frequency:                                {label: VCF Frequency, cc: 29, nrpn: 39, nrpn_range: [0, 255]}
+  vcf_resonance:                                {label: VCF Resonance, cc: 30, nrpn: 41, nrpn_range: [0, 255]}
+  vcf_envelope_modulation:                      {label: VCF Envelope Modulation, cc: 31}
+  # The chart's remark gives the banks as `Bank A(LSB =0)` to `Bank H (LSB =7)` (p. 132).
+  bank_select_lsb:                              {label: Bank Select (LSB), cc: 32, choices: {bank_a: 0, bank_b: 1, bank_c: 2, bank_d: 3, bank_e: 4, bank_f: 5, bank_g: 6, bank_h: 7}, range: [0, 7]}
+  vcf_lfo_modulation:                           {label: VCF LFO Modulation, cc: 33}
+  vcf_keyboard_modulation:                      {label: VCF Keyboard Modulation, cc: 34}
+  hpf_frequency:                                {label: HPF Frequency, cc: 35}
+  vca_level:                                    {label: VCA Level, cc: 36, nrpn: 80, nrpn_range: [0, 255]}
+  vca_envelope_attack:                          {label: VCA Envelope Attack, cc: 37}
+  vca_envelope_decay:                           {label: VCA Envelope Decay, cc: 39}
+  vca_envelope_sustain_cc_40:                   {label: VCA Envelope Sustain, cc: 40}
+  vca_envelope_release:                         {label: VCA Envelope Release, cc: 41}
+  vcf_envelope_attack:                          {label: VCF Envelope Attack, cc: 42}
+  vcf_envelope_decay:                           {label: VCF Envelope Decay, cc: 43}
+  # PRINTED TWICE: CC 40 is `VCA Envelope Sustain` too. Between `VCF Envelope Decay` at 43 and
+  # `VCF Envelope Release` at 45 it looks like the filter envelope's, and it is carried as printed -
+  # see the account.
+  vca_envelope_sustain_cc_44:                   {label: VCA Envelope Sustain, cc: 44}
+  vcf_envelope_release:                         {label: VCF Envelope Release, cc: 45}
+  mod_envelope_attack:                          {label: MOD Envelope Attack, cc: 46}
+  mod_envelope_decay:                           {label: MOD Envelope Decay, cc: 47}
+  mod_envelope_sustain:                         {label: MOD Envelope Sustain, cc: 48}
+  mod_envelope_release:                         {label: MOD Envelope Release, cc: 49}
+  vca_envelope_attack_curve_cc_50:              {label: VCA Envelope Attack Curve, cc: 50}
+  vca_envelope_decay_curve:                     {label: VCA Envelope Decay Curve, cc: 51, nrpn: 59, nrpn_range: [0, 255]}
+  vca_envelope_sustain_curve_cc_52:             {label: VCA Envelope Sustain Curve, cc: 52}
+  vca_envelope_release_curve:                   {label: VCA Envelope Release Curve, cc: 53}
+  vcf_envelope_attack_curve_cc_54:              {label: VCF Envelope Attack Curve, cc: 54}
+  vcf_envelope_decay_curve:                     {label: VCF Envelope Decay Curve, cc: 55, nrpn: 68, nrpn_range: [0, 255]}
+  # PRINTED TWICE: CC 52 is `VCA Envelope Sustain Curve` too. Carried as printed - see the account.
+  vca_envelope_sustain_curve_cc_56:             {label: VCA Envelope Sustain Curve, cc: 56}
+  vcf_envelope_release_curve:                   {label: VCF Envelope Release Curve, cc: 57}
+  mod_envelope_attack_curve_cc_58:              {label: MOD Envelope Attack Curve, cc: 58}
+  mod_envelope_decay_curve:                     {label: MOD Envelope Decay Curve, cc: 59, nrpn: 77, nrpn_range: [0, 255]}
+  mod_envelope_sustain_curve:                   {label: MOD Envelope Sustain Curve, cc: 60, nrpn: 78, nrpn_range: [0, 255]}
+  mod_envelope_release_curve:                   {label: MOD Envelope Release Curve, cc: 61}
+  effects_slot_1_parameter_1:                   {label: Effects Slot 1 Parameter 1, cc: 62}
+  effects_slot_1_parameter_2:                   {label: Effects Slot 1 Parameter 2, cc: 63}
+  sustain_pedal:                                {label: Sustain Pedal, cc: 64}
+  effects_slot_1_parameter_3:                   {label: Effects Slot 1 Parameter 3, cc: 65}
+  effects_slot_1_parameter_4:                   {label: Effects Slot 1 Parameter 4, cc: 66}
+  effects_slot_1_parameter_5:                   {label: Effects Slot 1 Parameter 5, cc: 67}
+  effects_slot_1_parameter_6:                   {label: Effects Slot 1 Parameter 6, cc: 68}
+  effects_slot_1_parameter_7:                   {label: Effects Slot 1 Parameter 7, cc: 69}
+  effects_slot_1_parameter_8:                   {label: Effects Slot 1 Parameter 8, cc: 70}
+  effects_slot_1_parameter_9:                   {label: Effects Slot 1 Parameter 9, cc: 71}
+  effects_slot_1_parameter_10:                  {label: Effects Slot 1 Parameter 10, cc: 72}
+  effects_slot_1_parameter_11:                  {label: Effects Slot 1 Parameter 11, cc: 73}
+  effects_slot_1_parameter_12:                  {label: Effects Slot 1 Parameter 12, cc: 74}
+  effects_slot_2_parameter_1:                   {label: Effects Slot 2 Parameter 1, cc: 75}
+  effects_slot_2_parameter_2:                   {label: Effects Slot 2 Parameter 2, cc: 76}
+  effects_slot_2_parameter_3:                   {label: Effects Slot 2 Parameter 3, cc: 77}
+  effects_slot_2_parameter_4:                   {label: Effects Slot 2 Parameter 4, cc: 78}
+  effects_slot_2_parameter_5:                   {label: Effects Slot 2 Parameter 5, cc: 79}
+  effects_slot_2_parameter_6:                   {label: Effects Slot 2 Parameter 6, cc: 80}
+  effects_slot_2_parameter_7:                   {label: Effects Slot 2 Parameter 7, cc: 81}
+  effects_slot_2_parameter_8:                   {label: Effects Slot 2 Parameter 8, cc: 82}
+  effects_slot_2_parameter_9:                   {label: Effects Slot 2 Parameter 9, cc: 83}
+  effects_slot_2_parameter_10:                  {label: Effects Slot 2 Parameter 10, cc: 84}
+  effects_slot_2_parameter_11:                  {label: Effects Slot 2 Parameter 11, cc: 85}
+  effects_slot_2_parameter_12:                  {label: Effects Slot 2 Parameter 12, cc: 86}
+  effects_slot_3_parameter_1:                   {label: Effects Slot 3 Parameter 1, cc: 87}
+  effects_slot_3_parameter_2:                   {label: Effects Slot 3 Parameter 2, cc: 88}
+  effects_slot_3_parameter_3:                   {label: Effects Slot 3 Parameter 3, cc: 89}
+  effects_slot_3_parameter_4:                   {label: Effects Slot 3 Parameter 4, cc: 90}
+  effects_slot_3_parameter_5:                   {label: Effects Slot 3 Parameter 5, cc: 91}
+  effects_slot_3_parameter_6:                   {label: Effects Slot 3 Parameter 6, cc: 92}
+  effects_slot_3_parameter_7:                   {label: Effects Slot 3 Parameter 7, cc: 93}
+  effects_slot_3_parameter_8:                   {label: Effects Slot 3 Parameter 8, cc: 94}
+  effects_slot_3_parameter_9:                   {label: Effects Slot 3 Parameter 9, cc: 95}
+  effects_slot_3_parameter_10:                  {label: Effects Slot 3 Parameter 10, cc: 102}
+  effects_slot_3_parameter_11:                  {label: Effects Slot 3 Parameter 11, cc: 103}
+  effects_slot_3_parameter_12:                  {label: Effects Slot 3 Parameter 12, cc: 104}
+  effects_slot_1_type:                          {label: Effects Slot 1 Type, cc: 105}
+  effects_slot_2_type:                          {label: Effects Slot 2 Type, cc: 106}
+  effects_slot_3_type:                          {label: Effects Slot 3 Type, cc: 107}
+  effects_slot_4_type:                          {label: Effects Slot 4 Type, cc: 108}
+  effects_slot_1_gain:                          {label: Effects Slot 1 Gain, cc: 109}
+  effects_slot_2_gain:                          {label: Effects Slot 2 Gain, cc: 110}
+  effects_slot_3_gain:                          {label: Effects Slot 3 Gain, cc: 111}
+  effects_slot_4_gain:                          {label: Effects Slot 4 Gain, cc: 112}
+  analog_thru:                                  {label: Analog Thru, cc: 113}
+  effects_mode:                                 {label: Effects Mode, cc: 114}
+  controller_x_axis_3d:                         {label: 3D Controller X-Axis, cc: 115}
+  controller_y_axis_3d:                         {label: 3D Controller Y-Axis, cc: 116}
+  controller_z_axis_3d:                         {label: 3D Controller Z-Axis, cc: 117}
+
+  # NRPNs with no controller, in the NRPN table's order ────────────────────────────────────────────
+  lfo_1_delay_fade:                             {label: LFO 1 Delay / Fade, nrpn: 1, range: [0, 255]}
+  lfo_1_shape:                                  {label: LFO 1 Shape, nrpn: 2, range: [0, 6], choices: {sine: 0, triangle: 1, square: 2, ramp_up: 3, ramp_down: 4, sample_and_hold: 5, sample_and_glide: 6}}
+  lfo_1_key_sync:                               {label: LFO 1 Key Sync, nrpn: 3, range: [0, 1], choices: {"off": 0, "on": 1}}
+  lfo_1_arp_sync:                               {label: LFO 1 Arp Sync, nrpn: 4, range: [0, 1], choices: {"off": 0, "on": 1}}
+  # `0-1` in its Range cell and `SPREAD-254(255)` in its Notes; the LFO pages settle it at 0-255
+  # (p. 62) - see the account.
+  lfo_1_mono_mode:                              {label: LFO 1 Mono Mode, nrpn: 5, range: [0, 255]}
+  lfo_1_slew_rate:                              {label: LFO 1 Slew Rate, nrpn: 6, range: [0, 255]}
+  lfo_2_delay_fade:                             {label: LFO 2 Delay / Fade, nrpn: 8, range: [0, 255]}
+  lfo_2_shape:                                  {label: LFO 2 Shape, nrpn: 9, range: [0, 6], choices: {sine: 0, triangle: 1, square: 2, ramp_up: 3, ramp_down: 4, sample_and_hold: 5, sample_and_glide: 6}}
+  lfo_2_key_sync:                               {label: LFO 2 Key Sync, nrpn: 10, range: [0, 1], choices: {"off": 0, "on": 1}}
+  lfo_2_arp_sync:                               {label: LFO 2 Arp Sync, nrpn: 11, range: [0, 1], choices: {"off": 0, "on": 1}}
+  lfo_2_mono_mode:                              {label: LFO 2 Mono Mode, nrpn: 12, range: [0, 255]}
+  lfo_2_slew_rate:                              {label: LFO 2 Slew Rate, nrpn: 13, range: [0, 255]}
+  osc_1_range:                                  {label: OSC 1 Range, nrpn: 14, range: [0, 2], choices: {ft_16: 0, ft_8: 1, ft_4: 2}}
+  osc_2_range:                                  {label: OSC 2 Range, nrpn: 15, range: [0, 2], choices: {ft_16: 0, ft_8: 1, ft_4: 2}}
+  osc_1_pwm_source:                             {label: OSC 1 PWM Source, nrpn: 16, range: [0, 5], choices: {manual: 0, lfo_1: 1, lfo_2: 2, vca_env: 3, vcf_env: 4, mod_env: 5}}
+  osc_2_tone_mod_source:                        {label: OSC 2 Tone Mod Source, nrpn: 17, range: [0, 5], choices: {manual: 0, lfo_1: 1, lfo_2: 2, vca_env: 3, vcf_env: 4, mod_env: 5}}
+  osc_1_pulse_enable:                           {label: OSC 1 Pulse Enable, nrpn: 18, range: [0, 1], choices: {"off": 0, "on": 1}}
+  osc_1_saw_enable:                             {label: OSC 1 Saw Enable, nrpn: 19, range: [0, 1], choices: {"off": 0, "on": 1}}
+  osc_sync_enable:                              {label: OSC Sync Enable, nrpn: 20, range: [0, 1], choices: {"off": 0, "on": 1}}
+  osc_1_pitch_mod_depth:                        {label: OSC 1 Pitch Mod Depth, nrpn: 21, range: [0, 255]}
+  osc_1_pitch_mod_select:                       {label: OSC 1 Pitch Mod Select, nrpn: 22, range: [0, 6], choices: {lfo_1: 0, lfo_2: 1, vca_env: 2, vcf_env: 3, mod_env: 4, lfo_1_unipolar: 5, lfo_2_unipolar: 6}}
+  osc_1_aftertouch_pitch_mod_depth:             {label: "OSC 1 Aftertouch > Pitch Mod Depth", nrpn: 23, range: [0, 255]}
+  osc_1_mod_wheel_pitch_mod_depth:              {label: "OSC 1 Mod Wheel > Pitch Mod Depth", nrpn: 24, range: [0, 255]}
+  osc_1_pwm_depth:                              {label: OSC 1 PWM Depth, nrpn: 25, range: [0, 255]}
+  osc_2_tone_mod_depth:                         {label: OSC 2 Tone Mod Depth, nrpn: 28, range: [0, 255]}
+  osc_2_pitch_mod_depth:                        {label: OSC 2 Pitch Mod Depth, nrpn: 29, range: [0, 255]}
+  osc_2_aftertouch_pitch_mod_depth:             {label: "OSC 2 Aftertouch > Pitch Mod Depth", nrpn: 30, range: [0, 255]}
+  osc_2_mod_wheel_pitch_mod_depth:              {label: "OSC 2 Mod Wheel > Pitch Mod Depth", nrpn: 31, range: [0, 255]}
+  osc_2_pitch_mod_select:                       {label: OSC 2 Pitch Mod Select, nrpn: 32, range: [0, 6], choices: {lfo_1: 0, lfo_2: 1, vca_env: 2, vcf_env: 3, mod_env: 4, lfo_1_unipolar: 5, lfo_2_unipolar: 6}}
+  portamento_time:                              {label: Portamento time, nrpn: 34, range: [0, 255]}
+  portamento_mode:                              {label: Portamento mode, nrpn: 35, range: [0, 13], choices: {normal: 0, fingered: 1, fixed_rate: 2, fixed_rate_fingered: 3, exponential: 4, exponential_fingered: 5, fixed_plus_2: 6, fixed_minus_2: 7, fixed_plus_5: 8, fixed_minus_5: 9, fixed_plus_12: 10, fixed_minus_12: 11, fixed_plus_24: 12, fixed_minus_24: 13}}
+  # The POLY menu sets each direction from -24 to +24 (p. 78), where this table prints 0-24.
+  pitch_bend_up_depth:                          {label: Pitch bend Up depth, nrpn: 36, range: [0, 24]}
+  # As for the up depth: -24 to +24 on the POLY menu (p. 78), 0-24 here.
+  pitch_bend_down_depth:                        {label: Pitch bend Down depth, nrpn: 37, range: [0, 24]}
+  osc_1_pitch_mod_mode:                         {label: OSC 1 Pitch Mod Mode, nrpn: 38, range: [0, 1], choices: {osc1_plus_2: 0, osc_1_only: 1}}
+  vcf_highpass_frequency:                       {label: VCF HighPass Frequency, nrpn: 40, range: [0, 255]}
+  vcf_envelope_depth:                           {label: VCF Envelope Depth, nrpn: 42, range: [0, 255]}
+  vcf_envelope_velocity_sensitivity:            {label: VCF Envelope Velocity Sensitivity, nrpn: 43, range: [0, 255]}
+  vcf_pitch_bend_to_freq_depth:                 {label: VCF Pitch Bend to Freq Depth, nrpn: 44, range: [0, 255]}
+  vcf_lfo_depth:                                {label: VCF LFO Depth, nrpn: 45, range: [0, 255]}
+  vcf_lfo_select:                               {label: VCF LFO Select, nrpn: 46, range: [0, 1], choices: {lfo_1: 0, lfo_2: 1}}
+  vcf_aftertouch_lfo_depth:                     {label: "VCF Aftertouch > LFO Depth", nrpn: 47, range: [0, 255]}
+  vcf_mod_wheel_lfo_depth:                      {label: "VCF Mod Wheel > LFO Depth", nrpn: 48, range: [0, 255]}
+  vcf_keyboard_tracking:                        {label: VCF Keyboard Tracking, nrpn: 49, range: [0, 255]}
+  vcf_envelope_polarity:                        {label: VCF Envelope Polarity, nrpn: 50, range: [0, 1], choices: {negative: 0, positive: 1}}
+  vcf_2_pole_mode:                              {label: VCF 2 Pole Mode, nrpn: 51, range: [0, 1], choices: {pole_4: 0, pole_2: 1}}
+  vcf_bass_boost:                               {label: VCF Bass Boost, nrpn: 52, range: [0, 1], choices: {"off": 0, "on": 1}}
+  vca_envelope_attack_time:                     {label: VCA Envelope Attack Time, nrpn: 53, range: [0, 255]}
+  vca_envelope_decay_time:                      {label: VCA Envelope Decay Time, nrpn: 54, range: [0, 255]}
+  vca_envelope_sustain_level:                   {label: VCA Envelope Sustain Level, nrpn: 55, range: [0, 255]}
+  vca_envelope_release_time:                    {label: VCA Envelope Release Time, nrpn: 56, range: [0, 255]}
+  vca_envelope_trigger_mode:                    {label: VCA Envelope Trigger Mode, nrpn: 57, range: [0, 4], choices: {key: 0, lfo_1: 1, lfo_2: 2, loop: 3, control_sequencer_step: 4}}
+  vca_envelope_attack_curve_nrpn_58:            {label: VCA Envelope Attack Curve, nrpn: 58, range: [0, 255]}
+  vca_envelope_sustain_curve_nrpn_60:           {label: VCA Envelope Sustain Curve, nrpn: 60, range: [0, 255]}
+  # PRINTED TWICE, with 58, where by its neighbours the release curve would follow. Carried as
+  # printed - see the account.
+  vca_envelope_attack_curve_nrpn_61:            {label: VCA Envelope Attack Curve, nrpn: 61, range: [0, 255]}
+  vcf_envelope_attack_time:                     {label: VCF Envelope Attack Time, nrpn: 62, range: [0, 255]}
+  vcf_envelope_decay_time:                      {label: VCF Envelope Decay Time, nrpn: 63, range: [0, 255]}
+  vcf_envelope_sustain_level:                   {label: VCF Envelope Sustain Level, nrpn: 64, range: [0, 255]}
+  vcf_envelope_release_time:                    {label: VCF Envelope Release Time, nrpn: 65, range: [0, 255]}
+  vcf_envelope_trigger_mode:                    {label: VCF Envelope Trigger Mode, nrpn: 66, range: [0, 4], choices: {key: 0, lfo_1: 1, lfo_2: 2, loop: 3, control_sequencer_step: 4}}
+  vcf_envelope_attack_curve_nrpn_67:            {label: VCF Envelope Attack Curve, nrpn: 67, range: [0, 255]}
+  vcf_envelope_sustain_curve:                   {label: VCF Envelope Sustain Curve, nrpn: 69, range: [0, 255]}
+  # PRINTED TWICE, with 67, where by its neighbours the release curve would follow. Carried as
+  # printed.
+  vcf_envelope_attack_curve_nrpn_70:            {label: VCF Envelope Attack Curve, nrpn: 70, range: [0, 255]}
+  mod_envelope_attack_time:                     {label: Mod Envelope Attack Time, nrpn: 71, range: [0, 255]}
+  mod_envelope_decay_time:                      {label: Mod Envelope Decay Time, nrpn: 72, range: [0, 255]}
+  mod_envelope_sustain_level:                   {label: Mod Envelope Sustain Level, nrpn: 73, range: [0, 255]}
+  mod_envelope_release_time:                    {label: Mod Envelope Release Time, nrpn: 74, range: [0, 255]}
+  mod_envelope_trigger_mode:                    {label: Mod Envelope Trigger Mode, nrpn: 75, range: [0, 4], choices: {key: 0, lfo_1: 1, lfo_2: 2, loop: 3, control_sequencer_step: 4}}
+  mod_envelope_attack_curve_nrpn_76:            {label: Mod Envelope Attack Curve, nrpn: 76, range: [0, 255]}
+  # PRINTED TWICE, with 76, where by its neighbours the release curve would follow. Carried as
+  # printed.
+  mod_envelope_attack_curve_nrpn_79:            {label: Mod Envelope Attack Curve, nrpn: 79, range: [0, 255]}
+  vca_envelope_depth:                           {label: VCA Envelope Depth, nrpn: 81, range: [0, 255]}
+  vca_envelope_velocity_sensitivity:            {label: VCA Envelope Velocity Sensitivity, nrpn: 82, range: [0, 255]}
+  vca_pan_spread:                               {label: VCA Pan Spread, nrpn: 83, range: [0, 255]}
+  voice_priority_mode:                          {label: Voice Priority Mode, nrpn: 84, range: [0, 2], choices: {lowest: 0, highest: 1, last: 2}}
+  polyphony_mode:                               {label: Polyphony Mode, nrpn: 85, range: [0, 12], choices: {poly: 0, unison_2: 1, unison_3: 2, unison_4: 3, unison_6: 4, unison_12: 5, mono: 6, mono_2: 7, mono_3: 8, mono_4: 9, mono_6: 10, poly_6: 11, poly_8: 12}}
+  envelope_trigger_mode:                        {label: Envelope Trigger Mode, nrpn: 86, range: [0, 3], choices: {mono: 0, re_trigger: 1, legato: 2, one_shot: 3}}
+  voice_drift:                                  {label: Voice Drift, nrpn: 88, range: [0, 255]}
+  parameter_drift:                              {label: Parameter Drift, nrpn: 89, range: [0, 255]}
+  drift_rate:                                   {label: Drift Rate, nrpn: 90, range: [0, 255]}
+  # Printed `OSC Portamento  Balance`, with two spaces, which the label closes up.
+  osc_portamento_balance:                       {label: OSC Portamento Balance, nrpn: 91, range: [0, 255]}
+  osc_key_down_reset:                           {label: OSC Key Down Reset, nrpn: 92, range: [0, 1], choices: {"off": 0, "on": 1}}
+  # THE MATRIX'S SOURCES ARE 0-22 AND ITS DESTINATIONS 0-129 AS THE TABLE PRINTS THEM (pp. 137-138),
+  # and this edition's own lists run 1-24 and 1-132 (pp. 93-94), so the ranges may stop short - see
+  # the account.
+  mod_1_source:                                 {label: Mod 1 Source, nrpn: 93, range: [0, 22]}
+  mod_1_destination:                            {label: Mod 1 Destination, nrpn: 94, range: [0, 129]}
+  mod_1_depth:                                  {label: Mod 1 Depth, nrpn: 95, range: [0, 255]}
+  mod_2_source:                                 {label: Mod 2 Source, nrpn: 96, range: [0, 22]}
+  mod_2_destination:                            {label: Mod 2 Destination, nrpn: 97, range: [0, 129]}
+  mod_2_depth:                                  {label: Mod 2 Depth, nrpn: 98, range: [0, 255]}
+  mod_3_source:                                 {label: Mod 3 Source, nrpn: 99, range: [0, 22]}
+  mod_3_destination:                            {label: Mod 3 Destination, nrpn: 100, range: [0, 129]}
+  mod_3_depth:                                  {label: Mod 3 Depth, nrpn: 101, range: [0, 255]}
+  mod_4_source:                                 {label: Mod 4 Source, nrpn: 102, range: [0, 22]}
+  mod_4_destination:                            {label: Mod 4 Destination, nrpn: 103, range: [0, 129]}
+  mod_4_depth:                                  {label: Mod 4 Depth, nrpn: 104, range: [0, 255]}
+  mod_5_source:                                 {label: Mod 5 Source, nrpn: 105, range: [0, 22]}
+  mod_5_destination:                            {label: Mod 5 Destination, nrpn: 106, range: [0, 129]}
+  mod_5_depth:                                  {label: Mod 5 Depth, nrpn: 107, range: [0, 255]}
+  mod_6_source:                                 {label: Mod 6 Source, nrpn: 108, range: [0, 22]}
+  mod_6_destination:                            {label: Mod 6 Destination, nrpn: 109, range: [0, 129]}
+  mod_6_depth:                                  {label: Mod 6 Depth, nrpn: 110, range: [0, 255]}
+  mod_7_source:                                 {label: Mod 7 Source, nrpn: 111, range: [0, 22]}
+  mod_7_destination:                            {label: Mod 7 Destination, nrpn: 112, range: [0, 129]}
+  mod_7_depth:                                  {label: Mod 7 Depth, nrpn: 113, range: [0, 255]}
+  mod_8_source:                                 {label: Mod 8 Source, nrpn: 114, range: [0, 22]}
+  mod_8_destination:                            {label: Mod 8 Destination, nrpn: 115, range: [0, 129]}
+  mod_8_depth:                                  {label: Mod 8 Depth, nrpn: 116, range: [0, 255]}
+  ctrl_sequencer_enable:                        {label: Ctrl Sequencer Enable, nrpn: 117, range: [0, 1], choices: {"off": 0, "on": 1}}
+  ctrl_sequencer_clock_divider:                 {label: Ctrl Sequencer Clock Divider, nrpn: 118, range: [0, 15]}
+  sequence_length:                              {label: Sequence Length, nrpn: 119, range: [0, 31]}
+  sequencer_swing_timing:                       {label: Sequencer Swing Timing, nrpn: 120, range: [0, 25]}
+  key_sync_and_loop:                            {label: "Key Sync & Loop", nrpn: 121, range: [0, 2], choices: {loop_on: 0, key_sync_on: 1, loop_and_key_sync_on: 2}}
+  slew_rate:                                    {label: Slew Rate, nrpn: 122, range: [0, 255]}
+  seq_step_value_1:                             {label: Seq Step Value 1, nrpn: 123, range: [0, 255]}
+  seq_step_value_2:                             {label: Seq Step Value 2, nrpn: 124, range: [0, 255]}
+  seq_step_value_3:                             {label: Seq Step Value 3, nrpn: 125, range: [0, 255]}
+  seq_step_value_4:                             {label: Seq Step Value 4, nrpn: 126, range: [0, 255]}
+  seq_step_value_5:                             {label: Seq Step Value 5, nrpn: 127, range: [0, 255]}
+  seq_step_value_6:                             {label: Seq Step Value 6, nrpn: 128, range: [0, 255]}
+  seq_step_value_7:                             {label: Seq Step Value 7, nrpn: 129, range: [0, 255]}
+  seq_step_value_8:                             {label: Seq Step Value 8, nrpn: 130, range: [0, 255]}
+  seq_step_value_9:                             {label: Seq Step Value 9, nrpn: 131, range: [0, 255]}
+  seq_step_value_10:                            {label: Seq Step Value 10, nrpn: 132, range: [0, 255]}
+  seq_step_value_11:                            {label: Seq Step Value 11, nrpn: 133, range: [0, 255]}
+  seq_step_value_12:                            {label: Seq Step Value 12, nrpn: 134, range: [0, 255]}
+  seq_step_value_13:                            {label: Seq Step Value 13, nrpn: 135, range: [0, 255]}
+  seq_step_value_14:                            {label: Seq Step Value 14, nrpn: 136, range: [0, 255]}
+  seq_step_value_15:                            {label: Seq Step Value 15, nrpn: 137, range: [0, 255]}
+  seq_step_value_16:                            {label: Seq Step Value 16, nrpn: 138, range: [0, 255]}
+  seq_step_value_17:                            {label: Seq Step Value 17, nrpn: 139, range: [0, 255]}
+  seq_step_value_18:                            {label: Seq Step Value 18, nrpn: 140, range: [0, 255]}
+  seq_step_value_19:                            {label: Seq Step Value 19, nrpn: 141, range: [0, 255]}
+  seq_step_value_20:                            {label: Seq Step Value 20, nrpn: 142, range: [0, 255]}
+  seq_step_value_21:                            {label: Seq Step Value 21, nrpn: 143, range: [0, 255]}
+  seq_step_value_22:                            {label: Seq Step Value 22, nrpn: 144, range: [0, 255]}
+  seq_step_value_23:                            {label: Seq Step Value 23, nrpn: 145, range: [0, 255]}
+  seq_step_value_24:                            {label: Seq Step Value 24, nrpn: 146, range: [0, 255]}
+  seq_step_value_25:                            {label: Seq Step Value 25, nrpn: 147, range: [0, 255]}
+  seq_step_value_26:                            {label: Seq Step Value 26, nrpn: 148, range: [0, 255]}
+  seq_step_value_27:                            {label: Seq Step Value 27, nrpn: 149, range: [0, 255]}
+  seq_step_value_28:                            {label: Seq Step Value 28, nrpn: 150, range: [0, 255]}
+  seq_step_value_29:                            {label: Seq Step Value 29, nrpn: 151, range: [0, 255]}
+  seq_step_value_30:                            {label: Seq Step Value 30, nrpn: 152, range: [0, 255]}
+  seq_step_value_31:                            {label: Seq Step Value 31, nrpn: 153, range: [0, 255]}
+  seq_step_value_32:                            {label: Seq Step Value 32, nrpn: 154, range: [0, 255]}
+  arp_on_off:                                   {label: Arp On/Off, nrpn: 155, range: [0, 1], choices: {"off": 0, "on": 1}}
+  arp_mode:                                     {label: Arp Mode, nrpn: 156, range: [0, 10], choices: {up: 0, down: 1, up_and_down: 2, up_inv: 3, down_inv: 4, up_and_down_inv: 5, up_alt: 6, down_alt: 7, random: 8, as_played: 9, chord: 10}}
+  arp_rate_tempo:                               {label: Arp Rate (tempo), nrpn: 157, range: [0, 255]}
+  arp_clock:                                    {label: Arp Clock, nrpn: 158, range: [0, 12]}
+  arp_key_sync:                                 {label: Arp Key Sync, nrpn: 159, range: [0, 1], choices: {"off": 0, "on": 1}}
+  arp_gate_time:                                {label: Arp Gate Time, nrpn: 160, range: [0, 255]}
+  arp_hold:                                     {label: Arp Hold, nrpn: 161, range: [0, 1], choices: {"off": 0, "on": 1}}
+  arp_pattern:                                  {label: Arp Pattern, nrpn: 162, range: [0, 64]}
+  arp_swing:                                    {label: Arp Swing, nrpn: 163, range: [0, 25]}
+  arp_octaves:                                  {label: Arp Octaves, nrpn: 164, range: [0, 5]}
+  fx_routing:                                   {label: FX Routing, nrpn: 165, range: [0, 9]}
+  fx_1_type:                                    {label: FX 1 Type, nrpn: 166, range: [0, 33]}
+  fx_2_type:                                    {label: FX 2 Type, nrpn: 179, range: [0, 33]}
+  fx_3_type:                                    {label: FX 3 Type, nrpn: 192, range: [0, 33]}
+  fx_4_type:                                    {label: FX 4 Type, nrpn: 205, range: [0, 33]}
+  fx_1_output_gain:                             {label: FX 1 Output Gain, nrpn: 218, range: [0, 150]}
+  # FX 2 and FX 3 print `—` for their range; 0-150 is a reading of FX 4's note,
+  # `Output gain for FX slots 1-4` (p. 139), beside the 0-150 of FX 1 and FX 4.
+  fx_2_output_gain:                             {label: FX 2 Output Gain, nrpn: 219, range: [0, 150]}
+  fx_3_output_gain:                             {label: FX 3 Output Gain, nrpn: 220, range: [0, 150]}
+  fx_4_output_gain:                             {label: FX 4 Output Gain, nrpn: 221, range: [0, 150]}
+  fx_mode:                                      {label: FX Mode, nrpn: 222, range: [0, 2], choices: {insert: 0, send: 1, bypass: 2}}
+  program_category:                             {label: Program Category, nrpn: 240, range: [0, 16]}
+  # `-48 (80) ... 0 ( 128) ... 176 (+48 )` (p. 139): -48 to +48 about 128, the last pair printed the
+  # other way round.
+  program_transpose:                            {label: Program Transpose, nrpn: 241, range: [80, 176]}

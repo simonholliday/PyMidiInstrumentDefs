@@ -157,6 +157,7 @@ class TestBundledCorpus:
 			"arturia/astrolab",
 			"arturia/drumbrute",
 			"arturia/drumbrute_impact",
+			"arturia/matrixbrute",
 			"arturia/microbrute",
 			"arturia/microfreak",
 			"arturia/minifreak",
@@ -18594,3 +18595,66 @@ class TestAlphaJuno2:
 		assert set(juno.sources) == {"manual", "archive"}
 		assert juno.sources["manual"].file_page(48) == 48 and juno.sources["manual"].file_page(32) == 32
 		assert juno.sources["archive"].sha256 == pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS]).sources["archive"].sha256
+
+
+class TestMatrixBrute:
+
+	"""Eighty controls on seventy-eight numbers, off one table that says which two it shares."""
+
+	def test_eighty_controls_both_ways_on_seventy_eight_numbers (self) -> None:
+		brute = pymidiinstrumentdefs.load("arturia/matrixbrute", [CORPUS])
+
+		numbers = [control.cc for control in brute.controls.values() if control.cc is not None]
+		assert len(brute.controls) == len(numbers) == 80 and len(set(numbers)) == 78
+		assert sorted(n for n in set(numbers) if numbers.count(n) > 1) == [3, 4]
+		assert (brute.controls["expr_pedal_2"].cc, brute.controls["m4"].cc) == (3, 3)
+		assert (brute.controls["expr_pedal_1"].cc, brute.controls["m3"].cc) == (4, 4)
+		assert all(control.direction == "both" and control.part is None and control.lsb is None
+			for control in brute.controls.values())
+		assert len(brute.groups) == 18 and list(brute.groups)[0] == "pedals" and list(brute.groups)[-1] == "macro_knobs"
+
+	def test_the_numbers_from_1_to_31_and_none_from_32_to_63 (self) -> None:
+		"""The 7-bit/14-bit rows are every number up to 31 but 6, and no fine half is carried."""
+		brute = pymidiinstrumentdefs.load("arturia/matrixbrute", [CORPUS])
+
+		numbers = {control.cc for control in brute.controls.values() if control.cc is not None}
+		assert {n for n in numbers if n < 32} == set(range(1, 32)) - {6}
+		assert not {n for n in numbers if 32 <= n <= 63}
+		assert brute.controls["vco_1_metalizer"].cc == 70 and brute.controls["vco_1_sawtooth"].cc == 10
+		assert (brute.controls["env_2_velo"].label, brute.groups["env_2"]) == ("Velo", "ENV 2")
+		assert brute.controls["env_1_velo_vcf"].label == "Velo / VCF"
+
+	def test_one_lower_part_and_no_voice_count (self) -> None:
+		brute = pymidiinstrumentdefs.load("arturia/matrixbrute", [CORPUS])
+
+		assert list(brute.parts) == ["lower"]
+		lower = brute.parts["lower"]
+		assert (lower.channel, lower.receives, lower.addressing) == ("assigned", ("notes",), "pitches")
+		assert (brute.voice.polyphony, brute.voice.voicing_modes, brute.voice.paraphonic) == (None, (), True)
+		assert brute.voice.aftertouch is None and brute.voice.note_range is None
+		assert brute.voice.velocity is not None and brute.voice.velocity.note_on == "received"
+		assert brute.voice.pitch_bend is not None
+		assert (brute.voice.pitch_bend.programmable, brute.voice.pitch_bend.semitones) == (True, None)
+
+	def test_clock_and_transport_received_and_256_presets (self) -> None:
+		brute = pymidiinstrumentdefs.load("arturia/matrixbrute", [CORPUS])
+
+		assert (brute.midi.channels, brute.midi.mode, brute.midi.clock, brute.midi.transport) == \
+			((1, 16), None, "receives", "receives")
+		assert brute.midi.program_change is not None
+		assert (brute.midi.program_change.receives, brute.midi.program_change.sends,
+			brute.midi.program_change.presets) == (True, None, 256)
+		assert (brute.midi.nrpn, brute.midi.sysex, brute.midi.control_change) == (None, None, None)
+
+	def test_firmware_2031411_and_two_editions_of_the_manual (self) -> None:
+		brute = pymidiinstrumentdefs.load("arturia/matrixbrute", [CORPUS])
+
+		assert brute.model.firmware == "2.0.3.1411" and brute.sources["release_notes"].edition == "2.0.3.1411"
+		assert set(brute.sources) == {"manual", "manual_2_0_1", "mcc_manual", "release_notes", "resources_page"}
+		assert (brute.sources["manual"].edition, brute.sources["manual_2_0_1"].edition) == ("2.0.3", "2.0.1")
+		assert brute.sources["manual"].file_page(49) == 55 and brute.sources["manual_2_0_1"].file_page(52) == 57
+		assert brute.sources["mcc_manual"].sha256 == \
+			pymidiinstrumentdefs.load("arturia/drumbrute", [CORPUS]).sources["mcc_manual"].sha256
+		account = " ".join((brute.source or "").split())
+		assert "**THE 2019 EDITION GIVES VCO 1'S `Metalizer` AS 10, AND THE CURRENT ONE AS 70.**" in account
+		assert "**THREE VOICE MODES, AND TWO PAGES DISAGREE ABOUT ONE OF THEM.**" in account

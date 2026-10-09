@@ -141,6 +141,7 @@ self-contained YAML file, and you share it by sending it.
 | `arturia/astrolab` | Arturia AstroLab: 36 controls off a table that gives a direction for every row in both directions - and a Section column that cannot be read as a grouping, because the rows are in controller-number order |
 | `arturia/drumbrute` | Arturia DrumBrute: publishes no controller number - its seventeen drum notes are one screenshot that both editions of its manual print, and its program change is in the firmware release notes and in no manual |
 | `arturia/drumbrute_impact` | Arturia DrumBrute Impact: publishes no controller number at all - its drum map is the one set of numbers it states, and it states them inside a screenshot |
+| `arturia/matrixbrute` | Arturia MatrixBrute: 80 controls on 78 numbers - two of them shared by an expression pedal and a macro knob, as its manual says - and 32 that can send 14-bit values on fine halves no page numbers |
 | `arturia/microbrute` | Arturia MicroBrute: thirteen controls, every one of them a setting of an editor whose manual ships inside a software archive rather than on the downloads page |
 | `arturia/microfreak` | Arturia MicroFreak: four paraphonic voices, and 21 controls out of a manual with no MIDI chart in it |
 | `arturia/minifreak` | Arturia MiniFreak: six voices, twelve when paraphonic, and one control its manual never mentions that its firmware release notes do |

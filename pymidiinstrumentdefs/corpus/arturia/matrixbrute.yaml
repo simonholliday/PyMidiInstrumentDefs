@@ -1,0 +1,445 @@
+# **EIGHTY CONTROLS ON SEVENTY-EIGHT NUMBERS, FROM ONE TABLE THAT SAYS WHICH TWO NUMBERS IT
+# SHARES.** Chapter 7 of the manual lists what the panel sends and answers to, eighteen small tables
+# of a name, a controller number and a resolution each. Two of its rows put an expression pedal on a
+# macro knob's number - Expr. Pedal 2 and M4 are both 3, Expr. Pedal 1 and M3 both 4 - and the
+# manual says so in a sentence of its own, so both rows of each pair are carried as printed.
+#
+# **THIRTY-TWO OF THEM CAN SEND A FOURTEEN-BIT VALUE, AND NO PAGE SAYS ON WHICH SECOND NUMBER.** The
+# table marks them `7-bit/14-bit`, and a setting turns the fine halves on and off. A fourteen-bit
+# controller's fine half travels on a number of its own, and this manual never prints one, so no
+# control below carries `lsb`. The account sets out why the standard pairing looks likely and why
+# that is not enough.
+#
+# **THE 2019 EDITION PRINTED ONE NUMBER DIFFERENTLY**: VCO 1's `Metalizer` is 10 there, Sawtooth's
+# number, and 70 in the current edition. 70 is carried, for the reasons in the account.
+
+definition: 1
+
+model:
+  manufacturer: Arturia
+  name: MatrixBrute
+  # **2.0.3.1411, THE NEWEST ARTURIA PUBLISHES, AND THE MANUAL DESCRIBES 2.0, THREE RELEASES BEFORE
+  # IT.** The resources page lists `MatrixBrute Firmware`, `Version 2.0.3.1411`, of 2/2/2022, and
+  # the page's own data has seven releases from 1.0.0.97 up to it. The manual is the English edition
+  # 2.0.3 of 2023-07-25, whose copyright page gives `Product version: 2.0.0`, and none of the three
+  # releases since 2.0 is in it: it prints the settings rows `L-O` as dark (manual p. 56), and
+  # firmware 2.0.3's one new feature sits on row `L`. Nothing in the release notes after 2.0 adds,
+  # moves or renames a controller. Checked 2026-10-09.
+  firmware: "2.0.3.1411"
+
+source: >-
+  **EIGHTY CONTROLS FROM ONE TABLE, BOTH WAYS.** `7.1. MIDI Continuous Controller Assignments` runs
+  over pp. 49-52 of the manual as eighteen small tables, each a heading over three columns: the
+  parameter's name, `MIDI CC` and `Resolution`. The chapter opens "In addition to the keyboard,
+  almost all MatrixBrute's knobs, sliders, and wheels send and respond to MIDI" (manual p. 49); the
+  introduction points to it for "which MIDI Continuous Controllers each fader and knob
+  sends/receives" (manual p. 6); and the pedals "are converted to MIDI, so they appear in the MIDI
+  Out data stream." (manual p. 3). So every control below is recorded both ways, which is the
+  format's default and why none says so - a reading of those pages together, since "almost all"
+  leaves room for exceptions that none of them names. Both directions are settings,
+  `MIDI param send` and `MIDI param receive` (manual p. 56), described together as "MIDI param send
+  and receive - Turns MIDI from the panel on and off." (manual p. 53). The table is drawn with real
+  rules and a text layer, and was read by the column each cell sits in.
+
+  **TWO NUMBERS CARRY TWO CONTROLS EACH, AND THE MANUAL SAYS SO.** Expr. Pedal 2 and M4 are both 3,
+  Expr. Pedal 1 and M3 both 4 (manual pp. 49, 52), and under the table: "If you connect expression
+  pedals 1 or 2 to the rear panel, they have duplicate CC assignments to Macro knobs 3's and 4's (to
+  the left of the keyboard)." (manual p. 52). The macro knobs' own page agrees, "they all send MIDI
+  Continuous Controllers (CC#11, 2, 4, and 3, in that order)" (manual p. 25), and in the matrix
+  "Note that both Expression pedals and the corresponding M 3 / M4 knobs are summed before being
+  routed to the Matrix." (manual p. 39). **No page says what a received 3 or 4 moves**, the knob's
+  value or the pedal's, so a consumer sending one cannot say which it means; both rows are carried
+  because both are what the maker printed. Every other number is used once: 80 rows on 78 numbers.
+
+  **THIRTY-TWO ROWS ARE `7-bit/14-bit` AND NONE NAMES ITS FINE HALF.** "Many of the knobs on the
+  front panel can send high-resolution 14-bit MIDI data." (manual p. 53), behind
+  `Enable 14-bit automation`, and firmware 1.1.0.73 fixed "No more conflict with LSB messages when
+  14-bit mode is off" (release_notes). So the fine halves exist and are sent, and no document
+  numbers one. **The pattern is suggestive and is not a statement**: the 32 rows sit on 30 numbers,
+  every number from 1 to 31 but 6, and the table uses nothing from 32 to 63, which is the block the
+  MIDI specification gives the fine halves of 0 to 31. Every other row is `7-bit`. That is what an
+  instrument pairing each controller with the number 32 above it would look like, and the Moog
+  definitions here carry `lsb` only because their documents print it. Nothing here is carried on a
+  pattern.
+
+  **THE 2019 EDITION GIVES VCO 1'S `Metalizer` AS 10, AND THE CURRENT ONE AS 70.** The two English
+  editions' chapter 7 agree in every other row and differ otherwise only in their page references:
+  `Metalizer` `10` in edition 2.0.1 (manual_2_0_1 p. 52) and `70` in 2.0.3 (manual p. 49). 70 is
+  carried, on more than the edition's date. 10 is VCO 1 Sawtooth's number in both editions, and the
+  one sentence about shared assignments names only the two pedals and macro knobs 3 and 4; and 65 to
+  70 is a run that VCO 2's table repeats as 71 to 76, row for row, with `Metalizer` last in both.
+  Edition 2.0.1 is cited so that a reader can see the difference.
+
+  **ENV 2'S TABLE IS HEADED AS THE FILTER ENVELOPE, AND EVERY OTHER PAGE MAKES IT THE AMPLIFIER'S.**
+  The table reads `ENV 2 (VCF) Parameters`, and its first row `Velo / VCF` (manual p. 51), as ENV
+  1's does. The envelope pages say "ENV 2 (VCA) (voltage-controlled amplifier) controls the overall
+  volume level of the sound" (manual p. 31) and give the slider as "Velo/VCA (ENV 2 only) When this
+  slider's all the way down, the VCOs sound at their maximum level, no matter how hard or softly you
+  play" (manual p. 32); the guided tour says "ENV 2 is always hardwired to control the MatrixBrute's
+  VCAs" (manual p. 12); and the table's own filter rows are `Env 1 Amt` (manual pp. 50-51), for the
+  envelope p. 30 calls "the one dedicated to the VCFs" (manual p. 30). The heading and those pages
+  cannot both be true, so the heading's `(VCF)` is not carried: the group is `ENV 2` and controller
+  95's label is `Velo`, the words every statement shares. More pages call the slider VCA than VCF -
+  `Velo/VCA` on pp. 12 and 32, ENV 2 (VCA)'s slider on pp. 42 and 44 - but the label is the table's
+  to give, and `Velo` in the group `ENV 2` names the slider without taking a side. Its number is not
+  in question. **One sentence points the other way**: a guided-tour bullet that opens "ENV 1 is
+  hardwired to the two filters' Cutoffs" (manual p. 13) ends by saying the filters' Env Amt knob
+  must be set to a non-zero value "so ENV 2 can affect that filter" (manual p. 13). Its own first
+  sentence, the table's `Env 1 Amt` and p. 30 all say ENV 1, so the labels are carried as the table
+  prints them.
+
+  **MASTER CUTOFF IS LISTED UNDER THE STEINER FILTER** (manual p. 50), and the filter pages say
+  "Master Cutoff is a prominent knob that sweeps both filters' cutoffs together." (manual p. 29). It
+  is grouped as the table groups it, and this sentence says what it does.
+
+  **SEVERAL OF THESE NUMBERS MEAN SOMETHING ELSE IN THE MIDI SPECIFICATION.** 7 is Channel Volume
+  there and here `Steiner Out`, by its name the Steiner filter's output level, though no page says
+  what it does; 8 is Balance and here `Ladder Out`; 10 is Pan and here VCO 1's sawtooth level; 11 is
+  Expression and here macro knob M1; 2 is Breath Controller and here M2. **So a sequencer sending a
+  routine volume message moves whatever `Steiner Out` is**, whenever the instrument is set to
+  receive controllers. 1 is the modulation wheel, 64 the sustain pedal, which the manual calls
+  standard, and 5, portamento time in the specification, is Glide.
+
+  **ONE PART, AND THE REST ON THE INPUT CHANNEL.** `Input MIDI Channel - All, 1-16, None` and
+  `Output MIDI Channel - 1-16` (manual p. 53), with "The MatrixBrute receives only on this MIDI
+  Channel when the Lower Part MIDI Channel is set to None." (manual p. 53). That second channel is
+  the `lower` part: "This is the MIDI Channel on which the lower half of the MatrixBrute receives
+  when the Voice mode is set to Duo Split." (manual p. 53). It is recorded as receiving notes and
+  nothing more, because the manual says the lower half receives there and never says a controller
+  reaches it; every control names no part, which puts it on the input channel. Firmware 2.0 fixed
+  "In Duo-Split lower and upper MIDI channel can now be properly adjusted" (release_notes), which
+  calls the input channel the upper part's; and in Duo-Split "The pitchbender will only affect this
+  upper part" (manual p. 21). Mode is not recorded: `Omni` is one of the input channel's settings
+  (manual p. 55), and no page gives a factory setting for it.
+
+  **THREE VOICE MODES, AND TWO PAGES DISAGREE ABOUT ONE OF THEM.** "Monophonic is the standard voice
+  mode." (manual p. 21); paraphonic mode "splits the three oscillators, one per note played, so that
+  you can play up to 3 notes at once" (manual p. 21); Duo-Split puts a different sound on each half
+  of the keyboard. But Note Priority "Determines what happens when you play more voices than are
+  available (one in Monophonic voice mode and two in the other voice modes)." (manual p. 24). Three
+  and two cannot both be how many notes paraphonic mode plays, nothing outside the pair settles it,
+  so `voicing_modes` is not recorded, and nor is `polyphony`: the voice mode is a panel setting and
+  no page gives the one it starts in. **`paraphonic` is recorded**, because in that mode "all 3 of
+  the oscillators share the same filters and VCA settings" (manual p. 21).
+
+  **VELOCITY RECEIVED IS A READING.** Velocity is row K of the matrix's sources (manual p. 39), two
+  sliders set how much it moves ENV 1 and ENV 2 (manual p. 32), and in monophonic mode "all the
+  oscillators will play when you press a key (or send MIDI or CV information)." (manual p. 21). No
+  page says in so many words that a note's velocity received over MIDI does what the keyboard's
+  does; `note_on: received` reads it from those three pages together, as `novation/bass_station_ii`
+  does. Firmware 2.0 fixed "No more note OFF when note velocity value is 0" (release_notes), which
+  does not say whether it means notes played or notes received, and is not used.
+
+  **NOT RECORDED, AFTERTOUCH, ALTHOUGH THE KEYBOARD HAS IT.** "The keys are pressure-sensitive when
+  you keep pushing after the note is triggered." (manual p. 38), it is row J of the matrix's
+  sources, and "Pressure sensitivity - Lets you adjust the keyboard aftertouch response."
+  (manual p. 54). No page says whether it is channel or polyphonic pressure, or that it is sent or
+  answered to over MIDI at all, and those are what the field says.
+
+  **PROGRAM CHANGE IS RECEIVED AND A SETTING**: "MIDI Program Change commands switch Presets."
+  (manual p. 54), switched by `Pr.Ch` on row E (manual p. 56). "MatrixBrute stores 16 banks of 16
+  Presets (total 256)." (manual p. 8), which is twice what one program change reaches, and **no page
+  names bank select or says which presets a program change reaches.** Whether it sends one is not
+  stated.
+
+  **CLOCK AND TRANSPORT ARE RECEIVED, AND NOTHING SAYS EITHER IS SENT.** "External Sync may come
+  from three sources: MIDI In, MIDI over USB, and the Sync port." (manual p. 40). The manual names
+  no transport message, and the release notes are read for one: 2.0.1 fixed a stuck note "when
+  holding a key and pressing play on Master device" (release_notes), with the instrument following a
+  master; 2.0.2 says "Arp and Seq can now start without receiving a MIDI start message"
+  (release_notes), which reads as a start message having been needed before, and so received; and
+  2.0.1 added "Song position pointer handling" (release_notes) without a direction. Firmware 2.0
+  fixed "Clock out is no longer reseted to 48 ppq when USB slaved" (release_notes); 48 ppq is one of
+  the Sync port's rates (manual p. 53), and that port is for pre-MIDI equipment, so the line is read
+  as the Sync port's clock and not a MIDI one. The two lists of clock sources differ,
+  `USB, MIDI, Sync` for the editor (manual p. 53) and `INT, CLK, USB, MIDI` on the panel
+  (manual p. 55), and both include MIDI.
+
+  **THE BEND RANGE IS A CONTROL OF ITS OWN.** "Bend Range sets how far the pitch wheel bends up or
+  down, up to a maximum of ± 1 octave." (manual p. 22), and it is controller 119 below, so
+  `programmable` is recorded. "The center position is up or down a fifth." (manual p. 22) is where
+  the knob's centre puts it, not a value it starts at, and no page gives one, so `semitones` is not.
+
+  **NOTHING PUBLISHED OFFERS A WAY TO REASSIGN THESE NUMBERS.** "All the MIDI settings are in
+  Arturia's MIDI Control Center application" (manual p. 49), and neither the editor's list of them
+  (manual pp. 53-55) nor the front panel's (manual pp. 55-56) assigns a controller. The editor's own
+  manual lists "No controller map: DrumBrute, MatrixBrute" (mcc_manual p. 20); it is version 1.0 of
+  2017, where the editor is now 1.23.0.134, and it is still the manual Arturia offers. So the
+  numbers are the ones chapter 7 prints.
+
+  **WHAT IT SENDS IS SWITCHABLE TOO, AND NONE OF IT IS A FIELD HERE.** "MIDI out select - The
+  choices are Off, USB, MIDI, or MIDI + USB." (manual p. 53); with controllers switched off "The
+  keyboard still sends notes when it's off." (manual p. 53); the sequencer and arpeggiator "send
+  MIDI notes" (manual p. 49), behind `Sequencer/Arp Sends Notes` (manual p. 54); the octave buttons'
+  transposition "affects the instrument locally as well as over MIDI." (manual p. 23); and with
+  local control off "all the panel controls and the keyboard get sent out over MIDI" (manual p. 55).
+
+  **NOT RECORDED, ALSO**: system exclusive, NRPN and the note range. The MIDI Control Center "is a
+  librarian for presets and sequences, and it's used to configure the instrument's MIDI settings"
+  (manual p. 6), which needs some protocol, and none is published; no page mentions NRPN, and
+  chapter 7 is a list of controllers rather than a full chart, so its silence is not a checked
+  absence; and the 49-key keyboard transposes by up to two octaves (manual p. 23), which says
+  nothing about which notes arriving over MIDI it sounds.
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual MatrixBrute
+    edition: "2.0.3"
+    dated: 2023-07-25
+    landing: "https://www.arturia.com/products/hardware-synths/matrixbrute/resources"
+    url: "https://www.arturia.com/api/download/products/matrixbrute/manual/matrixbrute_Manual_2_0_3_EN.pdf"
+    sha256: 167bc06721acde8c0b6fc0eebfc08a44e8bdbd8d8c7462f074bf4c67361dd203
+    retrieved: 2026-10-09
+    page_offset: 6
+    # 73 pages, one to a sheet, typeset by Prince. The resources page dates it 7/25/2023, and its
+    # copyright page says `Revision date: 25 July 2023`. **Every controller number below is from
+    # chapter 7, pp. 49-52**, the first table at the foot of the chapter's opening page.
+  manual_2_0_1:
+    kind: manual
+    title: User Manual MatrixBrute
+    edition: "2.0.1"
+    dated: 2019-11-08
+    landing: "https://www.arturia.com/products/hardware-synths/matrixbrute/resources"
+    url: "https://www.arturia.com/api/download/products/matrixbrute/manual/MatrixBrute_Manual_2_0_1_EN.pdf"
+    sha256: d5ee907ac447d38fc4c37aa08c4c89abcf25f9f51793296e281b5460e41d78e8
+    retrieved: 2026-10-09
+    page_offset: 5
+    # The previous English edition, listed behind the resources page's `Show all versions`, and the
+    # edition the four translations are still at. 74 pages. **Cited for one number**: its VCO 1
+    # table gives `Metalizer` as 10 (manual_2_0_1 p. 52). See the account.
+  mcc_manual:
+    kind: manual
+    title: User Manual MIDI Control Center
+    edition: "1.0"
+    dated: 2017-06-21
+    landing: "https://www.arturia.com/products/hardware-synths/matrixbrute/resources"
+    url: "https://www.arturia.com/api/download/products/mcc/manual/MIDI_Control_Center_Manual_1_0_EN.pdf"
+    sha256: 32ab28633af162978205422d2ab1610773fe160ff42b15bd8ab778554ba94b44
+    retrieved: 2026-10-09
+    page_offset: 4
+    # The editor's manual rather than this instrument's, and the same file `arturia/drumbrute`
+    # cites. It names the MatrixBrute twice, and the second is the one used: the editor, as it was
+    # in 2017, offered no controller map for it.
+  release_notes:
+    kind: release_notes
+    title: MatrixBrute release notes
+    edition: 2.0.3.1411
+    dated: 2022-02-02
+    landing: "https://www.arturia.com/products/hardware-synths/matrixbrute/resources"
+    url: "https://www.arturia.com/api/content/resources/release_notes?resource_id=11704"
+    sha256: b4b94ee9663d0767b50686a8206e59463433112c3ed14c45d88034986ad424ca
+    retrieved: 2026-10-09
+    paginated: false
+    # Arturia serves release notes from an API rather than as files, so this is the text rendered
+    # from the JSON by a written-down procedure anybody can repeat. Cumulative: every release from
+    # `V 2.0.3` down to `V 1.0.0.97`, the first. The notes carry no date; `dated` is the 2.0.3.1411
+    # download's, on the resources page.
+  resources_page:
+    kind: product_page
+    title: "Arturia - MatrixBrute"
+    landing: "https://www.arturia.com/products/hardware-synths/matrixbrute/resources"
+    url: "https://www.arturia.com/products/hardware-synths/matrixbrute/resources"
+    sha256: 4e709ee88c68e26d47b7371ed999dcfd6c70aa6a9b9bd627d630ff7d83e79ea5
+    retrieved: 2026-10-09
+    paginated: false
+    # The product's Resources tab, its visible text saved by `Tools/save_page.py` with the HTML
+    # beside it. Cited for the versions and dates the documents do not carry: which firmware is
+    # current, and which edition of the manual is the newest.
+
+midi:
+  # `Input MIDI Channel - All, 1-16, None` and `Output MIDI Channel - 1-16` (manual p. 53).
+  channels: [1, 16]
+  # **RECEIVED, AND NOTHING SAYS IT IS SENT.** "MIDI Sync ignores the internal tempo and locks the
+  # Sequencer and Arpeggiator to incoming MIDI clock." (manual p. 40), from MIDI, USB or the Sync
+  # port, chosen at `MIDI clock source` (manual p. 53) - `INT, CLK, USB, MIDI` on the panel
+  # (manual p. 55).
+  clock: receives
+  # **RECEIVED, A READING OF THE RELEASE NOTES.** The manual names no transport message; firmware
+  # 2.0.1's notes fix a stuck note "when holding a key and pressing play on Master device"
+  # (release_notes). See the account.
+  transport: receives
+  program_change:
+    # A setting, `Program Change Receive` (manual p. 54), whose factory state no page gives.
+    receives: true
+    # "To recall one of the 256 internal presets" (manual p. 35), in sixteen banks of sixteen. No
+    # page names bank select.
+    presets: 256
+  # NOT RECORDED: system exclusive and NRPN. See the account; neither is a checked absence.
+  # `control_change` is left unset because a map is published - see the controls below.
+
+voice:
+  addressing: pitches
+  # Paraphonic mode plays one note on each oscillator, and they "share the same filters and VCA
+  # settings" (manual p. 21). NOT RECORDED, `polyphony` and `voicing_modes`: the voice mode is a
+  # setting, and two pages give paraphonic mode three notes and two. See the account.
+  paraphonic: true
+  velocity:
+    # A reading - see the account.
+    note_on: received
+  # NOT RECORDED, aftertouch: the keys have it, and no page says which kind, or that it travels over
+  # MIDI. See the account.
+  pitch_bend:
+    # Bend Range is controller 119, up to an octave each way (manual p. 22).
+    programmable: true
+
+parts:
+  # **THE LOWER HALF OF THE KEYBOARD IN DUO-SPLIT, ON A CHANNEL OF ITS OWN** -
+  # `Lower Part MIDI Channel - None, 1-16` (manual p. 53), `Ch.Lo` on row B (manual p. 55). Notes,
+  # and nothing more is claimed. Everything else is on the input channel, which is why no control
+  # names a part.
+  lower:
+    label: Lower Part
+    channel: assigned
+    receives: [notes]
+    addressing: pitches
+
+groups:
+  # The table's own headings, in its order, with the word `Parameters` dropped because every heading
+  # carries it. Its capitals are kept as printed - some headings are set in them and some are not -
+  # except ENV 2's `(VCF)`, which every other page contradicts: see the account.
+  pedals: Pedals
+  vco_1: VCO 1
+  vco_2: VCO 2
+  vco_3_lfo_3: VCO 3 - LFO 3
+  audio_mod: AUDIO MOD
+  mixer: MIXER
+  steiner: STEINER
+  ladder: LADDER
+  lfo_1: LFO 1
+  lfo_2: LFO 2
+  env_1: ENV 1
+  env_2: ENV 2
+  env_3: ENV 3
+  analog_effects: ANALOG EFFECTS
+  sequencer: SEQUENCER
+  wheels: WHEELS
+  glide: GLIDE
+  macro_knobs: MACRO KNOBS
+
+controls:
+
+  # **EIGHTY, IN THE TABLE'S ORDER, EACH WITH THE LABEL IT PRINTS.** Thirty-two are marked
+  # `7-bit/14-bit` and carry no `lsb`, because no page numbers their fine halves.
+
+  # Pedals ──────────────────────────────────────────────────
+  sustain_pedal:              {label: Sustain Pedal, cc: 64, group: pedals}
+  # 3 and 4 are also M4 and M3, below - "duplicate CC assignments" (manual p. 52).
+  expr_pedal_2:               {label: Expr. Pedal 2, cc: 3, group: pedals}
+  expr_pedal_1:               {label: Expr. Pedal 1, cc: 4, group: pedals}
+
+  # VCO 1 ───────────────────────────────────────────────────
+  vco_1_fine:                 {label: Fine, cc: 65, group: vco_1}
+  vco_1_coarse:               {label: Coarse, cc: 66, group: vco_1}
+  vco_1_waveform_selection:   {label: Waveform Selection, cc: 67, group: vco_1}
+  vco_1_sub:                  {label: Sub, cc: 9, group: vco_1}
+  vco_1_ultrasaw:             {label: Ultrasaw, cc: 68, group: vco_1}
+  vco_1_sawtooth:             {label: Sawtooth, cc: 10, group: vco_1}
+  vco_1_square:               {label: Square, cc: 12, group: vco_1}
+  vco_1_triangle:             {label: Triangle, cc: 13, group: vco_1}
+  vco_1_pulse_width:          {label: Pulse Width, cc: 69, group: vco_1}
+  # 10 in edition 2.0.1 (manual_2_0_1 p. 52), and 70 in this one. See the account.
+  vco_1_metalizer:            {label: Metalizer, cc: 70, group: vco_1}
+
+  # VCO 2 ───────────────────────────────────────────────────
+  vco_2_fine:                 {label: Fine, cc: 71, group: vco_2}
+  vco_2_coarse:               {label: Coarse, cc: 72, group: vco_2}
+  vco_2_waveform_selection:   {label: Waveform Selection, cc: 73, group: vco_2}
+  vco_2_sub:                  {label: Sub, cc: 14, group: vco_2}
+  vco_2_ultrasaw:             {label: Ultrasaw, cc: 74, group: vco_2}
+  vco_2_sawtooth:             {label: Sawtooth, cc: 15, group: vco_2}
+  vco_2_square:               {label: Square, cc: 16, group: vco_2}
+  vco_2_triangle:             {label: Triangle, cc: 17, group: vco_2}
+  vco_2_pulse_width:          {label: Pulse Width, cc: 75, group: vco_2}
+  vco_2_metalizer:            {label: Metalizer, cc: 76, group: vco_2}
+
+  # VCO 3 - LFO 3 ───────────────────────────────────────────
+  vco_3_coarse:               {label: Coarse, cc: 22, group: vco_3_lfo_3}
+
+  # AUDIO MOD ───────────────────────────────────────────────
+  vco_1_vco_2:                {label: VCO 1 > VCO 2, cc: 77, group: audio_mod}
+  vco_1_vco_3_vco_2:          {label: VCO 1 < VCO 3 > VCO 2, cc: 78, group: audio_mod}
+  vcf_1_vco_3_vcf_2:          {label: VCF 1 < VCO 3 > VCF 2, cc: 79, group: audio_mod}
+  vco_1_noise_vcf_1:          {label: VCO 1 < Noise > VCF 1, cc: 80, group: audio_mod}
+
+  # MIXER ───────────────────────────────────────────────────
+  mixer_vco_1:                {label: VCO 1, cc: 18, group: mixer}
+  mixer_vco_2:                {label: VCO 2, cc: 19, group: mixer}
+  mixer_vco_3:                {label: VCO 3, cc: 20, group: mixer}
+  mixer_noise:                {label: Noise, cc: 21, group: mixer}
+  mixer_external:             {label: External, cc: 89, group: mixer}
+
+  # STEINER ─────────────────────────────────────────────────
+  steiner_drive:              {label: Drive, cc: 81, group: steiner}
+  steiner_cutoff:             {label: Cutoff, cc: 23, group: steiner}
+  steiner_resonance:          {label: Resonance, cc: 83, group: steiner}
+  steiner_brute_factor:       {label: Brute Factor, cc: 82, group: steiner}
+  steiner_env_1_amt:          {label: Env 1 Amt, cc: 24, group: steiner}
+  steiner_out:                {label: Steiner Out, cc: 7, group: steiner}
+  # Both filters at once (manual p. 29), listed here by the table.
+  master_cutoff:              {label: Master Cutoff, cc: 27, group: steiner}
+
+  # LADDER ──────────────────────────────────────────────────
+  ladder_drive:               {label: Drive, cc: 85, group: ladder}
+  ladder_brute_factor:        {label: Brute Factor, cc: 86, group: ladder}
+  ladder_cutoff:              {label: Cutoff, cc: 25, group: ladder}
+  ladder_env_1_amt:           {label: Env 1 Amt, cc: 26, group: ladder}
+  ladder_resonance:           {label: Resonance, cc: 87, group: ladder}
+  ladder_out:                 {label: Ladder Out, cc: 8, group: ladder}
+
+  # LFO 1 ───────────────────────────────────────────────────
+  lfo_1_phase:                {label: Phase, cc: 90, group: lfo_1}
+  lfo_1_rate:                 {label: Rate, cc: 91, group: lfo_1}
+
+  # LFO 2 ───────────────────────────────────────────────────
+  lfo_2_delay:                {label: Delay, cc: 92, group: lfo_2}
+  lfo_2_rate:                 {label: Rate, cc: 93, group: lfo_2}
+
+  # ENV 1 ───────────────────────────────────────────────────
+  env_1_velo_vcf:             {label: Velo / VCF, cc: 94, group: env_1}
+  env_1_attack:               {label: Attack, cc: 102, group: env_1}
+  env_1_decay:                {label: Decay, cc: 103, group: env_1}
+  env_1_sustain:              {label: Sustain, cc: 28, group: env_1}
+  env_1_release:              {label: Release, cc: 104, group: env_1}
+
+  # ENV 2 ───────────────────────────────────────────────────
+  # `Velo / VCF` under `ENV 2 (VCF) Parameters` in the table (manual p. 51), and
+  # `Velo/VCA (ENV 2 only)` on the envelope pages (manual p. 32). Neither is carried; see the
+  # account.
+  env_2_velo:                 {label: Velo, cc: 95, group: env_2}
+  env_2_attack:               {label: Attack, cc: 105, group: env_2}
+  env_2_decay:                {label: Decay, cc: 106, group: env_2}
+  env_2_sustain:              {label: Sustain, cc: 29, group: env_2}
+  env_2_release:              {label: Release, cc: 107, group: env_2}
+
+  # ENV 3 ───────────────────────────────────────────────────
+  env_3_delay:                {label: Delay, cc: 108, group: env_3}
+  env_3_attack:               {label: Attack, cc: 109, group: env_3}
+  env_3_decay:                {label: Decay, cc: 110, group: env_3}
+  env_3_sustain:              {label: Sustain, cc: 30, group: env_3}
+  env_3_release:              {label: Release, cc: 111, group: env_3}
+
+  # ANALOG EFFECTS ──────────────────────────────────────────
+  delay_time:                 {label: Delay Time, cc: 112, group: analog_effects}
+  regeneration:               {label: Regeneration, cc: 113, group: analog_effects}
+  tone_rate:                  {label: Tone / Rate, cc: 114, group: analog_effects}
+  width_depth:                {label: Width / Depth, cc: 115, group: analog_effects}
+  dry_wet:                    {label: Dry / Wet, cc: 31, group: analog_effects}
+
+  # SEQUENCER ───────────────────────────────────────────────
+  sequencer_rate:             {label: Rate, cc: 116, group: sequencer}
+  swing:                      {label: Swing, cc: 117, group: sequencer}
+  gate:                       {label: Gate, cc: 118, group: sequencer}
+
+  # WHEELS ──────────────────────────────────────────────────
+  modulation:                 {label: Modulation, cc: 1, group: wheels}
+  bend_range:                 {label: Bend Range, cc: 119, group: wheels}
+
+  # GLIDE ───────────────────────────────────────────────────
+  glide:                      {label: Glide, cc: 5, group: glide}
+
+  # MACRO KNOBS ─────────────────────────────────────────────
+  m1:                         {label: M1, cc: 11, group: macro_knobs}
+  m2:                         {label: M2, cc: 2, group: macro_knobs}
+  m3:                         {label: M3, cc: 4, group: macro_knobs}
+  m4:                         {label: M4, cc: 3, group: macro_knobs}

@@ -1,0 +1,163 @@
+definition: 1
+
+# TWELVE PADS ON TWELVE NOTES, A HUNDRED DRUM SETS BY PROGRAM CHANGE, AND NOT ONE CONTROLLER. The
+# reference manual's MIDI chapter gives each pad a default note, selects drum sets by program
+# change, and syncs to clock both ways; in 72 sheets it never names a control change, so this says
+# `none`, as `behringer/rd_9` does.
+
+model:
+  manufacturer: Alesis
+  name: SR-16
+  # NOT RECORDED: a firmware version. The manual says how to read it off the display, "To determine
+  # the software version in your SR-16, press the FILL button at any time you're in the Backup
+  # menu." (manual p. 56), and its picture of that display reads `VERSION 1.00`, an illustration
+  # rather than a statement of what any SR-16 runs.
+
+source: >-
+  The SR-16 Reference Manual, revision C, 72 sheets: the voices and their velocity at p. 4, the drum
+  sets at p. 29, the voice count at p. 33, the MIDI setup chapter at pp. 42 to 48, system exclusive
+  backup at pp. 49 to 51, the software version at p. 56, synchronisation at pp. 57 and 58, and the
+  MIDI supplement at pp. 62 to 64.
+
+  THE MANUAL IS ALESIS'S OWN FILE, AND NO CURRENT PAGE OF ALESIS'S LINKS IT. It is served from
+  alesis.com; the PDF's own title is `SR-16 Reference Manual`, the file's name says Rev C, and its
+  back page prints `7-51-1023-C` (manual sheet 72). The SR-16's page on Alesis's drums site, which
+  still sells it, names no document, and the site's downloads page lists other products and not the
+  SR-16.
+
+  ALESIS IS THE THIRTY-THIRD MAKER HERE AND THIS IS ITS FIRST INSTRUMENT, so nothing in this account
+  leans on a habit of the maker's, and nothing should be taken from it for the next.
+
+  NO CONTROLLER IS NAMED IN A WHOLE MANUAL, WHICH IS THE ROUTE `behringer/rd_9` TAKES TO `none`. No
+  page names a control change, a controller number or a non-registered parameter; the word
+  controller appears five times, each for a device that sends MIDI, such as "an external MIDI
+  controller (MIDI drum pads, MIDI keyboard, etc.)" (manual p. 42). This is a reference manual with
+  a MIDI setup chapter of seven pages and a MIDI supplement that lists the messages a pad produces,
+  so its silence is evidence, as the RD-9's 38 pages are. It prints no MIDI implementation chart.
+
+  TWELVE PADS, AND THE NOTES ARE DEFAULTS SET ON THE INSTRUMENT. "This page determines which MIDI in
+  NOTE will trigger a pad, or MIDI out note will be produced if you play a pad." (manual p. 44), and
+  "MIDI note assignments are not individually selectable for each Pattern." (manual p. 44). "The
+  default note assignments are:" (manual p. 44) twelve rows, Kick on 36 to Perc 1 on 65, with key
+  names that put 36 at C1 and so middle C at C3: "Middle C is 60." (manual p. 63). The table names
+  each row by its sound and prints no pad numbers, so the voices below are named as it names them.
+  Twelve notes is the default and not a rule: two pads given one note stack into one sound (manual
+  p. 60). The map is changed on the instrument itself, so `note_map` is left unset, as
+  `behringer/rd_9` and `behringer/lm_drum` leave theirs.
+
+  AND A SECOND MAP REACHES 120 NOTES. In the Note Map's MULTI-DRUMSET mode the twelve pads of ten
+  drum sets answer to notes 0 to 119, twelve to a drum set with pad 1 on every C (manual pp. 47 and
+  48): "Any of these drumset groups can cover MIDI notes 000 through 119." (manual p. 47). The page
+  puts it "Within each Pattern, MIDI notes can either be mapped to 12 different sounds in NORMAL
+  mode" (manual p. 47) but does not say whether that choice is kept for a pattern, a drum set or the
+  instrument, and prints no display or instruction for it. In that mode a program change from 00 to
+  49 selects a drum set group (manual p. 47), and "Note that while in this mode, you cannot record
+  notes into a Pattern via MIDI." (manual p. 47). The twelve voices below are the normal mode's.
+
+  NOTES ARE SENT AND RECEIVED, EACH BEHIND A SWITCH. DRUM IN takes notes with one of two velocity
+  curves, "ON V1 is a normal linear velocity curve" (manual p. 43), or ignores them, and DRUM OUT
+  sends them: "To have the SR-16 output MIDI note data from pad hits or when playing a Pattern/Song,
+  use the INC/DEC buttons to select ON." (manual p. 43). "Playing a pad on the SR-16 produces the
+  following MIDI data:" (manual p. 63) a note on, a note off and a velocity, whose range it gives as
+  1 to 127, though the pads resolve eight levels and no page says which values those go out as; and
+  sounds triggered by MIDI "respond to all 127 MIDI volume levels" (manual p. 4). So velocity is
+  recorded both ways.
+
+  SIXTEEN VOICES. "The SR-16 can play up to 16 voices at a time" (manual p. 33), from twelve pads.
+
+  A HUNDRED DRUM SETS BY PROGRAM CHANGE. "There are 50 preset Drum Sets and 50 user-programmable
+  Drum Sets." (manual p. 29), and with PRG CHNG on, "Program Changes 00-49 select the 50 User Drum
+  Sets. Program Changes 50-99 select Preset Drum Sets 00-49." (manual p. 47); "Program Changes
+  100-127 select User Drum Sets 00-27." (manual p. 47). No page says the SR-16 sends a program
+  change.
+
+  CLOCK AND START BOTH WAYS, AND STOP SENT, ON WHAT A MASTER AND A SLAVE DO. CLOCK IN and CLOCKOUT
+  are two settings (manual p. 45), and "The SR-16 emits 24 timing messages per quarter note."
+  (manual p. 64). No page names start or stop as a message the SR-16 sends or receives; the sync
+  chapter says what each end does. As the master it drives slaves set "to accept external MIDI Clock
+  and Start/Stop data." (manual p. 57), and as a slave "Press PLAY on the system master. The SR-16
+  should start at the same time, and progress at the same tempo." (manual p. 58), which is why a
+  module should "set CLOCK IN to OFF so that timing signals don't start playing a Pattern" (manual
+  p. 45). No page describes a received stop, and none names continue. Song position is described
+  both ways too - "If the slaves respond to Song Position Pointer, you can start an SR-16 Song at
+  any point" (manual p. 57) and "If the master generates Song Position Pointer, you can start the
+  master at any point, and both units will synchronize from that point on." (manual p. 58) - which
+  this format has no field for.
+
+  THE CHANNEL AND THE MODE. "The display shows the MIDI CHannel (1-16) or Omni." (manual p. 42), and
+  "00 selects Omni mode." (manual p. 42), in which it "receives data appearing on any of the 16 MIDI
+  channels; transmits data over channel 1" (manual p. 42); the supplement names the two modes, Omni
+  On/Poly, Mode 1, and Omni Off/Poly, Mode 3 (manual p. 64). No page says which the SR-16 starts in,
+  so the mode is not recorded. None of the nine MIDI setup pages prints a default: their pictures of
+  the display show `OMNI`, `ON V1`, `OFF`, `ON`, `ON`, `OFF` and `OFF` (manual pp. 42 to 47), which
+  are one display's settings and are not carried. "All the parameters on the following pages remain
+  as set, even if you turn off power, until changed." (manual p. 42).
+
+  SYSTEM EXCLUSIVE CARRIES PATTERNS, SONGS AND DRUM SETS. The backup chapter sends "all Patterns,
+  Songs, and Drum Setups" (manual p. 50) to a storage device or another SR-16; single patterns,
+  pads' parts, drum sets and songs go to another SR-16 too (manual pp. 27, 28 and 41); and "The
+  SR-16 will automatically load SR-16 system exclusive data present at its MIDI input." (manual
+  p. 51). No layout is printed.
+
+  NOT NAMED ANYWHERE as a message the SR-16 sends or receives: pitch bend, aftertouch, NRPN, RPN,
+  all notes off, local control, active sensing, continue and song select. Pitch bend and the
+  modulation wheel appear only in the supplement's general account of MIDI (manual p. 62), and the
+  supplement says the SR-16 offers modes 1 and 3 without saying it answers to the mode messages
+  (manual p. 64).
+
+midi:
+  # MIDI CH: 1 to 16, or Omni (manual p. 42). See the account for the mode.
+  channels: [1, 16]
+  # CLOCK IN and CLOCKOUT (manual p. 45); start each way and stop sent (manual pp. 45, 57 and 58).
+  # No page describes a received stop, and none names continue.
+  clock: both
+  transport: both
+  program_change:
+    # PRG CHNG, ON or OFF (manual p. 47). Sending is not described.
+    receives: true
+    # 50 user and 50 preset drum sets (manual p. 29).
+    presets: 100
+  # No page names one. See the account.
+  control_change: none
+  sysex: true
+
+voice:
+  addressing: voices
+  # "The SR-16 can play up to 16 voices at a time" (manual p. 33).
+  polyphony: 16
+  velocity:
+    # Received on two curves (manual p. 43) and sent with each note (manual p. 63); see the account
+    # for the pads' eight levels.
+    note_on: both
+  # The default note assignments, in the table's order (manual p. 44). Each is a setting, global to
+  # every pattern; see the account.
+  voices:
+    kick: 36
+    snare: 38
+    cls_hat: 42
+    open_hat: 46
+    claps: 39
+    perc_2: 67
+    tom_1: 48
+    tom_2: 45
+    tom_3: 41
+    ride: 51
+    crash: 49
+    perc_1: 65
+
+sources:
+  manual:
+    kind: manual
+    title: SR-16 Reference Manual
+    edition: Rev C
+    landing: "https://www.alesisdrums.com/multipads-and-drum-machines/sr-16/"
+    url: "https://www.alesis.com/rscdn/920/documents/SR16 Reference Rev C.pdf"
+    sha256: 42cfcfecfd456f378510304ccfb8de2e1e9a4ddedeab330b2ffbd53d519a56c4
+    retrieved: 2026-10-09
+    # The edition is the file name's; the only printed mark is the back page's part number, which
+    # ends -C. NO PAGE OF ALESIS'S LINKS THIS FILE: the landing is the SR-16's product page, which
+    # names no document. The file is on alesis.com, and its back page prints `7-51-1023-C`.
+    # Encrypted with an empty password, which PyMuPDF and pypdf both open. Printed page = sheet - 4
+    # on every sheet from 5 to 69; sheets 1 to 4 are the cover and contents, and 70 to 72 the
+    # troubleshooting chart and the back.
+    page_offset: 4

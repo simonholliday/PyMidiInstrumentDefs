@@ -153,6 +153,7 @@ class TestBundledCorpus:
 			"akai/mpc_live_iii",
 			"akai/mpc_sample",
 			"akai/mpc_xl",
+			"alesis/sr_16",
 			"arturia/astrolab",
 			"arturia/drumbrute",
 			"arturia/drumbrute_impact",
@@ -707,7 +708,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 23
+		assert len(empty) == 24
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -716,7 +717,7 @@ class TestAbsences:
 			key = "stated_none" if definition.midi.stated_none else definition.midi.control_change
 			kinds.setdefault(key, set()).add(name)
 
-		assert kinds["none"] == {"ableton/move", "behringer/model_d", "behringer/rd_9", "behringer/td_3",
+		assert kinds["none"] == {"ableton/move", "alesis/sr_16", "behringer/model_d", "behringer/rd_9", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
 			"vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl", "arturia/drumbrute",
@@ -16114,14 +16115,14 @@ class TestThirdWave:
 		assert wave.midi.transport == "receives"
 
 	def test_the_first_groove_synthesis_and_the_thirty_second_maker (self) -> None:
-		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		"""Counted rather than claimed; the current count moved to `TestSR16` when Alesis arrived."""
 		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("groove_synthesis/")]
 
 		assert names == ["groove_synthesis/third_wave"]
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers) == 32
+		assert len(makers - {"alesis"}) == 32
 		assert "GROOVE SYNTHESIS IS THE THIRTY-SECOND MAKER HERE" in prose_of("groove_synthesis", "third_wave")
 
 
@@ -16363,11 +16364,11 @@ class TestCascadia:
 		assert "Intellijel is the thirty-first maker here and its first instrument." in comments
 
 		# Thirty-one makers when it arrived. **The current count is asserted with the newest
-		# maker** - `TestThirdWave` - so this claim was narrowed when the corpus grew rather than
+		# maker** - `TestSR16` - so this claim was narrowed when the corpus grew rather than
 		# deleted: Intellijel is still one maker of the thirty-one that came before Groove Synthesis.
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"groove_synthesis"}) == 31
+		assert len(makers - {"groove_synthesis", "alesis"}) == 31
 
 
 class TestMontage:
@@ -18119,3 +18120,48 @@ class TestJP8000:
 		assert jp.model.firmware is None
 		assert set(jp.sources) == {"manual", "manuals_page", "updates", "readme"}
 		assert jp.sources["manual"].file_page(116) == 116
+
+
+class TestSR16:
+
+	"""Twelve pads on twelve default notes, a hundred drum sets, and no controller."""
+
+	def test_twelve_voices_at_the_default_notes (self) -> None:
+		sr = pymidiinstrumentdefs.load("alesis/sr_16", [CORPUS])
+
+		assert sr.voice.addressing == "voices" and sr.voice.note_map is None
+		assert sr.voice.voices == {"kick": 36, "snare": 38, "cls_hat": 42, "open_hat": 46, "claps": 39,
+			"perc_2": 67, "tom_1": 48, "tom_2": 45, "tom_3": 41, "ride": 51, "crash": 49, "perc_1": 65}
+		assert sr.voice.polyphony == 16
+		assert sr.voice.velocity is not None and sr.voice.velocity.note_on == "both"
+
+	def test_no_controller_and_the_reason (self) -> None:
+		sr = pymidiinstrumentdefs.load("alesis/sr_16", [CORPUS])
+
+		assert not sr.controls and sr.midi.control_change == "none"
+		account = " ".join((sr.source or "").split())
+		assert "NO CONTROLLER IS NAMED IN A WHOLE MANUAL, WHICH IS THE ROUTE `behringer/rd_9` TAKES TO `none`." in account
+
+	def test_drum_sets_clock_and_transport (self) -> None:
+		sr = pymidiinstrumentdefs.load("alesis/sr_16", [CORPUS])
+
+		assert sr.midi.program_change is not None
+		assert (sr.midi.program_change.receives, sr.midi.program_change.sends, sr.midi.program_change.presets) == (True, None, 100)
+		assert (sr.midi.channels, sr.midi.mode, sr.midi.clock, sr.midi.transport, sr.midi.sysex) == ((1, 16), None, "both", "both", True)
+
+	def test_the_first_alesis_and_the_thirty_third_maker (self) -> None:
+		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("alesis/")]
+
+		assert names == ["alesis/sr_16"]
+
+		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
+
+		assert len(makers) == 33
+		assert "ALESIS IS THE THIRTY-THIRD MAKER HERE" in prose_of("alesis", "sr_16")
+
+	def test_firmware_and_the_one_source (self) -> None:
+		sr = pymidiinstrumentdefs.load("alesis/sr_16", [CORPUS])
+
+		assert sr.model.firmware is None and set(sr.sources) == {"manual"}
+		assert sr.sources["manual"].file_page(44) == 48

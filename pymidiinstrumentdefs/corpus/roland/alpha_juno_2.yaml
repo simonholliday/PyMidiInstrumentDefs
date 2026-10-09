@@ -1,0 +1,203 @@
+# **FOUND ON ROLAND'S OWN ARCHIVE UNDER ANOTHER NAME.** The ranking's survey found no source for
+# this instrument, and Roland serves its manual all the same: the US manual archive lists it as
+# `JUNO-2 Owner’s Manual`, and lists a `JUNO-1 Owner’s Manual` too, and the file's cover reads
+# αJUNO-2. Model code JU-2, as the specifications give it. Read by eye, because the file is 54 pages
+# of image and no text.
+#
+# **THE CHART'S CONTROLLER BLOCK READS AS MISPRINTED, AND THE IMPLEMENTATION SETTLES IT.** The block
+# prints six numbers - 1, 4, 5, 7, 64, 65 - beside five lines of cells, level with the first five.
+# Read as printed, 4 would be portamento time, 7 the pedal switch and hold, and 65 nothing; read
+# with every line after the first one number further down, the remarks fall on Portamento Time at 5,
+# Hold-1 at 64 and Portamento Switch at 65, the line at 7 reads `* EXP PEDAL in` and `** Volume`,
+# and the transmitted column matches the implementation's transmitted data line for line. **The
+# implementation's two channel tables agree with each other, and the block does not add up on its
+# own terms**, so the implementation's five numbers are what is carried: 1, 5, 7, 64, 65. A stray 4
+# and a lost blank line cannot be told apart on the page, and both give those five.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: αJUNO-2
+  # NO FIRMWARE IS NAMED anywhere in the manual, so none is recorded. The implementation is
+  # `Version : 1.1` of `Jan. 27 1986` and the chart `Version : 1.1` of `Jan.27 1986`, which is the
+  # documents' edition and not the instrument's.
+
+source: >-
+  **A SCAN OF ROLAND'S OWN MANUAL, READ BY EYE.** 54 pages, each one image and not a character of
+  text, served by Roland from its US manual archive under the name `JUNO-2 Owner’s Manual`; the
+  cover reads αJUNO-2 and the specifications open with "α JUNO-2 (JU-2): 6 voice polyphonic and
+  programmable synthesizer" (manual p. 47). The MIDI Implementation is dated `Jan. 27 1986`
+  (manual p. 48) and its chart `Jan.27 1986` (manual p. 49), both `Version : 1.1`. No quotation
+  below can be checked by a machine, so a second reader checked every one against the rendered page.
+
+  **FIVE CONTROLLERS, FROM THE IMPLEMENTATION.** It sends Modulation on 1, Main volume on 7, Hold on
+  64 and Portamento on 65, and it receives all four and Portamento Time on 5 (manual p. 48). The
+  volume it sends is the expression pedal's: "The value of the Main volume message is controlled
+  only by EXP PEDAL IN." (manual p. 48). Hold and portamento are switches, sent as `0111 1111` and
+  `0000 0000` and received as `01xx xxxx` for on and `00xx xxxx` for off, which is the band at 64
+  below. The hold it sends is presumably the hold pedal's, whose jack turns "the Hold effect"
+  (manual p. 12) on or off, though no page says which jack sends the message; the pedal switch sends
+  program change, system exclusive or portamento, or nothing, by its function (manual p. 34).
+
+  **THE CHART'S CONTROLLER BLOCK DOES NOT LINE UP, SO THE IMPLEMENTATION'S NUMBERS ARE CARRIED.**
+  The block prints `1`, `4`, `5`, `7`, `64` and `65` beside five lines of cells, level with the
+  first five numbers (manual p. 49). Read as printed, 4 is portamento time, 5 the expression pedal
+  and volume, 7 the pedal switch and hold, 64 the portamento switch, and 65 nothing. Read with every
+  line after the first one number further down, the remarks fall on Portamento Time at 5, Hold-1 at
+  64 and Portamento Switch at 65, the line at 7, which has no remark, reads `* EXP PEDAL in` and
+  `** Volume`, and the transmitted column crosses 5 and marks the other four as settable, which is
+  the implementation's transmitted data exactly. The block disagrees with itself, a list with a
+  number its own lines do not reach, and the implementation's channel tables agree with each other
+  and with the block read that way; so the block reads as misprinted, and no 4 is carried. A stray 4
+  and a lost blank line cannot be told apart on the page, and both give the same five numbers.
+
+  **EVERY CONTROLLER, BEND, AFTERTOUCH, PROGRAM CHANGE AND EXCLUSIVE MESSAGE IS BEHIND A SWITCH, AND
+  ALL BUT ONE ARE ON FROM THE FACTORY.** "Transmitted if the corresponding function switch is ON."
+  (manual p. 48) and "Recognized if the corresponding function switch is ON." (manual p. 48), and
+  the chart's own note: "Can be set to ○ or × manually, and memorized." (manual p. 49). The MIDI
+  chapter's table gives eleven functions and their factory presets (manual p. 32): the channel 1,
+  OMNI off and Exclusive off, and Local Control, Aftertouch, Bender, Hold, Modulation, Program
+  Change, Volume and Portamento on. The notes themselves carry no such note.
+
+  **SYSTEM EXCLUSIVE IS OFF UNTIL SOMEBODY TURNS IT ON, BUT FOR THE BULK DUMP.** Tone parameters
+  travel only by system exclusive - "Transmitted if EXCL in the MIDI function is on."
+  (manual p. 48), as all thirty-six parameters at once or one at a time - and "Bulk Dump has no
+  relation with the EXCL in the MIDI function." (manual p. 51), which the data transfer chapter says
+  the other way round: "This function is available even when the MIDI Exclusive in the MIDI
+  Functions is turned off." (manual p. 38). No tone parameter has a controller number, so none is a
+  control here. The exclusive formats differ from themselves twice: the individual parameter list
+  gives five parameters, the three aftertouch depths and the two key follows, as `0 - 127`
+  (manual p. 48), where the bulk dump's tone format stores each in four bits (manual p. 51); and the
+  all-parameters message is sent with the tone's name and received, under the same operation code,
+  without it (manual pp. 48, 51).
+
+  **SIX VOICES, VELOCITY BOTH WAYS, AND CHANNEL AFTERTOUCH ANSWERED TO.** The keyboard has "61 keys,
+  5 octaves, C scale with Dynamics and Aftertouch" (manual p. 47). The implementation sends velocity
+  as `vvvvvvv = 10 - 127` and receives it as `vvvvvvv = 1 - 127`, ignores it on a received note off,
+  and receives `Channel After Touch` (manual p. 48); the chart circles velocity in both columns and
+  crosses key aftertouch in both (manual p. 49). Whether channel aftertouch is also sent, the chart
+  and the implementation disagree - see below.
+
+  **128 PROGRAMS, BOTH WAYS.** "0 - 63 : MEMORY GROUP or CARTRIDGE GROUP" (manual p. 48) and the
+  preset group above them, and the MIDI chapter's table maps two groups of eight banks of eight to
+  `1` to `128` (manual p. 35). With a memory cartridge in, the instrument has 192 tone colours, but
+  the cartridge's 64 take the memory group's program numbers, so 128 are in reach by program change
+  at once.
+
+  **EVERY NOTE SOUNDS, TRANSPOSED IF IT HAS TO BE.** It receives `0 - 127` and "Note numbers outside
+  the range 12 - 108 are transposed to the nearest octave inside this range." (manual p. 48), so the
+  range below is all 128, as `roland/jx_8p` records the same rule. It sends `12 - 108`, which the
+  MIDI chapter accounts for: the keyboard can "transmit data from 2 octaves lower to 1 octave higher
+  than the actual keyboard." (manual p. 34).
+
+  **THE CHART DIFFERS FROM THE REST IN THREE MORE PLACES, ABOUT NOTHING A FIELD HOLDS.** It marks
+  channel aftertouch as settable in its `Transmitted` column (manual p. 49), where the
+  implementation's transmitted data has no aftertouch row at all (manual p. 48); the MIDI chapter's
+  `MIDI Aftertouch` switch (manual p. 32) does not say which way it works. This definition's
+  `aftertouch` is what the instrument answers to, which both agree is channel aftertouch. It marks
+  received volume `** Volume` (manual p. 49), with the note about the panel's knob and without the
+  `*` that marks a switch, where the implementation puts volume behind its function switch
+  (manual p. 48) and the MIDI chapter gives `MIDI Volume` a switch of its own (manual p. 32). And it
+  labels the hold it sends `Pedal sw.` (manual p. 49), where the pedal switch's messages do not
+  include hold (manual p. 34). Nothing is chosen.
+
+  **`nrpn: none` IS A CHECKED ABSENCE.** Neither document names 6, 38 or 98 to 101: not the chart's
+  controller block, misprinted or not, and not the implementation's channel tables. Clock,
+  transport, song position and song select are crossed in both of the chart's columns (manual p. 49)
+  and are not in the implementation.
+
+  NOT RECORDED: the pitch bend range, which is a tone parameter for the memory tones, `BENDER RANGE`
+  `0 - 12` (manual p. 48), and one setting for all the preset tones together, from 0 to 12
+  (manual p. 15) - so it is settable, and the chart gives it as `0 - 12 semi` (manual p. 49). Nor
+  the chord memory, which a received `MONO ON` with one channel turns on (manual p. 48), and which
+  this format has no field for.
+
+  AND ONE DOCUMENT THE MANUAL POINTS TO THAT ROLAND DOES NOT SERVE. Its second page asks the reader
+  to read a separate volume called MIDI before the manual (manual p. 2), as the JX-8P's does, and
+  the archive lists no such volume; nothing in the manual says whether it is about this instrument
+  or about MIDI in general.
+
+sources:
+  manual:
+    kind: manual
+    title: αJUNO-2 Owner's Manual
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "http://cdn.roland.com/assets/media/pdf/JUNO-2_OM.pdf"
+    sha256: 3ffb31537401738f744d12f20efa028e537f2d0561a2c875679f9da13a2c2b9b
+    retrieved: 2026-10-09
+    # A SCAN: 54 pages, each one image 2560 by 3328 and no text, made by HyperGEAR's PDF library.
+    # **CITED BY PAGE WITH `page_offset: 0`**: the printed folio is the page of the file wherever
+    # one is printed - 31 to 35 and 47 among those read - and the four MIDI pages print none, so
+    # they are cited by their place in the file: the implementation on 48, 50 and 51, its chart on
+    # 49. The implementation's sections run 1 to 3.2 on p. 48, 3.2 to 4 on p. 51 and 5 on p. 50.
+    page_offset: 0
+  archive:
+    kind: download_page
+    title: Roland - Support - Manual Archive
+    landing: "https://www.roland.com/us/support/"
+    url: "https://www.roland.com/us/support/manual_archive/"
+    sha256: aa08cc61d2b474998265e8e0c893154f7145dfdb48d2726e8478c90e2558b499
+    retrieved: 2026-10-09
+    paginated: false
+    # Its visible text, byte for byte the copy `roland/jx_8p` and `roland/jd_800` cite. It lists
+    # `JUNO-1 Owner’s Manual` and `JUNO-2 Owner’s Manual` among the JUNOs, with no α in either name.
+
+midi:
+  # `1 - 16` in both columns' Default and Changed rows, `memorized` (manual p. 49); channel 1 from
+  # the factory (manual p. 32).
+  channels: [1, 16]
+  # The chart's recognised Default is `Mode 1, 3` (manual p. 49), presumably because OMNI is a
+  # switch; its factory preset is off (manual p. 32), which reads as mode 3 - the mode it also
+  # sends. The JX-8P's chart gives the same `Mode 1, 3`, and `roland/jx_8p` records none because its
+  # manual never says which mode its switch sets; this one's says what OMNI ON does and that it is
+  # off.
+  mode: 3
+  # Clock and Commands crossed in both columns (manual p. 49).
+  clock: none
+  transport: none
+  program_change:
+    # `* 0-127` sent and `* 0 - 127` received (manual p. 49), behind the Program Change switch.
+    receives: true
+    sends: true
+    # 64 memory or cartridge and 64 preset, mapped to 1 to 128 (manual p. 35).
+    presets: 128
+  # A checked absence: see the account.
+  nrpn: none
+  # Settable both ways (manual p. 49) and off from the factory (manual p. 32); see the account.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # Received over 0 to 127 and transposed into 12 to 108 (manual p. 48) - every note sounds.
+  note_range: [0, 127]
+  # "6 voice polyphonic" (manual p. 47), and the implementation and the chart are each headed
+  # `6-voice polyphonic synthesizer` (manual pp. 48-49).
+  polyphony: 6
+  velocity:
+    # Circled in both columns, `v = 1-127` received (manual p. 49); sent as `10 - 127` and received
+    # as `1 - 127` (manual p. 48). The tone parameters' envelope modes have settings "with dynamics"
+    # (manual p. 48), which reads as velocity at work.
+    note_on: both
+    # Crossed received (manual p. 49); the implementation's `1000 nnnn` reads "Note OFF, velocity
+    # ignored" (manual p. 48).
+    note_off: false
+  # Channel aftertouch received, `1101 nnnn` (manual p. 48); key aftertouch crossed both ways
+  # (manual p. 49).
+  aftertouch: channel
+  pitch_bend:
+    # A tone parameter for the memory tones, `BENDER RANGE` `0 - 12` (manual p. 48), and one setting
+    # for all the preset tones together (manual p. 15).
+    programmable: true
+
+controls:
+
+  # **FIVE, FROM THE IMPLEMENTATION**, under its own names (manual p. 48). Portamento time is
+  # received only; the other four go both ways, each behind its MIDI function switch.
+  modulation:      {label: Modulation, cc: 1}
+  portamento_time: {label: Portamento Time, cc: 5, direction: receives}
+  # Sent only from the expression pedal; received within the level the panel's volume knob sets.
+  main_volume:     {label: Main volume, cc: 7}
+  # Received with `01xx xxxx` as on and `00xx xxxx` as off; sent as 127 and 0.
+  hold:            {label: Hold, cc: 64, values: {"off": 0, "on": 64}}
+  portamento:      {label: Portamento, cc: 65, values: {"off": 0, "on": 64}}

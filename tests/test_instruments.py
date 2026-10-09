@@ -244,6 +244,7 @@ class TestBundledCorpus:
 			"oberheim/teo_5",
 			"polyend/tracker",
 			"pwm/malevolent",
+			"roland/alpha_juno_2",
 			"roland/d_50",
 			"roland/fantom_6_7_8",
 			"roland/jd_08",
@@ -15445,7 +15446,9 @@ class TestSH4D:
 		TR-8's, the TR-8S's and the TR-6S's rather than drum machines', and the
 		next Roland is worth reading before assuming either.
 
-		The JD-800 of 1991 is the oldest Roland here to declare one, and it says Mode 3
+		The αJUNO-2 of 1986 is the oldest Roland here to declare one: its chart's default is
+		`Mode 1, 3`, as the JX-8P's is, but its OMNI switch is described and off from the
+		factory and it sends Mode 3 itself, so it records 3. The JD-800 of 1991 says Mode 3
 		as a polyphonic synthesizer, with Mode 4 recognised for its solo key.
 		Its Boutique recreation, the JD-08, says Mode 3 on both of its charts, and so
 		does the JX-08 - though the JX-8P it recreates gives two defaults, Mode 1 and
@@ -15462,7 +15465,7 @@ class TestSH4D:
 		three = sorted(name for name, mode in modes.items() if mode == 3)
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
-		assert three == ["roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xa", "roland/jd_xi",
+		assert three == ["roland/alpha_juno_2", "roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xa", "roland/jd_xi",
 			"roland/jp_8000", "roland/ju_06a", "roland/jx_08", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1",
 			"roland/sh_4d", "roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
@@ -18547,3 +18550,47 @@ class TestNTS1:
 		assert "**AND THE DOCUMENTS DIFFER IN FOUR MORE PLACES THAT CAN ALL BE TRUE AT ONCE.**" in account
 		assert "**NO DOCUMENT NAMES A MIDI OUT JACK.**" in account
 		assert "an inference from the jacks" in account
+
+
+class TestAlphaJuno2:
+
+	"""A scan read by eye, and a chart whose controller block is one number out of step with itself."""
+
+	def test_five_controllers_from_the_implementation (self) -> None:
+		juno = pymidiinstrumentdefs.load("roland/alpha_juno_2", [CORPUS])
+
+		assert sorted(control.cc for control in juno.controls.values() if control.cc is not None) == [1, 5, 7, 64, 65]
+		assert juno.controls["portamento_time"].direction == "receives"
+		assert all(control.direction == "both" for name, control in juno.controls.items() if name != "portamento_time")
+		assert juno.controls["hold"].values == juno.controls["portamento"].values == {"off": 0, "on": 64}
+		assert juno.controls["hold"].name_for(127) == "on" and juno.controls["hold"].name_for(0) == "off"
+
+	def test_the_misprinted_chart_block_gives_no_4 (self) -> None:
+		"""The chart prints 1, 4, 5, 7, 64 and 65 beside five lines of cells; the implementation has no 4."""
+		juno = pymidiinstrumentdefs.load("roland/alpha_juno_2", [CORPUS])
+
+		assert 4 not in {control.cc for control in juno.controls.values()}
+		account = " ".join((juno.source or "").split())
+		assert "**THE CHART'S CONTROLLER BLOCK DOES NOT LINE UP, SO THE IMPLEMENTATION'S NUMBERS ARE CARRIED.**" \
+			in account
+		assert "so the block reads as misprinted, and no 4 is carried." in account
+
+	def test_six_voices_channel_aftertouch_and_128_programs (self) -> None:
+		juno = pymidiinstrumentdefs.load("roland/alpha_juno_2", [CORPUS])
+
+		assert (juno.voice.polyphony, juno.voice.aftertouch, juno.voice.note_range) == (6, "channel", (0, 127))
+		assert juno.voice.velocity is not None and (juno.voice.velocity.note_on, juno.voice.velocity.note_off) == ("both", False)
+		assert juno.voice.pitch_bend is not None and juno.voice.pitch_bend.programmable is True
+		assert juno.voice.pitch_bend.semitones is None
+		assert (juno.midi.channels, juno.midi.mode, juno.midi.clock, juno.midi.transport) == ((1, 16), 3, "none", "none")
+		assert juno.midi.program_change is not None
+		assert (juno.midi.program_change.receives, juno.midi.program_change.sends, juno.midi.program_change.presets) == (True, True, 128)
+		assert (juno.midi.nrpn, juno.midi.sysex) == ("none", True)
+
+	def test_a_scan_cited_by_page_and_no_firmware (self) -> None:
+		juno = pymidiinstrumentdefs.load("roland/alpha_juno_2", [CORPUS])
+
+		assert juno.model.firmware is None and juno.model.name == "αJUNO-2"
+		assert set(juno.sources) == {"manual", "archive"}
+		assert juno.sources["manual"].file_page(48) == 48 and juno.sources["manual"].file_page(32) == 32
+		assert juno.sources["archive"].sha256 == pymidiinstrumentdefs.load("roland/jx_8p", [CORPUS]).sources["archive"].sha256

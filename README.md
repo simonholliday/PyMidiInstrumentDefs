@@ -228,6 +228,7 @@ self-contained YAML file, and you share it by sending it.
 | `oberheim/teo_5` | Oberheim TEO-5: 198 controls off an implementation document that says in its own words the map belongs to a Sequential synth |
 | `polyend/tracker` | Polyend Tracker: 80 controls in two maps that are live in different modes - the performance effects and mixer whenever it listens, the instrument's own parameters only in synthesiser mode - plus one controller the manual's table drops and the instrument's own screen shows |
 | `pwm/malevolent` | PWM Malevolent: from its quick-start guide alone, and says so |
+| `roland/alpha_juno_2` | Roland αJUNO-2: five controllers off a 1986 implementation read by eye from Roland's own scan, carried as the implementation numbers them because its chart prints six controller numbers beside five lines |
 | `roland/d_50` | Roland D-50: the manual twice sends you to a MIDI implementation chart that is not in it, so this carries no controls - only the two ranges its pedals may be set to send |
 | `roland/fantom_6_7_8` | Roland FANTOM-6/7/8: 31 controls, every one of them the MIDI specification's own assignment under its own name, out of a 67-page implementation whose transmit section names five fewer than its receive section and says why |
 | `roland/jd_08` | Roland JD-08: 85 controls over two parts, from the implementation chart at the back of its Reference Manual - which the HTML edition prints again row for row - and a system channel that selects patterns and passes notes to the selected part |

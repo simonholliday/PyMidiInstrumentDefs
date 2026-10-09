@@ -169,6 +169,7 @@ class TestBundledCorpus:
 			"behringer/model_d",
 			"behringer/neutron",
 			"behringer/pro_800",
+			"behringer/rd_6",
 			"behringer/rd_9",
 			"behringer/td_3",
 			"behringer/ub_xa",
@@ -710,7 +711,7 @@ class TestAbsences:
 		empty = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
-		assert len(empty) == 24
+		assert len(empty) == 25
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -719,7 +720,7 @@ class TestAbsences:
 			key = "stated_none" if definition.midi.stated_none else definition.midi.control_change
 			kinds.setdefault(key, set()).add(name)
 
-		assert kinds["none"] == {"ableton/move", "alesis/sr_16", "behringer/model_d", "behringer/rd_9", "behringer/td_3",
+		assert kinds["none"] == {"ableton/move", "alesis/sr_16", "behringer/model_d", "behringer/rd_6", "behringer/rd_9", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
 			"vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl", "arturia/drumbrute",
@@ -18273,3 +18274,37 @@ class TestSlimPhatty:
 
 		assert set(slim.sources) == {"manual", "firmware_notes", "forum_post", "downloads_list"}
 		assert slim.sources["manual"].file_page(55) == 53 and slim.sources["manual"].file_page(67) == 65
+
+
+class TestRD6:
+
+	"""Eight drums on eight fixed notes, eight voices, and no controller by enumeration."""
+
+	def test_eight_voices_at_the_guides_notes (self) -> None:
+		rd6 = pymidiinstrumentdefs.load("behringer/rd_6", [CORPUS])
+
+		assert rd6.voice.addressing == "voices" and rd6.voice.note_map is None
+		assert rd6.voice.voices == {"bass_drum": 36, "snare_drum": 40, "low_tom": 45, "hi_tom": 50, "clap": 39,
+			"cymbal": 51, "open_hat": 46, "closed_hat": 42}
+		assert (rd6.voice.polyphony, rd6.voice.aftertouch, rd6.voice.velocity) == (8, "none", None)
+
+	def test_no_controller_by_enumeration (self) -> None:
+		rd6 = pymidiinstrumentdefs.load("behringer/rd_6", [CORPUS])
+
+		assert not rd6.controls and rd6.midi.control_change == "none"
+		account = " ".join((rd6.source or "").split())
+		assert "THE MAKER'S OWN MIDI MESSAGE TABLE IS THE ONLY LIST OF MESSAGES IT PUBLISHES, AND IT NAMES NO CONTROLLER." in account
+		assert "WHY A QUICK START GUIDE'S TABLE IS ENOUGH FOR `none` HERE, WHICH IS AN INFERENCE." in account
+
+	def test_clock_and_transport_received_and_no_program_change_recorded (self) -> None:
+		rd6 = pymidiinstrumentdefs.load("behringer/rd_6", [CORPUS])
+
+		assert (rd6.midi.channels, rd6.midi.mode, rd6.midi.clock, rd6.midi.transport) == ((1, 16), None, "receives", "receives")
+		assert rd6.midi.program_change is None and rd6.midi.sysex is None
+
+	def test_firmware_and_the_three_sources (self) -> None:
+		rd6 = pymidiinstrumentdefs.load("behringer/rd_6", [CORPUS])
+
+		assert rd6.model.firmware is None
+		assert set(rd6.sources) == {"guide", "release_notes", "product_page"}
+		assert rd6.sources["guide"].file_page(53) == 27 and rd6.sources["release_notes"].edition == "1.0.6"

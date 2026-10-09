@@ -1,0 +1,160 @@
+definition: 1
+
+# EIGHT DRUMS ON EIGHT NOTES, EIGHT VOICES AT ONCE, AND NO CONTROLLER IN THE MAKER'S OWN LIST OF
+# MESSAGES. The Quick Start Guide's specifications print a table of MIDI messages and a table of
+# each drum's note number. The first names no control change but All Notes Off, which is a channel
+# mode message. `control_change: none` rests on that list and on what `behringer/td_3` showed about
+# Behringer's tables of this kind, which the account sets out, rather than on a silence, as
+# `behringer/rd_9`'s does.
+
+model:
+  manufacturer: Behringer
+  name: RD-6
+  # NOT RECORDED: a firmware version. The guide names none, and its only printed year is its
+  # copyright, "© Music Tribe Global Brands Ltd. 2023" (guide p. 3). The RD-6-BK's product page
+  # offers one release note, for 1.0.6 (release_notes), whose only entry is a fix to choosing a
+  # pattern while the sequencer plays; it names nothing about MIDI, so it does not say whether the
+  # guide's tables describe 1.0.6 or earlier firmware. The page also offers Behringer's Synthtribe
+  # app, 3.2.4, which the guide calls the "Synth Tool app" (guide p. 34): that is the application's
+  # number, not the instrument's.
+
+source: >-
+  The Quick Start Guide, V 3.0, 30 sheets in nine European languages, with its specifications and
+  MIDI tables printed once, in English: the hook-up diagrams and controls at pp. 14 to 17, the clock
+  and MIDI channel settings at p. 34, and the specifications at pp. 52 and 53, which hold the MIDI
+  message table and the note table. Behringer publishes Chinese and Japanese editions as separate
+  files, which were not read. Also the RD-6-BK's product page, and the release note for firmware
+  1.0.6.
+
+  Two pages are printed to a sheet, with the cover and the back on sheets of their own, so
+  `pages_per_sheet: 2` with an offset of one: p. 52 is the left half of the 27th sheet.
+
+  THERE IS NO FULL MANUAL. Behringer has nine RD-6 pages, one for each colour, under product codes
+  `0704-AAE` to `0704-AAN`, and all nine offer this guide in the same file, `RD-6_QSG_WW.pdf`; the
+  RD-6-SR's page offers it a second time under its own product code, byte for byte the same, and the
+  other eight add the release note. None offers a user manual.
+
+  THE MAKER'S OWN MIDI MESSAGE TABLE IS THE ONLY LIST OF MESSAGES IT PUBLISHES, AND IT NAMES NO
+  CONTROLLER. The table is headed "MIDI message" (guide p. 53), gives five columns - Status, Second,
+  Third, Parameter, Description - and groups its rows as Channel Message and SysRT. The channel
+  messages are `8n` Note Off, `9n` Note On and `Bn 7B` All Notes Off; the real-time messages are
+  `F8` Timing Clock, `FA` Start, `FB` Continue and `FC` Stop. That is every row. It is
+  `behringer/td_3`'s table without its pitch bend row, printed the same way: `FB` and `FC` leave
+  their Second, Third and Parameter cells empty where `F8` and `FA` print dashes, and All Notes Off
+  is printed as two bytes, `Bn 7B`. Both are the artwork.
+
+  WHY A QUICK START GUIDE'S TABLE IS ENOUGH FOR `none` HERE, WHICH IS AN INFERENCE. A quick start
+  guide that lists no controller is not on its own evidence that an instrument has none, which is
+  why `pwm/malevolent` leaves its field unset. `behringer/td_3` says `none` because the same table
+  in the TD-3-MO's guide carries a row the TD-3's lacks, `Bn 4A` Filter Cutoff, which shows that
+  this table, in Behringer's guides, is where a controller is listed when an instrument has one.
+  This file takes that as holding for the same maker's table in the RD-6's guide, a step further
+  than `behringer/td_3` took: there the evidence was a sibling's own guide printing the same table,
+  and here it crosses from that bass line to a drum machine. The only `Bn` row is All Notes Off,
+  which this format keeps out of controls as a channel mode message. Pitch bend, aftertouch and
+  system exclusive are not in the table either.
+
+  THE TABLE GIVES NO DIRECTION, AND THE PAGES AROUND IT POINT IN. The examples beside it are
+  footnoted "Note: 1, MIDI input channel 1." (guide p. 53); the MIDI IN is "to input MIDI from an
+  external MIDI device such as a sequencer or DAW." (guide p. 17); and the hook-up drawing plays a
+  MIDI keyboard into it (guide p. 14). The RD-6 sends something too: the channel setting offers a
+  transmit channel as well as a receive one (guide p. 34), the MIDI OUT/THRU socket gives "output of
+  MIDI data to an external MIDI device and/or a direct output of the MIDI IN to chain to other
+  devices." (guide p. 17), and the product page claims "MIDI In, Out and Thru over USB"
+  (product_page). No page says what is sent, so nothing is recorded as sent.
+
+  EIGHT DRUMS ON EIGHT NOTES, AND NO PAGE SAYS THEY MOVE. The note table gives each voice in decimal
+  and hexadecimal (guide p. 53), from Bass Drum on 36 to Closed Hat on 42, and no page describes
+  changing them, though the app "can be used to change certain settings of the RD-6." (guide p. 34)
+  without naming them. So `note_map` is left unset. "Number of simultaneous voices 8" (guide p. 52),
+  and "Number of sounds 8" (guide p. 52): the two agree.
+
+  PROGRAM CHANGE IS LEFT UNSET, UNLIKE THE CONTROLLERS, BECAUSE THE PRODUCT PAGE POINTS THE OTHER
+  WAY FOR IT ALONE. The table has no `Cn` row, and on its own would give `false`, as
+  `behringer/td_3` records. But the product page says "USB connectivity has been added for sync and
+  MIDI triggering." (product_page) and that a DAW can control the instrument, "allowing songs and
+  patterns to be swapped or individual sounds to be triggered." (product_page). The triggering is
+  the note table; the swapping names no message, and only a program change or something like it
+  could carry it. Nothing on the page claims a controller.
+
+  NOT RECORDED: velocity, since the note-on row carries a `vv` byte in `[0, 7F]` and no page says
+  what the RD-6 does with it; the MIDI channel's default, which no page gives; and system exclusive,
+  which no page names.
+
+sources:
+  guide:
+    kind: manual
+    title: Quick Start Guide RD-6
+    edition: V 3.0
+    landing: "https://www.behringer.com/en/products/0704-AAF"
+    url: "https://cdn-media.empowertribe.com/c0380d2b03584de98e96f57f6c8b99b4/RD-6_QSG_WW.pdf"
+    sha256: 7efe9d5e76463a7d74481546ac69af9df2b18da2cfdadd426b402ab5639d52e7
+    retrieved: 2026-10-09
+    page_offset: 1
+    pages_per_sheet: 2
+    # 30 sheets: the cover and the back are single pages and the 28 between carry two printed pages
+    # each, from pp. 2 and 3 on the second sheet to pp. 56 and 57 on the 29th. Made with InDesign on
+    # 2023-08-25. The RD-6-SR's page serves the same bytes as `QSG_BE_0704-AAE_RD-6-SR_WW.pdf`.
+  release_notes:
+    kind: release_notes
+    title: Behringer RD-6 Firmware Version 1.0.6
+    edition: "1.0.6"
+    dated: 2022-03-25
+    landing: "https://www.behringer.com/en/products/0704-AAF"
+    url: "https://cdn-media.empowertribe.com/f3794d8b734a4de480416262a52dfd69/Release-Notes_BE_RD-6_v1-0-6_Rev.1.pdf"
+    sha256: db1f0b7d832ddd4df7c76c87b33ae420d3f0ae578b8d247e9d786557bf36c5e0
+    retrieved: 2026-10-09
+    page_offset: 0
+    # One page, one entry, a sequencer fix. The only release note the product pages offer.
+  product_page:
+    kind: product_page
+    title: "RD-6-BK | Behringer"
+    landing: "https://www.behringer.com/en/products/0704-AAF"
+    url: "https://www.behringer.com/en/products/0704-AAF"
+    sha256: 0bdeb38a30f24d3d9b18ab62528400f1b5e74ecb74a227efaa3f4ae5a6d5d726
+    retrieved: 2026-10-09
+    paginated: false
+    # The visible text of the RD-6-BK's page, which offers both documents above, the Chinese and
+    # Japanese guides and the Synthtribe app. Its download list is in the script payload of the HTML
+    # saved beside it, which hashes to
+    # 1f2755856e0ff5f096d4bbb2efffea653349c00e8cd2b36eedbdaa00f7487fef.
+
+midi:
+  # "press STEP KEYS 1-16 to select the channel, press PATTERN GROUP to switch between MIDI transmit
+  # (out) and receive (in)." (guide p. 34): one channel each way. No default is stated.
+  channels: [1, 16]
+  # "Step keys 1, 2, 3, or 4 represent clock source INT, MIDI, USB, or TRIG respectively."
+  # (guide p. 34), and the table gives `F8` Timing Clock. So MIDI and USB are each a clock this
+  # instrument follows. The next four keys set a clock rate, 1PPS, 2PPQ, 24PPQ or 48PPQ, and no page
+  # says which sources it applies to. Nothing says a MIDI clock is sent; its SYNC OUT is an analogue
+  # jack.
+  clock: receives
+  # AN INFERENCE, STATED AS ONE. `FA` Start, `FB` Continue and `FC` Stop are in the table
+  # (guide p. 53), which gives no direction. MIDI and USB are clock sources (guide p. 34), so they
+  # are taken to arrive with the clock, as for `behringer/td_3`. No page says the RD-6 starts or
+  # stops from them, or that it sends them.
+  transport: receives
+  # By the table, and by the inference the account sets out.
+  control_change: none
+
+voice:
+  # Eight drums on eight notes, each a drum rather than a pitch.
+  addressing: voices
+  # "Number of simultaneous voices 8" (guide p. 52).
+  polyphony: 8
+  # The table's channel messages are 8n, 9n and Bn, so neither `An` nor `Dn` is among them.
+  aftertouch: none
+  # THE GUIDE'S TABLE, in its order and with its names (guide p. 53). No page says they can be
+  # changed.
+  voices:
+    bass_drum: 36
+    snare_drum: 40
+    low_tom: 45
+    hi_tom: 50
+    clap: 39
+    cymbal: 51
+    open_hat: 46
+    closed_hat: 42
+
+# NO CONTROLS BLOCK: see midi.control_change above. The same shape as `behringer/td_3` and
+# `behringer/rd_9`.

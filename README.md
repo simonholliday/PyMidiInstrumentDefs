@@ -153,6 +153,7 @@ self-contained YAML file, and you share it by sending it.
 | `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
 | `behringer/neutron` | Behringer NEUTRON: two controllers, and the maker counts them for you - everything else this semi-modular answers to is system exclusive, and a note outside its stated range is clamped rather than silenced |
 | `behringer/pro_800` | Behringer PRO-800: 70 controls out of a table whose six columns say what each number is - 34 of them 14-bit, paired to a fine half by name alone, at three different offsets and none of them the MIDI specification's |
+| `behringer/rd_6` | Behringer RD-6: eight drums on eight fixed notes and eight voices at once, out of a quick start guide's MIDI message table that names no controller - `none` by enumeration, as for the TD-3 |
 | `behringer/rd_9` | Behringer RD-9: eleven drum notes, ten voices at once, a start message and a SysEx dump, and no controls - a search of its whole 38-page manual finds no controller, the route the Model D's `none` takes |
 | `behringer/td_3` | Behringer TD-3: no control changes either, established from the maker's own complete MIDI message table - its "Modded Out" sibling adds exactly one and needs a definition of its own |
 | `behringer/ub_xa` | Behringer UB-Xa: no controls, because the maker advertises a comprehensive MIDI implementation and publishes no part of one - two quick start guides covering two products name a controller number nowhere, and the keyboard's leaves its last two pages blank |

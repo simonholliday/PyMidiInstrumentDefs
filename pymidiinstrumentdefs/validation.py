@@ -74,7 +74,10 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	}),
 	"voice.velocity": frozenset({"note_on", "note_off", "gated_by", "transmits"}),
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
-	"parts": frozenset({"label", "channel", "channel_offset", "count", "receives", "addressing", "polyphony"}),
+	"parts": frozenset({
+		"label", "channel", "channel_offset", "count", "receives", "addressing", "polyphony",
+		"polyphony_shared",
+	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
 		"step", "unit", "group", "part", "panel_only", "direction", "kind",
@@ -417,15 +420,33 @@ class _Reader:
 
 				receives.append(kind)
 
+			count = self.integer(fields["count"], f"{where}.count", 1, 16) if "count" in fields else 1
+
+			polyphony = None if fields.get("polyphony") is None \
+				else self.integer(fields["polyphony"], f"{where}.polyphony", 0, 256)
+
+			shared = None if fields.get("polyphony_shared") is None \
+				else self.flag(fields["polyphony_shared"], f"{where}.polyphony_shared")
+
+			# Whether the instances share a figure means something only where there is a
+			# figure and more than one instance to share it, so either absence is refused
+			# rather than left for a consumer to puzzle over.
+
+			if shared is not None and polyphony is None:
+				self.refuse(f"{where}.polyphony_shared", "says how this part's voices are counted, and it gives no polyphony")
+
+			if shared is not None and count == 1:
+				self.refuse(f"{where}.polyphony_shared", "says whether instances share their voices, and this part has one instance")
+
 			found[self.name(name, "parts")] = pymidiinstrumentdefs.definition.Part(
-				label          = self.optional_text(fields, "label", where),
-				channel        = channel,
-				channel_offset = offset,
-				count          = self.integer(fields["count"], f"{where}.count", 1, 16) if "count" in fields else 1,
-				receives       = None if fields.get("receives") is None else tuple(receives),
-				addressing     = addressing,
-				polyphony      = None if fields.get("polyphony") is None
-					else self.integer(fields["polyphony"], f"{where}.polyphony", 0, 256),
+				label            = self.optional_text(fields, "label", where),
+				channel          = channel,
+				channel_offset   = offset,
+				count            = count,
+				receives         = None if fields.get("receives") is None else tuple(receives),
+				addressing       = addressing,
+				polyphony        = polyphony,
+				polyphony_shared = shared,
 			)
 
 		return found

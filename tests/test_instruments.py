@@ -2392,6 +2392,48 @@ class TestPolyphonyAcrossParts:
 		assert definition.warnings == ()
 
 
+class TestPartsSharingVoices:
+
+	"""A part's figure counts each instance, unless the part says its instances share it."""
+
+	def test_a_part_may_say_its_instances_share_one_figure (self) -> None:
+		body = ("definition: 1\nmodel: {name: X}\nsource: hand\nvoice: {polyphony_shared: false}\n"
+			"parts: {analog: {channel: assigned, count: 4, polyphony: 1},"
+			" digital: {channel: assigned, count: 4, polyphony: 64, polyphony_shared: true}}")
+		parsed = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert (parsed.parts["analog"].polyphony, parsed.parts["analog"].polyphony_shared) == (1, None)
+		assert (parsed.parts["digital"].polyphony, parsed.parts["digital"].polyphony_shared) == (64, True)
+		assert parsed.warnings == ()
+
+	def test_sharing_with_no_figure_is_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nparts: {p: {channel: assigned, count: 4, polyphony_shared: true}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "parts.p.polyphony_shared" in str(raised.value)
+		assert "gives no polyphony" in str(raised.value)
+
+	def test_sharing_with_one_instance_is_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nparts: {p: {channel: assigned, polyphony: 8, polyphony_shared: true}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "one instance" in str(raised.value)
+
+	def test_a_part_sharing_among_its_instances_is_still_its_own_pool (self) -> None:
+		"""So the instrument-wide pool cannot be claimed beside it, as for any part with voices."""
+		body = ("definition: 1\nmodel: {name: X}\nvoice: {polyphony_shared: true}\n"
+			"parts: {d: {channel: assigned, count: 4, polyphony: 64, polyphony_shared: true}}")
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "parts.d.polyphony" in str(raised.value)
+
+
 class TestSearchPath:
 
 	def test_the_nearest_definition_wins (self, tmp_path: pathlib.Path) -> None:
@@ -18441,7 +18483,9 @@ class TestJDXA:
 		assert list(xa.parts) == ["analog", "digital", "program"]
 		assert (xa.parts["analog"].count, xa.parts["digital"].count, xa.parts["program"].count) == (4, 4, 1)
 		assert all(part.channel == "assigned" for part in xa.parts.values())
-		assert xa.parts["analog"].polyphony is None and xa.parts["digital"].polyphony is None
+		assert (xa.parts["analog"].polyphony, xa.parts["analog"].polyphony_shared) == (1, None)
+		assert (xa.parts["digital"].polyphony, xa.parts["digital"].polyphony_shared) == (64, True)
+		assert xa.voice.polyphony is None and xa.voice.polyphony_shared is False
 		assert xa.parts["program"].receives == ("controls", "program_change")
 		assert not [control for control in xa.controls.values() if control.part is None]
 

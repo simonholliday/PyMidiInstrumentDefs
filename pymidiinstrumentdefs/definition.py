@@ -447,6 +447,11 @@ class Part:
 	``polyphony`` is how many voices a part has to itself, and it counts **each
 	instance**: three parts at eight voices is eight each.  Voices shared across
 	parts are stated once, on the instrument, rather than here.
+
+	``polyphony_shared`` true says the figure is the instances' **together**
+	instead: a JD-XA's four digital parts have 64 voices between them, while each
+	of its four analogue parts has one of its own.  It says nothing about how the
+	instances divide the figure, which no page of that instrument says either.
 	"""
 
 	label: str | None = None
@@ -456,6 +461,7 @@ class Part:
 	receives: tuple[str, ...] | None = None
 	addressing: str | None = None
 	polyphony: int | None = None
+	polyphony_shared: bool | None = None
 
 
 	@property

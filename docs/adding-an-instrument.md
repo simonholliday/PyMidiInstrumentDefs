@@ -530,6 +530,17 @@ Five rules worth holding on to:
   still honest; one figure for an instrument with parts, without saying which it is, draws
   a warning.
 
+  A part's figure counts each of its instances. Where the instances of one part share a
+  figure between them, say so on that part. A JD-XA's four analogue parts have a voice each,
+  and its four digital parts have 64 between them, divided in a way no page describes:
+
+  ```yaml
+  parts:
+    analog:  {channel: assigned, count: 4, polyphony: 1}
+    digital: {channel: assigned, count: 4, polyphony: 64, polyphony_shared: true}
+  voice: {polyphony_shared: false}
+  ```
+
 A part is not a panel. It says where a control is addressed, not how anything should be
 drawn — that stays the consuming page's business, as with everything else here.
 

@@ -126,12 +126,12 @@ source: >-
   ONE VOICE FOR EACH ANALOGUE PART, AND 64 FOR THE FOUR DIGITAL PARTS TOGETHER. "Each analog part is
   monophonic." (manual p. 4), and Poly Stack "Lets you use the four analog parts as one four-voice
   poly part." (manual p. 5). The specifications give "Analog Part: 4 voices" (specifications) and
-  "Digital Part: 64 voices (varies according to the sound generator load)" (specifications). Neither
-  is recorded as a number. A part's own polyphony needs the instrument to say whether its parts
-  share their voices. Here each analogue part has its one voice, and the digital parts' 64 is a
-  figure for the four together, whose engine the page calls "four-part, 64-voice digital"
-  (specifications), and no page says how they divide it. This format can say shared or not shared
-  for a whole instrument only, so it is said here instead.
+  "Digital Part: 64 voices (varies according to the sound generator load)" (specifications). So
+  each analogue part records `polyphony: 1`, and the digital part records `polyphony: 64` with
+  `polyphony_shared: true`: a figure for the four together, whose engine the page calls
+  "four-part, 64-voice digital" (specifications), and no page says how they divide it. The two
+  kinds are counted apart by the specifications and are different engines, so the instrument says
+  `polyphony_shared: false`: its parts do not draw on one pool.
 
   THE MIDI CONTROL PARTS ARE WHAT THE JD-XA SENDS TO OTHER INSTRUMENTS, AND ARE NOT RECORDED. With
   MIDI CTRL on, keyboard performance and panel operations are sent "on eight channels (channels 9–16
@@ -143,10 +143,10 @@ source: >-
   NOT RECORDED, AND WHY: Prog Ctrl Ch's default, which no page gives; the MIDI control parts, above;
   controller 90, which no page explains; 68, which the address map names beside a part's legato
   switch, `Part Legato Switch (CC# 68)` (implementation p. 12), and which neither the reception
-  section nor the chart lists; a polyphony for the digital parts, above; the system exclusive
-  address map's parameters, which this format does not carry; the channel mode messages, 120 to 127,
-  which this format refuses as controls; and the sequencer's chart, which is a recorder's and not
-  the sound source's, except for its clock and transport.
+  section nor the chart lists; the system exclusive address map's parameters, which this format does
+  not carry; the channel mode messages, 120 to 127, which this format refuses as controls; and the
+  sequencer's chart, which is a recorder's and not the sound source's, except for its clock and
+  transport.
 
 midi:
   # The sound source chart's Basic Channel row: 1 to 16 as a default and as changed, both ways, and
@@ -186,6 +186,9 @@ voice:
   # p. 21), where the transmission section gives 0 to 127 (implementation p. 5), for a 49-key
   # keyboard (specifications).
   note_range: [0, 127]
+  # The analogue and digital voices are counted apart and are different engines, so the parts do
+  # not draw on one pool; each kind states its own figure below.
+  polyphony_shared: false
   velocity:
     # Note on and note off velocity circled both ways (implementation p. 21), so it answers to
     # velocity and sends it.
@@ -211,8 +214,9 @@ parts:
     addressing: pitches
     # Notes and controllers on the part's channel; program changes go to Prog Ctrl Ch instead.
     receives: [notes, controls]
-    # NOT RECORDED, a polyphony, though "Each analog part is monophonic." (manual p. 4): see the
-    # account. With Poly Stack on, the four play as one four-voice part (manual p. 5).
+    # "Each analog part is monophonic." (manual p. 4). With Poly Stack on, the four play as one
+    # four-voice part (manual p. 5).
+    polyphony: 1
   digital:
     label: Digital Part
     count: 4
@@ -220,8 +224,10 @@ parts:
     channel: assigned
     addressing: pitches
     receives: [notes, controls]
-    # NOT RECORDED, a polyphony: "Digital Part: 64 voices (varies according to the sound generator
-    # load)" (specifications) is a figure for the four together; see the account.
+    # "Digital Part: 64 voices (varies according to the sound generator load)" (specifications),
+    # a figure for the four together, divided between them in a way no page describes.
+    polyphony: 64
+    polyphony_shared: true
   program:
     label: Program Control
     # Prog Ctrl Ch, `1–16` (manual p. 13), with no default printed.

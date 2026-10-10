@@ -1645,6 +1645,7 @@ class TestAftertouch:
 			"arturia/polybrute_12": ("poly", True),
 			"arturia/microfreak": (None, True),
 			"behringer/deepmind_12": ("channel", True),
+			"asm/hydrasynth_explorer": ("poly", True),
 		}
 
 

@@ -378,6 +378,15 @@ both forms - it looks for the number, and then for the two halves - and it repor
 many it could only find as halves, because small numbers are easy to find on a page full
 of them.
 
+**A number printed only in hexadecimal is written in decimal.** Some makers print a
+message as its bytes, so a controller appears as `Bn 4A xx` and its number, 74, appears
+nowhere. Write 74, as every number in a definition is written, and cite the page. The
+citation check looks for 74 first and, only if it is nowhere else, for `4A` as a word of
+its own, in capitals. It names each number it found only that way, so read each one on
+its page: prose prints short hexadecimal words too, and a power adapter rated at `1A`
+would answer for controller 26. It never reads a form made only of digits as
+hexadecimal, because a page printing `40` far more likely means forty than 64.
+
 **Stepped controls: bands and exact values are different things.**
 
 - `values` holds where each **band** starts, for a document printing `0-42 = Off`.

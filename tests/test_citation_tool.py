@@ -209,6 +209,60 @@ class TestFindingANumberThatIsOnlyInsideAPrintedRange:
 		assert "1 controller numbers found only inside a range the maker prints" in printed
 
 
+class TestFindingANumberPrintedOnlyInHexadecimal:
+
+	def test_a_byte_with_a_letter_names_its_number (self) -> None:
+		"""Behringer's TD-3-MO prints its one controller as "Bn 4A xx" and never prints 74."""
+		assert tool.in_hexadecimal(74, "Bn 4A xx \u2014 Filter Cutoff")
+
+	def test_a_form_of_digits_alone_is_never_read_as_hexadecimal (self) -> None:
+		"""A page that prints 40 is far likelier to mean forty than 64."""
+		assert not tool.in_hexadecimal(64, "Bn 40 xx")
+		assert not tool.in_hexadecimal(16, "Bn 10 xx")
+
+	def test_it_must_stand_as_a_word_of_its_own (self) -> None:
+		"""Part of a longer word is not the byte, whatever letters surround it."""
+		for printed in ("B4A", "4A7", "4AH", "0x4A", "x4Ay"):
+			assert not tool.in_hexadecimal(74, printed), printed
+
+	def test_it_must_be_printed_in_capitals (self) -> None:
+		"""Makers print bytes in capitals, and "4a" in running text is far likelier a label."""
+		assert not tool.in_hexadecimal(74, "Bn 4a xx")
+
+	def test_a_number_wider_than_a_byte_has_no_two_digit_form (self) -> None:
+		"""An NRPN of 300 would be 12C, which this rule does not read."""
+		assert not tool.in_hexadecimal(300, "12C 2C")
+
+	def test_it_is_reported_as_weaker_and_never_counted_as_found (self, capsys: pytest.CaptureFixture[str]) -> None:
+		"""A page that prints a byte has not printed the number in the base the definition holds."""
+		result = tool.Result(name = "behringer/td_3_mo", documents = [])
+		result.wanted = [("filter_cutoff", "cc", 74)]
+		result.as_hex = list(result.wanted)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert result.sound
+		assert "0 of 1 numbers found" in printed
+		assert "1 numbers found only as the hexadecimal byte the maker prints" in printed
+
+	def test_each_number_found_this_way_is_named_with_its_form (self, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Prose prints short hexadecimal words too: a Nymphes manual's adapter rated at 1A reads as 26.
+
+		So a count is not enough. Each is named, so a person can turn to the page and see
+		whether the byte is a message or an ampere.
+		"""
+		result = tool.Result(name = "example", documents = [])
+		result.wanted = [("filter_cutoff", "cc", 74), ("lfo_2_delay", "cc", 26)]
+		result.as_hex = list(result.wanted)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "filter_cutoff.cc = 74, printed as 4A" in printed
+		assert "lfo_2_delay.cc = 26, printed as 1A" in printed
+
+
 class TestWritingPagesBack:
 
 	def test_a_run_of_pages_prints_as_a_range (self) -> None:

@@ -268,6 +268,38 @@ def inside_a_range (number: int, text: str) -> bool:
 	return False
 
 
+def in_hexadecimal (number: int, text: str) -> bool:
+
+	"""Whether a page prints a number only as the two hexadecimal digits of its byte.
+
+	Behringer's TD-3-MO is the case: its guide's message table gives its one
+	controller as ``Bn 4A xx`` and never prints 74, so a definition holding 74
+	asks for a number the page carries only in another base.
+
+	Only a form containing a letter counts, and only standing as a word of its
+	own, in capitals as makers print a byte.  A form made only of digits is far
+	likelier to be a decimal number than a byte, so ``40`` never stands for 64,
+	and a word such as ``B4A`` or ``4AH`` is not ``4A``.
+
+	This is a **weaker** check than finding the number: a page of MIDI bytes is
+	full of short hexadecimal words, and one is matched wherever it appears rather
+	than against the row that means it.  Prose has them too - a Nymphes manual's
+	power adapter "rated for at least 1A" reads as 26.  So it is tried last, only
+	for a number that would otherwise be missing, and each number found this way
+	is named in the report beside the form that matched, never counted as found.
+	"""
+
+	if not 0 <= number <= 0xFF:
+		return False
+
+	form = f"{number:02X}"
+
+	if form.isdigit():
+		return False
+
+	return re.search(rf"(?<![0-9A-Za-z]){form}(?![0-9A-Za-z])", text) is not None
+
+
 def as_ranges (numbers: typing.Iterable[int]) -> str:
 
 	"""A run of numbers written the way a person cites them: ``21-24, 30``."""
@@ -363,6 +395,7 @@ class Result:
 	missing: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	as_halves: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	in_a_range: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+	as_hex: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	unverifiable: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 
 
@@ -527,6 +560,13 @@ def follow (
 			result.unverifiable.append(entry)
 			continue
 
+		# Last of all, and only for a number that would otherwise be missing: a byte
+		# is the weakest match there is, and prose prints short hexadecimal words too.
+
+		if in_hexadecimal(number, printed_text):
+			result.as_hex.append(entry)
+			continue
+
 		result.missing.append(entry)
 
 	return result
@@ -567,7 +607,7 @@ def render (result: Result, verbose: bool) -> None:
 		print(f"    ⚠ cited but in no document read: printed {as_ranges(result.unreachable)}")
 
 	found = (len(result.wanted) - len(result.missing) - len(result.as_halves) - len(result.in_a_range)
-		- len(result.unverifiable))
+		- len(result.as_hex) - len(result.unverifiable))
 
 	if not result.wanted:
 		print("    no numbers to check")
@@ -585,6 +625,15 @@ def render (result: Result, verbose: bool) -> None:
 			f"        {len(result.in_a_range)} controller numbers found only inside a range the maker "
 			f"prints, which is a weaker check"
 		)
+
+	if result.as_hex:
+		print(
+			f"        {len(result.as_hex)} numbers found only as the hexadecimal byte the maker prints, "
+			f"which is a weaker check, so each is named to be read on its page"
+		)
+
+		for name, kind, number in result.as_hex:
+			print(f"            {name}.{kind} = {number}, printed as {number:02X}")
 
 	if result.unverifiable:
 		why = ("a cited page publishes its numbers only in a picture"

@@ -71,7 +71,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 		"polyphony_shared", "paraphonic", "voicing_modes", "velocity", "aftertouch",
 		"pitch_bend", "voices",
 	}),
-	"voice.velocity": frozenset({"note_on", "note_off", "gated_by"}),
+	"voice.velocity": frozenset({"note_on", "note_off", "gated_by", "transmits"}),
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
 	"parts": frozenset({"label", "channel", "channel_offset", "count", "receives", "addressing", "polyphony"}),
 	"controls": frozenset({
@@ -672,15 +672,29 @@ class _Reader:
 			return None
 
 		section = self.fields(value, "voice.velocity", "voice.velocity")
+		note_on = self.word(section, "note_on", "voice.velocity", _NOTE_ON)
+
+		transmits = None if section.get("transmits") is None \
+			else self.flag(section["transmits"], "voice.velocity.transmits")
+
+		# `both` is received and sent, so a file saying it and denying the sending
+		# would give a consumer two answers to whether the keys send velocity.
+
+		if note_on == "both" and transmits is False:
+			self.refuse(
+				"voice.velocity.transmits",
+				"is false, and note_on: both says velocity is sent as well as received",
+			)
 
 		return pymidiinstrumentdefs.definition.Velocity(
-			note_on  = self.word(section, "note_on", "voice.velocity", _NOTE_ON),
+			note_on  = note_on,
 			note_off = None if section.get("note_off") is None
 				else self.flag(section["note_off"], "voice.velocity.note_off"),
 			gated_by = tuple(
 				self.name(name, "voice.velocity.gated_by")
 				for name in self.sequence(section.get("gated_by"), "voice.velocity.gated_by")
 			),
+			transmits = transmits,
 		)
 
 

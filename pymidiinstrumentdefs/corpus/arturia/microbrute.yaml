@@ -18,14 +18,13 @@
 # somebody else's box, "your external MIDI device's MIDI Out connector" (manual p. 46). So every
 # control below is `direction: receives`.
 #
-# **WHAT IT DOES SEND, IT SENDS OVER USB, AND THE FORMAT HAS NO WORD FOR THE ONE CASE THAT
-# MATTERS.** Two documents agree that velocity travels out and not in: "The MicroBrute will send
-# velocity as a USB controller. It does not have internal velocity routing and does not respond to
-# velocity however." (manual p. 32), and more plainly, "The MicroBrute does not receive or respond
-# to velocity but it does send it." (connection p. 8). `voice.velocity.note_on` can say `received`,
-# `both`, `gated` or `ignored`; **this instrument is none of those** - it transmits and does not
-# recognise. `ignored` is recorded below because it is the true half, and the half the format
-# cannot hold is written down here.
+# **WHAT IT DOES SEND, IT SENDS OVER USB, AND VELOCITY IS THE CASE THAT MATTERS.** Two documents
+# agree that velocity travels out and not in: "The MicroBrute will send velocity as a USB
+# controller. It does not have internal velocity routing and does not respond to velocity
+# however." (manual p. 32), and more plainly, "The MicroBrute does not receive or respond to
+# velocity but it does send it." (connection p. 8). So `voice.velocity` records both halves:
+# `note_on: ignored` for what it does with a velocity it is sent, and `transmits: true` for the
+# velocity its keys send.
 #
 # **THE SENTENCE THAT WOULD SET THE POLYPHONY WRONG IS ABOUT THE KEYBOARD, NOT THE SYNTHESIZER.**
 # "The keyboard can also be used as a fully polyphonic MIDI controller for other devices via the
@@ -94,15 +93,14 @@ source: >-
   "a fully polyphonic MIDI controller for other devices via the rear panel USB jack" (manual
   p. 42), and velocity.
 
-  **VELOCITY GOES OUT AND NOT IN, AND THIS FORMAT HAS NO WORD FOR THAT.** "The MicroBrute does not
-  receive or respond to velocity but it does send it." (connection p. 8), which the user's manual
-  says twice in its own words: "The MicroBrute will send velocity as a USB controller. It does not
-  have internal velocity routing and does not respond to velocity however." (manual p. 32).
-  `voice.velocity.note_on` can be `received`, `both`, `gated` or `ignored`, and **this instrument
-  is none of the four** - it transmits and does not recognise. `ignored` is recorded because it is
-  the true half: send this instrument a velocity and nothing will happen. The other half is here
-  in words because no field can hold it, and **controller 112 sets the curve of the velocity it
-  sends** - a parameter governing something it will never hear.
+  **VELOCITY GOES OUT AND NOT IN, AND THE FILE SAYS BOTH.** "The MicroBrute does not receive or
+  respond to velocity but it does send it." (connection p. 8), which the user's manual says twice
+  in its own words: "The MicroBrute will send velocity as a USB controller. It does not have
+  internal velocity routing and does not respond to velocity however." (manual p. 32). It
+  transmits and does not recognise, so `voice.velocity.note_on` is `ignored` - send this
+  instrument a velocity and nothing will happen - and `voice.velocity.transmits` is true. **And
+  controller 112 sets the curve of the velocity it sends** - a parameter governing something it
+  will never hear.
 
   **AND IT IS MONOPHONIC, THOUGH ONE SENTENCE READS LIKE THE OPPOSITE.** That `fully polyphonic
   MIDI controller` is the keyboard sending chords out of the USB socket, not the synthesiser
@@ -251,12 +249,13 @@ voice:
   # sentence that reads like a contradiction is about the keyboard as a controller; see above.
   polyphony: 1
   velocity:
-    # **IGNORED - AND IT TRANSMITS VELOCITY ALL THE SAME**, which this field cannot say. "The
-    # MicroBrute does not receive or respond to velocity but it does send it." (connection p. 8),
-    # which the user's manual states twice over in its own words (manual p. 32). The transmitted
-    # curve is a setting of its own, controller 112 below, with three shapes - so the instrument
-    # carries a parameter governing something it will never hear.
+    # **IGNORED, AND TRANSMITTED ALL THE SAME.** "The MicroBrute does not receive or respond to
+    # velocity but it does send it." (connection p. 8), which the user's manual states twice over
+    # in its own words (manual p. 32). The transmitted curve is a setting of its own, controller
+    # 112 below, with three shapes - so the instrument carries a parameter governing something it
+    # will never hear.
     note_on: ignored
+    transmits: true
   # NOT RECORDED, aftertouch. The word appears nowhere in either document, and the manual's list
   # of what the keyboard offers for expressiveness closes without it: velocity, transposition,
   # pitch bend, modulation wheel and the sequencer (manual p. 32).

@@ -250,11 +250,18 @@ class Velocity:
 	unless something else is turned up, in which case ``gated_by`` names the
 	controls that do the gating.  A panel can use that to explain a velocity lane
 	that appears to do nothing.  Any other word is refused.
+
+	``transmits`` is whether the instrument **sends** velocity, apart from what it
+	does with velocity it is sent.  A MicroBrute is the case: its keys send
+	velocity to everything else and it answers to none, so its ``note_on`` is
+	``ignored`` and ``transmits`` is true.  ``both`` already says sent as well, so
+	beside it ``transmits`` may only agree.  ``None`` is nobody having recorded it.
 	"""
 
 	note_on: str | None = None
 	note_off: bool | None = None
 	gated_by: tuple[str, ...] = ()
+	transmits: bool | None = None
 
 
 @dataclasses.dataclass(frozen=True)

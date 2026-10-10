@@ -1503,6 +1503,29 @@ class TestChartWords:
 		assert velocity is not None
 		assert velocity.note_on == word
 
+	def test_velocity_may_say_it_is_sent_apart_from_how_it_is_received (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nvoice: {velocity: {note_on: ignored, transmits: true}}"
+		velocity = pymidiinstrumentdefs.parse(body, source = "x.yaml").voice.velocity
+
+		assert velocity is not None
+		assert (velocity.note_on, velocity.transmits) == ("ignored", True)
+
+	def test_unrecorded_sending_is_none_rather_than_false (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nvoice: {velocity: {note_on: received}}"
+		velocity = pymidiinstrumentdefs.parse(body, source = "x.yaml").voice.velocity
+
+		assert velocity is not None
+		assert velocity.transmits is None
+
+	def test_both_beside_transmits_false_is_refused (self) -> None:
+		"""``both`` already says velocity is sent, so denying it gives a consumer two answers."""
+		body = "definition: 1\nmodel: {name: X}\nvoice: {velocity: {note_on: both, transmits: false}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "voice.velocity.transmits" in str(raised.value)
+
 	def test_an_unknown_note_on_is_refused (self) -> None:
 		body = "definition: 1\nmodel: {name: X}\nvoice: {velocity: {note_on: sends}}"
 
@@ -1878,7 +1901,7 @@ voice:
   polyphony_shared: true
   paraphonic: false
   voicing_modes: [1, 8]
-  velocity: {note_on: gated, note_off: false, gated_by: [a]}
+  velocity: {note_on: gated, note_off: false, gated_by: [a], transmits: true}
   aftertouch: channel
   pitch_bend: {semitones: 2, programmable: true}
   voices: {kick: 36}
@@ -15874,23 +15897,23 @@ class TestMicroBrute:
 
 		assert "channel mode message" in str(raised.value)
 
-	def test_velocity_is_sent_and_not_received_which_the_format_cannot_say (self) -> None:
-		"""``note_on`` has four values and this instrument is none of them.
+	def test_velocity_is_sent_and_not_received_and_the_file_says_both (self) -> None:
+		"""It transmits velocity over USB and does not recognise it.
 
-		It transmits velocity over USB and does not recognise it.  ``ignored`` is
-		the true half; the half with no field is written into the account, so the
-		fact is not lost even though nothing can switch on it.
+		``note_on: ignored`` is what it does with a velocity it is sent, and
+		``transmits: true`` is the velocity its keys send.  Before ``transmits``
+		existed the second half lived only in the account.
 		"""
 		brute = pymidiinstrumentdefs.load("arturia/microbrute", [CORPUS])
 		flat = " ".join((brute.source or "").split())
 
 		assert brute.voice.velocity is not None
-		assert brute.voice.velocity.note_on == "ignored"
+		assert (brute.voice.velocity.note_on, brute.voice.velocity.transmits) == ("ignored", True)
 
 		# Two documents say it, and the account quotes the plainer one.
 		assert ("The MicroBrute does not receive or respond to velocity but it does send it."
 			in flat)
-		assert "it transmits and does not recognise" in flat
+		assert "It transmits and does not recognise" in flat
 
 		# **And it carries a parameter governing something it will never hear**: the curve of
 		# the velocity it sends.

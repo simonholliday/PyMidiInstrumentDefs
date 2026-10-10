@@ -19612,7 +19612,12 @@ class TestIridiumMk2:
 	def test_os_4_and_midi_2_0_in_the_account (self) -> None:
 		mk2 = pymidiinstrumentdefs.load("waldorf/iridium_mk2", [CORPUS])
 
-		assert mk2.model.firmware == "4.0"
+		# The manual's credits and its System screenshot agree on 4.0.3; the specification's
+		# "4.0 or later" is a minimum, kept in the comment.
+		assert mk2.model.firmware == "4.0.3"
+		flat = " ".join(prose_of("waldorf", "iridium_mk2").split())
+		assert "**4.0.3, THE FIRMWARE THIS MANUAL WAS WRITTEN AGAINST.**" in flat
+		assert "Software: Waldorf Synthesis Platform OS 4.0 or later" in flat
 		assert set(mk2.sources) == {"manual", "iridium_manual", "specification", "product_page", "faq_page"}
 		account = " ".join((mk2.source or "").split())
 		assert "**MIDI 2.0, OVER USB.**" in account

@@ -1646,6 +1646,7 @@ class TestAftertouch:
 			"arturia/microfreak": (None, True),
 			"behringer/deepmind_12": ("channel", True),
 			"asm/hydrasynth_explorer": ("poly", True),
+			"expressive_e/osmose": ("channel", True),
 		}
 
 

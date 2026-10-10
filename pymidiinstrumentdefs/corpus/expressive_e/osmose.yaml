@@ -227,6 +227,17 @@ voice:
   # pitch bending" (p. 14). They reach the engine as MPE+ on member channels, which is why
   # the chart answers No to poly key aftertouch while the keyboard is polyphonic throughout.
   aftertouch: channel
+  # SENT, BY THE MANUAL'S ACCOUNT OF WHAT GOES OUT TO ANOTHER INSTRUMENT, and which kind depends
+  # on the configuration and on the adjust menu. In the classic keyboard configuration "the
+  # Aftertouch axis sends Channel Pressure, commonly called (mono) aftertouch" (p. 51); the poly
+  # aftertouch configuration "sends Polyphonic Aftertouch instead of Channel Pressure to the
+  # Aftertouch axis" (p. 52); and under MPE it is the other axis: "The Pressure axis sends
+  # Velocity (MPE Strike) and Channel Pressure (MPE Pressure)" (p. 51), while "The Aftertouch
+  # sends CC74" (p. 51). Either axis can be made to send something else, since "assign selects
+  # the MIDI message sent for the axis motion selected on the left" (p. 54). The chart, whose
+  # scope is the sound engine's port, marks channel aftertouch `Yes` transmitted too (midi_impl
+  # p. 1), though its transmit column is the one the clock comment above finds unreliable.
+  aftertouch_transmits: true
   velocity:
     # IGNORED ON THE PATH THE INSTRUMENT IS BUILT FOR, AND NOT ON THE OTHER, which one field
     # cannot say. The chart marks note-on and note-off velocity No in both directions and

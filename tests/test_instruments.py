@@ -294,6 +294,7 @@ class TestBundledCorpus:
 			"voce/electric_piano",
 			"waldorf/blofeld",
 			"waldorf/iridium",
+			"waldorf/iridium_core",
 			"waldorf/iridium_mk2",
 			"waldorf/protein",
 			"waldorf/streichfett",
@@ -2473,7 +2474,8 @@ class TestOsmose:
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
 			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "groove_synthesis/third_wave", "modal/carbon8m",
 			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
-			"udo_audio/super_6", "waldorf/iridium", "waldorf/iridium_mk2", "waldorf/protein"]
+			"udo_audio/super_6", "waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2",
+			"waldorf/protein"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -8111,7 +8113,9 @@ class TestProphet6:
 		assert "groove_synthesis/third_wave" in flagged
 		# The fourteenth, the Iridium MK2, which also takes per-note pitch bend over MIDI 2.0.
 		assert "waldorf/iridium_mk2" in flagged
-		assert len(flagged) == 14
+		# The fifteenth, the Iridium Core, the Iridium's MPE on a pool of twelve.
+		assert "waldorf/iridium_core" in flagged
+		assert len(flagged) == 15
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -16457,7 +16461,7 @@ class TestCascadia:
 		assert "`true` would misdescribe the instrument and `false` would hide the feature" in flat
 
 		# **AND NOT ONE INSTRUMENT THAT SETS THE FLAG IS MONOPHONIC**, which is the whole
-		# distinction: fourteen set it, and none of the fourteen records one voice. So this
+		# distinction: fifteen set it, and none of the fifteen records one voice. So this
 		# would have been the first, and the field's meaning here cannot stretch to it.
 		setters = {}
 
@@ -16467,7 +16471,7 @@ class TestCascadia:
 			if other.midi is not None and other.midi.per_voice_channels is True:
 				setters[name] = other
 
-		assert len(setters) == 14
+		assert len(setters) == 15
 		assert "modal/carbon8m" in setters and "waldorf/iridium" in setters
 		assert [name for name, other in setters.items() if other.voice.polyphony == 1] == []
 
@@ -18940,3 +18944,35 @@ class TestIridiumMk2:
 		assert set(mk2.sources) == {"manual", "iridium_manual", "specification", "product_page", "faq_page"}
 		account = " ".join((mk2.source or "").split())
 		assert "**MIDI 2.0, OVER USB.**" in account
+
+
+class TestIridiumCore:
+
+	"""The Iridium's fifteen fixed controllers, on two layers of twelve voices, from the Core's own manual."""
+
+	def test_the_iridium_s_controls (self) -> None:
+		core = pymidiinstrumentdefs.load("waldorf/iridium_core", [CORPUS])
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		ours = {name: (c.cc, c.label, c.direction) for name, c in core.controls.items()}
+		theirs = {name: (c.cc, c.label, c.direction) for name, c in iridium.controls.items()}
+		assert ours == theirs
+		assert (core.midi.control_change, core.midi.nrpn, core.midi.per_voice_channels) == ("learned", "none", True)
+		assert core.midi.channels is None and core.model.firmware is None
+
+	def test_two_layers_on_one_pool_of_twelve (self) -> None:
+		core = pymidiinstrumentdefs.load("waldorf/iridium_core", [CORPUS])
+
+		layer = core.parts["layer"]
+		assert (layer.count, layer.channel, layer.receives) == (2, "assigned", ("notes", "controls"))
+		assert (core.voice.polyphony, core.voice.polyphony_shared, core.voice.aftertouch) == (12, True, "poly")
+		assert core.voice.velocity is not None
+		assert (core.voice.velocity.note_on, core.voice.velocity.note_off) == ("received", None)
+
+	def test_program_change_sent_by_a_macro_and_received_on_the_faq (self) -> None:
+		core = pymidiinstrumentdefs.load("waldorf/iridium_core", [CORPUS])
+
+		change = core.midi.program_change
+		assert change is not None and (change.receives, change.sends, change.presets) == (True, True, None)
+		assert set(core.sources) == {"manual", "iridium_manual", "specification", "product_page", "faq_page"}
+		assert core.sources["faq_page"].kind == "support_article"

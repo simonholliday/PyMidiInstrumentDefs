@@ -1,0 +1,144 @@
+# **ONE CONTROLLER, FILTER CUTOFF, AND THAT ONE ROW IS THE WHOLE DIFFERENCE FROM THE TD-3.**
+# Behringer's MIDI message table for this instrument is the TD-3's with one extra row, `Bn 4A`
+# Filter Cutoff, which is controller 74. So it answers to one controller where `behringer/td_3`
+# answers to none, and because the table's channel messages read as a complete list of them, no
+# other channel message is carried.
+
+definition: 1
+
+model:
+  manufacturer: Behringer
+  name: TD-3-MO
+  # NOT RECORDED. The guide's edition, V 3.0, is the document's and not the instrument's, and the
+  # guide names no firmware version: "Please download the SYNTHTRIBE app from behringer.com. New
+  # updates will be available in the app from our cloud server when released." (guide p. 39).
+  # The TD-3's situation, from the same maker.
+
+source: >-
+  **THE QUICK START GUIDE, V 3.0, IS THE ONLY DOCUMENT READ.** The product page, which is the
+  TD-3-MO-BK's, offers three quick start guides and no full manual: this one, which the page marks
+  as multilingual, a Japanese one, and one whose file name marks it Chinese. This one prints its
+  first three steps and its Synthtribe page, among other pages, in nine languages, and its operation
+  pages, MIDI section and specifications in English only. It has 37 sheets: a single cover, pp. 2 to
+  71 two to a sheet, and an unnumbered back, so `pages_per_sheet: 2` with an offset of one. The rear
+  panel is at p. 21, the clock source at p. 38, the firmware update at p. 39, the Synthtribe
+  application at p. 60, the MIDI message table at p. 62 and the specifications at p. 66.
+
+  **THE TABLE'S CHANNEL MESSAGES READ AS A COMPLETE LIST, AND HAVE ONE CONTROLLER.** The table
+  headed "MIDI message" (guide p. 62), in the section "MIDI Information" (guide p. 62), gives five
+  columns - Status, Second, Third, Parameter, Description - and groups its rows as Channel Message
+  and SysRT. The channel messages are `8n` Note Off, `9n` Note On, `Bn 7B` All Notes Off, `Bn 4A`
+  Filter Cutoff and `En` Pitch Bend; the real-time messages are `F8` Timing Clock, `FA` Start, `FB`
+  Continue and `FC` Stop. That is every row. The page does not say the table is complete, and it is
+  not a list of everything the instrument takes: the Synthtribe application sets the instrument up
+  and updates its firmware (guide p. 60), and the table says nothing of how. But its Channel Message
+  group reads as a complete list of channel messages, kept as the TD-3's is and differing from it by
+  exactly the row this instrument's cover advertises. So **the TD-3-MO answers to one controller, 4A
+  in hexadecimal, 74**, and to no program change or pressure message, which are channel messages
+  missing from that list - the reading the TD-3's definition rests on, less this row. All Notes Off
+  is a channel mode message of the MIDI specification rather than a controller the maker publishes,
+  so it is not carried.
+
+  **THE TABLE NAMES NO DIRECTION, AND ITS ONE WORD ON IT IS "INPUT".** It has no column for what is
+  sent and what is received. Its worked examples end "Note: 1, MIDI input channel 1." (guide p. 62),
+  which is the only word on the page about which way its messages travel. So everything in it is
+  recorded as received, and nothing as sent.
+
+  **THE MAKER NAMES THE DIFFERENCE TWICE MORE.** The cover calls it an "Analog Bass Line Synthesizer
+  with VCO, MIDI-Controllable VCF and Sub-Harmonics Oscillator" (guide p. 1), and the product page
+  lists among its new features "a MIDI C/C controllable filter" (product_page). The page's feature
+  list, which says the filter frequency is fully controllable over MIDI CC, is in its script payload
+  rather than its visible text, so it is described here and not quoted.
+
+  **THE CONTROLLER'S RANGE IS NOT PRINTED.** Its row gives `xx` for the third byte and a dash for
+  Parameter, where Note On gives `[0, 7F]`, so the control keeps the format's default of 0 to 127,
+  and how a value maps to the cutoff is not said.
+
+  **THE TABLE IS PRINTED AS THE TD-3'S IS.** Within SysRT, `F8` and `FA` dash their Second, Third
+  and Parameter cells while `FB` and `FC` leave them empty, and All Notes Off is two bytes with
+  Third dashed. Unlike the TD-3's guide, which prints the table again in each of its translations,
+  this one prints its MIDI section once, in English.
+
+  **CLOCK AND TRANSPORT ARE RECEIVED, AND NOTHING SAYS THEY ARE SENT.** The table gives `F8`, `FA`,
+  `FB` and `FC` (guide p. 62). The clock source is set on the selector switches: "Selector switches
+  1, 2, 3, or 4 represent clock source INT, MIDI, USB, or TRIG respectively" (guide p. 38), so MIDI
+  and USB are each a clock this instrument follows. The same page sets a clock rate on switches 5 to
+  8 without saying whether it applies to a MIDI or USB clock, and no page ties Start, Continue or
+  Stop to the clock source.
+
+  **THE DIN SOCKET IS GIVEN TWO WAYS, SO NOTHING IS CLAIMED ABOUT WHAT LEAVES IT.** The rear-panel
+  description says the MIDI OUT/THRU jack "is used to pass MIDI out, and to pass through MIDI data
+  received at the MIDI INPUT." (guide p. 21); the specifications give "MIDI In and MIDI Thru, 5-pin
+  DIN" (guide p. 66), with no output. The USB port is "capable of supporting MIDI in and out."
+  (guide p. 21), and "USB MIDI OUT - sends MIDI data to an application." (guide p. 21) without
+  saying what. The TD-3's guide disagrees with itself the same way.
+
+  **ONE VOICE.** The specifications give "Number of voices Monophonic" (guide p. 66), and the
+  product page says "While it is a monophonic instrument (one note at a time)" (product_page),
+  before the sixteen-voice Poly Chain that several units make together - a fact about a rig rather
+  than about one instrument.
+
+  **PITCH BEND IS RECEIVED, AND THE FORMAT CANNOT YET SAY SO.** The table gives `En` with a 14-bit
+  value in `[0, 3FFF]` (guide p. 62) and no depth. `voice.pitch_bend` carries a depth and whether it
+  can be set, and neither is printed, so reception is recorded in this sentence instead, as the
+  TD-3's is.
+
+  **NOT RECORDED**: the MIDI channel, because no page prints a range or names a setting - the
+  table's examples end "Note: 1, MIDI input channel 1." (guide p. 62), an example rather than a
+  statement - while the page's script-payload feature list claims a MIDI channel and Voice Priority
+  selection, described and not quoted for the reason above; velocity, since the note rows carry a
+  `vv` byte in `[0, 7F]` and no page says what the instrument does with it; the note range; how far
+  pitch bend bends; and system exclusive, for the reason given beside `midi`.
+
+sources:
+  guide:
+    kind: manual
+    title: Quick Start Guide TD-3-MO
+    edition: V 3.0
+    landing: "https://www.behringer.com/en/products/0718-ABX"
+    url: "https://cdn-media.empowertribe.com/0bb5115060fa46eabc939cefcac50001/QSG_BE_0718-ABX_TD-3-MO_WW.pdf"
+    sha256: 1f9607424ca8bbfad831cbebe650bc23be0353e2437123ddfc13f05430752a3d
+    retrieved: 2026-10-10
+    page_offset: 1
+    pages_per_sheet: 2
+    # 37 sheets: a single cover, printed pp. 2 to 71 two to a sheet, and an unnumbered back. The
+    # same bytes as the copy fetched on 2026-10-03 for the TD-3's definition.
+  product_page:
+    kind: product_page
+    title: TD-3-MO-BK | Behringer
+    landing: "https://www.behringer.com/en/products/0718-ABX"
+    url: "https://www.behringer.com/en/products/0718-ABX"
+    sha256: f92ef4798c922b323c4a0e9612db820fe528a8980cb0b8dafe77ae5cdd3daf9b
+    retrieved: 2026-10-10
+    paginated: false
+    # The visible text of the page, the TD-3-MO-BK's, the same bytes as on 2026-10-03. Its feature
+    # and download lists are in the script payload of the HTML and are not in this text.
+
+midi:
+  # NOT RECORDED, the channel range: see the account. Received: `F8` Timing Clock, `FA` Start, `FB`
+  # Continue and `FC` Stop (guide p. 62), the clock followed when its source is MIDI or USB
+  # (guide p. 38). Nothing published says either is sent.
+  clock: receives
+  transport: receives
+  program_change:
+    # No `Cn` row among the table's channel messages (guide p. 62), which read as a complete list:
+    # see the account.
+    receives: false
+  # `control_change` is left unset because a map is published: the one controller below.
+  # NOT RECORDED, system exclusive. The guide never uses the word, and its table is not a list of
+  # everything the instrument takes: the Synthtribe application sets the instrument up and updates
+  # its firmware (guide p. 60), and no page says over which connection or in what form. What it
+  # sends is undocumented, not absent, as for the TD-3.
+
+voice:
+  addressing: pitches
+  # "Number of voices Monophonic" (guide p. 66).
+  polyphony: 1
+  # No `An` or `Dn` row among the table's channel messages (guide p. 62), which read as a complete
+  # list: see the account.
+  aftertouch: none
+
+controls:
+  # `Bn 4A xx` Filter Cutoff (guide p. 62): controller 74, its range not printed. Received, as
+  # everything in the table is recorded; nothing says it is sent.
+  filter_cutoff: {label: Filter Cutoff, cc: 74, direction: receives}

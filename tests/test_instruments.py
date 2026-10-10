@@ -175,6 +175,7 @@ class TestBundledCorpus:
 			"behringer/rd_6",
 			"behringer/rd_9",
 			"behringer/td_3",
+			"behringer/td_3_mo",
 			"behringer/ub_xa",
 			"dirtywave/m8",
 			"dreadbox/artemis",
@@ -19603,3 +19604,31 @@ class TestThirdWaveDesktops:
 		for wave in (module, eight):
 			assert wave.model.firmware == "2.0c"
 			assert (wave.midi.nrpn, wave.midi.clock, wave.midi.transport) == ("preferred", "both", "receives")
+
+
+class TestTD3MO:
+
+	"""The TD-3's table with one row more, and that row is the one control."""
+
+	def test_one_controller_and_the_rest_as_the_td_3 (self) -> None:
+		mo = pymidiinstrumentdefs.load("behringer/td_3_mo", [CORPUS])
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert list(mo.controls) == ["filter_cutoff"]
+		cutoff = mo.controls["filter_cutoff"]
+		assert (cutoff.cc, cutoff.label, cutoff.direction, cutoff.range) == (74, "Filter Cutoff", "receives", (0, 127))
+		assert not td3.controls and td3.midi.control_change == "none" and mo.midi.control_change is None
+		assert (mo.midi.clock, mo.midi.transport) == (td3.midi.clock, td3.midi.transport) == ("receives", "receives")
+		assert mo.midi.program_change is not None and mo.midi.program_change.receives is False
+		assert (mo.voice.polyphony, mo.voice.aftertouch) == (td3.voice.polyphony, td3.voice.aftertouch) == (1, "none")
+		assert mo.midi.channels is None and mo.model.firmware is None
+
+	def test_the_guide_and_the_page_it_comes_from (self) -> None:
+		mo = pymidiinstrumentdefs.load("behringer/td_3_mo", [CORPUS])
+		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
+
+		assert set(mo.sources) == {"guide", "product_page"}
+		assert mo.sources["guide"].sha256 == td3.sources["mo_guide"].sha256
+		assert mo.sources["guide"].file_page(62) == 32
+		account = " ".join((mo.source or "").split())
+		assert "**THE TABLE'S CHANNEL MESSAGES READ AS A COMPLETE LIST, AND HAVE ONE CONTROLLER.**" in account

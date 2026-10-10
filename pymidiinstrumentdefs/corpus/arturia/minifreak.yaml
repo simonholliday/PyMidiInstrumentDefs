@@ -59,11 +59,12 @@ source: >-
   the manual in either extraction mode, and a silence in a user manual is not a statement
   that the instrument has none - this one exchanges whole samples with its own software over
   USB and never says how.
-  Aftertouch is the asymmetry here, and the single field cannot hold it: "The keyboard sends
-  monophonic aftertouch messages, where all sounding voices are modulated by the same
-  amount", while "When receiving external MIDI, the MiniFreak's sound engine is compatible
-  with polyphonic aftertouch MIDI messages" (manual p. 86). The field says which kind is
-  answered to, so it says poly, and what it sends is in a comment.
+  Aftertouch is the asymmetry here: "The keyboard sends monophonic aftertouch messages, where
+  all sounding voices are modulated by the same amount" (manual p. 86), while "When receiving
+  external MIDI, the MiniFreak's sound engine is compatible with polyphonic aftertouch MIDI
+  messages" (manual p. 86). So `aftertouch` is poly, for what it answers to, and
+  `aftertouch_transmits` is true, for the fact that it sends; the kind it sends has no field,
+  and is in a comment beside the flag.
   CC 64 does more than the chart says. The release notes, version 2.0.0: "Hold now sends
   CC64 with value of 1 when Arp/Seq is enabled, and holds Sequencer but does not Sustain".
   The chart lists CC 64 as Pedals | Sustain and says nothing of the Hold button or of the
@@ -190,14 +191,16 @@ voice:
   # sends. What the sound engine does with velocity arriving over MIDI is never stated,
   # though the same page states the equivalent for aftertouch, so the silence is not for
   # want of a place to say it.
-  # The field says which kind is answered to. "When receiving external MIDI, the MiniFreak's
-  # sound engine is compatible with polyphonic aftertouch MIDI messages, where aftertouch
-  # modulation is applied in different amounts to each note individually" (p. 86), and the
-  # release notes date "Improved Poly Aftertouch support" to firmware 2.0.0. What it sends
-  # is the other kind: "The keyboard sends monophonic aftertouch messages, where all
-  # sounding voices are modulated by the same amount" (p. 86). Whether incoming channel
+  # What it answers to: "When receiving external MIDI, the MiniFreak's sound engine is
+  # compatible with polyphonic aftertouch MIDI messages, where aftertouch modulation is
+  # applied in different amounts to each note individually" (p. 86), and the release notes
+  # date "Improved Poly Aftertouch support" to firmware 2.0.0. Whether incoming channel
   # aftertouch is answered to as well is not stated anywhere.
   aftertouch: poly
+  # What it sends is the other kind, which the flag does not say: "The keyboard sends
+  # monophonic aftertouch messages, where all sounding voices are modulated by the same
+  # amount" (p. 86).
+  aftertouch_transmits: true
   pitch_bend:
     programmable: true   # "Bend Range: sets the range of pitch bend messages from MIDI or
                          # the Touch Strips, in semitones" (p. 84), "a Bend Range parameter

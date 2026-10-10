@@ -1641,6 +1641,9 @@ class TestAftertouch:
 			"akai/mpc_xl": ("both", True),
 			"akai/mpc_key_37": ("both", True),
 			"ableton/move": ("poly", True),
+			"arturia/minifreak": ("poly", True),
+			"arturia/polybrute_12": ("poly", True),
+			"arturia/microfreak": (None, True),
 		}
 
 

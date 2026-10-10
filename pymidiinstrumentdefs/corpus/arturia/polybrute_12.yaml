@@ -323,6 +323,11 @@ voice:
   # FullTouch is pressure over the whole of the key's travel and Classic AT is pressure past the
   # key stop, and a mode chooses which of them reaches which modulation lane.
   aftertouch: poly
+  # SENT IN EVERY MODE, by the MPE OUT table (manual p. 106): without MPE, `Aftertouch (Poly)` in
+  # four of the five modes and Channel Pressure in Mono AT; with MPE set to send, Channel Pressure
+  # in all five, one channel per note by the sentence quoted above (manual p. 118). The flag says
+  # only that it sends, so the kind is here.
+  aftertouch_transmits: true
   pitch_bend:
     # TWENTY-FOUR IS AS FAR AS THE WHEEL GOES, AND THE SIBLING'S MANUAL NEVER SAID: "Use [Assign
     # 1-8] to set the bend range for the Pitch wheel. Maximum range is +/- 24 semitones (+/-2

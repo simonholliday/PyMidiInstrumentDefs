@@ -292,8 +292,13 @@ class Voice:
 	is nobody having recorded it.  How a player divides a shared pool, where the
 	instrument lets them, is a setting and belongs to their project.
 
-	``addressing`` is ``relative`` for an instrument that reads a note as an
-	offset from ``reference_note`` rather than as a pitch.  ``note_map`` is
+	``addressing`` says how a note's number is read: ``pitches``, ``voices``
+	through the ``voices`` map, ``relative`` for an instrument that reads a note
+	as an offset from ``reference_note``, ``any`` for one that takes notes and
+	reads nothing from their number, and ``none`` for one that answers to no
+	notes at all.  The last two want opposite things from a panel: a volca drum
+	sounds the part whose channel carried the note whatever its number, so every
+	key of a grid does the same thing, while a DFAM should get no grid.  ``note_map`` is
 	``learned`` where notes are assigned by MIDI learn, in which case any
 	``voices`` given are the factory defaults rather than fixed facts.
 	"""

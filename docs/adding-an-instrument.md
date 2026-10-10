@@ -347,6 +347,12 @@ voice:
   polyphony: 1
 ```
 
+**`addressing: none` is an instrument no note reaches; `any` is one that takes every note
+and reads nothing from its number.** A volca drum's chart recognises notes 0 to 127 and
+remarks "Each sound does not correspond to a note number": the channel picks the part, and
+the note says nothing more. That is `any`. Keep `none` for the DFAM's case, where there is
+nothing to send a note to.
+
 **For `nrpn`, a chart that lists every controller number is a search of every page.** An
 NRPN travels on controllers 98 and 99, with its value on 6 and 38, and its registered
 counterpart, the RPN, travels on 100 and 101 with the same two for its value. So where a

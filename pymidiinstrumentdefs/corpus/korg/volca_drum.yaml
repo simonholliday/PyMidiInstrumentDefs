@@ -90,8 +90,8 @@ source: >-
 
   NOTES REACH A PART WITHOUT NAMING ONE. The chart recognises note numbers 0 to 127 and remarks
   "Each sound does not correspond to a note number", so the channel says which part sounds and
-  the note number says nothing at all. That is why `addressing` is `none` on a part that
-  nevertheless receives notes.
+  the note number says nothing at all. That is why `addressing` is `any`: the part takes every
+  note, and no note says more than another.
 
   NOT RECORDED: which channel carries the four resonator controls. The resonator is shared -
   "each part has two identical layers and the waveguide resonator is shared for all parts"
@@ -225,12 +225,12 @@ parts:
     channel_offset: 0
     # A note reaches the part whose channel carried it and the note number means nothing: the
     # chart recognises 0 to 127 and remarks "Each sound does not correspond to a note number".
-    # So this is a part that takes notes and has no note map, which is what `none` says here.
-    addressing: none
+    # So this is a part that takes notes and reads nothing from their number, which is `any`.
+    addressing: any
     receives: [notes, controls]
 
 voice:
-  addressing: none
+  addressing: any
   # "Note Number 0-127" recognised, transmitted nothing (chart).
   note_range: [0, 127]
   # NOT RECORDED: polyphony, for a part or for the instrument. The specification counts the

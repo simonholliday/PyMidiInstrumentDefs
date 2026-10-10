@@ -159,12 +159,12 @@ parts:
     channel_offset: 0
     # A note reaches the part whose channel carried it and the note number means nothing: the
     # chart recognises 0 to 127 and remarks "Each sound does not correspond to a note number."
-    # (chart). So this is a part that takes notes and has no note map, which is what `none` says.
-    addressing: none
+    # (chart). So this is a part that takes notes and reads nothing from their number: `any`.
+    addressing: any
     receives: [notes, controls]
 
 voice:
-  addressing: none
+  addressing: any
   # `0 - 127` in the Recognized column, with the Transmitted column starred and True Voice
   # starred in both (chart).
   note_range: [0, 127]

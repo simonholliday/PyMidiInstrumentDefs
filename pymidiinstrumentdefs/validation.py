@@ -34,7 +34,7 @@ VERSION: typing.Final[int] = 1
 # the grammar the project definition files already use.
 NAME: typing.Final[re.Pattern[str]] = re.compile(r"[a-z][a-z0-9_]*")
 
-_ADDRESSING: typing.Final[frozenset[str]] = frozenset({"pitches", "voices", "relative", "none"})
+_ADDRESSING: typing.Final[frozenset[str]] = frozenset({"pitches", "voices", "relative", "any", "none"})
 
 _NOTE_MAPS: typing.Final[frozenset[str]] = frozenset({"fixed", "learned"})
 

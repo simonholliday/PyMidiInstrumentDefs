@@ -1567,6 +1567,25 @@ class TestChartWords:
 		assert "voice.velocity.note_on" in str(raised.value)
 
 
+class TestAnyNote:
+
+	"""`any` takes notes and reads nothing from their number; `none` takes no notes at all."""
+
+	def test_any_note_is_a_word_for_instrument_and_part (self) -> None:
+		body = ("definition: 1\nmodel: {name: X}\nsource: hand\nvoice: {addressing: any}\n"
+			"parts: {p: {channel_offset: 0, count: 6, addressing: any, receives: [notes]}}")
+		parsed = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert (parsed.voice.addressing, parsed.parts["p"].addressing) == ("any", "any")
+
+	def test_the_corpus_tells_the_two_apart (self) -> None:
+		"""The volcas take every note and read none; the DFAM answers to no note at all."""
+		said = {name: pymidiinstrumentdefs.load(name, [CORPUS]).voice.addressing
+			for name in ("korg/volca_drum", "korg/volca_sample", "moog/dfam")}
+
+		assert said == {"korg/volca_drum": "any", "korg/volca_sample": "any", "moog/dfam": "none"}
+
+
 class TestRelativeNotes:
 
 	def test_a_relative_instrument_names_the_note_its_offsets_are_from (self) -> None:
@@ -3916,8 +3935,8 @@ class TestVolcaDrum:
 		"""It answers to every note number, and the number picks nothing."""
 		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
 
-		assert volca.voice.addressing == "none"
-		assert volca.parts["part"].addressing == "none"
+		assert volca.voice.addressing == "any"
+		assert volca.parts["part"].addressing == "any"
 		assert volca.parts["part"].takes("notes")
 
 		assert volca.voice.note_range == (0, 127)
@@ -15884,8 +15903,8 @@ class TestVolcaSample:
 		assert list(volca.parts) == ["part"]
 		assert volca.parts["part"].count == 10
 		assert volca.parts["part"].channel_offset == 0
-		assert volca.parts["part"].addressing == "none"
-		assert volca.voice.addressing == "none"
+		assert volca.parts["part"].addressing == "any"
+		assert volca.voice.addressing == "any"
 
 		# Ten parts over eight notes, so they cannot all sound at once.
 		assert volca.voice.polyphony == 8

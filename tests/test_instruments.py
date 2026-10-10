@@ -15704,31 +15704,31 @@ class TestVolcaFM:
 		assert "**ITS IMPLEMENTATION IS A TEXT FILE.**" in flat
 		assert "`korg/electribe` and `korg/minilogue` were each read from one here before this was" in flat
 
-	def test_one_value_table_is_carried_and_one_is_not (self) -> None:
-		"""Because one column is coherent and the other table has neither."""
+	def test_neither_value_table_is_carried (self) -> None:
+		"""Because ARP DIV's two columns are two partitions that disagree, and ARP TYPE's are neither."""
 		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
 
-		# ARP DIV's decimals partition 0 to 127 exactly, so they are carried.
-		bands = volca.controls["arp_div"].values
-
-		assert bands == {"one_twelfth": 0, "one_eighth": 12, "one_quarter": 24, "one_third": 36,
-			"one_half": 47, "two_thirds": 59, "one": 70, "three_halves": 82, "two": 94,
-			"three": 105, "four": 117}
-
-		# **AND ARP TYPE CARRIES NOTHING**, because no reading of its table is a partition.
-		assert not volca.controls["arp_type"].values
-		assert not volca.controls["arp_type"].choices
+		# ARP DIV's decimal and hexadecimal columns each partition 0 to 127 and put one boundary in
+		# two places, 36 and 35, with nothing to say which is right. It once carried the decimals,
+		# reading the two hexadecimal ends as typos; that was a choice the document does not make.
+		# ARP TYPE's table is no partition either way.
+		for name in ("arp_div", "arp_type"):
+			assert not volca.controls[name].values
+			assert not volca.controls[name].choices
 
 		flat = " ".join(prose_of("korg", "volca_fm").split())
 
-		assert "**ARP DIV's decimal column is coherent and its hexadecimal has two typos.**" in flat
+		assert "**ARP DIV's two columns are each a whole partition of 0 to 127, and they disagree on" \
+			" one boundary.**" in flat
+		assert "the decimals put it between 35 and 36 and the hexadecimal between 34 and 35" in flat
 		assert "**ARP TYPE's columns are both incoherent, so neither is carried.**" in flat
 		assert "**the decimal column overlaps itself**: the ninth row ends at 115 and the tenth" \
 			" begins at 104" in flat
 
-		# The ten names are recorded even though the numbers are not.
+		# The names are recorded even though the numbers are not, ten and eleven.
 		assert "`OFF`, `RISE1`, `RISE2`, `RISE3`, `FALL1`, `FALL2`, `FALL3`, `RAND1`, `RAND2`," \
 			" `RAND3`" in flat
+		assert "`1/12`, `1/8`, `1/4`, `1/3`, `1/2`, `2/3`, `1/1`, `3/2`, `2/1`, `3/1`, `4/1`" in flat
 
 	def test_one_number_means_two_things_and_the_documents_disagree (self) -> None:
 		"""So the label is the chart's single row and the rest is written down."""

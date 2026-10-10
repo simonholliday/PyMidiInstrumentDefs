@@ -11,9 +11,11 @@
 # **AND A VALUE TABLE IN IT DOES NOT AGREE WITH ITSELF.** Each control's bands are given twice
 # over, in hexadecimal and in decimal, and for two controls the two columns disagree:
 #
-#   **ARP DIV's decimal column is coherent and its hexadecimal has two typos.** The decimals run
-#   0 to 127 with no gap and no overlap; `18 (24) ~ 22 (35)` and `23 (36) ~ 2E (46)` have hex ends
-#   one out either side of a boundary the decimals place cleanly. So the decimals are carried.
+#   **ARP DIV's two columns are each a whole partition of 0 to 127, and they disagree on one
+#   boundary.** In `18 (24) ~ 22 (35)` and `23 (36) ~ 2E (46)` the decimals put it between 35 and
+#   36 and the hexadecimal between 34 and 35, and every other row's two columns agree. The table
+#   states that boundary two ways and says nothing of which is right, so this file records eleven
+#   band names and no numbers for them, as for ARP TYPE.
 #
 #   **ARP TYPE's columns are both incoherent, so neither is carried.** Four of its ten rows have a
 #   hexadecimal low end that is not its decimal - `40 (58)`, `50 (74)`, `60 (90)`, `74 (104)` -
@@ -279,13 +281,9 @@ controls:
   # itself - see the comment above the definition. The ten the maker names, in order: `OFF`,
   # `RISE1`, `RISE2`, `RISE3`, `FALL1`, `FALL2`, `FALL3`, `RAND1`, `RAND2`, `RAND3`.
   arp_type:          {label: ARP TYPE, cc: 49, direction: receives, group: arpeggiator}
-  # **AND ELEVEN THAT DO HAVE NUMBERS**, from the decimal column of a table whose hexadecimal has
-  # two typos in it. The decimals partition 0 to 127 exactly.
-  # **The maker prints them as ratios** - `1/12`, `1/8`, `1/4`, `1/3`, `1/2`, `2/3`, `1/1`, `3/2`,
-  # `2/1`, `3/1`, `4/1` - which this format's value names cannot be, so each is written out. They
-  # are rates against the step rather than note lengths, which is why they are not `quarter_note`
-  # and its kind.
-  arp_div:           {label: ARP DIV, cc: 50, direction: receives, group: arpeggiator,
-                      values: {one_twelfth: 0, one_eighth: 12, one_quarter: 24, one_third: 36,
-                               one_half: 47, two_thirds: 59, one: 70, three_halves: 82,
-                               two: 94, three: 105, four: 117}}
+  # **AND ELEVEN BANDS AND NO NUMBERS FOR THEM EITHER**, because the table's two columns put one
+  # boundary in two places - see the comment above the definition. The eleven the maker names, in
+  # order, are ratios: `1/12`, `1/8`, `1/4`, `1/3`, `1/2`, `2/3`, `1/1`, `3/2`, `2/1`, `3/1`,
+  # `4/1`, rates against the step rather than note lengths. By the decimal column the bands start
+  # at 0, 12, 24, 36, 47, 59, 70, 82, 94, 105 and 117; by the hexadecimal the fourth starts at 35.
+  arp_div:           {label: ARP DIV, cc: 50, direction: receives, group: arpeggiator}

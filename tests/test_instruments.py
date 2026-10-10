@@ -155,6 +155,7 @@ class TestBundledCorpus:
 			"akai/mpc_xl",
 			"alesis/sr_16",
 			"arturia/astrolab",
+			"arturia/astrolab_37",
 			"arturia/drumbrute",
 			"arturia/drumbrute_impact",
 			"arturia/matrixbrute",
@@ -18860,3 +18861,36 @@ class TestBlackbox:
 		account = " ".join((box.source or "").split())
 		assert "**NO ONE FIGURE IS THE POLYPHONY, SO NONE IS RECORDED.**" in account
 		assert "**The manual gives its channel two ways**" in account
+
+
+class TestAstroLab37:
+
+	"""The AstroLab 61's table less its two looper rows, from the 37's own manual."""
+
+	def test_the_61_s_controls_less_start_record_and_play_stop (self) -> None:
+		small = pymidiinstrumentdefs.load("arturia/astrolab_37", [CORPUS])
+		large = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
+
+		ours = {name: (c.cc, c.label, c.direction, c.group) for name, c in small.controls.items()}
+		theirs = {name: (c.cc, c.label, c.direction, c.group) for name, c in large.controls.items()}
+		assert len(ours) == 34 and set(theirs) - set(ours) == {"start_record", "play_stop"}
+		assert all(theirs[name] == value for name, value in ours.items())
+		directions = [c.direction for c in small.controls.values()]
+		assert (directions.count("both"), directions.count("receives")) == (13, 21)
+		assert 7 not in {c.cc for c in small.controls.values()}
+
+	def test_two_parts_channel_aftertouch_and_no_program_change (self) -> None:
+		small = pymidiinstrumentdefs.load("arturia/astrolab_37", [CORPUS])
+
+		assert (small.parts["part"].count, small.parts["part"].channel) == (2, "assigned")
+		assert (small.voice.aftertouch, small.voice.polyphony, small.voice.polyphony_shared) == ("channel", None, False)
+		assert small.voice.velocity is None and small.midi.program_change is None
+		assert (small.midi.clock, small.midi.transport, small.midi.channels) == ("receives", "receives", (1, 16))
+
+	def test_the_2_0_0_manual_and_firmware (self) -> None:
+		small = pymidiinstrumentdefs.load("arturia/astrolab_37", [CORPUS])
+
+		assert small.model.firmware == "2.0.0" and small.sources["manual"].edition == "2.0.0"
+		assert small.sources["manual"].file_page(91) == 96 and small.sources["manual_1_0_0"].file_page(81) == 86
+		account = " ".join((small.source or "").split())
+		assert "**THREE PEDAL ROWS, ONE PEDAL INPUT.**" in account

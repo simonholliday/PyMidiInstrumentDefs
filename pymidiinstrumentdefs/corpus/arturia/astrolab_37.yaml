@@ -1,0 +1,278 @@
+# **THE ASTROLAB 61'S TABLE LESS TWO ROWS.** "11.3. AstroLab 37 MIDI Implementation"
+# (manual pp. 91-92) prints the same five columns as `arturia/astrolab`'s, row for row, without
+# Start Record (108) and Play / Stop (109) - the two looper rows, on an instrument whose manual
+# describes no looper. Thirty-five rows; thirty-four are carried, for the reason the 61's file gives
+# for Master Volume.
+#
+# **ITS MANUAL IS 2.0.0, AND THE 1.0.0 MANUAL ARTURIA SERVES PRINTS THE SAME TABLE.** Arturia
+# published firmware 2.0.0 for all three AstroLabs on 2026-10-01 and a 2.0.0 manual for this one on
+# 2026-10-06. The table did not change between the two editions.
+#
+# **THREE PEDAL ROWS FOR AN INSTRUMENT WITH ONE PEDAL INPUT.** The table sends and receives
+# Expression, Aux 1 and Aux 2, where the rear panel has a sustain input and no other pedal input.
+# They are carried as printed and doubted in the account.
+
+definition: 1
+
+model:
+  manufacturer: Arturia
+  name: AstroLab 37
+  # **2.0.0, RELEASED 2026-10-01, AND THE MANUAL IS WRITTEN FOR IT**: "AstroLab 37 Firmware"
+  # (resources_page), "Version 2.0.0" (resources_page), and the manual's Sound Edit section opens
+  # "With the version 2 software" (manual p. 42). The release notes for 2.0.0 name no controller
+  # number (release_notes). The manual's update section still shows the firmware readout as
+  # `i.e. 1.7.0` (manual p. 100), an example left from the edition before; every MIDI fact here is
+  # the 2.0.0 manual's.
+  firmware: "2.0.0"
+
+source: >-
+  **THE ASTROLAB 37 HAS A MANUAL OF ITS OWN, AND ITS TABLE IS THE 61'S LESS TWO ROWS.** The User
+  Manual AstroLab 37, edition 2.0.0, prints "11.3. AstroLab 37 MIDI Implementation" (manual p. 91)
+  over two pages (manual pp. 91-92), under "Section Parameter MIDI CC Sending Receiving"
+  (manual p. 91): thirty-five rows from Mod Wheel on 1 to Reverb On/Off on 115. **It is
+  `arturia/astrolab`'s table for the 61 and the 88 without Start Record on 108 and Play / Stop on
+  109**, every other row alike in all five columns, the Section column's six labels and its stray
+  `n/a.` on Fader 1 included. The two missing rows are the looper's, and this manual describes no
+  looper. Arturia publishes no MIDI implementation document for it; its other documents are cheat
+  sheets.
+
+  **THE 1.0.0 MANUAL PRINTS THE SAME THIRTY-FIVE ROWS.** The edition before, which Arturia still
+  serves and has served under that number as three different files, prints the same table
+  (manual_1_0_0 pp. 81-82) in the one file read, the third, revised in July 2026 - so the map has
+  not changed between that file and the one written for firmware 2.0.0.
+
+  THE SECTION COLUMN IS NOT A GROUPING, AS ON THE 61. Six rows carry a label and the rest leave the
+  cell blank, in controller-number order, so the groups below come from what the manual's body says
+  each control is, exactly as in `arturia/astrolab`.
+
+  THE FOUR DIRECTION WORDS, READ AS THE 61'S ARE. No page defines them. `Always` and `Never` are
+  plain; `n/a` appears only against the nine Faders, Fader 1's printed `n/a.`; and `Not linked` is
+  read from what Link does: "Changes made in AstroLab 37’s Macro and Effects controls are sent to
+  Analog Lab." (manual p. 93), and the seven `Not linked` rows are exactly the four Macros, FX A, FX
+  B and Reverb. The MIDI Out Filter fits it: "Auto When AstroLab 37 and Analog Lab are Linked, the
+  MIDI Out Filter switches to Keyboard Only." (manual p. 29), where "Keyboard only Only the notes
+  played on the AstroLab 37 keyboard are transmitted via MIDI Out." (manual p. 29). So a
+  `Not linked` row is read as sent as a controller whenever the instrument is not mirroring its
+  software, and is `both`; taken literally, the Filter's note-only wording would silence the
+  `Always` rows too, so it is not read that far. Why Delay on 19 is `Always` where Reverb on 16, its
+  fellow send, is `Not linked`, no page says. This manual adds a switch the 61's lacks: "Knob Send
+  CC When On, turning a knob in AstroLab 37 will send a MIDI Control Change message."
+  (manual p. 29). The counts: 13 both, 21 receives, and Master Volume on 7, printed `Never` and
+  `Never`, not carried because the format has no direction for a control that travels neither way.
+
+  **THREE PEDAL ROWS, ONE PEDAL INPUT.** The table prints Expression on 11, Aux 1 on 12 and Aux 2 on
+  13 as `Always` sent and `Always` received. But the rear panel's only pedal jack is "Sustain Pedal
+  input" (manual p. 16), which "Accepts sustain pedal with TS or TRS connector" (manual p. 16), and
+  the feature list names "Sustain Pedal input." (manual p. 12) and no other. The body mentions an
+  Aux pedal once, in the Arpeggiator - "Hold can also be activated by the Sustain pedal or added as
+  a function to an Aux pedal." (manual p. 63) - and a Part's switches include the "Expression Pedal"
+  (manual p. 36), both as on the 61. So the three rows are carried as printed, and **that this
+  instrument sends them is doubted here**: nothing on it is described that could. A controller on
+  the USB-A port, which can play AstroLab 37, is one way they could arrive.
+
+  FOUR CONTROLLER NUMBERS ARE STATED TWICE, AS ON THE 61. "The MIDI Continuous Controller (CC)
+  messages sent by the Macro knobs are, left to right: 74, 71, 76, and 77." (manual p. 40), against
+  "The four Macro knobs are Brightness, Timbre, Time, and Movement" (manual p. 40); the table gives
+  Brightness 74, Timbre 71, Time 76 and Movement 77, and the two agree on the numbers. The note says
+  they are sent with no condition, where the table marks all four `Not linked` and Knob Send CC can
+  be turned off; the definition follows the table.
+
+  NINE FADERS THE MANUAL DOES NOT EXPLAIN. Fader 1 to Fader 9 take 73, 75, 79, 72, 80, 81, 82, 83
+  and 85, each `n/a` sending and `Always` receiving. The word appears elsewhere only as the Sound
+  Edit icon of "3 faders" (manual p. 41) and as display names on one instrument's Sound Edit page in
+  the appendix (manual p. 109), neither of which is these controls. They are below as published, and
+  what they are is left unrecorded.
+
+  **ONE CHANNEL FOR A SECOND CONTROLLER, AND A CHANNEL PAIR FOR EACH PART.** The keyboard's own
+  channel is fixed - "Main MIDI Channel This is the channel where the AstroLab 37 keyboard in
+  sending data. This cannot be changed." (manual p. 28), the maker's own wording - while the
+  "Secondary MIDI Channel" (manual p. 28) "selects the receive channel for a connected MIDI
+  controller (1–16 or All), which can be seen as the secondary keyboard." (manual p. 28). Each Part
+  has its own: "Part 1: Here you can set the Low Note and High Note limits, MIDI input and output
+  channels, and Octave and Semitone Transpose." (manual p. 36). So the two Parts are one part,
+  `channel: assigned`, as on the 61 - a section, MIDI and Splits, that the 1.0.0 manual does not
+  have. **The manual says the transmit channel two ways**, as the 61's does: fixed on p. 28, and
+  settable as "Keyboard Channel Here you can set the MIDI Output channel of the AstroLab 37"
+  (manual p. 29). Nothing here records a transmit channel. **And it says the receive channels two
+  ways**: the Secondary MIDI Channel "filters out all incoming data and only allows MIDI messages
+  corresponding to the selected channel." (manual p. 28), while each Part has its own input channel
+  and B-3 V presets need three channels at once, the upper keyboard on 1, the lower on 2 and the
+  pedals on 3 (manual p. 29). `channels` records 1 to 16, the one range printed, the Secondary
+  channel's, without its All; the Parts' range is not printed.
+
+  POLYPHONY BELONGS TO THE LOADED ENGINE, FROM 1 TO 48, AND THE PARTS DO NOT SHARE: "These are
+  voices per part, meaning that if you load, for example, a Multi consisting of a Mini V and
+  Prophet-5 V, you can play 16 voices on each part." (manual p. 39). The manual's own figures
+  disagree in places - the example's Mini V is listed at 6 voices (manual p. 37), and a later page
+  gives "8 voices for poly synths" (manual p. 96) against a table with 16, 12, 6 and 4 - and the
+  2.0.0 notes change Synthx and Sampler polyphony. No figure is recorded, and `polyphony_shared` is
+  false.
+
+  **CHANNEL AFTERTOUCH, STATED THIS TIME**: "AstroLab 37’s keyboard features 37 Slim Keys that sense
+  both velocity and channel aftertouch." (manual p. 17). The 61's manual leaves the word
+  unqualified; this one does not. It is said of the keyboard; that the sounds answer to it is read
+  from each Part's Aftertouch switch (manual p. 36).
+
+  CLOCK IS RECEIVED, AND START IS SAID ONCE. "USB: AstroLab 37 syncs to incoming MIDI clock over
+  USB." (manual p. 62) and "MIDI: AstroLab 37 syncs to incoming MIDI clock over the 5-pin MIDI
+  input." (manual p. 62), with "If a MIDI start message is detected, playback resumes synced to the
+  external clock." (manual p. 62). Clock is followed only when "Tempo Sync: This toggle enables or
+  disables syncing tempo to external devices." (manual p. 27) is on. The start sentence is the only
+  one about transport, under Auto sync, and "playback" there names nothing this manual describes -
+  it reads as left from the 61's looper text, whose stop sentence this manual drops - so
+  `transport: receives` is carried and doubted. No page says either is sent, and the MIDI Out
+  Filter's widest setting transmits notes.
+
+  **NOT RECORDED**: program change, which neither this manual nor the 37's release notes mention -
+  the 61's evidence for it is its own release notes, from versions before the 37's first, and the
+  resources page's "MIDI program change support" (resources_page) is in a blurb about the AstroLab
+  1.5 update; how incoming velocity is treated, since the keys "sense both velocity and channel
+  aftertouch" (manual p. 17) and no page says what an incoming velocity does; the note range; pitch
+  bend's range and whether it can be set, a Part's switch turning bend on or off (manual p. 36)
+  being neither, so `pitch_bend` is left out; `mode`, system exclusive and NRPN, which no page
+  mentions.
+
+sources:
+  manual:
+    kind: manual
+    title: User Manual AstroLab 37
+    edition: "2.0.0"
+    dated: 2026-10-06
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/download/products/astrolab-37/manual/astrolab-37_Manual_2_0_0_EN.pdf"
+    sha256: fa2655fccbfa9e98e92289f5705fd849fd909ca8cf6f1334715ff7b5832d5d97
+    retrieved: 2026-10-10
+    # 131 pages. The printed number is five lower than the file's page: the table is printed pages
+    # 91 and 92, file pages 96 and 97.
+    page_offset: 5
+  manual_1_0_0:
+    kind: manual
+    title: User Manual AstroLab 37
+    edition: "1.0.0"
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/download/products/astrolab-37/manual/astrolab-37_Manual_1_0_0_EN.pdf"
+    sha256: efc1cfc7ddce5dfa7222dabb9d5ddad5d9353843c2747deeb73bf18a5c1ad8ac
+    retrieved: 2026-10-10
+    # 99 pages, the third file Arturia has served as 1.0.0 (48,915,206 bytes, `Last-Modified`
+    # 2026-07-03). Cited only to show the table unchanged; its table is printed pages 81 and 82,
+    # file pages 86 and 87.
+    page_offset: 5
+  release_notes:
+    kind: release_notes
+    title: AstroLab 37 firmware release notes, through 2.0.0
+    edition: "2.0.0"
+    dated: 2026-10-01
+    landing: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    url: "https://www.arturia.com/api/content/resources/release_notes?resource_id=52274"
+    sha256: ed7cf64a2edbbb7db75d80b632c8f7c3570b87c8e116ec9d22d503699e871d6d
+    retrieved: 2026-10-10
+    paginated: false
+    # Served as JSON from Arturia's API; the digest is of the text rendering, which the project's
+    # release-notes rendering script rebuilds byte for byte. Cumulative from "First release of
+    # AstroLab 37" (release_notes) at V 1.5.9 to V 2.0.0. The notes carry no date; `dated` is the
+    # 2.0.0 firmware's, from the resources page's data.
+  resources_page:
+    kind: download_page
+    title: Arturia - AstroLab
+    landing: "https://www.arturia.com/products/hardware-synths/"
+    url: "https://www.arturia.com/products/hardware-synths/astrolab/resources"
+    sha256: c206b9a1312d5b55d4daec2593a052723b7efbcf8f34ae2084e38ad0929d3573
+    retrieved: 2026-10-10
+    paginated: false
+    # One page for all three AstroLabs. The visible text, which `Tools/save_page.py` rebuilds from
+    # the saved HTML byte for byte; the download records with their versions, sizes and dates are in
+    # the HTML's own data.
+
+midi:
+  # The Secondary MIDI Channel, "(1–16 or All)" (manual p. 28), and each Part's MIDI input channel
+  # (manual p. 36).
+  channels: [1, 16]
+  # Received over USB or the 5-pin input when Tempo Sync is on (manual p. 27; manual p. 62); no page
+  # says it is sent.
+  clock: receives
+  # "If a MIDI start message is detected, playback resumes synced to the external clock."
+  # (manual p. 62), the one sentence; doubted in the account.
+  transport: receives
+  # NOT RECORDED: `program_change`, `mode`, `sysex` and `nrpn`; see the account.
+
+voice:
+  addressing: pitches
+  # Voices per Part, from 1 to 48 by the loaded engine (manual pp. 37-39); see the account.
+  polyphony_shared: false
+  # "37 Slim Keys that sense both velocity and channel aftertouch" (manual p. 17), of the keyboard;
+  # see the account.
+  aftertouch: channel
+  # NOT RECORDED: `pitch_bend`. A Part may be "affected by Pitch Bend" (manual p. 36) or not, which
+  # is not a settable range, and no range is given. NOT RECORDED: velocity; see the account.
+
+parts:
+  part:
+    label: Part
+    # One or two per Preset (manual p. 32), each with "MIDI input and output channels"
+    # (manual p. 36).
+    count: 2
+    channel: assigned
+    addressing: pitches
+    # Notes and controllers. A Part's switches name "Pitch Bend, Mod Wheel, Aftertouch, Sustain and
+    # Expression Pedal" (manual p. 36), two of which are not controllers and have no word in
+    # `receives`.
+    receives: [notes, controls]
+
+groups:
+  controllers: Controllers
+  pedals: Pedals
+  effects: Effects
+  macros: Macros
+  faders: Faders
+  functions: Functions
+
+controls:
+
+  # CONTROLLERS -----------------------------------------------
+  mod_wheel:                 {label: Mod Wheel, cc: 1, group: controllers}
+
+  # PEDALS ---------------------------------------------------- The table's own rows; the rear panel
+  # has a sustain input only - see the account.
+  expression:                {label: Expression, cc: 11, group: pedals}
+  aux_1:                     {label: Aux 1, cc: 12, group: pedals}
+  aux_2:                     {label: Aux 2, cc: 13, group: pedals}
+  sustain:                   {label: Sustain, cc: 64, group: pedals}
+
+  # EFFECTS ---------------------------------------------------
+  reverb:                    {label: Reverb, cc: 16, group: effects}
+  fx_b:                      {label: FX B, cc: 18, group: effects}
+  delay:                     {label: Delay, cc: 19, group: effects}
+  fx_a:                      {label: FX A, cc: 93, group: effects}
+
+  # MACROS ---------------------------------------------------- "sent by the Macro knobs are, left
+  # to right: 74, 71, 76, and 77." (manual p. 40)
+  timbre:                    {label: Timbre, cc: 71, group: macros}
+  brightness:                {label: Brightness, cc: 74, group: macros}
+  time:                      {label: Time, cc: 76, group: macros}
+  movement:                  {label: Movement, cc: 77, group: macros}
+
+  # FADERS ---------------------------------------------------- Explained nowhere - see the account.
+  fader_4:                   {label: Fader 4, cc: 72, direction: receives, group: faders}
+  fader_1:                   {label: Fader 1, cc: 73, direction: receives, group: faders}
+  fader_2:                   {label: Fader 2, cc: 75, direction: receives, group: faders}
+  fader_3:                   {label: Fader 3, cc: 79, direction: receives, group: faders}
+  fader_5:                   {label: Fader 5, cc: 80, direction: receives, group: faders}
+  fader_6:                   {label: Fader 6, cc: 81, direction: receives, group: faders}
+  fader_7:                   {label: Fader 7, cc: 82, direction: receives, group: faders}
+  fader_8:                   {label: Fader 8, cc: 83, direction: receives, group: faders}
+  fader_9:                   {label: Fader 9, cc: 85, direction: receives, group: faders}
+
+  # FUNCTIONS ------------------------------------------------- The 61's functions without Start
+  # Record and Play / Stop.
+  previous_preset:           {label: Previous Preset, cc: 102, direction: receives, group: functions}
+  next_preset:               {label: Next Preset, cc: 103, direction: receives, group: functions}
+  previous_song:             {label: Previous Song, cc: 104, direction: receives, group: functions}
+  next_song:                 {label: Next Song, cc: 105, direction: receives, group: functions}
+  arp_on_off:                {label: Arp On/Off, cc: 106, direction: receives, group: functions}
+  arp_hold:                  {label: Arp Hold, cc: 107, direction: receives, group: functions}
+  tap_tempo:                 {label: Tap Tempo, cc: 110, direction: receives, group: functions}
+  rotary_fast_on_off:        {label: Rotary Fast On/Off, cc: 111, direction: receives, group: functions}
+  fx_a_on_off:               {label: FX A On/Off, cc: 112, direction: receives, group: functions}
+  fx_b_on_off:               {label: FX B On/Off, cc: 113, direction: receives, group: functions}
+  delay_on_off:              {label: Delay On/Off, cc: 114, direction: receives, group: functions}
+  reverb_on_off:             {label: Reverb On/Off, cc: 115, direction: receives, group: functions}

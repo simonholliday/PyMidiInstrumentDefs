@@ -693,6 +693,18 @@ def uncovered (text: str, keys: typing.Iterable[str]) -> tuple[list[str], list[s
 	return unlocated, short
 
 
+def offsets (source: typing.Any) -> str:
+
+	"""A source's offset as a reader would say it: one figure, or each run's from its first page."""
+
+	runs = getattr(source, "page_runs", ())
+
+	if not runs:
+		return f"{source.page_offset:+d}"
+
+	return ", ".join(f"{run.offset:+d} from p. {run.from_printed}" for run in runs)
+
+
 def with_pages (held: list[Document]) -> list[Document]:
 
 	"""The documents a page citation could be found in at all.
@@ -832,7 +844,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 		return Tally(unchecked = len(found) + len(named), unreadable = len(unreadable), **coverage)
 
 	print(f"    {len(held)} document(s): " + ", ".join(
-		f"{d.name} [{len(d.pages)} sheets, offset {d.source.page_offset:+d}"
+		f"{d.name} [{len(d.pages)} sheets, offset {offsets(d.source)}"
 		+ (f", {d.source.pages_per_sheet} printed pages to a sheet]" if d.source.pages_per_sheet != 1 else "]")
 		for d in held))
 

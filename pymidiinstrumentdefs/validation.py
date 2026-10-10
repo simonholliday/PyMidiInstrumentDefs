@@ -61,6 +61,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 		"kind", "title", "edition", "dated", "landing", "url", "sha256", "retrieved",
 		"page_offset", "pages_per_sheet", "paginated", "pictured_pages",
 	}),
+	"sources.page_offset": frozenset({"from_printed", "offset"}),
 	"midi": frozenset({
 		"channels", "mode", "clock", "transport", "program_change", "control_change",
 		"nrpn", "sysex", "per_voice_channels",
@@ -344,6 +345,7 @@ class _Reader:
 		for name, entry in self.mapping(value, "sources").items():
 			where = f"sources.{name}"
 			fields = self.fields(entry, where, "sources")
+			offset, runs = self.page_offset(fields, where)
 
 			found[self.name(name, "sources")] = pymidiinstrumentdefs.definition.Source(
 				kind            = self.optional_text(fields, "kind", where),
@@ -354,13 +356,64 @@ class _Reader:
 				url             = self.optional_text(fields, "url", where),
 				sha256          = self.optional_text(fields, "sha256", where),
 				retrieved       = self.stamp(fields, "retrieved", where),
-				page_offset     = self.integer(fields["page_offset"], f"{where}.page_offset", -999, 999) if "page_offset" in fields else 0,
+				page_offset     = offset,
 				pages_per_sheet = self.integer(fields["pages_per_sheet"], f"{where}.pages_per_sheet", 1, 8) if "pages_per_sheet" in fields else 1,
 				paginated       = self.flag(fields["paginated"], f"{where}.paginated") if "paginated" in fields else True,
 				pictured_pages  = self.pictured_pages(fields, where),
+				page_runs       = runs,
 			)
 
 		return found
+
+
+	def page_offset (
+		self,
+		fields: dict[str, typing.Any],
+		where: str,
+	) -> tuple[int, tuple[pymidiinstrumentdefs.definition.PageRun, ...]]:
+
+		"""Read ``page_offset``: one number, or a list of ``{from_printed, offset}`` runs.
+
+		Returned as the offset a single number gives, which for runs is the first
+		run's, and the runs.  Runs must start on ascending printed pages: a reader
+		that sorted them would hide a typo that sends a citation to the wrong page.
+		"""
+
+		if "page_offset" not in fields:
+			return 0, ()
+
+		value = fields["page_offset"]
+
+		if not isinstance(value, list):
+			return self.integer(value, f"{where}.page_offset", -999, 999), ()
+
+		if not value:
+			self.refuse(f"{where}.page_offset", "is an empty list - give one number, or at least one run")
+
+		runs: list[pymidiinstrumentdefs.definition.PageRun] = []
+
+		for position, entry in enumerate(value):
+			at = f"{where}.page_offset[{position}]"
+			run = self.fields(entry, at, "sources.page_offset")
+
+			for field in ("from_printed", "offset"):
+				if field not in run:
+					self.refuse(at, f"has no {field} - a run says where it starts and what to add")
+
+			start = self.integer(run["from_printed"], f"{at}.from_printed", 1, 9999)
+
+			if runs and start <= runs[-1].from_printed:
+				self.refuse(
+					f"{at}.from_printed",
+					f"{start} does not come after {runs[-1].from_printed} - runs must ascend",
+				)
+
+			runs.append(pymidiinstrumentdefs.definition.PageRun(
+				from_printed = start,
+				offset       = self.integer(run["offset"], f"{at}.offset", -999, 999),
+			))
+
+		return runs[0].offset, tuple(runs)
 
 
 	def parts (self, value: object) -> dict[str, pymidiinstrumentdefs.definition.Part]:

@@ -634,7 +634,15 @@ cannot:
   the facts. Nothing but a hash would have shown that.
 - **`page_offset`** is what to add to a printed page to reach the page of the
   file, because there is no rule: among these manuals it is zero eleven times,
-  and it is not zero three times.
+  and it is not zero three times. Where a document numbers itself in more than
+  one run - an unnumbered page in the middle, and every page after it one further
+  from the file - give a run for each, from its first printed page:
+
+  ```yaml
+      page_offset:
+        - {from_printed: 1, offset: 4}
+        - {from_printed: 53, offset: 5}   # file page 57 prints no number
+  ```
 - **`pages_per_sheet`** is for a manual that prints two pages on one sheet, which
   no offset can express. One definition here cites pp. 62-63 of a 40-sheet file,
   and that is only not a contradiction once the sheet count is known.

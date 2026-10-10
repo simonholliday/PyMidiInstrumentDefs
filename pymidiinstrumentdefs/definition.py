@@ -519,6 +519,19 @@ class Part:
 # ── Where the facts came from ────────────────────────────────────────────────
 
 @dataclasses.dataclass(frozen=True)
+class PageRun:
+
+	"""A stretch of a document whose printed page numbers sit one distance from the file's.
+
+	``from_printed`` is the first printed page of the stretch, and ``offset`` is
+	what to add to a printed page number in it to reach the page of the file.
+	"""
+
+	from_printed: int
+	offset: int
+
+
+@dataclasses.dataclass(frozen=True)
 class Source:
 
 	"""One document the facts were read from, named so a stranger can fetch it.
@@ -537,6 +550,14 @@ class Source:
 	manuals here it has been -9, +1, 0, and one that prints two pages to a sheet.
 	A document with no pages at all - a plain-text implementation chart runs to
 	numbered sections instead - says so with ``paginated: false``.
+
+	A document can also number itself in more than one run.  An OP-XY guide's
+	printed pages 1 to 52 are file pages 5 to 56, an unnumbered overflow page
+	follows, and from printed page 53 on the file is five ahead.  So
+	``page_offset`` may be written as a list of ``{from_printed, offset}`` runs,
+	held in ``page_runs``, each applying from its first printed page until the
+	next begins.  ``page_offset`` is then the first run's, and only ``file_page``
+	is right for every page.
 
 	``pictured_pages`` names the printed pages of this document whose numbers are
 	published **only as an image**, so that a checker reading the text finds
@@ -560,6 +581,7 @@ class Source:
 	pages_per_sheet: int = 1
 	paginated: bool = True
 	pictured_pages: tuple[int, ...] = ()
+	page_runs: tuple[PageRun, ...] = ()
 
 
 	def file_page (self, printed: int) -> int | None:
@@ -567,13 +589,21 @@ class Source:
 		"""Which page of the file carries a given printed page number.
 
 		``None`` where the document has no pages, so a caller asking the question
-		is told the question does not apply rather than given a number.
+		is told the question does not apply rather than given a number.  Where the
+		document numbers itself in runs, the run a page falls in decides its
+		offset, and a page before the first run takes the first run's.
 		"""
 
 		if not self.paginated:
 			return None
 
-		return (printed + self.page_offset + self.pages_per_sheet - 1) // self.pages_per_sheet
+		offset = self.page_offset
+
+		for run in self.page_runs:
+			if printed >= run.from_printed:
+				offset = run.offset
+
+		return (printed + offset + self.pages_per_sheet - 1) // self.pages_per_sheet
 
 
 # ── The whole document ───────────────────────────────────────────────────────

@@ -67,14 +67,15 @@ source: >-
   And the website's section 10 states the voice pool and the per-track channel outright where
   the printable guide states neither anywhere in its 135 pages.
 
-  THE PRINTABLE GUIDE NUMBERS ITS PAGES IN TWO RUNS, which anybody adding a citation needs to
-  know. What to add to a printed page number to reach the page of the file is 4 up to printed
-  page 52 and 5 from printed page 53 on, because file page 57 is an unnumbered overflow of
-  section 14.6. This source records the second offset and CITES NOTHING BELOW PRINTED PAGE 53;
-  the facts that live only in the earlier run are cited from the website sections and the
-  product page instead, which have no pages at all. The guide's own index is no help: it is
-  right through section 14 and then falls behind the pages themselves by one, two, three and
-  finally five, putting section 23 on page 117 where that page prints 122.
+  THE PRINTABLE GUIDE NUMBERS ITS PAGES IN TWO RUNS, and its source records both. What to add to a
+  printed page number to reach the page of the file is 4 up to printed page 52 and 5 from printed
+  page 53 on, because file page 57 is an unnumbered overflow of section 14.6. When this definition
+  was written a source could hold one offset only, so it cited nothing below printed page 53, and
+  the facts that live only in the earlier run are cited from the website sections and the product
+  page instead, which have no pages at all. A citation of the earlier pages now turns to the right
+  page. The guide's own index is no help: it is right through section 14 and then falls behind the
+  pages themselves by one, two, three and finally five, putting section 23 on page 117 where that
+  page prints 122.
 
   THE PRINTABLE GUIDE ALSO CARRIES AN INVISIBLE SECOND TEXT LAYER, added by the maker's PDF
   tooling, which extracts alongside the real text and misreads it - "Ito" for "lfo", "ep1ano"
@@ -137,12 +138,14 @@ sources:
     url: "https://assets.teenage.engineering/_img/6a452a3b31b95d1c6dbb44bb_original.pdf"
     sha256: 8aad30661dda05ba01baf5bd0e260f9e28bfc771fb37ab5ad9b8ff66577c2d39
     retrieved: 2026-10-02
-    # PRINTED PAGE + 5 = FILE PAGE, AND ONLY FROM PRINTED PAGE 53 ON. Below that it is + 4,
+    # PRINTED PAGE + 4 = FILE PAGE UP TO PRINTED PAGE 52, AND + 5 FROM PRINTED PAGE 53 ON,
     # because file page 57 is an overflow of section 14.6 that prints no number of its own.
     # Six pages print none: the cover, three index pages, that overflow, and the back cover.
-    # The other 129 print 1 to 129 with no gap and no repeat. Nothing below printed page 53
-    # is cited from this document, deliberately - see the source paragraph.
-    page_offset: 5
+    # The other 129 print 1 to 129 with no gap and no repeat. Nothing below printed page 53 is
+    # cited from this document yet - see the source paragraph.
+    page_offset:
+      - {from_printed: 1, offset: 4}
+      - {from_printed: 53, offset: 5}
     # The version beside the link to this file is not this file's version: the maker's page
     # wraps the link in an element marked v.1.1.0 while the text beside it reads v.1.1.15,
     # and the document's own cover says 1.1.15. Identified from its contents, which on this

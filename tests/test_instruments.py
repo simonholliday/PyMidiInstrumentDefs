@@ -1960,6 +1960,52 @@ controls:
 
 class TestSources:
 
+	def test_a_document_may_number_its_pages_in_runs (self) -> None:
+		body = ("definition: 1\nmodel: {name: X}\nsource: hand\nsources: {guide: {page_offset: "
+			"[{from_printed: 1, offset: 4}, {from_printed: 53, offset: 5}]}}")
+		parsed = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+		guide = parsed.sources["guide"]
+
+		assert [guide.file_page(printed) for printed in (1, 52, 53, 129)] == [5, 56, 58, 134]
+		assert guide.page_offset == 4
+		assert parsed.warnings == ()
+
+	def test_a_page_before_the_first_run_takes_the_first_runs_offset (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsources: {m: {page_offset: [{from_printed: 5, offset: 2}]}}"
+		manual = pymidiinstrumentdefs.parse(body, source = "x.yaml").sources["m"]
+
+		assert manual.file_page(3) == 5
+
+	def test_runs_with_two_pages_to_a_sheet (self) -> None:
+		"""The runs give the offset; the sheets still halve it, exactly as for one figure."""
+		body = ("definition: 1\nmodel: {name: X}\nsources: {m: {pages_per_sheet: 2, page_offset: "
+			"[{from_printed: 1, offset: 2}, {from_printed: 30, offset: 4}]}}")
+		manual = pymidiinstrumentdefs.parse(body, source = "x.yaml").sources["m"]
+
+		assert (manual.file_page(21), manual.file_page(30)) == (12, 17)
+
+	@pytest.mark.parametrize(("runs", "where"), [
+		("[]", "sources.m.page_offset"),
+		("[{from_printed: 10, offset: 1}, {from_printed: 5, offset: 2}]", "sources.m.page_offset[1].from_printed"),
+		("[{from_printed: 10, offset: 1}, {from_printed: 10, offset: 2}]", "sources.m.page_offset[1].from_printed"),
+		("[{offset: 1}]", "sources.m.page_offset[0]"),
+		("[{from_printed: 1}]", "sources.m.page_offset[0]"),
+		("[3, 4]", "sources.m.page_offset[0]"),
+	])
+	def test_runs_that_cannot_be_followed_are_refused (self, runs: str, where: str) -> None:
+		body = f"definition: 1\nmodel: {{name: X}}\nsources: {{m: {{page_offset: {runs}}}}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert f"x.yaml: {where}: " in str(raised.value)
+
+	def test_an_unknown_key_in_a_run_warns (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nsources: {m: {page_offset: [{from_printed: 1, offset: 0, to: 9}]}}"
+
+		assert any("sources.m.page_offset[0].to" in warning
+			for warning in pymidiinstrumentdefs.parse(body, source = "x.yaml").warnings)
+
 	def test_a_citation_keeps_the_landing_page_and_the_file_apart (self) -> None:
 		"""They fail differently: the page outlives the file's address.
 
@@ -3083,18 +3129,19 @@ class TestOpXy:
 		assert paginated == ["guide"]
 		assert "midi_cc_table" in op_xy.sources
 
-	def test_the_printable_guide_turns_its_pages_by_five (self) -> None:
-		"""And is cited nowhere below printed page 53, where that stops being true.
+	def test_the_printable_guide_turns_its_pages_by_four_then_five (self) -> None:
+		"""An unnumbered overflow page sits between printed 52 and 53, so the offset is 4 before it and 5 after.
 
-		An unnumbered overflow page sits between printed 52 and 53, so the offset is 4
-		before it and 5 after. The source records the run it is cited in.
+		The source records both runs, so a page of either turns to the right page
+		of the file; it once recorded the second only, and cited nothing in the first.
 		"""
 		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
 		guide = op_xy.sources["guide"]
+		run = pymidiinstrumentdefs.definition.PageRun
 
-		assert guide.page_offset == 5
-		assert guide.file_page(122) == 127
-		assert guide.file_page(53) == 58
+		assert guide.page_runs == (run(from_printed = 1, offset = 4), run(from_printed = 53, offset = 5))
+		assert guide.page_offset == 4
+		assert [guide.file_page(printed) for printed in (1, 52, 53, 122)] == [5, 56, 58, 127]
 
 	def test_its_sixteen_tracks_are_one_part_on_channels_the_player_sets (self) -> None:
 		"""Eight instrument tracks and eight auxiliary, and the table reaches all of them."""

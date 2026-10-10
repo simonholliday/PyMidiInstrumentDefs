@@ -237,10 +237,11 @@ class Velocity:
 
 	"""How the instrument treats how hard a note was played.
 
-	``note_on`` is ``ignored``, ``received``, or ``gated`` — the last meaning it
-	arrives but is inaudible unless something else is turned up, in which case
-	``gated_by`` names the controls that do the gating.  A panel can use that to
-	explain a velocity lane that appears to do nothing.
+	``note_on`` is ``received``, ``both`` (received, and sent as well),
+	``ignored``, or ``gated`` — the last meaning it arrives but is inaudible
+	unless something else is turned up, in which case ``gated_by`` names the
+	controls that do the gating.  A panel can use that to explain a velocity lane
+	that appears to do nothing.  Any other word is refused.
 	"""
 
 	note_on: str | None = None
@@ -334,6 +335,11 @@ class Midi:
 	rather than an unread page, which is the distinction the whole format turns
 	on.  The DFAM is the real case: a 44-page manual in which the word "MIDI"
 	never appears.
+
+	``clock`` and ``transport`` say which way each goes, from the instrument's
+	side: ``receives``, ``sends``, ``both`` or ``none``.  Any other word is
+	refused, ``transmits`` among them, since that is a control's word for its
+	direction and is not what these fields have ever said.
 	"""
 
 	stated_none: bool = False

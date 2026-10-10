@@ -1456,6 +1456,45 @@ class TestDirection:
 		assert "controls.a.direction" in str(raised.value)
 
 
+class TestChartWords:
+
+	"""Clock, transport and velocity take fixed words, so a file cannot drift into one nobody else uses."""
+
+	@pytest.mark.parametrize("word", ["both", "receives", "sends", "none"])
+	def test_clock_and_transport_take_the_four_words (self, word: str) -> None:
+		body = f"definition: 1\nmodel: {{name: X}}\nsource: hand\nmidi: {{clock: {word}, transport: {word}}}"
+		midi = pymidiinstrumentdefs.parse(body, source = "x.yaml").midi
+
+		assert (midi.clock, midi.transport) == (word, word)
+
+	@pytest.mark.parametrize("field", ["clock", "transport"])
+	def test_a_controls_word_for_its_direction_is_refused_here (self, field: str) -> None:
+		"""`transmits` is what a control says, and these fields have always said `sends`."""
+		body = f"definition: 1\nmodel: {{name: X}}\nmidi: {{{field}: transmits}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert f"midi.{field}" in str(raised.value)
+		assert "'transmits'" in str(raised.value)
+
+	@pytest.mark.parametrize("word", ["received", "both", "ignored", "gated"])
+	def test_note_on_takes_the_four_words (self, word: str) -> None:
+		body = f"definition: 1\nmodel: {{name: X}}\nsource: hand\nvoice: {{velocity: {{note_on: {word}}}}}"
+		velocity = pymidiinstrumentdefs.parse(body, source = "x.yaml").voice.velocity
+
+		assert velocity is not None
+		assert velocity.note_on == word
+
+	def test_an_unknown_note_on_is_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nvoice: {velocity: {note_on: sends}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "voice.velocity.note_on" in str(raised.value)
+
+
 class TestRelativeNotes:
 
 	def test_a_relative_instrument_names_the_note_its_offsets_are_from (self) -> None:

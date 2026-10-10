@@ -35,6 +35,16 @@ _ADDRESSING: typing.Final[frozenset[str]] = frozenset({"pitches", "voices", "rel
 
 _NOTE_MAPS: typing.Final[frozenset[str]] = frozenset({"fixed", "learned"})
 
+# Which way a chart row that is not a control goes, from the instrument's side:
+# clock and transport.  These are the words every definition has used for them,
+# and checking them stops the next file writing `transmits`, the word a control's
+# own direction uses, which would read here as something nobody meant.
+_FLOWS: typing.Final[frozenset[str]] = frozenset({"both", "receives", "sends", "none"})
+
+# What the instrument does with a note-on's velocity.  ``both`` is received and
+# sent too; ``gated`` is received and inaudible until something else is turned up.
+_NOTE_ON: typing.Final[frozenset[str]] = frozenset({"received", "both", "ignored", "gated"})
+
 # The channel mode messages, CC 120-127, by the name PyMidiDefs gives each. They
 # mean the same on every instrument that has them, so they are specification
 # facts, and a definition listing one as a control is duplicating the standard.
@@ -241,6 +251,23 @@ class _Reader:
 		return self.text(section[field], f"{where}.{field}")
 
 
+	def word (self, section: dict[str, typing.Any], field: str, where: str, allowed: frozenset[str]) -> str | None:
+
+		"""Read a text field that may be absent and is otherwise one of a fixed set of words.
+
+		A field read as free text lets a file drift into a word nobody else uses,
+		and a consumer switching on the field meets it without warning.  Refused,
+		as an unknown direction on a control is.
+		"""
+
+		found = self.optional_text(section, field, where)
+
+		if found is not None and found not in allowed:
+			self.refuse(f"{where}.{field}", f"{found!r} is not one of {sorted(allowed)}")
+
+		return found
+
+
 	def sources (self, value: object) -> dict[str, pymidiinstrumentdefs.definition.Source]:
 
 		"""Read the documents the facts came from, each under a short name.
@@ -406,8 +433,8 @@ class _Reader:
 				else self.pair(section["channels"], "midi.channels", 1, 16),
 			mode = None if section.get("mode") is None
 				else self.integer(section["mode"], "midi.mode", 1, 4),
-			clock              = self.optional_text(section, "clock", "midi"),
-			transport          = self.optional_text(section, "transport", "midi"),
+			clock              = self.word(section, "clock", "midi", _FLOWS),
+			transport          = self.word(section, "transport", "midi", _FLOWS),
 			program_change     = program_change,
 			control_change     = self.optional_text(section, "control_change", "midi"),
 			nrpn               = self.optional_text(section, "nrpn", "midi"),
@@ -590,7 +617,7 @@ class _Reader:
 		section = self.mapping(value, "voice.velocity")
 
 		return pymidiinstrumentdefs.definition.Velocity(
-			note_on  = self.optional_text(section, "note_on", "voice.velocity"),
+			note_on  = self.word(section, "note_on", "voice.velocity", _NOTE_ON),
 			note_off = None if section.get("note_off") is None
 				else self.flag(section["note_off"], "voice.velocity.note_off"),
 			gated_by = tuple(

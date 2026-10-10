@@ -6253,9 +6253,20 @@ class TestIridium:
 		assert iridium.midi.program_change is not None
 		assert iridium.midi.program_change.receives is True
 
-		# A Macro button sends one on demand, which is the only sending the manual describes.
+		# A Macro button sends one on demand, which is the only sending the manual describes, and
+		# only the Iridium Keyboard has Macro buttons.
 		assert iridium.midi.program_change.sends is True
 		assert iridium.midi.program_change.presets is None
+
+		flat = " ".join(prose_of("waldorf", "iridium").split())
+
+		assert "**So `sends` is the Keyboard's alone**" in flat
+		assert "A PICTURE SUPPORTS THIS ONE." in flat
+
+		# The one range printed near MIDI Learn is the XY pad's, and release velocity is named.
+		assert "**No page gives the numbers Learn accepts**" in flat
+		assert "nothing says anything about release velocity" not in flat
+		assert "Velocity; Release Velocity; Aftertouch (Pressure; and Polyphonic Pressure)." in flat
 
 	def test_one_manual_two_products_and_a_sibling_cited_twice (self) -> None:
 		"""Four sources: the shared manual, both product pages, and the MK2's for two sentences."""

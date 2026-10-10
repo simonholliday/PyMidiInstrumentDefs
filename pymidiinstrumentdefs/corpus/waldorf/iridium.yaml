@@ -8,11 +8,12 @@
 #
 # THERE IS NO CONTROL MAP, AND THAT IS THE INSTRUMENT RATHER THAN THE DOCUMENT. Waldorf publishes
 # no MIDI implementation document, and almost every parameter is reached by MIDI Learn instead:
-# "Set: opens a page allowing you to link a desired MIDI CC connection to any panel parameter
-# dial, potentiometer, or button" (manual p. 204), over a range given once as "CC01 to CC118 (or
-# Off)" (manual p. 187). A number a player assigns is not a property of the instrument, so none of
-# those 118 is below and `control_change: learned` says why - the same reading the OP-1's and the
-# Pulsar-23's got.
+# "Set: opens a page allowing you to link a desired MIDI CC connection to any panel parameter dial,
+# potentiometer, or button" (manual p. 204). **No page gives the numbers Learn accepts**: the only
+# range the manual prints for incoming controllers, "CC01 to CC118 (or Off)" (manual p. 187),
+# belongs to the XY pad's own `CC X/Y` selector. A number a player assigns is not a property of the
+# instrument, so none is below and `control_change: learned` says why - the same reading the OP-1's
+# and the Pulsar-23's got.
 #
 # FIFTEEN NUMBERS ARE THE INSTRUMENT'S OWN, AND FOURTEEN ARE IN A TABLE OF MODULATION SOURCES.
 # Printed page 234 lists 36 sources a patch can route, and five of its rows name controller
@@ -32,11 +33,13 @@
 # p. 202), the maker's own acute accent kept. Every other instrument in this corpus that mentions
 # NRPN either answers to it or says nothing.
 #
-# AND THE ONE STATEMENT ABOUT PROGRAM CHANGE IS ON A WEB PAGE, UNDER A TITLE THAT DENIES IT. The
-# manual's 246 pages mention program change once, in the glossary. The product page's FAQ is
-# titled "This device does not react to Program Change Messages!" and then explains how to make it
-# work - which is how every entry on that page is built, the title being the complaint and the
-# body the answer. See the source account.
+# AND THE ONE STATEMENT ABOUT RECEIVING PROGRAM CHANGE IS ON A WEB PAGE, UNDER A TITLE THAT DENIES
+# IT. The manual's 246 pages name the message twice, in the glossary and in the list of what a Macro
+# button can send (manual p. 194), and neither says what the instrument does on receiving one. The
+# product page's FAQ is titled "This device does not react to Program Change Messages!" and then
+# explains how to make it work - which is how every entry on that page is built, the title being the
+# complaint and the body the answer. A picture in the manual supports it, the `Favorites` tab
+# numbering each filled slot for MIDI (manual p. 174). See the source account.
 
 definition: 1
 
@@ -56,9 +59,12 @@ source: >-
   no MIDI implementation document for this instrument and the manual contains no control map**,
   because almost every parameter is reached by MIDI Learn instead: "Set: opens a page allowing you
   to link a desired MIDI CC connection to any panel parameter dial, potentio- meter, or button"
-  (manual p. 204), the maker's own line break, with the range given as "The selectable CCs can are
-  CC01 to CC118 (or Off)" (manual p. 187) - the maker's own "can are". So `control_change:
-  learned`, and none of those 118 numbers is a control here.
+  (manual p. 204), the maker's own line break. **No page gives the numbers Learn accepts.** The only
+  range the manual prints for incoming controllers, "The selectable CCs can are CC01 to CC118 (or
+  Off)" (manual p. 187) - the maker's own "can are" - closes the XY tab's `CC X/Y` entry, which
+  chooses the controllers that move the pad's two axes, and is that selector's range rather than
+  Learn's. So `control_change:
+  learned`, and no learned number is a control here.
 
   ONE MANUAL FOR TWO PRODUCTS, PROVED BY HASH RATHER THAN BY INFERENCE. Waldorf has four Iridium
   product pages. The Iridium's "Manual" link and the Iridium Keyboard's are different share ids,
@@ -116,8 +122,10 @@ source: >-
   automatically put Iridium into MPE mode" (manual p. 201) - and "Iridium supports an optional
   second MPE zone" (manual p. 201), which is why `parts` below has two.
 
-  PROGRAM CHANGE IS STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT. The manual never
-  mentions it except in the glossary that begins on printed page 239. The product page's FAQ is
+  RECEIVING PROGRAM CHANGE IS STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT. The
+  manual never says what the instrument does on receiving one: it names the message in the
+  glossary that begins on printed page 239 and in the list of what a Macro button can send (manual
+  p. 194), and nowhere else. The product page's FAQ is
   titled "This device does not react to Program Change Messages!" and answers "You will have to
   use the Favorites list in order to get the Prog CH working", then "This device uses only to the
   entries in the Favorites lis when Prog CH messages are used. As soon as you have put the most
@@ -125,6 +133,15 @@ source: >-
   to" and "lis". **Every entry on that page is titled as a user would phrase the complaint and
   answered in the body**, so the instrument does answer to program change and what it selects is a
   "Favorites" entry rather than a patch.
+
+  **A SUPPORT PAGE SHOULD CONFIRM A FACT RATHER THAN CARRY IT ALONE, AND A PICTURE SUPPORTS THIS
+  ONE.** The `Favorites` screenshot, captioned "The Favorites tab for Iridium Keyboard" (manual
+  p. 174), labels each filled slot with a MIDI number, from `0001 [MIDI 1]` to `0007 [MIDI 19]`;
+  the number follows the slot's place in the Set rather than the patch in it. No text says it is
+  program change, but a slot numbered for MIDI is what the FAQ describes. The FAQ entry itself is
+  shared by the family: `waldorf/iridium_mk2` and `waldorf/iridium_core` find it on their own FAQ
+  pages under the same author and time stamp, and `Favorites` screenshots with the same slot labels
+  in their own manuals, and all three record program change as received.
 
   **No preset count is recorded**, because nothing says how far program change reaches. The
   "Favorites" hold "20 sound programs per Set" over "up to six Sets, which means faster access to
@@ -250,19 +267,23 @@ midi:
   # "nor does it send" describes Internal rather than implying some other setting does.
   clock: receives
   program_change:
-    # STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT - see the source account. "This
-    # device uses only to the entries in the Favorites lis when Prog CH messages are used"
-    # (product_page), the maker's own spelling.
+    # STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT, AND SUPPORTED BY A PICTURE - see
+    # the source account. "This device uses only to the entries in the Favorites lis when Prog CH
+    # messages are used" (product_page), the maker's own spelling; and the `Favorites` tab numbers
+    # each filled slot for MIDI (manual p. 174).
     receives: true
-    # AND IT SENDS ONE ON DEMAND, from a Macro button: "Send MIDI Prog Sends a definable MIDI
-    # program change from 0 to 127" (manual p. 194). That is a performer firing a chosen message
-    # rather than the instrument announcing a patch change, but it is sending program change and
-    # the field has no finer word.
+    # AND THE IRIDIUM KEYBOARD SENDS ONE ON DEMAND, from a Macro button: "Send MIDI Prog Sends a
+    # definable MIDI program change from 0 to 127" (manual p. 194), under the heading "The Macro
+    # Buttons (Iridium Keyboard only)" (manual p. 193). **So `sends` is the Keyboard's alone**, and
+    # this definition covers the Desktop too, which the field cannot say. It is a performer firing
+    # a chosen message rather than the instrument announcing a patch change, but it is sending
+    # program change and the field has no finer word.
     sends: true
   # LEARNED, WHICH IS NEITHER A MAP NOR AN ABSENCE. "Set: opens a page allowing you to link a
   # desired MIDI CC connection to any panel parameter dial, potentio- meter, or button" (manual
-  # p. 204), over "CC01 to CC118 (or Off)" (manual p. 187). The fifteen controls below are the
-  # ones the maker fixes; the rest are the player's.
+  # p. 204). No page gives the numbers it accepts; "CC01 to CC118 (or Off)" (manual p. 187) is the
+  # XY pad's `CC X/Y` range, not Learn's. The fifteen controls below are the ones the maker fixes;
+  # the rest are the player's.
   control_change: learned
   # NONE **RECEIVED**, AND IT SENDS THEM: "Keep in mind, that the Iridium doesn´t react on
   # incoming NRPN MIDI data" (manual p. 202), in the same bullet as "Send NRPN: if set to On, the
@@ -295,8 +316,10 @@ voice:
   # p. 171).
   polyphony_shared: true
   velocity:
-    # The keybed is velocity sensitive and velocity is in the modulation-source table; nothing
-    # says anything about release velocity, so `note_off` is left out.
+    # The keybed is velocity sensitive and velocity is in the modulation-source table. Release
+    # velocity is named once, among the kinds of unipolar source, "Velocity; Release Velocity;
+    # Aftertouch (Pressure; and Polyphonic Pressure)." (manual p. 149), and the table on p. 234,
+    # which lists what a patch can route, has no row for it, so `note_off` is left out.
     note_on: both
   # POLYPHONIC, AND THE MANUAL SPENDS A PAGE ON IT: the Keyboard has "49 light-weighted sensitive
   # keys with polyphonic" aftertouch (manual p. 20), and the distinction is drawn explicitly -

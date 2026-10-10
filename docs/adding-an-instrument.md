@@ -473,6 +473,29 @@ use where that differs from `polyphony` (a Super 6 plays six of its twelve under
 behaviour that changes with the path a note arrives by. None of these has a field, and each
 waits for a second instrument that needs one.
 
+**Aftertouch says which kind the instrument answers to, and what it sends is a field of its
+own.** `voice.aftertouch` takes `channel`, `poly`, `both`, `received` or `none`, and the loader
+refuses any other word. `received` is for a document that says the instrument answers to
+aftertouch and never says which kind: a Typhon's manual lists aftertouch among the messages it
+accepts and no page says channel or poly, so writing either would read like a statement. `both`
+is an instrument that answers to both kinds, even where a setting picks which one reaches the
+sound - an opsix's chart recognises both, and the setting is the player's. What the instrument
+**sends** is `voice.aftertouch_transmits`, true or false, as `voice.velocity.transmits` is for
+velocity. A Yamaha DX7's manual sets out, in its MIDI data format, the data it transmits and
+the data it receives, and only the first has aftertouch, so it records:
+
+```yaml
+voice:
+  aftertouch: none              # the received data has no aftertouch
+  aftertouch_transmits: true    # the transmitted data has 1101nnnn
+```
+
+A format that sets out every message received is a statement of what arrives. A short list is
+not, and leaving something out of one is not a stated no: a Minimoog Model D's MIDI In line
+omits aftertouch and its MIDI Out line has it, so the Model D records
+`aftertouch_transmits: true` and leaves `aftertouch` unset. Which kind is sent has no field.
+Say it in a comment beside the flag, as a Leviasynth's does for the setting that chooses it.
+
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
 section answers one channel above its strings. A Voce plays three parts across three

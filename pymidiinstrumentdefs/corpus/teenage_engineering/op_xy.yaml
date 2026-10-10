@@ -113,9 +113,8 @@ source: >-
   RECEIVING A PROGRAM CHANGE: the words never appear; what is
   described is this instrument sending one.
 
-  AFTERTOUCH: received and routable, quoted against
-  voice below, but the guide never says whether it is channel or polyphonic, and there is no
-  third value to write.
+  AFTERTOUCH'S KIND: it is received and routable, quoted against voice below, and recorded
+  as `received`, but the guide never says whether it is channel or polyphonic.
 
   THE BEND RANGE IN SEMITONES: settable, but no range and no default is
   printed.
@@ -348,11 +347,14 @@ voice:
     # and "hard (for more vigorous playing)" (p. 110) set what the built-in keyboard sends.
     note_on: received
     # Note-off velocity is never mentioned in either edition.
-  # NOT RECORDED: AFTERTOUCH. It is received and can be routed - "in the mod settings you can
+  # RECEIVED, AND NEITHER EDITION SAYS WHICH KIND. The guide's section on playing it from a
+  # MIDI keyboard or controller goes on "if you wish to assign the modwheel, aftertouch,
+  # pitchbend and velocity to modulate the synth parameters you can do so by opening the
+  # preset settings" (p. 116), and the mod settings route it - "in the mod settings you can
   # change the routing of the modwheel, aftertouch, pitchbend and velocity to control various
-  # synth parameters" (instrument) - but neither edition says whether it is channel or
-  # polyphonic, and those are the only two things this field can say. Recording either would
-  # be a guess, and recording nothing loses the fact, so the fact is here in the comment.
+  # synth parameters" (instrument). Neither says whether it is channel or polyphonic
+  # pressure, so `received` is the whole of what is published.
+  aftertouch: received
   pitch_bend:
     # THE RANGE IS A SETTING: "rotate the light grey knob to adjust the bend range, this is
     # the pitch range of the pitch bend" (instrument). How far it reaches is not printed, in

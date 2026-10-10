@@ -86,15 +86,16 @@ source: >-
   THE MIDI TRACKS' OWN PARAMETERS ARE NOT CONTROLS AND ARE NOT BELOW. A MIDI track sends bank
   select on CC 0 and CC 32, program change, pitch bend, aftertouch, modulation and breath
   (p. 103); those are messages it emits on a channel of the player's choosing, not numbers it
-  answers to.
+  answers to. Aftertouch among them is why `aftertouch_transmits` is true.
 
   AFTERTOUCH AND PITCH BEND ARE BOTH RECEIVED AND NEITHER IS CHARACTERISED. The AFTERTOUCH menu
   "[o]pens a menu where you can assign up to four PARAMETER page parameters to the MIDI
   aftertouch command", and PITCH BEND the same, where "[t]he pitch bend from incoming MIDI sent
   to the Digitakt II from external devices affects the assigned parameters" (p. 39). The manual
   never says whether the aftertouch is channel pressure or polyphonic key pressure, so
-  `voice.aftertouch` is left unrecorded; and the bend reaches assigned parameters by a depth
-  setting rather than a range in semitones, so there is no `pitch_bend` block to put a number in.
+  `voice.aftertouch` says `received` and no more; and the bend reaches assigned parameters by a
+  depth setting rather than a range in semitones, so there is no `pitch_bend` block to put a
+  number in.
 
   SIX CONTROLS ARE 14-BIT AND NOT ONE OF THE SIX PAIRS IS THE STANDARD ONE. "Note that the LFO
   1/2/3 speed and depth are high-resolution parameters, with CC LSB values" (p. 110), and the
@@ -238,9 +239,12 @@ voice:
     # the Digitakt II from external devices affects the assigned parameters" (p. 39).
     # So velocity always arrives, and what it reaches is two menu settings rather than a
     # controller, which is why `gated_by` is empty and the fact is here.
-  # NOT RECORDED: WHICH KIND OF AFTERTOUCH, and not because nobody looked. It is received and
-  # assignable to four parameters (p. 39) and the manual never says channel pressure or
-  # polyphonic key pressure.
+  # RECEIVED AND SENT, AND THE KIND IS NOT STATED, and not because nobody looked. It is
+  # received and assignable to four parameters (p. 39) and the manual never says channel
+  # pressure or polyphonic key pressure. A MIDI track sends it among its own parameters
+  # (p. 103).
+  aftertouch: received
+  aftertouch_transmits: true
   # NOT RECORDED: THE PITCH BEND RANGE. Pitch bend is received and reaches assigned parameters
   # through a PITCH BEND DEPTH setting (pp. 38-39); no page puts a number of semitones on it.
 

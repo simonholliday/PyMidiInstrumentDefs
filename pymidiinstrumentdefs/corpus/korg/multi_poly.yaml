@@ -94,13 +94,14 @@ source: >-
   channel of its own answers to 24 to 27 on that channel. The format has no way to say "whichever
   part received it", so those four name no part and this says so instead.
 
-  NOT RECORDED: WHICH KIND OF AFTERTOUCH, and not because nobody looked. The chart marks both
-  Polyphonic (Key) and Channel aftertouch as recognised and neither as transmitted, and a setting
-  chooses which reaches the sound: "AT Source ... Off: All aftertouch will be ignored. Channel:
-  The mod source "Aftertouch" receives Channel Aftertouch ... Poly: The mod source "Aftertouch"
-  receives Poly Aftertouch ... Chan+Poly: The mod source "Aftertouch" receives both Channel and
-  Poly Aftertouch" (p. 120). This field holds one of channel, poly or none, and no one of them is
-  true here. The keyboard itself has none: "Note: Aftertouch is supported via MIDI only" (p. 119).
+  BOTH KINDS OF AFTERTOUCH ARE RECEIVED AND NEITHER IS SENT. The chart marks both Polyphonic (Key)
+  and Channel aftertouch as recognised and neither as transmitted, and a setting chooses which
+  reaches the sound: "AT Source ... Off: All aftertouch will be ignored. Channel: The mod source
+  "Aftertouch" receives Channel Aftertouch ... Poly: The mod source "Aftertouch" receives Poly
+  Aftertouch ... Chan+Poly: The mod source "Aftertouch" receives both Channel and Poly Aftertouch"
+  (p. 120). So `voice.aftertouch` is `both`, since the model answers to either kind and which one
+  reaches the sound is the player's setting, and `aftertouch_transmits` is false. The keyboard
+  itself has none: "Note: Aftertouch is supported via MIDI only" (p. 119).
 
   NOT RECORDED: THE PITCH BEND RANGE. The chart marks pitch bend as travelling both ways and
   gives no span, and the words "bend range" appear on no page of the manual.
@@ -225,8 +226,10 @@ voice:
     # release-velocity sensitive" (p. 126).
     note_on: received
     note_off: true
-  # NOT RECORDED: AFTERTOUCH, and not because nobody looked. Both kinds are recognised, neither
-  # is sent, and a four-way setting chooses which reaches the sound. See the source account.
+  # BOTH KINDS ARE RECOGNISED AND NEITHER IS SENT, and a four-way setting chooses which reaches
+  # the sound. See the source account.
+  aftertouch: both
+  aftertouch_transmits: false
   # NOT RECORDED: THE PITCH BEND RANGE, which the chart marks both ways and never quantifies.
 
 groups:

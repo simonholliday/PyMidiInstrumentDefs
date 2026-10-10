@@ -126,8 +126,8 @@ source: >-
   its depth is settable; no factory depth is printed, so `semitones` is unrecorded. CC 112 and
   113 set a minimum velocity, and velocity can be a CV source or open a gate above half, so
   velocity is received. **CC 110 and 111 are "Aftertouch in semitones", so aftertouch is
-  received too - and no page says which kind.** `voice.aftertouch` names the kind, so it is left
-  unset rather than guessed, and this sentence is the record of the fact.
+  received too - and no page says which kind.** So `voice.aftertouch` says `received` and no
+  more.
 
   TWO PLACES WHERE THE DOCUMENT DISAGREES WITH ITSELF, recorded and not resolved. The Program
   Page at p. 14 gives four sources for the MIDI B CV output - note number, velocity, mod wheel
@@ -249,9 +249,10 @@ voice:
     # 1/2 down)" and the same for channel B at 109 (p. 15). So bend is received and the depth is
     # settable per part; no factory depth is printed, so `semitones` stays unrecorded.
     programmable: true
-  # NOT RECORDED, aftertouch, and it is received. "AfterScale CH. A=110 Aftertouch in semitones"
-  # (p. 15) says so, and p. 17 says the MIDI B CV output can be assigned to it. Neither says
-  # whether it is channel or polyphonic pressure, and this field names the kind. See the source.
+  # RECEIVED, AND THE KIND IS NOT STATED. "AfterScale CH. A=110 Aftertouch in semitones" (p. 15)
+  # says so, and p. 17 says the MIDI B CV output can be assigned to it. Neither says whether it
+  # is channel or polyphonic pressure. See the source.
+  aftertouch: received
 
 parts:
   # The two "Channels of MIDI to CV and MIDI to Gate" the product page advertises. Each is given

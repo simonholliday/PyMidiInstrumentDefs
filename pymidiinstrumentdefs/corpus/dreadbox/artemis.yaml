@@ -108,8 +108,7 @@ source: >-
   `pitch_bend.semitones` is absent: the ordinary pitch wheel is settable "from 0 to 12 semitones"
   (manual p. 64) and **no document says where it starts**.
 
-  NOT RECORDED: the note range, the MIDI mode, and NRPN, none of which either manual mentions. The
-  aftertouch below is `poly` and understates what is published - see that field.
+  NOT RECORDED: the note range, the MIDI mode, and NRPN, none of which either manual mentions.
 
 sources:
   manual:
@@ -201,12 +200,9 @@ voice:
     # (manual p. 61). Controller 95 sets how much of it reaches the amplifier, and controller 31
     # can point every other controller at it.
     note_on: received
-  # **`poly` UNDERSTATES WHAT IS PUBLISHED, AND THIS FIELD HAS NO BETTER WORD.** "Both Polyphonic
-  # Aftertouch and Channel Aftertouch are supported." (manual p. 61), and this field's three
-  # values across the corpus are `none`, `poly` and `channel`. `poly` is recorded because it is
-  # the stronger of the two and the one a controller should prefer; **that this instrument also
-  # answers to channel aftertouch is in this comment and nowhere a program can read it.**
-  aftertouch: poly
+  # BOTH KINDS, AS PUBLISHED: "Both Polyphonic Aftertouch and Channel Aftertouch are supported."
+  # (manual p. 61).
+  aftertouch: both
   pitch_bend:
     # "Adjusts the range of the Pitch Wheel from 0 to 12 semitones." (manual p. 64), set in the
     # global parameters. **No document says where it starts**, so `semitones` is absent; and the

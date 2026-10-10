@@ -47,15 +47,17 @@
 # maker's side: there is nothing here to decline, because the generic name is the only name
 # printed. What each machine puts on each knob is in Appendix A and is not carried.
 #
-# NOT RECORDED, AND WHY. **Aftertouch**, which is received - "Opens a menu where you can assign up
-# to four parameters to the MIDI aftertouch command." (manual p. 52) - and whose kind the manual
-# never gives, neither channel nor polyphonic, in 130 pages. **Pitch bend**, likewise received,
-# with a depth setting of its own - "Sets the amount of pitch bend data from external MIDI devices
-# that affects Tonverk." (manual p. 51) - and no figure anywhere for how far it bends, so both
-# fields would be invented. **Polyphony**: the play mode is per track, "Here, you can set whether
-# a preset is polyphonic or monophonic" (manual p. 50), and the only voice count in the manual
-# belongs to one source machine rather than to the instrument. And **system exclusive**, which is
-# not mentioned in any spelling on any of the 130 pages - a silence rather than a checked absence.
+# NOT RECORDED, AND WHY. **Aftertouch's kind**: it is received - "Opens a menu where you can
+# assign up to four parameters to the MIDI aftertouch command." (manual p. 52) - and the manual
+# never gives its kind, neither channel nor polyphonic, in 130 pages, so it is recorded as
+# `received` and as sent, which a MIDI track does (manual p. 98), and no more. **Pitch bend**,
+# likewise received, with a depth setting of its own - "Sets the amount of pitch bend data from
+# external MIDI devices that affects Tonverk." (manual p. 51) - and no figure anywhere for how far
+# it bends, so its fields would be invented. **Polyphony**: the play mode is per track, "Here, you
+# can set whether a preset is polyphonic or monophonic" (manual p. 50), and the only voice count
+# in the manual belongs to one source machine rather than to the instrument. And **system
+# exclusive**, which is not mentioned in any spelling on any of the 130 pages - a silence rather
+# than a checked absence.
 #
 # AND THE MANUAL NEVER SAYS WHICH OS IT DESCRIBES. Its cover reads `Tonverk / User Manual` and
 # nothing else; no page carries a version. The OS is in the file's name and on the page that
@@ -219,10 +221,13 @@ voice:
     # Received: the appendix gives `TRIG velocity` a controller number of its own on every kind of
     # track, and the sequencer records the velocity of notes played in.
     note_on: received
-  # NOT RECORDED: aftertouch's kind. It is plainly received - "Opens a menu where you can assign
-  # up to four parameters to the MIDI aftertouch command." (manual p. 52) - and **no page of 130
-  # says whether that is channel pressure or polyphonic**, so either would be invented. The same
-  # omission the Typhon's manual makes.
+  # RECEIVED AND SENT, AND THE KIND IS NOT STATED. It is plainly received - "Opens a menu where
+  # you can assign up to four parameters to the MIDI aftertouch command." (manual p. 52) - a
+  # MIDI track sends it, since its AT "controls the aftertouch data sent on the MIDI track"
+  # (manual p. 98), and **no page of 130 says whether that is channel pressure or polyphonic**,
+  # so either would be invented. The same omission the Typhon's manual makes.
+  aftertouch: received
+  aftertouch_transmits: true
   # NOT RECORDED: pitch bend, for the same reason from the other side. It is received and has a
   # depth setting of its own - "Sets the amount of pitch bend data from external MIDI devices that
   # affects Tonverk." (manual p. 51) - and nothing anywhere says how far it bends, so the two

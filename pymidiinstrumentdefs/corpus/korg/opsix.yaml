@@ -63,14 +63,15 @@ source: >-
   are marked `receives` below. The other twenty-five travel both ways.
 
   AFTERTOUCH IS RECEIVED IN BOTH ITS FORMS AND SENT IN NEITHER, on this model. The chart marks
-  both Key's and Channel aftertouch as recognised, and marks both as transmitted only with the
-  footnote "Only the opsix SE can send aftertouch" - and the specifications agree, giving the
-  opsix 37 keys without aftertouch where the SE has 61 with it. Which form reaches the sound is
-  then a setting: "Aftertouch Src ... Ch: Channel pressure is applied ... Poly: Polyphonic key
-  pressure is applied. The effect intensity varies according to the note number" (p. 78), and
-  a fourth setting takes both at once - "Both: Both channel and polyphonic key pressure are
-  applied" (p. 78). So `voice.aftertouch` is left unrecorded: it holds one of channel, poly or
-  none, and this instrument answers to either or to both, and sends neither.
+  both Key's and Channel aftertouch as recognised, marks Channel as transmitted and Key's as
+  not, and footnotes both "Only the opsix SE can send aftertouch" - and the specifications
+  agree, giving the opsix 37 keys without aftertouch where the SE has 61 with it. Which form
+  reaches the sound is then a setting: "Aftertouch Src ... Ch: Channel pressure is applied ...
+  Poly: Polyphonic key pressure is applied. The effect intensity varies according to the note
+  number" (p. 78), and a fourth setting takes both at once - "Both: Both channel and polyphonic
+  key pressure are applied" (p. 78). So `voice.aftertouch` is `both`, since this instrument
+  answers to either kind and which one reaches the sound is the player's setting, and
+  `aftertouch_transmits` is false.
 
   THE PROGRAM CHANGE REACHES A HUNDRED OF FIVE HUNDRED. The chart gives program change as 0 to
   99 in both directions, and the instrument holds "500 programs (350 preset programs and 150
@@ -190,9 +191,11 @@ voice:
     # sensitive" (p. 105).
     note_on: received
     note_off: true
-  # NOT RECORDED: AFTERTOUCH, and not because nobody looked. This instrument recognises both
-  # channel pressure and polyphonic key pressure, and a setting chooses which one reaches the
-  # sound. This field holds one of channel, poly or none, and no one of them is true here.
+  # BOTH KINDS ARE RECOGNISED AND NEITHER IS SENT ON THIS MODEL. A setting chooses which kind
+  # reaches the sound, and the chart's footnote gives sending to the SE alone. See the source
+  # account.
+  aftertouch: both
+  aftertouch_transmits: false
   # NOT RECORDED: THE PITCH BEND RANGE. The chart marks pitch bend as travelling both ways and
   # gives no span, and no page of the manual puts a number of semitones on it.
 groups:

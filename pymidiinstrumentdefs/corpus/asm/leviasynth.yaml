@@ -191,21 +191,19 @@ source: >-
   A fact about two instruments and not about this one.
 
 
-  AFTERTOUCH TRAVELS BOTH WAYS AND IN TWO KINDS, AND ONE FIELD HOLDS A KIND. Receiving is
-  established by the MPE paragraph - "Leviasynth already supports polyphonic aftertouch, so MPE
-  pressure is mapped automatically to Poly aftertouch" (p. 151), with "any patch that uses PolyAT
-  as a mod source should respond automatically to pressure sent by an MPE controller" (p. 151) -
-  and corroborated by the sequencer, where "Each note track can record pitch bend, mod wheel, and
-  polyphonic aftertouch" (p. 12). Sending is a setting with three positions, "Aftertouch TX Off,
-  Mono, Poly" (p. 152), and the manual is explicit that both kinds exist on the panel whatever it
-  is set to: "Setting this to Off still allows both forms of aftertouch to be used locally but
-  stops them from being transmitted. Mono enables Channel aftertouch values to be sent (one value
-  for all active voices); Poly allows polyphonic aftertouch values to be sent" (p. 152). **So this
-  instrument receives poly and sends either poly or channel, by a setting, and `voice.aftertouch`
-  can hold one of those three facts.** It holds `poly`, which is what the same shape gave
-  `asm/hydrasynth_explorer`, and the rest is here. This is the third instrument in a fortnight
-  whose aftertouch wants more of this field than a kind, and it is raised where the format's
-  questions are kept.
+  AFTERTOUCH TRAVELS BOTH WAYS AND IN TWO KINDS. Receiving is established by the MPE paragraph -
+  "Leviasynth already supports polyphonic aftertouch, so MPE pressure is mapped automatically to
+  Poly aftertouch" (p. 151), with "any patch that uses PolyAT as a mod source should respond
+  automatically to pressure sent by an MPE controller" (p. 151) - and corroborated by the
+  sequencer, where "Each note track can record pitch bend, mod wheel, and polyphonic aftertouch"
+  (p. 12). Sending is a setting with three positions, "Aftertouch TX Off, Mono, Poly" (p. 152),
+  and the manual is explicit that both kinds exist on the panel whatever it is set to: "Setting
+  this to Off still allows both forms of aftertouch to be used locally but stops them from being
+  transmitted. Mono enables Channel aftertouch values to be sent (one value for all active
+  voices); Poly allows polyphonic aftertouch values to be sent" (p. 152). **So this instrument
+  receives poly and sends either poly or channel, by a setting.** `voice.aftertouch` holds `poly`,
+  which is what the same shape gave `asm/hydrasynth_explorer`, and `aftertouch_transmits` is true;
+  which kind goes out is the setting's, and is here.
 
 
   VELOCITY IS RECEIVED, AND THE SENTENCE THAT ESTABLISHES IT IS WORD FOR WORD THIS MAKER'S OTHER
@@ -390,9 +388,10 @@ voice:
   # POLYPHONIC, RECEIVED AS WELL AS SENT, AND THE PANEL HAS BOTH KINDS WHATEVER THE SETTING SAYS.
   # "Leviasynth already supports polyphonic aftertouch, so MPE pressure is mapped automatically
   # to Poly aftertouch" (p. 151) is the receiving side; "Aftertouch TX Off, Mono, Poly" (p. 152)
-  # is the sending side, and it can send channel aftertouch instead. One field holds one kind, so
-  # the rest of it is in the source account.
+  # is the sending side, and it can send channel aftertouch instead. `aftertouch_transmits` says
+  # it is sent, and which kind goes out is the setting's; see the source account.
   aftertouch: poly
+  aftertouch_transmits: true
   pitch_bend:
     # A MAXIMUM AND NOT A DEFAULT: "2 octaves up and 2 octaves down (+/- 24 semitones)" (p. 92),
     # saved with the patch, and no page says what a new patch starts at.

@@ -177,10 +177,15 @@ voice:
     # volume of the Sound", and VELOCITY MOD, which assigns "up to four PARAMETER page
     # parameters" to it (p. 34). `gated_by` names controls and neither of those has a
     # controller number, so it stays empty and the fact is here instead.
-  # NOT RECORDED, aftertouch. The pads are pressure sensitive and PRESSURE DEST decides
-  # whether that pressure leaves the instrument at all (p. 62), so it is transmitted; what the
-  # instrument does with aftertouch arriving on a track channel is nowhere stated, and the
-  # field says which kind is answered to. The appendix lists no aftertouch row either way.
+  # RECEIVED AND SENT, AND THE KIND IS NOT STATED. AFTERTOUCH "gives access to a menu where
+  # up to four PARAMETER page parameters can be assigned to the [PADS] or external MIDI unit
+  # aftertouch command" (p. 34), so it arrives from outside as well as from the pads. The
+  # pads' pressure is aftertouch - "Sounds that are designed for aftertouch play may be
+  # played by tapping and then pressing a pad" (p. 35) - and PRESSURE DEST decides whether
+  # that pressure leaves the instrument at all (p. 62), so it is sent. No page says channel
+  # or polyphonic pressure, and the appendix lists no aftertouch row either way.
+  aftertouch: received
+  aftertouch_transmits: true
 
 parts:
   # Every part is given a channel by the player, in SETTINGS > MIDI CONFIG > CHANNELS (p. 63),

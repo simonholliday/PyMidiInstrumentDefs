@@ -171,10 +171,11 @@ source: >-
   button's: "Third press: clock in PPQN settings: 24, 48, 96, 192 are available" (guide p. 17).
 
   ALSO NOT RECORDED: the note range, which no page states; and **which kind of aftertouch it
-  answers to**. Three parameters set how far a received pressure reaches - the VCA, VCF and LFO
-  Aftertouch amounts, on controllers 39 to 41 - so it plainly answers to one, and **no page says
-  whether that is channel pressure or polyphonic**. This instrument has no keyboard of its own, so
-  nothing about its own keybed settles it either.
+  answers to**, so `voice.aftertouch` says `received` and no more. Three parameters set how far a
+  received pressure reaches - the VCA, VCF and LFO Aftertouch amounts, on controllers 39 to 41 -
+  so it plainly answers to one, and **no page says whether that is channel pressure or
+  polyphonic**. This instrument has no keyboard of its own, so nothing about its own keybed
+  settles it either.
 
   **IT HAS NO KEYBOARD**, which is worth saying plainly because the guide's prose repeatedly says
   `the keyboard` and means the one you attach: "By holding the PERF and SETTINGS buttons then
@@ -307,11 +308,12 @@ voice:
     # are those two amounts. **Whether it sends velocity is not stated and it has no keys of its
     # own to send any from**, so only reception is recorded.
     note_on: received
-  # NOT RECORDED, AND IT PLAINLY ANSWERS TO ONE. Three parameters set how far a received pressure
-  # reaches - "VCA Aftertouch Amount" (guide p. 21) and "LFO Aftertouch Amount"
-  # (guide p. 21) among them, on controllers 39 to 41 below - so pressure arrives and is acted on. **No page says whether that is channel
-  # pressure or polyphonic**, and this instrument has no keybed of its own to settle it from the
-  # other side. A field that holds one of two answers is left unset rather than guessed.
+  # RECEIVED, AND THE KIND IS NOT STATED. Three parameters set how far a received pressure reaches -
+  # "VCA Aftertouch Amount" (guide p. 21) and "LFO Aftertouch Amount" (guide p. 21) among them, on
+  # controllers 39 to 41 below - so pressure arrives and is acted on. **No page says whether that is
+  # channel pressure or polyphonic**, and this instrument has no keybed of its own to settle it from
+  # the other side.
+  aftertouch: received
   pitch_bend:
     # TWENTY-FOUR SEMITONES AND SETTABLE, from the Preset Parameters menu: "Pitchbend Range 0-24" (guide p. 21). Twenty-four is as far as it will go; the setting reaches down to
     # none, which is a bend of nothing rather than a narrower one.

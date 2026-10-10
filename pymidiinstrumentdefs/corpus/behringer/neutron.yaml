@@ -102,12 +102,12 @@ source: >-
   is a voltage on a socket, which is a thing a semi-modular can do and this format has no field
   for.
 
-  NOT RECORDED, THE AFTERTOUCH, because no page says which kind. It is a modulation source and an
+  THE AFTERTOUCH IS RECEIVED, AND NO PAGE SAYS WHICH KIND. It is a modulation source and an
   assignable output in the two tables above and nowhere else, and the manual's glossary gives
   only the generic sense - "Aftertouch is MIDI data sent when pressure is applied to a keyboard
   after the key has been struck, and while it is being held down or sustained." (manual p. 30).
   Channel pressure is the likely reading for a monophonic instrument and it is a reading rather
-  than a statement, so the field is empty.
+  than a statement, so the field says `received` and no more.
 
   NOT RECORDED, THE TRANSPORT, and this is deliberately not `none`. **The words Start, Stop and
   Continue appear on none of the 112 sheets**, which establishes that nothing is published about
@@ -244,15 +244,16 @@ voice:
   voicing_modes: [1, 2]
   velocity:
     # RECEIVED, AND WHAT IT REACHES IS THE PLAYER'S CHOICE rather than a fixed destination - the
-    # filter, as one of four modulation sources, or the assignable control voltage jack. See the
+    # filter, as one of three modulation sources, or the assignable control voltage jack. See the
     # account. Nothing here is gated by it, and it is not routed anywhere by default.
     note_on: received
     # NOT RECORDED, release velocity: no page mentions it. What the release note does say about
     # a note off is that **a note-on of velocity nought became one in 2.0.2**.
-  # NOT RECORDED, THE AFTERTOUCH KIND, although aftertouch is plainly received - it is one of the
-  # filter's four modulation sources and one of the assignable output's five options. No page
-  # says whether that is channel pressure or polyphonic. Channel is the likely reading for a
-  # monophonic instrument and a reading is not a statement. See the account.
+  # RECEIVED, AND THE KIND IS NOT STATED. It is plainly received - one of the filter's three
+  # modulation sources and one of the assignable output's five options. No page says whether that
+  # is channel pressure or polyphonic. Channel is the likely reading for a monophonic instrument
+  # and a reading is not a statement. See the account.
+  aftertouch: received
   pitch_bend:
     # "Set Pitch Bend Range (*) F0 00 20 32 28 ID 0A 03 MM F7 MM = 0-24 (semitones). Default:2"
     # (manual p. 27), and the manual's own summary of the editor's options agrees: "Set pitch

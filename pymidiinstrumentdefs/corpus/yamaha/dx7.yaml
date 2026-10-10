@@ -35,12 +35,13 @@ source: >-
   which are channel mode messages and belong to the MIDI specification rather than to a
   definition; they are excluded for that reason and not because they were missed.
   Aftertouch is the other asymmetry: the instrument transmits channel aftertouch (p. 30)
-  and the received list does not mention aftertouch at all.
+  and the received data format (p. 32), which sets out the received messages one by
+  one - key off, key on, control change, program change and pitch bender - has no
+  aftertouch at all, so `aftertouch` is `none` and `aftertouch_transmits` is true.
 
-  NOT RECORDED, and marked in place: which kind of aftertouch it answers to, since it
-  answers to none; the pitch bend range as a number, since the bend range is a front
-  panel setting of 0 to 12 and the instrument ignores the fine half of a bend it
-  receives; and any firmware version, which the manual never states.
+  NOT RECORDED, and marked in place: the pitch bend range as a number, since the bend
+  range is a front panel setting of 0 to 12 and the instrument ignores the fine half
+  of a bend it receives; and any firmware version, which the manual never states.
 
   Also not carried, because the format has no field for it: the 156 voice parameters and
   14 function parameters of p. 31, which are addressable over MIDI by system exclusive
@@ -100,11 +101,12 @@ voice:
   velocity:
     note_on: received    # v=1; ppp to v=127; fff, and v=0 on a note on means note off
     note_off: false      # the received key-off velocity is marked ignored (p. 32)
-  # NOT RECORDED, aftertouch. The instrument transmits it - "1101nnnn After touch &
-  # Channel number", which is channel aftertouch by its status byte, with a touch value
-  # of 0 to 127 (p. 30) - and the received list does not mention aftertouch at all. The
-  # field says which kind is answered to and has no way to say "sent but not received",
-  # so writing "channel" here would claim something the manual denies.
+  # NOT RECEIVED, AND SENT. The instrument transmits it - "1101nnnn After touch & Channel
+  # number", which is channel aftertouch by its status byte, with a touch value of 0 to 127
+  # (p. 30) - and the received data format, which sets out the received messages one by one,
+  # has none (p. 32). Which kind it sends has no field, so the status byte's answer is here.
+  aftertouch: none
+  aftertouch_transmits: true
   # NOT RECORDED, pitch_bend. It is received (p. 32) and transmitted (p. 30), but the
   # range is a front panel function parameter of 0 to 12 semitones with a step of 0 to
   # 12 (p. 27), not one number this file could state, and nothing sets it over MIDI

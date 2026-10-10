@@ -145,10 +145,9 @@ source: >-
   **MIDI has two aftertouch messages and no page of this manual says which** - the
   nearest it comes is the generic "Aftertouch is controlled by the amount of pressure
   applied to a key, and can be found on many synths" (p. 21), which is true of both.
-  The field takes `channel` or `poly` and has no value for "one of the two", so it is
-  left unset. Channel pressure is the overwhelmingly likely answer for an instrument
-  with one voice and one routing destination, and that is a reading rather than a
-  reading of the document.
+  So the field says `received`, its word for an aftertouch whose kind is not
+  published. Channel pressure is the likely answer, and that would be a reading of
+  the instrument rather than of the document.
 
   SYSTEM EXCLUSIVE IS LEFT UNSET FOR THE DRUMBRUTE IMPACT'S REASON. Something very
   like it exists - Dreadbox publishes a Preset Manager for both platforms and the
@@ -333,16 +332,14 @@ voice:
     # (p. 21) is about where a velocity comes from inside the instrument rather than about
     # sending one out, and no switch anywhere in the menu sends notes.
     note_on: gated
-  # WHICH KIND OF AFTERTOUCH IS NOT RECORDED, BECAUSE THE MANUAL NEVER SAYS. It plainly answers
+  # RECEIVED, AND WHICH KIND IS NOT RECORDED, BECAUSE THE MANUAL NEVER SAYS. It plainly answers
   # to it - "Aftertouch" is on the accept list (manual p. 23) and the menu's row reads
   # "Aftertouch targets 0-100" (manual p. 20) - but MIDI has two aftertouch messages and no page
-  # of 24 says
-  # which this one is. The nearest is "Aftertouch is controlled by the amount of pressure
-  # applied to a key, and can be found on many synths" (p. 21), which is true of both. This
-  # field takes `channel` or `poly` and has no value for "one of the two", so it is left unset.
-  # Channel pressure is the overwhelmingly likely answer for an instrument with one voice and
-  # one routing destination - and that is a reading of the instrument rather than of the
-  # document, which is the distinction this corpus exists to keep.
+  # of 24 says which this one is. The nearest is "Aftertouch is controlled by the amount of
+  # pressure applied to a key, and can be found on many synths" (p. 21), which is true of both.
+  # Channel pressure is the likely answer, and that is a reading of the instrument rather than
+  # of the document, which is the distinction this corpus exists to keep.
+  aftertouch: received
   pitch_bend:
     # SETTABLE FROM ONE TO TWELVE SEMITONES, WITH NO DEFAULT PRINTED. The menu's row reads
     # "Pitch wheel 1-12" (manual p. 20), and the prose describes the control without a figure:

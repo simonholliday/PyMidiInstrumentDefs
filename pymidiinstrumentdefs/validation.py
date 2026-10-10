@@ -48,6 +48,11 @@ _FLOWS: typing.Final[frozenset[str]] = frozenset({"both", "receives", "sends", "
 # sent too; ``gated`` is received and inaudible until something else is turned up.
 _NOTE_ON: typing.Final[frozenset[str]] = frozenset({"received", "both", "ignored", "gated"})
 
+# Which kind of aftertouch the instrument answers to.  ``both`` is both kinds, even
+# where a setting picks one; ``received`` is aftertouch a document names without
+# saying which kind.  What is sent is ``aftertouch_transmits``, a flag of its own.
+_AFTERTOUCH: typing.Final[frozenset[str]] = frozenset({"channel", "poly", "both", "received", "none"})
+
 # The fields each section has.  A key outside its section's set is read by
 # nothing, so it is warned about: a misspelt field is otherwise dropped without a
 # word, and a source with `version` where `edition` belongs ships looking exactly
@@ -71,7 +76,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	"voice": frozenset({
 		"addressing", "reference_note", "note_map", "note_range", "polyphony",
 		"polyphony_shared", "paraphonic", "voicing_modes", "velocity", "aftertouch",
-		"pitch_bend", "voices",
+		"aftertouch_transmits", "pitch_bend", "voices",
 	}),
 	"voice.velocity": frozenset({"note_on", "note_off", "gated_by", "transmits"}),
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
@@ -674,7 +679,9 @@ class _Reader:
 				for mode in self.sequence(section.get("voicing_modes"), "voice.voicing_modes")
 			),
 			velocity     = self.velocity(section.get("velocity")),
-			aftertouch   = self.optional_text(section, "aftertouch", "voice"),
+			aftertouch   = self.word(section, "aftertouch", "voice", _AFTERTOUCH),
+			aftertouch_transmits = None if section.get("aftertouch_transmits") is None
+				else self.flag(section["aftertouch_transmits"], "voice.aftertouch_transmits"),
 			pitch_bend   = self.pitch_bend(section.get("pitch_bend")),
 			voices       = voices,
 		)

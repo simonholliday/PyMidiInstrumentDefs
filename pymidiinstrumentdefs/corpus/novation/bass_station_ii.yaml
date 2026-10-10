@@ -45,7 +45,7 @@ source: >-
 
   FOUR OF THE 98 ROWS ARE NOT CONTROLS and are not below: patch inc and patch dec, which are
   program changes, pitch, which is a pitch bend, and after touch. For those the message is the
-  address, and each is recorded in its own field instead.
+  address, so each belongs to a field of its own rather than to the controls.
 
   SIXTEEN CONTROL CHANGES CARRY A FINE HALF, written in the guide as `MSB:LSB` and always as n
   and n+32.
@@ -81,7 +81,8 @@ source: >-
   describes only the other direction. Transport, which no sentence in the guide mentions at all -
   not start, not stop, not continue, not song position. And whether program change is received:
   the only thing in 82 pages that bears on it is the table's own two rows, patch inc and patch
-  dec, which name the message and say nothing about direction.
+  dec, which name the message and say nothing about direction. Aftertouch in either direction,
+  for the same reason - its row is in the same list - and its kind, which no page gives.
 
   ONE MORE TYPOGRAPHICAL SLIP, CARRIED AS PRINTED: the envelope section has an "amp env fixed
   sustatin duration" where its neighbour four rows down is spelled "Mod Env fixed sustain
@@ -151,12 +152,15 @@ voice:
     # "25-note (two octaves) velocity-sensitive keyboard with aftertouch" (p. 8). Velocity has
     # two destinations of its own in the table below, the amplitude and modulation envelopes.
     note_on: received
-  # NOT RECORDED: AFTERTOUCH, although the keyboard has it - "25-note (two octaves)
-  # velocity-sensitive keyboard with aftertouch" (p. 8) - and it reaches three destinations of
-  # its own, which are three of the NRPNs below. The guide never says whether it is channel
-  # pressure or polyphonic key pressure, and those are the only two things this field can say.
-  # The one indirect sign is the table's own row, a single value of 0 to 127 with no note
-  # number, which is what channel pressure looks like and is not a statement that it is.
+  # NOT RECORDED: AFTERTOUCH, IN EITHER DIRECTION, although the keyboard has it - "25-note
+  # (two octaves) velocity-sensitive keyboard with aftertouch" (p. 8) - three of the NRPNs
+  # below are its destinations, and the MIDI parameters list gives it a row, `after touch`, 0
+  # to 127 (p. 73). That list has no direction column and no page says aftertouch arrives or
+  # leaves over MIDI: the guide's sentence about direction covers "almost every control and
+  # synth parameter" (p. 19), and this file does not stretch it to the list's message rows, as
+  # it does not for program change. Nor does any page say channel pressure or polyphonic key
+  # pressure. The one indirect sign is the row itself, a single value with no note number,
+  # which is what channel pressure looks like and is not a statement that it is.
   pitch_bend:
     # SETTABLE, AND THE GUIDE GIVES THREE DIFFERENT ANSWERS FOR HOW FAR, so no number is
     # written. Page 17 says "The maximum range of operation is 12 semitones up or down, but

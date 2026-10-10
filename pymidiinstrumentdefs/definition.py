@@ -301,6 +301,17 @@ class Voice:
 	key of a grid does the same thing, while a DFAM should get no grid.  ``note_map`` is
 	``learned`` where notes are assigned by MIDI learn, in which case any
 	``voices`` given are the factory defaults rather than fixed facts.
+
+	``aftertouch`` says which kind of aftertouch the instrument answers to:
+	``channel``, ``poly``, ``both`` (both kinds, even where a setting picks which
+	one reaches the sound, since the setting is the player's and the model answers
+	to either), ``received`` (it answers to aftertouch and no document says which
+	kind) or ``none``.  Any other word is refused.  ``aftertouch_transmits`` is
+	whether it **sends** aftertouch, apart from what it does with aftertouch it is
+	sent, as ``Velocity.transmits`` is for velocity: a Yamaha DX7's MIDI data format
+	has aftertouch among what it transmits and not among what it receives, so it
+	records ``none`` and true.
+	Which kind it sends has no field.  ``None`` is nobody having recorded it.
 	"""
 
 	addressing: str | None = None
@@ -313,6 +324,7 @@ class Voice:
 	voicing_modes: tuple[int, ...] = ()
 	velocity: Velocity | None = None
 	aftertouch: str | None = None
+	aftertouch_transmits: bool | None = None
 	pitch_bend: PitchBend | None = None
 	voices: dict[str, int] = dataclasses.field(default_factory=dict)
 

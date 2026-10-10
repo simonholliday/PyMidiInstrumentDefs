@@ -165,11 +165,12 @@ voice:
     note_on: both
     # NOT RECORDED. Nothing says what the Tracker does with a note-off velocity it receives, and
     # what it sends is a note's own velocity rather than a release one.
-  # `aftertouch` IS UNSET, and this is an asymmetry worth reading carefully: the Tracker **sends**
-  # both kinds as step effects - a step's MIDI message can be "CC (Control Change), PC (Program
-  # Change), Polyphonic Aftertouch or Channel Aftertouch" (manual p. 180) - and no document says
-  # it answers to either. This field describes what an instrument does with what it is sent.
-  #
+  # `aftertouch` IS UNSET AND `aftertouch_transmits` IS TRUE, an asymmetry worth reading
+  # carefully: the Tracker **sends** both kinds as step effects - a step's MIDI message can be "CC
+  # (Control Change), PC (Program Change), Polyphonic Aftertouch or Channel Aftertouch" (manual
+  # p. 180) - and no document says it answers to either. `aftertouch` describes what an instrument
+  # does with what it is sent.
+  aftertouch_transmits: true
   # NOT RECORDED, note_range. No document states one, and "Middle C" is settable to C-3, C-4, C-5
   # or C-6 (manual p. 251), which shifts the whole mapping against the sender's notes.
 

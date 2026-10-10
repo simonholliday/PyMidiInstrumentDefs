@@ -63,12 +63,11 @@ source: >-
   prose.
 
 
-  **SO AFTERTOUCH IS SENT AND NOT RECEIVED**, which the manual confirms three ways: the receive
-  list omits it, the send list has it, and the power-on commands offer a "MIDI Aftertouch
-  Output" switch with no input counterpart. `aftertouch: sends` says that, borrowing the word
-  this format already uses for a one-way `transport`. **It is the only word available and it is
-  not quite the right one**: the field names a kind of aftertouch elsewhere in this corpus -
-  channel, poly, none - and here it names a direction instead.
+  **SO AFTERTOUCH IS SENT, AND NO PAGE SAYS IT IS RECEIVED.** Both receive lists omit it and
+  both send lists have it, and the power-on commands include one that "Transmits Aftertouch
+  (After Pressure) data via MIDI" (guide p. 50). An omission from a list is not a stated no, so
+  `aftertouch` is unset and `aftertouch_transmits` is true. Which kind it sends is not stated
+  anywhere.
 
 
   MIDI THRU IS A JACK AND NOT A MESSAGE LIST. "This jack rebroadcasts the signal arriving at the
@@ -188,10 +187,12 @@ voice:
     # "44 full-size keys with Velocity and After Pressure" (guide p. 15), and the MIDI In list
     # carries Velocity. **What a received velocity reaches is not stated anywhere.**
     note_on: received
-  # **A DIRECTION WHERE THIS FIELD USUALLY NAMES A KIND.** The manual's receive list omits
-  # aftertouch, its send list has it, and the power-on commands offer an output switch for it
-  # with no input counterpart - three statements agreeing. See the account.
-  aftertouch: sends
+  # SENT, AND NO PAGE SAYS IT IS RECEIVED. Both of the manual's receive lists leave
+  # aftertouch out - the MIDI IN paragraph (guide p. 35) and the MIDI In line (guide p. 81) -
+  # where the send lists have it, and a power-on command "Transmits Aftertouch (After
+  # Pressure) data via MIDI" (guide p. 50). A list's omission is not a stated no, so
+  # `aftertouch` is unset. Which kind it sends is not stated. See the account.
+  aftertouch_transmits: true
   pitch_bend:
     # "Pitch Bend Range: (+/-) 7 semitones" (guide p. 80), corroborated by the wheel going "up a
     # fifth in its maximum position" (guide p. 24). **The figure is given under the keyboard

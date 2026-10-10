@@ -1174,7 +1174,7 @@ class TestTonverk:
 		"""Two the manual half-states, one it states per machine, one it never mentions."""
 		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
 
-		assert tonverk.voice.aftertouch is None
+		assert tonverk.voice.aftertouch == "received"
 		assert tonverk.voice.pitch_bend is None
 		assert tonverk.voice.polyphony is None
 		assert tonverk.midi.sysex is None
@@ -1565,6 +1565,77 @@ class TestChartWords:
 			pymidiinstrumentdefs.parse(body, source = "x.yaml")
 
 		assert "voice.velocity.note_on" in str(raised.value)
+
+
+class TestAftertouch:
+
+	"""Which kind of aftertouch is answered to, in five checked words, and whether it is sent, in a flag of its own."""
+
+	@pytest.mark.parametrize("word", ["channel", "poly", "both", "received", "none"])
+	def test_aftertouch_takes_the_five_words (self, word: str) -> None:
+		body = f"definition: 1\nmodel: {{name: X}}\nsource: hand\nvoice: {{aftertouch: {word}}}"
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").voice.aftertouch == word
+
+	def test_a_direction_is_not_a_kind (self) -> None:
+		"""`sends` is the word one released file once borrowed; sending is a field of its own now."""
+		body = "definition: 1\nmodel: {name: X}\nvoice: {aftertouch: sends}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "voice.aftertouch" in str(raised.value)
+		assert "'sends'" in str(raised.value)
+
+	def test_sending_is_a_flag_apart_from_what_is_received (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nvoice: {aftertouch: none, aftertouch_transmits: true}"
+		voice = pymidiinstrumentdefs.parse(body, source = "x.yaml").voice
+
+		assert (voice.aftertouch, voice.aftertouch_transmits) == ("none", True)
+
+	def test_unrecorded_sending_is_none_rather_than_false (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nvoice: {aftertouch: poly}"
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").voice.aftertouch_transmits is None
+
+	def test_sending_is_true_or_false_and_never_a_kind (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nvoice: {aftertouch_transmits: channel}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "voice.aftertouch_transmits" in str(raised.value)
+
+	def test_each_definition_says_what_its_own_documents_say (self) -> None:
+		"""A kind left unstated, both kinds, and what is sent, each from the file's own words."""
+		said = {}
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			voice = pymidiinstrumentdefs.load(name, [CORPUS]).voice
+
+			if voice.aftertouch in ("received", "both") or voice.aftertouch_transmits is not None:
+				said[name] = (voice.aftertouch, voice.aftertouch_transmits)
+
+		assert said == {
+			"teenage_engineering/op_xy": ("received", None),
+			"behringer/neutron": ("received", None),
+			"behringer/pro_800": ("received", None),
+			"dreadbox/typhon": ("received", None),
+			"elektron/analog_four": ("received", None),
+			"elektron/digitone": ("received", True),
+			"elektron/digitone_ii": ("received", True),
+			"elektron/tonverk": ("received", True),
+			"make_noise/zero_coast": ("received", None),
+			"elektron/digitakt_ii": ("received", True),
+			"dreadbox/artemis": ("both", None),
+			"korg/opsix": ("both", False),
+			"korg/multi_poly": ("both", False),
+			"moog/minimoog_model_d": (None, True),
+			"yamaha/dx7": ("none", True),
+			"asm/leviasynth": ("poly", True),
+			"elektron/analog_rytm_mkii": ("received", True),
+			"polyend/tracker": (None, True),
+		}
 
 
 class TestAnyNote:
@@ -1996,6 +2067,7 @@ voice:
   voicing_modes: [1, 8]
   velocity: {note_on: gated, note_off: false, gated_by: [a], transmits: true}
   aftertouch: channel
+  aftertouch_transmits: true
   pitch_bend: {semitones: 2, programmable: true}
   voices: {kick: 36}
 parts:
@@ -3283,7 +3355,7 @@ class TestOpXy:
 		"""
 		op_xy = pymidiinstrumentdefs.load("teenage_engineering/op_xy", [CORPUS])
 
-		assert op_xy.voice.aftertouch is None
+		assert op_xy.voice.aftertouch == "received"
 		assert op_xy.voice.note_range is None
 		assert op_xy.midi.nrpn is None
 		assert op_xy.midi.sysex is None
@@ -3452,15 +3524,15 @@ class TestOpsix:
 		# naming the same number as a system version.
 		assert opsix.model.firmware == "3.1.0"
 
-	def test_release_velocity_both_ways_and_no_aftertouch_recorded (self) -> None:
-		"""It answers to both kinds of aftertouch, which this field cannot say."""
+	def test_release_velocity_both_ways_and_both_kinds_of_aftertouch (self) -> None:
+		"""It answers to both kinds of aftertouch, and on this model sends neither."""
 		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
 
 		assert opsix.voice.velocity is not None
 		assert opsix.voice.velocity.note_on == "received"
 		assert opsix.voice.velocity.note_off is True
 
-		assert opsix.voice.aftertouch is None
+		assert (opsix.voice.aftertouch, opsix.voice.aftertouch_transmits) == ("both", False)
 		assert opsix.voice.note_range == (0, 127)
 
 	def test_what_its_chart_marks_in_both_directions (self) -> None:
@@ -3540,8 +3612,8 @@ class TestBassStationII:
 		assert synth.voice.pitch_bend.programmable is True
 		assert synth.voice.pitch_bend.semitones is None
 
-		# The keyboard has aftertouch and the guide never says which kind.
-		assert synth.voice.aftertouch is None
+		# The keyboard has aftertouch and the table a row for it, and no page gives a direction or a kind.
+		assert (synth.voice.aftertouch, synth.voice.aftertouch_transmits) == (None, None)
 
 	def test_what_the_guide_establishes_and_what_it_leaves_alone (self) -> None:
 		"""Clock only one way, and transport not at all."""
@@ -4202,8 +4274,9 @@ class TestDigitaktII:
 		# above that the manual says nothing, so nothing is claimed.
 		assert digitakt.voice.note_range == (0, 84)
 
-		# Aftertouch is received and never characterised, and the bend has no stated range.
-		assert digitakt.voice.aftertouch is None
+		# Aftertouch is received and never characterised, and a MIDI track sends it; the bend has
+		# no stated range.
+		assert (digitakt.voice.aftertouch, digitakt.voice.aftertouch_transmits) == ("received", True)
 		assert digitakt.voice.pitch_bend is None
 
 
@@ -4283,9 +4356,9 @@ class TestMultiPoly:
 		assert multi.midi.program_change is not None
 		assert multi.midi.program_change.presets == 64
 
-		# Both kinds of aftertouch are received and a four-way setting picks between them, so
-		# no one word is true; the bend has no stated range.
-		assert multi.voice.aftertouch is None
+		# Both kinds of aftertouch are received, a four-way setting picks between them, and
+		# neither is sent; the bend has no stated range.
+		assert (multi.voice.aftertouch, multi.voice.aftertouch_transmits) == ("both", False)
 		assert multi.voice.pitch_bend is None
 
 	def test_the_chart_is_a_page_of_the_manual_and_the_offset_says_so (self) -> None:
@@ -6517,10 +6590,10 @@ class TestDigitoneII:
 		assert digitakt.midi.nrpn == "supported"
 
 	def test_what_is_left_unrecorded_and_why (self) -> None:
-		"""Aftertouch reaches it and no page says which kind, so the field stays empty."""
+		"""Aftertouch reaches it and no page says which kind, so the field says only that."""
 		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
 
-		assert digitone.voice.aftertouch is None
+		assert digitone.voice.aftertouch == "received"
 		assert digitone.voice.pitch_bend is None
 
 		# What is established is recorded.
@@ -7291,7 +7364,7 @@ class TestTyphon:
 		assert typhon.voice.plays_note(0)
 		assert typhon.voice.plays_note(127)
 
-	def test_three_more_fields_are_left_unset_and_each_for_its_own_reason (self) -> None:
+	def test_polyphony_the_aftertouch_kind_and_the_bend_default_are_never_stated (self) -> None:
 		"""Polyphony is never stated, the aftertouch kind is never stated, and the bend
 		default is never printed."""
 		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
@@ -7301,7 +7374,7 @@ class TestTyphon:
 		assert typhon.voice.polyphony is None
 
 		# MIDI has two aftertouch messages and no page of 24 says which this one answers to.
-		assert typhon.voice.aftertouch is None
+		assert typhon.voice.aftertouch == "received"
 
 		# Settable 1 to 12, with none of the twelve marked as the one it arrives with.
 		assert typhon.voice.pitch_bend is not None
@@ -7909,20 +7982,19 @@ class TestZeroCoast:
 
 		assert only_over_midi == {104, 106, 108, 109, 110, 111, 112, 113, 116}
 
-	def test_pitch_bend_is_settable_and_aftertouch_is_unrecorded (self) -> None:
-		"""Two fields, the same silence, and only one of them can hold it.
+	def test_pitch_bend_is_settable_and_aftertouch_is_received (self) -> None:
+		"""Two fields, the same silence, and each can hold it.
 
 		CC 108 and 109 set the bend in semitones, which is what `programmable` says.
 		CC 110 and 111 scale aftertouch in semitones, which says aftertouch arrives and
-		not which kind - and the field names the kind, so it stays empty and the fact
-		is in the source account.
+		not which kind - which is what `received` says.
 		"""
 		coast = pymidiinstrumentdefs.load("make_noise/zero_coast", [CORPUS])
 
 		assert coast.voice.pitch_bend is not None
 		assert coast.voice.pitch_bend.programmable is True
 		assert coast.voice.pitch_bend.semitones is None
-		assert coast.voice.aftertouch is None
+		assert coast.voice.aftertouch == "received"
 
 		assert coast.voice.velocity is not None
 		assert coast.voice.velocity.note_on == "received"
@@ -10474,8 +10546,8 @@ class TestPro800:
 		assert pro.midi.transport is None
 		assert pro.voice.note_range is None
 
-		# It plainly answers to pressure and no page says which kind, so the field is unset.
-		assert pro.voice.aftertouch is None
+		# It plainly answers to pressure and no page says which kind.
+		assert pro.voice.aftertouch == "received"
 
 		labels = {control.label for control in pro.controls.values()}
 
@@ -10484,7 +10556,7 @@ class TestPro800:
 
 		said = prose_of("behringer", "pro_800")
 
-		assert "NOT RECORDED, AND IT PLAINLY ANSWERS TO ONE" in said
+		assert "RECEIVED, AND THE KIND IS NOT STATED" in said
 
 		assert "the menu's \"Sync In Start/Stop On / Off\"" in said
 
@@ -13558,9 +13630,8 @@ class TestNeutron:
 		assert neutron.voice.velocity is not None
 		assert neutron.voice.velocity.note_on == "received"
 
-		# **The aftertouch kind is unrecorded although aftertouch plainly arrives**, because
-		# no page says which kind it is.
-		assert neutron.voice.aftertouch is None
+		# **Aftertouch plainly arrives and no page says which kind it is.**
+		assert neutron.voice.aftertouch == "received"
 
 		flat = " ".join(prose_of("behringer", "neutron").split())
 

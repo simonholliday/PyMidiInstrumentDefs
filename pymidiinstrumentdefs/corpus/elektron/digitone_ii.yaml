@@ -166,10 +166,11 @@ source: >-
 
   NOT RECORDED: whether the aftertouch it answers to is channel pressure or per-note pressure. The
   instrument does answer to it - "Opens a menu where you can assign up to four parameters to the
-  MIDI aftertouch command" (p. 39) - but no page in 122 says which kind, and the field exists to
-  say which. The same page assigns pitch bend and the mod wheel the same way, and the pitch bend
-  depth is a setting of its own: "PITCH BEND DEPTH Sets how much the pitch bend data from external
-  MIDI devices affects the Digitone II" (p. 37), with no range given for it in semitones.
+  MIDI aftertouch command" (p. 39) - but no page in 122 says which kind, so the field says
+  `received` and no more. The same page assigns pitch bend and the mod wheel the same way, and the
+  pitch bend depth is a setting of its own: "PITCH BEND DEPTH Sets how much the pitch bend data
+  from external MIDI devices affects the Digitone II" (p. 37), with no range given for it in
+  semitones.
 
   ALSO NOT RECORDED: the default controller numbers the MIDI tracks' sixteen CC SEL parameters
   carry. The release notes say "The MIDI machines SEL 1-8 and SEL 9-16 parameters now have unique
@@ -295,6 +296,10 @@ voice:
     # Digitone II from external devices affects the assigned parameters" (p. 39), which is the
     # engine answering to velocity. Nothing states what it does with a note-off velocity.
     note_on: received
+  # RECEIVED AND SENT, AND THE KIND IS NOT STATED. A MIDI track sends it: its AT "controls
+  # the aftertouch data sent on the MIDI track" (p. 100). See the source account.
+  aftertouch: received
+  aftertouch_transmits: true
 
 groups:
   track:           Track

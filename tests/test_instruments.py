@@ -14137,7 +14137,7 @@ class TestJDXi:
 	"""
 
 	def test_its_four_parts_sit_on_fixed_channels (self) -> None:
-		"""Stated by the owner's manual and settable nowhere in 97 sheets."""
+		"""Stated twice by the owner's manual, though the address map has a channel for each part."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
 
 		assert list(jd_xi.parts) == ["digital_synth", "analog_synth", "drum"]
@@ -14159,6 +14159,14 @@ class TestJDXi:
 		assert "the first half is a fiction, there being no base to derive from because the" \
 			" base never moves" in flat
 
+		# **And the address map's channel for each part is named rather than denied**: a first
+		# reading said no document offered a setting, and the implementation has one per part.
+		assert "The channels used by the JD-Xi to transmit and receive MIDI messages are fixed and" \
+			" cannot be changed." in flat
+		assert "**THE IMPLEMENTATION HAS A RECEIVE CHANNEL FOR EACH PART, AND NO PAGE EXPLAINS IT.**" \
+			in flat
+		assert "No document in the set offers a setting" not in flat
+
 	def test_the_same_controller_means_two_things_on_two_channels (self) -> None:
 		"""Which is what the part field is for, and eight Elektrons here already do."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
@@ -14177,7 +14185,7 @@ class TestJDXi:
 		"""A control naming no part would mean the base channel, the first digital synth's alone."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
 
-		standard = [1, 5, 7, 10, 11, 64, 65, 71, 72, 73, 74, 75, 76, 77, 78]
+		standard = [1, 5, 7, 10, 11, 64, 65, 71, 72, 73, 74, 75, 76, 77, 78, 91, 94]
 
 		for part in ("digital_synth", "analog_synth", "drum"):
 			numbers = sorted(control.cc for control in jd_xi.controls.values()
@@ -14194,8 +14202,68 @@ class TestJDXi:
 
 		assert "THE CONTROLLERS EVERY PART RECEIVES ARE HERE ONCE FOR EACH KIND OF PART." in flat
 
+	def test_thirteen_of_the_standard_controllers_are_received_only (self) -> None:
+		"""The chart crosses them transmitted, and the transmission section lists none of them."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		received = {7, 10, 11, 64, 65, 71, 72, 73, 74, 75, 76, 77, 78}
+
+		for control in jd_xi.controls.values():
+			if control.part is not None and control.cc in received | {91, 94}:
+				assert control.direction == "receives", control.name
+			else:
+				# Modulation, portamento time and the knobs' numbers go both ways.
+				assert control.direction == pymidiinstrumentdefs.definition.BOTH, control.name
+
+		assert sum(1 for control in jd_xi.controls.values() if control.cc in received) == 39
+
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "DIRECTIONS ARE THE SOUND SOURCE CHART'S. Its transmitted column crosses 7, 10, 11," \
+			" 64, 65 and 71 to 78 (implementation p. 17)" in flat
+
+		# **And the sequencer's playback is named rather than counted**: its chart circles 0 to
+		# 119 transmitted because it plays back what it recorded.
+		assert "\"Recorded messages are transmitted during playback.\" (implementation p. 8)" in flat
+
+	def test_the_two_effect_sends_are_carried_though_the_chart_omits_them (self) -> None:
+		"""The reception section and the address map give both, and the chart is the narrowest."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		for part in ("digital_synth", "analog_synth", "drum"):
+			for key, number in (("reverb_send_level", 91), ("delay_send_level", 94)):
+				control = jd_xi.controls[f"{part}_{key}"]
+
+				assert (control.cc, control.part, control.direction) == (number, part, "receives")
+
+		said = prose_of("roland", "jd_xi")
+		flat = " ".join(said.split())
+
+		assert "**91 AND 94 ARE CARRIED THOUGH THE CHART HAS NO ROW FOR EITHER.**" in flat
+		assert "General Purpose Effect 4 (Delay Send Level) (Controller number 94)" in flat
+		assert "`Part Reverb Send Level (CC# 91)`" in flat
+
+		# The sentence that said they were not carried is gone.
+		assert "are not carried, because the chart this definition follows has no row" not in flat
+
+	def test_68_and_the_program_channel_are_named_and_not_carried (self) -> None:
+		"""68 is in the address map alone, and no page puts the five effects on the program's channel."""
+		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
+
+		assert all(control.cc != 68 for control in jd_xi.controls.values())
+		assert sorted(control.cc for control in jd_xi.controls.values()
+			if control.part is None and control.cc is not None) == [12, 13, 14, 15, 83]
+
+		flat = " ".join(prose_of("roland", "jd_xi").split())
+
+		assert "68, which the address map names beside a part's legato switch, `Part Legato" \
+			" Switch (CC# 68)` (implementation p. 10)" in flat
+		assert "\"Specifies the channel used to transmit and receive MIDI messages for the" \
+			" program.\" (manual p. 13)" in flat
+		assert "**THESE FIVE NAME NO PART, AND THE PROGRAM HAS A CHANNEL OF ITS OWN.**" in flat
+
 	def test_it_is_the_first_roland_here_with_real_nrpns (self) -> None:
-		"""Twenty-one of its 86 controls are addressed that way."""
+		"""Twenty-one of its 92 controls are addressed that way."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
 
@@ -14206,7 +14274,7 @@ class TestJDXi:
 		by_nrpn = [key for key, control in jd_xi.controls.items() if control.nrpn is not None]
 
 		assert len(by_nrpn) == 21
-		assert len(jd_xi.controls) == 86
+		assert len(jd_xi.controls) == 92
 
 		# Every one has a most significant byte of nought, so the address is the printed LSB.
 		addresses = [jd_xi.controls[key].nrpn for key in by_nrpn]
@@ -14223,7 +14291,7 @@ class TestJDXi:
 		# what names the drum part is the controllers every part receives, but for portamento time.
 		drum = [control for control in jd_xi.controls.values() if control.part == "drum"]
 
-		assert len(drum) == 14
+		assert len(drum) == 16
 		assert all(control.nrpn is None for control in drum)
 
 		said = prose_of("roland", "jd_xi")
@@ -14236,11 +14304,19 @@ class TestJDXi:
 		assert "`elektron/tonverk`'s lesson at rank 86" in flat
 
 	def test_it_says_which_of_its_numbers_rest_on_arithmetic (self) -> None:
-		"""Nine of 86, which the citation checker reports and the definition repeats."""
+		"""Nine of 92 rest on a span, and the citation checker's nine are nine others."""
 		flat = " ".join(prose_of("roland", "jd_xi").split())
 
-		assert "AND NINE OF THE EIGHTY-SIX NUMBERS ARE NOT PRINTED AS NUMBERS ANYWHERE." in flat
-		assert "77 of the 86 are found as numbers and nine are found inside a span" in flat
+		assert "AND NINE OF THE NINETY-TWO NUMBERS ARE NOT PRINTED AS THEIR CONTROLS' NUMBERS" \
+			" ANYWHERE." in flat
+		assert "103, 106, 118 and 17 as controllers, and 125, 4, 16, 19 and 22 as NRPN numbers" \
+			in flat
+
+		# **The checker reads only the pages the account cites**, and says something narrower
+		# about other numbers; the definition once said the two were the same nine.
+		assert "THE CITATION CHECKER'S NINE ARE NOT THE SAME NINE." in flat
+		assert "83 of the 92 are found as numbers and nine only inside a span" in flat
+		assert "The citation checker reports exactly that" not in flat
 
 		# And it distinguishes that from generating numbers, which is the line it did not cross.
 		assert "That is reading a table rather than generating numbers" in flat

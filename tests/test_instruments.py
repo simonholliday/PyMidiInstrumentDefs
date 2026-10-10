@@ -294,6 +294,7 @@ class TestBundledCorpus:
 			"voce/electric_piano",
 			"waldorf/blofeld",
 			"waldorf/iridium",
+			"waldorf/iridium_mk2",
 			"waldorf/protein",
 			"waldorf/streichfett",
 			"yamaha/dx7",
@@ -2472,7 +2473,7 @@ class TestOsmose:
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
 			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "groove_synthesis/third_wave", "modal/carbon8m",
 			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
-			"udo_audio/super_6", "waldorf/iridium", "waldorf/protein"]
+			"udo_audio/super_6", "waldorf/iridium", "waldorf/iridium_mk2", "waldorf/protein"]
 
 	def test_velocity_is_ignored_though_every_key_is_velocity_sensitive (self) -> None:
 		"""MPE+ carries a flow of pressure instead, and the chart answers No both ways."""
@@ -8108,7 +8109,9 @@ class TestProphet6:
 		# The thirteenth, whose MPE is a global setting and which, like this one, answers to MPE
 		# and sends none: "the 3rd Wave doesn't output MPE from its own keyboard".
 		assert "groove_synthesis/third_wave" in flagged
-		assert len(flagged) == 13
+		# The fourteenth, the Iridium MK2, which also takes per-note pitch bend over MIDI 2.0.
+		assert "waldorf/iridium_mk2" in flagged
+		assert len(flagged) == 14
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -16454,7 +16457,7 @@ class TestCascadia:
 		assert "`true` would misdescribe the instrument and `false` would hide the feature" in flat
 
 		# **AND NOT ONE INSTRUMENT THAT SETS THE FLAG IS MONOPHONIC**, which is the whole
-		# distinction: thirteen set it, and none of the thirteen records one voice. So this
+		# distinction: fourteen set it, and none of the fourteen records one voice. So this
 		# would have been the first, and the field's meaning here cannot stretch to it.
 		setters = {}
 
@@ -16464,7 +16467,7 @@ class TestCascadia:
 			if other.midi is not None and other.midi.per_voice_channels is True:
 				setters[name] = other
 
-		assert len(setters) == 13
+		assert len(setters) == 14
 		assert "modal/carbon8m" in setters and "waldorf/iridium" in setters
 		assert [name for name, other in setters.items() if other.voice.polyphony == 1] == []
 
@@ -18894,3 +18897,46 @@ class TestAstroLab37:
 		assert small.sources["manual"].file_page(91) == 96 and small.sources["manual_1_0_0"].file_page(81) == 86
 		account = " ".join((small.source or "").split())
 		assert "**THREE PEDAL ROWS, ONE PEDAL INPUT.**" in account
+
+
+class TestIridiumMk2:
+
+	"""The Iridium's fifteen fixed controllers and Master Volume, on four layers, from the MK2's own manual."""
+
+	def test_the_iridium_s_controls_and_master_volume (self) -> None:
+		mk2 = pymidiinstrumentdefs.load("waldorf/iridium_mk2", [CORPUS])
+		iridium = pymidiinstrumentdefs.load("waldorf/iridium", [CORPUS])
+
+		ours = {name: (c.cc, c.label, c.direction) for name, c in mk2.controls.items()}
+		theirs = {name: (c.cc, c.label, c.direction) for name, c in iridium.controls.items()}
+		assert set(ours) - set(theirs) == {"master_volume"} and not set(theirs) - set(ours)
+		assert all(ours[name] == value for name, value in theirs.items())
+		assert ours["master_volume"] == (7, "Master Volume", "receives")
+		assert (mk2.midi.control_change, mk2.midi.nrpn, mk2.midi.per_voice_channels) == ("learned", "none", True)
+		assert mk2.midi.channels is None
+
+	def test_program_change_received_on_the_faq_alone (self) -> None:
+		mk2 = pymidiinstrumentdefs.load("waldorf/iridium_mk2", [CORPUS])
+
+		change = mk2.midi.program_change
+		assert change is not None and (change.receives, change.sends, change.presets) == (True, None, None)
+		assert mk2.sources["faq_page"].kind == "support_article"
+		assert mk2.parts["layer"].receives == ("notes", "controls")
+
+	def test_four_layers_on_one_pool_of_sixteen (self) -> None:
+		mk2 = pymidiinstrumentdefs.load("waldorf/iridium_mk2", [CORPUS])
+
+		layer = mk2.parts["layer"]
+		assert (layer.count, layer.channel, layer.receives) == (4, "assigned", ("notes", "controls"))
+		assert (mk2.voice.polyphony, mk2.voice.polyphony_shared, mk2.voice.aftertouch) == (16, True, "poly")
+		assert mk2.voice.velocity is not None
+		assert (mk2.voice.velocity.note_on, mk2.voice.velocity.note_off) == ("received", True)
+		assert mk2.voice.pitch_bend is not None and mk2.voice.pitch_bend.semitones == 12
+
+	def test_os_4_and_midi_2_0_in_the_account (self) -> None:
+		mk2 = pymidiinstrumentdefs.load("waldorf/iridium_mk2", [CORPUS])
+
+		assert mk2.model.firmware == "4.0"
+		assert set(mk2.sources) == {"manual", "iridium_manual", "specification", "product_page", "faq_page"}
+		account = " ".join((mk2.source or "").split())
+		assert "**MIDI 2.0, OVER USB.**" in account

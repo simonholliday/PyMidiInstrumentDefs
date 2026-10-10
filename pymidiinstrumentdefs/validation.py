@@ -77,7 +77,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
 	"parts": frozenset({
 		"label", "channel", "channel_offset", "count", "receives", "addressing", "polyphony",
-		"polyphony_shared",
+		"polyphony_shared", "voices",
 	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
@@ -491,6 +491,15 @@ class _Reader:
 			if shared is not None and count == 1:
 				self.refuse(f"{where}.polyphony_shared", "says whether instances share their voices, and this part has one instance")
 
+			voices = self.note_map(fields.get("voices"), f"{where}.voices")
+
+			# A note map on a part the file says takes no notes would name notes that
+			# reach nothing, which is the same silent failure as a control on a part
+			# that takes no controls.
+
+			if voices and fields.get("receives") is not None and "notes" not in receives:
+				self.refuse(f"{where}.voices", "names notes on a part this file says takes no notes")
+
 			found[self.name(name, "parts")] = pymidiinstrumentdefs.definition.Part(
 				label            = self.optional_text(fields, "label", where),
 				channel          = channel,
@@ -500,6 +509,7 @@ class _Reader:
 				addressing       = addressing,
 				polyphony        = polyphony,
 				polyphony_shared = shared,
+				voices           = voices,
 			)
 
 		return found
@@ -580,6 +590,19 @@ class _Reader:
 		)
 
 
+	def note_map (self, value: object, where: str) -> dict[str, int]:
+
+		"""Read a name-to-note map, the instrument's or a part's: each name addressable, each note 0-127."""
+
+		voices: dict[str, int] = {}
+
+		for name, note in self.mapping(value, where).items():
+			key = self.name(name, where)
+			voices[key] = self.integer(note, f"{where}.{key}", 0, 127)
+
+		return voices
+
+
 	def mode (self, value: object) -> tuple[int | None, int | None, int | None]:
 
 		"""Read ``midi.mode``: one number for both ways, or ``{receives, sends}`` where the chart gives two.
@@ -631,11 +654,7 @@ class _Reader:
 		if note_map is not None and note_map not in _NOTE_MAPS:
 			self.refuse("voice.note_map", f"{note_map!r} is not one of {sorted(_NOTE_MAPS)}")
 
-		voices: dict[str, int] = {}
-
-		for name, note in self.mapping(section.get("voices"), "voice.voices").items():
-			key = self.name(name, "voice.voices")
-			voices[key] = self.integer(note, f"voice.voices.{key}", 0, 127)
+		voices = self.note_map(section.get("voices"), "voice.voices")
 
 		return pymidiinstrumentdefs.definition.Voice(
 			addressing = addressing,

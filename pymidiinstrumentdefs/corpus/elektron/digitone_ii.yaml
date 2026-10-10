@@ -142,13 +142,12 @@ source: >-
   knob F and the master overdrive. On the instrument these are a track's channel against the
   effects channel, and the body is the only place that says so.
 
-  ONE NOTE ON THE EFFECTS CHANNEL DOES SOMETHING, AND IT IS NOT RECORDED AS A CONTROL. The release
-  notes for OS 1.10 say "Added tap tempo via MIDI note, using G10 on FX CONTROL channel" - a note
-  number that works the panel rather than sounding a pitch. The effects part is recorded as taking
-  controls only, because a part marked as taking notes invites a consumer to draw a note grid for
-  it, and there is one note and it is a button. What the format should say about a note that works
-  a control surface is an open question in this corpus and the same shape as a Roland groovebox's
-  note-addressed pad.
+  ONE NOTE ON THE EFFECTS CHANNEL DOES SOMETHING, AND THE PART NAMES IT. The release notes for OS
+  1.10 say "Added tap tempo via MIDI note, using G10 on FX CONTROL channel" (release_notes) - a note
+  number that works the panel rather than sounding a pitch. The manual names notes so that "C5, MIDI
+  note 60, being middle C" (p. 24), which puts G10 at 127, the last MIDI note; no other naming keeps
+  G10 inside MIDI's range at all. So the effects part takes notes, reads them through a map of its
+  own, and the map holds one entry, `tap_tempo` on 127 - a button, not a grid.
 
   THE NOTE RANGE IS THE OUTER BOUND OF WHAT THE MANUAL STATES, over two bands that do different
   things. "Note numbers 0-15 correspond to notes C0 through to D#1, the leftmost octave. These
@@ -265,12 +264,16 @@ parts:
   fx:
     label: FX and Mixer
     channel: assigned
-    receives: [controls]
+    receives: [notes, controls]
     # Takes no notes to sound: the delay, the reverb, the chorus, the compressor, the external
     # input mixer and the master overdrive. "FX CONTROL CH selects the dedicated MIDI channel that
     # is associated with the parameters on the DELAY, REVERB, CHORUS, and COMPRESSOR parameter
     # pages together with the master overdrive, both for input and output" (p. 76). One note does
-    # reach it and it is a button rather than a pitch - see the source account.
+    # reach it and it is a button rather than a pitch: tap tempo on G10, which is 127 by the
+    # manual's own note names - see the source account.
+    addressing: voices
+    voices:
+      tap_tempo: 127
 
 voice:
   addressing: pitches

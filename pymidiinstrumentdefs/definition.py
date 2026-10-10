@@ -457,6 +457,12 @@ class Part:
 	instead: a JD-XA's four digital parts have 64 voices between them, while each
 	of its four analogue parts has one of its own.  It says nothing about how the
 	instances divide the figure, which no page of that instrument says either.
+
+	``voices`` is a part's own name-to-note map, as ``Voice.voices`` is the
+	instrument's, for notes that reach this part and each do one named thing.  A
+	note here need not sound: an MC-707's control channel works sixteen Scatter
+	pads with notes 60 to 75, and a Digitone II's effects channel taps the tempo
+	with one note.
 	"""
 
 	label: str | None = None
@@ -467,6 +473,7 @@ class Part:
 	addressing: str | None = None
 	polyphony: int | None = None
 	polyphony_shared: bool | None = None
+	voices: dict[str, int] = dataclasses.field(default_factory=dict)
 
 
 	@property

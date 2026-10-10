@@ -124,11 +124,12 @@ source: >-
   one history, and they agree.
 
   THE SCATTER PAD IS SIXTEEN NOTE NUMBERS ON THAT SAME CONTROL CHANNEL, by the chart's third
-  footnote, "Scatter Pad (60-75) on control channel" (chart p. 1), which the update notes put
-  in words as
-  "Use note numbers 60-75 on the control channel" (update p. 9). Sixteen notes that work a
-  performance effect rather than sounding a pitch. **Nothing in this format can say that**, so
-  the control channel below receives notes and the span is recorded here.
+  footnote, "Scatter Pad (60-75) on control channel" (chart p. 1), which the update notes put in
+  words as "Use note numbers 60-75 on the control channel" (update p. 9), to turn each pad's effect
+  on and off. Sixteen notes that work a performance effect rather than sounding a pitch, so the
+  control channel below carries them as a note map of its own, `scatter_1` on 60 to `scatter_16` on
+  75. That pad 1 is note 60 is the reading of a span of sixteen notes for sixteen pads: no page
+  lists them one by one.
 
   THE TWO DOCUMENTS DISAGREE ABOUT SYSTEM EXCLUSIVE AND NEITHER ANSWER IS RECORDED. The chart
   marks System Exclusive x in both columns - neither sent nor recognised. The reference manual
@@ -344,6 +345,27 @@ parts:
     # control change**: nothing in either document says a controller reaches it, and a control
     # sent to a channel an instrument ignores does nothing and says nothing about why.
     receives: [notes, program_change]
+    # THE SCATTER PAD'S SIXTEEN NOTES, as a map of the channel's own: "Use note numbers 60-75 on
+    # the control channel" (update p. 9). Pad 1 on 60 to pad 16 on 75 is the reading of a span of
+    # sixteen; no page lists them one by one.
+    addressing: voices
+    voices:
+      scatter_1: 60
+      scatter_2: 61
+      scatter_3: 62
+      scatter_4: 63
+      scatter_5: 64
+      scatter_6: 65
+      scatter_7: 66
+      scatter_8: 67
+      scatter_9: 68
+      scatter_10: 69
+      scatter_11: 70
+      scatter_12: 71
+      scatter_13: 72
+      scatter_14: 73
+      scatter_15: 74
+      scatter_16: 75
 
 groups:
   # NONE OF THESE FIVE LABELS IS THE MAKER'S WORD, because the chart heads nothing over its

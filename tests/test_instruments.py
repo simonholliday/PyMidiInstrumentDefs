@@ -1958,7 +1958,7 @@ voice:
   pitch_bend: {semitones: 2, programmable: true}
   voices: {kick: 36}
 parts:
-  p: {label: P, channel: assigned, count: 2, receives: [notes, controls], addressing: pitches}
+  p: {label: P, channel: assigned, count: 2, receives: [notes, controls], addressing: pitches, voices: {tap: 127}}
   q: {channel_offset: 1}
 groups: {g: G}
 controls:
@@ -2497,6 +2497,48 @@ class TestPartsSharingVoices:
 			pymidiinstrumentdefs.parse(body, source = "x.yaml")
 
 		assert "parts.d.polyphony" in str(raised.value)
+
+
+class TestPartNoteMaps:
+
+	"""A part may carry its own name-to-note map, for notes that each do one named thing there."""
+
+	def test_a_part_reads_its_own_map (self) -> None:
+		body = ("definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"parts: {fx: {channel: assigned, receives: [notes, controls], addressing: voices, voices: {tap_tempo: 127}}}")
+		parsed = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert parsed.parts["fx"].voices == {"tap_tempo": 127}
+		assert parsed.voice.voices == {}
+		assert parsed.warnings == ()
+
+	def test_a_map_on_a_part_that_takes_no_notes_is_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nparts: {fx: {channel: assigned, receives: [controls], voices: {tap: 1}}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "parts.fx.voices" in str(raised.value)
+
+	@pytest.mark.parametrize(("map_", "where"), [
+		("{Tap: 1}", "parts.fx.voices"),
+		("{tap: 128}", "parts.fx.voices.tap"),
+	])
+	def test_a_map_obeys_the_instruments_rules (self, map_: str, where: str) -> None:
+		body = f"definition: 1\nmodel: {{name: X}}\nparts: {{fx: {{channel: assigned, voices: {map_}}}}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert where in str(raised.value)
+
+	def test_the_digitone_ii_taps_its_tempo_with_g10 (self) -> None:
+		"""G10 is 127 by the manual's own names, where C5 is note 60, and no other naming reaches it."""
+		digitone = pymidiinstrumentdefs.load("elektron/digitone_ii", [CORPUS])
+		fx = digitone.parts["fx"]
+
+		assert fx.voices == {"tap_tempo": 127}
+		assert fx.receives == ("notes", "controls") and fx.addressing == "voices"
 
 
 class TestSearchPath:
@@ -5546,6 +5588,10 @@ class TestMC707:
 
 		# It takes a program change and the Scatter Pad's notes, and no control change.
 		assert control.receives == ("notes", "program_change")
+
+		# The Scatter Pad's sixteen notes, a map of the channel's own.
+		assert control.addressing == "voices"
+		assert control.voices == {f"scatter_{pad}": 59 + pad for pad in range(1, 17)}
 
 		# The scenes a program change reaches on that channel.
 		assert mc.midi.program_change is not None

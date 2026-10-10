@@ -491,7 +491,7 @@ parts:
   solo:    {channel_offset: 1, receives: [notes], addressing: pitches}
 ```
 
-Five rules worth holding on to:
+Six rules worth holding on to:
 
 - **A control naming no part is on the base channel.** In a file that declares parts there
   is no single part to fall back on, so that is what leaving `part` off means. It is a real
@@ -545,6 +545,16 @@ Five rules worth holding on to:
     analog:  {channel: assigned, count: 4, polyphony: 1}
     digital: {channel: assigned, count: 4, polyphony: 64, polyphony_shared: true}
   voice: {polyphony_shared: false}
+  ```
+- **A note that works a control rather than sounding goes in the part's own `voices`.** An
+  MC-707's control channel turns its sixteen Scatter pads on and off with notes 60 to 75, and
+  a Digitone II's effects channel taps the tempo with one note. Give that part `notes` in its
+  `receives`, `addressing: voices`, and a name for each note, the way `voice.voices` names an
+  instrument's drums:
+
+  ```yaml
+  parts:
+    fx: {channel: assigned, receives: [notes, controls], addressing: voices, voices: {tap_tempo: 127}}
   ```
 
 A part is not a panel. It says where a control is addressed, not how anything should be

@@ -288,6 +288,7 @@ class TestBundledCorpus:
 			"teenage_engineering/op_z",
 			"udo_audio/super_6",
 			"vermona/drm1_mkiv",
+			"vermona/perfourmer_mkii",
 			"voce/electric_piano",
 			"waldorf/blofeld",
 			"waldorf/iridium",
@@ -18771,3 +18772,38 @@ class TestESQ1:
 		assert "**TWO THIRD-PARTY SCANS OF ENSONIQ'S OWN MANUAL, BECAUSE NO ONE SERVES ENSONIQ'S.**" in account
 		assert "**THE PARAMETER SELECTS ARE READ AS AN NRPN SCHEME.**" in account
 		assert "**BREATH, 2, REACHES A SOUND ONLY THROUGH XCTRL.**" in account
+
+
+class TestPerfourmerMkii:
+
+	"""Four synthesiser channels, one voice each on a channel of its own, from Vermona's manual in a retailer's copy."""
+
+	def test_four_synthesiser_channels_of_one_voice_each (self) -> None:
+		p4m = pymidiinstrumentdefs.load("vermona/perfourmer_mkii", [CORPUS])
+
+		assert list(p4m.parts) == ["synth_channel"]
+		part = p4m.parts["synth_channel"]
+		assert (part.count, part.channel, part.receives, part.polyphony) == (4, "assigned", ("notes", "controls"), 1)
+		assert (p4m.voice.polyphony, p4m.voice.polyphony_shared, p4m.voice.voicing_modes) == (None, False, ())
+		assert p4m.voice.velocity is not None and p4m.voice.velocity.note_on == "received"
+		assert p4m.voice.aftertouch == "channel" and p4m.voice.pitch_bend is None and p4m.voice.note_range is None
+
+	def test_one_controller_received_and_the_clock (self) -> None:
+		p4m = pymidiinstrumentdefs.load("vermona/perfourmer_mkii", [CORPUS])
+
+		assert list(p4m.controls) == ["modulation_wheel"]
+		wheel = p4m.controls["modulation_wheel"]
+		assert (wheel.cc, wheel.part, wheel.direction, wheel.label) == (1, "synth_channel", "receives", "Modulation Wheel")
+		assert (p4m.midi.channels, p4m.midi.clock, p4m.midi.transport, p4m.midi.control_change) == ((1, 16), "receives", None, None)
+		assert p4m.midi.program_change is None
+
+	def test_vermona_s_own_file_in_a_retailer_s_copy (self) -> None:
+		p4m = pymidiinstrumentdefs.load("vermona/perfourmer_mkii", [CORPUS])
+
+		assert (p4m.model.name, p4m.model.revision, p4m.model.firmware) == ("PERfourMER", "MKII", None)
+		assert set(p4m.sources) == {"manual", "product_page", "support_page", "old_product_page"}
+		assert "kraftmusic.com" in (p4m.sources["manual"].url or "")
+		assert "web.archive.org" in (p4m.sources["old_product_page"].url or "")
+		account = " ".join((p4m.source or "").split())
+		assert "**A RETAILER'S COPY THAT IS VERMONA'S OWN FILE.**" in account
+		assert "**COMBINING THEM IS A SETTING, WHICH NO FIELD HOLDS.**" in account

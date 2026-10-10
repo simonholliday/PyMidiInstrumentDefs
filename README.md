@@ -272,6 +272,7 @@ self-contained YAML file, and you share it by sending it.
 | `teenage_engineering/op_z` | teenage engineering OP-Z: 53 controls, every one of them from the guide's incoming MIDI table - what it sends is a number the player sets, parameter by parameter, and no page prints one before they do |
 | `udo_audio/super_6` | UDO Audio Super 6: 86 controls off the most complete implementation a new maker has brought here - every number from 0 to 127 given a row, and 41 of them carrying an NRPN that is the controller number plus 1024 |
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV: a drum machine that ignores controller data |
+| `vermona/perfourmer_mkii` | Vermona PERfourMER MKII: Vermona's own manual, from a retailer's copy - four synthesiser channels, each one voice and each assigned a MIDI channel, and CC 1 to the pulse width |
 | `voce/electric_piano` | Voce ELECTRIC PIANO: 16 or 32 voices, depending on the chorus |
 | `waldorf/blofeld` | Waldorf Blofeld: a chart with a row for all 128 controller numbers, seventeen of which are not controls - and one manual covering a Desktop with no MIDI out and a Keyboard with one |
 | `waldorf/iridium` | Waldorf Iridium: no control map at all - almost every parameter is reached by MIDI learn, so what is here is the fifteen controller numbers the maker fixes, out of a manual two product pages serve as the same bytes |

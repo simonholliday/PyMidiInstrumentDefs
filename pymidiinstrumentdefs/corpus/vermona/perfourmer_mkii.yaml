@@ -1,0 +1,189 @@
+# **VERMONA SERVES NO MANUAL FOR THE PERfourMER MKII TODAY, SO IT IS READ FROM A RETAILER'S COPY
+# THAT IS PROVABLY VERMONA'S OWN FILE.** The copy is Kraft Music's, and its bytes are the manual
+# Vermona's own site offered, by the digest the Wayback Machine holds for every capture of that
+# address from 2011 to 2015.
+#
+# **FOUR SYNTHESISER CHANNELS, EACH ONE VOICE AND EACH ASSIGNED A MIDI CHANNEL, AND ONE NUMBERED
+# CONTROLLER.** Combining channels into one instrument is a setting the format has no field for; the
+# account says how it works.
+
+definition: 1
+
+model:
+  manufacturer: Vermona
+  name: PERfourMER
+  # The MKII is not the earlier PERfourMER, which had a manual of its own; a revision that changes
+  # the facts gets its own file, as `vermona/drm1_mkiv` does.
+  revision: MKII
+  # NOT RECORDED: firmware. No page of the manual names one, and nothing Vermona serves or served
+  # for this model offers one.
+
+source: >-
+  **A RETAILER'S COPY THAT IS VERMONA'S OWN FILE.** Vermona's support page for the PERfourMER MKII
+  offers two downloads, `PERfourMER MKII - patchsheet` and `Lowpass, 12 dB/octave - manual sweep`,
+  and no manual, though it warns that its database "is not filled with all contents, yet!"
+  (support_page); the product page lists no downloads at all (product_page). The manual cited is
+  Kraft Music's copy, a retailer's. It is byte for byte the file Vermona's own site offered from its
+  old product page as "PERfourMER MKII Manual (EN)" (old_product_page), `p4m2_manual_en.pdf`: the
+  Wayback Machine's index gives one SHA-1 for all seven of its captures of that file, from
+  2011-11-11 to 2015-05-30, and it is this file's. That address answers 500 today (2026-10-10). So
+  what is cited is Vermona's manual, labelled as a third-party copy only because Vermona no longer
+  serves it. A second copy on the Internet Archive, from 2020, is the same bytes again; another item
+  there that is labelled as this manual holds the Action Filter 4's.
+
+  **ONE EDITION KNOWN, PRINTING NO DATE.** The manual prints no edition, version or date. Its PDF
+  was made on 2011-10-31 and changed on 2011-11-01 by its metadata, and every capture of Vermona's
+  address, from 2011 to 2015, holds those same bytes. Every page from 2 on prints its own file page
+  as its folio.
+
+  **FOUR SYNTHESISER CHANNELS, EACH ASSIGNED A MIDI CHANNEL.** "On one hand, the PerFourMer MKII is
+  a four-voice polyphonic analogue synthesizer with a classic voice structure. On the other hand, it
+  offers four independent synthesizer channels." (manual p. 6). Each is given a MIDI channel in the
+  panel's MIDI mode, by choosing one of `(1…16)` with SELECT/SEQ and pressing the TRIG button of
+  each synthesiser channel that is to take it (manual p. 25). So they are one part, `synth_channel`,
+  of four, with `channel: assigned` - in every playmode but the two Duo modes, below.
+
+  **EACH SYNTHESISER CHANNEL IS ONE VOICE.** Each voice has one oscillator, "four VCOs in total"
+  (manual p. 7), and a channel that shares its MIDI channel with no other plays in Mono 1: "Mono 1
+  is the standard-mode for all synthesizer channels not being combined." (manual p. 25),
+  "disregarding the selected PLAYMODE setting." (manual p. 26). Vermona's product page says so
+  outright, in the part's own name: "PERfourMER MKII consists of four full-fledged monophonic
+  synthesizers (synth channels) that can be combined at will to create unusual or classic sounds."
+  (product_page), as its old page did: the instrument "combines four discrete built monophonic
+  analogue synthesizers into a single rack-mountable, desktop unit." (old_product_page). So each
+  part is recorded with `polyphony: 1`, and `polyphony_shared: false`: a combined group deals its
+  one MIDI channel's notes across its own channels' voices, and no page has a group take a voice
+  from a channel outside it, so the parts are read as not drawing on one pool.
+
+  **COMBINING THEM IS A SETTING, WHICH NO FIELD HOLDS.** "To combine synthesizer channels, simply
+  set them to identical MIDI-channels." (manual p. 25), and a PLAYMODE then decides how the combined
+  channels take notes. Mono 1 plays them all `in unison` as "a singular monophonic synthesizer"
+  (manual p. 25); Mono 2 deals notes out in turn, "The first MIDI-note will trigger e.g. channel 1,
+  the next channel 2 and so on" (manual p. 26); Poly 1 plays them "with up to four-voice-polyphony"
+  (manual p. 27), a fifth note taking the oldest voice, and Poly 2 is "almost similar to
+  Poly-1-mode" (manual p. 27); and the two Duo modes split the four into two units, channels 1 and 2
+  and channels 3 and 4, in which "the synthesizer channels are constantly combined and played by the
+  synthesizer channels 1's MIDI-channel." (manual p. 27). So in the Duo modes channels 2 to 4 answer
+  on channel 1's MIDI channel whatever they are set to. How many notes a MIDI channel holds
+  therefore runs from one to four, by how many synthesiser channels share it and the mode. The panel
+  has one PLAYMODE control (manual p. 25), and no page says how it applies to two groups combined on
+  different MIDI channels; and the manual and the product page describe Duo 1 differently, below. So
+  `voicing_modes` and an instrument-wide `polyphony` are not recorded.
+
+  **THE MANUAL AND THE PRODUCT PAGE DESCRIBE DUO 1, AND IN PART DUO 2, DIFFERENTLY.** The manual:
+  "Duo1-mode allows playing both units (voices) with monophonic alternating voice-fetching, similar
+  to Mono-2-mode." (manual p. 27), and Duo 2 "allows the two voice units to be played
+  duophonically." (manual p. 28). The product page: `D1 - duophonic, unison` and
+  `D2 - duophonic, rotating` (product_page). No field depends on it.
+
+  **ONE NUMBERED CONTROLLER.** The square wave's pulse width "can be varied using the modulation
+  wheel (MIDI CC #1)." (manual p. 7), switched on and off for each synthesiser channel by edit
+  parameter 2 (manual p. 29), and the product page agrees: "PWM via LFO or MIDI (modulation wheel
+  CC#1)" (product_page). So `modulation_wheel` is CC 1 on the `synth_channel` part, received only:
+  the MIDI connections are an input and a thru, the thru being the one MIDI output and passing the
+  input on (manual p. 23), and no page names a MIDI out. The cutoff "can also be modulated and
+  controlled by MIDI aftertouch or a corresponding MIDI control command." (manual p. 12), but no
+  page numbers that controller, so it is not carried, and `control_change` is left unset rather than
+  read as a map of one. Page 12 puts that controller and `MIDI aftertouch` under one switch, edit
+  parameter 3, which p. 29 describes as channel pressure alone.
+
+  **WHAT ELSE IS RECEIVED.** Each of these is switched for each synthesiser channel by an edit
+  parameter (manual p. 29): note-on velocity, to the amount of the VCA's envelope (parameter 4);
+  channel pressure, to the cutoff, as "(channel) after touch data" (manual p. 29) (parameter 3); and
+  the pitch bender, to the oscillator (parameter 1), read as MIDI pitch bend because no page gives
+  the instrument a bender of its own, over a range no page gives. MIDI clock is received for the
+  LFOs - "All of the PerFourMer MKII's LFOs can be beat-synced to a MIDI-clock." (manual p. 18) -
+  switched per synthesiser channel by edit parameter 8 and divided to one of eight note values
+  (manual p. 18), with an internal clock as a global alternative (manual p. 19).
+
+  **NOT RECORDED**: firmware, which no page names; the note range; the bend range and whether it is
+  settable, which are all that the format's `pitch_bend` holds, so it is left out; note-off
+  velocity; `transport`, program change, system exclusive, NRPN and channel-mode messages, which no
+  page mentions; and the MIDI channels a reset restores, since "The Reset only affects the EDIT
+  parameters and MIDI channel settings." (manual p. 30) without saying to what.
+
+sources:
+  manual:
+    kind: manual
+    title: Owner's Manual VERMONA PERfourMER MKII
+    url: "https://files.kraftmusic.com/media/ownersmanual/Vermona_PERfourMER_MKII_Owners_Manual.pdf"
+    sha256: 0949012098cc3d89b4e7523e4c5377b49cfda6e161c079486167e06d4bfbee07
+    retrieved: 2026-10-10
+    # **A THIRD-PARTY COPY: KRAFT MUSIC'S, OF VERMONA'S OWN MANUAL**, served with `Last-Modified`
+    # 2023-08-04. Vermona's own address for it,
+    # `https://www.vermona.com/index.php/en_p4m.html?file=tl_files/vermona/downloads/perfourmer2/p4m2_manual_en.pdf`,
+    # answered 500 on 2026-10-10. The Wayback Machine's capture of that address on 2011-11-11 is
+    # these 1,106,576 bytes exactly. Replace this with Vermona's copy if Vermona serves it again.
+  product_page:
+    kind: product_page
+    title: VERMONA - PERfourMER MKII
+    landing: "https://www.vermona.com/en/products/synthesizer/product/perfourmer-mkii/"
+    url: "https://www.vermona.com/en/products/synthesizer/product/perfourmer-mkii/"
+    sha256: a3ab70fbcab1254ea46cd98a77f6de2beaf1631018ca97553208769a8b559921
+    retrieved: 2026-10-10
+    paginated: false
+    # The visible text of the page, the same bytes as on 2026-10-08. Its specifications name CC 1
+    # and the six playmodes; its download list is empty.
+  support_page:
+    kind: download_page
+    title: VERMONA - PERfourMER MKII
+    landing: "https://www.vermona.com/en/support/product/perfourmer-mkii/"
+    url: "https://www.vermona.com/en/support/product/perfourmer-mkii/"
+    sha256: 93b0c4832704d994487fda318465793f501e898c8036fb9bfc737f03bf6405c6
+    retrieved: 2026-10-10
+    paginated: false
+    # The visible text of the page, the same bytes as on 2026-10-08: a patch sheet and a 26 MB file
+    # titled `Lowpass, 12 dB/octave - manual sweep`, and no manual.
+  old_product_page:
+    kind: product_page
+    title: VERMONA PERfourMER MKII - Vermona
+    landing: "https://web.archive.org/web/20140121012839/http://www.vermona.com:80/index.php/en_p4m.html"
+    url: "https://web.archive.org/web/20140121012839/http://www.vermona.com:80/index.php/en_p4m.html"
+    sha256: 3ad3ae981845275401d39788f26e588a47808abd698710b1a107d03bc7954070
+    retrieved: 2026-10-10
+    paginated: false
+    # Vermona's own product page as the Wayback Machine captured it on 2014-01-21, the visible text
+    # of the raw capture. Its Downloads offer the manual this definition cites, at 1,1 MB.
+
+midi:
+  # "Select the MIDI-channel (1…16) using the SELECT/SEQ control." (manual p. 25), once for each
+  # synthesiser channel; see the parts.
+  channels: [1, 16]
+  # Received for the LFOs: the MIDI CH LED blinks "to indicate clock-reception." (manual p. 18).
+  # Nothing is said to be sent: the MIDI connections are an input and a thru (manual p. 23).
+  clock: receives
+  # NOT RECORDED: `transport`, `program_change`, `nrpn`, `sysex` and `mode` (channel-mode messages),
+  # which no page mentions. `control_change` is left unset; see the account.
+
+voice:
+  # Except where a synthesiser channel's OCTAVE is at HI or LO, when its oscillator "doesn't respond
+  # to incoming pitch information." (manual p. 8), a panel setting.
+  addressing: pitches
+  # Four synthesiser channels with a voice each, stated on the part below; see the account.
+  polyphony_shared: false
+  velocity:
+    # To the VCA envelope's amount, switched per synthesiser channel by edit parameter 4
+    # (manual p. 14; manual p. 29).
+    note_on: received
+  # "(channel) after touch data" (manual p. 29), to the cutoff, by edit parameter 3.
+  aftertouch: channel
+  # NOT RECORDED: `note_range`, `pitch_bend` (the pitch bender is received, by edit parameter 1, and
+  # neither its range nor whether that is settable is given) and note-off velocity.
+
+parts:
+  # **THE FOUR SYNTHESISER CHANNELS**, each assigned a MIDI channel (manual p. 25) and each one
+  # voice; combining them is a setting, set out in the account, and in the Duo modes all four answer
+  # on channel 1's.
+  synth_channel:
+    label: Synthesizer Channel
+    count: 4
+    channel: assigned
+    receives: [notes, controls]
+    addressing: pitches
+    polyphony: 1
+
+controls:
+  # "the modulation wheel (MIDI CC #1)" (manual p. 7), to the square wave's pulse width, switched
+  # per synthesiser channel by edit parameter 2 (manual p. 29). Received only: the MIDI connections
+  # are an input and a thru (manual p. 23).
+  modulation_wheel: {label: Modulation Wheel, cc: 1, part: synth_channel, direction: receives}

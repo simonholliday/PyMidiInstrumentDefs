@@ -452,6 +452,27 @@ and `both`, which is what leaving `direction` out means.
   master_volume: {label: Master Volume, cc: 7, direction: none, group: master}
 ```
 
+**MPE is two fields, and they answer different questions.** `midi.mpe` says whether the
+instrument takes part in MIDI Polyphonic Expression at all, and which way: `receives`,
+`sends`, `both` or `none`, the words `clock` uses. `midi.per_voice_channels: true` says
+something narrower, that its voices take a channel each, one note to a channel. A Cascadia
+answers to MPE and sounds one note, so it records `mpe: receives` and leaves
+`per_voice_channels` out; a Prophet-6's six voices sit on MIDI channels 2 to 7 under MPE, so it
+records both. Several monosynths chained so that each sounds one voice of a shared polyphony
+is not `per_voice_channels`: that is a rig, not a model.
+
+```yaml
+midi:
+  per_voice_channels: true
+  mpe: receives       # "doesn't output MPE from its own keyboard"
+```
+
+Everything else about MPE goes in a comment beside them: which channel is the master and
+which the members take, the dialect (an Osmose takes Haken's MPE+), how many voices MPE can
+use where that differs from `polyphony` (a Super 6 plays six of its twelve under MPE), and
+behaviour that changes with the path a note arrives by. None of these has a field, and each
+waits for a second instrument that needs one.
+
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
 section answers one channel above its strings. A Voce plays three parts across three

@@ -6057,7 +6057,7 @@ class TestAstroLab:
 			for c in astrolab.controls.values() if c.group == "faders")
 
 	def test_nine_faders_the_manual_never_explains (self) -> None:
-		"""Named only inside the table, and numbered out of step with their controllers."""
+		"""Explained nowhere, and numbered out of step with their controllers."""
 		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
 
 		faders = {c.label: c.cc for c in astrolab.controls.values() if c.group == "faders"}
@@ -6066,6 +6066,15 @@ class TestAstroLab:
 		assert faders["Fader 4"] == 72
 		assert faders["Fader 1"] == 73
 		assert faders["Fader 9"] == 85
+
+		# **The 2.0.0 manual names four Faders outside the table**, as a software instrument's
+		# display names, so the sentence that said the word appeared only in the table was
+		# narrowed rather than kept.
+		flat = " ".join(prose_of("arturia", "astrolab").split())
+
+		assert "the CZ's Main page shows its Macro 1 to Macro 4 as `Fader 1` to `Fader 4` (manual" \
+			" p. 123)" in flat
+		assert "appears in these 115 pages only inside this table" not in flat
 
 	def test_two_parts_that_do_not_share_their_voices (self) -> None:
 		"""Voices are per part, and how many is the loaded engine's rather than the box's."""
@@ -6086,9 +6095,10 @@ class TestAstroLab:
 		assert part.polyphony is None
 
 		assert astrolab.voice.aftertouch == "channel"
-		assert astrolab.voice.pitch_bend is not None
-		assert astrolab.voice.pitch_bend.programmable is True
-		assert astrolab.voice.pitch_bend.semitones is None
+
+		# A Part's switch turns pitch bend on or off, which is not a settable range, so
+		# `pitch_bend` is left out, as the AstroLab 37's is.
+		assert astrolab.voice.pitch_bend is None
 
 	def test_clock_and_transport_come_in_and_do_not_go_out (self) -> None:
 		"""Sync is a received thing here; the MIDI Out Filter's widest setting is notes only."""
@@ -6115,18 +6125,30 @@ class TestAstroLab:
 		assert astrolab.midi.program_change.presets is None
 
 	def test_the_documents_and_what_each_is_for (self) -> None:
-		"""One manual for two models, three sets of release notes, a page and a cheatsheet."""
+		"""Two editions of one manual for two models, three sets of release notes, a page and a cheatsheet."""
 		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
 
-		assert set(astrolab.sources) == {"manual", "release_notes", "release_notes_88",
-			"release_notes_37", "resources_page", "cheatsheet"}
+		assert set(astrolab.sources) == {"manual", "manual_1_5_1", "release_notes",
+			"release_notes_88", "release_notes_37", "resources_page", "cheatsheet"}
 
-		# The firmware is two releases ahead of the manual that carries the map.
-		assert astrolab.model.firmware == "1.7.0"
-		assert astrolab.sources["manual"].edition == "1.5.1"
+		# The firmware and the manual that carries the map are both 2.0.0. The 1.5.1 manual is
+		# kept because its table is the same, cell for cell, and it is still the 88's.
+		assert astrolab.model.firmware == "2.0.0"
+		assert astrolab.sources["manual"].edition == "2.0.0"
+		assert astrolab.sources["manual_1_5_1"].edition == "1.5.1"
 
-		# The folio is six lower than the file's page, which no other source here needs.
-		assert astrolab.sources["manual"].page_offset == 6
+		# The folio is five lower than the file's page in 2.0.0, and six in 1.5.1.
+		assert astrolab.sources["manual"].page_offset == 5
+		assert astrolab.sources["manual_1_5_1"].page_offset == 6
+		assert astrolab.sources["manual"].file_page(105) == 110
+
+		# The title the page serves, where the copy of 2026-10-03 was recorded under another.
+		assert astrolab.sources["resources_page"].title == "Arturia - AstroLab"
+
+		flat = " ".join(prose_of("arturia", "astrolab").split())
+
+		assert "THE MAP IS THE 2.0.0 MANUAL'S, AND IT IS THE 1.5.1 MANUAL'S CELL FOR CELL." in flat
+		assert "**THE ASTROLAB 37 IS NOT IN THIS DEFINITION; IT IS `arturia/astrolab_37`.**" in flat
 
 		# The cheatsheet's version string reads newer than the manual's and is twenty months
 		# older, which is why its date is recorded.

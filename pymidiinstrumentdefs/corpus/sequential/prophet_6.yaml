@@ -172,8 +172,10 @@ midi:
   # Lower Zone setup on the connected MPE controller". Two pitch bend ranges are set separately,
   # master and per-voice, each 1-96 semitones, and the controller's Y axis reaches one of four
   # destinations - low-pass cutoff or a pulse width - unipolar or bipolar (addendum pp. 3-4).
-  # A boolean cannot carry any of that, which is the open question on this format.
+  # Neither a boolean nor the one word of `mpe` below can carry any of that.
   per_voice_channels: true
+  # Received and never sent, by the addendum's own sentence above.
+  mpe: receives
 
 voice:
   addressing: pitches

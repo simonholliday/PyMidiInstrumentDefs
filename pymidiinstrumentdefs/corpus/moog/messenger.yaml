@@ -71,8 +71,9 @@ source: >-
 
   THAT IS THE WHOLE OF WHAT THE MANUAL SAYS ABOUT MPE. One row of one table, on a synthesiser its
   own specification calls monophonic. Nothing says whether the instrument allocates a channel per
-  voice, so `midi.per_voice_channels` is left unrecorded rather than claimed from a single
-  mention.
+  voice, so `midi.per_voice_channels` is left unrecorded rather than claimed from a single mention.
+  `midi.mpe` is `receives` on that row's reading, since an activation message is what a receiver
+  answers to.
 
   THE BEND RANGE IS SEVEN SEMITONES AND SETTABLE FOUR WAYS. "Default pitch bend range is +/- 7
   semitones (can be changed in CONFIG menu)" (p. 7), and the ways to change it are RPN 00, CC 107
@@ -161,6 +162,10 @@ midi:
   # A CHECKED ABSENCE AND NOT A SILENCE: "NRPNs No No" (p. 34), where the same table marks four
   # RPNs as received. See the source account.
   nrpn: none
+  # ONE ROW, READ AS RECEIVING: CC 74 is "MPE 3rd Dimension of Control" (p. 36), switched
+  # "On/Off via MPE Activation message RPN 6" (p. 36), and an activation message is what a
+  # receiver answers to. Nothing says it sends MPE or spreads its one voice across channels.
+  mpe: receives
 
 voice:
   addressing: pitches

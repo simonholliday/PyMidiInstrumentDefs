@@ -150,11 +150,11 @@ source: >-
   sharpest thing in this definition for anybody writing a panel, because nothing in the format can
   express it.
 
-  **IT ANSWERS TO MPE WHILE SOUNDING ONE NOTE, AND `per_voice_channels` IS LEFT UNRECORDED AS A
-  RESULT.** "Although a monophonic instrument, Cascadia is capable of responding to MPE data"
-  (manual p. 101), across up to fifteen member channels, with pitch on bend, timbre on a learned
-  controller and pressure on channel aftertouch. **In this corpus that field means the voices are
-  spread across channels, one note to a channel** - which is what `modal/carbon8m` and
+  **IT ANSWERS TO MPE WHILE SOUNDING ONE NOTE, SO `midi.mpe` IS `receives` AND `per_voice_channels`
+  IS LEFT UNRECORDED.** "Although a monophonic instrument, Cascadia is capable of responding to MPE
+  data" (manual p. 101), across up to fifteen member channels, with pitch on bend, timbre on a
+  learned controller and pressure on channel aftertouch. **In this corpus that field means the
+  voices are spread across channels, one note to a channel** - which is what `modal/carbon8m` and
   `waldorf/iridium` set it for. One voice cannot be spread, so `true` would misdescribe the
   instrument and `false` would hide the feature. `moog/messenger` left the same field unrecorded on
   the same kind of machine, and consistency with it is deliberate. "Cascadia is a monophonic device
@@ -305,6 +305,10 @@ midi:
   # the maker's configuration program. In the MPE modes the channel setting disappears and up to
   # fifteen member channels are used instead.
   channels: [1, 16]
+  # **IT ANSWERS TO MPE AND SOUNDS ONE NOTE.** "Although a monophonic instrument, Cascadia is
+  # capable of responding to MPE data" (manual p. 101), so it receives MPE, and
+  # `per_voice_channels` stays unrecorded: one voice cannot be spread across channels.
+  mpe: receives
   # Answers to an incoming clock and generates one of its own. **Rests on the DIN output alone**;
   # see the account for the USB port, about which this manual says two different things.
   clock: both

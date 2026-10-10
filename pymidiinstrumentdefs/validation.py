@@ -39,7 +39,7 @@ _ADDRESSING: typing.Final[frozenset[str]] = frozenset({"pitches", "voices", "rel
 _NOTE_MAPS: typing.Final[frozenset[str]] = frozenset({"fixed", "learned"})
 
 # Which way a chart row that is not a control goes, from the instrument's side:
-# clock and transport.  These are the words every definition has used for them,
+# clock, transport and MPE.  These are the words every definition has used for them,
 # and checking them stops the next file writing `transmits`, the word a control's
 # own direction uses, which would read here as something nobody meant.
 _FLOWS: typing.Final[frozenset[str]] = frozenset({"both", "receives", "sends", "none"})
@@ -64,7 +64,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	"sources.page_offset": frozenset({"from_printed", "offset"}),
 	"midi": frozenset({
 		"channels", "mode", "clock", "transport", "program_change", "control_change",
-		"nrpn", "sysex", "per_voice_channels",
+		"nrpn", "sysex", "per_voice_channels", "mpe",
 	}),
 	"midi.program_change": frozenset({"receives", "sends", "presets"}),
 	"midi.mode": frozenset({"receives", "sends"}),
@@ -587,6 +587,7 @@ class _Reader:
 				else self.flag(section["sysex"], "midi.sysex"),
 			per_voice_channels = None if section.get("per_voice_channels") is None
 				else self.flag(section["per_voice_channels"], "midi.per_voice_channels"),
+			mpe                = self.word(section, "mpe", "midi", _FLOWS),
 		)
 
 

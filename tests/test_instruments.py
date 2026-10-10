@@ -1586,6 +1586,46 @@ class TestAnyNote:
 		assert said == {"korg/volca_drum": "any", "korg/volca_sample": "any", "moog/dfam": "none"}
 
 
+class TestMpe:
+
+	"""Whether an instrument takes part in MPE at all, and which way, apart from whether its voices take a channel each."""
+
+	@pytest.mark.parametrize("word", ["receives", "sends", "both", "none"])
+	def test_mpe_takes_the_words_clock_takes (self, word: str) -> None:
+		body = f"definition: 1\nmodel: {{name: X}}\nsource: hand\nmidi: {{mpe: {word}}}"
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").midi.mpe == word
+
+	def test_a_flag_is_not_a_direction (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse("definition: 1\nmodel: {name: X}\nmidi: {mpe: true}", source = "x.yaml")
+
+		assert "midi.mpe" in str(raised.value)
+
+	def test_the_cascadia_receives_mpe_with_one_voice (self) -> None:
+		"""The case the field exists for: MPE answered, and no voices to spread across channels."""
+		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
+
+		assert cascadia.midi.mpe == "receives"
+		assert cascadia.midi.per_voice_channels is None
+
+	def test_the_corpus_says_which_way_for_every_mpe_instrument (self) -> None:
+		said = {name: pymidiinstrumentdefs.load(name, [CORPUS]).midi.mpe for name in pymidiinstrumentdefs.available([CORPUS])}
+		both = sorted(name for name, word in said.items() if word == "both")
+
+		assert both == ["arturia/polybrute_12", "asm/hydrasynth_explorer", "asm/leviasynth", "expressive_e/osmose",
+			"synthstrom_audible/deluge"]
+		assert sum(word == "receives" for word in said.values()) == 15
+		assert not [name for name, word in said.items() if word in ("sends", "none")]
+
+	def test_every_instrument_spreading_voices_across_channels_says_which_way_mpe_goes (self) -> None:
+		"""`per_voice_channels` without `mpe` would leave a consumer guessing whether to offer MPE at all."""
+		silent = [name for name in pymidiinstrumentdefs.available([CORPUS])
+			if (midi := pymidiinstrumentdefs.load(name, [CORPUS]).midi).per_voice_channels and midi.mpe is None]
+
+		assert silent == []
+
+
 class TestRelativeNotes:
 
 	def test_a_relative_instrument_names_the_note_its_offsets_are_from (self) -> None:
@@ -1944,6 +1984,7 @@ midi:
   nrpn: none
   sysex: true
   per_voice_channels: false
+  mpe: both
 voice:
   addressing: relative
   reference_note: 60

@@ -81,12 +81,13 @@ source: >-
   differs from both sibling Dreadboxes**, whose controls are all `both`, so the standing maker
   rule held again.
 
-  THE CHANNEL, WHICH HAS A THIRD SETTING. "The selection can be OMNI (responds to all MIDI
-  channels) or 1 to 16 or MPE (activates the MPE support)." (manual p. 64). In MPE the zone is
+  THE CHANNEL, WHICH HAS A THIRD SETTING. "The selection can be OMNI (responds to all MIDI channels)
+  or 1 to 16 or MPE (activates the MPE support)." (manual p. 64). In MPE the zone is
   `LOWER for channels 1/ UPPER for channel 16` over `MPE CHANNELS 1 to 15` (manual p. 62), and
-  controller 74 is the timbre axis - "CC74 Uses MIDI CC74 as a modulation source, allowing
-  external controllers such as MPE devices to modulate any assigned parameter." (manual p. 61).
-  **There is no field for MPE in this format**, so it is here in words.
+  controller 74 is the timbre axis - "CC74 Uses MIDI CC74 as a modulation source, allowing external
+  controllers such as MPE devices to modulate any assigned parameter." (manual p. 61). `midi.mpe`
+  records that it receives MPE, and the zone and its channels are here in words, for want of a
+  field.
 
   **ITS SYSTEM EXCLUSIVE DOES NOT TRAVEL DOWN ITS OWN DIN SOCKET.** Presets are exported and
   imported as system exclusive with "a software program such as SysEx Librarian for Mac, or Bome
@@ -164,6 +165,9 @@ midi:
   # `TRANSPORT RECEIVE ON/OFF` (manual p. 62), and "Turns ON/OFF external Transport controls (e.g
   # play/stop/continue)." (manual p. 64) - which is the maker naming the three messages.
   transport: receives
+  # Received: MPE is a setting of the channel, "MPE (activates the MPE support)" (manual p. 64),
+  # for external controllers such as MPE devices; nothing says it sends MPE.
+  mpe: receives
   program_change:
     # `PC IN ON/OFF` (manual p. 62), and "PC IN Activates program change control." (manual p. 64).
     # **An in-switch and no out-switch**, so what it sends is unestablished and `sends` is absent

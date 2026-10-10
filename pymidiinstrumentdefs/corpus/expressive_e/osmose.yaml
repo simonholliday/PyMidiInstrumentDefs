@@ -160,6 +160,11 @@ midi:
   # on one. Everything else about it is in the comment below voice, because a boolean cannot
   # carry any of it.
   per_voice_channels: true
+  # BOTH WAYS. Its keyboard plays other instruments in MPE, the `mpe` configuration being the one
+  # that "sends MIDI messages according to the MIDI Polyphonic Expression standard" (manual p. 51),
+  # and its own engine is played the same way from outside, "allowing you to play the EaganMatrix
+  # from an external DIN MIDI device using MPE data" (manual p. 88).
+  mpe: both
   # RECEIVES ONLY, AND THE MAKER'S TWO DOCUMENTS DISAGREE ABOUT IT. The chart marks MIDI
   # Clock, Song Position Pointer, Start, Continue and Stop as both transmitted and
   # recognised. The manual says the opposite in as many words: "Attention: Osmose is not

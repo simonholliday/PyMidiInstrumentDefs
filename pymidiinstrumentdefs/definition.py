@@ -361,6 +361,12 @@ class Midi:
 	refused, ``transmits`` among them, since that is a control's word for its
 	direction and is not what these fields have ever said.
 
+	``mpe`` says whether the instrument takes part in MIDI Polyphonic Expression
+	at all, and which way: ``receives``, ``sends``, ``both`` or ``none``, the words
+	``clock`` uses.  ``per_voice_channels`` keeps its narrower meaning, that the
+	voices take a channel each.  The two come apart on a Cascadia, which answers
+	to MPE with one voice, so it receives MPE and has no voices to spread.
+
 	``mode`` is the chart's Mode row, 1 to 4, as the default both ways.  Where
 	the chart gives a different default each way - a JUNO-106 recognises mode 1
 	and announces mode 3 - ``mode`` is ``None`` and ``mode_receives`` and
@@ -381,6 +387,7 @@ class Midi:
 	nrpn: str | None = None
 	sysex: bool | None = None
 	per_voice_channels: bool | None = None
+	mpe: str | None = None
 
 
 	@property

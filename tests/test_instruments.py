@@ -11445,6 +11445,14 @@ class TestTR6S:
 		assert "chart_eng01" in tr_6s.sources
 		assert tr_6s.sources["chart_eng01"].edition == "eng01"
 
+		# **And the third document is another model's chart, cited and marked as such**: the
+		# TR-8S's, the same bytes `roland/tr8s` reads, for this one tie-break.
+		tr8s = pymidiinstrumentdefs.load("roland/tr8s", [CORPUS])
+
+		assert tr_6s.sources["sibling_chart"].sha256 == tr8s.sources["midi_impl"].sha256
+		assert "**the TR-8S's own chart, which is another model's document**" in account
+		assert "the committed `roland/tr8s`, read from its own chart under another task" not in account
+
 	def test_system_exclusive_is_not_recorded_because_two_documents_disagree (self) -> None:
 		"""The chart marks it absent and the Parameter Guide gives a device ID for it."""
 		tr_6s = pymidiinstrumentdefs.load("roland/tr_6s", [CORPUS])

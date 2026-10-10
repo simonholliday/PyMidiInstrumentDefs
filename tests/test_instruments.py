@@ -598,8 +598,9 @@ class TestBundledCorpus:
 
 		So `dated` written as `date`, or `sha256` as `sha`, would ship a source with no
 		date or no digest and look exactly like a source that has none - which is the
-		distinction this corpus is most careful about everywhere else.  This test is
-		the guard the loader does not provide.
+		distinction this corpus is most careful about everywhere else.  The loader now
+		warns about an unknown key in every section, and no bundled definition carries
+		a warning; this test stays as the case that found the gap.
 		"""
 		known = {field.name for field in dataclasses.fields(pymidiinstrumentdefs.Source)}
 		stray: dict[str, list[str]] = {}
@@ -1764,6 +1765,125 @@ class TestWarnings:
 		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
 
 		assert any("neither cc nor nrpn" in warning for warning in definition.warnings)
+
+
+class TestUnknownFields:
+
+	"""A key no section has is warned about, because a misspelt field is otherwise dropped without a word."""
+
+	@pytest.mark.parametrize(("body", "where"), [
+		("model: {name: X, maker: Moog}", "model.maker"),
+		("sources: {manual: {version: '1.0'}}", "sources.manual.version"),
+		("midi: {clocks: both}", "midi.clocks"),
+		("midi: {program_change: {receive: true}}", "midi.program_change.receive"),
+		("voice: {polyphon: 8}", "voice.polyphon"),
+		("voice: {velocity: {note_on: received, release: true}}", "voice.velocity.release"),
+		("voice: {pitch_bend: {range: 12}}", "voice.pitch_bend.range"),
+		("parts: {a: {channel: assigned, polyphonic: 4}}", "parts.a.polyphonic"),
+		("controls: {a: {cc: 1, labl: A}}", "controls.a.labl"),
+	])
+	def test_an_unknown_field_in_any_section_warns_and_names_where (self, body: str, where: str) -> None:
+		text = "definition: 1\nmodel: {name: X}\nsource: hand\n" + body if not body.startswith("model") \
+			else "definition: 1\n" + body + "\nsource: hand\n"
+		definition = pymidiinstrumentdefs.parse(text, source = "x.yaml")
+
+		assert [warning for warning in definition.warnings if f"x.yaml: {where}: " in warning], definition.warnings
+
+	def test_the_jupiter_x_typo_is_now_caught_by_the_loader (self) -> None:
+		"""`version` where `edition` belongs: the file loaded, every gate passed, the editions were gone."""
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nsources: {manual: {kind: manual, version: '1.0'}}"
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.sources["manual"].edition is None
+		assert any("sources.manual.version" in warning for warning in definition.warnings)
+
+	def test_an_unquoted_comma_in_a_flow_label_is_caught (self) -> None:
+		"""The shape that cut three bundled labels short: YAML ends the label at the comma.
+
+		`{label: LFO PW 1, 2 Dest On/Off}` is a label of `LFO PW 1` and a second key,
+		`2 Dest On/Off`, with no value.  The second key is what the warning finds.
+		"""
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\ncontrols: {a: {label: LFO PW 1, 2 Dest On/Off, nrpn: 95}}"
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.controls["a"].label == "LFO PW 1"
+		assert any("controls.a.2 Dest On/Off" in warning for warning in definition.warnings)
+
+	def test_the_three_labels_it_found_say_what_their_documents_print (self) -> None:
+		minilogue = pymidiinstrumentdefs.load("korg/minilogue_xd")
+		prophet = pymidiinstrumentdefs.load("sequential/prophet_6")
+
+		assert minilogue.controls["modulation1"].label == "Modulation1 (Joystick +Y, vv=0~127)"
+		assert minilogue.controls["modulation2"].label == "Modulation2 (Joystick -Y, vv=0~127)"
+		assert prophet.controls["lfo_pw_dest"].label == "LFO PW 1, 2 Dest On/Off"
+
+	def test_an_unknown_top_level_section_stays_silent (self) -> None:
+		"""That is what lets one tool grow a section without breaking another."""
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nlayout: {knobs: 4}"
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").warnings == ()
+
+	def test_a_file_using_every_field_draws_no_warning (self) -> None:
+		"""So that a field the reader reads cannot be missing from the set it checks against."""
+		body = """
+definition: 1
+model: {name: X, manufacturer: M, firmware: "1.0", revision: MkII}
+source: hand
+sources:
+  manual:
+    kind: manual
+    title: T
+    edition: "1"
+    dated: 2020-01-01
+    landing: "https://example.com/"
+    url: "https://example.com/m.pdf"
+    sha256: abc
+    retrieved: 2026-01-01
+    page_offset: 2
+    pages_per_sheet: 1
+    paginated: true
+    pictured_pages: [3]
+midi:
+  channels: [1, 16]
+  mode: 3
+  clock: both
+  transport: receives
+  program_change: {receives: true, sends: true, presets: 8}
+  control_change: none
+  nrpn: none
+  sysex: true
+  per_voice_channels: false
+voice:
+  addressing: relative
+  reference_note: 60
+  note_map: fixed
+  note_range: [0, 127]
+  polyphony: 8
+  polyphony_shared: true
+  paraphonic: false
+  voicing_modes: [1, 8]
+  velocity: {note_on: gated, note_off: false, gated_by: [a]}
+  aftertouch: channel
+  pitch_bend: {semitones: 2, programmable: true}
+  voices: {kick: 36}
+parts:
+  p: {label: P, channel: assigned, count: 2, receives: [notes, controls], addressing: pitches}
+  q: {channel_offset: 1}
+groups: {g: G}
+controls:
+  a: {label: A, cc: 1, lsb: 33, nrpn: 5, nrpn_range: [0, 1000], range: [0, 127], default: 0, step: 1,
+      unit: hz, group: g, part: p, panel_only: false, direction: both, kind: continuous}
+  b: {cc: 2, values: {low: 0, high: 64}, group: g}
+  c: {cc: 3, choices: {one: 0, two: 1}, group: g}
+"""
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.warnings == ()
+
+		# A part's own voices cannot stand beside a shared pool, so that field has a file of its own.
+		own = "definition: 1\nmodel: {name: X}\nsource: hand\nparts: {p: {channel: assigned, polyphony: 4}}\nvoice: {polyphony_shared: false}"
+
+		assert pymidiinstrumentdefs.parse(own, source = "x.yaml").warnings == ()
 
 
 class TestSources:

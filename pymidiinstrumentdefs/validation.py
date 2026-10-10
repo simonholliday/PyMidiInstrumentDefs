@@ -11,6 +11,9 @@ checked — is a warning carried on the definition rather than a refusal.
 What is deliberately not an error: an unknown top-level section, an unknown
 field inside a known section, an empty file, an absent section, and a null
 section.  That is what lets one tool grow a section without breaking another.
+An unknown field is warned about all the same, because it is far more often a
+misspelling than a field from the future, and a misspelt field is otherwise
+dropped without a word.
 """
 
 import datetime
@@ -44,6 +47,38 @@ _FLOWS: typing.Final[frozenset[str]] = frozenset({"both", "receives", "sends", "
 # What the instrument does with a note-on's velocity.  ``both`` is received and
 # sent too; ``gated`` is received and inaudible until something else is turned up.
 _NOTE_ON: typing.Final[frozenset[str]] = frozenset({"received", "both", "ignored", "gated"})
+
+# The fields each section has.  A key outside its section's set is read by
+# nothing, so it is warned about: a misspelt field is otherwise dropped without a
+# word, and a source with `version` where `edition` belongs ships looking exactly
+# like a source that has no edition.  A warning and not a refusal, so a file
+# written for a field a later reader adds still loads in this one.  Top-level
+# sections are not here: an unknown one is ignored without comment, which is
+# what lets one tool grow a section without breaking another.
+_FIELDS: typing.Final[dict[str, frozenset[str]]] = {
+	"model": frozenset({"name", "manufacturer", "firmware", "revision"}),
+	"sources": frozenset({
+		"kind", "title", "edition", "dated", "landing", "url", "sha256", "retrieved",
+		"page_offset", "pages_per_sheet", "paginated", "pictured_pages",
+	}),
+	"midi": frozenset({
+		"channels", "mode", "clock", "transport", "program_change", "control_change",
+		"nrpn", "sysex", "per_voice_channels",
+	}),
+	"midi.program_change": frozenset({"receives", "sends", "presets"}),
+	"voice": frozenset({
+		"addressing", "reference_note", "note_map", "note_range", "polyphony",
+		"polyphony_shared", "paraphonic", "voicing_modes", "velocity", "aftertouch",
+		"pitch_bend", "voices",
+	}),
+	"voice.velocity": frozenset({"note_on", "note_off", "gated_by"}),
+	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
+	"parts": frozenset({"label", "channel", "channel_offset", "count", "receives", "addressing", "polyphony"}),
+	"controls": frozenset({
+		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
+		"step", "unit", "group", "part", "panel_only", "direction", "kind",
+	}),
+}
 
 # The channel mode messages, CC 120-127, by the name PyMidiDefs gives each. They
 # mean the same on every instrument that has them, so they are specification
@@ -104,6 +139,28 @@ class _Reader:
 			self.refuse(where, f"expected a mapping, found {type(value).__name__}")
 
 		return value
+
+
+	def fields (self, value: object, where: str, section: str) -> dict[str, typing.Any]:
+
+		"""Read a section that must be a mapping, warning about any key it does not have.
+
+		``section`` names the set of fields in ``_FIELDS``; ``where`` is what to
+		call this one in a message, which for a source, a part or a control
+		includes its own name.
+		"""
+
+		found = self.mapping(value, where)
+
+		for key in found:
+			if key not in _FIELDS[section]:
+				self.warn(
+					f"{where}.{key}",
+					"is not a field this reader knows, so nothing reads it - a misspelling, "
+					"or a field from a later version of the format",
+				)
+
+		return found
 
 
 	def integer (self, value: object, where: str, low: int, high: int) -> int:
@@ -207,7 +264,7 @@ class _Reader:
 
 		"""Read ``model``.  Its ``name`` is the only required field in the file."""
 
-		section = self.mapping(value, "model")
+		section = self.fields(value, "model", "model")
 
 		if "name" not in section:
 			self.refuse("model", "no name — a definition must say which instrument it is")
@@ -282,7 +339,7 @@ class _Reader:
 
 		for name, entry in self.mapping(value, "sources").items():
 			where = f"sources.{name}"
-			fields = self.mapping(entry, where)
+			fields = self.fields(entry, where, "sources")
 
 			found[self.name(name, "sources")] = pymidiinstrumentdefs.definition.Source(
 				kind            = self.optional_text(fields, "kind", where),
@@ -317,7 +374,7 @@ class _Reader:
 
 		for name, entry in self.mapping(value, "parts").items():
 			where = f"parts.{name}"
-			fields = self.mapping(entry, where)
+			fields = self.fields(entry, where, "parts")
 
 			channel = self.optional_text(fields, "channel", where)
 			assigned = pymidiinstrumentdefs.definition.ASSIGNED
@@ -414,11 +471,11 @@ class _Reader:
 		if value == "none":
 			return pymidiinstrumentdefs.definition.Midi(stated_none = True)
 
-		section = self.mapping(value, "midi")
+		section = self.fields(value, "midi", "midi")
 		program_change = None
 
 		if section.get("program_change") is not None and section["program_change"] != "none":
-			inner = self.mapping(section["program_change"], "midi.program_change")
+			inner = self.fields(section["program_change"], "midi.program_change", "midi.program_change")
 			program_change = pymidiinstrumentdefs.definition.ProgramChange(
 				receives = None if inner.get("receives") is None
 					else self.flag(inner["receives"], "midi.program_change.receives"),
@@ -449,7 +506,7 @@ class _Reader:
 
 		"""Read ``voice`` — what the instrument sounds and what it answers to."""
 
-		section = self.mapping(value, "voice")
+		section = self.fields(value, "voice", "voice")
 		addressing = self.optional_text(section, "addressing", "voice")
 
 		if addressing is not None and addressing not in _ADDRESSING:
@@ -614,7 +671,7 @@ class _Reader:
 		if value is None:
 			return None
 
-		section = self.mapping(value, "voice.velocity")
+		section = self.fields(value, "voice.velocity", "voice.velocity")
 
 		return pymidiinstrumentdefs.definition.Velocity(
 			note_on  = self.word(section, "note_on", "voice.velocity", _NOTE_ON),
@@ -634,7 +691,7 @@ class _Reader:
 		if value is None:
 			return None
 
-		section = self.mapping(value, "voice.pitch_bend")
+		section = self.fields(value, "voice.pitch_bend", "voice.pitch_bend")
 
 		return pymidiinstrumentdefs.definition.PitchBend(
 			semitones = None if section.get("semitones") is None
@@ -662,7 +719,7 @@ class _Reader:
 		"""Read one control, and the bands or choices it has if it is stepped."""
 
 		where = f"controls.{name}"
-		section = self.mapping(value, where)
+		section = self.fields(value, where, "controls")
 
 		extent = self.pair(section["range"], f"{where}.range", 0, 16383) \
 			if section.get("range") is not None else (0, 127)

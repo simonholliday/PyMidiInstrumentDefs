@@ -26,16 +26,20 @@
 # (release_note p. 1) as one system. So this definition is every KRONOS, which is this maker's
 # arrangement rather than a convenience here.
 #
-# **TWENTY-EIGHT OF THE SEVENTY-TWO NUMBERS BELOW ARE OFF ON A NEW INSTRUMENT.** The
-# implementation prints the KARMA sliders, the KARMA switches, the eight pads and the Vector
-# Joystick's two axes with controller numbers, footnoted `When CC# by "CC Default" is assigned to
-# the KARMA Controllers, Vector Joystick X, Y and Pads in Global Mode` (implementation p. 2). The
-# Parameter Guide is blunter: "As shipped from the factory, for simplicity, all KARMA and Pad
-# assignments are set to Off." (guide p. 793), and "the KRONOS has a set of recommended CC
-# assignments which can be loaded in a single step" (guide p. 793). **So these twenty-eight are a
-# recommendation the player loads with one menu command, not a factory state** - they are carried
-# because they are the maker's published numbers and because a player who runs that command gets
-# exactly these, and the condition is said here rather than left for somebody to discover.
+# **TWENTY-SEVEN OF THE SEVENTY-TWO NUMBERS BELOW ARE OFF ON A NEW INSTRUMENT, AND TWO MORE ARE
+# DEFAULTS.** The implementation prints the KARMA sliders, the KARMA switches, the eight pads and
+# the Vector Joystick's two axes with controller numbers, footnoted `When CC# by "CC Default" is
+# assigned to the KARMA Controllers, Vector Joystick X, Y and Pads in Global Mode` (implementation
+# p. 2). The Parameter Guide is blunter: "As shipped from the factory, for simplicity, all KARMA and
+# Pad assignments are set to Off." (guide p. 793), and "the KRONOS has a set of recommended CC
+# assignments which can be loaded in a single step" (guide p. 793). **So the KARMA controls and the
+# pads, twenty-seven numbers with KARMA ON/OFF on 14, are a recommendation the player loads with one
+# menu command, not a factory state**, and each says `assignment: "off"`. The Vector Joystick is not
+# among them: "The KARMA controls and pads will all be set to Off; the Vector Joystick will be set
+# to its default CCs." (guide p. 822), and the guide gives those defaults as 118 and 119 (guide
+# p. 784). So its two axes are on as it ships and the owner can move them, which is `assignment:
+# default`. All twenty-nine are carried because they are the maker's published numbers and because a
+# player who runs that command gets exactly these.
 #
 # The chart is a third witness and the plainest of the three: "Valid if assigned as a MIDI
 # control change in Global P2 Controller. The number shown here is the CC default assignment."
@@ -51,7 +55,7 @@
 # footnote where it is received and not where it is transmitted. The guide puts it with the rest -
 # "KARMA ON/OFF [Off, MIDI CC#00...119] This assigns a control change message to the KARMA ON/OFF
 # switch. When assigned to a CC, the default is CC#14." (guide p. 793) - so the transmitted table
-# is missing a mark, and the count above reads 28 rather than 27 on the guide's authority.
+# is missing a mark, and CC 14 is counted with the rest on the guide's authority.
 #
 # **THE POLYPHONY IS NINE FIGURES AND A SENTENCE ABOUT SHARING A PROCESSOR, SO IT IS NOT
 # RECORDED.** The specifications give a maximum for each of nine synth engines and none for the
@@ -115,7 +119,7 @@ source: >-
 
   **AND SEPARATELY, ONE PAGE OF THE OPERATION GUIDE, WHICH IS AN ORDINARY CHART.** See the
   comment above the definition for where it is and why it was nearly missed. It is what `mode`
-  and `note_range` rest on, it witnesses the twenty-eight assignable numbers a third time, and it
+  and `note_range` rest on, it witnesses the twenty-nine CC default numbers a third time, and it
   carries controllers 98 and 99, which are the only numbers in any of these documents that the
   implementation omits. **Its marks are drawn and not lettered** - a circle is curve segments and
   a cross is straight lines, with a legend at the foot of the page that proves the test, exactly
@@ -492,8 +496,8 @@ controls:
   vector_mod_minus_x:          {label: Vector Mod -X, cc: 86, group: vector}
   vector_mod_plus_y:           {label: Vector Mod +Y, cc: 87, group: vector}
   vector_mod_minus_y:          {label: Vector Mod -Y, cc: 88, group: vector}
-  vector_joystick_x:           {label: Vector Joystick X, cc: 118, group: vector}
-  vector_joystick_y:           {label: Vector Joystick Y, cc: 119, group: vector}
+  vector_joystick_x:           {label: Vector Joystick X, cc: 118, group: vector, assignment: default}
+  vector_joystick_y:           {label: Vector Joystick Y, cc: 119, group: vector, assignment: default}
 
   # Effect controls, sends and switches ─────────────────────
   fx_control_1:                {label: FX Control 1, cc: 12, group: effects}
@@ -505,33 +509,33 @@ controls:
   total_fx:                    {label: Total FX1/2 Off/On, cc: 95, group: effects}
 
   # KARMA ───────────────────────────────────────────────────
-  karma_on_off:                {label: KARMA ON/OFF, cc: 14, group: karma}
-  karma_slider_1:              {label: KARMA Slider1, cc: 22, group: karma}
-  karma_slider_2:              {label: KARMA Slider2, cc: 23, group: karma}
-  karma_slider_3:              {label: KARMA Slider3, cc: 24, group: karma}
-  karma_slider_4:              {label: KARMA Slider4, cc: 25, group: karma}
-  karma_slider_5:              {label: KARMA Slider5, cc: 26, group: karma}
-  karma_slider_6:              {label: KARMA Slider6, cc: 27, group: karma}
-  karma_slider_7:              {label: KARMA Slider7, cc: 28, group: karma}
-  karma_slider_8:              {label: KARMA Slider8, cc: 29, group: karma}
-  karma_scene:                 {label: KARMA SCENE, cc: 30, choices: {scene_1: 0, scene_2: 1, scene_3: 2, scene_4: 3, scene_5: 4, scene_6: 5, scene_7: 6, scene_8: 7}, group: karma}
-  karma_latch:                 {label: KARMA LATCH, cc: 31, group: karma}
-  karma_sw_1:                  {label: KARMA SW1, cc: 102, values: {"off": 0, "on": 64}, group: karma}
-  karma_sw_2:                  {label: KARMA SW2, cc: 103, values: {"off": 0, "on": 64}, group: karma}
-  karma_sw_3:                  {label: KARMA SW3, cc: 104, values: {"off": 0, "on": 64}, group: karma}
-  karma_sw_4:                  {label: KARMA SW4, cc: 105, values: {"off": 0, "on": 64}, group: karma}
-  karma_sw_5:                  {label: KARMA SW5, cc: 106, values: {"off": 0, "on": 64}, group: karma}
-  karma_sw_6:                  {label: KARMA SW6, cc: 107, values: {"off": 0, "on": 64}, group: karma}
-  karma_sw_7:                  {label: KARMA SW7, cc: 108, values: {"off": 0, "on": 64}, group: karma}
-  karma_sw_8:                  {label: KARMA SW8, cc: 109, values: {"off": 0, "on": 64}, group: karma}
+  karma_on_off:                {label: KARMA ON/OFF, cc: 14, group: karma, assignment: "off"}
+  karma_slider_1:              {label: KARMA Slider1, cc: 22, group: karma, assignment: "off"}
+  karma_slider_2:              {label: KARMA Slider2, cc: 23, group: karma, assignment: "off"}
+  karma_slider_3:              {label: KARMA Slider3, cc: 24, group: karma, assignment: "off"}
+  karma_slider_4:              {label: KARMA Slider4, cc: 25, group: karma, assignment: "off"}
+  karma_slider_5:              {label: KARMA Slider5, cc: 26, group: karma, assignment: "off"}
+  karma_slider_6:              {label: KARMA Slider6, cc: 27, group: karma, assignment: "off"}
+  karma_slider_7:              {label: KARMA Slider7, cc: 28, group: karma, assignment: "off"}
+  karma_slider_8:              {label: KARMA Slider8, cc: 29, group: karma, assignment: "off"}
+  karma_scene:                 {label: KARMA SCENE, cc: 30, choices: {scene_1: 0, scene_2: 1, scene_3: 2, scene_4: 3, scene_5: 4, scene_6: 5, scene_7: 6, scene_8: 7}, group: karma, assignment: "off"}
+  karma_latch:                 {label: KARMA LATCH, cc: 31, group: karma, assignment: "off"}
+  karma_sw_1:                  {label: KARMA SW1, cc: 102, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
+  karma_sw_2:                  {label: KARMA SW2, cc: 103, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
+  karma_sw_3:                  {label: KARMA SW3, cc: 104, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
+  karma_sw_4:                  {label: KARMA SW4, cc: 105, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
+  karma_sw_5:                  {label: KARMA SW5, cc: 106, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
+  karma_sw_6:                  {label: KARMA SW6, cc: 107, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
+  karma_sw_7:                  {label: KARMA SW7, cc: 108, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
+  karma_sw_8:                  {label: KARMA SW8, cc: 109, values: {"off": 0, "on": 64}, group: karma, assignment: "off"}
 
   # The eight pads ──────────────────────────────────────────
-  pad_1:                       {label: Pad1, cc: 110, range: [1, 127], group: pads}
-  pad_2:                       {label: Pad2, cc: 111, range: [1, 127], group: pads}
-  pad_3:                       {label: Pad3, cc: 112, range: [1, 127], group: pads}
-  pad_4:                       {label: Pad4, cc: 113, range: [1, 127], group: pads}
-  pad_5:                       {label: Pad5, cc: 114, range: [1, 127], group: pads}
-  pad_6:                       {label: Pad6, cc: 115, range: [1, 127], group: pads}
-  pad_7:                       {label: Pad7, cc: 116, range: [1, 127], group: pads}
-  pad_8:                       {label: Pad8, cc: 117, range: [1, 127], group: pads}
+  pad_1:                       {label: Pad1, cc: 110, range: [1, 127], group: pads, assignment: "off"}
+  pad_2:                       {label: Pad2, cc: 111, range: [1, 127], group: pads, assignment: "off"}
+  pad_3:                       {label: Pad3, cc: 112, range: [1, 127], group: pads, assignment: "off"}
+  pad_4:                       {label: Pad4, cc: 113, range: [1, 127], group: pads, assignment: "off"}
+  pad_5:                       {label: Pad5, cc: 114, range: [1, 127], group: pads, assignment: "off"}
+  pad_6:                       {label: Pad6, cc: 115, range: [1, 127], group: pads, assignment: "off"}
+  pad_7:                       {label: Pad7, cc: 116, range: [1, 127], group: pads, assignment: "off"}
+  pad_8:                       {label: Pad8, cc: 117, range: [1, 127], group: pads, assignment: "off"}
 

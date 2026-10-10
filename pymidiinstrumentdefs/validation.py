@@ -53,6 +53,11 @@ _NOTE_ON: typing.Final[frozenset[str]] = frozenset({"received", "both", "ignored
 # saying which kind.  What is sent is ``aftertouch_transmits``, a flag of its own.
 _AFTERTOUCH: typing.Final[frozenset[str]] = frozenset({"channel", "poly", "both", "received", "none"})
 
+# What the owner can change about a control: ``default`` is a factory assignment
+# they can move, ``slot`` a fixed number whose destination they pick, ``off`` a
+# recommended assignment switched off until they enable it.  Absent is fixed.
+_ASSIGNMENTS: typing.Final[frozenset[str]] = frozenset({"default", "slot", "off"})
+
 # The fields each section has.  A key outside its section's set is read by
 # nothing, so it is warned about: a misspelt field is otherwise dropped without a
 # word, and a source with `version` where `edition` belongs ships looking exactly
@@ -86,7 +91,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
-		"step", "unit", "group", "part", "panel_only", "direction", "kind",
+		"step", "unit", "group", "part", "panel_only", "direction", "kind", "assignment",
 	}),
 }
 
@@ -918,6 +923,7 @@ class _Reader:
 			panel_only = False if section.get("panel_only") is None
 				else self.flag(section["panel_only"], f"{where}.panel_only"),
 			direction = direction,
+			assignment = self.word(section, "assignment", where, _ASSIGNMENTS),
 			kind_override = kind,
 		)
 

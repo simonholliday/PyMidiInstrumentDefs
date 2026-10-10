@@ -1638,6 +1638,68 @@ class TestAftertouch:
 		}
 
 
+class TestAssignment:
+
+	"""What the owner can change about a control: its number, its destination, or whether it is on at all."""
+
+	@pytest.mark.parametrize("word", ["default", "slot", "off"])
+	def test_assignment_takes_the_three_words (self, word: str) -> None:
+		"""Quoted, because YAML reads a bare off as false; the loader says so if it is not."""
+		body = f"definition: 1\nmodel: {{name: X}}\nsource: hand\ncontrols: {{a: {{cc: 74, assignment: \"{word}\"}}}}"
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").controls["a"].assignment == word
+
+	def test_a_number_the_maker_fixes_says_nothing (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\ncontrols: {a: {cc: 74}}"
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").controls["a"].assignment is None
+
+	def test_a_bare_off_is_refused_with_the_reason (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\ncontrols: {a: {cc: 74, assignment: off}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "controls.a.assignment" in str(raised.value)
+		assert "Quote it" in str(raised.value)
+
+	def test_any_other_word_is_refused (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\ncontrols: {a: {cc: 74, assignment: learned}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "controls.a.assignment" in str(raised.value)
+
+	def test_each_definition_marks_what_its_own_pages_say_the_owner_can_change (self) -> None:
+		"""A factory assignment, a fixed slot, and a recommendation switched off - six files, three words."""
+		said: dict[str, dict[str, int]] = {}
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			for control in pymidiinstrumentdefs.load(name, [CORPUS]).controls.values():
+				if control.assignment is not None:
+					said.setdefault(name, {}).setdefault(control.assignment, 0)
+					said[name][control.assignment] += 1
+
+		assert said == {
+			"korg/microkorg": {"default": 41},
+			"korg/wavestate": {"default": 41},
+			"erica_synths/perkons_hd_01": {"default": 44},
+			"elektron/octatrack": {"slot": 10},
+			"teenage_engineering/op_1_field": {"slot": 4},
+			"korg/kronos": {"off": 27, "default": 2},
+		}
+
+	def test_the_kronos_ships_its_karma_controls_and_pads_off_and_its_joystick_on (self) -> None:
+		"""Guide p. 822: KARMA and the pads reset to Off, the Vector Joystick to its default CCs."""
+		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
+		off = sorted(c.cc for c in kronos.controls.values() if c.assignment == "off" and c.cc is not None)
+		moved = sorted(c.cc for c in kronos.controls.values() if c.assignment == "default" and c.cc is not None)
+
+		assert off == [14] + list(range(22, 32)) + list(range(102, 118))
+		assert moved == [118, 119]
+
+
 class TestAnyNote:
 
 	"""`any` takes notes and reads nothing from their number; `none` takes no notes at all."""
@@ -2077,7 +2139,7 @@ groups: {g: G}
 controls:
   a: {label: A, cc: 1, lsb: 33, nrpn: 5, nrpn_range: [0, 1000], range: [0, 127], default: 0, step: 1,
       unit: hz, group: g, part: p, panel_only: false, direction: both, kind: continuous}
-  b: {cc: 2, values: {low: 0, high: 64}, group: g}
+  b: {cc: 2, values: {low: 0, high: 64}, group: g, assignment: default}
   c: {cc: 3, choices: {one: 0, two: 1}, group: g}
 """
 		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
@@ -3248,7 +3310,7 @@ class TestOP1Field:
 		assert "which is a channel mode message" in said
 
 	def test_it_is_the_first_with_both_a_factory_map_and_assignable_controllers (self) -> None:
-		"""Its sibling records `learned` and no controls; this one cannot say both."""
+		"""Its sibling records `learned` and no controls; this one has a fixed map and four slots."""
 		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
 		op1 = pymidiinstrumentdefs.load("teenage_engineering/op_1", [CORPUS])
 
@@ -3263,9 +3325,13 @@ class TestOP1Field:
 
 		said = prose_of("teenage_engineering", "op_1_field")
 
-		assert "This is the first definition\n  here with both kinds at once" in \
-			(CORPUS / "teenage_engineering" / "op_1_field.yaml").read_text()
+		assert "This is the first definition here with both kinds at once" in \
+			" ".join((CORPUS / "teenage_engineering" / "op_1_field.yaml").read_text().split())
 		assert "it cannot say \"48 fixed and 4" in said
+
+		# The four are the slots, and the format says so now.
+		slots = sorted(key for key, control in field.controls.items() if control.assignment == "slot")
+		assert slots == [f"midi_lfo_input_{n}" for n in range(1, 5)]
 
 
 class TestOpXy:

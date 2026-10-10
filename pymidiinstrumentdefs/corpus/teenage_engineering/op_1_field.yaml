@@ -143,8 +143,8 @@ source: >-
   `control_change` holds one word for a whole instrument, so it cannot say "48 fixed and 4
   assignable". The four are therefore carried as controls, which is true of their numbers - the
   maker fixes 1 to 4 and the player fixes only what they reach - and `control_change` is left
-  unset rather than claiming the instrument learns its whole map. **This is the first definition
-  here with both kinds at once.**
+  unset rather than claiming the instrument learns its whole map. Each of the four says
+  `assignment: slot`. **This is the first definition here with both kinds at once.**
 
 sources:
   guide:
@@ -276,10 +276,10 @@ groups:
   select: Sound selection
 controls:
   # MIDI LFO ------------------------------------------------------
-  midi_lfo_input_1:                 {label: "MIDI LFO input 1", cc: 1, group: midi_lfo, direction: receives}
-  midi_lfo_input_2:                 {label: "MIDI LFO input 2", cc: 2, group: midi_lfo, direction: receives}
-  midi_lfo_input_3:                 {label: "MIDI LFO input 3", cc: 3, group: midi_lfo, direction: receives}
-  midi_lfo_input_4:                 {label: "MIDI LFO input 4", cc: 4, group: midi_lfo, direction: receives}
+  midi_lfo_input_1:                 {label: "MIDI LFO input 1", cc: 1, group: midi_lfo, direction: receives, assignment: slot}
+  midi_lfo_input_2:                 {label: "MIDI LFO input 2", cc: 2, group: midi_lfo, direction: receives, assignment: slot}
+  midi_lfo_input_3:                 {label: "MIDI LFO input 3", cc: 3, group: midi_lfo, direction: receives, assignment: slot}
+  midi_lfo_input_4:                 {label: "MIDI LFO input 4", cc: 4, group: midi_lfo, direction: receives, assignment: slot}
 
   # MIXER ---------------------------------------------------------
   mixer_volume:                     {label: "mixer volume", cc: 7, part: track, group: mixer, direction: receives}

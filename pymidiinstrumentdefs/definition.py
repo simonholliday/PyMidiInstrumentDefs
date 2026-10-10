@@ -115,6 +115,13 @@ class Control:
 	only transmits must never be offered as something to send.  Nor must one
 	whose direction is ``none``: a number its maker published and then said the
 	instrument does nothing with, either way.
+
+	``assignment`` says what the owner can change about the control, where
+	anything: ``default`` is a factory assignment the owner can move to another
+	number, ``slot`` is a fixed number whose destination the owner picks, and
+	``off`` is the maker's recommended assignment, switched off until the owner
+	enables it.  ``None`` is a number the maker fixes.  A panel can label a fixed
+	number by its parameter and say of the others where the instrument starts.
 	"""
 
 	name: str
@@ -133,6 +140,7 @@ class Control:
 	part: str | None = None
 	panel_only: bool = False
 	direction: str = BOTH
+	assignment: str | None = None
 	kind_override: str | None = None
 
 

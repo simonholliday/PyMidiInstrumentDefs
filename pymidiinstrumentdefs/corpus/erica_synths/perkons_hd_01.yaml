@@ -14,8 +14,9 @@
 # say on the file's face: "You can alter the MIDI CC message assignment to your preference simply
 # by replacing CC message numbers in a text file on the SD card" (p. 36) - a file the same page
 # names `single-midi-cc.json`. So everything below is what a PĒRKONS answers to as it leaves the
-# factory, and a particular instrument may have been changed. There is no MIDI learn here and no
-# way to ask the instrument what it is set to; the file on the card is the whole of it.
+# factory, and a particular instrument may have been changed; every control says so with
+# `assignment: default`. There is no MIDI learn here and no way to ask the instrument what it is
+# set to; the file on the card is the whole of it.
 #
 # THE FOUR NOTE NUMBERS ARE NOT IN PRINT. "Voices will be triggered by NOTE ON messages - Voice 1
 # - C, Voice 2 - C#, Voice 3 - D, Voice 4 - D#" (p. 35), and **no octave is given anywhere in
@@ -272,61 +273,61 @@ controls:
   # Its three algorithms are FOLD DRUM 1, WAVETABLE DRUM and SIMPLE DRUM (p. 8), in that order,
   # which is what the ALGO switch picks between.
 
-  voice_1_tune:          {label: Voice 1 Tune, cc: 70, group: voice_1}
-  voice_1_decay:         {label: Voice 1 Decay, cc: 71, group: voice_1}
-  voice_1_param_1:       {label: Voice 1 PARAM1, cc: 72, group: voice_1}
-  voice_1_param_2:       {label: Voice 1 PARAM2, cc: 73, group: voice_1}
-  voice_1_cutoff:        {label: Voice 1 Cutoff, cc: 74, group: voice_1}
-  voice_1_drive:         {label: Voice 1 Drive, cc: 75, group: voice_1}
-  voice_1_fx_send:       {label: Voice 1 FX Send, cc: 76, group: voice_1}
-  voice_1_level:         {label: Voice 1 Level, cc: 77, group: voice_1}
-  voice_1_algo_switch:   {label: Voice 1 Algo Switch, cc: 78, group: voice_1}
-  voice_1_mode_switch:   {label: Voice 1 Mode Switch, cc: 79, group: voice_1}
-  voice_1_filter_switch: {label: Voice 1 Filter Switch, cc: 80, group: voice_1}
+  voice_1_tune:          {label: Voice 1 Tune, cc: 70, group: voice_1, assignment: default}
+  voice_1_decay:         {label: Voice 1 Decay, cc: 71, group: voice_1, assignment: default}
+  voice_1_param_1:       {label: Voice 1 PARAM1, cc: 72, group: voice_1, assignment: default}
+  voice_1_param_2:       {label: Voice 1 PARAM2, cc: 73, group: voice_1, assignment: default}
+  voice_1_cutoff:        {label: Voice 1 Cutoff, cc: 74, group: voice_1, assignment: default}
+  voice_1_drive:         {label: Voice 1 Drive, cc: 75, group: voice_1, assignment: default}
+  voice_1_fx_send:       {label: Voice 1 FX Send, cc: 76, group: voice_1, assignment: default}
+  voice_1_level:         {label: Voice 1 Level, cc: 77, group: voice_1, assignment: default}
+  voice_1_algo_switch:   {label: Voice 1 Algo Switch, cc: 78, group: voice_1, assignment: default}
+  voice_1_mode_switch:   {label: Voice 1 Mode Switch, cc: 79, group: voice_1, assignment: default}
+  voice_1_filter_switch: {label: Voice 1 Filter Switch, cc: 80, group: voice_1, assignment: default}
 
   # ──── voice_2 ────
   # FOLD DRUM 2, WAVETABLE DRUM and COMPLEX DRUM (p. 9). Its second algorithm carries the same
   # name as voice 1's, and the maker prints it that way.
 
-  voice_2_tune:          {label: Voice 2 Tune, cc: 81, group: voice_2}
-  voice_2_decay:         {label: Voice 2 Decay, cc: 82, group: voice_2}
-  voice_2_param_1:       {label: Voice 2 PARAM1, cc: 83, group: voice_2}
-  voice_2_param_2:       {label: Voice 2 PARAM2, cc: 84, group: voice_2}
-  voice_2_cutoff:        {label: Voice 2 Cutoff, cc: 85, group: voice_2}
-  voice_2_drive:         {label: Voice 2 Drive, cc: 86, group: voice_2}
-  voice_2_fx_send:       {label: Voice 2 FX Send, cc: 87, group: voice_2}
-  voice_2_level:         {label: Voice 2 Level, cc: 88, group: voice_2}
-  voice_2_algo_switch:   {label: Voice 2 Algo Switch, cc: 89, group: voice_2}
-  voice_2_mode_switch:   {label: Voice 2 Mode Switch, cc: 90, group: voice_2}
-  voice_2_filter_switch: {label: Voice 2 Filter Switch, cc: 91, group: voice_2}
+  voice_2_tune:          {label: Voice 2 Tune, cc: 81, group: voice_2, assignment: default}
+  voice_2_decay:         {label: Voice 2 Decay, cc: 82, group: voice_2, assignment: default}
+  voice_2_param_1:       {label: Voice 2 PARAM1, cc: 83, group: voice_2, assignment: default}
+  voice_2_param_2:       {label: Voice 2 PARAM2, cc: 84, group: voice_2, assignment: default}
+  voice_2_cutoff:        {label: Voice 2 Cutoff, cc: 85, group: voice_2, assignment: default}
+  voice_2_drive:         {label: Voice 2 Drive, cc: 86, group: voice_2, assignment: default}
+  voice_2_fx_send:       {label: Voice 2 FX Send, cc: 87, group: voice_2, assignment: default}
+  voice_2_level:         {label: Voice 2 Level, cc: 88, group: voice_2, assignment: default}
+  voice_2_algo_switch:   {label: Voice 2 Algo Switch, cc: 89, group: voice_2, assignment: default}
+  voice_2_mode_switch:   {label: Voice 2 Mode Switch, cc: 90, group: voice_2, assignment: default}
+  voice_2_filter_switch: {label: Voice 2 Filter Switch, cc: 91, group: voice_2, assignment: default}
 
   # ──── voice_3 ────
   # RESONANT DRUMS, SLAP and KARPLUS (p. 10).
 
-  voice_3_tune:          {label: Voice 3 Tune, cc: 92, group: voice_3}
-  voice_3_decay:         {label: Voice 3 Decay, cc: 93, group: voice_3}
-  voice_3_param_1:       {label: Voice 3 PARAM1, cc: 94, group: voice_3}
-  voice_3_param_2:       {label: Voice 3 PARAM2, cc: 95, group: voice_3}
-  voice_3_cutoff:        {label: Voice 3 Cutoff, cc: 96, group: voice_3}
-  voice_3_drive:         {label: Voice 3 Drive, cc: 97, group: voice_3}
-  voice_3_fx_send:       {label: Voice 3 FX Send, cc: 98, group: voice_3}
-  voice_3_level:         {label: Voice 3 Level, cc: 99, group: voice_3}
-  voice_3_algo_switch:   {label: Voice 3 Algo Switch, cc: 100, group: voice_3}
-  voice_3_mode_switch:   {label: Voice 3 Mode Switch, cc: 101, group: voice_3}
-  voice_3_filter_switch: {label: Voice 3 Filter Switch, cc: 102, group: voice_3}
+  voice_3_tune:          {label: Voice 3 Tune, cc: 92, group: voice_3, assignment: default}
+  voice_3_decay:         {label: Voice 3 Decay, cc: 93, group: voice_3, assignment: default}
+  voice_3_param_1:       {label: Voice 3 PARAM1, cc: 94, group: voice_3, assignment: default}
+  voice_3_param_2:       {label: Voice 3 PARAM2, cc: 95, group: voice_3, assignment: default}
+  voice_3_cutoff:        {label: Voice 3 Cutoff, cc: 96, group: voice_3, assignment: default}
+  voice_3_drive:         {label: Voice 3 Drive, cc: 97, group: voice_3, assignment: default}
+  voice_3_fx_send:       {label: Voice 3 FX Send, cc: 98, group: voice_3, assignment: default}
+  voice_3_level:         {label: Voice 3 Level, cc: 99, group: voice_3, assignment: default}
+  voice_3_algo_switch:   {label: Voice 3 Algo Switch, cc: 100, group: voice_3, assignment: default}
+  voice_3_mode_switch:   {label: Voice 3 Mode Switch, cc: 101, group: voice_3, assignment: default}
+  voice_3_filter_switch: {label: Voice 3 Filter Switch, cc: 102, group: voice_3, assignment: default}
 
   # ──── voice_4 ────
   # NOISE HAT, NOISE/TONE and ACOUSTIC HATS (p. 11) - the hi-hat voice, and the one whose third
   # algorithm plays samples a player can replace on the SD card.
 
-  voice_4_tune:          {label: Voice 4 Tune, cc: 103, group: voice_4}
-  voice_4_decay:         {label: Voice 4 Decay, cc: 104, group: voice_4}
-  voice_4_param_1:       {label: Voice 4 PARAM1, cc: 105, group: voice_4}
-  voice_4_param_2:       {label: Voice 4 PARAM2, cc: 106, group: voice_4}
-  voice_4_cutoff:        {label: Voice 4 Cutoff, cc: 107, group: voice_4}
-  voice_4_drive:         {label: Voice 4 Drive, cc: 108, group: voice_4}
-  voice_4_fx_send:       {label: Voice 4 FX Send, cc: 109, group: voice_4}
-  voice_4_level:         {label: Voice 4 Level, cc: 110, group: voice_4}
-  voice_4_algo_switch:   {label: Voice 4 Algo Switch, cc: 111, group: voice_4}
-  voice_4_mode_switch:   {label: Voice 4 Mode Switch, cc: 112, group: voice_4}
-  voice_4_filter_switch: {label: Voice 4 Filter Switch, cc: 113, group: voice_4}
+  voice_4_tune:          {label: Voice 4 Tune, cc: 103, group: voice_4, assignment: default}
+  voice_4_decay:         {label: Voice 4 Decay, cc: 104, group: voice_4, assignment: default}
+  voice_4_param_1:       {label: Voice 4 PARAM1, cc: 105, group: voice_4, assignment: default}
+  voice_4_param_2:       {label: Voice 4 PARAM2, cc: 106, group: voice_4, assignment: default}
+  voice_4_cutoff:        {label: Voice 4 Cutoff, cc: 107, group: voice_4, assignment: default}
+  voice_4_drive:         {label: Voice 4 Drive, cc: 108, group: voice_4, assignment: default}
+  voice_4_fx_send:       {label: Voice 4 FX Send, cc: 109, group: voice_4, assignment: default}
+  voice_4_level:         {label: Voice 4 Level, cc: 110, group: voice_4, assignment: default}
+  voice_4_algo_switch:   {label: Voice 4 Algo Switch, cc: 111, group: voice_4, assignment: default}
+  voice_4_mode_switch:   {label: Voice 4 Mode Switch, cc: 112, group: voice_4, assignment: default}
+  voice_4_filter_switch: {label: Voice 4 Filter Switch, cc: 113, group: voice_4, assignment: default}

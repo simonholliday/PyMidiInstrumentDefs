@@ -36,8 +36,8 @@ source: >-
   Scale Select 9, Performance Mod Knobs 1-8 as 24-31, and four layers of eight Mod Knobs as
   80-87, 88-95, 102-109 and 110-117. The player can reassign any of them, and the page says
   which cannot be used: "Some dedicated CCs cannot be assigned (CCs 1, 7, etc.)". They are
-  recorded because a factory default is a fact about the instrument, and marked as defaults
-  so that nothing reads them as fixed.
+  recorded because a factory default is a fact about the instrument, and marked
+  `assignment: default` so that nothing reads them as fixed.
 
   NINE ARE FIXED, from the MIDI implementation chart at printed p. 94: modulation at CC 1,
   volume at 7, pan at 10, expression at 11, the vector joystick's two axes at 16 and 17, and
@@ -190,65 +190,65 @@ groups:
 controls:
 
   # From MIDI CC Assign, printed p. 88. EVERY NUMBER IN THIS SECTION IS A DEFAULT, not a
-  # property of the model: the table's own column is headed "Default CC assignment", and
-  # the player can reassign any of them. They are here because a default is a fact about
-  # the instrument as it leaves the factory, and a panel that offers them will be right
-  # until somebody changes one.
+  # property of the model: the table's own column is headed "Default CC assignment", and the
+  # player can reassign any of them. They are here because a default is a fact about the
+  # instrument as it leaves the factory, and a panel that offers them will be right until
+  # somebody changes one. Each says so with `assignment: default`.
 
-  scale_select:              {label: Scale Select, cc: 9, group: scale_select}
+  scale_select:              {label: Scale Select, cc: 9, group: scale_select, assignment: default}
 
   # "Performance Mod Knobs 1...8", CC 24 to 31. The manual's screenshot of this page names
   # the first five - Perf Master Mod, Perf Timing Mod, Perf Sample Mod, Perf Pitch Mod,
   # Perf Shape Mod - but those names are in an image rather than in the text, and only five
   # of the eight are shown, so the table's own numbering is what the labels follow.
-  perf_mod_1:               {label: Performance Mod Knob 1, cc: 24, group: performance_mod}
-  perf_mod_2:               {label: Performance Mod Knob 2, cc: 25, group: performance_mod}
-  perf_mod_3:               {label: Performance Mod Knob 3, cc: 26, group: performance_mod}
-  perf_mod_4:               {label: Performance Mod Knob 4, cc: 27, group: performance_mod}
-  perf_mod_5:               {label: Performance Mod Knob 5, cc: 28, group: performance_mod}
-  perf_mod_6:               {label: Performance Mod Knob 6, cc: 29, group: performance_mod}
-  perf_mod_7:               {label: Performance Mod Knob 7, cc: 30, group: performance_mod}
-  perf_mod_8:               {label: Performance Mod Knob 8, cc: 31, group: performance_mod}
+  perf_mod_1:               {label: Performance Mod Knob 1, cc: 24, group: performance_mod, assignment: default}
+  perf_mod_2:               {label: Performance Mod Knob 2, cc: 25, group: performance_mod, assignment: default}
+  perf_mod_3:               {label: Performance Mod Knob 3, cc: 26, group: performance_mod, assignment: default}
+  perf_mod_4:               {label: Performance Mod Knob 4, cc: 27, group: performance_mod, assignment: default}
+  perf_mod_5:               {label: Performance Mod Knob 5, cc: 28, group: performance_mod, assignment: default}
+  perf_mod_6:               {label: Performance Mod Knob 6, cc: 29, group: performance_mod, assignment: default}
+  perf_mod_7:               {label: Performance Mod Knob 7, cc: 30, group: performance_mod, assignment: default}
+  perf_mod_8:               {label: Performance Mod Knob 8, cc: 31, group: performance_mod, assignment: default}
 
   # "Layer A Mod Knobs 1...8", CC 80 to 87.
-  layer_a_mod_1:            {label: Layer A Mod Knob 1, cc: 80, part: layer_a, group: layer_a_mod}
-  layer_a_mod_2:            {label: Layer A Mod Knob 2, cc: 81, part: layer_a, group: layer_a_mod}
-  layer_a_mod_3:            {label: Layer A Mod Knob 3, cc: 82, part: layer_a, group: layer_a_mod}
-  layer_a_mod_4:            {label: Layer A Mod Knob 4, cc: 83, part: layer_a, group: layer_a_mod}
-  layer_a_mod_5:            {label: Layer A Mod Knob 5, cc: 84, part: layer_a, group: layer_a_mod}
-  layer_a_mod_6:            {label: Layer A Mod Knob 6, cc: 85, part: layer_a, group: layer_a_mod}
-  layer_a_mod_7:            {label: Layer A Mod Knob 7, cc: 86, part: layer_a, group: layer_a_mod}
-  layer_a_mod_8:            {label: Layer A Mod Knob 8, cc: 87, part: layer_a, group: layer_a_mod}
+  layer_a_mod_1:            {label: Layer A Mod Knob 1, cc: 80, part: layer_a, group: layer_a_mod, assignment: default}
+  layer_a_mod_2:            {label: Layer A Mod Knob 2, cc: 81, part: layer_a, group: layer_a_mod, assignment: default}
+  layer_a_mod_3:            {label: Layer A Mod Knob 3, cc: 82, part: layer_a, group: layer_a_mod, assignment: default}
+  layer_a_mod_4:            {label: Layer A Mod Knob 4, cc: 83, part: layer_a, group: layer_a_mod, assignment: default}
+  layer_a_mod_5:            {label: Layer A Mod Knob 5, cc: 84, part: layer_a, group: layer_a_mod, assignment: default}
+  layer_a_mod_6:            {label: Layer A Mod Knob 6, cc: 85, part: layer_a, group: layer_a_mod, assignment: default}
+  layer_a_mod_7:            {label: Layer A Mod Knob 7, cc: 86, part: layer_a, group: layer_a_mod, assignment: default}
+  layer_a_mod_8:            {label: Layer A Mod Knob 8, cc: 87, part: layer_a, group: layer_a_mod, assignment: default}
 
   # "Layer B Mod Knobs 1...8", CC 88 to 95.
-  layer_b_mod_1:            {label: Layer B Mod Knob 1, cc: 88, part: layer_b, group: layer_b_mod}
-  layer_b_mod_2:            {label: Layer B Mod Knob 2, cc: 89, part: layer_b, group: layer_b_mod}
-  layer_b_mod_3:            {label: Layer B Mod Knob 3, cc: 90, part: layer_b, group: layer_b_mod}
-  layer_b_mod_4:            {label: Layer B Mod Knob 4, cc: 91, part: layer_b, group: layer_b_mod}
-  layer_b_mod_5:            {label: Layer B Mod Knob 5, cc: 92, part: layer_b, group: layer_b_mod}
-  layer_b_mod_6:            {label: Layer B Mod Knob 6, cc: 93, part: layer_b, group: layer_b_mod}
-  layer_b_mod_7:            {label: Layer B Mod Knob 7, cc: 94, part: layer_b, group: layer_b_mod}
-  layer_b_mod_8:            {label: Layer B Mod Knob 8, cc: 95, part: layer_b, group: layer_b_mod}
+  layer_b_mod_1:            {label: Layer B Mod Knob 1, cc: 88, part: layer_b, group: layer_b_mod, assignment: default}
+  layer_b_mod_2:            {label: Layer B Mod Knob 2, cc: 89, part: layer_b, group: layer_b_mod, assignment: default}
+  layer_b_mod_3:            {label: Layer B Mod Knob 3, cc: 90, part: layer_b, group: layer_b_mod, assignment: default}
+  layer_b_mod_4:            {label: Layer B Mod Knob 4, cc: 91, part: layer_b, group: layer_b_mod, assignment: default}
+  layer_b_mod_5:            {label: Layer B Mod Knob 5, cc: 92, part: layer_b, group: layer_b_mod, assignment: default}
+  layer_b_mod_6:            {label: Layer B Mod Knob 6, cc: 93, part: layer_b, group: layer_b_mod, assignment: default}
+  layer_b_mod_7:            {label: Layer B Mod Knob 7, cc: 94, part: layer_b, group: layer_b_mod, assignment: default}
+  layer_b_mod_8:            {label: Layer B Mod Knob 8, cc: 95, part: layer_b, group: layer_b_mod, assignment: default}
 
   # "Layer C Mod Knobs 1...8", CC 102 to 109.
-  layer_c_mod_1:            {label: Layer C Mod Knob 1, cc: 102, part: layer_c, group: layer_c_mod}
-  layer_c_mod_2:            {label: Layer C Mod Knob 2, cc: 103, part: layer_c, group: layer_c_mod}
-  layer_c_mod_3:            {label: Layer C Mod Knob 3, cc: 104, part: layer_c, group: layer_c_mod}
-  layer_c_mod_4:            {label: Layer C Mod Knob 4, cc: 105, part: layer_c, group: layer_c_mod}
-  layer_c_mod_5:            {label: Layer C Mod Knob 5, cc: 106, part: layer_c, group: layer_c_mod}
-  layer_c_mod_6:            {label: Layer C Mod Knob 6, cc: 107, part: layer_c, group: layer_c_mod}
-  layer_c_mod_7:            {label: Layer C Mod Knob 7, cc: 108, part: layer_c, group: layer_c_mod}
-  layer_c_mod_8:            {label: Layer C Mod Knob 8, cc: 109, part: layer_c, group: layer_c_mod}
+  layer_c_mod_1:            {label: Layer C Mod Knob 1, cc: 102, part: layer_c, group: layer_c_mod, assignment: default}
+  layer_c_mod_2:            {label: Layer C Mod Knob 2, cc: 103, part: layer_c, group: layer_c_mod, assignment: default}
+  layer_c_mod_3:            {label: Layer C Mod Knob 3, cc: 104, part: layer_c, group: layer_c_mod, assignment: default}
+  layer_c_mod_4:            {label: Layer C Mod Knob 4, cc: 105, part: layer_c, group: layer_c_mod, assignment: default}
+  layer_c_mod_5:            {label: Layer C Mod Knob 5, cc: 106, part: layer_c, group: layer_c_mod, assignment: default}
+  layer_c_mod_6:            {label: Layer C Mod Knob 6, cc: 107, part: layer_c, group: layer_c_mod, assignment: default}
+  layer_c_mod_7:            {label: Layer C Mod Knob 7, cc: 108, part: layer_c, group: layer_c_mod, assignment: default}
+  layer_c_mod_8:            {label: Layer C Mod Knob 8, cc: 109, part: layer_c, group: layer_c_mod, assignment: default}
 
   # "Layer D Mod Knobs 1...8", CC 110 to 117.
-  layer_d_mod_1:            {label: Layer D Mod Knob 1, cc: 110, part: layer_d, group: layer_d_mod}
-  layer_d_mod_2:            {label: Layer D Mod Knob 2, cc: 111, part: layer_d, group: layer_d_mod}
-  layer_d_mod_3:            {label: Layer D Mod Knob 3, cc: 112, part: layer_d, group: layer_d_mod}
-  layer_d_mod_4:            {label: Layer D Mod Knob 4, cc: 113, part: layer_d, group: layer_d_mod}
-  layer_d_mod_5:            {label: Layer D Mod Knob 5, cc: 114, part: layer_d, group: layer_d_mod}
-  layer_d_mod_6:            {label: Layer D Mod Knob 6, cc: 115, part: layer_d, group: layer_d_mod}
-  layer_d_mod_7:            {label: Layer D Mod Knob 7, cc: 116, part: layer_d, group: layer_d_mod}
-  layer_d_mod_8:            {label: Layer D Mod Knob 8, cc: 117, part: layer_d, group: layer_d_mod}
+  layer_d_mod_1:            {label: Layer D Mod Knob 1, cc: 110, part: layer_d, group: layer_d_mod, assignment: default}
+  layer_d_mod_2:            {label: Layer D Mod Knob 2, cc: 111, part: layer_d, group: layer_d_mod, assignment: default}
+  layer_d_mod_3:            {label: Layer D Mod Knob 3, cc: 112, part: layer_d, group: layer_d_mod, assignment: default}
+  layer_d_mod_4:            {label: Layer D Mod Knob 4, cc: 113, part: layer_d, group: layer_d_mod, assignment: default}
+  layer_d_mod_5:            {label: Layer D Mod Knob 5, cc: 114, part: layer_d, group: layer_d_mod, assignment: default}
+  layer_d_mod_6:            {label: Layer D Mod Knob 6, cc: 115, part: layer_d, group: layer_d_mod, assignment: default}
+  layer_d_mod_7:            {label: Layer D Mod Knob 7, cc: 116, part: layer_d, group: layer_d_mod, assignment: default}
+  layer_d_mod_8:            {label: Layer D Mod Knob 8, cc: 117, part: layer_d, group: layer_d_mod, assignment: default}
 
   # From the MIDI implementation chart, printed p. 94, which is where the fixed controllers
   # are. Direction follows its two columns, read by their position on the page rather than by

@@ -3,11 +3,9 @@
 # column the numbers come from is headed "Initial". The manual says so plainly: "Control
 # changes can be assigned to each front panel knob/key of the microKORG so that the changes
 # in sound as controlled by knob/key operations can be transmitted as performance data"
-# (p. 56). So a microKORG somebody has reassigned does not answer to the table below, and a
-# panel offering these numbers should say they are defaults. This is the same shape as
-# `voice.note_map: learned`, which says the voices given are factory defaults rather than
-# fixed facts; the format has no such flag for control changes, and that is recorded here
-# rather than worked around.
+# (p. 56). So a microKORG somebody has reassigned does not answer to the table below, and
+# each of the 41 from that table says so with `assignment: default`. CC 1, the one control
+# here whose number the player cannot reassign, carries no such word.
 #
 # EACH NUMBER MEANS TWO THINGS, AND WHICH ONE DEPENDS ON THE PROGRAM, not on the channel.
 # This instrument runs synth programs and vocoder programs, and the same knob is a different
@@ -216,47 +214,47 @@ groups:
 
 controls:
   pitch_modulation_depth: {label: Pitch Modulation Depth, cc: 1, group: pitch}
-  pitch_portamento:       {label: Portamento, cc: 5, group: pitch}
-  osc1_wave:              {label: Wave, cc: 77, group: osc1}
-  osc1_control1:          {label: Control1, cc: 14, group: osc1}
-  osc1_control2:          {label: Control2, cc: 15, group: osc1}
-  osc2_wave:              {label: Wave, cc: 78, group: osc2}  # synth programs only
-  osc2_osc_mod:           {label: OSC Mod, cc: 82, group: osc2}  # synth programs only
-  osc2_semitone:          {label: Semitone, cc: 18, group: osc2}  # in a vocoder program this is HPF Level
-  osc2_tune:              {label: Tune, cc: 19, group: osc2}  # in a vocoder program this is Threshold
-  mixer_osc_1_level:      {label: OSC 1 Level, cc: 20, group: mixer}
-  mixer_osc_2_level:      {label: OSC 2 Level, cc: 21, group: mixer}  # in a vocoder program this is Inst Level
-  mixer_noise_level:      {label: Noise Level, cc: 22, group: mixer}
-  filter_type:            {label: Type, cc: 83, group: filter}  # in a vocoder program this is Formant Shift
-  filter_cutoff:          {label: Cutoff, cc: 74, group: filter}
-  filter_resonance:       {label: Resonance, cc: 71, group: filter}
-  filter_eg_int:          {label: Filter EG Int, cc: 79, group: filter}  # in a vocoder program this is Mod Int
-  filter_kbd_track:       {label: KBD Track, cc: 85, group: filter}  # in a vocoder program this is E.F.Sense
-  filter_eg_attack:       {label: Attack, cc: 23, group: filter_eg}  # synth programs only
-  filter_eg_decay:        {label: Decay, cc: 24, group: filter_eg}  # synth programs only
-  filter_eg_sustain:      {label: Sustain, cc: 25, group: filter_eg}  # synth programs only
-  filter_eg_release:      {label: Release, cc: 26, group: filter_eg}  # synth programs only
-  amp_level:              {label: Level, cc: 7, group: amp}
-  amp_panpot:             {label: Panpot, cc: 10, group: amp}  # in a vocoder program this is Direct Level
-  amp_distortion:         {label: Distortion, cc: 92, group: amp}
-  amp_eg_attack:          {label: Attack, cc: 73, group: amp_eg}
-  amp_eg_decay:           {label: Decay, cc: 75, group: amp_eg}
-  amp_eg_sustain:         {label: Sustain, cc: 70, group: amp_eg}
-  amp_eg_release:         {label: Release, cc: 72, group: amp_eg}
-  lfo1_wave:              {label: Wave, cc: 87, group: lfo1}
-  lfo1_frequency:         {label: Frequency, cc: 27, group: lfo1}
-  lfo2_wave:              {label: Wave, cc: 88, group: lfo2}
-  lfo2_frequency:         {label: Frequency, cc: 76, group: lfo2}
-  patch_1_intensity:      {label: Intensity, cc: 28, group: patch}  # synth programs only
-  patch_2_intensity:      {label: Intensity, cc: 29, group: patch}  # synth programs only
-  patch_3_intensity:      {label: Intensity, cc: 30, group: patch}  # synth programs only
-  patch_4_intensity:      {label: Intensity, cc: 31, group: patch}  # synth programs only
-  mod_fx_lfo_speed:       {label: LFO Speed, cc: 12, group: mod_fx}
-  mod_fx_depth:           {label: Depth, cc: 93, group: mod_fx}
-  delay_time:             {label: Delay Time, cc: 13, group: delay}
-  delay_depth:            {label: Depth, cc: 94, group: delay}
-  midi_timbre_select:     {label: Timbre Select, cc: 95, group: midi}  # synth programs only
-  midi_sync_ctrl:         {label: Sync Ctrl, cc: 90, group: midi}
+  pitch_portamento:       {label: Portamento, cc: 5, group: pitch, assignment: default}
+  osc1_wave:              {label: Wave, cc: 77, group: osc1, assignment: default}
+  osc1_control1:          {label: Control1, cc: 14, group: osc1, assignment: default}
+  osc1_control2:          {label: Control2, cc: 15, group: osc1, assignment: default}
+  osc2_wave:              {label: Wave, cc: 78, group: osc2, assignment: default}  # synth programs only
+  osc2_osc_mod:           {label: OSC Mod, cc: 82, group: osc2, assignment: default}  # synth programs only
+  osc2_semitone:          {label: Semitone, cc: 18, group: osc2, assignment: default}  # in a vocoder program this is HPF Level
+  osc2_tune:              {label: Tune, cc: 19, group: osc2, assignment: default}  # in a vocoder program this is Threshold
+  mixer_osc_1_level:      {label: OSC 1 Level, cc: 20, group: mixer, assignment: default}
+  mixer_osc_2_level:      {label: OSC 2 Level, cc: 21, group: mixer, assignment: default}  # in a vocoder program this is Inst Level
+  mixer_noise_level:      {label: Noise Level, cc: 22, group: mixer, assignment: default}
+  filter_type:            {label: Type, cc: 83, group: filter, assignment: default}  # in a vocoder program this is Formant Shift
+  filter_cutoff:          {label: Cutoff, cc: 74, group: filter, assignment: default}
+  filter_resonance:       {label: Resonance, cc: 71, group: filter, assignment: default}
+  filter_eg_int:          {label: Filter EG Int, cc: 79, group: filter, assignment: default}  # in a vocoder program this is Mod Int
+  filter_kbd_track:       {label: KBD Track, cc: 85, group: filter, assignment: default}  # in a vocoder program this is E.F.Sense
+  filter_eg_attack:       {label: Attack, cc: 23, group: filter_eg, assignment: default}  # synth programs only
+  filter_eg_decay:        {label: Decay, cc: 24, group: filter_eg, assignment: default}  # synth programs only
+  filter_eg_sustain:      {label: Sustain, cc: 25, group: filter_eg, assignment: default}  # synth programs only
+  filter_eg_release:      {label: Release, cc: 26, group: filter_eg, assignment: default}  # synth programs only
+  amp_level:              {label: Level, cc: 7, group: amp, assignment: default}
+  amp_panpot:             {label: Panpot, cc: 10, group: amp, assignment: default}  # in a vocoder program this is Direct Level
+  amp_distortion:         {label: Distortion, cc: 92, group: amp, assignment: default}
+  amp_eg_attack:          {label: Attack, cc: 73, group: amp_eg, assignment: default}
+  amp_eg_decay:           {label: Decay, cc: 75, group: amp_eg, assignment: default}
+  amp_eg_sustain:         {label: Sustain, cc: 70, group: amp_eg, assignment: default}
+  amp_eg_release:         {label: Release, cc: 72, group: amp_eg, assignment: default}
+  lfo1_wave:              {label: Wave, cc: 87, group: lfo1, assignment: default}
+  lfo1_frequency:         {label: Frequency, cc: 27, group: lfo1, assignment: default}
+  lfo2_wave:              {label: Wave, cc: 88, group: lfo2, assignment: default}
+  lfo2_frequency:         {label: Frequency, cc: 76, group: lfo2, assignment: default}
+  patch_1_intensity:      {label: Intensity, cc: 28, group: patch, assignment: default}  # synth programs only
+  patch_2_intensity:      {label: Intensity, cc: 29, group: patch, assignment: default}  # synth programs only
+  patch_3_intensity:      {label: Intensity, cc: 30, group: patch, assignment: default}  # synth programs only
+  patch_4_intensity:      {label: Intensity, cc: 31, group: patch, assignment: default}  # synth programs only
+  mod_fx_lfo_speed:       {label: LFO Speed, cc: 12, group: mod_fx, assignment: default}
+  mod_fx_depth:           {label: Depth, cc: 93, group: mod_fx, assignment: default}
+  delay_time:             {label: Delay Time, cc: 13, group: delay, assignment: default}
+  delay_depth:            {label: Depth, cc: 94, group: delay, assignment: default}
+  midi_timbre_select:     {label: Timbre Select, cc: 95, group: midi, assignment: default}  # synth programs only
+  midi_sync_ctrl:         {label: Sync Ctrl, cc: 90, group: midi, assignment: default}
   arpeggio_on_off:        {label: Arpeggio On/Off, nrpn: 2, group: arpeggiator}
   arpeggio_octaves:       {label: Arpeggio Octaves, nrpn: 3, group: arpeggiator}
   arpeggio_latch_on_off:  {label: Arpeggio Latch On/Off, nrpn: 4, group: arpeggiator}

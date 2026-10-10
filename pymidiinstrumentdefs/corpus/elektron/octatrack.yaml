@@ -45,7 +45,7 @@ source: >-
   Octatrack MKII User Manual for OS 1.40C, 148 pages: **APPENDIX C: MIDI CONTROL REFERENCE at
   pp. 137-142**, whose two controller tables are every control below; the MIDI settings at
   pp. 40-41, where the clock, transport, program change and channel architecture are; the MIDI
-  sequencer at p. 90; the CTRL pages at p. 94; the OS upgrade at p. 112; the banks and patterns at
+  sequencer at p. 90; the CTRL pages at pp. 94-95; the OS upgrade at p. 112; the banks and patterns at
   p. 17; and the hardware at p. 116. And the MKI's manual for OS 1.40A, for the comparison that
   establishes one file covers both. And both support pages, for what Elektron publishes.
 
@@ -113,10 +113,11 @@ source: >-
 
   TEN OF THE MIDI MAP'S CONTROLLERS SET VALUES WHOSE DESTINATION THE OWNER CHOOSES. Controllers 36
   to 45 are `CC #1 param` to `CC #10 param`, and what they reach is a setting: "CC1-CC4 specifies
-  the CC commands that will be controlled on the CTRL 1 MAIN page" (manual p. 94), with a MIDI CC
-  learn mode for choosing them. So **the ten numbers are fixed and published and the ten
+  the CC commands that will be controlled on the CTRL 1 MAIN page" (manual p. 94) and "CC5-CC10
+  specifies the CC commands that will be controlled on the CTRL 2 MAIN page" (manual p. 95), with
+  a MIDI CC learn mode for choosing them. So **the ten numbers are fixed and published and the ten
   destinations are not**, which is a milder form of the owner-editable map the PERKONS HD-01
-  raised. Nothing below claims a destination.
+  raised. Nothing below claims a destination, and each of the ten says `assignment: slot`.
 
   ONE PARAMETER NAME IS AT TWO NUMBERS IN THE AUDIO MAP, with different directions: `Track level`
   is controller 7, marked received only, and controller 46, marked both ways. Controller 7 is the
@@ -483,18 +484,18 @@ controls:
   # midi - CTRL 1 ─────────────────────────────────────
   pitch_bend:                  {label: Pitch bend, cc: 34, direction: receives, part: midi, group: ctrl_1}
   aftertouch:                  {label: Aftertouch, cc: 35, direction: receives, part: midi, group: ctrl_1}
-  cc_1_param:                  {label: "CC #1 param", cc: 36, direction: receives, part: midi, group: ctrl_1}
-  cc_2_param:                  {label: "CC #2 param", cc: 37, direction: receives, part: midi, group: ctrl_1}
-  cc_3_param:                  {label: "CC #3 param", cc: 38, direction: receives, part: midi, group: ctrl_1}
-  cc_4_param:                  {label: "CC #4 param", cc: 39, direction: receives, part: midi, group: ctrl_1}
+  cc_1_param:                  {label: "CC #1 param", cc: 36, direction: receives, part: midi, group: ctrl_1, assignment: slot}
+  cc_2_param:                  {label: "CC #2 param", cc: 37, direction: receives, part: midi, group: ctrl_1, assignment: slot}
+  cc_3_param:                  {label: "CC #3 param", cc: 38, direction: receives, part: midi, group: ctrl_1, assignment: slot}
+  cc_4_param:                  {label: "CC #4 param", cc: 39, direction: receives, part: midi, group: ctrl_1, assignment: slot}
 
   # midi - CTRL 2 ─────────────────────────────────────
-  cc_5_param:                  {label: "CC #5 param", cc: 40, direction: receives, part: midi, group: ctrl_2}
-  cc_6_param:                  {label: "CC #6 param", cc: 41, direction: receives, part: midi, group: ctrl_2}
-  cc_7_param:                  {label: "CC #7 param", cc: 42, direction: receives, part: midi, group: ctrl_2}
-  cc_8_param:                  {label: "CC #8 param", cc: 43, direction: receives, part: midi, group: ctrl_2}
-  cc_9_param:                  {label: "CC #9 param", cc: 44, direction: receives, part: midi, group: ctrl_2}
-  cc_10_param:                 {label: "CC #10 param", cc: 45, direction: receives, part: midi, group: ctrl_2}
+  cc_5_param:                  {label: "CC #5 param", cc: 40, direction: receives, part: midi, group: ctrl_2, assignment: slot}
+  cc_6_param:                  {label: "CC #6 param", cc: 41, direction: receives, part: midi, group: ctrl_2, assignment: slot}
+  cc_7_param:                  {label: "CC #7 param", cc: 42, direction: receives, part: midi, group: ctrl_2, assignment: slot}
+  cc_8_param:                  {label: "CC #8 param", cc: 43, direction: receives, part: midi, group: ctrl_2, assignment: slot}
+  cc_9_param:                  {label: "CC #9 param", cc: 44, direction: receives, part: midi, group: ctrl_2, assignment: slot}
+  cc_10_param:                 {label: "CC #10 param", cc: 45, direction: receives, part: midi, group: ctrl_2, assignment: slot}
 
   # midi - MIDI Tracks ────────────────────────────────
   midi_track_mute:             {label: "MIDI Track Mute [0]=Unmuted, [1-127]=Muted", cc: 49, direction: receives, part: midi, group: midi_tracks}

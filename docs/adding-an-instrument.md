@@ -452,6 +452,22 @@ and `both`, which is what leaving `direction` out means.
   master_volume: {label: Master Volume, cc: 7, direction: none, group: master}
 ```
 
+**A number the owner can change says so with `assignment`.** Most controller numbers are the
+maker's, and a control that leaves `assignment` out is one of them. `assignment: default` is a
+factory assignment the owner can move to another number: a microKORG's panel numbers come from
+a table whose column is headed "Initial". `assignment: slot` is a fixed number whose
+destination the owner picks, like the four inputs of an OP-1 field's MIDI LFO.
+`assignment: "off"` is a number the maker recommends and leaves switched off until the owner
+enables it, like a KRONOS's KARMA controls and pads; it is quoted because YAML reads a bare off
+as false. A panel can then label a number with no `assignment` by its parameter, offer a
+`default` as where the instrument starts, show a `slot` by its position rather than a
+destination, and say that an `"off"` number has first to be switched on.
+
+```yaml
+  filter_cutoff:    {label: Cutoff, cc: 74, group: filter, assignment: default}
+  midi_lfo_input_1: {label: MIDI LFO input 1, cc: 1, group: midi_lfo, assignment: slot}
+```
+
 **MPE is two fields, and they answer different questions.** `midi.mpe` says whether the
 instrument takes part in MIDI Polyphonic Expression at all, and which way: `receives`,
 `sends`, `both` or `none`, the words `clock` uses. `midi.per_voice_channels: true` says

@@ -185,8 +185,10 @@ voice:
   polyphony: 1
   velocity:
     # "44 full-size keys with Velocity and After Pressure" (guide p. 15), and the MIDI In list
-    # carries Velocity. **What a received velocity reaches is not stated anywhere.**
-    note_on: received
+    # carries Velocity. **What a received velocity reaches is not stated anywhere.** And it is
+    # sent: "MIDI Out: Note On (Trigger), Note #, Velocity, Aftertouch, Pitch Bend, and Mod
+    # Wheel" (guide p. 81). So `both`, the format's word for received and sent.
+    note_on: both
   # SENT, AND NO PAGE SAYS IT IS RECEIVED. Both of the manual's receive lists leave
   # aftertouch out - the MIDI IN paragraph (guide p. 35) and the MIDI In line (guide p. 81) -
   # where the send lists have it, and a power-on command "Transmits Aftertouch (After

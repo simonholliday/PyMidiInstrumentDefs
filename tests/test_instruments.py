@@ -1653,6 +1653,10 @@ class TestAftertouch:
 			"korg/wavestation": ("both", True),
 			"korg/minilogue_xd": ("channel", False),
 			"korg/wavestate": ("both", False),
+			"moog/mother_32": ("channel", False),
+			"moog/muse": ("channel", True),
+			"moog/sub_37": ("channel", True),
+			"moog/subsequent_37": ("channel", True),
 		}
 
 

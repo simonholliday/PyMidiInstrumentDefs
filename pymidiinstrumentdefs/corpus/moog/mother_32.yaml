@@ -165,6 +165,10 @@ voice:
   # of sixteen settings names it "MIDI Channel Pressure" (p. 59). Polyphonic key pressure is
   # named nowhere, which for a monophonic instrument is what one would expect.
   aftertouch: channel
+  # Never sent, since there is no MIDI output to send it on: "MIDI INPUT: Din Jack" (p. 70) is
+  # the one MIDI socket. See the header comment. What p. 57 outputs is a voltage at the
+  # assignable jack, not MIDI.
+  aftertouch_transmits: false
   pitch_bend:
     # TWELVE SEMITONES BY DEFAULT AND SETTABLE DOWN TO NONE, by the standard registered
     # parameter rather than anything of Moog's - see the source paragraph for the sentence and

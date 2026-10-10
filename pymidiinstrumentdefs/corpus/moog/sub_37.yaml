@@ -253,14 +253,18 @@ voice:
     # channel pressure (aftertouch) messages", which the OUT FILTERS sub menu can turn off
     # (p. 36).
     # AND WHAT THE NOTES IT SENDS ARE IS A SETTING: SEQ OPTIONS offers "MIDI OUTPUT: SEQ,
-    # KEYS", and "SEQ is the default" (p. 47), so out of the box its note output is the
-    # arpeggiator or sequencer rather than the keys being played.
+    # KEYS" (p. 43), and "SEQ is the default" (p. 47), which sends the notes the arpeggiator
+    # or sequencer generates rather than the keys being played. What is sent while neither is
+    # playing is not said.
     # NOT RECORDED: note-off velocity, which the manual never mentions.
   # "TYPE OF KEYS: Semi-Weighted with After Pressure" and "CONTROLLERS: Pitch Bend, Mod
   # Wheel, After Pressure, Velocity" (p. 61). It is channel pressure rather than polyphonic:
   # the keys "transmit MIDI note data including channel pressure (aftertouch) messages"
   # (p. 36), and it reaches the sound through MOD 1 PRESSURE AMT and MOD 2 PRESSURE AMT.
   aftertouch: channel
+  # Sent by the keys, unless the OUT FILTERS sub menu's KEYS, or OUT PORTS, is set to OFF
+  # (p. 36).
+  aftertouch_transmits: true
   pitch_bend:
     # Up and down are separate amounts, each 0 to 24 semitones, and each is a control below
     # rather than a registered parameter: CC 107 and CC 108. The chart marks RPN itself

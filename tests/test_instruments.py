@@ -1526,6 +1526,38 @@ class TestChartWords:
 
 		assert "voice.velocity.transmits" in str(raised.value)
 
+	def test_one_mode_number_is_the_default_both_ways (self) -> None:
+		midi = pymidiinstrumentdefs.parse("definition: 1\nmodel: {name: X}\nsource: hand\nmidi: {mode: 3}",
+			source = "x.yaml").midi
+
+		assert (midi.mode, midi.mode_receives, midi.mode_sends) == (3, 3, 3)
+
+	def test_a_mode_may_be_given_each_way (self) -> None:
+		parsed = pymidiinstrumentdefs.parse(
+			"definition: 1\nmodel: {name: X}\nsource: hand\nmidi: {mode: {receives: 1, sends: 3}}", source = "x.yaml")
+
+		assert (parsed.midi.mode, parsed.midi.mode_receives, parsed.midi.mode_sends) == (None, 1, 3)
+		assert parsed.warnings == ()
+
+	def test_the_same_mode_each_way_is_the_same_as_writing_it_once (self) -> None:
+		midi = pymidiinstrumentdefs.parse(
+			"definition: 1\nmodel: {name: X}\nsource: hand\nmidi: {mode: {receives: 4, sends: 4}}", source = "x.yaml").midi
+
+		assert (midi.mode, midi.mode_receives, midi.mode_sends) == (4, 4, 4)
+
+	def test_a_mode_given_one_way_only_says_nothing_of_the_other (self) -> None:
+		midi = pymidiinstrumentdefs.parse(
+			"definition: 1\nmodel: {name: X}\nsource: hand\nmidi: {mode: {receives: 1}}", source = "x.yaml").midi
+
+		assert (midi.mode, midi.mode_receives, midi.mode_sends) == (None, 1, None)
+
+	def test_a_mode_outside_one_to_four_is_refused_each_way (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse("definition: 1\nmodel: {name: X}\nmidi: {mode: {receives: 1, sends: 5}}",
+				source = "x.yaml")
+
+		assert "midi.mode.sends" in str(raised.value)
+
 	def test_an_unknown_note_on_is_refused (self) -> None:
 		body = "definition: 1\nmodel: {name: X}\nvoice: {velocity: {note_on: sends}}"
 
@@ -1815,6 +1847,7 @@ class TestUnknownFields:
 		("sources: {manual: {version: '1.0'}}", "sources.manual.version"),
 		("midi: {clocks: both}", "midi.clocks"),
 		("midi: {program_change: {receive: true}}", "midi.program_change.receive"),
+		("midi: {mode: {receive: 1}}", "midi.mode.receive"),
 		("voice: {polyphon: 8}", "voice.polyphon"),
 		("voice: {velocity: {note_on: received, release: true}}", "voice.velocity.release"),
 		("voice: {pitch_bend: {range: 12}}", "voice.pitch_bend.range"),
@@ -3479,11 +3512,11 @@ class TestJuno106:
 		assert modulation.range == (0, 127)
 		assert modulation.states == []
 
-	def test_the_mode_is_left_out_because_the_chart_gives_two (self) -> None:
-		"""Default 3 transmitted and 1 recognized, and the field holds one number (#4179)."""
+	def test_the_mode_is_one_each_way_because_the_chart_gives_two (self) -> None:
+		"""Default 3 transmitted and 1 recognized, so no one number is true of both (#4179)."""
 		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
 
-		assert juno.midi.mode is None
+		assert (juno.midi.mode, juno.midi.mode_receives, juno.midi.mode_sends) == (None, 1, 3)
 
 	def test_its_note_range_is_what_it_accepts_not_what_it_sounds (self) -> None:
 		"""A note outside the keyboard is transposed into it rather than dropped, so 0-127."""

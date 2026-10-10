@@ -66,6 +66,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 		"nrpn", "sysex", "per_voice_channels",
 	}),
 	"midi.program_change": frozenset({"receives", "sends", "presets"}),
+	"midi.mode": frozenset({"receives", "sends"}),
 	"voice": frozenset({
 		"addressing", "reference_note", "note_map", "note_range", "polyphony",
 		"polyphony_shared", "paraphonic", "voicing_modes", "velocity", "aftertouch",
@@ -485,11 +486,14 @@ class _Reader:
 					else self.integer(inner["presets"], "midi.program_change.presets", 0, 16384),
 			)
 
+		mode, mode_receives, mode_sends = self.mode(section.get("mode"))
+
 		return pymidiinstrumentdefs.definition.Midi(
 			channels = None if section.get("channels") is None
 				else self.pair(section["channels"], "midi.channels", 1, 16),
-			mode = None if section.get("mode") is None
-				else self.integer(section["mode"], "midi.mode", 1, 4),
+			mode          = mode,
+			mode_receives = mode_receives,
+			mode_sends    = mode_sends,
 			clock              = self.word(section, "clock", "midi", _FLOWS),
 			transport          = self.word(section, "transport", "midi", _FLOWS),
 			program_change     = program_change,
@@ -500,6 +504,33 @@ class _Reader:
 			per_voice_channels = None if section.get("per_voice_channels") is None
 				else self.flag(section["per_voice_channels"], "midi.per_voice_channels"),
 		)
+
+
+	def mode (self, value: object) -> tuple[int | None, int | None, int | None]:
+
+		"""Read ``midi.mode``: one number for both ways, or ``{receives, sends}`` where the chart gives two.
+
+		Returned as the default both ways, then received, then sent.  The first is
+		``None`` where the two differ, since no one number is then true, and the
+		split form with two equal numbers is the same as writing the number once.
+		"""
+
+		if value is None:
+			return None, None, None
+
+		if not isinstance(value, dict):
+			both = self.integer(value, "midi.mode", 1, 4)
+
+			return both, both, both
+
+		split = self.fields(value, "midi.mode", "midi.mode")
+
+		receives = None if split.get("receives") is None \
+			else self.integer(split["receives"], "midi.mode.receives", 1, 4)
+		sends = None if split.get("sends") is None \
+			else self.integer(split["sends"], "midi.mode.sends", 1, 4)
+
+		return (receives if receives == sends else None), receives, sends
 
 
 	def voice (self, value: object) -> pymidiinstrumentdefs.definition.Voice:

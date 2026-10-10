@@ -355,11 +355,20 @@ class Midi:
 	side: ``receives``, ``sends``, ``both`` or ``none``.  Any other word is
 	refused, ``transmits`` among them, since that is a control's word for its
 	direction and is not what these fields have ever said.
+
+	``mode`` is the chart's Mode row, 1 to 4, as the default both ways.  Where
+	the chart gives a different default each way - a JUNO-106 recognises mode 1
+	and announces mode 3 - ``mode`` is ``None`` and ``mode_receives`` and
+	``mode_sends`` give each.  Those two are filled for a single figure as well,
+	so a consumer that cares about one direction reads that one and needs no
+	special case.
 	"""
 
 	stated_none: bool = False
 	channels: tuple[int, int] | None = None
 	mode: int | None = None
+	mode_receives: int | None = None
+	mode_sends: int | None = None
 	clock: str | None = None
 	transport: str | None = None
 	program_change: ProgramChange | None = None

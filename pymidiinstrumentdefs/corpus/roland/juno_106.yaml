@@ -55,24 +55,22 @@ source: >-
 
   EVERY ROW OF THE CHART IS ACCOUNTED FOR. Twelve function blocks, twenty-six rows in all,
   and a Notes row.
-  Carried as fields: Basic Channel, Note Number, Velocity, After Touch, Prog Change,
-  System Exclusive, and System Real Time, whose Clock and Commands are both crosses both
-  ways. Carried as controls: the two Control Change rows, 1 and 64. Left out with reason:
-  Mode, which is below; Pitch Bender, which is below; System Common, whose Song Pos, Song
+  Carried as fields: Basic Channel, Mode, which is below, Note Number, Velocity, After
+  Touch, Prog Change, System Exclusive, and System Real Time, whose Clock and Commands are
+  both crosses both ways. Carried as controls: the two Control Change rows, 1 and 64. Left
+  out with reason: Pitch Bender, which is below; System Common, whose Song Pos, Song
   Sel and Tune are crosses both ways and which the format has no field for; and the Aux
   Messages, whose Local ON/OFF, Active Sense and Reset are crosses and whose All Notes OFF
   is CC 123, a channel mode message that the format refuses as a control and the public
   guide forbids. The same goes for the 124, 125, 126 and 127 in the implementation's own
   received list: they are channel mode messages, excluded by category rather than missed.
 
-  NOT RECORDED, MODE. The chart gives two different defaults - 3 transmitted, 1 recognised
-  - and `midi.mode` holds one number. The implementation says which is which: "When power
-  is first applied, receiver's mode is OMNI ON, POLY mode" (p. 35) - mode 1 - while the
-  chart's own Notes row says "When power up.
-
-  OMNI OFF, POLY ON are sent in channel 1"
-  (mode 3). Writing either number alone would deny the other, so neither is written, the
-  way the DX7's aftertouch is left out for the same reason.
+  MODE, ONE DEFAULT EACH WAY. The chart gives two different defaults, 3 transmitted and 1
+  recognised, and the implementation says which is which: "When power is first applied,
+  receiver's mode is OMNI ON, POLY mode" (p. 35), which is mode 1, while the chart's own
+  Notes row says "When power up. OMNI OFF, POLY ON are sent in channel 1" (p. 34), which is
+  mode 3. So `midi.mode` gives each: it recognises mode 1 and announces mode 3, and no one
+  number is true of both.
 
   NOT RECORDED, PITCH BEND. It is received and transmitted in positions II and III, and
   how far it bends is two front-panel knobs rather than a number: DCO Bend Sens sets "the
@@ -136,6 +134,10 @@ midi:
   # (p. 25), Roland's own spelling. The chart says the same as Tx = Rx. It powers up on
   # channel 1.
   channels: [1, 16]
+  # Recognised in mode 1 and announced in mode 3: "When power is first applied, receiver's
+  # mode is OMNI ON, POLY mode" (p. 35), and the chart's Notes row has OMNI OFF, POLY ON
+  # "are sent in channel 1" (p. 34). See the source account.
+  mode: {receives: 1, sends: 3}
   # Both crosses both ways on the chart, so this instrument neither follows a clock nor
   # answers to start, stop or continue. For a 1984 synthesizer with no sequencer in it,
   # that is what you would expect, and it is recorded because it was read rather than

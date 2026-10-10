@@ -15658,7 +15658,7 @@ class TestVolcaFM:
 	"""Eleven controls that only travel inwards, and a value table that disagrees with itself.
 
 	Its maker says why nothing leaves in one line - there is no MIDI Out jack -
-	and its implementation is the first in this corpus that is a plain text file.
+	and its implementation is a plain text file.
 	"""
 
 	def test_nothing_leaves_and_the_maker_says_why (self) -> None:
@@ -15681,33 +15681,28 @@ class TestVolcaFM:
 		assert "a consumer can stop wondering what this instrument reports: it has nowhere to" \
 			" report to" in flat
 
-	def test_its_implementation_is_the_first_text_file_in_the_corpus (self) -> None:
+	def test_its_implementation_is_a_text_file (self) -> None:
 		"""Which is why there is no extraction, no ligature and no coordinate reading here."""
 		volca = pymidiinstrumentdefs.load("korg/volca_fm", [CORPUS])
 		url = volca.sources["implementation"].url
 
 		assert url is not None and url.endswith(".txt")
 
-		# **AND IT IS STILL THE FIRST**, which is the claim its account makes. It was the only
-		# one until rank 107, when `korg/volca_keys` arrived with the same arrangement from the
-		# same maker - so the list is asserted whole rather than as a count, and a third will
-		# show up here rather than passing unnoticed.
-		elsewhere = [name for name in pymidiinstrumentdefs.available([CORPUS])
+		# **AND NOT THE FIRST**, which its header once claimed. This test passed all the same,
+		# because it matched only the kind `implementation`, which the volcas alone use: the
+		# electribe and the minilogue were each read from a text implementation before it,
+		# under the kind `midi_implementation`. Both kinds are asked for now, and the two
+		# earlier ones by name, as the header names them.
+		elsewhere = {name for name in pymidiinstrumentdefs.available([CORPUS])
 			for source in pymidiinstrumentdefs.load(name, [CORPUS]).sources.values()
-			if source.kind == "implementation" and (source.url or "").endswith(".txt")]
+			if "implementation" in (source.kind or "") and (source.url or "").endswith(".txt")}
 
-		assert elsewhere == ["korg/volca_fm", "korg/volca_keys"]
-
-		# **`First` here means first into this corpus, not first published** - and the two run
-		# opposite ways, which is why it is worth saying. The volca keys' implementation is from
-		# 2013 and this one from 2016; the volca fm was written at rank 102 and the keys at 107.
-		keys = pymidiinstrumentdefs.load("korg/volca_keys", [CORPUS])
-
-		assert str(keys.sources["implementation"].dated) < str(volca.sources["implementation"].dated)
+		assert {"korg/electribe", "korg/minilogue", "korg/volca_fm"} <= elsewhere
 
 		flat = " ".join(prose_of("korg", "volca_fm").split())
 
-		assert "**ITS IMPLEMENTATION IS A TEXT FILE, WHICH IS THE FIRST IN THIS CORPUS.**" in flat
+		assert "**ITS IMPLEMENTATION IS A TEXT FILE.**" in flat
+		assert "`korg/electribe` and `korg/minilogue` were each read from one here before this was" in flat
 
 	def test_one_value_table_is_carried_and_one_is_not (self) -> None:
 		"""Because one column is coherent and the other table has neither."""

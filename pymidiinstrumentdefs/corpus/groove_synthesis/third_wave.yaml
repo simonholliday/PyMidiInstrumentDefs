@@ -39,11 +39,12 @@ source: >-
   row**; most of the disagreements recorded below are that reader's finding.
 
   TWO MAPS, AND A SETTING CHOOSES. The specification's global settings say a `MIDI param send`
-  and a `MIDI para receive` setting each choose "MIDI CC, MIDI nrpn, or off" (spec p. 2), and the
-  manual's own list of the settings calls NRPN "the preferred method" (manual p. 113).
-  **The NRPN table says the receiving setting's third value is something else**: "0: off, 1: CC, 2:
-  CC+NRPN" (spec p. 38). The prose, the manual and the table do not agree about whether the
-  instrument can take both at once, and nothing here depends on which is right.
+  setting chooses "MIDI CC, MIDI nrpn parameter values, or off" (spec p. 2) and a
+  `MIDI para receive` one "MIDI CC, MIDI nrpn, or off" (spec p. 2), and the manual's own list of the
+  settings calls NRPN "the preferred method" (manual p. 113). **The NRPN table says the receiving
+  setting's third value is something else**: "0: off, 1: CC, 2: CC+NRPN" (spec p. 38). The prose,
+  the manual and the table do not agree about whether the instrument can take both at once, and
+  nothing here depends on which is right.
 
   THE CONTROLLER TABLE NAMES KNOBS, AND THE MAKER SAYS WHY. "originally the MIDI CC implementation
   was designed to map physical controls on the synth" (spec p. 2), and "In later releases there has
@@ -88,10 +89,11 @@ source: >-
 
   THIRTY OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES. It
   makes 32 to 63 the fine halves of 0 to 31, and the keyboard's table gives thirty of them
-  parameters of their own. **Three will meet a sender of fourteen-bit values**: 33 is Oscillator
-  2's wave offset where a fourteen-bit modulation wheel sends its fine half, 34 is Oscillator 2's
-  level beside breath control on 2, and 39 is the low-pass filter's envelope amount beside volume
-  on 7. That is a fact about the MIDI specification set beside this table, not the maker's.
+  parameters of their own. Of the thirty, 25 have their own coarse number carried too. **Three sit
+  where the commonest fourteen-bit senders put their fine halves**: 33 is Oscillator 2's wave offset
+  where a fourteen-bit modulation wheel sends its fine half, 34 is Oscillator 2's level beside
+  breath control on 2, and 39 is the low-pass filter's envelope amount beside volume on 7. That is a
+  fact about the MIDI specification set beside this table, not the maker's.
 
   WHAT THE DOCUMENTS DISAGREE ABOUT, recorded and not resolved:
 
@@ -104,7 +106,7 @@ source: >-
 
   **The modulation sources.** The list of them is "Mod Source values (0-29 values)" (spec p. 39) and
   runs to MIDI breath control at 29 (spec p. 40); the sixteen NRPN rows that choose a source give
-  `0-26` (spec p. 26), which stops before the three sources the latest releases added. The rows'
+  `0-26` (spec p. 26), which stops before the last three sources in the list (spec p. 40). The rows'
   ranges are carried as printed.
 
   **Smaller ones.** The metronome's volume is `0-100` by NRPN (spec p. 20) and "Range 0-127"
@@ -205,7 +207,7 @@ midi:
     # Sent, behind "MIDI Send Program Change" (manual p. 112); receiving is not stated. See the
     # source account for the 500 presets.
     sends: true
-  # Pages of it: program import and export, wavetables, samples, a device inquiry (spec pp. 47-75).
+  # Pages of it: program import and export, wavetables, samples, a device inquiry (spec pp. 46-75).
   sysex: true
   # "NRPNs are the preferred method." (manual p. 113).
   nrpn: preferred
@@ -740,7 +742,7 @@ controls:
   lfo4_fine_amount:                                    {label: "LFO4 fine amount", nrpn: 457, range: [0, 254], group: multi}
   effects_2_param_7:                                   {label: "Effects 2 param 7", nrpn: 466, range: [0, 255], group: multi}
 
-  # ──── global - NRPN category Global, spec pp. 37-39 ────
+  # ──── global - NRPN category Global, spec pp. 38-39 ────
 
   midi_sysex_enable:                                   {label: "MIDI SysEx enable", nrpn: 445, range: [0, 1], group: global}
   midi_param_send:                                     {label: "MIDI param send", nrpn: 446, range: [0, 2], group: global}

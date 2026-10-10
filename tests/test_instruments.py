@@ -197,6 +197,8 @@ class TestBundledCorpus:
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
 			"groove_synthesis/third_wave",
+			"groove_synthesis/third_wave_24m",
+			"groove_synthesis/third_wave_8m",
 			"intellijel/cascadia",
 			"korg/drumlogue",
 			"korg/electribe",
@@ -2472,7 +2474,8 @@ class TestOsmose:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
-			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "groove_synthesis/third_wave", "modal/carbon8m",
+			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "groove_synthesis/third_wave",
+			"groove_synthesis/third_wave_24m", "groove_synthesis/third_wave_8m", "modal/carbon8m",
 			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
 			"udo_audio/super_6", "waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2",
 			"waldorf/protein"]
@@ -8115,7 +8118,10 @@ class TestProphet6:
 		assert "waldorf/iridium_mk2" in flagged
 		# The fifteenth, the Iridium Core, the Iridium's MPE on a pool of twelve.
 		assert "waldorf/iridium_core" in flagged
-		assert len(flagged) == 15
+		# The sixteenth and seventeenth, the 3rd Wave's two desktops, which answer to MPE as the
+		# keyboard does.
+		assert "groove_synthesis/third_wave_24m" in flagged and "groove_synthesis/third_wave_8m" in flagged
+		assert len(flagged) == 17
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -8135,7 +8141,8 @@ class TestProphet6:
 		preferred = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
 
-		assert preferred == ["elektron/digitone_ii", "groove_synthesis/third_wave", "oberheim/ob_x8", "oberheim/teo_5",
+		assert preferred == ["elektron/digitone_ii", "groove_synthesis/third_wave", "groove_synthesis/third_wave_24m",
+			"groove_synthesis/third_wave_8m", "oberheim/ob_x8", "oberheim/teo_5",
 			"sequential/fourm", "sequential/prophet_10", "sequential/prophet_5",
 			"sequential/prophet_6", "sequential/prophet_x", "sequential/take_5"]
 
@@ -16279,7 +16286,7 @@ class TestThirdWave:
 		"""Counted rather than claimed; the current count moved to `TestSR16` when Alesis arrived."""
 		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("groove_synthesis/")]
 
-		assert names == ["groove_synthesis/third_wave"]
+		assert names == ["groove_synthesis/third_wave", "groove_synthesis/third_wave_24m", "groove_synthesis/third_wave_8m"]
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
@@ -16461,7 +16468,7 @@ class TestCascadia:
 		assert "`true` would misdescribe the instrument and `false` would hide the feature" in flat
 
 		# **AND NOT ONE INSTRUMENT THAT SETS THE FLAG IS MONOPHONIC**, which is the whole
-		# distinction: fifteen set it, and none of the fifteen records one voice. So this
+		# distinction: seventeen set it, and none of the seventeen records one voice. So this
 		# would have been the first, and the field's meaning here cannot stretch to it.
 		setters = {}
 
@@ -16471,7 +16478,7 @@ class TestCascadia:
 			if other.midi is not None and other.midi.per_voice_channels is True:
 				setters[name] = other
 
-		assert len(setters) == 15
+		assert len(setters) == 17
 		assert "modal/carbon8m" in setters and "waldorf/iridium" in setters
 		assert [name for name, other in setters.items() if other.voice.polyphony == 1] == []
 
@@ -18976,3 +18983,52 @@ class TestIridiumCore:
 		assert change is not None and (change.receives, change.sends, change.presets) == (True, True, None)
 		assert set(core.sources) == {"manual", "iridium_manual", "specification", "product_page", "faq_page"}
 		assert core.sources["faq_page"].kind == "support_article"
+
+
+class TestThirdWaveDesktops:
+
+	"""The 3rd Wave's two desktop modules, each from its own controller table and the NRPN table all three share."""
+
+	def test_each_takes_its_own_table_and_the_shared_nrpns (self) -> None:
+		module = pymidiinstrumentdefs.load("groove_synthesis/third_wave_24m", [CORPUS])
+		eight = pymidiinstrumentdefs.load("groove_synthesis/third_wave_8m", [CORPUS])
+
+		for wave, cc, nrpn in ((module, 99, 418), (eight, 61, 415)):
+			assert sum(1 for c in wave.controls.values() if c.cc is not None) == cc
+			assert sum(1 for c in wave.controls.values() if c.nrpn is not None) == nrpn
+
+		# Bank select is addressing, here as on the keyboard.
+		assert all(c.cc != 32 for wave in (module, eight) for c in wave.controls.values())
+
+	def test_the_model_scoped_nrpns_go_to_the_model_they_name (self) -> None:
+		module = pymidiinstrumentdefs.load("groove_synthesis/third_wave_24m", [CORPUS])
+		eight = pymidiinstrumentdefs.load("groove_synthesis/third_wave_8m", [CORPUS])
+
+		def numbers (wave: pymidiinstrumentdefs.definition.Definition) -> set[int]:
+			return {c.nrpn for c in wave.controls.values() if c.nrpn is not None}
+
+		assert {424, 425, 426, 427, 428} <= numbers(module) and not {458, 459} & numbers(module)
+		assert {458, 459} <= numbers(eight) and not {424, 425, 426, 427, 428} & numbers(eight)
+
+	def test_the_24m_reuses_seven_numbers_its_main_table_deprecated (self) -> None:
+		module = pymidiinstrumentdefs.load("groove_synthesis/third_wave_24m", [CORPUS])
+		by_cc = {c.cc: c.label for c in module.controls.values() if c.cc is not None}
+
+		assert [by_cc[n] for n in (43, 44, 45, 46)] == ["Filter Envelope Attack", "Filter Envelope Decay",
+			"Filter Envelope Sustain", "Filter Envelope Release"]
+		assert [by_cc[n] for n in (110, 111, 112)] == ["Env 4 Sustain", "Effect 2 Mix", "Env 4 Amount"]
+		assert not {65, 66, 67} & set(by_cc)
+
+	def test_voices_parts_and_program_change (self) -> None:
+		module = pymidiinstrumentdefs.load("groove_synthesis/third_wave_24m", [CORPUS])
+		eight = pymidiinstrumentdefs.load("groove_synthesis/third_wave_8m", [CORPUS])
+
+		assert (module.voice.polyphony, eight.voice.polyphony) == (24, 8)
+		assert not module.parts and not eight.parts
+		assert module.midi.program_change is not None and eight.midi.program_change is not None
+		assert (module.midi.program_change.receives, module.midi.program_change.sends) == (None, True)
+		assert (eight.midi.program_change.receives, eight.midi.program_change.sends) == (True, True)
+		assert eight.midi.program_change.presets is None
+		for wave in (module, eight):
+			assert wave.model.firmware == "2.0c"
+			assert (wave.midi.nrpn, wave.midi.clock, wave.midi.transport) == ("preferred", "both", "receives")

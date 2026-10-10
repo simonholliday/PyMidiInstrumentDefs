@@ -1,13 +1,16 @@
-# **ONE CONTROL, AND IT IS A FACTORY ASSIGNMENT THE PLAYER CAN CHANGE TO ANY OTHER NUMBER.** The
-# modulation wheel sends controller 1 until somebody sets it otherwise: "Mod Wheel: Use this field
-# to select the MIDI function for the keyboard modulation wheel. Select Disable, Default - CC 001:
-# Modulation, or CC 000-126." (guide p. 103). That is the only controller number this maker
-# publishes for this machine, and `control_change: learned` is what says the rest are the owner's.
+# **THREE CONTROLS ON TWO NUMBERS: THE WHEEL'S FACTORY ASSIGNMENT, AND THE TWO NUMBERS THE GUIDE
+# GIVES AN EFFECT.** The modulation wheel sends controller 1 until somebody sets it otherwise: "Mod
+# Wheel: Use this field to select the MIDI function for the keyboard modulation wheel. Select
+# Disable, Default - CC 001: Modulation, or CC 000-126." (guide p. 103), so it carries `assignment:
+# default`. And the instrument answers to 1 and 11 as `akai/mpc_live` does, from pages of the same
+# guide that name no machine: the arpeggiator's modifiers (guide p. 85) and a keygroup's LFO (guide
+# p. 239). So 1 is two controls here, one sent by the wheel and assignable, one received and fixed,
+# which a single control travelling both ways would hide.
 #
 # **THIS IS THE THIRD DEFINITION OUT OF ONE DOCUMENT, AND IT WAS THE FIRST OF THE THREE TO FIND A
 # CONTROLLER NUMBER IN IT.** `akai/mpc_sample` carries no controls at all. `akai/mpc_live` carried
 # none until it was given 1 and 11, received, from the guide's arpeggiator and keygroup pages, which
-# name no machine and so bear on this one too; this definition has not been revised to match them.
+# name no machine and so bear on this one too, and this definition now carries them as well.
 # The guide is 530 sheets about an operating system that runs on fourteen machines - its own release
 # notes name them - and the MPC Live's definition established how it tells them apart. **What is new
 # here is that this machine has a keybed**, and the guide has a screen for it that the others'
@@ -16,8 +19,8 @@
 # **SO EVERY FIELD BELOW THAT IS NOT THE MPC LIVE'S COMES OFF TWO SHEETS**, 102 and 103, headed
 # `Keyboard Control` and scoped in their first sentence: "The keyboard control screen allows you
 # to edit the functions of the keybed on MPC Key 61, Key 37, and Key 37 G2." (guide p. 102).
-# That sentence is what makes the aftertouch, the velocity and the channel below statements about
-# this box rather than about MPCs.
+# That sentence is what makes the keybed's aftertouch, the wheel's assignment and the channel below
+# statements about this box rather than about MPCs.
 #
 # **AND THE MACHINE IT IS NOT IS NAMED ON THE SAME SHEETS.** There is an `MPC Key 37` and an `MPC
 # Key 37 G2`, the guide gives each its own hardware chapter and its own specification table, and
@@ -30,7 +33,7 @@
 # velocity-sensitive" (guide p. 376); its specification table calls the same keybed "37
 # synth-action keys with aftertouch" (guide p. 482). Semi-weighted and synth-action are different
 # things, and a reader cannot tell from this document which this instrument has. Nothing below
-# depends on it - but the aftertouch and the velocity do come from these same two sheets'
+# depends on it - but what the keybed sends does come from these same two sheets'
 # neighbourhood, so the disagreement is recorded rather than passed over.
 
 definition: 1
@@ -64,8 +67,11 @@ source: >-
   assignments, and a local-off setting - **none of which the two definitions before this one had
   any reason to read**, because neither of their machines has keys.
 
-  **AND ONE CONTROLLER NUMBER IS PUBLISHED**, which is one more than either of them found. See the
-  comment above the definition.
+  **AND THE KEYBED'S SHEETS PUBLISH ONE CONTROLLER NUMBER**, the wheel's factory 1. The two the
+  instrument answers to, 1 and 11, come from the pages the MPC Live reads: the arpeggiator's
+  modifiers "enable Expression messages (MIDI CC #11) from external MIDI controllers to modify the
+  arpeggiator" (guide p. 85), and the same for "Modulation messages (MIDI CC #1) from external MIDI
+  controllers" (guide p. 85). See the comment above the definition.
 
   WHAT THE PROGRAM CHANGE FIELD CANNOT SEND. A track's outgoing program change takes "a value from
   1-127" (guide p. 54), so **this machine cannot send one of the 128 numbers a program change can
@@ -144,11 +150,11 @@ midi:
     sends: true
     # NOT RECORDED, the preset count: what a program change selects here is a sequence or a track,
     # which is a setting rather than a number of presets.
-  # **EVERY OTHER CONTROLLER NUMBER IS THE OWNER'S.** "You can use the MIDI Learn function to
-  # assign external MIDI controllers to various parameters in your specific MPC project" (guide
-  # p. 320), and the assignments are saved with the project rather than with the instrument. So
-  # the one control below is a factory default and not a fixed fact, which is what this word says.
-  control_change: learned
+  # NOT RECORDED, AND ON PURPOSE: two numbers are fixed, 1 and 11, carried below, and every other
+  # is the owner's: "You can use the MIDI Learn function to assign external MIDI controllers to
+  # various parameters in your specific MPC project" (guide p. 320), saved with the project rather
+  # than with the instrument. One word cannot say both, so `control_change` is left unset, as
+  # `akai/mpc_live` leaves it.
   # NOT RECORDED: NRPN and system exclusive. Neither word is anywhere in the 530 sheets or in
   # either set of release notes - a silence `akai/mpc_live` established by enumeration, and one
   # this definition inherits rather than re-proving.
@@ -161,21 +167,27 @@ voice:
   # NOT RECORDED, the polyphony: the specification table for this machine (guide p. 482) gives
   # converters, connectors and key counts and no voice count at all.
   velocity:
-    # **RECEIVED, AND THE PLAYER CAN MAKE IT A CONSTANT**: "Note On Velocity: This determines the
-    # incoming velocity of note on messages. For velocity that is responsive to your playing,
-    # select As played. Alternatively, you can set a fixed velocity for all note on messages, at
-    # 12%, 18%, 25%, 31%, 37%, 43%, Half, 56%, 62%, 68%, 75%, 81%, 87%, 93% or Full velocity."
-    # (guide p. 102). **So fifteen fixed values or the one that was played**, which is a thing
-    # this field cannot say - and `akai/mpc_live` records `both` from pages of the same guide that
-    # name no machine (guide pp. 193, 268 and 334), which this definition has not been revised to
-    # match.
-    note_on: received
-  # **CHANNEL, AND THE MAKER NAMES THE KIND IN A BRACKET**: "Aftertouch (Channel Pressure): This
-  # determines whether aftertouch is enabled (As Played) or not (Disable)." (guide p. 102). That
-  # bracket is the whole reason this field can be filled: the specification table says only "37
-  # synth-action keys with aftertouch" (guide p. 482), which is the case this corpus has an open
-  # question about, and this sheet settles it.
-  aftertouch: channel
+    # **BOTH, AS `akai/mpc_live` RECORDS IT**, from pages of the same guide that name no machine: an
+    # incoming note's velocity is scaled and filtered (guide pp. 193 and 268), and the pads send it
+    # (guide p. 334). **And the keybed's can be made a constant**: "Note On Velocity: This
+    # determines the incoming velocity of note on messages. For velocity that is responsive to your
+    # playing, select As played. Alternatively, you can set a fixed velocity for all note on
+    # messages, at 12%, 18%, 25%, 31%, 37%, 43%, Half, 56%, 62%, 68%, 75%, 81%, 87%, 93% or Full
+    # velocity." (guide p. 102) - fifteen fixed values or the one that was played, which is a
+    # thing this field cannot say.
+    note_on: both
+  # **BOTH KINDS ARE ANSWERED TO, AS `akai/mpc_live` RECORDS IT**: the arpeggiator's modifiers
+  # take aftertouch and channel pressure from external controllers (guide p. 85), and a keygroup a
+  # keyboard's aftertouch and a device's channel pressure (guide p. 242), on pages that name no
+  # machine.
+  aftertouch: both
+  # **AND THE KEYBED SENDS CHANNEL PRESSURE, THE MAKER NAMING THE KIND IN A BRACKET**: "Aftertouch
+  # (Channel Pressure): This determines whether aftertouch is enabled (As Played) or not (Disable)."
+  # (guide p. 102). That bracket once filled the field above with `channel`; it is about the keys,
+  # so it says what this machine's keybed produces and sends. The specification table says only
+  # "37 synth-action keys with aftertouch" (guide p. 482). The pads send aftertouch too, `Off`,
+  # `Channel` or `Poly` at the owner's choice (guide p. 334).
+  aftertouch_transmits: true
   pitch_bend:
     # Settable, with no range published - "Range Up/Range Down: Use these sliders to set the range
     # of the pitch bend in semitones." (guide p. 103) and a Global Pitch Bend switch that
@@ -192,7 +204,12 @@ groups:
 
 controls:
 
-  # **THE ONLY CONTROLLER NUMBER THIS MAKER PUBLISHES FOR THIS MACHINE**, and it is a default
-  # rather than a fixture - see `midi.control_change` above. It travels one way: the wheel sends
-  # it, and nothing in any of the three documents says the machine answers to it.
-  modulation: {label: Mod Wheel, cc: 1, direction: transmits, group: wheels}
+  # **THE WHEEL'S FACTORY ASSIGNMENT**, a default rather than a fixture - see the comment above the
+  # definition. It travels one way: the wheel sends it.
+  modulation: {label: Mod Wheel, cc: 1, direction: transmits, assignment: default, group: wheels}
+
+  # THE TWO NUMBERS THE GUIDE GIVES AN EFFECT, received only, as `akai/mpc_live` carries them: the
+  # arpeggiator's modifiers (p. 85) and, for 1, a keygroup's LFO (p. 239). Each works where the
+  # owner switches it on or turns it up.
+  modulation_wheel: {label: Mod Wheel, cc: 1, direction: receives}
+  expression: {label: Expression, cc: 11, direction: receives}

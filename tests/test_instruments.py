@@ -1636,6 +1636,10 @@ class TestAftertouch:
 			"asm/leviasynth": ("poly", True),
 			"elektron/analog_rytm_mkii": ("received", True),
 			"polyend/tracker": (None, True),
+			"akai/mpc_live": ("both", True),
+			"akai/mpc_live_iii": ("both", True),
+			"akai/mpc_xl": ("both", True),
+			"akai/mpc_key_37": ("both", True),
 		}
 
 
@@ -1673,7 +1677,7 @@ class TestAssignment:
 		assert "controls.a.assignment" in str(raised.value)
 
 	def test_each_definition_marks_what_its_own_pages_say_the_owner_can_change (self) -> None:
-		"""A factory assignment, a fixed slot, and a recommendation switched off - six files, three words."""
+		"""A factory assignment, a fixed slot, and a recommendation switched off - seven files, three words."""
 		said: dict[str, dict[str, int]] = {}
 
 		for name in pymidiinstrumentdefs.available([CORPUS]):
@@ -1689,6 +1693,7 @@ class TestAssignment:
 			"elektron/octatrack": {"slot": 10},
 			"teenage_engineering/op_1_field": {"slot": 4},
 			"korg/kronos": {"off": 27, "default": 2},
+			"akai/mpc_key_37": {"default": 1},
 		}
 
 	def test_the_kronos_ships_its_karma_controls_and_pads_off_and_its_joystick_on (self) -> None:
@@ -11599,7 +11604,7 @@ class TestMpcLive:
 
 		# Which is why that screen's aftertouch setting carries no weight here: the field rests on
 		# the arpeggiator's and a keygroup's pages, which every machine shares.
-		assert live.voice.aftertouch == "poly"
+		assert live.voice.aftertouch == "both"
 		assert "The keyboard screen's own aftertouch setting is three other machines'" in account
 		assert "and nothing here rests on it." in account
 
@@ -11621,7 +11626,9 @@ class TestMpcLive:
 		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
 		account = " ".join((live.source or "").split())
 
-		assert live.voice.aftertouch == "poly"
+		# Both kinds received, and the pads send it (#4872).
+		assert live.voice.aftertouch == "both"
+		assert live.voice.aftertouch_transmits is True
 
 		assert "Off: The pad will not send any aftertouch messages" in account
 		assert "the aftertouch message each pad sends will be independent from the others" in account
@@ -15419,14 +15426,17 @@ class TestMpcKey37:
 	about keybeds that neither of them had any reason to read.
 	"""
 
-	def test_one_control_and_it_is_a_factory_default (self) -> None:
-		"""Which is exactly what `control_change: learned` means beside a control."""
+	def test_the_wheels_factory_default_and_the_two_it_answers_to (self) -> None:
+		"""The wheel's 1 is assignable and sent; the 1 and 11 it answers to are fixed (#4842)."""
 		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
 
-		assert len(key_37.controls) == 1
+		assert len(key_37.controls) == 3
 		assert key_37.controls["modulation"].cc == 1
 		assert key_37.controls["modulation"].direction == "transmits"
-		assert key_37.midi.control_change == "learned"
+		assert key_37.controls["modulation"].assignment == "default"
+		assert sorted((control.cc, control.direction) for name, control in key_37.controls.items()
+			if name != "modulation") == [(1, "receives"), (11, "receives")]
+		assert key_37.midi.control_change is None
 
 		said = prose_of("akai", "mpc_key_37")
 
@@ -15436,8 +15446,8 @@ class TestMpcKey37:
 
 		flat = " ".join(said.split())
 
-		assert "**ONE CONTROL, AND IT IS A FACTORY ASSIGNMENT THE PLAYER CAN CHANGE TO ANY OTHER" \
-			" NUMBER.**" in flat
+		assert "**THREE CONTROLS ON TWO NUMBERS: THE WHEEL'S FACTORY ASSIGNMENT, AND THE TWO NUMBERS" \
+			" THE GUIDE GIVES AN EFFECT.**" in flat
 
 		# **THE MPC SAMPLE CARRIES NOTHING, AND THE MPC LIVE ONLY THE TWO NUMBERS IT RECEIVES**,
 		# which were carried after this definition was written (#4697).
@@ -15475,27 +15485,27 @@ class TestMpcKey37:
 		assert "The keyboard control screen allows you to edit the functions of the keybed on" \
 			" MPC Key 61, Key 37, and Key 37 G2." in said
 
-		# The three fields that sentence makes statements about this box rather than about MPCs.
+		# What that sentence makes statements about this box rather than about MPCs: the channel,
+		# and what the keybed sends.
 		assert key_37.midi.channels == (1, 16)
 		assert key_37.voice is not None
-		assert key_37.voice.aftertouch == "channel"
-		assert key_37.voice.velocity is not None
-		assert key_37.voice.velocity.note_on == "received"
+		assert key_37.voice.aftertouch_transmits is True
 
-		# **AND THE SIBLING RECORDS THEM FROM OTHER PAGES**, because its machine has no keys.
+		# **AND WHAT IT ANSWERS TO IS THE SIBLING'S**, from pages that name no machine (#4842).
 		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
 
-		assert live.voice is not None
-		assert live.voice.aftertouch == "poly"
-		assert live.voice.velocity is not None
-		assert live.voice.velocity.note_on == "both"
+		for mpc in (key_37, live):
+			assert mpc.voice is not None
+			assert mpc.voice.aftertouch == "both"
+			assert mpc.voice.velocity is not None
+			assert mpc.voice.velocity.note_on == "both"
 
 	def test_the_maker_names_the_kind_of_aftertouch_in_a_bracket (self) -> None:
-		"""Which is the whole reason that field can be filled at all."""
+		"""It is about the keys, so it says what the keybed sends."""
 		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
 
 		assert key_37.voice is not None
-		assert key_37.voice.aftertouch == "channel"
+		assert key_37.voice.aftertouch_transmits is True
 
 		said = prose_of("akai", "mpc_key_37")
 
@@ -15505,7 +15515,7 @@ class TestMpcKey37:
 
 		flat = " ".join(said.split())
 
-		assert "That bracket is the whole reason this field can be filled" in flat
+		assert "That bracket once filled the field above with `channel`; it is about the keys" in flat
 
 	def test_the_machine_it_is_not_is_named_on_the_same_sheets (self) -> None:
 		"""There is an MPC Key 37 and an MPC Key 37 G2, and they differ in MIDI."""
@@ -15538,7 +15548,7 @@ class TestMpcKey37:
 
 		assert key_37.voice is not None
 		assert key_37.voice.velocity is not None
-		assert key_37.voice.velocity.note_on == "received"
+		assert key_37.voice.velocity.note_on == "both"
 
 		said = prose_of("akai", "mpc_key_37")
 
@@ -15548,7 +15558,7 @@ class TestMpcKey37:
 
 		flat = " ".join(said.split())
 
-		assert "**So fifteen fixed values or the one that was played**" in flat
+		assert "fifteen fixed values or the one that was played" in flat
 
 	def test_it_cannot_send_one_of_the_128_program_numbers (self) -> None:
 		"""A fact about the field rather than about the format, so the account holds it."""
@@ -17935,10 +17945,11 @@ class TestMpcLiveIII:
 		assert live.midi.channels == (1, 16)
 		assert live.midi.sysex is None and live.midi.nrpn is None
 		assert live.voice.polyphony is None
-		assert live.voice.aftertouch == "poly"
+		assert live.voice.aftertouch == "both"
+		assert live.voice.aftertouch_transmits is True
 		assert live.voice.velocity is not None and live.voice.velocity.note_on == "both"
-		assert "AFTERTOUCH AND VELOCITY ARE RECORDED FROM WHAT THE INSTRUMENT DOES WITH THEM WHEN" \
-			" THEY ARRIVE." in " ".join((live.source or "").split())
+		assert "AFTERTOUCH AND VELOCITY ARE RECORDED BOTH WAYS: WHAT THE PADS SEND, AND WHAT THE" \
+			" INSTRUMENT DOES WITH THEM WHEN THEY ARRIVE." in " ".join((live.source or "").split())
 		assert not live.voice.voices
 
 		assert live.voice.pitch_bend is not None
@@ -18413,7 +18424,8 @@ class TestMpcXl:
 			assert sorted((control.cc, control.direction) for control in other.controls.values()) \
 				== [(1, "receives"), (11, "receives")]
 			assert other.midi.control_change is None
-			assert other.voice.aftertouch == "poly"
+			assert other.voice.aftertouch == "both"
+			assert other.voice.aftertouch_transmits is True
 
 
 class TestJX8P:

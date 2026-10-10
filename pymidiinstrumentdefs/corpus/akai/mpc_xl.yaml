@@ -156,19 +156,20 @@ source: >-
   input's wording, which reads as a copying slip. A plugin track sends too: "Use the MIDI Ch field
   to select the MIDI channel over which the track sends its MIDI data." (guide p. 122).
 
-  AFTERTOUCH AND VELOCITY ARE RECORDED FROM WHAT THE INSTRUMENT DOES WITH THEM WHEN THEY ARRIVE. The
-  pads send aftertouch at the owner's choice: "Tap the Use Aftertouch box to enable pad aftertouch
-  messages." (guide p. 85), on this machine also from a button (guide p. 85), as `Off`, `Channel` or
-  `Poly` in MIDI Control Mode (guide p. 369), and "Record Pad Aftertouch Events: When enabled, pad
-  aftertouch data (from MPC’s pressure-sensitive pads) will be recorded." (guide p. 66). "When set
-  to Off, pressing the pad will send a note at full-level (127) always." (guide p. 369). The
-  instrument uses both kinds of pressure when they arrive, each a setting: the arpeggiator's boxes
-  "enable Aftertouch messages from the pads or external MIDI controllers to modify the arpeggiator"
-  (guide p. 87) and "enable Channel Pressure messages from external MIDI controllers to modify the
-  arpeggiator" (guide p. 87), and a keygroup's "Aftertouch To Cut 1/2 determines how much a
-  connected MIDI keyboard’s aftertouch data affects the filter cutoff." (guide p. 266). So
-  `aftertouch` is `poly`, **which is a reading**: the guide never says polyphonic or key pressure,
-  but it sets Aftertouch beside Channel Pressure as a kind of its own. And an incoming note's
+  AFTERTOUCH AND VELOCITY ARE RECORDED BOTH WAYS: WHAT THE PADS SEND, AND WHAT THE INSTRUMENT DOES
+  WITH THEM WHEN THEY ARRIVE. The pads send aftertouch at the owner's choice: "Tap the Use
+  Aftertouch box to enable pad aftertouch messages." (guide p. 85), on this machine also from a
+  button (guide p. 85), as `Off`, `Channel` or `Poly` in MIDI Control Mode (guide p. 369), and
+  "Record Pad Aftertouch Events: When enabled, pad aftertouch data (from MPC’s pressure-sensitive
+  pads) will be recorded." (guide p. 66). "When set to Off, pressing the pad will send a note at
+  full-level (127) always." (guide p. 369). The instrument uses both kinds of pressure when they
+  arrive, each a setting: the arpeggiator's boxes "enable Aftertouch messages from the pads or
+  external MIDI controllers to modify the arpeggiator" (guide p. 87) and "enable Channel Pressure
+  messages from external MIDI controllers to modify the arpeggiator" (guide p. 87), and a keygroup's
+  "Aftertouch To Cut 1/2 determines how much a connected MIDI keyboard’s aftertouch data affects the
+  filter cutoff." (guide p. 266). So `aftertouch` is `both`: the guide never says polyphonic or key
+  pressure, but it sets Aftertouch beside Channel Pressure as a kind of its own and the instrument
+  takes each. Since the pads send it, `aftertouch_transmits` is true. And an incoming note's
   velocity is used - "Use the Velocity Scaling field to apply scaling to the incoming velocity."
   (guide p. 218) - so `note_on` is `both`. The pads are "(16) velocity- and pressure-sensitive pads
   with 3D-sensing technology" (guide p. 542).
@@ -253,9 +254,11 @@ voice:
   velocity:
     # Sent by the pads, and an incoming note's is scaled (pp. 218 and 369); see the account.
     note_on: both
-  # Both kinds are received, the arpeggiator taking each (p. 87), and `poly` is the stronger; see
-  # the account.
-  aftertouch: poly
+  # Both kinds are received, the arpeggiator taking each (p. 87); see the account.
+  aftertouch: both
+  # The pads send it, `Off`, `Channel` or `Poly` by the owner's setting (p. 369). Which kind has no
+  # field.
+  aftertouch_transmits: true
   pitch_bend:
     # "Range Down / Range Up: Use these fields to determine the range of pitch bends in semitones."
     # (p. 66), with a Global Pitch Bend switch that overrides every track's own, and "Note: Pitch

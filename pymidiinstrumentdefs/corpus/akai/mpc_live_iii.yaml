@@ -162,27 +162,28 @@ source: >-
   send MIDI data to" (guide p. 54), which is a copying slip rather than a second statement about
   reception.
 
-  AFTERTOUCH AND VELOCITY ARE RECORDED FROM WHAT THE INSTRUMENT DOES WITH THEM WHEN THEY ARRIVE. The
-  pads send them, at the owner's choice: in MIDI Control Mode each pad's aftertouch is "Off: The pad
-  will not send any aftertouch messages." (guide p. 369), "Channel: If you press multiple pads that
-  have this setting, the aftertouch messages they send will be identical." (guide p. 369), or "Poly:
-  If you press multiple pads, the aftertouch message each pad sends will be independent from the
-  others." (guide p. 369); and "When set to Off, pressing the pad will send a note at full-level
-  (127) always." (guide p. 369). **And the instrument does things with them when they arrive**, each
-  a setting, and keeps the two kinds of pressure apart: the arpeggiator's boxes "enable Aftertouch
-  messages from the pads or external MIDI controllers to modify the arpeggiator" (guide p. 87) and
-  "enable Channel Pressure messages from external MIDI controllers to modify the arpeggiator"
-  (guide p. 87), and a keygroup's "Aftertouch To Cut 1/2 determines how much a connected MIDI
-  keyboard’s aftertouch data affects the filter cutoff." (guide p. 266) and "Pressure To Filter
-  determines how much a connected MIDI device’s channel pressure data affects the filter envelope."
-  (guide p. 266). So `aftertouch` is `poly`, **which is a reading**: the guide never says polyphonic
-  or key pressure, but it sets Aftertouch beside Channel Pressure as a kind of its own, and `poly`
-  is this format's word for the other kind. An incoming note's velocity is used too - "Use the
-  Velocity Scaling field to apply scaling to the incoming velocity." (guide p. 218), and a track's
-  "Velocity Range: This determines the Velocity Min and Velocity Max that passes MIDI."
-  (guide p. 296) - so `note_on` is `both`. The pads themselves are "(16) velocity- and
-  pressure-sensitive pads with 3D-sensing technology" (guide p. 540), and their X/Y position is
-  recorded as an event type of its own (guide p. 66), for which no MIDI message is named.
+  AFTERTOUCH AND VELOCITY ARE RECORDED BOTH WAYS: WHAT THE PADS SEND, AND WHAT THE INSTRUMENT DOES
+  WITH THEM WHEN THEY ARRIVE. The pads send them, at the owner's choice: in MIDI Control Mode each
+  pad's aftertouch is "Off: The pad will not send any aftertouch messages." (guide p. 369),
+  "Channel: If you press multiple pads that have this setting, the aftertouch messages they send
+  will be identical." (guide p. 369), or "Poly: If you press multiple pads, the aftertouch message
+  each pad sends will be independent from the others." (guide p. 369); and "When set to Off,
+  pressing the pad will send a note at full-level (127) always." (guide p. 369). **And the
+  instrument does things with them when they arrive**, each a setting, and keeps the two kinds of
+  pressure apart: the arpeggiator's boxes "enable Aftertouch messages from the pads or external MIDI
+  controllers to modify the arpeggiator" (guide p. 87) and "enable Channel Pressure messages from
+  external MIDI controllers to modify the arpeggiator" (guide p. 87), and a keygroup's "Aftertouch
+  To Cut 1/2 determines how much a connected MIDI keyboard’s aftertouch data affects the filter
+  cutoff." (guide p. 266) and "Pressure To Filter determines how much a connected MIDI device’s
+  channel pressure data affects the filter envelope." (guide p. 266). So `aftertouch` is `both`: the
+  guide never says polyphonic or key pressure, but it sets Aftertouch beside Channel Pressure as a
+  kind of its own and the instrument takes each. And since the pads send it, `aftertouch_transmits`
+  is true. An incoming note's velocity is used too - "Use the Velocity Scaling field to apply
+  scaling to the incoming velocity." (guide p. 218), and a track's "Velocity Range: This determines
+  the Velocity Min and Velocity Max that passes MIDI." (guide p. 296) - so `note_on` is `both`. The
+  pads themselves are "(16) velocity- and pressure-sensitive pads with 3D-sensing technology" (guide
+  p. 540), and their X/Y position is recorded as an event type of its own (guide p. 66), for which
+  no MIDI message is named.
 
   TWO MIDI INPUTS, TWO MIDI OUTPUTS, USB AND CV. The specification lists "(2) 5-pin MIDI inputs"
   (guide p. 540) and "(2) 5-pin MIDI outputs" (guide p. 540), and "(4) Stereo 1/8” (3.5 mm) CV/Gate
@@ -280,9 +281,12 @@ voice:
     # Sent by the pads, and an incoming note's is scaled and filtered (pp. 218, 296 and 369); see
     # the account.
     note_on: both
-  # Both kinds are received, the arpeggiator and a keygroup taking each (pp. 87 and 266), and
-  # `poly` is the stronger; see the account.
-  aftertouch: poly
+  # Both kinds are received, the arpeggiator and a keygroup taking each (pp. 87 and 266); see the
+  # account.
+  aftertouch: both
+  # The pads send it, `Off`, `Channel` or `Poly` by the owner's setting (p. 369). Which kind has no
+  # field.
+  aftertouch_transmits: true
   pitch_bend:
     # "Range Down / Range Up: Use these fields to determine the range of pitch bends in semitones."
     # (p. 66), with a Global Pitch Bend switch that overrides every track's own. THE RANGE THOSE

@@ -200,26 +200,26 @@ source: >-
   this machine, and three of the terms a control map would be written in appear nowhere else in
   530 pages.
 
-  THE PADS SEND AFTERTOUCH AND IT IS A THREE-WAY SETTING, WHICH NO SINGLE VALUE OF THIS FORMAT'S
-  FIELD CAN HOLD. "Aftertouch: This determines how the pad's aftertouch (pressure applied to the
-  pad after the initial press) behaves" (p. 334), and the three positions are given: "Off: The pad
-  will not send any aftertouch messages" (p. 334), "Channel: If you press multiple pads that have
-  this setting, the aftertouch messages they send will be identical" (p. 334), and "Poly: If you
-  press multiple pads, the aftertouch message each pad sends will be independent from the others"
-  (p. 334). The specification calls them "(16) velocity- and pressure-sensitive pads, RGB-backlit"
-  (p. 472).
+  THE PADS SEND AFTERTOUCH, SO `aftertouch_transmits` IS TRUE, AND WHICH KIND THEY SEND IS A
+  THREE-WAY SETTING NO FIELD HOLDS. "Aftertouch: This determines how the pad's aftertouch (pressure
+  applied to the pad after the initial press) behaves" (p. 334), and the three positions are given:
+  "Off: The pad will not send any aftertouch messages" (p. 334), "Channel: If you press multiple
+  pads that have this setting, the aftertouch messages they send will be identical" (p. 334), and
+  "Poly: If you press multiple pads, the aftertouch message each pad sends will be independent from
+  the others" (p. 334). The specification calls them "(16) velocity- and pressure-sensitive pads,
+  RGB-backlit" (p. 472).
 
-  AND IT ANSWERS TO BOTH KINDS AS THE GUIDE DIVIDES THEM, SO `aftertouch` IS `poly`. What the pads
+  AND IT ANSWERS TO BOTH KINDS AS THE GUIDE DIVIDES THEM, SO `aftertouch` IS `both`. What the pads
   send is the owner's choice, and this field records what an instrument answers to, which the
   guide states as well. The arpeggiator's modifiers "enable Aftertouch messages from the pads or
   external MIDI controllers to modify the arpeggiator" (p. 85) and "enable Channel Pressure
   messages from external MIDI controllers to modify the arpeggiator" (p. 85), and a keygroup has
   both: "Aftertouch To Cut 1/2 determines how much a connected MIDI keyboard’s aftertouch data
   affects the filter cutoff." (p. 242), and "Pressure To Filter determines how much a connected
-  MIDI device’s channel pressure data affects the filter envelope." (p. 242). **`poly` is a
-  reading**: the guide never says polyphonic or key pressure, and elsewhere calls channel pressure
-  aftertouch too (p. 334), but here and in its event list (p. 184) it sets Aftertouch beside
-  Channel Pressure as a kind of its own, and `poly` is this format's word for the other kind. The
+  MIDI device’s channel pressure data affects the filter envelope." (p. 242). The guide never says
+  polyphonic or key pressure, and elsewhere calls channel pressure aftertouch too (p. 334), but here
+  and in its event list (p. 184) it sets Aftertouch beside Channel Pressure as a kind of its own,
+  and the instrument takes each, so `both`. The
   keyboard screen's own aftertouch setting is three other machines' (p. 102), and nothing here
   rests on it.
 
@@ -330,9 +330,12 @@ voice:
     # Sent by the pads, and an incoming note's is scaled and filtered (pp. 193, 268 and 334); see
     # the account.
     note_on: both
-  # Both kinds are received, the arpeggiator and a keygroup taking each (pp. 85 and 242), and
-  # `poly` is the stronger; see the account.
-  aftertouch: poly
+  # Both kinds are received, the arpeggiator and a keygroup taking each (pp. 85 and 242); see the
+  # account.
+  aftertouch: both
+  # The pads send it, `Off`, `Channel` or `Poly` by the owner's setting (p. 334). Which kind has no
+  # field.
+  aftertouch_transmits: true
   pitch_bend:
     # "Range Down / Range Up: Use these fields to determine the range of pitch bend in semitones"
     # (p. 65), with a Global Pitch Bend switch that overrides every track's own setting. THE

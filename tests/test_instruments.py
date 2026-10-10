@@ -15569,9 +15569,9 @@ class TestTR8:
 	"""A complete chart five firmware releases old, and an update that carries on from it.
 
 	The chart prints the version it describes on its own face - 1.11 - and the
-	update document on the same page carries this instrument to 1.60.  So the
-	chart is where the fifty controller numbers are and it is not where this
-	instrument's MIDI ends.
+	update document on the same page carries this instrument to 1.60, with 1.61
+	on Roland's updates page after it.  So the chart is where the fifty controller
+	numbers are and it is not where this instrument's MIDI ends.
 	"""
 
 	def test_fifty_controls_and_three_it_obeys_without_reporting (self) -> None:
@@ -15599,8 +15599,12 @@ class TestTR8:
 		"""And the update document's last sheet is a MIDI section it has no row for."""
 		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
 
-		assert tr_8.model.firmware == "1.60"
+		# 1.61 is on the updates page a first reading never saved; 1.60 is the update
+		# document's last, and the claim that nothing after it is offered is gone.
+		assert tr_8.model.firmware == "1.61"
+		assert tr_8.sources["system_program"].edition == "Ver.1.61"
 		assert str(tr_8.sources["chart"].dated) == "2014-11-18"
+		assert "Nothing after 1.60 is offered" not in " ".join(prose_of("roland", "tr_8").split())
 
 		said = prose_of("roland", "tr_8")
 
@@ -15689,7 +15693,8 @@ class TestTR8:
 		"""Which the TR-909 needed the US manual archive for, and this one does not."""
 		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
 
-		assert len(tr_8.sources) == 5
+		# The four documents and the manuals page, and the updates page and its system program.
+		assert len(tr_8.sources) == 7
 
 		flat = " ".join(prose_of("roland", "tr_8").split())
 

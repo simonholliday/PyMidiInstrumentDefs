@@ -1,6 +1,7 @@
 # **A COMPLETE IMPLEMENTATION CHART ON ONE SHEET, AND IT IS FIVE FIRMWARE RELEASES OLD.** The
 # chart prints `Version: 1.11` and `Date: Nov. 18, 2014`; the update document on the same page
-# carries this instrument up to 1.60. **So the chart is where the 50 controller numbers come from
+# carries this instrument up to 1.60, and Roland's updates page offers 1.61 after it - 1.12, 1.20,
+# 1.50, 1.60 and 1.61 are the five. **So the chart is where the 50 controller numbers come from
 # and it is not where this instrument's MIDI ends**: the update's last sheet is a MIDI section the
 # chart has no row for.
 #
@@ -38,10 +39,16 @@ definition: 1
 model:
   manufacturer: Roland
   name: TR-8
-  # **1.60, FROM THE UPDATE DOCUMENT, WHICH IS FIVE RELEASES PAST THE CHART.** The chart describes
-  # 1.11 and says so on its face; the update covers 1.10, 1.12, 1.20, 1.50 and 1.60 and is the
-  # newest thing this maker publishes for the instrument. Nothing after 1.60 is offered.
-  firmware: "1.60"
+  # **1.61, THE SYSTEM PROGRAM ROLAND'S UPDATES PAGE OFFERS**, "TR-8 System Program (Ver.1.61)"
+  # (updates_page), whose own page dates it January 2019 and lists one addition: "Serato DJ Pro
+  # Ver.2.1.1 or later is now supported. Synchronized playback with compositions on Serato DJ Pro is
+  # possible." (system_program). That is the sync the Serato guide describes, and the guide says
+  # "Update your TR-8 to Ver.1.61 or later." (serato_guide). **Its notes name no controller, note or
+  # channel, so nothing below changes.** The chart describes 1.11 and says so on its face, and the
+  # update document covers 1.10, 1.11, 1.12, 1.20, 1.50 and 1.60. A first reading saved only the
+  # owner's manuals page and recorded 1.60, which is the update document's last; the updates page is
+  # a separate one.
+  firmware: "1.61"
   # A drum machine, discontinued - and **its support page is not the empty shell this maker's
   # discontinued pages usually are**: four documents, each on a GUID page of the kind a current
   # product gets. `roland/tr_909` had to go to the US manual archive instead, so that habit does
@@ -53,6 +60,9 @@ source: >-
   sheet and gives every field below but three. The `TR-8 Update` is five sheets of release notes
   whose **last sheet is a MIDI section** - the eight effect notes, the three scatter controllers
   and a setting that decides whether transport messages are obeyed at all, all on update p. 5.
+
+  Roland's Updates & Drivers page and the 1.61 system program's own page are cited for the
+  firmware alone.
 
   **TWO OF THE FOUR HAVE NO PAGE TO TURN TO**, which is why most of what is cited below is cited
   by name: the chart is a single sheet and the manual is a single A3 sheet of 17,395 characters.
@@ -94,7 +104,7 @@ sources:
     sha256: 706fa2014f70f0b1d770fcbfb47524deef428960356fcdbe321f10492c4dfecb
     retrieved: 2026-10-06
     # **ONE SHEET, AND IT PRINTS THE FIRMWARE IT DESCRIBES ON ITS OWN FACE**: `Model: TR-8 Date:
-    # Nov. 18, 2014 Version: 1.11`. That is what makes the gap to 1.60 a fact rather than a guess.
+    # Nov. 18, 2014 Version: 1.11`. That is what makes the gap to 1.61 a fact rather than a guess.
     # Read by coordinate: the flat text runs every number, then every transmitted mark, then every
     # recognized mark, then every name, so `20 o o BD TUNE` appears nowhere in it. The four
     # columns sit at x=188, 197, 317 and 438 and the rows are keyed by height.
@@ -148,7 +158,8 @@ sources:
     # clock** - sync over USB, the MIDI OUT port syncing other sequencers, and a MIDI clock delay
     # setting - and it names no controller number, note or system exclusive. Opened because a
     # connection guide between two devices is somewhere a map could have been, and read in full
-    # so that the count of four documents is a list rather than a search.
+    # so that the count of four documents is a list rather than a search. Its TR-8 section also
+    # names the firmware the sync needs, 1.61.
     page_offset: 0
   manuals_page:
     kind: download_page
@@ -169,6 +180,31 @@ sources:
     # The digest is of the extraction, which pairs each document with its GUID page and the
     # file that page serves; the served markup is saved beside it as `.html`, whose own
     # digest is 4adfa288e88a56e6f1a041c212e817a08cdfecb0897ad7c3e6070529bda5f396. One page, cited by name.
+  updates_page:
+    kind: download_page
+    title: "Roland - Support - TR-8 - Updates & Drivers"
+    landing: "https://www.roland.com/global/support/by_product/tr-8/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/tr-8/updates_drivers/"
+    sha256: 5dc6f8a3434a8b0ffba116d69981ee1490249171edb57fae539a18214617a43b
+    retrieved: 2026-10-10
+    paginated: false
+    # **THE PAGE THE FIRST READING NEVER SAVED**, as `roland/s_1`'s first reading did not save the
+    # S-1's either: one system program, 1.61, nine drivers, and a set of drum kits and patterns.
+    # The digest is of the text rendering; the page as served
+    # hashes to b1849ed4867157b0e42829abf74b5306d7b47f229e8afece1f00d6c35b52b976.
+  system_program:
+    kind: release_notes
+    title: TR-8 System Program (Ver.1.61)
+    edition: Ver.1.61
+    landing: "https://www.roland.com/global/support/by_product/tr-8/updates_drivers/"
+    url: "https://www.roland.com/global/support/by_product/tr-8/updates_drivers/9d8e26ad-8810-479e-84d7-13d3f1362497/"
+    sha256: 68861c23d2702821687dc701956c7f562c806df18a0072f7c67cece27a21a8b2
+    retrieved: 2026-10-10
+    paginated: false
+    # Its update history lists 1.61 (January 2019), 1.60 (August 2018), 1.50 (August 2017) and
+    # 1.20, the last three sending the reader to the TR-8 Update document. The digest is of the
+    # text rendering; the page as served hashes to
+    # 5df6369a5c5d46004a37d7699ad2c61573906f46c66853d825545b27acc087a6.
 
 midi:
   # `10` by default and `1-16, OFF` either way, marked `Memorized` (chart) - and the manual gives

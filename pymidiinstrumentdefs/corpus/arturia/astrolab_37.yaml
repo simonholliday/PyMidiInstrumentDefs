@@ -1,8 +1,8 @@
 # **THE ASTROLAB 61'S TABLE LESS TWO ROWS.** "11.3. AstroLab 37 MIDI Implementation"
 # (manual pp. 91-92) prints the same five columns as `arturia/astrolab`'s, row for row, without
 # Start Record (108) and Play / Stop (109) - the two looper rows, on an instrument whose manual
-# describes no looper. Thirty-five rows; thirty-four are carried, for the reason the 61's file gives
-# for Master Volume.
+# describes no looper. Thirty-five rows, all carried, Master Volume on 7 with `direction: none` as
+# on the 61.
 #
 # **ITS MANUAL IS 2.0.0, AND THE 1.0.0 MANUAL ARTURIA SERVES PRINTS THE SAME TABLE.** Arturia
 # published firmware 2.0.0 for all three AstroLabs on 2026-10-01 and a 2.0.0 manual for this one on
@@ -58,7 +58,7 @@ source: >-
   fellow send, is `Not linked`, no page says. This manual adds a switch the 61's lacks: "Knob Send
   CC When On, turning a knob in AstroLab 37 will send a MIDI Control Change message."
   (manual p. 29). The counts: 13 both, 21 receives, and Master Volume on 7, printed `Never` and
-  `Never`, not carried because the format has no direction for a control that travels neither way.
+  `Never` and carried with `direction: none`, as on the 61.
 
   **THREE PEDAL ROWS, ONE PEDAL INPUT.** The table prints Expression on 11, Aux 1 on 12 and Aux 2 on
   13 as `Always` sent and `Always` received. But the rear panel's only pedal jack is "Sustain Pedal
@@ -220,6 +220,7 @@ parts:
 
 groups:
   controllers: Controllers
+  master: Master
   pedals: Pedals
   effects: Effects
   macros: Macros
@@ -230,6 +231,11 @@ controls:
 
   # CONTROLLERS -----------------------------------------------
   mod_wheel:                 {label: Mod Wheel, cc: 1, group: controllers}
+
+  # MASTER ----------------------------------------------------
+  # the table's own `Master` label, printed against this row alone; `Never` sent and `Never`
+  # received (manual p. 91), so it is recorded and offered to nobody
+  master_volume:             {label: Master Volume, cc: 7, direction: none, group: master}
 
   # PEDALS ---------------------------------------------------- The table's own rows; the rear panel
   # has a sustain input only - see the account.

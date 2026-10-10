@@ -1448,6 +1448,22 @@ class TestDirection:
 
 		assert not control.is_sendable
 
+	def test_a_control_the_maker_says_travels_neither_way_is_not_for_sending (self) -> None:
+		"""Published, and then said to be neither sent nor received: carried, and offered to nobody."""
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\ncontrols: {master_volume: {cc: 7, direction: none}}"
+		control = pymidiinstrumentdefs.parse(body, source = "x.yaml").controls["master_volume"]
+
+		assert control.direction == pymidiinstrumentdefs.definition.NEITHER == "none"
+		assert not control.is_sendable
+
+	def test_a_control_nothing_receives_may_sit_on_a_part_that_takes_no_controls (self) -> None:
+		"""What the part receives is not the question for a control the instrument does not receive."""
+		body = ("definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"parts: {p: {channel: assigned, receives: [notes]}}\n"
+			"controls: {a: {cc: 7, direction: none, part: p}, b: {cc: 8, direction: transmits, part: p}}")
+
+		assert set(pymidiinstrumentdefs.parse(body, source = "x.yaml").controls) == {"a", "b"}
+
 	def test_an_unknown_direction_is_refused (self) -> None:
 		body = "definition: 1\nmodel: {name: X}\ncontrols: {a: {cc: 14, direction: sideways}}"
 
@@ -5582,21 +5598,25 @@ class TestAstroLab:
 
 	"""A Section column that cannot be carried down, and a row published as neither direction."""
 
-	def test_thirty_six_of_thirty_seven_published_rows (self) -> None:
-		"""The table gives 37; one is neither sent nor received and so is not a control."""
+	def test_all_thirty_seven_published_rows (self) -> None:
+		"""The table gives 37, one of them neither sent nor received, and that one is carried as such."""
 		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
 
-		assert len(astrolab.controls) == 36
-		assert len(astrolab.groups) == 6
+		assert len(astrolab.controls) == 37
+		assert len(astrolab.groups) == 7
 
 		numbers = sorted(c.cc for c in astrolab.controls.values() if c.cc is not None)
 
 		assert numbers[0] == 1
 		assert numbers[-1] == 115
 
-		# CC 7, Master Volume, is published "Never" sending and "Never" receiving, which none of
-		# the format's three directions can say.
-		assert 7 not in numbers
+		# CC 7, Master Volume, is published "Never" sending and "Never" receiving, and is carried
+		# with the direction that says so, under the table's own "Master" label.
+		volume = astrolab.controls["master_volume"]
+
+		assert (volume.cc, volume.direction, volume.group) == (7, "none", "master")
+		assert astrolab.groups["master"] == "Master"
+		assert not volume.is_sendable
 
 		assert all(c.group in astrolab.groups for c in astrolab.controls.values())
 
@@ -5619,8 +5639,8 @@ class TestAstroLab:
 
 		assert effects == {16, 18, 19, 93}
 
-	def test_the_four_direction_words_become_two (self) -> None:
-		"""Always and Not linked travel both ways; Never and n/a are received only."""
+	def test_the_four_direction_words_become_three (self) -> None:
+		"""Always and Not linked travel both ways; Never and n/a are received only; Never twice is neither."""
 		astrolab = pymidiinstrumentdefs.load("arturia/astrolab", [CORPUS])
 
 		both = [c for c in astrolab.controls.values()
@@ -5630,8 +5650,10 @@ class TestAstroLab:
 
 		assert len(both) == 13
 		assert len(receives) == 23
+		assert [c.name for c in astrolab.controls.values()
+			if c.direction == pymidiinstrumentdefs.definition.NEITHER] == ["master_volume"]
 
-		# Nothing is transmit-only: every row's Receiving cell but the excluded one says Always.
+		# Nothing is transmit-only: every row's Receiving cell but Master Volume's says Always.
 		assert not [c for c in astrolab.controls.values()
 			if c.direction == pymidiinstrumentdefs.definition.TRANSMITS]
 
@@ -15989,7 +16011,7 @@ class TestMicroBrute:
 
 		# **No two of the seven carry the same number of controls.**
 		assert counts == {
-			"arturia/astrolab": 36,
+			"arturia/astrolab": 37,
 			"arturia/drumbrute_impact": 0,
 			"arturia/microbrute": 13,
 			"arturia/microfreak": 21,
@@ -19046,11 +19068,11 @@ class TestAstroLab37:
 
 		ours = {name: (c.cc, c.label, c.direction, c.group) for name, c in small.controls.items()}
 		theirs = {name: (c.cc, c.label, c.direction, c.group) for name, c in large.controls.items()}
-		assert len(ours) == 34 and set(theirs) - set(ours) == {"start_record", "play_stop"}
+		assert len(ours) == 35 and set(theirs) - set(ours) == {"start_record", "play_stop"}
 		assert all(theirs[name] == value for name, value in ours.items())
 		directions = [c.direction for c in small.controls.values()]
-		assert (directions.count("both"), directions.count("receives")) == (13, 21)
-		assert 7 not in {c.cc for c in small.controls.values()}
+		assert (directions.count("both"), directions.count("receives"), directions.count("none")) == (13, 21, 1)
+		assert ours["master_volume"] == (7, "Master Volume", "none", "master")
 
 	def test_two_parts_channel_aftertouch_and_no_program_change (self) -> None:
 		small = pymidiinstrumentdefs.load("arturia/astrolab_37", [CORPUS])

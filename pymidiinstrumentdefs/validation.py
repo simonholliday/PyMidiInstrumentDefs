@@ -957,10 +957,10 @@ def build (
 	# The same silent failure from the other side: a control put on a part the
 	# file itself says takes no controls would be sent to a channel that ignores
 	# it.  Only where receiving is recorded, and not for a control the instrument
-	# only transmits, since what the part receives is then not the question.
+	# does not receive at all, since what the part receives is then not the question.
 
 	for control in controls.values():
-		if control.part is None or control.direction == pymidiinstrumentdefs.definition.TRANSMITS:
+		if control.part is None or not control.is_sendable:
 			continue
 
 		part = parts[control.part]

@@ -39,7 +39,13 @@ BOTH: typing.Final[str] = "both"
 TRANSMITS: typing.Final[str] = "transmits"
 RECEIVES: typing.Final[str] = "receives"
 
-DIRECTIONS: typing.Final[frozenset[str]] = frozenset({BOTH, TRANSMITS, RECEIVES})
+# A controller number the maker publishes and then says the instrument neither
+# sends nor answers to.  Carried rather than left out, because an absent row
+# reads exactly like one nobody looked at, and this one tells somebody building
+# a control map not to bother.
+NEITHER: typing.Final[str] = "none"
+
+DIRECTIONS: typing.Final[frozenset[str]] = frozenset({BOTH, TRANSMITS, RECEIVES, NEITHER})
 
 
 # ── Identity ─────────────────────────────────────────────────────────────────
@@ -106,7 +112,9 @@ class Control:
 	``nrpn_range`` is the value range over NRPN where it differs from ``range``,
 	for an instrument that offers finer resolution one way than the other.
 	``direction`` says which way the control travels, and one the instrument
-	only transmits must never be offered as something to send.
+	only transmits must never be offered as something to send.  Nor must one
+	whose direction is ``none``: a number its maker published and then said the
+	instrument does nothing with, either way.
 	"""
 
 	name: str
@@ -168,9 +176,9 @@ class Control:
 	@property
 	def is_sendable (self) -> bool:
 
-		"""False for a control the instrument transmits and does not recognise."""
+		"""False for a control the instrument does not recognise: one it only transmits, or one it ignores both ways."""
 
-		return self.direction != TRANSMITS
+		return self.direction not in (TRANSMITS, NEITHER)
 
 
 	def band (self, name: str) -> tuple[int, int]:
@@ -660,8 +668,8 @@ class Definition:
 
 		An assigned part gets only its own.  Whether a player happens to put it
 		on the base channel is their project's business, not this file's.  A
-		control the instrument only transmits is included like any other; read
-		``is_sendable`` for which a panel may send.
+		control the instrument only transmits, or ignores both ways, is included
+		like any other; read ``is_sendable`` for which a panel may send.
 		"""
 
 		found = self.parts[part]

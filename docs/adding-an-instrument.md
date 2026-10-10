@@ -435,6 +435,17 @@ and they go in as controls all the same, with the maker's labels and ranges:
   bank_select_lsb: {label: Bank select LSB, cc: 32, group: system}
 ```
 
+**A row the maker publishes as neither sent nor received is carried as well, with
+`direction: none`.** An AstroLab's table prints Master Volume on 7 and then says `Never` under
+Sending and `Never` under Receiving. Left out, that row would look like one nobody read;
+carried, it says the maker answered, and a consumer looking for something to send passes over
+it. The other directions are `receives` and `transmits`, for a row that travels one way only,
+and `both`, which is what leaving `direction` out means.
+
+```yaml
+  master_volume: {label: Master Volume, cc: 7, direction: none, group: master}
+```
+
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
 section answers one channel above its strings. A Voce plays three parts across three

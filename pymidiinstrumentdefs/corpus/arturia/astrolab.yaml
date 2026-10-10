@@ -20,11 +20,11 @@
 # `Not linked` names the condition under which a control **is** sent, and those seven rows
 # travel both ways.
 #
-# ONE PUBLISHED ROW IS NEITHER SENT NOR RECEIVED AND IS THEREFORE NOT HERE. "Master Volume 7
-# Never Never" (manual p. 96) is the only row in the table whose Receiving cell is not Always.
-# The format has three directions and none of them is "neither", so recording it would tell a
-# consumer the control can be sent or answered to when the maker says it cannot. It is left out
-# and said so, which is the honest half of a gap the format has.
+# ONE PUBLISHED ROW IS NEITHER SENT NOR RECEIVED, AND IT IS CARRIED AS EXACTLY THAT. "Master
+# Volume 7 Never Never" (manual p. 96) is the only row in the table whose Receiving cell is not
+# Always. It is carried with `direction: none`, which says the maker published the number and
+# then said the instrument does nothing with it either way: a consumer is not offered it to send,
+# and can tell the maker's answer from a row nobody read.
 #
 # NINE OF THE THIRTY-SEVEN NAME A CONTROL THE MANUAL MENTIONS NOWHERE ELSE. Fader 1 to Fader 9,
 # at CC 72, 73, 75 and 79 to 85, every one `n/a` sending and `Always` receiving - **and the word
@@ -97,9 +97,9 @@ source: >-
   13 both, 23 receives, and one row that is neither.
 
   "MASTER VOLUME 7 NEVER NEVER" (manual p. 96) IS THE ROW THAT IS NEITHER, and the only one in
-  the table whose Receiving cell is not Always. It is not below, because the format's three
-  directions cannot express a control the maker publishes and then says travels in no direction.
-  Recorded here so the absence is a decision and not an oversight.
+  the table whose Receiving cell is not Always. It is below with `direction: none`, in a group of
+  its own under the table's own `Master` label: the knob that "Sets the volume of AstroLab’s main
+  outputs" (manual p. 15), whose number the maker publishes and then says travels in no direction.
 
   FOUR CONTROLLER NUMBERS ARE STATED TWICE, WHICH IS WORTH HAVING. The Macro knobs' row values -
   Timbre 71, Brightness 74, Time 76, Movement 77 - are given again in prose and in a different
@@ -327,6 +327,7 @@ parts:
 
 groups:
   controllers: Controllers
+  master: Master
   pedals: Pedals
   effects: Effects
   macros: Macros
@@ -338,6 +339,11 @@ controls:
   # CONTROLLERS -----------------------------------------------
   # the wheel beside the keyboard, which the table itself heads "MIDI"
   mod_wheel:                 {label: Mod Wheel, cc: 1, group: controllers}
+
+  # MASTER ----------------------------------------------------
+  # the table's own `Master` label, printed against this row alone; `Never` sent and `Never`
+  # received (manual p. 96), so it is recorded and offered to nobody
+  master_volume:             {label: Master Volume, cc: 7, direction: none, group: master}
 
   # PEDALS ----------------------------------------------------
   # "Sustain Polarity", "Expression Polarity" and "Aux 1 / Aux 2: The two Aux sockets accept

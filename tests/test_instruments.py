@@ -15508,7 +15508,7 @@ class TestMpcKey37:
 			assert mpc.voice.velocity.note_on == "both"
 
 	def test_the_maker_names_the_kind_of_aftertouch_in_a_bracket (self) -> None:
-		"""It is about the keys, so it says what the keybed sends."""
+		"""It names what the keys produce, and the same page sends it out."""
 		key_37 = pymidiinstrumentdefs.load("akai/mpc_key_37", [CORPUS])
 
 		assert key_37.voice is not None
@@ -15522,7 +15522,10 @@ class TestMpcKey37:
 
 		flat = " ".join(said.split())
 
-		assert "That bracket once filled the field above with `channel`; it is about the keys" in flat
+		assert "That bracket once filled the field above with `channel`. It names what the keys" \
+			" produce, and the same page sends it out" in flat
+		assert "Keyboard sends MIDI here: Check this box to send all MIDI from the keyboard to the" \
+			" selected MIDI Output port" in flat
 
 	def test_the_machine_it_is_not_is_named_on_the_same_sheets (self) -> None:
 		"""There is an MPC Key 37 and an MPC Key 37 G2, and they differ in MIDI."""

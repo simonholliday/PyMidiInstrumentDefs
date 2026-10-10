@@ -1647,6 +1647,12 @@ class TestAftertouch:
 			"behringer/deepmind_12": ("channel", True),
 			"asm/hydrasynth_explorer": ("poly", True),
 			"expressive_e/osmose": ("channel", True),
+			"korg/kronos": ("both", True),
+			"korg/m1": ("channel", True),
+			"korg/triton": ("both", True),
+			"korg/wavestation": ("both", True),
+			"korg/minilogue_xd": ("channel", False),
+			"korg/wavestate": ("both", False),
 		}
 
 
@@ -13552,7 +13558,8 @@ class TestKRONOS:
 		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
 
 		assert kronos.voice is not None
-		assert kronos.voice.aftertouch == "poly"
+		assert kronos.voice.aftertouch == "both"
+		assert kronos.voice.aftertouch_transmits is True
 
 		said = prose_of("korg", "kronos")
 
@@ -17725,7 +17732,8 @@ class TestWavestation:
 	def test_it_answers_to_both_aftertouches_and_takes_clock_for_one_thing (self) -> None:
 		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])
 
-		assert wavestation.voice.aftertouch == "poly"
+		assert wavestation.voice.aftertouch == "both"
+		assert wavestation.voice.aftertouch_transmits is True
 		assert wavestation.midi.clock == "receives"
 		assert wavestation.midi.transport == "none"
 		assert "Used for Wave Sequence Sync function" in " ".join(
@@ -19132,7 +19140,7 @@ class TestTRITON:
 		assert (triton.midi.channels, triton.midi.mode, triton.midi.clock, triton.midi.transport, triton.midi.sysex) == ((1, 16), 3, "both", "both", True)
 		assert triton.midi.program_change is not None
 		assert (triton.midi.program_change.receives, triton.midi.program_change.sends, triton.midi.program_change.presets) == (True, True, None)
-		assert triton.voice.note_range == (0, 127) and triton.voice.aftertouch == "poly"
+		assert triton.voice.note_range == (0, 127) and triton.voice.aftertouch == "both"
 		assert triton.voice.velocity is not None and (triton.voice.velocity.note_on, triton.voice.velocity.note_off) == ("both", False)
 		assert triton.voice.pitch_bend is not None and (triton.voice.pitch_bend.programmable, triton.voice.pitch_bend.semitones) == (True, None)
 

@@ -71,8 +71,8 @@
 # polyphonic after touch." (guide p. 787), and then: "since the KRONOS does support polyphonic
 # after touch as an Alternate Modulation Source (AMS), it can receive polyphonic after touch to
 # control individual notes" (guide p. 787). A chart would have said that with four marks; this
-# says it in two sentences, and `aftertouch: poly` records the stronger of the two as this corpus
-# already does for the MC-707 and the FANTOM.
+# says it in two sentences, and the two fields below record them: `aftertouch: both` for what it
+# answers to, and `aftertouch_transmits: true` for the channel pressure its keyboard sends.
 #
 # **AND THE CHART SAYS IT A FOURTH TIME, MOST SHARPLY OF ALL.** Its Aftertouch rows are circled
 # in both directions for both kinds, which on its own would say the keyboard sends polyphonic
@@ -87,8 +87,9 @@
 # prints "KRONOS2-88LS LS Semi-Weighted Yes No" (operation p. 290) against Yes and Yes for the
 # other three, and the guide repeats it: "The KRONOS2-88LS keyboard does not generate aftertouch"
 # (guide p. 765). That is about one keyboard's hardware and not about what the instrument answers
-# to, which is why the field above is unchanged by it - but a player holding that model and
-# finding nothing sent is meeting a specification rather than a fault.
+# to, which is why `aftertouch` is unchanged by it, and `aftertouch_transmits` is true although
+# the 88LS's keyboard sends none - so a player holding that model and finding nothing sent is
+# meeting a specification rather than a fault.
 
 definition: 1
 
@@ -397,9 +398,14 @@ voice:
   # p. 3) and transmitted as sequence data; channel pressure is in both as well, and the chart
   # circles all four cells. The guide then draws the line the tables do not: the keyboard
   # transmits channel pressure only, while the instrument receives polyphonic pressure to control
-  # individual notes. `poly` is the stronger of the two words this field holds, which follows the
-  # MC-707 and the FANTOM. See the comment above the definition for the quotations.
-  aftertouch: poly
+  # individual notes. So `both`, and see the comment above the definition for the quotations.
+  aftertouch: both
+  # Sent: the keyboard "transmits only channel after touch" (guide p. 787), on every model but
+  # the KRONOS2-88LS, whose keyboard generates none (guide p. 765). Polyphonic pressure leaves
+  # only as sequence data, "Poly Key Pressure ( Sequence data )" (implementation p. 1). Both
+  # directions are under one switch: "On (checked): MIDI after touch messages will be
+  # transmitted and received" (guide p. 787).
+  aftertouch_transmits: true
   pitch_bend:
     # "En bb (bb) bb (bb) Bender Change" (implementation p. 3) in both tables, and settable over
     # the first of the three registered parameters: "r = 0 : Pitch Bend Sensitivity ( Bend

@@ -119,9 +119,9 @@ source: >-
   aftertouch are recognized but may or may not have an obvious effect, depending on the specific
   Patches which are programmed into the current Performance" (player p. 19) and "Channel aftertouch
   is transmitted" (player p. 19). The chart agrees: key aftertouch crossed transmitted and marked
-  received, channel aftertouch marked both ways (player p. 66). `aftertouch: poly` records what it
-  answers to. The keyboard itself has only the one kind to give: "Aftertouch pressure sensing is
-  monophonic" (player p. 7).
+  received, channel aftertouch marked both ways (player p. 66). `aftertouch: both` records what it
+  answers to, and `aftertouch_transmits: true` what it sends. The keyboard itself has only the one
+  kind to give: "Aftertouch pressure sensing is monophonic" (player p. 7).
 
   THIRTY-TWO VOICES, AND A PATCH SPENDS ONE, TWO OR FOUR ON EACH NOTE. "32 voices including
   individual filters, amps, LFOs, and envelopes" (player p. 60), and "Each patch can have 1, 2, or 4
@@ -254,7 +254,8 @@ voice:
     # Crossed both ways (player p. 66); a key off's velocity is `Ignored` (reference p. 106).
     note_off: false
   # Received, both kinds; the keyboard sends channel aftertouch. See the source account.
-  aftertouch: poly
+  aftertouch: both
+  aftertouch_transmits: true
   pitch_bend:
     # OFF to OCTAVE globally, and each patch may set its own (reference pp. 53 and 62).
     semitones: 12

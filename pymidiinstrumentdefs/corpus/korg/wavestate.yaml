@@ -21,7 +21,7 @@ model:
 
 source: >-
   Owner's Manual (100pp, the edition Korg names E3, published 03/2024): printed pp. 3, 13,
-  15, 56, 60, 84, 88, 93, 94.
+  15, 56, 58, 60, 84, 85, 86, 88, 93, 94.
 
   KORG PUBLISHES NO CONTROL-CHANGE CHART FOR THIS INSTRUMENT, which is the first thing to
   know about it. The file on its download page called "wavestate/Property Exchange MIDI
@@ -151,10 +151,20 @@ voice:
     # transmitted and "O 8n, V=0-127" recognized, with the remark "Received Note Off Velocity
     # values are clipped at 64" - so the full range arrives and is then clipped, which is not
     # the same as refusing half of it.
-  # NOT RECORDED: aftertouch. The chart marks channel aftertouch received, and polyphonic
-  # aftertouch received, but its remark says "Aftertouch transmit: wavestate SE only", which
-  # qualifies a mark rather than the row, and this manual describes four models at once. What
-  # a plain wavestate does with aftertouch arriving over MIDI is not separable here.
+  # BOTH KINDS ARE ANSWERED TO, ON EVERY MODEL, AND THIS ONE SENDS NEITHER. The chart's marks
+  # cannot tell the four models apart, but the prose does: "All wavestate models support
+  # aftertouch via MIDI; the wavestate SE also generates aftertouch from its built-in keyboard"
+  # (manual p. 85), and the specifications list "Aftertouch (wavestate: external MIDI only)"
+  # (manual p. 93) among the modulation sources. Which kind reaches the source called
+  # Aftertouch is a setting, AT Source [Off, Channel, Poly, Chan+Poly] (manual p. 86), and unless
+  # it is Off, polyphonic pressure has a source of its own as well: "This receives Poly
+  # Aftertouch via MIDI only" (manual p. 58), listed as "Poly Aftertouch (external MIDI only)"
+  # (manual p. 93). So `both`, the shape `korg/opsix` records.
+  aftertouch: both
+  # Not sent by this model: "the 37-note keyboards on the wavestate and wavestate mkII do not
+  # generate aftertouch" (manual p. 58), and the chart's remark limits its transmitted mark to
+  # another: "Aftertouch transmit: wavestate SE only" (manual p. 94).
+  aftertouch_transmits: false
 
 parts:
   # Four Layers, A to D, which is what this instrument is: "The wavestate plays one

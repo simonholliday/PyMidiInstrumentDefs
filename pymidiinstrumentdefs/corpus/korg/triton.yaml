@@ -301,9 +301,10 @@ voice:
   # channel after touch; it does not transmit polyphonic after touch." (parameter_guide p. 119), and
   # it "can receive polyphonic after touch to control individual notes" (parameter_guide p. 119).
   # The chart circles both kinds both ways and remarks "Polyphonic aftertouch transmitted"
-  # (basic_guide p. 137), "only as sequence data" (basic_guide p. 137). `poly` is the stronger of
-  # the two words this field holds, as `korg/kronos` records it.
-  aftertouch: poly
+  # (basic_guide p. 137), "only as sequence data" (basic_guide p. 137). So `both`, as `korg/kronos`
+  # records it, and the keyboard's channel pressure makes `aftertouch_transmits` true.
+  aftertouch: both
+  aftertouch_transmits: true
   pitch_bend:
     # In both lists, and settable over the first registered parameter, "r = 0 : Pitch Bend
     # Sensitivity ( Bend Range )." (implementation). The document gives no factory depth; "only

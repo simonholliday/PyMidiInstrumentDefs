@@ -1640,6 +1640,7 @@ class TestAftertouch:
 			"akai/mpc_live_iii": ("both", True),
 			"akai/mpc_xl": ("both", True),
 			"akai/mpc_key_37": ("both", True),
+			"ableton/move": ("poly", True),
 		}
 
 

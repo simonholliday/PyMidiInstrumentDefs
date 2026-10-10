@@ -92,9 +92,8 @@ source: >-
   AFTERTOUCH TRAVELS BOTH WAYS AND ONLY TWO OF THE INSTRUMENT'S OWN ENGINES ANSWER IT. Received:
   "Move can receive polyphonic aftertouch messages" (manual). Sent, from 1.3.0, as above. And
   the narrowing: "Drift and Wavetable support this type of aftertouch" (manual), said twice, so
-  the other instrument types do not. **The format records a kind and has no room for a
-  direction**, which is the third instrument in a fortnight to want one, after the Minimoog
-  Model D.
+  the other instrument types do not. **The format now holds the two apart**: `aftertouch: poly` for
+  what it answers to, and `aftertouch_transmits: true` for what it sends.
 
 
   **A CHECKED ABSENCE, STATED TWICE AND UNDER TWO NAMES: channel aftertouch.** The MIDI section
@@ -247,9 +246,11 @@ midi:
 
 voice:
   addressing: pitches
-  # Received per the manual and sent from 1.3.0, so both ways - and the field holds a kind
-  # rather than a direction. Only Drift and Wavetable answer it.
+  # Received per the manual, polyphonic and not channel, and only Drift and Wavetable answer it.
   aftertouch: poly
+  # Sent from 1.3.0, as polyphonic aftertouch: "Move now sends out polyphonic aftertouch when set
+  # to MIDI Out" (release_notes).
+  aftertouch_transmits: true
   # `velocity` is unset in both directions: the pads are velocity-sensitive and no document
   # says whether note velocity travels. `polyphony` is unset because no document states one.
 

@@ -286,6 +286,7 @@ class TestBundledCorpus:
 			"teenage_engineering/op_1_field",
 			"teenage_engineering/op_xy",
 			"teenage_engineering/op_z",
+			"ten_ten_music/blackbox",
 			"udo_audio/super_6",
 			"vermona/drm1_mkiv",
 			"vermona/perfourmer_mkii",
@@ -400,6 +401,9 @@ class TestBundledCorpus:
 		for path in bundled():
 			definition = pymidiinstrumentdefs.load_file(path)
 			maker = re.sub(r"[^a-z0-9]+", "_", (definition.model.manufacturer or "").lower())
+			# A maker whose name begins with a digit has its folder spelled out as the name is said, by
+			# the corpus rule, while the file names it as the maker writes it: 1010music is `ten_ten_music`.
+			maker = {"1010music": "ten_ten_music"}.get(maker, maker)
 
 			assert maker.startswith(path.parent.name), (
 				f"{path.parent.name}/{path.name} says it was made by {definition.model.manufacturer!r}"
@@ -16271,7 +16275,7 @@ class TestThirdWave:
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"alesis", "ensoniq"}) == 32
+		assert len(makers - {"alesis", "ensoniq", "ten_ten_music"}) == 32
 		assert "GROOVE SYNTHESIS IS THE THIRTY-SECOND MAKER HERE" in prose_of("groove_synthesis", "third_wave")
 
 
@@ -16517,7 +16521,7 @@ class TestCascadia:
 		# deleted: Intellijel is still one maker of the thirty-one that came before Groove Synthesis.
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"groove_synthesis", "alesis", "ensoniq"}) == 31
+		assert len(makers - {"groove_synthesis", "alesis", "ensoniq", "ten_ten_music"}) == 31
 
 
 class TestMontage:
@@ -18349,7 +18353,7 @@ class TestSR16:
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"ensoniq"}) == 33
+		assert len(makers - {"ensoniq", "ten_ten_music"}) == 33
 		assert "ALESIS IS THE THIRTY-THIRD MAKER HERE" in prose_of("alesis", "sr_16")
 
 	def test_firmware_and_the_one_source (self) -> None:
@@ -18726,14 +18730,14 @@ class TestESQ1:
 	"""Four controllers twice over, for the keyboard and for eight tracks, from two scans of a defunct maker's manual."""
 
 	def test_the_first_ensoniq_and_the_thirty_fourth_maker (self) -> None:
-		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		"""Counted rather than claimed; the current count moved to `TestBlackbox` when 1010music arrived."""
 		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("ensoniq/")]
 
 		assert names == ["ensoniq/esq_1"]
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers) == 34
+		assert len(makers - {"ten_ten_music"}) == 34
 		assert "ENSONIQ IS THE THIRTY-FOURTH MAKER HERE" in prose_of("ensoniq", "esq_1")
 
 	def test_four_controllers_for_the_keyboard_and_for_each_track (self) -> None:
@@ -18807,3 +18811,52 @@ class TestPerfourmerMkii:
 		account = " ".join((p4m.source or "").split())
 		assert "**A RETAILER'S COPY THAT IS VERMONA'S OWN FILE.**" in account
 		assert "**COMBINING THEM IS A SETTING, WHICH NO FIELD HOLDS.**" in account
+
+
+class TestBlackbox:
+
+	"""Three parts on three kinds of channel, a learned note map, and a voice pool two pad modes stand outside."""
+
+	def test_the_first_1010music_and_the_thirty_fifth_maker (self) -> None:
+		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("ten_ten_music/")]
+
+		assert names == ["ten_ten_music/blackbox"]
+
+		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
+
+		assert len(makers) == 35
+		assert "1010MUSIC IS THE THIRTY-FIFTH MAKER HERE" in prose_of("ten_ten_music", "blackbox")
+		assert pymidiinstrumentdefs.load("ten_ten_music/blackbox", [CORPUS]).model.manufacturer == "1010music"
+
+	def test_three_parts_and_sixteen_default_pad_notes (self) -> None:
+		box = pymidiinstrumentdefs.load("ten_ten_music/blackbox", [CORPUS])
+
+		assert list(box.parts) == ["global_in", "pad", "midi_seq"]
+		assert (box.parts["pad"].count, box.parts["pad"].receives, box.parts["pad"].addressing) == \
+			(16, ("notes", "controls"), "pitches")
+		assert (box.parts["global_in"].receives, box.parts["global_in"].addressing) == (("notes",), "voices")
+		assert all(part.channel == "assigned" and part.polyphony is None for part in box.parts.values())
+		assert (box.voice.addressing, box.voice.note_map) == ("voices", "learned")
+		assert box.voice.voices == {f"pad_{n}": 35 + n for n in range(1, 17)}
+		assert (box.voice.polyphony, box.voice.polyphony_shared) == (None, None)
+
+	def test_three_named_controllers_and_the_rest_learned (self) -> None:
+		box = pymidiinstrumentdefs.load("ten_ten_music/blackbox", [CORPUS])
+
+		assert {name: control.cc for name, control in box.controls.items()} == {"mod_wheel": 1, "volume": 7, "pan": 10}
+		assert all(control.part == "pad" and control.direction == "receives" for control in box.controls.values())
+		assert box.midi.control_change == "learned"
+		assert (box.midi.clock, box.midi.transport) == ("both", "both")
+		assert box.midi.program_change is not None
+		assert (box.midi.program_change.receives, box.midi.program_change.sends, box.midi.program_change.presets) == \
+			(True, False, 128)
+
+	def test_the_manual_is_3_0_and_the_firmware_3_1_9 (self) -> None:
+		box = pymidiinstrumentdefs.load("ten_ten_music/blackbox", [CORPUS])
+
+		assert box.model.firmware == "3.1.9"
+		assert set(box.sources) == {"manual", "product_page", "downloads_page"}
+		account = " ".join((box.source or "").split())
+		assert "**NO ONE FIGURE IS THE POLYPHONY, SO NONE IS RECORDED.**" in account
+		assert "**The manual gives its channel two ways**" in account

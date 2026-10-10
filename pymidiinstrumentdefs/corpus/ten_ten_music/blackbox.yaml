@@ -1,0 +1,242 @@
+# **THREE CHANNELS RECEIVE NOTES, EACH A PART.** The Global In channel plays the sixteen pads from a
+# note map and runs the sampler from the rest of it; each pad can take a channel of its own and is
+# then played chromatically, or by slice on a Slicer pad; and the MIDI Seq channel records notes
+# into a sequence. Every channel is a setting.
+#
+# **THREE CONTROLLERS ARE NAMED, AND THE REST ARE LEARNED**: the modulation wheel, volume and pan
+# are fixed modulation sources on a pad's own channel, and any other controller is taken by MIDI
+# learn.
+#
+# **NO ONE FIGURE IS THE POLYPHONY**: a 16-note pool that three of the five pad modes share, two
+# notes of its own for a pad in either of the others, and 32 voices in all, so neither `polyphony`
+# nor `polyphony_shared` is recorded.
+
+definition: 1
+
+model:
+  manufacturer: 1010music
+  name: Blackbox
+  # **3.1.9, THE CURRENT OFFICIAL FIRMWARE, AND THE MANUAL IS 3.0.** The manual says "This document
+  # covers version 3.0 firmware." (manual p. 8); the Downloads page offers "Firmware version 3.1.9"
+  # (downloads_page) and lists what is new "compared to version 3.0" (downloads_page), none of it
+  # about MIDI. The product page still lists features "New in firmware update 3.1.2" (product_page).
+  # Every MIDI fact here is the 3.0 manual's; that 3.1.9 keeps them rests on those notes naming no
+  # MIDI change.
+  firmware: "3.1.9"
+
+source: >-
+  **1010MUSIC IS THE THIRTY-FIFTH MAKER HERE AND THIS IS ITS FIRST INSTRUMENT.** Its name begins
+  with a digit, which a definition's name cannot, so the maker is `ten_ten_music`, its digits
+  spelled out in words; the maker's own spelling is kept in `manufacturer`.
+
+  **THE USER MANUAL v3.0, AND THE DOWNLOADS PAGE FOR WHAT CAME AFTER.** The manual is 1010music's
+  own, linked from the Blackbox's product page and its Downloads page, and "covers version 3.0
+  firmware." (manual p. 8). The Downloads page offers firmware 3.1.9 and says "See the Release Notes
+  section above for information about features added after the user manual was written."
+  (downloads_page); those notes name no MIDI change. The manual's cover is dated May 4, 2023, and
+  every page after it prints `Page N of 123`, its own file page.
+
+  **THE GLOBAL IN CHANNEL IS A NOTE MAP.** MIDI arrives at the TRS MIDI IN or from a USB device
+  plugged into the DEVICE port (manual p. 96). A channel set on the Tools screen "is used to trigger
+  pads and sequences as well as perform other functions." (manual p. 95). Its notes run: scenes 2 to
+  33, the previous and next scene 34 and 35, the pads in one-shot mode 36 to 51, sequences 52 to 67,
+  recording into a pad 68 to 83, clearing a pad 84 to 99, and five pad actions 100 to 104 - select
+  the previous or next pad, and play, record into or clear the selected one
+  (manual p. 96; manual p. 105). **Only the sixteen pads are voices**, so only they are in `voices`;
+  the rest select, start, stop, record and clear, and have no field. The pads are mapped "starting
+  at the bottom left, moving across and then up." (manual p. 105), and are numbered here in that
+  order. Each pad's note can be changed - "To return to the mapping described above, set Pad Note to
+  Default." (manual p. 97) - so the map is a default, and `note_map: learned` says so: the note is
+  dialled in on the pad rather than learned from incoming MIDI, but `learned` is the format's word
+  for a map that is only a default, as the DrumBrute's is. Recording, clearing and the five pad
+  actions by note need the Tools setting Pad Record on (manual p. 101; manual p. 103), and the scene
+  notes need Song Mode on (manual p. 104).
+
+  **THE GLOBAL IN CHANNEL CAN ALSO BE OMNI OR NONE.** "When set to Omni, these functions will be
+  triggered by all MIDI channels – excluding any MIDI channel that has been assigned as the MIDI In
+  for a particular pad." (manual p. 95), and "You can also disable Global In by selecting None."
+  (manual p. 95). The page on sharing input channels excludes the MIDI Seq channel from Omni as well
+  (manual p. 106), A note on p. 102, in older terms - the same channel, or Omni, for
+  `MIDI Pads and MIDI Keys` - says "you will trigger both playback of the pad via MIDI Keys mode,
+  and the MIDI Pads mapping action" (manual p. 102). Read as Global In and a pad's own channel, that
+  contradicts pp. 29, 103 and 106 for Omni, which give such a note to the pad alone. The format's
+  `channel: assigned` cannot say Omni; no page gives the setting's default.
+
+  **EACH PAD CAN HAVE A CHANNEL OF ITS OWN.** A pad's MIDI In is `None, Ch1 through Ch16.`
+  (manual p. 29), and on it notes "play a pad chromatically" (manual p. 98), or play slices on a
+  Slicer pad. "More than one pad can be assigned to the same MIDI channel. In this case, all
+  assigned pads will be triggered." (manual p. 29). So the sixteen pads are one part, `pad`, with
+  `channel: assigned`.
+
+  **THREE CONTROLLERS ARE NAMED SOURCES ON A PAD'S CHANNEL.** A parameter's modulation source can be
+  `MODW: MIDI Mod Wheel (Control Change 1)`, `MVOL: MIDI Volume (Control Change 7)` or
+  `MPAN: MIDI Pan (Control Change 10)` (manual p. 98), beside velocity and pitch bend, and these
+  "follow this channel assignment." (manual p. 29), the pad's own. A source is chosen in a
+  modulation slot the way an LFO is, and the number is fixed, so the three are controls on the `pad`
+  part - acting only where a slot has them as its source. **Any other controller is learned**: "With
+  Learn mode enabled, move the controller to be used." (manual p. 26), up to "a maximum of eight
+  MIDI CC mappings per pad." (manual p. 100). So `control_change` is `learned`. They are received
+  only: "All MIDI out now comes from sequences." (manual p. 93), and "MIDI Control Changes (CC) are
+  not passed through during playback and are not recorded into sequences." (manual p. 108). A
+  learned controller need not be on the pad's channel and can reach effect parameters too
+  (manual p. 99; manual p. 100), so `control_change: learned` belongs to the instrument and to no
+  part.
+
+  **THE MIDI SEQ CHANNEL RECORDS INTO A SEQUENCE.** It "is used to play notes into a sequence for
+  recording." (manual p. 97); in a MIDI-mode sequence the notes are also passed to that sequence's
+  output channel. It is a part, `midi_seq`, taking notes.
+
+  **WHAT IS SENT COMES FROM SEQUENCES, AND FROM THE MULTI-SAMPLER.** "MIDI output is always
+  generated by a sequence" (manual p. 108), on each sequence's own MIDI Out channel,
+  `None, Ch1, through Ch 16` (manual p. 73), though the multi-sampler also sends the notes it
+  records: "The blackbox will send out MIDI and CV signals while multi-sampling." (manual p. 52).
+  Notes with velocity, and pitch bend, arriving on the MIDI Seq channel are passed through
+  (manual p. 108); sequences store a velocity for each note (manual p. 110), and that they send it
+  is read rather than stated. The TRS MIDI OUT can instead pass on either input, as `MIDI In Thru`
+  or `USB Dvc Thru` (manual p. 95). Clock and transport - Start and Stop, with no word of Continue -
+  go both ways: it "can send MIDI Clock, Start, and Stop messages" (manual p. 112), and from either
+  MIDI input it "will follow MIDI Start, Stop, and Clock messages." (manual p. 113).
+
+  **PROGRAM CHANGE OPENS A PRESET, AND IS NEVER SENT.** "The blackbox supports using MIDI Program
+  Changes to access the first 128 presets." (manual p. 107), in alphabetical order, while "The
+  blackbox does not pass through or send out MIDI Program Changes." (manual p. 107). Its switch, PGM
+  In, "is by default turned off." (manual p. 107). **The manual gives its channel two ways**: "MIDI
+  Program Change messages on the Global In channel can be used to select Presets." (manual p. 95),
+  and "any MIDI program change on any connected MIDI channel will cause blackbox to load the
+  corresponding preset." (manual p. 107). Both pages agree that it is received, which is all
+  `program_change` holds; one gives it to the Global In channel and the other to any, so `global_in`
+  does not list it. Program 0 is the first preset: "Behind the scenes, it is always PGM 0."
+  (manual p. 107).
+
+  **NO ONE FIGURE IS THE POLYPHONY, SO NONE IS RECORDED.** Sixteen is given again and again: "The
+  note playback across all pads draws from a 16 pad pool." (manual p. 28), "The blackbox has 16-note
+  polyphony." (manual p. 76), the engine has a `16-note polyphony limitation` (manual p. 77), and
+  the product page gives a "Shared pool of 16 note polyphony, with user defined polyphony limits per
+  pad." (product_page). The technical specifications say instead "The blackbox can support playback
+  of up to 32 total voices across all pads at once." (manual p. 121), of which 24 play reliably,
+  with 16 as a limit for each Sample or Multi-Sample pad and "Nothing in blackbox will prevent you
+  from trying to play 16 voices on all 16 pads at the same time." (manual p. 121). The pad-mode
+  table splits the pads: a Sample or Multi-Sample pad "Shares 16 note pool." (manual p. 21), a
+  Granular pad is "Mono. Pulls from the 16 note pool." (manual p. 22), and a Clip or Slicer pad has
+  "2 Notes. Does not pull from Pool." (manual pp. 21-22). **The manual never relates 16 and 32.**
+  Read with the table, 16 is a pool that three pad modes share and 32 a ceiling across every pad;
+  read with p. 76, or with p. 121's last sentence, one of the two is wrong. Either way no single
+  figure is the instrument's, and whether pads share voices depends on each pad's mode, so neither
+  `polyphony` nor `polyphony_shared` is recorded.
+
+  **NOT RECORDED**: aftertouch, system exclusive, NRPN, Continue, song position and bank select,
+  which no page mentions; the note range; the bend range; note-off velocity; and the default of
+  every channel setting, which no page gives.
+
+sources:
+  manual:
+    kind: manual
+    title: Blackbox 3.0 User Manual
+    edition: May 4, 2023
+    landing: "https://1010music.com/product/blackbox"
+    url: "https://1010music.com/wp-content/uploads/2023/05/Blackbox-User-Manual-3.0-2023-05-04a.pdf"
+    sha256: e62a859e405ada2f89438398220a7118ea10a2d797fefaee9e2178aad5df17f7
+    retrieved: 2026-10-10
+    # Served with `Last-Modified` 2023-05-04, the date in its file name and its metadata.
+  product_page:
+    kind: product_page
+    title: Blackbox - Compact Sampling Studio - 1010music LLC
+    landing: "https://1010music.com/product/blackbox"
+    url: "https://1010music.com/product/blackbox"
+    sha256: 83c7d7ce6fe7d8b01eceba4483e61665ed99bd86715e531de10a9f6149fa256d
+    retrieved: 2026-10-10
+    paginated: false
+    # The visible text of the page, filed under Archives and out of stock.
+  downloads_page:
+    kind: download_page
+    title: Downloads - 1010music LLC
+    landing: "https://1010music.com/downloads"
+    url: "https://1010music.com/downloads"
+    sha256: 63359ce1467eb4705304c9a0d83d234c14b6fd561dbfb5a36c0bd6c1ad74bafb
+    retrieved: 2026-10-10
+    paginated: false
+    # The visible text of the page: the Blackbox's firmware 3.1.9 of July 2026, its notes since 3.0,
+    # and its documents.
+
+midi:
+  # A pad's MIDI In, `None, Ch1 through Ch16.` (manual p. 29), and a sequence's MIDI Out,
+  # `None, Ch1, through Ch 16` (manual p. 73); no page lists the Global In or MIDI Seq channels,
+  # which are taken to be the same.
+  channels: [1, 16]
+  clock: both
+  transport: both
+  program_change:
+    # PGM In, off by default (manual p. 107).
+    receives: true
+    sends: false
+    # "the first 128 presets" (manual p. 107).
+    presets: 128
+  # LEARNED: any controller, by the Learn button in a modulation slot (manual p. 26; manual p. 99).
+  # The three the maker fixes are the controls below.
+  control_change: learned
+  # NOT RECORDED: `nrpn` and `sysex`, which no page mentions, and `mode`: no page mentions
+  # channel-mode messages, and Omni here is a Global In setting (see the account).
+
+voice:
+  # The Global In note map; a pad on a channel of its own is played by pitch instead - see the
+  # parts.
+  addressing: voices
+  # Each pad's Pad Note can be set, from `C#-1` to `G9`, and `Default` restores this map
+  # (manual p. 29; manual p. 97).
+  note_map: learned
+  # Notes 36 to 51, "starting at the bottom left, moving across and then up." (manual p. 105),
+  # numbered here in that order.
+  voices:
+    pad_1: 36
+    pad_2: 37
+    pad_3: 38
+    pad_4: 39
+    pad_5: 40
+    pad_6: 41
+    pad_7: 42
+    pad_8: 43
+    pad_9: 44
+    pad_10: 45
+    pad_11: 46
+    pad_12: 47
+    pad_13: 48
+    pad_14: 49
+    pad_15: 50
+    pad_16: 51
+  velocity:
+    # Received as the modulation source VEL (manual p. 98); sent with notes passed through from the
+    # MIDI Seq channel (manual p. 108).
+    note_on: both
+  # NOT RECORDED: `polyphony` and `polyphony_shared` (a pool of 16 that two pad modes stand outside,
+  # within 32 voices in all; see the account), `note_range`, `aftertouch`, `pitch_bend` (a
+  # modulation source on a pad's channel, with no range given) and note-off velocity.
+
+parts:
+  # **THE GLOBAL IN CHANNEL**, or Omni, or None (manual p. 95), with the note map above.
+  global_in:
+    label: Global In
+    channel: assigned
+    receives: [notes]
+    addressing: voices
+  # **THE SIXTEEN PADS**, each with a MIDI In channel of its own or none (manual p. 29), played
+  # chromatically on it, or by slice, and modulated by the three controllers below.
+  pad:
+    label: Pad
+    count: 16
+    channel: assigned
+    receives: [notes, controls]
+    addressing: pitches
+  # **THE MIDI SEQ CHANNEL**, whose notes are recorded into the selected sequence (manual p. 97).
+  midi_seq:
+    label: MIDI Seq
+    channel: assigned
+    receives: [notes]
+    addressing: pitches
+
+controls:
+  # The three controllers a modulation slot names as sources, on the pad's own channel
+  # (manual p. 29; manual p. 98). Each acts only where a slot has it as its source. Received only:
+  # all MIDI output comes from sequences (manual p. 93).
+  mod_wheel:    {label: MODW, cc: 1, part: pad, direction: receives}
+  volume:       {label: MVOL, cc: 7, part: pad, direction: receives}
+  pan:          {label: MPAN, cc: 10, part: pad, direction: receives}

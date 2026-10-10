@@ -270,6 +270,7 @@ self-contained YAML file, and you share it by sending it.
 | `teenage_engineering/op_1_field` | teenage engineering OP-1 field: 52 controls out of two forms of one guide, where the web page carries the whole MIDI reference and the downloadable PDF carries none of it - and the four controllers the page omits are in the PDF |
 | `teenage_engineering/op_xy` | teenage engineering OP-XY: its maker publishes one guide twice, and the two editions give different numbers for the same row |
 | `teenage_engineering/op_z` | teenage engineering OP-Z: 53 controls, every one of them from the guide's incoming MIDI table - what it sends is a number the player sets, parameter by parameter, and no page prints one before they do |
+| `ten_ten_music/blackbox` | 1010music Blackbox: sixteen pads on a note map, each pad on a channel of its own if set, three named controllers and the rest learned - and a 16-note pool that two of its five pad modes stand outside |
 | `udo_audio/super_6` | UDO Audio Super 6: 86 controls off the most complete implementation a new maker has brought here - every number from 0 to 127 given a row, and 41 of them carrying an NRPN that is the controller number plus 1024 |
 | `vermona/drm1_mkiv` | Vermona DRM1 MkIV: a drum machine that ignores controller data |
 | `vermona/perfourmer_mkii` | Vermona PERfourMER MKII: Vermona's own manual, from a retailer's copy - four synthesiser channels, each one voice and each assigned a MIDI channel, and CC 1 to the pulse width |

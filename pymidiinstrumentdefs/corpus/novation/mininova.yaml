@@ -236,6 +236,9 @@ voice:
   # send Aftertouch data, but the synth engine will correctly respond to any Aftertouch data
   # received via MIDI (via DIN or USB)" (p. 36).
   aftertouch: channel
+  # Never sent: both aftertouch rows are X transmitted (midi_impl), which covers the whole
+  # instrument, and the keyboard "does not send Aftertouch data" (p. 36).
+  aftertouch_transmits: false
   pitch_bend:
     # "Pitch Bend" (midi_impl) is O in both columns, and the wheel's reach is a setting rather than a
     # fact: "The range of operation can be set via the menu system, from a semitone to an octave,

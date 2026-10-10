@@ -1657,6 +1657,8 @@ class TestAftertouch:
 			"moog/muse": ("channel", True),
 			"moog/sub_37": ("channel", True),
 			"moog/subsequent_37": ("channel", True),
+			"novation/mininova": ("channel", False),
+			"novation/summit": ("both", True),
 		}
 
 

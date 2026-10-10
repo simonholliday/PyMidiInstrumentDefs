@@ -1,8 +1,9 @@
 # **THE IRIDIUM'S FIFTEEN CONTROLLERS AND ONE MORE, FROM A MANUAL OF ITS OWN.** The Iridium Desktop
-# MK2 has the same numbered modulation sources as `waldorf/iridium` - the wheel, breath, expression
-# and sustain at 1, 2, 11 and 64, a fixed block at 22 to 31, and the MPE Y axis at 74 - and its
-# manual adds one sentence the Iridium's never prints: "Hint: Master Volume reacts on MIDI CC #7."
-# (manual p. 162). Most other parameters a player maps by MIDI Learn.
+# MK2 has the same numbered modulation sources as `waldorf/iridium` - the wheel, breath and
+# expression at 1, 2 and 11, the sustain pedal's number, 64, as the Pedal source, a fixed block at
+# 22 to 31, and the MPE Y axis at 74 - and its manual adds one sentence the Iridium's never prints:
+# "Hint: Master Volume reacts on MIDI CC #7." (manual p. 162). Most other parameters a player maps
+# by MIDI Learn.
 #
 # **FOUR LAYERS WHERE THE IRIDIUM HAS TWO, AND ONE POOL OF SIXTEEN VOICES.**
 #
@@ -18,11 +19,14 @@ model:
   # later" (specification p. 1). The manual's credits print "Version: 4.03, April 2026"
   # (manual p. 4) without saying of what. The manual's own edition is "Rev. 1, April 2026"
   # (manual p. 3), so 4.03 may well be the OS it was written for, which `4.0 or later` covers; but
-  # 4.0 is the only version any document calls the OS. The Iridium's manual has the same slot,
-  # "Revision: 3.0, July 2023" (iridium_manual p. 5), beside its edition, "Rev.3, September 2023"
-  # (iridium_manual p. 4), and was written for OS 3, which makes 4.03 the likelier reading here; it
-  # is not recorded because no page says it. The product page announces OS 4.0 for the older
-  # Iridiums and Quantums as "available soon" (product_page).
+  # 4.0 is the only version the documents' text calls the OS. **The manual's System screenshot reads
+  # `Iridium MK2 Firmware Version 4.0.3 b1`**, compiled on 21 March 2026 (manual p. 209), and the
+  # Iridium's manual pairs the same credits slot, "Revision: 3.0, July 2023" (iridium_manual p. 5),
+  # with a System screenshot reading `Version 3.0.0 b17`, compiled that July
+  # (iridium_manual p. 209). So this manual very likely describes firmware 4.0.3; 4.0 is kept
+  # because it is the version a document's text names as the OS, and the screenshot is apparently of
+  # a beta. The product page announces OS 4.0 for the older Iridiums and Quantums as "available
+  # soon" (product_page).
   firmware: "4.0"
 
 source: >-
@@ -33,8 +37,8 @@ source: >-
   has no control map**, because most parameters are reached by MIDI Learn: "Set: opens a page
   allowing you to link a desired MIDI CC connection to any panel parameter dial, potentiometer, or
   button." (manual p. 200). So `control_change` is `learned`. **No page gives the numbers Learn
-  accepts**: the one range printed, "CC 1 to CC 118 (or Off)" (manual p. 185), belongs to the XY
-  pad's own `CC X/Y` selector, and the Maps screenshot on p. 200 shows CC 0 learned. The FAQ page
+  accepts**: the nearest range printed, "CC 1 to CC 118 (or Off)" (manual p. 185), belongs to the XY
+  pad's own `CC X/Y` selector, and the Maps screenshot on p. 200 shows CC 0 mapped. The FAQ page
   adds that "the assignment is valid globally for all patches." (faq_page). The product page is
   titled `Iridium Desktop MK2`, and Waldorf's menus list no other MK2 Iridium, although the manual
   says once that the Tempo dial is `Iridium MK2 Desktop only` (manual p. 199).
@@ -56,7 +60,10 @@ source: >-
   dials and pots are capable of sending MIDI Controller data via USB and MIDI Out." (manual p. 22) -
   and "Send CC: here you can activate all mapped MIDI Control Change (MIDI CC) data being sent out
   for the panel pots, buttons, and encoder." (manual p. 199), the mapped, learned numbers. The panic
-  gesture sends one message by name, "to send an All Notes Off message." (manual p. 17).
+  gesture sends one message by name, "to send an All Notes Off message." (manual p. 17), without
+  saying whether it leaves the MIDI outputs. The arpeggiator and the sequencer send notes: "Keep in
+  mind that the arpeggiator and the step Sequencer will send MIDI notes for enabled MIDI outputs."
+  (manual p. 199).
 
   **IT SENDS NRPN AND DOES NOT ANSWER TO IT**, as the Iridium does: "Send NRPN: if set to On, the
   physical panel elements send out MIDI NRPN data. For parameter automation please use MIDI CC as
@@ -75,10 +82,10 @@ source: >-
   controller reaches the Layer on its channel: "Make sure that you’re sending the CCs on the correct
   MIDI channel so that you change the values on the correct layer." (faq_page). The In page's
   screenshot shows a row of four channels for each input, DIN, USB Ctrl and USB Cmp (manual p. 197),
-  so a Layer's channel is set port by port. **One setting overrides the channels for the play
-  controls** in Split and Layered modes: `Controller` "Determines which Layer will be affected by
-  incoming Mod wheel, Pitch bend, Aftertouch, Pads and Modulation pad data." (manual p. 164) - all
-  of them, one, or the selected one. And in Single mode the layers "cannot be played together."
+  so a Layer's channel appears to be set port by port. **One setting decides which Layer the play
+  controls reach** in Split and Layered modes: `Controller` "Determines which Layer will be affected
+  by incoming Mod wheel, Pitch bend, Aftertouch, Pads and Modulation pad data." (manual p. 164) -
+  all of them, one, or the selected one. And in Single mode the layers "cannot be played together."
   (manual p. 163).
 
   **MPE, WITH AN OPTIONAL SECOND ZONE.** "Left-right / X-axis (sent as MIDI Pitch Bend)"
@@ -110,7 +117,9 @@ source: >-
   (Pressure; and Polyphonic Pressure)" (manual p. 148), though the table on p. 220 has only
   polyphonic pressure. This desktop has pads and a touchscreen rather than a keybed - "To play the
   Iridium MK2 you need a MIDI master keyboard." (manual p. 10) - and the manual says nothing of
-  sending pitch bend, aftertouch or velocity, so this definition records none of them as sent.
+  sending pitch bend, aftertouch or velocity, so this definition records none of them as sent. The
+  sheet's "Wheels touchscreen for MIDI controls like mod wheel, pitch bend, aftertouch and velocity"
+  (specification p. 2) describes on-screen controls and does not say they transmit.
 
   **PITCH BEND PER OSCILLATOR**: "Determines the intensity of the pitch wheel in semitones for the
   selected oscillator from -24 to +24." (manual p. 31), with "Set Default: sets PB Range to its
@@ -154,16 +163,17 @@ source: >-
   "You will have to use the Favorites list in order to get the Prog CH working." (faq_page) and
   "This device uses only to the entries in the Favorites lis when Prog CH messages are used. As soon
   as you have put the most needed patches there, you can call them up by MIDI." (faq_page) - the
-  maker's own `uses only to` and `lis`. Every entry is titled as a user would put the complaint and
+  maker's own `uses only to` and `lis`. Every entry is titled as a user's question or complaint and
   answered in its body, so `receives: true` is read as `waldorf/iridium` reads the same words, and
   the three Iridiums answer the question the same way. **A support page is a source that should
   confirm a fact rather than carry it alone, and only a picture confirms this one.** No text of the
   manual or the quick start guide says what program change does, but the `Favorites` screenshot on
-  p. 172 labels each slot with a MIDI number - `0001 [MIDI 1]`, `0002 [MIDI 2]` and so on to
-  `0007 [MIDI 19]` - the number being the slot's place in the Set counted from 0, as in the
-  Iridium's and the Core's manuals. A slot numbered for MIDI is what the FAQ describes. The picture
-  names no message, and the entry was written for the family rather than for this instrument, so it
-  is carried for the Iridium's reason, and doubted here. **No preset count** is recorded: the
+  p. 172 labels each filled slot with a MIDI number, from `0001 [MIDI 1]` to `0007 [MIDI 19]`, as
+  the Iridium's and the Core's manuals do. The number follows the slot, not the patch - `0005` is
+  `[MIDI 9]` - and matches the slot's place in the Set counted from 0, row by row, which is this
+  definition's reading. A slot numbered for MIDI is what the FAQ describes. The picture names no
+  message, and the entry was written for the family rather than for this instrument, so it is
+  carried for the Iridium's reason, and doubted here. **No preset count** is recorded: the
   `Favorites` hold "20 sound patches per Set" (manual p. 171) over twelve Sets, "which means faster
   access to 240 sound patches" (manual p. 171), and nothing says whether program change reaches one
   Set or all twelve. **Nothing says the MK2 sends program change**: the Iridium Keyboard sends it
@@ -199,9 +209,10 @@ sources:
     url: "https://downloads.waldorfmusic.com/cloud/index.php/s/egbiccS5iBns7wL/download"
     sha256: 67e403e6dfb7496bb221bd730b75d9ca9ea66fc73adbf95a38147280f3bb06a7
     retrieved: 2026-10-03
-    # ANOTHER PRODUCT'S MANUAL, the one `waldorf/iridium` is read from, cited for what this
-    # definition says of the Iridium: its split sentence, its CC 7 and its Keyboard-only Macro
-    # buttons.
+    # ANOTHER PRODUCT'S MANUAL, the one `waldorf/iridium` is read from and titled as it titles it;
+    # `dated` is the file's, and the printed edition is "Rev.3, September 2023"
+    # (iridium_manual p. 4). Cited for what this definition says of the Iridium: its split sentence,
+    # its CC 7 and its Keyboard-only Macro buttons.
     page_offset: 0
   specification:
     kind: specification
@@ -246,9 +257,9 @@ midi:
   # MPE, with an optional second zone (manual p. 198).
   per_voice_channels: true
   program_change:
-    # ON ONE FAQ ENTRY THE THREE IRIDIUMS SHARE, AND NOTHING ELSE - see the account. A program
-    # change picks an entry in the `Favorites` list. Nothing says it is sent, and no count is
-    # recorded.
+    # ON ONE FAQ ENTRY THE THREE IRIDIUMS SHARE, CONFIRMED ONLY BY A SCREENSHOT - see the account. A
+    # program change picks an entry in the `Favorites` list. Nothing says it is sent, and no count
+    # is recorded.
     receives: true
   # NOT RECORDED: `mode`, `transport`, `sysex`; see the account.
 

@@ -117,8 +117,9 @@ source: >-
   "1024 Programs arranged in 8 Banks of 128 Programs." (manual p. 6); note-on and note-off velocity
   both ways, the release velocity used only as a modulation source - "The NOTE OFF VELOCITY is only
   available within the MOD MATRIX as a MODULATION SOURCE." (manual p. 30); channel pressure and not
-  polyphonic, "Note: The DeepMind 12 keyboard sends 'Channel Aftertouch,' meaning the MIDI message
-  created is common to all keys." (manual p. 30); pitch bend both ways, two semitones each way by
+  polyphonic, both ways by the chart (manual p. 132), and sent by the keyboard: "Note: The DeepMind
+  12 keyboard sends 'Channel Aftertouch,' meaning the MIDI message created is common to all keys."
+  (manual p. 30); pitch bend both ways, two semitones each way by
   default - "default P.BEND RANGE+ setting is +2 (notes)." (manual p. 78), and -2 down - and each
   direction settable from -24 to +24 on the POLY menu (manual p. 78), where NRPNs 36 and 37 print
   0-24; and system exclusive both ways, with its own chapter from p. 140. MIDI clock is received
@@ -261,8 +262,12 @@ voice:
     # Note-on and note-off velocity are both `Yes` both ways on the chart (manual p. 132).
     note_on: both
     note_off: true
-  # Channel pressure, said in so many words (manual p. 30), and `No` for polyphonic both ways.
+  # Channel pressure, said in so many words (manual p. 30), and on the chart `Yes` for channel
+  # aftertouch and `No` for polyphonic, both ways (manual p. 132).
   aftertouch: channel
+  # Sent: the chart's Transmit/Export column says `Yes` to channel aftertouch (manual p. 132), and
+  # the sentence on p. 30 is about what the keyboard sends.
+  aftertouch_transmits: true
   pitch_bend:
     # Two semitones each way by default, `+2` up and `-2` down, each settable from -24 to +24 on the
     # POLY menu's pitch page (manual p. 78); NRPNs 36 and 37 print 0-24.

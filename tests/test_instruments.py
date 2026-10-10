@@ -1644,6 +1644,7 @@ class TestAftertouch:
 			"arturia/minifreak": ("poly", True),
 			"arturia/polybrute_12": ("poly", True),
 			"arturia/microfreak": (None, True),
+			"behringer/deepmind_12": ("channel", True),
 		}
 
 

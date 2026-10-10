@@ -175,6 +175,7 @@ self-contained YAML file, and you share it by sending it.
 | `elektron/octatrack` | Elektron Octatrack: two controller maps where 51 numbers mean different things, one file for the MKI and the MKII because their appendices agree row for row - and sixteen rows the maker puts on numbers the MIDI specification reserves for channel mode, which this format cannot hold |
 | `elektron/syntakt` | Elektron Syntakt: twelve tracks and an FX track, where 28 controller numbers mean one thing on a track and another on the FX track |
 | `elektron/tonverk` | Elektron Tonverk: 242 controls over sixteen tracks in four kinds, where one controller number can name a different parameter on each kind - and 343 more numbers its appendix generates by a rule rather than printing |
+| `ensoniq/esq_1` | Ensoniq ESQ-1: two third-party scans of Ensoniq's own manual, read by eye - four controllers for the keyboard and the same four for each of eight sequencer tracks, which in MULTI mode each answer on a channel of their own |
 | `erica_synths/hexdrums` | Erica Synths HexDrums: ten voices on ten consecutive notes and no controllers at all - the one instrument here whose maker says it chose not to have any, and says why |
 | `erica_synths/perkons_hd_01` | Erica Synths PĒRKONS HD-01: 44 controls off two pages of a manual reached through a news item, whose numbers a player can rewrite in a file on the SD card |
 | `expressive_e/osmose` | Expressive E Osmose: an MPE instrument whose 24 voices each take a MIDI channel of their own, and which ignores velocity entirely |

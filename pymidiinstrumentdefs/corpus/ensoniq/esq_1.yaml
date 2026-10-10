@@ -1,0 +1,255 @@
+# **ENSONIQ IS GONE, SO THIS IS READ FROM TWO THIRD-PARTY SCANS OF ITS OWN MANUAL.** No
+# rights-holder serves anything for the ESQ-1. The Musician's Manual cited is buchty.net's scan,
+# image only, read by eye; a second, independent scan on the Internet Archive was compared with it,
+# and that one has Ensoniq's own update for software 3.0 bound in at the back.
+#
+# **FOUR CONTROLLERS, EACH TWICE: ONCE FOR THE STRAIGHT SYNTH AND ONCE FOR THE EIGHT SEQUENCER
+# TRACKS.** The MIDI chart lists modulation wheel, breath, foot pedal and volume both ways, beside
+# five named for the data entry slider, the two arrow buttons and the parameter selects, read as how
+# a parameter travels and not carried. In MULTI mode each track answers on a channel of its own, so
+# the four are written once with no part and once for the `track` part.
+#
+# **THE PARAMETER SELECTS ARE READ AS AN NRPN SCHEME, AND THEIR 148 PARAMETERS ARE NOT CARRIED**: an
+# appendix numbers them, and no page says how a value travels or what range it takes.
+
+definition: 1
+
+model:
+  manufacturer: Ensoniq
+  name: ESQ-1
+  # **3.0, THE NEWEST SOFTWARE ANY ENSONIQ DOCUMENT DESCRIBES.** The manual is `Version 2.0`, and
+  # its chart and implementation appendix say so too; Ensoniq's `ESQ-1 Software Version 3.0 Update`,
+  # P/N 9311 0011 01, lists what changed "between Versions 2.0 and 3.0" (second_copy p. 223). An
+  # enthusiast's page lists versions up to 3.5 with no document from the maker, so it is not a
+  # source.
+  firmware: "3.0"
+
+source: >-
+  **TWO THIRD-PARTY SCANS OF ENSONIQ'S OWN MANUAL, BECAUSE NO ONE SERVES ENSONIQ'S.** Ensoniq was
+  sold in 1998 and no rights-holder keeps an archive. The manual cited is **buchty.net's scan** of
+  Ensoniq's Musician's Manual for the ESQ 1, Version 2.0: 217 pages of 1-bit image, no text, the
+  copy Wikipedia cites. The **second copy is the Internet Archive's**, an independent scan whose PDF
+  was made in 2023: 231 pages of colour image with a text layer, the same edition with two more
+  pages before the body, **Ensoniq's eight-page update for software 3.0 bound in at the back**,
+  after the back cover, and last a sheet on reinitialising the instrument. A third copy on the
+  Internet Archive, from 2016, is buchty.net's scan repackaged, its images the same size page for
+  page, so it is not a second witness. Both scans were read, and compared on every page this
+  definition cites.
+
+  **ENSONIQ IS THE THIRTY-FOURTH MAKER HERE AND THIS IS ITS FIRST INSTRUMENT**, so nothing in this
+  account leans on a habit of the maker's.
+
+  **CITED BY SCAN PAGE.** The body prints folios ten behind its scan pages in buchty.net's copy and
+  twelve in the Internet Archive's - p. 20 is scan page 30 in one and 32 in the other - and the
+  appendices print `A-2` to `A-17` and then no number at all. So both sources say `page_offset: 0`,
+  and every locator here is a scan page.
+
+  **THE CHART.** `MIDI Implementation Chart`, `Version: 2.0`, `Date:11/12/86` (manual p. 213), read
+  by eye. Its Control Change cell lists, in both columns, `1 Mod Wheel`, `2 Breath`, `4 Foot Pedal`,
+  `6 Data Entry`, `7 Volume`, `96 Inc. Arrow`, `97 Dec. Arrow`, `98 Param. Select Low` and
+  `99 Param. Select High`, under `1 - 95` and beside the remark `Programmable`. **1, 2, 4 and 7 are
+  carried.** The other five are not: 98 and 99 select a parameter, and 6, 96 and 97, named for the
+  data entry slider and the two arrow buttons, are read as how its value is set, though no page says
+  so.
+
+  **`1 - 95` AND `Programmable` ARE READ AS ONE CONTROLLER THE PLAYER CHOOSES.** The MIDI page's
+  XCTRL picks any number from 1 to 95 as an external modulation source - "the number you select here
+  to make a particular Controller a Modulator in any of your Programs." (manual p. 31) - and lists
+  the numbers "agreed upon" in 1986, from `1 Modulation Wheel` to `95 Phaser` (manual p. 32). That
+  is a global setting rather than a control with a number of its own, so it is set out here and not
+  below. The chart does not name XCTRL, and XCTRL only receives - on the MIDI page "you select the
+  number of the External Controller that will be received by the ESQ 1." (manual p. 45) - so the
+  `1 - 95` in the chart's transmitted column is not explained.
+
+  **BREATH, 2, REACHES A SOUND ONLY THROUGH XCTRL.** Breath is not among "The 15 Modulation Sources"
+  (manual p. 43); instead "An External Controller such as a Breath Controller, Data Entry Slider ,
+  MOD Wheel, etc., which is received via MIDI from another synthesizer, can be assigned as a
+  Modulator within your ESQ 1 Programs." (manual p. 45). So 2 acts while XCTRL is set to 2 and a
+  program uses XCTRL as a modulator. It is carried because the chart lists it both ways, and the two
+  breath controls say so.
+
+  **THE FOOT PEDAL SENDS 4 OR 7, BY A SETTING SOFTWARE 3.0 ADDED.** With `PEDAL=MOD` "moving the
+  Pedal will send MIDI Foot Pedal (controller #4) messages out MIDI" (second_copy p. 224), and with
+  `PEDAL=VOL` "moving the Pedal will send MIDI Volume (controller #7) messages out MIDI"
+  (second_copy p. 224); the setting "has no effect whatever on incoming MIDI Foot Pedal
+  (controller #4) or Volume (controller #7) information." (second_copy p. 224). Both numbers are
+  carried as the chart prints them.
+
+  **ONE `track` PART, BECAUSE IN MULTI MODE EACH OF THE SEQUENCER'S EIGHT TRACKS HAS A CHANNEL.**
+  The `Straight Synth` - the keyboard with no track selected - always sends on the Base Channel
+  (manual p. 31), and receives on it in POLY and MULTI (manual p. 33). In MULTI mode "the 'Straight
+  Synth' section and each of the Sequencer's eight Tracks can send and receive MIDI information
+  independently on a different MIDI Channel." (manual p. 33), and "The ESQ 1 must be in MULTI Mode
+  for each Track to receive MIDI information on its selected Channel." (manual p. 125). So the eight
+  tracks are one part, `channel: assigned`, and **the four controllers are written twice**: with no
+  part, for the Straight Synth on the base channel, and with `part: track`. Each track sends and
+  answers to MIDI Volume: "the Sequencer Tracks send it to and receive it from those who do."
+  (manual p. 124). That a track answers to the other three is read from "receive incoming MIDI
+  information" (manual p. 125) and from MONO mode, where one channel carries controllers to every
+  track.
+
+  **THE OTHER MIDI MODES ARE NOT PARTS.** In OMNI a selected track hears every channel, and in POLY
+  only the base channel (manual p. 125). In MONO the Straight Synth hears nothing, track 1 takes the
+  base channel and each next track the channel above it, up to a base of nine (manual p. 33), and
+  "The Base Channel Minus One becomes a global MIDI Channel for Controllers" (manual p. 34).
+  Channels derived that way would be a second shape of the same eight tracks, which one part cannot
+  be; MULTI is the mode the manual calls Ensoniq's own design for the sequencer.
+
+  **EIGHT VOICES, SHARED.** The ESQ-1 is "an eight voice, poly-timbral Digital Synthesizer"
+  (manual p. 11) and its sequencer plays "eight separate polyphonic Tracks internally, each with its
+  own sound" (manual p. 11), from one pool of eight: the Straight Synth and the eight tracks cannot
+  all play at once, and "the ESQ 1's Dynamic Voice Assignment means that each has eight voices
+  available at any time, if someone else is not using them." (manual p. 101).
+
+  **THE PARAMETER SELECTS ARE READ AS AN NRPN SCHEME.** "The above numbers are the numbers that are
+  sent in the Parameter Select controllers (MIDI Controller #'s 98 and 99)." (manual p. 211), under
+  a list numbering 148 parameters, 0 to 147. The 3.0 update fixes how "incoming parameter selects"
+  (second_copy p. 228) chose parameters on the Modes page, and says the numbers listed on `A-16`
+  (manual p. 210) "are those which are both sent and received by the ESQ-1." (second_copy p. 228).
+  That is an NRPN in all but its name, so `nrpn: supported`, though no page says how a number above
+  127 is split between the two. **The 148 are not carried**: no page says which controller carries a
+  parameter's value or over what range, and the update corrects eight entries in the list besides,
+  seven numbers and one name (second_copy p. 229). Parameter changes are sent from the ENABLE
+  setting `KEYS + CONTROLLERS` on, and received only at `KEYS + CT + PC + SS + SX`, which "enables
+  the ESQ 1 to receive System Exclusive messages, such as Parameter Changes, Program Dumps,
+  Sequencer Data, etc." (manual p. 34). That page calls them system exclusive, and this reading
+  departs from it: the appendix of MIDI implementation specifications sets out dumps, requests,
+  keypad events and the handling of song selects, and no message for a parameter change
+  (manual pp. 197-206), while the chart lists the selects as controllers, so they are read as
+  controllers that the last ENABLE setting admits. The list's own note calls 132 to 143 the system
+  parameters, where the list runs on to 147 (manual p. 211).
+
+  **THE REST OF THE CHART**: channels 1 to 16 both ways, channel 1 by default; notes 21 to 108 both
+  ways; note-on and note-off velocity both ways; key and channel pressure both ways, beside the
+  remark `Transmitted only if recorded`; pitch bend both ways; program change 0 to 119 both ways;
+  system exclusive, song position and song select both ways; clock and `Start, Stop, Cont` both
+  ways; All Notes Off received and not sent, beside `Only Mode Change`; local control, active
+  sensing, reset and tune request neither way (manual p. 213). Pressure reaches it from outside -
+  "The ESQ 1, and its Sequencer, can receive Pressure via MIDI from those keyboards which send it."
+  (manual p. 32) - and `PRESS` chooses off, channel or key pressure; no page says its own keyboard
+  senses any, which the chart's remark fits. What is sent and received is a setting, the MIDI page's
+  ENABLE, from `KEY EVENTS ONLY` to `KEYS + CT + PC + SS + SX` (manual p. 34).
+
+  **NOTES 21 TO 108, FROM A KEYBOARD OF 36 TO 96.** The chart's `21 - 108` is wider than the 61
+  keys, which the diagram on p. 80 numbers 36 to 96. The split key takes the same 21 to 108, and a
+  split outside the keyboard "will only be effective if the ESQ 1 is played via MIDI from an
+  instrument with more than a 61-note keyboard." (manual p. 80) - so notes beyond the keys reach it
+  by MIDI. The text above that diagram says "the Low C on the ESQ 1 Keyboard is MIDI Key # 37"
+  (manual p. 80), where the diagram numbers that key 36 and the black key above it 37; both give
+  middle C as 60 and the high C as 96, which five octaves up from 36 fits, so the low C is read as
+  36. The disagreement reaches no field.
+
+  **120 PROGRAMS**: "Forty Programs, or 'patches', are stored in the Internal Memory, with another
+  eighty available on an external, plug-in Cartridge" (manual p. 11), program change 0 to 119, the
+  internal forty first (manual p. 196). From 3.0 a track can send all 128 program numbers to another
+  instrument (second_copy p. 225).
+
+  **WHAT SOFTWARE 3.0 ADDS THAT NO FIELD HOLDS**: a `KBD` setting for the Straight Synth, whose MIDI
+  state is "comparable to 'Local Off' on some Instruments." (second_copy p. 223); an overflow mode
+  that "will echo all inbound MIDI Program Changes and controllers at its MIDI Out jack."
+  (second_copy p. 225); and a device inquiry reply, which the update says pertains to release 2.1
+  and higher (second_copy p. 229).
+
+  **NOT RECORDED**: `mode`, which the chart gives as `Memorized` and the MIDI page as one of four
+  modes, none named as the factory setting, and which incoming mode messages change - the chart
+  recognises `OMNI On/Off, MONO On` and `OMNI Off > MULTI` (manual p. 213); the sustain pedal's
+  controller number, which no page prints though the manual warns about holding it while changing a
+  track's channel (manual p. 125); and the bend range's default - it is global, "Range: 0 To 12."
+  (manual p. 29), in semitones, so `programmable` is recorded and `semitones` is not. The Master
+  page's display shows a range of 02 only as an example (manual p. 28), and the page on fitting the
+  sequencer expander cartridge says reinitialising resets bend range, among others, to "their
+  Default values" (manual p. 105) without giving them.
+
+sources:
+  manual:
+    kind: manual
+    title: ESQ 1 Digital Wave Synthesizer and Sequencer Musician's Manual
+    edition: Version 2.0
+    url: "http://www.buchty.net/~buchty/esq1/files/ESQ1-MANUAL_TOTAL.pdf"
+    sha256: 33717ffbaf9a62c1e6a7ff888860cc445f17f29cf91f90244caae5a5a528fa4f
+    retrieved: 2026-10-09
+    page_offset: 0
+    # **A THIRD-PARTY COPY: buchty.net's scan of Ensoniq's own manual**, an ESQ-1 enthusiast's site,
+    # served with `Last-Modified` 2013-11-07; the same bytes as on 2026-10-07. Ensoniq, sold in
+    # 1998, has no rights-holder serving it. 217 pages of 824 x 1088 1-bit image, assembled in
+    # Photoshop in 2001, no text layer. **Cited by scan page**: see the account.
+  second_copy:
+    kind: manual
+    title: ESQ 1 Digital Wave Synthesizer and Sequencer Musician's Manual
+    edition: Version 2.0, with the ESQ-1 Software Version 3.0 Update, P/N 9311 0011 01
+    url: "https://archive.org/download/ensoniq-esq-1-manual/Ensoniq%20ESQ-1%20Manual.pdf"
+    sha256: 34c4eaee75a06158e2937fa4db48ea7eb5829d053b6f4a460a133f87ca7038be
+    retrieved: 2026-10-09
+    page_offset: 0
+    # **A SECOND THIRD-PARTY COPY: the Internet Archive's item `ensoniq-esq-1-manual`**, uploaded
+    # and made into a PDF on 2023-02-10, an independent scan of the same edition: 231 pages of
+    # colour image, JPEG 2000 in layers, with an OCR text layer. Ensoniq's update is scan pages
+    # 223-230. **Cited by scan page.**
+
+midi:
+  # `1 - 16` in both columns, `1` the default (manual p. 213); "Range: 01 To 16." (manual p. 31).
+  channels: [1, 16]
+  # `O Clock` in both columns (manual p. 213).
+  clock: both
+  # `O Start, Stop, Cont` in both columns (manual p. 213).
+  transport: both
+  program_change:
+    # `0 - 119` in both columns (manual p. 213), when ENABLE includes program changes
+    # (manual p. 34).
+    receives: true
+    sends: true
+    # Forty internal and eighty on a cartridge (manual p. 11; manual p. 196).
+    presets: 120
+  # The Parameter Select controllers, 98 and 99; see the account.
+  nrpn: supported
+  # `O` in both columns (manual p. 213), and an appendix of formats (manual pp. 197-206).
+  sysex: true
+  # NOT RECORDED: `mode`. See the account. `control_change` is left unset because a map is
+  # published - see the controls below.
+
+voice:
+  addressing: pitches
+  # `21 - 108` in both columns of the chart's Note Number row (manual p. 213), wider than the
+  # keyboard's 36 to 96; see the account.
+  note_range: [21, 108]
+  # "an eight voice, poly-timbral Digital Synthesizer" (manual p. 11).
+  polyphony: 8
+  # One pool of eight, drawn on by the Straight Synth and the eight tracks together (manual p. 101);
+  # see the account.
+  polyphony_shared: true
+  velocity:
+    # Note ON and Note OFF both `O` in both columns (manual p. 213).
+    note_on: both
+    note_off: true
+  # Key and channel pressure both `O` received (manual p. 213), chosen by `PRESS` (manual p. 32).
+  aftertouch: poly
+  pitch_bend:
+    # Global, 0 to 12 semitones (manual p. 29); no default is printed, and the display's 02 is an
+    # example (manual p. 28).
+    programmable: true
+
+parts:
+  # **THE SEQUENCER'S EIGHT TRACKS, EACH ON ITS OWN CHANNEL IN MULTI MODE** - "Range for each Track
+  # is 1 To 16." (manual p. 125). Notes and controllers; program changes are sent from a track
+  # (manual p. 123) and are not said to be received on one.
+  track:
+    label: Track
+    count: 8
+    channel: assigned
+    receives: [notes, controls]
+    addressing: pitches
+
+controls:
+  # The chart's names, `Mod Wheel`, `Breath`, `Foot Pedal` and `Volume` (manual p. 213).
+
+  # The Straight Synth, on the base channel ────────────────────────────────────────────────────────
+  mod_wheel:          {label: Mod Wheel, cc: 1}
+  breath:             {label: Breath, cc: 2}                # only through XCTRL; see the account
+  foot_pedal:         {label: Foot Pedal, cc: 4}
+  volume:             {label: Volume, cc: 7}
+
+  # Each track, on its own channel in MULTI mode ───────────────────────────────────────────────────
+  track_mod_wheel:    {label: Mod Wheel, cc: 1, part: track}
+  track_breath:       {label: Breath, cc: 2, part: track}   # only through XCTRL; see the account
+  track_foot_pedal:   {label: Foot Pedal, cc: 4, part: track}
+  track_volume:       {label: Volume, cc: 7, part: track}

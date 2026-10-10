@@ -191,6 +191,7 @@ class TestBundledCorpus:
 			"elektron/octatrack",
 			"elektron/syntakt",
 			"elektron/tonverk",
+			"ensoniq/esq_1",
 			"erica_synths/hexdrums",
 			"erica_synths/perkons_hd_01",
 			"expressive_e/osmose",
@@ -16269,7 +16270,7 @@ class TestThirdWave:
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"alesis"}) == 32
+		assert len(makers - {"alesis", "ensoniq"}) == 32
 		assert "GROOVE SYNTHESIS IS THE THIRTY-SECOND MAKER HERE" in prose_of("groove_synthesis", "third_wave")
 
 
@@ -16515,7 +16516,7 @@ class TestCascadia:
 		# deleted: Intellijel is still one maker of the thirty-one that came before Groove Synthesis.
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"groove_synthesis", "alesis"}) == 31
+		assert len(makers - {"groove_synthesis", "alesis", "ensoniq"}) == 31
 
 
 class TestMontage:
@@ -18340,14 +18341,14 @@ class TestSR16:
 		assert (sr.midi.channels, sr.midi.mode, sr.midi.clock, sr.midi.transport, sr.midi.sysex) == ((1, 16), None, "both", "both", True)
 
 	def test_the_first_alesis_and_the_thirty_third_maker (self) -> None:
-		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		"""Counted rather than claimed; the current count moved to `TestESQ1` when Ensoniq arrived."""
 		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("alesis/")]
 
 		assert names == ["alesis/sr_16"]
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers) == 33
+		assert len(makers - {"ensoniq"}) == 33
 		assert "ALESIS IS THE THIRTY-THIRD MAKER HERE" in prose_of("alesis", "sr_16")
 
 	def test_firmware_and_the_one_source (self) -> None:
@@ -18717,3 +18718,56 @@ class TestDeepMind12:
 		account = " ".join((deep.source or "").split())
 		assert "**A THIRD-PARTY COPY OF BEHRINGER'S OWN MANUAL, BECAUSE BEHRINGER SERVES NONE.**" in account
 		assert "**THE CHART IS ONE STAMP OVER TWO EDITIONS, AND THEY DISAGREE ABOUT TRANSPORT.**" in account
+
+
+class TestESQ1:
+
+	"""Four controllers twice over, for the keyboard and for eight tracks, from two scans of a defunct maker's manual."""
+
+	def test_the_first_ensoniq_and_the_thirty_fourth_maker (self) -> None:
+		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("ensoniq/")]
+
+		assert names == ["ensoniq/esq_1"]
+
+		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
+
+		assert len(makers) == 34
+		assert "ENSONIQ IS THE THIRTY-FOURTH MAKER HERE" in prose_of("ensoniq", "esq_1")
+
+	def test_four_controllers_for_the_keyboard_and_for_each_track (self) -> None:
+		esq = pymidiinstrumentdefs.load("ensoniq/esq_1", [CORPUS])
+
+		base = {control.cc: control.label for control in esq.controls.values() if control.part is None}
+		track = {control.cc: control.label for control in esq.controls.values() if control.part == "track"}
+		assert base == track == {1: "Mod Wheel", 2: "Breath", 4: "Foot Pedal", 7: "Volume"}
+		assert len(esq.controls) == 8 and all(control.nrpn is None for control in esq.controls.values())
+		assert list(esq.parts) == ["track"]
+		part = esq.parts["track"]
+		assert (part.count, part.channel, part.receives) == (8, "assigned", ("notes", "controls"))
+
+	def test_eight_shared_voices_and_the_chart_s_rows (self) -> None:
+		esq = pymidiinstrumentdefs.load("ensoniq/esq_1", [CORPUS])
+
+		assert (esq.voice.polyphony, esq.voice.polyphony_shared, esq.voice.note_range) == (8, True, (21, 108))
+		assert esq.voice.velocity is not None and (esq.voice.velocity.note_on, esq.voice.velocity.note_off) == ("both", True)
+		assert esq.voice.aftertouch == "poly"
+		assert esq.voice.pitch_bend is not None
+		assert (esq.voice.pitch_bend.programmable, esq.voice.pitch_bend.semitones) == (True, None)
+		assert (esq.midi.channels, esq.midi.mode, esq.midi.clock, esq.midi.transport) == ((1, 16), None, "both", "both")
+		assert esq.midi.program_change is not None
+		assert (esq.midi.program_change.receives, esq.midi.program_change.sends, esq.midi.program_change.presets) == \
+			(True, True, 120)
+		assert (esq.midi.nrpn, esq.midi.sysex) == ("supported", True)
+
+	def test_two_scans_cited_by_scan_page (self) -> None:
+		esq = pymidiinstrumentdefs.load("ensoniq/esq_1", [CORPUS])
+
+		assert esq.model.firmware == "3.0"
+		assert set(esq.sources) == {"manual", "second_copy"}
+		assert "buchty.net" in (esq.sources["manual"].url or "") and "archive.org" in (esq.sources["second_copy"].url or "")
+		assert esq.sources["manual"].file_page(213) == 213 and esq.sources["second_copy"].file_page(224) == 224
+		account = " ".join((esq.source or "").split())
+		assert "**TWO THIRD-PARTY SCANS OF ENSONIQ'S OWN MANUAL, BECAUSE NO ONE SERVES ENSONIQ'S.**" in account
+		assert "**THE PARAMETER SELECTS ARE READ AS AN NRPN SCHEME.**" in account
+		assert "**BREATH, 2, REACHES A SOUND ONLY THROUGH XCTRL.**" in account

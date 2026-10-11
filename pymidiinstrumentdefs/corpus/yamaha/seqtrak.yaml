@@ -1,25 +1,35 @@
-# **THE CONTROLLER MAP IS NOT IN THE DATA LIST, WHICH IS WHERE RANK 109 TAUGHT ME TO LOOK.** The
+# **THE CONTROLLER MAP IS IN THE DATA LIST, BUT NOT WHERE RANK 109 TAUGHT ME TO LOOK.** The
 # MONTAGE established that Yamaha publishes no standalone MIDI implementation and that its MIDI
 # data format, data table and implementation chart sit in the Data List. All three are here too,
-# promised on the contents page at 111, 117 and 162 - and **sheets 117 to 161 are a system
-# exclusive address map**, not a controller table. `Parameter Base Address`, `Bulk Dump Block`,
-# `Top Address`, addresses and sizes. The only places `Control Change` appears in those
-# forty-five sheets are the switches deciding whether control changes are transmitted at all.
+# promised on the contents page at 111, 117 and 162. **Sheets 117 to 161, the data table, hold
+# no controller**: a bank and program table, a system exclusive address map of
+# `Parameter Base Address`, `Bulk Dump Block`, `Top Address`, addresses and sizes, and last two
+# EQ frequency tables and a DX algorithm chart. The only places `Control Change` appears in
+# them are the switches deciding whether control changes are transmitted. **The data format
+# holds the map instead**: its control change lists give every
+# number with a name and whether it is transmitted or received (p. 113), and the next sheet names
+# the model-specific ones, gives their values and marks nine as for some tracks only (p. 114).
 #
-# **SO THE NUMBERS AND THE NAMES ARE IN DIFFERENT DOCUMENTS, AND NEITHER IS SUFFICIENT ALONE.**
-# The chart gives sixteen cells of controller numbers and the direction each travels, and names
-# three of those cells only `Model-Specific *2`, where `*2` says to refer to the manual. The
-# User Guide's section 18.3 names all thirty-seven with their channels and ranges and says
-# nothing about direction. This definition is built from both, which is why both are cited.
+# **AN EARLIER READING OF THIS FILE MISSED THOSE TWO SHEETS** and said the numbers and the names
+# were in different documents, neither sufficient alone. They are not: every controller below is
+# in the Data List, numbered, named in its own words and given a direction, and its chart agrees
+# with its lists on every one. What the User Guide adds is its section 18.3, which names
+# thirty-seven of the controllers with the channels each reaches and a range for each, and of
+# direction says only that the mute and solo are received and not sent. Its names are the labels
+# below wherever it gives one, and where its ranges differ from the Data List's the account says
+# so.
 #
-# **THE COUNT RECONCILES TO FORTY THREE WAYS, AND NOT ONE OF THEM IS A HAND COUNT.** The chart's
-# sixteen cells expand to fifty controller numbers; ten of those are addressing machinery or
-# channel mode, which the ruling at rank 77 and the Fantom's at rank 101 both exclude; forty
-# remain. The User Guide's three tables name thirty-seven, every one of them on the chart, and
-# the three the chart has that 18.3 does not are 11, 64 and 66 - Expression, Sustain Switch and
-# Sostenuto, standard controllers with no model-specific parameter behind them. 37 + 3 = 40.
-# **And midi.guide's independent figure for this instrument is 40.** Three sources agreeing, two
-# of them not Yamaha's.
+# **THE COUNT RECONCILES TO FORTY-TWO, AND NOT ONE PART OF IT IS A HAND COUNT.** The chart's
+# sixteen cells expand to fifty controller numbers; eight of those are addressing machinery or
+# channel mode - data entry and its increment and decrement, the RPN selects, and 126 and 127 -
+# and forty-two remain, bank select's 0 and 32 among them, carried as bank select is wherever a
+# maker numbers it. The Data List's received list is the same forty-two once its data entry pair
+# and its increment and decrement are taken out. The User Guide's three tables name thirty-seven,
+# every one of them on the chart, and the five the Data List has that 18.3 does not are bank
+# select's two and 11, 64 and 66 - Expression, Sustain Switch and Sostenuto, standard controllers
+# with no model-specific parameter behind them. 37 + 5 = 42. **midi.guide's figure for this
+# instrument is 40**: its SEQTRAK list, read 2026-10-11, has no 0 and no 32, so it leaves bank
+# select out, as this file once did.
 #
 # **UNLIKE THE MONTAGE'S, THIS DATA LIST NAMES ITS FIRMWARE.** Its cover reads `For OS V2.00` and
 # the User Guide says the same in prose, so the firmware comes from inside both documents rather
@@ -75,21 +85,52 @@ source: >-
   controllers for channel 10 alone. Two documents reaching the same layout from different
   directions is the strongest thing said about this instrument's addressing.
 
-  **FORTY CONTROLLER NUMBERS ARE PUBLISHED AND THE TWO DOCUMENTS DIVIDE THE WORK.** The
-  implementation chart lists the numbers and whether each travels, and names three of its cells
-  only as model-specific, with a footnote reading "Please refer to the manual." (data_list
-  p. 162). The manual it means is the User Guide, whose "18.3 MIDI Control Change Parameters"
-  (user_guide p. 100) names thirty-seven of the forty with a channel span and a value range for
-  each. The remaining three - Expression at 11, Sustain Switch at 64 and Sostenuto at 66 - are on
-  the chart and in no table, which is to say the instrument answers to them and Yamaha publishes
-  no model-specific parameter behind them.
+  **FORTY-TWO CONTROLLER NUMBERS ARE PUBLISHED, AND THE DATA LIST GIVES EVERY ONE.** Its control
+  change lists give each number with a name and whether it is transmitted or received
+  (data_list p. 113), and the next sheet names the model-specific ones and gives their values
+  (data_list p. 114). The
+  implementation chart agrees with them, and names three of its cells only as model-specific,
+  with a footnote reading "Please refer to the manual." (data_list p. 162). The manual it means
+  is the User Guide, whose "18.3 MIDI Control Change Parameters" (user_guide p. 100) names
+  thirty-seven of the forty-two with a channel span and a value range for each, and whose names
+  are the labels below. The other five - bank select at 0 and 32, Expression at 11, Sustain
+  Switch at 64 and Sostenuto at 66 - are in the Data List and not in 18.3.
 
-  **FIVE OF THE FORTY ARE RECEIVE-ONLY, AND ON TWO OF THEM TWO DOCUMENTS AGREE.** The chart
-  crosses the transmitted column for 11, 23, 24, 64 and 66 while circling all five as recognised.
-  For 23 and 24 the User Guide says the same thing in prose - "MUTE and SOLO are receive only"
+  **WHERE THE DATA LIST AND 18.3 GIVE DIFFERENT RANGES, THIS FILE CARRIES 18.3'S, AND IT IS THREE
+  CONTROLLERS.** Controller 10 is `TRACK PAN` over `1-127` in 18.3 (user_guide p. 100) and `PAN`
+  over `0 - 127` in both of the Data List's lists (data_list p. 113). Controller 27 is
+  `ARP TYPE` over `0-16` in 18.3 (user_guide p. 100) and `ARP TEMPLATE` over `0 - 15 (0:OFF)` in
+  the Data List (data_list p. 114). Controller 116, `FM ALGORITHM`, is `0-127` in 18.3
+  (user_guide p. 100) and `0 - 11` in the Data List (data_list p. 114). The other thirty-four
+  that both documents give agree. Both are edition D0 for the same firmware, so neither is the
+  later word, and a reader sending the top or bottom of one of these three ranges should expect
+  one document to be wrong.
+
+  **BANK SELECT CHOOSES WHAT THE NEXT PROGRAM CHANGE LOADS, AND THE DATA LIST SAYS WHICH BANKS
+  ARE ANSWERED.** Its full table puts a project at MSB 64, a sound at 63, a sampler element at 62
+  and a DrumKit sound at 32 to 38, one MSB for each of the seven drum tracks (data_list pp. 117,
+  118), and the shorter table on p. 113 leaves the DrumKit rows out. "Bank Select and Program
+  Change numbers that are not supported by this product will be ignored." (data_list p. 114).
+  Nothing happens until the program change: "Bank Select will be actually executed when the
+  Program Change message is received." (data_list p. 114). **So MSB 64 and a program change load
+  a whole project**, on whichever channel they arrive: "Channel number will be ignored."
+  (data_list p. 117). The two tables differ on the projects' programs, `0 - 7` on p. 113 and
+  `0 - 8` on p. 117, which adds that 8 is the temporary project.
+
+  **FIVE OF THE FORTY-TWO ARE RECEIVE-ONLY, AND ON TWO OF THEM TWO DOCUMENTS AGREE.** The chart
+  crosses the transmitted column for 11, 23, 24, 64 and 66 while circling all five as recognised,
+  and the Data List's transmitted list leaves out the same five, marking 23 and 24 `Receive
+  only` on the next sheet (data_list pp. 113, 114). For 23 and 24 the User Guide says the same
+  thing in prose - "MUTE and SOLO are receive only"
   (user_guide p. 101) - which is a chart written to describe message flow and a guide written to
   tell an owner what to expect, arriving at one fact without either deriving from the other. The
-  other thirty-five travel both ways.
+  other thirty-seven travel both ways - not 18.3's thirty-seven, since bank select's two are
+  among them and the mute and solo are not.
+
+  **ONE PAGE DRAWS IT DIFFERENTLY.** The transmit flow diagram (data_list p. 111) puts the sustain
+  switch and the block `(17H .. 1DH)`, which holds 23 and 24, under the switch for transmitting
+  control changes. The transmitted list and the chart leave all three out, and the next sheet
+  marks 23 and 24 `Receive only`, so the directions below follow those.
 
   **THE TWO SWITCHES AMONG THEM USE DIFFERENT CONVENTIONS, WHICH IS THE MAKER'S DOING AND NOT A
   TRANSCRIPTION ERROR.** The portamento switch at 65 is given exact values, 0 for off and 1 for
@@ -99,9 +140,12 @@ source: >-
 
   **TRANSMISSION SHIPS SWITCHED OFF, WHICH THE CHART DOES NOT TELL YOU AND THE SYSTEM EXCLUSIVE
   TABLE DOES.** The chart circles the control change rows in both columns with no footnote, while
-  the parameter table gives a transmit switch for each port - legacy MIDI, USB MIDI and Bluetooth
-  - whose control change bit defaults to off. So the instrument is capable of sending these
-  controllers and will not do so until an owner turns it on. Both statements are true and the
+  the parameter table gives each port - legacy MIDI, USB MIDI and Bluetooth - a transmit byte
+  with one bit for control change, one for bank select and one for program change, and all three
+  default to off (data_list p. 123). Bank select passes a second switch as well, `Receive/Transmit
+  Bank Select`, which ships on and gates both directions (data_list pp. 111, 112, 123). So the
+  instrument is capable of sending these controllers and will not do so until an owner turns
+  them on. Both statements are true and the
   directions below record the capability, which is what a reader needs in order to know the
   message exists at all.
 
@@ -123,10 +167,13 @@ source: >-
   that they "Can be added from the SEQTRAK app" (user_guide p. 98) under the sounds heading and
   nowhere near the MIDI sections. The controller map does not grow.
 
-  **ONE DISAGREEMENT IS CARRIED RATHER THAN SETTLED.** The specification lists this instrument's
+  **THE TRACK TYPES ARE CARRIED RATHER THAN SETTLED TOO.** The specification lists this instrument's
   track types as "DRUM, DRUMKIT, SYNTH, DX, SAMPLER" (user_guide p. 98) - five - while the track
   table names four groups and the controller tables' own `AVAILABLE ON` column names the same
-  four. **DRUMKIT appears in neither MIDI table.** Nothing below rests on it, and it is said here
+  four. **DRUMKIT appears in neither of those tables.** The one MIDI page that names it is the
+  bank table, where MSB 32 to 38 choose a DrumKit sound for each of the seven drum tracks
+  (data_list p. 118), which suggests a DrumKit is something a drum track plays rather than a
+  track of its own. Nothing below rests on it, and it is said here
   rather than quietly reduced to four, because an owner who meets a DRUMKIT track needs to know
   the MIDI documentation does not mention one.
 
@@ -199,8 +246,9 @@ midi:
   # registered parameters, which are addressing and not controls.
   nrpn: none
   sysex: true
-  # Circled both ways with the chart's `*3 If switch is on.` against each, and the parameter table
-  # gives the switch - `Receive/Transmit Program Change`, which ships on.
+  # Circled both ways with the chart's `*3 If switch is on.` against each. Receiving needs
+  # `Receive/Transmit Program Change`, which ships on; sending needs that and each port's own
+  # program change bit, which ships off (data_list p. 123). See the account on bank select.
   program_change:
     receives: true
     sends: true
@@ -282,9 +330,18 @@ groups:
   effect: Effect
 
 controls:
+  # ---- Bank select, from the Data List: 18.3 does not name it ----
+  # "0 BANK SELECT MSB 0 - 127" (data_list p. 113) and "32 BANK SELECT LSB 0 - 127" (data_list
+  # p. 113), in both the transmitted and the received lists. Both ways they pass the
+  # `Receive/Transmit Bank Select` switch (data_list pp. 111, 112), which ships on, and sent they
+  # pass each port's bank select bit too, which ships off (data_list p. 123). Only the banks the
+  # Data List's table gives are answered, and only when a program change follows: see the account.
+  bank_select_msb:     {label: BANK SELECT MSB, cc: 0}
+  bank_select_lsb:     {label: BANK SELECT LSB, cc: 32}
   # ---- 18.3.1 Sound Design parameters, all eleven tracks unless the account says otherwise ----
   track_volume:        {label: TRACK VOLUME, cc: 7, group: mix}
-  # **1 to 127, not 0 to 127**, which is what the maker prints for this one row and for no other.
+  # **1 to 127 in 18.3, the one row it gives that range, and 0 - 127 in the Data List** (p. 113).
+  # This file carries 18.3's: see the account.
   track_pan:           {label: TRACK PAN, cc: 10, range: [1, 127], group: mix}
   attack_time:         {label: ATTACK TIME, cc: 73, group: envelope}
   decay_release_time:  {label: DECAY/RELEASE TIME, cc: 75, group: envelope}
@@ -333,9 +390,10 @@ controls:
   # 0 is off and 1 to 11 each name a track, so the value is a track number rather than a level.
   solo: {label: SOLO, cc: 24, range: [0, 11], direction: receives, group: mix}
 
-  # ---- On the chart and in no table: the instrument answers to these and Yamaha publishes no
-  # ---- model-specific parameter behind them. In no group, because there is no panel control to
-  # ---- group them with - `korg/volca_keys` records its controller 11 the same way.
+  # ---- Not in 18.3: the Data List's received list names them (p. 113), and the chart crosses
+  # ---- their transmitted column. Standard controllers with no model-specific parameter behind
+  # ---- them, labelled as the chart prints them. In no group, because there is no panel control
+  # ---- to group them with - `korg/volca_keys` records its controller 11 the same way.
   expression:      {label: Expression, cc: 11, direction: receives}
   sustain_switch:  {label: Sustain Switch, cc: 64, direction: receives}
   sostenuto:       {label: Sostenuto, cc: 66, direction: receives}

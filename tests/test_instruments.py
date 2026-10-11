@@ -17523,36 +17523,44 @@ class TestMontage:
 
 class TestSeqtrak:
 
-	"""The numbers are in one document and the names are in another.
+	"""The Data List gives every number and direction; the User Guide adds the tracks.
 
-	Yamaha's Data List carries the implementation chart, which lists sixteen cells of
-	controller numbers and names three of them only as model-specific, with a footnote
-	pointing at "the manual".  The User Guide's section 18.3 names thirty-seven
-	controllers and says nothing about which way any of them travels.  Neither document
-	is sufficient, and the Data List's own MIDI Data Table - which is where rank 109
-	taught us to look - is a system exclusive address map with no controller names in it.
+	Yamaha's Data List carries the controller map in its MIDI Data Format, whose control
+	change lists give each number with a name and its direction, and in its
+	implementation chart, which agrees with them.  The User Guide's section 18.3 names
+	thirty-seven controllers with the channels each reaches, and its names are the labels.
+	The Data List's MIDI Data Table - which is where rank 109 taught us to look - is a bank
+	table and a system exclusive address map with no controller in it, which is how an
+	earlier reading came to miss the lists a few sheets before it.
 	"""
 
-	def test_forty_controls_reconciled_from_two_documents (self) -> None:
-		"""37 named in the User Guide, plus 3 the chart carries and no table names."""
+	def test_forty_two_controls_reconciled_from_two_documents (self) -> None:
+		"""37 named in the User Guide, plus 5 that only the Data List names."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 		numbers = sorted(control.cc for control in seqtrak.controls.values()
 			if control.cc is not None)
 
-		assert len(seqtrak.controls) == 40
-		assert numbers == [5, 7, 10, 11, 20, 21, 23, 24, 25, 26, 27, 28, 29,
+		assert len(seqtrak.controls) == 42
+		assert numbers == [0, 5, 7, 10, 11, 20, 21, 23, 24, 25, 26, 27, 28, 29, 32,
 			64, 65, 66, 71, 73, 74, 75, 91, 94,
 			102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
 			116, 117, 118, 119]
 
-		# **The three the chart has and 18.3 has not**: standard controllers the instrument
-		# answers to with no model-specific parameter published behind them.
-		for standard in (11, 64, 66):
+		# **The five the Data List names and 18.3 does not**: bank select's two, and three
+		# standard controllers with no model-specific parameter published behind them.
+		for standard in (0, 32, 11, 64, 66):
 			assert standard in numbers, standard
 
-		# Ten numbers the chart names are addressing machinery or channel mode, and the
-		# ruling at rank 77 and the Fantom's keep them out.
-		for machinery in (0, 32, 6, 38, 96, 97, 100, 101, 126, 127):
+		# The Data List's received list (p. 113) is the same forty-two once its data entry
+		# pair and its increment and decrement are taken out.
+		received = {0, 32, 5, 6, 38, 7, 10, 11, 20, 21, *range(23, 30), 64, 65, 66,
+			71, 73, 74, 75, 91, 94, 96, 97, *range(102, 120)}
+
+		assert sorted(received - {6, 38, 96, 97}) == numbers
+
+		# Eight numbers the chart names are addressing machinery or channel mode and are not here;
+		# bank select, 0 and 32, is carried, as it is wherever a maker numbers it.
+		for machinery in (6, 38, 96, 97, 100, 101, 126, 127):
 			assert machinery not in numbers, machinery
 
 		# 72 is absent because the chart writes `71,73-75` rather than `71-75`.
@@ -17573,7 +17581,10 @@ class TestSeqtrak:
 
 		both = [control for control in seqtrak.controls.values() if control.direction == "both"]
 
-		assert len(both) == 35
+		# Not 18.3's thirty-seven: bank select's two travel both ways, and the mute and solo do not.
+		assert len(both) == 37
+		assert {"bank_select_msb", "bank_select_lsb"} <= {
+			name for name, control in seqtrak.controls.items() if control.direction == "both"}
 
 	def test_the_two_switches_take_different_conventions (self) -> None:
 		"""One is given exact values and the other halves of the range, two sheets apart."""

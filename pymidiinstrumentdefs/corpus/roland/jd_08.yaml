@@ -69,6 +69,15 @@ source: >-
   when it is off, or outside sequencer mode. There is no controller for the part's pan, "Sets the
   pan position for each part." (reference p. 42), and 10 is not on the chart.
 
+  EVERY CONTROL BELOW NAMES THE PART, BECAUSE THE PARTS' CHANNELS ARE THE ONLY ONES THAT TAKE
+  CONTROL CHANGE. No channel derives from a base - the system's and each part's are set on their
+  own (reference p. 50) - so a control naming no part would mean a channel the JD-08 does not have.
+  All eighty-five numbers are on the Part chart, which by its title covers the parts, and the
+  System chart crosses control change in both columns (reference p. 62): so by the two charts an
+  external keyboard, which plays on the system channel, reaches no part with its controllers. The
+  chart treats the two parts alike, so each control is written once; the seven Effect B
+  controllers name the part too, and the paragraph above says what is known of Part B's.
+
   NO PAGE SAYS WHICH LAYER A RECEIVED CONTROLLER CHANGES. A patch has four layers, switched on and
   off and chosen for editing with the [TONE A] to [TONE D] buttons: "Select the layer to edit."
   (reference p. 3). Most of the controllers set what the manual calls a layer's parameters -
@@ -230,117 +239,117 @@ controls:
   # account.
 
   # PERFORMANCE: the wheel, the part's level and the pedals ────────────────────────────────────
-  modulation_wheel:           {label: Modulation Wheel, cc: 1}
-  part_level:                 {label: PART LEVEL, cc: 7, direction: receives}
-  expression:                 {label: EXPRESSION, cc: 11, direction: receives}
-  hold_pedal:                 {label: HOLD PEDAL, cc: 64, direction: receives}
-  sostenuto_pedal:            {label: SOSTENUTO PEDAL, cc: 66, direction: receives}
+  modulation_wheel:           {label: Modulation Wheel, cc: 1, part: part}
+  part_level:                 {label: PART LEVEL, cc: 7, direction: receives, part: part}
+  expression:                 {label: EXPRESSION, cc: 11, direction: receives, part: part}
+  hold_pedal:                 {label: HOLD PEDAL, cc: 64, direction: receives, part: part}
+  sostenuto_pedal:            {label: SOSTENUTO PEDAL, cc: 66, direction: receives, part: part}
 
   # PORTAMENTO ─────────────────────────────────────────────────────────────────────────────────
-  portamento_time:            {label: PORTAMENTO TIME, cc: 5, direction: receives, group: porta}
-  portamento:                 {label: PORTAMENTO, cc: 117, group: porta}
-  portamento_mode:            {label: PORTAMENTO MODE, cc: 118, direction: receives, group: porta}
+  portamento_time:            {label: PORTAMENTO TIME, cc: 5, direction: receives, part: part, group: porta}
+  portamento:                 {label: PORTAMENTO, cc: 117, part: part, group: porta}
+  portamento_mode:            {label: PORTAMENTO MODE, cc: 118, direction: receives, part: part, group: porta}
 
   # BENDER RANGE ───────────────────────────────────────────────────────────────────────────────
-  bender_range_up:            {label: BENDER RANGE UP, cc: 41, direction: receives, group: bender}
-  bender_range_down:          {label: BENDER RANGE DOWN, cc: 49, direction: receives, group: bender}
+  bender_range_up:            {label: BENDER RANGE UP, cc: 41, direction: receives, part: part, group: bender}
+  bender_range_down:          {label: BENDER RANGE DOWN, cc: 49, direction: receives, part: part, group: bender}
 
   # TVF ────────────────────────────────────────────────────────────────────────────────────────
-  tvf_cutoff:                 {label: TVF CUTOFF, cc: 3, group: tvf}
-  tvf_resonance:              {label: TVF RESONANSE, cc: 9, group: tvf}
-  tvf_filter_mode:            {label: TVF FILTER MODE, cc: 86, group: tvf}
-  tvf_env_depth:              {label: TVF ENVELOPE DEPTH, cc: 87, group: tvf}
-  tvf_key_follow:             {label: TVF KEY FOLLOW, cc: 89, group: tvf}
-  tvf_lfo_select:             {label: TVF LFO SELECT, cc: 90, group: tvf}
-  tvf_lfo_depth:              {label: TVF LFO DEPTH, cc: 102, group: tvf}
+  tvf_cutoff:                 {label: TVF CUTOFF, cc: 3, part: part, group: tvf}
+  tvf_resonance:              {label: TVF RESONANSE, cc: 9, part: part, group: tvf}
+  tvf_filter_mode:            {label: TVF FILTER MODE, cc: 86, part: part, group: tvf}
+  tvf_env_depth:              {label: TVF ENVELOPE DEPTH, cc: 87, part: part, group: tvf}
+  tvf_key_follow:             {label: TVF KEY FOLLOW, cc: 89, part: part, group: tvf}
+  tvf_lfo_select:             {label: TVF LFO SELECT, cc: 90, part: part, group: tvf}
+  tvf_lfo_depth:              {label: TVF LFO DEPTH, cc: 102, part: part, group: tvf}
 
   # TVA ────────────────────────────────────────────────────────────────────────────────────────
-  tva_level:                  {label: TVA LEVEL, cc: 103, group: tva}
-  tva_bias_point:             {label: TVA BIAS POINT, cc: 104, group: tva}
-  tva_bias_level:             {label: TVA BIAS LEVEL, cc: 105, group: tva}
-  tva_bias_direction:         {label: TVA BIAS DIRECTION, cc: 106, group: tva}
-  tva_lfo_select:             {label: TVA LFO SELECT, cc: 107, group: tva}
-  tva_lfo_depth:              {label: TVA LFO DEPTH, cc: 108, group: tva}
+  tva_level:                  {label: TVA LEVEL, cc: 103, part: part, group: tva}
+  tva_bias_point:             {label: TVA BIAS POINT, cc: 104, part: part, group: tva}
+  tva_bias_level:             {label: TVA BIAS LEVEL, cc: 105, part: part, group: tva}
+  tva_bias_direction:         {label: TVA BIAS DIRECTION, cc: 106, part: part, group: tva}
+  tva_lfo_select:             {label: TVA LFO SELECT, cc: 107, part: part, group: tva}
+  tva_lfo_depth:              {label: TVA LFO DEPTH, cc: 108, part: part, group: tva}
 
   # LFO 1 ──────────────────────────────────────────────────────────────────────────────────────
-  lfo1_rate:                  {label: LFO1 RATE, cc: 14, group: lfo1}
-  lfo1_delay:                 {label: LFO1 DELAY, cc: 15, group: lfo1}
-  lfo1_fade:                  {label: LFO1 FADE, cc: 16, group: lfo1}
-  lfo1_offset:                {label: LFO1 OFFSET, cc: 17, group: lfo1}
-  lfo1_key_trg:               {label: LFO1 KEY TRG, cc: 18, group: lfo1}
-  lfo1_waveform:              {label: LFO1 WAVEFORM, cc: 19, group: lfo1}
-  lfo1_rate_sync:             {label: LFO1 RATE (Rate sync), cc: 96, group: lfo1}
+  lfo1_rate:                  {label: LFO1 RATE, cc: 14, part: part, group: lfo1}
+  lfo1_delay:                 {label: LFO1 DELAY, cc: 15, part: part, group: lfo1}
+  lfo1_fade:                  {label: LFO1 FADE, cc: 16, part: part, group: lfo1}
+  lfo1_offset:                {label: LFO1 OFFSET, cc: 17, part: part, group: lfo1}
+  lfo1_key_trg:               {label: LFO1 KEY TRG, cc: 18, part: part, group: lfo1}
+  lfo1_waveform:              {label: LFO1 WAVEFORM, cc: 19, part: part, group: lfo1}
+  lfo1_rate_sync:             {label: LFO1 RATE (Rate sync), cc: 96, part: part, group: lfo1}
 
   # LFO 2 ──────────────────────────────────────────────────────────────────────────────────────
-  lfo2_rate:                  {label: LFO2 RATE, cc: 20, group: lfo2}
-  lfo2_delay:                 {label: LFO2 DELAY, cc: 21, group: lfo2}
-  lfo2_fade:                  {label: LFO2 FADE, cc: 22, group: lfo2}
-  lfo2_waveform:              {label: LFO2 WAVEFORM, cc: 23, group: lfo2}
-  lfo2_offset:                {label: LFO2 OFFSET, cc: 24, group: lfo2}
-  lfo2_key_trg:               {label: LFO2 KEY TRG, cc: 25, group: lfo2}
-  lfo2_rate_sync:             {label: LFO2 RATE (Rate sync), cc: 97, group: lfo2}
+  lfo2_rate:                  {label: LFO2 RATE, cc: 20, part: part, group: lfo2}
+  lfo2_delay:                 {label: LFO2 DELAY, cc: 21, part: part, group: lfo2}
+  lfo2_fade:                  {label: LFO2 FADE, cc: 22, part: part, group: lfo2}
+  lfo2_waveform:              {label: LFO2 WAVEFORM, cc: 23, part: part, group: lfo2}
+  lfo2_offset:                {label: LFO2 OFFSET, cc: 24, part: part, group: lfo2}
+  lfo2_key_trg:               {label: LFO2 KEY TRG, cc: 25, part: part, group: lfo2}
+  lfo2_rate_sync:             {label: LFO2 RATE (Rate sync), cc: 97, part: part, group: lfo2}
 
   # PITCH ENVELOPE ─────────────────────────────────────────────────────────────────────────────
-  pitch_env_time_key_follow:  {label: PITCH ENVELOPE TIME KEY FOLLOW, cc: 26, group: pitch_env}
-  pitch_env_l0:               {label: PITCH ENVELOPE L0, cc: 27, group: pitch_env}
-  pitch_env_t1:               {label: PITCH ENVELOPE T1, cc: 28, group: pitch_env}
-  pitch_env_l1:               {label: PITCH ENVELOPE L1, cc: 29, group: pitch_env}
-  pitch_env_t2:               {label: PITCH ENVELOPE T2, cc: 30, group: pitch_env}
-  pitch_env_t3:               {label: PITCH ENVELOPE T3, cc: 31, group: pitch_env}
-  pitch_env_l2:               {label: PITCH ENVELOPE L2, cc: 35, group: pitch_env}
+  pitch_env_time_key_follow:  {label: PITCH ENVELOPE TIME KEY FOLLOW, cc: 26, part: part, group: pitch_env}
+  pitch_env_l0:               {label: PITCH ENVELOPE L0, cc: 27, part: part, group: pitch_env}
+  pitch_env_t1:               {label: PITCH ENVELOPE T1, cc: 28, part: part, group: pitch_env}
+  pitch_env_l1:               {label: PITCH ENVELOPE L1, cc: 29, part: part, group: pitch_env}
+  pitch_env_t2:               {label: PITCH ENVELOPE T2, cc: 30, part: part, group: pitch_env}
+  pitch_env_t3:               {label: PITCH ENVELOPE T3, cc: 31, part: part, group: pitch_env}
+  pitch_env_l2:               {label: PITCH ENVELOPE L2, cc: 35, part: part, group: pitch_env}
 
   # FILTER ENVELOPE ────────────────────────────────────────────────────────────────────────────
-  filter_env_time_key_follow: {label: FILTER ENVELOPE TIME KEY FOLLOW, cc: 46, group: filter_env}
-  filter_env_t1:              {label: FILTER ENVELOPE T1, cc: 47, group: filter_env}
-  filter_env_l1:              {label: FILTER ENVELOPE L1, cc: 48, group: filter_env}
-  filter_env_t2:              {label: FILTER ENVELOPE T2, cc: 50, group: filter_env}
-  filter_env_l2:              {label: FILTER ENVELOPE L2, cc: 51, group: filter_env}
-  filter_env_t3:              {label: FILTER ENVELOPE T3, cc: 52, group: filter_env}
-  filter_env_sustain_level:   {label: FILTER ENVELOPE SUSTAIN LEVEL, cc: 53, group: filter_env}
-  filter_env_t4:              {label: FILTER ENVELOPE T4, cc: 54, group: filter_env}
-  filter_env_l4:              {label: FILTER ENVELOPE L4, cc: 56, group: filter_env}
+  filter_env_time_key_follow: {label: FILTER ENVELOPE TIME KEY FOLLOW, cc: 46, part: part, group: filter_env}
+  filter_env_t1:              {label: FILTER ENVELOPE T1, cc: 47, part: part, group: filter_env}
+  filter_env_l1:              {label: FILTER ENVELOPE L1, cc: 48, part: part, group: filter_env}
+  filter_env_t2:              {label: FILTER ENVELOPE T2, cc: 50, part: part, group: filter_env}
+  filter_env_l2:              {label: FILTER ENVELOPE L2, cc: 51, part: part, group: filter_env}
+  filter_env_t3:              {label: FILTER ENVELOPE T3, cc: 52, part: part, group: filter_env}
+  filter_env_sustain_level:   {label: FILTER ENVELOPE SUSTAIN LEVEL, cc: 53, part: part, group: filter_env}
+  filter_env_t4:              {label: FILTER ENVELOPE T4, cc: 54, part: part, group: filter_env}
+  filter_env_l4:              {label: FILTER ENVELOPE L4, cc: 56, part: part, group: filter_env}
 
   # AMP ENVELOPE ───────────────────────────────────────────────────────────────────────────────
-  amp_env_time_key_follow:    {label: AMP ENVELOPE TIME KEY FOLLOW, cc: 55, group: amp_env}
-  amp_env_t1:                 {label: AMP ENVELOPE T1, cc: 57, group: amp_env}
-  amp_env_l1:                 {label: AMP ENVELOPE L1, cc: 58, group: amp_env}
-  amp_env_t2:                 {label: AMP ENVELOPE T2, cc: 59, group: amp_env}
-  amp_env_l2:                 {label: AMP ENVELOPE L2, cc: 60, group: amp_env}
-  amp_env_t3:                 {label: AMP ENVELOPE T3, cc: 61, group: amp_env}
-  amp_env_sustain_level:      {label: AMP ENVELOPE SUSTAIN LEVEL, cc: 62, group: amp_env}
-  amp_env_t4:                 {label: AMP ENVELOPE T4, cc: 63, group: amp_env}
+  amp_env_time_key_follow:    {label: AMP ENVELOPE TIME KEY FOLLOW, cc: 55, part: part, group: amp_env}
+  amp_env_t1:                 {label: AMP ENVELOPE T1, cc: 57, part: part, group: amp_env}
+  amp_env_l1:                 {label: AMP ENVELOPE L1, cc: 58, part: part, group: amp_env}
+  amp_env_t2:                 {label: AMP ENVELOPE T2, cc: 59, part: part, group: amp_env}
+  amp_env_l2:                 {label: AMP ENVELOPE L2, cc: 60, part: part, group: amp_env}
+  amp_env_t3:                 {label: AMP ENVELOPE T3, cc: 61, part: part, group: amp_env}
+  amp_env_sustain_level:      {label: AMP ENVELOPE SUSTAIN LEVEL, cc: 62, part: part, group: amp_env}
+  amp_env_t4:                 {label: AMP ENVELOPE T4, cc: 63, part: part, group: amp_env}
 
   # WG ─────────────────────────────────────────────────────────────────────────────────────────
-  waveform:                   {label: WAVEFORM, cc: 72, range: [0, 108], group: wg}
-  pitch_coarse:               {label: PITCH COARSE, cc: 79, group: wg}
-  pitch_fine:                 {label: PITCH FINE, cc: 80, group: wg}
-  pitch_random:               {label: PITCH RANDOM, cc: 81, group: wg}
-  pitch_key_follow:           {label: PITCH KEY FOLLOW, cc: 82, group: wg}
-  wg_lfo1_depth:              {label: WG LFO1 DEPTH, cc: 83, group: wg}
-  wg_lfo2_depth:              {label: WG LFO2 DEPTH, cc: 85, group: wg}
+  waveform:                   {label: WAVEFORM, cc: 72, range: [0, 108], part: part, group: wg}
+  pitch_coarse:               {label: PITCH COARSE, cc: 79, part: part, group: wg}
+  pitch_fine:                 {label: PITCH FINE, cc: 80, part: part, group: wg}
+  pitch_random:               {label: PITCH RANDOM, cc: 81, part: part, group: wg}
+  pitch_key_follow:           {label: PITCH KEY FOLLOW, cc: 82, part: part, group: wg}
+  wg_lfo1_depth:              {label: WG LFO1 DEPTH, cc: 83, part: part, group: wg}
+  wg_lfo2_depth:              {label: WG LFO2 DEPTH, cc: 85, part: part, group: wg}
 
   # EFFECT B ───────────────────────────────────────────────────────────────────────────────────
-  fx_b_level:                 {label: FX B LEVEL, cc: 12, direction: receives, group: fx}
-  fx_b_reverb_time:           {label: FX B REVERB TIME, cc: 13, direction: receives, group: fx}
-  fx_b_reverb_level:          {label: FX B REVERB LEVEL, cc: 91, direction: receives, group: fx}
-  fx_b_delay_l_level:         {label: FX B DELAY L LEVEL, cc: 92, direction: receives, group: fx}
-  fx_b_chorus_level:          {label: FX B CHORUS LEVEL, cc: 93, direction: receives, group: fx}
-  fx_b_delay_c_level:         {label: FX B DELAY C LEVEL, cc: 94, direction: receives, group: fx}
-  fx_b_delay_r_level:         {label: FX B DELAY R LEVEL, cc: 95, direction: receives, group: fx}
+  fx_b_level:                 {label: FX B LEVEL, cc: 12, direction: receives, part: part, group: fx}
+  fx_b_reverb_time:           {label: FX B REVERB TIME, cc: 13, direction: receives, part: part, group: fx}
+  fx_b_reverb_level:          {label: FX B REVERB LEVEL, cc: 91, direction: receives, part: part, group: fx}
+  fx_b_delay_l_level:         {label: FX B DELAY L LEVEL, cc: 92, direction: receives, part: part, group: fx}
+  fx_b_chorus_level:          {label: FX B CHORUS LEVEL, cc: 93, direction: receives, part: part, group: fx}
+  fx_b_delay_c_level:         {label: FX B DELAY C LEVEL, cc: 94, direction: receives, part: part, group: fx}
+  fx_b_delay_r_level:         {label: FX B DELAY R LEVEL, cc: 95, direction: receives, part: part, group: fx}
 
   # PALETTE ────────────────────────────────────────────────────────────────────────────────────
-  tone_palette_a:             {label: TONE PALETTE A, cc: 68, direction: transmits, group: palette}
-  tone_palette_b:             {label: TONE PALETTE B, cc: 69, direction: transmits, group: palette}
-  tone_palette_c:             {label: TONE PALETTE C, cc: 70, direction: transmits, group: palette}
-  tone_palette_d:             {label: TONE PALETTE D, cc: 71, direction: transmits, group: palette}
+  tone_palette_a:             {label: TONE PALETTE A, cc: 68, direction: transmits, part: part, group: palette}
+  tone_palette_b:             {label: TONE PALETTE B, cc: 69, direction: transmits, part: part, group: palette}
+  tone_palette_c:             {label: TONE PALETTE C, cc: 70, direction: transmits, part: part, group: palette}
+  tone_palette_d:             {label: TONE PALETTE D, cc: 71, direction: transmits, part: part, group: palette}
 
   # THE LAYERS AND THE SOUND MODE ──────────────────────────────────────────────────────────────
-  level:                      {label: LEVEL, cc: 110, direction: receives}
-  layer:                      {label: LAYER, cc: 111}
-  active:                     {label: ACTIVE, cc: 112}
-  solo:                       {label: SOLO, cc: 115}
-  legato:                     {label: LEGATO, cc: 116, direction: receives}
-  unison:                     {label: UNISON, cc: 119, direction: receives}
+  level:                      {label: LEVEL, cc: 110, direction: receives, part: part}
+  layer:                      {label: LAYER, cc: 111, part: part}
+  active:                     {label: ACTIVE, cc: 112, part: part}
+  solo:                       {label: SOLO, cc: 115, part: part}
+  legato:                     {label: LEGATO, cc: 116, direction: receives, part: part}
+  unison:                     {label: UNISON, cc: 119, direction: receives, part: part}
 
 sources:
   reference:

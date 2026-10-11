@@ -18747,6 +18747,14 @@ class TestJD08:
 		assert jd.sources["reference"].page_offset == 0
 		assert jd.sources["chart_html"].paginated is False
 
+	def test_every_control_names_the_part (self) -> None:
+		"""The System chart takes no control change, so every number is a part's. Part-less until 2026-10-11."""
+		jd = pymidiinstrumentdefs.load("roland/jd_08", [CORPUS])
+
+		assert len(jd.controls) == 85
+		assert all(control.part == "part" for control in jd.controls.values())
+		assert "controls" not in (jd.parts["system"].receives or ())
+
 
 class TestJX08:
 

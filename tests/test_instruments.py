@@ -7107,16 +7107,16 @@ class TestEP133KOII:
 
 	"""A teenage engineering sampler whose chart says yes with a picture and no with a letter."""
 
-	def test_four_controllers_and_the_guide_says_that_is_all (self) -> None:
-		"""And the implementation chart adds two the list omits, which are not controls."""
+	def test_four_controllers_the_guide_lists_and_bank_select_the_chart_adds (self) -> None:
+		"""And the implementation chart adds two the list omits, bank select's, which are controls."""
 		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
 
-		assert len(ep.controls) == 4
+		assert len(ep.controls) == 6
 		assert sorted(control.cc for control in ep.controls.values()
-			if control.cc is not None) == [1, 12, 13, 64]
+			if control.cc is not None) == [0, 1, 12, 13, 32, 64]
 
-		# Bank select is program change's business, not a control's - the Moog 37s' reading.
-		assert all(control.cc not in (0, 32) for control in ep.controls.values())
+		# Bank select is a control wherever a maker numbers it, as the Moog 37s' now are.
+		assert ep.controls["bank_select_msb"].cc == 0 and ep.controls["bank_select_lsb"].cc == 32
 
 		assert ep.midi.program_change is not None
 		assert ep.midi.program_change.presets == 999
@@ -7125,7 +7125,12 @@ class TestEP133KOII:
 		"""Recorded as printed, and doubted in the account rather than corrected."""
 		ep = pymidiinstrumentdefs.load("teenage_engineering/ep_133_ko_ii", [CORPUS])
 
+		# The guide's list prints every one of its four 1-127; the chart's bank select pair has
+		# no range printed at all.
 		for control in ep.controls.values():
+			if control.name.startswith("bank_select"):
+				continue
+
 			assert control.range == (1, 127), control.name
 
 	def test_forty_eight_pads_on_four_groups_in_keypad_order (self) -> None:

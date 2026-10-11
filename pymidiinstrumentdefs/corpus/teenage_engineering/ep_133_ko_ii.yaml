@@ -47,9 +47,9 @@ source: >-
   parameters that can be adjusted with midi control changes" (system). They are vibrato,
   the two effect knobs and a sustain pedal. **The implementation chart adds two numbers
   that list does not** - CC 0 and CC 32, bank select, ticked in both directions - and
-  those are recorded under program_change rather than as controls, which is the reading
-  the two Moog 37s' charts got. So neither table alone gives the instrument's controller
-  numbers, and 14.5's claim to be a complete list is false by two.
+  those are controls too, as bank select is wherever a maker numbers it. So neither table
+  alone gives the instrument's controller numbers, and 14.5's claim to be a complete list
+  is false by two.
 
   THE CC MAP GIVES EVERY RANGE AS 1-127 AND THAT IS WORTH DOUBTING RATHER THAN BELIEVING.
   All four rows read the same, including the sustain pedal, which is conventionally a
@@ -127,7 +127,7 @@ midi:
     receives: true
     sends: true
     # 999 SOUNDS, AND PROGRAM CHANGE ALONE REACHES 128 OF THEM: "use bank select to reach all
-    # sounds 1-999" (system), which is why CC 0 and CC 32 are not controls below. "K.O.II can
+    # sounds 1-999" (system), which CC 0 and CC 32 below carry. "K.O.II can
     # store up to 999 samples, or 128 MB, whichever comes first" (modes). **How a sound number
     # maps to a bank and a program is stated nowhere**, which is the largest gap in this guide for
     # anybody writing software to drive the instrument.
@@ -227,6 +227,11 @@ controls:
   # THE WHOLE OF 14.5, WHICH THE GUIDE CALLS A COMPLETE LIST. The labels are the maker's own
   # wording, in its own lower case. Every range is printed 1-127 - see the account for why that
   # is recorded rather than believed.
+  # And the two the chart adds: `CC#0,32` with the note "bank select" (system), ticked both ways.
+  # The chart prints them as one row; which is the msb and which the lsb is the MIDI
+  # specification's, not the guide's.
+  bank_select_msb:   {label: bank select (msb), cc: 0}
+  bank_select_lsb:   {label: bank select (lsb), cc: 32}
   vibrato:           {label: vibrato, cc: 1, range: [1, 127], group: controllers}
   fx_parameter_x:    {label: fx parameter (knobx), cc: 12, range: [1, 127], group: controllers}
   fx_parameter_y:    {label: fx parameter (knoby), cc: 13, range: [1, 127], group: controllers}

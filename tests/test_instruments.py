@@ -7718,7 +7718,7 @@ class TestFantom:
 		"""
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
 
-		assert len(fantom.controls) == 31
+		assert len(fantom.controls) == 33
 		assert len(fantom.groups) == 5
 
 		by_number = {control.cc: control for control in fantom.controls.values()}
@@ -7731,7 +7731,7 @@ class TestFantom:
 		assert by_number[74].label == "Cutoff"
 
 	def test_the_addressing_mechanisms_are_not_carried_as_controls (self) -> None:
-		"""Bank select, data entry, the RPN selects and the velocity prefix address; they do not sound.
+		"""Data entry, the RPN selects and the velocity prefix address; they do not sound.
 
 		The line is one step wider than the validator's own refusal of the channel mode
 		messages, and the file draws it out loud rather than quietly.
@@ -7740,15 +7740,18 @@ class TestFantom:
 
 		numbers = {control.cc for control in fantom.controls.values()}
 
-		for mechanism in (0, 32, 6, 38, 88, 98, 99, 100, 101):
+		for mechanism in (6, 38, 88, 98, 99, 100, 101):
 			assert mechanism not in numbers, mechanism
 
 		for mode in range(120, 128):
 			assert mode not in numbers, mode
 
+		# Bank select is carried, as it is wherever a maker numbers it.
+		assert {0, 32} <= numbers
+
 		account = " ".join((fantom.source or "").split())
 
-		assert "SIX NUMBERS ARE NOT CARRIED" in account
+		assert "FIVE NUMBERS ARE NOT CARRIED" in account
 
 	def test_everything_travels_both_ways_and_the_document_says_why (self) -> None:
 		"""Five are named only under reception, and that is not an asymmetry.
@@ -7776,8 +7779,8 @@ class TestFantom:
 		assert "CONTRADICTS ITSELF IN ONE CHARACTER" in account
 		assert "is 0 to **119**, not 0 to" in account
 
-	def test_the_chart_omits_a_controller_the_implementation_names (self) -> None:
-		"""CC 17 is in the implementation twice and absent from the summary chart."""
+	def test_the_two_documents_agree_about_cc_17 (self) -> None:
+		"""CC 17 is in the implementation twice and on the summary chart, which an earlier reading missed."""
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
 
 		by_number = {control.cc: control for control in fantom.controls.values()}
@@ -7787,7 +7790,7 @@ class TestFantom:
 
 		account = " ".join((fantom.source or "").split())
 
-		assert "DISAGREE ABOUT ONE CONTROLLER'S EXISTENCE" in account
+		assert "THE TWO DOCUMENTS AGREE ABOUT CC 17" in account
 
 	def test_sixteen_zones_each_of_which_may_sound_nothing (self) -> None:
 		"""The same sixteen parts are the voices and the sixteen-channel MIDI output."""
@@ -14355,7 +14358,7 @@ class TestJDXi:
 		assert "**THESE FIVE NAME NO PART, AND THE PROGRAM HAS A CHANNEL OF ITS OWN.**" in flat
 
 	def test_it_is_the_first_roland_here_with_real_nrpns (self) -> None:
-		"""Twenty-one of its 92 controls are addressed that way."""
+		"""Twenty-one of its 98 controls are addressed that way."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
 
@@ -14366,7 +14369,7 @@ class TestJDXi:
 		by_nrpn = [key for key, control in jd_xi.controls.items() if control.nrpn is not None]
 
 		assert len(by_nrpn) == 21
-		assert len(jd_xi.controls) == 92
+		assert len(jd_xi.controls) == 98
 
 		# Every one has a most significant byte of nought, so the address is the printed LSB.
 		addresses = [jd_xi.controls[key].nrpn for key in by_nrpn]
@@ -14383,7 +14386,7 @@ class TestJDXi:
 		# what names the drum part is the controllers every part receives, but for portamento time.
 		drum = [control for control in jd_xi.controls.values() if control.part == "drum"]
 
-		assert len(drum) == 16
+		assert len(drum) == 18
 		assert all(control.nrpn is None for control in drum)
 
 		said = prose_of("roland", "jd_xi")
@@ -14396,10 +14399,10 @@ class TestJDXi:
 		assert "`elektron/tonverk`'s lesson at rank 86" in flat
 
 	def test_it_says_which_of_its_numbers_rest_on_arithmetic (self) -> None:
-		"""Nine of 92 rest on a span, and the citation checker's nine are nine others."""
+		"""Nine of 98 rest on a span, and the citation checker's nine are nine others."""
 		flat = " ".join(prose_of("roland", "jd_xi").split())
 
-		assert "AND NINE OF THE NINETY-TWO NUMBERS ARE NOT PRINTED AS THEIR CONTROLS' NUMBERS" \
+		assert "AND NINE OF THE NINETY-EIGHT NUMBERS ARE NOT PRINTED AS THEIR CONTROLS' NUMBERS" \
 			" ANYWHERE." in flat
 		assert "103, 106, 118 and 17 as controllers, and 125, 4, 16, 19 and 22 as NRPN numbers" \
 			in flat
@@ -14407,7 +14410,7 @@ class TestJDXi:
 		# **The checker reads only the pages the account cites**, and says something narrower
 		# about other numbers; the definition once said the two were the same nine.
 		assert "THE CITATION CHECKER'S NINE ARE NOT THE SAME NINE." in flat
-		assert "83 of the 92 are found as numbers and nine only inside a span" in flat
+		assert "89 of the 98 are found as numbers and nine only inside a span" in flat
 		assert "The citation checker reports exactly that" not in flat
 
 		# And it distinguishes that from generating numbers, which is the line it did not cross.
@@ -14618,10 +14621,10 @@ class TestJupiterX:
 	"""
 
 	def test_its_implementation_holds_only_the_performance_controls (self) -> None:
-		"""22 of the 35 numbers it names, the rest being machinery or channel mode."""
+		"""24 of the 35 numbers it names, the rest being machinery or channel mode."""
 		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
 
-		assert len(jupiter.controls) == 37
+		assert len(jupiter.controls) == 41
 		assert len(jupiter.groups) == 4
 
 		# Every one answers to a controller number, so the list below is the whole map.
@@ -14629,13 +14632,13 @@ class TestJupiterX:
 
 		assert sorted({control.cc for control in jupiter.controls.values()
 				if control.cc is not None}) == [
-			1, 4, 5, 7, 10, 11, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78, 84, 91, 93]
+			0, 1, 4, 5, 7, 10, 11, 32, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78, 84, 91, 93]
 
-		# **THE FANTOM RULING, STILL HOLDING NINE RANKS ON.** None of the addressing machinery
-		# the implementation also names is here, and nor is a channel mode message.
+		# None of the addressing machinery the implementation also names is here, and nor is a
+		# channel mode message; bank select is carried, as it is wherever a maker numbers it.
 		numbers = {control.cc for control in jupiter.controls.values()}
 
-		assert not numbers & {0, 32, 6, 38, 98, 99, 100, 101}
+		assert not numbers & {6, 38, 98, 99, 100, 101}
 		assert not numbers & set(range(120, 128))
 
 	def test_the_tone_map_is_in_the_parameter_guide_and_is_not_carried (self) -> None:
@@ -14668,7 +14671,7 @@ class TestJupiterX:
 		directions = collections.Counter(
 			control.direction for control in jupiter.controls.values() if control.part == "part")
 
-		assert directions == {"receives": 15, "both": 6, "transmits": 1}
+		assert directions == {"receives": 15, "both": 8, "transmits": 1}
 
 		for key in ("part_foot_type", "drum_foot_type"):
 			assert jupiter.controls[key].cc == 4
@@ -14688,12 +14691,12 @@ class TestJupiterX:
 		assert "**And `transmits` is doubted here**" in flat
 
 	def test_every_control_names_its_part_and_part_r_lacks_seven (self) -> None:
-		"""The four parts take all 22 numbers, and Part R lacks portamento, legato and vibrato."""
+		"""The four parts take all 24 numbers, and Part R lacks portamento, legato and vibrato."""
 		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
 
 		parts = collections.Counter(control.part for control in jupiter.controls.values())
 
-		assert parts == {"part": 22, "drum": 15}
+		assert parts == {"part": 24, "drum": 17}
 
 		four = {control.cc for control in jupiter.controls.values() if control.part == "part"}
 		drum = {control.cc for control in jupiter.controls.values() if control.part == "drum"}
@@ -14705,7 +14708,7 @@ class TestJupiterX:
 		flat = " ".join(prose_of("roland", "jupiter_x").split())
 
 		assert "Six entries name a parameter the Parameter Guide marks `Part 1–4 only`" in flat
-		assert "So the four parts carry all 22 numbers and Part R the other fifteen" in flat
+		assert "So the four parts carry all 24 numbers and Part R the other seventeen" in flat
 
 	def test_its_clock_rests_entirely_on_a_document_about_parameters (self) -> None:
 		"""The 90-sheet implementation never mentions a timing clock byte."""
@@ -16021,17 +16024,18 @@ class TestTB3:
 	#4243's rule would then make this definition carry neither.
 	"""
 
-	def test_thirteen_controls_and_the_bank_select_row_is_not_one (self) -> None:
-		"""Fourteen rows on the chart, and the first is addressing machinery."""
+	def test_fifteen_controls_and_the_bank_select_row_is_two_of_them (self) -> None:
+		"""Fourteen rows on the chart, and the first is bank select, carried and received only."""
 		tb_3 = pymidiinstrumentdefs.load("roland/tb_3", [CORPUS])
 		numbers = sorted(control.cc for control in tb_3.controls.values()
 			if control.cc is not None)
 
-		assert len(tb_3.controls) == 13
-		assert numbers == [1, 11, 12, 13, 16, 17, 68, 69, 71, 74, 102, 103, 104]
+		assert len(tb_3.controls) == 15
+		assert numbers == [0, 1, 11, 12, 13, 16, 17, 32, 68, 69, 71, 74, 102, 103, 104]
 
-		# The row the Fantom ruling sets aside: `0, 32` against "CC#0: Bank Number, CC#32: 0".
-		assert 0 not in numbers and 32 not in numbers
+		# `0, 32` against "CC#0: Bank Number, CC#32: 0", crossed transmitted and marked recognised.
+		assert tb_3.controls["bank_select_msb"].direction == "receives"
+		assert tb_3.controls["bank_select_lsb"].range == (0, 0)
 
 	def test_seven_numbers_are_confirmed_by_the_system_exclusive_document (self) -> None:
 		"""The second document reaches the same parameters and prints their numbers."""
@@ -16058,7 +16062,8 @@ class TestTB3:
 		receives = sorted(control.cc for control in tb_3.controls.values()
 			if control.direction == "receives" and control.cc is not None)
 
-		assert receives == [68, 69]
+		# Bank select is received and never sent as well (chart), as `0, 32` is crossed and marked.
+		assert receives == [0, 32, 68, 69]
 
 		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
 		tr_8_receives = sorted(control.cc for control in tr_8.controls.values()
@@ -18992,7 +18997,7 @@ class TestJDXA:
 	def test_the_rest_of_the_implementation (self) -> None:
 		xa = pymidiinstrumentdefs.load("roland/jd_xa", [CORPUS])
 
-		assert len(xa.controls) == 176
+		assert len(xa.controls) == 178
 		assert (xa.midi.channels, xa.midi.mode, xa.midi.clock, xa.midi.transport) == ((1, 16), 3, "both", "both")
 		assert xa.midi.program_change is not None and xa.midi.program_change.presets == 256
 		assert xa.voice.aftertouch == "poly" and xa.voice.note_range == (0, 127)

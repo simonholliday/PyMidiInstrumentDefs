@@ -1,6 +1,6 @@
 # **THE FIRST INSTRUMENT HERE WHOSE CONTROLLER NUMBERS ARE PUBLISHED TWICE.** Roland offers three
 # documents for the TB-3 and two of them are about MIDI and nothing else: a one-sheet
-# `MIDI Implementation Chart`, which gives all thirteen controller numbers, and a six-sheet
+# `MIDI Implementation Chart`, which gives all fifteen controller numbers, and a six-sheet
 # `MIDI Implementation`, which has no controller table at all.
 #
 # **BUT THE SECOND ONE NAMES SEVEN OF THE SAME NUMBERS ANYWAY.** It is a system-exclusive
@@ -47,7 +47,7 @@ source: >-
   **THREE DOCUMENTS, AND THE TWO THAT MATTER ARE ABOUT MIDI AND NOTHING ELSE.** The
   `MIDI Implementation Chart` is one A4 sheet and settles every field below except two. The
   `MIDI Implementation` is six sheets of system exclusive, and **its `Controller` address block
-  restates seven of the thirteen controller numbers** beside the addresses that reach the same
+  restates seven of the fifteen controller numbers** beside the addresses that reach the same
   parameters. All seven agree with the chart, which is the only corroboration of a controller
   number by a second document anywhere in this corpus:
 
@@ -204,21 +204,25 @@ groups:
 
 controls:
 
-  # **THIRTEEN NUMBERS OFF ONE CHART, SEVEN OF THEM CONFIRMED BY A SECOND DOCUMENT, AND ELEVEN OF
-  # THE THIRTEEN TRAVEL BOTH WAYS.** The two that do not are the scatter controls, crossed in the
-  # transmitted column and marked in the recognized one (chart) - **so a TB-3 can be told to
-  # scatter and will never tell anybody that it is.** That is the same pair of numbers, 68 and 69,
-  # that `roland/tr_8` refuses to transmit for the same two parameters, which is as close to a
-  # maker's habit as this corpus has caught Roland in.
+  # **FIFTEEN NUMBERS OFF ONE CHART, SEVEN OF THEM CONFIRMED BY A SECOND DOCUMENT, AND ELEVEN OF
+  # THE FIFTEEN TRAVEL BOTH WAYS.** The four that do not are bank select and the scatter controls,
+  # crossed in the transmitted column and marked in the recognized one (chart) - **so a TB-3 can
+  # be told to scatter and will never tell anybody that it is.** That is the same pair of numbers,
+  # 68 and 69, that `roland/tr_8` refuses to transmit for the same two parameters, which is as
+  # close to a maker's habit as this corpus has caught Roland in.
   #
-  # **THE FOURTEENTH ROW OF THE CHART IS NOT A CONTROL.** `0, 32` carries footnote `*1`,
-  # "CC#0: Bank Number, CC#32: 0" (chart) - bank select, which is addressing machinery and not a
-  # parameter, by the ruling `roland/fantom_6_7_8` set at rank 77 and every Roland since has
-  # followed.
+  # **THE FIRST ROW OF THE CHART IS BANK SELECT, AND IT IS CARRIED**, as bank select is wherever a
+  # maker numbers it: `0, 32` carries footnote `*1`, "CC#0: Bank Number, CC#32: 0" (chart), so the
+  # most significant byte is the bank number and the least is always 0. The chart never writes the
+  # words bank select, and names CC 32 only by its value, so its label is the usual one.
   #
   # The pad is three axes and they leave by three different routes: X as pitch bend, Y as
   # controller 11, and pressure as controller 1. The names in brackets are the chart's own and
   # say which of the pad's two modes each axis belongs to.
+
+  # bank select (2), received only
+  bank_select_msb: {label: Bank Number, cc: 0, direction: receives}
+  bank_select_lsb: {label: Bank Select LSB, cc: 32, range: [0, 0], direction: receives}
 
   # pad (4)
   pad_z:          {label: PAD Z, cc: 1, group: pad}

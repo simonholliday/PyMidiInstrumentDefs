@@ -1,7 +1,8 @@
 # **THE DOCUMENT NAMED FOR THIS INSTRUMENT'S MIDI IS NOT WHERE ITS CONTROLLERS ARE, AND EIGHT
 # ROLANDS HAD TAUGHT THE OPPOSITE.** The `JUPITER-X/Xm MIDI Implementation` runs to 90 sheets and
-# names 35 controller numbers, of which **22 are carried below** and every one is a standard
-# performance control - modulation, volume, the pedals, the eight filter and envelope offsets. The
+# names 35 controller numbers, of which **24 are carried below** and every one is a standard
+# assignment - bank select, and the performance controls: modulation, volume, the pedals, the eight
+# filter and envelope offsets. The
 # tone parameters are somewhere else entirely: **the Parameter Guide carries a `CC#` column on
 # nine of its 75 sheets, one table per model**, holding 156 more rows over 46 distinct numbers.
 #
@@ -34,7 +35,7 @@
 # which partial it reaches. A third axis again, in a twelfth document, for a model somebody buys
 # separately.
 #
-# WHAT THE IMPLEMENTATION DOES SETTLE IS THE DIRECTION OF EVERY ONE OF ITS 22, because it prints
+# WHAT THE IMPLEMENTATION DOES SETTLE IS THE DIRECTION OF EVERY ONE OF ITS 24, because it prints
 # reception and transmission as two separate halves rather than as a chart's two columns. **One
 # number is in the transmission half alone** - `Foot Type`, CC 4 - and fifteen are in the
 # reception half alone. The Fantom's definition at rank 77 records the same maker's same list with
@@ -70,7 +71,7 @@ source: >-
   the document whose name promised the map and not the one that held it.
 
   WHAT IS IN EACH, WHICH IS THE POINT OF LISTING THEM. The `MIDI Implementation` (90 sheets) holds
-  the 22 controllers below and the system exclusive address map, and gives no tone parameter a
+  the 24 controllers below and the system exclusive address map, and gives no tone parameter a
   controller number.
   The `Parameter Guide` (75) holds the per-model tone tables, every `Rx` switch, and the system
   MIDI settings this definition's clock rests on. The `Reference Manual` (65) holds the models,
@@ -110,8 +111,8 @@ source: >-
   arrives on. Six entries name a parameter the Parameter Guide marks `Part 1–4 only`
   (parameter_guide p. 5) - Porta Time, Porta Sw, Legato Sw and the three vibrato offsets, which 5,
   65, 68 and 76 to 78 change - and the entry for 84 says its glide "is determined by the Portamento
-  Time value." (implementation p. 2), the same parameter. So the four parts carry all 22 numbers
-  and Part R the other fifteen, Foot Type among them: 37 controls.
+  Time value." (implementation p. 2), the same parameter. So the four parts carry all 24 numbers
+  and Part R the other seventeen, Foot Type and bank select among them: 41 controls.
 
   NOT RECORDED: the mode, there being no chart in any of the eleven documents to carry a Mode row.
   The transport, which **no document mentions in any spelling** - the implementation's System
@@ -336,7 +337,7 @@ controls:
 
   # **THE DIRECTION ON EACH OF THESE IS READ FROM WHICH HALF OF THE DOCUMENT IT SITS IN**, because
   # this maker publishes reception and transmission as two prose sections rather than as a chart's
-  # two columns. Of the 22 numbers, six are in both, fifteen only in the reception half, and one
+  # two columns. Of the 24 numbers, eight are in both, fifteen only in the reception half, and one
   # only in the transmission half. `roland/fantom_6_7_8` records the same maker's nearly identical
   # list with no direction on any control; here the halves are what the document has instead of a
   # chart, so all three cases are recorded.
@@ -347,6 +348,18 @@ controls:
   # lowers the parameter by 64 rather than setting it to nothing.
   # **EACH NUMBER IS HERE ONCE FOR THE FOUR PARTS, AS `part_`, AND ONCE FOR PART R, AS `drum_`**,
   # but for the seven Part R does not receive; see the account.
+
+  # Bank select ───────────────────────────────────────────
+  # Carried, as it is wherever a maker numbers it, for the four parts and for Part R: "Bank Select
+  # (Controller number 0, 32)" (implementation p. 1) heads it under reception, and the same under
+  # transmission (implementation p. 6), so both ways. A part takes it under the system's Rx Bank
+  # and its own (parameter_guide p. 6), and it is sent only with Tx PC and Tx Bank on
+  # (implementation p. 6). On a part's channel it chooses a tone or a kit; the scenes' 085 goes on
+  # the Ctrl Ch, which no part here is.
+  part_bank_select_msb:              {label: Bank Select (MSB), cc: 0, part: part}
+  part_bank_select_lsb:              {label: Bank Select (LSB), cc: 32, part: part}
+  drum_bank_select_msb:              {label: Bank Select (MSB), cc: 0, part: drum}
+  drum_bank_select_lsb:              {label: Bank Select (LSB), cc: 32, part: drum}
 
   # Continuous controllers ────────────────────────────────
   part_modulation:                   {label: Modulation, cc: 1, part: part, group: continuous}

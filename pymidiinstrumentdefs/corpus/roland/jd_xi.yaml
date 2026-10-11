@@ -27,13 +27,13 @@
 # page's beginning found no list and was one sentence away from recording that Roland had printed
 # a stale cross-reference. **A page is not a page's first screen.**
 #
-# **TWENTY-ONE OF THE NINETY-TWO CONTROLS BELOW ARE ADDRESSED BY NRPN RATHER THAN BY A CONTROLLER
+# **TWENTY-ONE OF THE NINETY-EIGHT CONTROLS BELOW ARE ADDRESSED BY NRPN RATHER THAN BY A CONTROLLER
 # NUMBER**, which makes this the first Roland here with `nrpn: supported` - `roland/fantom_6_7_8`
 # and the rest have `none`. The list gives each as a most and a least significant byte, and every
 # one of them has a most significant byte of nought, so the address below is the least significant
 # byte as printed.
 #
-# **AND NINE OF THE NINETY-TWO NUMBERS ARE NOT PRINTED AS THEIR CONTROLS' NUMBERS ANYWHERE.**
+# **AND NINE OF THE NINETY-EIGHT NUMBERS ARE NOT PRINTED AS THEIR CONTROLS' NUMBERS ANYWHERE.**
 # The maker writes its runs as spans - `Cutoff | 1 - 3 | 102 - 104` (implementation p. 14) is
 # three partials and three controllers - so the inside of each run is **the interior of a
 # printed range** rather than a printed number: 103, 106, 118 and 17 as controllers, and 125, 4,
@@ -42,7 +42,7 @@
 # neither - but a reader deserves to know that nine of these rest on arithmetic.
 #
 # **THE CITATION CHECKER'S NINE ARE NOT THE SAME NINE.** It reads only the pages the account
-# cites, and the list's is not one of them. **83 of the 92 are found as numbers and nine only
+# cites, and the list's is not one of them. **89 of the 98 are found as numbers and nine only
 # inside a span**, and the span is the chart's `102-119` (implementation p. 17): 103 to 107, 117
 # and 118, with 105 and 117 counted for both kinds of synth part, and the list prints 104, 105,
 # 107 and 117 as numbers. Six of the list's nine pass as numbers because the same digits are
@@ -102,11 +102,12 @@ source: >-
   ruling `roland/fantom_6_7_8` made for the same maker: 1 to 128 is what one bank holds, and bank
   select chooses the bank.
 
-  **AND THE SAME RULING KEEPS EIGHT NUMBERS OUT OF THE MAP.** Bank Select (0 and 32), Data Entry
-  (6 and 38), the NRPN selects (98 and 99) and the RPN selects (100 and 101) are all named by the
-  chart and none is a parameter of this instrument: they are how MIDI addresses things. Bank
-  Select's work is under `program_change` and the registered parameters under `pitch_bend`. Eight
-  more are the channel mode messages, 120 to 127, which this format refuses as controls by design.
+  **SIX NUMBERS ARE KEPT OUT OF THE MAP.** Data Entry (6 and 38), the NRPN selects (98 and 99) and
+  the RPN selects (100 and 101) are all named by the chart and none is a parameter of this
+  instrument: they are how MIDI addresses things, and the registered parameters are under
+  `pitch_bend`. Bank Select (0 and 32) is carried, as it is wherever a maker numbers it, once for
+  each kind of part. Eight more are the channel mode messages, 120 to 127, which this format
+  refuses as controls by design.
 
   THE REGISTERED PARAMETERS, OF WHICH THERE ARE THREE AND ONE REACHES A FIELD. "00H, 00H mmH, llH
   Pitch Bend Sensitivity mm: 00H - 18H (0 - 24 semitones)" (implementation p. 3), "00H, 01H mmH,
@@ -393,6 +394,21 @@ controls:
   # is headed `(Knob operation)` (implementation p. 14), and the owner's manual says "Turning a
   # knob will transmit the corresponding control change message." (manual p. 15). What the
   # sequencer plays back is not counted; see the account.
+
+  # Bank select ───────────────────────────────────────────
+  # Carried, as it is wherever a maker numbers it, once for each kind of part: "Bank Select
+  # (Controller number 0, 32)" (implementation p. 1) heads it under reception, and the same under
+  # transmission (implementation p. 5), and "0,32" is both ways on the chart (implementation
+  # p. 17). Each part
+  # has a Tone Bank Select and a Receive Bank Select of its own in the address map (implementation
+  # p. 10), so on a part's channel it chooses that part's tone, or the drum part's kit. A program
+  # is chosen on the program channel, Prog Rx/Tx Ch (manual p. 13), which no part here is.
+  digital_synth_bank_select_msb:    {label: Bank Select (MSB), cc: 0, part: digital_synth}
+  digital_synth_bank_select_lsb:    {label: Bank Select (LSB), cc: 32, part: digital_synth}
+  analog_synth_bank_select_msb:     {label: Bank Select (MSB), cc: 0, part: analog_synth}
+  analog_synth_bank_select_lsb:     {label: Bank Select (LSB), cc: 32, part: analog_synth}
+  drum_bank_select_msb:             {label: Bank Select (MSB), cc: 0, part: drum}
+  drum_bank_select_lsb:             {label: Bank Select (LSB), cc: 32, part: drum}
 
   # Continuous controllers ────────────────────────────────
   digital_synth_modulation:         {label: Modulation, cc: 1, part: digital_synth, group: continuous}

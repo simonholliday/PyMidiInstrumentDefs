@@ -1,6 +1,6 @@
 definition: 1
 
-# ONE HUNDRED AND SEVENTY-SIX CONTROLS ON THREE KINDS OF PART, AND HOW TO READ THEM. The four
+# ONE HUNDRED AND SEVENTY-EIGHT CONTROLS ON THREE KINDS OF PART, AND HOW TO READ THEM. The four
 # analogue parts and the four digital parts each listen on a channel of their own, and the same
 # controller number means different things on the two kinds: 103 is an analogue part's filter cutoff
 # fine and a digital part's second partial cutoff. So every control names its part - `analog`,
@@ -430,6 +430,15 @@ controls:
 
   # THE PROGRAM PARAMETERS (parameter_guide pp. 69, 71 and 73), on the program control channel, both
   # ways.
+  # BANK SELECT, carried as it is wherever a maker numbers it, and put on the program control
+  # channel by inference, since no page names its channel: the only bank table is the programs',
+  # the only switch is the system's, and no part has an Rx Bank (parameter_guide p. 3).
+  # "Bank Select (Controller number 0, 32)" (implementation p. 1) heads it under reception, and the
+  # same under transmission (implementation p. 5), "0,32" both ways on the chart (implementation
+  # p. 21), each direction
+  # behind Rx Bank Sel and Tx Bank Sel (manual p. 13). The banks are under `program_change`.
+  bank_select_msb:                        {label: Bank Select (MSB), cc: 0, part: program, group: program}
+  bank_select_lsb:                        {label: Bank Select (LSB), cc: 32, part: program, group: program}
   tfx1_select:                            {label: TFX1 Select, cc: 80, part: program, group: program}
   tfx1_ctrl:                              {label: TFX1 Ctrl, cc: 14, part: program, group: program}
   tfx2_select:                            {label: TFX2 Select, cc: 81, part: program, group: program}

@@ -2,9 +2,9 @@
 # MIDI implementation document AND a two-chart implementation summary AND seven firmware
 # supplements. All of it was read, and the whole of what it establishes is below.
 #
-# THE CONTROLLER MAP IS THE MIDI SPECIFICATION'S OWN. Every one of the 31 controls below is a
-# standard assignment under its standard name - modulation, breath, foot, portamento time,
-# volume, pan, expression, the five pedals, the eight sound controllers, the eight general
+# THE CONTROLLER MAP IS THE MIDI SPECIFICATION'S OWN. Every one of the 33 controls below is a
+# standard assignment under its standard name - bank select, modulation, breath, foot, portamento
+# time, volume, pan, expression, the five pedals, the eight sound controllers, the eight general
 # purpose controllers and two effect sends. Roland invents none of them. That is why the groups
 # are the specification's sections rather than a panel's layout: there is no panel layout to
 # follow, because the knobs and sliders are assignable to any controller rather than wired to one.
@@ -67,19 +67,18 @@ source: >-
   resolved - it matters because that one line is the only thing in section 2 that accounts for
   the five missing controllers.
 
-  THE TWO DOCUMENTS DISAGREE ABOUT ONE CONTROLLER'S EXISTENCE. The implementation document names
-  General Purpose Controller 2 at CC 17, in both of its sound-source sections. **The Reference
-  Manual's chart omits 17 entirely**, listing 16, 18 and 19 and skipping it. Nothing explains the
-  gap. It is carried here, because the document that exists to enumerate controllers names it
-  twice and the chart that summarises them names 16 and 18 either side of it.
+  THE TWO DOCUMENTS AGREE ABOUT CC 17, though this account once said they did not. The
+  implementation document names General Purpose Controller 2 at CC 17, in both of its sound-source
+  sections, and the Reference Manual's chart prints a row for 17, General purpose controller 2,
+  between 16 and 18 (reference p. 128). It is carried here.
 
-  SIX NUMBERS ARE NOT CARRIED, AND THE LINE IS DRAWN ONCE AND SAID OUT LOUD. Bank Select (0 and
-  32), Data Entry (6 and 38), the RPN selects (100 and 101) and the High Resolution Velocity
-  Prefix (88) are all named in the document and none is a parameter of this instrument: they are
-  how the MIDI specification addresses things and how it extends a note's resolution. Bank
-  Select's work is recorded under `program_change` instead. That is the same ruling that keeps
-  the channel mode messages out - 120, 121, 123, 124, 125, 126 and 127, which this document also
-  names - drawn one step wider.
+  FIVE NUMBERS ARE NOT CARRIED, AND THE LINE IS DRAWN ONCE AND SAID OUT LOUD. Data Entry (6 and
+  38), the RPN selects (100 and 101) and the High Resolution Velocity Prefix (88) are all named in
+  the document and none is a parameter of this instrument: they are how the MIDI specification
+  addresses things and how it extends a note's resolution. That is the same ruling that keeps the
+  channel mode messages out - 120, 121, 123, 124, 125, 126 and 127, which this document also
+  names - drawn one step wider. **Bank Select (0 and 32) is carried**, as it is wherever a maker
+  numbers it; this file once set it aside with the five, and other definitions followed it there.
 
   EVERY NUMBER WAS READ TWICE AND THE TWO AGREE ON EVERY ONE. The second reading, made without
   sight of the first, worked from glyph geometry rather than from extracted text and then
@@ -238,6 +237,15 @@ groups:
   effects: Effect send levels
 
 controls:
+
+  # Bank select ───────────────────────────────────────────
+  # Carried, as it is wherever a maker numbers it: "Bank Select (Controller number 0, 32)"
+  # (implementation p. 1) heads it under reception, and the same under transmission
+  # (implementation p. 8), and "0, 32" is both ways on the sound generator's chart (reference
+  # p. 128). Reception needs the system's Receive Bank Select and the zone's own; transmission
+  # needs Transmit Program Change and Transmit Bank Select (implementation p. 8).
+  bank_select_msb:                   {label: Bank Select (MSB), cc: 0}
+  bank_select_lsb:                   {label: Bank Select (LSB), cc: 32}
 
   # Continuous controllers ────────────────────────────────
   modulation:                        {label: Modulation, cc: 1, group: continuous}

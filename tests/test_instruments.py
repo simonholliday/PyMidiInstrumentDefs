@@ -1661,6 +1661,12 @@ class TestAftertouch:
 			"novation/summit": ("both", True),
 			"oberheim/ob_x8": ("channel", True),
 			"oberheim/teo_5": ("both", True),
+			"roland/fantom_6_7_8": ("poly", True),
+			"roland/jd_800": ("channel", True),
+			"roland/jp_8000": ("channel", True),
+			"roland/jx_08": ("poly", False),
+			"roland/jx_8p": ("channel", True),
+			"roland/d_50": ("received", True),
 		}
 
 
@@ -4748,7 +4754,8 @@ class TestD50:
 
 		assert d50.voice.polyphony is None
 		assert d50.voice.note_range is None
-		assert d50.voice.aftertouch is None
+		assert d50.voice.aftertouch == "received"
+		assert d50.voice.aftertouch_transmits is True
 		assert d50.voice.velocity is None
 
 		# What is recorded is how notes reach it, which the manual does say.

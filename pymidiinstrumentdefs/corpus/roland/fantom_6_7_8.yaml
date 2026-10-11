@@ -189,12 +189,17 @@ voice:
     # The chart marks Note On and Note Off "o" in both columns, so release velocity travels too.
     note_off: true
   # BOTH KINDS ARE RECEIVED AND THE FIELD HOLDS ONE WORD, so this follows the MC-707's precedent
-  # from the same maker and says `poly`, the stronger of the two. The chart's After Touch rows:
-  # Key's is "x" transmitted and "o" recognised, Channel's is "o" in both. So polyphonic pressure
-  # is answered to and never sent, channel pressure both ways - and a zone can be told to ignore
+  # from the same maker and says `poly`, the stronger of the two. The sound generator section's
+  # chart (reference p. 128) gives the After Touch rows: Key's is "x" transmitted and "o"
+  # recognised, Channel's is "o" in both. So the sound generator answers to polyphonic pressure
+  # and never sends it, and channel pressure goes both ways - and a zone can be told to ignore
   # the latter, "Receive Channel Pressure (CA) OFF, ON Specifies whether channel aftertouch is
   # received (ON) or not received (OFF)" (parameter_guide p. 14).
   aftertouch: poly
+  # SENT, BUT NOT BY THE SAME SECTION: the sound generator sends channel pressure (reference
+  # p. 128), and the sequencer section's chart circles both kinds as transmitted (reference
+  # p. 129), polyphonic pressure being what a track has recorded.
+  aftertouch_transmits: true
   pitch_bend:
     # Settable over RPN, which the implementation document lists first among the four it
     # receives: RPN 00 00H is Pitch Bend Sensitivity, "mm: 00H - 18H (0 - 24 semitones)" with

@@ -16334,16 +16334,24 @@ class TestSH4D:
 		assert "BECAUSE THIS MAKER WRITES IT AS ONE WORD" in flat
 		assert "an absence has to be swept for with the text squashed" in flat
 
-	def test_the_sound_list_its_footnotes_name_is_not_published (self) -> None:
-		"""The bank numbers are published and what they select is not."""
+	def test_the_sound_list_its_footnotes_name_is_in_the_manual (self) -> None:
+		"""Sheets 199 to 238, headed with a lower-case l, which an exact search for the footnote missed.
+
+		Until 2026-10-11 this file said no sound list was published, which a prose check disproved.
+		"""
 		flat = " ".join(
 			(pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS]).source or "").split())
 
-		assert "THE BANK NUMBERS ARE PUBLISHED AND WHAT THEY SELECT IS NOT." in flat
+		assert "THE BANK NUMBERS ARE PUBLISHED, AND SO IS WHAT THEY SELECT." in flat
 		assert '"*3 See Sound List" (manual p. 241)' in flat
+		assert "The list and the chart do not quite meet" in flat
 
-		# The same shape as the TR-909's unpublished leaflet, and this file says so.
-		assert "roland/tr_909" in flat
+	def test_every_control_names_the_tone_part (self) -> None:
+		"""Only the Tone chart takes control change, and no channel derives from a base. Part-less until 2026-10-11."""
+		sh = pymidiinstrumentdefs.load("roland/sh_4d", [CORPUS])
+
+		assert len(sh.controls) == 32
+		assert all(control.part == "tone" for control in sh.controls.values())
 
 
 class TestVolcaSample:

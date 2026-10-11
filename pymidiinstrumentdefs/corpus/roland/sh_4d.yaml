@@ -9,9 +9,17 @@
 #
 # **AND ONLY THE TONE CHART HAS ANY CONTROL CHANGE AT ALL.** The rhythm chart reads
 # "Control Change x x" (manual p. 241) and the SYSTEM chart "ControlChange x x"
-# (manual p. 242). So the thirty-two controls below are the tone parts' controls, and **a reader
-# addressing the rhythm part gets nothing from them** - a fact about this instrument that a
-# single-chart definition could not state.
+# (manual p. 242), bank select aside: all three take it as their program change rows' MSB and
+# LSB, and footnote `*2` calls it CC#0 and CC#32. So the thirty-two controls below are the tone
+# parts' controls, and **a reader addressing the rhythm part gets nothing from them** - a fact
+# about this instrument that a single-chart definition could not state.
+#
+# **SO EVERY CONTROL BELOW NAMES THE TONE PART.** No channel here derives from a base: the control
+# channel and each part's are set on their own, "Part 1 Ch 1–16 Specifies the MIDI receive channel
+# for part 1." (manual p. 77) and the same for parts 2 to 4 and R, so a control naming no part
+# would mean a channel this instrument does not have - and the control channel, the one that
+# belongs to no part, takes no control change (manual p. 242). The four tone parts are one kind,
+# so each control is written once.
 #
 # **THE INSTRUMENT'S ONLY WAY OF SENDING CONTROLLER 1 IS TILTING THE BOX.** Controller 1 and
 # channel pressure both carry footnote "*1 Can be transmitted from D-MOTION only"
@@ -61,12 +69,15 @@ source: >-
   portamento, 66 sostenuto, 71 resonance, 72 release, 73 attack, 74 cutoff, 75 decay - which is
   the cheapest check there is that the rows were paired with the right names rather than one off.
 
-  **THE BANK NUMBERS ARE PUBLISHED AND WHAT THEY SELECT IS NOT.** Every bank and program row of
-  the tone and rhythm charts carries footnote "*3 See Sound List" (manual p. 241), and
-  `Sound List` appears on sheets 241 and 242 and nowhere else in the 244 - that is, only in the
-  footnotes naming it. No sound list is offered on the support page. So a reader can address bank
-  87 program 12 and has nothing published that says what will sound, which is the shape
-  `roland/tr_909` met with a leaflet.
+  **THE BANK NUMBERS ARE PUBLISHED, AND SO IS WHAT THEY SELECT.** Every bank and program row of
+  the tone and rhythm charts carries footnote "*3 See Sound List" (manual p. 241), and the list is
+  in the manual itself, on sheets 199 to 238 under a header printed `Sound list` with a lower-case
+  l - which is why an exact search for the footnote's capitals found only the footnotes, and an
+  earlier reading of this file said no list was published. Its tone list gives every preset
+  tone's bank and program, from MSB 88 and LSB 64 (manual p. 213), and its rhythm set list every
+  kit's, at MSB 86 and LSB 64 (manual p. 237). **The list and the chart do not quite meet**: the
+  chart prints MSB `87–88` and LSB `64–77` for tones (manual p. 241), while the list uses no MSB
+  87 and runs to LSB 79 (manual p. 237).
 
   **AND THE PITCH BEND RANGE WAS NEARLY RECORDED AS ABSENT, BECAUSE THIS MAKER WRITES IT AS ONE
   WORD.** A search of all 244 sheets for `Bend Range` returns nothing; the parameter is
@@ -210,45 +221,45 @@ controls:
   # modulation matrix. Both are set out above the definition.
 
   # tone (3)
-  modulation:        {label: Modulation Wheel, cc: 1, group: tone}
-  pitch:             {label: PITCH, cc: 21, group: tone}
-  timbre:            {label: TIMBRE, cc: 77, group: tone}
+  modulation:        {label: Modulation Wheel, cc: 1, part: tone, group: tone}
+  pitch:             {label: PITCH, cc: 21, part: tone, group: tone}
+  timbre:            {label: TIMBRE, cc: 77, part: tone, group: tone}
 
   # amp (6)
-  amp_level:         {label: AMP LEVEL (Pattern Part Level), cc: 7, group: amp}
-  amp_pan:           {label: AMP PAN (Pattern Part Pan), cc: 10, group: amp}
-  amp_sustain:       {label: AMP SUSTAIN, cc: 31, group: amp}
-  amp_release:       {label: AMP RELEASE, cc: 72, group: amp}
-  amp_attack:        {label: AMP ATTACK, cc: 73, group: amp}
-  amp_decay:         {label: AMP DECAY, cc: 75, group: amp}
+  amp_level:         {label: AMP LEVEL (Pattern Part Level), cc: 7, part: tone, group: amp}
+  amp_pan:           {label: AMP PAN (Pattern Part Pan), cc: 10, part: tone, group: amp}
+  amp_sustain:       {label: AMP SUSTAIN, cc: 31, part: tone, group: amp}
+  amp_release:       {label: AMP RELEASE, cc: 72, part: tone, group: amp}
+  amp_attack:        {label: AMP ATTACK, cc: 73, part: tone, group: amp}
+  amp_decay:         {label: AMP DECAY, cc: 75, part: tone, group: amp}
 
   # lfo (5) - the maker's own naming puts the amplifier's LFO depth in this group
-  lfo_amp:           {label: LFO AMP, cc: 80, group: lfo}
-  lfo_rate:          {label: LFO RATE, cc: 16, group: lfo}
-  lfo_pitch:         {label: LFO PITCH, cc: 18, group: lfo}
-  lfo_filter:        {label: LFO FILTER, cc: 19, group: lfo}
-  lfo_fade:          {label: LFO FADE, cc: 20, group: lfo}
+  lfo_amp:           {label: LFO AMP, cc: 80, part: tone, group: lfo}
+  lfo_rate:          {label: LFO RATE, cc: 16, part: tone, group: lfo}
+  lfo_pitch:         {label: LFO PITCH, cc: 18, part: tone, group: lfo}
+  lfo_filter:        {label: LFO FILTER, cc: 19, part: tone, group: lfo}
+  lfo_fade:          {label: LFO FADE, cc: 20, part: tone, group: lfo}
 
   # filter (10)
-  filter_sustain:    {label: FILTER SUSTAIN, cc: 28, group: filter}
-  filter_release:    {label: FILTER RELEASE, cc: 29, group: filter}
-  filter_resonance:  {label: FILTER RESONANCE, cc: 71, group: filter}
-  filter_cutoff:     {label: FILTER CUTOFF, cc: 74, group: filter}
-  filter_kbd:        {label: FILTER KBD, cc: 78, group: filter}
-  filter_hpf:        {label: FILTER HPF, cc: 79, group: filter}
-  filter_env:        {label: FILTER ENV, cc: 81, group: filter}
-  filter_attack:     {label: FILTER ATTACK, cc: 82, group: filter}
-  filter_decay:      {label: FILTER DECAY, cc: 83, group: filter}
-  filter_drive:      {label: FILTER DRIVE, cc: 90, group: filter}
+  filter_sustain:    {label: FILTER SUSTAIN, cc: 28, part: tone, group: filter}
+  filter_release:    {label: FILTER RELEASE, cc: 29, part: tone, group: filter}
+  filter_resonance:  {label: FILTER RESONANCE, cc: 71, part: tone, group: filter}
+  filter_cutoff:     {label: FILTER CUTOFF, cc: 74, part: tone, group: filter}
+  filter_kbd:        {label: FILTER KBD, cc: 78, part: tone, group: filter}
+  filter_hpf:        {label: FILTER HPF, cc: 79, part: tone, group: filter}
+  filter_env:        {label: FILTER ENV, cc: 81, part: tone, group: filter}
+  filter_attack:     {label: FILTER ATTACK, cc: 82, part: tone, group: filter}
+  filter_decay:      {label: FILTER DECAY, cc: 83, part: tone, group: filter}
+  filter_drive:      {label: FILTER DRIVE, cc: 90, part: tone, group: filter}
 
   # pedal (4) - all four received and never sent
-  hold_pedal:        {label: Hold Pedal, cc: 64, group: pedal, direction: receives}
-  porta_sw:          {label: Porta Sw, cc: 65, group: pedal, direction: receives}
-  sostenuto:         {label: Sostenuto, cc: 66, group: pedal, direction: receives}
-  portamento_control: {label: Portamento Control, cc: 84, group: pedal, direction: receives}
+  hold_pedal:        {label: Hold Pedal, cc: 64, part: tone, group: pedal, direction: receives}
+  porta_sw:          {label: Porta Sw, cc: 65, part: tone, group: pedal, direction: receives}
+  sostenuto:         {label: Sostenuto, cc: 66, part: tone, group: pedal, direction: receives}
+  portamento_control: {label: Portamento Control, cc: 84, part: tone, group: pedal, direction: receives}
 
   # slider (4)
-  slider_1:          {label: SLIDER 1, cc: 85, group: slider}
-  slider_2:          {label: SLIDER 2, cc: 86, group: slider}
-  slider_3:          {label: SLIDER 3, cc: 87, group: slider}
-  slider_4:          {label: SLIDER 4, cc: 88, group: slider}
+  slider_1:          {label: SLIDER 1, cc: 85, part: tone, group: slider}
+  slider_2:          {label: SLIDER 2, cc: 86, part: tone, group: slider}
+  slider_3:          {label: SLIDER 3, cc: 87, part: tone, group: slider}
+  slider_4:          {label: SLIDER 4, cc: 88, part: tone, group: slider}

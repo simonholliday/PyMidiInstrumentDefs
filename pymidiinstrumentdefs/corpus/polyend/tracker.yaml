@@ -1,16 +1,18 @@
-# TWO MAPS, AND WHICH ONE IS LIVE DEPENDS ON A MODE RATHER THAN ON A CHANNEL. The Tracker answers
-# to one set of thirty-two controller numbers for its performance effects and its mixer, whenever
-# CC In is on; and to a second set of forty-eight for the selected instrument's own parameters,
-# **only in MIDI Synthesizer mode and only while the sequencer is stopped**. The two sets share no
-# number, so nothing here has to choose between them - but this format has no field that says "in
-# this mode", and the groups below are the only thing distinguishing them.
+# TWO MAPS, AND WHETHER THE SECOND IS LIVE DEPENDS ON A MODE RATHER THAN ON A CHANNEL. The Tracker
+# answers to one set of thirty-two controller numbers for its performance effects and its mixer,
+# on which the manual's page puts no condition but CC In being on; and to a second set of
+# forty-eight for the selected instrument's own parameters, **only in MIDI Synthesizer mode,
+# which the manual says needs the sequencer stopped**. The two sets share no number. **The
+# second set is on a part that exists in the `synthesizer` mode only.** Until 2026-10-11 this
+# format had no field that said "in this mode", and the groups below were the only thing
+# distinguishing the two.
 #
 # NOTHING BELOW IS TRANSMITTED. The Tracker's outgoing controllers are not a map at all: six slots
 # per MIDI instrument, A to F, each of which the player sets to any number. So this file describes
 # what the Tracker answers to, and the sending side is a setting rather than a fact.
 #
 # THE ONE CONTROLLER THAT IS NOT IN EITHER TABLE. The manual's Synthesizer Mode table has the
-# whole panning envelope and no row for panning itself - and the picture of the instrument's own
+# whole panning automation and no row for panning itself - and the picture of the instrument's own
 # screen two pages earlier reads "Panning = 10". It ships, from the screen, and is marked.
 
 definition: 1
@@ -25,11 +27,13 @@ model:
 
 source: >-
   Tracker Manual (308pp, October 2025, for OS 1.9.2a): chapter 11 is MIDI, and **the two tables
-  every number here comes from are at pp. 262 and 267**. Beside them: the MIDI configuration at
-  pp. 251-252, the MIDI instruments at p. 256, velocity at p. 258, the CC out slots at pp. 259-260,
-  program change at p. 263, "MIDI Synthesizer" mode (manual p. 264) at pp. 264-266, performance
-  over MIDI at p. 279,
-  the voices at p. 236 and the tracks at p. 18.
+  every number here but one comes from are at pp. 262 and 267**. Beside them: the MIDI
+  configuration at pp. 251-252, an example setup that lists the first table's numbers at p. 255,
+  the MIDI instruments at p. 256, velocity at p. 258, the CC out slots at pp. 259-260, program
+  change at p. 263, the mode headed "MIDI Synthesizer" (manual p. 264) at pp. 264-266,
+  performance over MIDI at p. 279, the mixer's controllers at pp. 185-186, the voices at p. 236
+  and the tracks at p. 18. And the release notes on the maker's download page, which say of the
+  mode what the manual does not: when it arrived, a shortcut into it, and a new name.
 
   **THIS MANUAL IS NOT WRITTEN BY POLYEND.** Its colophon reads "Manual Produced in the United
   Kingdom by ... Synthdawg" (manual p. 307) - the ellipsis is the typesetter's web address,
@@ -41,19 +45,34 @@ source: >-
   disagree, the screen is the instrument and the book is a description of it.
 
   **AND THAT IS NOT HYPOTHETICAL HERE.** The "Synthesizer Mode - MIDI CC Configurations" table
-  (manual p. 267) lists forty-seven
-  controller numbers and **has no row for panning**, although it carries the whole panning
-  envelope at 26 to 31. Two pages earlier, a picture of the Tracker's own display lists the same
-  parameters in the same unusual order - Tune, FineTune, Volume, **Panning**, Filter type, Cutoff,
-  Resonance - with their numbers beside them, and gives "Panning = 10" (manual p. 265). Every
-  other pair on that screen matches the table exactly. **So the table is the screen with one line
-  dropped**, and CC 10 is recorded below on the screen's authority, marked.
+  (manual p. 267) lists forty-seven controller numbers and **has no row for panning**, although
+  it carries the whole panning automation at 26 to 31. Two pages earlier, a picture of the
+  Tracker's own display lists the same parameters in the same unusual order - Tune, FineTune,
+  Volume, **Panning**, Filter type, Cutoff, Resonance - with their numbers beside them, and
+  gives "Panning = 10" (manual p. 265). The picture shows thirteen lines of a list that
+  scrolls, and the twelve other pairs in it carry the table's numbers. **So the table has
+  dropped a line the screen has**, and CC 10 is recorded below on the screen's authority,
+  marked. The picture runs from Delay Send at 15 straight to Volume Automation Type at 20, so
+  the table's 16 and 17, the wavetable and granular pair, rest on the table alone.
 
-  THE OTHER THING THE TABLE IS SHORT OF, AND THIS ONE IS NOT RECORDED. Five of the six envelope
+  THE OTHER THING THE TABLE IS SHORT OF, AND THIS ONE IS NOT RECORDED. Five of the six automation
   blocks have six rows - Automation Type, Attack, Decay, Sustain, Release and Amount - and
   **Finetune has five**, ending at 118 Finetune Release with no Finetune Amount. By the pattern
   that would be 119. Nothing published says whether the parameter exists and was left out or does
   not exist, so nothing is recorded for it; unlike panning, no second printing settles it.
+
+  TWO ROWS OF EACH BLOCK CARRY TWO NAMES, because an automation is an envelope or an LFO: "The
+  modulator can be an LFO or an Envelope" (manual p. 115). So "Volume - Attack - Shape LFO"
+  (manual p. 267) is read here as one number that sets an envelope's attack or an LFO's shape,
+  by the block's Automation Type, and the Decay row as doubling for the LFO's speed the same
+  way. No page says so of the controller. NOT RECORDED: which value of Automation Type, or of
+  Filter Type, selects which. No page gives a controller's values for either.
+
+  WHAT A VALUE DOES IS SAID FOR THE PERFORMANCE NUMBERS ONLY. For the effect slots, "The CC range
+  on the controller is 0-127 which will be reflected across the range of the effect" (manual
+  p. 279), and for 41 to 48, "The value will represent the pattern" (manual p. 279). Nothing is
+  said for the mixer's twelve. Of the second map the manual says only that "The instrument
+  parameters will adjust when controlled by the external MIDI controller" (manual p. 266).
 
   WHAT THE TRACKER SENDS IS A SETTING, NOT A MAP. Each of its sixteen MIDI instruments carries
   **six controller slots, A to F**, and the player puts any number in each: "Six CC parameter
@@ -78,11 +97,24 @@ source: >-
   **PITCH BEND IS A CHECKED ABSENCE**: the words "pitch bend" do not occur anywhere in this
   manual's 308 pages, in either case, and neither does MPE.
 
-  THE MANUAL SPELLS THE MODE'S NAME BOTH WAYS. "Synthesizer" (manual p. 264) twenty-four times
-  across twelve pages, and "Synthesiser" (manual p. 265) twice - both on one page, in the two
-  paragraphs that explain the mode. A British author writing for a Polish maker in a document whose own headings are American.
-  The maker's spelling is kept wherever this file names the mode, which is why the word appears
-  here in quotation marks.
+  THE MANUAL SPELLS THE MODE'S NAME BOTH WAYS. "Synthesizer" (manual p. 264) twenty-five times
+  across twelve pages, five of them about wavetable and granular synthesis and not the mode,
+  and "Synthesiser" (manual p. 265) twice - both on one page, in the two paragraphs that
+  explain the mode. A British author writing for a Polish maker in a document whose own
+  headings are American. The heading's spelling is kept wherever this file names the mode.
+
+  THE MAKER HAS RENAMED IT SINCE, AND THE MANUAL HAS NOT FOLLOWED. The release notes on the
+  download page call it "MIDI Synth Mode (press the Shift + Instrument Parameters keys shortcut
+  to enter" (downloads) when it arrived in 1.6.0, and say of 1.9.0 that "Instrument Synthesizer
+  functionality (on Instrument Parameters/Effects screen) was renamed to Instrument MIDI
+  Mapping" (downloads). This file describes 1.9.2, and its manual still prints "Instrument
+  Synthesizer" (manual p. 265) on the pictured screen. So a player on current firmware should
+  look for Instrument MIDI Mapping on the instrument, and in the manual for the heading this
+  file takes the mode's label from. Whether the 1.6.0 shortcut still exists the manual does not
+  say: it names no shortcut. The one route it gives is to the mode's page, "Select [Instrument
+  Parameters] page 1/2. Screen Button [More] then Press [Instrument Synthesizer]" (manual
+  p. 265), which the 1.7.0 notes record as "Added access to the Instrument Synthesizer page in
+  Instrument Parameters > More" (downloads), and it says that page need not be displayed.
 
   ONE LINE OF THIS MANUAL BELONGS TO ANOTHER INSTRUMENT. The settings table at p. 50 explains
   Clock Out as "Sets the Tracker Mini clock output" - in a book about the Tracker, whose cover,
@@ -113,11 +145,12 @@ sources:
     sha256: c0ab90b6b22c1dc06d9ba1985d40065b44d54c500c3a4f9cb9e1d5b9d41c3770
     retrieved: 2026-10-04
     paginated: false
-    # Cited for the firmware and for nothing else. It carries the release notes for every version
-    # inline rather than as a document, and two of them are about controllers: "Tracker can now
-    # be configured to send 6 distinct MIDI CCs per MIDI channel" (downloads), and a fix for "In
-    # Instrument Synthesizer mode Tracker not responding to CCs assigned to Delay Send correctly"
-    # (downloads).
+    # Cited for the firmware and for its release notes, which it carries version by version
+    # inline rather than as a document. Several are about what this file describes: "Tracker can
+    # now be configured to send 6 distinct MIDI CCs per MIDI channel" (downloads); "Performance
+    # mode is now controllable via MIDI input." (downloads); a fix for "In Instrument Synthesizer
+    # mode Tracker not responding to CCs assigned to Delay Send correctly" (downloads); and the
+    # mode's arrival in 1.6.0 and its renaming in 1.9.0, which the source account quotes.
     #
     # The sha256 is of the page's visible text; the page as served hashes to
     # 4c8d6182f66e60e1f56f1d2fddfc1a65e89a95a46cd1372dee15f06658499f98.
@@ -153,10 +186,54 @@ midi:
   # `sysex` IS UNSET for the same reason: SYSEX appears once, in that same glossary, describing
   # what system exclusive is for in general. Nothing says what the Tracker does with it.
 
+modes:
+  # TWO STATES. The second is the mode the manual heads "MIDI Synthesizer" (manual p. 264), in
+  # which a controller "will be able to play and control Trackers instruments" (manual p. 264).
+  # **The manual names no switch that turns it on.** What it gives is a condition, "Tracker's
+  # sequencer must be stopped to use as a MIDI synthesizer." (manual p. 265), and a statement
+  # that its page need not be open: "The Synthesizer mode page does not have to be displayed to
+  # operate in this mode." (manual p. 265). On that account the mode is the sequencer stopped
+  # and the other state the sequencer running. The 1.6.0 release note has a shortcut that
+  # enters it, quoted in the source account, and no document reconciles the two. So the mode is
+  # recorded as the state in which the second map answers, and how it is reached stays in
+  # words. The first state has no name in any document, so its key is this file's and it has no
+  # label. Neither is marked as the factory one, since no page says which the instrument
+  # starts in.
+  # **PERFORMANCE MODE IS ANOTHER STATE THE MANUAL NAMES, AND IT IS KEPT IN WORDS HERE.** It is
+  # not one of these two and can hold in either: it is entered with playback stopped (manual
+  # p. 275) and patterns are played in it (manual p. 271). The first map's performance numbers
+  # are described as working in it - see the comment above the controls.
+  standard: {}
+  synthesizer:
+    label: MIDI Synthesizer
+
+parts:
+  # THE SELECTED INSTRUMENT, as an outside controller reaches it in MIDI Synthesizer mode, one
+  # instrument at a time: "The last selected instrument will be the one used for the synthesizer
+  # control from an external controller." (manual p. 265). Its forty-eight numbers come in on
+  # the CC In channel, as the other thirty-two do: that setting "Sets the MIDI channel that is
+  # used to receive CC (control change) messages" (manual p. 251), and the mode's setup asks
+  # that "the MIDI configuration is matched, for example same MIDI channel" (manual p. 266). So
+  # the part sits on the base channel, and what tells the two sets apart is the mode and not
+  # the channel. **`receives` claims controls, and that is not a statement that the part takes
+  # no notes.** A controller plays the instruments in this mode too, "controlling up to 8 voices
+  # across MIDI" (manual p. 264), but notes come in on the Notes Input Channel, a separate
+  # setting, which one base channel cannot say. On which instrument a note plays, the mode's
+  # setup has the selected one "as the destination target from the MIDI controller and as the
+  # synthesizer instrument" (manual p. 266), and an example setup has "The keyboard will control
+  # the current instrument in Channel 1." (manual p. 255).
+  synthesizer:
+    label: Selected instrument
+    mode: synthesizer
+    channel_offset: 0
+    receives: [controls]
+
 voice:
   addressing: pitches
   # "Tracker has 8 voices which would represent each of the tracks playback" (manual p. 236), and
-  # "Tracker has 8 tracks" (manual p. 18).
+  # "Tracker has 8 tracks" (manual p. 18). The 1.9.0 release notes add four MIDI tracks, "MIDI
+  # can now be sequenced on 12 tracks in total" (downloads), which the manual does not
+  # mention.
   polyphony: 8
   velocity:
     # Sent with every step, and recordable from outside: "To be able to record velocity, the
@@ -175,23 +252,35 @@ voice:
   # or C-6 (manual p. 251), which shifts the whole mapping against the sender's notes.
 
 # How to read the controls below. **Every one is received and none is transmitted**, for the
-# reason in the account above. They fall into two sets that are live at different times:
+# reason in the account above. They fall into two sets:
 #
-#   `performance_effects` and `master`   whenever CC In is on. "The MIDI CC Mapping within
-#                                        Tracker has a set of pre-defined destinations for CC
-#                                        messages" (manual p. 262).
-#   everything else                      only in MIDI Synthesizer mode, and only with the
-#                                        sequencer stopped: "To use Tracker as a synthesizer, the
+#   `performance_effects` and `master`   on which the page puts no condition but CC In being
+#                                        on. "The MIDI CC Mapping within Tracker has a set of
+#                                        pre-defined destinations for CC messages" (manual
+#                                        p. 262). They name no part, so the file has them
+#                                        answering in both modes. That is the format's reading
+#                                        of a row with no condition, and not a sentence of the
+#                                        manual's: it speaks of the performance numbers
+#                                        "in perform mode" (manual p. 279), an example setup
+#                                        lists them under "Performance Mode Tracks" (manual
+#                                        p. 255) and "Performance Mode Effects" (manual
+#                                        p. 255), and no page says whether they answer outside
+#                                        it, or with the sequencer stopped.
+#   everything else                      only in MIDI Synthesizer mode, for which the sequencer
+#                                        must be stopped: "To use Tracker as a synthesizer, the
 #                                        sequence must be stopped" (manual p. 265). They reach
-#                                        whichever instrument is selected.
+#                                        whichever instrument is selected, and are on the
+#                                        `synthesizer` part, which exists in that mode only.
 #
-# The two sets share no controller number, so no message means one thing in one mode and
-# something else in the other - which is luck rather than design, and is the only reason this
-# file can list them together at all.
+# The two sets share no controller number, and as the file reads them they could not: the first
+# set answers while the second does, so a number in both would mean two things at once. Until
+# 2026-10-11 the file could say no more than that; the part's mode now says when the second set
+# answers.
 #
 # THE ORDER IS THE MAKER'S, NOT NUMERIC. The synthesizer map's first rows run 5, 3, 7, 10, 9, 1,
 # 11 because that is the order the instrument's own screen lists them in, and the manual follows
-# it. Sorting them would lose the evidence that the table was copied from the screen.
+# it. Sorting them would lose the evidence that the table follows the screen, which the picture
+# gives as far as 15.
 #
 # NOT LISTED: nothing. Neither table has a mechanism row - no bank select, no data entry - so
 # unlike most instruments here there is nothing set aside, and every row of both tables is below.
@@ -199,12 +288,12 @@ voice:
 groups:
   # Neither table has a sub-heading, so these are taken from **the maker's own prefix inside the
   # rows**: every row of the first block begins "Performance Effect", every row of the second
-  # "Master -", and each envelope block is named for the parameter it shapes.
+  # "Master -", and each automation block is named for the parameter it shapes.
   performance_effects: Performance Effect
   master: Master
-  # The plain instrument parameters of Synthesizer Mode, as against the envelope blocks below.
-  # NOT THE MAKER'S WORD: the manual heads this run with nothing, and calls the thing they belong
-  # to "the selected instrument".
+  # The plain instrument parameters of Synthesizer Mode, as against the automation blocks below.
+  # NOT THE MAKER'S WORD: the manual heads this run with nothing, and says of the thing they
+  # belong to "The last selected instrument will be the one used" (manual p. 265).
   instrument: Instrument
   volume: Volume
   panning: Panning
@@ -254,69 +343,70 @@ controls:
 
   # ──── instrument ────
 
-  tune:                              {label: Tune, cc: 5, direction: receives, group: instrument}
-  finetune:                          {label: Finetune, cc: 3, direction: receives, group: instrument}
-  volume:                            {label: Volume, cc: 7, direction: receives, group: instrument}
-  panning:                           {label: Panning, cc: 10, direction: receives, group: instrument}
-  filter_type:                       {label: Filter Type, cc: 9, direction: receives, group: instrument}
-  cutoff:                            {label: Cutoff, cc: 1, direction: receives, group: instrument}
-  resonance:                         {label: Resonance, cc: 11, direction: receives, group: instrument}
-  overdrive:                         {label: Overdrive, cc: 12, direction: receives, group: instrument}
-  bit_depth:                         {label: Bit Depth, cc: 13, direction: receives, group: instrument}
-  reverb_send:                       {label: Reverb Send, cc: 14, direction: receives, group: instrument}
-  delay_send:                        {label: Delay Send, cc: 15, direction: receives, group: instrument}
-  wavetable_granular_position:       {label: Wavetable / Granular Position, cc: 16, direction: receives, group: instrument}
-  wavetable_window_granular_length:  {label: Wavetable Window / Granular Length, cc: 17, direction: receives, group: instrument}
+  tune:                              {label: Tune, cc: 5, direction: receives, part: synthesizer, group: instrument}
+  finetune:                          {label: Finetune, cc: 3, direction: receives, part: synthesizer, group: instrument}
+  volume:                            {label: Volume, cc: 7, direction: receives, part: synthesizer, group: instrument}
+  # FROM THE PICTURED SCREEN AND NOT THE TABLE: "Panning = 10" (manual p. 265). See the account.
+  panning:                           {label: Panning, cc: 10, direction: receives, part: synthesizer, group: instrument}
+  filter_type:                       {label: Filter Type, cc: 9, direction: receives, part: synthesizer, group: instrument}
+  cutoff:                            {label: Cutoff, cc: 1, direction: receives, part: synthesizer, group: instrument}
+  resonance:                         {label: Resonance, cc: 11, direction: receives, part: synthesizer, group: instrument}
+  overdrive:                         {label: Overdrive, cc: 12, direction: receives, part: synthesizer, group: instrument}
+  bit_depth:                         {label: Bit Depth, cc: 13, direction: receives, part: synthesizer, group: instrument}
+  reverb_send:                       {label: Reverb Send, cc: 14, direction: receives, part: synthesizer, group: instrument}
+  delay_send:                        {label: Delay Send, cc: 15, direction: receives, part: synthesizer, group: instrument}
+  wavetable_granular_position:       {label: Wavetable / Granular Position, cc: 16, direction: receives, part: synthesizer, group: instrument}
+  wavetable_window_granular_length:  {label: Wavetable Window / Granular Length, cc: 17, direction: receives, part: synthesizer, group: instrument}
 
   # ──── volume ────
 
-  volume_automation_type:            {label: Volume Automation Type, cc: 20, direction: receives, group: volume}
-  volume_attack_shape_lfo:           {label: Volume - Attack - Shape LFO, cc: 21, direction: receives, group: volume}
-  volume_decay_speed_lfo:            {label: Volume - Decay - Speed LFO, cc: 22, direction: receives, group: volume}
-  volume_sustain:                    {label: Volume Sustain, cc: 23, direction: receives, group: volume}
-  volume_release:                    {label: Volume Release, cc: 24, direction: receives, group: volume}
-  volume_amount:                     {label: Volume Amount, cc: 25, direction: receives, group: volume}
+  volume_automation_type:            {label: Volume Automation Type, cc: 20, direction: receives, part: synthesizer, group: volume}
+  volume_attack_shape_lfo:           {label: Volume - Attack - Shape LFO, cc: 21, direction: receives, part: synthesizer, group: volume}
+  volume_decay_speed_lfo:            {label: Volume - Decay - Speed LFO, cc: 22, direction: receives, part: synthesizer, group: volume}
+  volume_sustain:                    {label: Volume Sustain, cc: 23, direction: receives, part: synthesizer, group: volume}
+  volume_release:                    {label: Volume Release, cc: 24, direction: receives, part: synthesizer, group: volume}
+  volume_amount:                     {label: Volume Amount, cc: 25, direction: receives, part: synthesizer, group: volume}
 
   # ──── panning ────
 
-  panning_automation_type:           {label: Panning Automation Type, cc: 26, direction: receives, group: panning}
-  panning_attack_shape_lfo:          {label: Panning - Attack - Shape LFO, cc: 27, direction: receives, group: panning}
-  panning_decay_speed_lfo:           {label: Panning - Decay - Speed LFO, cc: 28, direction: receives, group: panning}
-  panning_sustain:                   {label: Panning Sustain, cc: 29, direction: receives, group: panning}
-  panning_release:                   {label: Panning Release, cc: 30, direction: receives, group: panning}
-  panning_amount:                    {label: Panning Amount, cc: 31, direction: receives, group: panning}
+  panning_automation_type:           {label: Panning Automation Type, cc: 26, direction: receives, part: synthesizer, group: panning}
+  panning_attack_shape_lfo:          {label: Panning - Attack - Shape LFO, cc: 27, direction: receives, part: synthesizer, group: panning}
+  panning_decay_speed_lfo:           {label: Panning - Decay - Speed LFO, cc: 28, direction: receives, part: synthesizer, group: panning}
+  panning_sustain:                   {label: Panning Sustain, cc: 29, direction: receives, part: synthesizer, group: panning}
+  panning_release:                   {label: Panning Release, cc: 30, direction: receives, part: synthesizer, group: panning}
+  panning_amount:                    {label: Panning Amount, cc: 31, direction: receives, part: synthesizer, group: panning}
 
   # ──── cutoff ────
 
-  cutoff_automation_type:            {label: Cutoff Automation Type, cc: 83, direction: receives, group: cutoff}
-  cutoff_attack_shape_lfo:           {label: Cutoff - Attack - Shape LFO, cc: 84, direction: receives, group: cutoff}
-  cutoff_decay_speed_lfo:            {label: Cutoff - Decay - Speed LFO, cc: 85, direction: receives, group: cutoff}
-  cutoff_sustain:                    {label: Cutoff Sustain, cc: 86, direction: receives, group: cutoff}
-  cutoff_release:                    {label: Cutoff Release, cc: 87, direction: receives, group: cutoff}
-  cutoff_amount:                     {label: Cutoff Amount, cc: 88, direction: receives, group: cutoff}
+  cutoff_automation_type:            {label: Cutoff Automation Type, cc: 83, direction: receives, part: synthesizer, group: cutoff}
+  cutoff_attack_shape_lfo:           {label: Cutoff - Attack - Shape LFO, cc: 84, direction: receives, part: synthesizer, group: cutoff}
+  cutoff_decay_speed_lfo:            {label: Cutoff - Decay - Speed LFO, cc: 85, direction: receives, part: synthesizer, group: cutoff}
+  cutoff_sustain:                    {label: Cutoff Sustain, cc: 86, direction: receives, part: synthesizer, group: cutoff}
+  cutoff_release:                    {label: Cutoff Release, cc: 87, direction: receives, part: synthesizer, group: cutoff}
+  cutoff_amount:                     {label: Cutoff Amount, cc: 88, direction: receives, part: synthesizer, group: cutoff}
 
   # ──── wavetable_position ────
 
-  wavetable_position_automation_type: {label: Wavetable Position Automation Type, cc: 102, direction: receives, group: wavetable_position}
-  wavetable_position_attack_shape_lfo: {label: Wavetable Position - Attack - Shape LFO, cc: 103, direction: receives, group: wavetable_position}
-  wavetable_position_decay_speed_lfo: {label: Wavetable Position - Decay - Speed LFO, cc: 104, direction: receives, group: wavetable_position}
-  wavetable_position_sustain:        {label: Wavetable Position Sustain, cc: 105, direction: receives, group: wavetable_position}
-  wavetable_position_release:        {label: Wavetable Position Release, cc: 106, direction: receives, group: wavetable_position}
-  wavetable_position_amount:         {label: Wavetable Position Amount, cc: 107, direction: receives, group: wavetable_position}
+  wavetable_position_automation_type: {label: Wavetable Position Automation Type, cc: 102, direction: receives, part: synthesizer, group: wavetable_position}
+  wavetable_position_attack_shape_lfo: {label: Wavetable Position - Attack - Shape LFO, cc: 103, direction: receives, part: synthesizer, group: wavetable_position}
+  wavetable_position_decay_speed_lfo: {label: Wavetable Position - Decay - Speed LFO, cc: 104, direction: receives, part: synthesizer, group: wavetable_position}
+  wavetable_position_sustain:        {label: Wavetable Position Sustain, cc: 105, direction: receives, part: synthesizer, group: wavetable_position}
+  wavetable_position_release:        {label: Wavetable Position Release, cc: 106, direction: receives, part: synthesizer, group: wavetable_position}
+  wavetable_position_amount:         {label: Wavetable Position Amount, cc: 107, direction: receives, part: synthesizer, group: wavetable_position}
 
   # ──── granular_position ────
 
-  granular_position_automation_type: {label: Granular Position Automation Type, cc: 108, direction: receives, group: granular_position}
-  granular_position_attack_shape_lfo: {label: Granular Position - Attack - Shape LFO, cc: 109, direction: receives, group: granular_position}
-  granular_position_decay_speed_lfo: {label: Granular Position - Decay - Speed LFO, cc: 110, direction: receives, group: granular_position}
-  granular_position_sustain:         {label: Granular Position Sustain, cc: 111, direction: receives, group: granular_position}
-  granular_position_release:         {label: Granular Position Release, cc: 112, direction: receives, group: granular_position}
-  granular_position_amount:          {label: Granular Position Amount, cc: 113, direction: receives, group: granular_position}
+  granular_position_automation_type: {label: Granular Position Automation Type, cc: 108, direction: receives, part: synthesizer, group: granular_position}
+  granular_position_attack_shape_lfo: {label: Granular Position - Attack - Shape LFO, cc: 109, direction: receives, part: synthesizer, group: granular_position}
+  granular_position_decay_speed_lfo: {label: Granular Position - Decay - Speed LFO, cc: 110, direction: receives, part: synthesizer, group: granular_position}
+  granular_position_sustain:         {label: Granular Position Sustain, cc: 111, direction: receives, part: synthesizer, group: granular_position}
+  granular_position_release:         {label: Granular Position Release, cc: 112, direction: receives, part: synthesizer, group: granular_position}
+  granular_position_amount:          {label: Granular Position Amount, cc: 113, direction: receives, part: synthesizer, group: granular_position}
 
   # ──── finetune ────
 
-  finetune_automation_type:          {label: Finetune Automation Type, cc: 114, direction: receives, group: finetune}
-  finetune_attack_shape_lfo:         {label: Finetune - Attack - Shape LFO, cc: 115, direction: receives, group: finetune}
-  finetune_decay_speed_lfo:          {label: Finetune - Decay - Speed LFO, cc: 116, direction: receives, group: finetune}
-  finetune_sustain:                  {label: Finetune Sustain, cc: 117, direction: receives, group: finetune}
-  finetune_release:                  {label: Finetune Release, cc: 118, direction: receives, group: finetune}
+  finetune_automation_type:          {label: Finetune Automation Type, cc: 114, direction: receives, part: synthesizer, group: finetune}
+  finetune_attack_shape_lfo:         {label: Finetune - Attack - Shape LFO, cc: 115, direction: receives, part: synthesizer, group: finetune}
+  finetune_decay_speed_lfo:          {label: Finetune - Decay - Speed LFO, cc: 116, direction: receives, part: synthesizer, group: finetune}
+  finetune_sustain:                  {label: Finetune Sustain, cc: 117, direction: receives, part: synthesizer, group: finetune}
+  finetune_release:                  {label: Finetune Release, cc: 118, direction: receives, part: synthesizer, group: finetune}

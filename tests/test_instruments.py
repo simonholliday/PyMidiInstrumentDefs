@@ -9445,7 +9445,7 @@ class TestMC101:
 
 class TestPolyendTracker:
 
-	"""A tracker with two received maps, live in different modes, and one controller in neither."""
+	"""A tracker with two received maps, the second live in one mode only, and one controller in neither."""
 
 	def test_eighty_controls_in_two_maps (self) -> None:
 		"""Thirty-two for performance and the mixer, forty-eight for the instrument."""
@@ -9460,14 +9460,24 @@ class TestPolyendTracker:
 		assert len(set(numbers)) == 80
 
 	def test_the_two_maps_share_no_number (self) -> None:
-		"""Which map is live depends on a mode, so an overlap would be unsayable.
+		"""Whether the second map is live depends on a mode, and its part names it.
 
-		`performance_effects` and `master` answer whenever CC In is on; everything else
-		answers only in MIDI Synthesizer mode with the sequencer stopped.  This format
-		has no field for that, and the only reason it can list both at once is that no
-		controller number is in both.
+		`performance_effects` and `master` name no part, the manual's page putting no
+		condition on them but CC In; everything else is on the `synthesizer` part, which
+		exists only in MIDI Synthesizer mode.  How that mode is reached stays in words.
+		Until 2026-10-11 the format had no field for a mode, and the only reason the file
+		could list both maps was that no controller number is in both.
 		"""
 		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
+
+		assert list(tracker.modes) == ["standard", "synthesizer"]
+		assert tracker.modes["standard"].label is None
+		assert tracker.modes["synthesizer"].label == "MIDI Synthesizer"
+		assert tracker.factory_mode is None
+
+		# The part claims controls; the comment beside it says that is not a refusal of notes.
+		assert tracker.parts["synthesizer"].mode == "synthesizer"
+		assert tracker.parts["synthesizer"].receives == ("controls",)
 
 		always = {control.cc for control in tracker.controls.values()
 			if control.group in ("performance_effects", "master")}
@@ -9478,9 +9488,17 @@ class TestPolyendTracker:
 		assert len(synth) == 48
 		assert not (always & synth)
 
+		# The first set names no part, which the format reads as answering in both modes.
+		assert {control.cc for control in tracker.controls_in("standard")} == always
+		assert {control.cc for control in tracker.controls_in("synthesizer")} == always | synth
+		assert {control.cc for control in tracker.controls.values()
+			if control.part == "synthesizer"} == synth
+		assert {control.cc for control in tracker.controls.values() if control.part is None} == always
+
 		said = prose_of("polyend", "tracker")
 
-		assert "TWO MAPS, AND WHICH ONE IS LIVE DEPENDS ON A MODE RATHER THAN ON A CHANNEL" in said
+		assert "WHETHER THE SECOND IS LIVE DEPENDS ON A MODE RATHER THAN ON A CHANNEL" in said
+		assert "THE MAKER HAS RENAMED IT SINCE, AND THE MANUAL HAS NOT FOLLOWED" in said
 
 	def test_the_controller_that_is_in_neither_table (self) -> None:
 		"""Panning is on the instrument's own screen and not in the manual's table."""
@@ -9554,7 +9572,7 @@ class TestPolyendTracker:
 		assert "AND THE MANUAL CONTRADICTS ITSELF ABOUT WHICH NUMBER PROGRAM CHANGE IS" in said
 
 	def test_the_order_is_the_makers_and_not_numeric (self) -> None:
-		"""The synthesizer map follows the instrument's own screen, which is the evidence."""
+		"""The synthesizer map follows the instrument's own screen as far as its picture shows."""
 		tracker = pymidiinstrumentdefs.load("polyend/tracker", [CORPUS])
 
 		run = [control.cc for control in tracker.controls.values()

@@ -99,9 +99,11 @@ source: >-
   its own clock footnote only on the four realtime messages. **Both say the messages are answered
   to and they cannot both be right about when**, so neither account is carried.
 
-  NOT RECORDED: NRPN, which neither document mentions. The aftertouch, program change and system
-  exclusive below are checked absences and not silences - crossed in both columns on the chart,
-  and absent from an implementation whose whole contents are four sections long.
+  CHECKED AND ABSENT: NRPN, which no document mentions, and whose numbers are not among the
+  sixteen the chart and the implementation both list - 5, 11 and 40 to 53, all received and none
+  sent. The aftertouch, program change and system exclusive below are checked absences too -
+  crossed in both columns on the chart, and absent from an implementation whose whole contents
+  are four sections long.
 
 sources:
   implementation:
@@ -196,6 +198,9 @@ midi:
   # common and system realtime. **Which is where `korg/volca_fm` differs**, that one accepting
   # Yamaha DX7 bulk data; so the two volcas with text implementations disagree here.
   sysex: false
+  # A checked absence: see the account. The chart's Control Change row names 5, 11 and 40 to 53
+  # (chart), and none is 6, 38 or 98 to 101.
+  nrpn: none
 
 voice:
   addressing: pitches

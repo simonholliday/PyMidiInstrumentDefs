@@ -223,8 +223,12 @@ midi:
   # data, with eight function IDs for the dumps and the errors. This is the most complete
   # exclusive documentation in this corpus.
   sysex: true
-  # NOT RECORDED: NRPN. Neither table mentions it and no page does, so nobody was told either
-  # way - which is a silence rather than the checked absence that aftertouch gets below.
+  # A CHECKED ABSENCE, AS AFTERTOUCH'S IS BELOW. Neither table mentions NRPN and no page does,
+  # and each gives a closed list of controller numbers. The chart's Control Change row gives 0,
+  # 32, 7, 10, 71 to 74, 80 to 83, 85 to 87 and 102 to 106 both ways (manual p. 110), with 123 to
+  # 127 received under All Notes Off; the implementation lists the same twenty each way, with
+  # 120, 121 and 123 received. Neither has 6, 38 or 98 to 101, which an NRPN or an RPN needs.
+  nrpn: none
 
 voice:
   addressing: pitches

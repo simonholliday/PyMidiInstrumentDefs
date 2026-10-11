@@ -207,7 +207,12 @@ midi:
   # **TRUE, AND THE FORMAT IS ANOTHER MAKER'S** - see the account. "Received only YAMAHA DX7 bulk
   # data." (chart).
   sysex: true
-  # NOT RECORDED, NRPN: the chart has no row for it and the implementation does not mention it.
+  # A CHECKED ABSENCE. The chart has no row for it and the implementation does not mention it.
+  # The chart's Control Change row names 40 to 50, received (chart), with 123 to 127 received
+  # under All Notes Off and nothing sent, and the implementation lists the same eleven
+  # controllers. None is 6, 38 or 98 to 101, which an NRPN or an RPN needs. Both documents are
+  # older than the firmware, as the model's note says.
+  nrpn: none
 
 voice:
   addressing: pitches

@@ -1697,6 +1697,10 @@ class TestNrpnFromTheChart:
 		"roland/tr8s",
 		"roland/tb_3",
 		"roland/ju_06a",
+		"korg/electribe",
+		"korg/volca_fm",
+		"korg/volca_keys",
+		"korg/volca_sample",
 	]
 
 	@pytest.mark.parametrize("name", CHARTED)
@@ -5237,7 +5241,10 @@ class TestElectribe:
 		assert et.model.firmware is None
 
 		assert et.midi.sysex is True
-		assert et.midi.nrpn is None
+
+		# Each table gives a closed list of controller numbers, and neither has one an NRPN needs.
+		# Recorded as a silence until 2026-10-11.
+		assert et.midi.nrpn == "none"
 
 		# Only the owner's manual's chart gives a mode, and the implementation never does.
 		assert et.midi.mode == 3

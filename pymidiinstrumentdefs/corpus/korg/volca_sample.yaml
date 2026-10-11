@@ -144,8 +144,12 @@ midi:
     sends: false
   # Crossed in both columns (chart): a checked absence rather than a silence.
   sysex: false
-  # NOT RECORDED, NRPN: neither `NRPN` nor `RPN` nor `Registered Parameter` appears on the chart
-  # or in either manual part, swept with the text squashed.
+  # A CHECKED ABSENCE. Neither `NRPN` nor `RPN` nor `Registered Parameter` appears on the chart or
+  # in either manual part, swept with the text squashed, and the chart's Control Change row names
+  # every number the chart says it answers to - 7, 10 and 40 to 48 (chart) - and it sends none.
+  # None is 6, 38 or 98 to 101. The chart predates the firmware, as the account says of its song
+  # position row.
+  nrpn: none
 
 parts:
   # **TEN PARTS ON TEN CHANNELS, WITH NOTHING TO SET**: "n=0 - 9 (Channel 1 - 10 = Parts 1 - 10)"

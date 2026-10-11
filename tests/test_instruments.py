@@ -10212,6 +10212,13 @@ class TestS1:
 		assert "rS.Sh (Riser Shape)" in said
 		assert "No firmware number appears anywhere in it" not in said
 
+	def test_every_control_names_the_synth (self) -> None:
+		"""The pattern channel is described only as carrying program change. Part-less until 2026-10-11."""
+		s1 = pymidiinstrumentdefs.load("roland/s_1", [CORPUS])
+
+		assert all(control.part == "synth" for control in s1.controls.values())
+		assert s1.parts["pattern"].receives == ("program_change",)
+
 
 class TestP6:
 

@@ -1,13 +1,13 @@
 # TWO TABLES, AND NEITHER WOULD DO ON ITS OWN. The S-1's MIDI is at the back of its owner's manual
 # in two pieces: an implementation chart on p. 73 whose Control Change rows give **ranges and no
-# names at all** - `12-31`, `71-76`, `102-107` - and a control change list on pp. 73 to 75 that
+# names at all** - `12-31`, `71-76`, `102-107` - and a control change list on pp. 73 and 74 that
 # gives a name for every number and says nothing about direction. **The chart has the directions
 # and the list has the names**, and the thirteen ranges cover exactly the fifty-four numbers the
 # list has, which is the one cross-check the manual affords.
 #
-# SIX CONTROLS ARE RECEIVED AND NEVER SENT, and the chart is where that is: six of its thirteen
-# Control Change rows are x transmitted and o received, and the numbers in them - 1, 10, 11, 64, 65
-# and 77 - are the only ones below marked `receives`. They are the modulation wheel, pan, the
+# SIX CONTROLS ARE RECEIVED AND NEVER SENT, and the chart is where that is: five of its thirteen
+# Control Change rows are x transmitted and o received, and the six numbers in them - 1, 10, 11, 64,
+# 65 and 77 - are the only ones below marked `receives`. They are the modulation wheel, pan, the
 # expression and damper pedals, portamento on-off and the transpose switch.
 #
 # **TWO CONTROLS HAVE THE SAME NAME AND THE MAKER TELLS THEM APART WITH A DRAWING.** Controllers 19
@@ -261,86 +261,95 @@ groups:
   effects: Effects
 controls:
 
+  # **EVERY CONTROL BELOW NAMES THE SYNTH.** Neither of the two channels is set from the other -
+  # each has its own menu entry over 1 to 16, as the parts above say - so a control naming no part
+  # would mean a channel this instrument does not have; and the pattern channel is described only
+  # as carrying the program changes that change patterns. That the controllers arrive on the
+  # synth's channel is read from its entry, "Specifies the MIDI transmit/receive channel."
+  # (manual p. 68), and from the chart's `3 (Synth)`; no page names the channel a control change
+  # arrives on. What they change is the selected pattern's tone, since the sound is kept with the
+  # pattern: "*1: The settings are made for the currently selected pattern" (manual p. 69).
+
   # ──── midi ────
 
-  modulation_wheel:        {label: Modulation Wheel, cc: 1, direction: receives, group: midi}
-  pan:                     {label: Pan, cc: 10, direction: receives, group: midi}
-  expression_pedal:        {label: Expression Pedal, cc: 11, direction: receives, group: midi}
-  damper_pedal:            {label: Damper Pedal, cc: 64, direction: receives, group: midi}
+  modulation_wheel:        {label: Modulation Wheel, cc: 1, direction: receives, part: synth, group: midi}
+  pan:                     {label: Pan, cc: 10, direction: receives, part: synth, group: midi}
+  expression_pedal:        {label: Expression Pedal, cc: 11, direction: receives, part: synth, group: midi}
+  damper_pedal:            {label: Damper Pedal, cc: 64, direction: receives, part: synth, group: midi}
 
   # ──── lfo ────
 
-  lfo_rate:                {label: LFO RATE, cc: 3, group: lfo}
-  lfo_wave_form:           {label: LFO WAVE FORM, cc: 12, group: lfo}
-  lfo_modulation_depth:    {label: LFO MODULATION DEPTH, cc: 17, group: lfo}
-  lfo_mode:                {label: LFO MODE, cc: 79, group: lfo}
-  lfo_key_trigger:         {label: LFO KEY TRIGGER, cc: 105, group: lfo}
-  lfo_sync:                {label: LFO SYNC, cc: 106, group: lfo}
+  lfo_rate:                {label: LFO RATE, cc: 3, part: synth, group: lfo}
+  lfo_wave_form:           {label: LFO WAVE FORM, cc: 12, part: synth, group: lfo}
+  lfo_modulation_depth:    {label: LFO MODULATION DEPTH, cc: 17, part: synth, group: lfo}
+  lfo_mode:                {label: LFO MODE, cc: 79, part: synth, group: lfo}
+  lfo_key_trigger:         {label: LFO KEY TRIGGER, cc: 105, part: synth, group: lfo}
+  lfo_sync:                {label: LFO SYNC, cc: 106, part: synth, group: lfo}
 
   # ──── portamento ────
 
-  portamento_time:         {label: PORTAMENTO TIME, cc: 5, group: portamento}
-  portamento_mode:         {label: PORTAMENTO MODE, cc: 31, group: portamento}
-  portamento:              {label: PORTAMENTO, cc: 65, direction: receives, group: portamento}
+  portamento_time:         {label: PORTAMENTO TIME, cc: 5, part: synth, group: portamento}
+  portamento_mode:         {label: PORTAMENTO MODE, cc: 31, part: synth, group: portamento}
+  portamento:              {label: PORTAMENTO, cc: 65, direction: receives, part: synth, group: portamento}
 
   # ──── osc ────
 
-  osc_lfo:                 {label: OSC LFO, cc: 13, group: osc}
-  osc_range:               {label: OSC RANGE, cc: 14, group: osc}
-  osc_pulse_width:         {label: OSC PULSE WIDTH, cc: 15, group: osc}
-  osc_pwm_source:          {label: OSC PWM SOURCE, cc: 16, group: osc}
-  osc_bend_sens:           {label: OSC BEND SENS, cc: 18, group: osc}
-  osc_level_19:            {label: OSC LEVEL, cc: 19, group: osc}
-  osc_level_20:            {label: OSC LEVEL, cc: 20, group: osc}
-  osc_sub_osc_level:       {label: OSC SUB OSC LEVEL, cc: 21, group: osc}
-  osc_sub_oct_type:        {label: OSC SUB OCT TYPE, cc: 22, group: osc}
-  osc_noise_level:         {label: OSC NOISE LEVEL, cc: 23, group: osc}
-  fine_tune:               {label: FINE TUNE, cc: 76, group: osc}
-  osc_draw_multiply:       {label: OSC DRAW MULTIPLY, cc: 102, group: osc}
-  osc_chop_overtone:       {label: OSC CHOP OVERTONE, cc: 103, group: osc}
-  osc_chop_comb:           {label: OSC CHOP COMB, cc: 104, group: osc}
-  osc_draw_sw:             {label: OSC DRAW SW, cc: 107, group: osc}
+  osc_lfo:                 {label: OSC LFO, cc: 13, part: synth, group: osc}
+  osc_range:               {label: OSC RANGE, cc: 14, part: synth, group: osc}
+  osc_pulse_width:         {label: OSC PULSE WIDTH, cc: 15, part: synth, group: osc}
+  osc_pwm_source:          {label: OSC PWM SOURCE, cc: 16, part: synth, group: osc}
+  osc_bend_sens:           {label: OSC BEND SENS, cc: 18, part: synth, group: osc}
+  osc_level_19:            {label: OSC LEVEL, cc: 19, part: synth, group: osc}
+  osc_level_20:            {label: OSC LEVEL, cc: 20, part: synth, group: osc}
+  osc_sub_osc_level:       {label: OSC SUB OSC LEVEL, cc: 21, part: synth, group: osc}
+  osc_sub_oct_type:        {label: OSC SUB OCT TYPE, cc: 22, part: synth, group: osc}
+  osc_noise_level:         {label: OSC NOISE LEVEL, cc: 23, part: synth, group: osc}
+  fine_tune:               {label: FINE TUNE, cc: 76, part: synth, group: osc}
+  osc_draw_multiply:       {label: OSC DRAW MULTIPLY, cc: 102, part: synth, group: osc}
+  osc_chop_overtone:       {label: OSC CHOP OVERTONE, cc: 103, part: synth, group: osc}
+  osc_chop_comb:           {label: OSC CHOP COMB, cc: 104, part: synth, group: osc}
+  osc_draw_sw:             {label: OSC DRAW SW, cc: 107, part: synth, group: osc}
 
   # ──── filter ────
 
-  filter_envelope:         {label: FILTER ENVELOPE, cc: 24, group: filter}
-  filter_lfo:              {label: FILTER LFO, cc: 25, group: filter}
-  filter_keyboard_follow:  {label: FILTER KEYBOARD FOLLOW, cc: 26, group: filter}
-  filter_bend_sens:        {label: FILTER BEND SENS, cc: 27, group: filter}
-  filter_resonance:        {label: FILTER RESONANCE, cc: 71, group: filter}
-  filter_frequency:        {label: FILTER FREQUENCY, cc: 74, group: filter}
+  filter_envelope:         {label: FILTER ENVELOPE, cc: 24, part: synth, group: filter}
+  filter_lfo:              {label: FILTER LFO, cc: 25, part: synth, group: filter}
+  filter_keyboard_follow:  {label: FILTER KEYBOARD FOLLOW, cc: 26, part: synth, group: filter}
+  filter_bend_sens:        {label: FILTER BEND SENS, cc: 27, part: synth, group: filter}
+  filter_resonance:        {label: FILTER RESONANCE, cc: 71, part: synth, group: filter}
+  filter_frequency:        {label: FILTER FREQUENCY, cc: 74, part: synth, group: filter}
 
   # ──── amp ────
 
-  amp_envelope_mode_sw:    {label: AMP ENVELOPE MODE SW, cc: 28, group: amp}
+  amp_envelope_mode_sw:    {label: AMP ENVELOPE MODE SW, cc: 28, part: synth, group: amp}
 
   # ──── env ────
 
-  env_trigger_mode:        {label: ENV TRIGGER MODE, cc: 29, group: env}
-  env_sustain:             {label: ENV SUSTAIN, cc: 30, group: env}
-  env_release:             {label: ENV RELEASE, cc: 72, group: env}
-  env_attack:              {label: ENV ATTACK, cc: 73, group: env}
-  env_decay:               {label: ENV DECAY, cc: 75, group: env}
+  env_trigger_mode:        {label: ENV TRIGGER MODE, cc: 29, part: synth, group: env}
+  env_sustain:             {label: ENV SUSTAIN, cc: 30, part: synth, group: env}
+  env_release:             {label: ENV RELEASE, cc: 72, part: synth, group: env}
+  env_attack:              {label: ENV ATTACK, cc: 73, part: synth, group: env}
+  env_decay:               {label: ENV DECAY, cc: 75, part: synth, group: env}
 
   # ──── chord ────
 
-  poly_mode:               {label: POLY MODE, cc: 80, group: chord}
-  chord_voice_2_sw:        {label: CHORD VOICE 2 SW, cc: 81, group: chord}
-  chord_voice_3_sw:        {label: CHORD VOICE 3 SW, cc: 82, group: chord}
-  chord_voice_4_sw:        {label: CHORD VOICE 4 SW, cc: 83, group: chord}
-  chord_voice_2_key_shift: {label: CHORD VOICE 2 KEY SHIFT, cc: 85, group: chord}
-  chord_voice_3_key_shift: {label: CHORD VOICE 3 KEY SHIFT, cc: 86, group: chord}
-  chord_voice_4_key_shift: {label: CHORD VOICE 4 KEY SHIFT, cc: 87, group: chord}
+  poly_mode:               {label: POLY MODE, cc: 80, part: synth, group: chord}
+  chord_voice_2_sw:        {label: CHORD VOICE 2 SW, cc: 81, part: synth, group: chord}
+  chord_voice_3_sw:        {label: CHORD VOICE 3 SW, cc: 82, part: synth, group: chord}
+  chord_voice_4_sw:        {label: CHORD VOICE 4 SW, cc: 83, part: synth, group: chord}
+  chord_voice_2_key_shift: {label: CHORD VOICE 2 KEY SHIFT, cc: 85, part: synth, group: chord}
+  chord_voice_3_key_shift: {label: CHORD VOICE 3 KEY SHIFT, cc: 86, part: synth, group: chord}
+  chord_voice_4_key_shift: {label: CHORD VOICE 4 KEY SHIFT, cc: 87, part: synth, group: chord}
 
   # ──── effects ────
 
-  reverb_time:             {label: REVERB TIME, cc: 89, group: effects}
-  delay_time:              {label: DELAY TIME, cc: 90, group: effects}
-  reverb_level:            {label: REVERB LEVEL, cc: 91, group: effects}
-  delay_level:             {label: DELAY LEVEL, cc: 92, group: effects}
-  chorus:                  {label: CHORUS, cc: 93, group: effects}
+  reverb_time:             {label: REVERB TIME, cc: 89, part: synth, group: effects}
+  delay_time:              {label: DELAY TIME, cc: 90, part: synth, group: effects}
+  reverb_level:            {label: REVERB LEVEL, cc: 91, part: synth, group: effects}
+  delay_level:             {label: DELAY LEVEL, cc: 92, part: synth, group: effects}
+  chorus:                  {label: CHORUS, cc: 93, part: synth, group: effects}
 
   # ──── no group of its own ────
 
-  transpose_sw:            {label: TRANSPOSE SW, cc: 77, direction: receives}
-  noise_mode:              {label: NOISE MODE, cc: 78}
+  transpose_sw:            {label: TRANSPOSE SW, cc: 77, direction: receives, part: synth}
+  noise_mode:              {label: NOISE MODE, cc: 78, part: synth}

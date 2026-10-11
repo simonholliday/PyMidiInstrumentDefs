@@ -386,15 +386,16 @@ voice:
     # thing twice and the two disagree, this corpus carries neither. Both editions print both
     # statements identically, so this is not an edition's slip.
   # BOTH KINDS ARE ANSWERED, AND ONE OF THEM IS SENT WHERE THE CHART SAYS IT IS NOT. Recognised:
-  # `Polyphonic` is `Yes` and `Channel` is `Yes` (guidebook_oled p. 241), so `poly` as the
-  # stronger of the two, which is the reading the MC-707's two After Touch rows got. Sending is
-  # where the document argues with itself: the chart marks polyphonic aftertouch `No`
-  # transmitted, while the MPE chapter says "Kits cannot output MPE MIDI and default, however
-  # aftertouch that has been recorded to the row will be output as polyphonic aftertouch for the
-  # rows note" (p. 259). This field records reception, so the contradiction does not change its
-  # value - but it is written down rather than quietly resolved, and anybody who adds a field for
-  # what an instrument transmits will find two answers waiting here.
-  aftertouch: poly
+  # `Polyphonic` is `Yes` and `Channel` is `Yes` (guidebook_oled p. 241), so `both`. Sending is
+  # where the document argues with itself, but only over polyphonic: the chart marks channel
+  # pressure `Yes` transmitted, which nothing contradicts, and polyphonic `No`, while the MPE
+  # chapter says "Kits cannot output MPE MIDI and default, however aftertouch that has been
+  # recorded to the row will be output as polyphonic aftertouch for the rows note" (p. 259).
+  # What sends it is a MIDI clip's gold knobs, whose messages include "bend and aftertouch"
+  # (p. 255). So `aftertouch_transmits` is true, and which kinds go out, which the flag cannot
+  # hold, is the contradiction, written down rather than quietly resolved.
+  aftertouch: both
+  aftertouch_transmits: true
   pitch_bend:
     # TWELVE SEMITONES BY DEFAULT AND SETTABLE TO ANYTHING FROM NONE TO EIGHT OCTAVES. The
     # setting is called BEND RANGE and its own cell reads "Global pitch bend range in semitones.

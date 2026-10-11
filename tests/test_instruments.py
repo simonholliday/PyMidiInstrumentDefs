@@ -1671,6 +1671,7 @@ class TestAftertouch:
 			"sequential/take_5": ("both", True),
 			"sequential/prophet_5": ("both", True),
 			"sequential/prophet_10": ("both", True),
+			"synthstrom_audible/deluge": ("both", True),
 		}
 
 
@@ -7302,7 +7303,8 @@ class TestDeluge:
 		fixed."""
 		deluge = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS])
 
-		assert deluge.voice.aftertouch == "poly"
+		assert deluge.voice.aftertouch == "both"
+		assert deluge.voice.aftertouch_transmits is True
 		assert deluge.midi.per_voice_channels is True
 
 		# Y is not CC 74 here: the guidebook patches it like any modulation source and names no

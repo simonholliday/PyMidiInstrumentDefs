@@ -452,9 +452,34 @@ RECEIVABLE: typing.Final[frozenset[str]] = frozenset({NOTES, CONTROLS, PROGRAM_C
 
 
 @dataclasses.dataclass(frozen=True)
+class Mode:
+
+	"""One named state of the whole instrument, chosen by a setting.
+
+	In a mode a different map, a different set of parts or a different channel
+	layout holds: a drumlogue answers on one channel as it ships, and across
+	consecutive channels when a global setting says so.  A part naming a mode
+	exists only in it; a part naming none exists in every mode, as every part
+	did before modes existed.
+
+	``factory`` is true on the one mode a document says the instrument ships
+	in, and never inferred: a state entered by holding a button at power-on is
+	not thereby the other one's default.
+
+	``unparted`` says whether the controls that name no part, the instrument's
+	own map on its base channel, answer in this mode.  True unless a file says
+	otherwise.
+	"""
+
+	label: str | None = None
+	factory: bool = False
+	unparted: bool = True
+
+
+@dataclasses.dataclass(frozen=True)
 class Part:
 
-	"""One separately addressable channel of an instrument.
+	"""One separately addressable part of an instrument, on a channel or within one.
 
 	``channel`` is ``assigned`` where the part is given a channel of its own, as
 	each of the Digitone's tracks and its effects unit is.  ``channel_offset`` is
@@ -490,6 +515,19 @@ class Part:
 	note here need not sound: an MC-707's control channel works sixteen Scatter
 	pads with notes 60 to 75, and a Digitone II's effects channel taps the tempo
 	with one note.
+
+	``mode`` names the one mode this part exists in, and ``None`` is every mode.
+
+	``nrpn_msb`` addresses a part's instances by NRPN MSB rather than by
+	channel: the first instance takes ``nrpn_msb`` and each next instance the
+	next MSB, as ``channel_offset`` counts channels.  A control on such a part
+	gives its ``nrpn`` as the first instance's number, as the document prints it.
+
+	``within`` names another part whose channel each instance shares, as a
+	Tonverk's eight subtracks sit inside an audio track running its Subtracks
+	machine.  Such a part takes no channel or offset of its own: the part it
+	names gives it, and ``count`` is how many sit inside each of that part's
+	instances.
 	"""
 
 	label: str | None = None
@@ -501,6 +539,9 @@ class Part:
 	polyphony: int | None = None
 	polyphony_shared: bool | None = None
 	voices: dict[str, int] = dataclasses.field(default_factory=dict)
+	mode: str | None = None
+	nrpn_msb: int | None = None
+	within: str | None = None
 
 
 	@property
@@ -509,7 +550,8 @@ class Part:
 		"""True when this part is given a channel rather than deriving one.
 
 		False for a part that says neither, which nothing can address: offering a
-		channel picker for it would claim something nobody recorded.
+		channel picker for it would claim something nobody recorded.  False too
+		for a part ``within`` another, which takes that part's channel.
 		"""
 
 		return self.channel == ASSIGNED
@@ -531,8 +573,9 @@ class Part:
 
 		"""Which MIDI channel one instance of this part sits on, given a base channel.
 
-		``None`` where the part is assigned a channel instead, so a caller asking
-		is told the question does not apply rather than handed a number.
+		``None`` where the part is assigned a channel instead, or sits ``within``
+		another part and takes its channel, so a caller asking is told the
+		question does not apply rather than handed a number.
 
 		Channels wrap at 16, which is documented behaviour rather than arithmetic
 		convenience: a Voce on a base channel of 15 plays its three parts on 15,
@@ -661,6 +704,10 @@ class Definition:
 	``warnings`` carries what the validator thought worth saying but not worth
 	refusing the file over — most often that provenance is missing, or that an
 	import has not yet been checked by a person.
+
+	``modes`` holds the states the whole instrument can be put in, each under a
+	short name, and is empty for the instrument most files describe, which has
+	one.
 	"""
 
 	version: int
@@ -669,6 +716,7 @@ class Definition:
 	sources: dict[str, Source] = dataclasses.field(default_factory=dict)
 	midi: Midi = dataclasses.field(default_factory=Midi)
 	voice: Voice = dataclasses.field(default_factory=Voice)
+	modes: dict[str, Mode] = dataclasses.field(default_factory=dict)
 	parts: dict[str, Part] = dataclasses.field(default_factory=dict)
 	groups: dict[str, str] = dataclasses.field(default_factory=dict)
 	controls: dict[str, Control] = dataclasses.field(default_factory=dict)
@@ -687,6 +735,55 @@ class Definition:
 		"""
 
 		return self.source is not None and "unverified" in self.source.lower()
+
+
+	@property
+	def factory_mode (self) -> str | None:
+
+		"""The name of the mode a document says the instrument ships in, if one does.
+
+		``None`` where no mode is marked, which is the ordinary case: most makers
+		do not say, and nothing here guesses for them.
+		"""
+
+		for name, mode in self.modes.items():
+			if mode.factory:
+				return name
+
+		return None
+
+
+	def parts_in (self, mode: str) -> dict[str, Part]:
+
+		"""The parts that exist in one mode: those naming it, and those naming none.
+
+		A mode this file does not declare is refused rather than answered, since
+		every part naming no mode would otherwise be handed back for a typo.
+		"""
+
+		if mode not in self.modes:
+			raise ValueError(f"{mode!r} is not one of this instrument's modes: {sorted(self.modes)}")
+
+		return {name: part for name, part in self.parts.items() if part.mode in (None, mode)}
+
+
+	def controls_in (self, mode: str) -> list[Control]:
+
+		"""The controls that answer in one mode, in file order.
+
+		The controls naming no part, unless the mode says ``unparted: false``,
+		and the controls of every part that exists in the mode.  So a drumlogue's
+		single-channel map answers in its factory mode and not in its
+		multi-channel one, where each part's own map does instead.
+		"""
+
+		present = self.parts_in(mode)
+		unparted = self.modes[mode].unparted
+
+		return [
+			control for control in self.controls.values()
+			if (control.part is None and unparted) or control.part in present
+		]
 
 
 	def grouped_controls (self) -> dict[str, list[Control]]:
@@ -761,6 +858,14 @@ class Definition:
 		on the base channel is their project's business, not this file's.  A
 		control the instrument only transmits, or ignores both ways, is included
 		like any other; read ``is_sendable`` for which a panel may send.
+
+		A part existing in one mode gets the controls naming no part only where
+		that mode lets them answer: in a mode saying ``unparted: false`` the
+		base-channel map is silent.  A part existing in every mode cannot know
+		which one a caller means, so it gets them as before; ask ``controls_in()``
+		what answers in one mode.  A part ``within`` this one is asked about by
+		its own name, since its controls reach one of its instances rather than
+		this part.
 		"""
 
 		found = self.parts[part]
@@ -773,7 +878,8 @@ class Definition:
 
 		on_base = found.channel_offset is not None \
 			and (found.channel_offset + instance) % 16 == 0 \
-			and found.takes(CONTROLS)
+			and found.takes(CONTROLS) \
+			and (found.mode is None or self.modes[found.mode].unparted)
 
 		return [
 			control for control in self.controls.values()

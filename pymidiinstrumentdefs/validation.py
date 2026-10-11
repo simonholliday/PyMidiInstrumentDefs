@@ -85,9 +85,10 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	}),
 	"voice.velocity": frozenset({"note_on", "note_off", "gated_by", "transmits"}),
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
+	"modes": frozenset({"label", "factory", "unparted"}),
 	"parts": frozenset({
 		"label", "channel", "channel_offset", "count", "receives", "addressing", "polyphony",
-		"polyphony_shared", "voices",
+		"polyphony_shared", "voices", "mode", "nrpn_msb", "within",
 	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
@@ -459,7 +460,19 @@ class _Reader:
 			if channel is not None and offset is not None:
 				self.refuse(where, "has both channel and channel_offset — a part is given a channel or derives one, not both")
 
-			if channel is None and offset is None:
+			# A part inside another takes that part's channel, so a channel of its own
+			# would be a second answer to where it is.  Whether the part it names
+			# exists, and has a channel to give, is checked once every part is read.
+
+			within = None if fields.get("within") is None else self.name(fields["within"], f"{where}.within")
+
+			if within is not None and (channel is not None or offset is not None):
+				self.refuse(
+					f"{where}.within",
+					"sits on another part's channel, and this part also gives a channel of its own — say one",
+				)
+
+			if channel is None and offset is None and within is None:
 				self.warn(where, "says neither channel nor channel_offset, so nothing can address it")
 
 			addressing = self.optional_text(fields, "addressing", where)
@@ -510,6 +523,30 @@ class _Reader:
 			if voices and fields.get("receives") is not None and "notes" not in receives:
 				self.refuse(f"{where}.voices", "names notes on a part this file says takes no notes")
 
+			# Instances addressed by MSB run upwards from the first, so the last must
+			# still be an MSB: eight instances from 121 would need a 128th.
+
+			msb = None if fields.get("nrpn_msb") is None \
+				else self.integer(fields["nrpn_msb"], f"{where}.nrpn_msb", 0, 127)
+
+			if msb is not None and msb + count - 1 > 127:
+				self.refuse(
+					f"{where}.nrpn_msb",
+					f"{msb} with {count} instances runs to MSB {msb + count - 1}, past 127",
+				)
+
+			# A part's instances are told apart one way.  Several instances on channels
+			# of their own and on MSBs of their own would leave a consumer two answers
+			# to where the third one is.
+
+			if msb is not None and count > 1 and (channel is not None or offset is not None):
+				self.refuse(
+					f"{where}.nrpn_msb",
+					"counts this part's instances by MSB, and its channel counts them too — say one",
+				)
+
+			mode = None if fields.get("mode") is None else self.name(fields["mode"], f"{where}.mode")
+
 			found[self.name(name, "parts")] = pymidiinstrumentdefs.definition.Part(
 				label            = self.optional_text(fields, "label", where),
 				channel          = channel,
@@ -520,6 +557,42 @@ class _Reader:
 				polyphony        = polyphony,
 				polyphony_shared = shared,
 				voices           = voices,
+				mode             = mode,
+				nrpn_msb         = msb,
+				within           = within,
+			)
+
+		return found
+
+
+	def modes (self, value: object) -> dict[str, pymidiinstrumentdefs.definition.Mode]:
+
+		"""Read the states the whole instrument can be put in, each under a short name.
+
+		Most instruments have one state and declare none, and an absent section
+		is the ordinary case.  What is checked is that a factory mode is claimed
+		once at most: two would give a consumer two answers to how the instrument
+		ships.
+		"""
+
+		found = {}
+
+		for name, entry in self.mapping(value, "modes").items():
+			where = f"modes.{name}"
+			fields = self.fields(entry, where, "modes")
+
+			found[self.name(name, "modes")] = pymidiinstrumentdefs.definition.Mode(
+				label    = self.optional_text(fields, "label", where),
+				factory  = False if fields.get("factory") is None else self.flag(fields["factory"], f"{where}.factory"),
+				unparted = True if fields.get("unparted") is None else self.flag(fields["unparted"], f"{where}.unparted"),
+			)
+
+		factory = [name for name, mode in found.items() if mode.factory]
+
+		if len(factory) > 1:
+			self.refuse(
+				f"modes.{factory[1]}.factory",
+				f"marks a second factory mode beside {factory[0]!r} — the instrument ships in one",
 			)
 
 		return found
@@ -734,6 +807,7 @@ class _Reader:
 		self,
 		voice: pymidiinstrumentdefs.definition.Voice,
 		parts: dict[str, pymidiinstrumentdefs.definition.Part],
+		modes: dict[str, pymidiinstrumentdefs.definition.Mode] | None = None,
 	) -> None:
 
 		"""Refuse voices counted in two places that cannot both be true.
@@ -743,9 +817,16 @@ class _Reader:
 		give a consumer two answers to how many notes a part can hold.  Leaving
 		the question unanswered is allowed; answering half of it is warned, so
 		that whoever reads a figure is not left guessing what it covers.
+
+		One exception: where **every** part with voices of its own exists in one
+		mode only, the instrument's figure may stand beside theirs.  An OB-X8 has
+		eight voices in every mode and four on each of its two parts only in
+		Split, so the two answers are to two different questions.  One declared
+		mode is no exception: a part in the only mode exists in every mode.
 		"""
 
 		own = [name for name, part in parts.items() if part.polyphony is not None]
+		moded = bool(own) and len(modes or {}) > 1 and all(parts[name].mode is not None for name in own)
 
 		if voice.polyphony_shared is not None and not parts:
 			self.refuse(
@@ -759,17 +840,18 @@ class _Reader:
 				"gives this part voices of its own, and voice.polyphony_shared says every part draws on one pool",
 			)
 
-		if voice.polyphony_shared is False and voice.polyphony is not None:
+		if voice.polyphony_shared is False and voice.polyphony is not None and not moded:
 			self.refuse(
 				"voice.polyphony",
 				"gives one figure for the whole instrument, and voice.polyphony_shared says each part "
 				"has voices of its own — give each part its figure instead",
 			)
 
-		if voice.polyphony is not None and own:
+		if voice.polyphony is not None and own and not moded:
+			unmoded = [name for name in own if parts[name].mode is None]
 			self.refuse(
 				"voice.polyphony",
-				f"gives one figure for the whole instrument, and parts.{own[0]} gives voices of its own "
+				f"gives one figure for the whole instrument, and parts.{unmoded[0]} gives voices of its own "
 				f"— say it once, where it is true",
 			)
 
@@ -1071,6 +1153,7 @@ def build (
 	model = reader.model(raw["model"])
 	provenance = reader.optional_text(raw, "source", "file")
 	documents = reader.sources(raw.get("sources"))
+	modes = reader.modes(raw.get("modes"))
 	parts = reader.parts(raw.get("parts"))
 	groups = reader.groups(raw.get("groups"))
 	controls = reader.controls(raw.get("controls"))
@@ -1093,7 +1176,55 @@ def build (
 					f"names {gate!r}, which is not one of this instrument's controls",
 				)
 
-	reader.polyphony(voice, parts)
+	# A part naming a mode nothing declares exists in no state the instrument has,
+	# and one inside a part nothing declares sits on no channel.  Both are typos
+	# that would otherwise fail in silence, as a control's unknown part would.
+
+	for name, part in parts.items():
+		if part.mode is not None and part.mode not in modes:
+			reader.refuse(f"parts.{name}.mode", f"names {part.mode!r}, which is not one of this instrument's modes")
+
+		if part.within is None:
+			continue
+
+		if part.within == name:
+			reader.refuse(f"parts.{name}.within", "names this part itself — a part sits inside another")
+
+		if part.within not in parts:
+			reader.refuse(f"parts.{name}.within", f"names {part.within!r}, which is not one of this instrument's parts")
+
+		# The part it names gives it a channel, so that part must have one to give.
+		# A part inside another has none of its own, so this also rules out a part
+		# inside a part inside another, and with it any circle.
+
+		parent = parts[part.within]
+
+		if parent.channel is None and parent.channel_offset is None:
+			reader.refuse(
+				f"parts.{name}.within",
+				f"names {part.within!r}, which has no channel of its own to share",
+			)
+
+		# Several instances on one channel need something else to tell them apart.
+		# Warned rather than refused, since a file being written may add it next.
+
+		if part.count > 1 and part.nrpn_msb is None:
+			reader.warn(
+				f"parts.{name}.within",
+				f"puts {part.count} instances on the channel of {part.within!r} with nothing to tell them "
+				f"apart — give nrpn_msb",
+			)
+
+	# Modes that change nothing are a section a consumer would read for nothing:
+	# no part lives in one, and every one lets the base-channel map answer.
+
+	if modes and not any(part.mode is not None for part in parts.values()) \
+			and all(mode.unparted for mode in modes.values()):
+		reader.warn("modes", "declares modes no part names and none says unparted: false, so no mode changes anything")
+	elif len(modes) == 1:
+		reader.warn("modes", "declares one mode, and a mode is one of several states, so one changes nothing")
+
+	reader.polyphony(voice, parts, modes)
 
 	# A control naming a part nothing declares would be addressed on a channel
 	# that does not exist, which fails silently on the wire.  Refused for the
@@ -1104,6 +1235,40 @@ def build (
 			reader.refuse(
 				f"controls.{control.name}.part",
 				f"names {control.part!r}, which is not one of this instrument's parts",
+			)
+
+	# A part whose instances are told apart by NRPN MSB is reached with the first
+	# instance's number, as printed, so a control on it must give an NRPN, and one
+	# in that first MSB: any other number would reach no instance, or the wrong one.
+
+	for control in controls.values():
+		if control.part is None or parts[control.part].nrpn_msb is None:
+			continue
+
+		msb = parts[control.part].nrpn_msb
+
+		if control.nrpn is None:
+			reader.refuse(
+				f"controls.{control.name}.part",
+				f"names {control.part!r}, whose instances are told apart by NRPN MSB, and gives no nrpn",
+			)
+
+		# A controller number, coarse or fine, reaches the part's channel and not one
+		# MSB, so where there are several instances it cannot say which it reaches.
+
+		for field, number in (("cc", control.cc), ("lsb", control.lsb)):
+			if number is not None and parts[control.part].count > 1:
+				reader.refuse(
+					f"controls.{control.name}.{field}",
+					f"is on {control.part!r}, whose instances are told apart by NRPN MSB, and a controller "
+					f"number cannot say which instance it reaches",
+				)
+
+		if control.nrpn // 128 != msb:
+			reader.refuse(
+				f"controls.{control.name}.nrpn",
+				f"is in MSB {control.nrpn // 128}, and {control.part!r} starts at MSB {msb} "
+				f"— give the first instance's number, as printed",
 			)
 
 	# The same silent failure from the other side: a control put on a part the
@@ -1142,6 +1307,7 @@ def build (
 		sources  = documents,
 		midi     = reader.midi(raw.get("midi")),
 		voice    = voice,
+		modes    = modes,
 		parts    = parts,
 		groups   = groups,
 		controls = controls,

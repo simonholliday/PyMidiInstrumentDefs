@@ -59,6 +59,7 @@ SWITCH = pymidiinstrumentdefs.definition.SWITCH
 Control = pymidiinstrumentdefs.definition.Control
 Definition = pymidiinstrumentdefs.definition.Definition
 Midi = pymidiinstrumentdefs.definition.Midi
+Mode = pymidiinstrumentdefs.definition.Mode
 Model = pymidiinstrumentdefs.definition.Model
 Part = pymidiinstrumentdefs.definition.Part
 Source = pymidiinstrumentdefs.definition.Source
@@ -85,6 +86,7 @@ __all__ = [
 	"DefinitionError",
 	"DefinitionNotFound",
 	"Midi",
+	"Mode",
 	"Model",
 	"Part",
 	"Source",

@@ -626,6 +626,92 @@ Six rules worth holding on to:
     fx: {channel: assigned, receives: [notes, controls], addressing: voices, voices: {tap_tempo: 127}}
   ```
 
+**Some instruments change shape with a setting.** A Korg drumlogue answers on one channel
+as it ships, and on a channel for each of its parts when a global setting says so, with a map
+in which one number can mean something different on each part. That is a *mode*: a named
+state of the whole instrument, in which a different map, a different set of parts or a
+different channel layout holds. Declare the modes in `modes`, and let a part name the one it
+exists in:
+
+```yaml
+modes:
+  single:
+    label: SINGLE Ch.
+    factory: true             # only where a document says so
+  multi:
+    label: MULTI Ch.
+    unparted: false           # the controls naming no part do not answer here
+
+parts:
+  part_1: {label: Part 1, mode: multi, channel_offset: 0, receives: [notes, controls]}
+
+controls:
+  bd_tune:        {label: BD TUNE, cc: 20}                  # the single-channel map
+  part_1_bd_tune: {label: BD TUNE, cc: 20, part: part_1}    # part 1's, in the other mode
+```
+
+- **A part naming no mode exists in every mode**, as every part did before modes existed. A
+  file declaring no modes reads exactly as it did.
+- **`factory: true` marks the mode the instrument ships in, and only where a document says
+  so**, on one mode at most. The drumlogue's manual calls its single-channel implementation
+  the factory default. Most makers do not say, and a state entered by holding a button at
+  power-on is not thereby the other one's default: leave both unmarked.
+- **`unparted: false` says the controls naming no part do not answer in that mode.** Those
+  controls are the instrument's own map on its base channel, and in the drumlogue's other mode
+  that map is not the one that answers. Left out, it is true.
+- **Declared modes must change something**: a part names one, or one says `unparted: false`.
+  Modes that change nothing draw a warning, and so does a single mode, since a mode is one of
+  several states.
+- **A mode is the whole instrument's.** Where a setting on one track decides what a number
+  means, as an Analog Rytm's machines do, that stays in words.
+
+A page asking what answers in one mode calls `controls_in()` and `parts_in()` with its name,
+and `factory_mode` names the marked one.
+
+**A mode also lets the instrument's figure for voices stand beside a part's.** One figure for
+the whole instrument and one for a part is refused, because it gives two answers to one
+question, unless every part with voices of its own exists in one of two or more modes. An
+OB-X8 has eight voices in every mode, and in Split mode four on each half:
+
+```yaml
+modes:
+  normal: {label: Normal}
+  split:  {label: Split}
+  double: {label: Double}
+parts:
+  lower: {mode: split, channel_offset: 0, polyphony: 4}
+  upper: {mode: split, channel_offset: 1, polyphony: 4}
+voice: {polyphony: 8, polyphony_shared: false}
+```
+
+**And a part's instances can be told apart by NRPN rather than by channel.** An Elektron
+Tonverk's audio track running its Subtracks machine holds eight subtracks, on the track's
+channel, which take the same 49 parameters, the first subtrack on NRPN MSB 1 and each next one
+on the next MSB. Say where the part sits with `within`, and where its instances start with
+`nrpn_msb`:
+
+```yaml
+parts:
+  audio:    {label: Audio track, channel: assigned, count: 8, receives: [notes, controls]}
+  subtrack: {label: Subtrack, within: audio, count: 8, nrpn_msb: 1, receives: [controls]}
+
+controls:
+  amp_pan:  {label: AMP pan, nrpn: 138, part: subtrack}   # the first subtrack's, as printed
+```
+
+- **`nrpn_msb` is the first instance's MSB**, and each next instance takes the next, as
+  `channel_offset` counts channels. A control on the part gives its `nrpn` as the first
+  instance's number, as the page prints it, so the citation check reads printed numbers. The
+  last instance's MSB must stay within 127.
+- **`within` names the part whose channel each instance shares.** A part inside another takes
+  no channel or offset of its own, and the part it names must have one to give. Its `count` is
+  how many sit inside each of that part's instances, and more than one with no `nrpn_msb` to
+  tell them apart draws a warning.
+- **A control on a part with `nrpn_msb` gives an `nrpn`, in the first instance's MSB.** Any
+  other NRPN would reach no instance, or the wrong one, and where there are several instances
+  a controller number could not say which it reaches, so all of these are refused. And a part's instances are
+  told apart one way: several of them counted by channel and by MSB at once are refused.
+
 A part is not a panel. It says where a control is addressed, not how anything should be
 drawn — that stays the consuming page's business, as with everything else here.
 

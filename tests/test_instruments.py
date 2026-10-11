@@ -2755,6 +2755,187 @@ class TestPartsSharingVoices:
 		assert "parts.d.polyphony" in str(raised.value)
 
 
+class TestModes:
+
+	"""A mode is a state of the whole instrument, and a part may exist in one only."""
+
+	HEAD = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+
+	def refused (self, body: str) -> str:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		return str(raised.value)
+
+	def test_a_file_declaring_no_modes_reads_as_it_did (self) -> None:
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + "parts: {p: {channel: assigned}}", source = "x.yaml")
+		part = parsed.parts["p"]
+
+		assert parsed.modes == {}
+		assert parsed.factory_mode is None
+		assert (part.mode, part.nrpn_msb, part.within) == (None, None, None)
+
+	def test_a_mode_reads_its_label_its_factory_mark_and_unparted (self) -> None:
+		body = ("modes: {single: {label: SINGLE Ch., factory: true}, multi: {label: Multi channel, unparted: false}}\n"
+			"parts: {part_1: {mode: multi, channel_offset: 0, receives: [notes, controls]}}")
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert parsed.modes["single"] == pymidiinstrumentdefs.Mode(label = "SINGLE Ch.", factory = True, unparted = True)
+		assert parsed.modes["multi"] == pymidiinstrumentdefs.Mode(label = "Multi channel", factory = False, unparted = False)
+		assert parsed.factory_mode == "single"
+		assert parsed.parts["part_1"].mode == "multi"
+		assert parsed.warnings == ()
+
+	def test_no_mode_is_the_factory_one_unless_a_file_says_so (self) -> None:
+		body = "modes: {normal: {label: Normal}, split: {label: Split}}\nparts: {lower: {mode: split, channel_offset: 0}}"
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert parsed.factory_mode is None
+
+	def test_what_answers_in_a_mode_follows_unparted_and_the_parts_present (self) -> None:
+		"""The drumlogue's shape: one number in the base-channel map, and on a part in the other mode."""
+		body = ("modes: {single: {factory: true}, multi: {unparted: false}}\n"
+			"parts: {part_1: {mode: multi, channel_offset: 0, receives: [notes, controls]},"
+			" fx: {channel: assigned, receives: [controls]}}\n"
+			"controls: {bd_tune: {label: BD TUNE, cc: 20}, part_1_bd_tune: {label: BD TUNE, cc: 20, part: part_1},"
+			" fx_level: {label: Level, cc: 7, part: fx}}")
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert [control.name for control in parsed.controls_in("single")] == ["bd_tune", "fx_level"]
+		assert [control.name for control in parsed.controls_in("multi")] == ["part_1_bd_tune", "fx_level"]
+		assert list(parsed.parts_in("single")) == ["fx"]
+		assert list(parsed.parts_in("multi")) == ["part_1", "fx"]
+
+	def test_asking_after_a_mode_the_file_does_not_declare_is_refused (self) -> None:
+		"""Rather than handing back every part naming no mode for a typo."""
+		body = "modes: {single: {}, multi: {unparted: false}}"
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		with pytest.raises(ValueError):
+			parsed.controls_in("mutli")
+
+	def test_two_factory_modes_are_refused (self) -> None:
+		problem = self.refused("modes: {a: {factory: true}, b: {factory: true, unparted: false}}")
+
+		assert "modes.b.factory" in problem
+
+	def test_a_part_naming_an_undeclared_mode_is_refused (self) -> None:
+		problem = self.refused("modes: {split: {}}\nparts: {lower: {mode: spilt, channel_offset: 0}}")
+
+		assert "parts.lower.mode" in problem and "'spilt'" in problem
+
+	def test_modes_that_change_nothing_are_warned_about (self) -> None:
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + "modes: {a: {}, b: {}}", source = "x.yaml")
+
+		assert any("no mode changes anything" in warning for warning in parsed.warnings)
+
+	def test_an_unknown_key_on_a_mode_is_warned_about (self) -> None:
+		body = "modes: {a: {unparted: false, defualt: true}}"
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert any("defualt" in warning for warning in parsed.warnings)
+
+	def test_a_part_inside_another_shares_its_channel_and_counts_msbs (self) -> None:
+		"""The Tonverk's shape: eight subtracks inside each audio track, on MSB 1 to 8."""
+		body = ("parts: {audio: {channel: assigned, count: 8, receives: [notes, controls]},"
+			" subtrack: {within: audio, count: 8, nrpn_msb: 1, receives: [controls]}}\n"
+			"controls: {amp_pan: {label: AMP pan, nrpn: 138, part: subtrack}}")
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+		subtrack = parsed.parts["subtrack"]
+
+		assert (subtrack.within, subtrack.nrpn_msb, subtrack.count) == ("audio", 1, 8)
+		assert subtrack.channel_for(1) is None
+		assert parsed.warnings == ()
+
+	def test_a_part_inside_another_may_not_give_a_channel_of_its_own (self) -> None:
+		problem = self.refused("parts: {a: {channel: assigned}, b: {within: a, channel_offset: 1}}")
+
+		assert "parts.b.within" in problem
+
+	def test_a_part_inside_itself_or_nothing_is_refused (self) -> None:
+		assert "itself" in self.refused("parts: {a: {within: a}}")
+		assert "'c'" in self.refused("parts: {a: {channel: assigned}, b: {within: c}}")
+
+	def test_a_part_inside_one_with_no_channel_to_give_is_refused (self) -> None:
+		"""Which also stops parts inside parts going round in a circle."""
+		problem = self.refused("parts: {a: {within: b}, b: {within: a}}")
+
+		assert "no channel of its own to share" in problem
+
+	def test_msbs_running_past_127_are_refused (self) -> None:
+		assert "past 127" in self.refused("parts: {a: {channel: assigned, count: 8, nrpn_msb: 121}}")
+		assert "parts.a.nrpn_msb" in self.refused("parts: {a: {channel: assigned, nrpn_msb: 128}}")
+
+	def test_the_instruments_figure_may_stand_beside_parts_that_exist_in_one_mode (self) -> None:
+		"""The OB-X8's shape: eight voices in every mode, and four on each part only in Split."""
+		body = ("modes: {normal: {label: Normal}, split: {label: Split}}\n"
+			"voice: {polyphony: 8, polyphony_shared: false}\n"
+			"parts: {lower: {mode: split, channel_offset: 0, polyphony: 4},"
+			" upper: {mode: split, channel_offset: 1, polyphony: 4}}")
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert parsed.voice.polyphony == 8
+		assert (parsed.parts["lower"].polyphony, parsed.parts["upper"].polyphony) == (4, 4)
+		assert parsed.warnings == ()
+
+	def test_one_part_with_voices_in_every_mode_keeps_the_refusal (self) -> None:
+		"""Then the two figures would be two answers to one question again."""
+		problem = self.refused(
+			"modes: {normal: {}, split: {}}\nvoice: {polyphony: 8}\n"
+			"parts: {lower: {mode: split, channel_offset: 0, polyphony: 4}, upper: {channel_offset: 1, polyphony: 4}}")
+
+		assert "parts.upper" in problem
+
+	def test_a_single_mode_is_warned_about_and_relaxes_nothing (self) -> None:
+		"""A part in the only mode exists in every mode, so its figure answers the instrument's question."""
+		parsed = pymidiinstrumentdefs.parse(
+			self.HEAD + "modes: {split: {}}\nparts: {lower: {mode: split, channel_offset: 0}}", source = "x.yaml")
+
+		assert any("declares one mode" in warning for warning in parsed.warnings)
+
+		problem = self.refused(
+			"modes: {split: {}}\nvoice: {polyphony: 8, polyphony_shared: false}\n"
+			"parts: {lower: {mode: split, channel_offset: 0, polyphony: 4}}")
+
+		assert "voice.polyphony" in problem
+
+	def test_a_part_in_a_mode_without_the_base_map_is_not_handed_it (self) -> None:
+		"""On the drumlogue's shape, part 1 sits on the base channel, where the single map is silent."""
+		body = ("modes: {single: {factory: true}, multi: {unparted: false}}\n"
+			"parts: {part_1: {mode: multi, channel_offset: 0, receives: [notes, controls]}}\n"
+			"controls: {bd_tune: {label: BD TUNE, cc: 20}, part_1_bd_tune: {label: BD TUNE, cc: 20, part: part_1}}")
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert [control.name for control in parsed.controls_reaching("part_1")] == ["part_1_bd_tune"]
+
+	def test_a_control_on_an_msb_part_must_give_the_first_instances_nrpn (self) -> None:
+		head = "parts: {audio: {channel: assigned}, sub: {within: audio, count: 8, nrpn_msb: 1, receives: [controls]}}\n"
+
+		assert "gives no nrpn" in self.refused(head + "controls: {pan: {label: Pan, cc: 10, part: sub}}")
+		assert "starts at MSB 1" in self.refused(head + "controls: {pan: {label: Pan, nrpn: 266, part: sub}}")
+		assert "controls.pan.cc" in self.refused(head + "controls: {pan: {label: Pan, cc: 10, nrpn: 138, part: sub}}")
+		assert "controls.pan.lsb" in self.refused(head + "controls: {pan: {label: Pan, lsb: 42, nrpn: 138, part: sub}}")
+
+	def test_one_instance_at_an_msb_may_also_take_a_controller_number (self) -> None:
+		"""With nothing to tell apart, the channel reaches the only instance."""
+		body = ("parts: {fx: {channel: assigned, nrpn_msb: 1, receives: [controls]}}\n"
+			"controls: {pan: {label: Pan, cc: 10, nrpn: 138, part: fx}}")
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert parsed.controls["pan"].cc == 10
+
+	def test_instances_inside_a_part_with_nothing_to_tell_them_apart_are_warned_about (self) -> None:
+		body = "parts: {audio: {channel: assigned}, sub: {within: audio, count: 8}}"
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + body, source = "x.yaml")
+
+		assert any("nothing to tell them apart" in warning for warning in parsed.warnings)
+
+	def test_instances_counted_by_channel_and_by_msb_at_once_are_refused (self) -> None:
+		problem = self.refused("parts: {a: {channel: assigned, count: 4, nrpn_msb: 1}}")
+
+		assert "parts.a.nrpn_msb" in problem and "say one" in problem
+
+
 class TestPartNoteMaps:
 
 	"""A part may carry its own name-to-note map, for notes that each do one named thing there."""

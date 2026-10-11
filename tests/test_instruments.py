@@ -4424,10 +4424,10 @@ class TestAnalogRytmMkii:
 
 class TestVolcaDrum:
 
-	"""An instrument whose maker publishes two maps, and a definition that follows one of them."""
+	"""An instrument whose maker publishes two maps, and a definition that carries each in its mode."""
 
 	def test_the_six_parts_sit_on_six_channels_with_nothing_to_set (self) -> None:
-		"""The chart's whole addressing scheme is "Channel 1-6 = Parts 1-6"."""
+		"""The split chart's whole addressing scheme is "Channel 1-6 = Parts 1-6"."""
 		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
 
 		part = volca.parts["part"]
@@ -4436,7 +4436,7 @@ class TestVolcaDrum:
 		assert part.channel_offset == 0
 		assert part.is_assigned is False
 
-		# There is no basic channel to choose, so the six channels follow from the one base.
+		# On the split channels there is no basic channel to choose, so the six follow from the one base.
 		assert volca.midi.channels == (1, 1)
 		assert [part.channel_for(1, instance) for instance in range(6)] == [1, 2, 3, 4, 5, 6]
 
@@ -4463,10 +4463,11 @@ class TestVolcaDrum:
 		assert volca.controls["select_2"].cc == 15
 		assert volca.controls["select_both"].cc == 16
 
-		both = [name for name in volca.controls if name.endswith("_both")]
+		both = [control.name for control in volca.controls_in("split") if control.name.endswith("_both")]
 
 		assert len(both) == 7
-		assert len(volca.controls) == 31
+		assert len(volca.controls_in("split")) == 31
+		assert len(volca.controls) == 85
 
 	def test_the_resonator_is_shared_so_four_controls_have_no_part (self) -> None:
 		"""Its send belongs to a part and its own four do not."""
@@ -4506,8 +4507,49 @@ class TestVolcaDrum:
 		assert volca.voice.velocity.note_on == "received"
 		assert volca.voice.velocity.note_off is False
 
-	def test_the_other_chart_is_cited_and_nothing_is_taken_from_it (self) -> None:
-		"""Both implementations are named, and the file describes the factory default."""
+	def test_each_chart_is_carried_in_its_mode (self) -> None:
+		"""The split channels, so marked in the chart's words, and the single channel's six blocks.
+
+		The single channel's chart was cited and nothing taken from it until 2026-10-11.
+		"""
+		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
+
+		assert list(volca.modes) == ["split", "single"]
+		assert volca.factory_mode == "split"
+		assert volca.parts["part"].mode == "split"
+
+		single = volca.controls_in("single")
+
+		assert len(single) == 58
+		assert sorted(control.name for control in single if control.part is None) == [
+			"waveguide_body", "waveguide_decay", "waveguide_model", "waveguide_tune"]
+		assert [part.label for part in volca.parts_in("single").values()] == [
+			"PART1", "PART2", "PART3", "PART4", "PART5", "PART6"]
+		assert volca.controls["single_part_1_select_both"].cc == 14
+		assert volca.controls["single_part_6_pan"].cc == 114
+
+		# The chart gives each part its controls and says nothing of which part a note sounds.
+		assert all(part.receives == ("controls",) for part in volca.parts_in("single").values())
+
+		# Six parts on one channel, so no number may mean two things across them.
+		assert len({control.cc for control in single}) == 58
+
+		# The two maps share 26 numbers, and 21 of them carry a different name in each.
+		split = {control.cc: control.label for control in volca.controls_in("split")}
+		shared = [control for control in single if control.cc in split]
+
+		assert len(shared) == 26
+		assert {control.cc for control in shared if control.label == split[control.cc]} == {
+			103, 116, 117, 118, 119}
+
+		# Part 6's block takes the numbers that carry an NRPN's number and half of an RPN's, as
+		# ordinary controllers.
+		assert volca.midi.nrpn == "none"
+		assert [volca.controls[f"single_part_6_{stem}_both"].cc
+			for stem in ("pitch", "eg_attack", "eg_release")] == [98, 99, 100]
+
+	def test_the_charts_are_both_cited (self) -> None:
+		"""Both implementations are named, by the titles their files carry."""
 		volca = pymidiinstrumentdefs.load("korg/volca_drum", [CORPUS])
 
 		assert set(volca.sources) == {

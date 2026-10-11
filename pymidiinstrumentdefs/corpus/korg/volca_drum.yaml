@@ -1,22 +1,24 @@
 # THIS INSTRUMENT HAS TWO MIDI IMPLEMENTATIONS AND KORG PUBLISHES A CHART FOR EACH. They are not
 # one map re-channelled: twenty-one numbers appear on both charts naming different parameters,
-# and four parameters can be reached in one implementation and not in the other. The two are
+# four parameters can be reached in one implementation and not in the other, and a part's two
+# layers can be reached one at a time in one and only together in the other. The two are
 # "MIDI Implementation Chart (Split channel)" and "MIDI Implementation Chart (Single channel)",
 # both dated 2019.03.29, both on the same download page.
 #
-# EVERYTHING BELOW IS THE SPLIT-CHANNEL IMPLEMENTATION, which is the one the instrument has out
-# of the box. Three documents say so. The split-channel chart: "This is the factory default
+# THE SPLIT-CHANNEL IMPLEMENTATION IS THE ONE THE INSTRUMENT HAS OUT OF THE BOX, and is the
+# factory mode below. Three documents say so. The split-channel chart: "This is the factory default
 # implementation." The single-channel chart: "This is an alternate implementation which can be
 # selected by setting a specific MIDI channel. The factory default implementation, split
 # channels, can be reverted to by deselecting the MIDI channel." And the owner's manual, from
 # the player's side: "Tapping the step for the selected channel (LED lit up) cancels the
 # selection and reverts to part 1-6 assigned to channels 1-6. (factory default)" (p. 3).
 #
-# THE FORMAT CANNOT HOLD BOTH, and that is a gap rather than an oversight. A control's number is
-# a fact about the instrument here, not a fact about the instrument in a mode, so there is
-# nowhere to put a second map that replaces this one when somebody picks a channel. What the
-# other implementation does is written into the source account below, in words, so that nobody
-# reading this file is surprised by a volca drum that answers differently.
+# **BOTH ARE CARRIED, EACH IN ITS MODE.** Until 2026-10-11 the format could not hold both: a
+# control's number was a fact about the instrument and not about the instrument in a mode, so
+# there was nowhere to put a second map that replaces the first when somebody picks a channel,
+# and the single-channel map was described in words. Modes hold it now. The split chart's part
+# answers in `split`, the single chart's six parts in `single`, and the resonator's four
+# controls, which name no part, in both.
 
 definition: 1
 
@@ -33,43 +35,60 @@ model:
   # SO THE CHARTS DESCRIBE THIS INSTRUMENT BEFORE TWO CHANGES TO THE THINGS THEY CHART, and
   # Korg has not republished them. The owner's manual is newer and shows it: 1.14 added pitch
   # quantization and the 2024 manual lists "QPI: enable pitch quantization (semitone)" among the
-  # part parameters (p. 3). Writing 1.14 here would claim the map below matches it, which the
+  # part parameters (p. 3). Writing 1.14 here would claim the maps below match it, which the
   # release notes themselves put in doubt. Checked 2026-10-02.
 
 source: >-
-  MIDI Implementation Chart (Split channel), one page, which is the whole of the map below:
-  p. 1. Owner's Manual, the edition Korg names EFGSCJ 4, eight sheets of six languages: printed
-  p. 3, the English one. MIDI Implementation Chart (Single channel), p. 1, for what the other
-  implementation does. And two pages of Korg's own site, saved as text and cited for what Korg
-  publishes and for the system versions.
+  MIDI Implementation Chart (Split channel), one page, which is the whole of the split-channel
+  map below: p. 1. Owner's Manual, the edition Korg names EFGSCJ 4, eight sheets of six
+  languages: printed p. 3, the English one. MIDI Implementation Chart (Single channel), p. 1,
+  which is the whole of the single-channel map below. And two pages of Korg's own site, saved as
+  text and cited for what Korg publishes and for the system versions.
 
-  THE SPLIT-CHANNEL CHART IS THE FACTORY DEFAULT and is what everything below describes. Its
+  THE SPLIT-CHANNEL CHART IS THE FACTORY DEFAULT and is the `split` mode below. Its
   Mode row is remarked "Channel 1-6 = Parts 1-6" and its Velocity row "n=0-5 (Channel 1-6 =
   Parts 1-6)", so the six parts are separately addressable with nothing set and nothing learned.
 
-  THE OTHER CHART IS A DIFFERENT MAP, NOT THE SAME MAP MOVED. Setting a MIDI channel switches
-  the instrument to the single-channel implementation, where all six parts answer on that one
-  channel and each gets a block of nine numbers of its own - part 1 on 14 to 20 with 103 and
-  109, part 2 on 23 to 29 with 104 and 110, part 3 on 46 to 52 with 105 and 111, part 4 on 55 to
-  61 with 106 and 112, part 5 on 80 to 86 with 107 and 113, part 6 on 89, 90, 96 to 100 with 108
-  and 114, and the resonator still on 116 to 119. Twenty-one numbers mean different things in
-  the two implementations: CC 14 is layer 1's Select below and part 1's both-layer Select there.
+  THE SINGLE-CHANNEL CHART IS A DIFFERENT MAP, NOT THE SPLIT ONE MOVED. Setting a MIDI channel
+  switches the instrument to the single-channel implementation, where all six parts answer on
+  that one channel and each gets a block of nine numbers of its own - part 1 on 14 to 20 with
+  103 and 109, part 2 on 23 to 29 with 104 and 110, part 3 on 46 to 52 with 105 and 111, part 4
+  on 55 to 61 with 106 and 112, part 5 on 80 to 86 with 107 and 113, part 6 on 89, 90, 96 to 100
+  with 108 and 114, and the resonator still on 116 to 119. Twenty-one numbers mean different
+  things in the two implementations: CC 14 is layer 1's Select on the split channels and part
+  1's both-layer Select on the single one. A twenty-second, CC 103, keeps its name and changes
+  whose it is: the send of whichever part's channel carries it on the split channels, and part
+  1's alone on the single one. **Every layer parameter on the single-channel chart carries the
+  `1-2` suffix**, so a part there reaches both of its layers at once and neither layer alone.
+  Those six blocks are the parts `single_part_1` to `single_part_6` below, which exist in the
+  `single` mode only.
+
+  THE TWO CHARTS ORDER A PART'S PARAMETERS DIFFERENTLY, which is a second trap for anyone copying
+  one from the other. The split chart runs select, level, attack, release, pitch, mod amount and
+  mod rate; the single chart runs select, level, mod amount, mod rate, pitch, attack and
+  release: "PART1: SELECT1-2, LEVEL1-2, MODAMT1-2, MODRATE1-2" (alternate_chart p. 1) and then
+  "PART1: PITCH1-2, EGATT1-2, EGREL1-2" (alternate_chart p. 1).
 
   FOUR PARAMETERS EXIST IN ONE IMPLEMENTATION AND NOT THE OTHER. Bit reduction, wave folder,
-  drive and dry gain are CC 49 to 52 below, and in the single-channel map those four numbers
-  belong to part 3, which leaves that implementation with no way to reach them at all. It also
-  has no CC 10: each part's pan has a number of its own there.
+  drive and dry gain are CC 49 to 52 on the split channels, and in the single-channel map those
+  four numbers belong to part 3, which leaves that implementation with no way to reach them at
+  all. It also has no CC 10: each part's pan has a number of its own there. And the fourteen
+  controls that reach one layer alone are the split channels' only, so the single channel
+  cannot set one layer without the other.
 
   EACH ROW PAIRS ITS NUMBERS TO ITS NAMES BY ORDER ALONE, which is the trap in reading either
-  chart. A row reads "14, 15, 16" against "SELECT1, SELECT2, SELECT1-2", and SELECT1-2 is not a
-  range covering two numbers: it is a third control that moves both layers at once, which is
-  what the panel's LAYER 1/2 button does - "The button will light up when both layers are
-  selected at once" (p. 3). Read as a range, this chart's ten rows give sixteen controls where
-  they give thirty-one. Every row here was checked to have exactly as many names as numbers.
+  chart. A row of the split chart reads "14, 15, 16" against "SELECT1, SELECT2, SELECT1-2"
+  (chart p. 1), and SELECT1-2 is not a range covering two numbers: it is a third control that
+  moves both layers at once, which is what the panel's LAYER 1/2 button does - "The button will
+  light up when both layers are selected at once" (p. 3). The single-channel chart is where the
+  misreading costs most: every layer name there has the `1-2` form, and read as ranges one
+  part's nine controls become sixteen. Every row of both charts was checked to have exactly as
+  many names as numbers: the split chart's ten rows give thirty-one controls and the single
+  chart's nineteen give fifty-eight.
 
-  THE INSTRUMENT SENDS NOTHING. Every row of both charts is marked X transmitted, and the
-  specification lists one connector - "MIDI IN connector" (p. 3) - with no OUT and no THRU. So
-  every control below is marked `receives`, and `clock` and `transport` likewise.
+  THE INSTRUMENT SENDS NOTHING. No row of either chart has an O in its Transmitted column, and
+  the specification lists one connector - "MIDI IN connector" (p. 3) - with no OUT and no THRU.
+  So every control below is marked `receives`, and `clock` and `transport` likewise.
 
   TWO GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, and both ship on. Footnote *1,
   carried by every control-change row and by the note row, reads "Received when global parameter
@@ -83,20 +102,46 @@ source: >-
   does not mark the Velocity row directly below - which is where the chart actually states that
   note on is received. One of those two rows is marked wrongly and the chart does not say which.
 
-  CC 46 TO 52 ARE THE LSB PARTNERS OF CC 14 TO 20 IN THE SPECIFICATION, and this chart gives
-  them parameters of their own. Anything sending 14-bit controller pairs will move a part's mod
-  rate while it means to refine its select, and neither chart warns about it. That is a caution
-  for a consumer rather than a fault in the file: the numbers below are what the maker published.
+  CC 46 TO 52 ARE THE LSB PARTNERS OF CC 14 TO 20 IN THE SPECIFICATION, and both charts give
+  them parameters of their own. On the split channels, anything sending 14-bit controller pairs
+  will move a part's mod rate while it means to refine its select, its bit reduction, wave
+  folder or drive while it means a level, and its dry gain while it means layer 1's attack. On
+  the single channel the pairs cross parts: 46 to 52 are part 3's block and 14 to 20 part 1's,
+  and 55 to 61 are part 4's and the partners of part 2's 23 to 29, so a pair aimed at part 1 or
+  2 moves the same parameter of part 3 or 4. Neither chart warns about it. That is a caution for
+  a consumer rather than a fault in the file: the numbers below are what the maker published.
+
+  THE SINGLE-CHANNEL CHART ALSO GIVES PART 6 FIVE NUMBERS THE SPECIFICATION KEEPS FOR OTHER
+  WORK. 96 and 97 are data increment and decrement there, 98 and 99 the two halves of an NRPN's
+  number and 100 half of an RPN's, and the chart has them as part 6's mod amount, mod rate,
+  pitch, attack and release: "PART6: SELECT1-2, LEVEL1-2, MODAMT1-2, MODRATE1-2"
+  (alternate_chart p. 1) against 89, 90, 96 and 97, and the next row against 98, 99 and 100.
+  So anything that sends an NRPN or an RPN on that channel moves part 6's pitch, attack or
+  release. 6, 38 and 101 are on neither chart.
 
   NOTES REACH A PART WITHOUT NAMING ONE. The chart recognises note numbers 0 to 127 and remarks
-  "Each sound does not correspond to a note number", so the channel says which part sounds and
-  the note number says nothing at all. That is why `addressing` is `any`: the part takes every
-  note, and no note says more than another.
+  "Each sound does not correspond to a note number", so on the split channels the channel says
+  which part sounds and the note number says nothing at all. That is why `addressing` is `any`:
+  the part takes every note, and no note says more than another.
 
-  NOT RECORDED: which channel carries the four resonator controls. The resonator is shared -
-  "each part has two identical layers and the waveguide resonator is shared for all parts"
-  (p. 3) - so those four are not a part's, and the chart does not say whether they answer on all
-  six channels or on one.
+  NOT RECORDED: which channel carries the four resonator controls in the split-channel
+  implementation. The resonator is shared - "each part has two identical layers and the
+  waveguide resonator is shared for all parts" (p. 3) - so those four are not a part's, and the
+  chart does not say whether they answer on all six channels or on one. They name no part
+  below, which in this format puts them on the base channel, channel 1: that is where the
+  file's shape leaves them and not something the chart says. In the single-channel
+  implementation there is one channel, and they are on it.
+
+  NOT RECORDED: which part a note sounds in the single-channel implementation. The split
+  chart's Velocity row says which, "n=0-5 (Channel 1-6 = Parts 1-6)" (chart p. 1), and the
+  single chart's has no remark. Its Note Number row recognises 0 to 127 with the split chart's
+  remark, "Each sound does not correspond to a note number." (alternate_chart p. 1), and with
+  six parts on one channel the channel cannot say either. The 1.14 system, later than both
+  charts, lists "Fixed single channel MIDI handling of note events." (release_notes) and does
+  not say what the handling is; the update manual in its archive, which sits behind a licence
+  agreement, was not read here. So the six parts there are recorded as taking controls, which
+  is all the chart gives each of them, and `notes` is left out of their `receives` as not
+  recorded rather than as found absent.
 
   NOT RECORDED: polyphony, which neither chart nor manual states for a part or for the
   instrument; the pitch bend range, there being no pitch bend; and how many presets a program
@@ -104,8 +149,9 @@ source: >-
   (p. 3) and nothing connects a program change to them, so the number is not written here.
 
   CHECKED AND ABSENT: NRPN and RPN. Neither word, nor "Registered", nor "Parameter Number",
-  appears anywhere on either chart or on printed page 3 of the manual. System exclusive is
-  marked X in both columns of both charts.
+  appears anywhere on either chart or on printed page 3 of the manual. Three of their numbers
+  are on the single-channel chart as part 6's own, as above. System exclusive is marked X in
+  both columns of both charts.
 
 sources:
   chart:
@@ -125,7 +171,7 @@ sources:
     # nothing else outside the table. The title above is the file's own `/Title` field, which
     # does carry the parenthetical; the page does not. Told apart from each other, the two are
     # distinguishable only by the Notes paragraph at the foot - and the only page that prints
-    # the words "split channels" is the single-channel one, in the note that sends you here.
+    # the words "split channels" is the single-channel one, in the note that names this chart.
     page_offset: 0
   manual:
     kind: manual
@@ -149,9 +195,8 @@ sources:
     url: "https://cdn.korg.com/us/support/download/files/68ae4f439b41bcb2cdc8350874a84cec.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27volca_drum_single_ch_MIDI_Chart_E1.pdf&response-content-type=application%2Fpdf%3B"
     sha256: 06cb9f9a4d8c3d0bc274f283e0742030908a3b23285383cb0c6f9af9c1904138
     retrieved: 2026-10-02
-    # Cited for the implementation this file does not describe. Nothing below comes from it; it
-    # is here because a reader who finds it on Korg's page needs to know which of the two they
-    # are holding, and because the source account above says what it changes.
+    # The single-channel map below comes from it, its one page being the whole of that map.
+    # Until 2026-10-11 nothing below came from it, the format having no mode to put it in.
     page_offset: 0
   download_page:
     kind: download_page
@@ -178,22 +223,26 @@ sources:
     # handling of note events, both after the charts were written.
 
 midi:
-  # THE SIX PARTS ARE ON CHANNELS 1 TO 6 AND NOTHING SETS A BASE. The split-channel chart marks
-  # Basic Channel as X in the Received column, which is this chart saying there is no basic
-  # channel to set: its Mode row remarks "Channel 1-6 = Parts 1-6" instead. So the base is 1 and
-  # cannot be anything else, and the part below, six instances from an offset of 0, is what puts
-  # them on 1 to 6. Setting a channel at all is what switches the instrument to the other
-  # implementation.
-  # THE CHART CONTRADICTS ITSELF HERE AND BOTH READINGS ARE RECORDED. An X against Basic Channel
-  # says the instrument answers to no basic channel at all, and three cells of the same chart
-  # say otherwise: the recognised mode is 3, which is omni off, and the Mode and Velocity rows
-  # both spell out that channels 1 to 6 are parts 1 to 6. A device that is omni off and answers
-  # on six channels has a basic channel. The single-channel chart gives 1-16 and "Memorized" for
-  # the same row. This file follows the X - as "the player cannot change it" rather than "there
-  # is none" - because that is the reading the two remarks agree with.
+  # ON THE SPLIT CHANNELS THE SIX PARTS ARE ON CHANNELS 1 TO 6 AND NOTHING SETS A BASE. The
+  # split-channel chart marks Basic Channel as X in the Received column, which is this chart
+  # saying there is no basic channel to set: its Mode row remarks "Channel 1-6 = Parts 1-6"
+  # (chart p. 1) instead. So on the split channels the base is 1 and cannot be anything else,
+  # and the split part below, six instances from an offset of 0, is what puts them on 1 to 6.
+  # Setting a channel at all is what switches the instrument to the other implementation, and
+  # on the single channel the base is the channel set, 1 to 16. **This field does not show
+  # that**: it is this file's reading of the split chart's X, the format having one figure for
+  # the whole instrument.
+  # THE SPLIT CHART CONTRADICTS ITSELF HERE AND BOTH READINGS ARE RECORDED. An X against Basic
+  # Channel says the instrument answers to no basic channel at all, and three cells of the same
+  # chart say otherwise: the recognised mode is 3, which is omni off, and the Mode and Velocity
+  # rows both spell out that channels 1 to 6 are parts 1 to 6. A device that is omni off and
+  # answers on six channels has a basic channel. The single-channel chart gives 1-16 and
+  # "Memorized" for the same row. This file follows the X - as "in this mode the player cannot
+  # change it" rather than "there is none" - because that is the reading the two remarks agree
+  # with.
   channels: [1, 1]
-  # The chart's recognised Mode default, 3, which is omni off and poly. Mode messages are marked
-  # X in both columns.
+  # Both charts' recognised Mode default, 3, which is omni off and poly. Mode messages are
+  # marked X in both columns of each.
   mode: 3
   # "System Real Time: Clock" is X transmitted and O received, with footnote *2. The instrument
   # has no MIDI OUT, so nothing it does travels outward; SYNC OUT is a 3.5 mm pulse jack and not
@@ -202,25 +251,50 @@ midi:
   # "System Real Time: Commands" and "System Common: Song Position" are both X transmitted and
   # O received, with footnote *2. Song Select and Tune Request are X in both columns.
   transport: receives
+  # ALSO RECEIVED, with no field to hold it: Active Sensing is O in the Received column of both
+  # charts, where Local On/Off, All Notes Off and System Reset beside it are X.
   program_change:
-    # O received, X transmitted, with "True Number" blank in both columns, so the chart says it
-    # answers to program change and does not say what range.
+    # O received, X transmitted, with "True Number" a row of asterisks in both columns, so the
+    # charts say it answers to program change and do not say what range.
     receives: true
     sends: false
     # NOT RECORDED: how many presets. See the source account.
   # System Exclusive is X in both columns of both charts: a checked absence rather than silence.
   sysex: false
-  # CHECKED AND ABSENT. The words NRPN, RPN, Registered and Parameter Number appear nowhere on
-  # either chart or on printed page 3 of the manual.
+  # CHECKED AND ABSENT, AS WORDS. NRPN, RPN, Registered and Parameter Number appear nowhere on
+  # either chart or on printed page 3 of the manual. **The numbers are not all absent.** The
+  # split chart lists 10, 14 to 31, 46 to 52, 103 and 116 to 119, so none of 6, 38 and 98 to
+  # 101. The single chart lists 14 to 20, 23 to 29, 46 to 52, 55 to 61, 80 to 86, 89, 90, 96 to
+  # 100, 103 to 114 and 116 to 119, and there 98, 99 and 100 are three of part 6's ordinary
+  # controllers. So nothing here is an NRPN, and on the single channel the two controllers
+  # that carry an NRPN's number are read as part 6's pitch and attack.
   nrpn: none
 
+modes:
+  # THE TWO IMPLEMENTATIONS, LABELLED BY THE CHARTS' OWN TITLES, which the files carry. Neither
+  # page prints its own, though each names the other in its Notes. The split chart marks itself
+  # the factory mode, "This is the factory default implementation." (chart p. 1), and the single
+  # chart "is an alternate implementation which can be selected by setting a specific MIDI
+  # channel" (alternate_chart p. 1). The channel is set at power-on: "While holding down the REC
+  # button, turn the volca drum on." (p. 3) and then "Step buttons 1 to 16 correspond to the
+  # MIDI channels 1 to 16." (p. 3).
+  split:
+    label: Split channel
+    factory: true
+  single:
+    label: Single channel
+    # `unparted` stays true in both modes: the resonator's four controls name no part and are
+    # on both charts.
+
 parts:
-  # SIX PARTS ON SIX CHANNELS, with nothing to set: "Channel 1-6 = Parts 1-6" (chart) and, from
-  # the player's side, "reverts to part 1-6 assigned to channels 1-6. (factory default)" (p. 3).
-  # They are one part with six instances rather than six parts, because the chart gives them one
-  # map between them and the channel is the only thing that tells them apart.
+  # THE SPLIT CHANNELS' SIX PARTS ON SIX CHANNELS, with nothing to set: "Channel 1-6 = Parts
+  # 1-6" (chart) and, from the player's side, "reverts to part 1-6 assigned to channels 1-6.
+  # (factory default)" (p. 3). They are one part with six instances rather than six parts,
+  # because the split chart gives them one map between them and the channel is the only thing
+  # that tells them apart.
   part:
     label: Part
+    mode: split
     count: 6
     channel_offset: 0
     # A note reaches the part whose channel carried it and the note number means nothing: the
@@ -228,6 +302,22 @@ parts:
     # So this is a part that takes notes and reads nothing from their number, which is `any`.
     addressing: any
     receives: [notes, controls]
+
+  # THE SINGLE-CHANNEL IMPLEMENTATION'S SIX PARTS, all on the one channel set, each with a block
+  # of nine numbers of its own, PART1 to PART6 on its chart. Six parts rather than one part of
+  # six instances, because each has its own numbers and the channel tells none of them apart.
+  # `channel_offset: 0` puts all six on the base channel, which in this mode is the channel
+  # set: the single chart's Basic Channel row reads 1-16 received and "Memorized", where
+  # `midi.channels` above is read from the split chart. **`notes` is left out of `receives` as
+  # not recorded, not as found absent.** The instrument takes notes on this channel too, which
+  # the `voice` section says for both modes, and no page says which part one sounds - see the
+  # source account.
+  single_part_1: {label: PART1, mode: single, channel_offset: 0, receives: [controls]}
+  single_part_2: {label: PART2, mode: single, channel_offset: 0, receives: [controls]}
+  single_part_3: {label: PART3, mode: single, channel_offset: 0, receives: [controls]}
+  single_part_4: {label: PART4, mode: single, channel_offset: 0, receives: [controls]}
+  single_part_5: {label: PART5, mode: single, channel_offset: 0, receives: [controls]}
+  single_part_6: {label: PART6, mode: single, channel_offset: 0, receives: [controls]}
 
 voice:
   addressing: any
@@ -240,23 +330,23 @@ voice:
     # "Note On O 9n, V=1-127" received, X transmitted; "Note Off X" in both columns (chart).
     note_on: received
     note_off: false
-  # A checked absence, from the chart's own rows: Key's aftertouch X in both columns, Channel
+  # A checked absence, from both charts' own rows: Key's aftertouch X in both columns, Channel
   # aftertouch X in both columns.
   aftertouch: none
-  # NOT RECORDED: pitch bend, because there is none. The chart marks Pitch Bend X in both
+  # NOT RECORDED: pitch bend, because there is none. Both charts mark Pitch Bend X in both
   # columns, so there is no range to state and no `pitch_bend` block to state it in.
 
 groups:
   # These three headings are the owner's manual's own, and they are the order it introduces
-  # them in. The chart heads nothing over its rows.
+  # them in. Neither chart heads anything over its rows.
   # "Sound Controls: These knobs and buttons control the sound of the currently selected drum
   # part and waveguide resonator effect" (p. 3).
   sound_controls: Sound Controls
   # "When EDIT/STEP is lit, this encoder functions as the PARAM knob, cycling through the
   # following additional part parameters: BIT: bit reduction amount, FLD: wave folder amount,
   # DRV: overdrive gain, PAN: left-right pan, GAN: pre-mix gain adjustment, QPI: enable pitch
-  # quantization (semitone)" (p. 3). Five of those six have a controller number; QPI has none
-  # on either chart.
+  # quantization (semitone)" (p. 3). Five of those six have a controller number on the split
+  # chart and only PAN on the single one; QPI has none on either.
   part_parameters: Part Parameters
   # "WAVEGUIDE" heads the SEND, DECAY, BODY and TUNE knobs (p. 3).
   waveguide: Waveguide
@@ -264,11 +354,12 @@ groups:
 controls:
 
   # Every one of these is received and never sent, and every one is marked with footnote *1,
-  # which the source account gives in full. Generated from the chart by
-  # `Notes/4204_write_controls.py`, which reproduces this block.
+  # which the source account gives in full. The split chart's thirty-one come first, generated
+  # from it by `Notes/4204_write_controls.py`, which reproduces them; the fifty-four that are
+  # the single chart's alone follow under a heading of their own.
   #
-  # THE LAYER SUFFIX IS NOT A RANGE. The chart writes SELECT1, SELECT2, SELECT1-2 against 14,
-  # 15, 16: three controls, the third moving both of a part's layers at once.
+  # THE LAYER SUFFIX IS NOT A RANGE. The split chart writes SELECT1, SELECT2, SELECT1-2 against
+  # 14, 15, 16: three controls, the third moving both of a part's layers at once.
 
   # Sound Controls ────────────────────────────────────────────────────────
   select_1:            {label: "Select, layer 1", cc: 14, direction: receives, part: part, group: sound_controls}
@@ -314,3 +405,75 @@ controls:
   waveguide_decay:     {label: Waveguide Decay, cc: 117, direction: receives, group: waveguide}
   waveguide_body:      {label: Waveguide Body, cc: 118, direction: receives, group: waveguide}
   waveguide_tune:      {label: Waveguide Tune, cc: 119, direction: receives, group: waveguide}
+
+  # ── THE SINGLE-CHANNEL CHART (alternate_chart p. 1): six parts on one channel, in `single`
+  # only, each a block of nine. Read from a render of the page, row by row. Every layer
+  # parameter there carries the `1-2` suffix, so these take the split part's labels for both
+  # layers at once; SEND is the part's waveguide send and PAN its pan, as on the split chart.
+  # The order within a part is the single chart's, which is not the split chart's.
+
+  # PART1 ──────────────────────────────────────────────────────────────────
+  single_part_1_select_both:        {label: "Select, both layers", cc: 14, direction: receives, part: single_part_1, group: sound_controls}
+  single_part_1_level_both:         {label: "Level, both layers", cc: 15, direction: receives, part: single_part_1, group: sound_controls}
+  single_part_1_mod_amount_both:    {label: "Mod Amount, both layers", cc: 16, direction: receives, part: single_part_1, group: sound_controls}
+  single_part_1_mod_rate_both:      {label: "Mod Rate, both layers", cc: 17, direction: receives, part: single_part_1, group: sound_controls}
+  single_part_1_pitch_both:         {label: "Pitch, both layers", cc: 18, direction: receives, part: single_part_1, group: sound_controls}
+  single_part_1_eg_attack_both:     {label: "EG Attack, both layers", cc: 19, direction: receives, part: single_part_1, group: sound_controls}
+  single_part_1_eg_release_both:    {label: "EG Release, both layers", cc: 20, direction: receives, part: single_part_1, group: sound_controls}
+  single_part_1_waveguide_send:     {label: "Waveguide Send", cc: 103, direction: receives, part: single_part_1, group: waveguide}
+  single_part_1_pan:                {label: "Pan", cc: 109, direction: receives, part: single_part_1, group: part_parameters}
+
+  # PART2 ──────────────────────────────────────────────────────────────────
+  single_part_2_select_both:        {label: "Select, both layers", cc: 23, direction: receives, part: single_part_2, group: sound_controls}
+  single_part_2_level_both:         {label: "Level, both layers", cc: 24, direction: receives, part: single_part_2, group: sound_controls}
+  single_part_2_mod_amount_both:    {label: "Mod Amount, both layers", cc: 25, direction: receives, part: single_part_2, group: sound_controls}
+  single_part_2_mod_rate_both:      {label: "Mod Rate, both layers", cc: 26, direction: receives, part: single_part_2, group: sound_controls}
+  single_part_2_pitch_both:         {label: "Pitch, both layers", cc: 27, direction: receives, part: single_part_2, group: sound_controls}
+  single_part_2_eg_attack_both:     {label: "EG Attack, both layers", cc: 28, direction: receives, part: single_part_2, group: sound_controls}
+  single_part_2_eg_release_both:    {label: "EG Release, both layers", cc: 29, direction: receives, part: single_part_2, group: sound_controls}
+  single_part_2_waveguide_send:     {label: "Waveguide Send", cc: 104, direction: receives, part: single_part_2, group: waveguide}
+  single_part_2_pan:                {label: "Pan", cc: 110, direction: receives, part: single_part_2, group: part_parameters}
+
+  # PART3 ──────────────────────────────────────────────────────────────────
+  single_part_3_select_both:        {label: "Select, both layers", cc: 46, direction: receives, part: single_part_3, group: sound_controls}
+  single_part_3_level_both:         {label: "Level, both layers", cc: 47, direction: receives, part: single_part_3, group: sound_controls}
+  single_part_3_mod_amount_both:    {label: "Mod Amount, both layers", cc: 48, direction: receives, part: single_part_3, group: sound_controls}
+  single_part_3_mod_rate_both:      {label: "Mod Rate, both layers", cc: 49, direction: receives, part: single_part_3, group: sound_controls}
+  single_part_3_pitch_both:         {label: "Pitch, both layers", cc: 50, direction: receives, part: single_part_3, group: sound_controls}
+  single_part_3_eg_attack_both:     {label: "EG Attack, both layers", cc: 51, direction: receives, part: single_part_3, group: sound_controls}
+  single_part_3_eg_release_both:    {label: "EG Release, both layers", cc: 52, direction: receives, part: single_part_3, group: sound_controls}
+  single_part_3_waveguide_send:     {label: "Waveguide Send", cc: 105, direction: receives, part: single_part_3, group: waveguide}
+  single_part_3_pan:                {label: "Pan", cc: 111, direction: receives, part: single_part_3, group: part_parameters}
+
+  # PART4 ──────────────────────────────────────────────────────────────────
+  single_part_4_select_both:        {label: "Select, both layers", cc: 55, direction: receives, part: single_part_4, group: sound_controls}
+  single_part_4_level_both:         {label: "Level, both layers", cc: 56, direction: receives, part: single_part_4, group: sound_controls}
+  single_part_4_mod_amount_both:    {label: "Mod Amount, both layers", cc: 57, direction: receives, part: single_part_4, group: sound_controls}
+  single_part_4_mod_rate_both:      {label: "Mod Rate, both layers", cc: 58, direction: receives, part: single_part_4, group: sound_controls}
+  single_part_4_pitch_both:         {label: "Pitch, both layers", cc: 59, direction: receives, part: single_part_4, group: sound_controls}
+  single_part_4_eg_attack_both:     {label: "EG Attack, both layers", cc: 60, direction: receives, part: single_part_4, group: sound_controls}
+  single_part_4_eg_release_both:    {label: "EG Release, both layers", cc: 61, direction: receives, part: single_part_4, group: sound_controls}
+  single_part_4_waveguide_send:     {label: "Waveguide Send", cc: 106, direction: receives, part: single_part_4, group: waveguide}
+  single_part_4_pan:                {label: "Pan", cc: 112, direction: receives, part: single_part_4, group: part_parameters}
+
+  # PART5 ──────────────────────────────────────────────────────────────────
+  single_part_5_select_both:        {label: "Select, both layers", cc: 80, direction: receives, part: single_part_5, group: sound_controls}
+  single_part_5_level_both:         {label: "Level, both layers", cc: 81, direction: receives, part: single_part_5, group: sound_controls}
+  single_part_5_mod_amount_both:    {label: "Mod Amount, both layers", cc: 82, direction: receives, part: single_part_5, group: sound_controls}
+  single_part_5_mod_rate_both:      {label: "Mod Rate, both layers", cc: 83, direction: receives, part: single_part_5, group: sound_controls}
+  single_part_5_pitch_both:         {label: "Pitch, both layers", cc: 84, direction: receives, part: single_part_5, group: sound_controls}
+  single_part_5_eg_attack_both:     {label: "EG Attack, both layers", cc: 85, direction: receives, part: single_part_5, group: sound_controls}
+  single_part_5_eg_release_both:    {label: "EG Release, both layers", cc: 86, direction: receives, part: single_part_5, group: sound_controls}
+  single_part_5_waveguide_send:     {label: "Waveguide Send", cc: 107, direction: receives, part: single_part_5, group: waveguide}
+  single_part_5_pan:                {label: "Pan", cc: 113, direction: receives, part: single_part_5, group: part_parameters}
+
+  # PART6 ──────────────────────────────────────────────────────────────────
+  single_part_6_select_both:        {label: "Select, both layers", cc: 89, direction: receives, part: single_part_6, group: sound_controls}
+  single_part_6_level_both:         {label: "Level, both layers", cc: 90, direction: receives, part: single_part_6, group: sound_controls}
+  single_part_6_mod_amount_both:    {label: "Mod Amount, both layers", cc: 96, direction: receives, part: single_part_6, group: sound_controls}
+  single_part_6_mod_rate_both:      {label: "Mod Rate, both layers", cc: 97, direction: receives, part: single_part_6, group: sound_controls}
+  single_part_6_pitch_both:         {label: "Pitch, both layers", cc: 98, direction: receives, part: single_part_6, group: sound_controls}
+  single_part_6_eg_attack_both:     {label: "EG Attack, both layers", cc: 99, direction: receives, part: single_part_6, group: sound_controls}
+  single_part_6_eg_release_both:    {label: "EG Release, both layers", cc: 100, direction: receives, part: single_part_6, group: sound_controls}
+  single_part_6_waveguide_send:     {label: "Waveguide Send", cc: 108, direction: receives, part: single_part_6, group: waveguide}
+  single_part_6_pan:                {label: "Pan", cc: 114, direction: receives, part: single_part_6, group: part_parameters}

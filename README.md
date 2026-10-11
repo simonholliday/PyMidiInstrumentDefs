@@ -215,7 +215,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/triton` | Korg TRITON: 52 controls, the 41 controller numbers among them all travelling both ways, out of a text implementation shaped like the KRONOS's - one definition for the 61-, 76- and 88-key models, sixteen tracks, and an arpeggiator reached by NRPN |
 | `korg/volca_bass` | Korg volca bass: 12 controls that only arrive, from an instrument with no MIDI Out jack - and three of them reach parameters its panel cannot, two of which its owner's manual never names |
 | `korg/volca_beats` | Korg volca beats: 20 controls and ten parts off a plain text file, where the chart beside it draws its yes and no marks and names only seven of the ten |
-| `korg/volca_drum` | Korg volca drum: six parts on six MIDI channels, and the one of its maker's two charts that the instrument answers to out of the box |
+| `korg/volca_drum` | Korg volca drum: both of its maker's charts, one for each mode - six parts on six MIDI channels out of the box, or six on one channel, each with nine numbers of its own |
 | `korg/volca_fm` | Korg volca fm: eleven controls that only travel inwards, out of the first implementation in this corpus that is a plain text file - and a value table that disagrees with itself |
 | `korg/volca_keys` | Korg volca keys: sixteen controls, all received, and a chart whose ticks and crosses are drawings - its own legend prints `: Yes` and `: No` with the symbols missing |
 | `korg/volca_sample` | Korg volca sample: eleven controls off a chart whose ticks and crosses are drawings rather than text, so the only column that matters is invisible to a reader that extracts the page |

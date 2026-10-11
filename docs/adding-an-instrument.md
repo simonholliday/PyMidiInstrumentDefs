@@ -348,8 +348,8 @@ voice:
 ```
 
 **`addressing: none` is an instrument no note reaches; `any` is one that takes every note
-and reads nothing from its number.** A volca drum's chart recognises notes 0 to 127 and
-remarks "Each sound does not correspond to a note number": the channel picks the part, and
+and reads nothing from its number.** A volca drum's factory chart recognises notes 0 to 127
+and remarks "Each sound does not correspond to a note number": the channel picks the part, and
 the note says nothing more. That is `any`. Keep `none` for the DFAM's case, where there is
 nothing to send a note to.
 

@@ -82,6 +82,14 @@ source: >-
   no page pairs it with 7. There is no controller for the part's pan, "Sets the pan position for
   each part." (reference p. 38), and 10 is not on the chart.
 
+  EVERY CONTROL BELOW NAMES THE PART, BECAUSE THE PARTS' CHANNELS ARE THE ONLY ONES THAT TAKE
+  CONTROL CHANGE. No channel derives from a base - the system's and each part's are set on their
+  own (reference p. 41) - so a control naming no part would mean a channel the JX-08 does not have.
+  All forty-nine numbers are on the Part chart, which by its title covers the parts, and the System
+  chart crosses control change in both columns (reference p. 64): so by the two charts an external
+  keyboard, which plays on the system channel, reaches no part with its controllers. The chart
+  treats the two parts alike, so each control is written once.
+
   TWO NAMES ARE PRINTED TWICE, AND ONE SOUND CONTROL, DCO-1'S TUNE, HAS NO ROW. The chart prints
   `DCO-1 RANGE` against 20 and 47, and `PORTAMENTO TIME` against 5 and 117 (reference pp. 62 and
   63), and the HTML edition prints the same (chart_html). The DCO section's picture shows DCO-1 with
@@ -257,71 +265,71 @@ controls:
   # No range is printed for any of them; see the account.
 
   # PERFORMANCE: wheel, part level, expression, BEND PITCH, hold pedal and sound mode ──────────
-  modulation_wheel:           {label: Modulation Wheel, cc: 1, direction: receives}
-  pattern_part_level:         {label: PATTERN PART LEVEL, cc: 7, direction: receives}
-  expression:                 {label: Expression, cc: 11, direction: receives}
-  bend_pitch:                 {label: BEND PITCH, cc: 41, direction: receives}
-  hold_pedal:                 {label: Hold Pedal, cc: 64, direction: receives}
-  solo_poly_unison:           {label: SOLO/POLY/UNISON, cc: 119}
+  modulation_wheel:           {label: Modulation Wheel, cc: 1, direction: receives, part: part}
+  pattern_part_level:         {label: PATTERN PART LEVEL, cc: 7, direction: receives, part: part}
+  expression:                 {label: Expression, cc: 11, direction: receives, part: part}
+  bend_pitch:                 {label: BEND PITCH, cc: 41, direction: receives, part: part}
+  hold_pedal:                 {label: Hold Pedal, cc: 64, direction: receives, part: part}
+  solo_poly_unison:           {label: SOLO/POLY/UNISON, cc: 119, part: part}
 
   # LFO ────────────────────────────────────────────────────────────────────────────────────────
-  lfo_delay_time:             {label: LFO DELAY TIME, cc: 27, group: lfo}
-  lfo_rate:                   {label: LFO RATE, cc: 29, group: lfo}
-  lfo_waveform:               {label: LFO WAVEFORM, cc: 35, group: lfo}
+  lfo_delay_time:             {label: LFO DELAY TIME, cc: 27, part: part, group: lfo}
+  lfo_rate:                   {label: LFO RATE, cc: 29, part: part, group: lfo}
+  lfo_waveform:               {label: LFO WAVEFORM, cc: 35, part: part, group: lfo}
 
   # DCO-1/DCO-2: 20 and 47 are both printed DCO-1 RANGE; see the account ───────────────────────
-  dco1_range_20:              {label: DCO-1 RANGE, cc: 20, group: dco}
-  dco1_env_mod:               {label: DCO-1 ENEV MOD, cc: 21, group: dco}
-  dco2_lfo:                   {label: DCO-2 LFO, cc: 25, group: dco}
-  dco1_lfo:                   {label: DCO-1 LFO, cc: 26, group: dco}
-  dco1_waveform:              {label: DCO-1 WAVEFORM, cc: 46, group: dco}
-  dco1_range_47:              {label: DCO-1 RANGE, cc: 47, group: dco}
-  dco2_fine_tune:             {label: DCO-2 FINE TUNE, cc: 56, group: dco}
-  dco_cross_mod:              {label: DCO CROSS MOD, cc: 59, group: dco}
-  dco_env_mode:               {label: DCO ENVELOPE MODE, cc: 60, group: dco}
-  dco2_waveform:              {label: DCO-2 WAVEFORM, cc: 61, group: dco}
-  dco2_range:                 {label: DCO-2 RANGE, cc: 62, group: dco}
-  dco2_env:                   {label: DCO-2 ENV, cc: 63, group: dco}
-  dco2_coarse_1oct:           {label: DCO-2 COARSE 1OCT, cc: 87, group: dco}
+  dco1_range_20:              {label: DCO-1 RANGE, cc: 20, part: part, group: dco}
+  dco1_env_mod:               {label: DCO-1 ENEV MOD, cc: 21, part: part, group: dco}
+  dco2_lfo:                   {label: DCO-2 LFO, cc: 25, part: part, group: dco}
+  dco1_lfo:                   {label: DCO-1 LFO, cc: 26, part: part, group: dco}
+  dco1_waveform:              {label: DCO-1 WAVEFORM, cc: 46, part: part, group: dco}
+  dco1_range_47:              {label: DCO-1 RANGE, cc: 47, part: part, group: dco}
+  dco2_fine_tune:             {label: DCO-2 FINE TUNE, cc: 56, part: part, group: dco}
+  dco_cross_mod:              {label: DCO CROSS MOD, cc: 59, part: part, group: dco}
+  dco_env_mode:               {label: DCO ENVELOPE MODE, cc: 60, part: part, group: dco}
+  dco2_waveform:              {label: DCO-2 WAVEFORM, cc: 61, part: part, group: dco}
+  dco2_range:                 {label: DCO-2 RANGE, cc: 62, part: part, group: dco}
+  dco2_env:                   {label: DCO-2 ENV, cc: 63, part: part, group: dco}
+  dco2_coarse_1oct:           {label: DCO-2 COARSE 1OCT, cc: 87, part: part, group: dco}
 
   # MIXER ──────────────────────────────────────────────────────────────────────────────────────
-  dco1_level:                 {label: DCO-1 LEVEL, cc: 16, group: mixer}
-  dco2_level:                 {label: DCO-2 LEVEL, cc: 17, group: mixer}
-  mixer_env:                  {label: MIXER ENV, cc: 18, group: mixer}
-  mixer_env_mode:             {label: MIXER ENVELOPE MODE, cc: 19, group: mixer}
+  dco1_level:                 {label: DCO-1 LEVEL, cc: 16, part: part, group: mixer}
+  dco2_level:                 {label: DCO-2 LEVEL, cc: 17, part: part, group: mixer}
+  mixer_env:                  {label: MIXER ENV, cc: 18, part: part, group: mixer}
+  mixer_env_mode:             {label: MIXER ENVELOPE MODE, cc: 19, part: part, group: mixer}
 
   # VCF ────────────────────────────────────────────────────────────────────────────────────────
-  vcf_cutoff:                 {label: VCF CUTOFF, cc: 3, group: vcf}
-  vcf_resonance:              {label: VCF RESONANCE, cc: 9, group: vcf}
-  vcf_lfo_depth:              {label: VCF LFO DEPTH, cc: 28, group: vcf}
-  filter_hpf:                 {label: FILTER HPF, cc: 79, group: vcf}
-  vcf_env:                    {label: VCF ENV, cc: 81, group: vcf}
-  vcf_key_follow:             {label: VCF KEY FOLLOW, cc: 82, group: vcf}
-  vcf_env_mode:               {label: VCF ENVELOPE MODE, cc: 84, group: vcf}
+  vcf_cutoff:                 {label: VCF CUTOFF, cc: 3, part: part, group: vcf}
+  vcf_resonance:              {label: VCF RESONANCE, cc: 9, part: part, group: vcf}
+  vcf_lfo_depth:              {label: VCF LFO DEPTH, cc: 28, part: part, group: vcf}
+  filter_hpf:                 {label: FILTER HPF, cc: 79, part: part, group: vcf}
+  vcf_env:                    {label: VCF ENV, cc: 81, part: part, group: vcf}
+  vcf_key_follow:             {label: VCF KEY FOLLOW, cc: 82, part: part, group: vcf}
+  vcf_env_mode:               {label: VCF ENVELOPE MODE, cc: 84, part: part, group: vcf}
 
   # VCA ────────────────────────────────────────────────────────────────────────────────────────
-  amp_env_mode:               {label: AMP ENVELOPE MODE, cc: 109, group: vca}
-  amp_level:                  {label: AMP LEVEL, cc: 110, group: vca}
+  amp_env_mode:               {label: AMP ENVELOPE MODE, cc: 109, part: part, group: vca}
+  amp_level:                  {label: AMP LEVEL, cc: 110, part: part, group: vca}
 
   # ENVELOPE-1/2 ───────────────────────────────────────────────────────────────────────────────
-  env1_attack:                {label: ENVELOPE1 ATTACK, cc: 83, group: env}
-  env1_decay:                 {label: ENV1 DECAY, cc: 80, group: env}
-  env1_sustain:               {label: ENVELOPE1 SUSTAIN, cc: 85, group: env}
-  env1_release:               {label: ENVELOPE1 RELEASE, cc: 86, group: env}
-  env1_key_follow:            {label: ENVELOPE1 KEY FOLLOW, cc: 104, group: env}
-  env2_attack:                {label: ENVELOPE2 ATTACK, cc: 89, group: env}
-  env2_decay:                 {label: ENVELOPE2 DECAY, cc: 90, group: env}
-  env2_sustain:               {label: ENVELOPE2 SUSTAIN, cc: 102, group: env}
-  env2_release:               {label: ENVELOPE2 RELEASE, cc: 103, group: env}
-  env2_key_follow:            {label: ENVELOPE2 KEY FOLLOW, cc: 105, group: env}
+  env1_attack:                {label: ENVELOPE1 ATTACK, cc: 83, part: part, group: env}
+  env1_decay:                 {label: ENV1 DECAY, cc: 80, part: part, group: env}
+  env1_sustain:               {label: ENVELOPE1 SUSTAIN, cc: 85, part: part, group: env}
+  env1_release:               {label: ENVELOPE1 RELEASE, cc: 86, part: part, group: env}
+  env1_key_follow:            {label: ENVELOPE1 KEY FOLLOW, cc: 104, part: part, group: env}
+  env2_attack:                {label: ENVELOPE2 ATTACK, cc: 89, part: part, group: env}
+  env2_decay:                 {label: ENVELOPE2 DECAY, cc: 90, part: part, group: env}
+  env2_sustain:               {label: ENVELOPE2 SUSTAIN, cc: 102, part: part, group: env}
+  env2_release:               {label: ENVELOPE2 RELEASE, cc: 103, part: part, group: env}
+  env2_key_follow:            {label: ENVELOPE2 KEY FOLLOW, cc: 105, part: part, group: env}
 
   # PORTAMENTO: 5 and 117 are both printed PORTAMENTO TIME; see the account ────────────────────
-  portamento_time_5:          {label: PORTAMENTO TIME, cc: 5, direction: receives, group: porta}
-  portamento_time_117:        {label: PORTAMENTO TIME, cc: 117, group: porta}
-  portamento_sw:              {label: PORTAMENTO SW, cc: 118, group: porta}
+  portamento_time_5:          {label: PORTAMENTO TIME, cc: 5, direction: receives, part: part, group: porta}
+  portamento_time_117:        {label: PORTAMENTO TIME, cc: 117, part: part, group: porta}
+  portamento_sw:              {label: PORTAMENTO SW, cc: 118, part: part, group: porta}
 
   # EFFECTS ────────────────────────────────────────────────────────────────────────────────────
-  reverb_send_level:          {label: Reverb Send Level, cc: 91, direction: receives, group: fx}
+  reverb_send_level:          {label: Reverb Send Level, cc: 91, direction: receives, part: part, group: fx}
 
 sources:
   reference:

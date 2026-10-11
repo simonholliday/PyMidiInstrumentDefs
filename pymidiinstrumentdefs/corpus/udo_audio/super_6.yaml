@@ -287,9 +287,13 @@ voice:
   # POLYPHONIC RECEIVED AND CHANNEL BOTH WAYS, which the Channel Messages table says row by row:
   # `Polyphonic Key Pressure` is **No transmitted and Yes received**, while `Channel Pressure` is
   # Yes in both columns (manual p. 120). So it answers to polyphonic pressure and never sends it,
-  # and sends and answers to channel pressure - recorded as `poly` because that is the wider thing
-  # it answers to, which is how the Hydrasynth Explorer and the Iridium record theirs.
-  aftertouch: poly
+  # and sends and answers to channel pressure: `both` for what it answers to, and
+  # `aftertouch_transmits` true for the channel pressure it sends. The table does not split the
+  # two models, and only the keyboard model has anything that presses, "a responsive 49-note
+  # Fatar keyboard that is velocity sensitive and responds to aftertouch" (manual p. 69), so for
+  # the desktop the send is the table's word alone.
+  aftertouch: both
+  aftertouch_transmits: true
   pitch_bend:
     # TWELVE SEMITONES, STATED TWICE AND FROM TWO DIRECTIONS. "The maximum pitch-bend range is one
     # octave" (manual p. 70), and the registered parameter table gives the same figure as a data

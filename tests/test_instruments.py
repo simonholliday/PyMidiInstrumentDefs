@@ -1672,6 +1672,7 @@ class TestAftertouch:
 			"sequential/prophet_5": ("both", True),
 			"sequential/prophet_10": ("both", True),
 			"synthstrom_audible/deluge": ("both", True),
+			"udo_audio/super_6": ("both", True),
 		}
 
 
@@ -11379,7 +11380,8 @@ class TestSuper6:
 		super_6 = pymidiinstrumentdefs.load("udo_audio/super_6", [CORPUS])
 
 		# Polyphonic Key Pressure is No transmitted and Yes received.
-		assert super_6.voice.aftertouch == "poly"
+		assert super_6.voice.aftertouch == "both"
+		assert super_6.voice.aftertouch_transmits is True
 
 		assert super_6.voice.velocity is not None
 		assert super_6.voice.velocity.note_on == "both"

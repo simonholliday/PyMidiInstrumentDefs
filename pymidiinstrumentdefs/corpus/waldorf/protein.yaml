@@ -1,8 +1,10 @@
 # **SEVENTY-ONE SHEETS, A SIX-SHEET MIDI GLOSSARY, AND NO IMPLEMENTATION.** Most of the MIDI words
 # in this manual are in a glossary of general synthesis and MIDI terms - sheets 62 to 67, between
-# `Aftertouch` and `Wavetable`, with `Coffee Filter` among them - and **not one sentence of it is
-# about this instrument.** It is MIDI education: what a controller is, what a channel is for, what
-# a program change does.
+# `Aftertouch` and `Wavetable`, with `Coffee Filter` among them - and **none of it gives a MIDI
+# fact about this instrument.** Three entries name the Protein: one in a joke, one as the
+# receiver in an example, and one to say that one of its oscillator shapes is built on
+# wavetables. The rest explains synthesis and MIDI in general: what a controller is, what a
+# channel is for, what a program change does.
 #
 # **SO THE NUMBERS IN IT ARE NOT THIS INSTRUMENT'S, AND THREE OF THEM LOOK EXACTLY AS IF THEY
 # WERE.** The glossary says a controller number "can be between 0 and 120." (manual p. 63), that
@@ -28,29 +30,35 @@
 # does, "If no MIDI CC mapping was made, Nothing Mapped is displayed." (manual p. 55).
 #
 # **`control_change` IS LEFT EMPTY BECAUSE IT HOLDS ONE WORD AND THIS INSTRUMENT IS BOTH THINGS.**
-# `learned` is what six definitions here use for an instrument whose map the player makes, and all
-# six carry no controls at all; writing it would say the six below are factory defaults
-# somebody can change, which they are not - they are fixed sources in the modulation matrix. The
-# field has no word for a maker that publishes some numbers and leaves the rest to MIDI learn.
+# `learned` is for an instrument whose map the player makes; writing it would say the six below
+# are factory defaults somebody can change, which they are not - they are fixed sources in the
+# modulation matrix. The field has no word for a maker that publishes some numbers and leaves
+# the rest to MIDI learn. **The corpus does not agree with itself here**: fourteen definitions
+# use `learned`, eight of them beside controls, and three of those are this maker's Iridiums,
+# which carry these same fixed sources. Until 2026-10-11 this said six used it and none carried
+# a control.
 #
-# **AND THE DOCUMENT THAT SETTLES THE MOST IS THE ONE THE DOWNLOADS PAGE DOES NOT NAME.** Four
-# things are offered there; three are labelled `manual`, `Specifications` and `SysEx Drop Tool`,
-# and the fourth is a bare address in the body of an answer about something else: "New OS versions
+# **AND THE DOCUMENT THAT SETTLES THE MOST IS THE ONE THE DOWNLOADS PAGE DOES NOT NAME.** Five
+# things are offered there. Four are labelled: `manual`, `Specifications`, `SysEx Drop Tool` and
+# a video, `Deep Dive`. The fifth is a bare address in the body of an answer about something
+# else: "New OS versions
 # are available in your “my waldorf” account under Hardware & OS Updates. Here is the changelog:"
-# (downloads_page). That changelog is **the only document that gives this instrument's
-# firmware version, the only one that says a controller number is recognised for anything, and the
-# only one with the right preset count.** A reader who took the labelled three would have none of
-# those.
+# (downloads_page). That changelog is **the only document that calls a version the firmware's,
+# the only one that says a controller number is recognised for choosing a preset, and the only
+# one with the right preset count.** A reader who took the labelled documents would have the
+# version number, from the manual's page of credits, and neither of the others.
 
 definition: 1
 
 model:
   manufacturer: Waldorf
   name: Protein
-  # **1.02, FROM THE ONE DOCUMENT THAT STATES A VERSION AT ALL** - "Changelog - Protein Firmware
-  # 1.02 (January 2026)" (changelog), which is also where 1.01 and its December 2025 changes
-  # are. The manual names no firmware and the specification sheet names none; the instrument shows
-  # its own at startup, which 1.02 added.
+  # **1.02, FROM THE CHANGELOG, AND THE MANUAL AGREES** - "Changelog - Protein Firmware 1.02
+  # (January 2026)" (changelog), which is also where 1.01 and its December 2025 changes are. The
+  # manual's list of its development team ends "Version: 1.02, January 2026" (manual p. 4),
+  # without the word firmware, and the specification sheet names none; the instrument shows its
+  # own at startup, which 1.02 added. **Until 2026-10-11 this comment said the manual named no
+  # firmware.**
   # **THE FIRMWARE ITSELF IS BEHIND A LOGIN** - the downloads page says new versions "are
   # available in your “my waldorf” account under Hardware & OS Updates" (downloads_page) -
   # so what is public is the account of what changed rather than the thing that changed.
@@ -70,8 +78,9 @@ source: >-
   WHERE EACH FACT COMES FROM, BECAUSE NO ONE DOCUMENT HOLDS THEM. The manual (71 sheets, `Rev. 2,
   January 2026`) has the settings on p. 51, the sync and MPE settings on p. 52, the MPE mapping
   and its one controller number on p. 53, the learn procedure on p. 55 and **fourteen of the
-  the modulation sources on p. 56**, in the Source column of its modulation table; the layers are on
-  p. 18, the shared voices on p. 16, the pitch bend on p. 26, the keyboard tracking reference on
+  modulation sources on p. 56**, in the Source column of its modulation table; the layers and
+  their modes are on pp. 16 to 19, the shared voices on p. 16, the pitch bend on p. 26, the
+  keyboard tracking reference on
   p. 29, the velocity on p. 32, the sysex dumps on p. 20 and the glossary on pp. 62 to 67. The
   changelog (1 sheet) has the firmware, the preset count and the one controller number recognised
   for choosing a preset. The specification sheet (2 sheets) has the voice count and the layer
@@ -97,13 +106,14 @@ source: >-
 
   HOW ITS DOCUMENTS ARE ADDRESSED, WHICH IS THE HABIT THIS MAKER DOES KEEP. Every file comes from
   a share on the maker's own Nextcloud - `downloads.waldorfmusic.com/cloud/index.php/s/<token>` -
-  and `waldorf/blofeld` and `waldorf/iridium` are reached the same way, so **three Waldorfs in
-  this corpus and one arrangement.** Two differences worth having: **the share serves a `.zip`
-  rather than the file**, each holding one folder and one or two PDFs, and **the token says nothing
-  about what it serves**, so the four here are told apart only by what comes back.
+  and the five other Waldorfs in this corpus are reached the same way, so **six Waldorfs here
+  and one arrangement.** Two things worth knowing about it: **each share fetched for this file
+  served a `.zip` rather than the file**, holding one folder and one or two PDFs, and **the
+  token says nothing about what it serves**, so an address is known only by what comes back.
 
   NOT RECORDED: the channel range, for the reason in the comment above - the only `1 through 16`
-  in 71 sheets is the glossary's. The mode, there being no implementation chart in any document.
+  in 71 sheets is the glossary's. `midi.mode`, the chart's Mode row, there being no implementation
+  chart in any document.
   The transport, which **no document mentions in any spelling**. The note range, whose only
   statement is the glossary's "between 0 and 127" (manual p. 65) about MIDI in general. NRPN, which appears
   nowhere at all - not even as a glossary entry, which is a silence and not a checked absence. And
@@ -141,11 +151,14 @@ sources:
     url: "https://downloads.waldorfmusic.com/cloud/index.php/s/FwQP632ba84cDLx/download"
     sha256: 6e269488ded610f3e89f37901853e41843fa66369ce44d4cffe1b0d2b6788b66
     retrieved: 2026-10-06
-    # **ONE SHEET, AND IT SETTLES THREE THINGS NO OTHER DOCUMENT DOES**: the firmware version, the
-    # preset count, and that a controller number is recognised for choosing a preset. See the
-    # account above for why it is also the one the downloads page does not name.
-    # It covers 1.02 and 1.01 only - **nothing about 1.00**, so what the instrument shipped with
-    # is unpublished. Made on the same day the downloads page's answer naming it is dated.
+    # **ONE SHEET, AND IT SETTLES THREE THINGS NO OTHER DOCUMENT DOES**: that the version is the
+    # firmware's, the preset count, and that a controller number is recognised for choosing a
+    # preset. See the account above for why it is also the one the downloads page does not name.
+    # It was made on the same day the downloads page's answer naming it is dated.
+    # It has a section for 1.02 and one for 1.01 and **none for what came before them**. No
+    # manual here describes that instrument by itself: the German one is labelled "Version: 1.0,
+    # November 2025" (german_manual p. 4) and has later additions in its body. The two-sheet
+    # specification is the only document here made before 1.01.
     # One of its 1.02 fixes is a MIDI fault worth a consumer's attention: "MIDI note-off and
     # pitch-bend messages leak between layers in MIDI split mode." (changelog).
     paginated: false
@@ -161,10 +174,10 @@ sources:
     # polyphony" (specifications p. 1) and "4 timbral layers" (specifications p. 1) are what the
     # definition rests on; its preset count
     # is superseded, which the account above sets out.
-    # It also names the layer modes in the maker's summary - "Stacked, round robin and MIDI-split
-    # layer-modes." (specifications p. 1) - **where the manual calls the first of those
-    # `Layered`** (manual
-    # p. 18). One instrument, two names for one mode, in two documents by one maker.
+    # It also names layer modes in the maker's summary - "Stacked, round robin and MIDI-split
+    # layer-modes." (specifications p. 1) - three where the manual's menu has four. Random Robin
+    # is not among them, and Stacked is the manual's `Layered` (manual p. 18) by elimination
+    # alone: no document sets the two words side by side.
     page_offset: 0
   german_manual:
     kind: manual
@@ -180,8 +193,13 @@ sources:
     # checked the same way: 72 sheets against the English 71, `Rev. 1, November 2025` against
     # `Rev. 2, January 2026`, and **every MIDI fact the English edition has** - CC 74 on its sheet
     # 54, the modulation sources on 57, MPE across five sheets, its own glossary at 63.
-    # So this is a translation one revision behind that leaves nothing out, which is what the
-    # other case needed comparing with. It arrives in the same `.zip` as the English manual.
+    # So this is a translation that leaves out no MIDI fact, which is what the other case needed
+    # comparing with. **IT IS NEITHER REVISION'S TEXT.** Under `Rev. 1` it prints five later
+    # additions in red, the pitch details screen and the fixed pitch among them (german_manual
+    # pp. 25 to 27 and 30), where the English edition has the same five with their words in
+    # black. And its black text gives the filter one slope, 12 dB, where the English gives two
+    # (german_manual p. 27, manual p. 27). Until 2026-10-11 this called it one revision
+    # behind. It arrives in the same `.zip` as the English manual.
     page_offset: 0
   downloads_page:
     kind: download_page
@@ -191,13 +209,17 @@ sources:
     sha256: d6e2a030b2990f3be8d191a99d63ed3ad90244559b99c8b0cfe22ad8797a335f
     retrieved: 2026-10-06
     paginated: false
-    # **Cited for the count being four and for one of them being unnamed.** The product page at
-    # waldorfmusic.com/protein/ offers only the manual; this page is where the other three are,
-    # and it is reached by a link reading `go to protein FAQ / Downloads`.
+    # **Cited for what is offered and for one of the five being unnamed.** The product page at
+    # waldorfmusic.com/protein/ offers only the manual; this page is where the other three
+    # shares are, and it is reached by a link reading `go to protein FAQ / Downloads`.
     # The digest is of the extraction, which pairs each share token with the words that label it -
     # and the changelog's row has the address as its own label, because it is written into the
-    # body of an answer rather than offered as a download. The served markup is saved beside it as
-    # `.html`, whose own digest is 3dc6c2be9f96f2cf80adfc062f741c84f2747d7a10a1d716521644e12445a731.
+    # body of an answer rather than offered as a download. **THE EXTRACTION HOLDS THE PAGE'S
+    # TITLE AND ITS FOUR SHARES AND NOTHING ELSE.** The answer this file quotes twice, and
+    # `Deep Dive`, a link to a video, are in the served markup saved beside the extraction as
+    # `.html`, whose own digest is
+    # 3dc6c2be9f96f2cf80adfc062f741c84f2747d7a10a1d716521644e12445a731. So the two quotations
+    # cited to this source rest on that markup and not on the text the digest above is of.
     # **No file address appears on it at all**: four share tokens, no file names, and the
     # `.zip` that comes back is the only thing that says what each is.
 
@@ -210,8 +232,8 @@ midi:
   # switch that speaks of "any MIDI channel" (manual p. 51) without counting them.
   # **So sixteen is almost certainly right and is not published**, which is the distinction this
   # field exists to keep.
-  # NOT RECORDED, the mode: no implementation chart exists in any of the four documents, and the
-  # Mode row is where this comes from.
+  # NOT RECORDED, `mode`: no implementation chart exists in any of the four documents, and the
+  # Mode row is where this comes from. The instrument's own modes are the `modes` section below.
   # **RECEIVES, BY A SETTING WITH TWO VALUES, AND SENDS NOTHING.** `Sync Settings Source`
   # "Determines how Protein reacts to incoming MIDI Clock messages." (manual p. 52) - `Intern`
   # means "Protein doesn’t react to incoming MIDI Clock" (manual p. 52) and `Extern` that it "automatically syncs
@@ -257,12 +279,36 @@ midi:
   # Received, on the channels set above (manual p. 53); nothing says it sends MPE.
   mpe: receives
 
+modes:
+  # FIVE STATES, UNDER THE MANUAL'S NAMES. "Protein offers 2 modes" (manual p. 16), Single Mode
+  # and Multi Mode, and Multi Mode's menu has four options: Layered, Round Robin, Random Robin
+  # and Midi Split (manual p. 18). The maker calls the options modes too - "Layered mode"
+  # (manual p. 16), "MIDI split mode" (changelog) - and the pictured display heads the menu
+  # `Multi Mode` over the one entry it shows, `Layered`. Each option is a mode of its own here
+  # because which channels the layers answer on turns on the option and not on the Multi
+  # button: only Midi Split gives them channels. Single Mode and the three remaining options
+  # differ in nothing this file holds as data.
+  # None is marked as the factory one. No page says which the instrument starts in, nor whether
+  # the mode is kept with a preset. **Two settings the manual also calls modes cut across all
+  # five and are in `midi` above**: Omni Mode (manual p. 51), and MPE, which the settings page
+  # calls a status (manual p. 52) and the page on pitch bend "MPE mode" (manual p. 26).
+  single:
+    label: Single Mode
+  layered:
+    label: Layered
+  round_robin:
+    label: Round Robin
+  random_robin:
+    label: Random Robin
+  midi_split:
+    label: Midi Split
+
 parts:
   layer:
     label: Layer
+    mode: midi_split
     count: 4
-    # **THESE PARTS EXIST IN ONE MODE OF FOUR, WHICH IS AN OPEN QUESTION ON THE FORMAT
-    # FROM THE OTHER SIDE.**
+    # **THE LAYERS TAKE CHANNELS OF THEIR OWN IN ONE MODE OF FIVE, AND THE PART NAMES IT.**
     # The four layers always exist as sounds; they take channels of their own only under `Midi
     # Split`, and the maker spells the derivation out: "Based on the determined MIDI Receive
     # Channel in the Settings, the select MIDI Channel triggers Layer A, the next MIDI channel
@@ -270,11 +316,30 @@ parts:
     # triggers Layer A, notes on MIDI channel 3 triggers layer B, notes on MIDI channel 4 triggers
     # Layer C and notes on MIDI channel 5 triggers Layer D." (manual p. 18). That is exactly what
     # `channel_offset` means - consecutive from a base that moves - so it is recorded that way.
-    # **IN THE OTHER THREE MODES ALL FOUR ANSWER ON THE ONE CHANNEL.** `Layered` plays them
-    # together, `Round Robin` takes "each incoming note triggers the next active layer in
-    # ascending order repeatedly" (manual p. 18) and `Random Robin` is "Same as Round Robin, but in random order."
-    # (manual p. 18), and Single Mode selects one by a button. **So a consumer that trusts
-    # these channels without knowing the mode will address three layers that are not listening.**
+    # The settings page says the same from its side: the Receive Channel "defines the first
+    # receive channel when using the Midi Split option in Multi Mode" (manual p. 51).
+    # **IN THE OTHER FOUR MODES NO LAYER HAS A CHANNEL OF ITS OWN**, and the one Receive Channel
+    # is what the instrument answers on, Omni Mode and MPE apart. In `Layered`, "all 4 layers
+    # (if active) plays simultaneously" (manual p. 18); in `Round Robin`, "each incoming note
+    # triggers the next active layer in ascending order repeatedly" (manual p. 18); `Random
+    # Robin` is "Same as Round Robin, but in random order." (manual p. 18); and in Single Mode
+    # a layer button chooses the one sound that is played (manual p. 16). **Until 2026-10-11
+    # the part named no mode**, and a consumer that trusted these channels without knowing the
+    # mode addressed three layers that were not listening.
+    # **A LAYER CAN BE SWITCHED OFF IN MULTI MODE**, which is what `active` means in those
+    # sentences: "Active: The corresponding layer is set to an active state" (manual p. 19),
+    # against Off. The Midi Split sentence has no such word, so whether a layer that is off
+    # keeps its place in the channel order is not stated.
+    # **NOT STATED FOR MIDI SPLIT EITHER**: what a layer takes when counting on from the Receive
+    # Channel passes 16 - Layer D with it on 14, C and D on 15, B to D on 16 - where this format
+    # counts on round to 1; what the mode does with Omni Mode on, or with MPE active, for which
+    # the instrument has a setting of its own for "the number of used channels" (manual p. 53);
+    # and what is sent, there being one Send Channel for the instrument.
+    # **`controls` IN `receives` IS MORE THAN ANY PAGE SAYS.** The page speaks of notes on each
+    # layer's channel and of nothing else. The nearest thing is a fault firmware 1.02 fixed,
+    # which implies pitch bend is per layer - see the `changelog` source. No page says a
+    # controller on a layer's channel reaches that layer, and no control below names the part:
+    # the six sit on the base channel, which in this mode is Layer A's.
     # Where the OB-X8's voices are four to each half in Split mode, and its eight stand beside
     # those fours, this instrument's layers share theirs, which `voice.polyphony_shared` records.
     channel_offset: 0
@@ -296,14 +361,17 @@ voice:
   # of 8 voices." (manual p. 16). **That sentence is why one figure is the whole answer here,
   # where `oberheim/ob_x8` needs two**: its parts take four voices each in split mode and neither
   # half can borrow, so its eight stand beside two fours, and here a single figure says it all.
+  # The manual prints that sentence under Working in Single Mode and does not repeat it for
+  # Multi Mode, where it says only that the layer options are nearly the same (manual p. 18).
+  # `polyphony_shared: true` reads it as true of the instrument in every mode.
   polyphony: 8
   polyphony_shared: true
   # Three per layer, and two of the three are one voice: "Poly: The corresponding Layer uses all
   # available voices." (manual p. 17), "Mono: Only the last played note sounds."
   # (manual p. 17) and "Legato: Same as Mono, but
   # when you play legato, only the first note that was played triggers the envelopes." (manual
-  # p. 17). **So this field's two numbers are three of the maker's modes** - legato and mono are
-  # both monophonic and differ in what they retrigger, which no field here holds.
+  # p. 17). **So this field's two numbers are three of the maker's voice modes** - legato and
+  # mono are both monophonic and differ in what they retrigger, which no field here holds.
   voicing_modes: [1, 8]
   velocity:
     # Received, with its depth a per-sound setting rather than a global one: "You can also use
@@ -332,7 +400,9 @@ voice:
     # **AND UNDER MPE IT IS A DIFFERENT NUMBER ENTIRELY**: per-note bend uses "the standard MPE
     # range of +/-48 semitones" (manual p. 53), which is four times the largest value the setting
     # above offers, and the manual gives the way to turn it off - "To disable this per-note Pitch
-    # bend effect, set the Pitch Bend parameter in Glide screen to 0." (manual p. 52).
+    # bend effect, set the Pitch Bend parameter in Glide screen to 0." (manual p. 52). That
+    # sentence is behind its own manual: "The pitch bend range has been moved to new pitch
+    # details screen." (changelog), which is where p. 26 has it.
     programmable: true
 
 groups:
@@ -349,6 +419,12 @@ controls:
   # name there is. **There is nothing here to decline.**
   # The labels are the maker's own words from the Source column, so a reader of this list is
   # reading what the modulation matrix will show them; bank select's is the changelog's.
+  # **THE FIVE SOURCES STATE NO `direction`, WHICH THIS FORMAT READS AS BOTH WAYS, AND THAT IS
+  # MORE THAN THE PAGES GIVE.** Each is listed as a source for the modulation matrix, which is
+  # a thing the instrument reads; no page says it sends any of the five. What a dial sends is
+  # what a player has mapped to it: "only those dials send MIDI CC data for which this data
+  # has been defined" (manual p. 51), and a mapping is learned, the last edited parameter
+  # taking the next controller to arrive (manual p. 55).
 
   # Named sources ─────────────────────────────────────────
   mod_wheel:        {label: Mod Wheel, cc: 1, group: modulation}
@@ -359,8 +435,9 @@ controls:
   breath:           {label: Breath, cc: 2, group: modulation}
   expression:       {label: Expression, cc: 11, group: modulation}
   pedal:            {label: Pedal, cc: 64, group: modulation}
-  # The one of the five that is not on p. 56: it is named where MPE is explained, as the
-  # message the Y axis arrives on, and its destination is set by the `MPE Y` source.
+  # The one of the five whose number is not on p. 56. The Sources table there has the row,
+  # `MPE Y`, and the number is where MPE is explained, as the message the Y axis arrives on
+  # (manual p. 53).
   mpe_y:            {label: MPE Y, cc: 74, group: modulation}
 
   # Bank select ───────────────────────────────────────────

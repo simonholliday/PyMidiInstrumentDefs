@@ -15445,8 +15445,9 @@ class TestProtein:
 		assert "**`control_change` IS LEFT EMPTY BECAUSE IT HOLDS ONE WORD AND THIS INSTRUMENT" \
 			" IS BOTH THINGS.**" in flat
 
-		# The five that do use `learned` all carry nothing, which is why writing it here would
-		# have said the five above are defaults somebody can change.
+		# Five that use `learned` and carry nothing, which is the case this file's reason was
+		# written against.  Eight others use it beside controls, three of them this maker's own
+		# Iridiums, and the header now says so.
 		for name in ("arturia/drumbrute_impact", "dirtywave/m8",
 				"roland/d_50", "synthstrom_audible/deluge", "teenage_engineering/op_1"):
 			other = pymidiinstrumentdefs.load(name, [CORPUS])
@@ -15454,14 +15455,32 @@ class TestProtein:
 			assert other.midi.control_change == "learned"
 			assert not other.controls
 
-	def test_its_four_layers_take_channels_in_one_mode_of_four (self) -> None:
-		"""So a consumer trusting the channels without the mode addresses nothing."""
+	def test_its_four_layers_take_channels_in_one_mode_of_five (self) -> None:
+		"""So the part names that mode, and a consumer asking another mode is told there are none."""
 		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
 
 		assert list(protein.parts) == ["layer"]
 		assert protein.parts["layer"].count == 4
 		assert protein.parts["layer"].channel_offset == 0
 		assert protein.parts["layer"].channel is None
+
+		assert {name: mode.label for name, mode in protein.modes.items()} == {
+			"single": "Single Mode", "layered": "Layered", "round_robin": "Round Robin",
+			"random_robin": "Random Robin", "midi_split": "Midi Split"}
+		assert protein.factory_mode is None
+		assert protein.parts["layer"].mode == "midi_split"
+		assert list(protein.parts_in("midi_split")) == ["layer"]
+
+		for mode in ("single", "layered", "round_robin", "random_robin"):
+			assert not protein.parts_in(mode), mode
+
+		# No control names the part, so every mode has every control, and in Midi Split the
+		# six reach the base channel's layer and no other. No page says that of them.
+		assert all(len(protein.controls_in(mode)) == len(protein.controls) for mode in protein.modes)
+		assert len(protein.controls_reaching("layer", 0)) == len(protein.controls)
+
+		for instance in (1, 2, 3):
+			assert not protein.controls_reaching("layer", instance), instance
 
 		said = prose_of("waldorf", "protein")
 
@@ -15470,9 +15489,9 @@ class TestProtein:
 
 		flat = " ".join(said.split())
 
-		assert "**THESE PARTS EXIST IN ONE MODE OF FOUR, WHICH IS AN OPEN QUESTION ON THE" \
-			" FORMAT FROM THE OTHER SIDE.**" in flat
-		assert "**IN THE OTHER THREE MODES ALL FOUR ANSWER ON THE ONE CHANNEL.**" in flat
+		assert "**THE LAYERS TAKE CHANNELS OF THEIR OWN IN ONE MODE OF FIVE, AND THE PART NAMES" \
+			" IT.**" in flat
+		assert "**IN THE OTHER FOUR MODES NO LAYER HAS A CHANNEL OF ITS OWN**" in flat
 
 	def test_eight_voices_shared_where_the_ob_x8_has_four_to_a_half (self) -> None:
 		"""One figure is the whole answer here, where the OB-X8 needs two."""
@@ -15560,7 +15579,7 @@ class TestProtein:
 		assert "You can also use Select to define the Vel Amnt (Velocity Amount), so that the" \
 			" volume will be affected by keyboard velocity." in said
 
-	def test_the_german_edition_is_a_revision_behind_and_omits_nothing (self) -> None:
+	def test_the_german_edition_omits_no_midi_fact_and_is_neither_revisions_text (self) -> None:
 		"""Which is what rank 95's instrument needed comparing with."""
 		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
 
@@ -15573,6 +15592,7 @@ class TestProtein:
 		assert "**CITED FOR A COMPARISON RATHER THAN FOR A FACT, AND IT IS THE REASSURING" \
 			" ONE.**" in flat
 		assert "**every MIDI fact the English edition has**" in flat
+		assert "**IT IS NEITHER REVISION'S TEXT.**" in flat
 
 		# The instrument it is being compared with, and what it did instead.
 		hexdrums = " ".join((pymidiinstrumentdefs.load(

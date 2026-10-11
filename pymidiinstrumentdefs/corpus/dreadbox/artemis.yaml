@@ -37,7 +37,7 @@ model:
   # Checked 2026-10-06.
 
 source: >-
-  **EIGHTY-FOUR CONTROLS, OUT OF THE MANUAL AND NOT OUT OF THE DOCUMENT NAMED FOR IT.**
+  **EIGHTY-FIVE CONTROLS, OUT OF THE MANUAL AND NOT OUT OF THE DOCUMENT NAMED FOR IT.**
   Dreadbox publishes a standalone `CC List v1.1.0` and the user's manual carries the same list as
   its chapter 017 - and at v1.2.0 the chapter has moved on. It adds controller 77, `VCO 1 TUNE`,
   which the standalone list does not have at all, and it changes four more: the selector at 31
@@ -49,8 +49,9 @@ source: >-
 
   **CONTROLLER 31 IS NOT AN ORDINARY CONTROL AND A CONSUMER MUST BE TOLD SO.** "Use CC 31
   (Selector) to choose whether subsequent CC messages adjust a parameter's base value or its
-  corresponding modulation amount." (manual p. 74). So every controller below means one of two
-  things depending on a mode set by another controller - and when it is set to a modulation the
+  corresponding modulation amount." (manual p. 74). So each of the 52 controllers the manual lists
+  under it, in the selector's own table (manual pp. 74-79), means one of two things depending on a
+  mode set by another controller - and when it is set to a modulation the
   range is re-read as a signed one: "0 → –100", "64 → 0", "127 → +100" (manual p. 74). **Send
   `LPF CUT OFF` without knowing where 31 stands and you may be setting the cutoff or setting how
   far an envelope moves it.** Its ten states are `BASE`, `LFO 1`, `LFO 2`, `VCA EG`, `VCF EG`,
@@ -61,11 +62,12 @@ source: >-
   0-127" (manual p. 70) and then print state names with no numbers against them. That is a rule
   and not a table: thirds of 0 to 127 can be written 0/42/84 or 0/43/85 and the maker has said
   which only for the two-state controls, where the specification's own 0 and 64 settle it. So the
-  seven switches carry their two states and **the thirteen controls with three or more states
+  seven switches carry their two states and **the fourteen controls with three or more states
   carry their names in this account and no numbers**, which is `novation/peak`'s rule as
   `korg/volca_fm` applied it.
 
-  Those thirteen, with the states each one offers: 18 `LFO 1 VCO TARGET` (3), 24 and 27 the two
+  Those fourteen, with the states each one offers: 0 `BANK SELECT` (8, `BANK A-H`), 18
+  `LFO 1 VCO TARGET` (3), 24 and 27 the two
   `LFO WAVE`s (8 each), 29 `LFO SYNC MODE` (4), 30 `PLAY MODE` (5), 31 `SELECTOR` (10), 38
   `DISTORTIONS TYPE` (15), 44 `MODULATIONS TYPE` (12), 50 `DELAYS TYPE` (5), 56 `REVERBS TYPE`
   (5), 82 `LPF TRACK` (3), 91 `SEQUENCERS PARAMETER TYPE` (3) and 93 `DRIVE MODE` (5).
@@ -224,13 +226,19 @@ groups:
 
 controls:
 
-  # **EIGHTY-FOUR, EVERY ONE RECEIVED, AND ALL OF THEM GOVERNED BY CONTROLLER 31.** Three rows of
-  # the manual's list are not controls: `BANK SELECT` at 0 is addressing machinery by the ruling
-  # `roland/fantom_6_7_8` set at rank 77, and `ALL SOUNDS OFF` at 120 and `ALL NOTES OFF` at 123
-  # are channel mode messages this library's validator refuses.
+  # **EIGHTY-FIVE, EVERY ONE RECEIVED, AND CONTROLLER 31 GOVERNS THE 52 LISTED UNDER IT.**
+  # `BANK SELECT` at 0 is a control, as bank select is wherever a maker numbers it. Two rows of the
+  # manual's list are not: `ALL SOUNDS OFF` at 120 and `ALL NOTES OFF` at 123 are channel mode
+  # messages this library's validator refuses.
   #
-  # The seven switches below carry their two states at 0 and 64. The thirteen controls with three
+  # The seven switches below carry their two states at 0 and 64. The fourteen controls with three
   # or more states carry none, because the maker prints no boundary for them - see the account.
+
+  # BANK SELECT, at 0 with `BANK A-H` for its values (manual p. 70): eight banks of the 512
+  # presets, "split in 8 banks of 64 presets each" (manual p. 11). The rule the same page gives
+  # every enumerated value covers it too, "split in the whole CC range of 0-127" (manual p. 70),
+  # so A to H are eighths of 0 to 127 rather than 0 to 7, and no boundary is printed.
+  bank_select:                      {label: BANK SELECT, cc: 0, direction: receives}
 
   # vco (11)
   vco_glide:                        {label: VCO GLIDE, cc: 5, direction: receives, group: vco}

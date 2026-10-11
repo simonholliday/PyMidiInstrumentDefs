@@ -16761,18 +16761,21 @@ class TestArtemis:
 	is 1.2.0, so the named document is the superseded one.
 	"""
 
-	def test_eighty_four_controls_and_every_one_of_them_only_receives (self) -> None:
+	def test_eighty_five_controls_and_every_one_of_them_only_receives (self) -> None:
 		"""The instrument has a MIDI out and every MIDI switch it offers receives."""
 		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
 		numbers = sorted(control.cc for control in artemis.controls.values()
 			if control.cc is not None)
 
-		assert len(artemis.controls) == 84
-		assert numbers[0] == 1 and numbers[-1] == 96
+		assert len(artemis.controls) == 85
+		assert numbers[0] == 0 and numbers[-1] == 96
 		assert {control.direction for control in artemis.controls.values()} == {"receives"}
 
-		# The three rows of the maker's list that are not controls.
-		assert 0 not in numbers, "bank select is addressing machinery"
+		# Bank select is a control, as it is wherever a maker numbers it.
+		assert artemis.controls["bank_select"].cc == 0
+		assert not artemis.controls["bank_select"].values, "eight banks and no boundary printed"
+
+		# The two rows of the maker's list that are not controls.
 		assert 120 not in numbers and 123 not in numbers, "120 and 123 are channel mode"
 
 	def test_the_survey_named_the_superseded_document (self) -> None:
@@ -16816,7 +16819,7 @@ class TestArtemis:
 
 		The maker says only that the states are "split in the whole CC range of
 		0-127", which is a rule and not a table: thirds can be 0/42/84 or
-		0/43/85.  So the thirteen multi-state controls carry no numbers -
+		0/43/85.  So the fourteen multi-state controls carry no numbers -
 		`novation/peak`'s rule, as `korg/volca_fm` applied it.
 		"""
 		artemis = pymidiinstrumentdefs.load("dreadbox/artemis", [CORPUS])
@@ -16860,7 +16863,7 @@ class TestArtemis:
 
 		# And no two carry the same number of controls.
 		counts = sorted(len(one.controls) for one in loaded.values())
-		assert counts == [82, 84, 98]
+		assert counts == [82, 85, 98]
 		assert len(set(counts)) == 3
 
 	def test_the_manual_contradicts_itself_about_the_mpe_bend_range (self) -> None:

@@ -93,11 +93,36 @@ source: >-
   the Reset All Controllers table. **RPN, by contrast, is received and the document lists exactly
   four**: Pitch Bend Sensitivity, Channel Fine Tuning, Channel Coarse Tuning and RPN null.
 
-  NOT RECORDED: the polyphony, which no document here states - the Reference Manual mentions "the
-  maximum polyphony" three times and never gives a figure, and the specifications table names the
-  keyboards and not the voices. And the preset count: program change reaches "Program Number
-  1-128" per the chart and Bank Select chooses the bank, and no document here says how many banks
-  there are.
+  EVERY CONTROL BELOW NAMES THE ZONE, BECAUSE A ZONE IS WHAT RECEIVES IT. Each of the sixteen
+  sets the channel it receives on, "Receive Channel 1-16 Specifies the MIDI channel assigned to
+  each zone" (parameter_guide p. 11), and no zone's is set from another channel, so a control
+  naming no part would mean a base channel, which the FANTOM does not have. Beside the zones'
+  own, the system's MIDI settings name one channel more, the Scene Control Channel, which
+  "Specifies the MIDI channel for controlling the scene" (reference p. 115); bank select's note
+  below says what that leaves open. The implementation document puts every channel voice message
+  it receives, control change among them, behind a zone's switch, "Not received when the Zone
+  Receive Switch parameter (ZONE EDIT:LEVEL/PAN) is OFF." (implementation p. 1), and nineteen of
+  the thirty-three below say more of the zone: fourteen change a setting of the zone's own, as 7
+  does its level and 74 its cutoff offset, and five more, bank select's two with 1, 11 and 64,
+  can each be refused by a filter in the zone (implementation pp. 1 to 4). The other fourteen are
+  tied to the zone by that note alone. What any of them does beyond that is assigned elsewhere: a
+  tone's MFX and matrix controls can take a controller as their source, and so can the four
+  System Control sources, whose settings "allow you to specify MIDI messages that will apply in
+  common" (reference p. 117) to the whole instrument, or in their place a scene's own four
+  (reference p. 117). The matrix controls are reached through a zone: "When a tone with Matrix
+  Control settings is assigned to a zone, confirm that any MIDI messages used for the Matrix
+  Control will be received" (parameter_guide p. 29). For the System Control sources no page says
+  on which channel they must arrive.
+
+  NOT RECORDED: the sound generator's polyphony, which no document here states. The Reference
+  Manual mentions the maximum polyphony twice (reference pp. 124 and 126) without a figure, and
+  its specifications give one only for the pad sampler, "Maximum Polyphony: 8" (reference p. 130).
+  And the preset count: program change reaches "Program Number 1-128" per the chart and Bank
+  Select chooses the bank. The specifications count the scenes, "128 Scenes x 4 Bank" (reference
+  p. 130), but give the tones only as "Over 3,500 Tones" (reference p. 130). The parameter guide
+  names the tone banks by kind (parameter_guide p. 11), and the bank select table prints the first
+  LSB of each and elides the rest of most (implementation p. 1), so no document here says how many
+  128-program banks of tones there are.
 
 sources:
   implementation:
@@ -168,7 +193,8 @@ midi:
     receives: true
     sends: true
     # NOT RECORDED, the preset count: 1-128 is what one bank holds and Bank Select chooses the
-    # bank, and no document here says how many banks there are.
+    # bank, and no document here says how many 128-program banks of tones there are. The scenes'
+    # four banks are in the source account.
   # A CHECKED ABSENCE FROM TWO DOCUMENTS AT ONCE: no NRPN parameter is named in 67 pages, no
   # heading exists for controllers 98 and 99, and the chart marks both "x" in both directions.
   nrpn: none
@@ -181,8 +207,8 @@ voice:
   # The chart's Note Number row gives 0-127 transmitted and recognised, and its True Voice row
   # 0-127 - which is the instrument saying it sounds every note it answers to.
   note_range: [0, 127]
-  # NOT RECORDED, the polyphony. See the source account: the maximum is referred to three times
-  # and never given.
+  # NOT RECORDED, the polyphony. See the source account: the Reference Manual refers to the sound
+  # generator's maximum twice and never gives it, and the one figure printed is the pad sampler's.
   velocity:
     note_on: received
     # The chart marks Note On and Note Off "o" in both columns, so release velocity travels too.
@@ -244,46 +270,51 @@ controls:
   # (implementation p. 8), and "0, 32" is both ways on the sound generator's chart (reference
   # p. 128). Reception needs the system's Receive Bank Select and the zone's own; transmission
   # needs Transmit Program Change and Transmit Bank Select (implementation p. 8).
-  bank_select_msb:                   {label: Bank Select (MSB), cc: 0}
-  bank_select_lsb:                   {label: Bank Select (LSB), cc: 32}
+  # NAMED FOR THE ZONE, THOUGH ONE OF ITS JOBS MAY NOT BE A ZONE'S. The zone's filter can refuse
+  # it, and its tables of banks list the tones and drum kits (implementation pp. 1 and 2); but the
+  # first lists scenes, at MSB 85 (implementation p. 1), and scenes have a channel of their own,
+  # the Scene Control Channel quoted in the source account. No page says on which channel a bank
+  # select of 85 must arrive to choose a scene, so that use has no control of its own here.
+  bank_select_msb:                   {label: Bank Select (MSB), cc: 0, part: zone}
+  bank_select_lsb:                   {label: Bank Select (LSB), cc: 32, part: zone}
 
   # Continuous controllers ────────────────────────────────
-  modulation:                        {label: Modulation, cc: 1, group: continuous}
-  breath_type:                       {label: Breath type, cc: 2, group: continuous}
-  foot_type:                         {label: Foot type, cc: 4, group: continuous}
-  portamento_time:                   {label: Portamento Time, cc: 5, group: continuous}
-  volume:                            {label: Volume, cc: 7, group: continuous}
-  panpot:                            {label: Panpot, cc: 10, group: continuous}
-  expression:                        {label: Expression, cc: 11, group: continuous}
+  modulation:                        {label: Modulation, cc: 1, part: zone, group: continuous}
+  breath_type:                       {label: Breath type, cc: 2, part: zone, group: continuous}
+  foot_type:                         {label: Foot type, cc: 4, part: zone, group: continuous}
+  portamento_time:                   {label: Portamento Time, cc: 5, part: zone, group: continuous}
+  volume:                            {label: Volume, cc: 7, part: zone, group: continuous}
+  panpot:                            {label: Panpot, cc: 10, part: zone, group: continuous}
+  expression:                        {label: Expression, cc: 11, part: zone, group: continuous}
 
   # General purpose controllers ───────────────────────────
-  general_purpose_controller_1:      {label: General Purpose Controller 1, cc: 16, group: general_purpose}
-  general_purpose_controller_2:      {label: General Purpose Controller 2, cc: 17, group: general_purpose}
-  general_purpose_controller_3:      {label: General Purpose Controller 3, cc: 18, group: general_purpose}
-  general_purpose_controller_4:      {label: General Purpose Controller 4, cc: 19, group: general_purpose}
-  general_purpose_controller_5:      {label: General Purpose Controller 5, cc: 80, group: general_purpose}
-  general_purpose_controller_6:      {label: General Purpose Controller 6, cc: 81, group: general_purpose}
-  general_purpose_controller_7:      {label: General Purpose Controller 7, cc: 82, group: general_purpose}
-  general_purpose_controller_8:      {label: General Purpose Controller 8, cc: 83, group: general_purpose}
+  general_purpose_controller_1:      {label: General Purpose Controller 1, cc: 16, part: zone, group: general_purpose}
+  general_purpose_controller_2:      {label: General Purpose Controller 2, cc: 17, part: zone, group: general_purpose}
+  general_purpose_controller_3:      {label: General Purpose Controller 3, cc: 18, part: zone, group: general_purpose}
+  general_purpose_controller_4:      {label: General Purpose Controller 4, cc: 19, part: zone, group: general_purpose}
+  general_purpose_controller_5:      {label: General Purpose Controller 5, cc: 80, part: zone, group: general_purpose}
+  general_purpose_controller_6:      {label: General Purpose Controller 6, cc: 81, part: zone, group: general_purpose}
+  general_purpose_controller_7:      {label: General Purpose Controller 7, cc: 82, part: zone, group: general_purpose}
+  general_purpose_controller_8:      {label: General Purpose Controller 8, cc: 83, part: zone, group: general_purpose}
 
   # Switches and pedals ───────────────────────────────────
-  hold_1:                            {label: Hold 1, cc: 64, group: switch}
-  portamento:                        {label: Portamento, cc: 65, group: switch}
-  sostenuto:                         {label: Sostenuto, cc: 66, group: switch}
-  soft:                              {label: Soft, cc: 67, group: switch}
-  legato_foot_switch:                {label: Legato Foot Switch, cc: 68, group: switch}
-  portamento_control:                {label: Portamento control, cc: 84, group: switch}
+  hold_1:                            {label: Hold 1, cc: 64, part: zone, group: switch}
+  portamento:                        {label: Portamento, cc: 65, part: zone, group: switch}
+  sostenuto:                         {label: Sostenuto, cc: 66, part: zone, group: switch}
+  soft:                              {label: Soft, cc: 67, part: zone, group: switch}
+  legato_foot_switch:                {label: Legato Foot Switch, cc: 68, part: zone, group: switch}
+  portamento_control:                {label: Portamento control, cc: 84, part: zone, group: switch}
 
   # Sound controllers ─────────────────────────────────────
-  resonance:                         {label: Resonance, cc: 71, group: sound}
-  release_time:                      {label: Release Time, cc: 72, group: sound}
-  attack_time:                       {label: Attack time, cc: 73, group: sound}
-  cutoff:                            {label: Cutoff, cc: 74, group: sound}
-  decay_time:                        {label: Decay Time, cc: 75, group: sound}
-  vibrato_rate:                      {label: Vibrato Rate, cc: 76, group: sound}
-  vibrato_depth:                     {label: Vibrato Depth, cc: 77, group: sound}
-  vibrato_delay:                     {label: Vibrato Delay, cc: 78, group: sound}
+  resonance:                         {label: Resonance, cc: 71, part: zone, group: sound}
+  release_time:                      {label: Release Time, cc: 72, part: zone, group: sound}
+  attack_time:                       {label: Attack time, cc: 73, part: zone, group: sound}
+  cutoff:                            {label: Cutoff, cc: 74, part: zone, group: sound}
+  decay_time:                        {label: Decay Time, cc: 75, part: zone, group: sound}
+  vibrato_rate:                      {label: Vibrato Rate, cc: 76, part: zone, group: sound}
+  vibrato_depth:                     {label: Vibrato Depth, cc: 77, part: zone, group: sound}
+  vibrato_delay:                     {label: Vibrato Delay, cc: 78, part: zone, group: sound}
 
   # Effect send levels ────────────────────────────────────
-  general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, group: effects}
-  general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, group: effects}
+  general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, part: zone, group: effects}
+  general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, part: zone, group: effects}

@@ -7871,6 +7871,17 @@ class TestFantom:
 		assert fantom.parts["zone"].channel == "assigned"
 		assert fantom.parts["zone"].receives == ("notes", "controls")
 
+	def test_every_control_names_the_zone (self) -> None:
+		"""Each zone sets its own receive channel and none is a base. Part-less until 2026-10-11."""
+		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
+
+		assert len(fantom.controls) == 33
+		assert all(control.part == "zone" for control in fantom.controls.values())
+
+		account = " ".join((fantom.source or "").split())
+
+		assert "EVERY CONTROL BELOW NAMES THE ZONE" in account
+
 	def test_clock_and_transport_are_both_ways_by_two_different_sections (self) -> None:
 		"""The sound generator receives clock; the sequencer sends it. Two charts, one instrument."""
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])

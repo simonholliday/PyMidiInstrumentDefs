@@ -377,9 +377,9 @@ account says, only where it breaks.
 NRPN's parameter number whole, and it goes in `nrpn` as printed. Others print an MSB
 column and an LSB column, as Elektron does: record `nrpn` as **MSB x 128 + LSB**, which
 is the number that goes on the wire, and say so in a comment. The citation check knows
-both forms - it looks for the number, and then for the two halves - and it reports how
-many it could only find as halves, because small numbers are easy to find on a page full
-of them.
+both forms - it looks for the number, and where that is not on the page for the two
+halves - and it reports how many it could only find as halves, because small numbers are
+easy to find on a page full of them.
 
 **A number printed only in hexadecimal is written in decimal.** Some makers print a
 message as its bytes, so a controller appears as `Bn 4A xx` and its number, 74, appears
@@ -388,7 +388,27 @@ citation check looks for 74 first and, only if it is nowhere else, for `4A` as a
 its own, in capitals. It names each number it found only that way, so read each one on
 its page: prose prints short hexadecimal words too, and a power adapter rated at `1A`
 would answer for controller 26. It never reads a form made only of digits as
-hexadecimal, because a page printing `40` far more likely means forty than 64.
+hexadecimal on its own, because a page printing `40` far more likely means forty than 64.
+
+**An NRPN printed as two hexadecimal bytes is one decimal number too.** Korg's RADIAS
+gives Vocoder Band14 Panpot as `04  5D`: write 4 x 128 + 93 = 605. The citation check
+looks for 605, then for `04` and `5D` side by side on one line with nothing but spaces
+between them, and only then for a 4 and a 93 anywhere in decimal. It reports how many it
+found only as such a pair. Standing side by side is what lets a byte made only of digits
+count there: `04  60` is found for 608, where a `60` alone would be read as sixty.
+
+**The pair is matched wherever it stands, so read every row on its page, both bytes.**
+The check cannot tell one row from the next, and it does not refuse a slip: `04  5D` read
+as one number is 1117, which is not found as a pair and is still found if an 8 and a 93
+are anywhere on the cited pages in decimal. Where a definition's NRPNs are found both
+ways, some as pairs and some only as decimal halves, it names the fewer of the two, or
+all of them where there are as many each way, and those are the ones to look at first.
+That catches a slip on one row. It does not catch one made on every row: the wrong
+numbers are then the many, or are other rows' pairs. And a number found as itself is
+never named: a byte of the first bank read as decimal is found that way, `00 14` held
+as 14. No other way of setting two bytes down is read: not with a bar, a comma or a
+colon between them, not with an `H` after each, and not set tight against a full stop, a
+colon, a stroke or a hash.
 
 **Stepped controls: bands and exact values are different things.**
 

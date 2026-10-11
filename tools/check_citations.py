@@ -225,6 +225,63 @@ def halves_on (nrpn: int, printed: set[int]) -> bool:
 	return nrpn // 128 in printed and nrpn % 128 in printed
 
 
+def as_a_byte_pair (nrpn: int, text: str) -> bool:
+
+	"""Whether a page prints an NRPN as its two bytes side by side, in hexadecimal.
+
+	Korg's RADIAS is the case: its MIDI implementation gives every NRPN as two
+	hexadecimal bytes in one cell, so Vocoder Band14 Panpot is ``04  5D``.  A
+	definition holds that as 4 x 128 + 93 = 605, and the pages that print the
+	table print neither 605 nor 93.
+
+	**Both bytes must be on one line with nothing but spaces or tabs between
+	them**, each as two digits in capitals, the pair standing as words of its own
+	and not against a full stop, a colon, a stroke or a hash.  Standing together
+	is what lets a byte made only of digits count here, where `in_hexadecimal`
+	refuses one on its own: a lone ``60`` is far likelier sixty than 96.
+
+	**A pair is read wherever two such words stand together, and no column is
+	looked for.**  So two decimal numbers of two digits each are read as bytes,
+	and so is an address in a system exclusive table.  Measured over this corpus,
+	seven wrong values at most pass that did not before on the pages of any
+	definition here that holds an NRPN.  And every row of a table is on the page,
+	so a number taken from another row is found as readily as the right one, a
+	byte of digits read as decimal among them: that is usually some other row.
+
+	The pair itself is not found for two slips a reader of bytes makes: ``04  5D``
+	does not answer for the two bytes joined as one number, or for the halves
+	changed places.  **That does not refuse them.**  Such a number is still looked
+	for as two halves in decimal, and two small decimal numbers are somewhere on
+	almost any page of MIDI tables.
+
+	**So where a definition's NRPNs are found both ways, the fewer are named.**  The
+	tables a definition is read off usually set an NRPN down one way.  If most
+	were found as pairs, the few found only as decimal halves are the likelier
+	slips; if most were found as halves, the few found as pairs are the likelier
+	coincidences; and where as many were found each way, all are named.  **That
+	catches a slip made on one row and not one made on every row**: joined as one
+	number throughout, the wrong numbers are the many and none is named; read as
+	decimal throughout, most are other rows' pairs.
+
+	It is tried before the decimal halves because it asks more of the page.  It
+	is reported apart from the numbers found as themselves and never counted
+	with them: it is not the number, and it is matched wherever it stands.  That
+	is weaker than finding a number of three digits or more printed whole.  It is
+	not always weaker than finding a small one, since a 20 is on a page of MIDI
+	tables many times over.
+
+	No other way of setting two bytes down is read: not one under the other, not
+	with a bar, a comma or a colon between them, and not with an H after each.
+	"""
+
+	if not 0 <= nrpn <= 0x3FFF:
+		return False
+
+	msb, lsb = f"{nrpn // 128:02X}", f"{nrpn % 128:02X}"
+
+	return re.search(rf"(?<![0-9A-Za-z.#:/]){msb}[ \t]+{lsb}(?![0-9A-Za-z.#:/])", text) is not None
+
+
 # A range wide enough to cover most of the controller space says nothing useful:
 # "0-127" would answer for every number a definition could hold. A group of
 # controls is small, so only a short run counts as naming its members.
@@ -393,6 +450,7 @@ class Result:
 	unreachable: set[int] = dataclasses.field(default_factory=set)
 	wanted: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	missing: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+	as_byte_pairs: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	as_halves: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	in_a_range: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	as_hex: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
@@ -525,7 +583,10 @@ def follow (
 			whole = "".join(page.extract_text() or "" for page in opened.pages)
 			document.scanned = not whole.strip()
 
-	printed_text = " ".join(document.text for document in result.documents)
+	# One document ends and the next begins on a new line, never on the same one: a
+	# space between them is a gap `numbers_on` closes, so the last digit of one
+	# document and the first of the next would be read as a number neither printed.
+	printed_text = "\n".join(document.text for document in result.documents)
 	printed_numbers = numbers_on(printed_text)
 
 	unreadable = any(document.scanned for document in result.documents)
@@ -541,6 +602,10 @@ def follow (
 		name, kind, number = entry
 
 		if number in printed_numbers:
+			continue
+
+		if kind == "nrpn" and as_a_byte_pair(number, printed_text):
+			result.as_byte_pairs.append(entry)
 			continue
 
 		if kind == "nrpn" and halves_on(number, printed_numbers):
@@ -606,19 +671,52 @@ def render (result: Result, verbose: bool) -> None:
 	if result.unreachable:
 		print(f"    ⚠ cited but in no document read: printed {as_ranges(result.unreachable)}")
 
-	found = (len(result.wanted) - len(result.missing) - len(result.as_halves) - len(result.in_a_range)
-		- len(result.as_hex) - len(result.unverifiable))
+	found = (len(result.wanted) - len(result.missing) - len(result.as_byte_pairs) - len(result.as_halves)
+		- len(result.in_a_range) - len(result.as_hex) - len(result.unverifiable))
 
 	if not result.wanted:
 		print("    no numbers to check")
 	else:
 		print(f"    {found} of {len(result.wanted)} numbers found")
 
+	if result.as_byte_pairs:
+		print(
+			f"        {len(result.as_byte_pairs)} NRPNs found only as two hexadecimal bytes side by side, "
+			f"which is a weaker check"
+		)
+
 	if result.as_halves:
 		print(
 			f"        {len(result.as_halves)} NRPNs found only as the two halves the maker prints, "
 			f"which is a weaker check"
 		)
+
+	# The tables a definition is read off usually set an NRPN down one way.  So where its
+	# NRPNs were found both ways, the fewer are the likelier slips or coincidences, and
+	# each of those is named with what was matched.  As many each way, and all are.
+
+	if result.as_byte_pairs and result.as_halves:
+		pairs, halves = len(result.as_byte_pairs), len(result.as_halves)
+
+		if pairs == halves:
+			which = "as many each way, so all"
+		elif pairs < halves:
+			which = "the fewer, as bytes side by side,"
+		else:
+			which = "the fewer, as halves in decimal,"
+
+		print(
+			f"        NRPNs were found both ways here, and a table prints one or the other: {which} are "
+			f"named to be read on their page"
+		)
+
+		if pairs <= halves:
+			for name, kind, number in result.as_byte_pairs:
+				print(f"            {name}.{kind} = {number}, as {number // 128:02X} {number % 128:02X} side by side")
+
+		if halves <= pairs:
+			for name, kind, number in result.as_halves:
+				print(f"            {name}.{kind} = {number}, as {number // 128} and {number % 128} in decimal")
 
 	if result.in_a_range:
 		print(

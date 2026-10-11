@@ -273,6 +273,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/tr_08` | Roland TR-08: 38 controls off a one-sheet chart, every number one the TR-8 uses and eleven of them under another name - 86 to 88 reach this machine's cowbell where the TR-8 has `RC` - and sixteen instruments over twenty-three notes that no single range describes |
 | `roland/tr_1000` | Roland TR-1000: 66 controls off a real chart, which is nine firmware releases behind the instrument it describes |
 | `roland/tr_6s` | Roland TR-6S: 34 controls, 33 of which are the TR-8S's - and one the TR-8S has not, named BEAT and explained nowhere |
+| `roland/tr_707` | Roland TR-707: no controls, because its chart crosses the row - fifteen voices on factory note numbers the owner can change by playing a note at it, two settings for the numbers it sends in place of sounding, and clock, start, continue, stop, song position and song select both ways, read by eye from a scan in Roland's manual archive |
 | `roland/tr_8` | Roland TR-8: 50 controls off a chart five firmware releases old, eleven instruments over seventeen contiguous notes, and three controls it obeys and never reports |
 | `roland/tr_909` | Roland TR-909: no controls, because its maker's whole published MIDI is one page of a scanned manual that names seven kinds of message and not one number |
 | `sequential/fourm` | Sequential Fourm: 100 controls out of two tables for one set of parameters, a controller and an NRPN apiece, which disagree about six of them and about which neither is reliably right |

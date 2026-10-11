@@ -276,6 +276,7 @@ class TestBundledCorpus:
 			"roland/tr_08",
 			"roland/tr_1000",
 			"roland/tr_6s",
+			"roland/tr_707",
 			"roland/tr_8",
 			"roland/tr_909",
 			"sequential/fourm",
@@ -730,8 +731,8 @@ class TestAbsences:
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
 		# The three MPCs left at #4697, when the two numbers their guides give an effect, 1 and 11,
-		# were carried.
-		assert len(empty) == 22
+		# were carried. `roland/tr_707` arrived at #4942, `none` off a chart's crossed row.
+		assert len(empty) == 23
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -741,7 +742,7 @@ class TestAbsences:
 			kinds.setdefault(key, set()).add(name)
 
 		assert kinds["none"] == {"ableton/move", "alesis/sr_16", "behringer/model_d", "behringer/rd_6", "behringer/rd_9", "behringer/td_3",
-			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_909",
+			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_707", "roland/tr_909",
 			"vermona/drm1_mkiv"}
 		assert kinds["learned"] == {"arturia/drumbrute",
 			"arturia/drumbrute_impact", "dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
@@ -20704,3 +20705,70 @@ class TestRadias:
 		assert "**IN DRUM MODE THE PANEL EDITS THE INSTRUMENT CHOSEN WITH THE SIXTEEN KEYS**" in said
 		assert "**No page applies that to Drum mode in so many words, and no channel message is named that chooses the instrument.**" in said
 		assert "**THE SIXTEEN NOTES BELOW ARE THE FACTORY KITS', AND AN OWNER CAN MOVE EVERY ONE.**" in said
+
+
+class TestTr707:
+
+	"""No controls off a chart's crossed row, and fifteen voices on notes the owner can teach it."""
+
+	def test_no_controls_and_the_absence_is_checked (self) -> None:
+		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
+
+		assert tr.controls == {} and tr.groups == {}
+		assert tr.midi.refuses_control_change and (tr.midi.control_change, tr.midi.nrpn) == ("none", "none")
+		assert tr.midi.program_change is not None
+		assert (tr.midi.program_change.receives, tr.midi.program_change.sends) == (False, False)
+
+		said = " ".join(prose_of("roland", "tr_707").split())
+
+		assert "**NO CONTROLLER, NO PROGRAM CHANGE, NO BEND AND NO AFTERTOUCH.**" in said
+		assert "The two mode messages are controllers 124 and 125" in said
+
+	def test_fifteen_voices_at_the_lower_number_of_each_pair (self) -> None:
+		"""Four voices answer to two numbers from the factory; the one carried is the one the instrument sends."""
+		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
+
+		assert tr.voice.voices == {"bass_drum_1": 35, "bass_drum_2": 36, "rim_shot": 37, "snare_drum_1": 38,
+			"hand_clap": 39, "snare_drum_2": 40, "low_tom": 41, "closed_hi_hat": 42, "mid_tom": 45, "open_hi_hat": 46,
+			"high_tom": 48, "crash_cymbal": 49, "ride_cymbal": 51, "tambourine": 54, "cowbell": 56}
+		assert (tr.voice.addressing, tr.voice.note_map) == ("voices", "learned")
+		assert not set(tr.voice.voices.values()) & {43, 44, 47, 50}
+
+		# Neither is recorded: the factory's numbers have gaps and no page counts the voices at once.
+		assert tr.voice.note_range is None and tr.voice.polyphony is None
+
+		said = " ".join(prose_of("roland", "tr_707").split())
+
+		assert "**FIFTEEN VOICES ON NINETEEN NOTE NUMBERS FROM THE FACTORY.**" in said
+		assert "**AND THE OWNER CAN TEACH IT OTHER NUMBERS, WHICH IS WHY `note_map` IS `learned`.**" in said
+		assert "**WHAT IT SENDS HAS TWO SETTINGS, AND IT SENDS IN PLACE OF SOUNDING.**" in said
+
+	def test_mode_one_received_and_three_sent_with_clock_and_transport_both_ways (self) -> None:
+		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
+
+		assert (tr.midi.mode, tr.midi.mode_receives, tr.midi.mode_sends) == (None, 1, 3)
+		assert (tr.midi.channels, tr.midi.clock, tr.midi.transport, tr.midi.sysex) == ((1, 16), "both", "both", True)
+
+		# The JUNO-106 is the other Roland here whose chart gives a different default each way.
+		juno = pymidiinstrumentdefs.load("roland/juno_106", [CORPUS])
+		assert (juno.midi.mode_receives, juno.midi.mode_sends) == (1, 3)
+
+	def test_velocity_both_ways_and_nothing_else_from_a_key (self) -> None:
+		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
+
+		assert tr.voice.velocity is not None
+		assert (tr.voice.velocity.note_on, tr.voice.velocity.note_off) == ("both", False)
+		assert tr.voice.aftertouch == "none" and tr.voice.pitch_bend is None
+
+	def test_a_scan_cited_by_page_and_no_firmware (self) -> None:
+		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
+
+		assert tr.model.firmware is None and tr.model.name == "TR-707"
+		assert set(tr.sources) == {"manual", "archive"}
+		assert tr.sources["manual"].file_page(50) == 50 and tr.sources["manual"].file_page(44) == 44
+		assert tr.sources["archive"].paginated is False
+
+		# The archive's visible text is the copy the αJUNO-2 cites, and the page the TR-909 cites.
+		assert tr.sources["archive"].sha256 == \
+			pymidiinstrumentdefs.load("roland/alpha_juno_2", [CORPUS]).sources["archive"].sha256
+		assert tr.sources["archive"].url == pymidiinstrumentdefs.load("roland/tr_909", [CORPUS]).sources["archive"].url

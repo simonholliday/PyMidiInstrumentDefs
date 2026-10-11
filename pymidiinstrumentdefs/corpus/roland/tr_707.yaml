@@ -1,0 +1,261 @@
+# **NO CONTROLLER, AND THE CHART CROSSES THE ROW.** Roland's implementation chart for this drum
+# machine crosses Control Change in both columns, and the implementation's two tables hold, between
+# them, notes, two mode messages, song position, song select, clock, start, continue, stop and
+# system exclusive, and nothing else. What a sequencer can do to a TR-707 is play its fifteen
+# voices, start, stop and continue it, drive its tempo, choose one of its four tracks and the bar
+# it plays from, turn OMNI on and off, and exchange its sequence data.
+#
+# **THE NOTE NUMBERS ARE THE FACTORY'S, AND THE OWNER CAN TEACH IT OTHERS.** A voice is given a
+# number by holding its key and playing a note at the instrument, anywhere from 35 to 98, so the
+# fifteen numbers below are where a TR-707 starts and not where the one in front of you need be.
+#
+# **FOUND ON ROLAND'S OWN ARCHIVE, WHERE THE RANKING'S SURVEY FOUND NOTHING.** The US manual archive
+# lists `TR-707 Owner’s Manual`. It is 58 pages of image and no text, so it was read by eye, and
+# its two pages of MIDI implementation are a reduced listing whose note numbers were each read in a
+# second place as well.
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: TR-707
+  # NO FIRMWARE IS NAMED anywhere in the manual, so none is recorded. No page prints a date, an
+  # edition or a version either; the chart's top and right-hand edges are cut off by the scan.
+
+source: >-
+  **A SCAN OF ROLAND'S OWN MANUAL, READ BY EYE.** 58 pages, each one image and not a character of
+  text, served by Roland from its US manual archive as `TR-707 Owner’s Manual`; the cover reads
+  `RHYTHM COMPOSER`, `TR-707` and `Owner's Manual` beside Roland's name and a MIDI badge, and the
+  specifications open with "TR-707 RHYTHM COMPOSER" (manual p. 47). No quotation below can be
+  checked by a machine, so a second reader checked every one against the rendered page.
+
+  **THE MIDI IMPLEMENTATION IS A REDUCED LISTING, SO ITS NOTE NUMBERS WERE READ TWICE.** Two pages
+  near the end reproduce a dot-matrix listing so small that the scan leaves a 3, a 5, a 6, an 8 and
+  a 9 hard to tell apart (manual pp. 55-56). Every note number in it is printed again at full size:
+  the received ones in a keyboard diagram (manual p. 44), the sent ones in two more (manual p. 46),
+  and the range in the chart (manual p. 50). Where a digit in a diagram is broken as well, the
+  key's place on the keyboard settles it. The diagrams and the listing agree on every number.
+
+  **NO CONTROLLER, NO PROGRAM CHANGE, NO BEND AND NO AFTERTOUCH.** The chart crosses Control Change,
+  Prog Change, Pitch Bender and both kinds of After Touch in both columns (manual p. 50). The
+  implementation's tables agree: what is sent is notes, song position, song select, clock, start,
+  continue, stop and system exclusive, and what is recognised is the same with two mode messages,
+  `OMNI OFF` and `OMNI ON`, added (manual p. 55). So `control_change` and `nrpn` are both `none`,
+  as checked absences. The two mode messages are controllers 124 and 125, which belong to the MIDI
+  specification and are not parameters of this instrument, and an NRPN needs controllers 98, 99, 6
+  and 38, none of which is in either table.
+
+  **THE MIDI CHAPTER NAMES FOUR KINDS OF MESSAGE, AND THREE OF THEM IN ONE MODE ONLY.** "The TR-707
+  can transmit and receive the following MIDI messages." (manual p. 42): a key message for each
+  voice, the track number as Song Select, the bar number as Song Position, and the synchronising
+  signals. Then "The messages 1, 2 and 3 can be sent or received only in Track Play mode."
+  (manual p. 42), which is the Track Playing Mode among the instrument's five (manual p. 8). By
+  that sentence a note sent to a TR-707 that is writing a pattern does nothing. The implementation
+  says the same of notes, "Recognized while in the Track Play mode." (manual p. 55), and narrows
+  the two song messages to a stopped instrument: "Recognized while in STOP of the Track Play mode."
+  (manual p. 55). The instrument sends each when its number is set: Song Position "When the
+  measure number is set." (manual p. 55) and Song Select "When the track # is set."
+  (manual p. 55). One more state hears nothing: in the tape interface mode, "all MIDI messages are
+  ignored." (manual p. 55).
+
+  **FIFTEEN VOICES ON NINETEEN NOTE NUMBERS FROM THE FACTORY.** "Originally, received note numbers
+  are assigned as follows:" (manual p. 55) and fifteen rows, which the MIDI chapter draws as a
+  keyboard headed "Drum Voices and corresponding Key Numbers. (MIDI IN)" (manual p. 44). Eleven
+  voices have one number and four have two: Low Tom 41 and 43, Closed Hi-Hat 42 and 44, Mid Tom 45
+  and 47, High Tom 48 and 50. The chart gives the same nineteen as `35-51, 54, 56` (manual p. 50).
+  `voices` holds one number for each voice and takes the lower of each pair, because that is the
+  number the instrument itself sends for the voice in its normal setting, described below.
+
+  **AND THE OWNER CAN TEACH IT OTHER NUMBERS, WHICH IS WHY `note_map` IS `learned`.** In the key
+  number setting mode, "Select a drum voice and hold the corresponding Main Key down, and without
+  releasing it, press a key on the connected instrument." (manual p. 45). "The key numbers available
+  for this assignment are 35 to 98." (manual p. 45), and "Several key numbers can be set to one
+  voice, but the same number cannot be assigned to more than one voice." (manual p. 45): a number
+  given to a second voice is taken from the first, "the previous voice will be automatically
+  dropped." (manual p. 45), and a number sent a second time to a held key is taken away again,
+  "press the same key again." (manual p. 45). The step before is pressing Track Clear, of which
+  the page says only "This clears previous key number assignment." (manual p. 45), not whether
+  that is one voice's or every voice's. The implementation says the numbers are assigned "by panel
+  operation, and then they will be memorized." (manual p. 55). The MIDI chapter also gives the way
+  back to the initial setting (manual p. 44).
+
+  **WHAT IT SENDS HAS TWO SETTINGS, AND IT SENDS IN PLACE OF SOUNDING.** In Track Playing mode with
+  the rhythm not running, Shift held with MIDI Channel and Instrument/Guide switches the instrument
+  between sounding its own voices and sending key messages (manual p. 46): "When the Composer is
+  transmitting MIDI message, the built-in voices do not output any sound." (manual p. 46). "The Key
+  message transmitting mode is available only while in the Track Play mode. In this mode, only the
+  programmed sounds will be transmitted." (manual p. 46). Each voice is sent on one number, from
+  one of two sets that, in the same state, Shift held with MIDI Channel and Last Step alternates
+  between (manual p. 46). The implementation calls them Setting A and Setting B (manual p. 55) and
+  the MIDI chapter draws them as two keyboards (manual p. 46). Setting A, "Setting A: Normal."
+  (manual p. 55), is the fifteen numbers of `voices` below. Setting B is the fifteen numbers from
+  36 to 50 in another order: Bass Drum 1 on 36 and 2 on 37, Snare Drum 1 on 38 and 2 on 39, Low Tom
+  40, Mid Tom 41, High Tom 42, Rim Shot 43, Cowbell 44, Hand Clap 45, Tambourine 46, Closed Hi-Hat
+  47, Open Hi-Hat 48, Crash Cymbal 49 and Ride Cymbal 50. So a TR-707 sending Setting B does not
+  play a factory TR-707 as itself: only Snare Drum 1 on 38 and Crash Cymbal on 49 arrive as
+  themselves, and its second bass drum, on 37, arrives as the rim shot. The format has no field
+  for a map of what is sent.
+
+  **VELOCITY BOTH WAYS, AND NO NOTE OFF HEARD.** Received as `vvvvvvv = 1 - 127` and sent as
+  `vvvvvvv = 40 - 124` (manual p. 55), which the chart gives as `v=1-127` and `9n v=40-124`
+  (manual p. 50). No page says what a received velocity does to the sound, nor what decides the
+  velocity it sends. A note off is sent as a note on with a velocity of nought, and "All the note
+  OFF messages are ignored." (manual p. 55).
+
+  **BY THE CHART IT LISTENS ON EVERY CHANNEL UNTIL OMNI IS TURNED OFF.** The chart's Mode row gives
+  `Mode 3` as the transmitted default and `Mode 1` as the recognised one, lists `OMNI ON OFF` as
+  the messages recognised, and remarks that MONO and POLY are ignored (manual p. 50); so `mode` is
+  1 received and 3 sent, as `roland/juno_106` records its own. OMNI is also a panel setting, shown
+  by a bar in the display (manual p. 43). One channel serves both directions, "one CH for both
+  receive and send" (manual p. 53), from 1 to 16, set with the Main Keys (manual p. 42), and it is
+  kept: "When the power is applied, the channel is set to the last channel." (manual p. 55).
+
+  **CLOCK, START, CONTINUE AND STOP BOTH WAYS, AND HEARD ONLY IN MIDI SYNC MODE.** The chart
+  circles Clock and Commands in both columns and writes `SYNC mode = MIDI` beside the recognised
+  ones (manual p. 50); the implementation marks all four received messages "When the SYNC mode is
+  at MIDI." (manual p. 55). The sync mode is one of four, DIN, tape, MIDI and internal
+  (manual pp. 38-39), and in MIDI sync "the tempo and start/stop are controlled by the master
+  device." (manual p. 39). By the implementation's note the clock it sends follows whatever it is
+  synchronised to, its own tempo, the received clock or the DIN clock (manual p. 55); the note has
+  no row for tape sync. Song Position and Song Select are circled both ways as well, Song Select
+  with `(0-3)` (manual p. 50), which is the four tracks counted from nought (manual p. 55); the
+  format has no field for either. Active Sense and Reset are crossed as recognised and marked in
+  the transmitted column with the note "If received when SYNC mode is MIDI." (manual p. 50), which
+  reads as passing them on; the implementation's tables list neither.
+
+  **SYSTEM EXCLUSIVE CARRIES WHAT THE IMPLEMENTATION CALLS SEQUENCE DATA.** Circled both ways and
+  remarked "For rhythm seq" (manual p. 50); both tables list it as `Sequence Data`, under Roland's
+  identifier (manual p. 55), and neither says what the data holds. The implementation's last
+  section sets out a handshake of eight message types for sending and requesting a file
+  (manual pp. 55-56), in which, as the section sets it out, the instrument only answers: it sends
+  its data when a file is requested and takes data when one is offered, in fifteen blocks, and
+  neither the MIDI chapter nor the operation table gives a way to start a transfer from the panel.
+  **The page's own bytes do not agree.** The recognised row prints its third byte as `0100 0010`,
+  where the transmitted row prints `0xxx xxxx` and the handshake section gives the data message's
+  operation code as `0101 0010` (manual p. 55); none of the eight operation codes is `0100 0010`
+  (manual pp. 55-56).
+
+  **FIVE PAIRS OF VOICES CANNOT SOUND TOGETHER, AND NO PAGE COUNTS WHAT CAN.** "It is not possible
+  to output the following pairs of voices at the same time." (manual p. 8): the two bass drums, the
+  two snare drums, rim shot and cowbell, hand clap and tambourine, closed and open hi-hat. That
+  would leave ten of the fifteen at once, which is the number of Multi Outputs the specifications
+  list (manual p. 47). But page 8 says it of the voices as numbered by their keys, with a written
+  step as its one example, and does not mention notes received; and no page states a count, so
+  `polyphony` is not recorded.
+
+  **THE MANUAL GIVES THREE PROCEDURES TWICE, AND DIFFERENTLY.** The MIDI chapter sets OMNI in "the
+  Track Writing mode with the rhythm not running" (manual p. 43), over a figure whose display reads
+  TRACK PLAY, where the operation table says "Set the Composer to Track Playing mode."
+  (manual p. 53). The chapter restores the key numbers in Track Playing mode (manual p. 44) and
+  assigns them after "Enter the Track Writing mode, without the rhythm having run."
+  (manual p. 45), where the table says Track Playing mode for both (manual p. 53). And the sync
+  chapter changes the sync mode in Track Play mode (manual pp. 38-39) where the table says "Set the
+  Composer to Track Writing mode." (manual p. 54). None is anything a field holds. In each the
+  manual names two modes and does not say whether both work.
+
+  **AND WHAT RESTORING THE KEY NUMBERS RESTORES IS TOLD TWO WAYS.** By the MIDI chapter, pressing
+  the Instrument/Guide button in the key number setting mode means "the initial setting is
+  returned." (manual p. 44), under the keyboard of received numbers on that page. The operation
+  table calls the same presses "Set the same Key number as MIDI out." (manual p. 53), over a small
+  keyboard that has labels under the keys from 36 to 50, which are Setting B's, in print too small
+  in the scan to read as words. The factory map carried here is the one three places agree on:
+  the chapter's keyboard (manual p. 44), the implementation's list (manual p. 55) and the chart's
+  range (manual p. 50).
+
+  NOT RECORDED: `note_range`, because the factory's nineteen numbers leave out 52, 53 and 55 and the
+  owner can move any voice anywhere from 35 to 98; `polyphony`; a firmware version, which no page
+  names; and which mode the instrument starts in.
+
+  AND ONE DOCUMENT THE MANUAL POINTS TO THAT ROLAND DOES NOT SERVE. The MIDI chapter opens by
+  sending the reader to a separate volume called MIDI (manual p. 42), and the specifications list
+  `MIDI` after `Owner's Manual` among the accessories (manual p. 47), as the JX-8P's and the
+  αJUNO-2's manuals point to one. The archive lists no such volume, and nothing in the manual says
+  whether it is about this instrument or about MIDI in general.
+
+sources:
+  manual:
+    kind: manual
+    title: TR-707 Owner's Manual
+    landing: "https://www.roland.com/us/support/manual_archive/"
+    url: "http://cdn.roland.com/assets/media/pdf/TR-707_OM.pdf"
+    sha256: e28fd0529337bcc1609ba54c3d5176357554897e36d815514dc09745ab7cff8c
+    retrieved: 2026-10-11
+    # A SCAN: 58 pages, each one image 1728 by 2208 and no text, made by HyperGEAR's PDF library.
+    # **CITED BY PAGE WITH `page_offset: 0`**: the printed folio is the page of the file on every
+    # page from 5 to 49, which is every numbered page cited. The chart, the operation table and the
+    # MIDI implementation print none, so they are cited by their place in the file: the chart on
+    # 50, the table on 51 to 54, the implementation on 55 and 56. The third page, a panel drawing
+    # set sideways, prints 4. The last page carries a label: `10666` under Roland's name and again
+    # as `UPC 10666` over a barcode, with a smaller number beside the barcode that the scan leaves
+    # in doubt.
+    page_offset: 0
+  archive:
+    kind: download_page
+    title: Roland - Support - Manual Archive
+    landing: "https://www.roland.com/us/support/"
+    url: "https://www.roland.com/us/support/manual_archive/"
+    sha256: aa08cc61d2b474998265e8e0c893154f7145dfdb48d2726e8478c90e2558b499
+    retrieved: 2026-10-11
+    paginated: false
+    # Its visible text, byte for byte the copy `roland/alpha_juno_2`, `roland/jx_8p` and
+    # `roland/jd_800` cite. It lists `TR-707 Owner’s Manual` among ten TR drum machines, each an
+    # owner's manual and nothing else.
+
+midi:
+  # `1 - 16` in both columns' Default and Changed rows, `Memorized` (manual p. 50). One channel
+  # for both directions (manual p. 53).
+  channels: [1, 16]
+  # `Mode 3` transmitted and `Mode 1` recognised as the defaults (manual p. 50): it sends on its
+  # channel and, until OMNI is turned off, answers on all of them.
+  mode: {receives: 1, sends: 3}
+  # Circled in both columns, and recognised when `SYNC mode = MIDI` (manual p. 50).
+  clock: both
+  # Start, Continue and Stop in both tables (manual p. 55); recognised in MIDI sync mode only.
+  transport: both
+  program_change:
+    # Crossed in both columns, with True # starred out in the transmitted one (manual p. 50).
+    receives: false
+    sends: false
+  # Crossed in both columns (manual p. 50): a checked absence. See the account.
+  control_change: none
+  nrpn: none
+  # Circled both ways, `For rhythm seq` (manual p. 50): sequence data, by a handshake.
+  sysex: true
+
+voice:
+  # A note names a drum voice: "here, each drum voice is represented by key number" (manual p. 42).
+  addressing: voices
+  # Assigned by holding a voice's key and sending the instrument a note, from 35 to 98
+  # (manual p. 45), so the numbers below are the factory's.
+  note_map: learned
+  # NOT RECORDED: note_range and polyphony. See the account.
+  velocity:
+    # Circled in both columns, `v=1-127` recognised and `9n v=40-124` transmitted (manual p. 50).
+    note_on: both
+    # Crossed as recognised (manual p. 50): "All the note OFF messages are ignored."
+    # (manual p. 55). It sends a note on with a velocity of nought in place of one.
+    note_off: false
+  # Key's and Ch's crossed in both columns, as is Pitch Bender (manual p. 50).
+  aftertouch: none
+  # **THE FACTORY'S RECEIVED NUMBERS**, under the implementation's names and in its order
+  # (manual p. 55), at the lower number where a voice has two. Low Tom also answers to 43, Closed
+  # Hi-Hat to 44, Mid Tom to 47 and High Tom to 50. By the MIDI chapter and the implementation,
+  # notes sound only in Track Play mode (manual pp. 42, 55).
+  voices:
+    bass_drum_1: 35
+    bass_drum_2: 36
+    rim_shot: 37
+    snare_drum_1: 38
+    hand_clap: 39
+    snare_drum_2: 40
+    low_tom: 41
+    closed_hi_hat: 42
+    mid_tom: 45
+    open_hi_hat: 46
+    high_tom: 48
+    crash_cymbal: 49
+    ride_cymbal: 51
+    tambourine: 54
+    cowbell: 56
+
+# NO CONTROLS BLOCK: see `midi.control_change` above.

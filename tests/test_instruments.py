@@ -1764,7 +1764,7 @@ class TestAssignment:
 		assert said == {
 			"korg/microkorg": {"default": 41},
 			"korg/wavestate": {"default": 41},
-			"erica_synths/perkons_hd_01": {"default": 44},
+			"erica_synths/perkons_hd_01": {"default": 55},
 			"elektron/octatrack": {"slot": 10},
 			"teenage_engineering/op_1_field": {"slot": 4},
 			"korg/kronos": {"off": 27, "default": 2},
@@ -9727,19 +9727,19 @@ class TestPerkonsHD01:
 
 	"""An Erica Synths drum machine whose map a player can rewrite on the SD card."""
 
-	def test_forty_four_controls_in_four_voices (self) -> None:
-		"""Eleven each, on an unbroken run of controller numbers."""
+	def test_forty_four_controls_in_four_voices_and_eleven_for_the_other_mode (self) -> None:
+		"""Eleven each, on an unbroken run of controller numbers, and voice 1's eleven again."""
 		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
 
-		assert len(perkons.controls) == 44
-		assert len(perkons.groups) == 4
-		assert not perkons.parts
+		assert len(perkons.controls) == 55
+		assert len(perkons.groups) == 5
+		assert set(perkons.parts) == {"multi_voice"}
 
 		per = collections.Counter(control.group for control in perkons.controls.values())
 
-		assert per == {"voice_1": 11, "voice_2": 11, "voice_3": 11, "voice_4": 11}
+		assert per == {"voice_1": 11, "voice_2": 11, "voice_3": 11, "voice_4": 11, "multi_voice": 11}
 
-		numbers = sorted(control.cc for control in perkons.controls.values()
+		numbers = sorted(control.cc for control in perkons.controls_in("single")
 			if control.cc is not None)
 
 		assert numbers == list(range(70, 114))
@@ -9771,12 +9771,58 @@ class TestPerkonsHD01:
 		assert perkons.midi.control_change is None
 		assert not perkons.midi.learns_control_change
 
-	def test_the_other_channel_mode_is_recorded_in_words (self) -> None:
-		"""Four voices on four channels, answering to voice 1's eleven numbers."""
+	def test_the_other_channel_mode_is_a_part_of_four_voices (self) -> None:
+		"""Four voices on four channels, answering to voice 1's eleven numbers.
+
+		It was recorded in words until 2026-10-11, the format having no mode to put it in.
+		"""
 		said = prose_of("erica_synths", "perkons_hd_01")
 
 		assert "TWO MAPS AGAIN, AND THIS TIME ONE IS THE OTHER'S FIRST QUARTER" in said
-		assert "THIS FORMAT HAS NO FIELD FOR A MAP THAT IS LIVE IN ONE MODE ONLY" in said
+		assert "BOTH MAPS ARE CARRIED, EACH IN ITS MODE" in said
+
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert {name: mode.label for name, mode in perkons.modes.items()} == {
+			"single": "SINGLE MIDI CHANNEL", "multi": "MULTI MIDI CHANNEL"}
+		assert perkons.factory_mode is None
+		assert perkons.modes["multi"].unparted is False
+
+		voice = perkons.parts["multi_voice"]
+
+		assert (voice.mode, voice.count, voice.is_assigned) == ("multi", 4, True)
+		assert voice.addressing == "pitches"
+
+		# Voice 1's eleven and nothing else: the table's forty-four are the other mode's.
+		multi = perkons.controls_in("multi")
+
+		assert [control.cc for control in multi] == list(range(70, 81))
+		assert all(control.part == "multi_voice" for control in multi)
+		assert [control.label for control in multi] == [
+			perkons.controls[f"voice_1_{control.name.removeprefix('multi_voice_')}"].label
+				.removeprefix("Voice 1 ") for control in multi]
+
+		# Four voices counted as one note each, beside the instrument's four. Both figures are
+		# read from the instrument's shape and neither is printed as a polyphony.
+		assert voice.polyphony == 1
+		assert perkons.voice is not None
+		assert perkons.voice.polyphony == 4
+		assert perkons.voice.polyphony_shared is False
+
+	def test_the_table_and_the_pictured_file_disagree_and_the_table_is_carried (self) -> None:
+		"""Six of the eleven numbers of each voice the picture shows in full differ from the table's."""
+		said = prose_of("erica_synths", "perkons_hd_01")
+
+		assert "THE MANUAL GIVES THE SINGLE MODE'S NUMBERS TWICE AND THE TWO DISAGREE" in said
+		assert "THE PICTURED FILE DOES NOT AGREE WITH THE TABLE" in said
+		assert "multi-midi-cc.json" in said
+
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		# The table's order (p. 35), which is what this definition carries.
+		assert [perkons.controls[f"voice_1_{stem}"].cc for stem in (
+			"tune", "decay", "param_1", "param_2", "cutoff", "drive", "fx_send", "level")] == [
+			70, 71, 72, 73, 74, 75, 76, 77]
 
 	def test_the_note_numbers_are_not_in_print (self) -> None:
 		"""Four note names and no octave, so there is nothing to record."""
@@ -9798,7 +9844,8 @@ class TestPerkonsHD01:
 		switches = [control for control in perkons.controls.values()
 			if control.name.endswith(("_algo_switch", "_mode_switch", "_filter_switch"))]
 
-		assert len(switches) == 12
+		# Three on each of the four voices, and the three of the other mode's part.
+		assert len(switches) == 15
 
 		for switch in switches:
 			assert switch.states == []

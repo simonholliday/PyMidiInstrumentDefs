@@ -7943,6 +7943,33 @@ class TestFantom:
 		assert "the 2001 Fantom, the Fantom-S, -X and -G, and the FANTOM-0 are different" in flowed
 
 
+class TestSp404Mkii:
+
+	"""A Roland sampler whose buses and input sit on fixed channels 1 to 5."""
+
+	def test_the_bus_controls_are_written_once_for_each_kind_of_part (self) -> None:
+		"""A control naming no part would mean channel 1, bus 1, alone. Part-less until 2026-10-11."""
+		sp = pymidiinstrumentdefs.load("roland/sp_404mkii", [CORPUS])
+
+		assert len(sp.controls) == 41
+
+		reaches: dict[int, set[str]] = {}
+
+		for control in sp.controls.values():
+			assert control.cc is not None
+			reaches.setdefault(control.cc, set()).add(control.part or "")
+
+		for number in (16, 17, 18, 19, 80, 81, 82, 83):
+			assert reaches[number] == {"bus_1_2", "bus_3_4", "input_fx"}, number
+
+		# DJ mode and Looper mode give channels 1 to 3 meanings other than a bus, so those
+		# controls name no part.
+		for number in (7, 8, *range(20, 28), *range(85, 92)):
+			assert reaches[number] == {""}, number
+
+		assert sp.controls["bus_3_4_efx_switch"].values == {"off": 0, "on": 64}
+
+
 class TestPolyBrute:
 
 	"""An Arturia whose chart is eighteen tables three across, with columns that move."""

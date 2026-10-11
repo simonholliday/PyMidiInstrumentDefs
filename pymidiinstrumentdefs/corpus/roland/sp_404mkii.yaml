@@ -18,8 +18,9 @@
 # four effect buses and the input; channels 1 to 10 are the ten sample banks in MIDI mode A;
 # two settable channels carry everything in MIDI mode B; channel 11 is the vocoder; channel 16
 # is chromatic playback; and in DJ mode channels 1, 2 and 3 are the two decks and the pattern
-# sequencer. **The parts below are the effect buses, because that is the assignment the chart
-# states as a flat table and the one every control here needs.** The rest is in the account.
+# sequencer. **The parts below that take controls are the effect buses and the input, because
+# that is the assignment the chart states as a flat table and the one the controls that name a
+# part need.** The rest is in the account.
 #
 # **TWO EDITIONS OF THIS MANUAL CARRY THE SAME CHART AND THAT IS A FREE VERIFICATION.** Roland
 # publishes it as a PDF at version 5.50 and as web pages, whose chart was published at version
@@ -106,10 +107,9 @@ source: >-
   THE THREE LISTS ARE EACH CONTIGUOUS FROM NOUGHT, WHICH IS THEIR OWN CHECK - 0 to 42, 0 to 40
   and 0 to 17, with nothing missing and nothing doubled - and all three agree between the PDF
   and the web edition, 102 names over all. **The chart's own example corroborates them from
-  outside**: `0xB3 53 01` sending "BUS 4 EFX number = 01 (303 VinylSim)" (p. 168) is a program
-  change
-  shown on channel 4, which is BUS 4, and 1 is `303 VinylSim` in the master buses' list and
-  nothing like it in the other two.
+  outside**: `0xB3 53 01` sending "BUS 4 EFX number = 01 (303 VinylSim)" (p. 168) is a control
+  change, controller 83 with a value of 1, shown on channel 4, which is BUS 4, and 1 is
+  `303 VinylSim` in the master buses' list and nothing like it in the other two.
 
 
   **AND A PRINTED PAGE NUMBER WAS READ AS AN EFFECT NUMBER, WHICH THE SECOND EDITION CAUGHT.**
@@ -146,12 +146,16 @@ source: >-
   on.
 
 
-  **THE PARTS BELOW ARE THE EFFECT BUSES AND NOTHING ELSE**, because that is the assignment the
-  chart states outright and the only one the controls need. Their channels are **fixed** - no
-  setting moves them, and the Pad MIDI Channels offset does not reach them - and this format has
-  no word for a fixed channel: `channel_offset` says a channel cannot be set on its own, which
-  is true here, and implies it is derived from a base channel, which is not. The nearest field
-  is used and the gap is raised where the format's questions are kept.
+  **THE PARTS BELOW THAT TAKE CONTROLS ARE THE EFFECT BUSES AND THE INPUT AND NOTHING ELSE**,
+  because that is the assignment the chart states outright and the only one the controls that name
+  a part need; the vocoder and chromatic parts take notes and no controls. Their channels are
+  **fixed** - no setting moves them, and the Pad MIDI Channels offset does not reach them - and
+  this format has no word for a fixed channel: `channel_offset` says a channel cannot be set on
+  its own, which is true here, and implies it is derived from a base channel, which is not. The
+  nearest field is used and the gap is raised where the format's questions are kept. Because the
+  field implies a base, a control naming no part means channel 1, the first bus's, so every
+  control the buses and the input take is written once for each of the three bus and input parts
+  below.
 
 
   THE CHART'S BASIC CHANNEL IS 1 TO 10 AND ONLY IN ONE MODE. `x (MIDI mode A)` and `1-10 (MIDI
@@ -425,19 +429,44 @@ parts:
     receives: [notes]
 
 controls:
-  # **THE SIX KNOBS AND THE SWITCH ARE THE SAME ON EVERY BUS**, so they are unparted: the chart
-  # gives `CC#16-19` and `CC#80-83` as flat rows reaching all five channels of the `*7` table,
-  # and only the effect *number* below differs by bus. The names are the maker's own from
-  # "Control change message numbers and corresponding EFX controls" (p. 169).
-  ctrl_1:                        {label: Ctrl 1, cc: 16}
-  ctrl_2:                        {label: Ctrl 2, cc: 17}
-  ctrl_3:                        {label: Ctrl 3, cc: 18}
-  # "EFX switch (0-63: OFF, 64-127: ON)" (p. 169), so the turnover is the maker's and not
-  # assumed.
-  efx_switch:                    {label: EFX switch, cc: 19, values: {"off": 0, "on": 64}}
-  ctrl_4:                        {label: Ctrl 4, cc: 80}
-  ctrl_5:                        {label: Ctrl 5, cc: 81}
-  ctrl_6:                        {label: Ctrl 6, cc: 82}
+  # **THE SIX KNOBS AND THE SWITCH ARE THE SAME ON EVERY BUS, AND EACH BUS AND THE INPUT TAKES
+  # THEM ON ITS OWN CHANNEL**: the chart gives `CC#16-19` and `CC#80-83` as flat rows reaching all
+  # five channels of the `*7` table, and only the effect *number* below differs by bus. So each is
+  # written once for each of the three bus and input parts, as `cc: 83` is, because a control
+  # naming no part would mean channel 1, bus 1, alone. Until 2026-10-11 each was written once and
+  # named no part, keyed `ctrl_1` to `ctrl_6` and `efx_switch`; the keys now take the part as a
+  # prefix, as the effect numbers' do. What they set is not always one bus's alone: "The effect
+  # parameters on this unit are shared in common with some buses to which effects are assigned."
+  # (p. 33): the sub-parameters of the input and buses 1 and 2 with one another, and all of buses
+  # 3 and 4's parameters with each other, the manual's example being the same effect on the input
+  # and bus 1. The `*7` table is cited from the recognised column alone (see the account), so it
+  # is reception that it ties to a bus, and no page says on which channel these are sent. The
+  # names are the maker's own from "Control change message numbers and corresponding EFX controls"
+  # (p. 169), and "EFX switch (0-63: OFF, 64-127: ON)" (p. 169), so the switch's turnover is the
+  # maker's and not assumed.
+  bus_1_2_ctrl_1:                {label: Ctrl 1, cc: 16, part: bus_1_2}
+  bus_1_2_ctrl_2:                {label: Ctrl 2, cc: 17, part: bus_1_2}
+  bus_1_2_ctrl_3:                {label: Ctrl 3, cc: 18, part: bus_1_2}
+  bus_1_2_efx_switch:            {label: EFX switch, cc: 19, values: {"off": 0, "on": 64}, part: bus_1_2}
+  bus_1_2_ctrl_4:                {label: Ctrl 4, cc: 80, part: bus_1_2}
+  bus_1_2_ctrl_5:                {label: Ctrl 5, cc: 81, part: bus_1_2}
+  bus_1_2_ctrl_6:                {label: Ctrl 6, cc: 82, part: bus_1_2}
+
+  bus_3_4_ctrl_1:                {label: Ctrl 1, cc: 16, part: bus_3_4}
+  bus_3_4_ctrl_2:                {label: Ctrl 2, cc: 17, part: bus_3_4}
+  bus_3_4_ctrl_3:                {label: Ctrl 3, cc: 18, part: bus_3_4}
+  bus_3_4_efx_switch:            {label: EFX switch, cc: 19, values: {"off": 0, "on": 64}, part: bus_3_4}
+  bus_3_4_ctrl_4:                {label: Ctrl 4, cc: 80, part: bus_3_4}
+  bus_3_4_ctrl_5:                {label: Ctrl 5, cc: 81, part: bus_3_4}
+  bus_3_4_ctrl_6:                {label: Ctrl 6, cc: 82, part: bus_3_4}
+
+  input_fx_ctrl_1:               {label: Ctrl 1, cc: 16, part: input_fx}
+  input_fx_ctrl_2:               {label: Ctrl 2, cc: 17, part: input_fx}
+  input_fx_ctrl_3:               {label: Ctrl 3, cc: 18, part: input_fx}
+  input_fx_efx_switch:           {label: EFX switch, cc: 19, values: {"off": 0, "on": 64}, part: input_fx}
+  input_fx_ctrl_4:               {label: Ctrl 4, cc: 80, part: input_fx}
+  input_fx_ctrl_5:               {label: Ctrl 5, cc: 81, part: input_fx}
+  input_fx_ctrl_6:               {label: Ctrl 6, cc: 82, part: input_fx}
 
   # ── CC#83, three times, because the same number selects a different effect on each half of
   # the bus structure and on the input. 43, 41 and 18 values, each contiguous from nought, and
@@ -571,7 +600,10 @@ controls:
   # ── DJ MODE REASSIGNS THE FIRST THREE CHANNELS, which is why these are unparted: channel 1 is
   # one deck, channel 2 the other and channel 3 the pattern sequencer (p. 169), none of which is
   # the bus that channel carries otherwise. **A part here would say the wrong thing in the other
-  # mode**, so the channels are in this comment and not in the structure above.
+  # mode**, so the channels are in this comment and not in the structure above. Naming no part,
+  # each reads as channel 1 alone. That is right for the X-FADE, which the table gives for
+  # channel 1 only; the volume slider and the eight buttons are given for channels 2 and 3 as
+  # well, the CH2 sample's and the pattern sequencer's (p. 169).
   #
   # The volume slider and the crossfade are the only two that travel both ways in DJ mode.
   volume_slider:                 {label: volume slider, cc: 7}
@@ -601,10 +633,9 @@ controls:
     values: {"released": 0, "pressed": 127}}
 
   # ── THE SEVEN THE CHART'S ROWS DO NOT CONTAIN, from the Looper mode table (pp. 169-170),
-  # which hangs off a footnote cited from rows about other numbers. **Nothing states their
-  # direction**: each one's printed effect is something done to this instrument on receiving a
-  # value, so they are recorded as received, and that is a reading rather than a cell. On
-  # channel 1, which in Looper mode is neither a bus nor a deck.
+  # which hangs off a footnote cited from rows about other numbers. **No cell states their
+  # direction**: one sentence of body prose does (p. 45), as the account says, so they are
+  # recorded as received. On channel 1, which in Looper mode is neither a bus nor a deck.
   #
   # **AND ONE OF THEM DELETES A RECORDING ON A VALUE OF 127.**
   looper_exit:                   {label: EXIT button, cc: 85, direction: receives,

@@ -203,10 +203,10 @@ voice:
 # The band identifiers are this file's, because a YAML key cannot be `16'` or `0%` or `2 POLE`,
 # and a bare `off` would be read as false. The maker's own names are in the bands above.
 #
-# NOT LISTED: CC 0 and 32, Bank Select MSB and LSB, which choose a bank rather than set a
-# parameter; and CC 120 All Sound Off, 122 Local Sw and 123 All Note Off, which are channel mode
+# NOT LISTED: CC 120 All Sound Off, 122 Local Sw and 123 All Note Off, which are channel mode
 # messages belonging to the MIDI specification rather than to this instrument. Those three are
-# recognised and never transmitted.
+# recognised and never transmitted. Bank select is listed, at the top, as it is wherever a maker
+# numbers it.
 
 groups:
   # The panel's own sections, as the manual numbers and names them (p. 4), in panel order.
@@ -225,6 +225,15 @@ groups:
   voice_mode: Voice mode
 
 controls:
+# ──── bank select ────
+
+  # Carried, as it is wherever a maker numbers it: `Bank Select (MSB)` takes vv=0 and `Bank Select
+  # (LSB)` vv=0~1, in both of the implementation's tables, and the chart has "0, 32" both ways
+  # (manual p. 63). The implementation gates them by `Enable Tx MIDI` and `Enable Rx MIDI`, the
+  # chart by MIDI Tx CC and Rx CC.
+  bank_select_msb:         {label: Bank Select (MSB), cc: 0, range: [0, 0]}
+  bank_select_lsb:         {label: Bank Select (LSB), cc: 32, range: [0, 1]}
+
 # ──── vco_1 ────
 
   vco_1_pitch:             {label: VCO 1 PITCH, cc: 34, group: vco_1}

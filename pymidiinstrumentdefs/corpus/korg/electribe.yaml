@@ -7,9 +7,9 @@
 # AND IT PRINTS EVERY NUMBER TWICE, in hex and in decimal - "47  (71)" - which is a checksum the
 # maker has handed over. `Notes/4231_extract_electribe_implementation.py` checks all of them.
 #
-# EIGHTEEN CONTROL CHANGES, EVERY ONE OF THEM BOTH WAYS. The transmitted and recognised tables
-# name the same eighteen numbers with the same names, so no control below carries a `direction`;
-# the received table adds the three channel mode messages and nothing else.
+# TWENTY CONTROL CHANGES, EVERY ONE OF THEM BOTH WAYS. The transmitted and recognised tables
+# name the same twenty numbers, eighteen parameters and bank select's two, so no control below
+# carries a `direction`; the received table adds the three channel mode messages and nothing else.
 #
 # SIXTEEN PARTS AND ONE MIDI CHANNEL, WHICH IS THE THING TO KNOW. "A single pattern consists of
 # 16 parts and a master effect" (manual p. 8), and "GLOBAL MIDI CH ... [01...16] Specifies the
@@ -56,13 +56,13 @@ source: >-
   never meet it. It is a second witness and it does not agree with the implementation
   everywhere; what it settles and what it muddies are both below.
 
-  EIGHTEEN CONTROL CHANGES AND NOT ONE MORE.
+  EIGHTEEN PARAMETER CONTROL CHANGES, AND BANK SELECT'S TWO.
 
   CC 7, 10, 71 to 74, 80 to 83, 85 to 87 and 102 to
   106 - the amplifier's level and pan, the filter's three, the two envelope stages, the
-  oscillator's three, the modulation's two, and the two effects' six between them. A hundred and
-  two numbers between 0 and 119 are used by nothing, and the document says nothing about any of
-  them.
+  oscillator's three, the modulation's two, and the two effects' six between them - and bank
+  select on 0 and 32. A hundred numbers between 0 and 119 are used by nothing, and the document
+  says nothing about any of them.
 
   WHAT GATES THEM ALL IS ONE GLOBAL SETTING, and the implementation has a column for it that
   most charts do not. Every parameter row is marked "S : Enabled When Global MIDI RECEIVE/SEND
@@ -71,8 +71,8 @@ source: >-
   side: "MIDI RECEIVE FILTER ... OFF: All messages are received. Short: Short messages (Note
   On/Off, Control Change) are not received. Short + Program: Short messages and program change
   messages are not received" (guide p. 6), and a MIDI SEND FILTER does the same outward. **So a
-  single setting silences all eighteen**, and the three channel mode messages at 120, 121 and
-  123 are the only ones marked "A : Always Enabled".
+  single setting silences all eighteen parameters**, Short still passing bank select, and the
+  three channel mode messages at 120, 121 and 123 are the only ones marked "A : Always Enabled".
 
   SIXTEEN PARTS, AND NO WAY THE DOCUMENTS GIVE OF CHOOSING ONE. The system exclusive layout
   carries a parameter table for each part at its own offset, so a part's whole state can be read
@@ -275,7 +275,8 @@ groups:
 controls:
 
   # Generated from the implementation by `Notes/4231_write_controls.py`, which reproduces this
-  # block. Every one is both transmitted and received, so none carries a `direction`; the
+  # block down to the bank select pair at its end, which is by hand. Every one is both transmitted
+  # and received, so none carries a `direction`; the
   # extraction script asserts that the two tables agree.
   #
   # EVERY ONE OF THESE IS 7-BIT ON THE WIRE, which the footnotes say and which is easy to read
@@ -321,3 +322,11 @@ controls:
   master_fx_y:            {label: Master Fx Y, cc: 103, group: master_fx}
   mfx_send_on:            {label: MFX Send Off/On, cc: 105, choices: {"off": 0, "on": 127}, group: master_fx}
   master_fx_on:           {label: Master Fx Off/On, cc: 106, choices: {"off": 0, "on": 127}, group: master_fx}
+
+  # BANK SELECT -------------------------------------------------------
+  # Carried, as it is wherever a maker numbers it: `Bank Select (MSB)` and `Bank Select(LSB)`, both
+  # tables, gated like program change. They choose a pattern rather than a sound: MSB 0 always, LSB
+  # 0 for patterns 1 to 127 and 1 for 128 to 250, by the footnote the account quotes - which, as
+  # the account says, gives numbers for only 248 of the 250.
+  bank_select_msb:        {label: Bank Select (MSB), cc: 0, range: [0, 0]}
+  bank_select_lsb:        {label: Bank Select(LSB), cc: 32, range: [0, 1]}

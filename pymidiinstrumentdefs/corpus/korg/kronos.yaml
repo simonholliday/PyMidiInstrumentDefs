@@ -1,7 +1,7 @@
 # **FIVE DOCUMENTS, AND THE ONE PAGE THAT SETTLES THE MOST IS IN THE LAST PLACE ANYBODY WOULD
 # LOOK.** What Korg publishes as this instrument's MIDI document is four pages of prose tables
 # headed `1.TRANSMITTED DATA` and `2.RECOGNIZED RECEIVE DATA`, listing every message by its
-# status byte with the physical control that sends it named in brackets. That is where all 72
+# status byte with the physical control that sends it named in brackets. That is where all 74
 # numbers below come from, and **because it is two separate lists rather than two columns of one
 # row, the direction of every number is the maker saying so rather than a box left blank**: all
 # 74 numbers common to both lists travel both ways.
@@ -26,7 +26,7 @@
 # (release_note p. 1) as one system. So this definition is every KRONOS, which is this maker's
 # arrangement rather than a convenience here.
 #
-# **TWENTY-SEVEN OF THE SEVENTY-TWO NUMBERS BELOW ARE OFF ON A NEW INSTRUMENT, AND TWO MORE ARE
+# **TWENTY-SEVEN OF THE SEVENTY-FOUR NUMBERS BELOW ARE OFF ON A NEW INSTRUMENT, AND TWO MORE ARE
 # DEFAULTS.** The implementation prints the KARMA sliders, the KARMA switches, the eight pads and
 # the Vector Joystick's two axes with controller numbers, footnoted `When CC# by "CC Default" is
 # assigned to the KARMA Controllers, Vector Joystick X, Y and Pads in Global Mode` (implementation
@@ -133,15 +133,16 @@ source: >-
   numbers. So a reader who has the guide and not the archive has the implementation anyway, and
   every quotation from either is findable in the other.
 
-  THE SEVENTY-TWO NUMBERS CARRIED, AND THE SIXTEEN NOT. The document names 88 controller numbers
-  across its two tables. **Eight are how MIDI addresses things rather than parameters of this
-  instrument**: Bank Select (0 and 32), Data Entry (6 and 38), Data Increment and Decrement (96
-  and 97) and the RPN selects (100 and 101). Bank Select's work is recorded under
-  `program_change` and the registered parameters under `pitch_bend`. **Eight more are the channel
-  mode messages**, 120 to 127, which this format refuses as controls by design and which are
-  described below. That is the same line `roland/fantom_6_7_8` drew from the same position.
+  THE SEVENTY-FOUR NUMBERS CARRIED, AND THE FOURTEEN NOT. The document names 88 controller numbers
+  across its two tables. Bank Select (0 and 32) is carried, as it is wherever a maker numbers it,
+  and its bank maps are recorded under `program_change`. **Six are how MIDI addresses things
+  rather than parameters of this instrument**: Data Entry (6 and 38), Data Increment and Decrement
+  (96 and 97) and the RPN selects (100 and 101), the registered parameters recorded under
+  `pitch_bend`. **Eight more are the channel mode messages**, 120 to 127, which this format
+  refuses as controls by design and which are described below. That is the same line
+  `roland/fantom_6_7_8` draws from the same position.
 
-  **AND EVERY ONE OF THE SEVENTY-TWO TRAVELS BOTH WAYS.** Not one number below needs a
+  **AND EVERY ONE OF THE SEVENTY-FOUR TRAVELS BOTH WAYS.** Not one number below needs a
   `direction`, which is unusual enough to state: 74 of the 88 are in both tables, and the
   fourteen that are in one are exactly the addressing machinery and the channel mode messages.
   **Nothing this instrument sends is something it will not answer to.**
@@ -456,6 +457,17 @@ groups:
   pads: The eight pads
 
 controls:
+
+  # Bank select ─────────────────────────────────────────────
+  # Carried, as it is wherever a maker numbers it: `Bank Select(MSB)` on 00 and `Bank Select(LSB)`
+  # on 20 (32), in both tables (implementation pp. 1 and 3), with the bank maps under
+  # `program_change`. Global mode's Bank Change switch governs both directions: "Bank Select
+  # messages will not be transmitted or received" (guide p. 786) when it is off. The Parameter
+  # Guide's sequencer list prints them the other way round, "CC#00 bank select (LSB), CC#32 bank
+  # select (MSB)" (guide p. 787); the implementation and the MIDI specification agree with each
+  # other, and are followed.
+  bank_select_msb:             {label: Bank Select(MSB), cc: 0}
+  bank_select_lsb:             {label: Bank Select(LSB), cc: 32}
 
   # Continuous controllers ──────────────────────────────────
   modulation_1:                {label: Modulation 1 (Joystick +Y), cc: 1, group: continuous}

@@ -5115,15 +5115,15 @@ class TestElectribe:
 
 	"""Sixteen parts on one MIDI channel, out of the one plain text source in this corpus."""
 
-	def test_eighteen_controls_and_every_one_goes_both_ways (self) -> None:
+	def test_twenty_controls_and_every_one_goes_both_ways (self) -> None:
 		"""Korg's two tables name the same numbers, so none carries a direction."""
 		et = pymidiinstrumentdefs.load("korg/electribe", [CORPUS])
 
-		assert len(et.controls) == 18
+		assert len(et.controls) == 20
 		assert len(et.groups) == 7
 
 		assert {c.cc for c in et.controls.values()} == {
-			7, 10, 71, 72, 73, 74, 80, 81, 82, 83, 85, 86, 87, 102, 103, 104, 105, 106}
+			0, 7, 10, 32, 71, 72, 73, 74, 80, 81, 82, 83, 85, 86, 87, 102, 103, 104, 105, 106}
 
 		assert all(c.direction == pymidiinstrumentdefs.definition.BOTH
 			for c in et.controls.values())
@@ -8830,22 +8830,23 @@ class TestMinilogue:
 
 	"""A Korg whose implementation is a text file, and whose maker prints it twice five years apart."""
 
-	def test_thirty_nine_controls_in_ten_panel_sections (self) -> None:
-		"""Of 44 rows the receiving table prints: five are set aside and the file says why."""
+	def test_forty_one_controls_in_ten_panel_sections_and_bank_select (self) -> None:
+		"""Of 44 rows the receiving table prints: three are set aside and the file says why."""
 		minilogue = pymidiinstrumentdefs.load("korg/minilogue", [CORPUS])
 
-		assert len(minilogue.controls) == 39
+		assert len(minilogue.controls) == 41
 		assert len(minilogue.groups) == 10
 
 		numbers = sorted(control.cc for control in minilogue.controls.values()
 			if control.cc is not None)
 
-		assert len(numbers) == 39
-		assert len(set(numbers)) == 39
-		assert numbers[0] == 16 and numbers[-1] == 88
+		assert len(numbers) == 41
+		assert len(set(numbers)) == 41
+		assert numbers[0] == 0 and numbers[-1] == 88
+		assert 32 in numbers, "bank select is carried wherever a maker numbers it"
 
-		# Bank select and the three channel mode messages are the five left out.
-		for set_aside in (0, 32, 120, 122, 123):
+		# The three channel mode messages are the three left out.
+		for set_aside in (120, 122, 123):
 			assert set_aside not in numbers, set_aside
 
 	def test_it_is_not_the_minilogue_xd (self) -> None:
@@ -12240,15 +12241,15 @@ class TestMicroKORG2:
 	def test_the_whole_map_arrives (self) -> None:
 		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
 
-		assert len(microkorg2.controls) == 181
+		assert len(microkorg2.controls) == 183
 		assert len(microkorg2.groups) == 23
 
 		by_control_change = [c for c in microkorg2.controls.values() if c.cc is not None]
 		by_nrpn = [c for c in microkorg2.controls.values() if c.nrpn is not None]
 
 		# 71 from the implementation's panel table, plus the modulation wheel and the damper
-		# pedal, which it keeps in its channel-message tables instead.
-		assert len(by_control_change) == 73
+		# pedal, which it keeps in its channel-message tables instead, and bank select's two.
+		assert len(by_control_change) == 75
 
 		# Every one of the implementation's NRPN rows, including the eight whose address it
 		# garbles and the manual supplies.
@@ -12303,7 +12304,7 @@ class TestMicroKORG2:
 		assert "does not have a half-damper function" in account
 		assert "Controller 50 is the one gap inside the OSC 3 run" in account
 		assert "there is no global dump" in account
-		assert "the manual never writes \"bank select\", anywhere in its 134 pages" in account
+		assert "the manual's prose never writes \"bank select\", anywhere in its 134 pages" in account
 
 		# The pitch bend range is one of them: a program parameter no number reaches.
 		assert not any(control.label.startswith("Pitch Bend")
@@ -13460,10 +13461,10 @@ class TestKRONOS:
 	"""
 
 	def test_every_control_travels_both_ways (self) -> None:
-		"""Seventy-two of them, and not one needs a direction - which is unusual."""
+		"""Seventy-four of them, and not one needs a direction - which is unusual."""
 		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
 
-		assert len(kronos.controls) == 72
+		assert len(kronos.controls) == 74
 		assert all(control.direction == "both" for control in kronos.controls.values())
 
 		said = prose_of("korg", "kronos")
@@ -13471,10 +13472,12 @@ class TestKRONOS:
 		assert "Nothing this instrument sends is something it will not answer to." in said
 
 		# The fourteen numbers that are in one table only are exactly the addressing
-		# machinery and the channel mode messages, which is why none of them is here.
+		# machinery and the channel mode messages, which is why none of them is here; bank
+		# select is in both tables and is carried, as it is wherever a maker numbers it.
 		carried = {control.cc for control in kronos.controls.values()}
 
-		assert not carried & {0, 32, 6, 38, 96, 97, 100, 101}
+		assert {0, 32} <= carried
+		assert not carried & {6, 38, 96, 97, 100, 101}
 		assert not carried & set(range(120, 128))
 
 	def test_its_chart_is_in_the_appendices_of_another_document (self) -> None:
@@ -19129,16 +19132,16 @@ class TestSR16:
 
 class TestTRITON:
 
-	"""Thirty-nine controller numbers all both ways, eleven NRPNs, and sixteen tracks."""
+	"""Forty-one controller numbers all both ways, eleven NRPNs, and sixteen tracks."""
 
-	def test_thirty_nine_controller_numbers_all_both_ways (self) -> None:
+	def test_forty_one_controller_numbers_all_both_ways (self) -> None:
 		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
 
 		numbered = [control for control in triton.controls.values() if control.cc is not None]
-		assert sorted(cc for cc in (control.cc for control in numbered) if cc is not None) == [1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 16, 17, 18, 19,
-			20, 21, 64, 65, 66, 67, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 91, 92, 93, 94, 95]
+		assert sorted(cc for cc in (control.cc for control in numbered) if cc is not None) == [0, 1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 16, 17,
+			18, 19, 20, 21, 32, 64, 65, 66, 67, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 91, 92, 93, 94, 95]
 		assert all(control.direction == "both" for control in numbered)
-		assert not {control.cc for control in numbered} & {0, 6, 32, 38, 96, 97, 98, 99, 100, 101}
+		assert not {control.cc for control in numbered} & {6, 38, 96, 97, 98, 99, 100, 101}
 
 	def test_eleven_nrpns_three_of_them_both_ways (self) -> None:
 		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
@@ -19147,7 +19150,7 @@ class TestTRITON:
 		assert by_nrpn == {2: "both", 10: "both", 11: "both", 136: "receives", 137: "receives", 138: "receives",
 			160: "receives", 161: "receives", 227: "receives", 228: "receives", 230: "receives"}
 		assert triton.controls["arpeggiator_on_off"].values == {"off": 0, "on": 64}
-		assert triton.midi.nrpn == "supported" and len(triton.controls) == 50
+		assert triton.midi.nrpn == "supported" and len(triton.controls) == 52
 
 	def test_the_crossed_sends_and_the_three_on_the_global_channel (self) -> None:
 		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])

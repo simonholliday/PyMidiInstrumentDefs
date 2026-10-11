@@ -25,9 +25,10 @@ source: >-
   The instrument transmits 64 control changes and recognises 67. The three it recognises
   and never sends are All Sound Off, Local Sw and All Note Off, which are channel mode
   messages belonging to the MIDI specification rather than to any instrument, and are
-  excluded for that reason rather than missed. Six more are the machinery of other
-  messages rather than controls of their own, and are excluded too: Bank Select MSB and
-  LSB, Data Entry MSB, NRPN MSB and LSB, and the LSB VALUE register described below.
+  excluded for that reason rather than missed. Four more are the machinery of other
+  messages rather than controls of their own, and are excluded too: Data Entry MSB, NRPN
+  MSB and LSB, and the LSB VALUE register described below. Bank Select MSB and LSB are
+  controls, as bank select is wherever a maker numbers it.
 
   What a value means is taken from the receive side throughout, because a definition's
   named values answer what to send in order to put a control into a state. That matters
@@ -132,6 +133,14 @@ voice:
   # none, but what either answers to from outside is not written down anywhere here.
 
 controls:
+
+  # ── Bank select ─────────────────────────────────────────────────────────────
+  # Carried, as it is wherever a maker numbers it: `Bank Select (MSB)` takes vv=0 and `Bank Select
+  # (LSB)` vv=0~4, in both of the implementation's tables, which reach the five banks of a hundred.
+  # The implementation gates them by MIDI Tx Prog Chg and Rx Prog Chg, the chart by MIDI Tx CC and
+  # Rx CC.
+  bank_select_msb:           {label: Bank Select (MSB), cc: 0, range: [0, 0]}
+  bank_select_lsb:           {label: Bank Select (LSB), cc: 32, range: [0, 4]}
 
   # ── Control changes, section 2-1, in the order the document prints them ─────
   # Every one is also transmitted, section 1-1: the two sections list the same

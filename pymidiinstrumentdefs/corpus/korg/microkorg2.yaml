@@ -176,10 +176,11 @@ source: >-
   the four MIDI filters cannot be read or written over system exclusive as documented.
 
   ONE MORE ASYMMETRY BETWEEN THE TWO DOCUMENTS, which is not a contradiction but will catch
-  somebody out: **the manual never writes "bank select", anywhere in its 134 pages.** Bank
-  select is documented only in the implementation, under its note *2, and in the chart's
-  own Program Change remark. A reader working from the manual alone would conclude this
-  instrument has 64 programs.
+  somebody out: **the manual's prose never writes "bank select", anywhere in its 134 pages.**
+  Bank select is documented only in the implementation, under its note *2, and in the
+  manual's own chart on printed page 133, which is drawn without a text layer, in its
+  controller row and its Program Change remark. A reader working from the manual's prose
+  alone would conclude this instrument has 64 programs.
 
   TWO PAGES OF THE MANUAL PRINT NO NUMBER OF THEIR OWN - its first sheet and its last - so
   neither is cited here. Every other sheet prints its own sheet number, which is why the
@@ -451,6 +452,13 @@ controls:
   reverb_control3:             {label: Reverb Control3, cc: 116, group: reverb}
   reverb_control4:             {label: Reverb Control4, cc: 117, group: reverb}
   reverb_control1:             {label: Reverb Control1, cc: 118, group: reverb}
+
+  # ── Bank select, by hand rather than by the script ───────────────────────────
+  # Carried, as it is wherever a maker numbers it: `Bank Select(MSB)` and `Bank Select(LSB)` in both
+  # of the implementation's tables under its note *2, and "0, 32" both ways on the chart (p. 133).
+  # The MSB is always 0 and the LSB picks the bank, as the program change comment sets out.
+  bank_select_msb: {label: Bank Select(MSB), cc: 0, range: [0, 0]}
+  bank_select_lsb: {label: Bank Select(LSB), cc: 32, range: [0, 3], choices: {classic: 0, modern: 1, future: 2, user: 3}}
 
   # ── NRPNs, the implementation's note *4, in the order it prints them ───────────
   # The number is the MSB times 128 plus the LSB, which is how this format addresses one.

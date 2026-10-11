@@ -3,7 +3,7 @@ definition: 1
 # THE SHAPE OF `korg/kronos`'S IMPLEMENTATION, AND NEARLY THE SAME MAP. Korg's MIDI implementation
 # for this instrument is a text file laid out as two lists, `1.TRANSMITTED DATA` and
 # `2.RECOGNIZED RECEIVE DATA`, each naming every message by its status byte, with the control that
-# sends it or the use it is put to in brackets, as the Kronos's does. All 39 controller numbers
+# sends it or the use it is put to in brackets, as the Kronos's does. All 41 controller numbers
 # below are in both lists, so none needs a `direction`; eleven non-registered parameters are
 # recorded as well.
 
@@ -55,20 +55,22 @@ source: >-
   1.6 puts right as 2A, 4A and 3A, and gives Sostenuto and Soft both as sent by `A.SW =Porta.SW`.
   Version 1.6 is followed throughout.
 
-  THE THIRTY-NINE NUMBERS CARRIED, AND THE EIGHTEEN NOT. The two lists name 57 controller numbers
-  between them, 44 sent and 57 received. Ten are how MIDI addresses things rather than parameters of
-  this instrument: Bank Select (0 and 32), Data Entry (6 and 38), Data Increment and Decrement (96
-  and 97), the NRPN selects (98 and 99) and the RPN selects (100 and 101). Bank Select's work is
-  under `program_change`, the first registered parameter under `pitch_bend`, and the non-registered
-  ones are controls below. Eight more are the channel mode messages, 120 to 127, which this format
-  refuses as controls by design; they are described under `midi`. That is the line `korg/kronos`
-  drew from the same position. The other 39 are in both lists, and every number the transmitted list
-  carries is in the received one too.
+  THE FORTY-ONE NUMBERS CARRIED, AND THE SIXTEEN NOT. The two lists name 57 controller numbers
+  between them, 44 sent and 57 received. Bank Select (0 and 32) is carried, as it is wherever a
+  maker numbers it, and its bank layout is under `program_change`. Eight are how MIDI addresses
+  things rather than parameters of this instrument: Data Entry (6 and 38), Data Increment and
+  Decrement (96 and 97), the NRPN selects (98 and 99) and the RPN selects (100 and 101). The first
+  registered parameter is under `pitch_bend`, and the non-registered ones are controls below.
+  Eight more are the channel mode messages, 120 to 127, which this format refuses as controls by
+  design; they are described under `midi`. That is the line `korg/kronos` drew from the same
+  position. The other 41 are in both lists, and every number the transmitted list carries is in
+  the received one too.
 
-  ALL 39 ARE AMONG `korg/kronos`'S NUMBERS, IN THE SAME GROUPS, AND SIX ARE NAMED DIFFERENTLY THERE.
-  The Kronos's 94 and 95 switch Master FX1/2 and Total FX1/2, where the TRITON's switch Master FX1
-  and Master FX2; and its 17, 19, 20 and 21 are Knob Mod5 to 8, where the TRITON's are Knob Mod1 to
-  4.
+  ALL 41 ARE AMONG `korg/kronos`'S NUMBERS, IN THE SAME GROUPS, AND EIGHT ARE NAMED DIFFERENTLY
+  THERE. The Kronos's 94 and 95 switch Master FX1/2 and Total FX1/2, where the TRITON's switch
+  Master FX1 and Master FX2; its 17, 19, 20 and 21 are Knob Mod5 to 8, where the TRITON's are Knob
+  Mod1 to 4; and its 71 and 74 are Resonance and Filter Cutoff, where the TRITON's are
+  Resonance/HPF and LPF Cutoff.
 
   THE NUMBERS ARE WHERE EACH FUNCTION SITS, AND THE KNOBS CAN BE SET TO ANY OF 0 TO 95. Beside its
   numbered rows the transmitted list carries "Control (cc)=0-95 ( Knob-B = MIDI CC#00-95 )"
@@ -347,6 +349,14 @@ groups:
   gs_nrpn: Sound parameters received by NRPN
 
 controls:
+
+  # Bank select ─────────────────────────────────────────────
+  # Carried, as it is wherever a maker numbers it: `Bank Select(MSB)` and `Bank Select(LSB)` are in
+  # both lists, and the Basic Guide gives "Bank select MSB (CC#0)" (basic_guide p. 114) with the
+  # LSB on CC#32 beside it. Both are gated by the Global mode's bank change switch, and the bank
+  # layout is a setting, KORG or GM(2) - see `program_change`.
+  bank_select_msb:             {label: Bank Select(MSB), cc: 0}
+  bank_select_lsb:             {label: Bank Select(LSB), cc: 32}
 
   # Continuous controllers ──────────────────────────────────
   modulation_1:                {label: Modulation 1 (Joystick +Y), cc: 1, group: continuous}

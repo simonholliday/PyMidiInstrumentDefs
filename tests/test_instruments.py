@@ -1316,7 +1316,7 @@ class TestSubsequent37:
 
 		assert 122 not in numbers, "local control is a channel mode message"
 		assert 123 not in numbers, "all notes off is a channel mode message"
-		assert 0 not in numbers and 32 not in numbers, "bank select is the MMA's"
+		assert {0, 32} <= numbers, "bank select is carried wherever a maker numbers it"
 
 
 class TestTheTwoMoog37s:
@@ -1335,7 +1335,7 @@ class TestTheTwoMoog37s:
 	"""
 
 	def test_they_carry_the_same_controls (self) -> None:
-		"""Every name, number, band, range and group of all 114."""
+		"""Every name, number, band, range and group of all 116."""
 		sub = pymidiinstrumentdefs.load("moog/sub_37", [CORPUS])
 		subsequent = pymidiinstrumentdefs.load("moog/subsequent_37", [CORPUS])
 
@@ -1348,7 +1348,7 @@ class TestTheTwoMoog37s:
 			}
 
 		assert surface(sub) == surface(subsequent)
-		assert len(sub.controls) == 114
+		assert len(sub.controls) == 116
 
 	def test_they_describe_the_same_firmware (self) -> None:
 		"""One image, which Moog names for the older instrument in both packages."""

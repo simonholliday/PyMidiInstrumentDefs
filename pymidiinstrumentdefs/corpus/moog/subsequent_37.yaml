@@ -25,8 +25,8 @@ source: >-
 
   TWO TABLES CARRY ALL OF IT, and they overlap without saying so. The CC chart, pp. 53-55,
   has 87 rows; the NRPN chart, pp. 56-59, has 123, numbered consecutively from 402 to 524.
-  Every row of both is accounted for below: 73 of the 87 controller numbers are controls
-  here, 10 are rows the maker itself marks RESERVED, 2 are bank select and 2 are channel
+  Every row of both is accounted for below: 75 of the 87 rows are controls here, bank
+  select's two among them, 10 are rows the maker itself marks RESERVED and 2 are channel
   mode messages. 98 of the 123 NRPN rows are named and 25 are the maker's own (RESERVED).
   57 PARAMETERS ARE IN BOTH CHARTS UNDER DIFFERENT NAMES, which no page points out: "FILTER
   EG ATTACK TIME" on one page is "F EG ATTACK" on the next, "FILTER MULTIDRIVE" is "FILTER
@@ -106,14 +106,14 @@ source: >-
   control: the four numbers p. 44 uses to reach the tuning scales are CC 101 and CC 100 for
   the RPN, CC 39 or 38 for the value, and CC 96 and CC 97 to step through them, and the
   chart marks all five of those RESERVED.
-  EXCLUDED, and not missed. CC 0 and CC 32 are bank select, which the MMA defines and every
-  instrument that has banks uses the same way; what this instrument puts in them is recorded
-  under program_change below, because the chart's own value column for CC 32 is the only
-  place the manual says how its 16 banks are addressed.
+  BANK SELECT IS CARRIED, CC 0 and CC 32, as it is wherever a maker numbers it; what this
+  instrument puts in them is with the two controls and under program_change below, because
+  the chart's own value column for CC 32 is the only place the manual says how its 16 banks
+  are addressed.
 
-  CC 122 LOCAL CONTROL ON/OFF and CC
-  123 ALL NOTES OFF are channel mode messages, which belong to the MIDI specification and
-  which the validator refuses as controls.
+  EXCLUDED, and not missed: CC 122 LOCAL CONTROL ON/OFF and CC 123 ALL NOTES OFF are channel
+  mode messages, which belong to the MIDI specification and which the validator refuses as
+  controls.
 
   NOT RECORDED, and marked in place: the note range, since the manual never says which MIDI
   note numbers the instrument answers to, only that its oscillators are calibrated over
@@ -339,6 +339,14 @@ groups:
   amp_envelope: Amplifier Envelope
 
 controls:
+
+  # BANK SELECT, CARRIED AS IT IS WHEREVER A MAKER NUMBERS IT. CC 0 "ALWAYS TRANSMITS 0, SHOULD
+  # ALWAYS SEND 0 WHEN SENDING THIS CC" (p. 53), so its one value is 0 and its cell speaks of
+  # both directions. CC 32 is 0 for preset banks 1 to 8 and 1 for 9 to 16 (p. 53), which with
+  # sixteen banks of sixteen patches (p. 12) is which half a program change reaches; its cell
+  # speaks of no direction. So both are left at the default, both ways.
+  bank_select_msb:  {label: BANK SELECT, cc: 0, range: [0, 0]}
+  bank_select_lsb:  {label: "BANK SELECT [LSB]", cc: 32, range: [0, 1], choices: {preset_banks_1_8: 0, preset_banks_9_16: 1}}
 
   # The CC chart, pp. 53-55, and the NRPN chart, pp. 56-59, read together: a parameter in
   # both carries both numbers. The order is the panel's, section by section as the manual

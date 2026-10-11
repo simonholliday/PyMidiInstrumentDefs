@@ -230,6 +230,7 @@ class TestBundledCorpus:
 			"moog/dfam",
 			"moog/grandmother",
 			"moog/labyrinth",
+			"moog/little_phatty",
 			"moog/matriarch",
 			"moog/messenger",
 			"moog/minimoog_model_d",
@@ -20772,3 +20773,72 @@ class TestTr707:
 		assert tr.sources["archive"].sha256 == \
 			pymidiinstrumentdefs.load("roland/alpha_juno_2", [CORPUS]).sources["archive"].sha256
 		assert tr.sources["archive"].url == pymidiinstrumentdefs.load("roland/tr_909", [CORPUS]).sources["archive"].url
+
+
+class TestLittlePhatty:
+
+	"""The Stage II's one table, 52 controls both ways, and the Slim Phatty's map but for one value."""
+
+	def test_fifty_two_controls_from_fifty_one_rows_sent_and_received (self) -> None:
+		little = pymidiinstrumentdefs.load("moog/little_phatty", [CORPUS])
+
+		assert len(little.controls) == 52
+		numbers = sorted(cc for cc in (control.cc for control in little.controls.values()) if cc is not None)
+		assert numbers == [1, 3, 4, 5, 6, 7, 9, 10, 11, 15, 16, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+			36, 65, 68, 69, 74, 75, 77, 88, 90, 91, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,
+			115, 116, 117, 118, 119]
+		assert all(control.direction == "both" for control in little.controls.values())
+		assert (little.controls["cutoff"].lsb, little.controls["mod_wheel"].lsb) == (51, 33)
+		assert little.controls["arp_clock_rate_fine"].cc == 36 and little.controls["arp_clock_rate_coarse"].lsb is None
+
+	def test_it_is_the_slim_phattys_map_but_for_the_sixteen_foot_octave (self) -> None:
+		"""Key for key and number for number, with the 16' octave on 0 where the rack's table prints 16."""
+		little = pymidiinstrumentdefs.load("moog/little_phatty", [CORPUS])
+		slim = pymidiinstrumentdefs.load("moog/slim_phatty", [CORPUS])
+
+		assert list(little.controls) == list(slim.controls)
+		differing = [key for key in little.controls
+			if (little.controls[key].cc, little.controls[key].lsb, little.controls[key].choices)
+			!= (slim.controls[key].cc, slim.controls[key].lsb, slim.controls[key].choices)]
+		assert differing == ["osc_1_octave", "osc_2_octave"]
+		for key in differing:
+			assert little.controls[key].choices == {"sixteen_foot": 0, "eight_foot": 32, "four_foot": 48, "two_foot": 64}
+			assert slim.controls[key].choices["sixteen_foot"] == 16
+
+	def test_a_keyboard_that_sends_chords_to_one_voice (self) -> None:
+		little = pymidiinstrumentdefs.load("moog/little_phatty", [CORPUS])
+
+		assert (little.midi.mode, little.midi.mode_receives, little.midi.mode_sends) == (None, 4, 3)
+		assert (little.midi.channels, little.midi.clock, little.midi.transport) == ((1, 16), "receives", "receives")
+		assert little.midi.program_change is not None
+		assert (little.midi.program_change.receives, little.midi.program_change.sends,
+			little.midi.program_change.presets) == (True, True, 100)
+		assert (little.midi.nrpn, little.midi.sysex) == ("none", True)
+		assert (little.voice.polyphony, little.voice.aftertouch, little.voice.note_range) == (1, "none", None)
+		assert little.voice.velocity is not None
+		assert (little.voice.velocity.note_on, little.voice.velocity.note_off) == ("both", False)
+
+		account = " ".join((little.source or "").split())
+
+		assert "THE KEYBOARD SENDS MORE NOTES THAN THE INSTRUMENT SOUNDS." in account
+
+	def test_the_stage_ii_at_2_2_and_nothing_of_3_1 (self) -> None:
+		little = pymidiinstrumentdefs.load("moog/little_phatty", [CORPUS])
+
+		assert (little.model.name, little.model.firmware) == ("Little Phatty Stage II", "2.2")
+		assert 87 not in {control.cc for control in little.controls.values()}
+
+		account = " ".join((little.source or "").split())
+
+		assert "IT IS THE STAGE II EDITION'S MANUAL, AND THE ONLY ONE MOOG SERVES." in account
+		assert "WHAT LATER SYSTEMS ADDED, AND WHY NONE OF IT IS BELOW." in account
+		assert "PART OF THIS FILE'S TEXT IS NOT WHAT ITS PAGES SHOW, SO THE TABLE WAS READ BY EYE AS WELL." in account
+
+	def test_three_sources_one_shared_with_the_slim_phatty (self) -> None:
+		little = pymidiinstrumentdefs.load("moog/little_phatty", [CORPUS])
+		slim = pymidiinstrumentdefs.load("moog/slim_phatty", [CORPUS])
+
+		assert list(little.sources) == ["manual", "forum_post", "downloads_list"]
+		assert little.sources["manual"].file_page(55) == 54 and little.sources["manual"].file_page(68) == 67
+		for key in ("forum_post", "downloads_list"):
+			assert little.sources[key].sha256 == slim.sources[key].sha256

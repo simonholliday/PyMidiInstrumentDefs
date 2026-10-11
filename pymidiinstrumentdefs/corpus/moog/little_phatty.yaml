@@ -1,0 +1,388 @@
+definition: 1
+
+# A MONOPHONIC MOOG WHOSE SOUND CONTROLS ARE IN ONE CONTROL CHANGE TABLE, SENT AND RECEIVED. The
+# manual's table gives nearly every sound parameter a controller number, and the value of every
+# stepped setting but the two pitch bend depths; this file carries all 51 of its 57 rows that have
+# a number, as 52 controls. Its numbers and values are those `moog/slim_phatty` carries, with one
+# difference: the oscillators' 16' octave is printed as 0 here.
+#
+# THE ONE MANUAL MOOG SERVES FOR THE LITTLE PHATTY IS THE STAGE II EDITION'S, SO THAT IS THE
+# INSTRUMENT DESCRIBED. The key is the product's name in Moog's downloads list; the Tribute and
+# Stage editions have no document there.
+
+model:
+  manufacturer: Moog Music
+  # The chart's own line is "Little Phatty Stage II Analog Synthesizer" (manual p. 68), and the
+  # contents page is headed "Stage II Edition" (manual p. 3).
+  name: Little Phatty Stage II
+  # 2.2, FROM THE CHART'S HEAD, "Version 2.2" (manual p. 68), which is dated 9/20/09. The manual's
+  # pictures of the System Utilities display read `VERS: 2.2` as well (manual pp. 34, 44 and 58),
+  # one of them on the page that says those menus begin "with the Version number display."
+  # (manual p. 44); other pictures show preset names that are not in this edition's list, so a
+  # picture alone would not carry it. The start-up message is printed as "Little Phatty Version
+  # X.x" (manual p. 6). Later systems exist, and nothing of them is in this manual; see the
+  # account. A customer in the forum thread cited there writes of trying to go back to
+  # "Firmware 2.21" (forum_post) on a Stage II, which, if the customer has it right, means 2.2 was
+  # not the last of its series.
+  firmware: "2.2"
+
+source: >-
+  The LP Stage II User's Manual, 77 sheets: the presets at p. 6, the keyboard and wheels at p. 19,
+  the Master menus at pp. 26 to 34, the LFO's sync among them at p. 27, the pitch bend and Pot
+  Mapping menus at pp. 36 to 38, the arpeggiator's menu at pp. 39 to 41, the SysEx menus at pp. 41
+  to 43, the MIDI chapter at p. 54, the control change table at pp. 55 and 56 with its two value
+  tables at p. 57, the clock appendices at pp. 59 and 60, the MIDI Implementation Chart at p. 68,
+  and the specifications at p. 72.
+
+  IT IS THE STAGE II EDITION'S MANUAL, AND THE ONLY ONE MOOG SERVES. Moog's downloads list has one
+  entry for the product, "Little Phatty Manual" (downloads_list), and no firmware. The file's
+  contents page is headed "Stage II Edition" (manual p. 3) and its chart is for the "Little Phatty
+  Stage II Analog Synthesizer" (manual p. 68). The Stage II has a USB connection beside its MIDI
+  sockets (manual p. 59). What the Tribute or the Stage edition answers to is not in any document
+  Moog serves, so nothing here is claimed of either.
+
+  EVERY CONTROLLER NUMBER AND VALUE BELOW IS THE TABLE'S OR ITS VALUE TABLES'. The table is
+  captioned "LP Stage II MIDI CC messages" (manual pp. 55-56) under each of its halves and gives
+  each row a section, a parameter, a function, a controller number and a value column. The chart
+  agrees with it about every number but one: it lists 53 where the table gives cutoff's fine half
+  as 51 (manual pp. 55 and 68). 51 is recorded, because it is the cutoff's 19 plus 32, as the
+  modulation wheel's fine half is its 1 plus 32, which is how the MIDI specification pairs them.
+  `moog/slim_phatty`'s manual has the same 53 in its chart.
+
+  PART OF THIS FILE'S TEXT IS NOT WHAT ITS PAGES SHOW, SO THE TABLE WAS READ BY EYE AS WELL. Lines
+  set in certain embedded fonts come out of the text layer shifted, as runs of capitals and
+  punctuation: the fine half of the arpeggiator's rate, printed `36 (fine)` beside `4 (coarse)`
+  (manual p. 56), is one, and so is every function cell with the word `filter` in it
+  (manual pp. 55-56). The pages are sound.
+  `Notes/4952_read_little_phatty.py` reads the table by where each cell sits and puts the shift
+  back, a second reader read every row from renders of the pages, and no quotation here is taken
+  from a shifted line.
+
+  STEPPED SETTINGS ARE EXACT VALUES, NOT BANDS, because that is how the table prints them: "0 (TRI),
+  16 (SQUARE)" (manual p. 55) and so on, a value and its name. They are recorded as `choices`, as
+  `moog/slim_phatty` records them. Three rows, two on p. 55 and one on p. 56, send the reader to a
+  table on another page: "See table for list of values" (manual p. 55). Those tables give fifteen
+  clock divisions and seventeen velocity sensitivities, value by value (manual p. 57). The two
+  pitch bend depths are the exception: the table prints them as 0 to 127, and the menu that sets
+  the same depths offers seven steps each way (manual pp. 36 and 55).
+
+  THE SIX ROWS WITHOUT A NUMBER are the two mode switches, the cursor, the enter button and the
+  two octave switches (manual p. 55). The panel's Octave Up/Down setting moves the notes the
+  keyboard sends and is kept with the sound, "The Octave settings are stored individually for each
+  preset." (manual p. 22), and the table gives it no controller; 74 and 75 are the oscillators'
+  own octaves.
+
+  THE CONTROLS GO BOTH WAYS. "When you adjust any one of the LP's four analog edit controls, MIDI
+  Continuous Controller (CC) messages are generated and transmitted on the MIDI Out connector."
+  (manual p. 54), and "MIDI CC messages are also generated when you adjust Preset parameter values
+  in the menus; this gives you total control of all LP sound parameters via MIDI." (manual p. 54).
+  So no control below states a direction.
+
+  TWO CONTROLS ARE FOURTEEN BITS, AND TWO MORE SPLIT ONE SETTING. "The LP sends and receives 7-bit
+  MIDI CC messages for all parameters except for the Modulation Wheel and Filter Cutoff, which send
+  and receive high-resolution," (manual p. 54) fourteen-bit messages, by the line that follows,
+  which is one of the shifted ones: 1 with 33, and 19 with 51. The table's own value cell for each
+  of the two still reads `0 – 127` (manual pp. 55-56), and a sender of seven bits may "use the MSB
+  channel number by itself for these two parameters." (manual p. 54). The arpeggiator's rate is one
+  row and two controllers of a different kind, 4 for the `coarse` rate in steps of 3 BPM over 21 to
+  320 BPM and 36 for the `fine` in tenths of one (manual pp. 54 and 56), figures that are on shifted
+  lines and that 128 steps of 3 do not square with, and the manual works an example: "For CC#04 = 40
+  and CC#36 = 17, the LP's display will show '121.7 BPM'." (manual p. 54). So 36 is recorded as a
+  control of its own and not as 4's lower half, although its number is 4 plus 32.
+
+  CONTROLLER 6 IS THE MODULATION AMOUNT, NOT DATA ENTRY, AND A CEILING RATHER THAN A LEVEL. The
+  table gives "Adjusts the modulation amount" (manual p. 55) against 6, and no page names a
+  registered or non-registered parameter for data entry to set, so 6 is carried as this instrument's
+  own control. The panel's AMOUNT "is used to adjust the maximum amount of modulation sent to the
+  Mod Wheel." (manual p. 17), and "when the Mod Wheel is all the way forward the Mod Source passes
+  to the Mod Destination at the level set by the Mod Amount." (manual p. 7). So 6 sets how far 1
+  can take the modulation. That it does nothing audible with the wheel at rest is a reading of
+  those two sentences, which no page states.
+
+  THE FOUR KNOBS CAN BE GIVEN OTHER NUMBERS. "The Pot Mapping menu allows you to make arbitrary MIDI
+  Continuous Controller (CC) assignments to each of the four Analog Edit knobs on the front panel
+  (MOD, OSC, FILT, and EGR)." (manual p. 37), to any of `OFF, 0-127`, acting on the instrument, on
+  MIDI or on both (manual p. 38), and "The MIDI CC assignments shown for each section are
+  over-ridden when Pot Mapping is enabled in that section." (manual p. 54). The table is the map
+  with Pot Mapping off. The mapping is one of the Advanced Preset menus, whose "parameters are
+  stored individually for each preset." (manual p. 35), and it is engaged at the panel: "Once
+  programmed, Pot Mapping is enabled in a section by selecting the active parameter in that
+  section." (manual p. 38). So whether the table holds for a knob depends on the preset loaded
+  and on a button, and no row of the table switches it.
+
+  THE KEYBOARD SENDS MORE NOTES THAN THE INSTRUMENT SOUNDS. "The keyboard produces velocity control
+  voltages and transmits MIDI Note On and Note Off messages polyphonically." (manual p. 19), from
+  37 keys and octave switches that reach two octaves each way (manual p. 22): "The transmitted
+  note numbers follow the OCTAVE switch setting, providing a total range of seven octaves. With no
+  octave transposition, the transmitted range is 48 – 84 (C3-C6)" (manual p. 68), 24 to 108 in
+  all. The instrument itself is "Programmable monophonic analog synthesizer w/100 presets"
+  (manual p. 72), and plays one of the notes held, by the keyboard priority. A setting lets
+  several Moogs share the notes of a chord between them over MIDI, each still playing one
+  (manual p. 33).
+
+  WHAT LATER SYSTEMS ADDED, AND WHY NONE OF IT IS BELOW. On Moog's forum a member posting as Amos
+  announced a pre-release beta of 3.1 under the title "New Firmware v3.1 for Slim Phatty, LP Stage
+  and Tribute" (forum_post), with an "OS2 to 3.1 Update for Stage / Stage II Editions"
+  (forum_post). A reply in the thread gives the surname, "Amos Gaynes for President 2012!"
+  (forum_post), which is a name the manual's foreword has in the team that made the instrument
+  (manual p. 4). The post lists per-preset settings for legato glide, an LFO reset and volume
+  velocity sensitivity; four choices of what MIDI output carries, the default being "Transmit All
+  MIDI CCs from the LP (default behavior)" (forum_post); "Significantly improved Polyphonic
+  note-allocation algorithm." (forum_post); "Significantly improved incoming MIDI CC and note
+  handling." (forum_post); and
+  "Arpeggiator if internal clock can now send MIDI Start, MIDI Clock, and MIDI Stop messages when
+  running." (forum_post). No page of the manual carries any of these, and Moog serves no firmware
+  or notes for the Little Phatty, so this file describes the system the manual describes.
+  `moog/slim_phatty` records what 3.2 added for the rack, by the notes in Moog's 3.21 package,
+  with a controller 87; those notes are the Slim Phatty's, and are not cited here.
+
+  THE CONTROLLER NUMBERS ARE SHARED WITH THE VOYAGER, BY THIS MANUAL'S ACCOUNT. Where it describes
+  stacking several Moogs it says their numbers "(MIDI CC's) are consistent between the Voyager and
+  Little Phatty" (manual p. 33). Nothing here rests on that.
+
+  LOCAL CONTROL IS A SETTING HERE, NOT A MESSAGE. The MIDI Setup menu turns local control of the
+  sound on and off, which it gives as the keyboard, the wheels and any panel control that can also
+  receive MIDI: "Values: ON, OFF; the default is ON" (manual p. 31), and
+  "It does not disable any MIDI transmitting or receiving." (manual p. 31). The chart crosses Local
+  Off both ways (manual p. 68), so no MIDI message reaches the setting. All Notes Off is circled
+  both ways, and the same menu sends it: "This command is the equivalent of a MIDI panic button to
+  silence stuck notes." (manual p. 31).
+
+  MIDI ARRIVES AND LEAVES BY DIN, BY USB OR BY BOTH, AND CAN BE MERGED THROUGH. The input and the
+  output are each a setting, "Values: NONE, DIN, USB, DIN/USB; the default is DIN/USB"
+  (manual p. 31), and a Merge setting for each input echoes what arrives to an output, off by
+  default: "This allows you to pass MIDI data thru the LP, even though the LP has no dedicated MIDI
+  Thru connector." (manual p. 32).
+
+  THE MANUAL GIVES THE ARPEGGIATOR'S RATE TWO NUMBERS, AND THE TABLE'S IS FOLLOWED. Two pages say
+  the rate is changed "by issuing a MIDI CC#90 command" (manual p. 39) and "by sending a MIDI CC#90
+  command with a value in the range 0-127" (manual p. 60), where the table gives 90 to Arp Run/Stop
+  and the rate to 4 and 36, with the worked example. `moog/slim_phatty` quotes the same two
+  phrases from its own manual.
+
+  NOT RECORDED: the note range. The chart's Note Number row gives 0 to 127 received with no True
+  Voice row beneath it (manual p. 68), and no page says directly which notes sound; the nearest is
+  the note calibration's default range, MIDI notes 12 to 116 (manual p. 47). NOT RECORDED EITHER:
+  the pitch bend depth, which is set for each preset.
+
+sources:
+  manual:
+    kind: manual
+    title: LP Stage II User's Manual
+    landing: "https://www.moogmusic.com/downloads/"
+    url: "https://cdn.inmusicbrands.com/Moog/LittlePhatty/Little_Phatty_Manual.pdf"
+    sha256: f9ae474cd83a93bd582b9a1ff928f6d85e7698ef2964da056d72659deb30b1b4
+    retrieved: 2026-10-11
+    # 77 sheets, the first a page of safety instructions with no text layer: the printed page is
+    # one more than the sheet on all 75 that print `Page N`, so the offset is negative. Sheets 1
+    # and 3 print no number. The title is the running head; the metadata has none. Its dates are
+    # the chart's 9/20/09 and the colophon's 2009 (manual p. 77), and it was made into a PDF on
+    # 2014-06-12. **Some lines of its text layer are shifted and unreadable as text**; see the
+    # account.
+    page_offset: -1
+  forum_post:
+    kind: web_page
+    title: "New Firmware v3.1 for Slim Phatty, LP Stage and Tribute"
+    dated: 2011-05-07
+    landing: "https://forum.moogmusic.com/"
+    url: "https://forum.moogmusic.com/t/new-firmware-v3-1-for-slim-phatty-lp-stage-and-tribute/9491"
+    sha256: ff217407536dc428e45fb97d007ecc40b30e4d18badc95369299ccfe06f828ba
+    retrieved: 2026-10-09
+    paginated: false
+    # Cited for what 3.1 changed, which the manual does not list, for a customer's mention of 2.21
+    # and for the poster's surname; byte for byte the copy `moog/slim_phatty` cites. Nothing a
+    # field records rests on this page. The digest is of the visible text; the served bytes are
+    # saved beside it.
+  downloads_list:
+    kind: web_page
+    title: Moog downloads
+    dated: 2026-10-01
+    landing: "https://www.moogmusic.com/downloads/"
+    url: "https://www.moogmusic.com/page-data/sq/d/1410304437.json"
+    sha256: 2b12c3d24177c87c55f47550f16333f1228b33d740b8dd7fd4067a88605c0349
+    retrieved: 2026-10-11
+    paginated: false
+    # Cited for what Moog serves for this instrument: "Little Phatty Manual" (downloads_list), and
+    # nothing else. Fetched again on 2026-10-11 and byte for byte the copy of 2026-10-01, which is
+    # the one in the library.
+
+midi:
+  # "Values: OFF, 1 – 16; the default values are 1 for both MIDI In and MIDI Out" (manual p. 31).
+  # The instrument "can only send and receive on one channel at a time, but each channel can be set
+  # independently." (manual p. 31).
+  channels: [1, 16]
+  # From the chart's Mode row: 3 transmitted, and a received cell reading `4*`, footnoted "Note
+  # priority is user selectable" (manual p. 68), with the legend "Mode 4 - Omni Off, Mono"
+  # (manual p. 68). The keyboard sends chords and the instrument plays one note.
+  mode: {receives: 4, sends: 3}
+  # "Receives Timing Clock" (manual p. 68), crossed as sent. The LFO and the arpeggiator each follow
+  # it by a setting of their own: the LFO's is global, "Modes: INTERNAL, MIDI CLOCK; the default is
+  # INTERNAL" (manual p. 27), and the arpeggiator's is set for each preset (manual p. 39). An input
+  # has to be on for it: the instrument "must have a MIDI Input enabled in the MIDI Setup menu in
+  # order to receive MIDI Clock." (manual p. 59), and both inputs, DIN and USB, are on by default
+  # (manual p. 31).
+  clock: receives
+  # "Receives START, CONTINUE & STOP" (manual p. 68), crossed as sent; song position and song select
+  # are crossed both ways. See the account for what 3.1 is said to send.
+  transport: receives
+  program_change:
+    # "Values: ON, OFF; the default values are ON for both SND and RCV" (manual p. 29), and the
+    # chart circles both cells with a true number of 00 to 99 (manual p. 68). No page names bank
+    # select.
+    receives: true
+    sends: true
+    # "Programmable monophonic analog synthesizer w/100 presets" (manual p. 72), at locations 00 to
+    # 99, all of them the user's (manual p. 6). The page about Moog's editor program speaks of
+    # "all 99 Presets" (manual p. 62), against those two and the chart's 00 to 99.
+    presets: 100
+  # NO PAGE NAMES A NON-REGISTERED PARAMETER, and the chart's control change list has neither 98 nor
+  # 99 (manual p. 68).
+  nrpn: none
+  # The current preset, all presets and a bulk dump go out from the SysEx menu
+  # (manual pp. 41-42), and what arrives is "recognized and received automatically when a SysEx
+  # data transfer is initiated." (manual p. 43), firmware included. **A preset or a bank that
+  # arrives is written, and no prompt is described**: "The preset will automatically be stored at
+  # the current preset location." (manual p. 43), and "The transmitted bank will replace the
+  # current bank." (manual p. 43). No page prints the format of any of it.
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "Programmable monophonic analog synthesizer w/100 presets" (manual p. 72). A Poly setting lets
+  # several Moogs share notes between them over MIDI (manual p. 33); each still plays one.
+  polyphony: 1
+  velocity:
+    # Note on is circled both ways and note off crossed both ways (manual p. 68). Velocity reaches
+    # the filter through the sensitivity controller 110 sets (manual p. 35).
+    note_on: both
+    note_off: false
+  # Crossed both ways on the chart (manual p. 68).
+  aftertouch: none
+  pitch_bend:
+    # Sent and received, "Programmable from 0 to ±12 semitones" (manual p. 68), up and down set
+    # separately for each preset, "UP: 0, +2, +3, +4, +5, +7, +12" (manual p. 36), and by
+    # controllers 107 and 108 below.
+    programmable: true
+
+groups:
+  # After the table's SECTION column, whose names are set sideways at its left edge.
+  interface: Interface Panel
+  modulation: Modulation
+  oscillators: Oscillators
+  filter: Filter
+  envelopes: Envelope Generator
+  arpeggiator: Arpeggiator
+  output: Output
+  keyboard: Keybd
+  wheel: Left-Hand Controller
+
+controls:
+
+  # Interface Panel ─────────────────────────────────────────
+  glide_on_off:                {label: Glide On/Off, cc: 65, choices: {"off": 0, "on": 64}, group: interface}
+
+  # Modulation ──────────────────────────────────────────────
+  # Changes nothing that is heard while the LFO follows MIDI clock: "if you try to control the LFO
+  # Rate from the panel knob or send a MIDI CC# 3 message while the LFO Sync Mode is set to MIDI
+  # CLOCK, the actual rate of the LFO will not change" (manual p. 59). The value is kept all the
+  # same, and when the sync mode goes back to internal "the rate of the LFO will jump to the
+  # internal LFO Clock rate." (manual p. 59).
+  lfo_rate:                    {label: LFO Rate, cc: 3, group: modulation}
+  mod_amount:                  {label: Modulation Amount, cc: 6, group: modulation}
+  mod_source:                  {label: Modulation Source, cc: 68, choices: {tri: 0, square: 16, saw: 32, ramp: 48, filt_env: 64, osc_2: 80}, group: modulation}
+  mod_destination:             {label: Modulation Destination, cc: 69, choices: {pitch: 0, filt: 16, wave: 32, osc_2: 48}, group: modulation}
+  lfo_sync_source:             {label: LFO Sync Source, cc: 102, choices: {int: 0, midi_clk: 64}, group: modulation}
+  lfo_sync_clock_div:          {label: LFO Sync Clock Div, cc: 103, choices: {thirty_second_note: 0, dotted_thirty_second_note: 8, sixteenth_note: 16, dotted_sixteenth_note: 24, eighth_note: 32, dotted_eighth_note: 40, quarter_note: 48, dotted_quarter_note: 56, half_note: 64, dotted_half_note: 72, whole_note: 80, whole_plus_quarter: 88, whole_plus_half: 96, whole_plus_dotted_half: 104, whole_plus_whole: 112}, group: modulation}
+  # What `FILT ENV`, value 64 of the source above, stands for: the filter envelope, or sample and
+  # hold. 105 does the same for `OSC2`, value 80: oscillator 2, or noise (manual p. 36).
+  mod_source_5:                {label: Mod Source 5, cc: 104, choices: {filt: 0, s_and_h: 64}, group: modulation}
+  mod_source_6:                {label: Mod Source 6, cc: 105, choices: {osc_2: 0, noise: 64}, group: modulation}
+  mod_dest_2:                  {label: Mod Dest 2, cc: 106, choices: {"off": 0, pitch: 25, filt: 50, wave: 75, osc_2: 100}, group: modulation}
+
+  # Oscillators ─────────────────────────────────────────────
+  # THE 16' OCTAVE IS PRINTED AS 0 HERE, where `moog/slim_phatty` records 16 from its own manual's
+  # table: both octave rows read `0 (16')`, then 32, 48 and 64 for 8', 4' and 2' (manual p. 55).
+  # Nothing says whether the two instruments differ or one table is misprinted; even steps of 16
+  # would make it 16.
+  osc_1_octave:                {label: Osc 1 Octave, cc: 74, choices: {sixteen_foot: 0, eight_foot: 32, four_foot: 48, two_foot: 64}, group: oscillators}
+  osc_1_wave:                  {label: Osc 1 Wave, cc: 9, group: oscillators}
+  osc_1_level:                 {label: Osc 1 Level, cc: 15, group: oscillators}
+  glide_rate:                  {label: Glide Rate, cc: 5, group: oscillators}
+  sync_1_2:                    {label: 1-2 Sync, cc: 77, choices: {"off": 0, "on": 64}, group: oscillators}
+  osc_2_octave:                {label: Osc 2 Octave, cc: 75, choices: {sixteen_foot: 0, eight_foot: 32, four_foot: 48, two_foot: 64}, group: oscillators}
+  osc_2_freq:                  {label: Osc 2 Freq, cc: 10, group: oscillators}
+  osc_2_wave:                  {label: Osc 2 Wave, cc: 11, group: oscillators}
+  osc_2_level:                 {label: Osc 2 Level, cc: 16, group: oscillators}
+  # The table gives these 0 to 127; the menu that sets the same depths offers seven steps each way,
+  # "UP: 0, +2, +3, +4, +5, +7, +12" (manual p. 36), and no page says how the one maps onto the
+  # other. The table's function cell for 107 reads "Selects the pitch end UP amount"
+  # (manual p. 55), a letter short.
+  pitch_bend_up_amount:        {label: Pitch Bend Up Amount, cc: 107, group: oscillators}
+  pitch_bend_down_amount:      {label: Pitch Bend Down Amount, cc: 108, group: oscillators}
+
+  # Filter ──────────────────────────────────────────────────
+  # Fourteen bits; see the account. The chart's list prints 53 where the table gives 51.
+  cutoff:                      {label: Cutoff, cc: 19, lsb: 51, range: [0, 16383], group: filter}
+  resonance:                   {label: Resonance, cc: 21, group: filter}
+  kb_amount:                   {label: KB Amount, cc: 22, group: filter}
+  eg_amount:                   {label: EG Amount, cc: 27, group: filter}
+  overload:                    {label: Overload, cc: 18, group: filter}
+  filter_poles:                {label: Filter Poles, cc: 109, choices: {one: 0, two: 32, three: 64, four: 96}, group: filter}
+  # Seventeen values, 7 apart except from -8 to -7, which is 12 (manual p. 57); recorded as printed.
+  filter_velocity_sens:        {label: Filter Velocity Sens, cc: 110, choices: {minus_8: 0, minus_7: 12, minus_6: 19, minus_5: 26, minus_4: 33, minus_3: 40, minus_2: 47, minus_1: 54, zero: 61, plus_1: 68, plus_2: 75, plus_3: 82, plus_4: 89, plus_5: 96, plus_6: 103, plus_7: 110, plus_8: 117}, group: filter}
+
+  # Envelope Generator ──────────────────────────────────────
+  filter_eg_attack:            {label: Filter EG Attack, cc: 23, group: envelopes}
+  filter_eg_decay:             {label: Filter EG Decay, cc: 24, group: envelopes}
+  filter_eg_sustain:           {label: Filter EG Sustain, cc: 25, group: envelopes}
+  filter_eg_release:           {label: Filter EG Release, cc: 26, group: envelopes}
+  volume_eg_attack:            {label: Volume EG Attack, cc: 28, group: envelopes}
+  volume_eg_decay:             {label: Volume EG Decay, cc: 29, group: envelopes}
+  volume_eg_sustain:           {label: Volume EG Sustain, cc: 30, group: envelopes}
+  volume_eg_release:           {label: Volume EG Release, cc: 31, group: envelopes}
+  egr_release:                 {label: EGR Release On/Off, cc: 111, choices: {"off": 0, "on": 64}, group: envelopes}
+  # The menu calls this GATE: with legato on the envelopes are not retriggered until the key is
+  # released, with it off a new note retriggers them from where they are, and reset starts them
+  # from nothing on every note (manual p. 35).
+  egr_legato:                  {label: EGR Legato, cc: 112, choices: {"on": 0, "off": 43, reset: 86}, group: envelopes}
+
+  # Arpeggiator ─────────────────────────────────────────────
+  # What 113 sets is whether the preset's arpeggiator may be switched on at all. The panel's switch
+  # works "When a preset has the Arpeggiator function enabled" (manual p. 52), and with it off "the
+  # arpeggiator will remain off" (manual p. 39). No page mentions 90 in this connection.
+  arpeggiator_enable:          {label: Arpeggiator Enable, cc: 113, choices: {"off": 0, "on": 64}, group: arpeggiator}
+  # THE TABLE GIVES 90 TO THIS, AND TWO PAGES GIVE IT TO THE CLOCK RATE; see the account. The table
+  # is followed.
+  arp_run_stop:                {label: Arp Run/Stop, cc: 90, choices: {"off": 0, "on": 64}, group: arpeggiator}
+  # 3 BPM a step over 21 to 320 BPM by the manual's figures, with 36 adding tenths: its example
+  # sets 40 and 17 for 121.7 BPM (manual p. 54).
+  arp_clock_rate_coarse:       {label: Arp Clock Rate (coarse), cc: 4, group: arpeggiator}
+  arp_clock_rate_fine:         {label: Arp Clock Rate (fine), cc: 36, group: arpeggiator}
+  # With MIDI chosen and no clock arriving, "Note that if no MIDI Clock signal is present, the
+  # Arpeggiator will not run and no notes will be heard." (manual p. 39).
+  arp_clock_source:            {label: Arp Clock Source, cc: 114, choices: {int: 0, lfo: 43, midi: 86}, group: arpeggiator}
+  arp_clock_divisions:         {label: Arp Clock Divisions, cc: 115, choices: {thirty_second_note: 0, dotted_thirty_second_note: 8, sixteenth_note: 16, dotted_sixteenth_note: 24, eighth_note: 32, dotted_eighth_note: 40, quarter_note: 48, dotted_quarter_note: 56, half_note: 64, dotted_half_note: 72, whole_note: 80, whole_plus_quarter: 88, whole_plus_half: 96, whole_plus_dotted_half: 104, whole_plus_whole: 112}, group: arpeggiator}
+  # Seven values printed with uneven steps, 19 apart except from 0 to +1, which is 14
+  # (manual p. 56); recorded as printed.
+  arp_range:                   {label: Arp Range (Octaves), cc: 116, choices: {minus_3: 0, minus_2: 19, minus_1: 38, zero: 57, plus_1: 71, plus_2: 90, plus_3: 109}, group: arpeggiator}
+  arp_pattern:                 {label: Arp Pattern, cc: 117, choices: {up: 0, down: 43, order: 86}, group: arpeggiator}
+  arp_mode:                    {label: Arp Mode, cc: 118, choices: {loop: 0, back_forth: 43, once: 86}, group: arpeggiator}
+  # 119 arms the latch as 113 arms the arpeggiator: with it off, "the Latch is always off and cannot
+  # be activated accidently." (manual p. 41), in a passage about activating it from the front
+  # panel, where the latch also needs the arpeggiator running. No page mentions controller 91
+  # there.
+  arp_latch_enable:            {label: Arp Latch Enable, cc: 119, choices: {"off": 0, "on": 64}, group: arpeggiator}
+  arp_latch_unlatch:           {label: Arp Latch/Unlatch, cc: 91, choices: {"off": 0, "on": 64}, group: arpeggiator}
+
+  # Output ──────────────────────────────────────────────────
+  volume:                      {label: Volume, cc: 7, group: output}
+
+  # Keybd ───────────────────────────────────────────────────
+  # 0 hands the choice to the global priority, which has no controller: "The default is GLOB
+  # (Global), which inherits the global keyboard priority setting from the Master KEYBD PRIORITY
+  # menu" (manual p. 37), whose "Values: LOW NOTE, HIGH NOTE, LAST NOTE; the default is LAST NOTE"
+  # (manual p. 28).
+  keyboard_note_priority:      {label: Keyboard Note Priority, cc: 88, choices: {glob: 0, low: 32, high: 64, last: 96}, group: keyboard}
+
+  # Left-Hand Controller ────────────────────────────────────
+  mod_wheel:                   {label: Mod Wheel, cc: 1, lsb: 33, range: [0, 16383], group: wheel}

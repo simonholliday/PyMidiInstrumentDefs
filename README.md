@@ -227,6 +227,7 @@ self-contained YAML file, and you share it by sending it.
 | `moog/dfam` | Moog DFAM: no MIDI at all, and the file says so |
 | `moog/grandmother` | Moog Grandmother: one voice, five controls in 14-bit pairs, and a value table of 24 clock divisions |
 | `moog/labyrinth` | Moog Labyrinth: answers to notes, clock and transport, and nothing else |
+| `moog/little_phatty` | Moog Little Phatty, the Stage II edition at 2.2: 52 controls sent and received, off the one table the Slim Phatty's is a copy of but for the value of a 16' octave - from the only manual Moog serves for it, part of whose text layer is shifted and was read by eye as well |
 | `moog/matriarch` | Moog Matriarch: 37 controls, one of which only its firmware notes mention, and a voice count you can switch over MIDI |
 | `moog/messenger` | Moog Messenger: 56 controls, 31 of them 14-bit pairs the specification's own way round, with every band named |
 | `moog/minimoog_model_d` | Moog Minimoog Model D: one control, the fourteen-bit mod wheel on CC 1 and CC 33 - the only controller number in 84 pages, from a maker whose manual points at a SysEx document it no longer offers |

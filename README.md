@@ -290,7 +290,7 @@ self-contained YAML file, and you share it by sending it.
 | `yamaha/reface_cp` | Yamaha reface CP: 18 controls out of the same data list as the reface DX, and the only one of its four instruments with a sostenuto and a soft pedal - it does no program change at all, where its sibling does |
 | `yamaha/reface_cs` | Yamaha reface CS: 21 controls out of a Data List that covers four instruments in four self-contained sections - 17 of them answer only while a setting is on, and its pedal socket sends one of two controllers and never both |
 | `yamaha/reface_dx` | Yamaha reface DX: 29 controls out of a data list covering four instruments, told apart by the system exclusive model identifier - and 25 of them answer only while MIDI Control is on |
-| `yamaha/seqtrak` | Yamaha SEQTRAK: 42 controls over eleven tracks, each on a fixed MIDI channel it cannot be moved from - every number and direction is in the Data List, under its own names, and the User Guide adds which tracks most of them reach |
+| `yamaha/seqtrak` | Yamaha SEQTRAK: 42 controller numbers over eleven tracks, each on a fixed MIDI channel it cannot be moved from, written as 105 controls, most numbers once for each kind of track they reach - every number and direction is in the Data List, under its own names, and the User Guide adds which tracks most of them reach |
 
 The set is a starting point rather than a catalogue. `moog/dfam` is five lines,
 because the DFAM has no MIDI at all and saying so is worth more than saying

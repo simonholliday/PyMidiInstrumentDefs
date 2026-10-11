@@ -17652,10 +17652,11 @@ class TestSeqtrak:
 	def test_forty_two_controls_reconciled_from_two_documents (self) -> None:
 		"""40 named in the User Guide, plus bank select's 2 that only the Data List names."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
-		numbers = sorted(control.cc for control in seqtrak.controls.values()
-			if control.cc is not None)
+		numbers = sorted({control.cc for control in seqtrak.controls.values()
+			if control.cc is not None})
 
-		assert len(seqtrak.controls) == 42
+		# Forty-two numbers, written as 105 controls, one for each kind of track a number reaches.
+		assert len(seqtrak.controls) == 105
 		assert numbers == [0, 5, 7, 10, 11, 20, 21, 23, 24, 25, 26, 27, 28, 29, 32,
 			64, 65, 66, 71, 73, 74, 75, 91, 94,
 			102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
@@ -17684,27 +17685,27 @@ class TestSeqtrak:
 	def test_five_are_received_only_on_two_documents_word (self) -> None:
 		"""The chart crosses their transmitted column, and the guide says so in prose for all five."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
-		receives = sorted(control.cc for control in seqtrak.controls.values()
-			if control.direction == "receives" and control.cc is not None)
+		receives = sorted({control.cc for control in seqtrak.controls.values()
+			if control.direction == "receives" and control.cc is not None})
 
 		assert receives == [11, 23, 24, 64, 66]
 
 		# The User Guide says it twice: of MUTE and SOLO, and of the three in its fourth table,
 		# whose names are now these three's labels.
-		assert seqtrak.controls["mute"].cc == 23
-		assert seqtrak.controls["solo"].cc == 24
+		assert seqtrak.controls["drum_mute"].cc == 23
+		assert seqtrak.controls["drum_solo"].cc == 24
 		assert "receive only" in (seqtrak.source or "")
 		assert "These are for receive only." in " ".join((seqtrak.source or "").split())
 
-		assert seqtrak.controls["expression"].label == "EXPRESSION CONTROL"
-		assert seqtrak.controls["sustain_switch"].label == "DAMPER PEDAL"
-		assert seqtrak.controls["sostenuto"].label == "SOSTENUTO"
+		assert seqtrak.controls["drum_expression"].label == "EXPRESSION CONTROL"
+		assert seqtrak.controls["synth_damper_pedal"].label == "DAMPER PEDAL"
+		assert seqtrak.controls["synth_sostenuto"].label == "SOSTENUTO"
 
 		both = [control for control in seqtrak.controls.values() if control.direction == "both"]
 
 		# 18.3's forty less its five received only, and bank select's two.
-		assert len(both) == 37
-		assert {"bank_select_msb", "bank_select_lsb"} <= {
+		assert len({control.cc for control in both}) == 37
+		assert {"drum_bank_select_msb", "drum_bank_select_lsb"} <= {
 			name for name, control in seqtrak.controls.items() if control.direction == "both"}
 
 	def test_the_switches_take_different_conventions (self) -> None:
@@ -17712,16 +17713,16 @@ class TestSeqtrak:
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 
 		# Exact values: 0 is off and 1 is on, and nothing says what 2 to 127 do.
-		assert seqtrak.controls["portamento_switch"].choices == {"off": 0, "on": 1}
-		assert seqtrak.controls["portamento_switch"].values == {}
+		assert seqtrak.controls["synth_portamento_switch"].choices == {"off": 0, "on": 1}
+		assert seqtrak.controls["synth_portamento_switch"].values == {}
 
 		# Bands: 0 to 63 off, 64 to 127 on.
-		assert seqtrak.controls["mute"].values == {"off": 0, "on": 64}
-		assert seqtrak.controls["mute"].choices == {}
+		assert seqtrak.controls["drum_mute"].values == {"off": 0, "on": 64}
+		assert seqtrak.controls["drum_mute"].choices == {}
 
 		# The sostenuto too, in both documents. Unbanded until 2026-10-11.
-		assert seqtrak.controls["sostenuto"].values == {"off": 0, "on": 64}
-		assert seqtrak.controls["sostenuto"].choices == {}
+		assert seqtrak.controls["synth_sostenuto"].values == {"off": 0, "on": 64}
+		assert seqtrak.controls["synth_sostenuto"].choices == {}
 
 	def test_eleven_tracks_on_eleven_channels_that_cannot_be_moved (self) -> None:
 		"""Four groups, because that is how both documents group the eleven."""
@@ -17737,21 +17738,39 @@ class TestSeqtrak:
 
 		assert sum(part.count for part in seqtrak.parts.values()) == 11
 
-	def test_the_part_specific_controls_name_their_part (self) -> None:
-		"""Where a control reaches one group only, the control says which."""
+	def test_each_controller_is_written_once_for_every_kind_of_track_it_reaches (self) -> None:
+		"""18.3's `AVAILABLE ON` column, kind by kind. One copy naming no part until 2026-10-11."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 
-		assert seqtrak.controls["drum_pitch"].part == "drum"
+		reaches: dict[int, set[str]] = {}
 
-		fm = [name for name, control in seqtrak.controls.items() if control.part == "dx"]
+		for control in seqtrak.controls.values():
+			assert control.cc is not None
+			reaches.setdefault(control.cc, set()).add(control.part or "")
 
-		assert sorted(fm) == ["fm_algorithm", "fm_modulation_amount",
-			"fm_modulator_feedback", "fm_modulator_frequency"]
+		every = {"drum", "synth", "dx", "sampler"}
 
-		# **The arpeggio and portamento controls reach two groups**, synth and DX, which a
-		# single `part` field cannot say - so they name none and the account says it instead.
-		for spanning in ("arp_type", "arp_gate", "arp_speed", "portamento_time"):
-			assert seqtrak.controls[spanning].part is None, spanning
+		for number in (0, 32, 7, 10, 11, 20, 21, 23, 24, 71, 73, 74, 75, 91, 94, 107, 108, 109):
+			assert reaches[number] == every, number
+
+		for number in (5, 26, 27, 28, 29, 65):
+			assert reaches[number] == {"synth", "dx"}, number
+
+		assert reaches[25] == {"drum"}
+		assert reaches[64] == {"synth", "dx", "sampler"}
+		assert reaches[66] == {"synth", "sampler"}
+
+		for number in (116, 117, 118, 119):
+			assert reaches[number] == {"dx"}, number
+
+		# The master and send effects are on channel 1 alone, the base the offsets count from.
+		for number in (102, 103, 104, 105, 106, 110, 111, 112, 113, 114, 115):
+			assert reaches[number] == {""}, number
+
+		# A key names its kind first, as `roland/jd_xi`'s do.
+		for name, control in seqtrak.controls.items():
+			if control.part is not None and not name.startswith(("drum_pitch", "fm_")):
+				assert name.startswith(control.part + "_"), name
 
 	def test_aftertouch_is_none_without_needing_a_judgement (self) -> None:
 		"""One chart, crossed in all four boxes - where its sibling had two that disagreed."""

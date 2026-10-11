@@ -84,6 +84,25 @@ source: >-
   controllers for channel 10 alone. Two documents reaching the same layout from different
   directions is the strongest thing said about this instrument's addressing.
 
+  **SO EACH CONTROLLER IS WRITTEN ONCE FOR EVERY KIND OF TRACK IT REACHES, AND THE FORTY-TWO
+  NUMBERS ARE 105 CONTROLS.** A control naming no part is on the base channel, which here is
+  channel 1, the first drum track's, so a volume naming no part would reach that track alone.
+  Every controller 18.3 gives for some tracks is written below once for each kind its `AVAILABLE
+  ON` column names: four times for those on channels 1 to 11, twice for the mono/poly/chord,
+  portamento and arpeggio controllers on 8 to 10, three times for the damper pedal on 8 to 11 and
+  twice for the sostenuto on 8, 9 and 11. The drum pitch and the four FM controllers already named
+  their one kind. Bank select is written for all four, since the control change format gives every
+  channel, `n = 0 - 10` (data_list p. 113), though what it chooses is often not that track's: see
+  its note below. **The eleven 18.3 gives for channel 1 alone name no part**, the three master
+  effects' five and the two send effects' six (user_guide p. 101): 18.3 gives them channel 1 and
+  no track, and `part: drum` would claim all seven drum channels. They are the project's master
+  and send effects, which the address map files under `Project Common` (data_list p. 119), and not
+  the first drum track's sound, though a reader asking what that track answers to is given them
+  too, since it sits on channel 1. Until 2026-10-11 each of those now written per kind was written
+  once, naming no part, and its released key took the kind as a prefix, `track_volume` becoming
+  `drum_track_volume` and its three siblings; the damper pedal's became `synth_damper_pedal` and
+  its two siblings, after its label.
+
   **FORTY-TWO CONTROLLER NUMBERS ARE PUBLISHED, AND THE DATA LIST GIVES EVERY ONE.** Its control
   change lists give each number with a name and whether it is transmitted or received
   (data_list p. 113), and the next sheet names the model-specific ones and gives their values
@@ -302,9 +321,8 @@ parts:
     channel_offset: 7
     addressing: pitches
     receives: [notes, controls, program_change]
-    # Channels 8 and 9. These and the DX part are the three the portamento, arpeggio and
-    # mono/poly/chord controllers are given for, which is why those controllers span 8 to 10 and
-    # name two groups rather than one - something `Control.part` cannot say, so it is said here.
+    # Channels 8 and 9. With the DX part, the two kinds the portamento, arpeggio and
+    # mono/poly/chord controllers are given for, so each of those is written twice below.
   dx:
     label: DX
     channel_offset: 9
@@ -339,32 +357,83 @@ controls:
   # `Receive/Transmit Bank Select` switch (data_list pp. 111, 112), which ships on, and sent they
   # pass each port's bank select bit too, which ships off (data_list p. 123). Only the banks the
   # Data List's table gives are answered, and only when a program change follows: see the account.
-  bank_select_msb:     {label: BANK SELECT MSB, cc: 0}
-  bank_select_lsb:     {label: BANK SELECT LSB, cc: 32}
-  # ---- 18.3.1 Sound Design parameters, all eleven tracks unless the account says otherwise ----
-  track_volume:        {label: TRACK VOLUME, cc: 7, group: mix}
+  # WRITTEN FOR ALL FOUR KINDS, because every channel takes control change, but what it chooses
+  # is often not the track's own. A project "Channel number will be ignored." (data_list
+  # p. 117), so it loads from any channel; a sound's type is "Drum / Synth / DX Sound" (data_list
+  # p. 117), which leaves the sampler out; and a sampler element and a DrumKit sound each
+  # "Regards channel number as element number." (data_list pp. 117, 118). The sampler has seven
+  # elements (data_list pp. 113, 119), so they are chosen on channels 1 to 7, the drum tracks';
+  # and a DrumKit sound chooses its drum track by its MSB, 32 to 38 (data_list p. 118), and its
+  # element by the channel, where no element is numbered above 7 (data_list p. 119). **So on the
+  # sampler's own channel the only bank documented to act is a project's.**
+  drum_bank_select_msb:               {label: BANK SELECT MSB, cc: 0, part: drum}
+  synth_bank_select_msb:              {label: BANK SELECT MSB, cc: 0, part: synth}
+  dx_bank_select_msb:                 {label: BANK SELECT MSB, cc: 0, part: dx}
+  sampler_bank_select_msb:            {label: BANK SELECT MSB, cc: 0, part: sampler}
+  drum_bank_select_lsb:               {label: BANK SELECT LSB, cc: 32, part: drum}
+  synth_bank_select_lsb:              {label: BANK SELECT LSB, cc: 32, part: synth}
+  dx_bank_select_lsb:                 {label: BANK SELECT LSB, cc: 32, part: dx}
+  sampler_bank_select_lsb:            {label: BANK SELECT LSB, cc: 32, part: sampler}
+  # ---- 18.3.1 Sound Design parameters, each once for every kind of track it reaches ----
+  drum_track_volume:                  {label: TRACK VOLUME, cc: 7, part: drum, group: mix}
+  synth_track_volume:                 {label: TRACK VOLUME, cc: 7, part: synth, group: mix}
+  dx_track_volume:                    {label: TRACK VOLUME, cc: 7, part: dx, group: mix}
+  sampler_track_volume:               {label: TRACK VOLUME, cc: 7, part: sampler, group: mix}
   # **1 to 127 in 18.3, the one row it gives that range, and 0 - 127 in the Data List** (p. 113).
   # This file carries 18.3's: see the account.
-  track_pan:           {label: TRACK PAN, cc: 10, range: [1, 127], group: mix}
-  attack_time:         {label: ATTACK TIME, cc: 73, group: envelope}
-  decay_release_time:  {label: DECAY/RELEASE TIME, cc: 75, group: envelope}
-  filter_cutoff:       {label: FILTER CUTOFF, cc: 74, group: filter}
-  filter_resonance:    {label: FILTER RESONANCE, cc: 71, group: filter}
-  eq_high_gain:        {label: EQ - HIGH GAIN, cc: 20, range: [40, 88], group: eq}
-  eq_low_gain:         {label: EQ - LOW GAIN, cc: 21, range: [40, 88], group: eq}
-  reverb_send:         {label: REVERB SEND, cc: 91, group: send}
-  delay_send:          {label: DELAY SEND, cc: 94, group: send}
+  drum_track_pan:                     {label: TRACK PAN, cc: 10, range: [1, 127], part: drum, group: mix}
+  synth_track_pan:                    {label: TRACK PAN, cc: 10, range: [1, 127], part: synth, group: mix}
+  dx_track_pan:                       {label: TRACK PAN, cc: 10, range: [1, 127], part: dx, group: mix}
+  sampler_track_pan:                  {label: TRACK PAN, cc: 10, range: [1, 127], part: sampler, group: mix}
+  drum_attack_time:                   {label: ATTACK TIME, cc: 73, part: drum, group: envelope}
+  synth_attack_time:                  {label: ATTACK TIME, cc: 73, part: synth, group: envelope}
+  dx_attack_time:                     {label: ATTACK TIME, cc: 73, part: dx, group: envelope}
+  sampler_attack_time:                {label: ATTACK TIME, cc: 73, part: sampler, group: envelope}
+  drum_decay_release_time:            {label: DECAY/RELEASE TIME, cc: 75, part: drum, group: envelope}
+  synth_decay_release_time:           {label: DECAY/RELEASE TIME, cc: 75, part: synth, group: envelope}
+  dx_decay_release_time:              {label: DECAY/RELEASE TIME, cc: 75, part: dx, group: envelope}
+  sampler_decay_release_time:         {label: DECAY/RELEASE TIME, cc: 75, part: sampler, group: envelope}
+  drum_filter_cutoff:                 {label: FILTER CUTOFF, cc: 74, part: drum, group: filter}
+  synth_filter_cutoff:                {label: FILTER CUTOFF, cc: 74, part: synth, group: filter}
+  dx_filter_cutoff:                   {label: FILTER CUTOFF, cc: 74, part: dx, group: filter}
+  sampler_filter_cutoff:              {label: FILTER CUTOFF, cc: 74, part: sampler, group: filter}
+  drum_filter_resonance:              {label: FILTER RESONANCE, cc: 71, part: drum, group: filter}
+  synth_filter_resonance:             {label: FILTER RESONANCE, cc: 71, part: synth, group: filter}
+  dx_filter_resonance:                {label: FILTER RESONANCE, cc: 71, part: dx, group: filter}
+  sampler_filter_resonance:           {label: FILTER RESONANCE, cc: 71, part: sampler, group: filter}
+  drum_eq_high_gain:                  {label: EQ - HIGH GAIN, cc: 20, range: [40, 88], part: drum, group: eq}
+  synth_eq_high_gain:                 {label: EQ - HIGH GAIN, cc: 20, range: [40, 88], part: synth, group: eq}
+  dx_eq_high_gain:                    {label: EQ - HIGH GAIN, cc: 20, range: [40, 88], part: dx, group: eq}
+  sampler_eq_high_gain:               {label: EQ - HIGH GAIN, cc: 20, range: [40, 88], part: sampler, group: eq}
+  drum_eq_low_gain:                   {label: EQ - LOW GAIN, cc: 21, range: [40, 88], part: drum, group: eq}
+  synth_eq_low_gain:                  {label: EQ - LOW GAIN, cc: 21, range: [40, 88], part: synth, group: eq}
+  dx_eq_low_gain:                     {label: EQ - LOW GAIN, cc: 21, range: [40, 88], part: dx, group: eq}
+  sampler_eq_low_gain:                {label: EQ - LOW GAIN, cc: 21, range: [40, 88], part: sampler, group: eq}
+  drum_reverb_send:                   {label: REVERB SEND, cc: 91, part: drum, group: send}
+  synth_reverb_send:                  {label: REVERB SEND, cc: 91, part: synth, group: send}
+  dx_reverb_send:                     {label: REVERB SEND, cc: 91, part: dx, group: send}
+  sampler_reverb_send:                {label: REVERB SEND, cc: 91, part: sampler, group: send}
+  drum_delay_send:                    {label: DELAY SEND, cc: 94, part: drum, group: send}
+  synth_delay_send:                   {label: DELAY SEND, cc: 94, part: synth, group: send}
+  dx_delay_send:                      {label: DELAY SEND, cc: 94, part: dx, group: send}
+  sampler_delay_send:                 {label: DELAY SEND, cc: 94, part: sampler, group: send}
   # Drum tracks only, channels 1 to 7.
   drum_pitch:          {label: DRUM PITCH, cc: 25, range: [40, 88], part: drum, group: voicing}
   # Synth and DX only, channels 8 to 10. Exact values, not bands.
-  mono_poly_chord:     {label: MONO/POLY/CHORD, cc: 26, choices: {mono: 0, poly: 1, chord: 2}, group: voicing}
+  synth_mono_poly_chord:              {label: MONO/POLY/CHORD, cc: 26, choices: {mono: 0, poly: 1, chord: 2}, part: synth, group: voicing}
+  dx_mono_poly_chord:                 {label: MONO/POLY/CHORD, cc: 26, choices: {mono: 0, poly: 1, chord: 2}, part: dx, group: voicing}
   # Synth and DX only. 0 switches it off rather than setting the shortest time.
-  portamento_time:     {label: PORTAMENTO TIME, cc: 5, group: portamento}
+  synth_portamento_time:              {label: PORTAMENTO TIME, cc: 5, part: synth, group: portamento}
+  dx_portamento_time:                 {label: PORTAMENTO TIME, cc: 5, part: dx, group: portamento}
   # **EXACT VALUES WHERE THE MUTE AND THE SOSTENUTO TAKE BANDS** - see the account.
-  portamento_switch:   {label: PORTAMENTO SWITCH, cc: 65, choices: {"off": 0, "on": 1}, group: portamento}
-  arp_type:            {label: ARP TYPE, cc: 27, range: [0, 16], group: arpeggio}
-  arp_gate:            {label: ARP GATE, cc: 28, group: arpeggio}
-  arp_speed:           {label: ARP SPEED, cc: 29, range: [0, 9], group: arpeggio}
+  synth_portamento_switch:            {label: PORTAMENTO SWITCH, cc: 65, choices: {"off": 0, "on": 1}, part: synth, group: portamento}
+  dx_portamento_switch:               {label: PORTAMENTO SWITCH, cc: 65, choices: {"off": 0, "on": 1}, part: dx, group: portamento}
+  synth_arp_type:                     {label: ARP TYPE, cc: 27, range: [0, 16], part: synth, group: arpeggio}
+  dx_arp_type:                        {label: ARP TYPE, cc: 27, range: [0, 16], part: dx, group: arpeggio}
+  synth_arp_gate:                     {label: ARP GATE, cc: 28, part: synth, group: arpeggio}
+  dx_arp_gate:                        {label: ARP GATE, cc: 28, part: dx, group: arpeggio}
+  synth_arp_speed:                    {label: ARP SPEED, cc: 29, range: [0, 9], part: synth, group: arpeggio}
+  dx_arp_speed:                       {label: ARP SPEED, cc: 29, range: [0, 9], part: dx, group: arpeggio}
   # The DX track alone, channel 10.
   fm_algorithm:        {label: FM ALGORITHM, cc: 116, part: dx, group: fm}
   fm_modulation_amount: {label: FM MODULATION AMOUNT, cc: 117, part: dx, group: fm}
@@ -372,15 +441,25 @@ controls:
   fm_modulator_feedback: {label: FM MODULATOR FEEDBACK, cc: 119, part: dx, group: fm}
 
   # ---- 18.3.2 Effect parameters: assigned-parameter slots, so what each one does depends on
-  # ---- which effect type the track or the master bus is using.
+  # ---- which effect type the track or the master bus is using. The master and send effects
+  # ---- are on channel 1 alone and name no part; the single effect is each track's.
   master_effect_1_parameter_1: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 1, cc: 102, group: effect}
   master_effect_1_parameter_2: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 2, cc: 103, group: effect}
   master_effect_1_parameter_3: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 3, cc: 104, group: effect}
   master_effect_2_parameter:   {label: MASTER EFFECT 2 - ASSIGNED PARAMETER, cc: 105, group: effect}
   master_effect_3_parameter:   {label: MASTER EFFECT 3 - ASSIGNED PARAMETER, cc: 106, group: effect}
-  single_effect_parameter_1:   {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, group: effect}
-  single_effect_parameter_2:   {label: SINGLE EFFECT - ASSIGNED PARAMETER 2, cc: 108, group: effect}
-  single_effect_parameter_3:   {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, group: effect}
+  drum_single_effect_parameter_1:     {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, part: drum, group: effect}
+  synth_single_effect_parameter_1:    {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, part: synth, group: effect}
+  dx_single_effect_parameter_1:       {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, part: dx, group: effect}
+  sampler_single_effect_parameter_1:  {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, part: sampler, group: effect}
+  drum_single_effect_parameter_2:     {label: SINGLE EFFECT - ASSIGNED PARAMETER 2, cc: 108, part: drum, group: effect}
+  synth_single_effect_parameter_2:    {label: SINGLE EFFECT - ASSIGNED PARAMETER 2, cc: 108, part: synth, group: effect}
+  dx_single_effect_parameter_2:       {label: SINGLE EFFECT - ASSIGNED PARAMETER 2, cc: 108, part: dx, group: effect}
+  sampler_single_effect_parameter_2:  {label: SINGLE EFFECT - ASSIGNED PARAMETER 2, cc: 108, part: sampler, group: effect}
+  drum_single_effect_parameter_3:     {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, part: drum, group: effect}
+  synth_single_effect_parameter_3:    {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, part: synth, group: effect}
+  dx_single_effect_parameter_3:       {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, part: dx, group: effect}
+  sampler_single_effect_parameter_3:  {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, part: sampler, group: effect}
   send_reverb_parameter_1:     {label: SEND REVERB - ASSIGNED PARAMETER 1, cc: 110, group: effect}
   send_reverb_parameter_2:     {label: SEND REVERB - ASSIGNED PARAMETER 2, cc: 111, group: effect}
   send_reverb_parameter_3:     {label: SEND REVERB - ASSIGNED PARAMETER 3, cc: 112, group: effect}
@@ -389,9 +468,15 @@ controls:
   send_delay_parameter_3:      {label: SEND DELAY - ASSIGNED PARAMETER 3, cc: 115, group: effect}
 
   # ---- 18.3.3 Mute/Solo, receive only on two documents' word ----
-  mute: {label: MUTE, cc: 23, values: {"off": 0, "on": 64}, direction: receives, group: mix}
+  drum_mute:                          {label: MUTE, cc: 23, values: {"off": 0, "on": 64}, direction: receives, part: drum, group: mix}
+  synth_mute:                         {label: MUTE, cc: 23, values: {"off": 0, "on": 64}, direction: receives, part: synth, group: mix}
+  dx_mute:                            {label: MUTE, cc: 23, values: {"off": 0, "on": 64}, direction: receives, part: dx, group: mix}
+  sampler_mute:                       {label: MUTE, cc: 23, values: {"off": 0, "on": 64}, direction: receives, part: sampler, group: mix}
   # 0 is off and 1 to 11 each name a track, so the value is a track number rather than a level.
-  solo: {label: SOLO, cc: 24, range: [0, 11], direction: receives, group: mix}
+  drum_solo:                          {label: SOLO, cc: 24, range: [0, 11], direction: receives, part: drum, group: mix}
+  synth_solo:                         {label: SOLO, cc: 24, range: [0, 11], direction: receives, part: synth, group: mix}
+  dx_solo:                            {label: SOLO, cc: 24, range: [0, 11], direction: receives, part: dx, group: mix}
+  sampler_solo:                       {label: SOLO, cc: 24, range: [0, 11], direction: receives, part: sampler, group: mix}
 
   # ---- 18.3.4 Other (user_guide p. 102): received only, on two documents' word - the note
   # ---- under that table, and the Data List's transmitted list, which leaves them out (data_list
@@ -401,8 +486,14 @@ controls:
   # ---- mistaken word that 18.3 did not name them. In no group, because there is no panel
   # ---- control to group them with - `korg/volca_keys` records its controller 11 the same way.
   # All eleven tracks, channels 1 to 11.
-  expression:      {label: EXPRESSION CONTROL, cc: 11, direction: receives}
+  drum_expression:                    {label: EXPRESSION CONTROL, cc: 11, direction: receives, part: drum}
+  synth_expression:                   {label: EXPRESSION CONTROL, cc: 11, direction: receives, part: synth}
+  dx_expression:                      {label: EXPRESSION CONTROL, cc: 11, direction: receives, part: dx}
+  sampler_expression:                 {label: EXPRESSION CONTROL, cc: 11, direction: receives, part: sampler}
   # Synth, DX and sampler only, channels 8 to 11.
-  sustain_switch:  {label: DAMPER PEDAL, cc: 64, direction: receives}
+  synth_damper_pedal:                 {label: DAMPER PEDAL, cc: 64, direction: receives, part: synth}
+  dx_damper_pedal:                    {label: DAMPER PEDAL, cc: 64, direction: receives, part: dx}
+  sampler_damper_pedal:               {label: DAMPER PEDAL, cc: 64, direction: receives, part: sampler}
   # Synth and sampler only, channels 8, 9 and 11. Halves of the range, as the mute's are.
-  sostenuto:       {label: SOSTENUTO, cc: 66, values: {"off": 0, "on": 64}, direction: receives}
+  synth_sostenuto:                    {label: SOSTENUTO, cc: 66, values: {"off": 0, "on": 64}, direction: receives, part: synth}
+  sampler_sostenuto:                  {label: SOSTENUTO, cc: 66, values: {"off": 0, "on": 64}, direction: receives, part: sampler}

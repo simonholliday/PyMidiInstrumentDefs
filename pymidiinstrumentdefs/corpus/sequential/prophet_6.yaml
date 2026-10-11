@@ -214,15 +214,17 @@ voice:
 # carries that range as its own. Every On/Off parameter is 0-1, which the tables never explain,
 # though 0 for off is the convention.
 #
-# NOT LISTED, and each for a reason: CC 0 and 32 (Bank Select), 6 and 38 (Data Entry), 96 and 97
-# (Data Increment and Decrement), 98-101 (NRPN and RPN addressing) and 39 (Volume LSB, the fine
-# half of CC 7) are how a value or a bank travels rather than parameters; CC 120-127 are channel
+# NOT LISTED, and each for a reason: CC 6 and 38 (Data Entry), 96 and 97 (Data Increment and
+# Decrement), 98-101 (NRPN and RPN addressing) and 39 (Volume LSB, the fine half of CC 7) are how a
+# value travels rather than parameters; CC 120-127 are channel
 # mode messages, which this format refuses as controls; and the thirteen NRPN blocks at 236-1023
 # are a program's name and sequence, which one control cannot carry.
 #
 # **The two tables disagree about which CC selects a bank.** The received and transmitted
 # message tables both use CC 32 (p. 74, p. 75) and the controller table calls CC 0 "Bank Select
-# MSB" (p. 76). Neither is a control here, so nothing rests on it.
+# MSB" (p. 76). Both are controls here, as bank select is wherever a maker numbers it, each under
+# the name its own table gives it; that the two together make an MSB and an LSB is the MIDI
+# specification's reading, and no page says so.
 
 groups:
   # The maker's own panel sections, as the panel prints them and the manual's chapters echo
@@ -259,6 +261,18 @@ groups:
   global: Global Settings
 
 controls:
+# ──── bank select ────
+
+  # BANK SELECT, in the three tables of the appendix that number it. CC 32 is "Bank Select" in
+  # both message tables, received as "0 - 4 select user banks 0 - 4; 5 - 9 select factory banks 0 -
+  # 4; others ignored" (p. 74) and sent as "0 - 9" (p. 75); p. 2 numbers the factory banks 5 to 9
+  # instead.
+  # CC 0 is "Bank Select MSB" (p. 76) in the controller table, with no values given, and that
+  # table's numbers "are transmitted when Param Xmit is set to CC, and recognized/received when MIDI
+  # Rcv Receive is set to CC" (p. 76); CC 32 is in the plain message tables, behind no such switch.
+  bank_select:                 {label: Bank Select, cc: 32, range: [0, 9]}
+  bank_select_msb:             {label: Bank Select MSB, cc: 0}
+
 # ──── performance ────
 
   mod_wheel:                   {label: Mod Wheel, cc: 1, group: performance}

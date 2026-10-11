@@ -8633,11 +8633,11 @@ class TestProphet6:
 
 	"""A Sequential whose maker prints one appendix three times and agrees with itself nowhere."""
 
-	def test_one_hundred_and_thirteen_controls_in_nineteen_panel_sections (self) -> None:
+	def test_one_hundred_and_fifteen_controls_in_nineteen_panel_sections (self) -> None:
 		"""Most parameters are reachable two ways, and seventy by NRPN alone."""
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
 
-		assert len(prophet.controls) == 113
+		assert len(prophet.controls) == 115
 		assert len(prophet.groups) == 19
 
 		both = [control for control in prophet.controls.values()
@@ -8646,7 +8646,7 @@ class TestProphet6:
 			if control.cc is not None and control.nrpn is None]
 		nrpn_only = [control for control in prophet.controls.values() if control.cc is None]
 
-		assert (len(both), len(cc_only), len(nrpn_only)) == (38, 5, 70)
+		assert (len(both), len(cc_only), len(nrpn_only)) == (38, 7, 70)
 
 		# No number is used twice in either table.
 		numbers = [control.cc for control in prophet.controls.values() if control.cc is not None]
@@ -8656,14 +8656,17 @@ class TestProphet6:
 		assert len(set(numbers)) == len(numbers)
 		assert len(set(addresses)) == len(addresses)
 
-	def test_the_five_controls_with_no_nrpn_are_the_ones_off_the_panel (self) -> None:
-		"""A player's hands and feet: the maker's NRPN tables hold none of them."""
+	def test_the_five_off_the_panel_and_bank_select_have_no_nrpn (self) -> None:
+		"""A player's hands and feet: the maker's NRPN tables hold none of them, nor bank select."""
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
 
 		off_panel = sorted(control.cc for control in prophet.controls.values()
-			if control.cc is not None and control.nrpn is None)
+			if control.cc is not None and control.nrpn is None
+			and not control.name.startswith("bank_select"))
 
 		assert off_panel == [1, 4, 7, 64, 74]
+		assert prophet.controls["bank_select"].nrpn is None
+		assert prophet.controls["bank_select_msb"].nrpn is None
 
 		for control in prophet.controls.values():
 

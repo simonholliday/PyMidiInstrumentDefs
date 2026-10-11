@@ -28,8 +28,10 @@ definition: 1
 model:
   manufacturer: Oberheim
   name: OB-X8
-  # OS 2.0, which is the addendum's subject and the newest the maker offers: "The newest
-  # version of the OS is 2.0" (addendum p. 1).
+  # OS 2.0, which is the addendum's subject: "The newest version of the OS is 2.0" (addendum
+  # p. 1). **The maker's page has since moved on**: "The newest version of the OB-X8 Main OS
+  # is" (product_page) `OBX8_Main_2.0.0.1` there, with a changelog the page links and this
+  # library does not hold. Until 2026-10-11 this comment called 2.0 the newest offered.
   # **THE CONTROL MAP BELOW IS THE GUIDE'S, AND THE GUIDE PREDATES OS 2.0.** The addendum
   # renumbers, removes and adds nothing in either table - checked by name against both - and
   # the only controller number it mentions at all is CC 74, which the guide already carries.
@@ -56,7 +58,8 @@ source: >-
   pp. 123-124, the control change table on pp. 125-128, how an NRPN travels on pp. 129-130, the
   NRPN table on pp. 131-133, and system exclusive on pp. 134-137. The OS 2.0 Addendum (8 sheets) supplies
   everything about split channels, MPE and the arpeggiator's clock. The product page is cited
-  for which documents the maker offers and for the two bodies sharing one page.
+  for which documents the maker offers, for the two bodies sharing one page, and for the newest
+  OS it names.
 
   **PAGES ARE CITED AS FILE PAGES, BECAUSE THE PRINTED NUMBERING IS BROKEN.** Sheets 1 to 7
   print no number; 8 and 9 print "viii" and "ix", and i to vii are never printed at all; sheets
@@ -206,8 +209,8 @@ sources:
     retrieved: 2026-10-04
     paginated: false
     # The digest is of the page's visible text as saved on 2026-10-04, which is the copy a
-    # citation can be checked against. Cited for the three documents the maker offers and for
-    # the keyboard and the Module sharing one page.
+    # citation can be checked against. Cited for the documents the maker offers, for the
+    # keyboard and the Module sharing one page, and for the newest OS it names.
 
 midi:
   # "MIDI Channel: All, 1-16. This allows you to set the MIDI channel that the OB-X8 will both
@@ -240,21 +243,30 @@ midi:
   # **AND THE CLAIM IS NOT QUITE TRUE OF THIS INSTRUMENT**: four real controls have no NRPN at
   # all - 9 Transpose Up/Down, 74 Brightness, 95 Lower/Upper/No Select and 119 Normal/Split/
   # Double Mode - so NRPN does not "cover the complete range of all parameters" here.
+  # **ONE OF THOSE IS THE ROW THAT NAMES THE MODES, AND THE SPLIT'S OWN PARAMETERS ARE NRPN
+  # ONLY.** The controllers "are transmitted when Param Xmit is set to CC, and
+  # recognized/received when Param Rcv is set to CC." (manual p. 125), and the NRPNs are
+  # "received when MIDI Parameter Receive is set to NRPN in globals" (manual p. 129). Those are
+  # one global under two more of its names, the Param Param Receive quoted above, so on the
+  # manual's words no one setting of it takes both CC 119 and a SPLIT address.
   nrpn: preferred
   # "MIDI SysEx Cable: Off, MIDI, USB-When set to MIDI it will receive and transmit MIDI SysEx
   # messages using the MIDI ports/cables" (manual p. 122). What the messages are is a different
   # question and the document does not agree with itself about it: see the source account.
   sysex: true
-  # MPE, WHICH IS A SETTING RATHER THAN A STATE. "the OB-X8 will respond to any MPE-capable
+  # MPE, WHICH IS A VALUE OF THE MIDI CHANNEL GLOBAL AND NOT ONE OF THE MODES BELOW. In the
+  # addendum's words, "the OB-X8 will respond to any MPE-capable
   # controller across eight MPE MIDI channels (as the OB-X8 has eight voices)" (addendum p. 4),
   # chosen by selecting "MPE Enabled" in the same global that sets the MIDI channel. So this is
   # true of the instrument and not true all the time, which is the same shape as
   # `expressive_e/osmose` and is why that flag exists. The three axes are "X-axis, or left-right
   # movement, sent as Pitch Bend", "Y-axis, or front-to-back movement, sent as MIDI CC74
   # (assignable per preset)" and "Z-axis, or up-down movement, sent as Channel Pressure/
-  # Aftertouch" (addendum p. 4). Whether MPE transmits as well as receives, whether there is a
-  # master channel, and whether MPE and the split channels below can both be on, are all
-  # unstated - the addendum says only "eight MPE MIDI channels".
+  # Aftertouch" (addendum p. 4). Whether MPE transmits as well as receives, and whether there is
+  # a master channel, are unstated - the addendum says only "eight MPE MIDI channels". MPE
+  # Enabled and a channel number are two values of the one global, which cannot hold both. The
+  # separate channels below are stated for a channel number, and what a Split or a Double does
+  # under MPE Enabled is not described.
   per_voice_channels: true
   # Received, "the OB-X8 will respond to any MPE-capable controller" (addendum p. 4); whether it
   # sends MPE is unstated, as above.
@@ -262,22 +274,30 @@ midi:
 
 voice:
   addressing: pitches
-  # **EIGHT VOICES, AND THIS FORMAT CANNOT SAY SO WHILE ALSO DESCRIBING THE SPLIT.** "The OB-X8
-  # is an eight-voice, polyphonic analog synthesizer" (manual p. 10), and Poly Chain raises it:
-  # "connect up to four OB-X8 keyboards or modules using Poly Chain mode, increasing the total
-  # polyphony from 8 up to as many as 32 voices" (addendum p. 2), one way only, over MIDI DIN.
+  # **EIGHT VOICES, IN EVERY MODE.** "The OB-X8 is an eight-voice, polyphonic analog
+  # synthesizer" (manual p. 10), and Poly Chain raises it: "connect up to four OB-X8 keyboards
+  # or modules using Poly Chain mode, increasing the total polyphony from 8 up to as many as 32
+  # voices" (addendum p. 2), one way only, over MIDI DIN. The Voice Enables global can lower
+  # it, a disabled voice leaving the instrument "with the selected voice or voices ignored (and
+  # fewer voices available.)" (manual p. 25).
   #
-  # The eight are stated against the two parts below, four each, rather than here. That is not a
-  # preference: the validator refuses a whole-instrument figure beside parts that do not share a
-  # pool, and these parts do not share one - "Split (four voices with one sound on the lower
-  # portion of the keyboard, and four voices with a different sound on the upper)" (manual
-  # p. 15), with Double likewise "two different programs of four voices each layered on top of
-  # each other" (manual p. 15). Neither half can take a voice from the other.
+  # The eight stand here beside the four on each of the two parts below, because those parts
+  # exist only in Split mode: "Split (four voices with one sound on the lower portion of the
+  # keyboard, and four voices with a different sound on the upper)" (manual p. 15). Neither half
+  # can take a voice from the other, which is what `polyphony_shared: false` says of the two
+  # parts, and the guide says it of Double as well: "if a preset has its Unison Voices parameter
+  # set to any of 5 through 8 and that preset is used in Split or Double, it will only play
+  # with 4 voices" (manual p. 60).
+  # **IN DOUBLE THE EIGHT VOICES ARE READ AS FOUR KEYS.** Double is "two different programs of
+  # four voices each layered on top of each other" (manual p. 15), so a key is taken to use a
+  # voice from each. No page of the guide says it in those words; the addendum's nearest are of
+  # its Binaural bank, "a four-voice stereo synthesizer, with two voices playing on each key
+  # press" (addendum p. 5).
   #
-  # **So the eight is here in words only, and that is a gap rather than a decision.** The parts
-  # exist only in Split mode and the eight is true always, which is one claim this format cannot
-  # hold beside the other. The two part figures do sum to eight, which recovers it for anybody
-  # reading the parts. Raised as a question of its own rather than worked around silently.
+  # **Until 2026-10-11 the eight was here in words only.** The loader refuses a figure for the
+  # whole instrument beside parts with voices of their own, which would be two answers to one
+  # question, and allows it where every such part exists in one of several modes. These do.
+  polyphony: 8
   polyphony_shared: false
   # CHANNEL, AND POLY KEY PRESSURE IS A SINGLE ROW WITH NOTHING BEHIND IT. "Polyphonic Key
   # Pressure" appears **once in 137 sheets**, in the received channel message table, and no page
@@ -304,6 +324,31 @@ voice:
     semitones: 12
     programmable: true
 
+modes:
+  # THREE STATES, NAMED AS THE ONE ROW THAT LISTS THEM NAMES THEM: CC 119 is
+  # `NORMAL/SPLIT/DOUBLE MODE` (manual p. 128), with a range of 0 to 2 and no word on which
+  # value is which. On the panel the SPLIT and DOUBLE switches choose - "Press the split or
+  # double switch to specify the type of bank selected" (manual p. 16) - and the mode is the
+  # kind of program loaded: one sound, or a Split or a Double, which "are each composed of two
+  # programs" (manual p. 15). For this state, `Normal` is that row's word alone; the prose has
+  # "When neither Split nor Double are engaged (when using a single preset)" (manual p. 43).
+  # None is marked as the factory one, since no page says which the instrument starts in.
+  # **OS 2.0 ADDS THREE KINDS OF BANK, AND THEY ARE NOT MODES HERE.** The addendum speaks of
+  # "Double, Split, Double+, Split+, and Binaural modes" (addendum p. 3). Split+ and Double+
+  # are further banks reached with the same two switches and the BANK encoder (addendum p. 5),
+  # and Binaural is a Double bank: "All Double Page 2 parameters are accessible in Binaural
+  # mode" (addendum p. 6). No page says
+  # whether a Split+ program has the separate channels below, or what CC 119 makes of the
+  # three.
+  # Normal and Double differ in nothing this file holds as data: each has every control that
+  # names no part, and neither has the two parts.
+  normal:
+    label: Normal
+  split:
+    label: Split
+  double:
+    label: Double
+
 parts:
   # TWO PARTS, AND ONLY IN SPLIT MODE. "This new feature allows you to control the Lower and
   # Upper programs of a Split program over separate MIDI channels. The Lower and Upper voices
@@ -313,20 +358,49 @@ parts:
   # `channel_offset` holds. What the Upper channel is when the global is 16 is not stated.
   # Not available in Double mode: "The Double program will only transmit and receive on the
   # Global MIDI channel" (addendum p. 2).
-  # **THE VOICES ARE NOT STATED AGAINST EITHER PART, AND THE VALIDATOR IS RIGHT TO ASK.** In
-  # Split mode the eight divide evenly - "Split (four voices with one sound on the lower portion
-  # of the keyboard, and four voices with a different sound on the upper)" (manual p. 15) - but
-  # that is true only in Split mode, and these parts exist only in Split mode while the eight
-  # voices in `voice` above are true of the instrument always. So the figure is said once, where
-  # it holds without a condition, and `voice.polyphony_shared: false` says the two halves do not
-  # draw on one another's voices. See the comment on `voice.polyphony_shared`.
+  # **ON ITS OWN CHANNEL A PROGRAM TAKES THE WHOLE KEYBOARD, AND THE SPLIT POINT IS THE LOCAL
+  # KEYBOARD'S**: "In operation, each program's full keyboard range can be addressed over its
+  # MIDI channel, while the program's keyboard split point will still function as expected when
+  # played on the OB-X8's local keyboard." (addendum p. 2). So a note on the Lower's channel
+  # plays the Lower anywhere on the keyboard, and one on the next channel the Upper.
+  # **EACH HALF HAS FOUR VOICES OF ITS OWN, AND `mode: split` IS WHAT LETS THE FILE SAY SO BESIDE
+  # THE INSTRUMENT'S EIGHT.** In Split mode the eight divide evenly - "Split (four voices with
+  # one sound on the lower portion of the keyboard, and four voices with a different sound on
+  # the upper)" (manual p. 15) - and `voice.polyphony_shared: false` says the halves do not draw
+  # on one another's. Until 2026-10-11 this comment said the voices were not stated against
+  # either part, which the `polyphony: 4` on each contradicted.
+  # **THE GLOBAL CHANNEL IS A SECOND CONDITION, KEPT IN WORDS.** The addendum has the separate
+  # channels active with the global on any channel but All, so with All these parts are not
+  # addressable apart by channel. No page says how a note or a controller is directed to one
+  # half on a single channel, nor what a Split does with the global on MPE Enabled.
+  # **WHAT A CONTROLLER DOES ON EITHER CHANNEL RESTS ON GENERAL WORDS.** The addendum has
+  # "control the Lower and Upper programs" (addendum p. 2) and the voices that transmit and
+  # receive, and names no controller of any kind: no page names a controller, an NRPN, a
+  # program change, a bend or a pressure on either split channel. The sound's map is written once
+  # below, on controls that name no part, which this format puts on the base channel, the
+  # Lower's. Whether the same numbers sent on the Upper's channel edit the Upper program is not
+  # stated. `controls` is in each part's `receives` because controls below name the part, on
+  # the strength of those words and no more.
+  # **SEVEN CONTROLS BELOW NAME A PART**: four to tell apart the two numbers in each of two
+  # cells, and three because the row's name holds a half. They are among the table's twelve SPLIT
+  # addresses, in ten rows (manual p. 133). Which of a cell's two numbers is the Upper's is
+  # read from the order of its `(UPPER/LOWER)` and from the rows beside it, and is not stated.
+  # The format then reads the seven as on that part's channel and as Split mode's only, and
+  # neither is on a page: no page says which channel carries a SPLIT address, or which modes
+  # any of the twelve answers in. By name all twelve are Split's. The Double's list, headed
+  # "Double Mode Page 2 Parameters" (manual p. 69) and running onto p. 70, is the Split's
+  # without the split point; no row is printed under DOUBLE, and matching a row to a list item
+  # is by name. The other five SPLIT rows name no part and so read as answering in every mode,
+  # a division that follows from which names hold a half and not from anything said of modes.
   lower:
     label: Lower
+    mode: split
     channel_offset: 0
     polyphony: 4
     receives: [notes, controls]
   upper:
     label: Upper
+    mode: split
     channel_offset: 1
     polyphony: 4
     receives: [notes, controls]

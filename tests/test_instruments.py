@@ -13273,15 +13273,34 @@ class TestOBX8:
 		assert ob_x8.parts["lower"].polyphony == 4
 		assert ob_x8.parts["upper"].polyphony == 4
 
-		# The four is stated against the parts and not against the instrument, because the
-		# validator refuses both and the parts do not share a pool.
-		assert ob_x8.voice.polyphony is None
+		# The four is each half's and the eight the instrument's. The two parts exist only in
+		# Split mode, so the two figures answer two questions and the loader allows both.
+		assert ob_x8.voice.polyphony == 8
 		assert ob_x8.voice.polyphony_shared is False
+
+		assert {name: mode.label for name, mode in ob_x8.modes.items()} == {
+			"normal": "Normal", "split": "Split", "double": "Double"}
+		assert ob_x8.factory_mode is None
+		assert all(part.mode == "split" for part in ob_x8.parts.values())
+		assert list(ob_x8.parts_in("split")) == ["lower", "upper"]
+		assert not ob_x8.parts_in("normal")
+		assert not ob_x8.parts_in("double")
+
+		# Seven controls name a half - four to tell a cell's two numbers apart, three because
+		# the row's name holds one - and so read as Split mode's with it. The comment on the
+		# parts says no page puts them there.
+		halves = [control.name for control in ob_x8.controls.values() if control.part is not None]
+
+		assert len(halves) == 7
+		assert len(ob_x8.controls_in("split")) == 147
+		assert len(ob_x8.controls_in("normal")) == 140
+		assert len(ob_x8.controls_in("double")) == 140
 
 		said = prose_of("oberheim", "ob_x8")
 
 		assert "The Upper MIDI channel is automatically assigned as Lower channel +1" in said
-		assert "THIS FORMAT CANNOT SAY SO WHILE ALSO DESCRIBING THE SPLIT" in said
+		assert "EIGHT VOICES, IN EVERY MODE" in said
+		assert "ON ITS OWN CHANNEL A PROGRAM TAKES THE WHOLE KEYBOARD" in said
 
 	def test_the_two_split_parameters_with_two_addresses_each (self) -> None:
 		"""The maker prints both numbers in one ruled cell and marks the name (UPPER/LOWER).
@@ -15455,8 +15474,8 @@ class TestProtein:
 			" FORMAT FROM THE OTHER SIDE.**" in flat
 		assert "**IN THE OTHER THREE MODES ALL FOUR ANSWER ON THE ONE CHANNEL.**" in flat
 
-	def test_eight_voices_shared_which_the_ob_x8_could_not_say (self) -> None:
-		"""One figure is true here and would have been false there."""
+	def test_eight_voices_shared_where_the_ob_x8_has_four_to_a_half (self) -> None:
+		"""One figure is the whole answer here, where the OB-X8 needs two."""
 		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
 
 		assert protein.voice is not None
@@ -15471,13 +15490,14 @@ class TestProtein:
 		# **THE CONTRAST THAT MAKES THE FIGURE WORTH HAVING**, asserted against the sibling.
 		ob_x8 = pymidiinstrumentdefs.load("oberheim/ob_x8", [CORPUS])
 
-		assert ob_x8.voice.polyphony is None
+		assert ob_x8.voice.polyphony == 8
+		assert ob_x8.voice.polyphony_shared is False
 		assert all(part.polyphony == 4 for part in ob_x8.parts.values())
 
 		flat = " ".join(said.split())
 
-		assert "**That sentence is why this definition can carry a figure where" \
-			" `oberheim/ob_x8` could not**" in flat
+		assert "**That sentence is why one figure is the whole answer here, where" \
+			" `oberheim/ob_x8` needs two**" in flat
 
 	def test_the_specification_is_stale_and_the_changelog_dates_it (self) -> None:
 		"""One statement superseded, which is not two contradicting each other."""

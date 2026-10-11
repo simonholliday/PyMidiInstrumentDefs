@@ -275,8 +275,8 @@ parts:
     # ascending order repeatedly" (manual p. 18) and `Random Robin` is "Same as Round Robin, but in random order."
     # (manual p. 18), and Single Mode selects one by a button. **So a consumer that trusts
     # these channels without knowing the mode will address three layers that are not listening.**
-    # Where the OB-X8 at rank 70 could not state its polyphony because its parts were conditional,
-    # this instrument can: its voices are shared in every mode, which the next field records.
+    # Where the OB-X8's voices are four to each half in Split mode, and its eight stand beside
+    # those fours, this instrument's layers share theirs, which `voice.polyphony_shared` records.
     channel_offset: 0
     addressing: pitches
     receives: [notes, controls]
@@ -293,9 +293,9 @@ voice:
   # **EIGHT, SHARED, AND THE MANUAL SAYS THE SHARING OUT LOUD.** "8 voice polyphony"
   # (specifications p. 1) with "4
   # timbral layers" (specifications p. 1), and "Keep in mind that all 4 layers share the maximum
-  # of 8 voices." (manual p. 16). **That sentence is why this definition can carry a figure where
-  # `oberheim/ob_x8` could not**: its parts take four voices each in split mode and neither half
-  # can borrow, so a single figure would have been false there and is true here.
+  # of 8 voices." (manual p. 16). **That sentence is why one figure is the whole answer here,
+  # where `oberheim/ob_x8` needs two**: its parts take four voices each in split mode and neither
+  # half can borrow, so its eight stand beside two fours, and here a single figure says it all.
   polyphony: 8
   polyphony_shared: true
   # Three per layer, and two of the three are one voice: "Poly: The corresponding Layer uses all

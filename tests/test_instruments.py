@@ -1673,6 +1673,8 @@ class TestAftertouch:
 			"sequential/prophet_10": ("both", True),
 			"synthstrom_audible/deluge": ("both", True),
 			"udo_audio/super_6": ("both", True),
+			"waldorf/iridium_core": ("both", None),
+			"waldorf/iridium_mk2": ("both", None),
 		}
 
 
@@ -19683,7 +19685,7 @@ class TestIridiumMk2:
 
 		layer = mk2.parts["layer"]
 		assert (layer.count, layer.channel, layer.receives) == (4, "assigned", ("notes", "controls"))
-		assert (mk2.voice.polyphony, mk2.voice.polyphony_shared, mk2.voice.aftertouch) == (16, True, "poly")
+		assert (mk2.voice.polyphony, mk2.voice.polyphony_shared, mk2.voice.aftertouch) == (16, True, "both")
 		assert mk2.voice.velocity is not None
 		assert (mk2.voice.velocity.note_on, mk2.voice.velocity.note_off) == ("received", True)
 		assert mk2.voice.pitch_bend is not None and mk2.voice.pitch_bend.semitones == 12
@@ -19721,7 +19723,7 @@ class TestIridiumCore:
 
 		layer = core.parts["layer"]
 		assert (layer.count, layer.channel, layer.receives) == (2, "assigned", ("notes", "controls"))
-		assert (core.voice.polyphony, core.voice.polyphony_shared, core.voice.aftertouch) == (12, True, "poly")
+		assert (core.voice.polyphony, core.voice.polyphony_shared, core.voice.aftertouch) == (12, True, "both")
 		assert core.voice.velocity is not None
 		assert (core.voice.velocity.note_on, core.voice.velocity.note_off) == ("received", None)
 

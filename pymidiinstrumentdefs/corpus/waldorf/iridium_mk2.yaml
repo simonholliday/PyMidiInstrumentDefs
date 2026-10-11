@@ -275,8 +275,10 @@ voice:
     # `MIDI Velocity` and `MIDI Release Velocity` among the modulation sources (manual p. 220).
     note_on: received
     note_off: true
-  # Poly AT by default, Mono AT by choice (manual p. 167).
-  aftertouch: poly
+  # BOTH KINDS: polyphonic, with Mono AT folding it to one value (manual p. 167), and channel
+  # aftertouch as the MPE Z axis (manual p. 198). No page says it sends aftertouch, so
+  # `aftertouch_transmits` is not recorded - see the account.
+  aftertouch: both
   pitch_bend:
     # Per oscillator, -24 to +24, default +12 (manual p. 31).
     semitones: 12

@@ -6821,11 +6821,12 @@ class TestBlofeld:
 		"""Every row is accounted for: each left out is left out for a reason."""
 		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
 
-		assert len(blofeld.controls) == 112
+		# 112 numbers, eight of them written twice: for the Global channel and for a Multi part.
+		assert len(blofeld.controls) == 120
 		assert len(blofeld.groups) == 21
 
-		numbers = sorted(control.cc for control in blofeld.controls.values()
-			if control.cc is not None)
+		numbers = sorted({control.cc for control in blofeld.controls.values()
+			if control.cc is not None})
 
 		assert len(numbers) == 112, "every control here is reached by control change"
 
@@ -6890,6 +6891,23 @@ class TestBlofeld:
 
 		# And CC 38, the data entry LSB, is an oscillator's.
 		assert by_number[38].label == "Osc 2 FM"
+
+	def test_the_standard_controllers_are_written_for_the_global_channel_and_for_a_part (self) -> None:
+		"""The seven with an asterisk and sostenuto, part-less for Sound mode and twinned for Multi mode."""
+		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
+		eight = ["modulation_wheel", "breath_control", "foot_control", "channel_volume", "pan",
+			"sustain_pedal", "bank_select_lsb", "sostenuto"]
+
+		for name in eight:
+			base, part = blofeld.controls[name], blofeld.controls["part_" + name]
+
+			assert base.part is None, name
+			assert part.part == "part", name
+			assert (part.cc, part.label, part.direction) == (base.cc, base.label, base.direction), name
+
+		# Nothing else names a part. The sound parameters reach a part too, and are left part-less
+		# because the rule covers only the standard controllers.
+		assert sorted(n for n, c in blofeld.controls.items() if c.part) == sorted("part_" + n for n in eight)
 
 	def test_sixteen_parts_drawing_on_twenty_five_voices (self) -> None:
 		"""A ceiling the patch lowers, held once for the instrument rather than per part."""

@@ -65,6 +65,19 @@ source: >-
   are not. Nothing else in the file marks the distinction, because the format has no way
   to say it.
 
+  EIGHT STANDARD CONTROLLERS ARE WRITTEN TWICE, ONCE FOR THE GLOBAL CHANNEL AND ONCE FOR A MULTI
+  PART. In Sound mode the instrument answers on the Global menu's channel, which "Sets the basic
+  send and receive channel for the Blofeld." (p. 82), so a control naming no part describes
+  Sound mode. In Multi mode each part has a channel of its own, "used to send MIDI messages and
+  to receive MIDI messages for this Part" (p. 25). Three of the eight are named as reaching a
+  part: its settings take or ignore the modulation wheel and the sustain pedal (pp. 27, 28), and
+  the note on controller 7 speaks of "the Instruments that receive on this MIDI channel"
+  (p. 25). For breath, foot, pan, sostenuto and bank select LSB it is inferred from the part's
+  channel alone. So each of the eight - the seven with an asterisk, and sostenuto, which has none
+  and is no sound parameter either - has a twin keyed `part_` that names the part. **The sound
+  parameters reach a Multi part on its channel too**, subject to its Edits switch (p. 28); they
+  are left part-less only because the rule this follows covers the standard controllers.
+
   THIS INSTRUMENT CANNOT DO NRPN OR RPN, AND THE CHART IS WHY. Neither the manual nor
   Waldorf's System Exclusive specification mentions either, on any page of either. More
   than that, the chart gives away the six controller numbers the mechanism needs: CC 6,
@@ -83,7 +96,8 @@ source: >-
   "the Blofeld disables this Controller as Sound parameter Controller and uses it
   exclusively for one of the Ctrl W…Ctrl Z" (p. 85). The four are not controls here,
   because a number a player assigns is not a property of the model - the reading the
-  modwave's hundred assignable numbers got - but any of the 112 below can be switched off
+  modwave's hundred assignable numbers got - but any of the 104 sound parameters below can be
+  switched off
   by one. **And it breaks in one direction only**: "The Sound parameter is sent out as
   Controller but can’t be received as long as you don’t change Ctrl W…Ctrl Z to other MIDI
   Continuous Controller messages" (p. 85). So a panel that moves a knob, watches the
@@ -91,7 +105,7 @@ source: >-
   sending the same controller back does nothing.
 
   THE CHART IS NOT THE WHOLE PARAMETER SET, WHICH MATTERS BEFORE ANYBODY BUILDS ON IT. A
-  sound is 383 bytes over system exclusive against the 112 controllers here, and whole
+  sound is 383 bytes over system exclusive against the 112 controller numbers here, and whole
   sections of the instrument have no controller number at all: the sixteen modulation
   matrix slots, the four modifiers, the arpeggiator's step data, the program name and
   category, and every effect parameter but the two mix levels. The Global menu offers
@@ -297,6 +311,16 @@ controls:
   # only: no page says the Blofeld sends it, as none says a program change leaves the instrument.
   bank_select_lsb:           {label: Bank Select LSB, cc: 32, direction: receives, group: controllers}
   sostenuto:                 {label: Sostenuto, cc: 66, group: controllers}
+  # THE SAME EIGHT FOR A MULTI PART, on the part's own channel: see the account. The ones above
+  # name no part and are on the Global menu's channel, which is Sound mode's.
+  part_modulation_wheel:     {label: Modulation Wheel, cc: 1, part: part, group: controllers}
+  part_breath_control:       {label: Breath Control, cc: 2, part: part, group: controllers}
+  part_foot_control:         {label: Foot Control, cc: 4, part: part, group: controllers}
+  part_channel_volume:       {label: Channel Volume, cc: 7, part: part, group: controllers}
+  part_pan:                  {label: Pan, cc: 10, part: part, group: controllers}
+  part_sustain_pedal:        {label: Sustain Pedal, cc: 64, part: part, group: controllers}
+  part_bank_select_lsb:      {label: Bank Select LSB, cc: 32, direction: receives, part: part, group: controllers}
+  part_sostenuto:            {label: Sostenuto, cc: 66, part: part, group: controllers}
 
   # ARPEGGIATOR -------------------------------------------------
   arp_range:                 {label: Arp Range, cc: 12, range: [0, 9], group: arpeggiator}

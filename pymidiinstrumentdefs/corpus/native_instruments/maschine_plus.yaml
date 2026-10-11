@@ -261,12 +261,23 @@ groups:
 
 controls:
 
+  # **BOTH CONTROLS NAME THE SOUND, BECAUSE WHAT THEY MOVE IS A SOUND'S INSTRUMENT.** "Instrument
+  # Plug-ins can only be loaded in the first Plug-in slot of Sounds." (manual p. 86). Controller 64
+  # sets the Sampler's envelope Sustain, and the Sampler's MODWHEEL DESTINATION sets "how incoming
+  # MIDI data sent by the Modulation Wheel affects various parameters" (manual p. 98). No channel
+  # is a base for controllers: the one instrument-wide channel, MIDI Change's, takes notes and
+  # program changes for scenes (manual p. 60), and a Sound's or a Group's channel is given for
+  # notes (manual p. 166). The manual documents only notes for a Group.
+  # **AND THE SOUND IS THE FOCUSED ONE.** By default all MIDI data goes to the focused Sound of the
+  # focused Group (manual p. 162), so a controller reaches whichever Sound is in view; no page
+  # says one sent on a Sound's own note channel reaches that Sound instead.
+
   # Smart Strip ─────────────────────────────────────────────
   # THE MAKER NAMING THE PROTOCOL'S OWN MEANING RATHER THAN CLAIMING A NUMBER: "The Smart Strip
   # always controls the parameter that is assigned to the standard MIDI CC #1. This MIDI Continuous
   # Controller is reserved for the modulation wheel" (manual p. 43). So in Modulation mode the
   # strip is a modulation wheel, and controller 1 is what it moves.
-  modulation:                  {label: Modulation, cc: 1, group: smart_strip}
+  modulation:                  {label: Modulation, cc: 1, part: sound, group: smart_strip}
 
   # Sampler ─────────────────────────────────────────────────
   # **A CONTINUOUS PARAMETER ON A NUMBER THE SPECIFICATION DEFINES AS A SWITCH**, which the maker
@@ -277,4 +288,4 @@ controls:
   # because a player meets it as a surprise - a sustain pedal moving an envelope's sustain level.
   # Received only: the sentence is about what an external controller or keyboard can do to this
   # parameter, and no page says the instrument sends it.
-  sustain:                     {label: Sustain, cc: 64, direction: receives, group: sampler}
+  sustain:                     {label: Sustain, cc: 64, direction: receives, part: sound, group: sampler}

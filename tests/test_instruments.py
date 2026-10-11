@@ -11261,6 +11261,14 @@ class TestMaschinePlus:
 
 		assert "MIDI In/Out/Thru" in octa
 
+	def test_both_controls_name_the_sound (self) -> None:
+		"""What both move is a Sound's instrument, and no channel is a base for controllers. Part-less until 2026-10-11."""
+		maschine = pymidiinstrumentdefs.load("native_instruments/maschine_plus", [CORPUS])
+
+		assert {name: control.part for name, control in maschine.controls.items()} == {
+			"modulation": "sound", "sustain": "sound"}
+		assert "controls" not in (maschine.parts["group"].receives or ())
+
 
 class TestSuper6:
 

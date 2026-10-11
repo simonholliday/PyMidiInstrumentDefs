@@ -1083,13 +1083,18 @@ class TestTonverk:
 		"""Eight audio, four bus, three send FX and one mix, each with a channel of its own."""
 		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
 
-		assert list(tonverk.parts) == ["audio", "bus", "fx_send", "mix"]
-		assert [part.count for part in tonverk.parts.values()] == [8, 4, 3, 1]
-		assert sum(part.count for part in tonverk.parts.values()) == 16
-		assert all(part.is_assigned for part in tonverk.parts.values())
+		tracks = {key: part for key, part in tonverk.parts.items() if part.within is None}
 
-		# **ONLY THE AUDIO TRACKS TAKE NOTES**, because a note plays the active track's preset
-		# and only tracks 1 to 8 hold one.
+		assert list(tracks) == ["audio", "bus", "fx_send", "mix"]
+		assert [part.count for part in tracks.values()] == [8, 4, 3, 1]
+		assert sum(part.count for part in tracks.values()) == 16
+		assert all(part.is_assigned for part in tracks.values())
+
+		# And one part that is no track: the eight subtracks inside an audio track.
+		assert list(tonverk.parts) == ["audio", "bus", "fx_send", "mix", "subtrack"]
+
+		# **ONLY THE AUDIO TRACKS TAKE NOTES**, because a note plays a track's preset and only
+		# tracks 1 to 8 hold one.
 		assert tonverk.parts["audio"].takes("notes")
 
 		for key in ("bus", "fx_send", "mix"):
@@ -1132,22 +1137,43 @@ class TestTonverk:
 		assert "Two distinct numbers cannot both be SRC 1's knob H" in said
 
 	def test_the_subtrack_numbers_it_does_not_print_are_not_here (self) -> None:
-		"""49 rows against a `1-8` MSB is 392 numbers, and 343 of them are on no page."""
+		"""49 rows against a `1-8` MSB is 392 numbers, and 343 of them are on no page.
+
+		The 49 are carried once, on a part of eight inside each audio track, and the part's
+		`nrpn_msb` gives the other seven.  Until 2026-10-11 they sat on the audio part under
+		keys beginning `subtrack_1_`, and the rule was in words.
+		"""
 		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
 
-		subtracks = [key for key in tonverk.controls if key.startswith("subtrack_")]
+		part = tonverk.parts["subtrack"]
+
+		assert (part.within, part.count, part.nrpn_msb) == ("audio", 8, 1)
+		assert part.receives == ("controls",)
+		assert part.mode is None
+		assert not part.is_assigned
+
+		subtracks = [control for control in tonverk.controls.values() if control.part == "subtrack"]
 
 		assert len(subtracks) == 49
-		assert all(key.startswith("subtrack_1_") for key in subtracks)
+		assert all(control.name.startswith("subtrack_") for control in subtracks)
+		assert not any(key.startswith("subtrack_1_") for key in tonverk.controls)
+		assert tonverk.controls["subtrack_amp_pan"].nrpn == 138
 
-		# Every one of them is the first subtrack's, which is the MSB the printed range opens
+		# Every one of them gives the first subtrack's number, in the MSB the printed range opens
 		# with - so each number is findable on the page the definition cites.
-		for key in subtracks:
-			control = tonverk.controls[key]
-
+		for control in subtracks:
 			assert control.nrpn is not None
-			assert 128 <= control.nrpn < 256
-			assert control.label.startswith("Subtrack 1 ")
+			assert control.nrpn >> 7 == part.nrpn_msb
+			assert control.cc is None
+			assert not control.label.startswith("Subtrack")
+
+		# Eight to a track: the 392 numbers the appendix's rule makes, 49 of them printed.
+		assert len(subtracks) * part.count == 392
+
+		# The rule is OS 1.4.1's, on the maker's own release notes, read for the first time
+		# on 2026-10-11.
+		assert "release_notes" in tonverk.sources
+		assert tonverk.model.firmware == "1.4.1"
 
 		said = prose_of("elektron", "tonverk")
 

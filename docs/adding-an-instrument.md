@@ -696,7 +696,7 @@ parts:
   subtrack: {label: Subtrack, within: audio, count: 8, nrpn_msb: 1, receives: [controls]}
 
 controls:
-  amp_pan:  {label: AMP pan, nrpn: 138, part: subtrack}   # the first subtrack's, as printed
+  subtrack_amp_pan: {label: AMP pan, nrpn: 138, part: subtrack}   # the first subtrack's
 ```
 
 - **`nrpn_msb` is the first instance's MSB**, and each next instance takes the next, as

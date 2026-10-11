@@ -1,4 +1,4 @@
-# THIS MAKER ADDRESSES ONE INSTRUMENT TWO WAYS AT ONCE, AND ONLY ONE OF THEM CAN BE WRITTEN DOWN.
+# THIS MAKER ADDRESSES ONE INSTRUMENT TWO WAYS AT ONCE, AND EACH HAS A SHAPE OF ITS OWN HERE.
 # 242 controls out of an appendix of 74 controller numbers and 92 parameter numbers:
 #
 #   **ACROSS**, by the kind of track. The CC table prints a column for each of four - audio, bus,
@@ -13,17 +13,22 @@
 #   means: "1–8 = values control parameters for the eight separate subtracks (1–8)." (manual
 #   p. 123). So its 49 rows are 392 numbers - **and 343 of them are printed nowhere.**
 #
-# **THE SECOND IS NOT EXPANDED, AND THE REASON IS A GATE RATHER THAN A PREFERENCE.** Expanding it
-# was the first thing tried: 585 controls, every number distinct, nothing colliding. The citation
-# checker refused it, and was right to - it looks for every number a definition claims in the
-# documents that definition cites, and found 329 of them on no page. **The manual publishes a
-# range and a rule, not 392 numbers**, and a definition that listed them would be asserting what
-# nobody printed.
+# **THE SECOND IS A PART OF EIGHT AND NOT 392 CONTROLS.** Listing all of them was the first thing
+# tried: 585 controls, every number distinct, nothing colliding. The citation checker refused
+# it, and was right to - it looks for every number a definition claims in the documents that
+# definition cites, and found 329 of them on no page. **The manual publishes a range and a
+# rule, not 392 numbers**, and a definition that listed them would be asserting what nobody
+# printed.
 #
-# So one subtrack's set is carried, at the MSB the range's low end gives, and the labels say which
-# subtrack that is. **The other seven are the same LSBs with the MSB counted up** - stated here
-# because no field holds it. `nrpn_range` is the nearest thing the format has and it means a value
-# range rather than an address range, so it is not it. Raised rather than hidden.
+# So the 49 rows are carried once, on a `subtrack` part: eight to an audio track, on that track's
+# channel (`within: audio`), the first at MSB 1 (`nrpn_msb: 1`). Each control gives the first
+# subtrack's number, where the page's range opens, and **the other seven are the same LSBs with
+# the MSB counted up**, which the part now says. **That rule is OS 1.4.1's.** The maker's notes
+# for it list "MIDI NRPN control of parameters on subtracks 2–8 was mapped incorrectly."
+# (release_notes) among its fixes, so on OS 1.4.0 at least, subtracks 2 to 8 did not answer as
+# the table says; the notes do not say since when. Until 2026-10-11 no field held the rule: the
+# 49 sat on the audio part under keys beginning `subtrack_1_`, with labels to match, and the rule
+# was in words here.
 #
 # SIX NUMBERS NAME DIFFERENT PARAMETERS ON DIFFERENT KINDS OF TRACK, and they are the only ones
 # that genuinely conflict rather than being present here and absent there. CC 16 to 18 and 20 to
@@ -40,7 +45,8 @@
 #
 # THE DATA ENTRY KNOBS ARE THE OPEN QUESTION OF THIS MAKER'S FORMAT, AND THE MAKER NAMES THEM
 # GENERICALLY ITSELF.
-# Thirty-two of the controls below are `SRC 1`, `SRC 2`, `FX 1`, `FX 2` or `FLTR` data entry knobs
+# Seventy-two of the controls below, on forty controller numbers, are `SRC 1`, `SRC 2`, `FX 1`,
+# `FX 2` or `FLTR` data entry knobs
 # A to H, each marked `(machine dependent)` or `(SRC machine dependent)` by the appendix - so what
 # a number does depends on which machine the track is running, and the appendix publishes the slot
 # rather than the meanings. That is the standing answer to that question arrived at from the
@@ -54,25 +60,28 @@
 # likewise received, with a depth setting of its own - "Sets the amount of pitch bend data from
 # external MIDI devices that affects Tonverk." (manual p. 51) - and no figure anywhere for how far
 # it bends, so its fields would be invented. **Polyphony**: the play mode is per track, "Here, you
-# can set whether a preset is polyphonic or monophonic" (manual p. 50), and the only voice count
-# in the manual belongs to one source machine rather than to the instrument. And **system
-# exclusive**, which is not mentioned in any spelling on any of the 130 pages - a silence rather
-# than a checked absence.
+# can set whether a preset is polyphonic or monophonic" (manual p. 50), and the voice counts in
+# the manual belong to source machines rather than to the instrument: four of the seven give
+# one, and of the three that give none one sounds. And **system exclusive**, which is
+# not mentioned in any spelling on any of the 130 pages - a silence rather than a checked absence.
 #
-# AND THE MANUAL NEVER SAYS WHICH OS IT DESCRIBES. Its cover reads `Tonverk / User Manual` and
-# nothing else; no page carries a version. The OS is in the file's name and on the page that
-# serves it, which announced `Tonverk OS 1.4.1` (download_page) the same day. See `model`.
+# THE MANUAL SAYS WHICH OS IT DESCRIBES IN THE LAST LINE OF A COPYRIGHT NOTICE: "This manual for
+# Tonverk OS version 1.4.1 was last updated September 23, 2026." (manual p. 13). Its cover reads
+# `Tonverk / User Manual` and nothing else. **Until 2026-10-11 this file said no page carried a
+# version**, on a search for `OS 1.4` that the page's `OS version 1.4.1` does not answer to. See
+# `model`.
 
 definition: 1
 
 model:
   manufacturer: Elektron
   name: Tonverk
-  # **THE DOCUMENT DOES NOT STATE THIS AND THE EVIDENCE IS ITS NAME AND ITS DATE.** The manual
-  # prints no OS version on any of its 130 pages. Its file is named `..._OS1.4.1_...`, the
-  # downloads page lists it as "Tonverk User Manual - EN" (download_page) dated Sept 23, 2026,
+  # STATED BY THE MANUAL, in the last line of the copyright notice at the foot of an inside
+  # page: "This manual for Tonverk OS version 1.4.1 was last updated September 23, 2026."
+  # (manual p. 13). Its file's name agrees, `..._OS1.4.1_...`,
+  # the downloads page lists it as "Tonverk User Manual - EN" (download_page) dated Sept 23, 2026,
   # and the same page's Updates section announces "Tonverk OS 1.4.1" (download_page) on that same
-  # date. So the two were issued together, which is as close as this maker comes to saying it.
+  # date. **Until 2026-10-11 this comment said the document did not state its OS.**
   # **The survey this instrument was picked from recorded OS 1.4.0** and the page now offers
   # 1.4.1, so a reader who comes back to this will find a third. Checked 2026-10-05.
   firmware: "1.4.1"
@@ -87,8 +96,12 @@ source: >-
   EVERY NUMBER BELOW COMES FROM THAT APPENDIX, which is pp. 120-124 and three tables. D.1 gives 74
   controller numbers against four columns of track kind; D.2 gives 43 NRPNs for audio tracks, every
   MSB nought; D.3 gives 49 more whose MSB is the subtrack. `Notes/4606_extract_tonverk.py` reads
-  all three off the grid the publisher drew, and `Notes/4606_write_controls.py` turns them into the
-  block below.
+  all three off the grid the publisher drew, and `Notes/4606_write_controls.py` wrote the block
+  below as it stood until 2026-10-11; the subtrack rows' keys, labels and part were changed by
+  hand that day. **The appendix's one word on how the audio column bears on a track running the
+  Subtracks machine is a footnote** to its `Audio tracks*` heading, "* = Several of the Subtracks
+  SRC machines' parameters are controlled using NPRN values." (manual p. 120), in its spelling.
+  It does not say which of the audio column's numbers still act on such a track.
 
   **AND ONE FIGURE OUTSIDE THESE DOCUMENTS AGREES WITH THE READING IN A WAY WORTH RECORDING.**
   midi.guide lists this instrument at 435 NRPNs, which is exactly 49 times eight plus the 43 of
@@ -110,18 +123,32 @@ source: >-
   tracks. 8 Audio/MIDI tracks, 4 Bus and MIDI tracks, 3 Send FX tracks, and one Mix track."
   (manual p. 20). Each has a channel of its own: "TRACK/BUS/SEND/MIX CHANNEL selects the dedicated
   MIDI channel that is used to receive or send" (manual p. 76) parameter data for it, and set to
-  OFF a track neither receives nor sends. **There is a seventeenth channel besides** - "AUTO
+  OFF a track neither receives nor sends. The manual also says they are the tracks' own numbers,
+  "The MIDI channels dedicated to each of the tracks are the same as the track's number."
+  (manual p. 36). Choosing freely is new in 1.4.0, "It is now possible to freely select a MIDI
+  channel for each track." (release_notes), so p. 36 reads as where a track sits until it is
+  moved. No page calls that a default. **There is a seventeenth channel besides** - "AUTO
   CHANNEL selects the MIDI channel that will give access to the currently active track." (manual
   p. 77) - and the manual notes that the track sharing that channel then listens to nothing, which
   no field here can say.
 
-  NOTES GO TO WHICHEVER TRACK IS ACTIVE, NOT TO A TRACK OF THEIR OWN. "The 128 notes in the
+  TWO PAGES SAY WHERE A NOTE GOES, AND THEY DO NOT SAY THE SAME THING. "The 128 notes in the
   standard MIDI range (0-127) all trigger the preset of the active track" (manual p. 30) in its
-  chromatic variations. **And eight of those notes mean something else again on a track running
-  the Subtracks machine**: "The subtracks are triggered over MIDI using these note values: 60, 62,
-  64, 65, 67, 69, 71, and 72." (manual p. 30). So a note is a pitch or a subtrack selector
-  depending on the machine, which is the same shape as the eight MSBs below and is recorded in
-  prose because no field holds it.
+  chromatic variations, with no word on the channel. And "The presets can also be played
+  chromatically using an external MIDI device connected to Tonverk. The MIDI channels dedicated
+  to each of the tracks are the same as the track's number." (manual p. 36), which reads as a
+  note reaching the track whose channel carries it. The second is what the parts below record,
+  each audio track taking notes on its own channel. The first holds on the AUTO channel at
+  least: "If an external MIDI keyboard connected to Tonverk sends MIDI data on this channel, the
+  keyboard will control the active track." (manual p. 77). Either way a setting has to allow
+  it: "RECEIVE NOTES will, when active, enable playing Tonverk using an external MIDI
+  keyboard." (manual p. 76). **Until 2026-10-11 this account took the first page alone, and said
+  notes go to no track of their own.** **And eight of those notes mean something else again on
+  a track running the Subtracks machine**: "The subtracks are triggered over MIDI using these
+  note values: 60, 62, 64, 65, 67, 69, 71, and 72." (manual p. 30). So a note is a pitch or a
+  subtrack selector depending on the machine. The eight MSBs are the `subtrack` part below. The
+  eight notes stay in prose: the page lists them without pairing each to a subtrack, and a
+  part's note map is the whole part's and cannot give one note to one instance.
 
   THE DIRECTIONS ARE ALL SETTINGS AND ALL TWO-WAY. Clock: "CLOCK RECEIVE determines whether
   Tonverk responds to MIDI clock sent from external devices or not." (manual p. 76) and "CLOCK
@@ -138,14 +165,23 @@ source: >-
   where you can assign up to four parameters to the MIDI aftertouch command." (manual p. 52) - so
   the pitch bend section describes aftertouch, and what pitch bend's four assignable parameters
   are is stated nowhere. The misprinted CC 31 is the other one, above. A third is smaller: `not
-  availble` for available, twice on p. 51.
+  availble` for available, once on p. 50 and once on p. 51. And the appendix's footnote spells
+  NRPN `NPRN` (manual p. 120), while two of its rows drop the slash their neighbours print.
+
+  NUMBERED IN PRINT AND NOT AMONG THE CONTROLS BELOW: four controllers outside the appendix. The
+  track setup menu assigns parameters to "the MIDI mod wheel command (CC #1)" (manual p. 52) and
+  to "the MIDI breath controller command (CC #2)" (manual p. 52), and the 1.3.0 notes have
+  "Added support for MIDI sustain pedal (CC64) and MIDI sostenuto pedal (CC66)."
+  (release_notes). None of the four is in Appendix D, which is this file's map, and whether
+  they join it is an open question.
 
   NOT CARRIED: what each machine puts on each data entry knob. Appendix A runs thirty pages and
   names the parameters of every SRC and FX machine, and the MIDI appendix publishes the slots
-  rather than the meanings - `SRC 1 Data entry knob A (machine dependent)` and so on through 32 of
-  them. **That is the same shape as the Analog Rytm's 220 rows and gets the same answer**, with
-  one difference worth noting: this maker never publishes a number against a machine's parameter
-  at all, so there is nothing here to decline. The generic name is the only name printed.
+  rather than the meanings - `SRC 1 Data entry knob A (machine dependent)` and so on through 40
+  of them, 32 so marked and eight `(SRC machine dependent)`. **That is the same shape as the
+  Analog Rytm's 220 rows and gets the same answer**, with one difference worth noting: outside
+  the Subtracks machine's own table, this maker publishes no number against a machine's
+  parameter, so there is nothing here to decline. The generic name is the only name printed.
 
 sources:
   manual:
@@ -161,11 +197,11 @@ sources:
     # number and it is the file's page index - asserted on all five appendix pages - so a
     # citation needs no offset. The folio sits at y 802 and the appendix's tables print bare
     # numbers as high as y 746, which is how the one is kept out of the other.
-    # **The edition above is not stated in the document.** Its cover reads `Tonverk / User
-    # Manual` and no page carries a version; the OS is in the file's name and on the page that
-    # serves it. See `model`.
+    # **The edition above is the document's own**, from the last line of the copyright notice
+    # at the foot of p. 13. Its cover reads `Tonverk / User Manual` and nothing else. See `model`.
     # Appendix D, pp. 120-124, is the source of every number below. Everything else is cited for
-    # the structure, the settings and the four absences.
+    # the structure, the settings, the four absences, the document's own edition, and two
+    # controller numbers it prints outside the appendix.
     page_offset: 0
   download_page:
     kind: download_page
@@ -175,18 +211,40 @@ sources:
     sha256: 27d2f03ef1e7c244e0230d43d373eb2abe5ed5330ae6e5a41b7f9627110e2e64
     retrieved: 2026-10-05
     paginated: false
-    # Cited for what the manual does not say about itself - the OS it describes and the date it
-    # was issued - and for what Elektron offers besides: the OS itself, its release notes,
-    # wavetables, and a Japanese manual still at OS 1.00 from November 2025, **which describes a
-    # different instrument from this one** and is not read here. No separate MIDI implementation
-    # is offered, which is this maker's habit across all eleven of its instruments in this corpus.
+    # Cited for the day the manual and OS 1.4.1 were issued together, and for what Elektron
+    # offers besides: the OS itself, its release notes, wavetables, and a Japanese manual still
+    # at OS 1.00 from November 2025, **which describes a different instrument from this one** and
+    # is not read here. No separate MIDI implementation is offered, which is this maker's habit:
+    # none of the eleven other Elektrons in this corpus has one either.
     # The digest is of the extraction; the served bytes are saved beside it as `.html`.
+  release_notes:
+    kind: release_notes
+    title: Tonverk OS Release Notes
+    edition: "1.4.1"
+    dated: 2026-09-23
+    landing: "https://www.elektron.se/support-downloads/tonverk"
+    url: "https://www.elektron.se/release-notes/tonverk-os-release-notes"
+    sha256: 603fe963b4696d28d5d584f15290ac921636950e244d26a70b0260ca5aaf39b3
+    retrieved: 2026-10-11
+    paginated: false
+    # The downloads page links this and holds none of it, so it was not read until 2026-10-11.
+    # It lists the changes of every system from 1.0.1 to 1.4.1, and four entries are quoted in
+    # this file: the 1.4.1 fix to the subtracks' NRPNs, which the header quotes; the free choice
+    # of a track's channel in 1.4.0 and the two pedals in 1.3.0, which the source account quotes;
+    # and, among the fixes of 1.1.0, "The device did not handle NRPN data." (release_notes). The
+    # page says "Last updated Sept 23, 2026" (release_notes), which is the manual's own day.
+    #
+    # The sha256 is of the page's visible text; the page as served hashes to
+    # 358797ca956a22fa9a3bae0bd4c6503baf4804885a52ea55990d0d8a4129c375.
 
 midi:
   # Sixteen, and this instrument uses more of them at once than most: one for each of its sixteen
   # tracks, "TRACK/BUS/SEND/MIX CHANNEL selects the dedicated MIDI channel that is used to receive
   # or send" (manual p. 76), plus an AUTO channel for whichever track is active and a channel each
-  # for program change in and out. No page states a default for any of them.
+  # for program change in and out. A track sits on its own number until it is moved, as p. 36
+  # reads - "The MIDI channels dedicated to each of the tracks are the same as the track's
+  # number." (manual p. 36) - and no page calls that a default, nor states one for the other
+  # three.
   channels: [1, 16]
   # BOTH, AND EACH DIRECTION IS ITS OWN SWITCH: "CLOCK RECEIVE determines whether Tonverk responds
   # to MIDI clock sent from external devices or not." (manual p. 76) and "CLOCK SEND determines
@@ -203,8 +261,9 @@ midi:
     # **PATTERNS, NOT PRESETS**: "MIDI program change messages 0-127 will select pattern 1-128
     # (A01-H16) on Tonverk." (manual p. 30), which is eight banks of sixteen.
     presets: 128
-  # 92 of the 242 controls below are addressed by NRPN and by nothing else, and the appendix's
-  # own count is 435 once the subtracks are counted out - see the comment above the definition.
+  # 92 of the 242 controls below are addressed by NRPN and by nothing else, and counted out over
+  # the subtracks they come to 435, 43 and eight times 49, which the `subtrack` part's eight
+  # instances give - see the comment above the definition.
   # The maker names the two together as one switch -
   # "RECEIVE CC/NRPN will, when active, make it possible to control Tonverk's parameters from an
   # external MIDI device sending CC and NRPN data." (manual p. 76) - so `supported` is as far as
@@ -233,8 +292,16 @@ voice:
   # affects Tonverk." (manual p. 51) - and nothing anywhere says how far it bends, so the two
   # fields a `pitch_bend` block holds would both be guesses.
   # NOT RECORDED: polyphony. The play mode is a per-track setting - "Here, you can set whether a
-  # preset is polyphonic or monophonic" (manual p. 50) - and the only voice count in the manual
-  # belongs to one source machine rather than to the instrument.
+  # preset is polyphonic or monophonic" (manual p. 50) - and the voice counts in the manual are
+  # each a source machine's and not the instrument's. Four of the seven machines give one: "This
+  # machine is eight voice polyphonic." (manual p. 86) of the Single Player, the same words of
+  # the Multi Player (manual p. 88), "This machine is eight-voice polyphonic, one voice per
+  # subtrack." (manual p. 88) of Subtracks, and "Grainer is polyphonic, with up to eight voices"
+  # (manual p. 89). Of the three that give none, Wavefinder sounds, Shape "does not produce any
+  # sound" (manual p. 95) and runs only on bus and send FX tracks, and the MIDI machine plays
+  # other gear. **One voice per subtrack would be the `subtrack` part's own figure, and it
+  # stays in words**: that part claims no notes, and a figure on it would have the file say
+  # whether every part shares its voices, which no page does.
 
 parts:
   # THE SIXTEEN TRACKS, IN THE FOUR KINDS THE APPENDIX GIVES A COLUMN EACH: "The Tonverk sequencer
@@ -242,8 +309,8 @@ parts:
   # track." (manual p. 20). Every one has a channel of its own, chosen rather than derived, so all
   # four say `assigned`.
   #
-  # **ONLY THE AUDIO TRACKS TAKE NOTES**, because notes play the active track's preset and only
-  # tracks 1-8 hold one. The other three kinds are a bus, a send effect and the mixer: they take
+  # **ONLY THE AUDIO TRACKS TAKE NOTES**, because a note plays a track's preset and only tracks
+  # 1-8 hold one. The other three kinds are a bus, a send effect and the mixer: they take
   # controls and nothing else.
   audio:
     label: Audio track
@@ -270,6 +337,32 @@ parts:
     label: Mix track
     channel: assigned
     # One, and the only kind whose column in the appendix names the external inputs.
+    receives: [controls]
+
+  # THE EIGHT SUBTRACKS INSIDE AN AUDIO TRACK THAT RUNS THE SUBTRACKS MACHINE, which is what the
+  # appendix's last table is for: its column is headed "Audio tracks using the Subtracks SRC
+  # machine" (manual p. 123). "The Subtracks machine allows you to load eight samples" (manual
+  # p. 88), each "onto a separate subtrack on the sequencer" (manual p. 88) with settings of its
+  # own. They are on their track's channel and told apart by NRPN MSB: "1–8 = values control
+  # parameters for the eight separate subtracks (1–8)." (manual p. 123). So `within` names the
+  # audio part, `count` is eight to a track, and `nrpn_msb` is where the first one sits. The
+  # rule holds from OS 1.4.1, whose notes list the mapping of subtracks 2 to 8 among its fixes.
+  # **ONLY WHILE THE TRACK RUNS THAT MACHINE**, which stays in words: a mode here is the whole
+  # instrument's, and this is one track's. No page says what these numbers do on a track running
+  # anything else, nor which of the audio column's numbers still act on a track running this
+  # one. The machine's additional sequencer track, the supertrack, "controls the parameters on
+  # the FX pages and the two FX LFOs on the MOD pages" (manual p. 88), and the appendix gives
+  # it no numbers of its own.
+  # **`receives` lists controls, which is what the table gives, so a program asking whether a
+  # subtrack takes notes is told no. That is the address speaking and not the instrument.** A
+  # note does trigger a subtrack, by its number - 60, 62, 64, 65, 67, 69, 71 and 72, as the
+  # source account quotes - and a part's note map is the whole part's, so it cannot give one
+  # note to one instance.
+  subtrack:
+    label: Subtrack
+    within: audio
+    count: 8
+    nrpn_msb: 1
     receives: [controls]
 
 groups:
@@ -499,52 +592,54 @@ controls:
   mix_track_level:                            {label: "Track level", cc: 95, part: mix, group: mixer}
 
   # SUBTRACKS SRC MACHINE ---------------------------------------
-  subtrack_1_src_tune:                        {label: "Subtrack 1 SRC tune", nrpn: 144, part: audio, group: subtrack}
-  subtrack_1_src_play_mode:                   {label: "Subtrack 1 SRC play mode", nrpn: 145, part: audio, group: subtrack}
-  subtrack_1_src_start:                       {label: "Subtrack 1 SRC start", nrpn: 148, part: audio, group: subtrack}
-  subtrack_1_src_length:                      {label: "Subtrack 1 SRC length", nrpn: 149, part: audio, group: subtrack}
-  subtrack_1_src_loop_point:                  {label: "Subtrack 1 SRC loop point", nrpn: 150, part: audio, group: subtrack}
-  subtrack_1_fltr_env_reset:                  {label: "Subtrack 1 FLTR env reset", nrpn: 173, part: audio, group: subtrack}
-  subtrack_1_fltr_env_delay:                  {label: "Subtrack 1 FLTR env delay", nrpn: 174, part: audio, group: subtrack}
-  subtrack_1_amp_mode:                        {label: "Subtrack 1 AMP mode", nrpn: 176, part: audio, group: subtrack}
-  subtrack_1_amp_env_reset:                   {label: "Subtrack 1 AMP env reset", nrpn: 177, part: audio, group: subtrack}
-  subtrack_1_fltr_attack:                     {label: "Subtrack 1 FLTR attack", nrpn: 198, part: audio, group: subtrack}
-  subtrack_1_fltr_decay:                      {label: "Subtrack 1 FLTR decay", nrpn: 199, part: audio, group: subtrack}
-  subtrack_1_fltr_sustain:                    {label: "Subtrack 1 FLTR sustain", nrpn: 200, part: audio, group: subtrack}
-  subtrack_1_fltr_release:                    {label: "Subtrack 1 FLTR release", nrpn: 201, part: audio, group: subtrack}
-  subtrack_1_fltr_frequency:                  {label: "Subtrack 1 FLTR frequency", nrpn: 202, part: audio, group: subtrack}
-  subtrack_1_fltr_resonance:                  {label: "Subtrack 1 FLTR resonance", nrpn: 203, part: audio, group: subtrack}
-  subtrack_1_fltr_type:                       {label: "Subtrack 1 FLTR type", nrpn: 204, part: audio, group: subtrack}
-  subtrack_1_fltr_env_depth:                  {label: "Subtrack 1 FLTR env depth", nrpn: 205, part: audio, group: subtrack}
-  subtrack_1_fltr_base:                       {label: "Subtrack 1 FLTR base", nrpn: 206, part: audio, group: subtrack}
-  subtrack_1_fltr_width:                      {label: "Subtrack 1 FLTR width", nrpn: 207, part: audio, group: subtrack}
-  subtrack_1_fltr_frequency_spread:           {label: "Subtrack 1 FLTR frequency spread", nrpn: 208, part: audio, group: subtrack}
-  subtrack_1_amp_attack:                      {label: "Subtrack 1 AMP attack", nrpn: 211, part: audio, group: subtrack}
-  subtrack_1_amp_hold:                        {label: "Subtrack 1 AMP hold", nrpn: 212, part: audio, group: subtrack}
-  subtrack_1_amp_decay:                       {label: "Subtrack 1 AMP decay", nrpn: 213, part: audio, group: subtrack}
-  subtrack_1_amp_sustain:                     {label: "Subtrack 1 AMP sustain", nrpn: 214, part: audio, group: subtrack}
-  subtrack_1_amp_release:                     {label: "Subtrack 1 AMP release", nrpn: 215, part: audio, group: subtrack}
-  subtrack_1_amp_overdrive:                   {label: "Subtrack 1 AMP overdrive", nrpn: 216, part: audio, group: subtrack}
-  subtrack_1_amp_pan:                         {label: "Subtrack 1 AMP pan", nrpn: 138, part: audio, group: subtrack}
-  subtrack_1_amp_volume:                      {label: "Subtrack 1 AMP volume", nrpn: 217, part: audio, group: subtrack}
-  subtrack_1_voice_lfo1_speed:                {label: "Subtrack 1 VOICE LFO1 speed", nrpn: 230, part: audio, group: subtrack}
-  subtrack_1_voice_lfo1_multiplier:           {label: "Subtrack 1 VOICE LFO1 multiplier", nrpn: 231, part: audio, group: subtrack}
-  subtrack_1_voice_lfo1_fade:                 {label: "Subtrack 1 VOICE LFO1 fade", nrpn: 232, part: audio, group: subtrack}
-  subtrack_1_voice_lfo1_waveform:             {label: "Subtrack 1 VOICE LFO1 waveform", nrpn: 234, part: audio, group: subtrack}
-  subtrack_1_voice_lfo1_start_phase:          {label: "Subtrack 1 VOICE LFO1 start phase / VOICE LFO1 slew", nrpn: 235, part: audio, group: subtrack}
-  subtrack_1_voice_lfo1_trig_mode:            {label: "Subtrack 1 VOICE LFO1 trig mode", nrpn: 236, part: audio, group: subtrack}
-  subtrack_1_voice_lfo1_depth:                {label: "Subtrack 1 VOICE LFO1 depth", nrpn: 237, part: audio, group: subtrack}
-  subtrack_1_voice_lfo2_speed:                {label: "Subtrack 1 VOICE LFO2 speed", nrpn: 238, part: audio, group: subtrack}
-  subtrack_1_voice_lfo2_multiplier:           {label: "Subtrack 1 VOICE LFO2 multiplier", nrpn: 239, part: audio, group: subtrack}
-  subtrack_1_voice_lfo2_fade:                 {label: "Subtrack 1 VOICE LFO2 fade", nrpn: 240, part: audio, group: subtrack}
-  subtrack_1_voice_lfo2_waveform:             {label: "Subtrack 1 VOICE LFO2 waveform", nrpn: 242, part: audio, group: subtrack}
-  subtrack_1_voice_lfo2_start_phase_voice_lfo2_slew: {label: "Subtrack 1 VOICE LFO2 start phase VOICE LFO2 slew", nrpn: 243, part: audio, group: subtrack}
-  subtrack_1_voice_lfo2_trig_mode:            {label: "Subtrack 1 VOICE LFO2 trig mode", nrpn: 244, part: audio, group: subtrack}
-  subtrack_1_voice_lfo2_depth:                {label: "Subtrack 1 VOICE LFO2 depth", nrpn: 245, part: audio, group: subtrack}
-  subtrack_1_mod_env_attack:                  {label: "Subtrack 1 MOD ENV attack", nrpn: 246, part: audio, group: subtrack}
-  subtrack_1_mod_env_decay:                   {label: "Subtrack 1 MOD ENV decay", nrpn: 247, part: audio, group: subtrack}
-  subtrack_1_mod_env_sustain:                 {label: "Subtrack 1 MOD ENV sustain", nrpn: 248, part: audio, group: subtrack}
-  subtrack_1_mod_env_release:                 {label: "Subtrack 1 MOD ENV release", nrpn: 249, part: audio, group: subtrack}
-  subtrack_1_mod_env_reset:                   {label: "Subtrack 1 MOD ENV reset", nrpn: 250, part: audio, group: subtrack}
-  subtrack_1_mod_env_delay:                   {label: "Subtrack 1 MOD ENV delay", nrpn: 251, part: audio, group: subtrack}
-  subtrack_1_mod_env_depth:                   {label: "Subtrack 1 MOD ENV depth", nrpn: 253, part: audio, group: subtrack}
+  # Table D.3 (manual pp. 123-124), carried once for the `subtrack` part. Each `nrpn` is the first
+  # subtrack's, MSB 1, and the part's eight instances take MSB 1 to 8. The labels are the table's.
+  subtrack_src_tune:                          {label: "SRC tune", nrpn: 144, part: subtrack, group: subtrack}
+  subtrack_src_play_mode:                     {label: "SRC play mode", nrpn: 145, part: subtrack, group: subtrack}
+  subtrack_src_start:                         {label: "SRC start", nrpn: 148, part: subtrack, group: subtrack}
+  subtrack_src_length:                        {label: "SRC length", nrpn: 149, part: subtrack, group: subtrack}
+  subtrack_src_loop_point:                    {label: "SRC loop point", nrpn: 150, part: subtrack, group: subtrack}
+  subtrack_fltr_env_reset:                    {label: "FLTR env reset", nrpn: 173, part: subtrack, group: subtrack}
+  subtrack_fltr_env_delay:                    {label: "FLTR env delay", nrpn: 174, part: subtrack, group: subtrack}
+  subtrack_amp_mode:                          {label: "AMP mode", nrpn: 176, part: subtrack, group: subtrack}
+  subtrack_amp_env_reset:                     {label: "AMP env reset", nrpn: 177, part: subtrack, group: subtrack}
+  subtrack_fltr_attack:                       {label: "FLTR attack", nrpn: 198, part: subtrack, group: subtrack}
+  subtrack_fltr_decay:                        {label: "FLTR decay", nrpn: 199, part: subtrack, group: subtrack}
+  subtrack_fltr_sustain:                      {label: "FLTR sustain", nrpn: 200, part: subtrack, group: subtrack}
+  subtrack_fltr_release:                      {label: "FLTR release", nrpn: 201, part: subtrack, group: subtrack}
+  subtrack_fltr_frequency:                    {label: "FLTR frequency", nrpn: 202, part: subtrack, group: subtrack}
+  subtrack_fltr_resonance:                    {label: "FLTR resonance", nrpn: 203, part: subtrack, group: subtrack}
+  subtrack_fltr_type:                         {label: "FLTR type", nrpn: 204, part: subtrack, group: subtrack}
+  subtrack_fltr_env_depth:                    {label: "FLTR env depth", nrpn: 205, part: subtrack, group: subtrack}
+  subtrack_fltr_base:                         {label: "FLTR base", nrpn: 206, part: subtrack, group: subtrack}
+  subtrack_fltr_width:                        {label: "FLTR width", nrpn: 207, part: subtrack, group: subtrack}
+  subtrack_fltr_frequency_spread:             {label: "FLTR frequency spread", nrpn: 208, part: subtrack, group: subtrack}
+  subtrack_amp_attack:                        {label: "AMP attack", nrpn: 211, part: subtrack, group: subtrack}
+  subtrack_amp_hold:                          {label: "AMP hold", nrpn: 212, part: subtrack, group: subtrack}
+  subtrack_amp_decay:                         {label: "AMP decay", nrpn: 213, part: subtrack, group: subtrack}
+  subtrack_amp_sustain:                       {label: "AMP sustain", nrpn: 214, part: subtrack, group: subtrack}
+  subtrack_amp_release:                       {label: "AMP release", nrpn: 215, part: subtrack, group: subtrack}
+  subtrack_amp_overdrive:                     {label: "AMP overdrive", nrpn: 216, part: subtrack, group: subtrack}
+  subtrack_amp_pan:                           {label: "AMP pan", nrpn: 138, part: subtrack, group: subtrack}
+  subtrack_amp_volume:                        {label: "AMP volume", nrpn: 217, part: subtrack, group: subtrack}
+  subtrack_voice_lfo1_speed:                  {label: "VOICE LFO1 speed", nrpn: 230, part: subtrack, group: subtrack}
+  subtrack_voice_lfo1_multiplier:             {label: "VOICE LFO1 multiplier", nrpn: 231, part: subtrack, group: subtrack}
+  subtrack_voice_lfo1_fade:                   {label: "VOICE LFO1 fade", nrpn: 232, part: subtrack, group: subtrack}
+  subtrack_voice_lfo1_waveform:               {label: "VOICE LFO1 waveform", nrpn: 234, part: subtrack, group: subtrack}
+  subtrack_voice_lfo1_start_phase:            {label: "VOICE LFO1 start phase / VOICE LFO1 slew", nrpn: 235, part: subtrack, group: subtrack}
+  subtrack_voice_lfo1_trig_mode:              {label: "VOICE LFO1 trig mode", nrpn: 236, part: subtrack, group: subtrack}
+  subtrack_voice_lfo1_depth:                  {label: "VOICE LFO1 depth", nrpn: 237, part: subtrack, group: subtrack}
+  subtrack_voice_lfo2_speed:                  {label: "VOICE LFO2 speed", nrpn: 238, part: subtrack, group: subtrack}
+  subtrack_voice_lfo2_multiplier:             {label: "VOICE LFO2 multiplier", nrpn: 239, part: subtrack, group: subtrack}
+  subtrack_voice_lfo2_fade:                   {label: "VOICE LFO2 fade", nrpn: 240, part: subtrack, group: subtrack}
+  subtrack_voice_lfo2_waveform:               {label: "VOICE LFO2 waveform", nrpn: 242, part: subtrack, group: subtrack}
+  subtrack_voice_lfo2_start_phase_voice_lfo2_slew: {label: "VOICE LFO2 start phase VOICE LFO2 slew", nrpn: 243, part: subtrack, group: subtrack}
+  subtrack_voice_lfo2_trig_mode:              {label: "VOICE LFO2 trig mode", nrpn: 244, part: subtrack, group: subtrack}
+  subtrack_voice_lfo2_depth:                  {label: "VOICE LFO2 depth", nrpn: 245, part: subtrack, group: subtrack}
+  subtrack_mod_env_attack:                    {label: "MOD ENV attack", nrpn: 246, part: subtrack, group: subtrack}
+  subtrack_mod_env_decay:                     {label: "MOD ENV decay", nrpn: 247, part: subtrack, group: subtrack}
+  subtrack_mod_env_sustain:                   {label: "MOD ENV sustain", nrpn: 248, part: subtrack, group: subtrack}
+  subtrack_mod_env_release:                   {label: "MOD ENV release", nrpn: 249, part: subtrack, group: subtrack}
+  subtrack_mod_env_reset:                     {label: "MOD ENV reset", nrpn: 250, part: subtrack, group: subtrack}
+  subtrack_mod_env_delay:                     {label: "MOD ENV delay", nrpn: 251, part: subtrack, group: subtrack}
+  subtrack_mod_env_depth:                     {label: "MOD ENV depth", nrpn: 253, part: subtrack, group: subtrack}

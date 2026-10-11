@@ -85,8 +85,13 @@ source: >-
   bend range's span, the channel and its default, and the mode that selects page 2. **And it gives
   one thing no chart could**: "Although the JU-06A is four-note polyphonic, you can increase the
   polyphony by using a MIDI cable to connect two or more JU-06A units and turning Chain mode on."
-  (manual p. 2), where the fifth note and those after it leave by MIDI OUT for the next unit. The
-  sound list names 64 patches, which is exactly what the chart's program change range reaches.
+  (manual p. 2), where the fifth note and those after it leave by MIDI OUT for the next unit.
+  **The sound list names 128 patches, not 64, as this file said until 2026-10-11**: two lists of
+  64 headed `60` and `106`, which the manual explains as "64 sounds taken from the JUNO-60 (8
+  patches × 8 banks) and another 64 sounds taken from the JUNO-106" (manual p. 1), chosen between
+  by a panel switch: "Switches between JUNO-60 sounds and JUNO-106 sounds." (manual p. 1). The
+  chart's program change range, 0 - 63, reaches 64 of them at a time, and no page says it can
+  reach the other side's.
 
   NOT RECORDED: aftertouch, a cross in both columns of both charts. System exclusive, likewise.
   The note range is 0 to 127 on page 1 and is recorded; page 2's two narrower ranges are notes
@@ -131,9 +136,9 @@ sources:
     url: "https://static.roland.com/assets/media/pdf/JU-06A_Sound_List_e01_W.pdf"
     sha256: 7769ae29ba3381d9051cf468f04e4ad1cced21a5e39892ea81cc0192b18bc9d5
     retrieved: 2026-10-06
-    # One page naming 64 patches as eight banks of eight, `1-1` through `8-8`. Cited for the
-    # count alone, which is exactly what the chart's program change range reaches - so two
-    # documents agree about it and neither says the other's number.
+    # One page naming 128 patches in two lists of 64 headed `60` and `106`, each eight banks of
+    # eight, `1-1` through `8-8`. Cited for the count, which is twice what the chart's program
+    # change range reaches. Until 2026-10-11 this file read only the first list.
     page_offset: 0
   manuals_page:
     kind: download_page
@@ -169,8 +174,10 @@ midi:
     # A range rather than a mark, in both columns: 0 - 63.
     receives: true
     sends: true
-    # SIXTY-FOUR, AND TWO DOCUMENTS AGREE WITHOUT EITHER CITING THE OTHER. The chart's program
-    # change range is 0 - 63, and the sound list names 64 patches as eight banks of eight.
+    # SIXTY-FOUR AT A TIME, OF 128. The chart's program change range is 0 - 63, and the sound
+    # list names 128 patches, 64 for each side of the panel's 60/106 switch - see the account.
+    # Carried as 64, the number a program change reaches, and doubted here, since the field
+    # counts what the instrument has. Until 2026-10-11 this said the two documents agreed on 64.
     presets: 64
   # A cross in both columns of the chart's System Exclusive row, on both of its pages.
   sysex: false

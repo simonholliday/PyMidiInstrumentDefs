@@ -4290,13 +4290,17 @@ class TestJU06A:
 		# module never sends a number it would not understand coming back.
 		assert not [control for control in module if control.direction == "transmits"]
 
-	def test_two_documents_agree_about_the_patch_count_without_citing_each_other (self) -> None:
-		"""The chart's program change range is 0-63 and the sound list names 64 patches."""
+	def test_program_change_reaches_64_of_its_128_patches (self) -> None:
+		"""The chart's range is 0-63 and the sound list names 128, 64 for each side of a switch.
+
+		Until 2026-10-11 the file read only the sound list's first 64 and said the two agreed.
+		"""
 		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
 
 		assert ju.midi.program_change is not None
 		assert ju.midi.program_change.presets == 64
 		assert "sound_list" in ju.sources
+		assert "The sound list names 128 patches" in " ".join((ju.source or "").split())
 
 	def test_four_voices_in_three_modes_and_a_bend_range_with_no_start (self) -> None:
 		"""All from the manual, which is the only document that gives any of them."""

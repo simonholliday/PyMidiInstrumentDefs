@@ -16,7 +16,7 @@ paraphrase of the maker's sentence rather than the maker's sentence.
 **What a pass means, and what it does not.**  A pass means the cited page carries the
 words.  It does not mean the quotation is apt, that the page says what the definition
 concludes from it, or that anything is missing.  Nor does it look at a quotation with no
-page beside it, since there is nothing to check it against.
+locator beside it, since there is nothing to check it against.
 
 Four things make the comparison about the words rather than the typesetting, and each is
 there because a correct quotation failed without it:
@@ -69,17 +69,31 @@ skipped.**  Each of those three read as complete while being silent, which is wo
 either checking or refusing, and the comment on ``QUOTED`` records a fourth of the same
 shape from before any of them.
 
-**And a page is read twice before a quotation is called absent.**  ``pypdf`` turns some
-makers' ordinary hyphens into an ``x`` - ``nonxregistered`` for ``non-registered`` - and
+**And a page is read twice before a quotation is called absent**, and so is a whole document
+where the locator names no page, wherever the second extractor is there to ask.  ``pypdf``
+turns some makers' ordinary hyphens into an ``x`` - ``nonxregistered`` for
+``non-registered`` - and
 since ``squash()`` folds hyphens away on purpose, a hyphen *dropped* costs nothing while a
 hyphen become a letter is the one thing the folding cannot absorb.  So a quotation the first
 reading cannot find is looked for again in a second extractor's reading of the same page,
 run in a subprocess on the system Python.  One it finds is on the page it cites and passes,
 and the disagreement is printed, because a page two extractors read differently is worth
-knowing about whichever of them is right.
+knowing about whichever of them is right.  Where the second extractor is not installed, or
+gives nothing, the report says so of a quotation located without a page that it calls absent:
+it had one reading of the document it was looked for in.
 
-It exits non-zero if any quotation is not on the page it cites, if any locator cannot be
-read, or if any locator names a source its definition does not have.
+**A document with no pages has places in it all the same, and two more shapes of locator
+name them.**  ``(os_updates, #243)`` names a source with no pages and then an entry in it, and
+is looked for in that source; what follows the comma is the writer's note and is not checked.
+``(15.6)`` is a number alone, a section's or a release's, and names no document, so the passage
+is looked for in every document the definition cites that could be read, and the report says
+which holds it.  Both used to read as no locator at all, and two definitions reported nothing
+to check while holding quotations located one of these two ways.
+
+It exits non-zero if any quotation is not on the page it cites, not in the source it names or,
+where it gives a number alone, in none of the documents cited when all of them could be read;
+if any locator cannot be read; or if a page locator names a source its definition does not
+have.
 
 **The last two became failures the moment they reached nought**, which was the only moment it
 could be done for nothing.  A convention that is reported and not enforced is one that
@@ -158,10 +172,12 @@ QUOTED = re.compile(r"[“\"]([^”\"]{12,})[”\"][\s*_]*\((?=[^)]*pp?\.\s*\d)(
 # and counted, which is the loud failure this task was about.
 PAIR = re.compile(r"(?:([a-z][a-z0-9_]*),?\s+)?pp?\.\s*([\d,\s-]+)")
 
-# There is deliberately no second "is this page-shaped" test anywhere below.  `QUOTED`'s
-# lookahead is the only place that decides, so a bare source key like `(product_page)` never
-# reaches `read_locator()` at all and cannot be mistaken for a locator this tool failed to
-# read.  A guard repeating that test would always pass, and would suggest a case it catches.
+# There is deliberately no second "is this page-shaped" test on the way to `read_locator()`.
+# `QUOTED`'s lookahead is the only place that decides, so a bare source key like
+# `(product_page)` never reaches it at all and cannot be mistaken for a locator this tool
+# failed to read.  A guard repeating that test would always pass, and would suggest a case it
+# catches.  `PAGE_SHAPED` below asks the same question in the same words for the coverage
+# figures and for the place locators, which must leave a page citation to this pattern.
 
 # The other shape a locator takes, for a document with no pages to cite: the source's own
 # key, as in `"polyphony up to 24 voices" (product_page)`.  A key followed by a page is the
@@ -169,6 +185,51 @@ PAIR = re.compile(r"(?:([a-z][a-z0-9_]*),?\s+)?pp?\.\s*([\d,\s-]+)")
 # locator and is the one worth checking.
 # The emphasis markers are allowed here for the same reason as in `QUOTED` above.
 BY_SOURCE = re.compile(r"[“\"]([^”\"]{12,})[”\"][\s*_]*\(([a-z][a-z0-9_]*)\)")
+
+# **TWO MORE SHAPES, FOR A DOCUMENT WITH NO PAGES THAT STILL HAS PLACES IN IT.**  A maker's
+# website of numbered sections, or a list of release notes, has no page to cite, and a
+# definition quoting one says where in it instead: `"..." (os_updates, #243)` names the source
+# and then the entry, and `"..." (15.6)` gives a number and no source at all.  Neither is a
+# page and neither is a bare key, so both read as no locator, and `teenage_engineering/op_1`
+# reported nothing to check while holding twelve quotations located one of these two ways.
+#
+# The first is looked for in the source it names, exactly as a bare key is.  **What follows
+# the comma is the writer's note of where and is not checked**: this tool can no more turn to
+# an entry than to a section.  The second names no document, so the passage is looked for in
+# **every** document the definition cites that this tool holds and can read, and the report
+# says which holds it.  That is a weaker claim than a page and still worth having: it says the
+# passage is in a document cited here, and which.  The number is as often a release's as a
+# section's - `(1.55D)` is an OS version heading a list of fixes - so the report says number.
+#
+# **BOTH ARE NARROW ON PURPOSE, SO THAT PROSE IN BRACKETS IS STILL NOT A LOCATOR.**
+#
+# - The key is one of the definition's own, **of a source with no pages**, and **a comma
+#   follows it**.  `(manual paraphrased)` is an aside that happens to begin with a key.
+#   `(manual, page 42)` is a page citation mistyped, and reading it as a place would pass it
+#   on a search of the whole manual without ever turning to page 42.  Both are left in the
+#   no-locator figure, where they can be seen.
+# - What follows the comma is not page-shaped, or it is the paged form and `QUOTED`'s.
+# - A number alone has **a dot in it, or a word for section before it**: `15.6`, `1.55D`,
+#   `v1.0.6`, `section 4`, `§ 4`.  A bare `(16)`, `(2025)` or `(5V)` is a channel, a year or a
+#   voltage far more often than a section, and a forgotten `p.` besides, so none is read.
+#   **A dotted number is read whatever it measures**, because `(1.01)` and `(1.55D)` are
+#   releases here and `(0.5)` and `(3.3V)` have their shape: a passage followed by one of
+#   those is looked for like any other, and found if it is a quotation.
+#
+# Each was first written wider - any text after a key, any digits at all - and each wider
+# form failed a run on an aside or passed a mistyped page.
+#
+# **AND THESE TWO ARE FOUND BY PAIRING THE QUOTE MARKS, NOT BY A PATTERN** - see
+# `placed_quotations()`.  `QUOTED` and `BY_SOURCE` can each say in the pattern what the
+# brackets must hold, which narrows the false pairing of prose between two quotations with
+# the bracket that opens the second.  A place depends on the definition's own keys and is told
+# apart afterwards, so a pattern for it would have to take any bracket at all - and then
+# `"..." (guide) and the heading "(10.4) Sync"` reads the words between the two quotations as
+# a third, located `(10.4)`, and fails the run on prose.  It was written that way once, and
+# that is what it did.  #4172.
+SOURCE_THEN = re.compile(r"([a-z][a-z0-9_]*)\s*,\s*\S.*")
+NUMBERED = re.compile(
+	r"(?:(?:section|sec\.)\s+|§\s*)\d+(?:\.\d+)*[A-Za-z]?|v?\d+(?:\.\d+)+[A-Za-z]?", re.IGNORECASE)
 
 # **WHY A LOCATOR THIS TOOL CANNOT READ IS NOW REPORTED RATHER THAN SKIPPED.**
 #
@@ -279,6 +340,44 @@ def read_again (path: pathlib.Path, file_page: int) -> str | None:
 		return None
 
 	return done.stdout if done.returncode == 0 else None
+
+
+SECOND_READING_WHOLE = """
+import sys
+
+import fitz
+
+sys.stdout.write(chr(10).join(page.get_text() for page in fitz.open(sys.argv[1])))
+"""
+
+
+def read_whole_again (path: pathlib.Path) -> str | None:
+
+	"""A whole document as the second extractor reads it, or nothing at all.
+
+	For a quotation that names no page: one located by a source key or by a number alone is
+	looked for in a whole document, and `pypdf`'s reading of that document can lose it just
+	as its reading of one page can.  Nothing for a text file, which is read as it is and has
+	no second reading to have, and nothing where the extractor is not installed, fails, or
+	returns no text at all - which `check()` says aloud, since an absence then rests on one
+	reading.
+
+	Not cached here.  `check()` asks once for each document of a definition and keeps the
+	answer, squashed, for as long as that definition is being checked.
+	"""
+
+	if path.suffix.lower() != ".pdf":
+		return None
+
+	try:
+		done = subprocess.run(
+				[SECOND_READER, "-c", SECOND_READING_WHOLE, str(path)],
+				capture_output = True, text = True, timeout = 600)
+
+	except (OSError, subprocess.SubprocessError):
+		return None
+
+	return done.stdout if done.returncode == 0 and done.stdout.strip() else None
 
 
 def squash (text: str) -> str:
@@ -503,6 +602,98 @@ def named_quotations (text: str, keys: typing.Iterable[str]) -> list[tuple[str, 
 		for quotation, where in BY_SOURCE.findall(flowed(text)) if where in known]
 
 
+def place_named (
+		locator: str,
+		known: typing.Collection[str],
+		paged: typing.Collection[str] = ()) -> tuple[str | None, str]:
+
+	"""What kind of place a locator names, where it is one this tool cannot turn to.
+
+	``("source", key)`` for one of the definition's source keys, a comma, and more;
+	``("number", locator)`` for a section or version number alone; and ``(None, "")`` for
+	anything else: a page, a bare key, or prose in brackets.
+
+	``paged`` is the keys whose documents have pages.  A key among them followed by a place
+	is not read, because a document with pages is cited by its page: ``(manual, page 42)``
+	is a mistyped page citation, and a search of the whole manual would pass it unturned.
+	"""
+
+	inside = " ".join(locator.split())
+
+	if PAGE_SHAPED.search(inside) or inside in known:
+		return None, ""
+
+	then = SOURCE_THEN.fullmatch(inside)
+
+	if then is not None and then.group(1) in known and then.group(1) not in paged:
+		return "source", then.group(1)
+
+	if NUMBERED.fullmatch(inside):
+		return "number", inside
+
+	return None, ""
+
+
+def placed_quotations (
+		text: str,
+		keys: typing.Iterable[str],
+		paged: typing.Collection[str] = ()) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
+
+	"""Quotations located by a place rather than a page: in a named source, or by a number alone.
+
+	Two lists.  The first is ``(quotation, source key)`` for a locator that names one of this
+	definition's sources and then says where in it, as ``(os_updates, #243)`` does; it is
+	checked exactly as a bare key is.  The second is ``(quotation, locator)`` for a locator
+	that is a section or version number and nothing else, as ``(15.6)`` is; it names no
+	document, so the passage is looked for in all of them.
+
+	**Found by pairing the quote marks in order, over the prose with its code spans taken
+	out, exactly as ``uncovered()`` does** - same text, same pairing, same test of what is a
+	place.  So the two cannot disagree: a passage this finds is one that function calls
+	located, and a passage with a place after it is never reported there as having no
+	locator.  And only what lies between an opening mark and its closing mark is ever a
+	quotation, which a pattern run over the whole file cannot promise.
+
+	What that costs is what it costs ``uncovered()``, four things:
+
+	- a file whose marks do not pair gives nothing here, which ``check()`` says aloud;
+	- a passage in curly marks is not seen;
+	- a passage inside backticks is code and is passed over, which is the point of the
+	  backticks - **and a backtick that is never closed turns each later code span inside
+	  out**, so that prose between two later spans is passed over and an example inside one
+	  is read as a quotation, which nothing in the report says;
+	- a code span inside a quoted passage is cut out of it before it is looked for, so
+	  ``"press the `PRG` button"`` is looked for without its middle and not found.
+	"""
+
+	flat = quotable(text)
+
+	if len(QUOTE_MARK.findall(flat)) % 2:
+		return [], []
+
+	known = set(keys)
+	positions = list(QUOTE_MARK.finditer(flat))
+
+	in_source: list[tuple[str, str]] = []
+	numbered: list[tuple[str, str]] = []
+
+	for opening, closing in zip(positions[::2], positions[1::2]):
+		quotation = flat[opening.end():closing.start()]
+		after = LOCATOR_AFTER.match(flat[closing.end():])
+
+		if after is None or len(quotation) < FLOOR:
+			continue
+
+		kind, named = place_named(after.group(1), known, paged)
+
+		if kind == "source":
+			in_source.append((quotation, named))
+		elif kind == "number":
+			numbered.append((quotation, named))
+
+	return in_source, numbered
+
+
 def unreadable_locators (text: str) -> list[tuple[str, str]]:
 
 	"""Every quotation whose locator looks like a page citation this tool cannot read.
@@ -646,7 +837,10 @@ def odd_quote_marks (text: str) -> bool:
 	return len(QUOTE_MARK.findall(quotable(text))) % 2 == 1
 
 
-def uncovered (text: str, keys: typing.Iterable[str]) -> tuple[list[str], list[str]]:
+def uncovered (
+		text: str,
+		keys: typing.Iterable[str],
+		paged: typing.Collection[str] = ()) -> tuple[list[str], list[str]]:
 
 	"""The quoted passages this tool never looked at, and why, by pairing the marks in order.
 
@@ -683,7 +877,8 @@ def uncovered (text: str, keys: typing.Iterable[str]) -> tuple[list[str], list[s
 
 		located = after is not None and (
 			PAGE_SHAPED.search(after.group(1)) is not None
-			or after.group(1).strip() in known)
+			or after.group(1).strip() in known
+			or place_named(after.group(1), known, paged)[0] is not None)
 
 		if located and len(quotation) < FLOOR:
 			short.append(quotation)
@@ -722,7 +917,7 @@ def with_pages (held: list[Document]) -> list[Document]:
 
 class Tally (typing.NamedTuple):
 
-	"""What one definition's check came to.  Every field counts quotations but one.
+	"""What one definition's check came to.  Every field counts quotations but two.
 
 	**The third figure used to add two different things together.**  A definition with
 	nothing to check returned 1, meaning one definition, and a definition whose documents
@@ -735,19 +930,21 @@ class Tally (typing.NamedTuple):
 	Every field defaults to nought so that a running total starts at ``Tally()``.
 	"""
 
-	# On the page they cite, or inside the source they name.
+	# On the page they cite, inside the source they name, or - where the locator is a number
+	# alone - in one of the documents cited.
 	passed: int = 0
 
-	# Not there, which is the only thing that fails the run.
+	# Not there.  This, an unreadable locator and a misnamed source are what fail the run.
 	missing: int = 0
 
 	# Counted in `passed` as well, because the page does carry the words: these are the
 	# ones only the second extractor could find.  A figure above nought says two readings
-	# of one page differ, which is worth knowing whichever is right.
+	# of one page, or of one whole document, differ, which is worth knowing whichever is right.
 	disagreed: int = 0
 
 	# They cite a page or a source, and no document that could hold it could be read: a
-	# scan, or a manual nobody has put in the library.
+	# scan, or a manual nobody has put in the library.  One located by a number alone is
+	# here too where it is in no document that was read and another cited could not be.
 	unchecked: int = 0
 
 	# Their locator looks like a page citation and this tool cannot read it.
@@ -757,8 +954,10 @@ class Tally (typing.NamedTuple):
 	# the file.  **These were collected and never printed** until #4475.
 	misnamed: int = 0
 
-	# **IN DEFINITIONS, NOT QUOTATIONS**, and the only field that is: one if this
-	# definition quotes nothing with a locator at all, nought otherwise.
+	# **IN DEFINITIONS, NOT QUOTATIONS**, one of the two fields that are: one if this
+	# definition quotes nothing with a locator at all, nought otherwise.  Nought too where
+	# its marks do not pair: a place locator is found by pairing them, so nobody knows that
+	# it has none, and `unpairable` counts it instead.
 	nothing_to_check: int = 0
 
 	# Quoted passages of `FLOOR` characters or more with no locator at all, which this tool
@@ -785,8 +984,15 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 	definition = pymidiinstrumentdefs.load_file(path)
 	held, absent = documents(definition, index)
 	body = path.read_text(encoding = "utf-8")
+	sources = definition.sources or {}
+
+	# A document with pages is cited by its page, so a key followed by a place is read only
+	# for one without.  See `place_named()`.
+	paged = {key for key, source in sources.items() if source.paginated}
+
 	found = quotations(body)
-	named = named_quotations(body, (definition.sources or {}))
+	in_source, numbered = placed_quotations(body, sources, paged)
+	named = named_quotations(body, sources) + in_source
 	unreadable = unreadable_locators(body)
 
 	# **Computed before any of the early returns below and carried into every one of them.**
@@ -794,7 +1000,7 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 	# coverage figure that only appeared on the path where checking happened would miss the
 	# cases it exists for.
 	unpairable = odd_quote_marks(body)
-	unlocated, short = ([], []) if unpairable else uncovered(body, (definition.sources or {}))
+	unlocated, short = ([], []) if unpairable else uncovered(body, sources, paged)
 
 	coverage = {
 		"no_locator": len(unlocated),
@@ -809,7 +1015,8 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 
 	if unpairable:
 		print(f"    its prose holds an ODD NUMBER OF QUOTE MARKS, so this tool cannot pair "
-			f"them and says nothing about what it did not check here")
+			f"them: no locator that names a place and not a page was looked for, and it "
+			f"says nothing about what it did not check here")
 
 	# Said whether or not anything else is wrong, because the point of the figure is that
 	# these passages were in no figure at all.
@@ -835,13 +1042,23 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 		for quotation, locator in unreadable:
 			print(f"        ({locator}): {quotation[:88]}")
 
-	if not found and not named:
+	if not found and not named and not numbered:
+		# A place locator is found by pairing the marks.  Where they do not pair nobody
+		# looked for one, so this is not known to be a definition with nothing to check.
+		if unpairable:
+			print(f"    no quotation in it cites a page or a source by its key alone")
+
+			return Tally(unreadable = len(unreadable), **coverage)
+
 		print(f"    no quotation in it cites a page or a source, so there is nothing to check")
+
 		return Tally(unreadable = len(unreadable), nothing_to_check = 1, **coverage)
 
 	if not held:
-		print(f"    {len(found) + len(named)} quotations cite a source and none could be read")
-		return Tally(unchecked = len(found) + len(named), unreadable = len(unreadable), **coverage)
+		print(f"    {len(found) + len(named) + len(numbered)} quotations cite a source and "
+			f"none could be read")
+		return Tally(unchecked = len(found) + len(named) + len(numbered),
+			unreadable = len(unreadable), **coverage)
 
 	print(f"    {len(held)} document(s): " + ", ".join(
 		f"{d.name} [{len(d.pages)} sheets, offset {offsets(d.source)}"
@@ -986,33 +1203,156 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 	# A quotation that names a source rather than a page is looked for in the whole of that
 	# document, which is what `paginated: false` means: there is no page to turn to.
 	by_name = {document.name: document for document in held}
+	wholes: dict[str, str] = {}
+
+	def whole_of (document: Document) -> str:
+
+		"""The whole of a held document, squashed, and read once however often it is asked for."""
+
+		if document.name not in wholes:
+			wholes[document.name] = squash("\n".join(document.pages))
+
+		return wholes[document.name]
+
+	second_wholes: dict[str, str | None] = {}
+	one_reading: set[str] = set()
+
+	def second_reading_holds (document: Document, parts: list[str]) -> bool:
+
+		"""Whether the other extractor's reading of the whole document carries every part."""
+
+		if document.name not in second_wholes:
+			again = read_whole_again(document.path)
+			second_wholes[document.name] = None if again is None else squash(again)
+
+			# A PDF the second extractor gave nothing for has had one reading, and an
+			# absence resting on it is said to.  A text file is read as it is.
+			if again is None and document.path.suffix.lower() == ".pdf":
+				one_reading.add(document.name)
+
+		again_whole = second_wholes[document.name]
+
+		return again_whole is not None and all(part in again_whole for part in parts)
+
+	# **BEFORE CALLING ONE OF THESE ABSENT, ASK THE OTHER EXTRACTOR, AS THE PAGED CHECK DOES.**
+	# A whole document is one `pypdf` reading as surely as one page is, and #4483's hyphen
+	# turned into an `x` is lost the same way wherever it is looked for.
+	disagreed_whole: list[tuple[str, str]] = []
 	elsewhere_missing: list[tuple[str, str]] = []
+	named_unread: list[tuple[str, str]] = []
 	named_passed = 0
 
 	for quotation, key in named:
 		named_document = by_name.get(key)
 
+		# The key is one of this definition's own, or it would not be here, so a document
+		# that is not held is one that could not be read: not in the library, or a scan.
+		# **That is unchecked, not wrong**, which is what a page cited in it gets too.  It
+		# used to be reported as `NOT IN` the source, the wording for a passage looked for
+		# and not found, about a document nobody had opened.
 		if named_document is None:
-			elsewhere_missing.append((quotation, key))
+			named_unread.append((quotation, key))
 			continue
 
-		whole = squash("\n".join(named_document.pages))
+		whole = whole_of(named_document)
 
 		# An empty document makes every quotation look absent, so it is this tool's fault
 		# before it is a finding.  `documents()` has already dropped a scan, so reaching
 		# here with nothing to search means something else is wrong.
 		assert whole, f"{key} read as empty, which is a bug in this tool and not a finding"
 
-		if all(part in whole for part in pieces(quotation)):
+		parts = pieces(quotation)
+
+		if all(part in whole for part in parts):
+			named_passed += 1
+		elif second_reading_holds(named_document, parts):
+			disagreed_whole.append((quotation, key))
 			named_passed += 1
 		else:
 			elsewhere_missing.append((quotation, key))
 
-	if named:
-		print(f"    {named_passed} of {len(named)} quotations that name a source are in it")
+	if len(named) > len(named_unread):
+		print(f"    {named_passed} of {len(named) - len(named_unread)} quotations that name a "
+			f"source are in it")
+
+	if named_unread:
+		print(f"    {len(named_unread)} name a source that could not be read, so they are "
+			f"unchecked:")
+
+		for quotation, key in named_unread:
+			print(f"        ({key}): {quotation[:88]}")
 
 	for quotation, key in elsewhere_missing:
 		print(f"\n      NOT IN {key}: {quotation[:120]}")
+
+	# A quotation located by a number alone names no document, so it is looked for in every
+	# one this definition cites that could be read, and the report says which holds it.
+	holding: list[tuple[str, str, list[str]]] = []
+	nowhere: list[tuple[str, str]] = []
+	perhaps_unread: list[tuple[str, str]] = []
+
+	for quotation, locator in numbered:
+		parts = pieces(quotation)
+		holders = [document.name for document in held
+			if all(part in whole_of(document) for part in parts)]
+
+		if not holders:
+			holders = [document.name for document in held if second_reading_holds(document, parts)]
+
+			if holders:
+				disagreed_whole.append((quotation, ", ".join(holders)))
+
+		# **In no document that was read is not in no document cited.**  Where one of this
+		# definition's sources could not be read, the passage may be in that one, and
+		# nothing here names the document it is credited to.  So it is unchecked, exactly as
+		# it would be had the locator named the unread source.
+		if holders:
+			holding.append((quotation, locator, holders))
+		elif absent:
+			perhaps_unread.append((quotation, locator))
+		else:
+			nowhere.append((quotation, locator))
+
+	if numbered:
+		print(f"    {len(holding)} of {len(numbered)} quotations located by a section or version "
+			f"number alone are in a document cited here, which is a weaker check than a page"
+			+ (":" if holding else ""))
+
+		for quotation, locator, holders in holding:
+			print(f"        ({locator}) in {', '.join(holders)}: {quotation[:76]}")
+
+	if perhaps_unread:
+		print(f"    {len(perhaps_unread)} more are in no document that could be read, and "
+			f"{len(absent)} cited here could not be, so they are unchecked:")
+
+		for quotation, locator in perhaps_unread:
+			print(f"        ({locator}): {quotation[:88]}")
+
+	if disagreed_whole:
+		print(f"    {len(disagreed_whole)} of those located without a page were found only by "
+			f"the second extractor, so the document carries the words and pypdf "
+			f"{pypdf.__version__} reads it differently:")
+
+		for quotation, in_document in disagreed_whole:
+			print(f"        {in_document}: {quotation[:84]}")
+
+	for quotation, locator in nowhere:
+		print(f"\n      IN NO DOCUMENT CITED, located ({locator}): {quotation[:110]}")
+
+	# The caveat the paged check prints, for the same reason: an absence the second
+	# extractor was never asked about, or could not answer, rests on one reading.  Said of
+	# the documents an absence was looked for in and of no other: a passage credited to a
+	# text file is not made doubtful by a PDF beside it.
+	rests_on_one = {key for _, key in elsewhere_missing if key in one_reading}
+
+	if nowhere:
+		rests_on_one |= one_reading
+
+	if rests_on_one:
+		print(f"\n          {', '.join(sorted(rests_on_one))} read with pypdf {pypdf.__version__} "
+			f"alone, the second extractor giving nothing, and that is one reading of a "
+			f"document rather than the document: if a quotation crosses a hyphen, check what "
+			f"is printed before changing it (#4483)")
 
 	# A locator naming a source the definition does not have.  The loop above declines to
 	# fall back to searching every document, which is right - a page number that happens to
@@ -1025,10 +1365,10 @@ def check (name: str, path: pathlib.Path, index: dict[str, pathlib.Path]) -> Tal
 			f"{', '.join(sorted(definition.sources or {})) or 'none'}")
 
 	return Tally(
-			passed = passed + named_passed,
-			missing = len(missing) + len(elsewhere_missing),
-			disagreed = len(disagreed),
-			unchecked = unchecked,
+			passed = passed + named_passed + len(holding),
+			missing = len(missing) + len(elsewhere_missing) + len(nowhere),
+			disagreed = len(disagreed) + len(disagreed_whole),
+			unchecked = unchecked + len(named_unread) + len(perhaps_unread),
 			unreadable = len(unreadable),
 			misnamed = len(misnamed),
 			**coverage)
@@ -1174,7 +1514,7 @@ def main (argv: list[str]) -> int:
 			unpairable_in.append(name)
 
 	print(f"\n{total.passed} quotations check out across {len(wanted)} definition(s); "
-		f"{total.missing} are not on the page they cite; "
+		f"{total.missing} are not on the page or in the document they cite; "
 		f"{total.unchecked} could not be checked")
 
 	# Said as its own sentence rather than folded into the figures above, because it is a
@@ -1185,8 +1525,8 @@ def main (argv: list[str]) -> int:
 
 	if total.disagreed:
 		print(f"{total.disagreed} of those were found only by the second extractor, so two "
-			f"readings of one page differ - counted above as checking out, because the page "
-			f"does carry the words")
+			f"readings of one page or document differ - counted above as checking out, because "
+			f"it does carry the words")
 
 	if total.misnamed:
 		print(f"{total.misnamed} quotations name a source their definition does not have")

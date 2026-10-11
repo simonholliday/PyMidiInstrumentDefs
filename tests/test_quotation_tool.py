@@ -10,10 +10,13 @@ because a **correct** quotation failed without it, and a tool that reports a cor
 citation as wrong is worse than no tool, because its output stops being read.
 """
 
+import hashlib
 import importlib.util
 import os
 import pathlib
 import typing
+
+import pytest
 
 
 def load_tool () -> typing.Any:
@@ -193,6 +196,519 @@ class TestAQuotationThatNamesItsSourceInsteadOfAPage:
 		assert paged == ["something on a page"]
 		assert len(named) == 2
 		assert not set(paged) & set(named), "a quotation was counted by both checks"
+
+
+class TestALocatorThatNamesAPlaceAndNotAPage:
+
+	"""A document with no pages still has places in it, and a definition cites them.
+
+	`teenage_engineering/op_1` rests on a website of numbered sections and a list of release
+	notes, so its locators are `(15.6)` and `(os_updates, #243)`. Neither is a page and
+	neither is a bare key, so the checker read both as no locator and reported nothing to
+	check for a file with twelve quotations in it.
+	"""
+
+	BODY = (
+		"definition: 1\n"
+		"model: {name: X}\n"
+		"source: >-\n"
+		'  The notes say "the identity reply now reflects the family" (os_updates, #243), the\n'
+		'  guide says "no sync is transmitted from the unit" (10.4) and "in beat match it leads"\n'
+		'  (section 10.5), a fix reads "messages were sometimes not sent" (1.55D), and one more\n'
+		'  is "something printed on a real page" (os_updates p. 3).\n'
+		"controls:\n"
+		"  one:\n"
+		'    # "a note in a comment about it" (os_updates, 1.1.0).\n'
+		"    cc: 70\n"
+	)
+
+	KEYS = ("os_updates", "guide")
+
+	def test_a_key_followed_by_a_place_names_that_source (self) -> None:
+		"""What follows the key is the writer's note of where, and the source is still named."""
+		in_source, _ = tool.placed_quotations(self.BODY, self.KEYS)
+
+		assert in_source == [
+			("the identity reply now reflects the family", "os_updates"),
+			("a note in a comment about it", "os_updates"),
+		]
+
+	def test_a_section_number_alone_names_no_document (self) -> None:
+		"""So it comes back with its locator, to be looked for in every document cited."""
+		_, numbered = tool.placed_quotations(self.BODY, self.KEYS)
+
+		assert numbered == [
+			("no sync is transmitted from the unit", "10.4"),
+			("in beat match it leads", "section 10.5"),
+			("messages were sometimes not sent", "1.55D"),
+		]
+
+	def test_a_key_followed_by_a_page_is_left_to_the_paged_check (self) -> None:
+		"""The page is the more precise locator, so the paged check keeps it."""
+		in_source, numbered = tool.placed_quotations(self.BODY, self.KEYS)
+
+		assert "something printed on a real page" not in [q for q, _ in in_source + numbered]
+		assert [q for q, _, _ in tool.quotations(self.BODY)] == ["something printed on a real page"]
+
+	def test_prose_in_brackets_is_still_not_a_locator (self) -> None:
+		"""An aside, a description of a document, and a key this definition does not have."""
+		for aside in ("our own words", "product page", "setting 0.10", "midi_impl, #4",
+				"release notes, column 3 under the v1.0.6 heading"):
+			body = f'source: >-\n  It says "a long enough phrase here" ({aside}).\n'
+
+			assert tool.placed_quotations(body, self.KEYS) == ([], []), aside
+
+	def test_an_aside_that_begins_with_a_key_is_not_a_locator_without_its_comma (self) -> None:
+		"""`manual` and `guide` are keys in most definitions and ordinary words in a sentence."""
+		for aside in ("guide paraphrased", "guide and os_updates", "os_updates heading",
+				"guide: 10.4"):
+			body = f'source: >-\n  It says "a long enough phrase here" ({aside}).\n'
+
+			assert tool.placed_quotations(body, self.KEYS) == ([], []), aside
+			assert tool.uncovered(body, self.KEYS)[0] == ["a long enough phrase here"], aside
+
+	def test_a_bare_number_is_not_a_section (self) -> None:
+		"""A channel, a controller, a year and a voltage sit in brackets far oftener than a section.
+
+		Each was read as a section by the first form of this, which then failed the run for a
+		passage that quoted nothing, and counted `"Cutoff" (74)` as a quotation too short to
+		check.
+		"""
+		for aside in ("16", "2", "74", "127", "2025", "5V", "2x", "section4"):
+			body = f'source: >-\n  It says "a long enough phrase here" ({aside}), and "Cutoff" ({aside}).\n'
+
+			assert tool.placed_quotations(body, self.KEYS) == ([], []), aside
+			assert tool.uncovered(body, self.KEYS) == (["a long enough phrase here"], []), aside
+
+	def test_a_number_with_a_dot_or_a_word_for_section_is_read (self) -> None:
+		"""A release's number as readily as a section's, which is why the report says number."""
+		for place in ("15.6", "1.55D", "v1.0.6", "1.1.17", "section 4", "Section 10.5",
+				"sec. 3", "§ 4", "§4"):
+			body = f'source: >-\n  It says "a long enough phrase here" ({place}).\n'
+
+			assert tool.placed_quotations(body, self.KEYS) == (
+				[], [("a long enough phrase here", place)]), place
+			assert tool.uncovered(body, self.KEYS) == ([], []), place
+
+	def test_a_place_in_a_document_with_pages_is_not_read (self) -> None:
+		"""A document with pages is cited by its page.
+
+		`(guide, page 42)` is a page citation mistyped. Read as a place, it passed on a search
+		of the whole guide while the correctly written `(guide p. 42)` beside it failed.
+		"""
+		for locator in ("guide, page 42", "guide, 42", "guide, section 4"):
+			body = f'source: >-\n  It says "a long enough phrase here" ({locator}).\n'
+
+			assert tool.placed_quotations(body, self.KEYS, paged = {"guide"}) == ([], []), locator
+			assert tool.uncovered(body, self.KEYS, paged = {"guide"})[0] \
+				== ["a long enough phrase here"], locator
+
+			# And the same words after the key of a document with no pages are a place in it.
+			assert tool.placed_quotations(body, self.KEYS) == (
+				[("a long enough phrase here", "guide")], []), locator
+
+	def test_a_quotation_that_begins_with_a_bracket_is_still_found (self) -> None:
+		"""The marks are paired in order, so the bracket inside the passage is part of it."""
+		body = (
+			"source: >-\n"
+			'  One says "the first thing it says" (os_updates) and then a range,\n'
+			'  "(OFF, 1-127) is the range" (15.6).\n')
+
+		assert tool.placed_quotations(body, self.KEYS) == (
+			[], [("(OFF, 1-127) is the range", "15.6")])
+
+	def test_prose_between_two_quotations_is_never_a_quotation (self) -> None:
+		"""Even where the second one begins with a bracket that reads as a place.
+
+		A pattern run over the whole text takes the words from one closing mark to the next
+		opening one, sees `(10.4)` after them, and looks for prose in the maker's documents.
+		That failed a run on a correct file, with nothing in it the writer could correct.
+		"""
+		for opening in ("(10.4) Sync and tempo", "(v2.1) adds a wrap setting",
+				"(section 4) of the guide", "(os_updates, #243) reads"):
+			body = (
+				"source: >-\n"
+				'  It says "no sync is transmitted from the unit" (guide) and then the heading\n'
+				f'  "{opening}" comes next.\n')
+
+			assert tool.placed_quotations(body, self.KEYS) == ([], []), opening
+			assert tool.named_quotations(body, self.KEYS) == [
+				("no sync is transmitted from the unit", "guide")], opening
+			assert tool.uncovered(body, self.KEYS)[0] == [opening], opening
+
+	def test_a_backticked_example_of_either_shape_is_code_and_is_passed_over (self) -> None:
+		"""Which is what the backticks are for, and what the coverage figures already do."""
+		body = (
+			"source: >-\n"
+			"  The form is `\"the maker's own sentence\" (guide, #243)` or, with a number alone,\n"
+			"  `\"the maker's own sentence\" (15.6)`.\n")
+
+		assert tool.placed_quotations(body, self.KEYS) == ([], [])
+		assert tool.uncovered(body, self.KEYS) == ([], [])
+
+	def test_a_quoted_yaml_value_is_not_a_quotation_whatever_follows_it (self) -> None:
+		"""A title in quote marks is YAML's, and the comment under it may open with a bracket."""
+		body = (
+			"sources:\n"
+			"  guide:\n"
+			'    title: "OP-1 user guide, section 15"\n'
+			"    # (15.6) is the section the whole definition turns on\n"
+			'    url: "https://example.invalid/guide"\n'
+			"    # (os_updates, #243) is where the other half is\n")
+
+		assert tool.placed_quotations(body, self.KEYS) == ([], [])
+
+	def test_a_code_span_inside_the_brackets_leaves_the_passage_unlocated_once (self) -> None:
+		"""Read with the span in, it was checked in its source and reported as unlocated too."""
+		body = 'source: >-\n  It says "no sync is transmitted from the unit" (guide, `10.4`).\n'
+
+		assert tool.placed_quotations(body, self.KEYS) == ([], [])
+		assert tool.uncovered(body, self.KEYS)[0] == ["no sync is transmitted from the unit"]
+
+	def test_marks_that_do_not_pair_give_nothing_here_as_they_give_no_coverage_figure (self) -> None:
+		"""Pairing an odd number of marks in order would pair every one after the stray wrongly."""
+		body = (
+			"source: >-\n"
+			'  It says "words that are quoted from it" (10.4), and one unclosed " mark.\n')
+
+		assert tool.odd_quote_marks(body)
+		assert tool.placed_quotations(body, self.KEYS) == ([], [])
+
+	def test_the_locator_can_be_folded_and_emphasised (self) -> None:
+		"""A comment wraps where it wraps, and a quotation is emphasised in the house style."""
+		body = (
+			"controls:\n"
+			"  one:\n"
+			'    # **"a note in a comment about it"** (os_updates,\n'
+			'    # 1.1.0), and "the next one in that comment"\n'
+			"    # (section 10.5).\n"
+			"    cc: 70\n")
+
+		assert tool.placed_quotations(body, self.KEYS) == (
+			[("a note in a comment about it", "os_updates")],
+			[("the next one in that comment", "section 10.5")])
+
+	def test_neither_is_reported_as_having_no_locator_any_more (self) -> None:
+		"""They are checked now, so counting them as unlocated would count them twice."""
+		unlocated, _ = tool.uncovered(self.BODY, self.KEYS)
+
+		assert unlocated == []
+
+		# And an aside after a quotation still leaves it unlocated.
+		body = 'source: >-\n  It says "a long enough phrase here" (our own words).\n'
+
+		assert tool.uncovered(body, self.KEYS)[0] == ["a long enough phrase here"]
+
+	def test_every_passage_is_in_exactly_one_list (self) -> None:
+		"""A page, a bare key, a key with a place, a number alone, and no locator at all.
+
+		Five answers, and each quoted passage of twelve characters or more gets exactly one.
+		"""
+		body = self.BODY.replace('(10.4)', '(guide)').replace(
+			"controls:", '  And "words of our own about it" (an aside).\ncontrols:')
+		paged = [q for q, _, _ in tool.quotations(body)]
+		named = [q for q, _ in tool.named_quotations(body, self.KEYS)]
+		in_source, numbered = tool.placed_quotations(body, self.KEYS)
+		unlocated, short = tool.uncovered(body, self.KEYS)
+
+		assert named == ["no sync is transmitted from the unit"]
+		assert unlocated == ["words of our own about it"]
+		assert short == []
+
+		everywhere = paged + named + [q for q, _ in in_source + numbered] + unlocated
+
+		assert sorted(everywhere) == sorted(set(everywhere)), "a passage is in two lists"
+		assert sorted(everywhere) == sorted([
+			"the identity reply now reflects the family",
+			"no sync is transmitted from the unit",
+			"in beat match it leads",
+			"messages were sometimes not sent",
+			"something printed on a real page",
+			"a note in a comment about it",
+			"words of our own about it",
+		])
+
+
+class TestCheckingAPlaceAgainstDocumentsOnDisk:
+
+	"""`check()` itself, on a definition and a library of text files written for the test.
+
+	No maker's document is needed for these: a `.txt` is a document with no pages, which is
+	the kind of document the two place locators are for. What is tested is what the report
+	says and which figure a quotation lands in, because every defect found in this part of
+	the tool was there and not in the patterns.
+	"""
+
+	GUIDE = "10.4 Sync\nIn this mode no sync is transmitted from the unit at all.\n"
+	NOTES = "#243\nThe identity reply now reflects the family of the product.\n"
+
+	def check (
+			self,
+			tmp_path: pathlib.Path,
+			capsys: pytest.CaptureFixture[str],
+			prose: str,
+			absent: tuple[str, ...] = (),
+			paged: tuple[str, ...] = (),
+			suffix: str | dict[str, str] = ".txt",
+			third: bool = False) -> tuple[typing.Any, str]:
+
+		"""Write a definition citing two documents, and check it against those on disk.
+
+		``suffix`` is one for both, or one for each by key.  ``third`` adds a source, `manual`,
+		whose document is never written, so that it is one that could not be read.
+		"""
+
+		library = tmp_path / "library"
+		library.mkdir(parents = True)
+
+		sources = ""
+		documents = [("guide", self.GUIDE), ("os_updates", self.NOTES)]
+
+		if third:
+			documents.append(("manual", "A document nobody has put in the library.\n"))
+			absent = absent + ("manual",)
+
+		for key, text in documents:
+			ending = suffix if isinstance(suffix, str) else suffix.get(key, ".txt")
+
+			if key not in absent:
+				(library / f"{key}{ending}").write_text(text, encoding = "utf-8")
+
+			sources += (
+				f"  {key}:\n"
+				f"    kind: web_page\n"
+				f"    title: The {key}\n"
+				f'    url: "https://example.invalid/{key}"\n'
+				f"    sha256: {hashlib.sha256(text.encode()).hexdigest()}\n"
+				f"    retrieved: 2026-10-01\n"
+				+ ("" if key in paged else "    paginated: false\n"))
+
+		path = tmp_path / "x.yaml"
+		path.write_text(
+			"definition: 1\n\nmodel:\n  manufacturer: Zz\n  name: X\n\n"
+			f"source: >-\n  {prose}\n\nsources:\n{sources}\n"
+			"midi: none\n\nvoice:\n  addressing: none\n  polyphony: 1\n",
+			encoding = "utf-8")
+
+		tally = tool.check("zz/x", path, tool.library_index(library))
+
+		return tally, capsys.readouterr().out
+
+	def test_a_number_alone_is_found_and_the_report_says_where (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		tally, said = self.check(tmp_path, capsys,
+			'It says "no sync is transmitted from the unit" (10.4).')
+
+		assert (tally.passed, tally.missing, tally.unchecked) == (1, 0, 0)
+		assert "1 of 1 quotations located by a section or version number alone" in said
+		assert "(10.4) in guide: no sync is transmitted from the unit" in said
+
+	def test_a_number_alone_in_no_document_fails_when_every_document_was_read (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		tally, said = self.check(tmp_path, capsys,
+			'It says "words that are in neither of them" (10.4).')
+
+		assert (tally.passed, tally.missing, tally.unchecked) == (0, 1, 0)
+		assert "IN NO DOCUMENT CITED, located (10.4): words that are in neither of them" in said
+
+		# Nothing was found, so the line ends there and promises no list.
+		assert "which is a weaker check than a page\n" in said
+
+	def test_a_number_alone_is_unchecked_when_a_document_could_not_be_read (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The passage may be in the one that was not read, and nothing names which it is in.
+
+		It was called `IN NO DOCUMENT CITED` and failed the run, where the same quotation
+		written `(guide p. 4)` was unchecked and did not.
+		"""
+		tally, said = self.check(tmp_path, capsys,
+			'It says "no sync is transmitted from the unit" (10.4).', absent = ("guide",))
+
+		assert (tally.passed, tally.missing, tally.unchecked) == (0, 0, 1)
+		assert "IN NO DOCUMENT CITED" not in said
+		assert "1 more are in no document that could be read, and 1 cited here could not be" in said
+
+	def test_a_number_alone_found_in_what_was_read_passes_whatever_was_not (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		tally, _ = self.check(tmp_path, capsys,
+			'It says "no sync is transmitted from the unit" (10.4).', absent = ("os_updates",))
+
+		assert (tally.passed, tally.missing, tally.unchecked) == (1, 0, 0)
+
+	def test_a_place_in_a_named_source_is_looked_for_in_that_source_alone (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The guide holds the second passage, and it is credited to the notes, so it fails."""
+		tally, said = self.check(tmp_path, capsys,
+			'It says "the identity reply now reflects the family" (os_updates, #243) and'
+			' "no sync is transmitted from the unit" (os_updates, #244).')
+
+		assert (tally.passed, tally.missing, tally.unchecked) == (1, 1, 0)
+		assert "1 of 2 quotations that name a source are in it" in said
+		assert "NOT IN os_updates: no sync is transmitted from the unit" in said
+
+	def test_a_named_source_that_could_not_be_read_is_unchecked_and_not_wrong (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""With a place after the key or without one: nobody opened the document either way."""
+		tally, said = self.check(tmp_path, capsys,
+			'It says "the identity reply now reflects the family" (os_updates, #243) and'
+			' "the family of the product" (os_updates), and "no sync is transmitted" (guide).',
+			absent = ("os_updates",))
+
+		assert (tally.passed, tally.missing, tally.unchecked) == (1, 0, 2)
+		assert "NOT IN" not in said
+
+		# The two that could not be looked for are not counted among those that were.
+		assert "1 of 1 quotations that name a source are in it" in said
+		assert "2 name a source that could not be read, so they are unchecked:" in said
+		assert "(os_updates): the identity reply now reflects the family" in said
+		assert "(os_updates): the family of the product" in said
+
+	def test_a_place_after_the_key_of_a_document_with_pages_is_left_unlocated (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Not passed on a search of the whole document, and not failed: left where it is seen."""
+		tally, said = self.check(tmp_path, capsys,
+			'It says "no sync is transmitted from the unit" (guide, page 42).', paged = ("guide",))
+
+		assert (tally.passed, tally.missing, tally.no_locator) == (0, 0, 1)
+		assert tally.nothing_to_check == 1
+		assert "with NO LOCATOR" in said
+
+	def test_marks_that_do_not_pair_are_not_reported_as_nothing_to_check (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""A place locator is found by pairing the marks, so with an odd one nobody looked."""
+		tally, said = self.check(tmp_path, capsys,
+			'It says "no sync is transmitted from the unit" (10.4) and then an unclosed " mark.')
+
+		assert (tally.passed, tally.missing, tally.unpairable) == (0, 0, 1)
+		assert tally.nothing_to_check == 0
+		assert "ODD NUMBER OF QUOTE MARKS" in said
+		assert "no locator that names a place and not a page was looked for" in said
+		assert "so there is nothing to check" not in said
+
+	def test_unpaired_marks_say_so_beside_a_quotation_that_was_checked (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""A bare key is found by a pattern and still checked; the place beside it is not."""
+		tally, said = self.check(tmp_path, capsys,
+			'It says "no sync is transmitted from the unit" (guide) and "the family of the'
+			' product" (os_updates, #243), and then an unclosed " mark.')
+
+		assert (tally.passed, tally.missing, tally.unpairable) == (1, 0, 1)
+		assert "1 of 1 quotations that name a source are in it" in said
+		assert "no locator that names a place and not a page was looked for" in said
+
+	def test_a_text_file_has_no_second_reading (self, tmp_path: pathlib.Path) -> None:
+		"""It is read as it is, so there is nothing for another extractor to disagree with."""
+		path = tmp_path / "notes.txt"
+		path.write_text(self.NOTES, encoding = "utf-8")
+
+		assert tool.read_whole_again(path) is None
+
+	def test_a_passage_only_the_second_reading_holds_passes_and_is_listed (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str],
+			monkeypatch: pytest.MonkeyPatch) -> None:
+		"""One extractor turns a hyphen into a letter, and the words are on the page all the same."""
+		monkeypatch.setattr(tool, "read_whole_again",
+			lambda path: self.GUIDE + "The non-registered parameters are read.\n"
+				if path.name == "guide.txt" else None)
+
+		tally, said = self.check(tmp_path, capsys,
+			'It says "The non-registered parameters are read" (10.4) and'
+			' "the non-registered parameters" (guide, 10.4).')
+
+		assert (tally.passed, tally.missing, tally.disagreed) == (2, 0, 2)
+		assert "2 of those located without a page were found only by the second extractor" in said
+		assert "IN NO DOCUMENT CITED" not in said
+		assert "NOT IN" not in said
+
+	def test_an_absence_resting_on_one_reading_of_a_pdf_says_so (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str],
+			monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Where the second extractor is not there to ask, the report must not sound as sure."""
+		monkeypatch.setattr(tool, "pages_of",
+			lambda path: [path.read_text(encoding = "utf-8")])
+		monkeypatch.setattr(tool, "read_whole_again", lambda path: None)
+
+		tally, said = self.check(tmp_path, capsys,
+			'It says "words that are in neither of them" (10.4).', suffix = ".pdf")
+
+		assert (tally.passed, tally.missing) == (0, 1)
+		assert "IN NO DOCUMENT CITED, located (10.4)" in said
+		assert "guide, os_updates read with pypdf" in said
+		assert "that is one reading of a document rather than the document" in said
+
+		# And nothing of the kind is said about text files, which have one reading by nature.
+		tally, said = self.check(tmp_path / "again", capsys,
+			'It says "words that are in neither of them" (10.4).')
+
+		assert tally.missing == 1
+		assert "read with pypdf" not in said
+
+	def test_a_pdf_the_second_extractor_did_read_gets_no_caveat (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str],
+			monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Two readings, and the passage in neither: that is an absence, said plainly."""
+		monkeypatch.setattr(tool, "pages_of",
+			lambda path: [path.read_text(encoding = "utf-8")])
+		monkeypatch.setattr(tool, "read_whole_again",
+			lambda path: path.read_text(encoding = "utf-8"))
+
+		tally, said = self.check(tmp_path, capsys,
+			'It says "words that are in neither of them" (10.4).', suffix = ".pdf")
+
+		assert (tally.passed, tally.missing, tally.disagreed) == (0, 1, 0)
+		assert "IN NO DOCUMENT CITED, located (10.4)" in said
+		assert "read with pypdf" not in said
+
+	def test_the_caveat_names_only_a_document_an_absence_was_looked_for_in (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str],
+			monkeypatch: pytest.MonkeyPatch) -> None:
+		"""A passage credited to one document is not made doubtful by the reading of another.
+
+		Three sources, which is what it takes: the guide a PDF with one reading, the notes a
+		text file, and a manual nobody could read.  The first passage names no document and is
+		in neither that was read, so it is unchecked - and asking about it is what finds the
+		guide has one reading.  The second is credited to the notes and is not in them.  That
+		is an absence from a text file, and the guide's reading has nothing to do with it.
+		"""
+		monkeypatch.setattr(tool, "pages_of",
+			lambda path: [path.read_text(encoding = "utf-8")])
+		monkeypatch.setattr(tool, "read_whole_again", lambda path: None)
+
+		tally, said = self.check(tmp_path, capsys,
+			'It says "words that are in neither of them" (10.4) and "other words in neither"'
+			' (os_updates, #9).', suffix = {"guide": ".pdf"}, third = True)
+
+		assert (tally.passed, tally.missing, tally.unchecked) == (0, 1, 1)
+		assert "NOT IN os_updates: other words in neither" in said
+		assert "read with pypdf" not in said
+
+		# And where the absence is from the PDF itself, the caveat is there and names it alone.
+		tally, said = self.check(tmp_path / "again", capsys,
+			'It says "words that are in neither of them" (guide, 10.4).',
+			suffix = {"guide": ".pdf"})
+
+		assert tally.missing == 1
+		assert "NOT IN guide" in said
+		assert "guide read with pypdf" in said
+		assert "os_updates read with pypdf" not in said and "guide, os_updates" not in said
+
+	def test_an_empty_second_reading_of_a_pdf_is_no_reading (
+			self, tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""An extractor that runs and returns no text has not read the document."""
+		path = tmp_path / "guide.pdf"
+		path.write_bytes(b"not a pdf at all")
+
+		class Done:
+			returncode = 0
+			stdout = "  \n"
+
+		monkeypatch.setattr(tool.subprocess, "run", lambda *args, **kwargs: Done())
+
+		assert tool.read_whole_again(path) is None
+
+		Done.stdout = "words on the page\n"
+
+		assert tool.read_whole_again(path) == "words on the page\n"
 
 
 class TestWhichDocumentsAPageCitationCouldBeFoundIn:

@@ -204,7 +204,10 @@ each one.
 **A text document has no pages.** Makers do publish plain-text MIDI implementations —
 one such runs 2,221 lines across fourteen numbered sections and contains no page
 breaks whatever. Cite its **section**, the way the document numbers it, and quote
-enough of the row that a reader can search for it.
+enough of the row that a reader can search for it. How to write that so the quotation
+checker can read it is under *Write a quotation's locator the one way a machine can
+read*, below: declare the source `paginated: false`, and cite it by its key, a comma, and
+then the section.
 
 **Extract the table twice, and compare the two.** This is the single highest-value
 habit in this guide, and it is worth spelling out why.
@@ -847,7 +850,8 @@ A fourth is for the case where the numbers are not text at all:
 
 ### Write a quotation's locator the one way a machine can read
 
-Every quotation should be followed by a locator, and it takes exactly one shape:
+Every quotation should be followed by a locator. For a document with pages, write it in
+exactly one shape:
 
 ```
 "the maker's sentence" (p. 42)               one document, or one that needs no naming
@@ -861,10 +865,29 @@ does not parse. `(user_guide p. 104)` names a key, and the quotation is then loo
 **that document alone** — which is the stronger check, because a page number that happens to
 exist in one of the other three cannot pass it.
 
-**Nothing else goes inside the brackets.** Not a version, as in `(release notes 1.4.0 p. 8)`.
+**Nothing else goes inside the brackets of a page citation.** Not a version, as in
+`(release notes 1.4.0 p. 8)`.
 Not the document after the page, as in `(p. 89 of the guide)`. And not your own aside about
 the quotation, as in `(p. 22, the misspelling is the manual's)` — that belongs in the
 sentence around the quotation, where a reader will see it.
+
+**A document with no pages is cited by its key, and may say where in it.** A web page or a
+plain-text file has no page to turn to and is declared `paginated: false`, so its locator is
+the source key on its own:
+`"the maker's sentence" (release_notes)`. Where the document has places of its own, say which
+after the key and a comma: `(os_updates, #243)` for an entry, `(release_notes, 1.4.1)` for a
+version. The key is written exactly as it is under `sources`, and the comma has to be there.
+The quotation is then looked for in the whole of that source. What follows the comma is for
+your reader and is not checked. It must not look like a page, `p.` and a number, which is the
+shape above and belongs to a document that has pages.
+
+**A number on its own is read too, and is the weaker locator.** It needs a dot in it or the
+word `section` before it: `(15.6)`, `(section 4)`, `(1.55D)`. It names no document, so the
+passage is looked for in every document the definition cites that the checker could read,
+and the report says which holds it. A bare `(16)` is not read as a locator at all. **Prefer
+the key.** It is the stronger check, and it stays a check when one of the definition's
+documents is a scan or is not in the library: a number alone that is found in none of the
+others is then unchecked, because the passage may be in the document nobody could read.
 
 **This is enforced, and the reason is worth a paragraph.** A locator the checker could not
 read was indistinguishable from no locator at all, and a quotation with no locator is passed

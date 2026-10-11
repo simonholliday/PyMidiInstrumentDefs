@@ -237,7 +237,11 @@ midi:
   # Crossed in all four boxes of its row (chart), so nothing here is addressed by system
   # exclusive. **That is a checked absence rather than a silence**, which is what a chart is for.
   sysex: false
-  # NOT RECORDED, NRPN: the chart has no row for it and no document mentions it.
+  # A CHECKED ABSENCE. The chart's Control Change row names every number this instrument sends or
+  # recognises - 9, 12, 13, 16 to 18, 20 to 29, 46 to 63, 68 to 71 and 80 to 91 (chart) - and an
+  # NRPN needs 98, 99, 6 and 38, an RPN 100 and 101 with the same two, none of which is among
+  # them. No document names either. The same reading as `roland/tr_08`'s.
+  nrpn: none
 
 voice:
   # Its notes name drums, and the chart's True Voice row is struck through rather than filled.

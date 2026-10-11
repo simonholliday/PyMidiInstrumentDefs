@@ -1678,6 +1678,42 @@ class TestAftertouch:
 		}
 
 
+class TestNrpnFromTheChart:
+
+	"""`nrpn: none` where a chart names every controller number and none that an NRPN needs.
+
+	An NRPN travels on 98 and 99 with its value on 6 and 38, and an RPN on 100 and 101 with
+	the same two. Where a chart's control change rows name every number the instrument uses
+	and none of those six is among them, the chart has said the instrument takes neither.
+	`roland/tr_08` was read that way first; the rest were read under the same rule on
+	2026-10-11, each chart by a blind reader before its definition changed.
+	"""
+
+	CHARTED = [
+		"roland/tr_08",
+		"roland/tr_8",
+		"roland/tr_6s",
+		"roland/tr_1000",
+		"roland/tr8s",
+		"roland/tb_3",
+		"roland/ju_06a",
+	]
+
+	@pytest.mark.parametrize("name", CHARTED)
+	def test_the_chart_gives_none_and_carries_no_number_an_nrpn_needs (self, name: str) -> None:
+		definition = pymidiinstrumentdefs.load(name, [CORPUS])
+
+		assert definition.midi.nrpn == "none"
+		assert not {control.cc for control in definition.controls.values()} & {6, 38, 98, 99, 100, 101}
+
+	def test_ninety_six_and_ninety_seven_are_knobs_on_two_rolands (self) -> None:
+		"""Data increment and decrement in the MIDI standard, BD and SD CTRL on these two charts."""
+		for name in ("roland/tr_6s", "roland/tr8s"):
+			controls = pymidiinstrumentdefs.load(name, [CORPUS]).controls
+
+			assert (controls["bd_ctrl"].cc, controls["sd_ctrl"].cc) == (96, 97), name
+
+
 class TestAssignment:
 
 	"""What the owner can change about a control: its number, its destination, or whether it is on at all."""
@@ -4679,15 +4715,17 @@ class TestTr1000:
 		assert not any(control.group == "trg" for control in tr.controls.values())
 
 	def test_what_was_checked_and_found_absent (self) -> None:
-		"""Three absences the chart states, and one silence it does not."""
+		"""Four absences the chart states, the last by the numbers its Control Change row leaves out."""
 		tr = pymidiinstrumentdefs.load("roland/tr_1000", [CORPUS])
 
 		assert tr.midi.sysex is False
 		assert tr.voice.aftertouch == "none"
 		assert tr.voice.pitch_bend is None
 
-		# The chart has no NRPN row at all, which is silence rather than an absence.
-		assert tr.midi.nrpn is None
+		# The chart has no NRPN row at all, but its Control Change row names every number and none
+		# an NRPN or an RPN needs, so this is an absence too, in the single-channel mode the 1.11
+		# chart describes. It was recorded as a silence until 2026-10-11.
+		assert tr.midi.nrpn == "none"
 
 	def test_the_chart_is_older_than_the_firmware_it_is_cited_beside (self) -> None:
 		"""Version 1.11 against a manual marked 1.20 and later, and a system program at 1.22."""
@@ -15806,7 +15844,9 @@ class TestTR8:
 		assert tr_8.voice.aftertouch == "none"
 		assert tr_8.voice.pitch_bend is None
 		assert tr_8.midi.sysex is False
-		assert tr_8.midi.nrpn is None
+		# And NRPN, which no box crosses: the Control Change row names every number, and none an
+		# NRPN needs. Recorded as a silence until 2026-10-11.
+		assert tr_8.midi.nrpn == "none"
 
 		assert tr_8.midi.mode == 4
 		assert tr_8.midi.program_change is not None

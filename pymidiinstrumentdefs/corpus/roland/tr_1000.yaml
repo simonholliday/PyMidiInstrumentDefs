@@ -108,9 +108,15 @@ source: >-
   channel and mode pair with Pattern Channel and Kit Channel, and left one "Altered" row inside
   the second of them.
 
-  NOT RECORDED: NRPN, which the chart has no row for and the manual never mentions - silence
-  rather than a checked absence. And the four jacks that are not MIDI: this instrument has
-  trigger and CV connectors and a DIN SYNC output, and no field here holds them.
+  CHECKED AND ABSENT: NRPN. The chart has no row for it and the manual never mentions it, and the
+  chart's Control Change row names every number the instrument uses, among which an NRPN's 98,
+  99, 6 and 38 are not, nor an RPN's 100 and 101. That is the 1.11 chart, so it speaks for the
+  single-channel mode alone: the MIDI MODE that 1.20 added, which puts each track on a channel
+  of its own, points to a chart Roland has not published, as the paragraph on it above says. No
+  release note since 1.11 names a controller number.
+
+  NOT RECORDED: the four jacks that are not MIDI. This instrument has trigger and CV connectors
+  and a DIN SYNC output, and no field here holds them.
 
 sources:
   chart:
@@ -178,8 +184,10 @@ midi:
     presets: 128
   # A checked absence: System Exclusive is marked x in both columns.
   sysex: false
-  # NOT RECORDED: NRPN. The chart has no NRPN row and the manual never uses the word, which is
-  # silence rather than a checked absence.
+  # A checked absence in the mode the 1.11 chart describes: its Control Change row names every
+  # number - 9, 12 to 31, 46 to 63, 80 to 87, 89 to 91 and 102 to 117 - and none is 6, 38 or 98
+  # to 101. See the account for the mode it does not describe.
+  nrpn: none
 
 voice:
   # Notes address instruments rather than pitches, which is what a rhythm machine is.

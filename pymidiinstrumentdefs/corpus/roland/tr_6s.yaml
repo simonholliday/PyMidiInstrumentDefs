@@ -138,9 +138,13 @@ source: >-
   manual is two minor versions behind the firmware and the guide is not. Both statements are in
   this file and neither is quoted with a locator, because there is no locator to give.
 
-  NOT RECORDED: NRPN, which the chart has no row for and neither other document mentions - a
-  silence rather than a checked absence. Values, bands and defaults for any control, none of
-  which any document gives. And the maximum polyphony, which no document states.
+  CHECKED AND ABSENT: NRPN. The chart has no row for it and no other document mentions it, and
+  the chart's Control Change row names every number the instrument uses, among which an
+  NRPN's 98, 99, 6 and 38 are not, nor an RPN's 100 and 101. Its 96 and 97 are the BD CTRL and
+  SD CTRL knobs, not data increment and decrement.
+
+  NOT RECORDED: values, bands and defaults for any control, none of which any document gives.
+  And the maximum polyphony, which no document states.
 
 sources:
   chart:
@@ -256,7 +260,10 @@ midi:
     presets: 128
   # NOT RECORDED: sysex. The chart marks System Exclusive "x" in both columns and the Parameter
   # Guide gives a Device ID for it. See the source account.
-  # NOT RECORDED: nrpn. No document mentions it, which is silence rather than a checked absence.
+  # A checked absence: the chart's Control Change row names every number - 2, 9, 15 to 20, 23 to
+  # 25, 28, 29, 46 to 48, 58 to 63, 70, 71, 80 to 82, 91, 96, 97, 102 and 106 to 108 - and none
+  # is 6, 38 or 98 to 101. See the account.
+  nrpn: none
 
 voice:
   # Notes address instruments rather than pitches, which is what a rhythm machine is.

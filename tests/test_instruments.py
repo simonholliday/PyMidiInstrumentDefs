@@ -215,6 +215,7 @@ class TestBundledCorpus:
 			"korg/multi_poly",
 			"korg/nts_1",
 			"korg/opsix",
+			"korg/radias",
 			"korg/triton",
 			"korg/volca_bass",
 			"korg/volca_beats",
@@ -1701,6 +1702,7 @@ class TestAftertouch:
 			"udo_audio/super_6": ("both", True),
 			"waldorf/iridium_core": ("both", None),
 			"waldorf/iridium_mk2": ("both", None),
+			"korg/radias": ("channel", True),
 		}
 
 
@@ -1778,7 +1780,7 @@ class TestAssignment:
 		assert "controls.a.assignment" in str(raised.value)
 
 	def test_each_definition_marks_what_its_own_pages_say_the_owner_can_change (self) -> None:
-		"""A factory assignment, a fixed slot, and a recommendation switched off - seven files, three words."""
+		"""A factory assignment, a fixed slot, and a recommendation switched off - eight files, three words."""
 		said: dict[str, dict[str, int]] = {}
 
 		for name in pymidiinstrumentdefs.available([CORPUS]):
@@ -1795,6 +1797,7 @@ class TestAssignment:
 			"teenage_engineering/op_1_field": {"slot": 4},
 			"korg/kronos": {"off": 27, "default": 2},
 			"akai/mpc_key_37": {"default": 1},
+			"korg/radias": {"default": 60},
 		}
 
 	def test_the_kronos_ships_its_karma_controls_and_pads_off_and_its_joystick_on (self) -> None:
@@ -20496,3 +20499,208 @@ class TestTD3MO:
 		assert mo.sources["guide"].file_page(62) == 32
 		account = " ".join((mo.source or "").split())
 		assert "**THE TABLE'S CHANNEL MESSAGES READ AS A COMPLETE LIST, AND HAVE ONE CONTROLLER.**" in account
+
+
+class TestRadias:
+
+	"""A map in two documents: the implementation names the knobs and the manual numbers them."""
+
+	def test_one_hundred_and_seventy_six_controls_and_how_they_divide (self) -> None:
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		numbers = [control.cc for control in radias.controls.values() if control.cc is not None]
+		addresses = [control.nrpn for control in radias.controls.values() if control.nrpn is not None]
+
+		assert len(radias.controls) == 176 and len(radias.groups) == 26
+		assert (len(numbers), len(set(numbers))) == (68, 68)
+		assert (len(addresses), len(set(addresses))) == (108, 108)
+		assert all(control.lsb is None and not control.choices for control in radias.controls.values())
+
+	def test_the_first_two_panel_rows_are_joined_by_name_and_not_by_position (self) -> None:
+		"""The implementation lists Portamento first and the manual lists Unison SW first.
+
+		Joined by position, 3 and 5 change places and nothing else in the file looks wrong.
+		"""
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		assert (radias.controls["unison_sw"].cc, radias.controls["unison_sw"].label) == (3, "Unison SW")
+		assert (radias.controls["portamento"].cc, radias.controls["portamento"].label) == (5, "Portamento")
+		assert (radias.controls["unison_sw"].group, radias.controls["portamento"].group) == ("unison", "pitch")
+
+		account = " ".join(prose_of("korg", "radias").split())
+
+		assert "**the two documents list the first two in opposite orders**" in account
+
+	def test_fifty_seven_factory_assignments_and_the_fifteen_above_95 (self) -> None:
+		"""Every panel control is a default the owner can move, and fifteen sit where the two documents disagree."""
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		defaults = [control for control in radias.controls.values() if control.assignment == "default"]
+		panel = [control for control in defaults if control.group != "sources"]
+
+		assert (len(defaults), len(panel)) == (60, 57)
+		assert (min(control.cc or 0 for control in panel), max(control.cc or 0 for control in panel)) == (3, 116)
+
+		# The implementation's recognised table stops at 95, and the manual says an assigned
+		# number is answered whatever it is.  The file follows the manual.
+		assert sorted(control.cc or 0 for control in panel if (control.cc or 0) > 95) == list(range(102, 117))
+		assert all(control.direction == "both" for control in panel)
+
+		# The master effect's two travel on the global channel and the other 55 on a timbre's.
+		assert [control.name for control in panel if control.part is None] == ["mfx_sw", "masterfx_edit"]
+		assert sum(1 for control in panel if control.part == "timbre") == 55
+
+		# Three of the five modulation sources at their factory numbers, and no vocoder control
+		# from the manual's thirteen rows of `Off`.
+		assert {control.name: control.cc for control in defaults if control.group == "sources"} == {
+			"midi1": 16, "midi3": 80, "midi4": 81}
+		assert not [control for control in radias.controls.values() if control.cc is not None
+			and control.group == "vocoder"]
+
+		# Three factory numbers are also what the pedal or the switch can send, and are carried once.
+		assert (radias.controls["amp_level"].cc, radias.controls["panpot"].cc,
+			radias.controls["filter2_keytrack"].cc) == (7, 10, 82)
+
+	def test_thirty_controls_carry_the_bands_the_implementation_s_notes_print (self) -> None:
+		"""Twelve panel controls and eighteen NRPNs. LFO2's wave is withheld: the manual renames its bands."""
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		banded = [control for control in radias.controls.values() if control.values]
+
+		assert sum(1 for control in banded if control.cc is not None) == 12
+		assert sum(1 for control in banded if control.nrpn is not None) == 18
+		assert radias.controls["osc1_wave"].band("formant") == (56, 69)
+		assert radias.controls["osc1_wave"].band("audio_in") == (112, 127)
+		assert radias.controls["drive_ws_sw"].values == {"off": 0, "drive": 42, "waveshape": 85}
+		assert radias.controls["lfo1_wave"].values == {"saw": 0, "squ": 32, "tri": 64, "s_h": 96}
+
+		# The three rows with bands or values of a kind that are left continuous.
+		assert not radias.controls["lfo2_wave"].values
+		assert not radias.controls["filter1_type_balance"].values
+		assert not radias.controls["unison_sw"].values
+
+		# Fifteen modulation sources on each of seven rows, and none on a destination: system
+		# 2.0 added destinations and no document says how the value divides now.
+		assert [control.name for control in banded if len(control.values) == 15] == \
+			[f"patch{n}_source" for n in range(1, 7)] + ["vocoder_fc_mod_source"]
+		assert all(not radias.controls[f"patch{n}_destination"].values for n in range(1, 7))
+
+		# A switch is answered in two halves, which is the recognised table's band. The
+		# transmitted table's is 0 and 127.
+		assert sum(1 for control in banded if control.values == {"off": 0, "on": 64}) == 13
+		assert radias.controls["arpeggio_select_sw"].band("step_seq2") == (3, 127)
+
+		account = " ".join(prose_of("korg", "radias").split())
+
+		assert "**THE BANDS ARE PRINTED FOR WHAT IS SENT.**" in account
+		assert "**A switch is the exception, and is answered more widely than it is sent**" in account
+
+	def test_one_hundred_and_eight_nrpns_and_one_of_them_received_only (self) -> None:
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		nrpns = [control for control in radias.controls.values() if control.nrpn is not None]
+		by_msb: dict[int, int] = {}
+
+		for control in nrpns:
+			by_msb[(control.nrpn or 0) // 128] = by_msb.get((control.nrpn or 0) // 128, 0) + 1
+
+		assert by_msb == {0: 10, 4: 93, 5: 5}
+		assert [control.name for control in nrpns if control.direction != "both"] == ["arpeggio_octaves"]
+		assert (radias.controls["arpeggio_octaves"].nrpn, radias.controls["arpeggio_octaves"].range,
+			radias.controls["arpeggio_octaves"].direction) == (3, (0, 3), "receives")
+
+		# Two bytes printed in hex, recorded as MSB x 128 + LSB.
+		assert radias.controls["patch1_source"].nrpn == 4 * 128
+		assert radias.controls["mod_seq1_step_01"].nrpn == 4 * 128 + 0x10
+		assert radias.controls["mod_seq3_step_16"].nrpn == 4 * 128 + 0x3F
+		assert radias.controls["vocoder_band16_panpot"].nrpn == 4 * 128 + 0x5F
+		assert radias.controls["vocoder_sw"].nrpn == 5 * 128 + 4
+
+		# The global channel for the arpeggiator, the step sequencers and the five switches; a
+		# timbre's for the patches and the modulation sequencers; the carrier's for the vocoder.
+		assert sum(1 for control in nrpns if control.part is None) == 15
+		assert sum(1 for control in nrpns if control.part == "timbre") == 60
+		assert sum(1 for control in nrpns if control.part == "vocoder") == 33
+
+	def test_two_modes_three_parts_and_twenty_four_voices (self) -> None:
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		assert {name: mode.label for name, mode in radias.modes.items()} == {
+			"program": "Program", "drum": "Drum"}
+
+		# "Each time you turn the power on, the RADIAS will be in the Program Play mode."
+		assert radias.factory_mode == "program"
+		assert list(radias.parts) == ["timbre", "vocoder", "kit"]
+		assert list(radias.parts_in("program")) == ["timbre", "vocoder"]
+		assert list(radias.parts_in("drum")) == ["kit"]
+
+		timbre, vocoder, kit = radias.parts["timbre"], radias.parts["vocoder"], radias.parts["kit"]
+
+		assert (timbre.count, timbre.is_assigned, timbre.addressing) == (4, True, "pitches")
+		assert timbre.takes("notes") and timbre.takes("controls") and timbre.takes("program_change")
+		assert vocoder.is_assigned and vocoder.takes("controls") and not vocoder.takes("notes")
+		assert (kit.channel_offset, kit.addressing) == (0, "voices")
+
+		# The keys every factory kit's table prints, C2 to D#3. An owner can move each.
+		assert kit.voices == {f"inst_{number}": 35 + number for number in range(1, 17)}
+		assert kit.takes("notes") and kit.takes("program_change") and not kit.takes("controls")
+
+		assert (radias.voice.polyphony, radias.voice.polyphony_shared, radias.voice.voicing_modes) == \
+			(24, True, (1, 24))
+		assert radias.voice.velocity is not None
+		assert (radias.voice.velocity.note_on, radias.voice.velocity.note_off) == ("both", False)
+		assert (radias.voice.aftertouch, radias.voice.aftertouch_transmits) == ("channel", True)
+		assert radias.voice.pitch_bend is not None
+		assert (radias.voice.pitch_bend.programmable, radias.voice.pitch_bend.semitones) == (True, None)
+
+		# Only the manual's chart says what is answered: every note. What its keys send is narrower.
+		assert radias.voice.note_range == (0, 127)
+
+	def test_clock_both_ways_transport_received_and_256_programs (self) -> None:
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		assert (radias.midi.channels, radias.midi.mode, radias.midi.clock, radias.midi.transport) == \
+			((1, 16), 3, "both", "receives")
+		assert radias.midi.program_change is not None
+		assert (radias.midi.program_change.receives, radias.midi.program_change.sends,
+			radias.midi.program_change.presets) == (True, True, 256)
+		assert (radias.midi.nrpn, radias.midi.sysex, radias.midi.control_change) == ("supported", True, None)
+
+	def test_the_manual_s_chart_is_followed_where_the_implementation_s_table_stops_short (self) -> None:
+		"""The chart marks 4 and the range to 119 as recognised. The implementation's table has neither."""
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		assert radias.controls["foot_control"].direction == "both"
+		assert all(control.direction == "both" for control in radias.controls.values()
+			if control.cc is not None)
+
+		# The chart's page prints no number. It follows p. 168 and is the file's 175th.
+		assert radias.sources["manual"].file_page(169) == 175
+
+		said = " ".join(prose_of("korg", "radias").split())
+
+		assert "THE MANUAL ENDS WITH A MIDI IMPLEMENTATION CHART, ON A PAGE THAT PRINTS NO NUMBER." in said
+		assert "**Its yes and no marks are drawings**" in said
+		assert "Against that stands one row that may only be short of a range." in said
+		assert "**The implementation's own global table agrees with them.**" in said
+
+	def test_system_two_and_a_map_from_2005 (self) -> None:
+		radias = pymidiinstrumentdefs.load("korg/radias", [CORPUS])
+
+		assert radias.model.firmware == "2.0"
+		assert set(radias.sources) == {"implementation", "manual", "upgrade", "download_page"}
+		assert (radias.sources["implementation"].edition, radias.sources["upgrade"].kind) == \
+			("Revision 1.0", "firmware_addendum")
+
+		# The manual prints its page numbers six behind its sheets, and the others none behind.
+		assert radias.sources["manual"].file_page(151) == 157
+		assert radias.sources["implementation"].file_page(6) == 6
+
+		said = " ".join(prose_of("korg", "radias").split())
+
+		assert "**THE MAP IS IN TWO DOCUMENTS, AND NEITHER HOLDS IT ALONE.**" in said
+		assert "**AND THE IMPLEMENTATION DISAGREES WITH ITSELF AND WITH THE MANUAL ABOUT FIFTEEN OF THE 57.**" in said
+		assert "**THE IMPLEMENTATION IS THE INSTRUMENT'S FIRST, AND THE INSTRUMENT IS NOT.**" in said
+		assert "**IN DRUM MODE THE PANEL EDITS THE INSTRUMENT CHOSEN WITH THE SIXTEEN KEYS**" in said
+		assert "**No page applies that to Drum mode in so many words, and no channel message is named that chooses the instrument.**" in said
+		assert "**THE SIXTEEN NOTES BELOW ARE THE FACTORY KITS', AND AN OWNER CAN MOVE EVERY ONE.**" in said

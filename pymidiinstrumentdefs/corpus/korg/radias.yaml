@@ -1,0 +1,833 @@
+# **THE MAP IS IN TWO DOCUMENTS, AND NEITHER HOLDS IT ALONE.** The MIDI implementation lists the 57
+# front-panel knobs and buttons that take a control change, under "Panel Knob & Switch Control
+# (assignable)" (implementation p. 6), and prints no number against any of them: its channel table
+# gives the whole class one row, "Control Change cc=00~95,102~119" (implementation p. 2). The
+# numbers they have when the instrument leaves the factory are in the owner's manual, in a table
+# headed `Section`, `Parameter`, `Initial` (manual p. 151). So every one of the 57 below is two
+# readings joined by a name, and **the two documents list the first two in opposite orders**:
+# Portamento then Unison SW in the implementation, Unison SW (`CC#03`) then Portamento (`CC#05`) in
+# the manual. Joined by position, those two numbers change places and nothing looks wrong.
+#
+# **EVERY ONE OF THE 57 IS A FACTORY SETTING THE OWNER CAN MOVE**, which is what `assignment:
+# default` says of each. "You can assign control changes CC#00–CC#95 and CC#102–CC#119 to the main
+# parameter controllers (knobs and buttons) of the front panel." (manual p. 149), on the Global
+# mode's MIDI MAP page. **Thirteen more parameters, the vocoder's, are in the same table with `Off`
+# where a number would be**, so they are assignable and unassigned, and they are not below: a
+# control here needs a number and the maker prints none for them.
+#
+# **AND THE IMPLEMENTATION DISAGREES WITH ITSELF AND WITH THE MANUAL ABOUT FIFTEEN OF THE 57.** Its
+# table of what is recognised gives the assignable class as "Control Data cc=00~95" (implementation
+# p. 9) and stops there, where its table of what is transmitted has 00 to 95 and 102 to 119.
+# Fifteen factory numbers are above 95, every one from 102 to 116: LFO2 Wave, the six patch
+# intensities, the two EQ gains, the modulation sequencer's switch, four of the insert effects'
+# controls and the master effect's knob. Two statements say they are received. The manual's: "If an
+# assigned control change is received, the result will be the same as if that controller had been
+# operated according to the corresponding value." (manual p. 149). And its chart's, which gives the
+# panel controls one row, `0 – 95, 102 – 119`, marked yes in both columns: "Transmitted and
+# received on the number specified by Global mode P07: MIDI MAP [CC#]." (manual p. 169). **The
+# implementation's own global table agrees with them.** A modulation source is driven by a control
+# change the instrument receives (manual p. 148), and may be set to any of `#CC 102~119`
+# (implementation p. 33), and the map holds one number for a control with none apart for receiving
+# (implementation p. 29). **This file follows the manual, which is the later document and the one
+# that describes the map, and the fifteen are recorded as travelling both ways.** Against that
+# stands one row that may only be short of a range. A consumer that finds one of the fifteen sent
+# and not answered has found that the row was right.
+#
+# **THE CHANNEL A CONTROL TRAVELS ON DEPENDS ON WHAT IT CONTROLS, AND THERE ARE THREE ANSWERS.** A
+# program has four timbres, each with a channel of its own, and the 55 controls of a timbre's sound
+# and its insert effects follow that timbre: "Parameters other than for the vocoder and master
+# effect are transmitted and received on the timbre's MIDI channel." (manual p. 151). The master
+# effect's two do not: "Master effect parameters are transmitted and received on the global MIDI
+# channel, regardless of the timbre's MIDI channel." (manual p. 151). And the vocoder's follow
+# whichever timbre is its carrier, a setting of the vocoder (manual p. 151). That is what the
+# `timbre` and `vocoder` parts below are for, and a control naming no part is on the global
+# channel. **Which timbre a knob speaks for is the panel's choice and not the knob's**: what the
+# panel sends goes out on the channel of the timbre its TIMBRE SELECT buttons have chosen, or of
+# one timbre fixed by the program's Panel Edit setting (manual p. 146).
+#
+# **THE IMPLEMENTATION IS THE INSTRUMENT'S FIRST, AND THE INSTRUMENT IS NOT.** It is "Revision 1.0
+# (2005.09.22)" (implementation p. 2). The note that describes system 2.0 is of 2007, and begins
+# "RADIAS operating system version 2.0 adds the following functions." (upgrade p. 2). Korg's page
+# offers no later implementation. What 2.0 adds that bears on this file is said where it bears: new
+# destinations for the virtual patches, whose NRPN value bands the 2005 table can no longer be the
+# whole of, and the controllers another instrument's keyboard sends it.
+#
+# NOT RECORDED, each for a reason the account gives: the bend range, the thirteen vocoder
+# parameters, what an arriving panel controller edits in Drum mode, the channel messages that are
+# commands and not controls, and `control_change`.
+
+definition: 1
+
+model:
+  manufacturer: Korg
+  name: RADIAS
+  # **2.0, THE NEWEST SYSTEM KORG SERVES AND THE NEWEST ANY DOCUMENT DESCRIBES.** The upgrade note
+  # is for it, and the downloads page's updater is "RADIAS/System Updater" (download_page) at 2.00.
+  # The updater is software and was not run, so that it is still the newest is the page's word on
+  # the day it was read, 2026-10-11. **The map below is older than that**: the implementation is of
+  # 2005 and Korg offers no revision of it, and where 2.0 is known to have moved something the
+  # comment beside it says so.
+  firmware: "2.0"
+
+source: >-
+  RADIAS MIDI Implementation, Revision 1.0, 61 pages, dated 2005.09.22 on its second page; the
+  RADIAS Owner's Manual, edition E 2, 176 pages, created 2005-12-27 by its own metadata; and
+  `RADIAS Function added in system version 2.0`, six pages, created 2007-07-09. Korg's downloads
+  page for the instrument offers all three, no later implementation and no later system: its two
+  rows for "RADIAS/System Updater" (download_page) are both at 2.00, which is where `firmware`
+  comes from.
+
+  THE IMPLEMENTATION IS A TEXT DOCUMENT IN A PDF, AND IT WAS READ AS ONE. It is set in a
+  fixed-width face and its tables are drawn in characters, so a row is one line and its cells are
+  what lies between the bars. `Notes/4929_read_radias.py` reads the channel tables (implementation
+  pp. 2 and 9), the two NRPN tables (implementation pp. 3-4 and 9-10), the panel table
+  (implementation p. 6) and the notes that say what a value means (implementation pp. 4-7), and
+  asserts every count stated here about those tables.
+
+  THE TABLES WERE READ TWICE, BY TWO READERS WHO DID NOT SEE EACH OTHER'S WORK. The first used
+  PyMuPDF. The second used pypdf and PDFium for the text and PDFium for renders of the pages, and
+  transcribed the factory map row by row from enlarged renders, comparing it with the text
+  afterwards. `Notes/4929_compare_readings.py` compares the two row for row: both channel tables,
+  both NRPN tables, the 57 panel rows, the 70 rows of the factory map with the section each stands
+  under, and sixteen notes of named bands. They agree in every cell.
+
+  THE MANUAL ENDS WITH A MIDI IMPLEMENTATION CHART, ON A PAGE THAT PRINTS NO NUMBER. It is the page
+  after p. 168 and the one the contents list as 169, which is how it is cited here, and it is dated
+  `Date : 2005. 10. 6`. **Its yes and no marks are drawings**: no text extraction returns a circle
+  or a cross from it. So every mark this file rests on was read twice, by the script, which tells a
+  circle from a cross by the path each is drawn with and places it by where it stands, and by eye
+  from a render of the page. Its numbers and remarks are text. The mode, the note range, the row
+  for the panel controls and controller 4's direction come from it.
+
+  THE FACTORY NUMBERS ARE IN THE MANUAL, IN A DRAWN TABLE, AND WERE READ BY POSITION. Two tables
+  stand side by side on manual p. 151, each a `Section`, a `Parameter` and an `Initial` column,
+  with a section cell spanning the rows it covers. Each `Initial` cell was paired with the
+  parameter on its own line: 57 rows with a number, from `CC#03` to `CC#116`, and 13 vocoder rows
+  reading `Off`. All 57 numbers are different, and all are inside the two ranges the map allows. A
+  section's label is set at the middle of the rows it covers, and its extent was counted from that.
+  The same page was rendered and read by eye.
+
+  THE TWO TABLES ARE THE SAME 57 CONTROLS UNDER SLIGHTLY DIFFERENT NAMES, and they were joined by
+  name. The implementation heads its rows with a panel section and a short name, `FILTER1` and `KBD
+  Track`; the manual writes `Filter1 KeyTrack`. The implementation has `IFX1` and `SW`; the manual
+  `FX1 SW`. The labels below are the manual's, because the manual's row is the one that carries the
+  number. Rows 3 to 57 are in the same order in both. **Rows 1 and 2 are not**, as the comment
+  above the definition says.
+
+  WHAT THE IMPLEMENTATION'S PANEL TABLE ADDS IS WHAT EACH VALUE MEANS, AND WHERE THAT IS A SET OF
+  NAMED BANDS THE BANDS ARE CARRIED. Most rows point at a note or print their values in the row.
+  Twelve of the 57 always divide the 128 values among named settings: the two oscillators' waves
+  and modulation types, the filter routing, the second filter's type, the drive switch, LFO1's
+  wave, and four switches printed `00~3F,40~7F:OFF,ON`. Those twelve have `values` below, each band
+  under the name the note prints and starting where the note starts it, the hexadecimal turned to
+  decimal (implementation pp. 6-7). The script reads every band from the page and asserts that each
+  note's bands cover 0 to 127 with no gap.
+
+  **THE BANDS ARE PRINTED FOR WHAT IS SENT.** The notes stand in the half of the implementation
+  headed "1.TRANSMITTED DATA" (implementation p. 2), and the recognised half gives the panel
+  controls one row and no note. That the same bands hold for what is received rests on the manual's
+  sentence in the comment above the definition, that an assigned control change received acts as
+  the control operated.
+
+  FIVE ROWS HAVE BANDS OR VALUES OF A KIND AND ARE LEFT CONTINUOUS. LFO2's wave: the implementation
+  gives both LFOs one note, under the names Saw, Squ, Tri and S/H, and the manual says "For LFO2
+  you can choose from Saw, Squ+, Sin, and S/H." (manual p. 90). The implementation's own table of a
+  timbre's stored parameters gives LFO2 a third list, `Saw,Squ(+),Tri,S&H` (implementation p. 25),
+  which agrees with neither. Which name belongs to which band is not printed, and a list is not
+  numbered here by the order it is printed in. Filter1's Type Balance: nine bands, four of them a
+  morph between two filter types, which is a continuous control with five named points and not a
+  stepped one. Unison SW, whose values are printed as `0,40` with no word saying which is which.
+  And the two LFOs' frequencies: their note is two tables, 128 frequencies for when the LFO's Tempo
+  Sync is off and seventeen note lengths in bands for when it is on (implementation p. 7), and
+  which applies is a setting of the sound.
+
+  Fifteen of the panel table's 57 rows name a vocoder parameter beside the synth one, because the
+  same knob edits the vocoder when the vocoder is being edited. They are thirteen parameters, two
+  of them named on two rows each. **A vocoder parameter does not share the knob's number.** It is a
+  slot of its own in the map, one of the thirteen reading `Off`.
+
+  THE EFFECTS' FIVE KNOBS ARE REFERRED ELSEWHERE, AND THE ELSEWHERE IS THE BACK OF THE SAME
+  DOCUMENT. Their rows read "refer midi_imp_fx" (implementation p. 6). No file of that name is on
+  Korg's page. A section of the implementation begins on p. 34 under the heading "RADIAS Effect
+  Parameter Structure" (implementation p. 34) and runs to p. 60, listing every effect's parameters,
+  which is by its heading what is meant. The notes to the dump tables point at it under another
+  name again, `(See midifx.txt.)` (implementation p. 32). What an EDIT knob does depends on the
+  effect a program has chosen, so nothing of it is carried.
+
+  THREE OF THE FACTORY NUMBERS ARE ALSO WHAT THE PEDAL OR THE SWITCH SENDS. Controller 7 is `Amp
+  Level` in the factory map and is what the assignable pedal sends when it is set to Volume; 10 is
+  `Panpot` and the pedal's Pan; and 82 is `Filter2 KeyTrack` and what the assignable switch sends
+  as "Multi Purpose Ctrl17(as Foot Sw)" (implementation p. 2). Each is carried once, as the knob's,
+  since the pedal and the switch are set at the factory to neither: "With the factory settings this
+  is set to ExpPedal." (manual p. 119) and "With the factory settings this is set to Damper."
+  (manual p. 119). The chart gives each of the three a row of its own, as Volume, Panpot and Foot
+  Switch, marked yes in both columns (manual p. 169). The implementation's recognised table has no
+  row for any of them, and the manual makes the effect of the first two conditional on the map: an
+  incoming volume message controls the volume if `AmpLevel` is assigned to controller 7, and pan
+  likewise (manual p. 148).
+
+  **AN ARRIVING 82 IS TWO THINGS AT ONCE, AND NO PAGE SAYS HOW THEY COMBINE.** With the factory map
+  it is `Filter2 KeyTrack`. It is also, by the chart's row and by the filter each timbre has for it
+  (manual pp. 169 and 79), a foot switch message, and the foot switch is a control source the
+  effects list, `F.SW Foot switch` (manual p. 126). As with controller 4, no single sentence says
+  that an arriving 82 drives that source. A switch set to FootSw sends only 0 and 127, which as the
+  knob are the two ends of its travel.
+
+  108 PARAMETERS ARE REACHED BY NRPN AND BY NO CONTROL CHANGE, and the two NRPN tables agree in
+  their rows but for one. The recognised table has `Arpeggio Octaves` at 00 03, "Arpeggio Octaves"
+  (implementation p. 9), and the transmitted table has no such row, so that one is recorded as
+  received only. The other 107 are in both under the same names. Each address is two bytes printed
+  in hex and is recorded as MSB x 128 + LSB. "The RADIAS uses only the data entry MSB." (manual
+  p. 149), so a value is one byte and none has a fine half.
+
+  EIGHTEEN OF THE NRPNs HAVE BANDS, AND THOSE ARE CARRIED TOO: the arpeggio's type and its
+  selector, the seven modulation sources, and nine switches. The recognised table points at the
+  same notes as the transmitted one, so these bands are printed for both directions. **A switch is
+  the exception, and is answered more widely than it is sent**: the recognised table prints
+  `00~3F/40~7F:OFF/ON`, which is what `values` records, and the transmitted table prints
+  `00/7F:OFF/ON`, so the instrument sends 0 and 127 and nothing between.
+
+  WHICH CHANNEL AN NRPN TRAVELS ON IS STATED FOR SOME AND NOT FOR OTHERS. The arpeggiator's and the
+  step sequencers' ten: "These messages are transmitted and received on the global MIDI channel."
+  (manual p. 149). The virtual patches' twelve: "Messages to control the VIRTUAL PATCH 1–6
+  SOURCE/DESTINATION are transmitted and received on the timbre's MIDI channel." (manual p. 149).
+  The vocoder's filter source follows the vocoder's carrier timbre, and so does what the manual
+  calls `CH PARAM (channel parameters)` (manual p. 149). **That those are the 32 band levels and
+  pans is a reading**, which the specifications support: "16-band vocoder, variable level/pan for
+  each channel" (manual p. 168). **For the 48 steps of the three modulation sequencers and for the
+  five timbre and vocoder switches no page names a channel.** The steps are recorded on the
+  timbre's, because each timbre is a synth program with modulation sequences of its own (manual
+  p. 168) and a number on the global channel could not say whose; the switches are left on the
+  global channel, being settings of the program. Both are readings too.
+
+  THE VIRTUAL PATCH VALUES ARE OLDER THAN THE INSTRUMENT'S SYSTEM. The 2005 table divides a patch's
+  destination into fifteen bands, and "RADIAS version 2.0 adds the following parameters as virtual
+  patch modulation destinations." (upgrade p. 2), twenty-five of them. No document says how the
+  value divides now, so the six destinations carry no `values`, alone among the NRPNs whose note
+  has named bands.
+
+  WHAT 2.0 ADDS TO THE CONTROLLERS. It lets the module be played from the keyboard of the M3, and
+  that keyboard's joystick, switches and ribbon arrive as controllers 1 and 2, 80 and 81, and 16
+  (upgrade pp. 2-4). Controller 1 acts as the modulation wheel does. The other four reach a sound
+  as the Global mode's modulation sources, `MIDI1` to `MIDI5`, which are set at the factory to
+  controllers 16, 2, 80 and 81 and to aftertouch (manual p. 117). 16, 80 and 81 are carried below
+  as factory assignments; 2 is the breath controller's own row in both channel tables and is
+  carried once. 2.0 also adds choices for those five sources: controllers 16, 17, 19, 20 and 21
+  read about their centre, for the M3's ribbon and four of its sliders (upgrade p. 5). Four of
+  those numbers are panel controls in the factory map below, 17 and 19 to 21, and the note does not
+  remark on it.
+
+  FILTERS GATE ALMOST EVERYTHING HERE, AND THEIR FACTORY STATE IS NOT PRINTED. The Global mode has
+  five, for program change, bank change, control change, pitch bend and system exclusive, each for
+  sending and receiving at once: "Specifies whether control change messages will be transmitted and
+  received." (manual p. 118). The control change filter gates the NRPNs and channel pressure too:
+  both carry its letter in the transmitted table (implementation p. 2), and the manual says it of
+  channel pressure in both directions (manual p. 148). Each timbre has filters of its own for what
+  it receives (manual p. 79), the last of them, by its wording, for whatever the others do not
+  name, which is most of the panel map: "Specifies whether other MIDI control change messages not
+  covered by the preceding items will be received by the timbre." (manual p. 79). Whether 82, or
+  the pedal's 7 and 10, fall under the foot pedal and switch filter instead the page does not say.
+  The page that describes the five global filters states no factory setting for any of them, where
+  the pages beside it do for the five modulation sources, the pedal and the switch (manual pp. 117
+  and 119).
+
+  NOT RECORDED, AND WHY. The bend range, a setting of each timbre, `BendRange [–12…+12]` on manual
+  p. 81, with no factory figure. The thirteen vocoder parameters, which the map leaves without a
+  number. What an arriving panel controller edits in Drum mode, which the manual leaves to
+  inference: see the `kit` part. The channel messages the implementation recognises beside its
+  controllers, All Sound Off, Reset All Controllers and All Note Off at 120, 121 and 123, and the
+  two Omni messages at 124 and 125 of which the next paragraph says more (implementation p. 9):
+  they are commands and not controls. And `control_change`, because the map is neither learned nor
+  fixed: it is a table of defaults, which `assignment` says control by control.
+
+  OTHER PLACES THE DOCUMENTS DISAGREE, ON WHICH NO FIELD TURNS. They were met in the reading and
+  are not a search for every one. The implementation's recognised table has rows for controllers
+  124 and 125, Omni Mode Off and On (implementation p. 9), where the chart marks mode messages with
+  a cross and gives All Notes Off as `123 – 127` (manual p. 169). The two agree if the
+  implementation's rows for 124 and 125 mean what the chart's two rows say together, that those
+  messages silence the notes and leave the mode alone; the implementation does not say so. The
+  implementation numbers the drum kits 01 to 32 (implementation p. 2) where the manual's bank table
+  has `Drum Kit 0–31` (manual p. 147). The panel table gives the second filter's `KBD Track` the
+  note of a value shown as -63 to +63 (implementation p. 6) where the manual gives it `[–2.0…+2.0]`
+  (manual p. 88). And it gives OSC1's `Control1` nothing to do on a drum wave and `Control2`
+  nothing on the audio input, where the manual gives each a parameter (manual p. 83).
+
+sources:
+  implementation:
+    kind: midi_implementation
+    title: RADIAS MIDI Implementation
+    edition: Revision 1.0
+    dated: 2005-09-22
+    landing: "https://www.korg.com/us/support/download/manual/1/197/3287/"
+    url: "https://cdn.korg.com/us/support/download/files/41e988bc72917fb31e1851dbad6d4da1.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27RADIAS_MIDIimp.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: db161891dffd9e4d7449bfcf7e8e91245ed1860785b59601563db2e1eff2a11c
+    retrieved: 2026-10-11
+    # 61 pages, counted with pypdf and with PyMuPDF, which agree. Pages 2 to 60 print their own
+    # number, which is the file's page index, so nothing is added; the cover and the last page
+    # print none. **Korg's download page links no file**: each row is a landing page of its own
+    # with a content-hashed address inside it, which is the `url` here. The page dates this row
+    # 2015.01.01; the document dates itself 2005.09.22 and its metadata agrees.
+    page_offset: 0
+  manual:
+    kind: manual
+    title: RADIAS Owner's Manual
+    edition: E 2
+    dated: 2005-12-27
+    landing: "https://www.korg.com/us/support/download/manual/1/197/1768/"
+    url: "https://cdn.korg.com/us/support/download/files/c9f9bb7725d303cbc977b6e7cc08d464.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27RADIAS_OM_E2.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: c3a4d8e29fcbaa641a04a811254f4282850a13ee24d60b1a3e5a53162706ac99
+    retrieved: 2026-10-11
+    # 176 pages, counted twice and agreed. **Its printed page numbers run six behind its sheets**:
+    # the page that prints 151 is the file's 157th, and 165 of its pages print a number that fits.
+    # Cited for the factory map on p. 151, for the channel each kind of control travels on, for
+    # everything the implementation gives as a row and not as a sentence, and for its MIDI
+    # implementation chart. **The chart's page prints no number.** It is the file's 175th, the page
+    # after p. 168, and the contents list it as 169, which the offset agrees with. It describes the
+    # instrument as first released and says nothing of system 2.0.
+    page_offset: 6
+  upgrade:
+    kind: firmware_addendum
+    title: RADIAS Function added in system version 2.0
+    edition: E 1
+    dated: 2007-07-09
+    landing: "https://www.korg.com/us/support/download/manual/1/197/1816/"
+    url: "https://cdn.korg.com/us/support/download/files/d0d8aefff0525ece5f502d956e89bbe3.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27RADIAS_SysVer2_E.pdf&response-content-type=application%2Fpdf%3B"
+    sha256: 56e9e800b72890e92d7c225a6426c9847d0b42bc284158b796fe53d37364011d
+    retrieved: 2026-10-11
+    # Six pages; the four inside print their own number. **The newest of the documents fetched**,
+    # by its own date, and the only one that describes system 2.0. Cited for the version, for the
+    # virtual patch destinations it adds, and for the controllers the M3's keyboard sends.
+    page_offset: 0
+  download_page:
+    kind: download_page
+    title: Downloads | RADIAS | KORG (USA)
+    landing: "https://www.korg.com/us/support/download/"
+    url: "https://www.korg.com/us/support/download/product/1/197/"
+    sha256: d6d92cc25ac5fce324132b2df2aeb2f96cd366dde36d9c02459b8e1711755c06
+    retrieved: 2026-10-11
+    paginated: false
+    # Cited for what Korg offers for this instrument and for the newest system it serves: eight
+    # documents, the Sound Editor at 2.0 and the System Updater at 2.00, each for two systems, and
+    # a USB driver. The digest is of the extraction, which holds each row's title, version, date,
+    # kind and size as the page prints them; the served markup is saved beside it as `.html`. Three
+    # of the eight documents are cited. Four more were fetched and are not: a history of system
+    # 1.07, an Easy Start guide, the RD-KB keyboard's manual and the manual of the EXB-RADIAS
+    # option board. One, by its title a sheet about fitting the keyboard, was not fetched.
+
+midi:
+  # A timbre's channel is `Ch [01…16, GLB]` (manual p. 79), and the instrument's own, the global
+  # channel, is `MIDI Ch [01…16]` on the Global mode's MIDI page (manual p. 116). "With the factory
+  # settings, the global MIDI channel is set to 1." (manual p. 17). No page gives a timbre a
+  # factory channel: it is a setting of each program.
+  channels: [1, 16]
+  # ONLY THE CHART GIVES A MODE, AND ONLY AS RECEIVED. Its Mode row has a cross under Transmitted
+  # and 3 under Recognized against `Memorized`, and its legend reads "Mode 3: OMNI OFF, POLY"
+  # (manual p. 169). Mode messages are marked with a cross in both columns, so by the chart the
+  # mode is not changed over MIDI; the implementation's rows for controllers 124 and 125 are in the
+  # account. Each timbre is separately monophonic or polyphonic, which is a setting of the sound
+  # and not this mode.
+  mode: 3
+  # SENT WHEN IT IS THE MASTER AND FOLLOWED WHEN IT IS NOT. Timing Clock is transmitted when the
+  # Global mode's Clock setting is Internal (implementation p. 7) and recognised when it is
+  # Ext-USB, Ext-MIDI or Auto (implementation p. 10). Internal: "The RADIAS will be the master
+  # device (the controlling device)." (manual p. 117). The chart says the same of each setting,
+  # with `Auto` among those that receive (manual p. 169).
+  clock: both
+  # RECEIVED, START AND STOP ONLY, AND NEVER SENT. The recognised table lists Start and Stop beside
+  # the clock, Stop glossed "(Arpeggiator stop)" (implementation p. 10); the transmitted table has
+  # the clock and Active Sensing and no more (implementation p. 7). "When a Start message [FA] is
+  # received, the arpeggiator will start from the first note that is played." (manual p. 150), and
+  # "When a Stop message [FC] is received, the arpeggiator and step sequencers will stop." (manual
+  # p. 150). Both are answered only while the Clock setting is Ext-USB, Ext-MIDI or Auto, the
+  # clock's own condition (implementation p. 10). Continue is in neither table.
+  transport: receives
+  program_change:
+    # BOTH WAYS, ON THE GLOBAL CHANNEL, AND NOT IN THREE OF THE MODES. "When you switch programs in
+    # the Program Play mode, a program change and bank select messages are transmitted." (manual
+    # p. 146), and "Program change and bank change are transmitted and received on the global MIDI
+    # channel." (manual p. 147). "Program changes are not received in the Program Edit mode, Drum
+    # Edit mode, or Global mode." (manual p. 147). Two switches gate them, one global and one on
+    # each timbre (manual pp. 118 and 79).
+    receives: true
+    sends: true
+    # "16 × 16 banks = 256 (including program/user area)" (manual p. 168): banks A to P of sixteen
+    # programs, reached as bank select LSB 0 and 1 with program 0 to 127 under each (implementation
+    # p. 2). The 32 drum kits are counted apart.
+    presets: 256
+  # 108 OF THE 176 CONTROLS BELOW ARE ADDRESSED BY NRPN AND BY NO CONTROL CHANGE. The manual gives
+  # the reason in a sentence: NRPNs carry the knobs and buttons "that are not included in the
+  # control messages described above" (manual p. 149).
+  nrpn: supported
+  # "Program data and global data can be transmitted as MIDI exclusive data." (manual p. 150), and
+  # the implementation gives the dumps, and a parameter change for the parameters of a program and
+  # of a drum kit; its table of global parameters gives none (implementation p. 28). The family
+  # byte is 72 hex, "RADIAS Series ID" (implementation p. 8). Three universal messages are
+  # answered: the identity request (implementation pp. 8 and 10), and the two the manual names, "Of
+  # these universal system exclusive messages, the RADIAS responds to master volume and master fine
+  # tuning." (manual p. 150).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # "maximum 24 voices" (manual p. 168), with a footnote: "Varies depending on the parameters that
+  # make up the sound." (manual p. 168). **SHARED IS A READING.** The figure is given for the tone
+  # generator and no page gives a timbre voices of its own; a program-level switch, the vocoder's,
+  # "will change the available number of voices" (manual p. 74). No page uses the word shared.
+  polyphony: 24
+  polyphony_shared: true
+  # One or many, for each timbre: `Assign` is "Selects monophonic or polyphonic operation." (manual
+  # p. 80). Unison is a third thing and is not a voicing mode here: "The RADIAS lets you stack as
+  # many as six voices in this way." (manual p. 80).
+  voicing_modes: [1, 24]
+  velocity:
+    # Sent and received. Note On is in both tables with a velocity of 1 to 127 (implementation
+    # pp. 2 and 9).
+    note_on: both
+    # "The note-off velocity is fixed at 64 for transmission, but will not be received." (manual
+    # p. 146).
+    note_off: false
+  # CHANNEL AFTERTOUCH, RECEIVED AS A MODULATION SOURCE AND NOTHING ELSE: "you can use aftertouch
+  # messages as a modulation source for a virtual patch in a synth program or as the vocoder FC MOD
+  # modulation source." (manual p. 147), when one of `MIDI1` to `MIDI5` is set to it, as `MIDI5` is
+  # at the factory (manual p. 117). Polyphonic pressure is in neither table.
+  aftertouch: channel
+  # SENT, BUT NOT BY ITS OWN KEYS: "49 Keys (no aftertouch)" (manual p. 168). Channel Pressure is
+  # in the transmitted table as what the assignable pedal sends when it is set to AftTouch
+  # (implementation p. 2), which is not its factory setting. Under system 2.0 the M3's larger
+  # keyboards send it too (upgrade p. 4).
+  aftertouch_transmits: true
+  pitch_bend:
+    # A setting of each timbre, `BendRange [–12…+12]` (manual p. 81), with no factory figure
+    # printed, so no `semitones`.
+    programmable: true
+  # WHAT IS ANSWERED, WHICH ONLY THE CHART SAYS: its Note Number row has `0 – 127` under
+  # Recognized, and again against True Voice (manual p. 169). What the instrument's own keys send
+  # is narrower and is not this field: 5 to 108 from "RADIAS(with Keyboard)" (implementation p. 2)
+  # and 21 to 108 from "RADIAS(no Keyboard)" (implementation p. 2). Each timbre also has a key zone
+  # of its own, a setting of the program.
+  note_range: [0, 127]
+
+modes:
+  # TWO PLAYING MODES, UNDER THE NAMES THE SPECIFICATIONS GIVE: "Program, Drum, Global" (manual
+  # p. 168). Global is where settings are made and is not a way of playing, so it is not here. The
+  # panel divides each of the two into a Play and an Edit mode and adds a Vocoder Edit mode (manual
+  # pp. 4-5).
+  # **PROGRAM IS WHERE IT STARTS, EVERY TIME**: "Each time you turn the power on, the RADIAS will
+  # be in the Program Play mode." (manual p. 19).
+  program:
+    label: Program
+    factory: true
+  drum:
+    label: Drum
+
+parts:
+  # FOUR TIMBRES TO A PROGRAM, EACH ON A CHANNEL THE PROGRAM SETS. "Each program = 4 timbres + 1
+  # vocoder + 1 Master Fx + arpeggiator + 2 step sequencers." (manual p. 168), and a "program uses
+  # four timbres, and allows you to set the MIDI channel independently for each timbre" (manual
+  # p. 146). The setting is `Ch`: "Specifies the MIDI transmit/receive channel." (manual p. 79),
+  # from 1 to 16, or `GLB`, with which "The MIDI transmit/receive channel of the timbre will always
+  # match the global MIDI channel." (manual p. 79). A channel is a setting of each program and no
+  # factory arrangement is printed, so the part says `assigned`. Two timbres may be given one
+  # channel, which is how the manual makes a split or a layer.
+  # A TIMBRE ANSWERS A PROGRAM CHANGE OF ITS OWN, which swaps that timbre for one from another
+  # program, selected by bank select 32 and an LSB of 32 to 39 (implementation p. 2). That is what
+  # `program_change` in `receives` means here; the program itself changes on the global channel.
+  # **The two documents disagree about whether it is sent**: "Timbre changes are transmitted and
+  # received on the timbre MIDI channel." (manual p. 147), where the implementation marks each of
+  # those bank numbers `(only Receive)` (implementation p. 2). Both say it is received, which is
+  # all this field records. A timbre holding a drum kit is switched to another kit, by bank select
+  # 32 and 64 on the timbre's channel, and a timbre on the global channel shares that channel with
+  # the program's own changes, so each must be sent with its bank select (manual p. 147).
+  # A timbre may hold a drum kit in place of a synth sound, and then its notes are the kit's
+  # instruments and not pitches: on the kit's own keys, moved by the program's `NoteSft` setting
+  # and heard only inside the timbre's key zone (manual pp. 76 and 63). The part says `pitches`,
+  # which is what a timbre is unless a program makes it otherwise.
+  timbre:
+    label: Timbre
+    mode: program
+    count: 4
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+  # THE VOCODER HAS NO CHANNEL OF ITS OWN: IT BORROWS ITS CARRIER'S. Its knobs and its NRPNs travel
+  # on the channel of the timbre chosen as its carrier, the vocoder's `InSrc1` setting (manual
+  # pp. 149 and 151), the 32 band NRPNs by the reading the account gives. That is one of the four
+  # timbres' channels and which one is a setting, so this part says `assigned` and takes controls
+  # only: the notes that play the vocoder are the carrier timbre's.
+  vocoder:
+    label: Vocoder
+    mode: program
+    channel: assigned
+    receives: [controls]
+  # IN DRUM MODE THE KIT PLAYS ON THE GLOBAL CHANNEL: "In the Drum Play/Edit modes, each drum
+  # instrument will sound on the global MIDI channel." (manual p. 28). A kit is sixteen
+  # instruments, each on a note.
+  # **THE SIXTEEN NOTES BELOW ARE THE FACTORY KITS', AND AN OWNER CAN MOVE EVERY ONE.** "In the
+  # factory-set drum kits, drum instruments are assigned to the C2–D#3 keys." (manual p. 28), and
+  # the Voice Name List prints the arrangement for all 32 kits: a table for each of Dr01 to Dr24
+  # and one for Dr25 to 32, `Init DrumKit`, each headed `Inst 1 (C2)` to `Inst 16 (D#3)` with that
+  # kit's instrument under each key (manual pp. 161-163). One table's second row of headings,
+  # Dr02's, gives the instruments' numbers without the keys. So the keys are the same in every
+  # factory kit and what sounds on them differs by kit, which is why the names here are the
+  # instruments' numbers. C2 is note 36 by the implementation's own scale, `0~127=C-1~G9`
+  # (implementation p. 27). Each instrument's note is a setting of the kit, `PlayNote [C-1…G9]`
+  # (manual p. 111), so a kit an owner has edited may answer on other notes. The format has no word
+  # for a part's notes being defaults.
+  # A kit is changed from outside as a program is, by bank select 32 and 64 and then a program
+  # change of 0 to 31 (implementation p. 2): "Drum kit changes are transmitted and received on the
+  # global MIDI channel." (manual p. 147). The implementation marks those bank numbers `(only
+  # Receive)` (implementation p. 2), as it does the timbres'; both say it is received.
+  # **IN DRUM MODE THE PANEL EDITS THE INSTRUMENT CHOSEN WITH THE SIXTEEN KEYS** (manual pp. 60 and
+  # 112), and by the manual's general sentence an assigned controller that arrives does what its
+  # knob would (manual p. 149). **No page applies that to Drum mode in so many words, and no
+  # channel message is named that chooses the instrument.** The display follows the instrument
+  # played, "The display will indicate the name, note number, and group of the drum instrument you
+  # played." (manual p. 28), and whether an arriving note does the same is not said. The
+  # implementation's drum kit table has a parameter that by its name chooses it, `Drum Prog
+  # select`, `0~15=DrumProg#01~16`, with a parameter change address of its own, `00:10`
+  # (implementation p. 27); that is system exclusive, and no page says the panel's controls follow
+  # it. So the 55 controls that follow a timbre are not recorded for this part: they name the
+  # `timbre` part, which exists in Program mode, and read here as Program mode's alone. The manual
+  # does say that performance data in the Drum Play and Drum Edit modes travels on the global
+  # channel (manual p. 116), and that the effects, arpeggiator and step sequencers there are those
+  # of the timbre that held a kit in the program chosen when the mode was entered (manual p. 28).
+  kit:
+    label: Drum kit
+    mode: drum
+    channel_offset: 0
+    addressing: voices
+    receives: [notes, program_change]
+    voices:
+      inst_1: 36
+      inst_2: 37
+      inst_3: 38
+      inst_4: 39
+      inst_5: 40
+      inst_6: 41
+      inst_7: 42
+      inst_8: 43
+      inst_9: 44
+      inst_10: 45
+      inst_11: 46
+      inst_12: 47
+      inst_13: 48
+      inst_14: 49
+      inst_15: 50
+      inst_16: 51
+
+groups:
+  performance: Performance controllers
+  sources: Modulation sources
+  bank: Bank select
+  unison: UNISON
+  pitch: PITCH
+  osc1: OSC1
+  osc2: OSC2
+  mixer: MIXER
+  filter: FILTER
+  filter1: FILTER1
+  filter2: FILTER2
+  amp: AMP
+  eg1: EG1
+  eg2: EG2
+  lfo1: LFO1
+  lfo2: LFO2
+  patch: Virtual patch
+  eq: EQ
+  mod_seq: Modulation sequencer
+  ifx1: I.FX1
+  ifx2: I.FX2
+  mfx: M.FX
+  arpeggiator: Arpeggiator
+  step_seq: Step sequencer
+  vocoder: Vocoder
+  program: Program
+
+controls:
+
+  # PERFORMANCE CONTROLLERS, WHICH NO MAP MOVES. Each is a row of its own in the implementation's
+  # channel tables. They are sent on the channel of the timbre the panel has selected: "When you
+  # operate the RADIAS' modulation wheel, modulation depth messages are transmitted on the MIDI
+  # channel of the selected timbre." (manual p. 148). Each timbre receives them on its own channel,
+  # where its filters let them in. **One use of them is on the global channel instead**: as the
+  # control source of the master effect (manual p. 149). The labels are the transmitted table's.
+  # The recognised table calls the first two "Pitch Modulation Depth" (implementation p. 9) and
+  # Breath Control Depth.
+  modulation_1:               {label: Modulation1, cc: 1, part: timbre, group: performance}
+  # Also the second of the five modulation sources at the factory, `MIDI2` (manual p. 117), and
+  # what the M3 keyboard's joystick sends in its -Y direction (upgrade p. 3).
+  modulation_2:               {label: Modulation2, cc: 2, part: timbre, group: performance}
+  # MARKED AS RECOGNISED, AND NOT SAID IN SO MANY WORDS TO DO ANYTHING. Foot Control is what the
+  # assignable pedal sends when it is set to FootPedal (implementation p. 2), which is not its
+  # factory setting. The chart marks controller 4 yes in both columns (manual p. 169), and a timbre
+  # has a filter for it: "Specifies whether foot pedal and foot switch messages will be received by
+  # the timbre." (manual p. 79). The implementation's recognised table has no row for it, and no
+  # page says in one sentence what an arriving 4 does. The nearest: the effects list the foot pedal
+  # as a control source, `F.Pedal Foot pedal` (manual p. 126), and the control changes used as the
+  # insert effects' control sources are received (manual p. 149). At the factory it is neither a
+  # panel control's number nor a modulation source. Recorded both ways, after the chart.
+  foot_control:               {label: Foot Control, cc: 4, part: timbre, group: performance}
+  # "When expression messages are received, the volume of a timbre will be controlled." (manual
+  # p. 148). Sent by the assignable pedal, which is set to it at the factory.
+  expression:                 {label: Expression, cc: 11, part: timbre, group: performance}
+  sustain:                    {label: Sustain Off/On, cc: 64, part: timbre, group: performance}
+  portamento_off_on:          {label: Portamento Off/On, cc: 65, part: timbre, group: performance}
+
+  # BANK SELECT, WHICH DOES NOTHING UNTIL A PROGRAM CHANGE FOLLOWS: "Receiving a bank select
+  # message will not cause the program or bank to switch immediately." (manual p. 147). On the
+  # global channel it chooses among the 256 programs, and in Drum mode among the kits; on a
+  # timbre's channel, with an MSB of 32, it chooses a timbre. Left without a part, as the program's
+  # own.
+  bank_select_msb:            {label: Bank Select(MSB), cc: 0, group: bank}
+  bank_select_lsb:            {label: Bank Select(LSB), cc: 32, group: bank}
+
+  # THREE OF THE FIVE MODULATION SOURCES, AT THEIR FACTORY NUMBERS. `MIDI1` to `MIDI5` are what a
+  # virtual patch, the vocoder's filter or an effect can be driven by, and each is set to a
+  # controller on the Global mode's MIDI page: 16, 2, 80 and 81 at the factory, and aftertouch
+  # (manual p. 117). 2 is `modulation_2` above. The owner can point any of the five elsewhere,
+  # which is what `assignment: default` says. Each timbre filters them with controllers 1 and 2, by
+  # its `Cntrl` setting (manual p. 79), which is why they name the `timbre` part; as the master
+  # effect's control source they are on the global channel instead (manual p. 149). **As it ships,
+  # nothing on the instrument or its own keyboard sends these three.** Under system 2.0 the M3
+  # keyboard's ribbon and its two switches do, through the instrument, on the channel of the timbre
+  # selected (upgrade pp. 3-4).
+  midi1:                      {label: MIDI1, cc: 16, assignment: default, part: timbre, group: sources}
+  midi3:                      {label: MIDI3, cc: 80, assignment: default, part: timbre, group: sources}
+  midi4:                      {label: MIDI4, cc: 81, assignment: default, part: timbre, group: sources}
+
+  # THE 57 PANEL CONTROLS, AT THE NUMBERS THE MANUAL'S TABLE GIVES THEM (manual p. 151), under its
+  # section headings. The labels are that table's `Parameter` column. All but the last two follow a
+  # timbre's channel. **The fifteen numbered above 95 are the ones the implementation's recognised
+  # table does not reach**: see the comment above the definition.
+
+  # UNISON ──────────────────────────────────────────────────────
+  unison_sw:                  {label: Unison SW, cc: 3, assignment: default, part: timbre, group: unison}
+
+  # PITCH ───────────────────────────────────────────────────────
+  portamento:                 {label: Portamento, cc: 5, assignment: default, part: timbre, group: pitch}
+
+  # OSC1 ────────────────────────────────────────────────────────
+  osc1_wave:                  {label: OSC1 Wave, cc: 8, values: {"saw": 0, "square": 14, "tri": 28, "sin": 42, "formant": 56, "noise": 70, "synth_pcm": 84, "drum_pcm": 98, "audio_in": 112}, assignment: default, part: timbre, group: osc1}
+  osc1_mod:                   {label: OSC1 Mod., cc: 9, values: {"waveform": 0, "cross": 32, "unison": 64, "vpm": 96}, assignment: default, part: timbre, group: osc1}
+  osc1_ctrl1:                 {label: OSC1 Ctrl1, cc: 15, assignment: default, part: timbre, group: osc1}
+  osc1_ctrl2:                 {label: OSC1 Ctrl2, cc: 17, assignment: default, part: timbre, group: osc1}
+
+  # OSC2 ────────────────────────────────────────────────────────
+  osc2_wave:                  {label: OSC2 Wave, cc: 18, values: {"saw": 0, "squ": 32, "tri": 64, "sin": 96}, assignment: default, part: timbre, group: osc2}
+  osc2_mod:                   {label: OSC2 Mod., cc: 19, values: {"off": 0, "ring": 32, "sync": 64, "ring_sync": 96}, assignment: default, part: timbre, group: osc2}
+  osc2_semitone:              {label: OSC2 Semitone, cc: 20, assignment: default, part: timbre, group: osc2}
+  osc2_tune:                  {label: OSC2 Tune, cc: 21, assignment: default, part: timbre, group: osc2}
+
+  # MIXER ───────────────────────────────────────────────────────
+  osc1_level:                 {label: OSC1 Level, cc: 23, assignment: default, part: timbre, group: mixer}
+  osc2_level:                 {label: OSC2 Level, cc: 24, assignment: default, part: timbre, group: mixer}
+  noise_level:                {label: Noise Level, cc: 25, assignment: default, part: timbre, group: mixer}
+
+  # FILTER ──────────────────────────────────────────────────────
+  filter_routing:             {label: Filter Routing, cc: 26, values: {"single": 0, "serial": 32, "parallel": 64, "individual": 96}, assignment: default, part: timbre, group: filter}
+
+  # FILTER1 ─────────────────────────────────────────────────────
+  filter1_type_balance:       {label: Filter1 Type Balance, cc: 27, assignment: default, part: timbre, group: filter1}
+  filter1_cutoff:             {label: Filter1 Cutoff, cc: 74, assignment: default, part: timbre, group: filter1}
+  filter1_resonance:          {label: Filter1 Resonance, cc: 71, assignment: default, part: timbre, group: filter1}
+  filter1_eg1_int:            {label: Filter1 EG1 Int, cc: 79, assignment: default, part: timbre, group: filter1}
+  filter1_keytrack:           {label: Filter1 KeyTrack, cc: 28, assignment: default, part: timbre, group: filter1}
+
+  # FILTER2 ─────────────────────────────────────────────────────
+  # 82 is also what the assignable switch sends when it is set to FootSw (implementation p. 2),
+  # and, by the chart, a foot switch message: see the account.
+  filter2_type:               {label: Filter2 Type, cc: 29, values: {"lpf": 0, "hpf": 32, "bpf": 64, "comb": 96}, assignment: default, part: timbre, group: filter2}
+  filter2_cutoff:             {label: Filter2 Cutoff, cc: 30, assignment: default, part: timbre, group: filter2}
+  filter2_resonance:          {label: Filter2 Resonance, cc: 68, assignment: default, part: timbre, group: filter2}
+  filter2_eg1_int:            {label: Filter2 EG1 Int, cc: 69, assignment: default, part: timbre, group: filter2}
+  filter2_keytrack:           {label: Filter2 KeyTrack, cc: 82, assignment: default, part: timbre, group: filter2}
+
+  # AMP ─────────────────────────────────────────────────────────
+  # 7 and 10 are also what the assignable pedal sends as Volume and Pan, and the manual makes their
+  # effect on the sound conditional on these two knobs being assigned to them (manual p. 148).
+  amp_level:                  {label: Amp Level, cc: 7, assignment: default, part: timbre, group: amp}
+  panpot:                     {label: Panpot, cc: 10, assignment: default, part: timbre, group: amp}
+  drive_ws_depth:             {label: Drive/WS Depth, cc: 83, assignment: default, part: timbre, group: amp}
+  drive_ws_sw:                {label: Drive/WS SW, cc: 84, values: {"off": 0, "drive": 42, "waveshape": 85}, assignment: default, part: timbre, group: amp}
+
+  # EG1 ─────────────────────────────────────────────────────────
+  eg1_attack:                 {label: EG1 Attack, cc: 85, assignment: default, part: timbre, group: eg1}
+  eg1_decay:                  {label: EG1 Decay, cc: 86, assignment: default, part: timbre, group: eg1}
+  eg1_sustain:                {label: EG1 Sustain, cc: 87, assignment: default, part: timbre, group: eg1}
+  eg1_release:                {label: EG1 Release, cc: 88, assignment: default, part: timbre, group: eg1}
+
+  # EG2 ─────────────────────────────────────────────────────────
+  eg2_attack:                 {label: EG2 Attack, cc: 73, assignment: default, part: timbre, group: eg2}
+  eg2_decay:                  {label: EG2 Decay, cc: 75, assignment: default, part: timbre, group: eg2}
+  eg2_sustain:                {label: EG2 Sustain, cc: 70, assignment: default, part: timbre, group: eg2}
+  eg2_release:                {label: EG2 Release, cc: 72, assignment: default, part: timbre, group: eg2}
+
+  # LFO1 ────────────────────────────────────────────────────────
+  lfo1_wave:                  {label: LFO1 Wave, cc: 89, values: {"saw": 0, "squ": 32, "tri": 64, "s_h": 96}, assignment: default, part: timbre, group: lfo1}
+  lfo1_frequency:             {label: LFO1 Frequency, cc: 90, assignment: default, part: timbre, group: lfo1}
+
+  # LFO2 ────────────────────────────────────────────────────────
+  lfo2_wave:                  {label: LFO2 Wave, cc: 102, assignment: default, part: timbre, group: lfo2}
+  lfo2_frequency:             {label: LFO2 Frequency, cc: 76, assignment: default, part: timbre, group: lfo2}
+
+  # PATCH1 to PATCH6 ────────────────────────────────────────────
+  patch1_int:                 {label: Patch1 Int., cc: 103, assignment: default, part: timbre, group: patch}
+  patch2_int:                 {label: Patch2 Int., cc: 104, assignment: default, part: timbre, group: patch}
+  patch3_int:                 {label: Patch3 Int., cc: 105, assignment: default, part: timbre, group: patch}
+  patch4_int:                 {label: Patch4 Int., cc: 106, assignment: default, part: timbre, group: patch}
+  patch5_int:                 {label: Patch5 Int., cc: 107, assignment: default, part: timbre, group: patch}
+  patch6_int:                 {label: Patch6 Int., cc: 108, assignment: default, part: timbre, group: patch}
+
+  # EQ ──────────────────────────────────────────────────────────
+  eq_hi_gain:                 {label: EQ Hi.Gain, cc: 109, assignment: default, part: timbre, group: eq}
+  eq_low_gain:                {label: EQ Low.Gain, cc: 110, assignment: default, part: timbre, group: eq}
+
+  # MOD.SEQ. ────────────────────────────────────────────────────
+  mod_seq_sw:                 {label: Mod.Seq. SW, cc: 111, values: {"off": 0, "on": 64}, assignment: default, part: timbre, group: mod_seq}
+
+  # I.FX1 ───────────────────────────────────────────────────────
+  fx1_sw:                     {label: FX1 SW, cc: 115, values: {"off": 0, "on": 64}, assignment: default, part: timbre, group: ifx1}
+  fx1_edit1:                  {label: FX1 Edit1, cc: 12, assignment: default, part: timbre, group: ifx1}
+  fx1_edit2:                  {label: FX1 Edit2, cc: 112, assignment: default, part: timbre, group: ifx1}
+
+  # I.FX2 ───────────────────────────────────────────────────────
+  fx2_sw:                     {label: FX2 SW, cc: 116, values: {"off": 0, "on": 64}, assignment: default, part: timbre, group: ifx2}
+  fx2_edit1:                  {label: FX2 Edit1, cc: 13, assignment: default, part: timbre, group: ifx2}
+  fx2_edit2:                  {label: FX2 Edit2, cc: 113, assignment: default, part: timbre, group: ifx2}
+
+  # M.FX: THE MASTER EFFECT'S TWO, ON THE GLOBAL CHANNEL, so they name no part (manual p. 151).
+  mfx_sw:                     {label: MFX SW, cc: 94, values: {"off": 0, "on": 64}, assignment: default, group: mfx}
+  masterfx_edit:              {label: MasterFX Edit, cc: 114, assignment: default, group: mfx}
+
+  # THE NRPNs, 108 OF THEM, AT THE ADDRESSES THE RECOGNISED TABLE PRINTS (implementation pp. 9-10),
+  # each recorded as MSB x 128 + LSB. The labels are that table's. All are sent as well as received
+  # but one.
+
+  # ARPEGGIATOR AND STEP SEQUENCERS, ON THE GLOBAL CHANNEL (manual p. 149). `Arpeggio Octaves` is
+  # in the recognised table and not in the transmitted one, and its values are 0 to 3 for one to
+  # four octaves (implementation p. 9). **`Arpeggio Select SW` moves a setting each timbre has**,
+  # the one that gives a timbre to the arpeggiator or to a step sequencer (manual p. 96), and which
+  # timbre a selector arriving on the global channel sets is not stated.
+  arpeggio_on_off:            {label: Arpeggio On/Off, nrpn: 2, values: {"off": 0, "on": 64}, group: arpeggiator}
+  arpeggio_octaves:           {label: Arpeggio Octaves, nrpn: 3, range: [0, 3], direction: receives, group: arpeggiator}
+  arpeggio_latch_on_off:      {label: Arpeggio Latch On/Off, nrpn: 4, values: {"off": 0, "on": 64}, group: arpeggiator}
+  arpeggio_type:              {label: Arpeggio Type, nrpn: 7, values: {"up": 0, "down": 21, "alt1": 42, "alt2": 63, "random": 84, "trigger": 105}, group: arpeggiator}
+  arpeggio_gate:              {label: Arpeggio Gate, nrpn: 10, group: arpeggiator}
+  arpeggio_select_sw:         {label: Arpeggio Select SW, nrpn: 11, values: {"off": 0, "arpeggiator": 1, "step_seq1": 2, "step_seq2": 3}, group: arpeggiator}
+  stepseq1_latch:             {label: StepSeq1 Latch, nrpn: 20, values: {"off": 0, "on": 64}, group: step_seq}
+  stepseq1_gate:              {label: StepSeq1 Gate, nrpn: 26, group: step_seq}
+  stepseq2_latch:             {label: StepSeq2 Latch, nrpn: 36, values: {"off": 0, "on": 64}, group: step_seq}
+  stepseq2_gate:              {label: StepSeq2 Gate, nrpn: 42, group: step_seq}
+
+  # VIRTUAL PATCHES, ON THE TIMBRE'S CHANNEL (manual p. 149). A source is one of fifteen bands
+  # (implementation p. 4). The fourth is printed `LFO` and the fifth `LFO2`; the manual's list has
+  # LFO1 and LFO2 there (manual p. 91). The destinations have no `values`: their bands are the 2005
+  # table's and system 2.0 added destinations, as the account says.
+  patch1_source:              {label: Patch1 Source, nrpn: 512, values: {"eg1": 0, "eg2": 8, "eg3": 17, "lfo": 25, "lfo2": 34, "velocity": 42, "pitch_bend": 51, "mod_wheel": 59, "kbd_track": 68, "envelope_follower": 76, "midi1": 85, "midi2": 93, "midi3": 102, "midi4": 110, "midi5": 119}, part: timbre, group: patch}
+  patch2_source:              {label: Patch2 Source, nrpn: 513, values: {"eg1": 0, "eg2": 8, "eg3": 17, "lfo": 25, "lfo2": 34, "velocity": 42, "pitch_bend": 51, "mod_wheel": 59, "kbd_track": 68, "envelope_follower": 76, "midi1": 85, "midi2": 93, "midi3": 102, "midi4": 110, "midi5": 119}, part: timbre, group: patch}
+  patch3_source:              {label: Patch3 Source, nrpn: 514, values: {"eg1": 0, "eg2": 8, "eg3": 17, "lfo": 25, "lfo2": 34, "velocity": 42, "pitch_bend": 51, "mod_wheel": 59, "kbd_track": 68, "envelope_follower": 76, "midi1": 85, "midi2": 93, "midi3": 102, "midi4": 110, "midi5": 119}, part: timbre, group: patch}
+  patch4_source:              {label: Patch4 Source, nrpn: 515, values: {"eg1": 0, "eg2": 8, "eg3": 17, "lfo": 25, "lfo2": 34, "velocity": 42, "pitch_bend": 51, "mod_wheel": 59, "kbd_track": 68, "envelope_follower": 76, "midi1": 85, "midi2": 93, "midi3": 102, "midi4": 110, "midi5": 119}, part: timbre, group: patch}
+  patch5_source:              {label: Patch5 Source, nrpn: 516, values: {"eg1": 0, "eg2": 8, "eg3": 17, "lfo": 25, "lfo2": 34, "velocity": 42, "pitch_bend": 51, "mod_wheel": 59, "kbd_track": 68, "envelope_follower": 76, "midi1": 85, "midi2": 93, "midi3": 102, "midi4": 110, "midi5": 119}, part: timbre, group: patch}
+  patch6_source:              {label: Patch6 Source, nrpn: 517, values: {"eg1": 0, "eg2": 8, "eg3": 17, "lfo": 25, "lfo2": 34, "velocity": 42, "pitch_bend": 51, "mod_wheel": 59, "kbd_track": 68, "envelope_follower": 76, "midi1": 85, "midi2": 93, "midi3": 102, "midi4": 110, "midi5": 119}, part: timbre, group: patch}
+  patch1_destination:         {label: Patch1 Destination, nrpn: 520, part: timbre, group: patch}
+  patch2_destination:         {label: Patch2 Destination, nrpn: 521, part: timbre, group: patch}
+  patch3_destination:         {label: Patch3 Destination, nrpn: 522, part: timbre, group: patch}
+  patch4_destination:         {label: Patch4 Destination, nrpn: 523, part: timbre, group: patch}
+  patch5_destination:         {label: Patch5 Destination, nrpn: 524, part: timbre, group: patch}
+  patch6_destination:         {label: Patch6 Destination, nrpn: 525, part: timbre, group: patch}
+
+  # THE THREE MODULATION SEQUENCERS' SIXTEEN STEPS EACH. **No page names their channel**; they are
+  # recorded on the timbre's, as a reading, because each timbre has sequencers of its own.
+  mod_seq1_step_01:           {label: "Mod.SEQ1 Step[01] VALUE", nrpn: 528, part: timbre, group: mod_seq}
+  mod_seq1_step_02:           {label: "Mod.SEQ1 Step[02] VALUE", nrpn: 529, part: timbre, group: mod_seq}
+  mod_seq1_step_03:           {label: "Mod.SEQ1 Step[03] VALUE", nrpn: 530, part: timbre, group: mod_seq}
+  mod_seq1_step_04:           {label: "Mod.SEQ1 Step[04] VALUE", nrpn: 531, part: timbre, group: mod_seq}
+  mod_seq1_step_05:           {label: "Mod.SEQ1 Step[05] VALUE", nrpn: 532, part: timbre, group: mod_seq}
+  mod_seq1_step_06:           {label: "Mod.SEQ1 Step[06] VALUE", nrpn: 533, part: timbre, group: mod_seq}
+  mod_seq1_step_07:           {label: "Mod.SEQ1 Step[07] VALUE", nrpn: 534, part: timbre, group: mod_seq}
+  mod_seq1_step_08:           {label: "Mod.SEQ1 Step[08] VALUE", nrpn: 535, part: timbre, group: mod_seq}
+  mod_seq1_step_09:           {label: "Mod.SEQ1 Step[09] VALUE", nrpn: 536, part: timbre, group: mod_seq}
+  mod_seq1_step_10:           {label: "Mod.SEQ1 Step[10] VALUE", nrpn: 537, part: timbre, group: mod_seq}
+  mod_seq1_step_11:           {label: "Mod.SEQ1 Step[11] VALUE", nrpn: 538, part: timbre, group: mod_seq}
+  mod_seq1_step_12:           {label: "Mod.SEQ1 Step[12] VALUE", nrpn: 539, part: timbre, group: mod_seq}
+  mod_seq1_step_13:           {label: "Mod.SEQ1 Step[13] VALUE", nrpn: 540, part: timbre, group: mod_seq}
+  mod_seq1_step_14:           {label: "Mod.SEQ1 Step[14] VALUE", nrpn: 541, part: timbre, group: mod_seq}
+  mod_seq1_step_15:           {label: "Mod.SEQ1 Step[15] VALUE", nrpn: 542, part: timbre, group: mod_seq}
+  mod_seq1_step_16:           {label: "Mod.SEQ1 Step[16] VALUE", nrpn: 543, part: timbre, group: mod_seq}
+  mod_seq2_step_01:           {label: "Mod.SEQ2 Step[01] VALUE", nrpn: 544, part: timbre, group: mod_seq}
+  mod_seq2_step_02:           {label: "Mod.SEQ2 Step[02] VALUE", nrpn: 545, part: timbre, group: mod_seq}
+  mod_seq2_step_03:           {label: "Mod.SEQ2 Step[03] VALUE", nrpn: 546, part: timbre, group: mod_seq}
+  mod_seq2_step_04:           {label: "Mod.SEQ2 Step[04] VALUE", nrpn: 547, part: timbre, group: mod_seq}
+  mod_seq2_step_05:           {label: "Mod.SEQ2 Step[05] VALUE", nrpn: 548, part: timbre, group: mod_seq}
+  mod_seq2_step_06:           {label: "Mod.SEQ2 Step[06] VALUE", nrpn: 549, part: timbre, group: mod_seq}
+  mod_seq2_step_07:           {label: "Mod.SEQ2 Step[07] VALUE", nrpn: 550, part: timbre, group: mod_seq}
+  mod_seq2_step_08:           {label: "Mod.SEQ2 Step[08] VALUE", nrpn: 551, part: timbre, group: mod_seq}
+  mod_seq2_step_09:           {label: "Mod.SEQ2 Step[09] VALUE", nrpn: 552, part: timbre, group: mod_seq}
+  mod_seq2_step_10:           {label: "Mod.SEQ2 Step[10] VALUE", nrpn: 553, part: timbre, group: mod_seq}
+  mod_seq2_step_11:           {label: "Mod.SEQ2 Step[11] VALUE", nrpn: 554, part: timbre, group: mod_seq}
+  mod_seq2_step_12:           {label: "Mod.SEQ2 Step[12] VALUE", nrpn: 555, part: timbre, group: mod_seq}
+  mod_seq2_step_13:           {label: "Mod.SEQ2 Step[13] VALUE", nrpn: 556, part: timbre, group: mod_seq}
+  mod_seq2_step_14:           {label: "Mod.SEQ2 Step[14] VALUE", nrpn: 557, part: timbre, group: mod_seq}
+  mod_seq2_step_15:           {label: "Mod.SEQ2 Step[15] VALUE", nrpn: 558, part: timbre, group: mod_seq}
+  mod_seq2_step_16:           {label: "Mod.SEQ2 Step[16] VALUE", nrpn: 559, part: timbre, group: mod_seq}
+  mod_seq3_step_01:           {label: "Mod.SEQ3 Step[01] VALUE", nrpn: 560, part: timbre, group: mod_seq}
+  mod_seq3_step_02:           {label: "Mod.SEQ3 Step[02] VALUE", nrpn: 561, part: timbre, group: mod_seq}
+  mod_seq3_step_03:           {label: "Mod.SEQ3 Step[03] VALUE", nrpn: 562, part: timbre, group: mod_seq}
+  mod_seq3_step_04:           {label: "Mod.SEQ3 Step[04] VALUE", nrpn: 563, part: timbre, group: mod_seq}
+  mod_seq3_step_05:           {label: "Mod.SEQ3 Step[05] VALUE", nrpn: 564, part: timbre, group: mod_seq}
+  mod_seq3_step_06:           {label: "Mod.SEQ3 Step[06] VALUE", nrpn: 565, part: timbre, group: mod_seq}
+  mod_seq3_step_07:           {label: "Mod.SEQ3 Step[07] VALUE", nrpn: 566, part: timbre, group: mod_seq}
+  mod_seq3_step_08:           {label: "Mod.SEQ3 Step[08] VALUE", nrpn: 567, part: timbre, group: mod_seq}
+  mod_seq3_step_09:           {label: "Mod.SEQ3 Step[09] VALUE", nrpn: 568, part: timbre, group: mod_seq}
+  mod_seq3_step_10:           {label: "Mod.SEQ3 Step[10] VALUE", nrpn: 569, part: timbre, group: mod_seq}
+  mod_seq3_step_11:           {label: "Mod.SEQ3 Step[11] VALUE", nrpn: 570, part: timbre, group: mod_seq}
+  mod_seq3_step_12:           {label: "Mod.SEQ3 Step[12] VALUE", nrpn: 571, part: timbre, group: mod_seq}
+  mod_seq3_step_13:           {label: "Mod.SEQ3 Step[13] VALUE", nrpn: 572, part: timbre, group: mod_seq}
+  mod_seq3_step_14:           {label: "Mod.SEQ3 Step[14] VALUE", nrpn: 573, part: timbre, group: mod_seq}
+  mod_seq3_step_15:           {label: "Mod.SEQ3 Step[15] VALUE", nrpn: 574, part: timbre, group: mod_seq}
+  mod_seq3_step_16:           {label: "Mod.SEQ3 Step[16] VALUE", nrpn: 575, part: timbre, group: mod_seq}
+
+  # THE VOCODER'S SIXTEEN BANDS, LEVEL AND PAN, AND ITS FILTER'S MODULATION SOURCE, on the channel
+  # of the vocoder's carrier timbre. The page says so of the filter's source and of `CH PARAM`;
+  # that the bands' levels and pans are those channel parameters is a reading (manual p. 149).
+  vocoder_band01_level:       {label: Vocoder Band01 Level, nrpn: 576, part: vocoder, group: vocoder}
+  vocoder_band02_level:       {label: Vocoder Band02 Level, nrpn: 577, part: vocoder, group: vocoder}
+  vocoder_band03_level:       {label: Vocoder Band03 Level, nrpn: 578, part: vocoder, group: vocoder}
+  vocoder_band04_level:       {label: Vocoder Band04 Level, nrpn: 579, part: vocoder, group: vocoder}
+  vocoder_band05_level:       {label: Vocoder Band05 Level, nrpn: 580, part: vocoder, group: vocoder}
+  vocoder_band06_level:       {label: Vocoder Band06 Level, nrpn: 581, part: vocoder, group: vocoder}
+  vocoder_band07_level:       {label: Vocoder Band07 Level, nrpn: 582, part: vocoder, group: vocoder}
+  vocoder_band08_level:       {label: Vocoder Band08 Level, nrpn: 583, part: vocoder, group: vocoder}
+  vocoder_band09_level:       {label: Vocoder Band09 Level, nrpn: 584, part: vocoder, group: vocoder}
+  vocoder_band10_level:       {label: Vocoder Band10 Level, nrpn: 585, part: vocoder, group: vocoder}
+  vocoder_band11_level:       {label: Vocoder Band11 Level, nrpn: 586, part: vocoder, group: vocoder}
+  vocoder_band12_level:       {label: Vocoder Band12 Level, nrpn: 587, part: vocoder, group: vocoder}
+  vocoder_band13_level:       {label: Vocoder Band13 Level, nrpn: 588, part: vocoder, group: vocoder}
+  vocoder_band14_level:       {label: Vocoder Band14 Level, nrpn: 589, part: vocoder, group: vocoder}
+  vocoder_band15_level:       {label: Vocoder Band15 Level, nrpn: 590, part: vocoder, group: vocoder}
+  vocoder_band16_level:       {label: Vocoder Band16 Level, nrpn: 591, part: vocoder, group: vocoder}
+  vocoder_band01_panpot:      {label: Vocoder Band01 Panpot, nrpn: 592, part: vocoder, group: vocoder}
+  vocoder_band02_panpot:      {label: Vocoder Band02 Panpot, nrpn: 593, part: vocoder, group: vocoder}
+  vocoder_band03_panpot:      {label: Vocoder Band03 Panpot, nrpn: 594, part: vocoder, group: vocoder}
+  vocoder_band04_panpot:      {label: Vocoder Band04 Panpot, nrpn: 595, part: vocoder, group: vocoder}
+  vocoder_band05_panpot:      {label: Vocoder Band05 Panpot, nrpn: 596, part: vocoder, group: vocoder}
+  vocoder_band06_panpot:      {label: Vocoder Band06 Panpot, nrpn: 597, part: vocoder, group: vocoder}
+  vocoder_band07_panpot:      {label: Vocoder Band07 Panpot, nrpn: 598, part: vocoder, group: vocoder}
+  vocoder_band08_panpot:      {label: Vocoder Band08 Panpot, nrpn: 599, part: vocoder, group: vocoder}
+  vocoder_band09_panpot:      {label: Vocoder Band09 Panpot, nrpn: 600, part: vocoder, group: vocoder}
+  vocoder_band10_panpot:      {label: Vocoder Band10 Panpot, nrpn: 601, part: vocoder, group: vocoder}
+  vocoder_band11_panpot:      {label: Vocoder Band11 Panpot, nrpn: 602, part: vocoder, group: vocoder}
+  vocoder_band12_panpot:      {label: Vocoder Band12 Panpot, nrpn: 603, part: vocoder, group: vocoder}
+  vocoder_band13_panpot:      {label: Vocoder Band13 Panpot, nrpn: 604, part: vocoder, group: vocoder}
+  vocoder_band14_panpot:      {label: Vocoder Band14 Panpot, nrpn: 605, part: vocoder, group: vocoder}
+  vocoder_band15_panpot:      {label: Vocoder Band15 Panpot, nrpn: 606, part: vocoder, group: vocoder}
+  vocoder_band16_panpot:      {label: Vocoder Band16 Panpot, nrpn: 607, part: vocoder, group: vocoder}
+  vocoder_fc_mod_source:      {label: Vocoder Fc Mod.Source, nrpn: 608, values: {"eg1": 0, "eg2": 8, "eg3": 17, "lfo": 25, "lfo2": 34, "velocity": 42, "pitch_bend": 51, "mod_wheel": 59, "kbd_track": 68, "envelope_follower": 76, "midi1": 85, "midi2": 93, "midi3": 102, "midi4": 110, "midi5": 119}, part: vocoder, group: vocoder}
+
+  # THE FOUR TIMBRES' SWITCHES AND THE VOCODER'S. **No page names their channel either**; they are
+  # left on the global channel, as settings of the program, which is a reading.
+  timbre1_sw:                 {label: Timbre1 SW, nrpn: 640, values: {"off": 0, "on": 64}, group: program}
+  timbre2_sw:                 {label: Timbre2 SW, nrpn: 641, values: {"off": 0, "on": 64}, group: program}
+  timbre3_sw:                 {label: Timbre3 SW, nrpn: 642, values: {"off": 0, "on": 64}, group: program}
+  timbre4_sw:                 {label: Timbre4 SW, nrpn: 643, values: {"off": 0, "on": 64}, group: program}
+  vocoder_sw:                 {label: Vocoder SW, nrpn: 644, values: {"off": 0, "on": 64}, group: program}

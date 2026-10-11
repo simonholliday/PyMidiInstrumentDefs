@@ -212,6 +212,7 @@ self-contained YAML file, and you share it by sending it.
 | `korg/multi_poly` | Korg multi/poly: nine fixed controllers and twelve that are factory defaults, off a chart page three of whose spans are enciphered |
 | `korg/nts_1` | Korg NTS-1 digital kit: 29 controllers both ways, off a text implementation and a chart that agree on every number, eight of them types whose every value sent falls in the band received |
 | `korg/opsix` | Korg opsix: 30 controls off one chart page whose text is enciphered, five of them recognised and never sent |
+| `korg/radias` | Korg RADIAS: 176 controls from two documents that each hold half the map - 57 panel controls at factory numbers only the owner's manual prints, joined by name to the value bands only the implementation prints, and 108 NRPNs from a 2005 implementation never revised for system 2.0 - over four timbres, a vocoder and a drum mode |
 | `korg/triton` | Korg TRITON: 52 controls, the 41 controller numbers among them all travelling both ways, out of a text implementation shaped like the KRONOS's - one definition for the 61-, 76- and 88-key models, sixteen tracks, and an arpeggiator reached by NRPN |
 | `korg/volca_bass` | Korg volca bass: 12 controls that only arrive, from an instrument with no MIDI Out jack - and three of them reach parameters its panel cannot, two of which its owner's manual never names |
 | `korg/volca_beats` | Korg volca beats: 20 controls and ten parts off a plain text file, where the chart beside it draws its yes and no marks and names only seven of the ten |

@@ -14441,16 +14441,36 @@ class TestDrumlogue:
 
 	"""Two complete implementation charts for two modes, on facing pages.
 
-	**And 65 of the 67 controller numbers they share mean different things**, so the two
-	cannot be merged and the factory default is the one carried.
+	**50 of the alternate's numbers mean more than one thing across its twelve parts**, so the
+	two cannot be merged, and each is carried in its mode. The default alone until 2026-10-11.
 	"""
 
-	def test_it_carries_the_first_of_two_whole_charts (self) -> None:
-		"""Which its maker calls the factory default, in those words."""
+	def test_it_carries_both_charts_each_in_its_mode (self) -> None:
+		"""The factory default, so marked in the maker's words, and the alternate's twelve parts."""
 		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
 
-		assert len(drumlogue.controls) == 66
-		assert len(drumlogue.groups) == 14
+		assert len(drumlogue.controls) == 245
+		assert len(drumlogue.groups) == 15
+		assert list(drumlogue.modes) == ["single", "multi"]
+		assert drumlogue.factory_mode == "single"
+		assert drumlogue.modes["multi"].label == "MULTI Ch."
+		assert drumlogue.modes["multi"].unparted is False
+
+		single = drumlogue.controls_in("single")
+		multi = drumlogue.controls_in("multi")
+
+		assert len(single) == 66 and all(control.part is None for control in single)
+		assert len(multi) == 179 and all(control.part is not None for control in multi)
+		assert len(drumlogue.parts) == 12
+		assert [drumlogue.parts[f"part_{n}"].channel_offset for n in range(1, 13)] == list(range(12))
+
+		# Controller 20 is four controls: BD TUNE in each mode, and two other parameters on two
+		# other parts' channels.
+		twenty = sorted((control.part or "", control.label) for control in drumlogue.controls.values()
+			if control.cc == 20)
+
+		assert twenty == [("", "BD TUNE"), ("part_1", "BD TUNE"), ("part_11", "USER SYNTH PARAM 5"),
+			("part_12", "DELAY PARAM 9")]
 
 		said = prose_of("korg", "drumlogue")
 
@@ -14459,12 +14479,12 @@ class TestDrumlogue:
 
 		flat = " ".join(said.split())
 
-		# **Counted rather than described**, which is the point of reading both.
-		assert "share **67** controller numbers, **65** of those name a different parameter" \
-			" in each" in flat
-		assert "the alternate gives **46** of its numbers more than one meaning" in flat
+		# **Counted from the two pages**, and the earlier count, which was wrong, said to be.
+		assert "**56** of the 67 keep their default meaning on one of the alternate's parts" in flat
+		assert "The alternate gives **50** of its numbers more than one meaning" in flat
+		assert "Until 2026-10-11 this said 65 of the 67 meant different things" in flat
 
-		# And the reason they cannot be merged is that 46 would need two meanings at once.
+		# And the reason they cannot be merged is that 50 need more than one meaning at once.
 		assert "the alternate cannot be merged" in flat
 
 	def test_its_chart_is_in_the_manual_as_the_pattern_now_predicts (self) -> None:
@@ -14492,7 +14512,8 @@ class TestDrumlogue:
 		flat = " ".join(said.split())
 
 		assert "The format has no field for a condition on a whole map" in flat
-		assert "will find all 66 of them silent" in flat
+		assert "will find every one of them silent" in flat
+		assert "Signals are transmitted on the channel corresponding to the part." in said
 
 	def test_its_notes_name_drums_and_carry_no_pitch (self) -> None:
 		"""Eleven voices over a span of twenty, nine of which do nothing."""
@@ -14513,8 +14534,8 @@ class TestDrumlogue:
 		assert sorted(drumlogue.voice.voices.values()) == [36, 37, 39, 40, 42, 45, 46, 50,
 			52, 53, 55]
 
-	def test_its_master_volume_is_its_one_fourteen_bit_control (self) -> None:
-		"""And it is why the control count differs from the chart's assignment count."""
+	def test_its_master_volume_is_the_default_maps_one_fourteen_bit_control (self) -> None:
+		"""The alternate uses the same pair for each part's level and the twelfth part's volume."""
 		drumlogue = pymidiinstrumentdefs.load("korg/drumlogue", [CORPUS])
 
 		volume = drumlogue.controls["master_volume"]
@@ -14523,8 +14544,14 @@ class TestDrumlogue:
 		assert volume.lsb == 39
 		assert volume.is_14_bit is True
 
-		assert [key for key, control in drumlogue.controls.items() if control.is_14_bit] \
+		assert [control.name for control in drumlogue.controls_in("single") if control.is_14_bit] \
 			== ["master_volume"]
+
+		paired = [control for control in drumlogue.controls_in("multi") if control.is_14_bit]
+
+		assert len(paired) == 12 and all((control.cc, control.lsb) == (7, 39) for control in paired)
+		assert drumlogue.controls["part_12_master_volume"].label == "MASTER VOLUME"
+		assert drumlogue.controls["part_1_bd_level"].cc == 7
 
 	def test_it_receives_a_velocity_and_sends_a_constant (self) -> None:
 		"""Because it has buttons rather than pads, so there is nothing to strike harder."""
@@ -16084,7 +16111,7 @@ class TestTR8:
 		assert "so **every number from 35 to 51 sounds something**" in flat
 
 	def test_an_expansion_board_changes_the_map_and_the_stock_one_is_carried (self) -> None:
-		"""Which is the ruling the JU-06A set and the drumlogue followed."""
+		"""As the JU-06A and the drumlogue carried one map each until the format had modes."""
 		tr_8 = pymidiinstrumentdefs.load("roland/tr_8", [CORPUS])
 
 		# The four numbers the expansion takes over are not voices here.
@@ -16098,8 +16125,9 @@ class TestTR8:
 		assert "**AND FITTING THAT BOARD CHANGES THE MAP.**" in flat
 		assert "**This definition carries the instrument as sold**" in flat
 
-		# The two rulings it follows, both in this corpus.
-		assert "`roland/ju_06a` set at rank 87 and `korg/drumlogue` followed at 93" in flat
+		# The two it followed, which now carry both their maps, each in a mode.
+		assert "as `roland/ju_06a` and `korg/drumlogue` carried only one of their maps until the" \
+			" format had modes" in flat
 
 	def test_the_chart_names_its_drums_after_a_machine_this_one_cannot_be (self) -> None:
 		"""Its own footnote says the names depend on the selected instrument set."""
@@ -16474,8 +16502,8 @@ class TestSH4D:
 	"""Three whole implementation charts, and only one of them has any control change.
 
 	`roland/ju_06a` at rank 87 and `korg/drumlogue` at 93 each met a maker
-	printing two maps where only one is in force at a time, and the ruling was
-	to carry the default.  **This instrument needs the opposite treatment**: its
+	printing two maps where only one is in force at a time, and each map is now
+	carried in a mode of its own.  **This instrument needs the opposite treatment**: its
 	three charts describe three kinds of destination inside one machine - four
 	tone parts, one rhythm part, and the control channel - and all three hold at
 	once.

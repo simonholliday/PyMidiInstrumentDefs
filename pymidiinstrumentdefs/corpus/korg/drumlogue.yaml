@@ -1,29 +1,38 @@
-# **TWO WHOLE MIDI IMPLEMENTATION CHARTS, FOR TWO MODES, ON FACING PAGES - AND 65 OF THE 67
-# NUMBERS THEY SHARE MEAN DIFFERENT THINGS.** Pages 60 and 61 of the owner's manual are each a
+# **TWO WHOLE MIDI IMPLEMENTATION CHARTS, FOR TWO MODES, ON FACING PAGES - AND 50 OF THE
+# ALTERNATE'S NUMBERS MEAN MORE THAN ONE THING.** Pages 60 and 61 of the owner's manual are each a
 # complete chart, and each ends by naming the other: p. 60 is headed `SINGLE Ch.` and says "This
 # is the factory default implementation." (manual p. 60), while p. 61 says "This is an alternate
 # implementation selectable via MIDI Global settings." (manual p. 61).
 #
 # **THEY ARE NOT A CHART AND A CONTINUATION.** In the default mode all eleven parts answer on one
-# channel, notes 36 to 55 address them, and the controller map is flat - which is the map below.
-# In the alternate mode **each part has a channel of its own**, notes run 0 to 127, and the same
-# controller number means a different thing on each channel: controller 20 is `BD TUNE` on the
-# first part's channel and part of `DELAY PARAM 9-16` on the effects channel. Counted rather than
-# described: the two maps share **67** controller numbers, **65** of those name a different
-# parameter in each, and the alternate gives **46** of its numbers more than one meaning.
+# channel, notes 36 to 55 address them, and the controller map is flat. In the alternate mode
+# **each part has a channel of its own**, notes run 0 to 127, and the same controller number means
+# a different thing on each channel: controller 20 is `BD TUNE` on the first part's channel, the
+# fifth user synth parameter on the multi part's and the ninth delay parameter on the effects
+# channel. Counted from the two pages: the alternate uses all **67** of the default's controller
+# numbers and five more. **56** of the 67 keep their default meaning on one of the alternate's
+# parts, and the other **11** are the parts' levels, which the alternate moves to 7 and 39 on each
+# part's own channel. The alternate gives **50** of its numbers more than one meaning, and 25 and
+# 26 four each, counting a parameter every sound part has - its level, pan and two sends - as one
+# meaning. **Until 2026-10-11 this said 65 of the 67 meant different things and 46 had more than
+# one meaning.** That count compared labels as the chart prints them, so a parameter printed
+# without its part's name, or inside a range, counted as a different one; it counted 120 and 121;
+# and it missed or merged the alternate's rows for 7, 39, 91 and 92.
 #
-# **THE DEFAULT IS CARRIED AND THE ALTERNATE IS IN PROSE**, which is `roland/ju_06a`'s ruling at
-# rank 87 from the same position - one file, two charts, two states the instrument can be in. The
-# reason to prefer the default here is the maker's own word for it, and the reason not to merge
-# them is that **the alternate cannot be merged**: 46 of its numbers would need two meanings at
-# once.
+# **BOTH ARE CARRIED, EACH IN ITS MODE**, as `roland/ju_06a`'s two pages now are - one file, two
+# charts, two states the instrument can be in. Until 2026-10-11 the default was carried and the
+# alternate was in prose, because **the alternate cannot be merged** into the default's map: 50 of
+# its numbers need more than one meaning at once. Modes hold the two apart instead. The default's
+# 66 controls name no part and answer in `single`, marked as the factory mode on the maker's own
+# word; the alternate's 179 are on twelve parts that exist only in `multi`, which says
+# `unparted: false`.
 #
 # AND THE SETTING THAT CHOOSES BETWEEN THEM IS ONE LINE OF THE GLOBAL CHAPTER: "CH [1...16, 1-12,
 # 2-13...5-16, 6-1..16-11] Sets the MIDI channel used for MIDI sending/receiving. In addition to
 # single channels 1 to 16, you can assign 11 parts to different MIDI channels" (manual p. 47). So
 # a drumlogue is one of the two instruments these charts describe depending on a number somebody
-# set, and **a definition for the alternate mode would be a different definition** - eleven parts
-# with channels of their own and a map that collides with this one.
+# set. **The setting's spans are twelve channels wide where its sentence says eleven parts**: the
+# alternate's chart has a twelfth part, the effects - see the parts.
 #
 # **THERE IS NO SEPARATE MIDI IMPLEMENTATION, AND THAT IS NOW THE EXPECTED CASE FOR THIS MAKER.**
 # Korg publishes thirteen documents for this instrument and not one is called an implementation;
@@ -33,13 +42,14 @@
 # of a four-page manual while its 2.2 KB implementation carries no chart at all. By now this is
 # the first place to look rather than the last.
 #
-# **EVERY ONE OF THE 66 CONTROLS BELOW IS GATED BY A GLOBAL SWITCH, IN EACH DIRECTION
+# **EVERY ONE OF THE 245 CONTROLS BELOW IS GATED BY A GLOBAL SWITCH, IN EACH DIRECTION
 # SEPARATELY.** The chart footnotes all of them: "*2 : When the GLOBAL setting MIDI RX CC is ON,
 # the drumlogue will receive signals; and when the GLOBAL setting MIDI TX CC is ON, the drumlogue
-# will transmit signals." (manual p. 60). The Global chapter gives both switches and a third for
-# the transport, each `[OFF, ON]`. The format has no field for a condition on a whole map, so it
-# is said here - and a consumer offering these numbers to a drumlogue that has not been told to
-# listen will find all 66 of them silent.
+# will transmit signals." (manual p. 60), and the alternate's chart says the same as its `*1`,
+# adding "Signals are transmitted on the channel corresponding to the part." (manual p. 61). The
+# Global chapter gives both switches and a third for the transport, each `[OFF, ON]`. The format
+# has no field for a condition on a whole map, so it is said here - and a consumer offering these
+# numbers to a drumlogue that has not been told to listen will find every one of them silent.
 #
 # ITS NOTES ADDRESS DRUMS AND DO NOTHING ELSE. "*1 : Note numbers correspond to the following
 # parts, 36: BD, 37: RS, 39: CP, 40: SD, 42: CH, 45: LT, 46: OH, 50: HT, 52: SP1, 53: SP2, 55:
@@ -64,9 +74,9 @@ model:
 
 source: >-
   **The drumlogue Owner's Manual, 62 sheets, whose last two pages are two complete MIDI
-  Implementation Charts for two modes of the same instrument.** Every number below comes from
-  p. 60, the one its maker calls the factory default; p. 61 is read, counted and recorded in
-  prose. See the comment above the definition.
+  Implementation Charts for two modes of the same instrument.** The single-channel controls below
+  come from p. 60, the one its maker calls the factory default, and the multi-channel ones from
+  p. 61, the alternate. See the comment above the definition.
 
   **THIRTEEN DOCUMENTS AND NOT ONE IS A MIDI IMPLEMENTATION.** Korg's downloads page lists the
   owner's manual in four languages, a quick start guide in two, a precautions sheet, the 1.1.0
@@ -78,31 +88,39 @@ source: >-
   saying because the guide is the larger file of the two: 8 sheets in five languages, and its
   only MIDI content is the rear-panel description. Nothing below rests on either.
 
-  WHY THE DEFAULT MAP RATHER THAN THE ALTERNATE, IN ONE MORE SENTENCE THAN THE COMMENT ABOVE.
-  Three reasons, in descending order of weight. **The maker calls it the default**, in those
-  words. **The alternate cannot be held by this format at all without parts**, because 46 of its
-  numbers mean more than one thing. And **the default is the map a drumlogue out of the box
-  answers to**, which is what a consumer reading a definition is most often holding.
+  WHY THE DEFAULT IS MARKED AS THE FACTORY MODE AND THE ALTERNATE IS NOT. **The maker calls it the
+  default**, in those words, and it is the map a drumlogue out of the box answers to. Until
+  2026-10-11 that was also why only the default was carried: the alternate could not be held
+  without parts, because 50 of its numbers mean more than one thing, and parts alone could not
+  say that the default's map falls silent when the alternate's parts answer. A mode says it.
 
-  **ITS MASTER VOLUME IS THE ONLY FOURTEEN-BIT CONTROL, AND THE CHART WRITES IT AS THE
-  SPECIFICATION DOES.** `7, 39 MASTER VOLUME MSB, LSB` - controller 39 being the least
-  significant half of controller 7. So that row is one control below rather than two, which is
-  the one place the count of controls differs from the count of assignments the chart prints.
+  **ITS MASTER VOLUME IS THE DEFAULT MAP'S ONLY FOURTEEN-BIT CONTROL, AND THE CHART WRITES IT AS
+  THE SPECIFICATION DOES.** `7, 39 MASTER VOLUME MSB, LSB` - controller 39 being the least
+  significant half of controller 7. So that row is one control below rather than two. The
+  alternate uses the same pair for every part's level and for the twelfth part's master volume,
+  `PART 1-11: LEVEL MSB, LSB. PART 12: MASTER VOLUME MSB, LSB`, so its twelve are fourteen-bit
+  too.
 
   THE CHART'S READING ORDER IS LOST AND ITS CELLS ARE READ BY COORDINATE. The flat text runs
   every row label, then every controller number, then every parameter name, then every mark - so
   no row of it can be matched as a string, and `Control Change 20, 21, 22, 23, 24 O O BD TUNE,
   DRIVE, ATTACK, DECAY, LEVEL` appears nowhere in it. `Notes/4622_extract_drumlogue.py` reads
-  both sheets by coordinate and asserts every cell the fields below rest on.
+  both sheets by coordinate and asserts every cell the single-channel fields below rest on. It
+  misses p. 61's first row, so the multi-channel fields were read again from a render of that
+  page, row by row.
 
   **AND ITS PARAMETER NAMES ARE A PREFIX AND A COMMA LIST**, which is how the chart saves room:
   `BD TUNE, DRIVE, ATTACK, DECAY, LEVEL` is five controls and only the first carries the part's
   name. The script distributes the prefix, so every label below is one a reader would recognise
-  on the panel rather than a bare `DRIVE` that could belong to any of eleven parts.
+  on the panel rather than a bare `DRIVE` that could belong to any of eleven parts. The
+  alternate's labels are read the same way, and its rows for parts 1 to 11 at once take each
+  part's own name, so `PART 1-11: PAN` is `BD PAN` on the first part and `MULTI PAN` on the
+  eleventh. A row naming a range, `USER SYNTH PARAM 1-8`, is read as its numbers in order, the
+  first parameter on the first number, as the default's `USER SYNTH PARAM 1, 2, 3, 4` is.
 
   NOT RECORDED: the polyphony, which no document states. The eleven parts' own parameters beyond
   what the chart gives numbers for - the panel has more knobs than the map has controllers. The
-  alternate map's 137 assignments. The sequencer, its patterns and its sixteen steps. And the
+  sequencer, its patterns and its sixteen steps. And the
   SYNC IN and SYNC OUT jacks, which carry a pulse rather than a message and have four settings
   between them.
 
@@ -175,7 +193,7 @@ midi:
   # The chart's Basic Channel row: 1 to 16 either way, as a default and as changed, with
   # `Memorized` in the remarks - so the number survives a power cycle.
   # **AND THE SAME SETTING IS WHAT CHOOSES BETWEEN THE TWO CHARTS**, its values running past 16
-  # into eleven-part spans. See the comment above the definition.
+  # into spans of twelve channels. See the comment above the definition.
   channels: [1, 16]
   # The chart's Mode row, recognised. Its Messages row is crossed in both columns, so the mode
   # cannot be set over MIDI.
@@ -210,6 +228,9 @@ midi:
   sysex: true
 
 voice:
+  # THE SINGLE-CHANNEL CHART'S, AS THE `midi` SECTION'S FIELDS ARE: the alternate's chart
+  # recognises notes 0 to 127 (manual p. 61), and the parts say which of them take notes and how
+  # each reads them.
   # **ITS NOTES NAME DRUMS RATHER THAN PITCHES**, which the chart says twice over - once by
   # listing the eleven and once by saying what the number does not do. See the voices below.
   addressing: voices
@@ -249,6 +270,49 @@ voice:
     sp2: 53
     multi: 55
 
+modes:
+  # THE TWO CHARTS' OWN HEADINGS: p. 60 is headed `SINGLE Ch.` and p. 61 `MULTI Ch.`. The first is
+  # marked as the factory mode on its own words, "This is the factory default implementation."
+  # (manual p. 60); the second "is an alternate implementation selectable via MIDI Global
+  # settings" (manual p. 61), chosen by the Global setting quoted above the definition.
+  single:
+    label: SINGLE Ch.
+    factory: true
+  multi:
+    label: MULTI Ch.
+    # The default's map does not answer here: the base channel is the first part's, and carries
+    # that part's map.
+    unparted: false
+
+parts:
+  # TWELVE PARTS ON TWELVE CONSECUTIVE CHANNELS, IN THE ALTERNATE MODE ONLY. The chart's Basic
+  # Channel row gives `1-12` by default, with "Each part is assigned a separate channel." (manual
+  # p. 61) and "Any continuous range of channels can be set." (manual p. 61); the Global setting's
+  # spans wrap past 16, as `channel_offset` does. **The manual's sentence counts eleven parts and
+  # the chart twelve**: its last row is `PART 1-12: ALL SOUND OFF, RESET ALL CONTROLLERS`. Parts 1
+  # to 11 are the eleven sound parts, named on the chart by their first parameters - BD, SD, LT,
+  # HT, CH, OH, RS, CP, SP1 and SP2, and the VPM, NOISE and USER SYNTH sources of the eleventh -
+  # and PART 12 takes the effects and the master volume. So twelve are carried. Two things here
+  # are read and not printed: that part N takes the Nth channel of the span, which follows the
+  # numbering, and that the eleventh is the one the charts call the MULTI part, which follows
+  # its three sources.
+  # NOTES. "Except for the MULTI part, pitch is unaffected by the note number." (manual p. 61), so
+  # the eleventh reads a note as a pitch and the other ten take any note and read nothing from it.
+  # No page says what a note does on the twelfth part's channel, which has no sound of its own, so
+  # it is recorded as taking controls; nor on which channel a program change arrives.
+  part_1:   {label: PART 1, mode: multi, channel_offset: 0, addressing: any, receives: [notes, controls]}
+  part_2:   {label: PART 2, mode: multi, channel_offset: 1, addressing: any, receives: [notes, controls]}
+  part_3:   {label: PART 3, mode: multi, channel_offset: 2, addressing: any, receives: [notes, controls]}
+  part_4:   {label: PART 4, mode: multi, channel_offset: 3, addressing: any, receives: [notes, controls]}
+  part_5:   {label: PART 5, mode: multi, channel_offset: 4, addressing: any, receives: [notes, controls]}
+  part_6:   {label: PART 6, mode: multi, channel_offset: 5, addressing: any, receives: [notes, controls]}
+  part_7:   {label: PART 7, mode: multi, channel_offset: 6, addressing: any, receives: [notes, controls]}
+  part_8:   {label: PART 8, mode: multi, channel_offset: 7, addressing: any, receives: [notes, controls]}
+  part_9:   {label: PART 9, mode: multi, channel_offset: 8, addressing: any, receives: [notes, controls]}
+  part_10:  {label: PART 10, mode: multi, channel_offset: 9, addressing: any, receives: [notes, controls]}
+  part_11:  {label: PART 11, mode: multi, channel_offset: 10, addressing: pitches, receives: [notes, controls]}
+  part_12:  {label: PART 12, mode: multi, channel_offset: 11, receives: [controls]}
+
 groups:
   # **ONE GROUP PER PART, WHICH IS THIS INSTRUMENT'S OWN DIVISION RATHER THAN A CHOICE.** The
   # chart's control change block is written part by part - five rows for the bass drum, five for
@@ -270,6 +334,7 @@ groups:
   multi: The multi part - VPM, noise and the user synth
   delay: Delay
   reverb: Reverb
+  master_fx: Master FX
 
 controls:
 
@@ -366,3 +431,211 @@ controls:
   reverb_param_3:                {label: REVERB PARAM 3, cc: 87, group: reverb}
   reverb_param_4:                {label: REVERB PARAM 4, cc: 89, group: reverb}
   reverb_level:                  {label: REVERB LEVEL, cc: 91, group: reverb}
+
+  # ── THE MULTI Ch. CHART, p. 61: twelve parts, each on its own channel, in `multi` only. Read
+  # from a render, row by row, each row's prefix given to every parameter as above, and the rows
+  # for parts 1 to 11 at once written once for each part. The chart's 120 and 121 are channel mode
+  # messages and are not controls.
+
+  # PART 1, the bass drum ──────────────────────────────────────
+  part_1_bd_level:                  {label: BD LEVEL, cc: 7, lsb: 39, part: part_1, group: bass_drum}
+  part_1_bd_pan:                    {label: BD PAN, cc: 10, part: part_1, group: bass_drum}
+  part_1_bd_reverb_send:            {label: BD REVERB SEND, cc: 91, part: part_1, group: bass_drum}
+  part_1_bd_delay_send:             {label: BD DELAY SEND, cc: 92, part: part_1, group: bass_drum}
+  part_1_bd_tune:                   {label: BD TUNE, cc: 20, part: part_1, group: bass_drum}
+  part_1_bd_drive:                  {label: BD DRIVE, cc: 21, part: part_1, group: bass_drum}
+  part_1_bd_attack:                 {label: BD ATTACK, cc: 22, part: part_1, group: bass_drum}
+  part_1_bd_decay:                  {label: BD DECAY, cc: 23, part: part_1, group: bass_drum}
+  part_1_bd_sweep:                  {label: BD SWEEP, cc: 24, part: part_1, group: bass_drum}
+  part_1_bd_sw_time:                {label: BD SW.TIME, cc: 25, part: part_1, group: bass_drum}
+  part_1_bd_hold:                   {label: BD HOLD, cc: 26, part: part_1, group: bass_drum}
+
+  # PART 2, the snare drum ─────────────────────────────────────
+  part_2_sd_level:                  {label: SD LEVEL, cc: 7, lsb: 39, part: part_2, group: snare_drum}
+  part_2_sd_pan:                    {label: SD PAN, cc: 10, part: part_2, group: snare_drum}
+  part_2_sd_reverb_send:            {label: SD REVERB SEND, cc: 91, part: part_2, group: snare_drum}
+  part_2_sd_delay_send:             {label: SD DELAY SEND, cc: 92, part: part_2, group: snare_drum}
+  part_2_sd_tune:                   {label: SD TUNE, cc: 25, part: part_2, group: snare_drum}
+  part_2_sd_snap_lv:                {label: SD SNAP.LV, cc: 26, part: part_2, group: snare_drum}
+  part_2_sd_snap_dec:               {label: SD SNAP.DEC, cc: 27, part: part_2, group: snare_drum}
+  part_2_sd_decay:                  {label: SD DECAY, cc: 28, part: part_2, group: snare_drum}
+  part_2_sd_tone:                   {label: SD TONE, cc: 29, part: part_2, group: snare_drum}
+
+  # PART 3, the low tom ────────────────────────────────────────
+  part_3_lt_level:                  {label: LT LEVEL, cc: 7, lsb: 39, part: part_3, group: low_tom}
+  part_3_lt_pan:                    {label: LT PAN, cc: 10, part: part_3, group: low_tom}
+  part_3_lt_reverb_send:            {label: LT REVERB SEND, cc: 91, part: part_3, group: low_tom}
+  part_3_lt_delay_send:             {label: LT DELAY SEND, cc: 92, part: part_3, group: low_tom}
+  part_3_lt_tune:                   {label: LT TUNE, cc: 46, part: part_3, group: low_tom}
+  part_3_lt_detune:                 {label: LT DETUNE, cc: 47, part: part_3, group: low_tom}
+  part_3_lt_decay:                  {label: LT DECAY, cc: 48, part: part_3, group: low_tom}
+  part_3_lt_sweep:                  {label: LT SWEEP, cc: 49, part: part_3, group: low_tom}
+  part_3_lt_attack:                 {label: LT ATTACK, cc: 50, part: part_3, group: low_tom}
+  part_3_lt_drive:                  {label: LT DRIVE, cc: 51, part: part_3, group: low_tom}
+
+  # PART 4, the high tom ───────────────────────────────────────
+  part_4_ht_level:                  {label: HT LEVEL, cc: 7, lsb: 39, part: part_4, group: high_tom}
+  part_4_ht_pan:                    {label: HT PAN, cc: 10, part: part_4, group: high_tom}
+  part_4_ht_reverb_send:            {label: HT REVERB SEND, cc: 91, part: part_4, group: high_tom}
+  part_4_ht_delay_send:             {label: HT DELAY SEND, cc: 92, part: part_4, group: high_tom}
+  part_4_ht_tune:                   {label: HT TUNE, cc: 50, part: part_4, group: high_tom}
+  part_4_ht_detune:                 {label: HT DETUNE, cc: 51, part: part_4, group: high_tom}
+  part_4_ht_decay:                  {label: HT DECAY, cc: 52, part: part_4, group: high_tom}
+  part_4_ht_sweep:                  {label: HT SWEEP, cc: 53, part: part_4, group: high_tom}
+  part_4_ht_attack:                 {label: HT ATTACK, cc: 54, part: part_4, group: high_tom}
+  part_4_ht_drive:                  {label: HT DRIVE, cc: 55, part: part_4, group: high_tom}
+
+  # PART 5, the closed hat ─────────────────────────────────────
+  part_5_ch_level:                  {label: CH LEVEL, cc: 7, lsb: 39, part: part_5, group: closed_hat}
+  part_5_ch_pan:                    {label: CH PAN, cc: 10, part: part_5, group: closed_hat}
+  part_5_ch_reverb_send:            {label: CH REVERB SEND, cc: 91, part: part_5, group: closed_hat}
+  part_5_ch_delay_send:             {label: CH DELAY SEND, cc: 92, part: part_5, group: closed_hat}
+  part_5_ch_tune:                   {label: CH TUNE, cc: 61, part: part_5, group: closed_hat}
+  part_5_ch_decay:                  {label: CH DECAY, cc: 62, part: part_5, group: closed_hat}
+  part_5_ch_attack:                 {label: CH ATTACK, cc: 63, part: part_5, group: closed_hat}
+  part_5_ch_start:                  {label: CH START, cc: 80, part: part_5, group: closed_hat}
+  part_5_ch_end:                    {label: CH END, cc: 81, part: part_5, group: closed_hat}
+
+  # PART 6, the open hat ───────────────────────────────────────
+  part_6_oh_level:                  {label: OH LEVEL, cc: 7, lsb: 39, part: part_6, group: open_hat}
+  part_6_oh_pan:                    {label: OH PAN, cc: 10, part: part_6, group: open_hat}
+  part_6_oh_reverb_send:            {label: OH REVERB SEND, cc: 91, part: part_6, group: open_hat}
+  part_6_oh_delay_send:             {label: OH DELAY SEND, cc: 92, part: part_6, group: open_hat}
+  part_6_oh_tune:                   {label: OH TUNE, cc: 80, part: part_6, group: open_hat}
+  part_6_oh_decay:                  {label: OH DECAY, cc: 81, part: part_6, group: open_hat}
+  part_6_oh_attack:                 {label: OH ATTACK, cc: 82, part: part_6, group: open_hat}
+  part_6_oh_start:                  {label: OH START, cc: 83, part: part_6, group: open_hat}
+  part_6_oh_end:                    {label: OH END, cc: 85, part: part_6, group: open_hat}
+
+  # PART 7, the rim shot ───────────────────────────────────────
+  part_7_rs_level:                  {label: RS LEVEL, cc: 7, lsb: 39, part: part_7, group: rim_shot}
+  part_7_rs_pan:                    {label: RS PAN, cc: 10, part: part_7, group: rim_shot}
+  part_7_rs_reverb_send:            {label: RS REVERB SEND, cc: 91, part: part_7, group: rim_shot}
+  part_7_rs_delay_send:             {label: RS DELAY SEND, cc: 92, part: part_7, group: rim_shot}
+  part_7_rs_tune:                   {label: RS TUNE, cc: 55, part: part_7, group: rim_shot}
+  part_7_rs_decay:                  {label: RS DECAY, cc: 56, part: part_7, group: rim_shot}
+  part_7_rs_start:                  {label: RS START, cc: 57, part: part_7, group: rim_shot}
+  part_7_rs_end:                    {label: RS END, cc: 58, part: part_7, group: rim_shot}
+
+  # PART 8, the clap ───────────────────────────────────────────
+  part_8_cp_level:                  {label: CP LEVEL, cc: 7, lsb: 39, part: part_8, group: clap}
+  part_8_cp_pan:                    {label: CP PAN, cc: 10, part: part_8, group: clap}
+  part_8_cp_reverb_send:            {label: CP REVERB SEND, cc: 91, part: part_8, group: clap}
+  part_8_cp_delay_send:             {label: CP DELAY SEND, cc: 92, part: part_8, group: clap}
+  part_8_cp_tune:                   {label: CP TUNE, cc: 58, part: part_8, group: clap}
+  part_8_cp_decay:                  {label: CP DECAY, cc: 59, part: part_8, group: clap}
+  part_8_cp_attack:                 {label: CP ATTACK, cc: 60, part: part_8, group: clap}
+  part_8_cp_start:                  {label: CP START, cc: 61, part: part_8, group: clap}
+  part_8_cp_end:                    {label: CP END, cc: 62, part: part_8, group: clap}
+
+  # PART 9, sample 1 ───────────────────────────────────────────
+  part_9_sp1_level:                 {label: SP1 LEVEL, cc: 7, lsb: 39, part: part_9, group: sample_1}
+  part_9_sp1_pan:                   {label: SP1 PAN, cc: 10, part: part_9, group: sample_1}
+  part_9_sp1_reverb_send:           {label: SP1 REVERB SEND, cc: 91, part: part_9, group: sample_1}
+  part_9_sp1_delay_send:            {label: SP1 DELAY SEND, cc: 92, part: part_9, group: sample_1}
+  part_9_sp1_tune:                  {label: SP1 TUNE, cc: 102, part: part_9, group: sample_1}
+  part_9_sp1_attack:                {label: SP1 ATTACK, cc: 103, part: part_9, group: sample_1}
+  part_9_sp1_decay:                 {label: SP1 DECAY, cc: 104, part: part_9, group: sample_1}
+  part_9_sp1_start:                 {label: SP1 START, cc: 105, part: part_9, group: sample_1}
+  part_9_sp1_end:                   {label: SP1 END, cc: 106, part: part_9, group: sample_1}
+
+  # PART 10, sample 2 ──────────────────────────────────────────
+  part_10_sp2_level:                {label: SP2 LEVEL, cc: 7, lsb: 39, part: part_10, group: sample_2}
+  part_10_sp2_pan:                  {label: SP2 PAN, cc: 10, part: part_10, group: sample_2}
+  part_10_sp2_reverb_send:          {label: SP2 REVERB SEND, cc: 91, part: part_10, group: sample_2}
+  part_10_sp2_delay_send:           {label: SP2 DELAY SEND, cc: 92, part: part_10, group: sample_2}
+  part_10_sp2_tune:                 {label: SP2 TUNE, cc: 106, part: part_10, group: sample_2}
+  part_10_sp2_attack:               {label: SP2 ATTACK, cc: 107, part: part_10, group: sample_2}
+  part_10_sp2_decay:                {label: SP2 DECAY, cc: 108, part: part_10, group: sample_2}
+  part_10_sp2_start:                {label: SP2 START, cc: 109, part: part_10, group: sample_2}
+  part_10_sp2_end:                  {label: SP2 END, cc: 110, part: part_10, group: sample_2}
+
+  # PART 11, the multi part ────────────────────────────────────
+  part_11_multi_level:              {label: MULTI LEVEL, cc: 7, lsb: 39, part: part_11, group: multi}
+  part_11_multi_pan:                {label: MULTI PAN, cc: 10, part: part_11, group: multi}
+  part_11_multi_reverb_send:        {label: MULTI REVERB SEND, cc: 91, part: part_11, group: multi}
+  part_11_multi_delay_send:         {label: MULTI DELAY SEND, cc: 92, part: part_11, group: multi}
+  part_11_vpm_noise:                {label: VPM NOISE, cc: 108, part: part_11, group: multi}
+  part_11_vpm_idx_mod:              {label: VPM IDX MOD, cc: 109, part: part_11, group: multi}
+  part_11_vpm_note:                 {label: VPM NOTE, cc: 110, part: part_11, group: multi}
+  part_11_vpm_index:                {label: VPM INDEX, cc: 111, part: part_11, group: multi}
+  part_11_vpm_ratio:                {label: VPM RATIO, cc: 112, part: part_11, group: multi}
+  part_11_vpm_eg:                   {label: VPM EG, cc: 113, part: part_11, group: multi}
+  part_11_vpm_attack:               {label: VPM ATTACK, cc: 114, part: part_11, group: multi}
+  part_11_vpm_release:              {label: VPM RELEASE, cc: 115, part: part_11, group: multi}
+  part_11_noise_color:              {label: NOISE COLOR, cc: 116, part: part_11, group: multi}
+  part_11_noise_attack:             {label: NOISE ATTACK, cc: 117, part: part_11, group: multi}
+  part_11_noise_release:            {label: NOISE RELEASE, cc: 118, part: part_11, group: multi}
+  part_11_noise_peak:               {label: NOISE PEAK, cc: 119, part: part_11, group: multi}
+  part_11_user_synth_param_1:       {label: USER SYNTH PARAM 1, cc: 16, part: part_11, group: multi}
+  part_11_user_synth_param_2:       {label: USER SYNTH PARAM 2, cc: 17, part: part_11, group: multi}
+  part_11_user_synth_param_3:       {label: USER SYNTH PARAM 3, cc: 18, part: part_11, group: multi}
+  part_11_user_synth_param_4:       {label: USER SYNTH PARAM 4, cc: 19, part: part_11, group: multi}
+  part_11_user_synth_param_5:       {label: USER SYNTH PARAM 5, cc: 20, part: part_11, group: multi}
+  part_11_user_synth_param_6:       {label: USER SYNTH PARAM 6, cc: 21, part: part_11, group: multi}
+  part_11_user_synth_param_7:       {label: USER SYNTH PARAM 7, cc: 22, part: part_11, group: multi}
+  part_11_user_synth_param_8:       {label: USER SYNTH PARAM 8, cc: 23, part: part_11, group: multi}
+  part_11_user_synth_param_9:       {label: USER SYNTH PARAM 9, cc: 24, part: part_11, group: multi}
+  part_11_user_synth_param_10:      {label: USER SYNTH PARAM 10, cc: 25, part: part_11, group: multi}
+  part_11_user_synth_param_11:      {label: USER SYNTH PARAM 11, cc: 26, part: part_11, group: multi}
+  part_11_user_synth_param_12:      {label: USER SYNTH PARAM 12, cc: 27, part: part_11, group: multi}
+  part_11_user_synth_param_13:      {label: USER SYNTH PARAM 13, cc: 28, part: part_11, group: multi}
+  part_11_user_synth_param_14:      {label: USER SYNTH PARAM 14, cc: 29, part: part_11, group: multi}
+  part_11_user_synth_param_15:      {label: USER SYNTH PARAM 15, cc: 30, part: part_11, group: multi}
+  part_11_user_synth_param_16:      {label: USER SYNTH PARAM 16, cc: 31, part: part_11, group: multi}
+
+  # PART 12, the effects ───────────────────────────────────────
+  part_12_master_volume:            {label: MASTER VOLUME, cc: 7, lsb: 39, part: part_12, group: master}
+  part_12_reverb_level:             {label: REVERB LEVEL, cc: 91, part: part_12, group: reverb}
+  part_12_delay_level:              {label: DELAY LEVEL, cc: 92, part: part_12, group: delay}
+  part_12_delay_param_1:            {label: DELAY PARAM 1, cc: 12, part: part_12, group: delay}
+  part_12_delay_param_2:            {label: DELAY PARAM 2, cc: 13, part: part_12, group: delay}
+  part_12_delay_param_3:            {label: DELAY PARAM 3, cc: 14, part: part_12, group: delay}
+  part_12_delay_param_4:            {label: DELAY PARAM 4, cc: 15, part: part_12, group: delay}
+  part_12_delay_param_5:            {label: DELAY PARAM 5, cc: 16, part: part_12, group: delay}
+  part_12_delay_param_6:            {label: DELAY PARAM 6, cc: 17, part: part_12, group: delay}
+  part_12_delay_param_7:            {label: DELAY PARAM 7, cc: 18, part: part_12, group: delay}
+  part_12_delay_param_8:            {label: DELAY PARAM 8, cc: 19, part: part_12, group: delay}
+  part_12_delay_param_9:            {label: DELAY PARAM 9, cc: 20, part: part_12, group: delay}
+  part_12_delay_param_10:           {label: DELAY PARAM 10, cc: 21, part: part_12, group: delay}
+  part_12_delay_param_11:           {label: DELAY PARAM 11, cc: 22, part: part_12, group: delay}
+  part_12_delay_param_12:           {label: DELAY PARAM 12, cc: 23, part: part_12, group: delay}
+  part_12_delay_param_13:           {label: DELAY PARAM 13, cc: 24, part: part_12, group: delay}
+  part_12_delay_param_14:           {label: DELAY PARAM 14, cc: 25, part: part_12, group: delay}
+  part_12_delay_param_15:           {label: DELAY PARAM 15, cc: 26, part: part_12, group: delay}
+  part_12_delay_param_16:           {label: DELAY PARAM 16, cc: 27, part: part_12, group: delay}
+  part_12_delay_return:             {label: DELAY RETURN, cc: 44, part: part_12, group: delay}
+  part_12_delay_reverb_send:        {label: DELAY REVERB SEND, cc: 45, part: part_12, group: delay}
+  part_12_master_fx_param_1:        {label: MASTER FX PARAM 1, cc: 46, part: part_12, group: master_fx}
+  part_12_master_fx_param_2:        {label: MASTER FX PARAM 2, cc: 47, part: part_12, group: master_fx}
+  part_12_master_fx_param_3:        {label: MASTER FX PARAM 3, cc: 48, part: part_12, group: master_fx}
+  part_12_master_fx_param_4:        {label: MASTER FX PARAM 4, cc: 49, part: part_12, group: master_fx}
+  part_12_master_fx_param_5:        {label: MASTER FX PARAM 5, cc: 50, part: part_12, group: master_fx}
+  part_12_master_fx_param_6:        {label: MASTER FX PARAM 6, cc: 51, part: part_12, group: master_fx}
+  part_12_master_fx_param_7:        {label: MASTER FX PARAM 7, cc: 52, part: part_12, group: master_fx}
+  part_12_master_fx_param_8:        {label: MASTER FX PARAM 8, cc: 53, part: part_12, group: master_fx}
+  part_12_master_fx_param_9:        {label: MASTER FX PARAM 9, cc: 54, part: part_12, group: master_fx}
+  part_12_master_fx_param_10:       {label: MASTER FX PARAM 10, cc: 55, part: part_12, group: master_fx}
+  part_12_master_fx_param_11:       {label: MASTER FX PARAM 11, cc: 56, part: part_12, group: master_fx}
+  part_12_master_fx_param_12:       {label: MASTER FX PARAM 12, cc: 57, part: part_12, group: master_fx}
+  part_12_master_fx_param_13:       {label: MASTER FX PARAM 13, cc: 58, part: part_12, group: master_fx}
+  part_12_master_fx_param_14:       {label: MASTER FX PARAM 14, cc: 59, part: part_12, group: master_fx}
+  part_12_master_fx_param_15:       {label: MASTER FX PARAM 15, cc: 60, part: part_12, group: master_fx}
+  part_12_master_fx_param_16:       {label: MASTER FX PARAM 16, cc: 61, part: part_12, group: master_fx}
+  part_12_reverb_return:            {label: REVERB RETURN, cc: 83, part: part_12, group: reverb}
+  part_12_reverb_param_1:           {label: REVERB PARAM 1, cc: 85, part: part_12, group: reverb}
+  part_12_reverb_param_2:           {label: REVERB PARAM 2, cc: 86, part: part_12, group: reverb}
+  part_12_reverb_param_3:           {label: REVERB PARAM 3, cc: 87, part: part_12, group: reverb}
+  part_12_reverb_param_4:           {label: REVERB PARAM 4, cc: 89, part: part_12, group: reverb}
+  part_12_reverb_param_5:           {label: REVERB PARAM 5, cc: 90, part: part_12, group: reverb}
+  part_12_reverb_param_6:           {label: REVERB PARAM 6, cc: 102, part: part_12, group: reverb}
+  part_12_reverb_param_7:           {label: REVERB PARAM 7, cc: 103, part: part_12, group: reverb}
+  part_12_reverb_param_8:           {label: REVERB PARAM 8, cc: 104, part: part_12, group: reverb}
+  part_12_reverb_param_9:           {label: REVERB PARAM 9, cc: 105, part: part_12, group: reverb}
+  part_12_reverb_param_10:          {label: REVERB PARAM 10, cc: 106, part: part_12, group: reverb}
+  part_12_reverb_param_11:          {label: REVERB PARAM 11, cc: 107, part: part_12, group: reverb}
+  part_12_reverb_param_12:          {label: REVERB PARAM 12, cc: 108, part: part_12, group: reverb}
+  part_12_reverb_param_13:          {label: REVERB PARAM 13, cc: 109, part: part_12, group: reverb}
+  part_12_reverb_param_14:          {label: REVERB PARAM 14, cc: 110, part: part_12, group: reverb}
+  part_12_reverb_param_15:          {label: REVERB PARAM 15, cc: 111, part: part_12, group: reverb}
+  part_12_reverb_param_16:          {label: REVERB PARAM 16, cc: 112, part: part_12, group: reverb}

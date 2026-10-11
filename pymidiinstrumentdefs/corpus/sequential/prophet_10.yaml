@@ -178,13 +178,13 @@ source: >-
   not a program change. The implementation is six months older than the layers. So no part is
   recorded here, because a part is something a sender addresses, and nothing published says how.
 
-  IT RECEIVES POLYPHONIC KEY PRESSURE AND ITS OWN KEYBOARD SENDS CHANNEL PRESSURE, which the one
-  field here cannot say twice. The received table has "Polyphonic Key Pressure" (p. 2) and
+  IT RECEIVES BOTH KINDS OF PRESSURE AND ITS OWN KEYBOARD SENDS CHANNEL PRESSURE, which the two
+  fields and this paragraph say. The received table has "Polyphonic Key Pressure" (p. 2) and
   "Channel Pressure" (p. 2); the transmitted table has "Channel Pressure" (p. 3) and no polyphonic
   row at all. And "The Prophet-10 provides monophonic (or 'channel') aftertouch, which means that
   applying pressure to any key within a chord will apply modulation to all notes currently held"
-  (guide p. 38). `aftertouch: poly` records what it answers to, which is what the field is for,
-  and this paragraph is the rest of it.
+  (guide p. 38). `aftertouch: both` records what it answers to and `aftertouch_transmits: true` what
+  it sends, and this paragraph is the rest of it.
 
   VELOCITY ARRIVES AND IS IGNORED ON NOTE OFF. "Note Off. Velocity is ignored" (p. 2) and "Note
   On. Note off if vvvvvvv = 0" (p. 2), and what it transmits on note off is a literal `0000000`
@@ -357,9 +357,10 @@ voice:
     note_on: received
     # "Note Off. Velocity is ignored" (p. 2), and what it sends is a literal zero (p. 3).
     note_off: false
-  # IT RECEIVES POLYPHONIC KEY PRESSURE AND ITS KEYBOARD SENDS CHANNEL PRESSURE. This field says
-  # what it answers to; the source account has both halves.
-  aftertouch: poly
+  # IT RECEIVES BOTH KINDS OF PRESSURE AND ITS KEYBOARD SENDS CHANNEL PRESSURE: `aftertouch` for
+  # what it answers to, `aftertouch_transmits` for what it sends. The source account has both.
+  aftertouch: both
+  aftertouch_transmits: true
   pitch_bend:
     # "A setting of 1 equals a semitone. A setting of 12 equals an octave" (guide p. 37), chosen
     # per program. Controller 70 counts the same twelve values from 0 to 11.

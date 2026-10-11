@@ -1667,6 +1667,10 @@ class TestAftertouch:
 			"roland/jx_08": ("poly", False),
 			"roland/jx_8p": ("channel", True),
 			"roland/d_50": ("received", True),
+			"sequential/prophet_x": ("both", True),
+			"sequential/take_5": ("both", True),
+			"sequential/prophet_5": ("both", True),
+			"sequential/prophet_10": ("both", True),
 		}
 
 
@@ -11922,10 +11926,11 @@ class TestProphet5:
 		assert prophet.controls["alt_tunings"].range == (0, 15)
 
 	def test_it_receives_poly_pressure_and_its_keyboard_sends_channel (self) -> None:
-		"""The Super 6's shape from the other side, and the one field cannot say it twice."""
+		"""The Super 6's shape from the other side, and the two fields say it between them."""
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])
 
-		assert prophet.voice.aftertouch == "poly"
+		assert prophet.voice.aftertouch == "both"
+		assert prophet.voice.aftertouch_transmits is True
 
 		account = " ".join((prophet.source or "").split())
 
@@ -18907,7 +18912,7 @@ class TestProphetX:
 		assert px.midi.program_change is not None and px.midi.program_change.presets == 1024
 
 		assert px.voice.voicing_modes == (8, 16, 32) and px.voice.polyphony is None
-		assert px.voice.aftertouch == "poly"
+		assert px.voice.aftertouch == "both"
 		assert px.voice.velocity is not None and px.voice.velocity.note_off is False
 		assert px.voice.pitch_bend is not None and px.voice.pitch_bend.programmable is True
 

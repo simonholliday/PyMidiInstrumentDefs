@@ -107,9 +107,14 @@ voice:
   velocity:
     note_on: received
     note_off: false          # "Note Off. Velocity is ignored" (p. 2)
-  # Polyphonic key pressure and channel pressure are both received (p. 2). Its
-  # own keyboard sends channel pressure only (guide p. 55).
-  aftertouch: poly
+  # Polyphonic key pressure and channel pressure are both received (p. 2), and channel pressure
+  # alone is in the transmitted table (p. 3); the guide says the keyboard provides monophonic, or
+  # channel, aftertouch (guide p. 55). One global switch governs both directions: "If disabled,
+  # the Take 5 will neither respond to nor transmit aftertouch/key pressure data" (guide p. 12).
+  # What presses is the keyboard, which the guide calls "not available on the Module" (guide
+  # p. 50), so the send is the Take 5 Keyboard's.
+  aftertouch: both
+  aftertouch_transmits: true
   pitch_bend:
     # Up 0-12 and down 0-24 semitones, set separately (CC 85 and 86).
     programmable: true

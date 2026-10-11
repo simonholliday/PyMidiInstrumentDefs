@@ -545,6 +545,26 @@ class TestFindingANumberThatIsOnlyInsideAPrintedRange:
 		for printed in ("102...109", "102-109", "102\u2013109", "102 \u2026 109"):
 			assert tool.inside_a_range(105, printed), printed
 
+	def test_a_fine_half_given_by_a_rule_is_found_inside_the_range_the_rule_prints (self, tmp_path: pathlib.Path) -> None:
+		"""Moog's Theremini gives every controller below 32 a fine control "at locations 32 - 63".
+
+		It prints no fine half's own number, so a definition that holds one for controller 9
+		asks for a 41 that no row carries, and the page has named it in the only way a rule can.
+		"""
+		page = ("7 Master Volume\n9 Wavetable Scan Rate\n"
+			"All implemented controller numbers 0 - 31 have corresponding LSB (fine) controls at locations 32 - 63.")
+		result = followed(tmp_path, "scan_rate: {cc: 9, lsb: 41}", page)
+
+		assert result.in_a_range == [("scan_rate", "lsb", 41)]
+		assert not result.missing
+
+	def test_a_fine_half_inside_no_printed_range_is_still_missing (self, tmp_path: pathlib.Path) -> None:
+		"""The rule is what names it. A table that prints the coarse number alone has not."""
+		result = followed(tmp_path, "scan_rate: {cc: 9, lsb: 41}", "7 Master Volume\n9 Wavetable Scan Rate")
+
+		assert result.missing == [("scan_rate", "lsb", 41)]
+		assert not result.in_a_range
+
 	def test_it_is_reported_as_weaker_and_never_counted_as_found (self, capsys: pytest.CaptureFixture[str]) -> None:
 		"""The whole point: a page that names a range has not printed the number."""
 		result = tool.Result(name = "korg/wavestate", documents = [])

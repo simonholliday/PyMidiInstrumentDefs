@@ -305,6 +305,12 @@ def inside_a_range (number: int, text: str) -> bool:
 	holds eight controls asks for six numbers the page does not carry.  The page
 	does name them, in the only way a table of ranges can.
 
+	A fine half is named the same way where a maker gives the fine halves by a
+	rule: Moog's Theremini prints "All implemented controller numbers 0 - 31 have
+	corresponding LSB (fine) controls at locations 32 - 63." and no fine half's
+	own number, so a definition that holds fifteen of them asks for numbers from
+	39 to 62 that no row carries.
+
 	This is a **weaker** check than finding the number, for two reasons: the page
 	never shows the number itself, and a range is matched wherever it appears
 	rather than against the row that means it.  It is reported separately for that
@@ -612,7 +618,7 @@ def follow (
 			result.as_halves.append(entry)
 			continue
 
-		if kind == "cc" and inside_a_range(number, printed_text):
+		if kind in ("cc", "lsb") and inside_a_range(number, printed_text):
 			result.in_a_range.append(entry)
 			continue
 

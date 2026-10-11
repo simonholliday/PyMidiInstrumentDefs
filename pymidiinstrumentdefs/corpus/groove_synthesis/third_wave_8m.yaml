@@ -55,9 +55,9 @@ source: >-
   wave envelope's six times and six positions, the wave surfer and the hold.
 
   EVERY ROW OF BOTH TABLES IS ACCOUNTED FOR. The 8M's table prints 62 rows, 48 in the main table and
-  14 in the 2.0a sub-table, and **one is not carried**: 32, "MIDI bank select" (spec p. 15), which
-  is how a program is addressed rather than a parameter of one. Volume is printed "Volume (added in
-  version 1.9c)" (spec p. 14) and carried as `Volume`. So 61 controls come from that table.
+  14 in the 2.0a sub-table, and **every one is carried**, 32, "MIDI bank select" (spec p. 15),
+  among them, as bank select is wherever a maker numbers it. Volume is printed "Volume (added in
+  version 1.9c)" (spec p. 14) and carried as `Volume`. So 62 controls come from that table.
 
   The NRPN table prints 469 rows, 0 to 468 without a gap, and 415 are carried. **The 54 not carried
   are left out for what each row says it is**: the part-select bitmap at 0; eleven rows of sequence
@@ -107,11 +107,13 @@ source: >-
   manuals says program change is received. **No preset count is recorded**: "The 3rd Wave has 500
   presets divided into 5 banks of 100 presets." (manual p. 1), but the bank select controller the
   table names runs `0-3` (spec p. 15) - four of the five - and the system exclusive messages index
-  banks `0-4` (spec p. 48), so how far program change reaches is not settled.
+  banks `0-4` (spec p. 48), so how far program change reaches is not settled. The controller is
+  carried as printed, 0-3.
 
-  NINETEEN OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES. It
+  TWENTY OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES. It
   makes 32 to 63 the fine halves of 0 to 31, and this table gives nineteen of them parameters of
-  their own. Of the nineteen, 13 have their own coarse number carried too. **Three sit where the
+  their own; the twentieth, 32, keeps the specification's meaning, bank select's fine half. Of the
+  nineteen, 13 have their own coarse number carried too. **Three sit where the
   commonest fourteen-bit senders put their fine halves**: 33 is oscillator 2's wave offset where a
   fourteen-bit modulation wheel sends its fine half, 34 oscillator 2's level beside breath control
   on 2, and 39 the low-pass filter's envelope amount beside volume on 7. That is a fact about the
@@ -269,6 +271,7 @@ controls:
   oscillator_2_pitch:                                  {label: "Oscillator 2 pitch", cc: 29, group: panel}
   oscillator_2_fine:                                   {label: "Oscillator 2 fine", cc: 30, group: panel}
   oscillator_2_wavetable:                              {label: "Oscillator 2 wavetable", cc: 31, group: panel}
+  midi_bank_select:                                    {label: "MIDI bank select", cc: 32, range: [0, 3], group: panel}
   oscillator_2_wave_offset:                            {label: "Oscillator 2 wave offset", cc: 33, range: [0, 63], group: panel}
   oscillator_2_level:                                  {label: "Oscillator 2 level", cc: 34, group: panel}
   oscillator_3_pitch:                                  {label: "Oscillator 3 pitch", cc: 35, group: panel}

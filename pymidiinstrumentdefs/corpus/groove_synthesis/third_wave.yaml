@@ -50,15 +50,15 @@ source: >-
   was designed to map physical controls on the synth" (spec p. 2), and "In later releases there has
   been a shift to expose more parameters over MIDI CC instead of using them to map knobs and
   buttons." (spec p. 2) - for the two desktop models, whose tables grew in 2.0a. **The keyboard's did
-  not**: its 101 rows are its panel's controls.
+  not**: its 101 rows are its panel's controls, but for bank select at 32.
 
   EVERY ROW OF BOTH TABLES IS ACCOUNTED FOR. The keyboard's controller table prints 101 rows and a
   sub-table of four "New in version 1.9a (remapped CC 65, 66, 67 to prevent conflicts)" (spec p. 8).
-  **Four are not carried**: 32, "MIDI bank select" (spec p. 4), which is how a program is addressed
-  rather than a parameter of one; and 65, 66 and 67, the low-pass filter's cutoff, resonance and
+  32, "MIDI bank select" (spec p. 4), is carried, as bank select is wherever a maker numbers it.
+  **Three are not carried**: 65, 66 and 67, the low-pass filter's cutoff, resonance and
   envelope amount, which the main table still prints marked "changed in version 1.9, see below"
   (spec p. 5) and which 1.9a moved to 9, 37 and 39. What 65 to 67 do on this firmware is not stated.
-  So 101 controls come from that table. The NRPN table prints 469 rows, 0 to 468 without a gap, and
+  So 102 controls come from that table. The NRPN table prints 469 rows, 0 to 468 without a gap, and
   413 are carried. **The 56 not carried each say why in their own row**: the part-select bitmap at
   0; eleven rows of sequence data, a stream of commands rather than a parameter; 27 whose value
   packs two numbers into one, which a single range cannot describe - the three oscillators'
@@ -87,9 +87,10 @@ source: >-
   GROOVE SYNTHESIS IS THE THIRTY-SECOND MAKER HERE AND THIS IS ITS FIRST INSTRUMENT, so nothing in
   this account leans on a habit of the maker's, and nothing should be taken from it for the next.
 
-  THIRTY OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES. It
-  makes 32 to 63 the fine halves of 0 to 31, and the keyboard's table gives thirty of them
-  parameters of their own. Of the thirty, 25 have their own coarse number carried too. **Three sit
+  THIRTY-ONE OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES.
+  It makes 32 to 63 the fine halves of 0 to 31, and the keyboard's table gives thirty of them
+  parameters of their own; the thirty-first, 32, keeps the specification's meaning, bank select's
+  fine half. Of the thirty, 25 have their own coarse number carried too. **Three sit
   where the commonest fourteen-bit senders put their fine halves**: 33 is Oscillator 2's wave offset
   where a fourteen-bit modulation wheel sends its fine half, 34 is Oscillator 2's level beside
   breath control on 2, and 39 is the low-pass filter's envelope amount beside volume on 7. That is a
@@ -117,7 +118,7 @@ source: >-
 
   **Banks.** "The 3rd Wave has 500 presets divided into 5 banks of 100 presets." (manual p. 1), and
   the bank select controller the table names runs `0-3` (spec p. 4) - four of the five. The system
-  exclusive messages index banks `0-4` (spec p. 48).
+  exclusive messages index banks `0-4` (spec p. 48). The controller is carried as printed, 0-3.
 
   **Effect 2's types.** The controller table lists fourteen, 0 to 13, ending with the shimmer reverb
   2.0a added (spec p. 7); the NRPN table's row for the same choice runs `0-12` and stops before it
@@ -139,8 +140,9 @@ source: >-
   (release_notes) from controllers that send it. **Receiving program change**: the manual says only that "The
   3rd Wave can send MIDI Program Change messages." (manual p. 103), and so the 500 presets are in
   this account rather than in a field that would claim the instrument answers to one; the
-  only hint the other way is a "fix for midi program change via midi din" (release_notes), which
-  names no direction. **The pitch
+  hints the other way are a "fix for midi program change via midi din" (release_notes), which
+  names no direction, and the bank select controller its table names (spec p. 4), which chooses
+  nothing until a program change follows. **The pitch
   bend's depth**: it is settable from 0 to 24 semitones up and down per program (NRPNs 36 and 37),
   and no default is given. **A mode** and **a note range**: there is no implementation chart.
 
@@ -261,6 +263,7 @@ controls:
   oscillator_2_pitch:                                  {label: "Oscillator 2 pitch", cc: 29, group: panel}
   oscillator_2_fine:                                   {label: "Oscillator 2 fine", cc: 30, group: panel}
   oscillator_2_wavetable:                              {label: "Oscillator 2 wavetable", cc: 31, group: panel}
+  midi_bank_select:                                    {label: "MIDI bank select", cc: 32, range: [0, 3], group: panel}
   oscillator_2_wave_offset:                            {label: "Oscillator 2 wave offset", cc: 33, range: [0, 63], group: panel}
   oscillator_2_level:                                  {label: "Oscillator 2 level", cc: 34, group: panel}
   oscillator_3_pitch:                                  {label: "Oscillator 3 pitch", cc: 35, group: panel}

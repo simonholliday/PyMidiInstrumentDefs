@@ -59,8 +59,8 @@ source: >-
   the wave surfer and the effect mixes numbers of their own (spec pp. 13-14).
 
   EVERY ROW OF BOTH TABLES IS ACCOUNTED FOR. The 24M's table prints 110 rows: 69 in the main table
-  and 16, 4 and 21 in the three sub-tables. **Eleven are not carried**: 32, "MIDI bank select"
-  (spec p. 9), which is how a program is addressed rather than a parameter of one; 65, 66 and 67,
+  and 16, 4 and 21 in the three sub-tables. 32, "MIDI bank select" (spec p. 9), is carried, as
+  bank select is wherever a maker numbers it. **Ten are not carried**: 65, 66 and 67,
   the low-pass filter's cutoff, resonance and envelope amount, which the main table still prints
   marked "changed in version 1.9, see below" (spec p. 10) and which 1.9a moved to 9, 37 and 39; and
   seven the main table marks "(deprecated in version 2.0a)" (spec p. 9) - the four LFO enable
@@ -68,7 +68,7 @@ source: >-
   **whose numbers the 2.0a sub-table gives new jobs**: 43 to 46 the filter envelope's four stages,
   110 the fourth envelope's sustain, 111 effect 2's mix and 112 the fourth envelope's amount. The
   specification says `deprecated`, not removed, and on firmware 2.0c the 2.0a meanings are read as
-  the live ones. So 99 controls come from that table. **Some settings then have two numbers each**:
+  the live ones. So 100 controls come from that table. **Some settings then have two numbers each**:
   the filter envelope at 70 to 73, shared there with the third envelope, and at 43 to 46; the amp
   envelope at 75 to 77 and 118, shared with the fourth, and at 23 and 52 to 54; and the effects' mix
   at 104, for whichever effect is being edited, and at 114 and 111. All are carried.
@@ -119,9 +119,10 @@ source: >-
   control of multi-parts 1-2 on a given program" (manual p. 114), and the four settings that follow
   it give parts 1 to 4 a channel each.
 
-  THIRTY OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES. It
-  makes 32 to 63 the fine halves of 0 to 31, and this table gives thirty of them parameters of their
-  own. Of the thirty, 25 have their own coarse number carried too. **Three sit where the commonest
+  THIRTY-ONE OF THE CARRIED CONTROLLERS ARE NUMBERS THE MIDI SPECIFICATION KEEPS FOR FINE HALVES.
+  It makes 32 to 63 the fine halves of 0 to 31, and this table gives thirty of them parameters of
+  their own; the thirty-first, 32, keeps the specification's meaning, bank select's fine half.
+  Of the thirty, 25 have their own coarse number carried too. **Three sit where the commonest
   fourteen-bit senders put their fine halves**: 33 is oscillator 1's fine tuning where a
   fourteen-bit modulation wheel sends its fine half, 34 oscillator 2's fine tuning beside breath
   control on 2, and 39 the low-pass filter's envelope amount beside volume on 7. That is a fact
@@ -147,7 +148,7 @@ source: >-
 
   **Banks.** "The 3rd Wave has 500 presets divided into 5 banks of 100 presets." (manual p. 1), and
   the bank select controller the table names runs `0-3` (spec p. 9) - four of the five. The system
-  exclusive messages index banks `0-4` (spec p. 48).
+  exclusive messages index banks `0-4` (spec p. 48). The controller is carried as printed, 0-3.
 
   **Smaller ones.** The metronome's volume is `0-100` by NRPN (spec p. 20) and `Range 0-127` in the
   manual (manual p. 101). The MIDI in and out cables can be set off by NRPN (spec p. 39), where the
@@ -281,6 +282,7 @@ controls:
   oscillator_1_pitch:                                  {label: "Oscillator 1 Pitch", cc: 29, group: panel}
   oscillator_2_pitch:                                  {label: "Oscillator 2 Pitch", cc: 30, group: panel}
   oscillator_3_pitch:                                  {label: "Oscillator 3 Pitch", cc: 31, group: panel}
+  midi_bank_select:                                    {label: "MIDI bank select", cc: 32, range: [0, 3], group: panel}
   oscillator_1_fine:                                   {label: "Oscillator 1 Fine", cc: 33, group: panel}
   oscillator_2_fine:                                   {label: "Oscillator 2 Fine", cc: 34, group: panel}
   oscillator_3_fine:                                   {label: "Oscillator 3 Fine", cc: 35, group: panel}

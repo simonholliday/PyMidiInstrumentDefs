@@ -16944,14 +16944,14 @@ class TestThirdWave:
 		*range(354, 365), *range(371, 395), 424, 425, 426, 427, 428, 444, 458, 459])
 
 	def test_two_maps_and_neither_control_carries_both (self) -> None:
-		"""101 by controller from the keyboard's table and 413 by NRPN, never paired."""
+		"""102 by controller from the keyboard's table and 413 by NRPN, never paired."""
 		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
 
 		by_cc = [control for control in wave.controls.values() if control.cc is not None]
 		by_nrpn = [control for control in wave.controls.values() if control.nrpn is not None]
 
-		assert len(wave.controls) == 514
-		assert len(by_cc) == 101 and len(by_nrpn) == 413
+		assert len(wave.controls) == 515
+		assert len(by_cc) == 102 and len(by_nrpn) == 413
 		assert not [control for control in wave.controls.values() if control.cc is not None and control.nrpn is not None]
 		assert wave.midi.nrpn == "preferred"
 
@@ -16960,15 +16960,15 @@ class TestThirdWave:
 		assert "TWO MAPS FOR ONE INSTRUMENT, AND A SETTING CHOOSES WHICH IS LIVE" in said
 
 	def test_every_row_of_both_tables_is_accounted_for (self) -> None:
-		"""Four controller rows and 56 NRPN rows left out, each for a reason; nothing else."""
+		"""Three controller rows and 56 NRPN rows left out, each for a reason; nothing else."""
 		wave = pymidiinstrumentdefs.load("groove_synthesis/third_wave", [CORPUS])
 
 		numbers = {control.cc for control in wave.controls.values() if control.cc is not None}
 		nrpns = {control.nrpn for control in wave.controls.values() if control.nrpn is not None}
 
-		# Bank select, and the three filter controllers 1.9a moved to 9, 37 and 39.
-		assert not numbers & {32, 65, 66, 67}
-		assert {2, 9, 37, 39} <= numbers
+		# The three filter controllers 1.9a moved to 9, 37 and 39; bank select, 32, is carried.
+		assert not numbers & {65, 66, 67}
+		assert {2, 9, 32, 37, 39} <= numbers
 
 		assert len(self.NRPN_LEFT_OUT) == 56
 		assert nrpns == set(range(0, 469)) - set(self.NRPN_LEFT_OUT)
@@ -16985,7 +16985,7 @@ class TestThirdWave:
 
 		counts = collections.Counter(control.group for control in wave.controls.values())
 
-		assert counts == {"panel": 101, "single": 129, "multi": 269, "global": 15}
+		assert counts == {"panel": 102, "single": 129, "multi": 269, "global": 15}
 
 	def test_a_button_is_pressed_from_64 (self) -> None:
 		"""">= 64 is pressed, <= 63 is off" on every button the controller table names."""
@@ -19768,12 +19768,12 @@ class TestThirdWaveDesktops:
 		module = pymidiinstrumentdefs.load("groove_synthesis/third_wave_24m", [CORPUS])
 		eight = pymidiinstrumentdefs.load("groove_synthesis/third_wave_8m", [CORPUS])
 
-		for wave, cc, nrpn in ((module, 99, 418), (eight, 61, 415)):
+		for wave, cc, nrpn in ((module, 100, 418), (eight, 62, 415)):
 			assert sum(1 for c in wave.controls.values() if c.cc is not None) == cc
 			assert sum(1 for c in wave.controls.values() if c.nrpn is not None) == nrpn
 
-		# Bank select is addressing, here as on the keyboard.
-		assert all(c.cc != 32 for wave in (module, eight) for c in wave.controls.values())
+		# Bank select is a control, here as on the keyboard, as it is wherever a maker numbers it.
+		assert all(wave.controls["midi_bank_select"].cc == 32 for wave in (module, eight))
 
 	def test_the_model_scoped_nrpns_go_to_the_model_they_name (self) -> None:
 		module = pymidiinstrumentdefs.load("groove_synthesis/third_wave_24m", [CORPUS])

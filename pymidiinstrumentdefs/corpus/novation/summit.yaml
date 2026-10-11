@@ -1,18 +1,24 @@
-# SIXTY PARAMETERS ARE NAMED HERE WITH NO NUMBER AT ALL, AND THAT IS THIS DOCUMENT'S HEADLINE.
+# SIXTY OF THE NUMBERS BELOW ARE TAKEN FROM ANOTHER INSTRUMENT'S MANUAL, AND EACH IS AN INFERENCE.
 # The MIDI parameters list names all four parameters of all sixteen Modulation Matrix slots. It
-# prints the four numbers of slot 1 - NRPN 1:0 to 1:3 - and then the Control Number column is
-# empty for every row of slots 2 to 16: sixty rows with a name, a range and a default, and no
-# way to address any of them. **The sibling Peak's manual numbers all sixteen slots**, 1:0 to
-# 16:3, and the two instruments share an engine - so the numbers exist and are published, in the
-# other instrument's document. They are not here, and they are not inferred: see the source
-# account for the three editions that were searched before that was written down.
+# prints the four numbers of slot 1 - NRPN 1:0 to 1:3 - and then the Control Number column is empty
+# for every row of slots 2 to 16: sixty rows with a name, a range and a default, and no number.
+# **The Peak's manual numbers all sixteen of the Peak's slots**, 1:0 to 16:3, and this guide says
+# in its own words that the two share an engine: "Summit is essentially a two-part, multi-timbral
+# hybrid instrument built around a dual implementation of Peak's synth core." (guide p. 4). So the
+# sixty controls below take their names, ranges and defaults from this guide and their numbers from
+# the Peak's manual, cited as `sibling_manual` and marked there as another model's document.
 #
-# THE MAKER'S DEFAULT COLUMN DOES NOT AGREE WITH ITSELF, AND 36 OF THE 189 CONTROLS BELOW CARRY NO
+# **NOTHING HERE WAS SENT TO A SUMMIT TO TEST IT.** No document read for this file prints one of
+# the sixty for this instrument. The source account says what the inference rests on and what it
+# does not establish, and names the three editions of this guide that were searched before its
+# cells were called blank. Until 2026-10-11 the sixty were described here and not carried.
+#
+# THE MAKER'S DEFAULT COLUMN DOES NOT AGREE WITH ITSELF, AND 36 OF THE 249 CONTROLS BELOW CARRY NO
 # DEFAULT BECAUSE OF IT. The list prints up to two numbers per row - `64 (0)` - and the second is
 # the first as the display shows it, which the row's own Range column gives the arithmetic for: a
 # range of `0-127 (-64 to +63)` says the display is the wire value less 64, so `64 (0)` checks out
 # on it, and Glide Time's range of `0-127 (0 to +127)` says the display is the wire value, so its
-# `0 (60)` cannot. Nothing in either document explains either column. Three ways the rule found a
+# `0 (60)` cannot. Nothing in either document explains either column. Five ways the rule found a
 # row the guide does not settle:
 #
 #   28 rows where the two halves cannot both be right, by the row's own range;
@@ -28,34 +34,36 @@
 # A default is recorded only where every statement the documents make about it agrees.
 # `Notes/4599_write_controls.py` applies that rule and names each of the 36 refusals with the
 # arithmetic that refused it. **THE REVERB IS THE ONE THE GUIDE DISPROVES TWICE**, and it is the
-# same parameter of the same engine that the Peak's manual disproves twice: its three presets
-# "are simply numbered 1, 2 and 3, and set the RevSize parameter (see page 37) to values of 0,
-# 64 or 127 respectively" (guide p. 35), and `RevSize`'s own initial value is 64 - which is
-# preset 2, where the Default Value column's 2 on a range of 0-2 would be preset 3.
+# same parameter of the same engine that the Peak's manual disproves twice (sibling_manual p. 31):
+# its three presets "are simply numbered 1, 2 and 3, and set the RevSize parameter (see page 37) to
+# values of 0, 64 or 127 respectively" (guide p. 35), and `RevSize`'s own initial value is 64 -
+# which is preset 2, where the Default Value column's 2 on a range of 0-2 would be preset 3.
 #
-# AND THE SECOND WITNESS THIS GUIDE HAS CANNOT BE JOINED TO ITS OWN TABLE. The Peak's manual
-# prints an Init Patch table keyed by parameter name and 34 of its rows could be checked against
-# it. This guide has no such table. What it has is 105 blocks of body text, each giving a
-# `Displayed as` / `Initial value` / `Range of adjustment` triple, 88 of them with an initial
-# value - and the display name is scoped to a menu screen while the MIDI list's name does not
-# carry the menu, so `Velocity`, `Delay`, `HoldTime` and `Repeats` each name three or more
+# AND THE SECOND WITNESS THIS GUIDE HAS CANNOT BE JOINED TO ITS OWN TABLE. The Peak's manual prints
+# an Init Patch table keyed by parameter name (sibling_manual pp. 38-39) and 34 of its rows could
+# be checked against it. This guide has no such table. What it has is 105 blocks of body text, each
+# giving a `Displayed as` / `Initial value` / `Range of adjustment` triple, 88 of them with an
+# initial value - and the display name is scoped to a menu screen while the MIDI list's name does
+# not carry the menu, so `Velocity`, `Delay`, `HoldTime` and `Repeats` each name three or more
 # parameters. Joining the 89 names that occur only once, by longest suffix, yields 16 matches of
 # which at least two are plainly wrong: the envelope's `Delay` lands on `Reverb Pre Delay`. **A
 # false join does not produce a wrong value, it produces a wrong refusal**, discarding a default
 # the document states correctly - so none of the 16 was used, and the five joins in `PANEL` were
 # each made by hand on the page they cite.
 #
-# THIS DEFINITION IS BUILT FROM TWO DOCUMENTS DESCRIBING TWO FIRMWARES, and it targets the
-# later. The guide is "applicable to Summit synthesisers with v1.1 firmware" (guide p. 4) and the
-# addendum is "For Firmware Updates 2.0 and 2.1" (addendum p. 1).
+# THIS DEFINITION IS BUILT FROM TWO DOCUMENTS OF ITS OWN, DESCRIBING TWO FIRMWARES, and it targets
+# the later. The guide is "applicable to Summit synthesisers with v1.1 firmware" (guide p. 4) and
+# the addendum is "For Firmware Updates 2.0 and 2.1" (addendum p. 1). **Sixty of its numbers are
+# from a third document, about another instrument at another firmware**: the Peak's manual, for the
+# Peak's v1.2 (sibling_manual p. 4).
 #
 # **AND `1.1` IN THE FILE NAME IS THE GUIDE'S EDITION, NOT THE FIRMWARE, ALTHOUGH HERE THEY ARE
 # THE SAME NUMBER.** That coincidence is the trap, and one other edition springs it: Novation
 # offers this guide in twenty-four language versions, and the Italian is labelled version 1.2
 # and dated fourteen months later while its own body sentence still gives the firmware as v1.1.
 # So the two numbers move independently and the English reader cannot tell, because for it they
-# agree. The French edition, labelled V2, omits the firmware sentence altogether. **No edition
-# in any language describes firmware 2.x**, which is what the addendum is for.
+# agree. The French edition, labelled V2, omits the firmware sentence altogether. **None of the
+# three editions searched describes firmware 2.x**, which is what the addendum is for.
 #
 # TWO PARTS, EACH WITH A CHANNEL OF ITS OWN, AND THE MAP DEPENDS ON THE MODE. This is "a
 # bi-timbral, 16-voice, polyphonic instrument" (guide p. 22) whose two Parts are "two independent
@@ -81,14 +89,14 @@
 #
 # NO CONTROL HERE HAS `choices`, ALTHOUGH DOZENS OF THEM ARE SELECTORS. The guide names the
 # states of its stepped parameters in prose and numbers none of them: the three sync-rate tables,
-# the 60 wavetables, the modulation matrix's 23 sources and 37 destinations, and the chorus
+# the 60 wavetables, the modulation matrix's 23 sources and 38 destinations, and the chorus
 # programs "named 2 Tap, 4 Tap and Ensemble" (guide p. 35) all carry no value against any row.
 # **The one place the order of a published list could be checked against something, it agrees** -
 # the LFO Range button "has three settings: Low, High and Sync" (guide p. 31) over a range of
 # 0-2, and the default is 0, which is Low. That is worth recording because the Peak's manual
-# lists the same three settings of the same engine in the other order and so disagrees with its
-# own default: this sentence is the one that is right. One list agreeing is not a convention, so
-# nothing here is numbered by its order.
+# lists the same three settings of the same engine in the other order (sibling_manual p. 20)
+# and so disagrees with its own default: this sentence is the one that is right. One list
+# agreeing is not a convention, so nothing here is numbered by its order.
 #
 # NOT RECORDED: the note range, because no page states one - the keyboard is 61 notes (guide
 # p. 4) and nothing says which. Transport, which neither document mentions: not start, not stop,
@@ -115,13 +123,16 @@ source: >-
   Summit User Guide v1.1 English, 62 pages, created 2021-07-12 by its own metadata, and the
   "Summit and Peak User Guide Addendum Version 2.1" (addendum p. 1), 18 pages, created
   2022-07-27. Novation publishes no programmer's reference and no separate MIDI implementation
-  for this instrument, unlike its Circuit, so these two documents are the whole of the published
-  map - which the saved downloads page establishes as what was offered on the day.
+  for this instrument, unlike its Circuit, so these two documents are the whole of the map it
+  publishes for the Summit - which the saved downloads page establishes as what was offered on
+  the day.
 
-  BOTH END IN A MIDI PARAMETERS LIST and the two together are this definition: 229 rows over the
-  guide's pp. 47-49 and 19 more on the addendum's p. 18, plus three NRPNs the addendum publishes
-  in a bug-fix bullet and in no table at all. 189 controls come out of 251 rows. Sixty of the
-  rows carry no control number, one carries `NA:NA`, and one is a rename rather than an addition.
+  BOTH END IN A MIDI PARAMETERS LIST and the two together are this definition, all but sixty of
+  its numbers: 229 rows over the guide's pp. 47-49 and 19 more on the addendum's p. 18, plus
+  three NRPNs the addendum publishes in a bug-fix bullet and in no table at all. 249 controls
+  come out of 251 rows: one row carries `NA:NA` and one is a rename rather than an addition.
+  Sixty of the 249 are rows this guide leaves without a control number, and their numbers are
+  taken from the Peak's manual, as set out below.
 
   THE TABLE IS A DRAWN GRID AND THAT IS HOW IT WAS READ. Novation's publisher gives every cell a
   rule above and below it, each rule a separate thin rectangle whose own x extent is one column's
@@ -139,10 +150,11 @@ source: >-
 
   THE SIXTY BLANK CELLS WERE CHECKED THREE WAYS BEFORE BEING CALLED BLANK. The grid finds the
   cells empty; a plain text extraction finds nothing between the kind and the range; and no
-  number of the form `2:0` to `16:3` occurs anywhere in any edition of this guide that has a
-  readable text layer - the English 1.1, the Italian 1.2 and the French V2, two languages over
-  fourteen months - while all three print slot 1's four numbers. So this is the maker's omission
-  and not one edition's typesetting. `Notes/4599_extract_summit.py` asserts it for all three.
+  number of the form `2:0` to `16:3` occurs anywhere in the three editions of this guide that
+  were searched - the English 1.1, the Italian 1.2 and the French V2, three languages over
+  fourteen months - while all three print slot 1's four numbers. So this is the maker's
+  omission and not one edition's typesetting, as far as three editions of twenty-four can
+  show. `Notes/4599_extract_summit.py` asserts it for all three.
 
   WHAT THE OTHER EDITIONS ARE FOR, AND WHAT THEY ARE NOT. Neither is read for a number or quoted
   for a word. The Italian settles that the version in the file name is the guide's edition rather
@@ -152,6 +164,59 @@ source: >-
   the sixty blank cells a second time. **Its first page is in German**, a colophon whose address
   and trademark notice are in that language, where its second page carries the same colophon in
   French, and its contents page is headed in English.
+
+  THE SIXTY NUMBERS ARE TAKEN FROM THE PEAK'S MANUAL, AND THIS IS WHAT TAKING THEM RESTS ON. The
+  Peak is another instrument. Its manual is cited here as `sibling_manual`, for these sixty numbers
+  and for the comparison that supports taking them. Another model's document may supply a number
+  only where the instrument's own document says the two share an engine, and this one does: "Summit
+  is essentially a two-part, multi-timbral hybrid instrument built around a dual implementation of
+  Peak's synth core." (guide p. 4). Six things then line up, each checked row by row in two
+  extractions of both documents. The 64 slot rows carry the same names in both lists, `Mod Matrix 7
+  Depth` in each (guide pp. 48-49, sibling_manual pp. 42-43). The ranges are printed the same: 0-16
+  for each source, 0-127 for depth, 0-36 for destination. The defaults are the same: 0, 0, 64 and
+  0. `Mod Matrix Selection` is NRPN 0:125 with a range of 0-15 in both. Slot 1 is numbered
+  identically, 1:0 to 1:3. And slot 1 is not the only agreement: every one of the 168 rows this
+  guide's list does number carries the number the Peak's list gives that row, 163 under the same
+  name and 5 under a name spelt or worded a little differently, and this list has no row the Peak's
+  lacks (guide pp. 47-49, sibling_manual pp. 40-43). The Peak's manual numbers slot n as n:0 to n:3
+  for every n up to 16, and that is what the sixty controls carry, each as MSB x 128 + LSB. **One
+  row is printed differently and no value differs**: the Peak's last, `Mod Matrix 16 Destination`,
+  gives its range as `0-36` and its default as `0`, without the bracketed halves its other 63 rows
+  and this guide's 64 have. The format has no field yet for marking a source as another model's, so
+  this account and that source's comment are the marking.
+
+  WHAT THAT DOES NOT ESTABLISH. No document read for this file prints one of the sixty numbers for
+  the Summit, so each is an inference from a sibling and not a reading: three of the guide's
+  twenty-four language editions were searched, and the online guide could not be fetched. Nothing
+  here was sent to an instrument. **The two lists describe different firmware, and neither is the
+  one this file targets**: the Peak's manual its v1.2 (sibling_manual p. 4), this guide the
+  Summit's v1.1, and this definition 2.1. The addendum for 2.0 and 2.1 covers both instruments and
+  adds to the matrix - eleven destinations under "three new destinations" (addendum p. 5), and
+  Noise as a source "in both the Mod Matrix and FX Mod Matrix" (addendum p. 10) - while its own
+  MIDI parameters list has no Mod Matrix row (addendum p. 18). So nothing confirms or contradicts
+  these numbers at 2.1. And the Summit has a matrix for each Part - "each of the two Summit synths
+  has 16 such slots" (guide p. 38) - where no page gives a slot an address of a Part's own, so
+  which Part's matrix a number reaches is left to the channel it arrives on, as it is for every
+  control here.
+
+  **AND THE RANGES CARRIED FOR THE MATRIX DO NOT FIT THE LISTS THEY SELECT FROM**, in this guide
+  before any addendum. Every source row gives 0-16, seventeen values, where the guide lists 23
+  sources (guide p. 46). Every destination row gives 0-36, thirty-seven values, where the guide
+  lists 38 destinations (guide p. 46). The Peak's manual lists 37 (sibling_manual p. 39), and
+  `FfreqSep`, the last in this guide's list, is not among them. **Which value selects which
+  destination no page says**, so nothing here says the range stops short of that one in particular:
+  only that 38 names cannot fit 37 values. The printed ranges are carried for all sixteen slots, as
+  what the maker printed and not as what the instrument accepts.
+
+  THIS GUIDE'S LIST HAS THE PEAK'S ROWS IN THE PEAK'S ORDER, ALL BUT ONE, AND NO ROW OF ITS OWN.
+  The row it lacks is `Osc Common Noise HPF`, NRPN 0:12 (sibling_manual p. 40), for a filter this
+  guide's body documents (guide p. 26). **That number is not taken, though the same sibling prints
+  it.** This list has no row for the parameter at all, so its name, range and default would be
+  borrowed along with its number, and the Peak's own row prints the range as `0-0 ( to+)`. The
+  sixty are different in kind: this guide prints every one of their rows and leaves one cell empty.
+  The two printings are not identical all the same. 17 of this list's rows are printed differently
+  from the Peak's in a range or a default cell, six of them in a value, and no matrix range is
+  among the six.
 
   THE DEFAULTS REST ON ONE WITNESS AND THE GUIDE HAS A SECOND ONE THAT CANNOT BE REACHED. See
   the comment above the definition: 105 body blocks give an `Initial value` keyed by a display
@@ -176,8 +241,10 @@ source: >-
 
   TWO ROWS HAVE NO RANGE AT ALL, `Effects Routing` (NRPN 0:89) and `Chorus Type` (NRPN 0:111).
   Their neighbours are complete, their own rows are single-height with nothing in the column, and
-  no other page gives either a range. `Effects Routing` therefore keeps no default either: its
-  column reads `0 (0)`, and with no range there is no arithmetic to check its two halves by,
+  no other page of this instrument's own documents gives either a range. The Peak's list prints
+  `0-6 (0 to +6)` and `0-2 (0 to +2)` for the same two rows (sibling_manual p. 42); those are the
+  Peak's, and no range is taken from it here. `Effects Routing` therefore keeps no default either:
+  its column reads `0 (0)`, and with no range there is no arithmetic to check its two halves by,
   which is a different thing from two statements that disagree.
 
   THE ADDENDUM COVERS THIS INSTRUMENT AND THE PEAK AND MARKS WHAT BELONGS TO WHICH, under
@@ -191,7 +258,9 @@ source: >-
   eight-voice Peak does not have, and that names this instrument outright in another of its
   bullets. **The reverse also holds and needs no action**: the two features under the Peak's own
   heading, envelope Delay and a high-pass noise filter, were added to the Peak "to match Summit"
-  (addendum p. 12), so this instrument already had both and its own list already numbers them.
+  (addendum p. 12), so this instrument already had both (guide pp. 26 and 30). **Its own list
+  numbers neither**: it has no row for the high-pass noise filter and none for an envelope's
+  Delay, so neither is a control below. Until 2026-10-11 this said the list numbered both.
 
   VELOCITY ARRIVES AND DOES NOTHING UNTIL A PATCH TURNS IT UP, which is why it is recorded as
   gated. The Amp Envelope's Velocity parameter has an initial value of 0 and "If set to zero, the
@@ -231,7 +300,7 @@ sources:
     # the last. **The folio sits at x 30, y 817 and a controller value never does**, which is
     # how it is kept out of the table: pp. 47-49 print bare integers in their own right.
     # THE BOOKMARK FOR THE MIDI PARAMETERS LIST IS WRONG. The PDF's own outline gives the list
-    # at 47 and `Sound designers` at 49, and the list runs to the end of p. 49 - sixty of its
+    # at 47 and `Sound designers` at 49, and the list runs to the end of p. 49 - 58 of its
     # rows are on the page the outline says is somebody else's. Found by reading the table's
     # grid to its last rule rather than by trusting the outline.
     page_offset: 0
@@ -275,11 +344,31 @@ sources:
     sha256: e84a3cccfab1556269592e9af9bbb81004e9259d3c559030741171518203dbb1
     retrieved: 2026-10-05
     # 65 pages, created 2021-11-30. **CITED FOR AN ABSENCE AND QUOTED FOR NOTHING**: it is the
-    # second edition that witnesses the sixty blank Control Number cells, which is what makes
-    # them the maker's omission rather than one edition's typesetting. It also omits the
-    # firmware sentence the English and Italian editions both carry, so it says nothing about
-    # which firmware it describes. Three of its pages are not in French: p. 1 is a German
-    # colophon, p. 2 the same colophon in French, p. 3 a contents page headed in English.
+    # second edition that witnesses the sixty blank Control Number cells, which is what makes them
+    # the maker's omission rather than one edition's typesetting, as far as three editions of
+    # twenty-four can show. It also omits the firmware sentence the English and Italian editions
+    # both carry, so it says nothing about which firmware it describes. Three of its pages are not
+    # in French: p. 1 is a German colophon, p. 2 the same colophon in French, p. 3 a contents page
+    # headed in English.
+    page_offset: 0
+  sibling_manual:
+    kind: manual
+    title: Peak user guide
+    edition: for firmware v1.2
+    dated: 2019-08-07
+    landing: "https://downloads.novationmusic.com/novation/synthesisers/peak"
+    url: "https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Peak%201.2%20Manual%20-%20English.pdf"
+    sha256: 9a09dbe821f3a32a96aa4d8a007cc0de58cb732dff74ac6b272cd9d5e6f09353
+    retrieved: 2026-10-03
+    # **ANOTHER MODEL'S MANUAL, THE PEAK'S.** Cited for sixty numbers: the control numbers of
+    # Modulation Matrix slots 2 to 16, which its MIDI parameters list prints on pp. 42-43 and this
+    # instrument's guide leaves blank. No name, range or default below is read from it. It is cited
+    # besides for what those numbers are compared with and doubted by - its whole list on
+    # pp. 40-43, its matrix destinations on p. 39 and its firmware on p. 4 - and for three remarks
+    # in the comment above the definition about the Peak's own reverb, Init Patch table and LFO
+    # range. The account says what lets it be cited at all. It is `novation/peak`'s own `manual`
+    # source, with the same digest. The format has no field yet for marking a source as another
+    # model's, so this comment does it.
     page_offset: 0
   download_page:
     kind: download_page
@@ -325,10 +414,10 @@ midi:
     # **Which block a program change reaches is the Single or Multi mode the player is in**, not
     # a MIDI message, so 512 are addressable at a time and 1024 exist.
     presets: 1024
-  # 115 OF THE 189 CONTROLS BELOW ARE ADDRESSED BY NRPN AND BY NOTHING ELSE, against 74 the
-  # control changes reach. The maker still does not prefer either in words:
-  # the Settings menu names them together as one switch, "CC/NRPN", with one value for both
-  # (guide p. 42), so `supported` is as far as the documents go.
+  # 175 OF THE 249 CONTROLS BELOW ARE ADDRESSED BY NRPN AND BY NOTHING ELSE, sixty of them by
+  # numbers from the Peak's manual, against 74 the control changes reach. The maker still does not
+  # prefer either in words: the Settings menu names them together as one switch, "CC/NRPN", with
+  # one value for both (guide p. 42), so `supported` is as far as the documents go.
   nrpn: supported
   # Patches travel this way: "It is also possible to import Patch data into Summit via MIDI SysEx
   # messages, using applications such as SysEx Librarian (Mac) or MIDI-OX (Windows)" (guide
@@ -639,6 +728,71 @@ controls:
   mod_matrix_1_source2:             {label: Mod Matrix 1 Source2, nrpn: 129, range: [0, 16], default: 0, group: mod_matrix}
   mod_matrix_1_depth:               {label: Mod Matrix 1 Depth, nrpn: 130, default: 64, group: mod_matrix}
   mod_matrix_1_destination:         {label: Mod Matrix 1 Destination, nrpn: 131, range: [0, 36], default: 0, group: mod_matrix}
+  # **SLOTS 2 TO 16 TAKE THEIR NUMBERS FROM THE PEAK'S MANUAL**, cited as `sibling_manual`. This
+  # guide prints each row's name, range and default and leaves its Control Number empty, so the
+  # sixty below are an inference from another model's document and not a reading of this
+  # instrument's own: see the source account, which also says why the ranges are doubted. Slot n is
+  # NRPN n:0 to n:3 there, recorded here as n x 128 plus 0 to 3.
+  mod_matrix_2_source1:             {label: Mod Matrix 2 Source1, nrpn: 256, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_2_source2:             {label: Mod Matrix 2 Source2, nrpn: 257, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_2_depth:               {label: Mod Matrix 2 Depth, nrpn: 258, default: 64, group: mod_matrix}
+  mod_matrix_2_destination:         {label: Mod Matrix 2 Destination, nrpn: 259, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_3_source1:             {label: Mod Matrix 3 Source1, nrpn: 384, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_3_source2:             {label: Mod Matrix 3 Source2, nrpn: 385, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_3_depth:               {label: Mod Matrix 3 Depth, nrpn: 386, default: 64, group: mod_matrix}
+  mod_matrix_3_destination:         {label: Mod Matrix 3 Destination, nrpn: 387, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_4_source1:             {label: Mod Matrix 4 Source1, nrpn: 512, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_4_source2:             {label: Mod Matrix 4 Source2, nrpn: 513, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_4_depth:               {label: Mod Matrix 4 Depth, nrpn: 514, default: 64, group: mod_matrix}
+  mod_matrix_4_destination:         {label: Mod Matrix 4 Destination, nrpn: 515, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_5_source1:             {label: Mod Matrix 5 Source1, nrpn: 640, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_5_source2:             {label: Mod Matrix 5 Source2, nrpn: 641, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_5_depth:               {label: Mod Matrix 5 Depth, nrpn: 642, default: 64, group: mod_matrix}
+  mod_matrix_5_destination:         {label: Mod Matrix 5 Destination, nrpn: 643, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_6_source1:             {label: Mod Matrix 6 Source1, nrpn: 768, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_6_source2:             {label: Mod Matrix 6 Source2, nrpn: 769, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_6_depth:               {label: Mod Matrix 6 Depth, nrpn: 770, default: 64, group: mod_matrix}
+  mod_matrix_6_destination:         {label: Mod Matrix 6 Destination, nrpn: 771, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_7_source1:             {label: Mod Matrix 7 Source1, nrpn: 896, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_7_source2:             {label: Mod Matrix 7 Source2, nrpn: 897, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_7_depth:               {label: Mod Matrix 7 Depth, nrpn: 898, default: 64, group: mod_matrix}
+  mod_matrix_7_destination:         {label: Mod Matrix 7 Destination, nrpn: 899, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_8_source1:             {label: Mod Matrix 8 Source1, nrpn: 1024, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_8_source2:             {label: Mod Matrix 8 Source2, nrpn: 1025, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_8_depth:               {label: Mod Matrix 8 Depth, nrpn: 1026, default: 64, group: mod_matrix}
+  mod_matrix_8_destination:         {label: Mod Matrix 8 Destination, nrpn: 1027, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_9_source1:             {label: Mod Matrix 9 Source1, nrpn: 1152, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_9_source2:             {label: Mod Matrix 9 Source2, nrpn: 1153, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_9_depth:               {label: Mod Matrix 9 Depth, nrpn: 1154, default: 64, group: mod_matrix}
+  mod_matrix_9_destination:         {label: Mod Matrix 9 Destination, nrpn: 1155, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_10_source1:            {label: Mod Matrix 10 Source1, nrpn: 1280, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_10_source2:            {label: Mod Matrix 10 Source2, nrpn: 1281, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_10_depth:              {label: Mod Matrix 10 Depth, nrpn: 1282, default: 64, group: mod_matrix}
+  mod_matrix_10_destination:        {label: Mod Matrix 10 Destination, nrpn: 1283, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_11_source1:            {label: Mod Matrix 11 Source1, nrpn: 1408, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_11_source2:            {label: Mod Matrix 11 Source2, nrpn: 1409, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_11_depth:              {label: Mod Matrix 11 Depth, nrpn: 1410, default: 64, group: mod_matrix}
+  mod_matrix_11_destination:        {label: Mod Matrix 11 Destination, nrpn: 1411, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_12_source1:            {label: Mod Matrix 12 Source1, nrpn: 1536, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_12_source2:            {label: Mod Matrix 12 Source2, nrpn: 1537, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_12_depth:              {label: Mod Matrix 12 Depth, nrpn: 1538, default: 64, group: mod_matrix}
+  mod_matrix_12_destination:        {label: Mod Matrix 12 Destination, nrpn: 1539, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_13_source1:            {label: Mod Matrix 13 Source1, nrpn: 1664, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_13_source2:            {label: Mod Matrix 13 Source2, nrpn: 1665, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_13_depth:              {label: Mod Matrix 13 Depth, nrpn: 1666, default: 64, group: mod_matrix}
+  mod_matrix_13_destination:        {label: Mod Matrix 13 Destination, nrpn: 1667, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_14_source1:            {label: Mod Matrix 14 Source1, nrpn: 1792, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_14_source2:            {label: Mod Matrix 14 Source2, nrpn: 1793, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_14_depth:              {label: Mod Matrix 14 Depth, nrpn: 1794, default: 64, group: mod_matrix}
+  mod_matrix_14_destination:        {label: Mod Matrix 14 Destination, nrpn: 1795, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_15_source1:            {label: Mod Matrix 15 Source1, nrpn: 1920, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_15_source2:            {label: Mod Matrix 15 Source2, nrpn: 1921, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_15_depth:              {label: Mod Matrix 15 Depth, nrpn: 1922, default: 64, group: mod_matrix}
+  mod_matrix_15_destination:        {label: Mod Matrix 15 Destination, nrpn: 1923, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_16_source1:            {label: Mod Matrix 16 Source1, nrpn: 2048, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_16_source2:            {label: Mod Matrix 16 Source2, nrpn: 2049, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_16_depth:              {label: Mod Matrix 16 Depth, nrpn: 2050, default: 64, group: mod_matrix}
+  mod_matrix_16_destination:        {label: Mod Matrix 16 Destination, nrpn: 2051, range: [0, 36], default: 0, group: mod_matrix}
 
   # SETTINGS --------------------------------------------------------
   atouch_scale:                     {label: Atouch Scale, nrpn: 8195, range: [1, 10], default: 5, group: settings}

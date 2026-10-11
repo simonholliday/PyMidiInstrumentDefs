@@ -5771,34 +5771,87 @@ class TestSummit:
 
 	"""The Peak's keyboard sibling, whose guide names sixty parameters it will not number."""
 
-	def test_sixty_parameters_are_named_with_no_number_and_are_not_here (self) -> None:
-		"""Slot 1 of the Modulation Matrix is numbered and slots 2 to 16 are blank.
+	def test_sixty_numbers_come_from_the_peak_s_manual_marked_as_another_model_s (self) -> None:
+		"""The guide numbers slot 1 of the Modulation Matrix and leaves slots 2 to 16 blank.
 
-		**The sibling's manual numbers all sixteen**, 1:0 to 16:3, and the two share an
-		engine - so this is the one place in the corpus where the number a definition wants
-		is published, and published in another instrument's document.
+		**The sibling's manual numbers all sixteen**, 1:0 to 16:3, and this instrument's own
+		guide says the two share an engine - which is the one condition under which another
+		model's document may supply a number. So the sixty are here, with their names, ranges
+		and defaults from this guide and their numbers from that manual.
 		"""
 		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
 		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
 
-		# Slot 1 is here in full, as NRPN 1:0 to 1:3 recorded as MSB x 128 + LSB.
-		for part, number in enumerate(("source1", "source2", "depth", "destination")):
-			assert summit.controls[f"mod_matrix_1_{number}"].nrpn == 128 + part
+		parameters = ("source1", "source2", "depth", "destination")
 
-		# And nothing from slot 2 upwards is here at all.
+		# Slot 1 is this guide's own, as NRPN 1:0 to 1:3 recorded as MSB x 128 + LSB.
+		for index, parameter in enumerate(parameters):
+			assert summit.controls[f"mod_matrix_1_{parameter}"].nrpn == 128 + index
+
 		for slot in range(2, 17):
-			for number in ("source1", "source2", "depth", "destination"):
-				assert f"mod_matrix_{slot}_{number}" not in summit.controls
+			for index, parameter in enumerate(parameters):
+				key = f"mod_matrix_{slot}_{parameter}"
+				ours, theirs = summit.controls[key], peak.controls[key]
 
-				# The Peak has every one of them, which is what makes this an omission.
-				assert peak.controls[f"mod_matrix_{slot}_{number}"].nrpn == \
-					slot * 128 + ("source1", "source2", "depth", "destination").index(number)
+				# The number is the one the Peak's definition carries for the same row, which
+				# was read from the Peak's manual, and it follows the rule slot 1 states.
+				assert ours.nrpn == theirs.nrpn == slot * 128 + index, key
+				assert ours.cc is None, key
 
-	def test_one_hundred_and_eighty_nine_controls_in_the_table_s_own_sections (self) -> None:
-		"""229 rows of the guide and 22 of the addendum, less the 62 that reach nothing."""
+				# Everything else a row states is the same in the two definitions.
+				assert (ours.label, ours.range, ours.default, ours.group) \
+					== (theirs.label, theirs.range, theirs.default, "mod_matrix"), key
+
+				# And each slot is a copy of slot 1 in all but its number, as the guide prints it.
+				first = summit.controls[f"mod_matrix_1_{parameter}"]
+
+				assert (ours.range, ours.default) == (first.range, first.default), key
+
+		# The manual is cited under a key of its own, with the Peak's digest.
+		assert summit.sources["sibling_manual"].sha256 == peak.sources["manual"].sha256
+		assert summit.sources["sibling_manual"].title == "Peak user guide"
+
+		flat = " ".join(prose_of("novation", "summit").split())
+
+		# The file says in two places that it is another model's: on the source, and in the
+		# account, which also says what the inference does not establish.
+		assert "**ANOTHER MODEL'S MANUAL, THE PEAK'S.**" in flat
+		assert "The Peak is another instrument. Its manual is cited here as `sibling_manual`" in flat
+		assert "built around a dual implementation of Peak's synth core" in flat
+		assert "each is an inference from a sibling and not a reading" in flat
+		assert "Nothing here was sent to an instrument." in flat
+		assert "So nothing confirms or contradicts these numbers at 2.1." in flat
+
+		# One more number the same sibling prints is not taken, and the file says why.
+		assert "osc_common_noise_hpf" not in summit.controls
+		assert "**That number is not taken, though the same sibling prints it.**" in flat
+
+	def test_the_matrix_s_printed_ranges_are_carried_and_doubted (self) -> None:
+		"""The guide lists more sources and destinations than its own ranges reach."""
 		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
 
-		assert len(summit.controls) == 189
+		for slot in range(1, 17):
+			assert summit.controls[f"mod_matrix_{slot}_source1"].range == (0, 16)
+			assert summit.controls[f"mod_matrix_{slot}_source2"].range == (0, 16)
+			assert summit.controls[f"mod_matrix_{slot}_destination"].range == (0, 36)
+
+		flat = " ".join(prose_of("novation", "summit").split())
+
+		assert "**AND THE RANGES CARRIED FOR THE MATRIX DO NOT FIT THE LISTS THEY SELECT FROM**" \
+			in flat
+		assert "the guide lists 23 sources (guide p. 46)" in flat
+		assert "lists 38 destinations (guide p. 46)" in flat
+		assert "**Which value selects which destination no page says**" in flat
+
+	def test_two_hundred_and_forty_nine_controls_in_the_table_s_own_sections (self) -> None:
+		"""229 rows of the guide and 22 of the addendum, less one that reaches nothing and a rename."""
+		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
+
+		assert len(summit.controls) == 249
+
+		# 74 by control change and 175 by NRPN alone, sixty of those from the Peak's manual.
+		assert sum(1 for c in summit.controls.values() if c.cc is not None) == 74
+		assert sum(1 for c in summit.controls.values() if c.cc is None) == 175
 		assert len(summit.groups) == 11
 
 		# The guide's own section headings, in the order it prints them, plus the two the
@@ -5897,17 +5950,19 @@ class TestSummit:
 		assert "Two witnesses say 1, one says 3" in said
 
 	def test_the_sixty_blank_cells_were_checked_against_three_editions (self) -> None:
-		"""Two languages over fourteen months, which is what makes it the maker's omission."""
+		"""Three languages over fourteen months, which is as far as three editions can show."""
 		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
 
-		# The two editions that are cited for an absence and quoted for nothing.
+		# Two of the six are editions cited for an absence and quoted for nothing, and one is
+		# another model's manual.
 		assert set(summit.sources) == {
-			"guide", "addendum", "translation", "second_edition", "download_page"}
+			"guide", "addendum", "translation", "second_edition", "sibling_manual",
+			"download_page"}
 
 		said = prose_of("novation", "summit")
 
-		assert "no number of the form `2:0` to `16:3` occurs anywhere in any edition of this" \
-			" guide that has a readable text layer" in said
+		assert "no number of the form `2:0` to `16:3` occurs anywhere in the three editions of" \
+			" this guide that were searched" in said
 
 
 class TestModwaveMkII:

@@ -104,10 +104,10 @@ it:
 says the two share an engine.** A Novation Summit's guide calls it a two-part instrument
 *"built around a dual implementation of Peak's synth core"*, and it prints the numbers of
 one modulation matrix slot where the Peak's manual numbers all sixteen. That sentence is
-what would let the Peak's manual supply the other fifteen. Believing two instruments are
-related is not enough: the maker has to say so, in the document about the instrument you
-are writing for. It lets a definition carry a number its own documents do not print, which
-is why the condition is narrow. Where it is met:
+what lets the Peak's manual supply the other fifteen, which is how `novation/summit` carries
+them. Believing two instruments are related is not enough: the maker has to say so, in the
+document about the instrument you are writing for. It lets a definition carry a number its
+own documents do not print, which is why the condition is narrow. Where it is met:
 
 - cite the other model's document in `sources` like any other, and say in the account that
   it describes another instrument (until the format has a field for that);

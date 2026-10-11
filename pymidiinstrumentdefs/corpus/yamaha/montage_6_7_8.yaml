@@ -61,12 +61,13 @@ source: >-
   The seven are 6 and 38 (data entry), 96 and 97 (data entry increment and decrement), and three
   real controls - 11 "EXPRESSION" (data_list p. 191), 65 "PORTAMENTO SWITCH" (data_list p. 191)
   and 66 "SOSTENUTO" (data_list p. 191),
-  which are `direction: receives` below. The other twelve go both ways.
+  which are `direction: receives` below. The other fourteen go both ways, bank select's two among
+  them.
 
-  **SIX NUMBERS ARE ADDRESSING MACHINERY AND ARE NOT CONTROLS**, on the ruling the Fantom
-  established: 0 and 32 are "Bank Select", 6 and 38 "Data Entry", 96 and 97 "RPN Inc,Dec" and 100
-  and 101 "RPN LSB,MSB" (data_list p. 225). They address a parameter rather than being one. The
-  chart's channel mode rows are refused by the format in any case.
+  **SIX NUMBERS ARE ADDRESSING MACHINERY AND ARE NOT CONTROLS**: 6 and 38 are "Data Entry", 96 and
+  97 "RPN Inc,Dec" and 100 and 101 "RPN LSB,MSB" (data_list p. 225). They address a parameter
+  rather than being one. The chart's channel mode rows are refused by the format in any case.
+  **Bank select, 0 and 32, is carried**, as it is wherever a maker numbers it.
 
   **FOURTEEN MORE CONTROLLERS ARE FACTORY ASSIGNMENTS RATHER THAN FIXTURES, AND THE DEFINITION SAYS
   WHICH.** The chart gives "1-95" against "Assignable Cntrl" (data_list p. 225), and a footnote
@@ -343,8 +344,17 @@ groups:
 controls:
 
   # FIXED, AND TRAVELLING BOTH WAYS ------------------------------------------
-  # Twelve numbers in both of the maker's lists. Where the two lists give different names, the
+  # Fourteen numbers in both of the maker's lists. Where the two lists give different names, the
   # label is the received one and the transmitted one is in the comment.
+
+  # Bank select, both ways: "c = 0 BANK SELECT MSB" (data_list p. 191) and "c = 32 BANK SELECT
+  # LSB" (data_list p. 191), in both lists, and "0,32" against "Bank Select" on the chart
+  # (data_list p. 225). A global switch governs both directions (data_list pp. 190-191,
+  # reference_manual p. 171), each part has a Receive Bank Select (reference_manual p. 92) and each
+  # zone a Transmit Bank Select (reference_manual p. 64), and "Bank Select will be actually executed
+  # when the Program Change message is received." (data_list p. 192).
+  bank_select_msb:       {label: Bank Select MSB, cc: 0}
+  bank_select_lsb:       {label: Bank Select LSB, cc: 32}
 
   modulation:            {label: Modulation, cc: 1, group: wheels}
   channel_volume:        {label: Channel Volume, cc: 7, group: mix}

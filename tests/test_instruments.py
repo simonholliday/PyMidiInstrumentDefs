@@ -17314,17 +17314,17 @@ class TestMontage:
 	moved in four and a half years anyway.
 	"""
 
-	def test_twenty_nine_controls_and_half_of_them_are_only_the_factory_choice (self) -> None:
+	def test_thirty_one_controls_and_fourteen_are_only_the_factory_choice (self) -> None:
 		"""The chart gives 1 to 95 as assignable, and a footnote gives the shipped numbers."""
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
 		numbers = sorted(control.cc for control in montage.controls.values()
 			if control.cc is not None)
 
-		assert len(montage.controls) == 29
-		assert numbers == [1, 2, 5, 7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-			64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 94]
+		assert len(montage.controls) == 31
+		assert numbers == [0, 1, 2, 5, 7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+			32, 64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 94]
 
-		# **Fourteen of the twenty-nine are a default rather than a fixture**, and they are
+		# **Fourteen of the thirty-one are a default rather than a fixture**, and they are
 		# in a group of their own so a consumer can read them as one.
 		assignable = [name for name, control in montage.controls.items()
 			if control.group == "assignable"]
@@ -17333,8 +17333,8 @@ class TestMontage:
 		assert montage.midi.learns_control_change is True
 		assert montage.groups["assignable"] == "Assignable Cntrl"
 
-		# Six numbers the chart names are addressing machinery and are not here.
-		for machinery in (0, 32, 6, 38, 96, 97, 100, 101):
+		# Six numbers the chart names are addressing machinery and are not here; bank select is.
+		for machinery in (6, 38, 96, 97, 100, 101):
 			assert machinery not in numbers, machinery
 
 	def test_three_are_received_and_never_transmitted (self) -> None:

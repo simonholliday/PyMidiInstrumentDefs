@@ -208,24 +208,33 @@ controls:
   #
   # Two of the eleven are the numbers the MIDI standard assigns - 7 for level and 10 for pan -
   # and the other nine are this maker's own, running 40 to 48 with no gap.
+  #
+  # **EVERY ONE NAMES THE PART**, because each is set for a part and the parts are the channels.
+  # The knobs edit the part the player selects - "The part is selected. The selected part can be
+  # edited." (manual_2 p. 1) - and the chart's Note On line maps the two: "n=0 - 9 (Channel 1 - 10
+  # = Parts 1 - 10)" (chart). The basic channel cannot be changed, so it is always 1, and a control
+  # naming no part would mean channel 1 alone, the first part. That each is received on its part's
+  # channel is read from that one remark, since no control change row says it again; the master
+  # VOLUME knob, which has no number, is the instrument's own. `korg/volca_drum`, the same maker's,
+  # reads its part parameters the same way on more evidence, its chart giving the mapping twice.
 
   # mix (2)
-  level:              {label: LEVEL, cc: 7, group: mix, direction: receives}
-  pan:                {label: PAN, cc: 10, group: mix, direction: receives}
+  level:              {label: LEVEL, cc: 7, part: part, group: mix, direction: receives}
+  pan:                {label: PAN, cc: 10, part: part, group: mix, direction: receives}
 
   # sample (3)
-  sample_start_point: {label: SAMPLE START POINT, cc: 40, group: sample, direction: receives}
-  sample_length:      {label: SAMPLE LENGTH, cc: 41, group: sample, direction: receives}
-  speed:              {label: SPEED, cc: 43, group: sample, direction: receives}
+  sample_start_point: {label: SAMPLE START POINT, cc: 40, part: part, group: sample, direction: receives}
+  sample_length:      {label: SAMPLE LENGTH, cc: 41, part: part, group: sample, direction: receives}
+  speed:              {label: SPEED, cc: 43, part: part, group: sample, direction: receives}
 
   # tone (1)
-  hi_cut:             {label: HI CUT, cc: 42, group: tone, direction: receives}
+  hi_cut:             {label: HI CUT, cc: 42, part: part, group: tone, direction: receives}
 
   # pitch_eg (3)
-  pitch_eg_int:       {label: PITCH EG INT, cc: 44, group: pitch_eg, direction: receives}
-  pitch_eg_attack:    {label: PITCH EG ATTACK, cc: 45, group: pitch_eg, direction: receives}
-  pitch_eg_decay:     {label: PITCH EG DECAY, cc: 46, group: pitch_eg, direction: receives}
+  pitch_eg_int:       {label: PITCH EG INT, cc: 44, part: part, group: pitch_eg, direction: receives}
+  pitch_eg_attack:    {label: PITCH EG ATTACK, cc: 45, part: part, group: pitch_eg, direction: receives}
+  pitch_eg_decay:     {label: PITCH EG DECAY, cc: 46, part: part, group: pitch_eg, direction: receives}
 
   # amp_eg (2)
-  amp_eg_attack:      {label: AMP EG ATTACK, cc: 47, group: amp_eg, direction: receives}
-  amp_eg_decay:       {label: AMP EG DECAY, cc: 48, group: amp_eg, direction: receives}
+  amp_eg_attack:      {label: AMP EG ATTACK, cc: 47, part: part, group: amp_eg, direction: receives}
+  amp_eg_decay:       {label: AMP EG DECAY, cc: 48, part: part, group: amp_eg, direction: receives}

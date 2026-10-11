@@ -16494,6 +16494,13 @@ class TestVolcaSample:
 
 		assert any("/370/" in (source.landing or "") for source in volca.sources.values())
 
+	def test_every_control_names_the_part (self) -> None:
+		"""Each is a part's own setting, and the parts are channels 1 to 10. Part-less until 2026-10-11."""
+		volca = pymidiinstrumentdefs.load("korg/volca_sample", [CORPUS])
+
+		assert len(volca.controls) == 11
+		assert all(control.part == "part" for control in volca.controls.values())
+
 
 class TestMicroBrute:
 

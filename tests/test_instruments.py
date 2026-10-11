@@ -17643,14 +17643,14 @@ class TestSeqtrak:
 	Yamaha's Data List carries the controller map in its MIDI Data Format, whose control
 	change lists give each number with a name and its direction, and in its
 	implementation chart, which agrees with them.  The User Guide's section 18.3 names
-	thirty-seven controllers with the channels each reaches, and its names are the labels.
+	forty controllers in four tables, with the channels each reaches, and its names are the labels.
 	The Data List's MIDI Data Table - which is where rank 109 taught us to look - is a bank
 	table and a system exclusive address map with no controller in it, which is how an
 	earlier reading came to miss the lists a few sheets before it.
 	"""
 
 	def test_forty_two_controls_reconciled_from_two_documents (self) -> None:
-		"""37 named in the User Guide, plus 5 that only the Data List names."""
+		"""40 named in the User Guide, plus bank select's 2 that only the Data List names."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 		numbers = sorted(control.cc for control in seqtrak.controls.values()
 			if control.cc is not None)
@@ -17661,8 +17661,8 @@ class TestSeqtrak:
 			102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
 			116, 117, 118, 119]
 
-		# **The five the Data List names and 18.3 does not**: bank select's two, and three
-		# standard controllers with no model-specific parameter published behind them.
+		# **The two the Data List names and 18.3 does not** are bank select's. 11, 64 and 66
+		# are in 18.3's fourth table, which this file once missed and so counted them here.
 		for standard in (0, 32, 11, 64, 66):
 			assert standard in numbers, standard
 
@@ -17681,28 +17681,34 @@ class TestSeqtrak:
 		# 72 is absent because the chart writes `71,73-75` rather than `71-75`.
 		assert 72 not in numbers
 
-	def test_five_are_received_only_and_two_of_them_on_two_documents_word (self) -> None:
-		"""The chart crosses their transmitted column; the guide says so in prose for two."""
+	def test_five_are_received_only_on_two_documents_word (self) -> None:
+		"""The chart crosses their transmitted column, and the guide says so in prose for all five."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 		receives = sorted(control.cc for control in seqtrak.controls.values()
 			if control.direction == "receives" and control.cc is not None)
 
 		assert receives == [11, 23, 24, 64, 66]
 
-		# MUTE and SOLO are the pair the User Guide also states, which is the account's point.
+		# The User Guide says it twice: of MUTE and SOLO, and of the three in its fourth table,
+		# whose names are now these three's labels.
 		assert seqtrak.controls["mute"].cc == 23
 		assert seqtrak.controls["solo"].cc == 24
 		assert "receive only" in (seqtrak.source or "")
+		assert "These are for receive only." in " ".join((seqtrak.source or "").split())
+
+		assert seqtrak.controls["expression"].label == "EXPRESSION CONTROL"
+		assert seqtrak.controls["sustain_switch"].label == "DAMPER PEDAL"
+		assert seqtrak.controls["sostenuto"].label == "SOSTENUTO"
 
 		both = [control for control in seqtrak.controls.values() if control.direction == "both"]
 
-		# Not 18.3's thirty-seven: bank select's two travel both ways, and the mute and solo do not.
+		# 18.3's forty less its five received only, and bank select's two.
 		assert len(both) == 37
 		assert {"bank_select_msb", "bank_select_lsb"} <= {
 			name for name, control in seqtrak.controls.items() if control.direction == "both"}
 
-	def test_the_two_switches_take_different_conventions (self) -> None:
-		"""One is given exact values and the other halves of the range, two sheets apart."""
+	def test_the_switches_take_different_conventions (self) -> None:
+		"""One is given exact values and two are given halves of the range, all three in 18.3."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 
 		# Exact values: 0 is off and 1 is on, and nothing says what 2 to 127 do.
@@ -17712,6 +17718,10 @@ class TestSeqtrak:
 		# Bands: 0 to 63 off, 64 to 127 on.
 		assert seqtrak.controls["mute"].values == {"off": 0, "on": 64}
 		assert seqtrak.controls["mute"].choices == {}
+
+		# The sostenuto too, in both documents. Unbanded until 2026-10-11.
+		assert seqtrak.controls["sostenuto"].values == {"off": 0, "on": 64}
+		assert seqtrak.controls["sostenuto"].choices == {}
 
 	def test_eleven_tracks_on_eleven_channels_that_cannot_be_moved (self) -> None:
 		"""Four groups, because that is how both documents group the eleven."""

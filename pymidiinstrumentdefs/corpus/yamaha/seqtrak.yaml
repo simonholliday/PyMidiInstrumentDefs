@@ -13,23 +13,22 @@
 # **AN EARLIER READING OF THIS FILE MISSED THOSE TWO SHEETS** and said the numbers and the names
 # were in different documents, neither sufficient alone. They are not: every controller below is
 # in the Data List, numbered, named in its own words and given a direction, and its chart agrees
-# with its lists on every one. What the User Guide adds is its section 18.3, which names
-# thirty-seven of the controllers with the channels each reaches and a range for each, and of
-# direction says only that the mute and solo are received and not sent. Its names are the labels
-# below wherever it gives one, and where its ranges differ from the Data List's the account says
-# so.
+# with its lists on every one. What the User Guide adds is its section 18.3, which names forty
+# of the controllers in four tables with the channels each reaches and a range for each, and of
+# direction says only that five are received and not sent. Its names are the labels below
+# wherever it gives one, and where its ranges differ from the Data List's the account says so.
 #
 # **THE COUNT RECONCILES TO FORTY-TWO, AND NOT ONE PART OF IT IS A HAND COUNT.** The chart's
 # sixteen cells expand to fifty controller numbers; eight of those are addressing machinery or
 # channel mode - data entry and its increment and decrement, the RPN selects, and 126 and 127 -
 # and forty-two remain, bank select's 0 and 32 among them, carried as bank select is wherever a
 # maker numbers it. The Data List's received list is the same forty-two once its data entry pair
-# and its increment and decrement are taken out. The User Guide's three tables name thirty-seven,
-# every one of them on the chart, and the five the Data List has that 18.3 does not are bank
-# select's two and 11, 64 and 66 - Expression, Sustain Switch and Sostenuto, standard controllers
-# with no model-specific parameter behind them. 37 + 5 = 42. **midi.guide's figure for this
-# instrument is 40**: its SEQTRAK list, read 2026-10-11, has no 0 and no 32, so it leaves bank
-# select out, as this file once did.
+# and its increment and decrement are taken out. The User Guide's four tables name forty, every
+# one of them on the chart, and the two the Data List has that 18.3 does not are bank select's.
+# 40 + 2 = 42. **This file once counted three tables and thirty-seven**, and missed the fourth,
+# `18.3.4 Other` (user_guide p. 102), which names 64, 66 and 11 with their channels. **midi.guide's
+# figure for this instrument is 40**: its SEQTRAK list, read 2026-10-11, has no 0 and no 32, so
+# it leaves bank select out, as this file once did.
 #
 # **UNLIKE THE MONTAGE'S, THIS DATA LIST NAMES ITS FIRMWARE.** Its cover reads `For OS V2.00` and
 # the User Guide says the same in prose, so the firmware comes from inside both documents rather
@@ -91,17 +90,18 @@ source: >-
   (data_list p. 114). The
   implementation chart agrees with them, and names three of its cells only as model-specific,
   with a footnote reading "Please refer to the manual." (data_list p. 162). The manual it means
-  is the User Guide, whose "18.3 MIDI Control Change Parameters" (user_guide p. 100) names
-  thirty-seven of the forty-two with a channel span and a value range for each, and whose names
-  are the labels below. The other five - bank select at 0 and 32, Expression at 11, Sustain
-  Switch at 64 and Sostenuto at 66 - are in the Data List and not in 18.3.
+  is the User Guide, whose "18.3 MIDI Control Change Parameters" (user_guide p. 100) names forty
+  of the forty-two in four tables, with a channel span and a value range for each, and whose
+  names are the labels below. Its fourth table, `18.3.4 Other` (user_guide p. 102), holds 64, 66
+  and 11, which this file once said 18.3 did not name. The other two, bank select at 0 and 32,
+  are in the Data List and not in 18.3.
 
   **WHERE THE DATA LIST AND 18.3 GIVE DIFFERENT RANGES, THIS FILE CARRIES 18.3'S, AND IT IS THREE
   CONTROLLERS.** Controller 10 is `TRACK PAN` over `1-127` in 18.3 (user_guide p. 100) and `PAN`
   over `0 - 127` in both of the Data List's lists (data_list p. 113). Controller 27 is
   `ARP TYPE` over `0-16` in 18.3 (user_guide p. 100) and `ARP TEMPLATE` over `0 - 15 (0:OFF)` in
   the Data List (data_list p. 114). Controller 116, `FM ALGORITHM`, is `0-127` in 18.3
-  (user_guide p. 100) and `0 - 11` in the Data List (data_list p. 114). The other thirty-four
+  (user_guide p. 100) and `0 - 11` in the Data List (data_list p. 114). The other thirty-seven
   that both documents give agree. Both are edition D0 for the same firmware, so neither is the
   later word, and a reader sending the top or bottom of one of these three ranges should expect
   one document to be wrong.
@@ -117,26 +117,28 @@ source: >-
   (data_list p. 117). The two tables differ on the projects' programs, `0 - 7` on p. 113 and
   `0 - 8` on p. 117, which adds that 8 is the temporary project.
 
-  **FIVE OF THE FORTY-TWO ARE RECEIVE-ONLY, AND ON TWO OF THEM TWO DOCUMENTS AGREE.** The chart
+  **FIVE OF THE FORTY-TWO ARE RECEIVE-ONLY, AND ON ALL FIVE TWO DOCUMENTS AGREE.** The chart
   crosses the transmitted column for 11, 23, 24, 64 and 66 while circling all five as recognised,
   and the Data List's transmitted list leaves out the same five, marking 23 and 24 `Receive
-  only` on the next sheet (data_list pp. 113, 114). For 23 and 24 the User Guide says the same
-  thing in prose - "MUTE and SOLO are receive only"
-  (user_guide p. 101) - which is a chart written to describe message flow and a guide written to
-  tell an owner what to expect, arriving at one fact without either deriving from the other. The
-  other thirty-seven travel both ways - not 18.3's thirty-seven, since bank select's two are
-  among them and the mute and solo are not.
+  only` on the next sheet (data_list pp. 113, 114). The User Guide says the same of all five in
+  prose, of 23 and 24 "MUTE and SOLO are receive only" (user_guide p. 101) and of 64, 66 and 11
+  "These are for receive only." (user_guide p. 102) - which is a chart written to describe
+  message flow and a guide written to tell an owner what to expect, arriving at one fact without
+  either deriving from the other. The other thirty-seven travel both ways: 18.3's forty less its
+  five received only, and bank select's two.
 
   **ONE PAGE DRAWS IT DIFFERENTLY.** The transmit flow diagram (data_list p. 111) puts the sustain
   switch and the block `(17H .. 1DH)`, which holds 23 and 24, under the switch for transmitting
   control changes. The transmitted list and the chart leave all three out, and the next sheet
   marks 23 and 24 `Receive only`, so the directions below follow those.
 
-  **THE TWO SWITCHES AMONG THEM USE DIFFERENT CONVENTIONS, WHICH IS THE MAKER'S DOING AND NOT A
+  **THE SWITCHES AMONG THEM USE DIFFERENT CONVENTIONS, WHICH IS THE MAKER'S DOING AND NOT A
   TRANSCRIPTION ERROR.** The portamento switch at 65 is given exact values, 0 for off and 1 for
-  on, so it carries `choices`; the mute at 23 is given halves of the range, 0 to 63 off and 64 to
-  127 on, so it carries `values`. Both are in the same section two sheets apart. Nothing says
-  what 2 to 127 do to the portamento switch, which is why a band would be an invention.
+  on, so it carries `choices`; the mute at 23 and the sostenuto at 66 are given halves of the
+  range, 0 to 63 off and 64 to 127 on, so they carry `values`. All three are in 18.3, and the Data
+  List gives each the same way (data_list pp. 113, 114). Nothing says what 2 to 127 do to the
+  portamento switch, which is why a band would be an invention. The damper pedal at 64, which the
+  Data List calls a switch, is given in both only as 0 to 127, so it carries neither.
 
   **TRANSMISSION SHIPS SWITCHED OFF, WHICH THE CHART DOES NOT TELL YOU AND THE SYSTEM EXCLUSIVE
   TABLE DOES.** The chart circles the control change rows in both columns with no footnote, while
@@ -275,7 +277,8 @@ voice:
 parts:
   # **ELEVEN TRACKS ON ELEVEN FIXED CHANNELS, GROUPED THE WAY BOTH DOCUMENTS GROUP THEM.** The
   # Data List's track table gives a Track Group for each of the eleven, and the User Guide's
-  # `AVAILABLE ON` column names those same four groups against each controller - so the grouping
+  # `AVAILABLE ON` column names those same four groups against every controller but the master
+  # and send effects', where it is blank - so the grouping
   # is the maker's twice over rather than this file's invention.
   #
   # **`channel_offset` CARRIES THE SAME FICTION IT CARRIES IN `roland/jd_xi`**, and for the same
@@ -357,7 +360,7 @@ controls:
   mono_poly_chord:     {label: MONO/POLY/CHORD, cc: 26, choices: {mono: 0, poly: 1, chord: 2}, group: voicing}
   # Synth and DX only. 0 switches it off rather than setting the shortest time.
   portamento_time:     {label: PORTAMENTO TIME, cc: 5, group: portamento}
-  # **EXACT VALUES WHERE THE MUTE TWO SHEETS LATER TAKES BANDS** - see the account.
+  # **EXACT VALUES WHERE THE MUTE AND THE SOSTENUTO TAKE BANDS** - see the account.
   portamento_switch:   {label: PORTAMENTO SWITCH, cc: 65, choices: {"off": 0, "on": 1}, group: portamento}
   arp_type:            {label: ARP TYPE, cc: 27, range: [0, 16], group: arpeggio}
   arp_gate:            {label: ARP GATE, cc: 28, group: arpeggio}
@@ -390,10 +393,16 @@ controls:
   # 0 is off and 1 to 11 each name a track, so the value is a track number rather than a level.
   solo: {label: SOLO, cc: 24, range: [0, 11], direction: receives, group: mix}
 
-  # ---- Not in 18.3: the Data List's received list names them (p. 113), and the chart crosses
-  # ---- their transmitted column. Standard controllers with no model-specific parameter behind
-  # ---- them, labelled as the chart prints them. In no group, because there is no panel control
-  # ---- to group them with - `korg/volca_keys` records its controller 11 the same way.
-  expression:      {label: Expression, cc: 11, direction: receives}
-  sustain_switch:  {label: Sustain Switch, cc: 64, direction: receives}
-  sostenuto:       {label: Sostenuto, cc: 66, direction: receives}
+  # ---- 18.3.4 Other (user_guide p. 102): received only, on two documents' word - the note
+  # ---- under that table, and the Data List's transmitted list, which leaves them out (data_list
+  # ---- p. 113), as the chart's transmitted column crosses them. Standard controllers with no
+  # ---- model-specific parameter behind them, labelled as 18.3 names them; until 2026-10-11
+  # ---- they carried the chart's names, Expression, Sustain Switch and Sostenuto, on the
+  # ---- mistaken word that 18.3 did not name them. In no group, because there is no panel
+  # ---- control to group them with - `korg/volca_keys` records its controller 11 the same way.
+  # All eleven tracks, channels 1 to 11.
+  expression:      {label: EXPRESSION CONTROL, cc: 11, direction: receives}
+  # Synth, DX and sampler only, channels 8 to 11.
+  sustain_switch:  {label: DAMPER PEDAL, cc: 64, direction: receives}
+  # Synth and sampler only, channels 8, 9 and 11. Halves of the range, as the mute's are.
+  sostenuto:       {label: SOSTENUTO, cc: 66, values: {"off": 0, "on": 64}, direction: receives}

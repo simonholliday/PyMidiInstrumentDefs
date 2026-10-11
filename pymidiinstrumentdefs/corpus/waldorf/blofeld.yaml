@@ -39,7 +39,7 @@ source: >-
   User´s Manual, 128 pages, Revision 1.1 of January 2009: Controller Numbers at
   pp. 113-117, which gives a row for every controller number from 0 to 127 under four
   columns - Ctrl #, Controller Range, Controller name or Sound Parameter, Value Range.
-  111 of those 128 rows are controls here. Plus the connections at pp. 8 and 10, the
+  112 of those 128 rows are controls here. Plus the connections at pp. 8 and 10, the
   Keyboard's own controls at p. 16, Multi mode at pp. 24-28, the oscillator and filter
   sections at pp. 42-52, the modulation sources at p. 60, the Global menu at pp. 82-86,
   the appendix's modulation source table at p. 106 and the glossary at p. 122.
@@ -49,18 +49,19 @@ source: >-
   whole of the published controller map, and the specification is cited below only for
   the parameter ranges it gives differently and for the device ID.
 
-  SEVENTEEN ROWS ARE NOT CONTROLS, each left out for a stated reason. Twelve read
-  "- not used -" in the maker's own hand: 0, 3, 6, 8, 9, 11, 63, 119 and 124 to 127.
-  Four are channel mode messages, which belong to the MIDI specification rather than to
-  this instrument and which the validator refuses - All Sound Off, Reset All Controllers,
-  Local Control and All Notes Off at 120 to 123. The last is bank select LSB at 32,
-  whose banks are recorded under program_change below instead.
+  SIXTEEN ROWS ARE NOT CONTROLS, each left out for a stated reason. Twelve read
+  "- not used -" in the maker's own hand: 0, 3, 6, 8, 9, 11, 63, 119 and 124 to 127 -
+  0 among them, the chart's `Bank Select MSB`. Four are channel mode messages, which
+  belong to the MIDI specification rather than to this instrument and which the
+  validator refuses - All Sound Off, Reset All Controllers, Local Control and All Notes
+  Off at 120 to 123. Bank select LSB at 32 is a control, as bank select is wherever a
+  maker numbers it, and its banks are under program_change below too.
 
   TEN CONTROLS CARRY AN ASTERISK IN THE CHART, which is a footnote marker and not part
   of a name, so it is not in their labels: "Controllers marked with * don’t change the
   Sound program but can perform temporary modulations or other tasks" (p. 113). They are
-  the modulation wheel, breath control, foot control, channel volume, pan and the sustain
-  pedal, which are here; and bank select LSB and the three channel mode messages, which
+  the modulation wheel, breath control, foot control, channel volume, pan, the sustain
+  pedal and bank select LSB, which are here; and the three channel mode messages, which
   are not. Nothing else in the file marks the distinction, because the format has no way
   to say it.
 
@@ -82,7 +83,7 @@ source: >-
   "the Blofeld disables this Controller as Sound parameter Controller and uses it
   exclusively for one of the Ctrl W…Ctrl Z" (p. 85). The four are not controls here,
   because a number a player assigns is not a property of the model - the reading the
-  modwave's hundred assignable numbers got - but any of the 111 below can be switched off
+  modwave's hundred assignable numbers got - but any of the 112 below can be switched off
   by one. **And it breaks in one direction only**: "The Sound parameter is sent out as
   Controller but can’t be received as long as you don’t change Ctrl W…Ctrl Z to other MIDI
   Continuous Controller messages" (p. 85). So a panel that moves a knob, watches the
@@ -90,7 +91,7 @@ source: >-
   sending the same controller back does nothing.
 
   THE CHART IS NOT THE WHOLE PARAMETER SET, WHICH MATTERS BEFORE ANYBODY BUILDS ON IT. A
-  sound is 383 bytes over system exclusive against the 111 controllers here, and whole
+  sound is 383 bytes over system exclusive against the 112 controllers here, and whole
   sections of the instrument have no controller number at all: the sixteen modulation
   matrix slots, the four modifiers, the arpeggiator's step data, the program name and
   category, and every effect parameter but the two mix levels. The Global menu offers
@@ -179,9 +180,9 @@ midi:
     # between them: "In addition to 1024 sound programs, Blofeld now offers 128 Multi sets"
     # (p. 24), and a Multi part takes its sound from "Bank A...H" (p. 25). The chart's own value
     # column for CC 32 reads "Bank A..." and its range "0…n", which is the only place the manual
-    # says how the banks are addressed - so bank select LSB is left out of the controls, as the
-    # Sub 37's is, and recorded here. The 128 Multi sets are selected with the panel dial; no
-    # page says a program change reaches them.
+    # says how the banks are addressed - so bank select LSB is among the controls, as the Sub
+    # 37's is, and the banks are recorded here too. The 128 Multi sets are selected with the
+    # panel dial; no page says a program change reaches them.
     presets: 1024
   # THE CHART IS COMPLETE AND NOTHING IS LEARNED, so this says nothing - unlike the Iridium,
   # where MIDI Learn is the whole map.
@@ -290,6 +291,11 @@ controls:
   channel_volume:            {label: Channel Volume, cc: 7, group: controllers}
   pan:                       {label: Pan, cc: 10, group: controllers}
   sustain_pedal:             {label: Sustain Pedal, cc: 64, group: controllers}
+  # Bank select LSB, carried as bank select is wherever a maker numbers it: the chart's row 32
+  # gives `0…n`, `Bank Select LSB*` and `Bank A...` (p. 114), the asterisk being the footnote
+  # above. No range is printed beyond `0…n`, so none is claimed; the banks are A to H. Received
+  # only: no page says the Blofeld sends it, as none says a program change leaves the instrument.
+  bank_select_lsb:           {label: Bank Select LSB, cc: 32, direction: receives, group: controllers}
   sostenuto:                 {label: Sostenuto, cc: 66, group: controllers}
 
   # ARPEGGIATOR -------------------------------------------------

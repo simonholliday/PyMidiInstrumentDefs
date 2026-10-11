@@ -6772,24 +6772,24 @@ class TestBlofeld:
 	"""A Waldorf whose chart has a row for all 128 controller numbers, and seventeen are not
 	controls."""
 
-	def test_the_chart_runs_0_to_127_and_111_of_them_are_controls (self) -> None:
+	def test_the_chart_runs_0_to_127_and_112_of_them_are_controls (self) -> None:
 		"""Every row is accounted for: each left out is left out for a reason."""
 		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
 
-		assert len(blofeld.controls) == 111
+		assert len(blofeld.controls) == 112
 		assert len(blofeld.groups) == 21
 
 		numbers = sorted(control.cc for control in blofeld.controls.values()
 			if control.cc is not None)
 
-		assert len(numbers) == 111, "every control here is reached by control change"
+		assert len(numbers) == 112, "every control here is reached by control change"
 
-		# The twelve the maker marks `- not used -`, the four channel mode messages, and bank
-		# select LSB. Nothing else is missing from 0 to 127.
+		# The twelve the maker marks `- not used -` and the four channel mode messages. Nothing
+		# else is missing from 0 to 127: bank select LSB is carried.
 		unused = {0, 3, 6, 8, 9, 11, 63, 119, 124, 125, 126, 127}
 		mode = {120, 121, 122, 123}
 
-		assert set(numbers) == set(range(128)) - unused - mode - {32}
+		assert set(numbers) == set(range(128)) - unused - mode
 
 	def test_no_channel_mode_message_is_a_control (self) -> None:
 		"""CC 120 to 127 belong to the MIDI specification, and the validator refuses them."""
@@ -6798,11 +6798,13 @@ class TestBlofeld:
 		for control in blofeld.controls.values():
 			assert control.cc is None or control.cc < 120, control.name
 
-	def test_bank_select_is_left_out_and_its_banks_are_recorded_instead (self) -> None:
+	def test_bank_select_lsb_is_carried_and_its_banks_are_recorded_too (self) -> None:
 		"""The chart's value column for CC 32 is the only place the manual addresses them."""
 		blofeld = pymidiinstrumentdefs.load("waldorf/blofeld", [CORPUS])
 
-		assert all(control.cc != 32 for control in blofeld.controls.values())
+		# Carried, as bank select is wherever a maker numbers it; CC 0 reads "- not used -".
+		assert blofeld.controls["bank_select_lsb"].cc == 32
+		assert all(control.cc != 0 for control in blofeld.controls.values())
 
 		# Eight banks of 128, which is what the 1024 counts.
 		assert blofeld.midi.program_change is not None
@@ -6935,7 +6937,7 @@ class TestBlofeld:
 
 		account = " ".join(blofeld.source.split())
 
-		assert "111 of those 128 rows are controls" in account
+		assert "112 of those 128 rows are controls" in account
 		assert "System Exclusive specification" in account
 
 		# The two products and the socket that tells them apart are in the file's own comments,
@@ -14882,13 +14884,14 @@ class TestProtein:
 		# **AND THE LESSON IS NAMED AS THE THIRD IN A ROW**, which is the point of keeping it.
 		assert "a glossary is not an implementation" in flat
 
-	def test_five_numbers_carried_and_ten_recorded_rather_than_listed (self) -> None:
-		"""Because the maker printed two ends and a rule, not ten numbers."""
+	def test_six_numbers_carried_and_ten_recorded_rather_than_listed (self) -> None:
+		"""Because the maker printed two ends and a rule, not ten numbers - and bank select."""
 		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
 
-		assert len(protein.controls) == 5
+		assert len(protein.controls) == 6
 		assert sorted(control.cc for control in protein.controls.values()
-			if control.cc is not None) == [1, 2, 11, 64, 74]
+			if control.cc is not None) == [1, 2, 11, 32, 64, 74]
+		assert protein.controls["bank_select_lsb"].direction == "receives"
 
 		flat = " ".join(prose_of("waldorf", "protein").split())
 
@@ -14900,8 +14903,10 @@ class TestProtein:
 		# The gate that decided it, named so the next reader does not argue it again.
 		assert "which is `elektron/tonverk`'s gate at rank 88" in flat
 
-		# And none of the five names a parameter - every one is a modulation source.
-		assert {control.group for control in protein.controls.values()} == {"modulation"}
+		# And none of the six names a parameter - five are modulation sources, and bank select
+		# chooses among the slots.
+		assert {control.group for control in protein.controls.values()
+			if control.name != "bank_select_lsb"} == {"modulation"}
 
 	def test_control_change_is_empty_because_it_is_both_things_the_field_names (self) -> None:
 		"""Fixed sources in the matrix, and MIDI learn for everything else."""

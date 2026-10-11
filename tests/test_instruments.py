@@ -9091,6 +9091,15 @@ class TestMC101:
 
 		assert sorted(track.receives or ()) == ["controls", "notes", "program_change"]
 
+		# So every control names the track, as on the MC-707: there is no base channel, and the
+		# control channel takes no controller. Part-less until 2026-10-11.
+		assert all(control.part == "track" for control in mc_101.controls.values())
+
+		flat = " ".join(prose_of("roland", "mc_101").split())
+
+		assert "EVERY CONTROL BELOW NAMES THE TRACK, BECAUSE THE TRACKS ARE THE ONLY PART THAT" \
+			" TAKES ONE." in flat
+
 	def test_the_missing_chart_edition_is_recorded (self) -> None:
 		"""eng01 and eng03 exist and eng02 does not, so one firmware step is unprinted."""
 		mc_101 = pymidiinstrumentdefs.load("roland/mc_101", [CORPUS])

@@ -302,6 +302,7 @@ class TestBundledCorpus:
 			"waldorf/iridium",
 			"waldorf/iridium_core",
 			"waldorf/iridium_mk2",
+			"waldorf/microwave",
 			"waldorf/protein",
 			"waldorf/streichfett",
 			"yamaha/dx7",
@@ -1705,6 +1706,7 @@ class TestAftertouch:
 			"waldorf/iridium_core": ("both", None),
 			"waldorf/iridium_mk2": ("both", None),
 			"korg/radias": ("channel", True),
+			"waldorf/microwave": ("both", None),
 		}
 
 
@@ -20842,3 +20844,92 @@ class TestLittlePhatty:
 		assert little.sources["manual"].file_page(55) == 54 and little.sources["manual"].file_page(68) == 67
 		for key in ("forum_post", "downloads_list"):
 			assert little.sources[key].sha256 == slim.sources[key].sha256
+
+
+class TestMicrowave:
+
+	"""Five received controllers a chart and two manuals agree on, and none for breath, which they number two ways."""
+
+	def test_five_controllers_each_written_for_single_mode_and_for_an_instrument (self) -> None:
+		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])
+
+		own = {key: control.cc for key, control in microwave.controls.items() if control.part is None}
+		assert own == {"modulation": 1, "volume": 7, "panning": 10, "sustain": 64, "portamento": 65}
+		twins = {key: control.cc for key, control in microwave.controls.items() if control.part == "instrument"}
+		assert twins == {"instrument_" + key: number for key, number in own.items()}
+		assert len(microwave.controls) == 10
+		# A rack with no keyboard: its chart sends nothing but system exclusive.
+		assert all(control.direction == "receives" for control in microwave.controls.values())
+
+		# Single mode answers on the instrument's channel and Multi mode on each Instrument's.
+		assert microwave.factory_mode == "single" and microwave.modes["multi"].unparted is False
+		assert [control.part for control in microwave.controls_in("single")] == [None] * 5
+		assert [control.part for control in microwave.controls_in("multi")] == ["instrument"] * 5
+
+	def test_breath_is_numbered_two_ways_and_carried_as_neither (self) -> None:
+		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])
+
+		assert not {2, 3} & {control.cc for control in microwave.controls.values()}
+
+		said = " ".join(prose_of("waldorf", "microwave").split())
+
+		assert "**BREATH IS 3 IN THE CHART AND 2 IN THE PROGRAMMING MANUAL, SO NEITHER IS CARRIED.**" in said
+		assert '"Breath controller (MIDI continuous controller 2)" (programming p. 27)' in said
+		assert "`3 (Breath)` (performance p. 121" in said
+
+	def test_fixed_numbers_beside_four_the_owner_assigns_leave_control_change_unsaid (self) -> None:
+		"""The field holds one word, and neither `learned` nor silence about the five would be true."""
+		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])
+
+		assert microwave.midi.control_change is None and microwave.midi.nrpn == "none"
+		assert not microwave.midi.refuses_control_change and not microwave.midi.learns_control_change
+
+		said = " ".join(prose_of("waldorf", "microwave").split())
+
+		assert "**CONTROL W, X, Y AND Z ARE NUMBERS THE OWNER CHOOSES, SO THEY ARE NOT CONTROLS HERE.**" in said
+		assert "**`control_change` IS LEFT EMPTY, AS `waldorf/blofeld`, WHICH HAS THE SAME FOUR, LEAVES ITS OWN.**" in said
+		for sibling in ("waldorf/blofeld", "waldorf/protein"):
+			assert pymidiinstrumentdefs.load(sibling, [CORPUS]).midi.control_change is None
+
+	def test_neither_a_mode_nor_a_clock_where_the_documents_tell_it_two_ways (self) -> None:
+		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])
+
+		assert (microwave.midi.mode, microwave.midi.mode_receives, microwave.midi.mode_sends) == (None, None, None)
+		assert microwave.midi.clock is None and microwave.midi.transport == "none"
+		assert microwave.midi.channels == (1, 16)
+		assert microwave.midi.program_change == pymidiinstrumentdefs.definition.ProgramChange(True, False, 128)
+
+		said = " ".join(prose_of("waldorf", "microwave").split())
+
+		assert "**CHANNELS 1 TO 16, AND THE DEFAULT IS TOLD TWO WAYS, SO NO `mode` IS CARRIED.**" in said
+		assert '"23= MIDI Clock Rate" (sysex)' in said
+
+	def test_eight_voices_shared_by_up_to_eight_instruments (self) -> None:
+		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])
+
+		assert (microwave.voice.polyphony, microwave.voice.polyphony_shared) == (8, True)
+		assert microwave.voice.note_range == (0, 127) and microwave.voice.aftertouch == "both"
+		assert microwave.voice.pitch_bend == pymidiinstrumentdefs.definition.PitchBend(None, True)
+
+		part = microwave.parts["instrument"]
+
+		assert (part.count, part.channel, part.mode) == (8, "assigned", "multi")
+		assert part.receives == ("notes", "controls", "program_change")
+		assert microwave.parts_in("single") == {} and list(microwave.parts_in("multi")) == ["instrument"]
+
+	def test_four_documents_out_of_one_archive (self) -> None:
+		"""Each cites the archive's address and its own digest, and the booklet two printed pages to a sheet."""
+		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])
+		members = [microwave.sources[key] for key in ("performance", "programming", "update", "sysex")]
+
+		assert len({source.url for source in members}) == 1 and len({source.sha256 for source in members}) == 4
+		assert microwave.sources["legacy_page"].url == members[0].landing
+		assert microwave.sources["legacy_index"].url == microwave.sources["legacy_page"].landing
+		assert list(microwave.sources) == ["performance", "programming", "update", "sysex", "legacy_page", "legacy_index"]
+
+		update = microwave.sources["update"]
+
+		assert update.pages_per_sheet == 2
+		assert [update.file_page(printed) for printed in range(1, 10)] == [2, 3, 3, 4, 4, 5, 5, 6, 6]
+		assert microwave.sources["sysex"].file_page(1) is None
+		assert (microwave.model.name, microwave.model.firmware) == ("MicroWave", "2.0")

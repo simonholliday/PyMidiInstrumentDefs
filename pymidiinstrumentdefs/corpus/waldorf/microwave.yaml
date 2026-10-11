@@ -1,0 +1,443 @@
+# **FIVE CONTROLLERS BY NUMBER, ALL RECEIVED, AND FOUR MORE THE OWNER NUMBERS.** The first MicroWave
+# is a rack module with no keyboard, and by its chart it sends nothing but system exclusive. What it
+# hears by a fixed number is the modulation wheel on 1, volume on 7, panning on 10, the sustain
+# pedal on 64 and a portamento controller on 65. Four more, Control W to Z, are sources a sound can
+# use, and the owner gives each a number from 0 to 120.
+#
+# **BREATH IS A SOURCE AS WELL, AND ITS NUMBER IS PRINTED TWO WAYS.** The chart at the back of both
+# manuals says 3 and the Programming Manual's list of sources says 2. No other page numbers it, so
+# neither is carried and both are said.
+#
+# **THE CHART IS OF 1990 AND THE SOFTWARE DESCRIBED IS 2.0.** Waldorf serves both manuals, a booklet
+# for the 2.0 update and its system exclusive texts from the instrument's legacy page. The manuals
+# and the booklet are scans, read by eye; the text for 2.00 is a text file. Where 2.0's documents
+# add to what the chart says, the account says so.
+
+definition: 1
+
+model:
+  manufacturer: Waldorf
+  # `MODEL: MicroWave` on the chart (performance p. 121), and so throughout both manuals. The covers
+  # read `The Micro-Wave Manual`, the 2.0 booklet's `Micro Wave`, the system exclusive text's title
+  # "WALDORF MICROWAVE" (sysex), and Waldorf's page today `Microwave`.
+  name: MicroWave
+  # THE LATEST SOFTWARE ANY OF WALDORF'S DOCUMENTS NAMES. The booklet is "MicroWave Software Version
+  # 2.0" (update p. 2) and the text "Microwave System Software Version 2.00 Revision 00" (sysex).
+  # The legacy page names no version. The two manuals name none in their prose; their chart is
+  # `Version: 1.10` (performance p. 121).
+  firmware: "2.0"
+
+source: >-
+  **WALDORF'S OWN DOCUMENTS, FROM ITS LEGACY PAGE.** The page for this instrument lists
+  `Documentation`, `Sounds` and `Tools` under "Microwave Downloads" (legacy_page), and the first is
+  one archive of seven files: the Performance Manual, 122 pages; the Programming Manual, 190; a
+  booklet for the 2.0 software, six sheets; and four text files of system exclusive documentation,
+  for software 1.0, an addendum for 1.25, an addendum for 2.00 and the whole of it for 2.00. Four
+  are cited here: the two manuals, the booklet and the whole text for 2.00. The two manuals and the
+  booklet are scans, each page one image and not a character of text, so no quotation from them can
+  be checked by a machine; a second reader checked every one against the rendered page.
+
+  **THIS IS THE FIRST MICROWAVE, THE RACK OF 1989.** "In 1989 this extraordinary reincarnation of
+  the legendary PPG synthesizers set out to conquer the world." (legacy_page). Waldorf's legacy
+  index lists it under "Microwave & Wave" (legacy_index) as `Microwave`, beside the Microwave II,
+  the XT and the XTk, which the index links to one other page between them, and nothing here is
+  about them.
+
+  **THE SOFTWARE IS 2.0, AND THE DOCUMENTS ARE OF THREE DATES.** Both manuals end with the same MIDI
+  implementation chart, on a page that prints no number: `Date: Feb. 20, 1990` and `Version: 1.10`
+  (performance p. 121) and the same again (programming p. 189). The booklet is of 1994 by its spine
+  and describes what 2.0 changed: "This section only describes the changed or new parameters
+  compared to Version 1.25 . See the MicroWave Performance Manual for more information."
+  (update p. 3). The text is dated "March, 1st, 1994" (sysex). So the chart's rows are those of
+  software 1.10, and they are carried where neither the booklet nor the text for 2.00 says
+  otherwise. The booklet numbers no controller and does not mention the clock, and of channels it
+  only repeats an Instrument's, 01 to 16 with 01 the default (update p. 2). The text adds one
+  thing the chart crosses, set out under the clock below, and says otherwise than one of its
+  remarks, set out under the modes. The archive's three other texts, for
+  1.0, an addendum for 1.25 and an addendum for 2.00, were searched as well: none numbers a
+  controller or speaks of start or stop, and the addendum for 2.00 has the one line about the
+  clock too. No document but the chart names 1.10. What 1.25 added is told for system exclusive
+  alone: its addendum lists seven new messages and two new functions of the dumps, which change
+  the mode, and speaks of an Overflow-Link mode. The channel, Control W to Z and the on/off
+  settings are in it only as the global parameters one of those messages lists and another sets
+  one at a time, and the clock is not in it.
+
+  **NOTHING IS SENT BUT SYSTEM EXCLUSIVE.** The chart's Transmitted column is a dash or a cross on
+  every row but System Exclusive, with an empty cell beside True # (performance p. 121). The
+  instrument has no keyboard: "Since the MicroWave has no keyboard of its own for you to play, you
+  must connect a MIDI-keyboard (or some other type of MIDI controller) in order to trigger a
+  sound." (performance p. 8). So every control below is `direction: receives`. What it receives, by
+  the same chart, is notes, both velocities, both kinds of aftertouch, pitch bend, control change,
+  program change, system exclusive, and All Notes Off, Active Sense and Reset.
+
+  **TWO SETTINGS DO PUT RECEIVED MESSAGES ON THE OUTPUT.** With MIDI Overflow on, the notes it has
+  no voice for go out again for a second instrument: "On will output any note-on message received
+  while all 8 voices are busy at the MIDI out port." (performance p. 41), and what arrives and the
+  instrument does not itself use is sent on as well (performance p. 42). With Overflow off, a
+  second setting passes everything through: "Midiout = Thru (on/off) will redirect all data
+  present at the MIDI-In port to the MIDI-Out port if desired, thus making it output all MIDI-Thru
+  data in addition to all MIDI-Out data." (performance p. 42), which the page says holds only
+  then. None of that is the instrument sending a note or a controller of its own, and the chart
+  has a dash or a cross for them all the same. What it does send of its own is system exclusive;
+  from 1.25, by that software's addendum, that includes a message for each parameter changed at
+  its panel while Overflow is at a third value, which the text for 2.00 spells `Lnk` (sysex) and
+  the manual's on and off do not list.
+
+  **THE CHART NAMES SIX CONTROLLERS AS FIXED, AND FIVE OF THEM ARE GIVEN THE SAME NUMBER AGAIN IN
+  THE MANUALS.** Its Control Change row is crossed as transmitted, marked yes as received, and
+  remarked `fixed:` `Ctrl. 1 (Mod)`, `3 (Breath)`, `7 (Vol)`, `10 (Pan)`, `64 (Sustain)`, `65
+  (Porta)`, then `free:` "4 assignable Controller, 0..120" (performance p. 121). The Programming
+  Manual's table of modifier modules, the sources a sound's modulation inputs can take, has a list
+  headed `Extenal MIDI Modifier modules:` with "Modulation wheel (MIDI continuous controller 1)"
+  (programming p. 27), "Sustain pedal (MIDI continuous controller 64)" (programming p. 27), "Volume
+  controller (MIDI continuous controller 7)" (programming p. 27) and "Panning controller (MIDI
+  continuous controller 10)" (programming p. 27). The Performance Manual gives the same four
+  numbers where it describes the setting that lets each in, for the instrument
+  (performance pp. 38-39) and for each Instrument of a Multi-program (performance pp. 67-68).
+  Controller 65 is in the Programming Manual's account of Glide. Those five are the controls below.
+
+  **WHAT EACH OF THE FIVE DOES.** Volume and panning act without being routed: "MIDI Volume
+  Controller (Controller #7) is permanently assigned to adjust the Sound-program's loudness."
+  (programming p. 60) and "MIDI Panning Controller (Controller #10) is permanently assigned to
+  adjust the Sound-program's panning-position." (programming p. 70). The modulation wheel and the
+  sustain pedal are listed as sources, which a sound's modulation inputs may take. No page gives
+  either a fixed destination, and **no page says whether the pedal also holds notes**: of the pedal
+  the Performance Manual says only that it is "sustain- or hold-pedal data (MIDI
+  continuous-controller #64)" (performance p. 39). A sound begun from the Sound-init program, which
+  the manual suggests recalling "so you can start from scratch." (programming p. 30), has the wheel
+  bringing in LFO 1 on the pitch of both oscillators: `Mod1 Source` at LFO 1, `Mod1 Control` at Mod
+  Wheel and `Mod1 Amount` at +20 for each (programming p. 161). Controller 65 is a condition on a
+  sound's Glide, at two of that parameter's settings: "MPorta is the same as Porta, with the
+  difference being that the portamento effect will only be applied if a MIDI portamento-command
+  (MIDI controller #65) is received." (programming p. 100), and `MGliss` is the same of the
+  glissando. The page does not say which values of the controller count as received; the manuals'
+  remark on a switch's values, printed three times, is made of a controller assigned to Control W,
+  that such controllers "will output only two values: 0 if they are not active and 127 if they are
+  activated." (performance p. 37), and with `not pressed` for `not active` where it is said again
+  (performance p. 57, programming p. 28). The booklet's two settings for 2.0, `FGliss` and `FPorta`,
+  glide only while a key is held, and the booklet says nothing of the controller for them (update p.
+  8).
+
+  **FOUR OF THE FIVE CAN BE SHUT OUT, AND FROM THE MULTI INIT THEY ARE LET IN.** The MIDI parameters
+  have an on/off setting for each of modulation, volume, panning and the sustain pedal, beside
+  those for program change, the pitch wheel, aftertouch and poly pressure: "If it is set to off,
+  the MIDI-source will be filtered and has no effect on the sound whatsoever." (performance p. 38).
+  Each Instrument of a Multi-program has the same eight, and "These parameters will over-ride those
+  set in the Global MIDI parameters." (performance p. 67). The Multi Init patch sets all eight on
+  for an Instrument (performance p. 55), and the booklet's table for 2.0 gives the same
+  (update p. 3). For the instrument's own eight no page prints a factory setting in words; the
+  display pictured beside each reads `on` (performance pp. 38-39), which is a picture and not a
+  statement. No setting names controller 65 or breath.
+
+  **BREATH IS 3 IN THE CHART AND 2 IN THE PROGRAMMING MANUAL, SO NEITHER IS CARRIED.** The chart's
+  remark has `3 (Breath)` (performance p. 121, programming p. 189). The Programming Manual's list
+  has "Breath controller (MIDI continuous controller 2)" (programming p. 27). The system exclusive
+  text lists the same sources by their place in a table, "16= Breath Controller" (sysex), and
+  numbers no controller at all; the listing of the Sound-init program names `BreathControl` in the
+  same table, again without a number (programming p. 165). Breath control is controller 2 in the
+  MIDI specification, but nothing in Waldorf's documents says which of its two is the slip.
+
+  **CONTROL W, X, Y AND Z ARE NUMBERS THE OWNER CHOOSES, SO THEY ARE NOT CONTROLS HERE.** "Control W
+  (000..120) is one of four programmable free MIDI controllers you can use for modulating sounds."
+  (performance p. 37); X, Y and Z are the same. They are sources like the modulation wheel, "The
+  MIDI Modifier modules Controller W through Z support any MIDI continuous controller between
+  values of 000 and 120." (programming p. 28), and the number each stands for is set once for the
+  instrument and again in each Multi-program, where it "overrides the same parameter of the
+  Global-parameter page!" (performance p. 57). The Multi Init patch sets all four to 000
+  (performance p. 54). A number an owner assigns is not a property of the model, which is the
+  reading `waldorf/blofeld` gives its own Control W to Z.
+
+  **`control_change` IS LEFT EMPTY, AS `waldorf/blofeld`, WHICH HAS THE SAME FOUR, LEAVES ITS
+  OWN.** The field holds one word. `learned` would say the five below are factory defaults an
+  owner can move, and they are fixed; no word says that a maker fixes some numbers and leaves
+  four to the owner. `waldorf/protein` leaves the field empty for the like reason, its other
+  numbers being learned.
+
+  **NO NRPN, AND A PARAMETER IS REACHED BY SYSTEM EXCLUSIVE.** No page of either manual or of the
+  booklet names a registered or non-registered parameter, and the text has neither term. An editor
+  changes a sound through messages of the instrument's own, "60 RTBP Real Time BPR Edit" (sysex)
+  and its companions for a Multi-program, the global parameters and the tables.
+
+  **CHANNELS 1 TO 16, AND THE DEFAULT IS TOLD TWO WAYS, SO NO `mode` IS CARRIED.** The channel is
+  one setting with seventeen values: "MIDI Channel (omni..1..16) sets the MIDI channel that the
+  MicroWave will receive on in MIDI poly-mode." (performance p. 37), and "Omni selects MIDI
+  omni-mode. The MicroWave will receive incoming MIDI messages on all 16 MIDI channels."
+  (performance p. 37). The chart gives a default channel of `1` and, two rows down, a default mode
+  of `1`, which its own legend reads as "Mode 1: OMNI ON, POLY" (performance p. 121); the setting
+  cannot be both a channel and omni, and the chart's Changed row, `1..16`, leaves omni out
+  altogether. The first-steps chapter tells the reader to have the controller and the instrument
+  both on channel 1: "Refer to chapter 4 to find out how to check and set the MicroWave's MIDI
+  receive channel (which should also be 1)." (performance p. 15). The chart's Mode row has more:
+  `Omni/Poly/Multi` as the messages received, `>All notes off` in its Altered cell, and the remark
+  "Modes can't be switched via MIDI" (performance p. 121), which later software's dumps are an
+  exception to; see the modes below. Global parameters are kept through
+  power-off (performance p. 35), and the manual calls the channel one of them
+  (performance p. 28); that the channel is kept is a reading of the two pages together.
+
+  **SINGLE MODE AT POWER-ON, AND A MULTI MODE OF UP TO EIGHT INSTRUMENTS.** "In Single mode you can
+  play one Sound-program at a time, using all eight voices of the MicroWave." (performance p. 28)
+  and "The MicroWave defaults to Single mode upon powering up." (performance p. 28). The first-steps
+  chapter allows for the other case all the same: after switching on, "The display should look like
+  this:" (performance p. 14), a Sound program, and for a display showing a Multi program instead it
+  has the reader press the select button labelled `MIDI-mode` (performance p. 14). In Multi mode a
+  Multi-program holds up to eight Instruments, each a sound with a key window, a velocity window and
+  a channel: "Every Instrument has it's own MIDI channel which may be different from or the same as
+  that of any other Instrument defined in a Multi-program." (performance p. 51). An Instrument's
+  channel is 1 to 16 and never omni: "Sorry, there is no omni-mode available for an Instrument."
+  (performance p. 60). How many of the eight exist is a setting of the Multi-program, "Number of
+  Instruments (1..8) defines how many Instruments are active in a certain Multi-program."
+  (performance p. 59), and the Multi Init patch has one, on channel 01 (performance pp. 54-55).
+
+  **FROM 1.25 A DUMP CHANGES THE MODE, WHATEVER THE CHART OF 1.10 SAYS.** "When recieving a
+  sound-dump, the MicroWave first switches into Poly Mode." (sysex), and "If the MicroWave
+  recieves an ARPD, it first switches to Multi Mode." (sysex), an ARPD being an "Arrangement
+  Program Dump" (sysex), a Multi-program's. Poly is the text's word for the manual's Single mode,
+  "Single (Poly) mode" (sysex). The addendum for 1.25 gives both as new functions of those dumps.
+  So a Sound Dump, the message BPRD, sent to an instrument in Multi mode takes it out of Multi
+  mode; the text names another message, ABPD, for a sender that does not want the switch (sysex).
+
+  **IN MULTI MODE THE INSTRUMENT'S OWN CHANNEL HEARS ONLY PROGRAM CHANGES.** "Besides the Instrument
+  channels you also have a basic MIDI channel. In Multi mode, this is used only to receive program
+  changes for recalling Multi-programs." (performance p. 53), and a later page says the same of
+  everything else: "the MicroWave will not recognize anything but program change commands on it's
+  basic MIDI channel" (performance p. 73). It is the channel of Single mode's setting, "it's the
+  same parameter you set for receiving in Single mode." (performance p. 58). So the five controls
+  are written twice below: once naming no part, for Single mode, and once for an Instrument on its
+  own channel, and Multi mode is `unparted: false`. **An Instrument may sit on that same
+  channel**, as the Multi Init patch's one Instrument on 01 does while the instrument's own
+  channel is 1 or omni. The manual warns against it for program changes: "There's no way the
+  MicroWave can determine whether it is meant for the Instrument or the Multi-program"
+  (performance p. 58). That notes and controllers on a shared channel still reach the Instrument
+  is a reading of its channel being the one "the Instrument will receive on" (performance p. 60);
+  no page says it of a channel shared with the instrument's own. For modulation, volume,
+  panning and the sustain pedal the manual says that the Instrument recognises them
+  (performance pp. 67-68), and of volume that "you may individually control the volume of each
+  Instrument as long as the MIDI channels differ" (programming p. 60), with the same sentence for
+  panning (programming p. 70). **That controller 65 reaches an Instrument on its channel is a
+  reading**: Glide is a setting of the sound the Instrument plays, and no page says on which
+  channel the controller is heard.
+
+  **PROGRAM CHANGE CHOOSES A SOUND OR A MULTI-PROGRAM, AND THE MANUAL COUNTS IT FROM 1.** The chart
+  marks it received over `0..127`, with the remark `0...63:internal 64..127:Card` and
+  `(x2,single/Multi)` (performance p. 121): 64 programs inside and 64 on a card, of each kind.
+  `presets` is the 128 Sound-programs. The Performance Manual counts from 1 and stops one short:
+  "Internal banks A and B refer to MIDI program numbers 1 to 64 respectively, while the card memory
+  is called by program numbers 65 through 127." (performance p. 40), and of a map, "You can select
+  and program all 127 possible program-change values." (performance p. 84), beside a display that
+  begins at `PC:000`. The first-steps chapter counts as page 40 does (performance p. 15), and the
+  text for 2.00 as the chart does: "Instr. Sound (BPR) (0...127 = Soundprog. A01...D32)" (sysex).
+  Two maps, one for sounds and one for Multi-programs, redirect a program change when PC Maps is on
+  (performance pp. 40, 84). In Multi mode a setting of the Multi-program decides what a program
+  change does: on the basic channel it recalls a Multi-program, on an Instrument's channel it
+  changes that Instrument's sound, or both, and the Multi Init patch has the first (performance pp.
+  54, 58).
+
+  **NOTES 0 TO 127, AND A TRUE VOICE OF 0 TO 108.** The chart's Note Number row reads `0..127`
+  received and its True Voice row `0..108` (performance p. 121). `note_range` is what the
+  instrument accepts. `roland/juno_106` records its own that way on a sentence saying that notes
+  outside are transposed; here no page says what a note above 108 sounds as. An Instrument's key
+  window runs from C-2 to G8 (performance p. 55), and each oscillator of a sound can be set to
+  ignore the pitch of the note that plays it (programming p. 38).
+
+  **VELOCITY, RELEASE VELOCITY, BOTH PRESSURES AND BEND ARE SOURCES A SOUND CHOOSES TO USE.** The
+  chart marks note-on and note-off velocity, key and channel aftertouch and the pitch bender as
+  received (performance p. 121), and the table of sources lists each: "Release velocity (the
+  velocity sent upon release of a key)" (programming p. 27), "After-touch (monophonic)"
+  (programming p. 27) and "Poly pressure (polyphonic, individual per key)" (programming p. 27).
+  The bend range belongs to each oscillator of a sound: "Bend Range (0..12) sets the pitch bend
+  range for this oscillator in semitones." (programming p. 38), so it is programmable and no
+  single figure is recorded. The Sound-init program has 02 for both oscillators
+  (programming p. 161).
+
+  **EIGHT VOICES, SHARED BY THE INSTRUMENTS.** In Multi mode the Instruments "share the same
+  hardware, and, of course, the eight available voices." (performance p. 51), and "In general all
+  voice allocation is done dynamically, yielding the best results for multi-channel sequencer
+  usage." (performance p. 51). An Instrument sent to one of the four individual outputs
+  (performance p. 30) takes one voice out of the pool and is monophonic (performance p. 52). The
+  booklet adds an Allocation Mode to each Instrument in 2.0, `dynamic` or one of six monophonic
+  settings (update p. 2), four of which it goes on to describe (update pp. 3-4): `dynamic` is the
+  manual's behaviour, in which an Instrument "is polyphonic and can hence be played with up to
+  eight voices" (update p. 3).
+
+  **THE CHART CROSSES CLOCK, AND THE TEXT FOR 2.00 LISTS IT AS A SOURCE, SO `clock` IS NOT
+  RECORDED.** Clock and Commands are crossed in both columns of the chart of 1990
+  (performance p. 121). The system exclusive text's table of sources ends "23= MIDI Clock Rate"
+  (sysex), on a line marked as one that earlier software had reserved and 2.0 gave a function. The
+  text for 1.0 has no such line, its table stopping at 22. No other line of the text for 2.00
+  mentions clock and the booklet does not mention it at all, so what a
+  sound does with it is not described anywhere. `transport` is `none` by the chart, and nothing
+  later speaks of start or stop.
+
+  **SYSTEM EXCLUSIVE, UNDER A DEVICE NUMBER.** The chart marks it both ways (performance p. 121).
+  The text gives the maker's identifier, "IDW : Waldorf MIDI ID = 3Eh" (sysex), and the device
+  number, "DEV : Device number, 00h to 7Eh, 7Fh = global" (sysex), which the manual sets as
+  "Device Number (0..126)" (performance p. 42) and gives a factory value: "By default the device
+  number is set to 000." (performance p. 43). The Performance Manual lists thirteen dump requests
+  the instrument answers (performance pp. 109-110), and the text documents those and more.
+
+  **WHERE WALDORF'S DOCUMENTS DISAGREE WITH THEMSELVES.** Breath, 3 or 2. The default, channel 1 or
+  omni. Program changes, 0 to 127 on the chart and 1 through 127 in the manual. Each is set out
+  above, and none is settled here.
+
+  NOT RECORDED: `mode` and `clock`, for the reasons above; a number for breath; the four
+  controllers an owner assigns; a factory setting for the channel, which the chart prints two
+  ways, or for the instrument's own eight on/off settings, which no page prints in words; and a
+  single bend range.
+
+sources:
+  performance:
+    kind: manual
+    title: The Micro-Wave Manual. Performance Manual
+    landing: "https://waldorfmusic.com/legacy-microwave/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/weTqE3SkZzocxYe/download"
+    sha256: f2158007f21386d7938648fd56ce194ac807e89aeb66e5e1ff8582e4959de710
+    retrieved: 2026-10-11
+    # A FILE INSIDE WALDORF'S ARCHIVE. The address serves `Documentation EN.zip`, 13,235,334 bytes,
+    # digest 08dde6bc05f8cfa5273ebd20e4786303a52211cfd7e86c739f9e70c6f7874e77, and the digest above
+    # is of its member `Performance_Manual_Eng.pdf`. A SCAN: 122 pages, each one image and no text.
+    # **CITED BY THE PAGE OF THE FILE, WITH `page_offset: 0`**, because the manual numbers its pages
+    # by chapter: the page cited as 37 prints 4-7, and the chart on 121 prints nothing.
+    page_offset: 0
+  programming:
+    kind: manual
+    title: The Micro-Wave Manual. Programming Manual
+    landing: "https://waldorfmusic.com/legacy-microwave/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/weTqE3SkZzocxYe/download"
+    sha256: a62a96847919db9d931dbdade8dba9bb931810b66c4982a8f821db43371e49ca
+    retrieved: 2026-10-11
+    # The archive's member `Programming_Manual_Eng.pdf`. A scan of 190 pages, cited by the page of
+    # the file as the Performance Manual is: the page cited as 27 prints 2-11, and the chart is on
+    # 189. Pages 175 to 183, the last of its three sample sounds, carry their headings and almost
+    # none of their body in the scan.
+    page_offset: 0
+  update:
+    kind: firmware_addendum
+    title: Micro Wave Software-Update Vers. 2.0
+    edition: "2.0"
+    dated: "1994"
+    landing: "https://waldorfmusic.com/legacy-microwave/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/weTqE3SkZzocxYe/download"
+    sha256: fcd983086a9eaa5b945f4472fa93755644e383e0a536cc77f1b368e3f11e2b45
+    retrieved: 2026-10-11
+    # The archive's member `OS2_Manual_eng.pdf`: a booklet scanned as six sheets, two printed pages
+    # to a sheet, numbered from 1 to 9. It is cited by its printed page, and page 1 is the right
+    # half of the second sheet, so the offset is three. The year is on its spine. Its two halves
+    # are addenda to the two manuals.
+    pages_per_sheet: 2
+    page_offset: 3
+  sysex:
+    kind: midi_implementation
+    title: Waldorf Microwave System Exclusive Documentation
+    edition: System Software Version 2.00 Revision 00
+    dated: 1994-03-01
+    landing: "https://waldorfmusic.com/legacy-microwave/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/weTqE3SkZzocxYe/download"
+    sha256: 9f23a0cfcbf06c95ba80a1774595a4ee012e105570281d780f20937117bc96e0
+    retrieved: 2026-10-11
+    paginated: false
+    # The archive's member `MicrowaveSysex 2_0.txt`, 58,562 bytes of plain ASCII. It numbers no
+    # controller. Cited for the software's version, the identifiers, the table of sources and the
+    # messages an editor uses.
+  legacy_page:
+    kind: download_page
+    title: Legacy Microwave – Waldorf Music
+    landing: "https://waldorfmusic.com/legacy/"
+    url: "https://waldorfmusic.com/legacy-microwave/"
+    sha256: 62ce2d9ad2e5916c68dd410ac948d2cf9f45e611a5e873a16695e2c73bb73182
+    retrieved: 2026-10-11
+    paginated: false
+    # Its visible text; the bytes as served are kept beside it. The link behind `Documentation` is
+    # the archive the four documents above come from. It names no software version.
+  legacy_index:
+    kind: download_page
+    title: Welcome to our legacy!
+    landing: "https://waldorfmusic.com/"
+    url: "https://waldorfmusic.com/legacy/"
+    sha256: 642093d44dd7b7be9171c28d3e2ffa88e7901beee83973f80491465518ded1af
+    retrieved: 2026-10-11
+    paginated: false
+    # Its visible text. Cited for which instrument this is: its list of legacy hardware has the
+    # Microwave and the Microwave II, XT and XTk as entries of their own. The markup it was taken
+    # from, kept beside it, links the first to this instrument's page and the other three to one
+    # page of their own.
+
+midi:
+  # `1..16` as the received Changed row (performance p. 121); the setting is omni or 1 to 16
+  # (performance p. 37). No `mode`: see the account.
+  channels: [1, 16]
+  # Commands crossed in both columns (performance p. 121). No `clock`: see the account.
+  transport: none
+  program_change:
+    # Crossed as transmitted and marked received over `0..127` (performance p. 121).
+    receives: true
+    sends: false
+    # Sixty-four inside and sixty-four on a card, and as many Multi-programs again; see the account.
+    presets: 128
+  # No page or line names one, and a parameter is edited by system exclusive; see the account.
+  nrpn: none
+  # Marked in both columns (performance p. 121).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # What the chart recognises; its True Voice row is `0..108` (performance p. 121).
+  note_range: [0, 127]
+  # "using all eight voices of the MicroWave" (performance p. 28), and in Multi mode the
+  # Instruments draw on the same eight (performance p. 51).
+  polyphony: 8
+  polyphony_shared: true
+  velocity:
+    # Both marked received and neither sent (performance p. 121).
+    note_on: received
+    note_off: true
+  # Key's and Ch's both marked received (performance p. 121).
+  aftertouch: both
+  pitch_bend:
+    # A range for each oscillator of a sound, 0 to 12 semitones (programming p. 38).
+    programmable: true
+
+modes:
+  single:
+    label: Single mode
+    # "The MicroWave defaults to Single mode upon powering up." (performance p. 28), said again on
+    # p. 33; the first-steps chapter allows for a display in Multi mode after switching on
+    # (performance p. 14).
+    factory: true
+  multi:
+    label: Multi mode
+    # The instrument's own channel hears only program changes here (performance pp. 53, 73).
+    unparted: false
+
+parts:
+  # Up to eight, each with a channel from 1 to 16 that may be another's as well
+  # (performance pp. 51, 60). The Multi Init patch has one Instrument, on channel 01
+  # (performance pp. 54-55).
+  instrument:
+    label: Instrument
+    mode: multi
+    count: 8
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+
+controls:
+
+  # THE FIVE NUMBERS THE CHART AND THE MANUALS' OWN PAGES BOTH NAME, each received and none sent
+  # (performance p. 121). The labels are the Programming Manual's names for the sources
+  # (programming p. 27), and for 65 the word its account of Glide uses (programming p. 100), which
+  # the chart shortens to `Porta`.
+  # Single mode, on the instrument's channel ───────────────
+  modulation:  {label: Modulation wheel, cc: 1, direction: receives}
+  volume:      {label: Volume controller, cc: 7, direction: receives}
+  panning:     {label: Panning controller, cc: 10, direction: receives}
+  sustain:     {label: Sustain pedal, cc: 64, direction: receives}
+  portamento:  {label: Portamento, cc: 65, direction: receives}
+
+  # Multi mode, on an Instrument's channel ────────────────
+  # The first four are recognised by the Instrument unless its own setting shuts them out
+  # (performance pp. 67-68). The fifth is a reading; see the account.
+  instrument_modulation:  {label: Modulation wheel, cc: 1, direction: receives, part: instrument}
+  instrument_volume:      {label: Volume controller, cc: 7, direction: receives, part: instrument}
+  instrument_panning:     {label: Panning controller, cc: 10, direction: receives, part: instrument}
+  instrument_sustain:     {label: Sustain pedal, cc: 64, direction: receives, part: instrument}
+  instrument_portamento:  {label: Portamento, cc: 65, direction: receives, part: instrument}

@@ -261,8 +261,14 @@ voice:
   # both in the received table (p. 3); the transmitted table has Channel Pressure and no
   # polyphonic row (p. 4). Whether either travels at all is one global switch: "Aftertouch On:
   # On, Off - Selects whether aftertouch (key pressure) is enabled or disabled. If disabled, the
-  # TEO-5 will neither respond to nor transmit aftertouch/key pressure data" (guide p. 21).
-  aftertouch: poly
+  # TEO-5 will neither respond to nor transmit aftertouch/key pressure data" (guide p. 21). So
+  # `both` for what comes in, on the received table's word, as the Prophet-5's file reads the same
+  # table. It is one row: the guide's prose says only that the TEO-5 provides monophonic, or
+  # channel, aftertouch (guide p. 63), which is its own keyboard. `aftertouch_transmits` is true
+  # for the channel pressure that goes out, while the switch is on, and from the keyboard: the
+  # touch-sensitive keyboard is "keyboard version only" (product_page).
+  aftertouch: both
+  aftertouch_transmits: true
   pitch_bend:
     # Up and down are set separately and by different amounts - 0-12 semitones up and 0-24 down
     # (CC 85 and 86, NRPN 32 and 33) - so no single number is the range.

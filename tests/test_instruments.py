@@ -1659,6 +1659,8 @@ class TestAftertouch:
 			"moog/subsequent_37": ("channel", True),
 			"novation/mininova": ("channel", False),
 			"novation/summit": ("both", True),
+			"oberheim/ob_x8": ("channel", True),
+			"oberheim/teo_5": ("both", True),
 		}
 
 
@@ -4867,7 +4869,8 @@ class TestTeo5:
 		teo = pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS])
 
 		assert teo.voice.polyphony == 5
-		assert teo.voice.aftertouch == "poly"
+		assert teo.voice.aftertouch == "both"
+		assert teo.voice.aftertouch_transmits is True
 		assert teo.voice.addressing == "pitches"
 
 		assert teo.voice.velocity is not None

@@ -99,7 +99,8 @@ voice:
   polyphony: 16
   voicing_modes: [1, 16]
   velocity:
-    note_on: received    # v=1; ppp to v=127; fff, and v=0 on a note on means note off
+    # Sent (p. 30) and received (p. 32) alike: v=1; ppp to v=127; fff, and v=0 is a note off.
+    note_on: both
     note_off: false      # the received key-off velocity is marked ignored (p. 32)
   # NOT RECEIVED, AND SENT. The instrument transmits it - "1101nnnn After touch & Channel
   # number", which is channel aftertouch by its status byte, with a touch value of 0 to 127

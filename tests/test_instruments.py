@@ -263,6 +263,7 @@ class TestBundledCorpus:
 			"roland/jp_8000",
 			"roland/ju_06a",
 			"roland/juno_106",
+			"roland/juno_x",
 			"roland/jupiter_x",
 			"roland/jx_08",
 			"roland/jx_8p",
@@ -1707,6 +1708,7 @@ class TestAftertouch:
 			"waldorf/iridium_mk2": ("both", None),
 			"korg/radias": ("channel", True),
 			"waldorf/microwave": ("both", None),
+			"roland/juno_x": ("both", True),
 		}
 
 
@@ -16834,7 +16836,8 @@ class TestSH4D:
 		as a polyphonic synthesizer, with Mode 4 recognised for its solo key.
 		Its Boutique recreation, the JD-08, says Mode 3 on both of its charts, and so
 		does the JX-08 - though the JX-8P it recreates gives two defaults, Mode 1 and
-		3, so `roland/jx_8p` records none.
+		3, so `roland/jx_8p` records none. The JUNO-X says Mode 3 in both columns of a
+		chart its sibling the JUPITER-X does not have.
 		"""
 		modes = {}
 
@@ -16848,8 +16851,8 @@ class TestSH4D:
 		four = sorted(name for name, mode in modes.items() if mode == 4)
 
 		assert three == ["roland/alpha_juno_2", "roland/fantom_6_7_8", "roland/jd_08", "roland/jd_800", "roland/jd_xa", "roland/jd_xi",
-			"roland/jp_8000", "roland/ju_06a", "roland/jx_08", "roland/mc_101", "roland/mc_707", "roland/p_6", "roland/s_1",
-			"roland/sh_4d", "roland/tr_08"]
+			"roland/jp_8000", "roland/ju_06a", "roland/juno_x", "roland/jx_08", "roland/mc_101", "roland/mc_707",
+			"roland/p_6", "roland/s_1", "roland/sh_4d", "roland/tr_08"]
 		assert four == ["roland/tb_3", "roland/tr8s", "roland/tr_6s", "roland/tr_8"]
 
 		# Three of the four are drum machines; the TB-3 is the exception worth knowing.
@@ -20933,3 +20936,70 @@ class TestMicrowave:
 		assert [update.file_page(printed) for printed in range(1, 10)] == [2, 3, 3, 4, 4, 5, 5, 6, 6]
 		assert microwave.sources["sysex"].file_page(1) is None
 		assert (microwave.model.name, microwave.model.firmware) == ("MicroWave", "2.0")
+
+
+class TestJunoX:
+
+	"""Thirty-three controller numbers over two kinds of part, and a tone map counted and not carried."""
+
+	def test_fifty_nine_controls_thirty_three_for_the_parts_and_twenty_six_for_part_r (self) -> None:
+		juno = pymidiinstrumentdefs.load("roland/juno_x", [CORPUS])
+
+		for_parts = sorted(control.cc for control in juno.controls.values()
+			if control.part == "part" and control.cc is not None)
+		for_drum = sorted(control.cc for control in juno.controls.values()
+			if control.part == "drum" and control.cc is not None)
+		assert for_parts == [0, 1, 2, 4, 5, 7, 10, 11, 16, 17, 18, 19, 32, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76,
+			77, 78, 80, 81, 82, 83, 84, 91, 93]
+		# Part R has no portamento, legato or vibrato offsets: the Parameter Guide marks each `Part 1-4 only`.
+		assert sorted(set(for_parts) - set(for_drum)) == [5, 65, 68, 76, 77, 78, 84]
+		assert len(for_parts) + len(for_drum) == len(juno.controls) == 59 and all(control.part in ("part", "drum") for control in juno.controls.values())
+
+	def test_four_with_no_heading_under_transmission_state_no_direction_either (self) -> None:
+		"""The chart, the address map and the General Controller have 75 to 78 sent; a missing heading denies nothing."""
+		juno = pymidiinstrumentdefs.load("roland/juno_x", [CORPUS])
+
+		assert all(control.direction == "both" for control in juno.controls.values())
+
+		said = " ".join(prose_of("roland", "juno_x").split())
+
+		assert "**FOUR HAVE NO HEADING UNDER TRANSMISSION, AND THREE OTHER PLACES SAY THEY ARE SENT.**" in said
+		assert "A missing heading denies nothing" in said
+
+	def test_the_tone_map_is_counted_and_not_carried (self) -> None:
+		"""As on the JUPITER-X: a number's meaning turns on the model a part holds, which no field holds."""
+		juno = pymidiinstrumentdefs.load("roland/juno_x", [CORPUS])
+
+		# 3 is CUTOFF in six of the nine tone tables and no control here.
+		assert 3 not in {control.cc for control in juno.controls.values()}
+
+		said = " ".join(prose_of("roland", "juno_x").split())
+
+		assert "That is 188 rows in nine tables over 58 distinct numbers" in said
+		assert "so the tone map takes 76 numbers in all" in said
+		assert "**AND THE TONE MAP CAN BE SWITCHED OFF, BY THE PARAMETER GUIDE.**" in said
+
+	def test_a_chart_gives_what_the_jupiter_x_could_not (self) -> None:
+		"""Mode 3 and `nrpn: none` come off a chart; the JUPITER-X's documents have none, and it records neither."""
+		juno = pymidiinstrumentdefs.load("roland/juno_x", [CORPUS])
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+
+		assert (juno.midi.mode, juno.midi.nrpn, juno.midi.clock, juno.midi.transport) == (3, "none", "both", "none")
+		assert (jupiter.midi.mode, jupiter.midi.nrpn, jupiter.midi.transport) == (None, None, None)
+		assert juno.midi.program_change == pymidiinstrumentdefs.definition.ProgramChange(True, True, 128)
+
+	def test_five_parts_sharing_a_pool_with_no_one_figure (self) -> None:
+		juno = pymidiinstrumentdefs.load("roland/juno_x", [CORPUS])
+
+		assert {key: (part.count, part.channel, part.addressing) for key, part in juno.parts.items()} == {
+			"part": (4, "assigned", "pitches"), "drum": (1, "assigned", "voices")}
+		assert (juno.voice.polyphony, juno.voice.polyphony_shared, juno.voice.note_range) == (None, True, (0, 127))
+		assert (juno.voice.aftertouch, juno.voice.aftertouch_transmits) == ("both", True)
+
+	def test_the_system_version_comes_from_the_updates_page (self) -> None:
+		juno = pymidiinstrumentdefs.load("roland/juno_x", [CORPUS])
+
+		assert juno.model.firmware == "1.12"
+		assert list(juno.sources) == ["implementation", "parameter_guide", "reference", "jupiter_8", "jd_800", "jx_8p",
+			"sh_101", "sound_list", "vocal_designer", "manuals_page", "updates_page"]
+		assert juno.sources["implementation"].edition == "1.10"

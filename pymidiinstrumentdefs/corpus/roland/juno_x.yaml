@@ -1,0 +1,496 @@
+# **THIRTY-THREE CONTROLLER NUMBERS, EACH WRITTEN FOR THE FOUR PARTS, AND 26 OF THEM FOR PART R.**
+# Roland's `JUNO-X MIDI Implementation` gives a controller a heading under what is received and
+# again under what is transmitted, and ends with a chart. Twenty-nine numbers have both headings.
+# Four, the decay time and the three vibrato offsets, have none under transmission, and the chart,
+# the address map and the transmission half's own catch-all say they are sent all the same. So no
+# control here states a direction.
+#
+# **THE TONE PARAMETERS HAVE NUMBERS TOO, IN OTHER DOCUMENTS, AND THEY ARE NOT CARRIED.** The
+# Parameter Guide and four Model Expansion guides print a `CC#` column in a table for each model:
+# 188 rows over 58 numbers, 24 of which name more than one parameter from one model to another,
+# and two lists give a tone's four partials sixty numbers besides. A part holds whichever model
+# somebody loaded, so what such a number means turns on a setting and
+# not on a channel, as on `roland/jupiter_x`, and a system switch turns the map on and off.
+#
+# **THE SYSTEM IS 1.12, BY ROLAND'S UPDATES PAGE. THE IMPLEMENTATION IS HEADED 1.10 AND DOES NOT
+# SAY OF WHAT.**
+
+definition: 1
+
+model:
+  manufacturer: Roland
+  name: JUNO-X
+  # FROM ROLAND'S UPDATES PAGE: "JUNO-X System Program ( Ver.1.12 )" (updates_page), the one place
+  # a version is printed as the system's; the page says nothing of what 1.12 changed. The
+  # implementation's head reads "Version: 1.10" (implementation p. 1), dated April 26, 2022, and
+  # does not say whether that is the system's or the document's. `roland/jupiter_x` takes its own
+  # implementation's 1.06 for the document's, the file being served as `eng06`; this one is
+  # served as `eng01`, so the number is not its edition. Its Identity Reply prints a "Software
+  # revision level" (implementation p. 10) of `00H 01H 00H 01H`. No document says which system it
+  # describes.
+  # 61 keys: "61 Keys (channel aftertouch)" (reference p. 56).
+  firmware: "1.12"
+
+source: >-
+  **THIRTEEN ENGLISH DOCUMENTS, AND WHAT IS IN EACH.** Roland's manuals page lists them
+  (manuals_page), and every one was opened and searched. The `MIDI Implementation` (92 sheets)
+  holds the controllers below, the system exclusive address map and a chart. The `Parameter
+  Guide` (72) holds four models' tone tables, every `Rx` switch and the system's MIDI settings. The
+  `Reference Manual` (56) holds the parts, the models, the polyphony and the specifications; it
+  gives no controller a number of its own, and its one print of them is the range a button, a
+  slider or a pedal can be set to, `CC01–31, 32 (OFF), 33–95` (reference p. 41). Four Roland Cloud
+  Model Expansion guides hold tone tables: JUPITER-8 (11), JD-800 (17), JX-8P (11) and SH-101
+  (10). Two more print controller numbers in passing. The `Sound List` (59) has five in its list
+  of the 112 factory scenes, as what each scene's two sliders are set to: `ATTAK:CC73`,
+  `RELES:CC72`, `CUTOF:CC74`, `RESO:CC71` and `PTIME:CC05` (sound_list pp. 3-6). The Vocal
+  Designer expansion's guide (13) has one: "A wah effect is applied according to the CC17
+  (controller number 17) value." (vocal_designer p. 8). The other four print none: the `Startup
+  Guide` (14), the `Editor Owner's Manual` (14), the Sound Pack/Wave Expansion guide (4) and the
+  `MainStage Profile Usage Guide` (2). `Notes/4953_extract_juno_x.py` reads all thirteen and
+  asserts the counts here.
+
+  **THE IMPLEMENTATION HAS TWO HALVES AND A CHART, AND THE CONTROLS ARE THE NUMBERS THE HALVES
+  GIVE A HEADING TO.** Section 1 is "1. Data Reception" (implementation p. 1) and section 2 "2. Data
+  Transmission" (implementation p. 7), each with a heading for every controller, as
+  `roland/jupiter_x`'s has. Between them they name 44 controller numbers. Four select or carry a
+  parameter, 6 and 38 for data entry and 100 and 101 for the registered parameters; seven are
+  channel mode messages, 120, 121 and 123 to 127. **The other 33 are the controls below**, bank
+  select among them, as it is wherever a maker numbers it. Twenty-nine have a heading in both
+  halves and four in the reception half alone.
+
+  **FOUR HAVE NO HEADING UNDER TRANSMISSION, AND THREE OTHER PLACES SAY THEY ARE SENT.** Decay
+  Time, Vibrato Rate, Vibrato Depth and Vibrato Delay, 75 to 78, have headings under reception
+  (implementation p. 3) and none under transmission, whose list runs from Cutoff, 74, to General
+  Purpose Controller 5, 80 (implementation p. 8). The chart marks all four `o` in both columns
+  (implementation p. 92). The transmission half opens its controllers with "By selecting a
+  controller number that corresponds to the setting of parameters of controllers (knobs, etc.),
+  this unit can transmit any control change message." (implementation p. 7) and ends them with a
+  `General Controller` that takes the four in, "kk = Controller number: 00H - 77H (0 - 31, 33 -
+  95)" (implementation p. 9). And the address map names all four among what an assignable
+  button, a slider or a pedal can be set to: `DECAY:CC75`, `VRATE:CC76`, `VDPTH:CC77` and
+  `VDLY:CC78` (implementation pp. 12-13). A missing heading denies nothing, so the four state no
+  direction, as the other 29 do not.
+
+  **THE TWO ASSIGNABLE SLIDERS, THE THREE BUTTONS AND THE TWO PEDALS SEND WHAT THEY ARE SET TO.**
+  The same lists run
+  from `MOD:CC01` to `PHASR:CC95` with 32 as `OFF:CC32` (implementation pp. 12-13), which is the
+  Reference Manual's range. The Sound List has the two sliders of its factory scenes on
+  `ATTAK:CC73` 86 times and `RELES:CC72` 91, of 224 (sound_list pp. 3-6). The `General Controller`
+  line's hexadecimal and its decimal do not agree, `77H` being 119 where the gloss stops at 95;
+  the chart's row for it is `1-31,33-95`, marked `o` as transmitted and `-` as recognised
+  (implementation p. 92), and the lists bear the chart's row out. The rest of the panel sends too:
+  "MIDI messages can be sent from the MIDI OUT connector and from USB MIDI OUT when you operate
+  the controllers of the JUNO-X, such as the knobs and keyboard, and the various pedals connected
+  to the rear panel." (reference p. 40), on a page that names no controller number.
+
+  **EIGHT OF THE CONTROLS ARE RELATIVE.** 71 to 78 are each printed as a change about a centre,
+  "vv = Cutoff value (relative change): 00H - 40H - 7FH (-64 - 0 - +63)" (implementation p. 3),
+  and each names the part's parameter it moves: "The Cutoff parameter (SCENE PART EDIT: MODIFY)
+  will change." (implementation p. 3). The format has no word for a relative value, so the range
+  is left to the default and the fact is here: sending 0 to one of these lowers the parameter by
+  64.
+
+  **TEN NUMBERS HAVE NO PURPOSE OF THEIR OWN.** Breath type, Foot Type and the eight General
+  Purpose Controllers, 2, 4, 16 to 19 and 80 to 83, are each printed with "vv = Control value:
+  00H - 7FH (0 - 127)" (implementation pp. 1-3) and no parameter. What they reach is a setting:
+  "If you select a controller number that corresponds to an MFX Src 1–4 parameter, the
+  respective effect is applied according to the setting." (implementation p. 1), and the system
+  has four control sources of its own, each set to one of `OFF, CC01–CC31, CC33–CC95, BEND, AFT`
+  (parameter_guide p. 31). One of the ten has a use printed elsewhere, 17 on the Vocal Designer's
+  wah. Soft, 67, is printed in the same bare form (implementation p. 2), but it is a pedal, and
+  the Parameter Guide has a tone setting for "the soft pedal (CC#67)" (parameter_guide p. 17).
+  Eight of the ten are numbers the tone tables use as well; see below.
+
+  **EVERY CONTROL NAMES ITS PART, ONCE FOR THE FOUR PARTS AND ONCE FOR PART R, AND SEVEN NUMBERS
+  ARE THE FOUR PARTS' ALONE.** "Each scene has five parts: for parts 1–4 you can select a
+  synthesizer tone, and for part R you can select a drum kit tone." (reference p. 5). Each part
+  listens on a channel of its own setting, "Specifies the MIDI receive channel of each part."
+  (parameter_guide p. 5), so none derives its channel from a base, and a control naming no part
+  would mean a channel the instrument does not have. Six entries name a parameter the Parameter
+  Guide marks `Part 1–4 only` (parameter_guide pp. 4-5): Porta Time, Porta Sw, Legato Sw and the
+  three vibrato offsets, which 5, 65, 68 and 76 to 78 change. The entry for 84 says its glide "is
+  determined by the Portamento Time value." (implementation p. 3), the same parameter. So the four
+  parts carry all 33 numbers and Part R the other 26: 59 controls.
+
+  **THE TONE PARAMETERS ARE IN `CC#` COLUMNS IN FIVE OTHER DOCUMENTS, AND THEY ARE COUNTED HERE AND
+  NOT CARRIED.** The Parameter Guide has the column on six sheets (parameter_guide pp. 16-21), in
+  four tables: the common parameters of the tones it heads `XV-5080, RD-PIANO, PR-A, PR-B, PD-C,
+  PR-D, COMMON, PR-X`, 7 rows with a number; `JUNO-X`, 42; `JUNO-106`, 22; and `JUNO-60`, 18. Four
+  expansion guides have five tables more: `JUPITER-8`, 33 rows (jupiter_8 pp. 8-9); `JD-800`, 14
+  in two tables, its common parameters (jd_800 p. 8) and its `TONE MFX Group B` (jd_800 p. 11);
+  `JX-8P`, 30 (jx_8p pp. 8-9); and `SH-101`, 22 (sh_101 p. 8). That is 188 rows in nine tables
+  over 58 distinct numbers, and **24 of the 58 name more than one parameter from one model to
+  another**, capitals apart: 119 is `KEY MODE` on a JUNO-X tone and `Unison Sw` on an XV-5080 one,
+  and 16 is `OSC1 LEVEL` on one expansion and `PW LEVEL` on another. One number stands alone: the
+  `JUNO-X` table gives `FLT KEY FOLLOW` 122 (parameter_guide p. 19) where the five other tables
+  with that parameter give it 82, and 122 lies among the numbers MIDI keeps for channel mode
+  messages. No page says it is a slip. A part is loaded with one of the models, "Six types are
+  provided: JUNO-X, JUNO-106, JUNO-60, XV-5080, RD-PIANO, and VOCODER." (reference p. 53), or with
+  one an owner has added, and "Other models can be used with parts 1–4." (reference p. 53). So
+  the meaning of such a number turns on what somebody loaded and not on the channel it arrives
+  on, which no field holds, and carrying the rows would assert that 119 is `KEY MODE` on a part
+  that might be holding an XV-5080 tone. That is the reading `roland/jupiter_x` gives its own
+  tables.
+
+  **TWO LISTS GIVE A TONE'S PARTIALS NUMBERS OF THEIR OWN, WITH NO `CC#` COLUMN.** Those tones'
+  table of partial parameters has no `CC#` column and a note above it, "The CCs that are supported
+  differ with each partial. (p. 30)" (parameter_guide p. 21), and that page prints a `List of
+  supported CCs` (parameter_guide p. 30): fifteen parameters, each with a number for partials 1 to
+  4, sixty numbers and none of them twice. The JD-800 guide has a list of the same name
+  (jd_800 p. 12) with the same sixty in the same fours under its own names: `Level` in the one and
+  `TVA:Level` in the other are both 16, 17, 18 and 19. Eighteen of the sixty are in no `CC#`
+  column, so the tone map takes 76 numbers in all.
+
+  **AND THE TONE MAP CAN BE SWITCHED OFF, BY THE PARAMETER GUIDE.** Its tone tables open with a
+  note, "You can set whether control change messages (CC) are transmitted/received using the"
+  (parameter_guide p. 16) Tone CC Map system parameter, which "Sets whether control change
+  messages (CC) for the tone parameters are transmitted/received (ON) or not (OFF)."
+  (parameter_guide p. 32). No page prints its factory setting. None of the four expansion guides
+  names the switch, so that it governs their tables as well is a reading.
+
+  **ELEVEN NUMBERS ARE IN BOTH MAPS.** 5, 16 to 19, 80 to 83, 91 and 93 are controls in the
+  implementation and tone parameters in one table or another. Portamento Time's 5 is the
+  portamento time in every model's table, printed `PORTA TIME`, `Porta Time` or `Porta time`. Of
+  the eight General Purpose Controllers, 16 to 19 are the levels of an oscillator, a
+  sub-oscillator or noise on the tables' models, 80 and 83 are envelope times, 81 is the filter's
+  envelope depth and 82 its key follow; in the two lists the eight are a partial's level and two
+  settings of its filter envelope. 91 and 93, the reverb and chorus send levels, are `RV Level`
+  and `CH Level` in the JD-800's second table, which "can only be used when a tone from the
+  JD-800 model is selected for part 1." (jd_800 p. 11). The implementation does not mention the
+  tone map, and no page says which a number does when a model's table claims it.
+
+  **NO NRPN, BY THE CHART.** Its Control Change rows end `98,99`, crossed in both columns, "NRPN
+  LSB,MSB" (implementation p. 92), and `100,101`, received and not sent. The halves have no entry
+  for 98 or 99, and three registered parameters, pitch bend sensitivity, channel fine tuning and
+  channel coarse tuning (implementation p. 4). Four sentences of the halves still speak of NRPN
+  in passing, where the JUPITER-X's have three: data entry carries, in each half, "the value of the
+  parameter specified by RPN/NRPN" (implementation pp. 1, 7), the registered parameter null
+  leaves both `unspecified`, and Reset All Controllers lists an NRPN among what it leaves unset
+  (implementation p. 4). The supplementary material has two more, on ending with the null and
+  on sending number and value in order (implementation p. 91). The chart is what that instrument's
+  documents lack, and it is explicit, so `nrpn` is `none` here.
+
+  **MODE 3, AND THE MODE MESSAGES ARE RECEIVED.** The chart gives `Mode 3` as the default in both
+  columns, with `Mono, Poly` as the messages transmitted and `Mode 3, 4(M=1)` as those recognised
+  (implementation p. 92).
+
+  **CLOCK BOTH WAYS, BY A SETTING, AND NO START OR STOP.** The clock is "Not received when the
+  Sync Mode parameter (SYSTEM:SYNC/TEMPO) is INT." (implementation p. 5) and "Transmitted when the
+  Sync Mode parameter (SYSTEM:SYNC/TEMPO) is INT." (implementation p. 10); the chart circles it in
+  both columns and crosses Commands in both (implementation p. 92). Sync Mode takes `AUTO, INT,
+  MIDI, USB COM, USB MEM` and a second setting chooses the connector the clock leaves by
+  (parameter_guide p. 31).
+
+  **A SIXTH CHANNEL SWITCHES SCENES.** Program change and bank select on a part's channel choose
+  that part's tone. A scene is chosen on a channel of the system's own: "Specifies the MIDI
+  receive channel on which MIDI messages (program change and bank select) from an external MIDI
+  device can be received to switch programs." (parameter_guide p. 31), 1 to 16 or off. The scenes
+  are bank select 085 with 000 and 001 and programs 1 to 128, `SCENE | 1 - 256`
+  (implementation p. 1). That channel is no part here and carries no control below.
+
+  **SYSTEM EXCLUSIVE UNDER ROLAND'S ID, WITH A SWITCH EACH WAY.** Data requests and data sets are
+  received, and "Universal Non-realtime System Exclusive Message and Data Set 1 (DT1) are the only
+  System Exclusive messages transmitted by this unit." (implementation p. 10). By the chart's
+  third note it is sent only with `Transmitted Edit Data` on or when a data request arrives
+  (implementation p. 92), and the system has `Rx Exclusive` and `Tx Edit` (parameter_guide p. 32).
+
+  NOT RECORDED: the polyphony as a number, for the reason the maker gives under `voice`; which
+  note plays which drum, the Sound List naming the kits and printing no note number; a factory
+  setting for the Tone CC Map; and the tone map, its 188 rows and its two lists of sixty.
+
+sources:
+  implementation:
+    kind: implementation
+    title: JUNO-X MIDI Implementation
+    edition: "1.10"
+    dated: 2022-04-26
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/df3dfa74-b01f-4e0a-b8d0-4ff3642598c0/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_MIDI_imple_eng01_W.pdf"
+    sha256: a8f761d1578163f8fca03c0d3208571d0ba9a2ab56271fc31f45d21ce4c14c61
+    retrieved: 2026-10-11
+    # `Version: 1.10` is on its head and, as `Version : 1.10`, on the chart's, and is held here as
+    # the document's own mark;
+    # see `model` for what it does not say. No edition numeral is printed.
+    # 92 sheets. Reception is sheets 1 to 7 and transmission 7 to 10, so the boundary is a heading
+    # and not a page; the system exclusive Parameter Address Map runs from sheet 10 to sheet 90,
+    # and the chart is the last sheet. Its folio is its own sheet number, so no offset.
+    page_offset: 0
+  parameter_guide:
+    kind: parameter_guide
+    title: JUNO-X Parameter Guide
+    edition: "02"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/5bc3dc33-f52e-4c99-bfae-68b874cd118e/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_Parameter_eng02_W.pdf"
+    sha256: 0aadc6b49f117883cec81b134b1674f8ef9213a5605520c35c6ce9982e76644b
+    retrieved: 2026-10-11
+    # 72 sheets, © 2023 Roland Corporation on its first. A `CC#` column on sheets 16 to 21 and
+    # nowhere else, read by coordinate because the flat text runs each explanation into the numbers,
+    # and a list of sixty numbers for a tone's partials on sheet 30. It also holds every `Rx`
+    # switch, the part channel setting and the system's MIDI block.
+    page_offset: 0
+  reference:
+    kind: manual
+    title: JUNO-X Reference Manual
+    edition: "01"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/cdd93019-3aa0-45cd-9d24-d96774da73b2/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_Reference_eng01_W.pdf"
+    sha256: 2915a5415379a0f69f33d2f99b5ba1105158a79cb96857a61cd1a59de9747352
+    retrieved: 2026-10-11
+    # 56 sheets, © 2022 Roland Corporation. Its one print of controller numbers is the range a
+    # button, a slider or a pedal can be set to, on sheet 41. Cited for that, the parts, the
+    # models, the polyphony and the specifications.
+    page_offset: 0
+  jupiter_8:
+    kind: manual
+    title: Roland Cloud JUPITER-8 Model Expansion User's Guide
+    edition: "03"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/d7e6e5b4-0ce7-4b27-b7f2-765dba311b3a/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_JUPITER-8_eng03_W.pdf"
+    sha256: 59f9d5fb3eea8595394e630db9adb81af2bebf2732786ea63d5f5831e72f3c3b
+    retrieved: 2026-10-11
+    # 11 sheets. Cited, with the three below, for what its tables count to and the names in them.
+    page_offset: 0
+  jd_800:
+    kind: manual
+    title: Roland Cloud JD-800 Model Expansion User's Guide
+    edition: "02"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/cd3ceea2-eb73-4215-8d8c-742ca988ed20/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_JD-800_eng02_W.pdf"
+    sha256: 79c2d3cf0104d854548db8925c2b841b43830721eb13ece9c96ed497099fe013
+    retrieved: 2026-10-11
+    # 17 sheets. Two tables have the column, on sheets 8 and 11, with a table that has none
+    # between them, and sheet 12 has the list for partials.
+    page_offset: 0
+  jx_8p:
+    kind: manual
+    title: Roland Cloud JX-8P Model Expansion User's Guide
+    edition: "03"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/72bb3ebe-d7b9-4ee3-8296-0ecc3c4dc254/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_JX-8P_eng03_W.pdf"
+    sha256: b1d069976d81085b0c631b3552cd6e1eee858167b6d4efddd94f17d54d25c58b
+    retrieved: 2026-10-11
+    # 11 sheets.
+    page_offset: 0
+  sh_101:
+    kind: manual
+    title: Roland Cloud SH-101 Model Expansion User's Guide
+    edition: "04"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/2defbddc-7045-4644-8e01-ea079dcf48ca/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_SH-101_eng04_W.pdf"
+    sha256: 502835f6d2095becea62f7410b12e80117b9c29f28abe26257882973cc149d33
+    retrieved: 2026-10-11
+    # 10 sheets.
+    page_offset: 0
+  sound_list:
+    kind: manual
+    title: JUNO-X Sound List
+    edition: "01"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/7ec300dd-70ab-428c-ae22-4ae2ccd0fde6/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_sound_list_eng01_W.pdf"
+    sha256: 1106bce5b8b8e47f1189567f2aed9f8ab0c62373ef218f2c7c2045b608cc3c2a
+    retrieved: 2026-10-11
+    # 59 sheets, © 2022 Roland Corporation. Cited for what the factory scenes' two sliders are set
+    # to, on sheets 3 to 6; the rest names scenes, tones, kits, waves and arpeggio types and prints
+    # no note number.
+    page_offset: 0
+  vocal_designer:
+    kind: manual
+    title: Roland Cloud Vocal Designer Model Expansion User's Guide
+    edition: "02"
+    landing: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/24df8a1b-43f3-49c7-a4ab-f81246da84df/"
+    url: "https://static.roland.com/assets/media/pdf/JUNO-X_VocalDesigner_eng02_W.pdf"
+    sha256: 8997daf1ca4ac2a3f7e9448eb71801f269349b28519c0a2da7e72e370df00c1e
+    retrieved: 2026-10-11
+    # 13 sheets. None of its tables of tone settings, on sheets 8 and 11, has a `CC#` column; the
+    # 17 is on sheet 8, in the row for the WahVox (CTRL) algorithm. Cited for that one number.
+    page_offset: 0
+  manuals_page:
+    kind: download_page
+    title: Roland - Support - JUNO-X - Owner's Manuals
+    landing: "https://www.roland.com/global/support/by_product/juno-x/"
+    url: "https://www.roland.com/global/support/by_product/juno-x/owners_manuals/"
+    sha256: 5c5eaa5192f7b3e740da324c888c3ed5fba7d96053ce09b906cae19cfde003cb
+    retrieved: 2026-10-11
+    paginated: false
+    # Its visible text; the bytes as served are kept beside it. Nineteen documents, thirteen of
+    # them English: the Startup Guide is in seven languages and the other twelve in English alone,
+    # the last of them "[English] JUNO-X MainStage Profile Usage Guide [PDF]" (manuals_page).
+  updates_page:
+    kind: download_page
+    title: Roland - Support - JUNO-X - Updates & Drivers
+    landing: "https://www.roland.com/global/support/by_product/juno-x/"
+    url: "https://www.roland.com/global/support/by_product/juno-x/updates_drivers/"
+    sha256: 7ec97949c3305342f7293479eb1437be7b7f028c1a470ef9a53787c36a4370e3
+    retrieved: 2026-10-11
+    paginated: false
+    # Its visible text. Cited for the system's version and nothing else.
+
+midi:
+  # `1-16` in both columns of the chart's Basic Channel rows, `Memorized` (implementation p. 92),
+  # and "n = MIDI channel number: 0H - FH (ch.1 - ch.16)" (implementation p. 1) on the entries,
+  # ten of which print it as `(ch.1 - 16)`.
+  channels: [1, 16]
+  # `Mode 3` as the default in both columns (implementation p. 92).
+  mode: 3
+  # Circled in both columns (implementation p. 92), each way by the Sync Mode setting; see the
+  # account.
+  clock: both
+  # Commands crossed in both columns (implementation p. 92), and neither half has a start, a stop
+  # or a continue.
+  transport: none
+  program_change:
+    # Both ways, each behind switches: "Not received when the Rx PC parameter (SYSTEM: MIDI RX) is
+    # OFF." (implementation p. 4), and sent "when Program or Tone is selected." (implementation
+    # p. 9).
+    receives: true
+    sends: true
+    # 128 to a bank: "pp = Program number: 00H - 7FH (prog.1 - prog.128)" (implementation p. 4).
+    # The banks are what make the number large; the bank select table is on the first sheet.
+    presets: 128
+  # `98,99` crossed in both columns, "NRPN LSB,MSB" (implementation p. 92); see the account.
+  nrpn: none
+  # Marked in both columns (implementation p. 92); see the account.
+  sysex: true
+
+parts:
+  part:
+    label: Part
+    count: 4
+    # A channel of its own setting, which serves for sending as well when Tx Mode is on
+    # (parameter_guide p. 5).
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+    # What a part is, on this instrument, is a model somebody chose; see the account.
+  drum:
+    label: Part R
+    count: 1
+    channel: assigned
+    # Its notes name drums: "No, a drum kit can be used only with part R." (reference p. 53).
+    addressing: voices
+    receives: [notes, controls, program_change]
+
+voice:
+  addressing: pitches
+  # `0-127` in both columns of the chart's Note Number row, and a True Voice of `0-127`
+  # (implementation p. 92).
+  note_range: [0, 127]
+  # NOT RECORDED AS A NUMBER, AND THE MAKER SAYS WHY: "It differs depending on the type and
+  # combination of models." (reference p. 53), with two figures and neither a ceiling for the
+  # instrument: "The JUNO-X model has a maximum polyphony of 16 notes." (reference p. 53) and, of
+  # PCM sounds, "up to 256 notes (for MONO) can be produced." (reference p. 53). The pool is
+  # shared: each part has a reserve, "Specifies the number of voices reserved for each part when
+  # the performance exceeds the maximum polyphony." (parameter_guide p. 4).
+  polyphony_shared: true
+  velocity:
+    # Note on and note off circled in both columns (implementation p. 92).
+    note_on: both
+    note_off: true
+  # Key's and Channel's both recognised, each selectable; Channel's is sent and Key's is not
+  # (implementation p. 92), from a keyboard with channel aftertouch (reference p. 56).
+  # `roland/jupiter_x` records `poly` for an instrument that answers to both kinds as well, taking
+  # the stronger of the two; this file uses the word for both.
+  aftertouch: both
+  aftertouch_transmits: true
+  pitch_bend:
+    # Both ways (implementation p. 92). The range is a setting of each of the four parts, `0–24,
+    # TONE`, marked `Part 1–4 only` (parameter_guide p. 4), so Part R has none; the first
+    # registered parameter sets it: "mm: 00H - 18H (0 - 24 semitones)" (implementation p. 4).
+    programmable: true
+
+groups:
+  continuous: Continuous controllers
+  general: General purpose controllers
+  switch: Switches and pedals
+  sound: Sound controllers
+  effects: Effect send levels
+
+controls:
+
+  # **NO CONTROL HERE STATES A DIRECTION.** Twenty-nine numbers have a heading in both halves of
+  # the implementation. Four, 75 to 78, have one under reception alone, and the chart, the address
+  # map and the transmission half's General Controller say they are sent as well. See the account.
+  # **EACH NUMBER IS HERE ONCE FOR THE FOUR PARTS, AS `part_`, AND ONCE FOR PART R, AS `drum_`**,
+  # but for the seven Part R does not receive.
+
+  # Bank select ───────────────────────────────────────────
+  # "Bank Select (Controller number 0, 32)" (implementation p. 1) under reception and again under
+  # transmission (implementation p. 7). On a part's channel it chooses a tone or a kit.
+  part_bank_select_msb:              {label: Bank Select (MSB), cc: 0, part: part}
+  part_bank_select_lsb:              {label: Bank Select (LSB), cc: 32, part: part}
+  drum_bank_select_msb:              {label: Bank Select (MSB), cc: 0, part: drum}
+  drum_bank_select_lsb:              {label: Bank Select (LSB), cc: 32, part: drum}
+
+  # Continuous controllers ────────────────────────────────
+  part_modulation:                   {label: Modulation, cc: 1, part: part, group: continuous}
+  part_breath_type:                  {label: Breath type, cc: 2, part: part, group: continuous}
+  part_foot_type:                    {label: Foot Type, cc: 4, part: part, group: continuous}
+  part_portamento_time:              {label: Portamento Time, cc: 5, part: part, group: continuous}
+  part_volume:                       {label: Volume, cc: 7, part: part, group: continuous}
+  part_panpot:                       {label: Panpot, cc: 10, part: part, group: continuous}
+  part_expression:                   {label: Expression, cc: 11, part: part, group: continuous}
+  drum_modulation:                   {label: Modulation, cc: 1, part: drum, group: continuous}
+  drum_breath_type:                  {label: Breath type, cc: 2, part: drum, group: continuous}
+  drum_foot_type:                    {label: Foot Type, cc: 4, part: drum, group: continuous}
+  drum_volume:                       {label: Volume, cc: 7, part: drum, group: continuous}
+  drum_panpot:                       {label: Panpot, cc: 10, part: drum, group: continuous}
+  drum_expression:                   {label: Expression, cc: 11, part: drum, group: continuous}
+
+  # General purpose controllers ───────────────────────────
+  # Received as a value with no parameter named; see the account. The tone tables use all eight
+  # numbers for parameters of their own.
+  part_general_purpose_controller_1: {label: General Purpose Controller 1, cc: 16, part: part, group: general}
+  part_general_purpose_controller_2: {label: General Purpose Controller 2, cc: 17, part: part, group: general}
+  part_general_purpose_controller_3: {label: General Purpose Controller 3, cc: 18, part: part, group: general}
+  part_general_purpose_controller_4: {label: General Purpose Controller 4, cc: 19, part: part, group: general}
+  part_general_purpose_controller_5: {label: General Purpose Controller 5, cc: 80, part: part, group: general}
+  part_general_purpose_controller_6: {label: General Purpose Controller 6, cc: 81, part: part, group: general}
+  part_general_purpose_controller_7: {label: General Purpose Controller 7, cc: 82, part: part, group: general}
+  part_general_purpose_controller_8: {label: General Purpose Controller 8, cc: 83, part: part, group: general}
+  drum_general_purpose_controller_1: {label: General Purpose Controller 1, cc: 16, part: drum, group: general}
+  drum_general_purpose_controller_2: {label: General Purpose Controller 2, cc: 17, part: drum, group: general}
+  drum_general_purpose_controller_3: {label: General Purpose Controller 3, cc: 18, part: drum, group: general}
+  drum_general_purpose_controller_4: {label: General Purpose Controller 4, cc: 19, part: drum, group: general}
+  drum_general_purpose_controller_5: {label: General Purpose Controller 5, cc: 80, part: drum, group: general}
+  drum_general_purpose_controller_6: {label: General Purpose Controller 6, cc: 81, part: drum, group: general}
+  drum_general_purpose_controller_7: {label: General Purpose Controller 7, cc: 82, part: drum, group: general}
+  drum_general_purpose_controller_8: {label: General Purpose Controller 8, cc: 83, part: drum, group: general}
+
+  # Switches and pedals ───────────────────────────────────
+  part_hold_1:                       {label: Hold 1, cc: 64, part: part, group: switch}
+  part_portamento:                   {label: Portamento, cc: 65, part: part, group: switch}
+  part_sostenuto:                    {label: Sostenuto, cc: 66, part: part, group: switch}
+  part_soft:                         {label: Soft, cc: 67, part: part, group: switch}
+  part_legato_foot_switch:           {label: Legato Foot Switch, cc: 68, part: part, group: switch}
+  # Not a switch; put here beside Portamento, 65, as the other controller that makes a glide. The
+  # implementation groups none of its controllers. Its value is a note, "kk = source note number:
+  # 00H - 7FH (0 - 127)" (implementation p. 3), and the note it names is where the next note-on
+  # slides from.
+  part_portamento_control:           {label: Portamento control, cc: 84, part: part, group: switch}
+  drum_hold_1:                       {label: Hold 1, cc: 64, part: drum, group: switch}
+  drum_sostenuto:                    {label: Sostenuto, cc: 66, part: drum, group: switch}
+  drum_soft:                         {label: Soft, cc: 67, part: drum, group: switch}
+
+  # Sound controllers ─────────────────────────────────────
+  # These eight are the relative ones; Part R has the first five. 75 to 78 have no heading under
+  # transmission; see the account.
+  part_resonance:                    {label: Resonance, cc: 71, part: part, group: sound}
+  part_release_time:                 {label: Release Time, cc: 72, part: part, group: sound}
+  part_attack_time:                  {label: Attack time, cc: 73, part: part, group: sound}
+  part_cutoff:                       {label: Cutoff, cc: 74, part: part, group: sound}
+  part_decay_time:                   {label: Decay Time, cc: 75, part: part, group: sound}
+  part_vibrato_rate:                 {label: Vibrato Rate, cc: 76, part: part, group: sound}
+  part_vibrato_depth:                {label: Vibrato Depth, cc: 77, part: part, group: sound}
+  part_vibrato_delay:                {label: Vibrato Delay, cc: 78, part: part, group: sound}
+  drum_resonance:                    {label: Resonance, cc: 71, part: drum, group: sound}
+  drum_release_time:                 {label: Release Time, cc: 72, part: drum, group: sound}
+  drum_attack_time:                  {label: Attack time, cc: 73, part: drum, group: sound}
+  drum_cutoff:                       {label: Cutoff, cc: 74, part: drum, group: sound}
+  drum_decay_time:                   {label: Decay Time, cc: 75, part: drum, group: sound}
+
+  # Effect send levels ────────────────────────────────────
+  # Named as the implementation names them, brackets and all.
+  part_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, part: part, group: effects}
+  part_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, part: part, group: effects}
+  drum_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, part: drum, group: effects}
+  drum_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, part: drum, group: effects}

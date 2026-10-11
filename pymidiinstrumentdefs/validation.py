@@ -822,7 +822,8 @@ class _Reader:
 		mode only, the instrument's figure may stand beside theirs.  An OB-X8 has
 		eight voices in every mode and four on each of its two parts only in
 		Split, so the two answers are to two different questions.  One declared
-		mode is no exception: a part in the only mode exists in every mode.
+		mode is no exception: a part in the only mode exists in every mode.  And
+		a part recorded as taking no notes has no voices, so it raises no question.
 		"""
 
 		own = [name for name, part in parts.items() if part.polyphony is not None]
@@ -862,7 +863,13 @@ class _Reader:
 				"instrument whether its parts share voices gets no answer",
 			)
 
-		if parts and voice.polyphony is not None and voice.polyphony_shared is None:
+		# Only parts that can take notes have voices to share: a part recorded as taking
+		# none, as a control surface that sounds nothing is, leaves nothing to ask.
+
+		noting = [part for part in parts.values()
+			if part.receives is None or pymidiinstrumentdefs.definition.NOTES in part.receives]
+
+		if noting and voice.polyphony is not None and voice.polyphony_shared is None:
 			self.warn(
 				"voice.polyphony",
 				"gives one figure for an instrument with parts without saying whether they share it "

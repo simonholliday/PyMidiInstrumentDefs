@@ -2704,6 +2704,15 @@ class TestPolyphonyAcrossParts:
 
 		assert any("whether they share it" in warning for warning in definition.warnings)
 
+	def test_parts_that_take_no_notes_leave_nothing_to_share (self) -> None:
+		"""A JU-06A's control surface sounds nothing, so its four voices are the sound module's."""
+		definition = self.make(
+			"parts: {surface: {channel_offset: 0, receives: []}}\n"
+			"voice: {polyphony: 4}\n"
+		)
+
+		assert definition.warnings == ()
+
 	def test_an_instrument_with_no_parts_is_unchanged (self) -> None:
 		"""Every definition written before parts still says polyphony the way it always did."""
 		definition = self.make("voice: {polyphony: 5}")
@@ -4228,13 +4237,26 @@ class TestTR909:
 
 class TestJU06A:
 
-	"""A chart whose two pages are two whole maps, and only one of them is carried."""
+	"""A chart whose two pages are two whole maps, each carried in the mode it belongs to."""
 
-	def test_only_the_sound_module_s_map_is_here (self) -> None:
-		"""39 controls off page 1; page 2's 24 are in prose, because fifteen collide."""
+	def test_each_page_answers_in_its_own_mode (self) -> None:
+		"""Page 1's 39 in the sound module's state, page 2's 24 in the surface's. Page 1 alone until 2026-10-11."""
 		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
 
-		assert len(ju.controls) == 39
+		assert len(ju.controls) == 63
+		assert list(ju.modes) == ["sound_module", "control_surface"]
+		assert ju.factory_mode is None
+		assert ju.modes["control_surface"].label == "Control Surface Mode"
+		assert ju.modes["control_surface"].unparted is False
+
+		module = ju.controls_in("sound_module")
+		surface = ju.controls_in("control_surface")
+
+		assert len(module) == 39 and all(control.part is None for control in module)
+		assert len(surface) == 24 and all(control.part == "surface" for control in surface)
+		assert all(control.direction == "transmits" for control in surface)
+		assert ju.parts["surface"].receives == ()
+		assert ju.controls["surface_vcf_freq"].cc == 3
 
 		said = prose_of("roland", "ju_06a")
 
@@ -4258,15 +4280,15 @@ class TestJU06A:
 		"""The modulation wheel, the expression pedal and hold - and nothing the other way."""
 		ju = pymidiinstrumentdefs.load("roland/ju_06a", [CORPUS])
 
-		receiving = sorted(control.cc for control in ju.controls.values()
+		module = ju.controls_in("sound_module")
+		receiving = sorted(control.cc for control in module
 			if control.direction == "receives" and control.cc is not None)
 
 		assert receiving == [1, 11, 64]
 
-		# And nothing is transmitted without also being recognised, so the instrument never
-		# sends a number it would not understand coming back.
-		assert not [control for control in ju.controls.values()
-			if control.direction == "transmits"]
+		# And nothing on page 1 is transmitted without also being recognised, so the sound
+		# module never sends a number it would not understand coming back.
+		assert not [control for control in module if control.direction == "transmits"]
 
 	def test_two_documents_agree_about_the_patch_count_without_citing_each_other (self) -> None:
 		"""The chart's program change range is 0-63 and the sound list names 64 patches."""

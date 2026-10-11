@@ -602,8 +602,8 @@ Six rules worth holding on to:
 
   Where an instrument lets a player divide a shared pool between parts, that division is a
   setting and belongs to their project, like the channel. Saying nothing about voices is
-  still honest; one figure for an instrument with parts, without saying which it is, draws
-  a warning.
+  still honest; one figure for an instrument with parts that take notes, without saying
+  which it is, draws a warning.
 
   A part's figure counts each of its instances. Where the instances of one part share a
   figure between them, say so on that part. A JD-XA's four analogue parts have a voice each,

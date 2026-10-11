@@ -89,6 +89,19 @@ streichfett.controls_by_part()[""]         # the controls on the base channel
 streichfett.controls_reaching("strings")   # all 19 - the strings sit on the base channel
 ```
 
+Some instruments change shape with a setting, and a definition says so with
+`modes`: a part may exist in one mode only, and a mode may silence the controls
+that name no part. A page asks what answers in each:
+
+```python
+ju = pymidiinstrumentdefs.load("roland/ju_06a")
+
+list(ju.modes)                             # ['sound_module', 'control_surface']
+len(ju.controls_in("sound_module"))        # 39 - the first page of its chart
+len(ju.controls_in("control_surface"))     # 24 - the second, sent and never recognised
+ju.factory_mode                            # None - no page says which it ships in
+```
+
 A definition also says what its maker calls each group of controls, which is
 what a page can head a table with. The groups are what the maker's own document
 groups them into, in the order to show them:
@@ -243,7 +256,7 @@ self-contained YAML file, and you share it by sending it.
 | `roland/jd_xa` | Roland JD-XA: 178 controls on three kinds of part - four analogue, four digital and the program - each on a channel of its own, where the same controller number means one thing on an analogue part and another on a digital one |
 | `roland/jd_xi` | Roland JD-Xi: 98 controls over four parts on four fixed MIDI channels, 21 of them addressed by NRPN rather than by a controller number - the first Roland here whose NRPN is more than a crossed box |
 | `roland/jp_8000` | Roland JP-8000: 50 controls on two parts and a performance channel, read by eye from a scanned manual - forty knobs at the numbers its second edit mode gives them from the factory, twelve of which its first mode sends as system exclusive instead |
-| `roland/ju_06a` | Roland JU-06A: 39 controls off one page of an implementation chart whose other page is a second whole map - fifteen numbers in both and eleven of them meaning something else |
+| `roland/ju_06a` | Roland JU-06A: 63 controls in two modes, one for each page of an implementation chart whose pages are two whole maps - fifteen numbers in both and eleven of them meaning something else |
 | `roland/juno_106` | Roland JUNO-106: two controller numbers in the whole instrument, and everything else it can be told is system exclusive |
 | `roland/jupiter_x` | Roland JUPITER-X: 24 controllers, 41 controls over two kinds of part, from a 90-sheet implementation that holds none of its tone parameters - those are in the Parameter Guide, one table per model, where 21 numbers name more than one thing |
 | `roland/jx_08` | Roland JX-08: 49 controls over two parts and a system channel that selects patterns, from the implementation chart at the back of its Reference Manual - which prints two names twice each, and has no row for one of the panel's two TUNE knobs |

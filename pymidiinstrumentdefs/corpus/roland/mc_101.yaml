@@ -231,10 +231,12 @@ voice:
     note_on: both
     note_off: true
   # RECEIVED ONLY, AND BOTH KINDS. The chart has two After Touch rows, Key's and Channel's, and
-  # both are x transmitted and o recognised. `poly` is the stronger of the two and is published;
-  # channel pressure is answered to as well, and the Ver.1.80 notes give it a per-track switch of
-  # its own, "Rx ChPress" (update p. 5).
-  aftertouch: poly
+  # both are x transmitted and o recognised. The Ver.1.80 notes give channel pressure a
+  # per-track switch of its own, "Rx ChPress" (update p. 5). Until 2026-10-12 this said `poly`,
+  # the stronger of two words where the field had no third.
+  aftertouch: both
+  # Never sent: both rows are x transmitted (chart p. 1).
+  aftertouch_transmits: false
   pitch_bend:
     # RECEIVED AND NEVER SENT - the chart's Pitch Bend row is x transmitted, o recognised - and
     # settable: "Bend Range 0-24, TONE Specifies the amount of pitch change in semitone units

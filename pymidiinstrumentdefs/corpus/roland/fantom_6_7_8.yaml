@@ -156,7 +156,7 @@ sources:
     sha256: 80b8b5c99276192a67471fdac9d64e963555eb883b831c9406dd15b0fc3ac73d
     retrieved: 2026-10-03
     # 76 pages. Cited for the per-zone settings the other three documents only imply: which
-    # channel a zone receives on, and the switch that makes it ignore channel pressure.
+    # channel a zone receives on, and the switches that make it ignore either kind of pressure.
   owners_manual:
     kind: manual
     title: FANTOM-6/FANTOM-7/FANTOM-8 Owner's Manual
@@ -213,14 +213,16 @@ voice:
     note_on: received
     # The chart marks Note On and Note Off "o" in both columns, so release velocity travels too.
     note_off: true
-  # BOTH KINDS ARE RECEIVED AND THE FIELD HOLDS ONE WORD, so this follows the MC-707's precedent
-  # from the same maker and says `poly`, the stronger of the two. The sound generator section's
-  # chart (reference p. 128) gives the After Touch rows: Key's is "x" transmitted and "o"
-  # recognised, Channel's is "o" in both. So the sound generator answers to polyphonic pressure
-  # and never sends it, and channel pressure goes both ways - and a zone can be told to ignore
-  # the latter, "Receive Channel Pressure (CA) OFF, ON Specifies whether channel aftertouch is
-  # received (ON) or not received (OFF)" (parameter_guide p. 14).
-  aftertouch: poly
+  # BOTH KINDS ARE RECEIVED. The sound generator section's chart (reference p. 128) gives the
+  # After Touch rows: Key's is "x" transmitted and "o" recognised, Channel's is "o" in both. So
+  # the sound generator answers to polyphonic pressure and never sends it, and channel pressure
+  # goes both ways - and a zone can be told to ignore either: "Receive Poly Key Pressure (PA)
+  # OFF, ON Specifies whether polyphonic aftertouch is received (ON) or not received (OFF)."
+  # (parameter_guide p. 14), and "Receive Channel Pressure (CA) OFF, ON Specifies whether
+  # channel aftertouch is received (ON) or not received (OFF)" (parameter_guide p. 14). Until
+  # 2026-10-12 this said `poly`, the stronger of two words where the field had no third, after
+  # the MC-707's precedent.
+  aftertouch: both
   # SENT, BUT NOT BY THE SAME SECTION: the sound generator sends channel pressure (reference
   # p. 128), and the sequencer section's chart circles both kinds as transmitted (reference
   # p. 129), polyphonic pressure being what a track has recorded.

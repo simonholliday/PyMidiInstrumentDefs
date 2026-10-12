@@ -93,9 +93,11 @@ source: >-
   chart's program change range, 0 - 63, reaches 64 of them at a time, and no page says it can
   reach the other side's.
 
-  NOT RECORDED: aftertouch, a cross in both columns of both charts. System exclusive, likewise.
-  The note range is 0 to 127 on page 1 and is recorded; page 2's two narrower ranges are notes
-  the surface sends, which no field holds. And the firmware, which no document states - see `model`.
+  RECORDED AS ABSENT: aftertouch, a cross in both columns of both charts, and system exclusive
+  likewise. The note range is 0 to 127 on page 1 and is recorded.
+
+  NOT RECORDED: page 2's two narrower ranges, which are notes the surface sends and which no
+  field holds. And the firmware, which no document states - see `model`.
 
 sources:
   chart:
@@ -206,6 +208,9 @@ voice:
   # A checked absence, from the chart's own row: After Touch is a cross in both columns, and the
   # chart has one row for it rather than the usual two.
   aftertouch: none
+  # Never sent: the one After Touch row is a cross as transmitted, on the chart (chart p. 1) and on
+  # its second chart, for Control Surface Mode (chart p. 2).
+  aftertouch_transmits: false
   pitch_bend:
     # SETTABLE, AND NO DOCUMENT SAYS WHERE IT STARTS. "Specifies the pitch bend range in
     # semitone units. OFF, 1-24" (manual p. 2) is the span, and it is also `bend_range` below,

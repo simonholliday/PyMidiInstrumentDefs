@@ -116,9 +116,11 @@ voice:
     # Recognised; the machine itself sends a fixed velocity of 80.
     note_on: received
   # Neither key nor channel aftertouch, and no pitch bend, either way. Mode
-  # messages and every Aux message - All Notes Off, Local, Omni - are "x" both
-  # ways as well.
+  # messages and every Aux message but Active Sensing - All Notes Off, Local,
+  # Omni - are "x" both ways as well.
   aftertouch: none
+  # Never sent: Key's and Channel's are both "x" as transmitted on the chart.
+  aftertouch_transmits: false
   # The chart's INST map. Both it and the second, ALT map it prints are factory
   # defaults, "configurable on UTILITY:MIDI:Inst Note". The ALT map is:
   #   bd 35, sd 40, lt 41, mt 45, ht 48, rs 56, hc 54, ch 44, oh 55, cc 61, rc 63

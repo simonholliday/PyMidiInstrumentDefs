@@ -1757,7 +1757,7 @@ class TestAftertouch:
 			"novation/summit": ("both", True),
 			"oberheim/ob_x8": ("both", True),
 			"oberheim/teo_5": ("both", True),
-			"roland/fantom_6_7_8": ("poly", True),
+			"roland/fantom_6_7_8": ("both", True),
 			"roland/jd_800": ("channel", True),
 			"roland/jp_8000": ("channel", True),
 			"roland/jx_08": ("poly", False),
@@ -1776,6 +1776,26 @@ class TestAftertouch:
 			"roland/juno_x": ("both", True),
 			"sequential/pro_3": ("both", True),
 			"nord/lead_a1": ("none", False),
+			"roland/jd_08": ("poly", False),
+			"roland/jd_xa": ("both", True),
+			"roland/jd_xi": ("both", False),
+			"roland/ju_06a": ("none", False),
+			"roland/juno_106": ("none", False),
+			"roland/jupiter_x": ("both", True),
+			"roland/mc_101": ("both", False),
+			"roland/mc_707": ("both", False),
+			"roland/p_6": ("none", False),
+			"roland/s_1": ("none", False),
+			"roland/sh_4d": ("channel", True),
+			"roland/sp_404mkii": ("none", False),
+			"roland/tb_3": ("none", False),
+			"roland/tr8s": ("none", False),
+			"roland/tr_08": ("none", False),
+			"roland/tr_1000": ("none", False),
+			"roland/tr_6s": ("none", False),
+			"roland/tr_707": ("none", False),
+			"roland/tr_8": ("none", False),
+			"roland/tr_909": ("none", False),
 		}
 
 
@@ -6922,7 +6942,7 @@ class TestMC707:
 		assert mc.voice.velocity.note_on == "both"
 		assert mc.voice.velocity.note_off is True
 
-		assert mc.voice.aftertouch == "poly"
+		assert mc.voice.aftertouch == "both"
 		assert mc.voice.pitch_bend is not None
 		assert mc.voice.pitch_bend.programmable is True
 		assert mc.voice.pitch_bend.semitones is None
@@ -8947,11 +8967,11 @@ class TestFantom:
 
 		assert "NRPN IS A CHECKED ABSENCE, FROM BOTH DOCUMENTS AT ONCE" in account
 
-	def test_both_pressures_are_received_and_the_field_holds_one_word (self) -> None:
-		"""Poly is recorded, as the MC-707 does from the same maker, and channel is in the comment."""
+	def test_both_pressures_are_received_and_the_field_says_both (self) -> None:
+		"""It said poly until 2026-10-12, after the MC-707, when the field had no word for both."""
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
 
-		assert fantom.voice.aftertouch == "poly"
+		assert fantom.voice.aftertouch == "both"
 		assert fantom.voice.pitch_bend is not None
 		assert fantom.voice.pitch_bend.programmable is True
 		assert fantom.voice.pitch_bend.semitones is None
@@ -16106,7 +16126,7 @@ class TestJupiterX:
 		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
 
 		assert jupiter.voice is not None
-		assert jupiter.voice.aftertouch == "poly"
+		assert jupiter.voice.aftertouch == "both"
 
 		said = prose_of("roland", "jupiter_x")
 
@@ -16119,9 +16139,10 @@ class TestJupiterX:
 		assert "so the two documents complete each other here rather than disagreeing, which" \
 			" is the opposite of the NRPN case above" in flat
 
-		# Following the chain of three Rolands that chose the stronger word.
-		for name in ("roland/mc_707", "roland/fantom_6_7_8", "roland/jd_xi"):
-			assert pymidiinstrumentdefs.load(name, [CORPUS]).voice.aftertouch == "poly"
+		# **The chain of three Rolands that chose the stronger word says `both` with it**, since
+		# 2026-10-12: each answers to both kinds, and the field has a word for that now.
+		for name in ("roland/mc_707", "roland/fantom_6_7_8", "roland/jd_xi", "roland/mc_101", "roland/jd_xa"):
+			assert pymidiinstrumentdefs.load(name, [CORPUS]).voice.aftertouch == "both"
 
 	def test_five_parts_in_two_kinds_and_a_polyphony_the_maker_will_not_give (self) -> None:
 		"""Four take any model, the fifth takes only a drum kit."""
@@ -18794,7 +18815,7 @@ class TestMontage:
 		"""Polyphonic pressure is recorded by the sequencer and never reaches the engine.
 
 		Which is `roland/fantom_6_7_8`'s situation with the answer the other way about,
-		because there both kinds reached the engine and `poly` was the stronger word.
+		because there both kinds reached the engine, and it says `both`.
 		"""
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
 		flat = " ".join((montage.source or "").split())
@@ -18807,7 +18828,7 @@ class TestMontage:
 		# The Fantom took the other answer on its own evidence.
 		fantom = pymidiinstrumentdefs.load("roland/fantom_6_7_8", [CORPUS])
 
-		assert fantom.voice.aftertouch == "poly"
+		assert fantom.voice.aftertouch == "both"
 
 		# And the split is why two fields say `both` where one chart alone would not.
 		assert montage.midi.clock == "both"
@@ -20489,7 +20510,7 @@ class TestJDXA:
 		assert len(xa.controls) == 178
 		assert (xa.midi.channels, xa.midi.mode, xa.midi.clock, xa.midi.transport) == ((1, 16), 3, "both", "both")
 		assert xa.midi.program_change is not None and xa.midi.program_change.presets == 256
-		assert xa.voice.aftertouch == "poly" and xa.voice.note_range == (0, 127)
+		assert xa.voice.aftertouch == "both" and xa.voice.note_range == (0, 127)
 		assert xa.voice.pitch_bend is not None and xa.voice.pitch_bend.programmable is True
 
 	def test_the_structure_diagram_is_read_from_the_drawing (self) -> None:

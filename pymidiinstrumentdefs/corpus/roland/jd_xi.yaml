@@ -321,12 +321,20 @@ voice:
     # both a striking and a release velocity travel in both directions.
     note_on: received
     note_off: true
-  # **BOTH KINDS RECEIVED, NEITHER TRANSMITTED, AND EACH CAN BE SWITCHED OFF.** The chart's
-  # After Touch rows cross both transmitted cells and circle both recognised ones, each under
-  # the `*1` footnote - and the sysex map names the switches, `Receive Polyphonic Key Pressure`
-  # and `Receive Channel Press`. `poly` is the stronger of the two words this field holds, which
-  # follows `roland/mc_707` and `roland/fantom_6_7_8`.
-  aftertouch: poly
+  # **BOTH KINDS RECEIVED, AND EACH CAN BE SWITCHED OFF.** The sound source's chart crosses both
+  # transmitted After Touch cells and circles both recognised ones, each under the `*1`
+  # footnote (implementation p. 17) - and the reception section names the switches, `Receive
+  # Polyphonic Key Pressure` (implementation p. 1) and `Receive Channel Press` (implementation
+  # p. 3). Until 2026-10-12 this said `poly`, the stronger of two words where the field had no
+  # third, as `roland/mc_707` and `roland/fantom_6_7_8` did.
+  aftertouch: both
+  # Never sent by the sound source, whose chart crosses both rows as transmitted (implementation
+  # p. 17), and this field is the sound source's, as the others are but for the clock and the
+  # transport. The sequencer replays what it has recorded: its own chart circles `Channel's` as
+  # transmitted (implementation p. 18), and "Recorded messages are transmitted during playback."
+  # (implementation p. 8). The keys are given as having velocity (manual p. 17), and nothing on the
+  # instrument is said to make pressure.
+  aftertouch_transmits: false
   pitch_bend:
     # Circled both ways under the `*1` footnote, and settable over the first of the three
     # registered parameters - 0 to 24 semitones. The document gives no factory depth, so

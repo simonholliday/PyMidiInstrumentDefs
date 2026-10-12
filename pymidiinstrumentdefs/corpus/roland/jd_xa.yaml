@@ -194,9 +194,15 @@ voice:
     # velocity and sends it.
     note_on: both
     note_off: true
-  # Polyphonic key pressure received, under a part's Rx PolyPress switch (implementation p. 1), and
-  # channel pressure both ways (implementation p. 21); `poly` follows `roland/jd_xi`.
-  aftertouch: poly
+  # BOTH KINDS: polyphonic key pressure received, under a part's Rx PolyPress switch
+  # (implementation p. 1), and channel pressure, under its Rx Ch Press (implementation p. 3);
+  # the chart circles both as recognised (implementation p. 21). Until 2026-10-12 this said
+  # `poly`, the stronger of two words where the field had no third, as `roland/jd_xi` did.
+  aftertouch: both
+  # Sent, as channel pressure: the transmission half has a Channel Pressure entry and none for
+  # polyphonic key pressure (implementation p. 5), and the chart circles `Channel's` and crosses
+  # `Key's` as transmitted (implementation p. 21).
+  aftertouch_transmits: true
   pitch_bend:
     # Settable by the first registered parameter, "00H–18H (0–24 semitones)" (implementation p. 2).
     programmable: true

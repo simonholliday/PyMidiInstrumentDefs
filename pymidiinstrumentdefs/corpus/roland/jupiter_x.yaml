@@ -417,16 +417,21 @@ voice:
     # And note off velocity is a byte it reads rather than discards: "vv = Note off velocity: 00H
     # - 7FH (0 - 127)" (implementation p. 1).
     note_off: true
-  # **BOTH KINDS ARE RECEIVED AND THIS FIELD HOLDS ONE WORD**, so it takes the stronger - which is
-  # the chain `roland/mc_707`, `roland/fantom_6_7_8` and `roland/jd_xi` established. Channel
-  # pressure is in the implementation both ways (pp. 3 and 6); polyphonic has no entry in either
-  # half, and the Parameter Guide gives it a switch of its own: "Rx Poly Pres OFF, ON Specifies
-  # whether polyphonic aftertouch is received (ON) or not received (OFF)." (parameter_guide
-  # p. 6). **The implementation's silence is not a denial** - it lists Polyphonic Key Pressure
-  # among the controllers Reset All Controllers resets (implementation p. 4), so the two
-  # documents complete each other here rather than disagreeing, which is the opposite of the
-  # NRPN case above.
-  aftertouch: poly
+  # **BOTH KINDS ARE RECEIVED.** Channel pressure is in the implementation both ways (pp. 3 and
+  # 6); polyphonic has no entry in either half, and the Parameter Guide gives it a switch of its
+  # own: "Rx Poly Pres OFF, ON Specifies whether polyphonic aftertouch is received (ON) or not
+  # received (OFF)." (parameter_guide p. 6). **The implementation's silence is not a denial** -
+  # it lists Polyphonic Key Pressure among the controllers Reset All Controllers resets
+  # (implementation p. 4), and its address map has a `Receive Poly Key Pressure` switch
+  # (implementation p. 14), so the two documents complete each other here rather than
+  # disagreeing, which is the opposite of the NRPN case above. Until 2026-10-12 this said
+  # `poly`, the stronger of two words where the field had no third, as `roland/mc_707`,
+  # `roland/fantom_6_7_8` and `roland/jd_xi` did.
+  aftertouch: both
+  # Sent, as channel pressure: the transmission half has a Channel Pressure entry (implementation
+  # p. 6), and the keyboard is given as having channel aftertouch (owners_manual p. 4). Polyphonic
+  # pressure has no entry there, and with no chart no page says it is not sent.
+  aftertouch_transmits: true
   pitch_bend:
     # Received and transmitted, fourteen bits: "mm, ll = Pitch Bend value: 00 00H - 40 00H - 7F
     # 7FH (-8192 - 0 - +8191)" (implementation p. 3).

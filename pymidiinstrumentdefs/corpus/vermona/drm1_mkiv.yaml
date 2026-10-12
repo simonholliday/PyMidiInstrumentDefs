@@ -33,6 +33,11 @@ midi:
   # DRM1 MKIV." A checked absence, and the strongest kind there is - the manual
   # says so in as many words. Do not go looking for a CC map; there is not one.
   control_change: none
+  # It follows from the line above. A non-registered parameter is addressed and
+  # set with controller messages, 98 and 99 and then 6 and 38, so an instrument
+  # that takes no control change takes none. That line rests on the manual's own
+  # sentence that controller data is not processed.
+  nrpn: none
 
 voice:
   addressing: voices

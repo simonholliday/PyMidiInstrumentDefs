@@ -66,6 +66,11 @@ midi:
   # resets; any other position is ignored (p. 47).
   transport: receives
   control_change: none
+  # It follows from the line above. A non-registered parameter is addressed and
+  # set with controller messages, 98 and 99 and then 6 and 38, so an instrument
+  # that takes no control change takes none. That line rests on the search of
+  # the manual the account sets out.
+  nrpn: none
 
 voice:
   # A note does not choose a pitch the way a keyboard synth's does. With the

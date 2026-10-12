@@ -74,8 +74,8 @@ source: >-
   above the definition for where and why that matters. The ten lines on p. 27 are the note numbers; the
   sentence is the reason there is nothing else.
 
-  WHY `control_change: none` IS DIFFERENT HERE FROM EVERYWHERE ELSE IT APPEARS. Eight definitions
-  in this corpus carry that field and in the other seven it records **an absence somebody
+  WHY `control_change: none` IS DIFFERENT HERE FROM EVERYWHERE ELSE IT APPEARS. In every other
+  definition in this corpus that says `none` there, it records **an absence somebody
   established** - a chart's crossed boxes, an enumeration that did not mention a control change, a
   maker's list of what its socket accepts. This one records **a decision somebody explains**. That
   is a stronger claim and a different one, and a consumer can act on it with more confidence: not
@@ -175,6 +175,11 @@ midi:
   # controller was found, but that the parameters are not the kind of thing a controller could
   # reach, by design.
   control_change: none
+  # IT FOLLOWS FROM THE LINE ABOVE. A non-registered parameter is addressed and set with
+  # controller messages, 98 and 99 and then 6 and 38, so an instrument that takes no control
+  # change takes none. That line rests on the maker's own sentence that there is no MIDI CC
+  # implementation for parameter control.
+  nrpn: none
 
 voice:
   # Its notes name drums and nothing else - ten of them, one per voice.

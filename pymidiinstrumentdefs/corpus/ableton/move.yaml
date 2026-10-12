@@ -239,6 +239,11 @@ midi:
   # supported" (manual), and no release note since adds either. This field is about what the
   # instrument answers to; the one controller it sends, CC 120, is in the account.
   control_change: none
+  # IT FOLLOWS FROM THE LINE ABOVE. A non-registered parameter is addressed and set with
+  # controller messages, 98 and 99 and then 6 and 38, so an instrument that takes no control
+  # change takes none. That line rests on the manual's own statement that MIDI CC is not
+  # supported.
+  nrpn: none
   # `sysex` is **unset and not `false`**, which is the distinction settled on the Roland TR-8S:
   # `false` says the instrument has no system exclusive in either direction, and no
   # document here says that - none of the five mentions it at all. A silence is not a checked

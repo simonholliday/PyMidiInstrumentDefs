@@ -760,6 +760,24 @@ class TestAbsences:
 		assert kinds["none"] == {"ableton/move", "alesis/sr_16", "behringer/model_d", "behringer/rd_6", "behringer/rd_9", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_707", "roland/tr_909",
 			"vermona/drm1_mkiv"}
+		# **NO CONTROL CHANGE, SO NO NON-REGISTERED PARAMETER (#4900).** One is addressed and set
+		# with controllers 98, 99, 6 and 38, so each of these records `nrpn: none` as well, as
+		# `korg/ms_20_mini` did from the first. Two do not yet. `roland/tr_909`'s scan has a
+		# chart, which is to be read again before anything is added to the file. And
+		# `behringer/model_d`'s manual has it answer to a MIDI keyboard's modulation wheel, so
+		# its own `none` is in question (#4982) and nothing is built on it.
+		unset = {name for name in kinds["none"]
+			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn != "none"}
+
+		assert unset == {"roland/tr_909", "behringer/model_d"}
+
+		for name in ("ableton/move", "alesis/sr_16", "behringer/rd_6", "behringer/rd_9",
+				"behringer/td_3", "erica_synths/hexdrums", "moog/labyrinth", "vermona/drm1_mkiv"):
+			path = CORPUS / (name + ".yaml")
+			said = " ".join(line.strip().lstrip("# ") for line in path.read_text(encoding = "utf-8").split("\n"))
+
+			assert "follows from the line above. a non-registered parameter is addressed" in said.lower(), name
+
 		assert kinds["learned"] == {"arturia/drumbrute",
 			"arturia/drumbrute_impact", "dirtywave/m8", "roland/d_50", "synthstrom_audible/deluge",
 			"teenage_engineering/op_1"}
@@ -15134,8 +15152,8 @@ class TestHexdrums:
 		# rather than left to a reader to notice that this `none` is unlike the other seven.
 		flat = " ".join(said.split())
 
-		assert "Eight definitions in this corpus carry that field and in the other seven it" \
-			" records **an absence somebody established**" in flat
+		assert "In every other definition in this corpus that says `none` there, it records" \
+			" **an absence somebody established**" in flat
 		assert "This one records **a decision somebody explains**" in flat
 
 	def test_ten_voices_over_ten_consecutive_notes (self) -> None:
@@ -19141,7 +19159,8 @@ class TestRD9:
 		assert rd9.controls == {}
 		assert rd9.midi.control_change == "none" and rd9.midi.refuses_control_change
 		assert pymidiinstrumentdefs.load("behringer/model_d", [CORPUS]).midi.control_change == "none"
-		assert (rd9.midi.program_change, rd9.midi.nrpn) == (None, None)
+		# No controller, so no non-registered parameter, which is made of controllers.
+		assert (rd9.midi.program_change, rd9.midi.nrpn) == (None, "none")
 
 	def test_clock_and_a_start_message_are_received (self) -> None:
 		rd9 = pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS])

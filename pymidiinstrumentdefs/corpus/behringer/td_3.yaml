@@ -213,6 +213,11 @@ midi:
   # definition here. Eleven knobs and twenty-eight switches, and not one of them is addressable.
   # The TD-3-MO, which is a different instrument, answers to one: see the source account.
   control_change: none
+  # IT FOLLOWS FROM THE LINE ABOVE. A non-registered parameter is addressed and set with
+  # controller messages, 98 and 99 and then 6 and 38, so an instrument that takes no control
+  # change takes none. That line rests on the guide's table, whose only `Bn` row is All Notes
+  # Off.
+  nrpn: none
   # NOT RECORDED, system exclusive. The guide never uses the word, so there is no byte layout
   # and no statement to cite - and `false` would be the wrong answer rather than a cautious one,
   # because the maker's own application configures this instrument over USB and the Model D's

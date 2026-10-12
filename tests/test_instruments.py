@@ -22233,6 +22233,9 @@ class TestWebPageTitles:
 		("dreadbox/nymphes", "support_page"): "support - Dreadbox Synthesizers",
 		("dreadbox/typhon", "support_page"): "support - Dreadbox Synthesizers",
 		("dreadbox/typhon", "product_page"): "Typhon Analog Synthesizer - Dreadbox Synthesizers",
+		("elektron/digitakt_ii", "support_page"): "Digitakt II - Elektron",
+		("elektron/digitone_ii", "support_page"): "Digitone II - Elektron",
+		("elektron/tonverk", "download_page"): "Tonverk - Elektron",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

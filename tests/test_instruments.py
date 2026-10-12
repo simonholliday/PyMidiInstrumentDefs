@@ -22220,6 +22220,7 @@ class TestWebPageTitles:
 	SERVED = {
 		("ableton/move", "product_page"): "Move — a portable instrument for intuitive music making | Ableton",
 		("ableton/move", "new_features"): "Move | All new features",
+		("access/virus_ti", "downloads_page"): "Downloads | The Virus TI - Totally Integrated Synthesizers",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

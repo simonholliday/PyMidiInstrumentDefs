@@ -99,6 +99,21 @@ source: >-
   Enabled: Specifies whether MIDI CC#7 (volume) will be recognized" (manual p. 153), and the
   part's own "Volume RX".
 
+  **ALL FOUR ARE WRITTEN TWICE.** Naming no part a control is on the Global Channel, which is
+  Single mode's. Keyed `part_` it names the Multi part, whose channel is "The MIDI channel to
+  which this Part will respond" (manual p. 167). Two of the four are named for a Part in so many
+  words, by a switch of the Part's own: the hold pedal's, quoted above, and volume's, which
+  "Specifies whether the Part will respond to MIDI CC#7 (Volume)" (manual p. 169). **As a
+  controller the instrument answers, 64 is named only for a Part.** That a Single program answers
+  it on the Global Channel rests on that channel's being "a MIDI channel used for SINGLE mode"
+  (manual p. 152), and no page says a controller on the Global Channel reaches a Part in Multi
+  mode.
+  Panorama and expression are written for a Part on a reading. No page says which channel they
+  are answered on in Multi mode. What they reach is a setting of the Single program that a Part
+  holds, and a Part has a Panorama of its own that "Overrides/overwrites the Single parameter of
+  the same name" (manual p. 167). Expression rests on its sharing Patch Volume with controller 7
+  (manual p. 129), and on nothing else.
+
   **OTHER NUMBERS APPEAR AND ARE NOT CONTROLS**, and each would be a different kind of mistake.
   The wheel and the pedals choose what the instrument *sends*: "0 to 127: Specifies the MIDI CC
   number (see glossary) transmitted by the modulation wheel. The standard value is 1 ('Mod
@@ -274,8 +289,11 @@ parts:
   # (manual p. 14), so it is the player's; in Sequencer mode "the MIDI channel is always equal to
   # the PART number" (manual p. 128). `assigned` records the first, and the source account the
   # second.
-  # NOT RECORDED: what a part receives. Neither document enumerates it, and program change is
-  # stated to reach a part while nothing says which other messages do.
+  # NOT RECORDED: a `receives` list. Neither document enumerates one. Notes (manual p. 168),
+  # program change, volume and the hold pedal (manual p. 169) are each stated to reach a part,
+  # and nothing says which other messages do.
+  # A CONTROL NAMING THIS PART IS ON A MULTI PART'S OWN CHANNEL, and one naming no part is on the
+  # Global Channel: see the account.
   # Written once with `count`, because the sixteen are alike but for their number.
   part:
     label: Part
@@ -296,3 +314,10 @@ controls:
   panorama:       {label: Panorama, cc: 10}
   expression:     {label: Expression, cc: 11}
   hold_pedal:     {label: Hold Pedal, cc: 64}
+
+  # THE SAME FOUR FOR A MULTI PART ON ITS OWN CHANNEL: see the account. Each control above names
+  # no part and is on the Global Channel.
+  part_channel_volume: {label: Channel Volume, cc: 7, part: part}
+  part_panorama:       {label: Panorama, cc: 10, part: part}
+  part_expression:     {label: Expression, cc: 11, part: part}
+  part_hold_pedal:     {label: Hold Pedal, cc: 64, part: part}

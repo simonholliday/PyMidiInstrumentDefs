@@ -14687,8 +14687,9 @@ class TestVirusTI:
 	def test_four_controls_and_they_are_not_the_control_map (self) -> None:
 		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
 
-		assert len(virus.controls) == 4
-		assert sorted(c.cc for c in virus.controls.values() if c.cc is not None) == [7, 10, 11, 64]
+		# Four numbers, each written a second time for a Multi part.
+		assert len(virus.controls) == 8
+		assert sorted({c.cc for c in virus.controls.values() if c.cc is not None}) == [7, 10, 11, 64]
 
 		said = " ".join(prose_of("access", "virus_ti").split())
 
@@ -14768,6 +14769,18 @@ class TestVirusTI:
 
 		assert "the MIDI channel is always equal to the PART number" in said
 
+		# **A control naming no part is on the Global Channel, Single mode's**, and all four are
+		# written again for a Multi part. Until 2026-10-12 no control here named a part. Volume
+		# and the hold pedal are named for a Part by its own switches; the other two are a reading.
+		own = {key: control for key, control in virus.controls.items() if control.part}
+
+		assert {control.part for control in own.values()} == {"part"}
+		assert sorted(control.cc for control in own.values() if control.cc is not None) == [7, 10, 11, 64]
+		assert all(key.startswith("part_") for key in own)
+		assert all(virus.controls[key[len("part_"):]].label == control.label for key, control in own.items())
+		assert [control.name for control in virus.controls_reaching("part")] == list(own)
+		assert "Panorama and expression are written for a Part on a reading." in said
+
 	def test_what_is_absent_is_absent_for_stated_reasons (self) -> None:
 		"""Transport, NRPN and a bend range, each with the search behind it."""
 		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
@@ -14813,7 +14826,7 @@ class TestVirusTI:
 		model_d = pymidiinstrumentdefs.load("behringer/model_d", [CORPUS])
 
 		assert len(model_d.controls) == 0
-		assert len(virus.controls) == 4
+		assert len({control.cc for control in virus.controls.values()}) == 4
 
 		said = " ".join(prose_of("access", "virus_ti").split())
 

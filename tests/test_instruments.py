@@ -9269,14 +9269,14 @@ class TestZeroCoast:
 
 class TestTD3:
 
-	"""A TB-303 recreation whose maker publishes a complete message table with no controller in it."""
+	"""A TB-303 recreation whose maker's table of messages has no controller among its channel messages."""
 
 	def test_no_controls_and_the_absence_is_a_checked_one (self) -> None:
 		"""The distinction the whole format turns on, in its plainest form.
 
 		Eleven knobs and twenty-eight switches, none of them addressable - and the
-		file says so rather than saying nothing, because the maker's own MIDI message
-		table enumerates what the instrument answers to and no controller is in it.
+		file says so rather than saying nothing, because the Channel Message group of the
+		maker's own MIDI message table reads as a complete list and no controller is in it.
 		"""
 		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
 
@@ -9292,8 +9292,8 @@ class TestTD3:
 		"""Three negatives from one reading, argued once instead of three times.
 
 		The table lists `8n`, `9n`, `Bn 7B` and `En` under Channel Message, so program
-		change and both kinds of aftertouch are missing from an enumeration that is
-		otherwise complete.  A reader who disagrees with that reading knows from the
+		change and both kinds of aftertouch are missing from a group that reads as a
+		complete list of channel messages.  A reader who disagrees with that reading knows from the
 		file exactly which three conclusions to revisit.
 		"""
 		td3 = pymidiinstrumentdefs.load("behringer/td_3", [CORPUS])
@@ -15693,7 +15693,7 @@ class TestJDXi:
 
 		assert "`Vibrate rate`, `Vibrate depth` and `Vibrate delay`" in flat
 
-	def test_its_parameter_guide_carries_no_number_and_was_checked (self) -> None:
+	def test_its_parameter_guide_carries_no_map_and_was_checked (self) -> None:
 		"""Because on this maker's other instruments a Parameter Guide is where they are."""
 		jd_xi = pymidiinstrumentdefs.load("roland/jd_xi", [CORPUS])
 
@@ -15703,7 +15703,10 @@ class TestJDXi:
 
 		assert "CITED FOR AN ABSENCE AND QUOTED FOR NOTHING, AND ITS NAME IS WHY IT WAS" \
 			" CHECKED." in flat
-		assert "51 sheets, 31,811 words, and **not one controller number**" in flat
+		assert "51 sheets, some thirty thousand words, and **no controller map**" in flat
+
+		# It names one number in passing, the modulation wheel's, and the comment says where.
+		assert "`(CC01)` seven times, five on p. 14 and two on p. 19" in flat
 
 
 class TestHexdrums:
@@ -17274,8 +17277,8 @@ class TestVolcaFM:
 		assert "**not one controller number**" in flat
 
 		# The two that made it worth opening, both in this corpus.
-		assert "`roland/jd_xi` at rank 94 found nothing and `roland/jupiter_x` at 96 found a" \
-			" whole second map" in flat
+		assert "`roland/jd_xi` at rank 94 found no map and `roland/jupiter_x` at 96 found a" \
+			" whole second one" in flat
 
 
 class TestTB3:

@@ -3,9 +3,10 @@
 # conclusion. The DRM1 MKIV's manual says the thing outright, that controller data will not
 # be processed, which is the strongest form there is. The Model D's rests on a search of 44 pages
 # finding the phrase nowhere but a glossary. This one rests on an **enumeration**: the maker
-# publishes a table of the status bytes the instrument answers to, and no controller is among
-# them. A TB-303 recreation whose eleven knobs are not addressable, established from that table
-# rather than inferred from a silence.
+# publishes a table whose Channel Message group reads as a complete list of the channel
+# messages the instrument answers to, and no controller is among them. A TB-303 recreation
+# whose eleven knobs are not addressable, established from that table rather than inferred
+# from a silence.
 #
 # ITS SIBLING IS A DIFFERENT INSTRUMENT AND DIFFERS BY EXACTLY ONE ROW. The TD-3-MO answers to
 # one controller, Filter Cutoff, which this one does not. Behringer says so on its own cover.
@@ -43,17 +44,26 @@ source: >-
   English-bearing document for this instrument sits on one colour variant's page, filed under
   a second variant's product code, and is absent from a third variant's page.
 
-  THE MAKER'S OWN MIDI MESSAGE TABLE IS THE WHOLE OF ITS IMPLEMENTATION, AND THAT IS WHY THIS
+  THE MAKER'S OWN MIDI MESSAGE TABLE IS ITS WHOLE PUBLISHED IMPLEMENTATION, AND THAT IS WHY THIS
   FILE SAYS `none` RATHER THAN SAYING NOTHING. The table at p. 94 is headed "MIDI message" (p. 94),
   gives five columns - Status, Second, Third, Parameter, Description - and groups its rows as
   Channel Message and SysRT. The channel messages are `8n` Note Off, `9n` Note On, `Bn 7B` All
   Notes Off and `En` Pitch Bend; the real-time messages are `F8` Timing Clock, `FA` Start,
   `FB` Continue and `FC` Stop. That is every row.
 
-  So the table enumerates the status bytes this instrument answers to, and three are missing
-  from an enumeration that is otherwise complete: `Bn` with anything but 7B, `Cn` program
+  So the table's Channel Message group reads as a complete list of the channel messages this
+  instrument answers to, and three are missing from it: `Bn` with anything but 7B, `Cn` program
   change, and `An` or `Dn` aftertouch. **Everything recorded below as absent rests on that one
-  reading of that one table**, stated here once rather than argued three times. The only `Bn`
+  reading of that one table**, stated here once rather than argued three times. THE READING GOES
+  NO FURTHER THAN THAT GROUP. The table has no column for direction and no word saying it is
+  complete; the page's one word on direction is a footnote to the examples printed with the
+  table, "Note: 1, MIDI input channel 1." (p. 94). And the guide sends the owner to an
+  application for one setting, "Please use the 'SynthTool.exe' to configure the Poly Chain
+  mode." (p. 92), without saying what that application sends. The TD-3-MO's guide gives that
+  job for its own instrument, one of five that include setting it up and updating its
+  firmware, to an application it calls Synthtribe (mo_guide p. 60), and no document says the
+  two are one program. So the table is not a list of everything the instrument takes. The
+  only `Bn`
   the table gives is All Notes Off, which is a channel mode message belonging to the MIDI
   specification rather than a controller this instrument publishes, so there is no control to
   carry and `control_change: none` is a checked absence.
@@ -222,7 +232,7 @@ midi:
   # and no statement to cite - and `false` would be the wrong answer rather than a cautious one,
   # because the maker's own application configures this instrument over USB and the Model D's
   # manual, from the same maker, publishes a System Exclusive command table that does exactly
-  # that job. What the Synthtribe application sends is undocumented, not absent.
+  # that job. What that application sends is undocumented, not absent.
 
 voice:
   addressing: pitches

@@ -93,8 +93,8 @@ source: >-
   channel. These two do not
   overlap: the sound source's control change block names 22 groups and the sequencer's names
   `0-119` wholesale, because a sequencer records whatever arrives. **The fields below are the
-  sound source's except where the sequencer's chart is the only one that circles a row**, which is
-  the clock and the transport.
+  sound source's, but for two that rest on the sequencer's chart: the sending of the clock, and
+  the transport both ways.**
 
   WHY `presets` IS UNRECORDED THOUGH THE DOCUMENT COUNTS BANKS. The chart gives "Program No.1-128"
   (implementation p. 17) against its True Number row, and the reception section then lists sixteen
@@ -155,8 +155,9 @@ source: >-
   NOT RECORDED: the polyphony, which no document states. 68, which the address map names beside
   a part's legato switch, `Part Legato Switch (CC# 68)` (implementation p. 10), and which neither
   the reception section nor the chart lists. The 51-sheet Parameter Guide's whole
-  contents, which is a panel reference and carries no controller number - **checked, because its
-  name suggests otherwise**. The drum part's 148 NRPN addresses, for the reason above. And the
+  contents, which is a panel reference with no controller map, and names one number, the
+  modulation wheel's, in passing - **checked, because its name suggests otherwise**. The drum
+  part's 148 NRPN addresses, for the reason above. And the
   sequencer's own behaviour, of which the chart's footnotes give three sentences worth reading if
   somebody ever records into it: a note-off is recorded for each sounding note before an all-notes
   -off, and the all-notes-off itself is not recorded.
@@ -200,11 +201,15 @@ sources:
     sha256: 08a8825e91d98bad0451f0717f1e932f780d6ac4819beaf8e40ee68a8e1269b2
     retrieved: 2026-10-06
     # **CITED FOR AN ABSENCE AND QUOTED FOR NOTHING, AND ITS NAME IS WHY IT WAS CHECKED.** 51
-    # sheets, 31,811 words, and **not one controller number** - neither `CC#` nor `Controller
-    # number` nor `Control Change` appears anywhere in it. It is a panel reference: every
-    # parameter of every tone, by the knob that reaches it. On this maker's other instruments a
-    # document called a Parameter Guide is where the numbers are, so the absence is worth
-    # recording rather than leaving a reader to search 51 sheets for themselves.
+    # sheets, some thirty thousand words, and **no controller map** - neither `CC#` nor
+    # `Controller number` nor `Control Change` appears anywhere in it. **One controller number is
+    # in it, in passing**: `(CC01)` seven times, five on p. 14 and two on p. 19, each time beside
+    # the modulation wheel or the modulation controller it names. Until 2026-10-12 this comment
+    # said the guide held not one, and gave a count of its words to the last digit, which
+    # depends on who counts. It is a panel reference: every parameter of every tone, by the knob
+    # that reaches it. On this maker's other instruments a document called a Parameter Guide is
+    # where the numbers are, so the absence is worth recording rather than leaving a reader to
+    # search 51 sheets for themselves.
     page_offset: 0
   supplement_1_10:
     kind: firmware_addendum
@@ -269,8 +274,11 @@ midi:
   # p. 18). The owner's manual says the whole of it in one sentence: "The JD-Xi can transmit and
   # receive MIDI clock (F8) messages to synchronize its tempo." (manual p. 15).
   clock: both
-  # The same division, and the same sentence continues: "It can also send and receive MIDI start
-  # (FA) and MIDI stop (FC) messages to start or stop." (manual p. 15).
+  # NOT THE SAME DIVISION, THOUGH THE SAME SENTENCE CONTINUES. The sound source's chart crosses
+  # Commands in both columns (implementation p. 17) and the sequencer's circles both
+  # (implementation p. 18), so starting and stopping are the sequencer's alone, sent and received.
+  # The manual: "It can also send and receive MIDI start (FA) and MIDI stop (FC) messages to
+  # start or stop." (manual p. 15).
   transport: both
   program_change:
     # "Program Change : True Number o *1 ************** o *1 0-127 Program No.1-128"

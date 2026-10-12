@@ -901,7 +901,11 @@ The `source` field is prose, and it is the authority for the whole file. Make it
 - **what kind of document** it is — user manual, MIDI implementation, quick start guide,
   firmware addendum;
 - **its title as printed**, including the maker's own typos, which is often how you find
-  it again;
+  it again. **A web page's title is the one the page serves**: the text of its `<title>`,
+  read from the page as you saved it, with the site's name and the punctuation as they
+  come and white space run together. So `Downloads | volca drum | KORG (USA)` and not
+  `volca drum downloads`. A shorter description of a page is not its title, and nobody
+  searching for it will find the page;
 - **its edition or revision, and its date**, as the document states them — not as the
   download page states them;
 - **where it can be obtained**, so a reader is not left searching;

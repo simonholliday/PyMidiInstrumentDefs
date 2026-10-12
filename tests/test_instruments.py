@@ -1749,7 +1749,7 @@ class TestAftertouch:
 			"moog/subsequent_37": (None, True),
 			"novation/mininova": ("channel", False),
 			"novation/summit": ("both", True),
-			"oberheim/ob_x8": ("channel", True),
+			"oberheim/ob_x8": ("both", True),
 			"oberheim/teo_5": ("both", True),
 			"roland/fantom_6_7_8": ("poly", True),
 			"roland/jd_800": ("channel", True),
@@ -13431,15 +13431,24 @@ class TestOBX8:
 		assert not ob_x8.parts_in("normal")
 		assert not ob_x8.parts_in("double")
 
-		# Seven controls name a half - four to tell a cell's two numbers apart, three because
-		# the row's name holds one - and so read as Split mode's with it. The comment on the
-		# parts says no page puts them there.
-		halves = [control.name for control in ob_x8.controls.values() if control.part is not None]
+		# **No control names a part (#4922).** Seven named the part of their half until
+		# 2026-10-12, four to tell a cell's two numbers apart and three because the row's name
+		# holds one, and so read as on that half's channel and as Split mode's only. No page
+		# puts them there, so all 147 are on the base channel and answer in every mode.
+		assert not [control.name for control in ob_x8.controls.values() if control.part is not None]
 
-		assert len(halves) == 7
-		assert len(ob_x8.controls_in("split")) == 147
-		assert len(ob_x8.controls_in("normal")) == 140
-		assert len(ob_x8.controls_in("double")) == 140
+		for mode in ("split", "normal", "double"):
+			assert len(ob_x8.controls_in(mode)) == 147, mode
+
+		assert "**NO CONTROL BELOW NAMES A PART, THOUGH SEVEN SPLIT ADDRESSES NAME A HALF.**" in prose_of("oberheim", "ob_x8")
+
+		# **And it answers to both kinds of aftertouch, on its received table's two rows (#4894)**,
+		# as the TEO-5 does from the same table. The polyphonic row is never explained, and the
+		# file says so.
+		assert (ob_x8.voice.aftertouch, ob_x8.voice.aftertouch_transmits) == ("both", True)
+		assert pymidiinstrumentdefs.load("oberheim/teo_5", [CORPUS]).voice.aftertouch == "both"
+		assert "BOTH, ON THE RECEIVED TABLE'S WORD, AND ITS POLYPHONIC ROW IS NEVER EXPLAINED." \
+			in prose_of("oberheim", "ob_x8")
 
 		said = prose_of("oberheim", "ob_x8")
 
@@ -13461,12 +13470,11 @@ class TestOBX8:
 		assert ob_x8.controls["split_params_split_point_upper"].nrpn == 1123
 		assert ob_x8.controls["split_params_split_point_lower"].nrpn == 1092
 
-		for name, part in (("split_params_upper_level_upper", "upper"),
-				("split_params_upper_level_lower", "lower"),
-				("split_upper_transpose", "upper"), ("split_lower_transpose", "lower")):
-			assert ob_x8.controls[name].part == part, name
+		for name in ("split_params_upper_level_upper", "split_params_upper_level_lower",
+				"split_upper_transpose", "split_lower_transpose"):
+			assert ob_x8.controls[name].part is None, name
 
-		# The maker's own label is kept on both halves; the part is what tells them apart.
+		# The maker's own label is kept on both halves; the key is what tells them apart.
 		assert ob_x8.controls["split_params_upper_level_upper"].label \
 			== ob_x8.controls["split_params_upper_level_lower"].label
 

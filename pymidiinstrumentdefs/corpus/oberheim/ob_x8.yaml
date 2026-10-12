@@ -299,13 +299,17 @@ voice:
   # question, and allows it where every such part exists in one of several modes. These do.
   polyphony: 8
   polyphony_shared: false
-  # CHANNEL, AND POLY KEY PRESSURE IS A SINGLE ROW WITH NOTHING BEHIND IT. "Polyphonic Key
-  # Pressure" appears **once in 137 sheets**, in the received channel message table, and no page
-  # in either document says what it does. Everything else about pressure here is channel
-  # pressure: it is in both the received and the transmitted tables, it is what the TOUCH button
-  # routes, it is MPE's Z-axis, and the addendum calls it "mono pressure" where MPE is off. So
-  # `channel` is what the documents describe and `poly` would rest on one unexplained row.
-  aftertouch: channel
+  # BOTH, ON THE RECEIVED TABLE'S WORD, AND ITS POLYPHONIC ROW IS NEVER EXPLAINED. The received
+  # channel message table has a row for each kind, `Polyphonic Key Pressure` and `Channel
+  # Pressure` (manual p. 123), and a received table is the maker's statement of what is received.
+  # **The polyphonic row is the only place those words appear in 137 sheets, and no page in
+  # either document says what the instrument does with it.** Everything else about pressure
+  # here is channel pressure: it is in both the received and the transmitted tables, it is what
+  # the TOUCH button routes, it is MPE's Z-axis, and "unless MPE is enabled, Aftertouch To Volume
+  # functions as mono pressure" (addendum p. 3). Until 2026-10-12 this file read the row as bare
+  # and recorded `channel`. `oberheim/teo_5` has the same two rows and the same sentences, and
+  # records what the table says arrives, as this now does.
+  aftertouch: both
   # Sent: the transmitted table has Channel Pressure too (manual p. 124), and both directions are
   # under the Key Aftertouch switch - "If disabled, the OB-X8 will neither respond to nor transmit
   # aftertouch/key pressure data" (manual p. 23).
@@ -379,19 +383,21 @@ parts:
   # program change, a bend or a pressure on either split channel. The sound's map is written once
   # below, on controls that name no part, which this format puts on the base channel, the
   # Lower's. Whether the same numbers sent on the Upper's channel edit the Upper program is not
-  # stated. `controls` is in each part's `receives` because controls below name the part, on
-  # the strength of those words and no more.
-  # **SEVEN CONTROLS BELOW NAME A PART**: four to tell apart the two numbers in each of two
-  # cells, and three because the row's name holds a half. They are among the table's twelve SPLIT
-  # addresses, in ten rows (manual p. 133). Which of a cell's two numbers is the Upper's is
-  # read from the order of its `(UPPER/LOWER)` and from the rows beside it, and is not stated.
-  # The format then reads the seven as on that part's channel and as Split mode's only, and
-  # neither is on a page: no page says which channel carries a SPLIT address, or which modes
-  # any of the twelve answers in. By name all twelve are Split's. The Double's list, headed
+  # stated. `controls` is in each part's `receives` on the strength of those words and no more.
+  # **NO CONTROL BELOW NAMES A PART, THOUGH SEVEN SPLIT ADDRESSES NAME A HALF.** So do four of
+  # the MOD BOX's controls, which never named a part. The table has twelve SPLIT addresses, in
+  # ten rows (manual p. 133): two cells print two numbers each, under names ending
+  # `(UPPER/LOWER)`, and three rows have a half in their name. Which of a cell's two
+  # numbers is the Upper's is read from the order of its `(UPPER/LOWER)` and from the rows beside
+  # it, and is not stated; the keys below end `_upper` and `_lower` to tell the pair apart, and
+  # each keeps the maker's label. **Until 2026-10-12 those seven named the part of their half**,
+  # and the format then read them as on that part's channel and as Split mode's only. Neither is
+  # on a page: no page says which channel carries a SPLIT address, or which modes any of the
+  # twelve answers in. So all twelve are on the base channel and answer in every mode, as the
+  # five that never named a part did. By name all twelve are Split's. The Double's list, headed
   # "Double Mode Page 2 Parameters" (manual p. 69) and running onto p. 70, is the Split's
   # without the split point; no row is printed under DOUBLE, and matching a row to a list item
-  # is by name. The other five SPLIT rows name no part and so read as answering in every mode,
-  # a division that follows from which names hold a half and not from anything said of modes.
+  # is by name.
   lower:
     label: Lower
     mode: split
@@ -582,15 +588,15 @@ controls:
   page_2_filter_kbd_track:            {label: PAGE 2 FILTER KBD TRACK, nrpn: 123, group: page_2_filter}
   page_2_filter_kbd_on_level:         {label: PAGE 2 FILTER KBD ON LEVEL, cc: 37, group: page_2_filter}
   # ---- split
-  split_params_upper_level_upper:     {label: SPLIT PARAMS UPPER LEVEL (UPPER/LOWER), nrpn: 1122, range: [0, 63], part: upper, group: split}
-  split_params_upper_level_lower:     {label: SPLIT PARAMS UPPER LEVEL (UPPER/LOWER), nrpn: 1090, range: [0, 63], part: lower, group: split}
-  split_params_split_point_upper:     {label: SPLIT PARAMS SPLIT POINT (UPPER/LOWER), nrpn: 1123, part: upper, group: split}
-  split_params_split_point_lower:     {label: SPLIT PARAMS SPLIT POINT (UPPER/LOWER), nrpn: 1092, part: lower, group: split}
+  split_params_upper_level_upper:     {label: SPLIT PARAMS UPPER LEVEL (UPPER/LOWER), nrpn: 1122, range: [0, 63], group: split}
+  split_params_upper_level_lower:     {label: SPLIT PARAMS UPPER LEVEL (UPPER/LOWER), nrpn: 1090, range: [0, 63], group: split}
+  split_params_split_point_upper:     {label: SPLIT PARAMS SPLIT POINT (UPPER/LOWER), nrpn: 1123, group: split}
+  split_params_split_point_lower:     {label: SPLIT PARAMS SPLIT POINT (UPPER/LOWER), nrpn: 1092, group: split}
 # 147 controls in 24 groups
 
-  split_lower_transpose:              {label: SPLIT LOWER TRANSPOSE, nrpn: 1093, range: [0, 72], part: lower, group: split}
-  split_upper_transpose:              {label: SPLIT UPPER TRANSPOSE, nrpn: 1125, range: [0, 72], part: upper, group: split}
-  split_lower_detune:                 {label: SPLIT LOWER DETUNE, nrpn: 1094, range: [0, 64], part: lower, group: split}
+  split_lower_transpose:              {label: SPLIT LOWER TRANSPOSE, nrpn: 1093, range: [0, 72], group: split}
+  split_upper_transpose:              {label: SPLIT UPPER TRANSPOSE, nrpn: 1125, range: [0, 72], group: split}
+  split_lower_detune:                 {label: SPLIT LOWER DETUNE, nrpn: 1094, range: [0, 64], group: split}
   split_pan_mode:                     {label: SPLIT PAN MODE, nrpn: 1076, range: [0, 4], group: split}
   split_pan_width:                    {label: SPLIT PAN WIDTH, nrpn: 1077, range: [0, 2], group: split}
   split_hold_chord_source:            {label: SPLIT HOLD/CHORD SOURCE, nrpn: 1072, range: [0, 2], group: split}

@@ -14816,10 +14816,12 @@ class TestKRONOS:
 	"""
 
 	def test_every_control_travels_both_ways (self) -> None:
-		"""Seventy-four of them, and not one needs a direction - which is unusual."""
+		"""Seventy-four numbers, and not one needs a direction - which is unusual."""
 		kronos = pymidiinstrumentdefs.load("korg/kronos", [CORPUS])
 
-		assert len(kronos.controls) == 74
+		# Seventy-four numbers, thirteen of them written a second time for a timbre.
+		assert len({control.cc for control in kronos.controls.values()}) == 74
+		assert len(kronos.controls) == 87
 		assert all(control.direction == "both" for control in kronos.controls.values())
 
 		said = prose_of("korg", "kronos")
@@ -15000,7 +15002,19 @@ class TestKRONOS:
 		said = prose_of("korg", "kronos")
 
 		assert "g : Always Global Channel No. (0 - 15)" in said
-		assert "there is no part for the instrument itself" in said
+		assert "nothing in a control says that it stays on the" in said
+
+		# **A control naming no part is on the global channel**, and the standard controllers
+		# are written again for a timbre, which has a channel of its own. Until 2026-10-12 no
+		# control here named a part.
+		own = {key: control for key, control in kronos.controls.items() if control.part}
+
+		assert {control.part for control in own.values()} == {"timbre"}
+		assert sorted(control.cc for control in own.values() if control.cc is not None) == [0, 1, 2, 4, 5, 7, 10, 11, 32, 64, 65, 66, 67]
+		assert all(key.startswith("timbre_") for key in own)
+		assert all(kronos.controls[key[len("timbre_"):]].cc == control.cc for key, control in own.items())
+		assert all(kronos.controls[key[len("timbre_"):]].label == control.label for key, control in own.items())
+		assert [control.name for control in kronos.controls_reaching("timbre")] == list(own)
 
 		# Their received cells lost the TRITON's `≠`, and no band rests on another instrument's page.
 		assert all(not kronos.controls[key].values

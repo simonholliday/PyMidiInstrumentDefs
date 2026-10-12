@@ -221,7 +221,7 @@ self-contained YAML file, and you share it by sending it.
 | `intellijel/cascadia` | Intellijel Cascadia: four controllers, and four is all there are - a semi-modular whose MIDI becomes a voltage at eight jacks, two of them driven by whichever controller its owner last taught it |
 | `korg/drumlogue` | Korg drumlogue: 245 controls from its manual's **two** complete implementation charts, one for each mode - the alternate's twelve parts each take a channel, and 50 of its numbers mean more than one thing across them |
 | `korg/electribe` | Korg electribe: 20 controls out of a plain text file that prints every number twice, with sixteen parts on one MIDI channel and no way given of choosing one |
-| `korg/kronos` | Korg KRONOS: 74 controls, every one travelling both ways, out of a MIDI document that is prose rather than a chart - and 27 of them switched off on a new instrument until somebody loads them |
+| `korg/kronos` | Korg KRONOS: 87 controls, every one travelling both ways, out of a MIDI document that is prose rather than a chart - and 27 of them switched off on a new instrument until somebody loads them |
 | `korg/m1` | Korg M1: four controls, because everything else about this 1988 workstation is reached by system exclusive - read by eye out of a 138-page scan with no text in it at all |
 | `korg/microkorg` | Korg microKORG: 41 controller numbers that are the factory assignment and not fixed, each meaning one thing in a synth program and another in a vocoder one |
 | `korg/microkorg2` | Korg microKORG2: 189 controls out of a maker who prints the same map three times, where the NRPN table gives six parameters one address and numbers two more twice over, and the manual's own pages are what put all eight right |

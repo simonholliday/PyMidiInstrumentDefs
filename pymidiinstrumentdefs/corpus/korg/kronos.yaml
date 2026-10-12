@@ -147,14 +147,45 @@ source: >-
   fourteen that are in one are exactly the addressing machinery and the channel mode messages.
   **Nothing this instrument sends is something it will not answer to.**
 
-  THREE NUMBERS REACH ONE CHANNEL ONLY AND THE FORMAT CANNOT SAY SO. The document gives most rows
-  the status `Bn`, glossed "n : MIDI Channel No. (0 - 15)"
+  THIRTEEN STANDARD CONTROLLERS ARE WRITTEN TWICE, AND THREE NUMBERS REACH ONE CHANNEL ONLY. The
+  document gives most rows the status `Bn`, glossed "n : MIDI Channel No. (0 - 15)"
   (implementation p. 1) and "Usually Global Channel" (implementation p. 1), with each timbre's
-  or track's channel in Combination and Sequencer modes - but gives three the status
-  `Bg`, glossed "g : Always Global Channel No. (0 - 15)" (implementation p. 1). Those three are
-  controllers 92, 94 and 95, the effect off-switches, and they ignore which timbre is playing. A
-  control is placed by its `part` here and there is no part for the instrument itself, so they
-  are ordinary controls above and the restriction is recorded only here.
+  or track's channel in Combination and Sequencer modes. **So a control naming no part is on
+  the global channel, and the standard controllers have a twin keyed `timbre_` that names the
+  part**: bank select's two halves and numbers 1, 2, 4, 5, 7, 10, 11 and 64 to 67. The
+  Parameter Guide says the same of every channel message and names no number: "Channel
+  messages will be received if they match the MIDI channel of a timbre whose Status is set to
+  INT" (guide p. 1145). A twin goes both ways because the two legends end differently: a
+  timbre or track answers while its status is INT or BTH (implementation p. 3) and sends while
+  it is EXT, EX2 or BTH (implementation p. 1). Only a track can be BTH, so no one timbre does
+  both at once. Each timbre and track also has switches of its own for the damper, the
+  portamento switch, the joystick's two directions, the foot pedal, every other control change,
+  and program change, which bank select goes with (guide pp. 477-480, 589-592, 1146), so a part
+  can refuse its twin.
+
+  **THE GLOBAL CHANNEL IS PROGRAM AND SAMPLING MODES', AND THE OTHER MODES ANSWER LITTLE ON IT.**
+  In Combination mode it is used "for selecting a combination and turning effects on/off, and to
+  transmit/receive exclusive data" (guide p. 1145), though what the panel does is still sent on
+  it. So there one of the thirteen naming no part moves only the timbres on `Gch` or on the
+  global channel's own number (guide p. 1136), and bank select does two jobs: on the global
+  channel it goes with the program change that selects the combination, and on a timbre's
+  channel it selects that timbre's program (guide p. 1146). In Sequencer mode the global channel
+  carries exclusive data and the effect switches (guide p. 1145), and a track has no `Gch` to
+  follow it with (guide p. 578).
+
+  Every other `Bn` row that the table does not footnote reaches a timbre on its channel as the
+  thirteen do, the sound controllers 70 to 79 among them, and names no part only because the
+  rule this follows covers the standard controllers. **Two footnotes of the received table
+  except thirty numbers.** Controller 8 is answered on the global channel in Program and
+  Sampling modes and otherwise on "each IFX's channel" (implementation p. 4). The KARMA, pad and
+  Vector Joystick numbers, 14, 22 to 31 and 102 to 119, are answered on the global channel in
+  Program and Combination modes, and in Sequencer mode on the "current selected track's
+  channel" (implementation p. 4). Three rows
+  are of another kind: they have the status `Bg`, glossed
+  "g : Always Global Channel No. (0 - 15)" (implementation p. 1). Those three are controllers
+  92, 94 and 95, the effect off-switches, and they ignore which timbre is playing. They name
+  no part either, and nothing in a control says that it stays on the global channel where its
+  neighbours do not, so that restriction is recorded only here.
 
   **CONTROLLERS 0 TO 119 ARE ALL ASSIGNABLE, WHICH IS A DIFFERENT FACT FROM THE MAP.** Beside its
   numbered rows the transmitted table carries eight that name a span instead - "Control
@@ -421,6 +452,8 @@ parts:
     channel: assigned
     addressing: pitches
     receives: [notes, controls, program_change]
+    # A CONTROL NAMING THIS PART IS ON A TIMBRE'S OR TRACK'S OWN CHANNEL, and one naming no part
+    # is on the global channel: see the account.
     # **SIXTEEN UNDER TWO NAMES, WHICH IS KORG'S OWN FRAMING AND NOT THIS CORPUS'S TIDYING.**
     # The Operation Guide says it twice, 190 printed pages apart: the control surface reaches
     # "each of the 16 Timbres or Tracks in Combi and Sequence modes" (operation p. 1), and
@@ -556,4 +589,23 @@ controls:
   pad_6:                       {label: Pad6, cc: 115, range: [1, 127], group: pads, assignment: "off"}
   pad_7:                       {label: Pad7, cc: 116, range: [1, 127], group: pads, assignment: "off"}
   pad_8:                       {label: Pad8, cc: 117, range: [1, 127], group: pads, assignment: "off"}
+
+  # The standard controllers on a timbre's own channel ──────
+  # The thirteen again, for a timbre in Combination mode or a track in Sequencer mode: see the
+  # account. Each control above names no part and is on the global channel. A timbre whose
+  # Portamento is set to PRG takes the switch and not the time: "CC#05 will be ignored." (guide
+  # p. 471).
+  timbre_bank_select_msb:      {label: Bank Select(MSB), cc: 0, part: timbre}
+  timbre_bank_select_lsb:      {label: Bank Select(LSB), cc: 32, part: timbre}
+  timbre_modulation_1:         {label: Modulation 1 (Joystick +Y), cc: 1, part: timbre, group: continuous}
+  timbre_modulation_2:         {label: Modulation 2 (Joystick -Y), cc: 2, part: timbre, group: continuous}
+  timbre_foot_pedal:           {label: Foot Pedal, cc: 4, part: timbre, group: continuous}
+  timbre_portamento_time:      {label: Portamento Time, cc: 5, part: timbre, group: continuous}
+  timbre_volume:               {label: Volume, cc: 7, part: timbre, group: continuous}
+  timbre_panpot:               {label: Panpot, cc: 10, part: timbre, group: continuous}
+  timbre_expression:           {label: Expression, cc: 11, part: timbre, group: continuous}
+  timbre_hold_1:               {label: Hold 1 (Damper), cc: 64, part: timbre, group: switch}
+  timbre_portamento:           {label: Portamento Off/On, cc: 65, values: {"off": 0, "on": 64}, part: timbre, group: switch}
+  timbre_sostenuto:            {label: Sostenuto Off/On, cc: 66, values: {"off": 0, "on": 64}, part: timbre, group: switch}
+  timbre_soft_pedal:           {label: Soft Pedal, cc: 67, part: timbre, group: switch}
 

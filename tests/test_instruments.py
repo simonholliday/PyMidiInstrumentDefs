@@ -15948,14 +15948,25 @@ class TestJupiterX:
 
 		assert "**THE DOCUMENT NAMED FOR THIS INSTRUMENT'S MIDI IS NOT WHERE ITS CONTROLLERS" \
 			" ARE, AND EIGHT ROLANDS HAD TAUGHT THE OPPOSITE.**" in flat
-		assert "the Parameter Guide carries a `CC#` column on nine of its 75 sheets, one table" \
-			" per model**, holding 156 more rows over 46 distinct numbers" in flat
+		assert "the Parameter Guide carries a `CC#` column on nine of its 75 sheets, in six" \
+			" tables**, holding 149 more rows over 52 distinct numbers" in flat
 
 		# **AND THE JD-XI'S LESSON IS CORRECTED RATHER THAN LEFT TO CONTRADICT THIS ONE.**
 		assert "So rank 94's lesson was about the JD-Xi and not about Roland" in flat
 
-		# The reason those 156 rows are not below: the meaning turns on a setting.
-		assert "21 of the 46 numbers name more than one parameter across those tables" in flat
+		# The reason those 149 rows are not below: the meaning turns on a setting.
+		assert "28 of the 52 numbers are given more than one name from table to table" in flat
+
+		# **Recounted on 2026-10-12 by two readers who did not see each other's reading**, a row
+		# being what lies between two rules: the file had said 156 rows over 46 numbers.
+		recount = "That is 149 rows and 155 numbers, 52 of them distinct, where this file said 156 rows over 46."
+
+		assert recount in flat
+		assert "`JUPITER-8`, 33; `JUNO-106`, 22; `JX-8P`, 30; `SH-101`, 22; and `JUPITER-X`, 35" in flat
+
+		# The list for partials is the Parameter Guide's as well as the expansion's.
+		assert "The Parameter Guide has a `List of supported CCs` (parameter_guide p. 33)" in flat
+		assert "fifteen parameters over four columns, sixty numbers and none of them twice" in flat
 		assert "That is **not** the collision the `part` field exists for." in flat
 		assert "so the meaning turns on what somebody loaded, not on where the message arrived" \
 			in flat
@@ -15971,7 +15982,13 @@ class TestJupiterX:
 		directions = collections.Counter(
 			control.direction for control in jupiter.controls.values() if control.part == "part")
 
-		assert directions == {"receives": 15, "both": 8, "transmits": 1}
+		# **Fifteen said `receives` until 2026-10-12**, on a heading missing from the transmission
+		# half, which denies nothing: four places in the documents say they can be sent.
+		assert directions == {"both": 23, "transmits": 1}
+
+		every = collections.Counter(control.direction for control in jupiter.controls.values())
+
+		assert every == {"both": 39, "transmits": 2}
 
 		for key in ("part_foot_type", "drum_foot_type"):
 			assert jupiter.controls[key].cc == 4
@@ -15989,6 +16006,42 @@ class TestJupiterX:
 
 		# And the definition doubts it, because the reception half resets a Foot Type.
 		assert "**And `transmits` is doubted here**" in flat
+
+	def test_fifteen_numbers_state_no_direction_and_the_account_says_what_sends_them (self) -> None:
+		"""A heading missing from the transmission half denies nothing, as on the JUNO-X."""
+		jupiter = pymidiinstrumentdefs.load("roland/jupiter_x", [CORPUS])
+		fifteen = {5, 10, 66, 67, 68, 71, 72, 73, 75, 76, 77, 78, 84, 91, 93}
+		theirs = [control for control in jupiter.controls.values() if control.cc in fifteen]
+
+		assert len(theirs) == 24 and {control.cc for control in theirs} == fifteen
+		assert all(control.direction == "both" for control in theirs)
+
+		said = prose_of("roland", "jupiter_x")
+
+		assert "By selecting a controller number that corresponds to the setting of" in said
+		assert "this unit can transmit any control change message." in said
+
+		flat = " ".join(said.split())
+
+		heading = ("**FIFTEEN NUMBERS HAVE NO HEADING UNDER TRANSMISSION, ONE SENTENCE SAYS ANY CONTROLLER"
+			" CAN BE SENT, AND THE CONTROLS THAT SEND ARE OFFERED ALL FIFTEEN.**")
+
+		assert heading in flat
+		assert "**A missing heading denies nothing, so the fifteen state no direction**" in flat
+		assert "Until 2026-10-12 each said `direction: receives`." in flat
+
+		# The two documents the evidence comes from are sources now, and the sentence that said
+		# seven documents named no controller is corrected.
+		assert {"sound_list", "vocal_designer"} <= set(jupiter.sources)
+		assert "**Of the other seven, three name no controller number**" in flat
+		assert "298 of the 384 are controllers (sound_list pp. 3-8)" in flat
+
+		# The sibling read from the same family of documents says the same of the four it shares.
+		juno = pymidiinstrumentdefs.load("roland/juno_x", [CORPUS])
+
+		shared = [control for control in juno.controls.values() if control.cc in (75, 76, 77, 78)]
+
+		assert shared and all(control.direction == "both" for control in shared)
 
 	def test_every_control_names_its_part_and_part_r_lacks_seven (self) -> None:
 		"""The four parts take all 24 numbers, and Part R lacks portamento, legato and vibrato."""
@@ -16041,8 +16094,8 @@ class TestJupiterX:
 
 		assert "**THE IMPLEMENTATION CONTRADICTS ITSELF ABOUT NRPN, SO `nrpn` IS LEFT EMPTY" \
 			" RATHER THAN SET TO `none`.**" in flat
-		assert "the enumeration that gives every controller number it receives gives no 98 and" \
-			" no 99" in flat
+		assert "the reception half, whose headings name 34 controller numbers, has none for 98" \
+			" and none for 99" in flat
 
 		# **THE RULE IS BORROWED RATHER THAN INVENTED**, and the definition says whose it is.
 		assert "which is the rule `novation/peak` and `novation/circuit_tracks` established" \
@@ -16111,21 +16164,21 @@ class TestJupiterX:
 		assert "no Basic Channel row, no True Voice row, on any of the 377 sheets" in flat
 
 	def test_the_model_id_is_printed_two_ways_in_one_document (self) -> None:
-		"""Three statements say 65H and two say 52H, and the definition counts them."""
+		"""Seven places give 65H and two give 52H, and the definition counts them."""
 		flat = " ".join(prose_of("roland", "jupiter_x").split())
 
-		assert "**Three statements say 65H and two say 52H**" in flat
+		assert "**Seven places give 65H and two give 52H**" in flat
 
 		# Said because of what it costs a reader, not as a complaint about the maker.
 		assert "a sysex implementer reading sheet 5 alone would address a device that is not" \
 			" there" in flat
 
 	def test_the_owners_manual_names_the_wrong_product_once (self) -> None:
-		"""On 25 sheets it is the X's; in one explanation it is the Xm's."""
+		"""On 25 sheets it is the X's; one explanation is the Xm's alone, and one sheet names both."""
 		flat = " ".join(prose_of("roland", "jupiter_x").split())
 
-		assert "**IT NAMES THE JUPITER-X ON 25 OF ITS 31 SHEETS AND THE JUPITER-Xm ON EXACTLY" \
-			" ONE**" in flat
+		assert "**IT NAMES THE JUPITER-X ON 25 OF ITS 31 SHEETS AND THE Xm ON TWO**" in flat
+		assert "and once alone, in the `Sync Mode` explanation" in flat
 		assert "the setting is this instrument's, and the Parameter Guide, which is titled for" \
 			" both, prints the same words" in flat
 

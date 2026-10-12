@@ -1,10 +1,10 @@
 # **THE DOCUMENT NAMED FOR THIS INSTRUMENT'S MIDI IS NOT WHERE ITS CONTROLLERS ARE, AND EIGHT
 # ROLANDS HAD TAUGHT THE OPPOSITE.** The `JUPITER-X/Xm MIDI Implementation` runs to 90 sheets and
-# names 35 controller numbers, of which **24 are carried below** and every one is a standard
-# assignment - bank select, and the performance controls: modulation, volume, the pedals, the eight
-# filter and envelope offsets. The
-# tone parameters are somewhere else entirely: **the Parameter Guide carries a `CC#` column on
-# nine of its 75 sheets, one table per model**, holding 156 more rows over 46 distinct numbers.
+# gives 35 controller numbers a heading, of which **24 are carried below** and every one is a
+# standard assignment - bank select, and the performance controls: modulation, volume, the
+# pedals, the eight filter and envelope offsets. The tone parameters are somewhere else
+# entirely: **the Parameter Guide carries a `CC#` column on nine of its 75 sheets, in six
+# tables**, holding 149 more rows over 52 distinct numbers.
 #
 # `roland/jd_xi` at rank 94 cited its Parameter Guide **for an absence** - 51 sheets, some thirty
 # thousand words and no controller map, only the modulation wheel's number in passing - because on
@@ -15,33 +15,43 @@
 # running to say so.
 #
 # **AND THE SAME NUMBER MEANS DIFFERENT THINGS DEPENDING ON A SETTING RATHER THAN ON A CHANNEL,
-# WHICH IS WHY THOSE 156 ROWS ARE NOT CARRIED BELOW.** A part is loaded with one of the models -
+# WHICH IS WHY THOSE 149 ROWS ARE NOT CARRIED BELOW.** A part is loaded with one of the models -
 # "Seven types are provided: JUPITER-8, JUNO-106, JX-8P, SH-101, XV- 5080, RD (Piano), and
-# VOCODER." (reference p. 61) - and each has a tone table of its own. **21 of the 46 numbers name
-# more than one parameter across those tables**: CC 3 is `CUTOFF` on one model and `FILTER FREQ`
-# on another, CC 16 is `OSC1 LEVEL` or `PW LEVEL`, CC 18 is one of `OSC3 LEVEL`, `SUB LEVEL` or
-# `SUB OSC LEVEL`.
+# VOCODER." (reference p. 61) - and the guide's tone tables go by model. **28 of the 52 numbers
+# are given more than one name from table to table**, capitals apart: CC 3 is `CUTOFF` in four
+# tables and `FILTER FREQ` in a fifth, CC 16 is `OSC1 LEVEL` or `PW LEVEL`, CC 18 is one of
+# `OSC3 LEVEL`, `SUB LEVEL` or `SUB OSC LEVEL`, and CC 119 is `KEY MODE` in five tables and
+# `Unison Sw` in the sixth. Some of the 28 are one parameter under two names, as 3 looks to
+# be, and some are not, as 16 is not.
 #
 # That is **not** the collision the `part` field exists for. `elektron/tonverk` expands its
 # per-kind map because a track's kind decides which channel reaches it, so a part holds the fact.
 # Here every part takes any model - "Other models can be used with parts 1-4." (reference p. 61) -
 # so the meaning turns on what somebody loaded, not on where the message arrived. **No field holds
-# that**, and carrying the rows anyway would assert that CC 3 is `CUTOFF` on an instrument whose
-# part might be holding a JUNO-106, which is false. So the figures are recorded here and the
-# format gap is raised rather than papered over.
+# that**, and carrying the rows anyway would assert that CC 16 is `OSC1 LEVEL` on an instrument
+# whose part might be holding an SH-101, where it is `PW LEVEL`. So the figures are recorded
+# here and the format gap is raised rather than papered over. Until 2026-10-12 the example
+# here was CC 3 and a JUNO-106, whose table gives 3 to `CUTOFF` like three others.
 #
-# **A WHOLE FURTHER MAP IS IN A MODEL EXPANSION, AND IT IS ADDRESSED PER PARTIAL.** The JD-800
-# Model Expansion prints a `List of supported CCs` (jd_800 p. 14) whose columns are partials 1 to
-# 4 - sixteen parameters over four columns, so `LFO1:Rate` is CC 29, 20, 22 and 23 depending on
-# which partial it reaches. A third axis again, in a twelfth document, for a model somebody buys
-# separately.
+# **A FURTHER MAP IS ADDRESSED PER PARTIAL, AND IT IS PRINTED TWICE.** The Parameter Guide has a
+# `List of supported CCs` (parameter_guide p. 33) whose columns are partials 1 to 4: fifteen
+# parameters over four columns, sixty numbers and none of them twice, so `L1 Rate` is CC 29,
+# 20, 22 and 23 depending on which partial it reaches. The JD-800 Model Expansion's guide has a
+# list of the same name (jd_800 p. 14) with the same sixty in the same fours under its own
+# names, `LFO1:Rate` for that one, and a `CC#` column besides, fourteen rows in two tables
+# (jd_800 pp. 9, 13 and 14). That is a third axis again, and with it the tone map takes 76
+# numbers. **Until 2026-10-12 this gave the list to the expansion alone, and counted sixteen
+# parameters in it.**
 #
-# WHAT THE IMPLEMENTATION DOES SETTLE IS THE DIRECTION OF EVERY ONE OF ITS 24, because it prints
-# reception and transmission as two separate halves rather than as a chart's two columns. **One
-# number is in the transmission half alone** - `Foot Type`, CC 4 - and fifteen are in the
-# reception half alone. The Fantom's definition at rank 77 records the same maker's same list with
-# no direction on any control; this one records all three cases, because the halves are what the
-# document has instead of a chart.
+# THE IMPLEMENTATION PRINTS RECEPTION AND TRANSMISSION AS TWO HALVES AND NO CHART, AND A HEADING
+# MISSING FROM ONE HALF DENIES NOTHING. Eight of the 24 numbers have a heading in both. Fifteen
+# have one under reception alone, **and until 2026-10-12 this file recorded them as received
+# only.** They can be sent as well: the transmission half says at the head of its controllers
+# that the instrument can transmit any control change, the address map names all fifteen among
+# what an assignable button, slider, pedal or wheel can be set to, and the factory scenes ship
+# with their sliders on six of them. See the account. So the fifteen state no direction, as
+# the eight do not, which in this format says both. **One number is in the transmission half
+# alone** - `Foot Type`, CC 4 - and it still says `transmits`, with a doubt beside it.
 #
 # **AND THERE IS NO CHART IN ANY OF THE ELEVEN DOCUMENTS.** No `MIDI Implementation Chart`
 # heading, no Basic Channel row, no True Voice row, on any of the 377 sheets. That is why `mode` is
@@ -52,16 +62,20 @@ definition: 1
 model:
   manufacturer: Roland
   name: JUPITER-X
-  # **`3.0 and later`, WHICH IS WHAT TEN OF THE ELEVEN DOCUMENTS SAY RATHER THAN A VERSION THE
-  # INSTRUMENT REPORTS.** The owner's manual states it plainly - "This Owner's Manual explains the
-  # basic operations of the JUPITER-X (Ver. 3.0 and later)." (owners_manual p. 1) - and so does
-  # every title on the downloads page. **The implementation's own version is a different number**:
+  # **`3.0 and later`, WHICH IS WHAT THE DOCUMENTS SAY RATHER THAN A VERSION THE INSTRUMENT
+  # REPORTS.** The owner's manual states it plainly - "This Owner's Manual explains the
+  # basic operations of the JUPITER-X (Ver. 3.0 and later)." (owners_manual p. 1) - and the
+  # Reference Manual and the Sound List print the words as well. Seven of the eleven titles on
+  # the downloads page carry them; the two expansion guides', the install manual's and the
+  # Roland Cloud manual's do not. Until 2026-10-12 this said ten of the eleven documents say it
+  # and every title does. **The implementation's own version is a different number**:
   # its first sheet reads `Date: Apr 19, 2022 Version: 1.06`, which is the document's revision and
   # not the firmware's, and the file is served as `eng06` to match. So a reader comparing the two
   # is comparing a firmware floor with a document revision.
   # The keyboard is 61 keys - "Roland JUPITER-X: Synthesizer Keyboard 61 Keys (semi-weighted
   # keyboard and channel aftertouch)" (owners_manual p. 4) - and the Xm is the same engine in a
-  # 37-key box, which is why ten of the eleven documents are titled for both.
+  # 37-key box, which is why seven of the eleven documents are titled for both and ten name it
+  # somewhere, all but the Sound List.
   firmware: "3.0"
   # Checked 2026-10-06.
 
@@ -73,34 +87,92 @@ source: >-
 
   WHAT IS IN EACH, WHICH IS THE POINT OF LISTING THEM. The `MIDI Implementation` (90 sheets) holds
   the 24 controllers below and the system exclusive address map, and gives no tone parameter a
-  controller number.
-  The `Parameter Guide` (75) holds the per-model tone tables, every `Rx` switch, and the system
-  MIDI settings this definition's clock rests on. The `Reference Manual` (65) holds the models,
-  the parts and the polyphony. The `Owner's Manual` (31) holds the specification. **The other
-  seven name no controller at all except the JD-800 expansion**, which names a map of its own:
-  `Sound List` (61), `Editor Owner's Manual` (14), `JD-800 Model Expansion` (19), `Vocal Designer
-  Model Expansion` (13), `SOUND PACK/WAVE EXPANSION Install Manual` (4), `Roland Cloud Connect
-  Setup Manual` (3) and `MainStage Profile Usage Guide` (2).
+  controller number. The `Parameter Guide` (75) holds the per-model tone tables, every `Rx` switch,
+  and the system MIDI settings this definition's clock rests on. The `Reference Manual` (65) holds
+  the models, the parts and the polyphony. The `Owner's Manual` (31) holds the specification. Both
+  of those print the range of controllers an assignable control can be set to. **Of the other seven,
+  three name no controller number**: `SOUND PACK/WAVE EXPANSION Install Manual` (4), `Roland Cloud
+  Connect Setup Manual` (3) and `MainStage Profile Usage Guide` (2), in their text and in their
+  pictures. The `Editor Owner's Manual` (14) has none in its text and one in a picture: its
+  screenshot of a tone editor shows a `Source 1` set to `MOD:CC01` (sheet 10). The `Sound List` (61)
+  gives the two sliders of each of its 192 factory scenes a function, and 298 of the 384 are
+  controllers (sound_list pp. 3-8). The `Vocal Designer Model Expansion` guide (13) names one in
+  passing, "CC17 (controller number 17)" (vocal_designer p. 7). And the `JD-800 Model Expansion`
+  guide (19) has a map of its own. **Until 2026-10-12 this said the seven named none but for the
+  JD-800's.** The search behind that did not look for the Sound List's spelling, `CUTOF: CC74`, or
+  at a picture.
+
+  **FIFTEEN NUMBERS HAVE NO HEADING UNDER TRANSMISSION, ONE SENTENCE SAYS ANY CONTROLLER CAN BE
+  SENT, AND THE CONTROLS THAT SEND ARE OFFERED ALL FIFTEEN.** 5, 10, 66, 67, 68, 71, 72,
+  73, 75 to 78, 84, 91 and 93 each have a heading under reception (implementation pp. 1-3) and none
+  under transmission, whose headings are bank select, 1, 4, 7, 11, 64, 65 and 74 (implementation
+  p. 6). First, the transmission half opens its controllers with "By selecting a controller number
+  that corresponds to the setting of parameters of controllers (knobs, etc.), this unit can transmit
+  any control change message." (implementation p. 6). Second, the address map gives the three
+  assignable buttons, the two sliders, the two pedals and the two wheels a function each, in the
+  system's block and again in the scene's, eighteen parameters, and every one lists the controllers
+  from `MOD:CC01` to `PHASR:CC95` with 32 as `OFF:CC32` (implementation pp. 9, 10, 12 and 13). The
+  fifteen are there as `PTIME:CC05`, `PAN:CC10`, `SOSTE:CC66`, `SOFT:CC67`, `LEGAT:CC68`,
+  `RESO:CC71`, `RELES:CC72`, `ATTAK:CC73`, `DECAY:CC75`, `VRATE:CC76`, `VDPTH:CC77`, `VDLY:CC78`,
+  `PCTRL:CC84`, `REV:CC91` and `CHO:CC93`. Third, the Parameter Guide gives a slider's choices as
+  "CC01–CC95 Controller number 1–95" (parameter_guide p. 3), and its table of what can be assigned
+  to which control has a row `CC01–31, 32 (OFF), 33–95` marked in all six columns (parameter_guide
+  p. 37), which the Reference Manual and the Owner's Manual print as well (reference p. 52;
+  owners_manual p. 31). Fourth, the Sound List has the factory scenes' sliders on six of the
+  fifteen: `RELES: CC72` 76 times, `ATTAK: CC73` 73, `RESO: CC71` 37, `PTIME: CC05` 26,
+  `DECAY: CC75` five and `VDPTH: CC77` once, of 298 (sound_list pp. 3-8). **A missing heading denies
+  nothing, so the fifteen state no direction**, which is the reading `roland/juno_x` gives the four
+  of them that its own implementation leaves out of transmission. Until 2026-10-12 each said
+  `direction: receives`. What sending rests on is the first of the four and one sentence of the
+  Reference Manual, "MIDI messages can be sent from the MIDI OUT connector and from USB MIDI OUT
+  when you operate the controllers of this unit, such as the knobs and keyboard, and the various
+  pedals connected to the rear panel." (reference p. 45). The second and third say a control can be
+  set to the number, and the fourth that the factory's sliders are.
+
+  **THE TONE PARAMETERS' NUMBERS ARE COUNTED HERE AND NOT CARRIED, AND THE COUNT WAS WRONG UNTIL
+  2026-10-12.** The Parameter Guide's `CC#` column is in six tables (parameter_guide pp. 16-24):
+  the common parameters of the tones it heads `RD-PIANO, XV-5080, PR-A, PR-B, PD-C, PR-D,
+  COMMON, PR-X`, 7 rows with a number; `JUPITER-8`, 33; `JUNO-106`, 22; `JX-8P`, 30; `SH-101`,
+  22; and `JUPITER-X`, 35, four of whose rows hold more than one number. That is 149 rows and
+  155 numbers, 52 of them distinct, where this file said 156 rows over 46. A row is counted
+  here as what lies between two rules of a table. Two readers who did not see each other's
+  reading agree on every table, number for number. See the comment above the definition for
+  what the numbers collide over, and for the lists that give a tone's four partials sixty
+  numbers, seventeen of them in no table.
+
+  **THE PARAMETER GUIDE'S TONE MAP HAS A SYSTEM SWITCH, AND FOUR OF THE NUMBERS BELOW ARE TONE
+  NUMBERS TOO.**
+  The first of the Parameter Guide's tone tables has a note above it, "You can set whether control
+  change messages (CC) are transmitted/received" (parameter_guide p. 16), by the Tone CC Map
+  parameter, which "Sets whether control change messages (CC) for the tone parameters are
+  transmitted/received (ON) or not (OFF)." (parameter_guide p. 36). 5 is the portamento time in all
+  six tables, as it is in the implementation. **84 is not the same thing in the two documents**: the
+  implementation's is Portamento control, whose value is a note (implementation p. 2), and the
+  `JUPITER-X` tone table gives 84 to `FENV1 DECAY`, by its footnote the first filter envelope's
+  (parameter_guide pp. 23-24). No page reconciles them, and the control below is the
+  implementation's. The JD-800 guide's effects table gives 93 to `CH Level` and 91 to `RV Level`
+  (jd_800 pp. 13-14), the numbers of the two send levels below, and that guide does not name the
+  switch.
 
   **THE IMPLEMENTATION CONTRADICTS ITSELF ABOUT NRPN, SO `nrpn` IS LEFT EMPTY RATHER THAN SET TO
-  `none`.** Three of its sentences treat NRPN as something this instrument holds: Data Entry is
-  "the value of the parameter specified by RPN/NRPN" (implementation p. 1), RPN null sets both RPN
-  and NRPN to `unspecified` (implementation p. 3), and Reset All Controllers resets
-  "NRPN unset; previously set data will not change" (implementation p. 4). **And the enumeration
-  that gives every controller number it receives gives no 98 and no 99**, which are the only way
-  to select an NRPN parameter, and no NRPN parameter list exists anywhere in 90 sheets. A
-  document that says a thing twice and does not agree gets neither statement carried, and the
-  disagreement written down instead - which is the rule `novation/peak` and
-  `novation/circuit_tracks` established for `default` and which has not been applied to this field
-  before.
+  `none`.** Three of its sentences treat NRPN as something this instrument holds: Data Entry is "the
+  value of the parameter specified by RPN/NRPN" (implementation p. 1), RPN null sets both RPN and
+  NRPN to `unspecified` (implementation p. 3), and Reset All Controllers resets "NRPN unset;
+  previously set data will not change" (implementation p. 4). **And the reception half, whose
+  headings name 34 controller numbers, has none for 98 and none for 99**, which are the only way to
+  select an NRPN parameter, and no NRPN parameter list exists anywhere in 90 sheets. A document that
+  says a thing twice and does not agree gets neither statement carried, and the disagreement written
+  down instead - which is the rule `novation/peak` and `novation/circuit_tracks` established for
+  `default` and which has not been applied to this field before.
 
-  AND IT CONTRADICTS ITSELF ABOUT ITS OWN MODEL ID, WHICH CHANGES NOTHING AND IS WORTH KNOWING.
-  Its prose says "The model ID of the exclusive messages used by this instrument is 00H 00H 00H
-  65H." (implementation p. 5) and the two byte tables on that same sheet both gloss the fourth
-  byte as `52H model ID #4`, where the identical table in the transmission half reads `65H`
-  (implementation p. 7) and the worked checksum example sends `F0 41 10 00 00 00 65 12`
-  (implementation p. 90). **Three statements say 65H and two say 52H**, so the two are the misprint
-  - which a consumer needs only because a sysex implementer reading sheet 5 alone would address a
+  AND IT CONTRADICTS ITSELF ABOUT ITS OWN MODEL ID, WHICH CHANGES NOTHING AND IS WORTH KNOWING. Its
+  prose says "The model ID of the exclusive messages used by this instrument is 00H 00H 00H 65H."
+  (implementation p. 5) and the two byte tables on that same sheet both gloss the fourth byte as
+  `52H model ID #4`, each under a line of bytes that has 65H there. The identical table in the
+  transmission half reads `65H` in its bytes and in its gloss, and a line under it has the model ID
+  ending 65H (implementation p. 7), and the worked checksum example sends `F0 41 10 00 00 00 65 12`
+  (implementation p. 90). **Seven places give 65H and two give 52H**, so the two are the misprint -
+  which a consumer needs only because a sysex implementer reading sheet 5 alone would address a
   device that is not there.
 
   EVERY CONTROL NAMES ITS PART, ONCE FOR THE FOUR PARTS AND ONCE FOR PART R, AND SEVEN NUMBERS
@@ -132,11 +204,16 @@ sources:
     url: "https://static.roland.com/assets/media/pdf/JUPITER-X_Xm_MIDI_imple_eng06_W.pdf"
     sha256: 426dedfcea5fd6957af38ecc9fb5b1813fdc124fb0d95d950ebc6ee342f6127b
     retrieved: 2026-10-06
-    # **90 sheets, and its controller numbers are all on sheets 1 to 6.** Sheets 7 to 88 are the
-    # system exclusive Parameter Address Map and 89 to 90 the decimal/hex tables, the checksum
-    # worked example and the ASCII chart. Reception runs sheets 1 to 5 and transmission 5 to 7,
-    # so the boundary is a heading rather than a page - which is why the direction of each
-    # control is read from where the entry sits rather than from a column.
+    # **90 sheets, and every controller with a heading is on sheets 1 to 6.** Sheets 7 to 88 are
+    # the system exclusive Parameter Address Map, and from the foot of sheet 88 to sheet 90 are
+    # the decimal/hex table, the checksum worked example and the ASCII chart. Reception runs
+    # sheets 1 to 5 and transmission 5 to 7, so the boundary is a heading rather than a page.
+    # **The address map names controller numbers again**: in the eighteen lists of what an
+    # assignable button, slider, pedal or wheel can be set to (sheets 9, 10, 12 and 13), in
+    # sixteen lists of what a control source can be set to (sheets 9, 13, 80, 81, 85 and 86),
+    # in the names of sixteen part parameters, `Part Portamento Time (CC#5)` and the like
+    # (sheet 13), and in two of the setup's, `Scene BS MSB (CC# 0)` and its LSB (sheet 9). Each
+    # of its user pattern slots has a type that can be `CC` and a number from 0 to 127 besides.
     # Its folio is its own sheet number, printed at the head of each page, so no offset.
     page_offset: 0
   parameter_guide:
@@ -148,11 +225,14 @@ sources:
     sha256: 49f86eb7bfd542a778fc7d60e4e4c23dd85d51806afa7456f64bd090daba83b1
     retrieved: 2026-10-06
     # **THIS IS WHERE THE TONE CONTROLLERS ARE, WHICH IS THE OPPOSITE OF THE JD-XI.** A `CC#`
-    # column on sheets 16 to 24, one table per model, 156 rows over 46 distinct numbers - and
-    # nothing else in the document has that column. Read by coordinate, because the flat text
-    # runs each explanation into the numbers: `LFO RATE 0-1023 Specifies the rate of the LFO
-    # cycle. 29` is the only form a reader of it meets, and the 29 is nine words from the name it
-    # belongs to.
+    # column on sheets 16 to 24, in six tables, 149 rows with a number over 52 distinct numbers
+    # - and nothing else in the document has that column, though sheet 33 has the `List of
+    # supported CCs`, sixty numbers by partial. The `JUPITER-X` table stacks up to four names
+    # in a row and marks each number of such a row with a footnote saying which it is for; the
+    # count of numbers with more than one name goes by those footnotes. Read by coordinate,
+    # because the flat text runs each explanation into the numbers: `LFO RATE 0-1023 Specifies
+    # the rate of the LFO cycle. 29` is the only form a reader of it meets, and the 29 is nine
+    # words from the name it belongs to.
     # It also holds every `Rx` switch, the system MIDI block, and the part channel setting.
     # © 2023 Roland Corporation, from its own first sheet; no day or month is printed.
     page_offset: 0
@@ -164,8 +244,9 @@ sources:
     url: "https://static.roland.com/assets/media/pdf/JUPITER-X_Reference_eng07_W.pdf"
     sha256: 5007d9e38c987759e0523b2597d11cd9dbe72b0ce0c89108aaba58081e002162
     retrieved: 2026-10-06
-    # Cited for the models, the parts and the polyphony - and **its last five sheets are a
-    # question-and-answer appendix**, which is where all three of those are stated most plainly.
+    # Cited for the models, the parts and the polyphony - and **six of its last seven sheets are
+    # questions and answers**, sheets 59 to 64, which is where all three of those are stated
+    # most plainly.
     page_offset: 0
   owners_manual:
     kind: manual
@@ -176,8 +257,9 @@ sources:
     sha256: 5c4379cf93d54a4b1f115f35b6f283cf9dc99b183cf0e05e5908809e808cb874
     retrieved: 2026-10-06
     # Cited for the specification and for what firmware this definition describes.
-    # **IT NAMES THE JUPITER-X ON 25 OF ITS 31 SHEETS AND THE JUPITER-Xm ON EXACTLY ONE**, in the
-    # `Sync Mode` explanation, which says "according to which the JUPITER-Xm operates"
+    # **IT NAMES THE JUPITER-X ON 25 OF ITS 31 SHEETS AND THE Xm ON TWO**: once as
+    # `JUPITER-X/Xm`, of exported scenes (sheet 25), and once alone, in the `Sync Mode`
+    # explanation, which says "according to which the JUPITER-Xm operates"
     # (owners_manual p. 28).
     # Its cover says this document is the JUPITER-X's, so that is a sentence copied from the
     # sibling's manual and left unchanged - the setting is this instrument's, and the Parameter
@@ -192,9 +274,35 @@ sources:
     sha256: 8f8a76bdff2f89cc10663bee48e0c9466c05b16fc9b81fbdfd779ee130699331
     retrieved: 2026-10-06
     # **Cited for a map this definition does not carry, and for the axis it is addressed on.** Its
-    # `List of supported CCs` on p. 14 is sixteen parameters over four partial columns, so one
-    # parameter has four numbers. A model somebody buys separately, so its controllers are not
-    # this instrument's until they do.
+    # `List of supported CCs` on p. 14 is fifteen parameters over four partial columns, so one
+    # parameter has four numbers, and two of its tables have a `CC#` column, seven rows each
+    # (pp. 9, 13 and 14). A model somebody buys separately, so its controllers are not this
+    # instrument's until they do.
+    page_offset: 0
+  sound_list:
+    kind: manual
+    title: JUPITER-X Sound List
+    edition: "02"
+    landing: "https://www.roland.com/global/support/by_product/jupiter-x/owners_manuals/26c49896-e7c2-46f1-b4f2-7a72ad89f2e4/"
+    url: "https://static.roland.com/assets/media/pdf/JUPITER-X_sound_list_eng02_W.pdf"
+    sha256: 855012e4fe50043695b0faba6c63641aa983bcb9e408eb103b804ac4d86971c4
+    retrieved: 2026-10-06
+    # 61 sheets. **Cited for what the factory scenes' two sliders are set to**, in the `SL1
+    # Assign` and `SL2 Assign` columns of its scene tables on sheets 3 to 8: 192 scenes, and 298
+    # of their 384 slider cells hold a controller, over nine numbers, 3, 5, 7, 71 to 75 and 77.
+    # The other 86 hold a function with no controller number, such as `ARP SHUFFLE` or
+    # `PART FADE1`.
+    page_offset: 0
+  vocal_designer:
+    kind: manual
+    title: JUPITER-X/Xm Vocal Designer Model Expansion Owner's Manual
+    edition: "04"
+    landing: "https://www.roland.com/global/support/by_product/jupiter-x/owners_manuals/e231b4a8-1439-4efc-8fdb-7e57cc2e3714/"
+    url: "https://static.roland.com/assets/media/pdf/JUPITER-X_Xm_VocalDesigner_eng04_W.pdf"
+    sha256: 8e555b4bcb5a56faf9657a9e1de8bdd98a07cd314bf19ca149f5e6f701b342bb
+    retrieved: 2026-10-06
+    # 13 sheets, and no `CC#` column. **Cited for the one controller number it prints**, 17, in
+    # two sentences on sheet 7 about a wah effect and the control pedal.
     page_offset: 0
   manuals_page:
     kind: download_page
@@ -217,9 +325,9 @@ sources:
     # 44ed00c11cb8169c1f51283cfea70c9a202de9d34ed46beb245f9f8ecceeb1fd. One page, cited as p. 1.
 
 midi:
-  # "n = MIDI channel number: 0H - FH (ch.1 - ch.16)" (implementation p. 1), on every entry of
-  # both halves - and the part setting agrees: "Rx Ch 1-16 Specifies the MIDI receive channel of
-  # each part." (parameter_guide p. 6).
+  # "n = MIDI channel number: 0H - FH (ch.1 - ch.16)" (implementation p. 1), through both
+  # halves, ten entries printing it `(ch.1 - 16)` - and the part setting agrees: "Rx Ch 1-16
+  # Specifies the MIDI receive channel of each part." (parameter_guide p. 6).
   channels: [1, 16]
   # NOT RECORDED, the mode. **There is no chart in any of the eleven documents** - no `MIDI
   # Implementation Chart` heading, no Basic Channel row, no True Voice row on any of the 377
@@ -267,7 +375,7 @@ parts:
     # this format cannot hold. "Other models can be used with parts 1-4." (reference p. 61), with
     # one exception the maker states, which is that `VOCODER` "can be used only with part 1."
     # (reference p. 61).
-    # So the 156 tone rows in the Parameter Guide belong to whichever model a part is holding at
+    # So the 149 tone rows in the Parameter Guide belong to whichever model a part is holding at
     # the time, and nothing below can say so.
   drum:
     label: Part R
@@ -311,12 +419,13 @@ voice:
     note_off: true
   # **BOTH KINDS ARE RECEIVED AND THIS FIELD HOLDS ONE WORD**, so it takes the stronger - which is
   # the chain `roland/mc_707`, `roland/fantom_6_7_8` and `roland/jd_xi` established. Channel
-  # pressure is in the implementation both ways (pp. 3 and 6); polyphonic is not in it at all, and
-  # the Parameter Guide gives it a switch of its own: "Rx Poly Pres OFF, ON Specifies whether
-  # polyphonic aftertouch is received (ON) or not received (OFF)." (parameter_guide p. 6). **The
-  # implementation's silence is not a denial** - it lists Polyphonic Key Pressure among the
-  # controllers Reset All Controllers resets (implementation p. 4), so the two documents complete
-  # each other here rather than disagreeing, which is the opposite of the NRPN case above.
+  # pressure is in the implementation both ways (pp. 3 and 6); polyphonic has no entry in either
+  # half, and the Parameter Guide gives it a switch of its own: "Rx Poly Pres OFF, ON Specifies
+  # whether polyphonic aftertouch is received (ON) or not received (OFF)." (parameter_guide
+  # p. 6). **The implementation's silence is not a denial** - it lists Polyphonic Key Pressure
+  # among the controllers Reset All Controllers resets (implementation p. 4), so the two
+  # documents complete each other here rather than disagreeing, which is the opposite of the
+  # NRPN case above.
   aftertouch: poly
   pitch_bend:
     # Received and transmitted, fourteen bits: "mm, ll = Pitch Bend value: 00 00H - 40 00H - 7F
@@ -336,12 +445,14 @@ groups:
 
 controls:
 
-  # **THE DIRECTION ON EACH OF THESE IS READ FROM WHICH HALF OF THE DOCUMENT IT SITS IN**, because
-  # this maker publishes reception and transmission as two prose sections rather than as a chart's
-  # two columns. Of the 24 numbers, eight are in both, fifteen only in the reception half, and one
-  # only in the transmission half. `roland/fantom_6_7_8` records the same maker's nearly identical
-  # list with no direction on any control; here the halves are what the document has instead of a
-  # chart, so all three cases are recorded.
+  # **ONE NUMBER HERE STATES A DIRECTION, FOOT TYPE'S ON ITS TWO CONTROLS, AND 23 DO NOT.** This
+  # maker publishes reception and transmission as two prose halves and no chart. Of the 24
+  # numbers, eight have a heading in both. Fifteen have one under reception alone; the sentence
+  # that opens the transmission half's controllers says any controller can be sent, and the
+  # address map lets a button, slider, pedal or wheel be set to each of them: see the account.
+  # **Until 2026-10-12 those fifteen said `direction: receives`.** One, Foot Type, has a heading
+  # under transmission alone and says `transmits`. `roland/fantom_6_7_8` and `roland/juno_x`
+  # record nearly the same list with no direction on any control.
   # Eight of them are relative rather than absolute - `00H - 40H - 7FH (-64 - 0 - +63)`, which the
   # implementation calls a "relative change" (implementation p. 2) - and **this format has no
   # word for that**, so the
@@ -354,7 +465,7 @@ controls:
   # Carried, as it is wherever a maker numbers it, for the four parts and for Part R: "Bank Select
   # (Controller number 0, 32)" (implementation p. 1) heads it under reception, and the same under
   # transmission (implementation p. 6), so both ways. A part takes it under the system's Rx Bank
-  # and its own (parameter_guide p. 6), and it is sent only with Tx PC and Tx Bank on
+  # and its own (parameter_guide pp. 6 and 36), and it is sent only with Tx PC and Tx Bank on
   # (implementation p. 6). On a part's channel it chooses a tone or a kit; the scenes' 085 goes on
   # the Ctrl Ch, which no part here is.
   part_bank_select_msb:              {label: Bank Select (MSB), cc: 0, part: part}
@@ -368,52 +479,57 @@ controls:
   # (implementation p. 6) and in no entry of the reception half, which lists every other number
   # below. **And `transmits` is doubted here**: the reception half's Reset All Controllers list
   # resets a `Foot Type` with the rest (implementation p. 4), which a number nothing receives
-  # would not need.
+  # would not need. And 4 is among what a control source can be set to, as `FOOT:CC04`, in the
+  # scene's lists and in the MFX's (implementation pp. 13, 85 and 86), and the reception half's
+  # controllers open "If you select a controller number that corresponds to an MFX Src 1–4
+  # parameter, the respective effect is applied according to the setting." (implementation
+  # p. 1). So the instrument can be made to answer 4 as a source of modulation, which is not to
+  # say it answers it as Foot Type.
   part_foot_type:                    {label: Foot Type, cc: 4, direction: transmits, part: part, group: continuous}
-  part_portamento_time:              {label: Portamento Time, cc: 5, direction: receives, part: part, group: continuous}
+  part_portamento_time:              {label: Portamento Time, cc: 5, part: part, group: continuous}
   part_volume:                       {label: Volume, cc: 7, part: part, group: continuous}
-  part_panpot:                       {label: Panpot, cc: 10, direction: receives, part: part, group: continuous}
+  part_panpot:                       {label: Panpot, cc: 10, part: part, group: continuous}
   part_expression:                   {label: Expression, cc: 11, part: part, group: continuous}
   drum_modulation:                   {label: Modulation, cc: 1, part: drum, group: continuous}
   drum_foot_type:                    {label: Foot Type, cc: 4, direction: transmits, part: drum, group: continuous}
   drum_volume:                       {label: Volume, cc: 7, part: drum, group: continuous}
-  drum_panpot:                       {label: Panpot, cc: 10, direction: receives, part: drum, group: continuous}
+  drum_panpot:                       {label: Panpot, cc: 10, part: drum, group: continuous}
   drum_expression:                   {label: Expression, cc: 11, part: drum, group: continuous}
 
   # Switches and pedals ───────────────────────────────────
   part_hold_1:                       {label: Hold 1, cc: 64, part: part, group: switch}
   part_portamento:                   {label: Portamento, cc: 65, part: part, group: switch}
-  part_sostenuto:                    {label: Sostenuto, cc: 66, direction: receives, part: part, group: switch}
-  part_soft:                         {label: Soft, cc: 67, direction: receives, part: part, group: switch}
-  part_legato_foot_switch:           {label: Legato Foot Switch, cc: 68, direction: receives, part: part, group: switch}
+  part_sostenuto:                    {label: Sostenuto, cc: 66, part: part, group: switch}
+  part_soft:                         {label: Soft, cc: 67, part: part, group: switch}
+  part_legato_foot_switch:           {label: Legato Foot Switch, cc: 68, part: part, group: switch}
   # Not a switch and filed with them because this maker files it with them: its value is a note
   # rather than a level - "kk = source note number: 00H - 7FH (0 - 127)" (implementation p. 2) -
   # and the note it names is where the next note-on slides from.
-  part_portamento_control:           {label: Portamento control, cc: 84, direction: receives, part: part, group: switch}
+  part_portamento_control:           {label: Portamento control, cc: 84, part: part, group: switch}
   drum_hold_1:                       {label: Hold 1, cc: 64, part: drum, group: switch}
-  drum_sostenuto:                    {label: Sostenuto, cc: 66, direction: receives, part: drum, group: switch}
-  drum_soft:                         {label: Soft, cc: 67, direction: receives, part: drum, group: switch}
+  drum_sostenuto:                    {label: Sostenuto, cc: 66, part: drum, group: switch}
+  drum_soft:                         {label: Soft, cc: 67, part: drum, group: switch}
 
   # Sound controllers ─────────────────────────────────────
   # These eight numbers are the relative ones, and each names the Scene Part parameter it moves;
   # Part R has the first five.
-  part_resonance:                    {label: Resonance, cc: 71, direction: receives, part: part, group: sound}
-  part_release_time:                 {label: Release Time, cc: 72, direction: receives, part: part, group: sound}
-  part_attack_time:                  {label: Attack time, cc: 73, direction: receives, part: part, group: sound}
+  part_resonance:                    {label: Resonance, cc: 71, part: part, group: sound}
+  part_release_time:                 {label: Release Time, cc: 72, part: part, group: sound}
+  part_attack_time:                  {label: Attack time, cc: 73, part: part, group: sound}
   part_cutoff:                       {label: Cutoff, cc: 74, part: part, group: sound}
-  part_decay_time:                   {label: Decay Time, cc: 75, direction: receives, part: part, group: sound}
-  part_vibrato_rate:                 {label: Vibrato Rate, cc: 76, direction: receives, part: part, group: sound}
-  part_vibrato_depth:                {label: Vibrato Depth, cc: 77, direction: receives, part: part, group: sound}
-  part_vibrato_delay:                {label: Vibrato Delay, cc: 78, direction: receives, part: part, group: sound}
-  drum_resonance:                    {label: Resonance, cc: 71, direction: receives, part: drum, group: sound}
-  drum_release_time:                 {label: Release Time, cc: 72, direction: receives, part: drum, group: sound}
-  drum_attack_time:                  {label: Attack time, cc: 73, direction: receives, part: drum, group: sound}
+  part_decay_time:                   {label: Decay Time, cc: 75, part: part, group: sound}
+  part_vibrato_rate:                 {label: Vibrato Rate, cc: 76, part: part, group: sound}
+  part_vibrato_depth:                {label: Vibrato Depth, cc: 77, part: part, group: sound}
+  part_vibrato_delay:                {label: Vibrato Delay, cc: 78, part: part, group: sound}
+  drum_resonance:                    {label: Resonance, cc: 71, part: drum, group: sound}
+  drum_release_time:                 {label: Release Time, cc: 72, part: drum, group: sound}
+  drum_attack_time:                  {label: Attack time, cc: 73, part: drum, group: sound}
   drum_cutoff:                       {label: Cutoff, cc: 74, part: drum, group: sound}
-  drum_decay_time:                   {label: Decay Time, cc: 75, direction: receives, part: drum, group: sound}
+  drum_decay_time:                   {label: Decay Time, cc: 75, part: drum, group: sound}
 
   # Effect send levels ────────────────────────────────────
   # Named as the implementation names them, brackets and all, which is also what the Fantom does.
-  part_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, part: part, group: effects}
-  part_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, direction: receives, part: part, group: effects}
-  drum_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, direction: receives, part: drum, group: effects}
-  drum_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, direction: receives, part: drum, group: effects}
+  part_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, part: part, group: effects}
+  part_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, part: part, group: effects}
+  drum_general_purpose_effect_1_reverb_send_level: {label: General Purpose Effect 1 (Reverb Send Level), cc: 91, part: drum, group: effects}
+  drum_general_purpose_effect_3_chorus_send_level: {label: General Purpose Effect 3 (Chorus Send Level), cc: 93, part: drum, group: effects}

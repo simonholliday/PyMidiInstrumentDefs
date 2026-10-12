@@ -22221,6 +22221,12 @@ class TestWebPageTitles:
 		("ableton/move", "product_page"): "Move — a portable instrument for intuitive music making | Ableton",
 		("ableton/move", "new_features"): "Move | All new features",
 		("access/virus_ti", "downloads_page"): "Downloads | The Virus TI - Totally Integrated Synthesizers",
+		("arturia/drumbrute_impact", "resources_page"): "Arturia - DrumBrute Impact",
+		("arturia/microbrute", "downloads_page"): "MicroBrute – Downloads & Manuals | Arturia",
+		("arturia/microfreak", "resources_page"): "Arturia - MicroFreak",
+		("arturia/minifreak", "resources_page"): "Arturia - MiniFreak",
+		("arturia/polybrute", "resources_page"): "Arturia - PolyBrute",
+		("arturia/polybrute_12", "resources_page"): "Arturia - PolyBrute 12",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

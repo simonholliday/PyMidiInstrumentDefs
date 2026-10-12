@@ -524,6 +524,13 @@ class Part:
 	knowing not to draw one.  ``addressing`` says how
 	notes are read **when** the part takes them, and means nothing when it does not.
 
+	``unrecorded`` is the third answer, for a kind of message that reaches the
+	instrument where this part is and that no document ties to the part: a volca drum
+	on its single channel receives notes there, and no page says which of its six
+	parts a note sounds.  Left out of ``receives`` alone, that kind reads as one the
+	part does not take, which the documents do not say either.  ``takes()`` answers
+	``None`` for it.
+
 	``polyphony`` is how many voices a part has to itself, and it counts **each
 	instance**: three parts at eight voices is eight each.  Voices shared across
 	parts are stated once, on the instrument, rather than here.
@@ -565,6 +572,7 @@ class Part:
 	mode: str | None = None
 	nrpn_msb: int | None = None
 	within: str | None = None
+	unrecorded: tuple[str, ...] = ()
 
 
 	@property
@@ -580,14 +588,23 @@ class Part:
 		return self.channel == ASSIGNED
 
 
-	def takes (self, message: str) -> bool:
+	def takes (self, message: str) -> bool | None:
 
 		"""Whether this part answers to a kind of message — notes, controls, program change.
 
+		``True`` where the file records it, and ``None`` where the file says the kind
+		reaches the instrument here and no document gives how it reaches this part:
+		neither yes nor no, and a panel that drew nothing for it would be answering
+		for the maker.  ``None`` is false to a caller that asks only yes or no.
+
 		A part that says nothing about what it receives answers ``False`` to
-		everything, which is honest: nobody recorded it.  Read ``receives`` itself
-		to tell that apart from a part recorded as receiving nothing.
+		everything it does not name as unrecorded, which is honest: nobody recorded
+		it.  Read ``receives`` itself to tell that apart from a part recorded as
+		receiving nothing.
 		"""
+
+		if message in self.unrecorded:
+			return None
 
 		return self.receives is not None and message in self.receives
 

@@ -660,7 +660,7 @@ parts:
   solo:    {channel_offset: 1, receives: [notes], addressing: pitches}
 ```
 
-Six rules worth holding on to:
+Seven rules worth holding on to:
 
 - **A control naming no part is on the base channel.** In a file that declares parts there
   is no single part to fall back on, so that is what leaving `part` off means. It is a real
@@ -684,6 +684,20 @@ Six rules worth holding on to:
   that part receives `notes`, and nothing more is claimed. A control sent to a channel an
   instrument ignores does nothing, and says nothing about why. So a control naming a part
   whose `receives` leaves out `controls` is refused: the file would be saying both.
+- **Where a kind of message reaches the instrument and no page ties it to the part, say
+  `unrecorded`.** A volca drum on its single channel receives notes there, and its chart gives
+  each of the six parts its controllers and never says which part a note sounds. With
+  `receives: [controls]` alone, a program reads the part as taking no notes and draws no keys
+  for an instrument that plays from them. `unrecorded: [notes]` says the third thing: notes
+  arrive here, and how they reach this part is not in the documents. The words are those of
+  `receives`, a kind goes in one list or the other, and `takes()` answers `None` for it. A part
+  whose notes are unrecorded cannot have `voices`, and one whose controls are cannot be named
+  by a control it receives: either would be the record the word says is missing.
+
+  ```yaml
+  parts:
+    part_1: {channel_offset: 0, receives: [controls], unrecorded: [notes]}
+  ```
 - **Say whether parts share their voices.** A Digitone's eight voices go to whichever of
   its tracks plays next, so eight is a ceiling across all four, not a figure each can count
   on. A Streichfett's two sections have voices of their own, 128 and eight. Those are

@@ -87,8 +87,8 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
 	"modes": frozenset({"label", "factory", "unparted"}),
 	"parts": frozenset({
-		"label", "channel", "channel_offset", "count", "receives", "addressing", "polyphony",
-		"polyphony_shared", "voices", "mode", "nrpn_msb", "within",
+		"label", "channel", "channel_offset", "count", "receives", "unrecorded", "addressing",
+		"polyphony", "polyphony_shared", "voices", "mode", "nrpn_msb", "within",
 	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
@@ -482,8 +482,8 @@ class _Reader:
 
 			receives: list[str] = []
 
-			# Absent is unrecorded and an empty list is a part receiving nothing,
-			# so the two are kept apart rather than both read as empty.
+			# Absent is nobody having recorded it and an empty list is a part receiving
+			# nothing, so the two are kept apart rather than both read as empty.
 
 			for message in self.sequence(fields.get("receives"), f"{where}.receives"):
 				kind = self.text(message, f"{where}.receives")
@@ -495,6 +495,42 @@ class _Reader:
 					self.refuse(f"{where}.receives", f"names {kind!r} twice")
 
 				receives.append(kind)
+
+			# The kinds that reach the instrument where this part is, with no document saying
+			# how they reach the part.  The same words as `receives`, and never the same kind
+			# in both: a file cannot record that a part takes notes and that nobody says so.
+
+			unrecorded: list[str] = []
+
+			for message in self.sequence(fields.get("unrecorded"), f"{where}.unrecorded"):
+				kind = self.text(message, f"{where}.unrecorded")
+
+				if kind not in receivable:
+					self.refuse(f"{where}.unrecorded", f"{kind!r} is not one of {sorted(receivable)}")
+
+				if kind in unrecorded:
+					self.refuse(f"{where}.unrecorded", f"names {kind!r} twice")
+
+				if kind in receives:
+					self.refuse(
+						f"{where}.unrecorded",
+						f"names {kind!r}, which receives records this part as taking — it is one or the other",
+					)
+
+				unrecorded.append(kind)
+
+			# An empty list says nothing, where an empty `receives` says a great deal; and a
+			# part found to receive nothing is not one that a kind of message reaches.
+
+			if fields.get("unrecorded") is not None and not unrecorded:
+				self.refuse(f"{where}.unrecorded", "names no kind of message - leave it out")
+
+			if unrecorded and fields.get("receives") is not None and not receives:
+				self.refuse(
+					f"{where}.unrecorded",
+					f"lists {unrecorded[0]!r} as reaching this part by a route no document gives, "
+					f"where receives says the part was found to receive nothing",
+				)
 
 			count = self.integer(fields["count"], f"{where}.count", 1, 16) if "count" in fields else 1
 
@@ -519,6 +555,16 @@ class _Reader:
 			# A note map on a part the file says takes no notes would name notes that
 			# reach nothing, which is the same silent failure as a control on a part
 			# that takes no controls.
+
+			# And a map of which note does what is a record of how notes reach the part, so
+			# it cannot stand where the file says no document gives that.  Asked before the
+			# other: such a part is not one the file "says takes no notes".
+
+			if voices and "notes" in unrecorded:
+				self.refuse(
+					f"{where}.voices",
+					"names notes on a part whose notes this file says no document ties to it",
+				)
 
 			if voices and fields.get("receives") is not None and "notes" not in receives:
 				self.refuse(f"{where}.voices", "names notes on a part this file says takes no notes")
@@ -553,6 +599,7 @@ class _Reader:
 				channel_offset   = offset,
 				count            = count,
 				receives         = None if fields.get("receives") is None else tuple(receives),
+				unrecorded       = tuple(unrecorded),
 				addressing       = addressing,
 				polyphony        = polyphony,
 				polyphony_shared = shared,
@@ -867,7 +914,8 @@ class _Reader:
 		# none, as a control surface that sounds nothing is, leaves nothing to ask.
 
 		noting = [part for part in parts.values()
-			if part.receives is None or pymidiinstrumentdefs.definition.NOTES in part.receives]
+			if part.receives is None or pymidiinstrumentdefs.definition.NOTES in part.receives
+				or pymidiinstrumentdefs.definition.NOTES in part.unrecorded]
 
 		if noting and voice.polyphony is not None and voice.polyphony_shared is None:
 			self.warn(
@@ -1333,6 +1381,15 @@ def build (
 			continue
 
 		part = parts[control.part]
+
+		# A control on a part is itself the record that controls reach it.  One the part
+		# only sends is not asked: the word is about what reaches the part.
+
+		if pymidiinstrumentdefs.definition.CONTROLS in part.unrecorded:
+			reader.refuse(
+				f"controls.{control.name}.part",
+				f"names {control.part!r}, whose controls this file says no document ties to it",
+			)
 
 		if part.receives is not None and not part.takes(pymidiinstrumentdefs.definition.CONTROLS):
 			reader.refuse(

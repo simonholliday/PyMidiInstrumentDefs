@@ -2495,7 +2495,7 @@ voice:
   voices: {kick: 36}
 parts:
   p: {label: P, channel: assigned, count: 2, receives: [notes, controls], addressing: pitches, voices: {tap: 127}}
-  q: {channel_offset: 1}
+  q: {channel_offset: 1, receives: [controls], unrecorded: [notes]}
 groups: {g: G}
 controls:
   a: {label: A, cc: 1, lsb: 33, nrpn: 5, nrpn_range: [0, 1000], range: [0, 127], default: 0, step: 1,
@@ -2709,7 +2709,7 @@ class TestParts:
 		assert part.receives is None
 		assert part.takes("notes") is False
 
-	def test_a_part_recorded_as_receiving_nothing_is_not_unrecorded (self) -> None:
+	def test_a_part_recorded_as_receiving_nothing_is_not_one_nobody_recorded (self) -> None:
 		"""One lets a consumer offer a note grid a musician can try; the other says not to draw one."""
 		part = self.make("parts: {lane: {channel: assigned, receives: []}}").parts["lane"]
 
@@ -2828,7 +2828,7 @@ class TestParts:
 		assert "controls.solo_tone.part" in str(raised.value)
 		assert "receives no controls" in str(raised.value)
 
-	def test_a_control_on_a_part_whose_receiving_is_unrecorded_still_loads (self) -> None:
+	def test_a_control_on_a_part_whose_receiving_nobody_recorded_still_loads (self) -> None:
 		"""Nothing is contradicted when nobody recorded what the part receives."""
 		definition = self.make(
 			"parts: {synth: {channel: assigned}}\n"
@@ -2891,6 +2891,139 @@ class TestParts:
 		definition = pymidiinstrumentdefs.parse("definition: 1\nmodel: {name: X}", source = "x.yaml")
 
 		assert definition.parts == {}
+
+
+class TestAKindOfMessageNoDocumentTiesToAPart:
+
+	"""`unrecorded`: the kind reaches the instrument here, and no page says how it reaches the part.
+
+	A file can leave `notes` out of `receives` and say in a comment that this is no finding
+	that the part takes none, as `korg/volca_drum` does.  The data then says it takes none.
+	"""
+
+	HEAD = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+
+	def part (self, body: str, more: str = "") -> pymidiinstrumentdefs.definition.Part:
+		return pymidiinstrumentdefs.parse(
+			self.HEAD + f"parts: {{one: {{channel_offset: 0, {body}}}}}\n" + more, source = "x.yaml").parts["one"]
+
+	def test_takes_gives_the_three_answers (self) -> None:
+		part = self.part("receives: [controls], unrecorded: [notes]")
+
+		assert part.takes("controls") is True
+		assert part.takes("notes") is None
+		assert part.takes("program_change") is False
+
+	def test_a_part_that_says_neither_is_as_it_was (self) -> None:
+		assert self.part("receives: [notes]").unrecorded == ()
+		assert self.part("count: 2").takes("notes") is False
+
+	def test_it_stands_without_receives (self) -> None:
+		"""Nobody recorded what the part takes, and one kind is known to arrive."""
+		part = self.part("unrecorded: [notes]")
+
+		assert part.receives is None
+		assert part.takes("notes") is None
+
+	def test_a_kind_is_in_one_list_or_the_other (self) -> None:
+		for kind in ("notes", "controls", "program_change"):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.part(f"receives: [{kind}], unrecorded: [{kind}]")
+
+			assert "parts.one.unrecorded" in str(raised.value), kind
+			assert "it is one or the other" in str(raised.value), kind
+
+	def test_an_empty_list_says_nothing_and_is_refused (self) -> None:
+		"""Where an empty `receives` says the part was found to take nothing."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.part("unrecorded: []")
+
+		assert "names no kind of message" in str(raised.value)
+
+	def test_a_part_found_to_receive_nothing_has_nothing_unrecorded (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.part("receives: [], unrecorded: [notes]")
+
+		assert "parts.one.unrecorded" in str(raised.value)
+		assert "found to receive nothing" in str(raised.value)
+
+		for kind in ("controls", "program_change"):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.part(f"receives: [], unrecorded: [{kind}]")
+
+			assert f"lists '{kind}' as reaching this part" in str(raised.value), kind
+
+	def test_left_empty_in_yaml_s_own_way_it_is_as_if_left_out (self) -> None:
+		"""`unrecorded:` with nothing after it is a field with no value, which every field allows."""
+		assert self.part("unrecorded: null, receives: [notes]").unrecorded == ()
+
+	def test_only_the_three_kinds_and_each_once (self) -> None:
+		for body in ("unrecorded: [sysex]", "unrecorded: [notes, notes]"):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.part(body)
+
+			assert "parts.one.unrecorded" in str(raised.value), body
+
+	def test_a_note_map_is_a_record_of_how_notes_reach_it (self) -> None:
+		"""With `receives` beside it or without, and said as what it is.
+
+		It is asked before the older refusal, whose words are that the file "says takes no
+		notes": the one thing this word is there to stop a file saying.
+		"""
+		for body in ("unrecorded: [notes]", "receives: [controls], unrecorded: [notes]"):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.part(f"{body}, voices: {{kick: 36}}")
+
+			assert "parts.one.voices" in str(raised.value), body
+			assert "no document ties to it" in str(raised.value), body
+
+	def test_a_note_map_stands_where_it_is_the_controls_that_are_unrecorded (self) -> None:
+		part = self.part("receives: [notes], unrecorded: [controls], voices: {kick: 36}")
+
+		assert part.voices == {"kick": 36}
+
+	def test_so_is_a_control_on_the_part (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.part("unrecorded: [controls]", "controls: {level: {cc: 7, part: one}}\n")
+
+		assert "controls.level.part" in str(raised.value)
+		assert "no document ties to it" in str(raised.value)
+
+	def test_a_control_stands_where_it_is_the_notes_that_are_unrecorded (self) -> None:
+		"""The shape the word was added for: the part's controllers are recorded and its notes are not."""
+		definition = pymidiinstrumentdefs.parse(
+			self.HEAD + "parts: {one: {channel_offset: 0, receives: [controls], unrecorded: [notes]}}\n"
+			"controls: {level: {cc: 7, part: one}}\n", source = "x.yaml")
+
+		assert definition.controls["level"].part == "one"
+		assert [control.name for control in definition.controls_reaching("one")] == ["level"]
+
+	def test_a_control_the_part_only_sends_is_not_what_reaches_it (self) -> None:
+		part = self.part("unrecorded: [controls]", "controls: {wheel: {cc: 1, part: one, direction: transmits}}\n")
+
+		assert part.unrecorded == ("controls",)
+
+	def test_a_part_whose_notes_are_unrecorded_may_have_voices_to_share (self) -> None:
+		"""So one figure for the instrument's voices still wants saying whether its parts share it."""
+		definition = pymidiinstrumentdefs.parse(
+			self.HEAD + "voice: {polyphony: 6}\n"
+			"parts: {one: {channel_offset: 0, receives: [controls], unrecorded: [notes]}}\n", source = "x.yaml")
+
+		assert any("add voice.polyphony_shared" in str(warning) for warning in definition.warnings)
+
+	def test_it_is_added_after_every_field_a_part_had (self) -> None:
+		"""So that nothing a caller gave by position moved."""
+		names = [field.name for field in dataclasses.fields(pymidiinstrumentdefs.definition.Part)]
+
+		assert names.index("unrecorded") > names.index("within")
+
+	def test_the_base_channel_s_controls_are_not_filed_under_such_a_part (self) -> None:
+		"""`controls_reaching` asks whether the part is recorded as taking controls, and it is not."""
+		definition = pymidiinstrumentdefs.parse(
+			self.HEAD + "parts: {one: {channel_offset: 0, receives: [notes], unrecorded: [controls]}}\n"
+			"controls: {level: {cc: 7}}\n", source = "x.yaml")
+
+		assert definition.controls_reaching("one") == []
 
 
 class TestPolyphonyAcrossParts:

@@ -101,6 +101,12 @@ streichfett.controls_by_part()[""]         # the controls on the base channel
 streichfett.controls_reaching("strings")   # all 19 - the strings sit on the base channel
 ```
 
+`takes()` answers `True` for a kind of message the part is recorded as taking
+and `False` for any other, with one exception. It answers `None` where the file
+says a kind of message reaches the instrument there and no document ties it to
+the part: neither yes nor no, so a page that leaves out what a part does not
+take should not leave that out.
+
 Some instruments change shape with a setting, and a definition says so with
 `modes`: a part may exist in one mode only, and a mode may silence the controls
 that name no part. A page asks what answers in each:

@@ -18824,17 +18824,18 @@ class TestMontage:
 	def test_thirty_one_controls_and_fourteen_are_only_the_factory_choice (self) -> None:
 		"""The chart gives 1 to 95 as assignable, and a footnote gives the shipped numbers."""
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
-		numbers = sorted(control.cc for control in montage.controls.values()
-			if control.cc is not None)
+		numbers = sorted({control.cc for control in montage.controls.values()
+			if control.cc is not None})
 
-		assert len(montage.controls) == 31
+		# Thirty-one numbers, eleven of them written a second time for a part on its own channel.
+		assert len(montage.controls) == 42
 		assert numbers == [0, 1, 2, 5, 7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24,
 			32, 64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 94]
 
 		# **Fourteen of the thirty-one are a default rather than a fixture**, and they are
 		# in a group of their own so a consumer can read them as one.
 		assignable = [name for name, control in montage.controls.items()
-			if control.group == "assignable"]
+			if control.group == "assignable" and control.part is None]
 
 		assert len(assignable) == 14
 		assert montage.midi.learns_control_change is True
@@ -18847,8 +18848,8 @@ class TestMontage:
 	def test_three_are_received_and_never_transmitted (self) -> None:
 		"""The maker prints two lists and the transmitted one is a subset."""
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
-		receives = sorted(control.cc for control in montage.controls.values()
-			if control.direction == "receives" and control.cc is not None)
+		receives = sorted({control.cc for control in montage.controls.values()
+			if control.direction == "receives" and control.cc is not None})
 
 		assert receives == [11, 65, 66]
 		assert montage.controls["expression"].cc == 11
@@ -18953,6 +18954,21 @@ class TestMontage:
 
 		assert '"[SW1] Complies with Part Receive Switch. The MIDI Receive Channel complies ' \
 			'with the Part number."' in flat
+
+		# **A control naming no part is on the MIDI I/O channel**, and eleven standard controllers
+		# are written again for a part. Until 2026-10-12 no control here named a part.
+		own = {key: control for key, control in montage.controls.items() if control.part}
+
+		assert {control.part for control in own.values()} == {"part"}
+		assert sorted(control.cc for control in own.values() if control.cc is not None) == [0, 1, 2, 5, 7, 10, 11, 32, 64, 65, 66]
+		assert all(key.startswith("part_") for key in own)
+
+		for key, control in own.items():
+			twin = montage.controls[key[len("part_"):]]
+			assert (twin.cc, twin.label, twin.direction, twin.group) == (control.cc, control.label, control.direction, control.group)
+
+		assert [control.name for control in montage.controls_reaching("part")] == list(own)
+		assert "**No page lists what that channel answers to.**" in flat
 
 	def test_mode_three_is_named_which_the_four_older_yamahas_do_not (self) -> None:
 		"""Four Yamahas were already here and not one of them names a reception mode.

@@ -99,6 +99,32 @@ source: >-
   "16 Parts (internal), Audio Input Parts (A/D*1, USB*1)" (manual p. 63) in the specification. The
   `parts` block below says so; which part a player uses belongs to their project.
 
+  **ONE CHANNEL CAN STAND FOR THE PARTS THE KEYBOARD PLAYS, AND ELEVEN STANDARD CONTROLLERS ARE
+  WRITTEN FOR BOTH.** The data format's receive flow describes only the arrangement above. The
+  Supplementary Manual adds a setting beside it, `MIDI I/O Mode`, whose second value is "Single:
+  Transmits MIDI data using only the channel specified in 'MIDI I/O Ch.'" (supplementary_manual
+  p. 128), and later a third, Hybrid, in which data arriving on that channel "is received on Parts
+  with Keyboard Control Switch set to ON" (supplementary_manual p. 61), while data on any other
+  channel "is received via the corresponding Part" (supplementary_manual p. 61). So by those two
+  sentences every Part still answers on its own channel in Hybrid, unless that channel is the MIDI
+  I/O channel. In the Data List the Single mode is a switch on the way to MIDI Out (data_list
+  p. 193) and two rows of the system table (data_list p. 198), and nowhere a way of receiving.
+  **So a control naming no part is on the MIDI I/O channel, and keyed `part_` it names the part and
+  is on the part's own**: bank select's two halves and numbers 1, 2, 5, 7, 10, 11, 64, 65 and 66.
+  Single mode sends on that channel, and Hybrid mode is the one stated to receive on it. That
+  Single mode receives on it rests on the setting's own page alone, which calls it the channel "to
+  be used for data communication" (supplementary_manual p. 128) and describes what is sent. **No
+  page lists what that channel answers to.** One sentence, about a keyboard plugged into the USB TO
+  DEVICE socket, says that in Single mode control changes "regarded as Common parameters"
+  (supplementary_manual p. 62) are not passed to a part, and it names none of them. One controller
+  is given that channel by name, and it is not among those below: the Super Knob's is sent on
+  channel 1 in Multi mode and on the MIDI I/O channel in Single (supplementary_manual p. 118). And
+  where a Performance uses zones, "the Zone setting for the Performance is given priority over the
+  'MIDI I/O Mode' setting" (supplementary_manual p. 128). Every other controller below reaches a
+  part on its channel too, since the receive flow puts every control change behind `[SW1]`, whose
+  note is the sentence quoted above, and names no part only because the rule this follows covers
+  the standard controllers.
+
   **AND THE POLYPHONY IS GIVEN TWICE AND NEVER TOTALLED.** "Polyphony AWM2: 128 (max.; stereo/mono
   waveforms) FM-X: 128 (max.)" (manual p. 63), and in troubleshooting, "the maximum polyphony (128
   for each of AWM2 and FM-X) of the MONTAGE" (manual p. 60). **Two engines, two ceilings, no sum in
@@ -260,7 +286,8 @@ sources:
     # names every one: "New Functions in MONTAGE Version 3.50" (supplementary_manual p. 3) down
     # to 1.1. Published the same
     # month as the MW-J0 Data List, which corroborates that Data List's label from inside the
-    # document set rather than from the page. It adds nothing to the MIDI map.
+    # document set rather than from the page. No control below comes from it; the account rests the
+    # MIDI I/O mode and its channel on it.
   downloads_page:
     kind: download_page
     title: "MONTAGE - Downloads - Synthesizers - Synthesizers & Music Production Tools - Products -
@@ -302,6 +329,8 @@ midi:
     # `presets` omitted: the maker's figure is an approximation. See the account.
 
 parts:
+  # A CONTROL NAMING THIS PART IS ON THE PART'S OWN CHANNEL, and one naming no part is on the MIDI
+  # I/O channel: see the account.
   part:
     label: Part
     count: 16
@@ -413,3 +442,20 @@ controls:
   assignable_function_2: {label: Assignable Function 2, cc: 87, group: assignable}
   motion_seq_hold:       {label: Motion Seq Hold, cc: 88, group: assignable}
   motion_seq_trigger:    {label: Motion Seq Trigger, cc: 89, group: assignable}
+
+  # THE STANDARD CONTROLLERS AGAIN, FOR A PART ON ITS OWN CHANNEL -------------
+  # Eleven numbers, each named and directed as its control above is: see the account. Each control
+  # above names no part and is on the MIDI I/O channel. A part may be a Drum Part, and portamento
+  # time and the portamento switch are "Invalid with Drum Parts." (data_list p. 191).
+  part_bank_select_msb:   {label: Bank Select MSB, cc: 0, part: part}
+  part_bank_select_lsb:   {label: Bank Select LSB, cc: 32, part: part}
+  part_modulation:        {label: Modulation, cc: 1, part: part, group: wheels}
+  part_channel_volume:    {label: Channel Volume, cc: 7, part: part, group: mix}
+  part_pan:               {label: Pan, cc: 10, part: part, group: mix}
+  part_portamento_time:   {label: Portamento Time, cc: 5, part: part, group: portamento}
+  part_sustain:           {label: Sustain Switch, cc: 64, part: part, group: pedals}
+  part_expression:        {label: Expression, cc: 11, direction: receives, part: part, group: mix}
+  part_portamento_switch: {label: Portamento Switch, cc: 65, values: {"off": 0, "on": 64}, direction: receives, part: part, group: portamento}
+  part_sostenuto:         {label: Sostenuto, cc: 66, values: {"off": 0, "on": 64}, direction: receives, part: part, group: pedals}
+  # The breath controller's shipped number, a default like the fourteen above it.
+  part_breath:            {label: Breath Controller, cc: 2, part: part, group: assignable}

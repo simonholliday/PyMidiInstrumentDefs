@@ -222,7 +222,13 @@ voice:
     note_on: both
     note_off: true
   # Key and channel pressure both `O` received (manual p. 213), chosen by `PRESS` (manual p. 32).
-  aftertouch: poly
+  # Until 2026-10-12 this said `poly`, the stronger of two words where the field had no third.
+  # NOT RECORDED, whether it is sent: the chart has both kinds `O` transmitted beside the remark
+  # `Transmitted only if recorded` (manual p. 213), and "the Sequencer will Record and Play back
+  # Pressure, if a Track is recorded from an external instrument which sends it." (manual
+  # p. 46). That page heads the pressure modulator `(MIDI only)`; with the chart's `only`, the
+  # keyboard makes none.
+  aftertouch: both
   pitch_bend:
     # Global, 0 to 12 semitones (manual p. 29); no default is printed, and the display's 02 is an
     # example (manual p. 28).

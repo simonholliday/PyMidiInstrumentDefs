@@ -1816,6 +1816,7 @@ class TestAftertouch:
 			"waldorf/protein": ("both", None),
 			"sequential/fourm": ("both", True),
 			"sequential/prophet_6": ("both", True),
+			"ensoniq/esq_1": ("both", None),
 		}
 
 
@@ -21074,7 +21075,7 @@ class TestESQ1:
 
 		assert (esq.voice.polyphony, esq.voice.polyphony_shared, esq.voice.note_range) == (8, True, (21, 108))
 		assert esq.voice.velocity is not None and (esq.voice.velocity.note_on, esq.voice.velocity.note_off) == ("both", True)
-		assert esq.voice.aftertouch == "poly"
+		assert esq.voice.aftertouch == "both"
 		assert esq.voice.pitch_bend is not None
 		assert (esq.voice.pitch_bend.programmable, esq.voice.pitch_bend.semitones) == (True, None)
 		assert (esq.midi.channels, esq.midi.mode, esq.midi.clock, esq.midi.transport) == ((1, 16), None, "both", "both")

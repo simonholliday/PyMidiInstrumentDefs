@@ -5866,9 +5866,21 @@ class TestSummit:
 		assert "Nothing here was sent to an instrument." in flat
 		assert "So nothing confirms or contradicts these numbers at 2.1." in flat
 
-		# One more number the same sibling prints is not taken, and the file says why.
-		assert "osc_common_noise_hpf" not in summit.controls
-		assert "**That number is not taken, though the same sibling prints it.**" in flat
+		# **THE SIXTY-FIRST (#4930).** The guide's body documents a high-pass noise filter and its
+		# list has no row for it, so the number is the Peak's and the rest is the guide's own.
+		hpf = summit.controls["osc_common_noise_hpf"]
+
+		assert (hpf.nrpn, hpf.cc, hpf.range, hpf.default) == (12, None, (0, 127), 0)
+		assert hpf.label == "High-pass noise filter"
+		assert pymidiinstrumentdefs.load("novation/peak", [CORPUS]).controls["osc_common_noise_hpf"].nrpn == 12
+		assert "**That number is taken too, and it is the sixty-first.**" in flat
+		assert "**AND IT RESTS ON LESS THAN THE SIXTY DO.**" in flat
+		assert "a \"Range of adjustment: 0 to 127\" (guide p. 26)" in flat
+		assert "NRPN 0:12 (sibling_manual p. 40)" in flat
+
+		# The two ranges the same list leaves blank are not borrowed.
+		assert "those are the Peak's, and no range is taken from it here." in flat
+		assert summit.controls["effects_routing"].range == (0, 127)
 
 	def test_the_matrix_s_printed_ranges_are_carried_and_doubted (self) -> None:
 		"""The guide lists more sources and destinations than its own ranges reach."""
@@ -5887,15 +5899,18 @@ class TestSummit:
 		assert "lists 38 destinations (guide p. 46)" in flat
 		assert "**Which value selects which destination no page says**" in flat
 
-	def test_two_hundred_and_forty_nine_controls_in_the_table_s_own_sections (self) -> None:
-		"""229 rows of the guide and 22 of the addendum, less one that reaches nothing and a rename."""
+	def test_two_hundred_and_fifty_controls_in_the_table_s_own_sections (self) -> None:
+		"""229 rows of the guide and 22 of the addendum, less one that reaches nothing and a rename.
+
+		And one more that has no row in either list, the high-pass noise filter.
+		"""
 		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
 
-		assert len(summit.controls) == 249
+		assert len(summit.controls) == 250
 
-		# 74 by control change and 175 by NRPN alone, sixty of those from the Peak's manual.
+		# 74 by control change and 176 by NRPN alone, sixty-one of those from the Peak's manual.
 		assert sum(1 for c in summit.controls.values() if c.cc is not None) == 74
-		assert sum(1 for c in summit.controls.values() if c.cc is None) == 175
+		assert sum(1 for c in summit.controls.values() if c.cc is None) == 176
 		assert len(summit.groups) == 11
 
 		# The guide's own section headings, in the order it prints them, plus the two the

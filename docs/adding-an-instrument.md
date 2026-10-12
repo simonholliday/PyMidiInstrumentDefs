@@ -924,13 +924,44 @@ The quotation is then looked for in the whole of that source. What follows the c
 your reader and is not checked. It must not look like a page, `p.` and a number, which is the
 shape above and belongs to a document that has pages.
 
+**A document that has pages is always cited by its page, never by its key alone.**
+`"the maker's sentence" (manual)` used to be looked for in the whole manual, and it passed
+without a page ever being turned to. Thirty-eight quotations in seven definitions were written
+that way. The checker now refuses the shape, and `(manual, section 4)` with it. Where it holds
+the document and can read it, its report names the page the passage is on, so that you can
+write it in: `(manual p. 17)`. If the document really has no pages to turn to, say
+`paginated: false` on its source, and the key alone is then the right locator.
+
+**And a document with no pages is never cited by a page.** `(release_notes p. 3)`, where
+`release_notes` says `paginated: false`, has no page to turn to. It used to be counted as
+unchecked without a word, and it fails now. So does `(p. 3)` with no key, where none of the
+definition's sources has pages.
+
+**A document's name that is not one of your keys fails the run.** `(chart)` where the sources
+are `manual` and `chart_article`, or `(midi_impl, #243)` where there is no `midi_impl`: the
+word is what the definitions bundled here call a document, so it reads as one, and yours has
+not got it. A word counts as such a name if it is a source key with an underscore in it
+anywhere in the corpus, or one of nine words that name a document and little else: `addendum`,
+`changelog`, `chart`, `guide`, `implementation`, `manual`, `reference`, `specifications` and
+`supplement`. Any other word of one piece is an aside, whatever some definition uses it for a
+key: `(midi)`, `(keyboard)` and `(update)` fail nothing. Before a page, any name that is not
+one of your keys is refused, as `(handbook p. 3)` is. So is one of those names in other
+capitals where it is your key, `(Manual)` for `manual`. **A key spelt wrongly is not caught
+this way.** `(manaul)` is nobody's key, so it leaves the quotation with no locator, exactly as
+an aside such as `(sic)` or `(our emphasis)` does. Put an aside in the sentence and not in the
+brackets, and read the list of passages with no locator, which is where a misspelt key shows.
+
 **A number on its own is read too, and is the weaker locator.** It needs a dot in it or the
 word `section` before it: `(15.6)`, `(section 4)`, `(1.55D)`. It names no document, so the
-passage is looked for in every document the definition cites that the checker could read,
-and the report says which holds it. A bare `(16)` is not read as a locator at all. **Prefer
-the key.** It is the stronger check, and it stays a check when one of the definition's
-documents is a scan or is not in the library: a number alone that is found in none of the
-others is then unchecked, because the passage may be in the document nobody could read.
+passage is looked for in every document the definition cites that has no pages and that the
+checker could read, and the report says which holds it. A bare `(16)` is not read as a
+locator at all. **A number alone is for a document with no pages.** Where a document has
+pages its page says more, and a search of the whole of it is what the bare key was refused
+for; so where every source of a definition has pages, a number alone fails the run as the
+bare key does. **Prefer the key** even where a number is allowed. It is the stronger check,
+and it stays a check when one of the definition's unpaged documents is not in the library: a
+number alone that is found in none of the others is then unchecked, because the passage may
+be in the document nobody could read.
 
 **This is enforced, and the reason is worth a paragraph.** A locator the checker could not
 read was indistinguishable from no locator at all, and a quotation with no locator is passed
@@ -940,6 +971,11 @@ that state. Reading them found five that were wrong, and **three of those were q
 saying something the maker had not said** — the one fault a page citation cannot catch,
 because the page is real and the sentence is not. The checker now refuses a locator it cannot
 read instead of skipping it, so an unreadable one fails the run rather than passing quietly.
+The run also fails on a source the definition has not got; on a document with pages cited
+without one, or one without pages cited by a page; on a curly quote mark outside a quotation;
+on a quotation with its locator inside backticks; on quote marks or backticks that do not
+pair, or that pair wrongly so far as it can tell; and on an account that is not written as a
+block scalar. Each is explained in this section.
 
 **A locator goes after each closing quote, not once at the end of the sentence.** This is the
 commonest way one goes missing, and it reads as though everything is cited:
@@ -956,10 +992,68 @@ of a sentence whose first half carried the citation.
 
 **Where a passage is not quoting a document, use backticks instead of quote marks.** A field
 value, a file name, a term you are naming rather than citing — `System Exclusive`, not
-`"System Exclusive"`. The checker reads past a backticked span entirely, so this is the
-remedy for anything it reports that was never meant as a quotation. A PDF's internal metadata
-title and a quotation of another definition in this corpus are both this case: neither has a
-page to cite, so neither should be written as a quotation.
+`"System Exclusive"`. The checker reads past a backticked span, so this is the remedy for
+anything it reports that was never meant as a quotation. **The one thing it will not read
+past is a quotation with its locator**: a quoted passage and a `(p. 4)` after it, inside
+backticks, fails the run, because that is what a backtick left open makes of a real
+quotation. A PDF's internal metadata title and a quotation of another definition in this
+corpus are both this case: neither has a page to cite, so neither should be written as a
+quotation.
+
+**Close every backtick and every quote mark you open.** The checker finds a quotation by
+pairing the quote marks in order, after taking out each code span: a run of backticks, and
+everything up to the next run of as many. One backtick left open turns every later code span
+inside out: the prose between two spans is taken out and what was inside them is read. One
+definition had a parameter's name opened and never closed, and from there on the pairing saw 7
+of its 25 page citations. So a definition with a paragraph in which either mark does not pair
+is not checked at all, and fails the run until the stray one is closed; the report names the
+line that paragraph begins on. A paragraph is what it is in the account, lines with no empty
+line among them; among comments it is a run of lines that each carry a comment. An empty line
+ends it, and so does a bare `#` or a line of YAML with no comment; a line of YAML with a
+comment after it does not. A quotation and a code span each begin and end in one paragraph. If
+you need a lone `"` in a sentence, an inch mark for instance, put it inside backticks. A lone
+backtick that a maker prints cannot be written at all inside one backtick each side, so put two
+each side, which is a code span too and may hold one, or say it in words. A run of backticks is
+closed only by a run of as many, and one that nothing closes is a stray mark like any other.
+Two spans set back to back are read as one, which changes nothing.
+
+**Two stray marks are worse than one, because the count is even again.** Everything between
+them is paired inside out and nothing is odd. The checker cannot count its way to that, so it
+looks at what the pairs enclose: a "quotation" that begins or ends with a space, or is empty,
+or begins with the `**` that closed another quotation's emphasis and then a locator, is the
+prose between two quotations, and a quoted passage with its locator inside backticks is a
+quotation somebody's backtick swallowed. Either fails the run. A quotation that begins with a
+bracket of its own, such as a section heading printed `(10.4) Sync`, is none of these.
+Neither is proof, and a stray pair can still fall where it shows no sign, so read the list of
+passages with no locator when you change a definition: prose turning up in it is the other
+sign. Where a maker really does print a passage with a space at its edge, or nothing between
+two marks, write it in backticks, since nothing of that kind can be looked for on a page.
+
+**Write a quote mark inside a quotation as a single one.** The maker's sentence may quote a
+word itself: `set this to "ON" or "P-Dump"`. Inside your quotation those marks become single,
+`"set this to 'ON' or 'P-Dump'" (p. 55)`, because a double one ends your quotation early and
+the rest is looked for by its tail, or not at all. The comparison ignores which kind of mark
+it is. Twelve definitions had a double mark inside a quotation, and one of the quotations it
+hid cited the wrong page.
+
+**Write the quote marks straight.** Only straight marks are paired. A curly mark inside a
+passage is fine, because it is the maker's own: `"Works the same as “start.”" (p. 62)` is one
+quotation and is looked for as one. A passage that is itself in curly marks is seen by
+nothing, so a curly mark anywhere outside a quotation fails the run.
+
+**Write the account as a block scalar**, `source: >-`, as every definition here does. The
+checker finds the account by that line, or by `source: |`. An account written any other way,
+in quote marks on one line for instance, is read by nothing, so it fails the run.
+
+**A square bracket in a quotation is the maker's or yours, and the checker tries both.** It
+may be yours, adapting a word to your sentence: `"make[s] it possible"` for a page that says
+`makes it possible`. Or it may be the maker's, as when a manual prints a range as
+`[1 Note...12 Note]`. The passage is looked for with its brackets as printed, and then with
+what is in them left out, provided at least eight characters remain outside them. A passage
+that is all bracket used to have nothing left to look for, and was found on every page. **The
+second way does not look inside the brackets at all**, so a passage found only that way is
+named in the report: that is right for `make[s]`, and it is no check of a range the maker
+printed, so quote a maker's bracket exactly.
 
 **Two things you do not have to worry about.** Emphasis around a quotation is fine —
 `**"the part parameters"** (p. 45)` is read exactly as the plain form is. And a passage

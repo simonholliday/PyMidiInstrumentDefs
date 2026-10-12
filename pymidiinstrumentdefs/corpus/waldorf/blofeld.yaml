@@ -198,8 +198,14 @@ midi:
     # 37's is, and the banks are recorded here too. The 128 Multi sets are selected with the
     # panel dial; no page says a program change reaches them.
     presets: 1024
-  # THE CHART IS COMPLETE AND NOTHING IS LEARNED, so this says nothing - unlike the Iridium,
-  # where MIDI Learn is the whole map.
+  # LEARNED, FOR FOUR NUMBERS THE PLAYER SETS BESIDE A CHART THAT IS OTHERWISE COMPLETE. Control
+  # W, X, Y and Z are modulation sources whose controller numbers the player picks at the
+  # panel, each from 0 to 120 (p. 84), which the word covers as it covers a number taught by
+  # MIDI learn. The four are picked from among the chart's own numbers, and one that takes a
+  # sound parameter's number switches that parameter's controller off (p. 85). Nothing here is
+  # learned over MIDI, unlike the Iridium, where MIDI Learn is the map beyond its fixed
+  # sources. Until 2026-10-12 the field was left out. See the source account.
+  control_change: learned
   nrpn: none
   # "Defines the device identification number for system exclusive data transmission" (p. 82),
   # 0 to 126 with 127 as broadcast, which Waldorf's specification gives as 00h to 7Eh and 7Fh.

@@ -29,14 +29,13 @@
 # to map its parameters to incoming MIDI control change data." (manual p. 55), and until somebody
 # does, "If no MIDI CC mapping was made, Nothing Mapped is displayed." (manual p. 55).
 #
-# **`control_change` IS LEFT EMPTY BECAUSE IT HOLDS ONE WORD AND THIS INSTRUMENT IS BOTH THINGS.**
-# `learned` is for an instrument whose map the player makes; writing it would say the six below
-# are factory defaults somebody can change, which they are not - they are fixed sources in the
-# modulation matrix. The field has no word for a maker that publishes some numbers and leaves
-# the rest to MIDI learn. **The corpus does not agree with itself here**: fourteen definitions
-# use `learned`, eight of them beside controls, and three of those are this maker's Iridiums,
-# which carry these same fixed sources. Until 2026-10-11 this said six used it and none carried
-# a control.
+# **`control_change` IS `learned`, WHICH SAYS THE REST IS THE PLAYER'S, AND THE SIX BELOW ARE THE
+# MAKER'S.** The word says that some of an instrument's controller numbers are its owner's to
+# assign, here by MIDI learn, and it stands beside the numbers a maker fixes. The six below are
+# not factory defaults somebody can change: they are fixed sources in the modulation matrix,
+# and bank select. This maker's three Iridiums carry the same fixed sources under the same
+# word. Until 2026-10-12 the field was left empty, because the word was then read as leaving
+# no room for a number the maker fixes.
 #
 # **AND THE DOCUMENT THAT SETTLES THE MOST IS THE ONE THE DOWNLOADS PAGE DOES NOT NAME.** Five
 # things are offered there. Four are labelled: `manual`, `Specifications`, `SysEx Drop Tool` and
@@ -116,9 +115,9 @@ source: >-
   chart in any document.
   The transport, which **no document mentions in any spelling**. The note range, whose only
   statement is the glossary's "between 0 and 127" (manual p. 65) about MIDI in general. NRPN, which appears
-  nowhere at all - not even as a glossary entry, which is a silence and not a checked absence. And
-  `control_change`, for the reason in the comment: this instrument is both of the things that
-  field has words for.
+  nowhere at all - not even as a glossary entry, which is a silence and not a checked absence.
+  `control_change` was in this list until 2026-10-12 and is `learned` now: see the comment above
+  the definition.
 
 sources:
   manual:
@@ -260,9 +259,10 @@ midi:
     # **AND CC 32 IS AMONG THE CONTROLS BELOW**, received only, as bank select is wherever a maker
     # numbers it.
     presets: 360
-  # NOT RECORDED, AND THE REASON IS THAT THIS INSTRUMENT IS BOTH THINGS THIS FIELD HAS WORDS FOR.
-  # See the comment above the definition: a fixed set of numbers in the modulation matrix, and
-  # MIDI learn for every parameter beyond them.
+  # LEARNED, BESIDE THE NUMBERS THE MAKER FIXES, OF WHICH SIX ARE CONTROLS BELOW: a fixed set of
+  # numbers in the modulation matrix and bank select, and MIDI learn for every parameter beyond
+  # them. See the comment above the definition.
+  control_change: learned
   # **BOTH WAYS, FOR WHOLE SOUNDS RATHER THAN FOR PARAMETERS.** The preset menu sends - "The
   # active sound (as edited) will be sent as MIDI SysEx dump to the USB-C port. The dump contains
   # multiple MIDI SysEx messages." (manual p. 20) - and receives, by a mode it is put into:

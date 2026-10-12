@@ -16149,12 +16149,17 @@ class TestProtein:
 		assert {control.group for control in protein.controls.values()
 			if control.name != "bank_select_lsb"} == {"modulation"}
 
-	def test_control_change_is_empty_because_it_is_both_things_the_field_names (self) -> None:
-		"""Fixed sources in the matrix, and MIDI learn for everything else."""
+	def test_control_change_is_learned_beside_the_numbers_the_maker_fixes (self) -> None:
+		"""Fixed sources in the matrix, and MIDI learn for everything else: #4924.
+
+		Left empty until 2026-10-12, when the word was read as leaving no room for a fixed
+		number, while this maker's Iridiums said it beside the same fixed sources.
+		"""
 		protein = pymidiinstrumentdefs.load("waldorf/protein", [CORPUS])
 
-		assert protein.midi.control_change is None
+		assert protein.midi.control_change == "learned" and protein.midi.learns_control_change
 		assert not protein.midi.refuses_control_change
+		assert len(protein.controls) == 6
 
 		said = prose_of("waldorf", "protein")
 
@@ -16164,12 +16169,14 @@ class TestProtein:
 
 		flat = " ".join(said.split())
 
-		assert "**`control_change` IS LEFT EMPTY BECAUSE IT HOLDS ONE WORD AND THIS INSTRUMENT" \
-			" IS BOTH THINGS.**" in flat
+		assert "**`control_change` IS `learned`, WHICH SAYS THE REST IS THE PLAYER'S, AND THE SIX BELOW" \
+			" ARE THE MAKER'S.**" in flat
 
-		# Five that use `learned` and carry nothing, which is the case this file's reason was
-		# written against.  Eight others use it beside controls, three of them this maker's own
-		# Iridiums, and the header now says so.
+		for sibling in ("waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2"):
+			assert pymidiinstrumentdefs.load(sibling, [CORPUS]).midi.control_change == "learned", sibling
+
+		# Five that use `learned` and carry nothing, which is the case the word was once read
+		# as being for alone.
 		for name in ("arturia/drumbrute_impact", "dirtywave/m8",
 				"roland/d_50", "synthstrom_audible/deluge", "teenage_engineering/op_1"):
 			other = pymidiinstrumentdefs.load(name, [CORPUS])
@@ -21580,19 +21587,25 @@ class TestMicrowave:
 		assert '"Breath controller (MIDI continuous controller 2)" (programming p. 27)' in said
 		assert "`3 (Breath)` (performance p. 121" in said
 
-	def test_fixed_numbers_beside_four_the_owner_assigns_leave_control_change_unsaid (self) -> None:
-		"""The field holds one word, and neither `learned` nor silence about the five would be true."""
+	def test_four_numbers_the_owner_sets_are_learned_beside_the_ones_the_maker_fixes (self) -> None:
+		"""The word covers a number set at the panel as it covers one taught by MIDI learn: #4924."""
 		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])
 
-		assert microwave.midi.control_change is None and microwave.midi.nrpn == "none"
-		assert not microwave.midi.refuses_control_change and not microwave.midi.learns_control_change
+		assert microwave.midi.control_change == "learned" and microwave.midi.nrpn == "none"
+		assert not microwave.midi.refuses_control_change and microwave.midi.learns_control_change
 
 		said = " ".join(prose_of("waldorf", "microwave").split())
 
 		assert "**CONTROL W, X, Y AND Z ARE NUMBERS THE OWNER CHOOSES, SO THEY ARE NOT CONTROLS HERE.**" in said
-		assert "**`control_change` IS LEFT EMPTY, AS `waldorf/blofeld`, WHICH HAS THE SAME FOUR, LEAVES ITS OWN.**" in said
+		assert ("**`control_change` IS `learned`, FOR THE FOUR NUMBERS THE OWNER SETS, AS `waldorf/blofeld`, WHICH"
+			" HAS THE SAME FOUR, SAYS OF ITS OWN.**") in said
+
 		for sibling in ("waldorf/blofeld", "waldorf/protein"):
-			assert pymidiinstrumentdefs.load(sibling, [CORPUS]).midi.control_change is None
+			assert pymidiinstrumentdefs.load(sibling, [CORPUS]).midi.control_change == "learned", sibling
+
+		blofeld = " ".join(prose_of("waldorf", "blofeld").split())
+
+		assert "LEARNED, FOR FOUR NUMBERS THE PLAYER SETS BESIDE A CHART THAT IS OTHERWISE COMPLETE." in blofeld
 
 	def test_neither_a_mode_nor_a_clock_where_the_documents_tell_it_two_ways (self) -> None:
 		microwave = pymidiinstrumentdefs.load("waldorf/microwave", [CORPUS])

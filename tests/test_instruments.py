@@ -22269,6 +22269,10 @@ class TestWebPageTitles:
 		("teenage_engineering/op_xy", "product_page"): "OP–XY - teenage engineering",
 		("teenage_engineering/op_z", "product_page"): "OP–Z - teenage engineering",
 		("udo_audio/super_6", "support_page"): "Super 6 | Support & Downloads",
+		("waldorf/blofeld", "product_page"): "Blofeld Desktop EN – Waldorf Music",
+		("waldorf/blofeld", "keyboard_page"): "Blofeld Keyboard EN – Waldorf Music",
+		("waldorf/iridium", "product_page"): "Iridium EN – Waldorf Music",
+		("waldorf/iridium", "keyboard_page"): "Iridium Keyboard EN – Waldorf Music",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

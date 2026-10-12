@@ -763,14 +763,14 @@ class TestAbsences:
 			"vermona/drm1_mkiv"}
 		# **NO CONTROL CHANGE, SO NO NON-REGISTERED PARAMETER (#4900).** One is addressed and set
 		# with controllers 98, 99, 6 and 38, so each of these records `nrpn: none` as well, as
-		# `korg/ms_20_mini` did from the first. Two do not yet. `roland/tr_909`'s scan has a
-		# chart, which is to be read again before anything is added to the file. And
-		# `behringer/model_d`'s manual has it answer to a MIDI keyboard's modulation wheel, so
-		# its own `none` is in question (#4982) and nothing is built on it.
+		# `korg/ms_20_mini` did from the first, and `roland/tr_909` does since its chart was read
+		# (#4899). One does not yet: `behringer/model_d`'s manual has it answer to a MIDI
+		# keyboard's modulation wheel, so its own `none` is in question (#4982) and nothing is
+		# built on it.
 		unset = {name for name in kinds["none"]
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn != "none"}
 
-		assert unset == {"roland/tr_909", "behringer/model_d"}
+		assert unset == {"behringer/model_d"}
 
 		for name in ("ableton/move", "alesis/sr_16", "behringer/rd_6", "behringer/rd_9",
 				"behringer/td_3", "erica_synths/hexdrums", "moog/labyrinth", "vermona/drm1_mkiv"):
@@ -4805,10 +4805,10 @@ class TestJuno106:
 
 class TestTR909:
 
-	"""Whose maker published one MIDI page, seven kinds of message, and not one number."""
+	"""Whose manual spreads its MIDI over three pages of prose, and a full chart on a sheet with no page number."""
 
 	def test_it_carries_no_controls_and_says_somebody_looked (self) -> None:
-		"""`control_change: none`, reached by an enumeration rather than a crossed box."""
+		"""`control_change: none`, on the chart's crossed box, where a list of seven kinds once stood for it."""
 		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
 
 		assert tr.controls == {}
@@ -4845,7 +4845,7 @@ class TestTR909:
 			assert sibling in said
 
 	def test_the_page_offset_runs_the_other_way_from_most_of_the_corpus (self) -> None:
-		"""A cover and a contents sheet carry no folio, so printed is one ahead of the sheet."""
+		"""Three sheets with no folio come first, one of them double width, and printed is one ahead of the sheet."""
 		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
 
 		assert tr.sources["manual"].page_offset == -1
@@ -4865,17 +4865,37 @@ class TestTR909:
 			in said
 		assert "is Omni mode that receives all Channel information" in said
 
-	def test_no_direction_is_recorded_for_any_message (self) -> None:
-		"""Because the page says what can be communicated and never which way."""
+	def test_the_chart_on_its_unnumbered_sheet_gives_every_direction (self) -> None:
+		"""Read again on 2026-10-12 from the 41st sheet, which the first reading never reached (#4899).
+
+		The prose page says what can be communicated and never which way.  The chart, four
+		sheets on, says which way for every row.
+		"""
 		tr = pymidiinstrumentdefs.load("roland/tr_909", [CORPUS])
 
-		assert tr.midi.clock is None
-		assert tr.midi.transport is None
-		assert tr.midi.program_change is None
-		assert tr.midi.sysex is None
-		assert tr.voice.addressing is None
-		assert tr.voice.note_range is None
-		assert tr.voice.velocity is None
+		assert (tr.midi.clock, tr.midi.transport, tr.midi.sysex) == ("both", "both", True)
+		assert (tr.midi.mode, tr.midi.mode_receives, tr.midi.mode_sends) == (None, 1, 3)
+		assert tr.midi.program_change is not None
+		assert (tr.midi.program_change.receives, tr.midi.program_change.sends) == (False, False)
+		assert (tr.midi.control_change, tr.midi.nrpn) == ("none", "none")
+
+		# Notes name voices and no page says which names which, so there is a range and no map.
+		assert (tr.voice.addressing, tr.voice.note_range, tr.voice.voices) == ("voices", (35, 51), {})
+		assert tr.voice.velocity is not None
+		assert (tr.voice.velocity.note_on, tr.voice.velocity.note_off) == ("both", False)
+		assert tr.voice.aftertouch == "none" and tr.voice.pitch_bend is None
+
+		# The chart is cited by the page its sheet would carry, which is the scan's 41st.
+		assert tr.sources["manual"].file_page(42) == 41
+
+		said = " ".join(prose_of("roland", "tr_909").split())
+
+		assert '"MODEL TR-909 MIDI Implementation Chart" (manual p. 42)' in said
+		assert "**No page says which note reaches which drum.**" in said
+		assert "Neither is recorded, there being no field for a default channel." in said
+		assert "WHAT THE MANUAL SHOWS IT SENDING IS A PATTERN WRITTEN FOR ANOTHER INSTRUMENT." in said
+		assert "No sentence says whether the internal pattern's notes go out as well." in said
+		assert '"The TR-909 can serve either as a slave or master device." (manual p. 34)' in said
 
 
 class TestJU06A:

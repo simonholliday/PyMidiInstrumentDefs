@@ -22241,6 +22241,16 @@ class TestWebPageTitles:
 		("expressive_e/osmose", "preset_changes"): "Changing Osmose's sound presets from an external device with Bank Select and Program Change messages - Help Center",
 		("expressive_e/osmose", "product_page"): "Expressive MPE Polyphonic Synthesizer",
 		("intellijel/cascadia", "product_page"): "Cascadia Desktop Semi-Modular Synth - intellijel",
+		("korg/microkorg", "download_page"): "Downloads | microKORG (2002) | KORG (USA)",
+		("korg/microkorg2", "product_page"): "microKORG2 - SYNTHESIZER/VOCODER | KORG (USA)",
+		("korg/modwave_mk_ii", "download_page"): "Downloads | modwave mk II | KORG (USA)",
+		("korg/modwave_mk_ii", "download_page_modwave"): "Downloads | modwave | KORG (USA)",
+		("korg/multi_poly", "download_page"): "Downloads | multi/poly | KORG (USA)",
+		("korg/nts_1", "specifications"): "Specifications | NTS-1 digital kit - PROGRAMMABLE SYNTHESIZER KIT | KORG (USA)",
+		("korg/opsix", "download_page"): "Downloads | opsix mk II | KORG (USA)",
+		("korg/volca_bass", "download_page"): "Downloads | volca bass | KORG (USA)",
+		("korg/volca_drum", "download_page"): "Downloads | volca drum | KORG (USA)",
+		("korg/volca_sample", "updater"): "Downloads | volca sample - System Updater | KORG (USA)",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

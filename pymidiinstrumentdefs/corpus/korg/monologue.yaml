@@ -211,9 +211,12 @@ voice:
     # implementation agrees - its transmitted table gives a note off whose third byte is 40 in hex
     # and 64 in decimal, and its received one takes "Note Off  vv=0~127" (midi_impl).
     note_off: false
-  # A checked absence, from the chart's own rows: Polyphonic (Key) is a cross in both columns and
-  # Monophonic (Channel) is a cross in both (manual p. 58).
+  # A checked absence, from the chart's own rows: under After Touch, Key's is X in both columns
+  # and Channel is X in both (manual p. 58). Until 2026-10-12 this gave the rows labels which
+  # that chart does not print.
   aftertouch: none
+  # Never sent: both rows are X as transmitted (manual p. 58).
+  aftertouch_transmits: false
   pitch_bend:
     # O in both columns with footnote *1 (manual p. 58). **The reach is a setting and the manual
     # ties it to the slider rather than to an incoming message**: "Bend Range +" (manual p. 32) and

@@ -1796,6 +1796,21 @@ class TestAftertouch:
 			"roland/tr_707": ("none", False),
 			"roland/tr_8": ("none", False),
 			"roland/tr_909": ("none", False),
+			"korg/drumlogue": ("none", False),
+			"korg/electribe": ("none", False),
+			"korg/microkorg": ("none", False),
+			"korg/microkorg2": ("none", False),
+			"korg/minilogue": ("none", False),
+			"korg/modwave_mk_ii": ("both", False),
+			"korg/monologue": ("none", False),
+			"korg/ms_20_mini": ("none", False),
+			"korg/nts_1": ("none", False),
+			"korg/volca_bass": ("none", False),
+			"korg/volca_beats": ("none", False),
+			"korg/volca_drum": ("none", False),
+			"korg/volca_fm": ("none", False),
+			"korg/volca_keys": ("none", False),
+			"korg/volca_sample": ("none", False),
 		}
 
 
@@ -6775,7 +6790,7 @@ class TestModwaveMkII:
 		assert mw.voice.velocity.note_off is True
 
 		# Received only, and both kinds, which the prose settles independently of the chart.
-		assert mw.voice.aftertouch == "poly"
+		assert mw.voice.aftertouch == "both"
 
 		# Settable in both directions with no published default.
 		assert mw.voice.pitch_bend is not None

@@ -135,8 +135,8 @@ source: >-
   specified below, and will not play from the built-in keyboard" (manual p. 13), with "MIDI
   Channel [1...16]" beneath it.
 
-  WHAT A LAYER TAKES AND WHAT IT DOES NOT. Each one has an "Rx Other CCs" switch whose off
-  position tells you what the on position means: the Layer then "will ignore all MIDI CCs
+  WHAT A LAYER TAKES AND WHAT IT DOES NOT. Each one has an `Rx Other CCs` switch (manual p. 13)
+  whose off position tells you what the on position means: the Layer then "will ignore all MIDI CCs
   (except for CC#64), as well as Aftertouch, Poly Aftertouch, and Pitch Bend" (manual p. 14).
   So notes, controllers, both kinds of aftertouch and pitch bend all reach a Layer. **Program
   change does not**: it is global, listed under the Global Channel as "Program Change (via Set
@@ -169,8 +169,8 @@ sources:
     retrieved: 2026-10-03
     # 113 pages, counted with pypdf and with PyMuPDF, which agree. **THE PRINTED NUMBER IS
     # FIVE LOWER THAN THE FILE'S PAGE**, because the cover and front matter are unnumbered, so
-    # the MIDI Implementation Chart is printed page 107 and file page 112, and five is what a
-    # printed number needs adding to it.
+    # the MIDI Implementation Chart is page 107 by the contents list and file page 112, its own
+    # sheet printing no number, and five is what a printed number needs adding to it.
     page_offset: 5
   property_exchange:
     kind: midi_implementation
@@ -289,13 +289,21 @@ voice:
     # V=1-64 transmitted and O 8n, V=0-127 recognized - it sends a narrower range than it
     # accepts, with the remark "Received Note Off Velocity values are clipped at 64".
     note_off: true
-  # RECEIVED ONLY, AND BOTH KINDS, which this field has one word for. The chart has two rows
-  # under After Touch - Polyphonic (Key) and Channel - and both are X transmitted and O
-  # recognized, so the instrument answers to each and sends neither. A Layer's "Rx Other CCs"
-  # switch names them together: turning it off makes the Layer ignore "all MIDI CCs (except for
-  # CC#64), as well as Aftertouch, Poly Aftertouch, and Pitch Bend" (manual p. 14). `poly` is
-  # recorded as the stronger of the two.
-  aftertouch: poly
+  # RECEIVED ONLY, AND BOTH KINDS. The chart has two rows under After Touch - Polyphonic (Key)
+  # and Channel - and both are X transmitted and O recognized, so the instrument can answer to
+  # each and sends neither. A Layer's `Rx Other CCs` switch (manual p. 13) names them together:
+  # turning it off makes the Layer ignore "all MIDI CCs (except for CC#64), as well as
+  # Aftertouch, Poly Aftertouch, and Pitch Bend" (manual p. 14). And a global setting chooses
+  # which the Aftertouch source follows, or neither: "AT Source (Aftertouch Source) [Off,
+  # Channel, Poly, Chan+Poly]" (manual p. 100), where Off means "All aftertouch will be
+  # ignored." (manual p. 100). No default is printed. Until 2026-10-12 this said `poly`, the
+  # stronger of two words where the field had no third.
+  aftertouch: both
+  # Never sent: both rows are X transmitted on the chart (manual p. 107), and "the modwave and
+  # modwave mkII keyboards themselves do not generate aftertouch" (manual p. 71). One figure pulls
+  # the other way, a panel of the aftertouch curves labelled `Aftertouch (Keyboard to MIDI Out)`
+  # (manual p. 100); no sentence says the keys send pressure.
+  aftertouch_transmits: false
   pitch_bend:
     # SETTABLE IN BOTH DIRECTIONS SEPARATELY AND WITH NO PUBLISHED DEFAULT. "Pitch Bend Up
     # [-60...+60] This sets the maximum amount of pitch bend, in semitones, when you move the

@@ -19814,7 +19814,9 @@ class TestJD800:
 		"""Seven are recognised and four are sent; breath, portamento time and portamento only arrive."""
 		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
 
-		numbers = {control.cc: control for control in jd.controls.values() if control.cc is not None}
+		# The parts' chart is the one that recognises all seven, pan among them.
+		numbers = {control.cc: control for control in jd.controls.values()
+			if control.cc is not None and control.part == "part"}
 
 		assert sorted(numbers) == [1, 2, 5, 7, 10, 64, 65]
 		assert {cc for cc, control in numbers.items() if control.direction == "receives"} == {2, 5, 65}
@@ -19822,7 +19824,39 @@ class TestJD800:
 		assert numbers[64].label == "Hold 1" and numbers[5].label == "Portamento time"
 
 		# The registered parameters' carriers and the mode messages are not carried.
-		assert not {6, 38, 100, 101, 121} & set(numbers)
+		assert not {6, 38, 100, 101, 121} & {control.cc for control in jd.controls.values()}
+
+	def test_each_controller_is_written_once_for_each_chart_that_marks_it (self) -> None:
+		"""Single mode's channel, the five synth parts and the special part: nineteen controls.
+
+		Until 2026-10-12 there were seven, naming no part, and pan said both ways. **Pan naming
+		no part is now sent only**: Single mode ignores it, and the five parts receive it.
+		"""
+		jd = pymidiinstrumentdefs.load("roland/jd_800", [CORPUS])
+
+		by_part: dict[str | None, dict[int, str]] = {}
+
+		for control in jd.controls.values():
+			assert control.cc is not None
+			by_part.setdefault(control.part, {})[control.cc] = control.direction
+
+		assert len(jd.controls) == 19
+		assert by_part[None] == {1: "both", 2: "receives", 5: "receives", 7: "both", 10: "transmits",
+			64: "both", 65: "receives"}
+		assert by_part["part"] == {1: "both", 2: "receives", 5: "receives", 7: "both", 10: "both",
+			64: "both", 65: "receives"}
+		assert by_part["special"] == {1: "both", 2: "receives", 7: "both", 10: "transmits", 64: "both"}
+
+		for key, control in jd.controls.items():
+			if control.part:
+				assert key.startswith(f"{control.part}_")
+				assert jd.controls[key[len(control.part) + 1:]].label == control.label
+
+		assert len(jd.controls_reaching("part")) == 7 and len(jd.controls_reaching("special")) == 5
+
+		account = " ".join((jd.source or "").split())
+
+		assert "**So pan naming no part is sent and not received.**" in account
 
 	def test_pan_is_the_one_row_where_the_single_and_parts_charts_differ (self) -> None:
 		"""Only Multi mode's five synth parts receive it, and the prose says why.

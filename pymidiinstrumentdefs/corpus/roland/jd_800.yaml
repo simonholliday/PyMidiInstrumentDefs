@@ -61,7 +61,24 @@ source: >-
   up with the remarks, the rows for Portamento time and Portamento are blank, and the numbers 5 and
   65 are not printed. That is consistent with the special setup, whose common settings are only a
   bender range and an aftertouch bend sensitivity (reference p. 174), though no page says the
-  special part ignores portamento. The pan comment below rests on this reading and on page 170.
+  special part ignores portamento. The special part's controls below rest on this reading, and its
+  want of a pan on page 170 as well.
+
+  EACH CONTROLLER IS WRITTEN ONCE FOR EACH CHART THAT MARKS IT, SENT OR RECOGNISED. A control
+  naming no part takes the Single mode chart's pair of marks. Keyed `part_` it names one of the
+  five synth parts and takes the parts' chart's, and keyed `special_` it names the special part and
+  takes that chart's. **So pan naming no part is sent and not received.** All three charts mark it
+  `*1` as transmitted, which is the pedal set to PAN (reference p. 288), the special part's on the
+  reading by its remarks, and only the five parts' chart circles it as recognised. The special
+  part has five of the seven, modulation, breath, volume, hold and a pan that is sent only: its
+  chart leaves both portamento rows blank. The `*1` beside Hold 1 as recognised, in the Single and
+  parts charts, is no setting of the MIDI menu: each Tone's Hold control "also determines the
+  effect of Hold messages from MIDI IN." (reference p. 31). What is received arrives on Single
+  mode's receive channel or on the part's own. What is sent leaves on the transmit channel. That
+  follows the receive channel at `RX CH` in Single mode and `PART` in Multi, where "The transmit
+  channel will be the same as the receive channel of the Part" (reference p. 207), and at PATCH too
+  for the special part, where the Transmit Channel table's `PARTS` line "acts as Rx ch."
+  (reference p. 288); its other values are a fixed channel from 1 to 16, PATCH and OFF.
 
   PROGRAM CHANGE REACHES 128 PATCHES, HALF OF THEM ON A CARD. "64 patches can be stored internally
   and an additional 64 patches can be stored on a separately sold DATA card for a combined total of
@@ -134,7 +151,8 @@ midi:
 parts:
   # "In Multi mode, the JD-800 functions as 5 Synth Parts and a Special Part." (reference p. 13).
   # Single mode is the instrument as one part on its Rx channel; the parts are what Multi mode
-  # adds.
+  # adds. A control naming a part is that part's chart row, and one naming no part is Single
+  # mode's: see the account.
   part:
     label: Part
     count: 5
@@ -175,17 +193,39 @@ voice:
     programmable: true
 
 controls:
+  # THE SINGLE MODE CHART'S ROWS (reference p. 297), received on Single mode's receive channel and
+  # sent on the transmit channel: see the account.
   modulation:      {label: Modulation, cc: 1}
   breath:          {label: Breath, cc: 2, direction: receives}
   portamento_time: {label: Portamento time, cc: 5, direction: receives}
   volume:          {label: Volume, cc: 7}
-  # Received by Multi mode's five synth parts only, not in Single mode and not by the special part
-  # (reference pp. 285, 299, 301 and 170); see the account.
-  pan:             {label: Pan, cc: 10}
+  # Sent and not received in Single mode (reference pp. 288 and 297). Multi mode's five synth parts
+  # receive it, below, and the special part does not (reference pp. 285, 299, 301 and 170); see the
+  # account.
+  pan:             {label: Pan, cc: 10, direction: transmits}
   hold_1:          {label: Hold 1, cc: 64}
   # "Being made functionable only in solo mode, changes the Portamento Switch in respective patch
   # parameters." (reference p. 285).
   portamento:      {label: Portamento, cc: 65, direction: receives}
+
+  # THE PARTS' CHART'S ROWS, for each of Multi mode's five synth parts (reference p. 299), received
+  # on the part's own channel. Pan is recognised here and in neither other chart.
+  part_modulation:      {label: Modulation, cc: 1, part: part}
+  part_breath:          {label: Breath, cc: 2, direction: receives, part: part}
+  part_portamento_time: {label: Portamento time, cc: 5, direction: receives, part: part}
+  part_volume:          {label: Volume, cc: 7, part: part}
+  part_pan:             {label: Pan, cc: 10, part: part}
+  part_hold_1:          {label: Hold 1, cc: 64, part: part}
+  part_portamento:      {label: Portamento, cc: 65, direction: receives, part: part}
+
+  # THE SPECIAL PART'S CHART'S ROWS, read by its remarks (reference p. 301), and five of the seven:
+  # it leaves both portamento rows blank, and its pan is sent and crossed as recognised, as Single
+  # mode's is. See the account.
+  special_modulation:   {label: Modulation, cc: 1, part: special}
+  special_breath:       {label: Breath, cc: 2, direction: receives, part: special}
+  special_volume:       {label: Volume, cc: 7, part: special}
+  special_pan:          {label: Pan, cc: 10, direction: transmits, part: special}
+  special_hold_1:       {label: Hold 1, cc: 64, part: special}
 
 sources:
   reference:
@@ -199,9 +239,9 @@ sources:
     # A SCAN: 316 sheets, each one 1-bit image, and not a character of text. The date is the
     # printing code on the back cover, `'91-3-E3-21D`, beside part number `26045450`.
     # **CITED BY SHEET**: the book prints chapter folios, and a locator here is a sheet of the
-    # file. To turn a printed folio into a sheet: II-n is sheet 160 + n, III-n is sheet 194 + n,
-    # and V-n is sheet 232 + n - so the MIDI implementation's V-53 is sheet 285. `file` says 0
-    # pages.
+    # file. To turn a printed folio into a sheet: I-n is sheet 16 + n, II-n is sheet 160 + n, III-n
+    # is sheet 194 + n, and V-n is sheet 232 + n - so the MIDI implementation's V-53 is sheet 285.
+    # `file` says 0 pages.
     page_offset: 0
   guide:
     kind: manual

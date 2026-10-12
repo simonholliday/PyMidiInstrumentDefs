@@ -1447,6 +1447,15 @@ class TestTheTwoMoog37s:
 		for field in ("addressing", "paraphonic", "voicing_modes", "polyphony", "aftertouch"):
 			assert getattr(sub.voice, field) == getattr(subsequent.voice, field), field
 
+		# **Each sends channel pressure from its keys, and neither manual says it is received**
+		# (#4893), so the field for what is answered to is unset in both, as it is in the Model
+		# D's, and all three say why.
+		for name in ("moog/sub_37", "moog/subsequent_37", "moog/minimoog_model_d"):
+			moog = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			assert (moog.voice.aftertouch, moog.voice.aftertouch_transmits) == (None, True), name
+			assert "SENT, AND NO PAGE SAYS IT IS RECEIVED." in " ".join(prose_of(*name.split("/")).split()), name
+
 		assert sub.midi.channels == subsequent.midi.channels
 		assert sub.midi.clock == subsequent.midi.clock
 		assert sub.midi.transport == subsequent.midi.transport
@@ -1736,8 +1745,8 @@ class TestAftertouch:
 			"korg/wavestate": ("both", False),
 			"moog/mother_32": ("channel", False),
 			"moog/muse": ("channel", True),
-			"moog/sub_37": ("channel", True),
-			"moog/subsequent_37": ("channel", True),
+			"moog/sub_37": (None, True),
+			"moog/subsequent_37": (None, True),
 			"novation/mininova": ("channel", False),
 			"novation/summit": ("both", True),
 			"oberheim/ob_x8": ("channel", True),

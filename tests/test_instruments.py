@@ -1814,6 +1814,50 @@ class TestNrpnFromTheChart:
 			assert (controls["bd_ctrl"].cc, controls["sd_ctrl"].cc) == (96, 97), name
 
 
+class TestLearnedBesideFixedControls:
+
+	"""`control_change: learned` says the owner assigns numbers, and may stand beside controls.
+
+	The property's own words once said there are then no controls, eight definitions carried
+	some all the same, and others left the field empty for that reason: one maker's
+	instruments answered one question two ways.
+	"""
+
+	def test_the_word_stands_beside_the_numbers_the_maker_fixes (self) -> None:
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"midi: {control_change: learned}\n"
+			"controls: {wheel: {cc: 1, direction: receives}}\n"
+		)
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.midi.learns_control_change
+		assert not definition.midi.refuses_control_change
+		assert list(definition.controls) == ["wheel"]
+		assert not definition.warnings
+
+	def test_and_alone_where_there_is_no_factory_map_at_all (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nmidi: {control_change: learned}\n"
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.midi.learns_control_change
+		assert not definition.controls
+
+	def test_a_file_that_says_nothing_learns_nothing (self) -> None:
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\ncontrols: {wheel: {cc: 1}}\n"
+
+		assert not pymidiinstrumentdefs.parse(body, source = "x.yaml").midi.learns_control_change
+
+	def test_the_word_is_matched_as_it_is_spelt (self) -> None:
+		"""`Learned` is words of the writer's own, as any other text in the field is and always was."""
+		body = "definition: 1\nmodel: {name: X}\nsource: hand\nmidi: {control_change: Learned}\n"
+		definition = pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert definition.midi.control_change == "Learned"
+		assert not definition.midi.learns_control_change
+		assert not definition.warnings
+
+
 class TestAssignment:
 
 	"""What the owner can change about a control: its number, its destination, or whether it is on at all."""

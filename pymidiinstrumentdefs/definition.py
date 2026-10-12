@@ -321,8 +321,8 @@ class Voice:
 	notes at all.  The last two want opposite things from a panel: a volca drum
 	as it ships sounds the part whose channel carried the note whatever its number, so
 	every key of a grid does the same thing, while a DFAM should get no grid.  ``note_map`` is
-	``learned`` where notes are assigned by MIDI learn, in which case any
-	``voices`` given are the factory defaults rather than fixed facts.
+	``learned`` where the owner assigns the notes, by MIDI learn or by setting them in a
+	menu, in which case any ``voices`` given are the factory defaults rather than fixed facts.
 
 	``aftertouch`` says which kind of aftertouch the instrument answers to:
 	``channel``, ``poly``, ``both`` (both kinds, even where a setting picks which
@@ -438,10 +438,19 @@ class Midi:
 	@property
 	def learns_control_change (self) -> bool:
 
-		"""True when the instrument answers to control changes assigned by MIDI learn.
+		"""True when some of the instrument's controller numbers are its owner's to assign.
 
-		There is no factory map to publish, so there are no controls, and that
-		is neither an unread page nor a checked absence: it is by design.
+		By MIDI learn or by setting a number in a menu: either way the number is the
+		owner's, and no file can publish it.  **The file may carry controls all the
+		same.**  Those are the numbers the maker fixes, or the ones it prints as what
+		the instrument ships sending, and ``learned`` says the rest is the owner's.
+		Waldorf's Iridiums have fifteen or sixteen numbers their maker fixes, most of
+		them modulation sources, and map everything else by learning; a MONTAGE
+		prints the number each of its physical controllers ships on, and every one
+		can be moved.  Which way a number travels is not what the word says: a D-50's
+		are the ones its pedals send.  A
+		file with no controls and this word has no factory map at all, which is
+		neither an unread page nor a checked absence.
 		"""
 
 		return self.control_change == "learned"

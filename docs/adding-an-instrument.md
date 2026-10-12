@@ -514,6 +514,33 @@ model.
 `channels` is the range the instrument can be set to. Anything the format cannot yet
 express goes in a comment, never in an invented field.
 
+**`control_change` says two things a list of controls cannot.** `control_change: none` is a
+checked absence: somebody read the documents and the instrument answers to no controller, as
+`midi: none` says of MIDI altogether. `control_change: learned` says the owner assigns
+controller numbers, by MIDI learn or by setting a number in a menu, so no file can publish
+them. **`learned` may stand beside controls.** The controls are then the numbers the maker
+fixes, or the ones it prints as what the instrument ships sending, and the word says the rest
+is the owner's. Waldorf's Iridiums have fifteen or sixteen numbers their maker fixes, most of
+them modulation sources, and map any other parameter by learning; a MONTAGE prints the number
+each of its physical controllers ships on, and every one can be moved. The paragraph on
+`assignment` below is how a control says the owner can move it. Leave `control_change` out
+where neither word is so.
+
+```yaml
+midi:
+  # "the maker's sentence about giving a parameter a controller" (manual p. 12)
+  control_change: learned
+
+controls:
+  # A number the maker fixes, from its table of modulation sources (manual p. 34).
+  mod_wheel: {label: Mod Wheel, cc: 1, direction: receives}
+```
+
+`voice.note_map: learned` is the same word for the notes in `voice.voices`: the owner assigns
+which note plays which voice, and a map the file gives is then where the instrument starts and
+not a fixed fact. `fixed` says the maker's map cannot be changed, and leaving it out says
+nobody has recorded which.
+
 **Bank select is in the MIDI specification too, and it is carried anyway, wherever the
 maker numbers it.** CC 0 and CC 32 choose a bank of programs rather than shaping a sound,
 and they go in as controls all the same, with the maker's labels and ranges:

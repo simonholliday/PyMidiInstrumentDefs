@@ -15686,8 +15686,8 @@ class TestJDXi:
 
 		# **The checker reads only the pages the account cites**, and says something narrower
 		# about other numbers; the definition once said the two were the same nine.
-		assert "THE CITATION CHECKER'S NINE ARE NOT THE SAME NINE." in flat
-		assert "89 of the 98 are found as numbers and nine only inside a span" in flat
+		assert "THE CITATION CHECKER'S THREE ARE THREE OF THOSE NINE." in flat
+		assert "95 of the 98 are found as numbers and three only inside a span" in flat
 		assert "The citation checker reports exactly that" not in flat
 
 		# And it distinguishes that from generating numbers, which is the line it did not cross.

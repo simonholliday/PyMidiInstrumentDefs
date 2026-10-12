@@ -5169,6 +5169,20 @@ class TestVolcaDrum:
 		# The chart gives each part its controls and says nothing of which part a note sounds.
 		assert all(part.receives == ("controls",) for part in volca.parts_in("single").values())
 
+		# **Notes reach the instrument on the single channel and no page says which part one
+		# sounds**, so each of the six says `unrecorded` and answers neither yes nor no.
+		for name, part in volca.parts_in("single").items():
+			assert part.unrecorded == ("notes",), name
+			assert part.takes("notes") is None and part.takes("controls") is True, name
+
+		assert volca.parts["part"].takes("notes") is True
+
+		# And the base channel is the split chart's fixed 1 in one mode, and any of sixteen
+		# in the other, where one figure used to stand for both.
+		assert (volca.channels_in("split"), volca.channels_in("single")) == ((1, 1), (1, 16))
+		assert volca.midi.channels == (1, 1)
+		assert not volca.warnings
+
 		# Six parts on one channel, so no number may mean two things across them.
 		assert len({control.cc for control in single}) == 58
 

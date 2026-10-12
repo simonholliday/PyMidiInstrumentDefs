@@ -140,8 +140,8 @@ source: >-
   charts, lists "Fixed single channel MIDI handling of note events." (release_notes) and does
   not say what the handling is; the update manual in its archive, which sits behind a licence
   agreement, was not read here. So the six parts there are recorded as taking controls, which
-  is all the chart gives each of them, and `notes` is left out of their `receives` as not
-  recorded rather than as found absent.
+  is all the chart gives each of them, and each says `unrecorded: [notes]`: notes arrive on
+  that channel, and how one reaches a part is not in the documents.
 
   NOT RECORDED: polyphony, which neither chart nor manual states for a part or for the
   instrument; the pitch bend range, there being no pitch bend; and how many presets a program
@@ -229,9 +229,10 @@ midi:
   # (chart p. 1) instead. So on the split channels the base is 1 and cannot be anything else,
   # and the split part below, six instances from an offset of 0, is what puts them on 1 to 6.
   # Setting a channel at all is what switches the instrument to the other implementation, and
-  # on the single channel the base is the channel set, 1 to 16. **This field does not show
-  # that**: it is this file's reading of the split chart's X, the format having one figure for
-  # the whole instrument.
+  # on the single channel the base is the channel set, 1 to 16. **This field is the split
+  # chart's, and the single mode below gives its own range.** Here it is this file's reading
+  # of the split chart's X. Until 2026-10-12 the format had one figure for the whole
+  # instrument, and the single channel's 1 to 16 was in words only.
   # THE SPLIT CHART CONTRADICTS ITSELF HERE AND BOTH READINGS ARE RECORDED. An X against Basic
   # Channel says the instrument answers to no basic channel at all, and three cells of the same
   # chart say otherwise: the recognised mode is 3, which is omni off, and the Mode and Velocity
@@ -283,6 +284,9 @@ modes:
     factory: true
   single:
     label: Single channel
+    # The base channel is the channel set, any of sixteen: the single chart's Basic Channel row
+    # reads 1-16 received and "Memorized" (alternate_chart p. 1).
+    channels: [1, 16]
     # `unparted` stays true in both modes: the resonator's four controls name no part and are
     # on both charts.
 
@@ -307,17 +311,18 @@ parts:
   # of nine numbers of its own, PART1 to PART6 on its chart. Six parts rather than one part of
   # six instances, because each has its own numbers and the channel tells none of them apart.
   # `channel_offset: 0` puts all six on the base channel, which in this mode is the channel
-  # set: the single chart's Basic Channel row reads 1-16 received and "Memorized", where
-  # `midi.channels` above is read from the split chart. **`notes` is left out of `receives` as
-  # not recorded, not as found absent.** The instrument takes notes on this channel too, which
+  # set: the single chart's Basic Channel row reads 1-16 received and "Memorized", which the
+  # mode's own `channels` above records, where `midi.channels` is read from the split chart.
+  # **`notes` is `unrecorded` on each.** The instrument takes notes on this channel too, which
   # the `voice` section says for both modes, and no page says which part one sounds - see the
-  # source account.
-  single_part_1: {label: PART1, mode: single, channel_offset: 0, receives: [controls]}
-  single_part_2: {label: PART2, mode: single, channel_offset: 0, receives: [controls]}
-  single_part_3: {label: PART3, mode: single, channel_offset: 0, receives: [controls]}
-  single_part_4: {label: PART4, mode: single, channel_offset: 0, receives: [controls]}
-  single_part_5: {label: PART5, mode: single, channel_offset: 0, receives: [controls]}
-  single_part_6: {label: PART6, mode: single, channel_offset: 0, receives: [controls]}
+  # source account. Until 2026-10-12 `notes` was only left out of `receives`, which reads as a
+  # part that takes none.
+  single_part_1: {label: PART1, mode: single, channel_offset: 0, receives: [controls], unrecorded: [notes]}
+  single_part_2: {label: PART2, mode: single, channel_offset: 0, receives: [controls], unrecorded: [notes]}
+  single_part_3: {label: PART3, mode: single, channel_offset: 0, receives: [controls], unrecorded: [notes]}
+  single_part_4: {label: PART4, mode: single, channel_offset: 0, receives: [controls], unrecorded: [notes]}
+  single_part_5: {label: PART5, mode: single, channel_offset: 0, receives: [controls], unrecorded: [notes]}
+  single_part_6: {label: PART6, mode: single, channel_offset: 0, receives: [controls], unrecorded: [notes]}
 
 voice:
   addressing: any

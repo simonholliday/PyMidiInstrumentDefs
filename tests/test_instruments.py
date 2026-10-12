@@ -22230,6 +22230,9 @@ class TestWebPageTitles:
 		("asm/leviasynth", "downloads"): "Downloads | Ashun Sound Machines",
 		("behringer/td_3", "product_page"): "TD-3-RD | Behringer",
 		("dirtywave/m8", "downloads"): "Resources & Downloads – Dirtywave",
+		("dreadbox/nymphes", "support_page"): "support - Dreadbox Synthesizers",
+		("dreadbox/typhon", "support_page"): "support - Dreadbox Synthesizers",
+		("dreadbox/typhon", "product_page"): "Typhon Analog Synthesizer - Dreadbox Synthesizers",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

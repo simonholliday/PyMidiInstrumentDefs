@@ -197,6 +197,7 @@ class TestBundledCorpus:
 			"ensoniq/esq_1",
 			"erica_synths/hexdrums",
 			"erica_synths/perkons_hd_01",
+			"erica_synths/steampipe",
 			"expressive_e/osmose",
 			"groove_synthesis/third_wave",
 			"groove_synthesis/third_wave_24m",
@@ -690,10 +691,13 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Twenty-four definitions carry no controls, for five different reasons.
+		"""Twenty-five definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a twenty-fifth
-		cannot be added without saying which kind it is. The twenty-fourth is
+		Pinned here because the count has gone stale in notes twice: a twenty-sixth
+		cannot be added without saying which kind it is. The twenty-fifth is
+		`erica_synths/steampipe`, which records no word for the UB-Xa's reason turned
+		round: its maker says every parameter answers to a controller on a mapping
+		from the factory, and prints no table of that mapping. The twenty-fourth is
 		`behringer/b2600`, which records no word, for two of the five reasons at once:
 		a quick start guide with no table of MIDI messages is all its maker publishes,
 		and its maker's page claims a MIDI implementation of which the maker's documents
@@ -742,8 +746,8 @@ class TestAbsences:
 
 		# The three MPCs left at #4697, when the two numbers their guides give an effect, 1 and 11,
 		# were carried. `roland/tr_707` arrived at #4942, `none` off a chart's crossed row, and
-		# `behringer/b2600` at #4954, with no word at all.
-		assert len(empty) == 24
+		# `behringer/b2600` at #4954, with no word at all, as `erica_synths/steampipe` at #4966.
+		assert len(empty) == 25
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -760,9 +764,17 @@ class TestAbsences:
 			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
-		# And the five that record no word at all, for three different reasons now.
+		# And the six that record no word at all, for three different reasons now.
 		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent", "behringer/ub_xa",
-			"behringer/edge", "behringer/b2600"}
+			"behringer/edge", "behringer/b2600", "erica_synths/steampipe"}
+
+		# **THE STEAMPIPE IS THE SIXTH.** Its manual says a factory mapping exists and its owner can
+		# change it, so neither `none` nor `learned` is true of it, and the mapping is printed nowhere.
+		steampipe = " ".join((pymidiinstrumentdefs.load("erica_synths/steampipe", [CORPUS]).source or "").split())
+
+		assert "**The factory's mapping is printed nowhere**" in steampipe
+		assert "**SO `control_change` IS UNSET.**" in steampipe
+		assert pymidiinstrumentdefs.load("erica_synths/steampipe", [CORPUS]).midi.control_change is None
 
 		# **THE 2600 IS THE FIFTH, AND IT HAS BOTH OF ITS MAKER'S REASONS AT ONCE.** A quick start
 		# guide with no table of MIDI messages is all Behringer publishes for it, which is the
@@ -1884,7 +1896,7 @@ class TestMpe:
 
 		assert both == ["arturia/polybrute_12", "asm/hydrasynth_explorer", "asm/leviasynth", "expressive_e/osmose",
 			"synthstrom_audible/deluge"]
-		assert sum(word == "receives" for word in said.values()) == 15
+		assert sum(word == "receives" for word in said.values()) == 16
 		assert not [name for name, word in said.items() if word in ("sends", "none")]
 
 	def test_every_instrument_spreading_voices_across_channels_says_which_way_mpe_goes (self) -> None:
@@ -3355,7 +3367,8 @@ class TestOsmose:
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.per_voice_channels)
 
 		assert flagged == ["arturia/polybrute_12", "asm/hydrasynth_explorer",
-			"asm/leviasynth", "dreadbox/nymphes", "expressive_e/osmose", "groove_synthesis/third_wave",
+			"asm/leviasynth", "dreadbox/nymphes", "erica_synths/steampipe", "expressive_e/osmose",
+			"groove_synthesis/third_wave",
 			"groove_synthesis/third_wave_24m", "groove_synthesis/third_wave_8m", "modal/carbon8m",
 			"oberheim/ob_x8", "sequential/prophet_6", "synthstrom_audible/deluge",
 			"udo_audio/super_6", "waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2",
@@ -9241,7 +9254,9 @@ class TestProphet6:
 		# The sixteenth and seventeenth, the 3rd Wave's two desktops, which answer to MPE as the
 		# keyboard does.
 		assert "groove_synthesis/third_wave_24m" in flagged and "groove_synthesis/third_wave_8m" in flagged
-		assert len(flagged) == 17
+		# The eighteenth, the Steampipe, whose maker's page counts its MPE channels by its voices: eight.
+		assert "erica_synths/steampipe" in flagged
+		assert len(flagged) == 18
 
 	def test_nrpn_is_preferred_as_it_is_on_the_other_sequential (self) -> None:
 		"""Word for word the same sentence in both implementations, so it is the maker's."""
@@ -10004,7 +10019,7 @@ class TestPerkonsHD01:
 
 		erica = sorted(path.stem for path in (CORPUS / "erica_synths").glob("*.yaml"))
 
-		assert erica == ["hexdrums", "perkons_hd_01"]
+		assert erica == ["hexdrums", "perkons_hd_01", "steampipe"]
 
 		# **THIS MAKER CHANGED HOW IT PUBLISHES BETWEEN THE TWO**, which is the whole value of
 		# having learned its habits here: the PĒRKONS's manual sits at a direct address naming
@@ -17869,7 +17884,7 @@ class TestCascadia:
 		assert "`true` would misdescribe the instrument and `false` would hide the feature" in flat
 
 		# **AND NOT ONE INSTRUMENT THAT SETS THE FLAG IS MONOPHONIC**, which is the whole
-		# distinction: seventeen set it, and none of the seventeen records one voice. So this
+		# distinction: eighteen set it, and none of the eighteen records one voice. So this
 		# would have been the first, and the field's meaning here cannot stretch to it.
 		setters = {}
 
@@ -17879,7 +17894,7 @@ class TestCascadia:
 			if other.midi is not None and other.midi.per_voice_channels is True:
 				setters[name] = other
 
-		assert len(setters) == 17
+		assert len(setters) == 18
 		assert "modal/carbon8m" in setters and "waldorf/iridium" in setters
 		assert [name for name, other in setters.items() if other.voice.polyphony == 1] == []
 
@@ -21238,3 +21253,52 @@ class TestPro3:
 
 		assert "**THE GUIDE READS AS THE FIRST OPERATING SYSTEM'S, WHATEVER ITS TITLE SHEET SAYS.**" in said
 		assert "**A SETTING CHOOSES WHICH HALF OF THIS FILE THE INSTRUMENT HEARS.**" in said
+
+
+class TestSteampipe:
+
+	"""Eight voices, MPE and a clock received, and no controls: a factory mapping its maker never prints."""
+
+	def test_no_controls_and_no_word_about_them (self) -> None:
+		steampipe = pymidiinstrumentdefs.load("erica_synths/steampipe", [CORPUS])
+
+		assert not steampipe.controls and not steampipe.parts
+		assert steampipe.midi.control_change is None and not steampipe.midi.refuses_control_change
+		assert not steampipe.midi.learns_control_change
+
+		flat = " ".join(prose_of("erica_synths", "steampipe").split())
+
+		assert "**NO CONTROLS, AND THIS FILE DOES NOT SAY `none`.**" in flat
+		assert "**NOR DOES IT SAY `learned`.**" in flat
+		assert "**AN OWNER CAN READ THE MAPPING OFF THE INSTRUMENT.**" in flat
+		assert "**A PICTURE OF THE MENU SHOWS FIVE ROWS, AND FOUR CONTROLLER NUMBERS.**" in flat
+
+	def test_the_other_erica_synths_definitions_are_the_two_ends_it_stands_between (self) -> None:
+		"""The HexDrums says `none` on its maker's word; the Perkons carries a printed factory assignment."""
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
+		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
+
+		assert hexdrums.midi.control_change == "none" and not hexdrums.controls
+		assert perkons.controls and all(control.assignment == "default" for control in perkons.controls.values())
+
+	def test_what_its_midi_is_recorded_as (self) -> None:
+		steampipe = pymidiinstrumentdefs.load("erica_synths/steampipe", [CORPUS])
+
+		assert (steampipe.midi.clock, steampipe.midi.mpe, steampipe.midi.per_voice_channels) == ("receives", "receives", True)
+		assert (steampipe.midi.channels, steampipe.midi.mode, steampipe.midi.transport, steampipe.midi.program_change,
+			steampipe.midi.nrpn, steampipe.midi.sysex) == (None, None, None, None, None, None)
+
+	def test_eight_voices_or_one (self) -> None:
+		steampipe = pymidiinstrumentdefs.load("erica_synths/steampipe", [CORPUS])
+
+		assert (steampipe.voice.addressing, steampipe.voice.polyphony, steampipe.voice.voicing_modes) == ("pitches", 8, (1, 8))
+		assert steampipe.voice.velocity is not None and steampipe.voice.pitch_bend is not None
+		assert (steampipe.voice.velocity.note_on, steampipe.voice.pitch_bend.programmable) == ("received", True)
+		assert (steampipe.voice.aftertouch, steampipe.voice.note_range) == (None, None)
+
+	def test_one_manual_and_the_firmware_the_page_names (self) -> None:
+		steampipe = pymidiinstrumentdefs.load("erica_synths/steampipe", [CORPUS])
+
+		assert (steampipe.model.manufacturer, steampipe.model.name, steampipe.model.firmware) == ("Erica Synths", "Steampipe", "1.1")
+		assert list(steampipe.sources) == ["manual", "product_page"]
+		assert (steampipe.sources["manual"].edition, steampipe.sources["product_page"].paginated) == ("V3", False)

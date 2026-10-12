@@ -1,0 +1,201 @@
+# **NO CONTROLS, AND THIS FILE DOES NOT SAY `none`.** The manual says every parameter of the
+# Steampipe answers to a controller, that a mapping comes from the factory, and that its owner can
+# change it. It prints no table of that mapping, so there is no number here to give a control.
+#
+# **NOR DOES IT SAY `learned`.** Four further controllers are the owner's to name, by hand or by
+# MIDI learn, and as this file reads the menu for each controller they play it from. But the maker
+# says the parameters' own mapping is the factory's, which is the opposite of an instrument with no
+# map by design.
+#
+# **WHAT THE MANUAL SHOWS IS PICTURES OF THE SCREEN.** Controller numbers stand in pictures of three
+# of its screens, four beside parameters' names in one. A picture of a screen is at most a setting
+# somebody had, so the account gives the numbers and no control is made of one.
+
+definition: 1
+
+model:
+  manufacturer: Erica Synths
+  # The manual calls it `THE ERICA SYNTHS X 112dB STEAMPIPE SYNTHESIZER`, made with the Dutch
+  # company 112dB (manual p. 3).
+  name: Steampipe
+  # THE NEWER OF THE TWO FIRMWARE FILES ON THE PRODUCT PAGE, `Steampipe 1.1 Firmware`: "This
+  # firmware adds stereo spread option and increases LFO speed range." (product_page). The manual is
+  # a week older by the date the page gives it and already has a spread control, which may be the
+  # one meant: see the account. Both files are images for the instrument and were not read.
+  firmware: "1.1"
+
+source: >-
+  **ONE MANUAL, AND IT PRINTS NO TABLE OF CONTROLLER NUMBERS.** Erica Synths' product page offers
+  one document, `User manual`, dated `July 15, 2025`, with two packs of presets and two firmware
+  files (product_page). The manual is 20 sheets with no page numbers, so a page cited here is a
+  sheet. Its last sheet reads "User Manual V3, July, 2025" (manual p. 20). Its text names no
+  controller number anywhere, and no program change, system exclusive or NRPN.
+
+  **EVERY PARAMETER ANSWERS TO A CONTROLLER, AND WHICH NUMBER IS A SETTING.** "Every parameter on
+  the Steampipe can be controlled via MIDI CC messages. The Steampipe comes with factory preset
+  mapping, but you can personalize mapping in the MIDI CC MAP menu." (manual p. 16). The owner
+  changes a number at the instrument: "Rotate the left encoder to select the parameter and rotate
+  the right encoder to alter the MIDI CC number." (manual p. 16). **The factory's mapping is
+  printed nowhere**: no table, no list, and no file of it on the product page.
+
+  **A PICTURE OF THE MENU SHOWS FIVE ROWS, AND FOUR CONTROLLER NUMBERS.** Beside that paragraph is a
+  picture of the screen headed `MIDI CC MAPPING` (manual p. 16). Its rows, numbered 0 to 4, are
+  `Envelope Attack`, with the word `Learn` where a number would stand, and `Envelope Decay`,
+  `Envelope Sustain`, `Envelope Release` and `Envelope Scaling` with 71, 72, 73 and 74. That is what
+  one screen showed when the picture was taken. No sentence says whether its numbers are the
+  factory's, or what the word in its first row
+  means: the text describes no learning in this menu. `Envelope Scaling` is the name of no control
+  on the panel, whose envelope has a keytrack knob and a velocity knob, and the manual says of the
+  one that it scales the envelope's times and of the other its level (manual p. 7). And five rows
+  are not a mapping of every parameter. So no control is made of it.
+
+  **SO `control_change` IS UNSET.** `none` would say the instrument answers to no controller,
+  which the maker denies in so many words. `learned` would say there is no factory map by
+  design, and the maker says there is one. What is missing is the document.
+
+  **AN OWNER CAN READ THE MAPPING OFF THE INSTRUMENT.** Row by row in the mapping menu (manual p.
+  16), which is one of the settings menu's options (manual p. 15). Or by recording what the
+  instrument sends, which the manual offers for another purpose, in a sentence printed as it stands:
+  "This feature in particularly useful if you wish to record automations during live recording of
+  the Steampipe into your DAW." (manual p. 15). That turning a knob sends its controller is a
+  reading; no sentence says so in terms.
+
+  **THE SAME NUMBERS ARE SENT.** "The Steampipe transmits MIDI CC messages as mapped in the CC
+  mapping menu" (manual p. 15). Each of the two ports, the DIN socket and USB, has a switch for
+  receiving controllers and another for sending them (manual p. 15). No default is printed for the
+  four. Of the DIN port's receiving switch the manual says: "This is particularly useful to avoid
+  conflicting messages from the MIDI controller as described in the MIDI DEVICE menu section."
+  (manual p. 15). That section describes no conflict. The switch's own words name every controller
+  from that port, and the four sources below are controllers too; the reason given reads as if the
+  playing controller's messages went on working. No sentence settles which. The second DIN socket is
+  "the configurable MIDI thru/ MIDI out" (manual p. 5), lettered MIDI OUT on the drawing of the back
+  and `MIDI Thru/Out` among the features (manual pp. 4, 5), and no setting that makes it one or the
+  other is described.
+
+  **FOUR MORE CONTROLLERS ARE THE OWNER'S TO NAME.** "There are basic MIDI messages, like pitch,
+  note on and velocity that are hard-wired to the Steampipe controls, but for more expressive
+  performance, there are four more addressable MIDI CC messages" (manual p. 12). They are the four
+  `CC SOURCES`, A to D, set by hand or by MIDI learn. As this file reads the menu they are set for
+  each controller the owner adds as a device. Editing a controller is editing its sources, "In order
+  to edit MIDI CC messages assigned to sources A, B, C and D, select EDIT in the MIDI controller
+  setup menu." (manual p. 12), and the features speak of a modulation matrix "with MIDI
+  controller-specific configurations" (manual p. 4). No sentence says in terms that each device
+  keeps four of its own. They are sent on to destinations in a modulation menu, and what a source
+  does there belongs to the preset: "Modulation settings are saved with PRESETS." (manual p. 13). No
+  sentence says where the parameters' mapping, or a device's sources and bend range, are kept. The
+  picture of the device screen shows two devices, `KEYBOARD` and `EWI`, the four sources at 1, 2, 17
+  and 18, and a bend of `+12` and `-12` (manual p. 12): again a picture of a setting.
+
+  **NOTES AND VELOCITY ARE WIRED IN, AND A BEND RANGE IS A SETTING.** The sentence above names
+  pitch, note on and velocity. No sentence says in terms that pitch bend is received; what is
+  described is its range: "The same screen provides access to the pitch bend range setting." (manual
+  p. 13), on the screen of the device the owner set up.
+
+  **MPE IS A MODE, AND THE MAKER'S ANSWER GIVES THE CONTROLLER EIGHT CHANNELS.** The MIDI menu's
+  third item is to "Initiate the MPE (Multidimensional Polyphonic Expression) mode to play the
+  Steampipe with controllers" (manual p. 15) of that kind. The product page's one answer about it:
+  "Since the Steampipe only uses 8 voices, make sure your MPE controller is configured to only use 8
+  MPE channels, not 16." (product_page). So `mpe` is `receives` and `per_voice_channels` true, the
+  second as a reading of that answer. The same answer has an owner "set A to 74 CC and B to poly"
+  (product_page) in the device menu, and "Leave C and D on zero." (product_page); no page of the
+  manual says what `poly` or zero is as a source. Of how MPE works the manual says no more than that
+  there is a mode; twice more it names MPE controllers as a kind (manual pp. 6, 12). No zone, no
+  channel and no bend range for it is printed.
+
+  **A ROW `Mono-P:` IN A PICTURE, THE WORD `poly` ON THE PAGE, AND PRESSURE IN NO SENTENCE.** The
+  picture of the MIDI monitor shows two controllers, 1 and 74, and a row `Mono-P:` with a value
+  (manual p. 15). This file reads that row as channel pressure and the page's `poly` as pressure of
+  the note; neither document says so. No sentence of the manual or the page says the instrument
+  answers to aftertouch of either kind, so `aftertouch` is not recorded.
+
+  **A CHANNEL FOR EACH INPUT, AND NO VALUES PRINTED.** The MIDI menu's first two items are "Select
+  the MIDI IN channel on the DIN MIDI connector." (manual p. 15) and "Select the MIDI IN channel on
+  the USB MIDI connector." (manual p. 15). The picture of that menu shows both at `OMNI`, with `MPE
+  MODE` at `OFF` and `SYNC SOURCE` at `DIN`. No page prints the values a channel can be set to, so
+  `channels` is not recorded.
+
+  **CLOCK IS RECEIVED, FOR THE LFOS.** "Synchronizes the LFO to the MIDI clock." (manual p. 9),
+  and the MIDI menu chooses which input it is taken from: "Select the source (DIN or USB) of the
+  MIDI CLOCK for LFO synchronization." (manual p. 15). No sentence has the instrument send a
+  clock, and none names start or stop.
+
+  **THE SUSTAIN PEDAL HAS A SWITCH AND NO NUMBER.** The instrument has a pedal socket of its own,
+  and a setting for a pedal on the keyboard it is played from: "With default setting - SUSTAIN
+  ON - an external pedal is enabled." (manual p. 15). No controller number is printed for it.
+
+  **EIGHT VOICES, OR ONE NOTE AT A TIME.** "It is an 8-voice polyphonic synthesizer, but it has no
+  conventional oscillators." (manual p. 3). "Voice mode: with polyphonic selected, every voice gets
+  a note. Monophonic is one voice at a time, in unison all voices play the same note." (manual p.
+  8). Three modes are named, and two of them sound one note, the second on all the voices. So
+  `polyphony` is 8 and `voicing_modes` one and eight.
+
+  **THE MANUAL IS TAKEN TO DESCRIBE 1.1.** By the date the page gives it, it is a week older than
+  the 1.1 firmware, and it already has a stereo spread, which that firmware is said to add: "Sets
+  the stereo spread." (manual p. 9) among the reverberator's controls, and a `VOICE SPREAD` in the
+  engine menu (manual p. 11). Which of the two the page means it does not say. No page says which
+  firmware the manual is written for. The instrument shows its own: "The SYSTEM screen shows the
+  firmware version, memory usage and CPU usage." (manual p. 17), and the picture of that screen in
+  the manual reads `VERSION: 0.00`.
+
+  NOT RECORDED: the controllers, for want of the factory's mapping, and not declared absent; the
+  channels, no values being printed; `mode`, there being no chart; aftertouch; a note range; a bend
+  range, which is a setting; program change, system exclusive and NRPN, none of them named, the
+  presets being moved as files over USB (manual p. 17); whether a clock is sent; transport; and
+  anything of MPE beyond the mode.
+
+sources:
+  manual:
+    kind: manual
+    title: Steampipe User Manual
+    edition: V3
+    dated: 2025-07-15
+    landing: "https://www.ericasynths.lv/steampipe-3153/"
+    url: "https://www.ericasynths.lv/service/file/download/product_id/1434/file_id/566/"
+    sha256: f89b9bcb645b8ad26ef8c478356b913e25adce1185152e6ac530adb0b2028c59
+    retrieved: 2026-10-12
+    # 20 sheets, landscape, with no page numbers: a page cited is a sheet. The title is put together
+    # here: the manual's first sheet is a picture reading STEAMPIPE and USER MANUAL, in no text
+    # layer, and its last reads `User Manual V3, July, 2025`. The date is the day the file was made,
+    # by its own metadata, which is also the date the product page gives it. **Many sheets carry
+    # pictures of the instrument's screen, whose words and numbers are in no text layer**: those
+    # cited here were read by eye, twice.
+    page_offset: 0
+  product_page:
+    kind: product_page
+    title: "Steampipe - Erica Synths"
+    landing: "https://www.ericasynths.lv/steampipe-3153/"
+    url: "https://www.ericasynths.lv/steampipe-3153/"
+    sha256: e7d0b09c3dc86556a5f3b7e17b130253a3fe91a3d0b0a282248b12dc1135a8bd
+    retrieved: 2026-10-12
+    paginated: false
+    # Cited for what Erica Synths serves for the Steampipe, one manual and two firmware files
+    # among five downloads; for what the 1.1 firmware is said to add; and for its one answer
+    # about MPE. The digest is of the page's visible text; the markup as served is kept beside it.
+
+midi:
+  # "Synchronizes the LFO to the MIDI clock." (manual p. 9). No sentence has one sent.
+  clock: receives
+  # A mode of the MIDI menu (manual p. 15).
+  mpe: receives
+  # A READING of the product page's answer, eight voices and eight MPE channels (product_page).
+  per_voice_channels: true
+  # NOT RECORDED, AND NOT DECLARED ABSENT, the controllers: see the comment above the definition.
+  # NOT RECORDED EITHER: the channels, `mode`, transport, program change, system exclusive and
+  # NRPN.
+
+voice:
+  addressing: pitches
+  # "It is an 8-voice polyphonic synthesizer" (manual p. 3), with a voice mode that can make it one
+  # voice at a time or all voices on one note (manual p. 8).
+  polyphony: 8
+  voicing_modes: [1, 8]
+  velocity:
+    # Among the messages the manual calls hard-wired (manual p. 12), and an envelope's level can
+    # be scaled by it (manual p. 7).
+    note_on: received
+  pitch_bend:
+    # Its range is set on the instrument's screen, in the MIDI device menu (manual p. 13). No
+    # sentence says in terms that bend is received.
+    programmable: true
+  # NOT RECORDED: aftertouch. A row `Mono-P:` in a picture (manual p. 15) is read here as channel
+  # pressure; no sentence says so. Nor a note range.

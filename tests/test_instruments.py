@@ -22261,6 +22261,11 @@ class TestWebPageTitles:
 		("novation/summit", "download_page"): "Summit | Novation Downloads",
 		("oberheim/ob_x8", "product_page"): "OB-X8 analog synthesizer - Oberheim",
 		("oberheim/teo_5", "product_page"): "TEO-5 Synthesizer - Oberheim",
+		("roland/d_50", "support_page"): "Roland - Support - - Owner's Manuals",
+		("roland/jupiter_x", "manuals_page"): "Roland - Support - JUPITER-X - Owner's Manuals",
+		("roland/mc_707", "support_page"): "Roland - Support - MC-707 - Owner's Manuals",
+		("roland/sp_404mkii", "documents_page"): "Roland - Support - SP-404MKII - Owner's Manuals",
+		("roland/tr_8", "manuals_page"): "Roland - Support - TR-8 - Owner's Manuals",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

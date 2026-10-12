@@ -20,8 +20,8 @@
 # TWO MIDI DOCUMENTS, AND THE NEWER ONE IS INSIDE THE MANUAL. Korg's downloads page offers one
 # implementation and no chart; the chart is on p. 58 of the owner's manual, and it is **four months
 # newer** - "Version: 1.10" (manual p. 58) and "Date: 2019.06.06" (manual p. 58) against the
-# implementation's "Revision 1.00 (2019.02.19)" (midi_impl). Where they differ the chart is followed, and they
-# differ in one place that matters: **song position**.
+# implementation's "Revision 1.00 (2019.02.19)" (midi_impl). Where they differ the chart is
+# followed, and they differ in one place that matters: **song position**.
 
 definition: 1
 
@@ -65,17 +65,17 @@ source: >-
 
   THREE ROWS OF THE IMPLEMENTATION ARE NOT CONTROLS AND ARE LEFT OUT, by number rather than by
   accident: All Sound Off at 120, Local Sw at 122 and All Note Off at 123. They mean the same on
-  every instrument that has them. The manual says something about them worth keeping: "CC#120
-  onward cannot be controlled using this setting" (manual), of the global filter that turns every
+  every instrument that has them. The manual says something about them worth keeping: "CC#120 onward
+  cannot be controlled using this setting" (manual p. 43), of the global filter that turns every
   other control change off.
 
-  SIX GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, which is more than any other
-  instrument here. The chart's footnotes make the control changes conditional on "MIDI Rx CC"
-  and "MIDI Tx CC" (manual p. 58), program change on "MIDI Rx Prog Chg" (manual p. 58) and
-  "MIDI Tx Prog Chg" (manual p. 58), and pitch bend on "MIDI Rx Pitch Bend" (manual p. 58) and
-  "MIDI Tx Pitch Bend" (manual p. 58), each of them an Off/On in the global menu (manual). **The manual does not print a factory default for any of the six**, which
-  is a real gap: the volca beats' manual marks its two with an asterisk and a key, and this one
-  does not.
+  SIX GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, which is more than any other instrument
+  here. The chart's footnotes make the control changes conditional on "MIDI Rx CC" and "MIDI Tx CC"
+  (manual p. 58), program change on "MIDI Rx Prog Chg" (manual p. 58) and "MIDI Tx Prog Chg" (manual
+  p. 58), and pitch bend on "MIDI Rx Pitch Bend" (manual p. 58) and "MIDI Tx Pitch Bend" (manual p.
+  58), each of them an Off/On in the global menu (manual). **The manual does not print a factory
+  default for any of the six**, which is a real gap: the volca beats' manual marks its two with an
+  asterisk and a key, and this one does not.
 
   THE MAKER'S NAMES DIFFER BETWEEN ITS OWN DOCUMENTS and the implementation is followed, because it
   is the document the numbers come from. Controllers 16 and 17 are "AMP EG ATTACK" (midi_impl) and
@@ -157,7 +157,7 @@ sources:
 midi:
   # The chart's Basic Channel row gives 1 to 16 for the default and 1 to 16 for a changed one, in
   # both columns, remarked "Memorized" (manual p. 58). The manual's global menu agrees and says
-  # what kind of channel it is: "This is both the Transmit and Receive channel." (manual).
+  # what kind of channel it is: "This is both the Transmit and Receive channel." (manual p. 42).
   channels: [1, 16]
   # The chart's Mode row: a cross transmitted and **3** received, which is omni off and poly, with
   # Messages a cross in both columns (manual p. 58).
@@ -180,7 +180,7 @@ midi:
     receives: true
     sends: true
     # WHAT THE INSTRUMENT HOLDS: "Number of programs: 100 (80 preset programs, 20 user programs)"
-    # (manual), and a program change reaches all of them - 0 to 99 is the whole of it, with no
+    # (manual p. 56), and a program change reaches all of them - 0 to 99 is the whole of it, with no
     # bank select anywhere in either document.
     presets: 100
   # O in both columns with footnote *4, "In addition to Korg exclusive messages, Inquiry is
@@ -193,12 +193,12 @@ midi:
   nrpn: none
 
 voice:
-  # "The monologue is a monophonic synthesizer" (manual), which its own front cover says again -
-  # the chart is headed "[MONOPHONIC ANALOGUE SYNTHESIZER]" (manual p. 58).
+  # "The monologue is a monophonic synthesizer" (manual p. 2), which its own front cover says again
+  # - the chart is headed "[MONOPHONIC ANALOGUE SYNTHESIZER]" (manual p. 58).
   polyphony: 1
   # The chart's Note Number row is "0–127" in both columns and its True Voice row "0–127" received
   # (manual p. 58). The keyboard itself is smaller - "25 keys (slim keyboard, velocity sensitive)"
-  # (manual) - but what the instrument will sound is the chart's figure.
+  # (manual p. 56) - but what the instrument will sound is the chart's figure.
   note_range: [0, 127]
   velocity:
     # "O 9n, V=1–127" (manual p. 58) in both columns of the chart's Note On row, and the
@@ -216,10 +216,11 @@ voice:
   aftertouch: none
   pitch_bend:
     # O in both columns with footnote *1 (manual p. 58). **The reach is a setting and the manual
-    # ties it to the slider rather than to an incoming message**: "Bend Range +" (manual) and
-    # "Bend Range" minus are each "[1 Note...12 Note]" (manual), and each "specifies how much pitch
-    # bend will be applied when moving the slider" (manual). So the two directions are settable separately, which no other
-    # instrument here does, and what an incoming bend does with them is not printed.
+    # ties it to the slider rather than to an incoming message**: "Bend Range +" (manual p. 32) and
+    # "Bend Range" minus are each "[1 Note...12 Note]" (manual p. 32), and each "specifies how much
+    # pitch bend will be applied when moving the slider" (manual p. 32). So the two directions are
+    # settable separately, which no other instrument here does, and what an incoming bend does with
+    # them is not printed.
     programmable: true
 
 groups:

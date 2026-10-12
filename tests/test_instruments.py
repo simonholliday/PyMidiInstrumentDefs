@@ -10183,8 +10183,7 @@ class TestMiniNova:
 
 		said = prose_of("novation", "mininova")
 
-		assert "None of them\n  # is a firmware number." in \
-			(CORPUS / "novation" / "mininova.yaml").read_text()
+		assert "**None of them is a firmware number.**" in " ".join(said.split())
 
 	def test_it_is_none_of_the_other_novations (self) -> None:
 		"""Seven of them now, and the UltraNova is an eighth this does not describe.

@@ -1,9 +1,9 @@
 # TWO MIDI DOCUMENTS, AND THE ONE CALLED THE IMPLEMENTATION GUIDE HAS NO CONTROLLER NUMBER IN IT.
-# Novation publishes both on one page. The `MiniNova MIDI Implementation Guide` is a single sheet
-# of the classic Function/Transmitted/Received chart, and where a controller number would be it
-# says "See MiniNova CC & NRPN tables" (midi_impl). **Everything below comes from those tables**,
-# the nine-sheet `MiniNova CC & NRPN Chart`, and everything about what the instrument answers to
-# in general comes from the one-sheet guide. Reading either alone would leave half the file empty.
+# Novation publishes both on one page. The `MiniNova MIDI Implementation Guide` is a single sheet of
+# the classic Function/Transmitted/Received chart, and where a controller number would be it says
+# "See MiniNova CC & NRPN tables" (midi_impl p. 1). **Everything below comes from those tables**,
+# the nine-sheet `MiniNova CC & NRPN Chart`, and everything about what the instrument answers to in
+# general comes from the one-sheet guide. Reading either alone would leave half the file empty.
 #
 # THE CONTROL CHANGES AND THE NRPNS ARE TWO DIFFERENT SETS OF PARAMETERS, NOT ONE MAP ADDRESSED
 # TWICE. **Of 557 controls, 105 carry a controller number, 452 carry an NRPN, and not one carries
@@ -15,7 +15,7 @@
 # All Notes Off are CC 120, 122 and 123, which mean the same on every instrument that has them and
 # belong to the MIDI specification rather than to one synthesiser. **The Local Off/On row is worth
 # reading before it goes**, because the chart gives it values no specification does - "99=On,
-# 33=Off" (midi_impl), where the standard says 0 and 127.
+# 33=Off" (midi_impl p. 1), where the standard says 0 and 127.
 #
 # TWO NRPN ADDRESSES CARRY THIRTY-SIX PARAMETERS BETWEEN THEM, and the value says which. NRPN 122
 # is thirty switches - every envelope's trigger, every LFO's four, the gator's three, the
@@ -36,16 +36,14 @@ definition: 1
 model:
   manufacturer: Novation
   name: MiniNova
-  # NOT RECORDED, and this one was looked for in three places. The user guide is "Version 1.01"
-  # (p. 1) and that is the guide's version, not the instrument's; the chart says "Version 0002" (chart
+  # NOT RECORDED, and this one was looked for in three places. The user guide is "Version 1.01" (p.
+  # 1) and that is the guide's version, not the instrument's; the chart says "Version 0002" (chart
   # p. 1) on its first seven sheets and "Version 0001" (chart p. 8) on its last two; the
-  # implementation guide says "Version: 0001" (midi_impl) and "Date: 10/02/2014" (midi_impl).
-  # **None of them
-  # is a firmware number.** The guide tells
-  # a player where to look instead - "Firmware update files will be available from time to time at
-  # support.novationmusic.com" (p. 9) - and the instrument shows its own under "Operating System
-  # Version" (p. 13). So what the numbers below match is the chart of February 2014, and nothing
-  # published says which firmware that is.
+  # implementation guide says "Version: 0001" (midi_impl p. 1) and "Date: 10/02/2014" (midi_impl p.
+  # 1). **None of them is a firmware number.** The guide tells a player where to look instead -
+  # "Firmware update files will be available from time to time at support.novationmusic.com" (p. 9)
+  # - and the instrument shows its own under "Operating System Version" (p. 13). So what the numbers
+  # below match is the chart of February 2014, and nothing published says which firmware that is.
 
 source: >-
   MiniNova CC & NRPN Chart, nine sheets: **every control below is one of its 490 rows**, seven
@@ -56,7 +54,7 @@ source: >-
 
   THE CHART IS THE DOCUMENT WITH THE NUMBERS AND IT IS NOT THE ONE CALLED THE IMPLEMENTATION
   GUIDE. That one-sheet guide is the classic chart of functions, and against Control Change it
-  says "See MiniNova CC & NRPN tables" (midi_impl) rather than giving any. Both are linked from
+  says "See MiniNova CC & NRPN tables" (midi_impl p. 1) rather than giving any. Both are linked from
   the same downloads page, 58.41 KB and 120.83 KB; a reader who fetched the one whose name
   promises an implementation would come away with none.
 
@@ -90,15 +88,15 @@ source: >-
 
   THE MAKER MISSPELLS NRPN AS NPRN, AND NOT ONLY IN PASSING. The chart's first sheet is headed
   "Novation MiniNova Extended CC & NRPN Map" (chart p. 1) and the running foot of all seven says
-  "Novation MiniNova CC NPRN Map" (chart p. 1); the file Novation serves it as is named `mininova-cc-nprn-chart.pdf`;
-  and two of its own rows are "NPRN LSB" and "NPRN MSB", at CC 98 and 99. Both spellings are the
-  maker's and both are kept where they are quoted.
+  "Novation MiniNova CC NPRN Map" (chart p. 1); the file Novation serves it as is named
+  `mininova-cc-nprn-chart.pdf`; and two of its own rows are "NPRN LSB" and "NPRN MSB", at CC 98 and
+  99. Both spellings are the maker's and both are kept where they are quoted.
 
-  AND THE PARAMETER NAMED AFTER THE INSTRUMENT IS THERE FOR ITS SIBLING. At the very top of the
-  NRPN space, 127:127, sits the arpeggiator parameter the chart spells `Mininova`, with a small n
-  where the rest of the document writes MiniNova, remarked "Managed parameter for UltraNova compatibility"
-  (chart p. 5). The UltraNova is the larger synthesiser this one is derived from and is **not**
-  what this file describes.
+  AND THE PARAMETER NAMED AFTER THE INSTRUMENT IS THERE FOR ITS SIBLING. At the very top of the NRPN
+  space, 127:127, sits the arpeggiator parameter the chart spells `Mininova`, with a small n where
+  the rest of the document writes MiniNova, remarked "Managed parameter for UltraNova compatibility"
+  (chart p. 5). The UltraNova is the larger synthesiser this one is derived from and is **not** what
+  this file describes.
 
   WHAT ELSE THE CHART GETS WRONG OR NEARLY WRONG, recorded rather than mended. Two of its value
   lists end in a stray comma, which drops the last value of each for anyone reading by comma;
@@ -137,9 +135,9 @@ sources:
     page_offset: 0
     # **EVERY NUMBER IN THIS FILE COMES FROM THIS DOCUMENT.** Nine sheets with no printed page
     # numbers other than its own "1 of 9" foot, which matches the sheets. Its own version is given
-    # twice and differently: "Version 0002" (chart p. 1) on the seven sheets of the map and
-    # "Version 0001" (chart p. 8) on the two of tables behind it, which is one document carrying two numbers rather than two
-    # documents. Built 2014-06-03 by its own metadata.
+    # twice and differently: "Version 0002" (chart p. 1) on the seven sheets of the map and "Version
+    # 0001" (chart p. 8) on the two of tables behind it, which is one document carrying two numbers
+    # rather than two documents. Built 2014-06-03 by its own metadata.
   midi_impl:
     kind: midi_implementation
     title: MiniNova MIDI Implementation Guide
@@ -151,9 +149,10 @@ sources:
     retrieved: 2026-10-04
     page_offset: 0
     # One sheet, and **everything in `midi:` below comes from it**. It gives its own date and
-    # version in its heading - "Date: 10/02/2014" (midi_impl) and "Version: 0001" (midi_impl) -
-    # and names the instrument "Model: Novation MiniNova" (midi_impl). It is the document whose name promises controller numbers and
-    # which has none: against Control Change it says to look at the other one.
+    # version in its heading - "Date: 10/02/2014" (midi_impl p. 1) and "Version: 0001" (midi_impl p.
+    # 1) - and names the instrument "Model: Novation MiniNova" (midi_impl p. 1). It is the document
+    # whose name promises controller numbers and which has none: against Control Change it says to
+    # look at the other one.
   manual:
     kind: manual
     title: MiniNova User Guide
@@ -186,11 +185,12 @@ sources:
 
 midi:
   # Its Basic Channel row gives "1 - 16" in both columns, for the default and for a changed one
-  # alike, remarked "Global Setting (MIDI Channel)" (midi_impl). The guide says which it leaves the factory on: a master
-  # keyboard should be "set to MIDI channel 1 (the MiniNova's default channel)" (p. 6).
+  # alike, remarked "Global Setting (MIDI Channel)" (midi_impl p. 1). The guide says which it leaves
+  # the factory on: a master keyboard should be "set to MIDI channel 1 (the MiniNova's default
+  # channel)" (p. 6).
   channels: [1, 16]
   # NOT RECORDED, because the chart gives two and does not choose. Its Mode row reads "Mode 3,4"
-  # in both columns, remarked "Patch Dependent" (midi_impl) - so omni is off either way and
+  # in both columns, remarked "Patch Dependent" (midi_impl p. 1) - so omni is off either way and
   # whether it is poly or mono is a property of the patch rather than of the instrument.
   clock: receives
   # System Real Time: Commands is X in both columns (midi_impl), and so are Song Position, Song
@@ -198,7 +198,7 @@ midi:
   transport: none
   program_change:
     # O in both columns, remarked "Use Bank Select LSB (CC32) for Banks 1=A, 2=B, 3=C"
-    # (midi_impl).
+    # (midi_impl p. 1).
     receives: true
     sends: true
     # WHAT THE INSTRUMENT HOLDS, which is the settled way of counting: "The Patches are arranged
@@ -207,41 +207,40 @@ midi:
     # banks)" (p. 34). One program change reaches 128 of them and the bank select reaches the
     # other two hundred and fifty-six.
     presets: 384
-  # O in both columns, remarked "For Patch Dumps" (midi_impl). The guide describes three of them:
-  # the current patch, all 384, and the global settings (p. 34).
+  # O in both columns, remarked "For Patch Dumps" (midi_impl p. 1). The guide describes three of
+  # them: the current patch, all 384, and the global settings (p. 34).
   sysex: true
-  # 452 of the 557 controls below are reachable only this way, and the chart is headed "Extended
-  # CC & NRPN Map" (chart p. 1). **`supported` rather than `preferred` because neither document ranks them**:
-  # nothing says to prefer an NRPN where a controller number exists, and in fact no parameter here
-  # has both, so the question never arises for any one control.
+  # 452 of the 557 controls below are reachable only this way, and the chart is headed "Extended CC
+  # & NRPN Map" (chart p. 1). **`supported` rather than `preferred` because neither document ranks
+  # them**: nothing says to prefer an NRPN where a controller number exists, and in fact no
+  # parameter here has both, so the question never arises for any one control.
   nrpn: supported
 
 voice:
   # "Full polyphony, with up to 18 voices" (p. 4), and the guide says the same again where it
   # warns about running out: "there are a maximum of 18 voices internally" (p. 20).
   polyphony: 18
-  # "Note Number 0 - 127" (midi_impl) received and transmitted, "True Voice 0 - 127" (midi_impl). The keyboard
-  # itself is smaller and transposable - "37-note (3 octaves) keyboard with velocity sensing"
-  # (p. 5), with OCTAVE buttons that "transpose the keyboard up or down one octave each time they
-  # are pressed" (p. 5) - but what the instrument will sound is the chart's figure.
+  # "Note Number 0 - 127" (midi_impl p. 1) received and transmitted, "True Voice 0 - 127" (midi_impl
+  # p. 1). The keyboard itself is smaller and transposable - "37-note (3 octaves) keyboard with
+  # velocity sensing" (p. 5), with OCTAVE buttons that "transpose the keyboard up or down one octave
+  # each time they are pressed" (p. 5) - but what the instrument will sound is the chart's figure.
   note_range: [0, 127]
   velocity:
-    # "Velocity Note On 0-127" (midi_impl) in both columns.
+    # "Velocity Note On 0-127" (midi_impl p. 1) in both columns.
     note_on: received
     # "Note Off X" transmitted and "0-127" received (midi_impl), so it arrives and is never sent.
     note_off: true
-  # "Aftertouch Key's X" (midi_impl) in both columns, and its Channel row is X transmitted and O
-  # received.
-  # The guide says the same from the player's side and says why: "the MiniNova keyboard does not
-  # send Aftertouch data, but the synth engine will correctly respond to any Aftertouch data
-  # received via MIDI (via DIN or USB)" (p. 36).
+  # "Aftertouch Key's X" (midi_impl p. 1) in both columns, and its Channel row is X transmitted and
+  # O received. The guide says the same from the player's side and says why: "the MiniNova keyboard
+  # does not send Aftertouch data, but the synth engine will correctly respond to any Aftertouch
+  # data received via MIDI (via DIN or USB)" (p. 36).
   aftertouch: channel
   # Never sent: both aftertouch rows are X transmitted (midi_impl), which covers the whole
   # instrument, and the keyboard "does not send Aftertouch data" (p. 36).
   aftertouch_transmits: false
   pitch_bend:
-    # "Pitch Bend" (midi_impl) is O in both columns, and the wheel's reach is a setting rather than a
-    # fact: "The range of operation can be set via the menu system, from a semitone to an octave,
+    # "Pitch Bend" (midi_impl) is O in both columns, and the wheel's reach is a setting rather than
+    # a fact: "The range of operation can be set via the menu system, from a semitone to an octave,
     # in semitone steps" (p. 8). So there is no one number to record, which is what `programmable`
     # says. Each oscillator also has a pitch bend amount of its own among the controls below.
     programmable: true

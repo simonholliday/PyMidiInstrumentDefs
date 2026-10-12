@@ -153,12 +153,12 @@ sources:
     # separately when it chooses, and for the Nymphes it has not.
 
 midi:
-  # **SIXTEEN, BY TWO MECHANISMS THAT REACH DIFFERENT NUMBERS.** The menu's rotary stops at seven
-  # - "Send any MIDI message (channel 1 to 16) or use the rotary to select from channel 1 to 7."
-  # (manual) - and the release notes put it the other way round: "Nymphes can now be set to any
-  # MIDI channel (except of 1 to 7) with the use of MIDI learn." (v2_notes p. 3). **So a player
-  # with no MIDI source to hand can only reach channels 1 to 7**, which is a thing this field
-  # cannot say.
+  # **SIXTEEN, BY TWO MECHANISMS THAT REACH DIFFERENT NUMBERS.** The menu's rotary stops at seven -
+  # "Send any MIDI message (channel 1 to 16) or use the rotary to select from channel 1 to 7."
+  # (manual p. 17) - and the release notes put it the other way round: "Nymphes can now be set to
+  # any MIDI channel (except of 1 to 7) with the use of MIDI learn." (v2_notes p. 3). **So a player
+  # with no MIDI source to hand can only reach channels 1 to 7**, which is a thing this field cannot
+  # say.
   channels: [1, 16]
   # NOT RECORDED, the mode: there is no implementation chart, and what the documents give instead
   # is a state - "Midi channel=OMNI/Mp=OFF" (v2_notes p. 5) after a factory reset - rather than a
@@ -182,8 +182,8 @@ midi:
     receives: true
     sends: true
     # **98, WHICH IS EVERY SLOT RATHER THAN A BANK**: "98 Presets Memory (49 user and 49 factory)"
-    # (manual). The sysex format addresses them as a page, a bank of seven and a preset of seven -
-    # 7 x 7 user and 7 x 7 factory - so program change alone reaches all of them.
+    # (manual p. 3). The sysex format addresses them as a page, a bank of seven and a preset of
+    # seven - 7 x 7 user and 7 x 7 factory - so program change alone reaches all of them.
     presets: 98
   # **TRUE, AND THE MAKER PUBLISHES THE FORMAT RATHER THAN ONLY THE FACT.** Preset import and
   # export, with the message laid out byte by byte and a manufacturer ID given as part of it
@@ -193,36 +193,36 @@ midi:
   # sysex numbers are preset specifics following Google Protobuf format." (v2_notes p. 3), with an
   # email address for anybody who wants the rest.
   sysex: true
-  # "This option lets you set the midi channel that Nymphes will respond to or enable MPE
-  # support." (manual), and the release notes give the procedure and what it costs: **under MPE
-  # the pitch wheel's range changes**, `From 0 to 48 semitones (On MPE)` against 0 to 12
-  # otherwise (manual).
+  # "This option lets you set the midi channel that Nymphes will respond to or enable MPE support."
+  # (manual p. 17), and the release notes give the procedure and what it costs: **under MPE the
+  # pitch wheel's range changes**, `From 0 to 48 semitones (On MPE)` against 0 to 12 otherwise
+  # (manual).
   per_voice_channels: true
   # Received: the channel setting is the one "Nymphes will respond to or enable MPE support"
-  # (manual), and nothing says it sends MPE.
+  # (manual p. 17), and nothing says it sends MPE.
   mpe: receives
 
 voice:
   addressing: pitches
-  # NOT RECORDED. No document gives a note range.
-  # **SIX, AND FIVE OF ITS SIX PLAY MODES TAKE FEWER.** "6 voices of Polyphony" (manual), and the
-  # mode table on the same document gives the rest: POLY 6, UNI A 1, UNI B 1, TRI 3, DUO 2,
-  # MONO 1 - **a voice count and an oscillators-per-note count for each**, so the instrument
-  # spends its six voices either on six notes or on one thick one.
+  # NOT RECORDED. No document gives a note range. **SIX, AND FIVE OF ITS SIX PLAY MODES TAKE
+  # FEWER.** "6 voices of Polyphony" (manual p. 3), and the mode table on the same document gives
+  # the rest: POLY 6, UNI A 1, UNI B 1, TRI 3, DUO 2, MONO 1 - **a voice count and an
+  # oscillators-per-note count for each**, so the instrument spends its six voices either on six
+  # notes or on one thick one.
   polyphony: 6
   # The four distinct counts that table gives, which is what this field holds.
   voicing_modes: [1, 2, 3, 6]
   velocity:
     # Received, as one of four assignable modulation sources: "This lets you use keyboard velocity
     # (how hard you strike a note on a keyboard) to modulate any of the 28 slider parameters,
-    # assuming your keyboard controller has velocity sensitive keys." (manual). **What it does
+    # assuming your keyboard controller has velocity sensitive keys." (manual p. 17). **What it does
     # without an assignment is not said**, so this records that the byte is read and not that it
     # reaches the amplifier.
     note_on: received
   # **POLYPHONIC, STATED IN SO MANY WORDS, AND WITH THE LIMIT STATED BESIDE IT**: "Polyphonic
   # Aftertouch is implemented, so that Nymphes can respond to a keyboard/ controller that allows
   # this feature. Please note that not all targets are polyphonic. That means, some of them will
-  # still have a monophonic response." (manual). The release notes list the sixteen that do
+  # still have a monophonic response." (manual p. 17). The release notes list the sixteen that do
   # answer per note (v2_notes p. 2), which is a thing no field here holds: **this instrument's
   # aftertouch is polyphonic for some destinations and monophonic for the rest.**
   aftertouch: poly

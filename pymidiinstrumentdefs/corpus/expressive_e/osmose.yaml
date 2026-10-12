@@ -127,7 +127,8 @@ sources:
     # reader to for exactly this material.
   preset_changes:
     kind: support_article
-    title: "Changing Osmose's sound presets from an external device with Bank Select and Program Change messages"
+    title: "Changing Osmose's sound presets from an external device with Bank Select and Program
+    Change messages"
     landing: "https://expressivee.happyfox.com/kb/article/301-changing-osmose-s-sound-presets-from-an-external-device-with-bank-select-and-program-change-messages/"
     url: "https://expressivee.happyfox.com/kb/article/301-changing-osmose-s-sound-presets-from-an-external-device-with-bank-select-and-program-change-messages/"
     sha256: 9a249bf3ebc1fd9b2f728c1741d12d418322c1384e3d92650201a0e8656959f6
@@ -165,15 +166,15 @@ midi:
   # and its own engine is played the same way from outside, "allowing you to play the EaganMatrix
   # from an external DIN MIDI device using MPE data" (manual p. 88).
   mpe: both
-  # RECEIVES ONLY, AND THE MAKER'S TWO DOCUMENTS DISAGREE ABOUT IT. The chart marks MIDI
-  # Clock, Song Position Pointer, Start, Continue and Stop as both transmitted and
-  # recognised. The manual says the opposite in as many words: "Attention: Osmose is not
-  # capable of sending its own internal clock" (p. 45). The manual is followed here, for
-  # three reasons recorded rather than re-argued: its statement is about this exact question; the midi i/o tab offers three ports to take clock *from* and
-  # no way to send any (p. 87); and this chart's transmit column is demonstrably unreliable,
-  # since it marks CC 83 and 84 as answering to nothing while printing a range for both.
-  # DAW Control Mode does drive a DAW's "Play, Stop, Record, and Metronome" (p. 72), over
-  # port 4 by a DAW protocol, which the manual nowhere calls MIDI transport.
+  # RECEIVES ONLY, AND THE MAKER'S TWO DOCUMENTS DISAGREE ABOUT IT. The chart marks MIDI Clock, Song
+  # Position Pointer, Start, Continue and Stop as both transmitted and recognised. The manual says
+  # the opposite in as many words: "Attention: Osmose is not capable of sending its own internal
+  # clock" (p. 45). The manual is followed here, for three reasons recorded rather than re-argued:
+  # its statement is about this exact question; the midi i/o tab offers three ports to take clock
+  # *from* and no way to send any (p. 87); and this chart's transmit column is demonstrably
+  # unreliable, since it marks CC 83 and 84 as answering to nothing while printing a range for both.
+  # DAW Control Mode does drive a DAW's "Play, Stop, Record, and Metronome" (p. 72), over port 4 by
+  # a DAW protocol, which the manual nowhere calls MIDI transport.
   clock: receives
   transport: receives
   program_change:
@@ -205,16 +206,16 @@ midi:
   # port 2 and not about the instrument's every socket.
   sysex: false
 
-# MPE, WHICH THE FORMAT HOLDS AS A FLAG AND NOT MUCH MORE. The engine is Haken
-# Audio's and takes Haken's extension of the standard: "MPE+ is what Haken Audio calls their
-# optimized extension to the MPE standard (MIDI Polyphonic Expression)" (sound_engine_input).
-# The master channel is 1 and member channels are 2-14, narrowing to 2-12 on some presets.
-# CC 87 carries "LSB value of Aftertouch or Pressure (see MPE+)" (chart), which is the extra
-# resolution MPE+ adds. Pressure is required rather than optional: "To produce a sound in the
-# first place, you are always required to send Channel Pressure messages (sometimes called
-# "mono aftertouch") alongside your Note On messages", because "a constant flow of Channel
-# Pressure messages is used to describe a sound's envelope, specifically its attack
-# trajectory" (sound_engine_input). None of that fits in a boolean, so it is here.
+# MPE, WHICH THE FORMAT HOLDS AS A FLAG AND NOT MUCH MORE. The engine is Haken Audio's and takes
+# Haken's extension of the standard: "MPE+ is what Haken Audio calls their optimized extension to
+# the MPE standard (MIDI Polyphonic Expression)" (sound_engine_input). The master channel is 1 and
+# member channels are 2-14, narrowing to 2-12 on some presets. CC 87 carries "LSB value of
+# Aftertouch or Pressure (see MPE+)" (midi_impl p. 3), which is the extra resolution MPE+ adds.
+# Pressure is required rather than optional: "To produce a sound in the first place, you are always
+# required to send Channel Pressure messages (sometimes called "mono aftertouch") alongside your
+# Note On messages", because "a constant flow of Channel Pressure messages is used to describe a
+# sound's envelope, specifically its attack trajectory" (sound_engine_input). None of that fits in a
+# boolean, so it is here.
 
 voice:
   addressing: pitches

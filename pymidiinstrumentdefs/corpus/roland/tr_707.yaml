@@ -50,7 +50,10 @@ source: >-
   voice, the track number as Song Select, the bar number as Song Position, and the synchronising
   signals. Then "The messages 1, 2 and 3 can be sent or received only in Track Play mode."
   (manual p. 42), which is the Track Playing Mode among the instrument's five (manual p. 8). By
-  that sentence a note sent to a TR-707 that is writing a pattern does nothing. The implementation
+  that sentence a note sent to a TR-707 that is writing a pattern does nothing. **So the fifteen
+  voices below are a part of that mode.** The one other place the manual has the instrument take
+  a note is the procedure that teaches a voice its key number, which the chapter begins in Track
+  Writing mode and the operation table in Track Playing mode: see below. The implementation
   says the same of notes, "Recognized while in the Track Play mode." (manual p. 55), and narrows
   the two song messages to a stopped instrument: "Recognized while in STOP of the Track Play mode."
   (manual p. 55). The instrument sends each when its number is set: Song Position "When the
@@ -150,8 +153,10 @@ source: >-
   assigns them after "Enter the Track Writing mode, without the rhythm having run."
   (manual p. 45), where the table says Track Playing mode for both (manual p. 53). And the sync
   chapter changes the sync mode in Track Play mode (manual pp. 38-39) where the table says "Set the
-  Composer to Track Writing mode." (manual p. 54). None is anything a field holds. In each the
-  manual names two modes and does not say whether both work.
+  Composer to Track Writing mode." (manual p. 54). In each the manual names two modes and does
+  not say whether both work. Until 2026-10-12 none was anything a field holds. The voices' part
+  is now Track Playing mode's, on the sentences of the MIDI chapter and the implementation, and
+  the two modes given for teaching a key number stay in words.
 
   **AND WHAT RESTORING THE KEY NUMBERS RESTORES IS TOLD TWO WAYS.** By the MIDI chapter, pressing
   the Instrument/Guide button in the key number setting mode means "the initial setting is
@@ -222,12 +227,60 @@ midi:
   # Circled both ways, `For rhythm seq` (manual p. 50): sequence data, by a handshake.
   sysex: true
 
+modes:
+  # "The TR-707 has the following 5 modes." (manual p. 8), under the names that page gives them
+  # and in its order; it brackets the second and third as Pattern Writing Modes. **They are
+  # declared because the manual has notes exchanged in one of them**: see the part below. One
+  # more state is in words in the account, the tape interface mode, in which every message is
+  # ignored.
+  pattern_play: {label: Pattern Playing Mode}
+  step_write: {label: Step Writing Mode}
+  tap_write: {label: Tap Writing Mode}
+  track_play: {label: Track Playing Mode}
+  track_write: {label: Track Writing Mode}
+
+parts:
+  # THE FIFTEEN VOICES, WHICH THE MANUAL HAS ANSWER TO NOTES IN TRACK PLAYING MODE. "The messages
+  # 1, 2 and 3 can be sent or received only in Track Play mode." (manual p. 42), and of notes
+  # the implementation says "Recognized while in the Track Play mode." (manual p. 55). So the
+  # voices are a part of that mode, on the instrument's one channel. The procedure that teaches
+  # a voice its number takes a note too, and the manual begins it in two different modes: see
+  # the account. Until 2026-10-12 the voices were the instrument's own and the mode was in
+  # words, a part having had no way to say that its map is learned.
+  drum_voices:
+    label: Drum voices
+    mode: track_play
+    channel_offset: 0
+    addressing: voices
+    receives: [notes]
+    # Assigned by holding a voice's key and sending the instrument a note, from 35 to 98
+    # (manual p. 45), so the numbers below are the factory's.
+    note_map: learned
+    # **THE FACTORY'S RECEIVED NUMBERS**, under the implementation's names and in its order
+    # (manual p. 55), at the lower number where a voice has two. Low Tom also answers to 43,
+    # Closed Hi-Hat to 44, Mid Tom to 47 and High Tom to 50.
+    voices:
+      bass_drum_1: 35
+      bass_drum_2: 36
+      rim_shot: 37
+      snare_drum_1: 38
+      hand_clap: 39
+      snare_drum_2: 40
+      low_tom: 41
+      closed_hi_hat: 42
+      mid_tom: 45
+      open_hi_hat: 46
+      high_tom: 48
+      crash_cymbal: 49
+      ride_cymbal: 51
+      tambourine: 54
+      cowbell: 56
+
 voice:
   # A note names a drum voice: "here, each drum voice is represented by key number" (manual p. 42).
+  # Which note names which is the `drum_voices` part's, with the word that says an owner can
+  # teach it others.
   addressing: voices
-  # Assigned by holding a voice's key and sending the instrument a note, from 35 to 98
-  # (manual p. 45), so the numbers below are the factory's.
-  note_map: learned
   # NOT RECORDED: note_range and polyphony. See the account.
   velocity:
     # Circled in both columns, `v=1-127` recognised and `9n v=40-124` transmitted (manual p. 50).
@@ -237,25 +290,5 @@ voice:
     note_off: false
   # Key's and Ch's crossed in both columns, as is Pitch Bender (manual p. 50).
   aftertouch: none
-  # **THE FACTORY'S RECEIVED NUMBERS**, under the implementation's names and in its order
-  # (manual p. 55), at the lower number where a voice has two. Low Tom also answers to 43, Closed
-  # Hi-Hat to 44, Mid Tom to 47 and High Tom to 50. By the MIDI chapter and the implementation,
-  # notes sound only in Track Play mode (manual pp. 42, 55).
-  voices:
-    bass_drum_1: 35
-    bass_drum_2: 36
-    rim_shot: 37
-    snare_drum_1: 38
-    hand_clap: 39
-    snare_drum_2: 40
-    low_tom: 41
-    closed_hi_hat: 42
-    mid_tom: 45
-    open_hi_hat: 46
-    high_tom: 48
-    crash_cymbal: 49
-    ride_cymbal: 51
-    tambourine: 54
-    cowbell: 56
 
 # NO CONTROLS BLOCK: see `midi.control_change` above.

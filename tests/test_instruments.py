@@ -21486,11 +21486,21 @@ class TestTr707:
 		"""Four voices answer to two numbers from the factory; the one carried is the one the instrument sends."""
 		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
 
-		assert tr.voice.voices == {"bass_drum_1": 35, "bass_drum_2": 36, "rim_shot": 37, "snare_drum_1": 38,
+		drums = tr.parts["drum_voices"]
+
+		assert drums.voices == {"bass_drum_1": 35, "bass_drum_2": 36, "rim_shot": 37, "snare_drum_1": 38,
 			"hand_clap": 39, "snare_drum_2": 40, "low_tom": 41, "closed_hi_hat": 42, "mid_tom": 45, "open_hi_hat": 46,
 			"high_tom": 48, "crash_cymbal": 49, "ride_cymbal": 51, "tambourine": 54, "cowbell": 56}
-		assert (tr.voice.addressing, tr.voice.note_map) == ("voices", "learned")
-		assert not set(tr.voice.voices.values()) & {43, 44, 47, 50}
+		assert (drums.addressing, drums.note_map, drums.receives) == ("voices", "learned", ("notes",))
+		assert not set(drums.voices.values()) & {43, 44, 47, 50}
+
+		# **The manual has notes exchanged in one of its five modes** (manual pp. 8, 42 and 55),
+		# so the voices are that mode's part and the instrument has no map of its own.
+		assert list(tr.modes) == ["pattern_play", "step_write", "tap_write", "track_play", "track_write"]
+		assert drums.mode == "track_play" and list(tr.parts_in("track_play")) == ["drum_voices"]
+		assert all(not tr.parts_in(mode) for mode in tr.modes if mode != "track_play")
+		assert (tr.voice.addressing, tr.voice.note_map, tr.voice.voices) == ("voices", None, {})
+		assert not tr.warnings
 
 		# Neither is recorded: the factory's numbers have gaps and no page counts the voices at once.
 		assert tr.voice.note_range is None and tr.voice.polyphony is None

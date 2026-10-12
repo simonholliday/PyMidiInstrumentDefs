@@ -142,6 +142,35 @@ source: >-
   change does not**: it is global, listed under the Global Channel as "Program Change (via Set
   Lists)" (manual p. 98), so a Layer's `receives` stops at notes and controls.
 
+  SEVEN STANDARD CONTROLLERS ARE WRITTEN TWICE, once for the Global Channel and once for a
+  Layer taken off it. A control naming no part is on the Global Channel. For the seven, that is
+  where a Layer left on it receives them, its two `Rx` switches allowing. The seven keyed
+  `layer_` are modulation, volume, pan, expression, damper, sostenuto and soft, numbers 1, 7,
+  10, 11, 64, 66 and 67, for a Layer whose `Use Global MIDI Channel` is off: its channel
+  setting "sets the channel on which the Layer will receive MIDI" (manual p. 13). **No page
+  marks any of the seven with a channel.** They rest on that sentence and on the two switches,
+  and the only number either switch names is 64: with `Rx Damper` on, the Layer "will respond
+  to the connected damper pedal and to MIDI CC#64" (manual p. 13). Each of the seven is
+  received only, since what the keyboard and its controllers send, the Mod Knobs apart, goes
+  out on the Global Channel (manual p. 98). **Nor does a page say what five of them act on.**
+  Volume, pan, expression, sostenuto and soft are rows of the chart, and 7 is named once more
+  as a dedicated controller that cannot be reassigned (manual p. 101); neither place says what
+  they act on, and the instrument has three volumes, for the Program (manual p. 10), the Layer
+  (manual p. 13) and the Performance (manual p. 14). And no page says in terms whether a Layer
+  taken off the Global Channel still answers the wheel, the pedal or these numbers arriving on
+  the Global Channel. The setting says such a Layer "will receive on the channel specified
+  below, and will not play from the built-in keyboard" (manual p. 13), and the sentence of
+  `Rx Damper` about the connected pedal makes no exception for it.
+
+  The other numbers below name no part only because the rule this follows covers the standard
+  controllers: `Rx Other CCs` is each Layer's switch for the controllers it answers. Three
+  are less simple. Kaoss Physics, which the pad's two axes feed, is the Global Channel's own
+  (manual p. 98), whatever channel a Layer is on; the Kaoss button is a modulation source like
+  the wheel (manual p. 71), and no page puts it on the Global Channel alone. Scale Select is
+  given no channel on any page. And for the Mod Knobs the manual speaks only of a Layer left
+  on the Global Channel (manual p. 98), so which channel carries a knob for a Layer taken off
+  it is not stated.
+
   PROGRAM CHANGE SELECTS A SET LIST SLOT AND THERE ARE 64 OF THEM. "A Set List has 64 Slots,
   arranged into four banks A- D, corresponding to MIDI Program Change messages 1-64" (manual
   p. 5) - the maker's own spacing - and the chart gives Program Change as 0-63 both ways
@@ -314,7 +343,9 @@ voice:
 
 parts:
   # Each Layer is given a channel by the player or follows the global one, so neither derives a
-  # channel from the other: there is no offset to record.
+  # channel from the other: there is no offset to record. A control naming this part is for a
+  # Layer on a channel of its own, and one naming no part is on the Global Channel: see the
+  # account.
   layer:
     label: Layer
     count: 2
@@ -357,3 +388,14 @@ controls:
   mod_knob_2:            {label: Mod Knob 2, cc: 25, group: mod_knobs}
   mod_knob_3:            {label: Mod Knob 3, cc: 26, group: mod_knobs}
   mod_knob_4:            {label: Mod Knob 4, cc: 27, group: mod_knobs}
+
+  # A LAYER ON A CHANNEL OF ITS OWN ----------------------------------
+  # The seven standard controllers again, for a Layer taken off the Global Channel, and received
+  # only: see the account. Each control above is on the Global Channel.
+  layer_modulation:      {label: Modulation, cc: 1, direction: receives, part: layer, group: controllers}
+  layer_volume:          {label: Volume, cc: 7, direction: receives, part: layer, group: controllers}
+  layer_pan:             {label: Pan, cc: 10, direction: receives, part: layer, group: controllers}
+  layer_expression:      {label: Expression, cc: 11, direction: receives, part: layer, group: controllers}
+  layer_damper:          {label: Damper, cc: 64, direction: receives, part: layer, group: pedals}
+  layer_sostenuto:       {label: Sostenuto, cc: 66, direction: receives, part: layer, group: pedals}
+  layer_soft:            {label: Soft, cc: 67, direction: receives, part: layer, group: pedals}

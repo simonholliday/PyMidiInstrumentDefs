@@ -6712,11 +6712,13 @@ class TestModwaveMkII:
 
 	"""One document set for three products, and a chart whose columns had to be proved."""
 
-	def test_fifteen_controls_off_three_tables (self) -> None:
+	def test_fifteen_numbers_off_three_tables (self) -> None:
 		"""Nine from the chart, five from MIDI CC Assign, and one the chart never names."""
 		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
 
-		assert len(mw.controls) == 15
+		# Fifteen numbers, seven of them written a second time for a Layer on its own channel.
+		assert len({c.cc for c in mw.controls.values()}) == 15
+		assert len(mw.controls) == 22
 		assert len(mw.groups) == 5
 
 		# The chart's nine named controller numbers.
@@ -6737,7 +6739,7 @@ class TestModwaveMkII:
 		mw = pymidiinstrumentdefs.load("korg/modwave_mk_ii", [CORPUS])
 
 		receiving = sorted(name for name, c in mw.controls.items()
-			if c.direction == pymidiinstrumentdefs.definition.RECEIVES)
+			if c.direction == pymidiinstrumentdefs.definition.RECEIVES and c.part is None)
 
 		assert receiving == ["expression", "pan", "soft", "sostenuto", "volume"]
 
@@ -6778,6 +6780,19 @@ class TestModwaveMkII:
 
 		# Notes and controllers reach a Layer; program change does not.
 		assert layer.receives == ("notes", "controls")
+
+		# **A control naming no part is on the Global Channel**, and the standard controllers
+		# are written again for a Layer taken off it, where a Layer only receives. Until
+		# 2026-10-12 no control here named a part.
+		own = {key: control for key, control in mw.controls.items() if control.part}
+
+		assert {control.part for control in own.values()} == {"layer"}
+		assert sorted(control.cc for control in own.values() if control.cc is not None) == [1, 7, 10, 11, 64, 66, 67]
+		assert all(key.startswith("layer_") for key in own)
+		assert all(mw.controls[key[len("layer_"):]].cc == control.cc for key, control in own.items())
+		assert all(control.direction == pymidiinstrumentdefs.definition.RECEIVES for control in own.values())
+		assert [control.name for control in mw.controls_reaching("layer")] == list(own)
+		assert not mw.warnings
 
 		# Sixty voices are a ceiling across the pair, not a figure each can count on.
 		assert mw.voice.polyphony == 60

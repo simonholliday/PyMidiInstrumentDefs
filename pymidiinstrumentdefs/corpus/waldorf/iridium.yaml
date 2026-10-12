@@ -326,13 +326,16 @@ voice:
     # Aftertouch (Pressure; and Polyphonic Pressure)." (manual p. 149), and the table on p. 234,
     # which lists what a patch can route, has no row for it, so `note_off` is left out.
     note_on: both
-  # POLYPHONIC, AND THE MANUAL SPENDS A PAGE ON IT: the Keyboard has "49 light-weighted sensitive
-  # keys with polyphonic" aftertouch (manual p. 20), and the distinction is drawn explicitly -
-  # "Polyphonic aftertouch, that is transmitted individually" (manual p. 21) against monophonic
-  # channel aftertouch. The modulation-source table carries "After Touch" described as
-  # "Polyphonic Keyboard Pressure Data". **The MPE Z axis is channel aftertouch**, which is a
-  # different message from the keybed's own; both are answered to.
-  aftertouch: poly
+  # BOTH KINDS, AND THE MANUAL HAS A SECTION ON THE POLYPHONIC: the Keyboard has "49
+  # light-weighted sensitive keys with polyphonic" aftertouch (manual p. 20), and the distinction
+  # is drawn explicitly - "Polyphonic aftertouch, that is transmitted individually" (manual
+  # p. 21) against monophonic channel aftertouch. The modulation-source table carries "After
+  # Touch" described as "Polyphonic Keyboard Pressure Data". **The MPE Z axis is channel
+  # aftertouch** (manual p. 201), which is a different message from polyphonic key pressure;
+  # both are answered to, the channel kind on that page's word alone. Until 2026-10-12 this
+  # said `poly`, the stronger of two words where the field had no third; `waldorf/iridium_core`
+  # and `waldorf/iridium_mk2` say `both` of the same engine.
+  aftertouch: both
   pitch_bend:
     # PER OSCILLATOR, WHICH IS UNUSUAL: "PB Range Osc 1, 2, or 3" (manual p. 38), "Determines the
     # intensity of the pitch wheel in semitones for the selected oscillator from -24 to +24"

@@ -393,15 +393,15 @@ voice:
     # **AND SO IS RELEASE VELOCITY**, which few instruments here read: `Rel Velo` is "MIDI note
     # release velocity" (manual p. 56), one of the modulation sources.
     note_off: true
-  # **BOTH KINDS ARE MODULATION SOURCES**, so this takes the stronger word as the three Rolands
-  # before it did: `Ch Press` is "MIDI channel pressure" (manual p. 56) and `Poly AT` is "MIDI polyphonic
-  # pressure" (manual p. 56), and the specification claims the second in one line,
-  # "Poly-aftertouch capable" (specifications p. 1).
+  # **BOTH KINDS ARE MODULATION SOURCES**: `Ch Press` is "MIDI channel pressure" (manual p. 56)
+  # and `Poly AT` is "MIDI polyphonic pressure" (manual p. 56), and the specification claims the
+  # second in one line, "Poly-aftertouch capable" (specifications p. 1). Until 2026-10-12 this
+  # said `poly`, the stronger of two words where the field had no third.
   # **Under MPE the pressure axis arrives as channel aftertouch and drives the polyphonic
   # source**, which is how MPE works and which the manual states: the Z axis "(sent as MIDI
   # Channel Aftertouch) – this controls the Poly Aftertouch (Poly AT) modulation assignments."
   # (manual p. 53).
-  aftertouch: poly
+  aftertouch: both
   pitch_bend:
     # **SETTABLE PER OSCILLATOR, WHICH IS UNUSUAL, AND NO FACTORY DEPTH IS GIVEN.** "Determines
     # the intensity of the pitch bend (from 0 to 12 semitones) via MIDI pitch bend messages in

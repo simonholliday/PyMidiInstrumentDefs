@@ -1772,7 +1772,7 @@ class TestAftertouch:
 			"waldorf/iridium_core": ("both", None),
 			"waldorf/iridium_mk2": ("both", None),
 			"korg/radias": ("channel", True),
-			"waldorf/microwave": ("both", None),
+			"waldorf/microwave": ("both", False),
 			"roland/juno_x": ("both", True),
 			"sequential/pro_3": ("both", True),
 			"nord/lead_a1": ("none", False),
@@ -1811,6 +1811,9 @@ class TestAftertouch:
 			"korg/volca_fm": ("none", False),
 			"korg/volca_keys": ("none", False),
 			"korg/volca_sample": ("none", False),
+			"waldorf/blofeld": ("both", None),
+			"waldorf/iridium": ("both", None),
+			"waldorf/protein": ("both", None),
 		}
 
 
@@ -7364,7 +7367,7 @@ class TestIridium:
 		assert layer.receives == ("notes", "controls")
 		assert layer.polyphony is None
 
-		assert iridium.voice.aftertouch == "poly"
+		assert iridium.voice.aftertouch == "both"
 
 	def test_no_note_range_because_the_one_sentence_is_not_about_one (self) -> None:
 		"""The split-range limits bound a split point, and contradict the manual's own numbering."""
@@ -7995,7 +7998,7 @@ class TestBlofeld:
 		# receiving it.
 		assert blofeld.voice.velocity.note_off is True
 
-		assert blofeld.voice.aftertouch == "poly"
+		assert blofeld.voice.aftertouch == "both"
 		assert blofeld.voice.pitch_bend is not None
 		assert blofeld.voice.pitch_bend.programmable is True
 

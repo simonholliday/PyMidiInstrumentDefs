@@ -1825,6 +1825,7 @@ class TestAftertouch:
 			"moog/messenger": ("channel", True),
 			"moog/minitaur": ("none", False),
 			"moog/slim_phatty": ("none", False),
+			"teenage_engineering/ep_133_ko_ii": ("none", False),
 		}
 
 

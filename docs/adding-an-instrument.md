@@ -773,9 +773,22 @@ controls:
 - **`unparted: false` says the controls naming no part do not answer in that mode.** Those
   controls are the instrument's own map on its base channel, and in the drumlogue's other mode
   that map is not the one that answers. Left out, it is true.
-- **Declared modes must change something**: a part names one, or one says `unparted: false`.
-  Modes that change nothing draw a warning, and so does a single mode, since a mode is one of
-  several states.
+- **`channels` on a mode is the range the base channel can be set to in that mode**, where it
+  differs from `midi.channels`. A volca drum's six parts sit on channels 1 to 6 and cannot
+  move, which is a base channel fixed at 1; on its single channel the owner picks any of 1 to
+  16. A page asks `channels_in()` with the mode's name and gets the mode's range, or the
+  instrument's where the mode gives none.
+
+  ```yaml
+  midi:
+    channels: [1, 1]                 # the base channel, where the mode says nothing else
+  modes:
+    split: {label: Split}            # six parts on channels 1 to 6, which cannot move
+    single: {label: Single, channels: [1, 16]}
+  ```
+- **Declared modes must change something**: a part names one, or one says `unparted: false`,
+  or the base channel's range is not the same in each. Modes that change nothing draw a
+  warning, and so does a single mode, since a mode is one of several states.
 - **A mode is the whole instrument's.** Where a setting on one track decides what a number
   means, as an Analog Rytm's machines do, that stays in words.
 

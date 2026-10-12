@@ -2495,7 +2495,10 @@ voice:
   voices: {kick: 36}
 parts:
   p: {label: P, channel: assigned, count: 2, receives: [notes, controls], addressing: pitches, voices: {tap: 127}}
-  q: {channel_offset: 1, receives: [controls], unrecorded: [notes]}
+  q: {channel_offset: 1, receives: [controls], unrecorded: [notes], mode: split}
+modes:
+  single: {label: Single, factory: true, unparted: true, channels: [1, 8]}
+  split: {label: Split}
 groups: {g: G}
 controls:
   a: {label: A, cc: 1, lsb: 33, nrpn: 5, nrpn_range: [0, 1000], range: [0, 127], default: 0, step: 1,
@@ -3356,6 +3359,154 @@ class TestModes:
 		problem = self.refused("parts: {a: {channel: assigned, count: 4, nrpn_msb: 1}}")
 
 		assert "parts.a.nrpn_msb" in problem and "say one" in problem
+
+
+class TestAModeWithAChannelRangeOfItsOwn:
+
+	"""`modes.<name>.channels`: the base channel's range while that mode holds.
+
+	`midi.channels` is one figure for the whole instrument, and a volca drum's two modes
+	have two: fixed at 1 where its parts take channels 1 to 6, and any of 16 on its single
+	channel.
+	"""
+
+	BODY = (
+		"definition: 1\nmodel: {name: X}\nsource: hand\n"
+		"midi: {channels: [1, 1]}\n"
+		"modes: {split: {label: Split}, single: {label: Single, channels: [1, 16]}}\n"
+		"parts: {part: {mode: split, channel_offset: 0, count: 6, receives: [notes]}}\n"
+	)
+
+	def test_a_mode_answers_with_its_own_range (self) -> None:
+		definition = pymidiinstrumentdefs.parse(self.BODY, source = "x.yaml")
+
+		assert definition.modes["single"].channels == (1, 16)
+		assert definition.channels_in("single") == (1, 16)
+
+	def test_a_mode_that_gives_none_answers_with_the_instrument_s (self) -> None:
+		definition = pymidiinstrumentdefs.parse(self.BODY, source = "x.yaml")
+
+		assert definition.modes["split"].channels is None
+		assert definition.channels_in("split") == (1, 1)
+		assert definition.midi.channels == (1, 1)
+
+	def test_neither_recorded_is_no_answer (self) -> None:
+		body = self.BODY.replace("midi: {channels: [1, 1]}\n", "")
+
+		assert pymidiinstrumentdefs.parse(body, source = "x.yaml").channels_in("split") is None
+
+	def test_a_mode_nobody_declared_is_refused (self) -> None:
+		with pytest.raises(ValueError):
+			pymidiinstrumentdefs.parse(self.BODY, source = "x.yaml").channels_in("multi")
+
+	def test_a_channel_outside_one_to_sixteen_is_refused (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(self.BODY.replace("[1, 16]", "[0, 16]"), source = "x.yaml")
+
+		assert "modes.single.channels" in str(raised.value)
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(self.BODY.replace("[1, 16]", "[1, 17]"), source = "x.yaml")
+
+		assert "modes.single.channels" in str(raised.value)
+
+	def test_a_range_of_its_own_is_a_mode_changing_something (self) -> None:
+		"""So two modes that differ only in it draw no warning that they change nothing."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"modes: {one: {label: One}, other: {label: Other, channels: [1, 16]}}\n"
+		)
+
+		assert not [w for w in pymidiinstrumentdefs.parse(body, source = "x.yaml").warnings if "modes" in w]
+
+	def test_the_instrument_s_own_range_said_again_changes_nothing (self) -> None:
+		"""Two modes with the instrument's range each are two modes that do nothing."""
+		body = (
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"midi: {channels: [1, 16]}\n"
+			"modes: {one: {label: One, channels: [1, 16]}, other: {label: Other, channels: [1, 16]}}\n"
+		)
+		warnings = pymidiinstrumentdefs.parse(body, source = "x.yaml").warnings
+
+		assert any("the base channel's range is the same in each" in warning
+			and "no mode changes anything" in warning for warning in warnings)
+
+		# And one that differs from it is a mode changing something, whatever the other says.
+		differs = body.replace("other: {label: Other, channels: [1, 16]}", "other: {label: Other, channels: [1, 6]}")
+
+		assert not [w for w in pymidiinstrumentdefs.parse(differs, source = "x.yaml").warnings if "modes" in w]
+
+	def test_one_range_given_to_every_mode_changes_nothing_either (self) -> None:
+		"""Whatever the instrument's own range is, or if it gives none: no mode differs from another."""
+		for instrument in ("midi: {channels: [1, 1]}\n", ""):
+			body = (
+				"definition: 1\nmodel: {name: X}\nsource: hand\n" + instrument
+				+ "modes: {one: {label: One, channels: [1, 16]}, other: {label: Other, channels: [1, 16]}}\n"
+			)
+
+			assert any("no mode changes anything" in warning
+				for warning in pymidiinstrumentdefs.parse(body, source = "x.yaml").warnings), instrument
+
+	def test_a_mode_that_gives_none_is_compared_by_the_instrument_s (self) -> None:
+		"""One mode says the instrument's own range and the other says nothing: they do not differ."""
+		head = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+		modes = "modes: {one: {label: One, channels: [1, 16]}, other: {label: Other}}\n"
+		same = pymidiinstrumentdefs.parse(head + "midi: {channels: [1, 16]}\n" + modes, source = "x.yaml").warnings
+
+		assert any("the base channel's range is the same in each" in warning for warning in same)
+
+		# Against another range of the instrument's, the mode that gives its own differs.
+		differs = pymidiinstrumentdefs.parse(head + "midi: {channels: [1, 1]}\n" + modes, source = "x.yaml").warnings
+
+		assert not [warning for warning in differs if "modes" in warning]
+
+	def test_modes_that_give_no_range_draw_the_words_they_always_drew (self) -> None:
+		"""A file written before a mode could give one is told what it was always told."""
+		head = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+		always = "x.yaml: modes: declares modes no part names and none says unparted: false, so no mode changes anything"
+
+		for modes in ("modes: {a: {}, b: {}}\n", "modes: {a: {}}\n"):
+			assert pymidiinstrumentdefs.parse(head + modes, source = "x.yaml").warnings == (always,), modes
+
+	def test_one_mode_with_a_range_is_still_one_mode (self) -> None:
+		head = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+		warnings = pymidiinstrumentdefs.parse(head + "modes: {a: {channels: [1, 16]}}\n", source = "x.yaml").warnings
+
+		assert warnings == ("x.yaml: modes: declares one mode, and a mode is one of several states, so one changes nothing",)
+
+	def test_a_midi_section_that_is_wrong_is_refused_in_the_reader_s_words (self) -> None:
+		"""The check before it looks at the instrument's range as the file writes it, and guesses at nothing."""
+		head = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+
+		for modes, channels in (("{a: {}, b: {}}", "[[1], 16]"), ("{a: {}}", "[[1, 16]]"),
+				("{a: {channels: [1, 16]}, b: {}}", "[[1], 16]"), ("{a: {channels: [1, 16]}, b: {}}", "{low: 1}"),
+				("{a: {channels: [1, 16]}, b: {}}", "[1]"), ("{a: {channels: [1, 16]}, b: {}}", "[]")):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				pymidiinstrumentdefs.parse(head + f"modes: {modes}\nmidi: {{channels: {channels}}}\n", source = "x.yaml")
+
+			assert "midi.channels" in str(raised.value), (modes, channels)
+
+	def test_a_range_beside_midi_none_is_left_as_it_is (self) -> None:
+		"""Nothing beside `midi: none` is refused, a control or a part included, and this is no exception."""
+		head = "definition: 1\nmodel: {name: X}\nsource: hand\nmidi: none\n"
+		definition = pymidiinstrumentdefs.parse(head + "modes: {a: {channels: [1, 16]}, b: {}}\n", source = "x.yaml")
+
+		assert (definition.channels_in("a"), definition.channels_in("b")) == ((1, 16), None)
+		assert not definition.warnings
+
+	def test_the_midi_section_s_faults_and_warnings_come_where_they_always_did (self) -> None:
+		"""It is read last, so a fault elsewhere is reported before one in it, and its warnings come last."""
+		head = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+		warned = pymidiinstrumentdefs.parse(
+			head + "midi: {clocks: both}\ngroups: {g: G}\nmodes: {a: {}, b: {}}\n", source = "x.yaml").warnings
+
+		assert [warning.split(": ")[1] for warning in warned] == ["modes", "groups.g", "midi.clocks"]
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(
+				head + "midi: {channels: [0, 16]}\ncontrols: {a: {cc: 7, part: nowhere}}\n", source = "x.yaml")
+
+		assert "controls.a.part" in str(raised.value)
 
 
 class TestPartNoteMaps:

@@ -108,8 +108,9 @@ the part: neither yes nor no, so a page that leaves out what a part does not
 take should not leave that out.
 
 Some instruments change shape with a setting, and a definition says so with
-`modes`: a part may exist in one mode only, and a mode may silence the controls
-that name no part. A page asks what answers in each:
+`modes`: a part may exist in one mode only, a mode may silence the controls
+that name no part, and a mode may give the base channel a range of its own,
+which `channels_in()` answers with. A page asks what answers in each:
 
 ```python
 ju = pymidiinstrumentdefs.load("roland/ju_06a")

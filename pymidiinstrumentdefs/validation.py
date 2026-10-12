@@ -85,7 +85,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	}),
 	"voice.velocity": frozenset({"note_on", "note_off", "gated_by", "transmits"}),
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
-	"modes": frozenset({"label", "factory", "unparted"}),
+	"modes": frozenset({"label", "factory", "unparted", "channels"}),
 	"parts": frozenset({
 		"label", "channel", "channel_offset", "count", "receives", "unrecorded", "addressing",
 		"polyphony", "polyphony_shared", "voices", "mode", "nrpn_msb", "within",
@@ -632,6 +632,8 @@ class _Reader:
 				label    = self.optional_text(fields, "label", where),
 				factory  = False if fields.get("factory") is None else self.flag(fields["factory"], f"{where}.factory"),
 				unparted = True if fields.get("unparted") is None else self.flag(fields["unparted"], f"{where}.unparted"),
+				channels = None if fields.get("channels") is None
+					else self.pair(fields["channels"], f"{where}.channels", 1, 16),
 			)
 
 		factory = [name for name, mode in found.items() if mode.factory]
@@ -1316,11 +1318,36 @@ def build (
 			)
 
 	# Modes that change nothing are a section a consumer would read for nothing:
-	# no part lives in one, and every one lets the base-channel map answer.
+	# no part lives in one, and every one lets the base-channel map answer.  Where
+	# no mode gives a base channel range of its own that is the whole of it, and
+	# the warning is in the words it always had.
 
-	if modes and not any(part.mode is not None for part in parts.values()) \
-			and all(mode.unparted for mode in modes.values()):
+	unnamed = bool(modes) and all(mode.unparted for mode in modes.values()) and not any(
+		part.mode is not None for part in parts.values())
+	ranged = any(mode.channels is not None for mode in modes.values())
+
+	# Where one does give a range, several modes still change nothing if it is the
+	# same in each, a mode that gives none having the instrument's.  The instrument's
+	# is taken as the file writes it: the `midi` section is read last, as it always
+	# was, so that its faults and warnings come in the order they always did.  Only
+	# a pair of whole numbers is compared.  Anything else is refused when the
+	# section is read, in the reader's own words, and is nothing to guess from here.
+
+	stated = raw.get("midi")
+	written = stated.get("channels") if isinstance(stated, dict) else None
+	instrument: tuple[int, int] | None = None
+
+	if isinstance(written, list) and len(written) == 2 and all(type(end) is int for end in written):
+		instrument = (written[0], written[1])
+
+	if unnamed and not ranged:
 		reader.warn("modes", "declares modes no part names and none says unparted: false, so no mode changes anything")
+	elif unnamed and len(modes) > 1 and len({mode.channels or instrument for mode in modes.values()}) == 1:
+		reader.warn(
+			"modes",
+			"declares modes no part names, none says unparted: false, and the base channel's range "
+			"is the same in each, so no mode changes anything",
+		)
 	elif len(modes) == 1:
 		reader.warn("modes", "declares one mode, and a mode is one of several states, so one changes nothing")
 

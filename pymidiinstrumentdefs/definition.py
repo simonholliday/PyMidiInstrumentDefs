@@ -492,11 +492,18 @@ class Mode:
 	``unparted`` says whether the controls that name no part, the instrument's
 	own map on its base channel, answer in this mode.  True unless a file says
 	otherwise.
+
+	``channels`` is the range the base channel can be set to while this mode
+	holds, where that differs from ``midi.channels``: a volca drum's six parts sit
+	on channels 1 to 6 and cannot move, and on its single channel the owner picks
+	any of 1 to 16.  ``None`` is the instrument's own range.  Ask
+	``Definition.channels_in()`` and it answers for either.
 	"""
 
 	label: str | None = None
 	factory: bool = False
 	unparted: bool = True
+	channels: tuple[int, int] | None = None
 
 
 @dataclasses.dataclass(frozen=True)
@@ -791,6 +798,21 @@ class Definition:
 				return name
 
 		return None
+
+
+	def channels_in (self, mode: str) -> tuple[int, int] | None:
+
+		"""The range the base channel can be set to in one mode.
+
+		The mode's own range where it gives one, and the instrument's where it does
+		not.  ``None`` where neither is recorded.  A mode this file does not declare
+		is refused rather than answered.
+		"""
+
+		if mode not in self.modes:
+			raise ValueError(f"{mode!r} is not one of this instrument's modes: {sorted(self.modes)}")
+
+		return self.modes[mode].channels or self.midi.channels
 
 
 	def parts_in (self, mode: str) -> dict[str, Part]:

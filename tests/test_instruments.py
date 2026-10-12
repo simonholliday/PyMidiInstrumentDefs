@@ -1826,6 +1826,11 @@ class TestAftertouch:
 			"moog/minitaur": ("none", False),
 			"moog/slim_phatty": ("none", False),
 			"teenage_engineering/ep_133_ko_ii": ("none", False),
+			"yamaha/montage_6_7_8": ("channel", True),
+			"yamaha/reface_cp": ("none", False),
+			"yamaha/reface_cs": ("none", False),
+			"yamaha/reface_dx": ("none", False),
+			"yamaha/seqtrak": ("none", False),
 		}
 
 

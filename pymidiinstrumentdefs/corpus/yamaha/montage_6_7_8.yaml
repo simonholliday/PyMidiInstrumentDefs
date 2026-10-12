@@ -115,7 +115,7 @@ source: >-
   **THE TWO CHARTS DISAGREE ABOUT AFTERTOUCH AND THE FIELD HOLDS ONE WORD.** The chart's After Touch block has a
   row for a key's pressure and one for a channel's, and the `synthesizer part` marks the first "X"
   in both columns and the second "O" (data_list p. 225), while the `sequencer part` marks both rows
-  "O" both ways (data_list pp. 225-226). So polyphonic pressure is recorded and played back and
+  "O" both ways (data_list p. 226). So polyphonic pressure is recorded and played back and
   **never reaches the tone generator**, and `aftertouch: channel` describes what makes a sound.
   This is `roland/fantom_6_7_8`'s situation with the answer the other way about, because there both
   kinds reached the engine. **Worth your eye if you disagree** - it is the one field here where the
@@ -244,7 +244,7 @@ sources:
     retrieved: 2026-10-06
     page_offset: 0
     # 187 sheets, folio equal to sheet. **The most recently revised document the maker offers for
-    # this instrument**, two years after the newest Data List - and the only one that says what the
+    # this instrument**, two years after the newest Data List - and it says in words what the
     # chart's `*1` footnote means.
   supplementary_manual:
     kind: firmware_addendum
@@ -323,10 +323,16 @@ voice:
     # The chart marks Note Off "X" recognised, and the data format says the velocity byte of a
     # note off is ignored. Two statements, one answer.
     note_off: false
-  # **CHANNEL, AND THE OTHER CHART SAYS POLY** - the `sequencer part` records and plays back key
-  # pressure that the tone generator does not answer to. See the account; this is the field in
-  # this definition most worth a second opinion.
+  # **CHANNEL, AND THE OTHER CHART SAYS BOTH KINDS** - the `sequencer part` records and plays
+  # back key pressure that the tone generator does not answer to. See the account; this is the
+  # field in this definition most worth a second opinion.
   aftertouch: channel
+  # Sent, as channel pressure, by the synthesizer part: its chart has `Ch's` O and `Key's` X as
+  # transmitted (data_list p. 225), and a zone has a switch for it, "After Touch (Transmit After
+  # Touch) Determines whether After Touch messages are transmitted to the external tone generator or
+  # not." (reference_manual p. 65). The sequencer part's chart marks key pressure as transmitted too
+  # (data_list p. 226).
+  aftertouch_transmits: true
   pitch_bend:
     # Settable over RPN 0, with fine and coarse tuning beside it. The shipped depth is printed
     # nowhere in 633 sheets of documentation.

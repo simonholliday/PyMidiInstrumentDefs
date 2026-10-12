@@ -276,12 +276,14 @@ whether the two statements could both be true of the same instrument.
    column overlaps itself, so its definition names the ten bands and numbers none of them.
 
 3. **One statement narrower than the other: look outside the pair first.** An Arturia
-   PolyBrute 12's specifications list its aftertouch as *"channel aftertouch"* and, nine
+   PolyBrute 12's specifications list its aftertouch as *"channel aftertouch"* and, a few
    lines further on, as *"channel or polyphonic"*. Both could be true of an instrument
    that does both, so this is not the second case. The body of the manual settles it -
    four of its five aftertouch modes send polyphonic aftertouch when MPE is off - so the
-   definition records polyphonic and sets out all three statements. **A third witness has
-   to be about the same thing**, not merely nearby in the same document. Where nothing
+   definition records that it sends aftertouch and sets out all three statements. **A third
+   witness has to be about the same thing**, not merely nearby in the same document: those
+   pages are about what the keybed sends, so they settle that and say nothing of what the
+   instrument answers to, which the definition takes from another page. Where nothing
    outside the pair settles it, carry neither, as in the second case.
 
 4. **A clause that cannot be read is damaged, not competing** - one that does not add up

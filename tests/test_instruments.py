@@ -1723,7 +1723,7 @@ class TestAftertouch:
 			"akai/mpc_key_37": ("both", True),
 			"ableton/move": ("poly", True),
 			"arturia/minifreak": ("poly", True),
-			"arturia/polybrute_12": ("poly", True),
+			"arturia/polybrute_12": ("received", True),
 			"arturia/microfreak": (None, True),
 			"behringer/deepmind_12": ("channel", True),
 			"asm/hydrasynth_explorer": ("poly", True),
@@ -10963,25 +10963,27 @@ class TestPolyBrute12:
 
 		assert "Please note that only 6 voices can be played" in said
 
-	def test_the_aftertouch_is_poly_although_one_specification_line_says_channel (self) -> None:
-		"""Two statements of one fact on one page, settled by the body of the manual.
+	def test_the_aftertouch_it_answers_to_is_received_and_what_its_keybed_sends_is_apart (self) -> None:
+		"""The field held `poly` on evidence that was all about sending (#4890).
 
-		The rule this corpus follows is that a document contradicting itself about a
-		thing records neither. **What takes this out of that rule is a third statement**,
-		four pages of aftertouch modes that describe polyphonic pressure as what the
-		keybed produces - so the narrower specification line is incomplete rather than in
-		conflict, and the file sets out all of it.
+		Two specification lines on one page say channel and channel or polyphonic, and four
+		pages of aftertouch modes settle that for the keybed: it sends polyphonic pressure.
+		What the instrument answers to is another question, and one sentence answers it,
+		for MPE alone: channel pressure, one channel per note.  No page says what it does
+		with aftertouch arriving without MPE, so the kind is left open.
 		"""
 		twelve = pymidiinstrumentdefs.load("arturia/polybrute_12", [CORPUS])
 		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
 
-		assert twelve.voice.aftertouch == "poly"
+		assert (twelve.voice.aftertouch, twelve.voice.aftertouch_transmits) == ("received", True)
 		assert six.voice.aftertouch == "channel"
 
 		said = prose_of("arturia", "polybrute_12")
 
+		assert "RECEIVED, AND THE ONE KIND A PAGE NAMES AS RECEIVED IS CHANNEL PRESSURE UNDER MPE" in said
+		assert "accepts channel (mono) aftertouch on multiple MIDI channels (one per note)" in " ".join(said.split())
+		assert "none says polyphonic key pressure is received at all" in " ".join(said.split())
 		assert "Two statements of one fact that do not meet" in said
-		assert "WHAT SETTLES IT IS THE BODY OF THE MANUAL, NOT EITHER LINE" in said
 		assert "Aftertouch (pressure sensitivity), channel or polyphonic" in said
 
 	def test_mpe_is_the_difference_the_field_can_carry (self) -> None:

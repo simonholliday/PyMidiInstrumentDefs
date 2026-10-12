@@ -7,7 +7,7 @@
 #
 # **SO THE TWO FILES AGREE ABOUT THE CHART AND DISAGREE ABOUT THE INSTRUMENT**, and a reader who
 # noticed the first and assumed the second would be wrong six ways. What differs below: twelve
-# voices instead of six, polyphonic aftertouch instead of channel, MPE on up to sixteen channels,
+# voices instead of six, a keybed that sends polyphonic aftertouch, MPE on up to sixteen channels,
 # **one controller number the chart does not list**, a pitch-bend range the PolyBrute's manual
 # never printed, and a transport that this manual says travels both ways where the PolyBrute's
 # said only one.
@@ -162,17 +162,18 @@ source: >-
   EVERY QUOTATION BELOW CARRIES A LOCATOR, AND THAT WAS AUDITED RATHER THAN ASSUMED. The
   quotation gate only acts on a quotation followed by `(p. N)` or a source key, and says nothing
   at all about one followed by neither - so the quote marks in this file were paired off in order
-  and counted: **62 quotations, 62 locators**, with the six remaining pairs being field values
+  and counted: **66 quotations, 66 locators**, with the six remaining pairs being field values
   rather than anybody's words. Ten quotations had no locator when the file was first written,
   including two of the three Duo Bend modes and both halves of the voice-mode sentence, and the
   gate reported none of them. **A gate's silence is not a pass**, and the only way to know which
   quotations it looked at is to count them yourself.
 
-  **AND THE TWO COUNTS RECONCILE EXACTLY, WHICH IS THE POINT OF TAKING BOTH.** The gate checks 60
-  here - 57 against a page and 3 against a document with no pages - where this file has 62
-  locators. The two missing are "5-octave" (manual p. 122) and the edition "3.1.0"
-  (resources_page), both **shorter than the twelve characters the gate requires**, so it passes
-  over them silently. A figure that cannot be reconciled with a count made another way is a figure
+  **AND THE TWO COUNTS RECONCILE EXACTLY, WHICH IS THE POINT OF TAKING BOTH.** The gate checks 62
+  here - 59 against a page and 3 against a document with no pages - where this file has 66
+  locators. The four missing are two passages, each written once where it is used and once in
+  this sentence: "5-octave" (manual p. 122) and the edition "3.1.0" (resources_page), both
+  **shorter than the twelve characters the gate requires**, so it passes over them, and now says
+  that it has. A figure that cannot be reconciled with a count made another way is a figure
   nobody can act on; these can.
 
   ALSO NOT RECORDED: the note range, and the mode. No page states what the instrument answers to
@@ -302,27 +303,39 @@ voice:
     # velocity and aftertouch curves, and [Assign 2] to set the aftertouch sensitivity" (manual
     # p. 113). Three curves each, named at pp. 113-114.
     note_on: received
-  # POLYPHONIC, AND THE SPECIFICATIONS SAY IT TWO WAYS ON ONE PAGE. Under Keyboard they list
-  # "channel aftertouch" (manual p. 122); nine lines below, under Performance controls, they list
+  # RECEIVED, AND THE ONE KIND A PAGE NAMES AS RECEIVED IS CHANNEL PRESSURE UNDER MPE. This field
+  # is what the instrument answers to, and one sentence in the manual says what arrives: "When
+  # receiving MPE, PolyBrute 12 accepts channel (mono) aftertouch on multiple MIDI channels (one
+  # per note), which are routed polyphonically to the Mod Matrix" (manual p. 118). The MPE IN
+  # table routes `Channel Pressure` to the Aftertouch lane in four of the five aftertouch modes and
+  # to `VCF ENV` in FullTouch Envelope (manual p. 107). **No page says what it does with
+  # aftertouch that arrives without MPE, and none says polyphonic key pressure is received at
+  # all**: a search of every page for aftertouch or pressure beside receive, incoming, accept or
+  # respond finds, about a message arriving, only sentences about MPE: that one and the page
+  # before it, where MPE lets each voice "respond not only to its own aftertouch data, but also
+  # pitch bend, and slide" (manual p. 117). So the word here is `received`: it answers to
+  # aftertouch, the one kind a page names is channel pressure and that for MPE alone, and which
+  # kind it takes outside MPE no page states.
+  # **WHAT THE KEYBED SENDS IS THE OTHER DIRECTION, AND IT IS WHAT THIS FIELD HELD AS `poly` UNTIL
+  # 2026-10-12.** The specifications say it two ways on one page. Under Keyboard they list
+  # "channel aftertouch" (manual p. 122); a few lines below, under Performance controls, they list
   # "Aftertouch (pressure sensitivity), channel or polyphonic" (manual p. 122). **Two statements
-  # of one fact that do not meet**, which would ordinarily mean recording neither.
-  # **WHAT SETTLES IT IS THE BODY OF THE MANUAL, NOT EITHER LINE.** Four pages of aftertouch modes
-  # describe polyphonic pressure as what the keybed produces - "The notes are triggered
-  # immediately at the touch point, and the polyphonic aftertouch signals use the entire travel of
-  # the key from the touch point down to the bottom of the keybed" (manual p. 106) - and the MPE
-  # OUT table on that page gives `Aftertouch (Poly)` as what is sent, without MPE, in four of its
-  # five aftertouch modes. Only Mono AT sends Channel Pressure there. So the narrower line is the
-  # incomplete one and `poly` is the instrument.
+  # of one fact that do not meet**, and the body of the manual settles it for what is sent. Four
+  # pages of aftertouch modes describe polyphonic pressure as what the keybed produces - "The
+  # notes are triggered immediately at the touch point, and the polyphonic aftertouch signals use
+  # the entire travel of the key from the touch point down to the bottom of the keybed"
+  # (manual p. 106) - and the MPE OUT table on that page gives `Aftertouch (Poly)` as what is
+  # sent, without MPE, in four of its five aftertouch modes. Only Mono AT sends Channel Pressure
+  # there. All of that is about sending, and is `aftertouch_transmits` below.
   # **AND WITH MPE ON IT SENDS THE OTHER KIND**: "When sending MPE, PolyBrute 12 sends mono
   # aftertouch (Channel Pressure) and Slide (CC74) on multiple channels (one per note)" (manual
-  # p. 118). One pressure message per channel, one channel per note. Both kinds are real on this
-  # instrument, which is how the Hydrasynth Explorer and the Iridium record theirs too.
+  # p. 118). One pressure message per channel, one channel per note.
   # THE FIVE MODES, for a reader who meets them on the panel: Mono AT, Poly AT, FullTouch
   # Envelope, FullTouch, and FullTouch + Z (manual pp. 105-107). "FullTouch: The range starts at
   # the beginning of the key press and stops at the Classic AT area start" (manual p. 105) - so
   # FullTouch is pressure over the whole of the key's travel and Classic AT is pressure past the
   # key stop, and a mode chooses which of them reaches which modulation lane.
-  aftertouch: poly
+  aftertouch: received
   # SENT IN EVERY MODE, by the MPE OUT table (manual p. 106): without MPE, `Aftertouch (Poly)` in
   # four of the five modes and Channel Pressure in Mono AT; with MPE set to send, Channel Pressure
   # in all five, one channel per note by the sentence quoted above (manual p. 118). The flag says

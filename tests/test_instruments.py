@@ -1205,6 +1205,11 @@ class TestTonverk:
 
 		assert (part.within, part.count, part.nrpn_msb) == ("audio", 8, 1)
 		assert part.receives == ("controls",)
+
+		# A note triggers a subtrack by its number and no map can say which, so notes are
+		# neither taken nor refused as far as the file can tell a program.
+		assert part.unrecorded == ("notes",)
+		assert part.takes("notes") is None and part.takes("controls") is True
 		assert part.mode is None
 		assert not part.is_assigned
 

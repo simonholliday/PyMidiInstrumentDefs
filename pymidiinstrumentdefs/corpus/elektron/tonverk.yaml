@@ -353,17 +353,19 @@ parts:
   # one. The machine's additional sequencer track, the supertrack, "controls the parameters on
   # the FX pages and the two FX LFOs on the MOD pages" (manual p. 88), and the appendix gives
   # it no numbers of its own.
-  # **`receives` lists controls, which is what the table gives, so a program asking whether a
-  # subtrack takes notes is told no. That is the address speaking and not the instrument.** A
-  # note does trigger a subtrack, by its number - 60, 62, 64, 65, 67, 69, 71 and 72, as the
-  # source account quotes - and a part's note map is the whole part's, so it cannot give one
-  # note to one instance.
+  # **`receives` lists controls, which is what the table gives, and `notes` is `unrecorded`.**
+  # A note does trigger a subtrack, by its number - 60, 62, 64, 65, 67, 69, 71 and 72, as the
+  # source account quotes - and no page says which number sounds which subtrack, nor can a
+  # part's note map give one note to one instance. So a program asking whether a subtrack
+  # takes a note is told neither yes nor no. Until 2026-10-12 `notes` was only left out of
+  # `receives`, and the answer was no.
   subtrack:
     label: Subtrack
     within: audio
     count: 8
     nrpn_msb: 1
     receives: [controls]
+    unrecorded: [notes]
 
 groups:
   trig: Trig

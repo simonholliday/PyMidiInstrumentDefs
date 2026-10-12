@@ -22205,3 +22205,27 @@ class TestLeadA1:
 		assert list(lead.sources) == ["manual", "downloads_page", "update_history"]
 		assert lead.sources["manual"].edition == "OS Version 1.3x, Print Edition F"
 		assert (lead.sources["update_history"].edition, lead.sources["update_history"].paginated) == ("v1.36", False)
+
+
+class TestWebPageTitles:
+
+	"""A web page's `title` is the title the page serves, as served.
+
+	Decided on 2026-10-12: a shorter description of a page is not its title.  Each of these was
+	read from the `<title>` of the page as it was saved, white space run together, and replaces
+	a title somebody wrote for the page.  They are pinned because nothing in the repository
+	holds the saved page to read again.
+	"""
+
+	SERVED = {
+		("ableton/move", "product_page"): "Move — a portable instrument for intuitive music making | Ableton",
+		("ableton/move", "new_features"): "Move | All new features",
+	}
+
+	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:
+		"""With its site's name and its punctuation, whichever dash that is."""
+
+		for (name, key), served in self.SERVED.items():
+			definition = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			assert definition.sources[key].title == served, (name, key)

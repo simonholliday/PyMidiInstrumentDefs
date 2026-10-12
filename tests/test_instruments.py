@@ -22240,6 +22240,7 @@ class TestWebPageTitles:
 		("expressive_e/osmose", "sound_engine_input"): "Triggering Osmose's sound engine (the EaganMatrix) from an external device - Help Center",
 		("expressive_e/osmose", "preset_changes"): "Changing Osmose's sound presets from an external device with Bank Select and Program Change messages - Help Center",
 		("expressive_e/osmose", "product_page"): "Expressive MPE Polyphonic Synthesizer",
+		("intellijel/cascadia", "product_page"): "Cascadia Desktop Semi-Modular Synth - intellijel",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

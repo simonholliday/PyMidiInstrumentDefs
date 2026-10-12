@@ -22251,6 +22251,7 @@ class TestWebPageTitles:
 		("korg/volca_bass", "download_page"): "Downloads | volca bass | KORG (USA)",
 		("korg/volca_drum", "download_page"): "Downloads | volca drum | KORG (USA)",
 		("korg/volca_sample", "updater"): "Downloads | volca sample - System Updater | KORG (USA)",
+		("make_noise/zero_coast", "product_page"): "0-COAST – Make Noise Music",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

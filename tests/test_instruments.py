@@ -22266,6 +22266,8 @@ class TestWebPageTitles:
 		("roland/mc_707", "support_page"): "Roland - Support - MC-707 - Owner's Manuals",
 		("roland/sp_404mkii", "documents_page"): "Roland - Support - SP-404MKII - Owner's Manuals",
 		("roland/tr_8", "manuals_page"): "Roland - Support - TR-8 - Owner's Manuals",
+		("teenage_engineering/op_xy", "product_page"): "OP–XY - teenage engineering",
+		("teenage_engineering/op_z", "product_page"): "OP–Z - teenage engineering",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

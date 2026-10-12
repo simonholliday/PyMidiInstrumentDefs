@@ -242,6 +242,7 @@ class TestBundledCorpus:
 			"moog/sub_37",
 			"moog/subharmonicon",
 			"moog/subsequent_37",
+			"moog/theremini",
 			"native_instruments/maschine_plus",
 			"novation/bass_station_ii",
 			"novation/circuit",
@@ -21084,3 +21085,66 @@ class TestB2600:
 		assert "**THE TWO SPECIAL EDITIONS PRINT THE SAME FOUR ITEMS.**" in flat
 		assert "**Every other line a field here rests on is in both as well**" in flat
 		assert "This file is not offered as either's" in flat
+
+
+class TestTheremini:
+
+	"""Twenty-eight controllers received off one table, two sent on numbers the owner chooses, and no note."""
+
+	def test_twenty_eight_controls_all_received (self) -> None:
+		theremini = pymidiinstrumentdefs.load("moog/theremini", [CORPUS])
+
+		numbers = sorted(control.cc for control in theremini.controls.values() if control.cc is not None)
+		assert numbers == [7, 9, 12, 14, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 71, 74, 80, 84, 85, 86, 87, 88, 90,
+			91, 102, 103, 119]
+		assert len(theremini.controls) == 28
+		assert all(control.direction == "receives" for control in theremini.controls.values())
+
+	def test_every_number_below_thirty_two_has_a_fine_half_thirty_two_higher (self) -> None:
+		"""The manual's sentence: controllers 0 to 31 have their fine controls at 32 to 63."""
+		theremini = pymidiinstrumentdefs.load("moog/theremini", [CORPUS])
+
+		for control in theremini.controls.values():
+			assert control.cc is not None
+			assert control.lsb == (control.cc + 32 if control.cc < 32 else None), control.label
+		assert sum(1 for control in theremini.controls.values() if control.lsb is not None) == 15
+
+	def test_four_controls_take_named_values_and_the_filter_types_end_as_the_waveforms_do (self) -> None:
+		"""Both manuals print the last two filter types as the last two waveforms' names; recorded as printed."""
+		theremini = pymidiinstrumentdefs.load("moog/theremini", [CORPUS])
+
+		named = {key: control.choices for key, control in theremini.controls.items() if control.choices}
+		assert {key: len(choices) for key, choices in named.items()} == {"wave_selection": 7, "filter_type": 7,
+			"scale": 22, "root_note": 12}
+		for choices in named.values():
+			assert list(choices.values()) == list(range(len(choices)))
+		assert list(named["filter_type"])[5:] == list(named["wave_selection"])[5:] == ["animoog_3", "etherwave"]
+
+		said = " ".join(prose_of("moog", "theremini").split())
+
+		assert "**The last two filter types are printed as `Animoog 3` and `Etherwave`" in said
+
+	def test_no_channel_no_note_and_no_word_for_what_it_sends (self) -> None:
+		theremini = pymidiinstrumentdefs.load("moog/theremini", [CORPUS])
+
+		assert (theremini.midi.channels, theremini.midi.control_change, theremini.midi.program_change,
+			theremini.midi.clock, theremini.midi.sysex) == (None, None, None, None, True)
+		assert (theremini.voice.addressing, theremini.voice.polyphony, theremini.voice.note_range) == (None, None, None)
+		assert not theremini.parts
+
+		said = " ".join(prose_of("moog", "theremini").split())
+
+		assert "**TWO CONTROLLERS HAVE SETTINGS FOR SENDING, AND THE OWNER NUMBERS THEM.**" in said
+		assert "**TWO RANGES ARE PRINTED AS MIDI NOTES, AND NO NOTE MESSAGE IS NAMED.**" in said
+		assert '"(Pitch, Volume oder Note)" (german_manual p. 16)' in said
+		assert "So `channels` is not recorded." in said
+		assert "**NO NOTE MESSAGE IS NAMED IN EITHER MANUAL, SO THERE IS NO `voice` SECTION.**" in said
+
+	def test_two_manuals_and_the_version_is_on_the_german_ones_cover (self) -> None:
+		theremini = pymidiinstrumentdefs.load("moog/theremini", [CORPUS])
+
+		assert theremini.model.firmware == "1.1"
+		assert list(theremini.sources) == ["manual", "german_manual", "downloads_list"]
+		assert (theremini.sources["manual"].edition, theremini.sources["german_manual"].edition) == (None, "OS 1.1.X")
+		assert theremini.sources["downloads_list"].sha256 == \
+			pymidiinstrumentdefs.load("moog/little_phatty", [CORPUS]).sources["downloads_list"].sha256

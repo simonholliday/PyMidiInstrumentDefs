@@ -1,0 +1,257 @@
+definition: 1
+
+# **AN INSTRUMENT PLAYED BY TWO ANTENNAS, WHOSE SOUND IS SET BY 28 CONTROLLERS IT RECEIVES.** The
+# manual's MIDI DATA table gives a controller number to each of 28 functions, and this file
+# carries all 28. The two controllers it has settings to send, one from each antenna, go out on
+# numbers its owner chooses, so they are in words here and not among the controls.
+#
+# **NO NOTE MESSAGE IS NAMED IN EITHER MANUAL, SO THERE IS NO `voice` SECTION.** Moog serves two
+# manuals, an English one of 2014 and a later German one for `OS 1.1.X`. They print the same
+# table; the German one adds a channel for each antenna's controller, and neither names a channel
+# the instrument listens on.
+
+model:
+  manufacturer: Moog Music
+  name: Theremini
+  # `OS 1.1.X` ON THE GERMAN MANUAL'S COVER, THE ONLY VERSION EITHER MANUAL PRINTS. It is on the
+  # cover alone, where the page shows it and the text layer does not; the file's name carries
+  # `1.1.X` as well. The table under that cover has the 28 numbers and ranges recorded here, so
+  # the controls are that version's. The English manual's cover names the product and calls
+  # itself a user's manual, with no version, and the word firmware is nowhere in that file.
+  # Moog's downloads list calls both "Theremini Manual v1.1 English" (downloads_list) and its
+  # German twin `v1.1`, and has no firmware for the product.
+  firmware: "1.1"
+
+source: >-
+  **TWO MANUALS, AND THEY ARE TWO EDITIONS.** Moog's downloads list has four entries for the
+  Theremini: an English and a German manual and two editor packages (downloads_list). The English
+  manual is 36 sheets, made in 2014: "© 2014 Moog Music" (manual p. 36). The German one is 40
+  sheets, headed `OS 1.1.X`, with an imprint of 2020, "©2020 Moog Music, Inc." (german_manual p.
+  38), in a file made in 2025. The German describes what the English does not: a MIDI channel for
+  each antenna's controller, an interval between controller messages, a note source for the control
+  voltage output and the pages of an Advanced menu (german_manual pp. 16-18), a menu the English
+  mentions only in one answer among its questions, the one about the display's contrast (manual p.
+  32). **The two pictures of one screen show the difference**: the English MIDI CC OUT has a number
+  and a type for each antenna (manual p. 18), and the German has a channel beside each and an
+  interval under them (german_manual p. 16). So the English describes an earlier state of the
+  instrument than `OS 1.1.X`, though it prints no version, whatever the list calls it. The editor
+  packages hold programs and no document, and were not run.
+
+  **THE TABLE IS THE SAME IN BOTH.** The English manual's MIDI DATA page is a table of `CC NO.`,
+  `FUNCTION` and `EFFECTIVE VALUE RANGE`, 28 rows (manual p. 33). The German manual's table has the
+  same 28 numbers, with the functions' names in German or in the English words hyphenated the German
+  way, one left exactly as the English prints it, the ranges' words in German, and every figure the
+  same (german_manual p. 36). **The German table cannot be checked by machine**: its text layer
+  holds other letters and figures than the page shows, as its cover's does, so it was read by eye,
+  twice. Every number and label below is the English table's.
+
+  **THE TABLE IS WRITTEN FOR WHAT ARRIVES, AND EVERY CONTROL BELOW IS `direction: receives`.** Its
+  note says what a value does when it is sent to the instrument: "For these controllers, sending 0
+  sets the parameter to fully negative, 64 sets it to 0, and 127 sets it to fully positive." (manual
+  p. 33). The front panel's chapter says the same of the presets: "Presets can be edited, modified
+  and saved via MIDI." (manual p. 16). The German manual says it too, "Via MIDI lassen sich Presets
+  bearbeiten und speichern." (german_manual p. 14), and names the means: an editor that Moog offers
+  for download, which also reaches "einige versteckte Funktionen des Theremini" (german_manual p.
+  14), some hidden functions. No page says which functions those are, whether they are among the 28,
+  or by what messages the editor works. No page of either manual says that the instrument sends any
+  of the 28.
+
+  **TWO CONTROLLERS HAVE SETTINGS FOR SENDING, AND THE OWNER NUMBERS THEM.** The MIDI CV SETUP menu
+  has a page headed MIDI CC OUT, with a number from 0 to 127 for each antenna: "PITCH: Use the
+  PRESETS knob to assign a MIDI CC number" (manual p. 18) "to the output of the Pitch antenna."
+  (manual p. 18), and the same for the other, "to the output of the Volume antenna." (manual p. 18),
+  each with "TYPE: Choose either 7-bit or 14-bit MIDI output." (manual p. 18). A number an owner
+  assigns is not a property of the model, so neither is a control here. The page's picture of the
+  screen shows `Pitch: CC 20` and `Volume: CC 2`, each `Type 7bit` (manual p. 18), which is a
+  picture of a setting and not a statement of the factory's; 20 is also the number the table gives
+  Scan Amount. No page says what number carries the fine half of an antenna's 14-bit output: the
+  sentence about fine halves, below, stands over the table and speaks of implemented controller
+  numbers, and whether it covers a number an owner gives an antenna is not said. `control_change` is
+  left unset: no word of the format says that a maker fixes the numbers received and leaves those
+  sent to the owner.
+
+  **THE LATER EDITION GIVES EACH OF THE TWO A CHANNEL, AND NO PAGE GIVES ONE TO WHAT IS RECEIVED.**
+  The German manual adds a setting beside each number, "PITCH CC CH. (MIDI Kanal)"
+  (german_manual p. 16) and "VOLUME CC CH. (MIDI Kanal)" (german_manual p. 16), each over `(0 –
+  16)`, without saying what 0 does. It also adds an interval, in milliseconds, that thins the
+  stream of controller messages: by its two rules a controller goes out no more often than once
+  in the interval, and only when its value has changed, except that one unchanged for a second
+  or longer is sent again (german_manual p. 16). Its picture of the screen shows the English
+  picture's two numbers, `Ch 1` for each antenna and `Interval: 50ms`. Neither manual names a
+  channel on which
+  the 28 are heard: the word channel is not in the English manual at all, and `Kanal` is on that
+  one German page alone. So `channels` is not recorded.
+
+  **FIFTEEN OF THE 28 HAVE A FINE HALF.** "All implemented controller numbers 0 - 31 have
+  corresponding LSB (fine) controls at locations 32 - 63." (manual p. 33). Fifteen rows are below
+  32: 7, 9, 12, 14 and 20 to 30. Each carries `lsb`, its own number plus 32, and no row of the
+  table uses a number from 32 to 63 for anything else.
+
+  **SOME PARAMETERS ARE SIGNED, ABOUT A CENTRE OF 64.** The table's range column gives each
+  parameter's span in its own units, `-400% - 400%` or `-64 - 63 Semitones`, and the sentence
+  quoted above says how a controller's 0 to 127 covers a signed one. The spans are in comments
+  beside the controls; the format's `range` is the controller's.
+
+  **FOUR ROWS TAKE NAMED VALUES**, each sent to a table on the next page by `See Below`: 22 scales,
+  12 root notes, 7 waveforms and 7 filter types (manual p. 34). They are `choices` below, each
+  name against the value printed beside it. **The last two filter types are printed as `Animoog
+  3` and `Etherwave`, which are the last two waveforms' names**, in both manuals. They are
+  recorded as printed; what filters values 5 and 6 select is not said anywhere else.
+
+  **TWO RANGES ARE PRINTED AS MIDI NOTES, AND NO NOTE MESSAGE IS NAMED.** 87 and 88 set the
+  lowest and the highest note the antenna's range covers, their ranges printed as `Lowest MIDI
+  Note` and `Highest MIDI Note` (manual p. 33) and read here as note numbers: the setup menu's
+  note range, "the range of notes that can be played by the Theremini." (manual p. 17). No page
+  of either manual names a note-on or a note-off, received or sent, a program change, a pitch
+  bend message or a clock. **One loose end is the German manual's**: its paragraph on the
+  interval lists three controllers, "(Pitch, Volume oder Note)" (german_manual p. 16), where its
+  page has settings for Pitch and Volume alone, and no page says what Note would send. Note is
+  also a third source for its control voltage output (german_manual p. 17). The instrument is
+  played by hand in the air, and what a sequencer can do to it by these documents is set its
+  sound.
+
+  **CONTROLLER 119 WRITES TO MEMORY.** "Any Value Saves All Edits To Currently Selected Preset"
+  (manual p. 33). There are 32 presets (manual p. 32).
+
+  **SYSTEM EXCLUSIVE RENAMES A PRESET AND AN EFFECT.** Two messages are printed byte for byte.
+  The first carries a preset's name, "nn are the 13 ASCII characters in the name."
+  (manual p. 35), with "Use UPPER CASE characters only!" (manual p. 35) under it; the second an
+  effect's, "nn are the 13 ASCII characters in the effect name." (manual p. 35). Neither says
+  which preset or which effect it renames. The German manual prints the same bytes
+  (german_manual p. 36).
+
+  **MIDI IS BY USB ALONE.** "The Theremini provides a full-speed USB 2.0 Mini-B jack that allows
+  MIDI data to be transmitted and received between the Theremini and a compatible computer, tablet,
+  or MIDI device." (manual p. 22). The rear panel has no other MIDI socket: its connections are two
+  audio outputs, a control voltage output, that jack, a lock slot, a power switch, a power jack and
+  a ground terminal (manual pp. 21-22), and the German manual's list shows none but the USB port
+  either (german_manual pp. 26-27).
+
+  NOT RECORDED: a channel, which no page gives for what is received; `control_change`, for the
+  reason above; the two controllers the antennas send, and what they are set to from the factory;
+  program change, clock and transport, none of them named; and anything of notes or voices.
+
+sources:
+  manual:
+    kind: manual
+    title: Theremini User's Manual
+    dated: "2014"
+    landing: "https://www.moogmusic.com/downloads/?product=Theremini&type=User%20Manual"
+    url: "https://cdn.inmusicbrands.com/Moog/Theremini/Theremini%20Manual.pdf"
+    sha256: 52334d74e5c0c7e0bd54ce7f6713c7a5ad76907349ab925608c80a7ce3f16a90
+    retrieved: 2026-10-11
+    # 36 sheets. The folio is the sheet number from 4 to 35; the first three sheets print none, and
+    # the last shows none, though its text layer holds a 38, and is cited as p. 36. Its cover
+    # names no version. The title is the cover's two lines, with a plain apostrophe for its
+    # typographic one; the file's metadata has none.
+    page_offset: 0
+  german_manual:
+    kind: manual
+    title: Theremini Bedienungsanleitung
+    edition: OS 1.1.X
+    dated: "2020"
+    landing: "https://www.moogmusic.com/downloads/?product=Theremini&type=User%20Manual"
+    url: "https://cdn.inmusicbrands.com/Moog/Theremini/Theremini_Manual_1.1.X_D_Web_050423.pdf"
+    sha256: beb28a6dd3319c006b16e72412ad53715cc96a4e0204e12ceedffef41d4f6826
+    retrieved: 2026-10-11
+    # 40 sheets, in German, its folio the sheet number from 3 to 39. **Its cover, its MIDI table and
+    # its value tables do not read as text**, so those were read by eye; its prose does, and is
+    # quoted. Cited for the version, for what its menus add, and for its table being the English
+    # one's. **THE YEAR IS ITS IMPRINT'S, `©2020`, THE ONLY YEAR OF COPYRIGHT IT PRINTS, AND IS TO
+    # BE READ WITH CARE.** The same block names another instrument, the Subharmonicon, as a
+    # trademark (german_manual p. 38), which suggests the block was carried over from another
+    # manual. The declaration of conformity cites two standards as amended in 2020 (german_manual p.
+    # 39), so the edition is not earlier than that. The file was printed to PDF on 2025-04-23, and
+    # its name ends `050423`, which is not explained.
+    page_offset: 0
+  downloads_list:
+    kind: web_page
+    title: Moog downloads
+    dated: 2026-10-01
+    landing: "https://www.moogmusic.com/downloads/"
+    url: "https://www.moogmusic.com/page-data/sq/d/1410304437.json"
+    sha256: 2b12c3d24177c87c55f47550f16333f1228b33d740b8dd7fd4067a88605c0349
+    retrieved: 2026-10-01
+    paginated: false
+    # Cited for what Moog serves for this instrument: two manuals and two editors, and no
+    # firmware. Fetched again on 2026-10-11 and byte for byte the copy of 2026-10-01, which is the
+    # one in the library.
+
+midi:
+  # NOT RECORDED, the channel: see the account. NOT RECORDED EITHER: `control_change`, clock,
+  # transport and program change.
+  # Two messages, each printed in full (manual p. 35).
+  sysex: true
+
+groups:
+  wavetable: Wavetable
+  modulation: Pitch Mod and Vol Mod
+  filter: Filter
+  delay: Delay
+  pitch: Pitch correction and range
+  preset: Preset and output
+
+controls:
+
+  # **EVERY NUMBER AND LABEL IS THE TABLE'S (manual p. 33), AND EVERY ONE IS RECEIVED.** The span
+  # after each is the table's `EFFECTIVE VALUE RANGE`, in the parameter's own units.
+
+  # Preset and output ─────────────────────────────────────
+  # 0 - 100%.
+  master_volume:           {label: Master Volume, cc: 7, lsb: 39, direction: receives, group: preset}
+  # -64 - 63 Semitones.
+  transpose:               {label: Transpose, cc: 102, direction: receives, group: preset}
+  # "0 = Off, 127 = Max" (manual p. 33).
+  preset_volume:           {label: Preset Volume, cc: 103, direction: receives, group: preset}
+  # Any value saves every edit to the preset selected; see the account.
+  save_to_current_preset:  {label: Save To Current Preset, cc: 119, direction: receives, group: preset}
+
+  # Wavetable ─────────────────────────────────────────────
+  wave_selection:          {label: Wave Selection, cc: 90, direction: receives, choices: {sine: 0, triangle: 1, super_saw: 2, animoog_1: 3, animoog_2: 4, animoog_3: 5, etherwave: 6}, group: wavetable}
+  # 0 - 32 Hz.
+  wavetable_scan_rate:     {label: Wavetable Scan Rate, cc: 9, lsb: 41, direction: receives, group: wavetable}
+  # 0 - 2, both.
+  scan_amount:             {label: Scan Amount, cc: 20, lsb: 52, direction: receives, group: wavetable}
+  scan_position:           {label: Scan Position, cc: 21, lsb: 53, direction: receives, group: wavetable}
+
+  # Pitch Mod and Vol Mod ─────────────────────────────────
+  # The label is the table's two prefixes, which neither manual expands. Seven are signed, about
+  # a centre of 64: -400% - 400% on the first four and on Pitch Mod Resonance, -100% - 100% on Vol
+  # Mod Cutoff and -200% - 200% on Vol Mod Resonance. Vol Mod Volume is printed 0% - 1600%, with
+  # no negative half.
+  pitch_mod_scan_freq:     {label: Pitch Mod Scan Freq., cc: 22, lsb: 54, direction: receives, group: modulation}
+  vol_mod_scan_freq:       {label: Vol Mod Scan Freq., cc: 23, lsb: 55, direction: receives, group: modulation}
+  pitch_mod_scan_amount:   {label: Pitch Mod Scan Amount, cc: 24, lsb: 56, direction: receives, group: modulation}
+  vol_mod_scan_amount:     {label: Vol Mod Scan Amount, cc: 25, lsb: 57, direction: receives, group: modulation}
+  vol_mod_volume:          {label: Vol Mod Volume, cc: 26, lsb: 58, direction: receives, group: modulation}
+  vol_mod_cutoff:          {label: Vol Mod Cutoff, cc: 27, lsb: 59, direction: receives, group: modulation}
+  vol_mod_resonance:       {label: Vol Mod Resonance, cc: 28, lsb: 60, direction: receives, group: modulation}
+  pitch_mod_resonance:     {label: Pitch Mod Resonance, cc: 30, lsb: 62, direction: receives, group: modulation}
+
+  # Filter ────────────────────────────────────────────────
+  # THE LAST TWO NAMES ARE THE TABLE'S OWN, AND THEY ARE THE WAVEFORMS' LAST TWO; see the account.
+  # The first is printed `None (bypass)`.
+  filter_type:             {label: Filter Type, cc: 80, direction: receives, choices: {none: 0, two_pole_lowpass: 1, two_pole_bandpass: 2, two_pole_highpass: 3, two_pole_notch: 4, animoog_3: 5, etherwave: 6}, group: filter}
+  # 0 - 100%, both.
+  filter_cutoff_freq:      {label: Filter Cutoff Freq, cc: 74, direction: receives, group: filter}
+  filter_resonance:        {label: Filter Resonance, cc: 71, direction: receives, group: filter}
+  # -800% - 800%.
+  filter_pitch_tracking:   {label: Filter Pitch Tracking, cc: 29, lsb: 61, direction: receives, group: filter}
+
+  # Delay ─────────────────────────────────────────────────
+  # "0 - 0.83s (approx.)" (manual p. 33).
+  delay_time:              {label: Delay Time, cc: 12, lsb: 44, direction: receives, group: delay}
+  # 0 - 100%.
+  delay_feedback:          {label: Delay Feedback, cc: 14, lsb: 46, direction: receives, group: delay}
+  # "0 = Dry Only, 64 = Wet + Dry, 127 = Wet Only" (manual p. 33).
+  effect_mix:              {label: Effect Mix, cc: 91, direction: receives, group: delay}
+
+  # Pitch correction and range ────────────────────────────
+  # 0 - 100%.
+  pitch_correction_amount: {label: Pitch Correction Amount, cc: 84, direction: receives, group: pitch}
+  scale:                   {label: Scale, cc: 85, direction: receives, choices: {chromatic: 0, ionian: 1, dorian: 2, phrygian: 3, lydian: 4, mixolydian: 5, aeolian: 6, locrian: 7, major_blues: 8, minor_blues: 9, diminished: 10, major_penta: 11, minor_penta: 12, spanish: 13, gypsy: 14, arabian: 15, egyptian: 16, ryukyu: 17, wholetone: 18, major_3rd: 19, minor_3rd: 20, fifth: 21}, group: pitch}
+  root_note:               {label: Root Note, cc: 86, direction: receives, choices: {c: 0, c_sharp: 1, d: 2, d_sharp: 3, e: 4, f: 5, f_sharp: 6, g: 7, g_sharp: 8, a: 9, a_sharp: 10, b: 11}, group: pitch}
+  # Read as a note number, the lowest and the highest note of the antenna's range: the table
+  # prints `Lowest MIDI Note` and `Highest MIDI Note` for their ranges and no figures.
+  low_note:                {label: Low Note, cc: 87, direction: receives, group: pitch}
+  high_note:               {label: High Note, cc: 88, direction: receives, group: pitch}

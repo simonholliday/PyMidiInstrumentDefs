@@ -1,12 +1,15 @@
-# **106 CONTROLLERS BY NAME AND NO RANGE, AND 353 NRPNS THAT ARE COUNTED AND NOT CARRIED.** The
-# guide's appendix has a row for every controller number from 0 to 127 and prints no range for any.
-# It gives 353 program parameters an NRPN and a name, again with no range, so those are counted in
-# the account and no control is made of one.
+# **106 CONTROLLERS BY NAME AND NO RANGE, AND 308 PROGRAM PARAMETERS BY NRPN WHOSE RANGE IS NOT
+# KNOWN.** The guide's appendix has a row for every controller number from 0 to 127 and prints no
+# range for any. It gives 353 program parameters an NRPN and a name, again with no range. The 303
+# it names are controls here, with the five its second addendum names, and each says
+# `range: unknown`; the 45 left as placeholders are not carried. These controls' keys begin
+# `nrpn_`, because no page pairs one with a controller.
 #
 # **A SETTING CHOOSES WHICH HALF OF THIS FILE THE INSTRUMENT HEARS.** `MIDI Param Receive` is CC,
 # NRPN or off, and `MIDI Param Send` the same for what it sends. By the guide's sentences the 106
-# controllers are heard with it at CC, and the sixteen NRPNs here, fifteen global settings and the
-# sequencer's play and stop, with it at NRPN. No page says which it is set to as shipped.
+# controllers are heard with it at CC, and the NRPNs here, the program parameters, fifteen global
+# settings and the sequencer's play and stop, with it at NRPN. No page says which it is set to as
+# shipped.
 #
 # **THE GUIDE READS AS THE FIRST OPERATING SYSTEM'S, AND TWO ADDENDA FOLLOW IT.** Neither addendum
 # reprints a table, and, the five NRPNs the second adds apart, no document says a number in the
@@ -105,23 +108,60 @@ source: >-
   the factory's, and names no add-on bank anywhere else. No range is recorded for either
   control.
 
-  **353 PROGRAM PARAMETERS HAVE AN NRPN AND A NAME, AND NO RANGE, SO NONE IS CARRIED.** "The
-  following table lists Pro 3 program parameters 0-352. Subsequent parameters can be found on the
-  Pro 3 Support page of the Sequential website." (guide p. 141). The table has two columns, `NRPN`
-  and `Param Name`, and 353 rows from 0 to 352 (guide pp. 141-144), fifty of them placeholders with
-  `Unused` in the name. No column gives a range, and the documentation page lists no document that
-  would (documentation_page). The guide's own reason for preferring NRPN is that its ranges are not
-  a controller's: "NRPNs are the preferred method of parameter transmission, since they cover the
-  complete range of all parameters, while CCs are limited to a range of 128." (guide p. 97). A
-  control with an NRPN and no printed range could only state a guessed one: the guide says a
-  controller's 128 values are not the whole range of every parameter, its chapters print the panel's
-  range for many parameters and not for all, and no page says an NRPN's value is the panel's. So the
-  353 are counted here and not carried. **Nor is an NRPN paired with a controller.** `Osc1Octave`
-  and `Osc. 1 Octave` read as one parameter, and no page says so of any pair.
+  **353 PROGRAM PARAMETERS HAVE AN NRPN AND A NAME, AND NO RANGE, SO EACH NAMED ONE SAYS ITS RANGE
+  IS UNKNOWN.** "The following table lists Pro 3 program parameters 0-352. Subsequent parameters
+  can be found on the Pro 3 Support page of the Sequential website." (guide p. 141). The table has
+  two columns, `NRPN` and `Param Name`, and 353 rows from 0 to 352 (guide pp. 141-144), fifty of
+  them placeholders with `Unused` in the name. No column gives a range, and the documentation page
+  lists no document that would (documentation_page). The guide's own reason for preferring NRPN is
+  that its ranges are not a controller's: "NRPNs are the preferred method of parameter
+  transmission, since they cover the complete range of all parameters, while CCs are limited to a
+  range of 128." (guide p. 97). So a range could only be guessed: the guide says a controller's 128
+  values are not the whole range of every parameter, its chapters print the panel's range for many
+  parameters and not for all, and no page says an NRPN's value is the panel's. **Each of the 303
+  named rows is a control below that says `range: unknown`**, its label the table's name and its
+  key that name in lower case with its words parted, after `nrpn_`. A program reading this file is
+  told the range is not known and is given the widest an NRPN can carry, 0 to 16383, which is no
+  claim about the parameter. **Nor is an NRPN paired with a controller.** `Osc1Octave` and
+  `Osc. 1 Octave` read as one parameter, and no page says so of any pair, so each is a control of
+  its own and the `nrpn_` keeps their keys apart. **And the table is not the whole of them.** By
+  the sentence quoted above there are program parameters after 352. They are not in the guide or
+  its two addenda, and the documentation page lists no document that would hold them
+  (documentation_page), so none is here.
+
+  **THIRTY-SIX ROWS ARE NAMED AS THE UPPER PART OF ANOTHER, AND NO PAGE SAYS HOW THE TWO MAKE ONE
+  VALUE.** `Osc1FreqFineMSB` to `Osc3FreqFineMSB` are 6 to 8 beside `Osc1FreqFine` to
+  `Osc3FreqFine` at 3 to 5, `FilterFreqMSB` is 53 beside `FilterFreq` at 52 (guide p. 141), and
+  `Mod1AmtMSB` to `Mod32AmtMSB` are 232 to 263 beside `Mod1Amt` to `Mod32Amt` at 200 to 231 (guide
+  p. 143). An NRPN's value already travels as an upper and a lower half (guide p. 140), and no page
+  says whether a row named `MSB` is used over MIDI at all, or what either row's values are. The
+  sentence quoted below, that the upper half of a number or a value is "never more than two"
+  (guide p. 140), would put no value above 383, where the panel's fine tune alone runs from -700
+  to +699 (guide p. 18). Of the globals' numbers it is plainly wrong, 4096 and above needing an
+  upper half of 32; of values no page lets it be tested, and none connects it with these rows.
+  Each is carried as the table prints it, a control of its own.
+
+  **TWENTY-FOUR ROWS READ, BY THEIR NAMES ALONE, AS A PROGRAM'S DATA AND NOT ITS SOUND.**
+  `SoundVersion` at 320, the twenty rows of the name from 321, printed `Name (20 characters)` and
+  then `Name1` to `Name19`, `EditorByte` at 341, and `DummyModSource` and `DummyModDest` at 344 and
+  345 (guide p. 144). The names are all the page gives. They are named rows of the table and are
+  carried as it prints them. No page says what sending one does, or names one as sent. The guide's
+  sentence on direction covers program parameters as a whole (guide p. 140), and what it says of
+  what prompts a send speaks each time of front panel controls (guide pp. 97, 98, 134).
+
+  SEVEN CELLS PRINT SOMETHING OTHER THAN ONE UNBROKEN NAME. Two carry a mark and a number,
+  `PBendRangeDown // 30` at 42 (guide p. 141) and `FilterDrive // 50` at 55 (guide p. 142): no page
+  explains either, and the labels below are the names alone. The four rows from 130 break their
+  name over two lines at a hyphen, `EnvFilterVelocity-` and then `OnOff` (guide p. 142), and are
+  closed up here as one word, the hyphen being taken for the printer's. The last two of the four
+  are printed `EnvEnv3Velocity-` and `EnvEnv4Velocity-`, with `Env` twice where the first two have
+  it once, and their labels keep that. And 321 is `Name (20 characters)` (guide p. 144), kept
+  whole.
 
   **THE SECOND ADDENDUM NAMES FIVE OF THE NUMBERS THE GUIDE PRINTS AS UNUSED.** 304 to 308 are
   Morph Source, Morph Target Bank, Morph Target Program, Morph Target Mode and Morph Amount
-  (addendum_1_2 p. 4), again with no range, and are not carried either.
+  (addendum_1_2 p. 4), again with no range, and are carried the same way. So 308 program
+  parameters are controls below, and the 45 rows still named `Unused` are not.
 
   **FIFTEEN GLOBAL SETTINGS ARE CARRIED BY NRPN, AND THIRTY ARE NOT.** "The table shows the global
   data sent and received on global parameter dumps, and corresponding NRPN number when sent/received
@@ -217,7 +257,7 @@ source: >-
   `polyphony` is not recorded.
 
   NOT RECORDED: a range for any controller or program parameter, neither table printing one; the
-  thirty global rows above; the 353 program parameters and the five the second addendum names;
+  thirty global rows above; the 45 program parameters still named `Unused`, and those after 352;
   `mode`, there being no chart, though the table names 124 to 127 as the omni, mono and poly
   messages; a note range, the two lists' legends giving a note's number as 0 to 127 (guide pp.
   136-137) and the sequence editor a step's note as C0 to G10 (guide p. 73), and no page a range of
@@ -345,6 +385,8 @@ voice:
 groups:
   # NOT THE MAKER'S WORDS. The controller table is one flat list of `CC#` and `Param`, so the
   # sorting below is this file's own and no page's. The labels of the controls are the table's.
+  # The program parameter table is a flat list of `NRPN` and `Param Name` too, and the last three
+  # groups are for rows of it that no controller's group fits.
   performance: Performance controllers
   oscillators: Oscillators and mixer
   glide: Glide
@@ -355,6 +397,9 @@ groups:
   effects: Effects
   clock: Clock, arpeggiator and sequencer
   global: Global settings
+  modulation: Modulation matrix
+  morph: Patch Morphing
+  program: Program settings, name and data
 
 controls:
 
@@ -516,3 +561,385 @@ controls:
   screen_saver:                          {label: Screen Saver, nrpn: 4118, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
   # The global menu's Aftertouch Enable.
   pressure_enable:                       {label: Pressure Enable, nrpn: 4123, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+
+  # **THE PROGRAM PARAMETERS BY NRPN (guide pp. 141-144, addendum_1_2 p. 4): 308 NAMED ROWS, AND
+  # EVERY ONE SAYS `range: unknown`.** The table prints a number and a name beside it and no range,
+  # so nothing more is stated of any of them: see the account. Each label is the table's name, but
+  # for six of the seven cells the account lists and the five names that are the addendum's. The
+  # headings below and the groups are this file's own sorting; the order is the table's. By the
+  # guide's one sentence for all NRPNs they go both ways, with the two settings above at NRPN
+  # (guide p. 140); no page says so of any one row, and the account says which rows it is least
+  # safe to assume of.
+
+  # Oscillators, 0 to 29 (guide p. 141) ────────────────────────────────
+  # Thirty rows, the three `FreqFineMSB` rows among them: see the account.
+  nrpn_osc1_octave:                      {label: Osc1Octave, nrpn: 0, range: unknown, group: oscillators}
+  nrpn_osc2_octave:                      {label: Osc2Octave, nrpn: 1, range: unknown, group: oscillators}
+  nrpn_osc3_octave:                      {label: Osc3Octave, nrpn: 2, range: unknown, group: oscillators}
+  nrpn_osc1_freq_fine:                   {label: Osc1FreqFine, nrpn: 3, range: unknown, group: oscillators}
+  nrpn_osc2_freq_fine:                   {label: Osc2FreqFine, nrpn: 4, range: unknown, group: oscillators}
+  nrpn_osc3_freq_fine:                   {label: Osc3FreqFine, nrpn: 5, range: unknown, group: oscillators}
+  nrpn_osc1_freq_fine_msb:               {label: Osc1FreqFineMSB, nrpn: 6, range: unknown, group: oscillators}
+  nrpn_osc2_freq_fine_msb:               {label: Osc2FreqFineMSB, nrpn: 7, range: unknown, group: oscillators}
+  nrpn_osc3_freq_fine_msb:               {label: Osc3FreqFineMSB, nrpn: 8, range: unknown, group: oscillators}
+  nrpn_osc1_shape:                       {label: Osc1Shape, nrpn: 9, range: unknown, group: oscillators}
+  nrpn_osc2_shape:                       {label: Osc2Shape, nrpn: 10, range: unknown, group: oscillators}
+  nrpn_osc3_shape:                       {label: Osc3Shape, nrpn: 11, range: unknown, group: oscillators}
+  nrpn_osc1_shape_mod:                   {label: Osc1ShapeMod, nrpn: 12, range: unknown, group: oscillators}
+  nrpn_osc2_shape_mod:                   {label: Osc2ShapeMod, nrpn: 13, range: unknown, group: oscillators}
+  nrpn_osc3_shape_mod:                   {label: Osc3ShapeMod, nrpn: 14, range: unknown, group: oscillators}
+  nrpn_osc1_slop:                        {label: Osc1Slop, nrpn: 15, range: unknown, group: oscillators}
+  nrpn_osc2_slop:                        {label: Osc2Slop, nrpn: 16, range: unknown, group: oscillators}
+  nrpn_osc3_slop:                        {label: Osc3Slop, nrpn: 17, range: unknown, group: oscillators}
+  nrpn_osc1_glide_rate:                  {label: Osc1GlideRate, nrpn: 18, range: unknown, group: glide}
+  nrpn_osc2_glide_rate:                  {label: Osc2GlideRate, nrpn: 19, range: unknown, group: glide}
+  nrpn_osc3_glide_rate:                  {label: Osc3GlideRate, nrpn: 20, range: unknown, group: glide}
+  nrpn_osc1_key_on_off:                  {label: Osc1KeyOnOff, nrpn: 21, range: unknown, group: oscillators}
+  nrpn_osc2_key_on_off:                  {label: Osc2KeyOnOff, nrpn: 22, range: unknown, group: oscillators}
+  nrpn_osc3_key_on_off:                  {label: Osc3KeyOnOff, nrpn: 23, range: unknown, group: oscillators}
+  nrpn_osc1_note_reset:                  {label: Osc1NoteReset, nrpn: 24, range: unknown, group: oscillators}
+  nrpn_osc2_note_reset:                  {label: Osc2NoteReset, nrpn: 25, range: unknown, group: oscillators}
+  nrpn_osc3_note_reset:                  {label: Osc3NoteReset, nrpn: 26, range: unknown, group: oscillators}
+  nrpn_osc1_sync:                        {label: Osc1Sync, nrpn: 27, range: unknown, group: oscillators}
+  nrpn_osc2_sync:                        {label: Osc2Sync, nrpn: 28, range: unknown, group: oscillators}
+  nrpn_osc3_low_freq:                    {label: Osc3LowFreq, nrpn: 29, range: unknown, group: oscillators}
+
+  # Glide, 39 to 40 (guide p. 141) ─────────────────────────────────────
+  # The three glide rates are 18 to 20, among the oscillators' rows, and are grouped here.
+  nrpn_glide_mode:                       {label: GlideMode, nrpn: 39, range: unknown, group: glide}
+  nrpn_glide_on_off:                     {label: GlideOnOff, nrpn: 40, range: unknown, group: glide}
+
+  # Pitch bend range, 41 to 42 (guide p. 141) ──────────────────────────
+  # The second cell prints `PBendRangeDown // 30`, and no page says what the mark means.
+  nrpn_p_bend_range:                     {label: PBendRange, nrpn: 41, range: unknown, group: performance}
+  nrpn_p_bend_range_down:                {label: PBendRangeDown, nrpn: 42, range: unknown, group: performance}
+
+  # Mixer and external input, 43 to 51 (guide p. 141) ──────────────────
+  nrpn_osc1_level:                       {label: Osc1Level, nrpn: 43, range: unknown, group: oscillators}
+  nrpn_osc2_level:                       {label: Osc2Level, nrpn: 44, range: unknown, group: oscillators}
+  nrpn_osc3_level:                       {label: Osc3Level, nrpn: 45, range: unknown, group: oscillators}
+  nrpn_noise_level:                      {label: NoiseLevel, nrpn: 46, range: unknown, group: oscillators}
+  nrpn_audio_in_level:                   {label: AudioInLevel, nrpn: 47, range: unknown, group: oscillators}
+  nrpn_audio_in_gain:                    {label: AudioInGain, nrpn: 48, range: unknown, group: oscillators}
+  nrpn_ext_in_gate_threshold:            {label: ExtInGateThreshold, nrpn: 49, range: unknown, group: oscillators}
+  nrpn_env_fol_attack:                   {label: EnvFolAttack, nrpn: 50, range: unknown, group: oscillators}
+  nrpn_env_fol_release:                  {label: EnvFolRelease, nrpn: 51, range: unknown, group: oscillators}
+
+  # Filters, 52 to 60 (guide pp. 141-142) ──────────────────────────────
+  # `FilterFreqMSB` is 53. The cell at 55 prints `FilterDrive // 50`.
+  nrpn_filter_freq:                      {label: FilterFreq, nrpn: 52, range: unknown, group: filter}
+  nrpn_filter_freq_msb:                  {label: FilterFreqMSB, nrpn: 53, range: unknown, group: filter}
+  nrpn_filter_resonance:                 {label: FilterResonance, nrpn: 54, range: unknown, group: filter}
+  nrpn_filter_drive:                     {label: FilterDrive, nrpn: 55, range: unknown, group: filter}
+  nrpn_filter_key_amt:                   {label: FilterKeyAmt, nrpn: 56, range: unknown, group: filter}
+  nrpn_filter_select:                    {label: FilterSelect, nrpn: 57, range: unknown, group: filter}
+  nrpn_sem_lp_notch_hp:                  {label: SemLPNotchHP, nrpn: 58, range: unknown, group: filter}
+  nrpn_sem_norm_bp:                      {label: SemNormBP, nrpn: 59, range: unknown, group: filter}
+  nrpn_ladder_boost:                     {label: LadderBoost, nrpn: 60, range: unknown, group: filter}
+
+  # Voice, 63 to 65 (guide p. 142) ─────────────────────────────────────
+  nrpn_voice_volume:                     {label: VoiceVolume, nrpn: 63, range: unknown, group: performance}
+  nrpn_paraphonic_on:                    {label: ParaphonicOn, nrpn: 64, range: unknown, group: performance}
+  nrpn_para_level:                       {label: ParaLevel, nrpn: 65, range: unknown, group: performance}
+
+  # Feedback and distortion, 66 to 69 (guide p. 142) ───────────────────
+  nrpn_feedback_amt:                     {label: FeedbackAmt, nrpn: 66, range: unknown, group: feedback}
+  nrpn_feedback_tune:                    {label: FeedbackTune, nrpn: 67, range: unknown, group: feedback}
+  nrpn_distortion_amt:                   {label: DistortionAmt, nrpn: 68, range: unknown, group: feedback}
+  nrpn_grunge:                           {label: Grunge, nrpn: 69, range: unknown, group: feedback}
+
+  # Effect 1, 70 to 77 (guide p. 142) ──────────────────────────────────
+  nrpn_fx1_on_off:                       {label: FX1OnOff, nrpn: 70, range: unknown, group: effects}
+  nrpn_fx1_select:                       {label: FX1Select, nrpn: 71, range: unknown, group: effects}
+  nrpn_fx1_mix:                          {label: FX1Mix, nrpn: 72, range: unknown, group: effects}
+  nrpn_fx1_param1:                       {label: FX1Param1, nrpn: 73, range: unknown, group: effects}
+  nrpn_fx1_param2:                       {label: FX1Param2, nrpn: 74, range: unknown, group: effects}
+  nrpn_fx1_param3:                       {label: FX1Param3, nrpn: 75, range: unknown, group: effects}
+  nrpn_fx1_sync:                         {label: FX1Sync, nrpn: 76, range: unknown, group: effects}
+  nrpn_fx1_sync_rate:                    {label: FX1SyncRate, nrpn: 77, range: unknown, group: effects}
+
+  # Effect 2, 80 to 87 (guide p. 142) ──────────────────────────────────
+  nrpn_fx2_on_off:                       {label: FX2OnOff, nrpn: 80, range: unknown, group: effects}
+  nrpn_fx2_select:                       {label: FX2Select, nrpn: 81, range: unknown, group: effects}
+  nrpn_fx2_mix:                          {label: FX2Mix, nrpn: 82, range: unknown, group: effects}
+  nrpn_fx2_param1:                       {label: FX2Param1, nrpn: 83, range: unknown, group: effects}
+  nrpn_fx2_param2:                       {label: FX2Param2, nrpn: 84, range: unknown, group: effects}
+  nrpn_fx2_param3:                       {label: FX2Param3, nrpn: 85, range: unknown, group: effects}
+  nrpn_fx2_sync:                         {label: FX2Sync, nrpn: 86, range: unknown, group: effects}
+  nrpn_fx2_sync_rate:                    {label: FX2SyncRate, nrpn: 87, range: unknown, group: effects}
+
+  # Low frequency oscillators, 90 to 116 (guide p. 142) ────────────────
+  nrpn_lfo1_freq:                        {label: LFO1Freq, nrpn: 90, range: unknown, group: lfo}
+  nrpn_lfo2_freq:                        {label: LFO2Freq, nrpn: 91, range: unknown, group: lfo}
+  nrpn_lfo3_freq:                        {label: LFO3Freq, nrpn: 92, range: unknown, group: lfo}
+  nrpn_lfo1_amt:                         {label: LFO1Amt, nrpn: 93, range: unknown, group: lfo}
+  nrpn_lfo2_amt:                         {label: LFO2Amt, nrpn: 94, range: unknown, group: lfo}
+  nrpn_lfo3_amt:                         {label: LFO3Amt, nrpn: 95, range: unknown, group: lfo}
+  nrpn_lfo1_shape:                       {label: LFO1Shape, nrpn: 96, range: unknown, group: lfo}
+  nrpn_lfo2_shape:                       {label: LFO2Shape, nrpn: 97, range: unknown, group: lfo}
+  nrpn_lfo3_shape:                       {label: LFO3Shape, nrpn: 98, range: unknown, group: lfo}
+  nrpn_lfo1_sync:                        {label: LFO1Sync, nrpn: 99, range: unknown, group: lfo}
+  nrpn_lfo2_sync:                        {label: LFO2Sync, nrpn: 100, range: unknown, group: lfo}
+  nrpn_lfo3_sync:                        {label: LFO3Sync, nrpn: 101, range: unknown, group: lfo}
+  nrpn_lfo1_dest:                        {label: LFO1Dest, nrpn: 102, range: unknown, group: lfo}
+  nrpn_lfo2_dest:                        {label: LFO2Dest, nrpn: 103, range: unknown, group: lfo}
+  nrpn_lfo3_dest:                        {label: LFO3Dest, nrpn: 104, range: unknown, group: lfo}
+  nrpn_lfo1_freq_sync:                   {label: LFO1FreqSync, nrpn: 105, range: unknown, group: lfo}
+  nrpn_lfo2_freq_sync:                   {label: LFO2FreqSync, nrpn: 106, range: unknown, group: lfo}
+  nrpn_lfo3_freq_sync:                   {label: LFO3FreqSync, nrpn: 107, range: unknown, group: lfo}
+  nrpn_lfo1_slew:                        {label: LFO1Slew, nrpn: 108, range: unknown, group: lfo}
+  nrpn_lfo2_slew:                        {label: LFO2Slew, nrpn: 109, range: unknown, group: lfo}
+  nrpn_lfo3_slew:                        {label: LFO3Slew, nrpn: 110, range: unknown, group: lfo}
+  nrpn_lfo1_note_reset:                  {label: LFO1NoteReset, nrpn: 111, range: unknown, group: lfo}
+  nrpn_lfo2_note_reset:                  {label: LFO2NoteReset, nrpn: 112, range: unknown, group: lfo}
+  nrpn_lfo3_note_reset:                  {label: LFO3NoteReset, nrpn: 113, range: unknown, group: lfo}
+  nrpn_lfo1_phase:                       {label: LFO1Phase, nrpn: 114, range: unknown, group: lfo}
+  nrpn_lfo2_phase:                       {label: LFO2Phase, nrpn: 115, range: unknown, group: lfo}
+  nrpn_lfo3_phase:                       {label: LFO3Phase, nrpn: 116, range: unknown, group: lfo}
+
+  # Envelopes, 126 to 157 (guide p. 142) ───────────────────────────────
+  nrpn_env_filter_amt:                   {label: EnvFilterAmt, nrpn: 126, range: unknown, group: envelopes}
+  nrpn_env_vca_amt:                      {label: EnvVCAAmt, nrpn: 127, range: unknown, group: envelopes}
+  nrpn_env3_amt:                         {label: Env3Amt, nrpn: 128, range: unknown, group: envelopes}
+  nrpn_env4_amt:                         {label: Env4Amt, nrpn: 129, range: unknown, group: envelopes}
+  nrpn_env_filter_velocity_on_off:       {label: EnvFilterVelocityOnOff, nrpn: 130, range: unknown, group: envelopes}
+  nrpn_env_vca_velocity_on_off:          {label: EnvVCAVelocityOnOff, nrpn: 131, range: unknown, group: envelopes}
+  nrpn_env_env3_velocity_on_off:         {label: EnvEnv3VelocityOnOff, nrpn: 132, range: unknown, group: envelopes}
+  nrpn_env_env4_velocity_on_off:         {label: EnvEnv4VelocityOnOff, nrpn: 133, range: unknown, group: envelopes}
+  nrpn_env_filter_del:                   {label: EnvFilterDel, nrpn: 134, range: unknown, group: envelopes}
+  nrpn_env_vca_del:                      {label: EnvVCADel, nrpn: 135, range: unknown, group: envelopes}
+  nrpn_env3_del:                         {label: Env3Del, nrpn: 136, range: unknown, group: envelopes}
+  nrpn_env4_del:                         {label: Env4Del, nrpn: 137, range: unknown, group: envelopes}
+  nrpn_env_filter_att:                   {label: EnvFilterAtt, nrpn: 138, range: unknown, group: envelopes}
+  nrpn_env_vca_att:                      {label: EnvVCAAtt, nrpn: 139, range: unknown, group: envelopes}
+  nrpn_env3_att:                         {label: Env3Att, nrpn: 140, range: unknown, group: envelopes}
+  nrpn_env4_att:                         {label: Env4Att, nrpn: 141, range: unknown, group: envelopes}
+  nrpn_env_filter_dec:                   {label: EnvFilterDec, nrpn: 142, range: unknown, group: envelopes}
+  nrpn_env_vca_dec:                      {label: EnvVCADec, nrpn: 143, range: unknown, group: envelopes}
+  nrpn_env3_dec:                         {label: Env3Dec, nrpn: 144, range: unknown, group: envelopes}
+  nrpn_env4_dec:                         {label: Env4Dec, nrpn: 145, range: unknown, group: envelopes}
+  nrpn_env_filter_sus:                   {label: EnvFilterSus, nrpn: 146, range: unknown, group: envelopes}
+  nrpn_env_vca_sus:                      {label: EnvVCASus, nrpn: 147, range: unknown, group: envelopes}
+  nrpn_env3_sus:                         {label: Env3Sus, nrpn: 148, range: unknown, group: envelopes}
+  nrpn_env4_sus:                         {label: Env4Sus, nrpn: 149, range: unknown, group: envelopes}
+  nrpn_env_filter_rel:                   {label: EnvFilterRel, nrpn: 150, range: unknown, group: envelopes}
+  nrpn_env_vca_rel:                      {label: EnvVCARel, nrpn: 151, range: unknown, group: envelopes}
+  nrpn_env3_rel:                         {label: Env3Rel, nrpn: 152, range: unknown, group: envelopes}
+  nrpn_env4_rel:                         {label: Env4Rel, nrpn: 153, range: unknown, group: envelopes}
+  nrpn_env_filter_repeat:                {label: EnvFilterRepeat, nrpn: 154, range: unknown, group: envelopes}
+  nrpn_env_vca_repeat:                   {label: EnvVCARepeat, nrpn: 155, range: unknown, group: envelopes}
+  nrpn_env3_repeat:                      {label: Env3Repeat, nrpn: 156, range: unknown, group: envelopes}
+  nrpn_env4_repeat:                      {label: Env4Repeat, nrpn: 157, range: unknown, group: envelopes}
+
+  # Envelope destinations, 166 to 167 (guide p. 143) ───────────────────
+  nrpn_env3_dest:                        {label: Env3Dest, nrpn: 166, range: unknown, group: envelopes}
+  nrpn_env4_dest:                        {label: Env4Dest, nrpn: 167, range: unknown, group: envelopes}
+
+  # Modulation matrix: sources, 168 to 199 (guide p. 143) ──────────────
+  nrpn_mod1_source:                      {label: Mod1Source, nrpn: 168, range: unknown, group: modulation}
+  nrpn_mod2_source:                      {label: Mod2Source, nrpn: 169, range: unknown, group: modulation}
+  nrpn_mod3_source:                      {label: Mod3Source, nrpn: 170, range: unknown, group: modulation}
+  nrpn_mod4_source:                      {label: Mod4Source, nrpn: 171, range: unknown, group: modulation}
+  nrpn_mod5_source:                      {label: Mod5Source, nrpn: 172, range: unknown, group: modulation}
+  nrpn_mod6_source:                      {label: Mod6Source, nrpn: 173, range: unknown, group: modulation}
+  nrpn_mod7_source:                      {label: Mod7Source, nrpn: 174, range: unknown, group: modulation}
+  nrpn_mod8_source:                      {label: Mod8Source, nrpn: 175, range: unknown, group: modulation}
+  nrpn_mod9_source:                      {label: Mod9Source, nrpn: 176, range: unknown, group: modulation}
+  nrpn_mod10_source:                     {label: Mod10Source, nrpn: 177, range: unknown, group: modulation}
+  nrpn_mod11_source:                     {label: Mod11Source, nrpn: 178, range: unknown, group: modulation}
+  nrpn_mod12_source:                     {label: Mod12Source, nrpn: 179, range: unknown, group: modulation}
+  nrpn_mod13_source:                     {label: Mod13Source, nrpn: 180, range: unknown, group: modulation}
+  nrpn_mod14_source:                     {label: Mod14Source, nrpn: 181, range: unknown, group: modulation}
+  nrpn_mod15_source:                     {label: Mod15Source, nrpn: 182, range: unknown, group: modulation}
+  nrpn_mod16_source:                     {label: Mod16Source, nrpn: 183, range: unknown, group: modulation}
+  nrpn_mod17_source:                     {label: Mod17Source, nrpn: 184, range: unknown, group: modulation}
+  nrpn_mod18_source:                     {label: Mod18Source, nrpn: 185, range: unknown, group: modulation}
+  nrpn_mod19_source:                     {label: Mod19Source, nrpn: 186, range: unknown, group: modulation}
+  nrpn_mod20_source:                     {label: Mod20Source, nrpn: 187, range: unknown, group: modulation}
+  nrpn_mod21_source:                     {label: Mod21Source, nrpn: 188, range: unknown, group: modulation}
+  nrpn_mod22_source:                     {label: Mod22Source, nrpn: 189, range: unknown, group: modulation}
+  nrpn_mod23_source:                     {label: Mod23Source, nrpn: 190, range: unknown, group: modulation}
+  nrpn_mod24_source:                     {label: Mod24Source, nrpn: 191, range: unknown, group: modulation}
+  nrpn_mod25_source:                     {label: Mod25Source, nrpn: 192, range: unknown, group: modulation}
+  nrpn_mod26_source:                     {label: Mod26Source, nrpn: 193, range: unknown, group: modulation}
+  nrpn_mod27_source:                     {label: Mod27Source, nrpn: 194, range: unknown, group: modulation}
+  nrpn_mod28_source:                     {label: Mod28Source, nrpn: 195, range: unknown, group: modulation}
+  nrpn_mod29_source:                     {label: Mod29Source, nrpn: 196, range: unknown, group: modulation}
+  nrpn_mod30_source:                     {label: Mod30Source, nrpn: 197, range: unknown, group: modulation}
+  nrpn_mod31_source:                     {label: Mod31Source, nrpn: 198, range: unknown, group: modulation}
+  nrpn_mod32_source:                     {label: Mod32Source, nrpn: 199, range: unknown, group: modulation}
+
+  # Modulation matrix: amounts, 200 to 231 (guide p. 143) ──────────────
+  nrpn_mod1_amt:                         {label: Mod1Amt, nrpn: 200, range: unknown, group: modulation}
+  nrpn_mod2_amt:                         {label: Mod2Amt, nrpn: 201, range: unknown, group: modulation}
+  nrpn_mod3_amt:                         {label: Mod3Amt, nrpn: 202, range: unknown, group: modulation}
+  nrpn_mod4_amt:                         {label: Mod4Amt, nrpn: 203, range: unknown, group: modulation}
+  nrpn_mod5_amt:                         {label: Mod5Amt, nrpn: 204, range: unknown, group: modulation}
+  nrpn_mod6_amt:                         {label: Mod6Amt, nrpn: 205, range: unknown, group: modulation}
+  nrpn_mod7_amt:                         {label: Mod7Amt, nrpn: 206, range: unknown, group: modulation}
+  nrpn_mod8_amt:                         {label: Mod8Amt, nrpn: 207, range: unknown, group: modulation}
+  nrpn_mod9_amt:                         {label: Mod9Amt, nrpn: 208, range: unknown, group: modulation}
+  nrpn_mod10_amt:                        {label: Mod10Amt, nrpn: 209, range: unknown, group: modulation}
+  nrpn_mod11_amt:                        {label: Mod11Amt, nrpn: 210, range: unknown, group: modulation}
+  nrpn_mod12_amt:                        {label: Mod12Amt, nrpn: 211, range: unknown, group: modulation}
+  nrpn_mod13_amt:                        {label: Mod13Amt, nrpn: 212, range: unknown, group: modulation}
+  nrpn_mod14_amt:                        {label: Mod14Amt, nrpn: 213, range: unknown, group: modulation}
+  nrpn_mod15_amt:                        {label: Mod15Amt, nrpn: 214, range: unknown, group: modulation}
+  nrpn_mod16_amt:                        {label: Mod16Amt, nrpn: 215, range: unknown, group: modulation}
+  nrpn_mod17_amt:                        {label: Mod17Amt, nrpn: 216, range: unknown, group: modulation}
+  nrpn_mod18_amt:                        {label: Mod18Amt, nrpn: 217, range: unknown, group: modulation}
+  nrpn_mod19_amt:                        {label: Mod19Amt, nrpn: 218, range: unknown, group: modulation}
+  nrpn_mod20_amt:                        {label: Mod20Amt, nrpn: 219, range: unknown, group: modulation}
+  nrpn_mod21_amt:                        {label: Mod21Amt, nrpn: 220, range: unknown, group: modulation}
+  nrpn_mod22_amt:                        {label: Mod22Amt, nrpn: 221, range: unknown, group: modulation}
+  nrpn_mod23_amt:                        {label: Mod23Amt, nrpn: 222, range: unknown, group: modulation}
+  nrpn_mod24_amt:                        {label: Mod24Amt, nrpn: 223, range: unknown, group: modulation}
+  nrpn_mod25_amt:                        {label: Mod25Amt, nrpn: 224, range: unknown, group: modulation}
+  nrpn_mod26_amt:                        {label: Mod26Amt, nrpn: 225, range: unknown, group: modulation}
+  nrpn_mod27_amt:                        {label: Mod27Amt, nrpn: 226, range: unknown, group: modulation}
+  nrpn_mod28_amt:                        {label: Mod28Amt, nrpn: 227, range: unknown, group: modulation}
+  nrpn_mod29_amt:                        {label: Mod29Amt, nrpn: 228, range: unknown, group: modulation}
+  nrpn_mod30_amt:                        {label: Mod30Amt, nrpn: 229, range: unknown, group: modulation}
+  nrpn_mod31_amt:                        {label: Mod31Amt, nrpn: 230, range: unknown, group: modulation}
+  nrpn_mod32_amt:                        {label: Mod32Amt, nrpn: 231, range: unknown, group: modulation}
+
+  # Modulation matrix: the rows named `AmtMSB`, 232 to 263 (guide p. 143) ────
+  # See the account: no page says how one of these and its `Amt` row make a value.
+  nrpn_mod1_amt_msb:                     {label: Mod1AmtMSB, nrpn: 232, range: unknown, group: modulation}
+  nrpn_mod2_amt_msb:                     {label: Mod2AmtMSB, nrpn: 233, range: unknown, group: modulation}
+  nrpn_mod3_amt_msb:                     {label: Mod3AmtMSB, nrpn: 234, range: unknown, group: modulation}
+  nrpn_mod4_amt_msb:                     {label: Mod4AmtMSB, nrpn: 235, range: unknown, group: modulation}
+  nrpn_mod5_amt_msb:                     {label: Mod5AmtMSB, nrpn: 236, range: unknown, group: modulation}
+  nrpn_mod6_amt_msb:                     {label: Mod6AmtMSB, nrpn: 237, range: unknown, group: modulation}
+  nrpn_mod7_amt_msb:                     {label: Mod7AmtMSB, nrpn: 238, range: unknown, group: modulation}
+  nrpn_mod8_amt_msb:                     {label: Mod8AmtMSB, nrpn: 239, range: unknown, group: modulation}
+  nrpn_mod9_amt_msb:                     {label: Mod9AmtMSB, nrpn: 240, range: unknown, group: modulation}
+  nrpn_mod10_amt_msb:                    {label: Mod10AmtMSB, nrpn: 241, range: unknown, group: modulation}
+  nrpn_mod11_amt_msb:                    {label: Mod11AmtMSB, nrpn: 242, range: unknown, group: modulation}
+  nrpn_mod12_amt_msb:                    {label: Mod12AmtMSB, nrpn: 243, range: unknown, group: modulation}
+  nrpn_mod13_amt_msb:                    {label: Mod13AmtMSB, nrpn: 244, range: unknown, group: modulation}
+  nrpn_mod14_amt_msb:                    {label: Mod14AmtMSB, nrpn: 245, range: unknown, group: modulation}
+  nrpn_mod15_amt_msb:                    {label: Mod15AmtMSB, nrpn: 246, range: unknown, group: modulation}
+  nrpn_mod16_amt_msb:                    {label: Mod16AmtMSB, nrpn: 247, range: unknown, group: modulation}
+  nrpn_mod17_amt_msb:                    {label: Mod17AmtMSB, nrpn: 248, range: unknown, group: modulation}
+  nrpn_mod18_amt_msb:                    {label: Mod18AmtMSB, nrpn: 249, range: unknown, group: modulation}
+  nrpn_mod19_amt_msb:                    {label: Mod19AmtMSB, nrpn: 250, range: unknown, group: modulation}
+  nrpn_mod20_amt_msb:                    {label: Mod20AmtMSB, nrpn: 251, range: unknown, group: modulation}
+  nrpn_mod21_amt_msb:                    {label: Mod21AmtMSB, nrpn: 252, range: unknown, group: modulation}
+  nrpn_mod22_amt_msb:                    {label: Mod22AmtMSB, nrpn: 253, range: unknown, group: modulation}
+  nrpn_mod23_amt_msb:                    {label: Mod23AmtMSB, nrpn: 254, range: unknown, group: modulation}
+  nrpn_mod24_amt_msb:                    {label: Mod24AmtMSB, nrpn: 255, range: unknown, group: modulation}
+  nrpn_mod25_amt_msb:                    {label: Mod25AmtMSB, nrpn: 256, range: unknown, group: modulation}
+  nrpn_mod26_amt_msb:                    {label: Mod26AmtMSB, nrpn: 257, range: unknown, group: modulation}
+  nrpn_mod27_amt_msb:                    {label: Mod27AmtMSB, nrpn: 258, range: unknown, group: modulation}
+  nrpn_mod28_amt_msb:                    {label: Mod28AmtMSB, nrpn: 259, range: unknown, group: modulation}
+  nrpn_mod29_amt_msb:                    {label: Mod29AmtMSB, nrpn: 260, range: unknown, group: modulation}
+  nrpn_mod30_amt_msb:                    {label: Mod30AmtMSB, nrpn: 261, range: unknown, group: modulation}
+  nrpn_mod31_amt_msb:                    {label: Mod31AmtMSB, nrpn: 262, range: unknown, group: modulation}
+  nrpn_mod32_amt_msb:                    {label: Mod32AmtMSB, nrpn: 263, range: unknown, group: modulation}
+
+  # Modulation matrix: destinations, 264 to 295 (guide pp. 143-144) ────
+  nrpn_mod1_dest:                        {label: Mod1Dest, nrpn: 264, range: unknown, group: modulation}
+  nrpn_mod2_dest:                        {label: Mod2Dest, nrpn: 265, range: unknown, group: modulation}
+  nrpn_mod3_dest:                        {label: Mod3Dest, nrpn: 266, range: unknown, group: modulation}
+  nrpn_mod4_dest:                        {label: Mod4Dest, nrpn: 267, range: unknown, group: modulation}
+  nrpn_mod5_dest:                        {label: Mod5Dest, nrpn: 268, range: unknown, group: modulation}
+  nrpn_mod6_dest:                        {label: Mod6Dest, nrpn: 269, range: unknown, group: modulation}
+  nrpn_mod7_dest:                        {label: Mod7Dest, nrpn: 270, range: unknown, group: modulation}
+  nrpn_mod8_dest:                        {label: Mod8Dest, nrpn: 271, range: unknown, group: modulation}
+  nrpn_mod9_dest:                        {label: Mod9Dest, nrpn: 272, range: unknown, group: modulation}
+  nrpn_mod10_dest:                       {label: Mod10Dest, nrpn: 273, range: unknown, group: modulation}
+  nrpn_mod11_dest:                       {label: Mod11Dest, nrpn: 274, range: unknown, group: modulation}
+  nrpn_mod12_dest:                       {label: Mod12Dest, nrpn: 275, range: unknown, group: modulation}
+  nrpn_mod13_dest:                       {label: Mod13Dest, nrpn: 276, range: unknown, group: modulation}
+  nrpn_mod14_dest:                       {label: Mod14Dest, nrpn: 277, range: unknown, group: modulation}
+  nrpn_mod15_dest:                       {label: Mod15Dest, nrpn: 278, range: unknown, group: modulation}
+  nrpn_mod16_dest:                       {label: Mod16Dest, nrpn: 279, range: unknown, group: modulation}
+  nrpn_mod17_dest:                       {label: Mod17Dest, nrpn: 280, range: unknown, group: modulation}
+  nrpn_mod18_dest:                       {label: Mod18Dest, nrpn: 281, range: unknown, group: modulation}
+  nrpn_mod19_dest:                       {label: Mod19Dest, nrpn: 282, range: unknown, group: modulation}
+  nrpn_mod20_dest:                       {label: Mod20Dest, nrpn: 283, range: unknown, group: modulation}
+  nrpn_mod21_dest:                       {label: Mod21Dest, nrpn: 284, range: unknown, group: modulation}
+  nrpn_mod22_dest:                       {label: Mod22Dest, nrpn: 285, range: unknown, group: modulation}
+  nrpn_mod23_dest:                       {label: Mod23Dest, nrpn: 286, range: unknown, group: modulation}
+  nrpn_mod24_dest:                       {label: Mod24Dest, nrpn: 287, range: unknown, group: modulation}
+  nrpn_mod25_dest:                       {label: Mod25Dest, nrpn: 288, range: unknown, group: modulation}
+  nrpn_mod26_dest:                       {label: Mod26Dest, nrpn: 289, range: unknown, group: modulation}
+  nrpn_mod27_dest:                       {label: Mod27Dest, nrpn: 290, range: unknown, group: modulation}
+  nrpn_mod28_dest:                       {label: Mod28Dest, nrpn: 291, range: unknown, group: modulation}
+  nrpn_mod29_dest:                       {label: Mod29Dest, nrpn: 292, range: unknown, group: modulation}
+  nrpn_mod30_dest:                       {label: Mod30Dest, nrpn: 293, range: unknown, group: modulation}
+  nrpn_mod31_dest:                       {label: Mod31Dest, nrpn: 294, range: unknown, group: modulation}
+  nrpn_mod32_dest:                       {label: Mod32Dest, nrpn: 295, range: unknown, group: modulation}
+
+  # Pan and Volume, 296 to 297 (guide p. 144) ──────────────────────────
+  # The table has `VoiceVolume` at 63 as well, and no page says which is the vca menu's volume
+  # (guide p. 82).
+  nrpn_pan:                              {label: Pan, nrpn: 296, range: unknown, group: program}
+  nrpn_volume:                           {label: Volume, nrpn: 297, range: unknown, group: program}
+
+  # Tempo, 298 (guide p. 144) ──────────────────────────────────────────
+  nrpn_bpm:                              {label: BPM, nrpn: 298, range: unknown, group: clock}
+
+  # Keys, 299 to 301 (guide p. 144) ────────────────────────────────────
+  nrpn_key_mode:                         {label: KeyMode, nrpn: 299, range: unknown, group: program}
+  nrpn_retrig:                           {label: Retrig, nrpn: 300, range: unknown, group: program}
+  nrpn_gate_source:                      {label: GateSource, nrpn: 301, range: unknown, group: program}
+
+  # Swing, 302 (guide p. 144) ──────────────────────────────────────────
+  nrpn_swing:                            {label: Swing, nrpn: 302, range: unknown, group: clock}
+
+  # Scale, 303 (guide p. 144) ──────────────────────────────────────────
+  nrpn_scale:                            {label: Scale, nrpn: 303, range: unknown, group: program}
+
+  # Patch Morphing, 304 to 308 (guide p. 144, addendum_1_2 p. 4) ───────
+  # The guide prints these five as `Unused0` to `Unused4` (guide p. 144), and the OS 1.2 addendum
+  # names them (addendum_1_2 p. 4).
+  nrpn_morph_source:                     {label: Morph Source, nrpn: 304, range: unknown, group: morph}
+  nrpn_morph_target_bank:                {label: Morph Target Bank, nrpn: 305, range: unknown, group: morph}
+  nrpn_morph_target_program:             {label: Morph Target Program, nrpn: 306, range: unknown, group: morph}
+  nrpn_morph_target_mode:                {label: Morph Target Mode, nrpn: 307, range: unknown, group: morph}
+  nrpn_morph_amount:                     {label: Morph Amount, nrpn: 308, range: unknown, group: morph}
+
+  # Program data, 320 to 341 (guide p. 144) ────────────────────────────
+  # `SoundVersion`, the twenty rows of the name and `EditorByte`. The names are all the page gives:
+  # no page says a name row is one character, or how a character is numbered.
+  nrpn_sound_version:                    {label: SoundVersion, nrpn: 320, range: unknown, group: program}
+  nrpn_name:                             {label: "Name (20 characters)", nrpn: 321, range: unknown, group: program}
+  nrpn_name1:                            {label: Name1, nrpn: 322, range: unknown, group: program}
+  nrpn_name2:                            {label: Name2, nrpn: 323, range: unknown, group: program}
+  nrpn_name3:                            {label: Name3, nrpn: 324, range: unknown, group: program}
+  nrpn_name4:                            {label: Name4, nrpn: 325, range: unknown, group: program}
+  nrpn_name5:                            {label: Name5, nrpn: 326, range: unknown, group: program}
+  nrpn_name6:                            {label: Name6, nrpn: 327, range: unknown, group: program}
+  nrpn_name7:                            {label: Name7, nrpn: 328, range: unknown, group: program}
+  nrpn_name8:                            {label: Name8, nrpn: 329, range: unknown, group: program}
+  nrpn_name9:                            {label: Name9, nrpn: 330, range: unknown, group: program}
+  nrpn_name10:                           {label: Name10, nrpn: 331, range: unknown, group: program}
+  nrpn_name11:                           {label: Name11, nrpn: 332, range: unknown, group: program}
+  nrpn_name12:                           {label: Name12, nrpn: 333, range: unknown, group: program}
+  nrpn_name13:                           {label: Name13, nrpn: 334, range: unknown, group: program}
+  nrpn_name14:                           {label: Name14, nrpn: 335, range: unknown, group: program}
+  nrpn_name15:                           {label: Name15, nrpn: 336, range: unknown, group: program}
+  nrpn_name16:                           {label: Name16, nrpn: 337, range: unknown, group: program}
+  nrpn_name17:                           {label: Name17, nrpn: 338, range: unknown, group: program}
+  nrpn_name18:                           {label: Name18, nrpn: 339, range: unknown, group: program}
+  nrpn_name19:                           {label: Name19, nrpn: 340, range: unknown, group: program}
+  nrpn_editor_byte:                      {label: EditorByte, nrpn: 341, range: unknown, group: program}
+
+  # The two `Dummy` rows, 344 to 345 (guide p. 144) ────────────────────
+  nrpn_dummy_mod_source:                 {label: DummyModSource, nrpn: 344, range: unknown, group: program}
+  nrpn_dummy_mod_dest:                   {label: DummyModDest, nrpn: 345, range: unknown, group: program}
+
+  # The slider's mode, 346 (guide p. 144) ──────────────────────────────
+  # No page describes a mode for the slider. Its position is controller 14, among the performance
+  # controllers.
+  nrpn_slider1_mode:                     {label: Slider1Mode, nrpn: 346, range: unknown, group: performance}
+
+  # Arpeggiator and clock, 347 to 352 (guide p. 144) ───────────────────
+  nrpn_arp_on_off:                       {label: ArpOnOff, nrpn: 347, range: unknown, group: clock}
+  nrpn_arp_mode:                         {label: ArpMode, nrpn: 348, range: unknown, group: clock}
+  nrpn_arp_range:                        {label: ArpRange, nrpn: 349, range: unknown, group: clock}
+  nrpn_arp_relatch:                      {label: ArpRelatch, nrpn: 350, range: unknown, group: clock}
+  nrpn_clock_div:                        {label: ClockDiv, nrpn: 351, range: unknown, group: clock}
+  nrpn_arp_repeats:                      {label: ArpRepeats, nrpn: 352, range: unknown, group: clock}

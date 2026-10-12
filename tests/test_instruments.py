@@ -22186,7 +22186,7 @@ class TestTheremini:
 
 class TestPro3:
 
-	"""106 controllers by name and no range, sixteen NRPNs, and 353 program parameters counted and not carried."""
+	"""106 controllers by name and no range, sixteen NRPNs with one, and 308 program parameters whose range is unknown."""
 
 	def test_a_hundred_and_six_controllers_with_no_range_and_no_direction (self) -> None:
 		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
@@ -22214,19 +22214,20 @@ class TestPro3:
 
 		assert "**THE SHORT LISTS BEFORE THE TABLE DISAGREE WITH IT ON A NUMBER TWICE, AND THE TABLE IS FOLLOWED.**" in said
 
-	def test_sixteen_nrpns_and_no_program_parameter_among_them (self) -> None:
+	def test_sixteen_nrpns_with_a_range_and_no_program_parameter_among_them (self) -> None:
 		"""Fifteen global rows that the table and the guide's own chapter agree on, and the sequencer's play and stop."""
 		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
 
-		by_nrpn = {control.nrpn: control for control in pro_3.controls.values() if control.nrpn is not None}
+		every = {control.nrpn: control for control in pro_3.controls.values() if control.nrpn is not None}
+		by_nrpn = {number: control for number, control in every.items() if number >= 4096}
 
 		assert sorted(by_nrpn) == [4098, 4100, 4101, 4102, 4103, 4104, 4107, 4109, 4110, 4113, 4114, 4116, 4117, 4118,
 			4123, 4188]
-		assert all(control.cc is None for control in by_nrpn.values())
+		assert all(control.cc is None and control.range_known for control in by_nrpn.values())
 		assert [control.group for number, control in sorted(by_nrpn.items())] == ["global"] * 15 + ["clock"]
 
-		# The program parameters run from 0 to 352, and none is here.
-		assert min(by_nrpn) >= 4096 and len(pro_3.controls) == 122
+		# The program parameters run from 0 to 352: 106 controllers, these sixteen and 308 of those.
+		assert len(every) == 16 + 308 and len(pro_3.controls) == 430
 
 		assert by_nrpn[4102].choices == by_nrpn[4103].choices == {"nrpn": 0, "cc": 1, "off": 2}
 		assert by_nrpn[4101].choices == {"midi_1_port": 0, "midi_2_port": 1, "usb": 2, "midi_all": 3, "all": 4}
@@ -22235,10 +22236,60 @@ class TestPro3:
 
 		said = " ".join(prose_of("sequential", "pro_3").split())
 
-		assert "**353 PROGRAM PARAMETERS HAVE AN NRPN AND A NAME, AND NO RANGE, SO NONE IS CARRIED.**" in said
+		assert "**353 PROGRAM PARAMETERS HAVE AN NRPN AND A NAME, AND NO RANGE, SO EACH NAMED ONE SAYS ITS RANGE IS UNKNOWN.**" in said
 		assert "**FIFTEEN GLOBAL SETTINGS ARE CARRIED BY NRPN, AND THIRTY ARE NOT.**" in said
 		assert "**THE THIRTY LEFT OUT, AND WHY EACH.**" in said
 		assert "**No page says what the two settings are as shipped**" in said
+
+	def test_the_308_named_program_parameters_say_their_range_is_unknown (self) -> None:
+		"""Every named row of the table, and the five the 1.2 addendum names, with no range claimed.
+
+		Until 2026-10-12 the 353 were counted in the account and none was a control, because a control
+		with no range would have read as 0 to 127.
+		"""
+		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
+
+		rows = {control.nrpn: control for control in pro_3.controls.values()
+			if control.nrpn is not None and control.nrpn < 4096}
+
+		# The 45 rows still named `Unused`: nine and nine, eight, eleven, and four pairs.
+		unused = set(range(30, 39)) | set(range(117, 126)) | set(range(158, 166)) | set(range(309, 320)) \
+			| {61, 62, 78, 79, 88, 89, 342, 343}
+		assert len(unused) == 45
+		assert sorted(rows) == [number for number in range(353) if number not in unused] and len(rows) == 308
+
+		# **No range is claimed**: each is given the widest an NRPN can carry and says it is not known.
+		assert all(not control.range_known and control.range == (0, 16383) for control in rows.values())
+		assert all(control.cc is None and control.direction == "both" for control in rows.values())
+		assert not any(control.choices or control.values or control.default is not None for control in rows.values())
+
+		# The labels are the table's names, and the keys those names after `nrpn_`.
+		assert all(control.name.startswith("nrpn_") for control in rows.values())
+		assert (rows[0].label, rows[0].name) == ("Osc1Octave", "nrpn_osc1_octave")
+		assert (rows[131].label, rows[131].name) == ("EnvVCAVelocityOnOff", "nrpn_env_vca_velocity_on_off")
+		assert (rows[42].label, rows[55].label) == ("PBendRangeDown", "FilterDrive")
+		assert (rows[321].label, rows[322].label, rows[340].label) == ("Name (20 characters)", "Name1", "Name19")
+		assert not any("Unused" in control.label for control in rows.values())
+
+		# Thirty-six rows are named as the upper part of another, and each is a control of its own.
+		upper = sorted(number for number, control in rows.items() if control.label.endswith("MSB"))
+		assert upper == [6, 7, 8, 53] + list(range(232, 264))
+
+		# The five the second addendum names, which the guide prints as `Unused0` to `Unused4`.
+		assert [rows[number].label for number in range(304, 309)] == ["Morph Source", "Morph Target Bank",
+			"Morph Target Program", "Morph Target Mode", "Morph Amount"]
+		assert {rows[number].group for number in range(304, 309)} == {"morph"}
+
+		# No program parameter shares a control with a controller: no page pairs one with another.
+		assert not any(control.cc is not None and control.nrpn is not None for control in pro_3.controls.values())
+		assert {control.group for control in rows.values()} == {"oscillators", "glide", "performance", "filter",
+			"feedback", "effects", "lfo", "envelopes", "modulation", "program", "clock", "morph"}
+
+		said = " ".join(prose_of("sequential", "pro_3").split())
+
+		assert "**THIRTY-SIX ROWS ARE NAMED AS THE UPPER PART OF ANOTHER, AND NO PAGE SAYS HOW THE TWO MAKE ONE VALUE.**" in said
+		assert "**TWENTY-FOUR ROWS READ, BY THEIR NAMES ALONE, AS A PROGRAM'S DATA AND NOT ITS SOUND.**" in said
+		assert "**And the table is not the whole of them.**" in said
 
 	def test_what_its_midi_and_its_voices_are_recorded_as (self) -> None:
 		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])

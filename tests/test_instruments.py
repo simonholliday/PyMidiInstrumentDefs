@@ -1814,6 +1814,8 @@ class TestAftertouch:
 			"waldorf/blofeld": ("both", None),
 			"waldorf/iridium": ("both", None),
 			"waldorf/protein": ("both", None),
+			"sequential/fourm": ("both", True),
+			"sequential/prophet_6": ("both", True),
 		}
 
 

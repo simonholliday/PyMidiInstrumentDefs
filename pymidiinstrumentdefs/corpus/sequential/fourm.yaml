@@ -104,12 +104,13 @@ source: >-
   no figure is given for a default, which the document does not state.
 
 
-  **POLYPHONIC AFTERTOUCH IS RECEIVED AND NOT TRANSMITTED, WHICH IS REMARKABLE FOR THIS
-  INSTRUMENT.** The received table carries both polyphonic key pressure and channel pressure;
-  the transmitted table carries channel pressure alone. This is a synthesiser whose cover calls
-  it a "compact and powerful 4-voice poly synth equipped with a Tactive™ polyphonic aftertouch
-  keybed" (guide p. 1), so either it cannot send over MIDI what its own keybed generates, or the
-  transmitted table has an omission. **The document says what it says and this file records it**;
+  **POLYPHONIC AFTERTOUCH IS RECEIVED, AND THE TRANSMITTED TABLE DOES NOT LIST IT, WHICH IS
+  REMARKABLE FOR THIS INSTRUMENT.** The received table carries both polyphonic key pressure and
+  channel pressure; the transmitted table carries channel pressure alone. This is a synthesiser
+  whose guide's first chapter opens by calling it a "compact and powerful 4-voice poly synth
+  equipped with a Tactive™ polyphonic aftertouch keybed" (guide p. 1), so either it cannot send
+  over MIDI what its own keybed generates, or the transmitted table has an omission. **The
+  document says what it says and this file records it**;
   it cannot be settled by testing, because this instrument is not on the rig.
 
 
@@ -199,9 +200,15 @@ voice:
   velocity:
     # Received on note on, and the document says of note off that "Velocity is ignored".
     note_on: received
-  # **RECEIVED, NOT TRANSMITTED** - see the account. The received table carries polyphonic key
+  # **BOTH KINDS RECEIVED** - see the account. The received table carries polyphonic key
   # pressure and channel pressure both; the transmitted table carries channel pressure alone.
-  aftertouch: poly
+  # Until 2026-10-12 this said `poly`, the stronger of two words where the field had no third.
+  aftertouch: both
+  # Sent, as channel pressure: the transmitted table has Channel Pressure and lists no Polyphonic
+  # Key Pressure (midi p. 3), though the keybed has a "pressure sensor per key" (guide p. 35) and a
+  # global setting offers "Aftertouch: Off, Mono, Poly" (guide p. 13). No page says whether that
+  # setting changes what is sent.
+  aftertouch_transmits: true
   pitch_bend:
     # The range is a program parameter, controller 3 and NRPN 26, both 0-12, so it is the
     # player's. The document states no default and none is invented here.

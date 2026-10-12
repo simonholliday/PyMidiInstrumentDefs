@@ -192,7 +192,11 @@ voice:
   # monophonic (or 'channel') aftertouch, which means that applying pressure to any key" affects
   # the whole sound (p. 59), and the transmitted table at p. 74 has no Polyphonic Key Pressure
   # in it.
-  aftertouch: poly
+  # Until 2026-10-12 this said `poly`, the stronger of two words where the field had no third.
+  aftertouch: both
+  # Sent, as channel pressure, by the keyboard: the transmitted table has Channel Pressure and no
+  # Polyphonic Key Pressure (p. 74). No document here says what the desktop module sends.
+  aftertouch_transmits: true
   pitch_bend:
     # NRPN 31 Pbend Range, below. HOW FAR IT GOES IS NOT SETTLED by the documents: the NRPN
     # table gives 0-24 (p. 79) and the prose "P Wheel Range: 0...12 Semitones" (p. 59). Both are

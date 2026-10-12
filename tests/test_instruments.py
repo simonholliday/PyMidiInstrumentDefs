@@ -166,6 +166,7 @@ class TestBundledCorpus:
 			"arturia/polybrute_12",
 			"asm/hydrasynth_explorer",
 			"asm/leviasynth",
+			"behringer/b2600",
 			"behringer/deepmind_12",
 			"behringer/edge",
 			"behringer/lm_drum",
@@ -687,10 +688,14 @@ class TestAbsences:
 		assert "Two documents are what turn a silence into a statement" in account
 
 	def test_the_corpus_divides_its_empty_definitions_by_why (self) -> None:
-		"""Twenty-three definitions carry no controls, for five different reasons.
+		"""Twenty-four definitions carry no controls, for five different reasons.
 
-		Pinned here because the count has gone stale in notes twice: a twenty-fourth
-		cannot be added without saying which kind it is. The twenty-third is
+		Pinned here because the count has gone stale in notes twice: a twenty-fifth
+		cannot be added without saying which kind it is. The twenty-fourth is
+		`behringer/b2600`, which records no word, for two of the five reasons at once:
+		a quick start guide with no table of MIDI messages is all its maker publishes,
+		and its maker's page claims a MIDI implementation of which the maker's documents
+		set out the channel and the sockets, and no message. The twenty-third is
 		`akai/mpc_xl`, `learned` from the MPC Live III's own book. The twenty-first was
 		`arturia/drumbrute`, `learned` for the DrumBrute Impact's reason from its own
 		manual, and the twenty-second is `behringer/rd_9`, `none` for the Model D's
@@ -734,8 +739,9 @@ class TestAbsences:
 			if not pymidiinstrumentdefs.load(name, [CORPUS]).controls}
 
 		# The three MPCs left at #4697, when the two numbers their guides give an effect, 1 and 11,
-		# were carried. `roland/tr_707` arrived at #4942, `none` off a chart's crossed row.
-		assert len(empty) == 23
+		# were carried. `roland/tr_707` arrived at #4942, `none` off a chart's crossed row, and
+		# `behringer/b2600` at #4954, with no word at all.
+		assert len(empty) == 24
 
 		kinds: dict[str | None, set[str]] = {}
 
@@ -752,9 +758,20 @@ class TestAbsences:
 			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
-		# And the four that record no word at all, for three different reasons now.
+		# And the five that record no word at all, for three different reasons now.
 		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent", "behringer/ub_xa",
-			"behringer/edge"}
+			"behringer/edge", "behringer/b2600"}
+
+		# **THE 2600 IS THE FIFTH, AND IT HAS BOTH OF ITS MAKER'S REASONS AT ONCE.** A quick start
+		# guide with no table of MIDI messages is all Behringer publishes for it, which is the
+		# EDGE's reason. And its product page claims a comprehensive MIDI implementation with no
+		# controller and no table of messages behind it, which is the UB-Xa's.
+		b2600 = " ".join((pymidiinstrumentdefs.load("behringer/b2600", [CORPUS]).source or "").split())
+
+		assert "**NO TABLE OF MIDI MESSAGES, SO NOTHING FOR A CONTROLLER TO BE MISSING FROM.**" in b2600
+		assert ("**THE PAGE CLAIMS A COMPREHENSIVE MIDI IMPLEMENTATION, AND BEHRINGER PUBLISHES THE CHANNEL AND THE "
+			"SOCKETS, AND NO MESSAGE.**") in b2600
+		assert pymidiinstrumentdefs.load("behringer/b2600", [CORPUS]).midi.control_change is None
 
 		# **THE EDGE IS THE FOURTH AND IT IS THE MALEVOLENT'S REASON, NOT THE UB-Xa's.**
 		# Everything its maker publishes for it is a quick start guide, and a quick start
@@ -21003,3 +21020,67 @@ class TestJunoX:
 		assert list(juno.sources) == ["implementation", "parameter_guide", "reference", "jupiter_8", "jd_800", "jx_8p",
 			"sh_101", "sound_list", "vocal_designer", "manuals_page", "updates_page"]
 		assert juno.sources["implementation"].edition == "1.10"
+
+
+class TestB2600:
+
+	"""A channel range and a switch between one voice and two, from a quick start guide that is all there is."""
+
+	def test_a_channel_range_and_nothing_else_about_midi (self) -> None:
+		b2600 = pymidiinstrumentdefs.load("behringer/b2600", [CORPUS])
+
+		assert (b2600.model.manufacturer, b2600.model.name, b2600.model.firmware) == ("Behringer", "2600", None)
+		assert b2600.midi.channels == (1, 16)
+		assert (b2600.midi.mode, b2600.midi.clock, b2600.midi.transport, b2600.midi.program_change, b2600.midi.nrpn,
+			b2600.midi.sysex) == (None, None, None, None, None, None)
+		assert not b2600.controls and not b2600.parts
+
+	def test_it_does_not_say_none_as_the_edge_does_not (self) -> None:
+		"""Same maker, same kind of document, same answer; the TD-3's guide has the table these two lack."""
+		b2600 = pymidiinstrumentdefs.load("behringer/b2600", [CORPUS])
+		edge = pymidiinstrumentdefs.load("behringer/edge", [CORPUS])
+
+		for definition in (b2600, edge):
+			assert definition.midi.control_change is None and not definition.midi.refuses_control_change
+		assert pymidiinstrumentdefs.load("behringer/td_3", [CORPUS]).midi.control_change == "none"
+
+		flat = " ".join(prose_of("behringer", "b2600").split())
+
+		assert "**NO CONTROLS, AND THIS FILE DOES NOT SAY `none`.**" in flat
+		assert "this guide is the EDGE's case" in flat
+
+	def test_the_page_claims_what_no_document_sets_out (self) -> None:
+		"""The UB-Xa's position: a claim on the maker's page, with no controller and no table of messages behind it."""
+		flat = " ".join(prose_of("behringer", "b2600").split())
+
+		assert '"Comprehensive MIDI implementation with MIDI channel and Voice Priority selection" (product_page)' in flat
+		assert "The word priority is in none of the three guides" in flat
+		assert "**NEITHER LIST IS IN THE PAGE'S VISIBLE TEXT, WHICH NEVER NAMES MIDI.**" in flat
+		assert "comprehensive MIDI implementation" in " ".join(prose_of("behringer", "ub_xa").split())
+
+	def test_one_voice_or_two_is_a_switch_with_no_default (self) -> None:
+		b2600 = pymidiinstrumentdefs.load("behringer/b2600", [CORPUS])
+
+		assert b2600.voice.addressing == "pitches"
+		assert (b2600.voice.polyphony, b2600.voice.voicing_modes, b2600.voice.paraphonic) == (None, (1, 2), None)
+		assert (b2600.voice.velocity, b2600.voice.aftertouch, b2600.voice.note_range) == (None, None, None)
+
+	def test_three_guides_and_three_pages_and_the_special_editions_are_cited_for_one_thing (self) -> None:
+		b2600 = pymidiinstrumentdefs.load("behringer/b2600", [CORPUS])
+
+		assert list(b2600.sources) == ["guide", "blue_marvin_guide", "gray_meanie_guide", "product_page",
+			"blue_marvin_page", "gray_meanie_page"]
+		for key in ("guide", "blue_marvin_guide", "gray_meanie_guide"):
+			assert (b2600.sources[key].kind, b2600.sources[key].pages_per_sheet, b2600.sources[key].page_offset) == \
+				("quick_start", 2, 1)
+		assert [b2600.sources[key].edition for key in ("guide", "blue_marvin_guide", "gray_meanie_guide")] == \
+			["V 4.0", "V 3.0", "V 3.0"]
+		for key, guide in (("product_page", "guide"), ("blue_marvin_page", "blue_marvin_guide"),
+				("gray_meanie_page", "gray_meanie_guide")):
+			assert not b2600.sources[key].paginated and b2600.sources[key].url == b2600.sources[guide].landing
+
+		flat = " ".join(prose_of("behringer", "b2600").split())
+
+		assert "**THE TWO SPECIAL EDITIONS PRINT THE SAME FOUR ITEMS.**" in flat
+		assert "**Every other line a field here rests on is in both as well**" in flat
+		assert "This file is not offered as either's" in flat

@@ -22228,6 +22228,7 @@ class TestWebPageTitles:
 		("arturia/polybrute", "resources_page"): "Arturia - PolyBrute",
 		("arturia/polybrute_12", "resources_page"): "Arturia - PolyBrute 12",
 		("asm/leviasynth", "downloads"): "Downloads | Ashun Sound Machines",
+		("behringer/td_3", "product_page"): "TD-3-RD | Behringer",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

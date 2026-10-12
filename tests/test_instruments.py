@@ -1818,6 +1818,8 @@ class TestAftertouch:
 			"sequential/prophet_6": ("both", True),
 			"ensoniq/esq_1": ("both", None),
 			"novation/peak": ("both", None),
+			"elektron/digitakt": (None, True),
+			"elektron/octatrack": (None, True),
 		}
 
 

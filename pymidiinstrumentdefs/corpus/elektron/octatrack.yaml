@@ -344,6 +344,11 @@ voice:
   # than a property of the instrument. **The MIDI tracks' pitch bend and aftertouch are controls
   # below** - controllers 34 and 35 of the MIDI map - because what they set is a value the track
   # sends onward, not something this instrument's own voice answers to.
+  # Sent, by a MIDI track, and the kind is not stated: its CTRL 1 page sets an aftertouch value, and
+  # "The default value of the parameters is OFF, meaning they are disabled and won't send out any
+  # data." (manual p. 94). What arrives is recorded into a MIDI track, "Note length, velocity and
+  # aftertouch will be recorded as well." (manual p. 91); nothing says an audio track answers to it.
+  aftertouch_transmits: true
 
 groups:
   # THE MAKER'S OWN PARAMETER PAGE NAMES, from sections 11.4 and 15.4, in the order those sections

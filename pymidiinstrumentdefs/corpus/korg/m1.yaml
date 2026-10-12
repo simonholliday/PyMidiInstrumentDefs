@@ -115,6 +115,18 @@ source: >-
   sound" (p. 73), and "Real time performance controls such as joy stick and after touch affect
   only the Timbres whose channels are the same as the Global channel" (p. 73).
 
+  **SO EACH OF THE FOUR CONTROLS BELOW IS WRITTEN TWICE.** Naming no part it is on the Global
+  channel. The joystick and the pedals send it there, though not when the sequencer is in use:
+  "Usually Global Channel. When using Sequencer, each track's channel." (p. 122). A Program
+  answers it there, and in a Multi only the Timbres set to the Global channel do. Keyed
+  `timbre_` it names the part and is received only, because a Timbre's channel is a receive
+  channel and nothing more. A Timbre has one switch for the damper and another for the other
+  three, "control change messages (joy stick, MIDI volume, etc.)" (p. 78). The last sentence
+  quoted from page 73 follows the one about the M1's own keyboard and does not say MIDI. Read
+  as a limit on what a Timbre receives it would contradict the sentence about control change
+  two paragraphs above it on the same page, so it is taken to be about the M1's own joystick,
+  and the page does not say so itself.
+
   THE PRESET COUNT IS A SETTING AND 100 IS ONE OF ITS TWO VALUES. "100 Programs" and "100
   Combinations" in the specifications (p. 134), footnoted "Memory allocation can be changed to 50
   Programs and 50 Combinations" - and the Global page offers "100 PROG/100 COMBI/4400 SEQ" or
@@ -255,10 +267,12 @@ parts:
   # **WHAT EACH ONE ANSWERS TO IS STATED RATHER THAN ASSUMED**: "Program change, pitch bend,
   # after touch and control change parameters receive data over the MIDI channel set for each
   # Timbre" (p. 73). Each timbre also has its own switch for program change, damper, after touch
-  # and control change (p. 72), so a timbre can be made deaf to any of them.
+  # and control change (pp. 72, 77-78), so a timbre can be made deaf to any of them.
   # The keyboard reaches only some of them: "When playing the keyboard of the M1, only the
   # Timbres which are set to the same channel as the MIDI Global channel (GLOBAL Mode, F 5-1)
   # will sound" (p. 73).
+  # A CONTROL NAMING THIS PART IS ON A TIMBRE'S OWN RECEIVE CHANNEL, and one naming no part is on
+  # the Global channel: see the account.
   # Written once with `count`, because the eight are alike but for their number.
   timbre:
     label: Timbre
@@ -285,3 +299,10 @@ controls:
   vdf_modulation: {label: VDF modulation, cc: 2}
   volume:         {label: Volume, cc: 7}
   sustain:        {label: Sustain, cc: 64}
+
+  # THE SAME FOUR FOR A TIMBRE ON ITS OWN RECEIVE CHANNEL, received only: see the account. Each
+  # control above names no part and is on the Global channel.
+  timbre_pitch_mg:       {label: Pitch MG, cc: 1, direction: receives, part: timbre}
+  timbre_vdf_modulation: {label: VDF modulation, cc: 2, direction: receives, part: timbre}
+  timbre_volume:         {label: Volume, cc: 7, direction: receives, part: timbre}
+  timbre_sustain:        {label: Sustain, cc: 64, direction: receives, part: timbre}

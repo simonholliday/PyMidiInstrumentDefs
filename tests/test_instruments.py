@@ -14292,8 +14292,9 @@ class TestM1:
 		"""Ten numbers in the chart's Control Change block, four of them parameters."""
 		m1 = pymidiinstrumentdefs.load("korg/m1", [CORPUS])
 
-		assert len(m1.controls) == 4
-		assert sorted(c.cc for c in m1.controls.values() if c.cc is not None) == [1, 2, 7, 64]
+		# Four numbers, each written a second time for a Multi timbre.
+		assert len(m1.controls) == 8
+		assert sorted({c.cc for c in m1.controls.values() if c.cc is not None}) == [1, 2, 7, 64]
 
 		# The maker's own names for them, out of the chart's Remarks column.
 		assert [m1.controls[n].label for n in
@@ -14357,6 +14358,19 @@ class TestM1:
 		assert "Dynamic Voice Allocation" in said
 		assert "only the Timbres which are set to the same channel as the MIDI Global channel" \
 			in said
+
+		# **A control naming no part is on the Global channel**, and all four are written again
+		# for a timbre, whose channel only receives. Until 2026-10-12 no control here named a part.
+		own = {key: control for key, control in m1.controls.items() if control.part}
+
+		assert {control.part for control in own.values()} == {"timbre"}
+		assert sorted(control.cc for control in own.values() if control.cc is not None) == [1, 2, 7, 64]
+		assert all(key.startswith("timbre_") for key in own)
+		assert all(m1.controls[key[len("timbre_"):]].label == control.label for key, control in own.items())
+		assert all(control.direction == pymidiinstrumentdefs.definition.RECEIVES for control in own.values())
+		assert all(control.direction == pymidiinstrumentdefs.definition.BOTH
+			for control in m1.controls.values() if control.part is None)
+		assert [control.name for control in m1.controls_reaching("timbre")] == list(own)
 
 	def test_sixteen_voices_or_eight_depending_on_the_program (self) -> None:
 		"""Single mode and Double mode, which is what `voicing_modes` is for."""

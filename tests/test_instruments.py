@@ -9,6 +9,7 @@ import pytest
 import yaml
 
 import pymidiinstrumentdefs
+import pymidiinstrumentdefs.midnam
 
 
 CORPUS: pathlib.Path = pymidiinstrumentdefs.loading.BUNDLED
@@ -2010,6 +2011,145 @@ class TestNrpnRange:
 			pymidiinstrumentdefs.parse(body, source = "x.yaml")
 
 		assert "controls.cutoff.nrpn_range" in str(raised.value)
+
+
+class TestARangeNotEstablished:
+
+	"""`range: unknown`: the maker's documents print no range, or two that cannot both be true.
+
+	A control with no `range` reads as 0-127, which is a claim.  A DeepMind 12's table prints
+	its modulation sources as 0-22 where the same edition lists 24, and a file that carried
+	either, or left the field out, would be saying something no page establishes.
+	"""
+
+	HEAD = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+
+	def control (self, body: str) -> pymidiinstrumentdefs.definition.Control:
+		return pymidiinstrumentdefs.parse(self.HEAD + f"controls: {{a: {{{body}}}}}\n", source = "x.yaml").controls["a"]
+
+	def test_the_word_is_read_and_the_control_says_its_range_is_not_known (self) -> None:
+		assert self.control("nrpn: 93, range: unknown").range_known is False
+
+	def test_a_control_with_a_range_or_with_none_knows_it (self) -> None:
+		"""Leaving the field out is 0-127 as it always was, and is still a statement."""
+		assert self.control("nrpn: 93, range: [0, 22]").range_known is True
+		assert self.control("cc: 74").range_known is True
+		assert self.control("cc: 74").range == (0, 127)
+
+	def test_the_range_held_is_the_widest_the_message_carries (self) -> None:
+		"""So a program that never asks can still send every value the instrument might take."""
+		assert self.control("nrpn: 93, range: unknown").range == (0, 16383)
+		assert self.control("cc: 74, range: unknown").range == (0, 127)
+
+		# A controller with a fine half carries fourteen bits, and 155 bundled controls with
+		# one state a range past 127.
+		fine = self.control("cc: 74, lsb: 106, range: unknown, default: 300")
+
+		assert (fine.range, fine.default) == ((0, 16383), 300)
+		assert self.control("cc: 74, lsb: 106, nrpn: 93, range: unknown").nrpn_range is None
+
+	def test_a_control_with_neither_number_is_held_as_a_controller_is (self) -> None:
+		"""Nothing can be sent to it, which the reader warns of, so there is no message to be wide."""
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + "controls: {a: {range: unknown}}\n", source = "x.yaml")
+
+		assert parsed.controls["a"].range == (0, 127)
+		assert any("declares neither cc nor nrpn" in str(warning) for warning in parsed.warnings)
+
+	def test_a_control_with_both_addresses_keeps_the_controller_s_width (self) -> None:
+		"""Its `range` is what a controller carries, and nothing is made up for the NRPN's side.
+
+		A range filled in for it could not be told from one the file stated.
+		"""
+		both = self.control("cc: 74, nrpn: 93, range: unknown")
+
+		assert (both.range, both.nrpn_range, both.range_known) == ((0, 127), None, False)
+
+		# The NRPN's side may be stated where the controller's is not known, and is kept as stated.
+		stated = self.control("cc: 74, nrpn: 93, range: unknown, nrpn_range: [0, 1023]")
+
+		assert (stated.range, stated.nrpn_range, stated.range_known) == ((0, 127), (0, 1023), False)
+
+	def test_a_fault_earlier_in_the_control_is_still_the_one_reported (self) -> None:
+		"""The controller number is read before the NRPN's range, as it always was."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.control("cc: 999, nrpn: 5, nrpn_range: [5, 1]")
+
+		assert "controls.a.cc" in str(raised.value)
+
+	def test_a_control_reached_only_by_nrpn_cannot_be_unknown_and_stated (self) -> None:
+		"""It has one message and so one range."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.control("nrpn: 93, range: unknown, nrpn_range: [0, 22]")
+
+		assert "controls.a.nrpn_range" in str(raised.value)
+		assert "it is one or the other" in str(raised.value)
+
+	def test_exact_values_and_a_default_are_still_allowed (self) -> None:
+		control = self.control("nrpn: 93, range: unknown, default: 300, choices: {lfo: 1, envelope: 200}")
+
+		assert control.default == 300
+		assert control.choices == {"lfo": 1, "envelope": 200}
+
+	def test_bands_are_refused_because_the_last_would_have_no_top (self) -> None:
+		"""Whichever message the control is reached by."""
+		for address in ("nrpn: 93", "cc: 74", "cc: 74, nrpn: 93"):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.control(f"{address}, range: unknown, values: {{low: 0, high: 64}}")
+
+			assert "controls.a.values" in str(raised.value), address
+			assert "no top" in str(raised.value), address
+
+	def test_an_empty_set_of_bands_is_refused_as_any_other_is (self) -> None:
+		"""`values: {}` is the field given, whatever it holds."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.control("cc: 74, range: unknown, values: {}")
+
+		assert "controls.a.values" in str(raised.value)
+
+	def test_a_fine_half_makes_it_fourteen_bits_whatever_else_is_given (self) -> None:
+		"""Even with no controller number beside it, which draws a warning of its own."""
+		assert self.control("lsb: 38, range: unknown").range == (0, 16383)
+
+	def test_any_other_word_is_refused (self) -> None:
+		for word in ("unstated", "Unknown", "none", "true", "127"):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.control(f"nrpn: 93, range: {word}")
+
+			assert "controls.a.range" in str(raised.value), word
+			assert "is not a pair of numbers, or the word 'unknown'" in str(raised.value), word
+
+	def test_a_control_made_without_a_file_knows_its_range (self) -> None:
+		"""The importer builds controls so, and what it reads from a .midnam is stated there."""
+		assert pymidiinstrumentdefs.Control(name = "a", label = "A", cc = 7).range_known is True
+
+	def test_the_flag_comes_after_every_field_a_control_had (self) -> None:
+		"""So that nothing a caller gave by position moved."""
+		names = [field.name for field in dataclasses.fields(pymidiinstrumentdefs.Control)]
+
+		assert names.index("range_known") > names.index("kind_override")
+
+	def test_written_out_again_it_is_still_the_word (self) -> None:
+		"""The pair it holds is the widest the message carries, which nobody stated, so the word is written.
+
+		And a range of that same width that somebody did state is written as the pair it is.
+		"""
+		definition = pymidiinstrumentdefs.parse(
+			self.HEAD + "controls: {a: {nrpn: 93, range: unknown}, b: {cc: 74, range: unknown}, c: {cc: 7},"
+			" d: {nrpn: 5, range: [0, 16383]}}\n",
+			source = "x.yaml")
+		written = pymidiinstrumentdefs.midnam.to_yaml(definition)
+
+		assert written.count("range: unknown") == 2
+		assert written.count("range: [0, 16383]") == 1
+
+		again = pymidiinstrumentdefs.parse(written, source = "y.yaml")
+
+		assert [again.controls[name].range_known for name in "abcd"] == [False, False, True, True]
+		assert (again.controls["a"].range, again.controls["d"].range) == ((0, 16383), (0, 16383))
+
+	def test_a_value_past_what_the_message_carries_is_still_refused (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError):
+			self.control("cc: 74, range: unknown, default: 300")
 
 
 class TestBands:
@@ -20281,6 +20421,22 @@ class TestDeepMind12:
 		assert all(deep.controls[name].nrpn_range == (0, 255) for name in deep.controls if deep.controls[name].cc in both)
 		assert all(control.direction == "both" and control.part is None and control.group is None
 			for control in deep.controls.values())
+
+	def test_the_matrix_s_sources_and_destinations_state_no_range (self) -> None:
+		"""The table prints 0-22 and 0-129, and the lists it points to run to 24 and 132."""
+		deep = pymidiinstrumentdefs.load("behringer/deepmind_12", [CORPUS])
+		unknown = [name for name, control in deep.controls.items() if not control.range_known]
+
+		assert unknown == [f"mod_{slot}_{end}" for slot in range(1, 9) for end in ("source", "destination")]
+		assert all(deep.controls[name].range == (0, 16383) for name in unknown)
+
+		# The depth beside each is printed once and is carried.
+		assert all(deep.controls[f"mod_{slot}_depth"].range == (0, 255) for slot in range(1, 9))
+
+		flat = " ".join(prose_of("behringer", "deepmind_12").split())
+
+		assert "**AND THE CITED EDITION'S OWN LISTS OUTGROW ITS NRPN TABLE.**" in flat
+		assert "**The sixteen source and destination NRPNs say `range: unknown`.**" in flat
 
 	def test_names_printed_twice_keep_their_numbers (self) -> None:
 		"""Five labels are printed twice; each is carried as printed, and its key carries its number."""

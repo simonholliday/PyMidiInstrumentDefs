@@ -476,6 +476,31 @@ a default outside the control's range. **Defaults are often stated twice** - in 
 and again in an init patch table - so they are often where a document disagrees with
 itself, and section 4 says what to carry when it does.
 
+**Where the documents do not establish a range, say `range: unknown`.** Leaving `range` out
+does not say that: a control with no `range` is 0 to 127, which is a claim. A DeepMind 12's
+NRPN table prints its modulation sources as 0-22, and the same edition's list of sources runs
+to 24, so neither figure can be carried as the range. And a Pro 3's guide lists 353 NRPNs by
+name with no range beside any of them, where 0 to 127 is known to be wrong for some.
+
+```yaml
+  mod_1_source:
+    label: Mod 1 Source
+    nrpn: 93
+    # The table prints 0-22 (manual p. 137), and the list it points to has 24 (manual p. 93).
+    range: unknown
+```
+
+Put what the maker printed in the comment, with its page. A program reading the file is told
+`range_known` is false, and is given the widest range the message can carry - 0 to 127 for a
+controller, and 0 to 16383 for a controller with a fine half or a control reached only by
+NRPN - so that it can still send every value that message might take. A control with both a
+controller number and an NRPN is given the controller's range, and nothing is made up for its
+NRPN: state `nrpn_range` beside the word where the documents give it. A control like this
+may have `choices`, which are exact values, and a `default`. It may not have `values`: the
+last band runs to the top of the range, and there is no top. **The word needs a reader that
+knows it**: one older than the release that added it refuses the file, where it only warns
+about a field it does not know.
+
 **Three kinds of fact, and only one of them belongs in your file.** Facts about the
 MIDI specification are not your instrument's parameters. The channel mode messages,
 CC 120 to 127, are the clearest case and **the validator refuses them outright**.

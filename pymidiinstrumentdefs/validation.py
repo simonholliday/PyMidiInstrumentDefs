@@ -961,8 +961,41 @@ class _Reader:
 		where = f"controls.{name}"
 		section = self.fields(value, where, "controls")
 
-		extent = self.pair(section["range"], f"{where}.range", 0, 16383) \
-			if section.get("range") is not None else (0, 127)
+		# `range: unknown` says the documents do not establish one.  The range held is
+		# then the widest the message can carry, so that nothing the instrument might
+		# take is out of reach, and `range_known` says it is no claim.  Only that one
+		# word: any other is a pair mistyped.
+
+		stated = section.get("range")
+		known = stated != "unknown"
+
+		if stated is not None and not isinstance(stated, list) and known:
+			self.refuse(f"{where}.range", f"{stated!r} is not a pair of numbers, or the word 'unknown'")
+
+		by_controller = section.get("cc") is not None
+		by_nrpn = section.get("nrpn") is not None
+		fine = section.get("lsb") is not None
+
+		# A controller with a fine half carries fourteen bits, as an NRPN does, and a
+		# controller alone carries seven.
+
+		if not known:
+			extent = (0, 16383) if fine or (by_nrpn and not by_controller) else (0, 127)
+		elif stated is not None:
+			extent = self.pair(stated, f"{where}.range", 0, 16383)
+		else:
+			extent = (0, 127)
+
+		# A band runs to the next band's start, and the last to the top of the range.
+		# With no range established the last band has no top, and the widest value
+		# the message can carry would be one the file invented.
+
+		if not known and section.get("values") is not None:
+			self.refuse(
+				f"{where}.values",
+				"names bands on a control whose range is unknown, and the last band would have no "
+				"top — name exact values with choices, or leave the control continuous",
+			)
 
 		kind = self.optional_text(section, "kind", where)
 
@@ -987,6 +1020,17 @@ class _Reader:
 		if section.get("nrpn_range") is not None and section.get("nrpn") is None:
 			self.refuse(f"{where}.nrpn_range", "given without an nrpn for it to apply to")
 
+		# A control reached only by NRPN has one range, so a file cannot call it unknown
+		# and state it.  One with a controller number as well may know the NRPN's range
+		# and not the controller's, and nothing is made up for a side the file leaves out.
+
+		if not known and section.get("nrpn_range") is not None and not by_controller:
+			self.refuse(
+				f"{where}.nrpn_range",
+				"states a range for a control reached only by NRPN whose range is unknown - "
+				"it is one or the other",
+			)
+
 		control = pymidiinstrumentdefs.definition.Control(
 			name  = name,
 			label = self.optional_text(section, "label", where) or name.replace("_", " "),
@@ -999,6 +1043,7 @@ class _Reader:
 			values = self.values(section.get("values"), where, extent),
 			choices = self.choices(section.get("choices"), where, extent),
 			range  = extent,
+			range_known = known,
 			nrpn_range = None if section.get("nrpn_range") is None
 				else self.pair(section["nrpn_range"], f"{where}.nrpn_range", 0, 16383),
 			default = None if section.get("default") is None

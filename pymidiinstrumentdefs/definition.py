@@ -111,6 +111,19 @@ class Control:
 
 	``nrpn_range`` is the value range over NRPN where it differs from ``range``,
 	for an instrument that offers finer resolution one way than the other.
+
+	``range_known`` is false where the file says ``range: unknown``: the maker's
+	documents do not establish what values the control takes, because they print
+	none or print two that cannot both be true.  ``range`` is then the widest the
+	message can carry: 0-127 for a controller, and 0-16383 for a controller with a
+	fine half or a control reached only by NRPN.  That is so everything the
+	instrument might take can still be sent; it is not a claim about the
+	instrument, and a panel that draws a slider from it should say so, or not draw
+	one.  The flag is said of ``range`` alone: a control with a controller number
+	and an NRPN may state ``nrpn_range`` beside it, which is then known, and where
+	it states none nothing is made up for it.  A control that states no range at
+	all is a different thing, and is 0-127 as it always was.
+
 	``direction`` says which way the control travels, and one the instrument
 	only transmits must never be offered as something to send.  Nor must one
 	whose direction is ``none``: a number its maker published and then said the
@@ -142,6 +155,7 @@ class Control:
 	direction: str = BOTH
 	assignment: str | None = None
 	kind_override: str | None = None
+	range_known: bool = True
 
 
 	@property

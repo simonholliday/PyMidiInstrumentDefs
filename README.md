@@ -74,6 +74,18 @@ matriarch.controls["glide_type"].value_for("exp")   # 106
 pymidiinstrumentdefs.available()         # what is on the search path
 ```
 
+A control says what values it takes, or says that its maker's documents do not
+settle it. A DeepMind 12's table prints one range for its modulation sources and
+its own list of them runs past it:
+
+```python
+deepmind = pymidiinstrumentdefs.load("behringer/deepmind_12")
+
+deepmind.controls["mod_1_depth"].range          # (0, 255)   as the table prints it
+deepmind.controls["mod_1_source"].range_known   # False      two figures, and they disagree
+deepmind.controls["mod_1_source"].range         # (0, 16383) all an NRPN can carry, and no claim
+```
+
 Some instruments are several instruments at once, each answering on its own
 MIDI channel. A definition says so with `parts`, and a control names the part
 it belongs to - so the same controller number can mean two different things

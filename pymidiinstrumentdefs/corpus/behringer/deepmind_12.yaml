@@ -98,8 +98,10 @@ source: >-
 
   **35 NRPNS CARRY THEIR NAMED VALUES**, wherever the Notes cell names every value in the range and
   nothing else - an LFO's seven shapes, the thirteen polyphony modes, the eleven arpeggiator modes.
-  Notes that name some values and not others, such as `20 bpm (0) to 275 bpm (255)`, or that point
-  to a list printed elsewhere, such as `See Modulation Matrix Source List`, are left as ranges.
+  Notes that name some values and not others, such as `20 bpm (0) to 275 bpm (255)`, are left as
+  ranges. Twenty-four rows' Notes point to a list printed elsewhere, such as `See Modulation
+  Matrix Source List`, and none of them carries names. Sixteen, the matrix's sources and
+  destinations, carry no range either, and the four FX Types' range is doubted: see below.
 
   **THE CHART IS ONE STAMP OVER TWO EDITIONS, AND THEY DISAGREE ABOUT TRANSPORT.** Both print
   `Version:1.0` and `01 September 2016` (manual p. 132; earlier_manual p. 113). The later fills in
@@ -140,13 +142,25 @@ source: >-
   **AND THE CITED EDITION'S OWN LISTS OUTGROW ITS NRPN TABLE.** Its numbered lists run sources 1-24
   and destinations 1-132 (manual pp. 93-94), where the earlier edition's run 1-22 and 1-129
   (earlier_manual pp. 77-78). Both editions' NRPN tables give each matrix slot's source 0-22 and
-  destination 0-129 (manual pp. 137-138) - the earlier lists' numbers and one value more, at 0. So
-  the table was not raised with the lists, and as printed it cannot reach the cited edition's last
-  two sources or last three destinations. The source list is renumbered as well as lengthened -
-  `Expression` is new at 6, where the earlier list has LFO1 - so a value names a different source in
-  each edition, and no control here names them. **The sixteen source and destination NRPNs carry the
-  ranges the table prints**, because their numbers are not in doubt and a control with no range
-  would read as 0-127; whether the ranges or the lists describe firmware 1.1.2 no document says.
+  destination 0-129 (manual pp. 137-138, earlier_manual pp. 118-119) - the earlier lists' numbers
+  and one value more, at 0. So the table was not raised with the lists, and as printed it stops
+  short of the cited edition's: by its last two sources and last three destinations if a value
+  is the list's own number, and by one and two if the values count from nought, which no page
+  says. The source list is renumbered as well as lengthened - `Expression` is new at 6, where the
+  earlier list has LFO1 - so a value names a different source in each edition, and no control
+  here names them. **The sixteen source and destination NRPNs say `range: unknown`.** Their
+  numbers are not in doubt, and their ranges are. The table's cannot reach the lists it points
+  to, and whether the table or the lists describe firmware 1.1.2 no document says. Until
+  2026-10-12 they carried the table's ranges, because a control with no range reads as 0-127 and
+  this format then had no way to say that a range is not established.
+
+  **THE FOUR FX TYPES FALL SHORT THE SAME WAY, AND STILL CARRY THE TABLE'S RANGE.** Each prints
+  `0-33` with the note `See FX Type list`, in the cited edition (manual p. 139) and in the
+  earlier one (earlier_manual pp. 119-120). The earlier edition's Effects Table runs 1-34
+  (earlier_manual p. 79), which thirty-four values fit, and the cited edition's runs 1-35
+  (manual p. 95): `Vintage Pitch` is new at 34 and `RotarySpkr` moves from 34 to 35. So the
+  table was not raised here either, and a value may name a different effect in each edition.
+  `[0, 33]` is carried as printed, and it is doubted for the reason the matrix's ranges are.
 
   **FOUR MORE DISAGREEMENTS, NONE REACHING A FIELD.** The Global Commands' `Pedal CC` lists "Foot
   Control (CC4), Breath (CC3), Volume (CC7), Expression (CC11)" (manual p. 139), where the
@@ -480,32 +494,32 @@ controls:
   # Printed `OSC Portamento  Balance`, with two spaces, which the label closes up.
   osc_portamento_balance:                       {label: OSC Portamento Balance, nrpn: 91, range: [0, 255]}
   osc_key_down_reset:                           {label: OSC Key Down Reset, nrpn: 92, range: [0, 1], choices: {"off": 0, "on": 1}}
-  # THE MATRIX'S SOURCES ARE 0-22 AND ITS DESTINATIONS 0-129 AS THE TABLE PRINTS THEM (pp. 137-138),
-  # and this edition's own lists run 1-24 and 1-132 (pp. 93-94), so the ranges may stop short - see
-  # the account.
-  mod_1_source:                                 {label: Mod 1 Source, nrpn: 93, range: [0, 22]}
-  mod_1_destination:                            {label: Mod 1 Destination, nrpn: 94, range: [0, 129]}
+  # THE MATRIX'S SOURCES AND DESTINATIONS SAY `range: unknown`. The table prints 0-22 and 0-129
+  # for them (pp. 137-138), and this edition's own lists run 1-24 and 1-132 (pp. 93-94), so the
+  # table's figures stop short of the lists it points to and neither is carried - see the account.
+  mod_1_source:                                 {label: Mod 1 Source, nrpn: 93, range: unknown}
+  mod_1_destination:                            {label: Mod 1 Destination, nrpn: 94, range: unknown}
   mod_1_depth:                                  {label: Mod 1 Depth, nrpn: 95, range: [0, 255]}
-  mod_2_source:                                 {label: Mod 2 Source, nrpn: 96, range: [0, 22]}
-  mod_2_destination:                            {label: Mod 2 Destination, nrpn: 97, range: [0, 129]}
+  mod_2_source:                                 {label: Mod 2 Source, nrpn: 96, range: unknown}
+  mod_2_destination:                            {label: Mod 2 Destination, nrpn: 97, range: unknown}
   mod_2_depth:                                  {label: Mod 2 Depth, nrpn: 98, range: [0, 255]}
-  mod_3_source:                                 {label: Mod 3 Source, nrpn: 99, range: [0, 22]}
-  mod_3_destination:                            {label: Mod 3 Destination, nrpn: 100, range: [0, 129]}
+  mod_3_source:                                 {label: Mod 3 Source, nrpn: 99, range: unknown}
+  mod_3_destination:                            {label: Mod 3 Destination, nrpn: 100, range: unknown}
   mod_3_depth:                                  {label: Mod 3 Depth, nrpn: 101, range: [0, 255]}
-  mod_4_source:                                 {label: Mod 4 Source, nrpn: 102, range: [0, 22]}
-  mod_4_destination:                            {label: Mod 4 Destination, nrpn: 103, range: [0, 129]}
+  mod_4_source:                                 {label: Mod 4 Source, nrpn: 102, range: unknown}
+  mod_4_destination:                            {label: Mod 4 Destination, nrpn: 103, range: unknown}
   mod_4_depth:                                  {label: Mod 4 Depth, nrpn: 104, range: [0, 255]}
-  mod_5_source:                                 {label: Mod 5 Source, nrpn: 105, range: [0, 22]}
-  mod_5_destination:                            {label: Mod 5 Destination, nrpn: 106, range: [0, 129]}
+  mod_5_source:                                 {label: Mod 5 Source, nrpn: 105, range: unknown}
+  mod_5_destination:                            {label: Mod 5 Destination, nrpn: 106, range: unknown}
   mod_5_depth:                                  {label: Mod 5 Depth, nrpn: 107, range: [0, 255]}
-  mod_6_source:                                 {label: Mod 6 Source, nrpn: 108, range: [0, 22]}
-  mod_6_destination:                            {label: Mod 6 Destination, nrpn: 109, range: [0, 129]}
+  mod_6_source:                                 {label: Mod 6 Source, nrpn: 108, range: unknown}
+  mod_6_destination:                            {label: Mod 6 Destination, nrpn: 109, range: unknown}
   mod_6_depth:                                  {label: Mod 6 Depth, nrpn: 110, range: [0, 255]}
-  mod_7_source:                                 {label: Mod 7 Source, nrpn: 111, range: [0, 22]}
-  mod_7_destination:                            {label: Mod 7 Destination, nrpn: 112, range: [0, 129]}
+  mod_7_source:                                 {label: Mod 7 Source, nrpn: 111, range: unknown}
+  mod_7_destination:                            {label: Mod 7 Destination, nrpn: 112, range: unknown}
   mod_7_depth:                                  {label: Mod 7 Depth, nrpn: 113, range: [0, 255]}
-  mod_8_source:                                 {label: Mod 8 Source, nrpn: 114, range: [0, 22]}
-  mod_8_destination:                            {label: Mod 8 Destination, nrpn: 115, range: [0, 129]}
+  mod_8_source:                                 {label: Mod 8 Source, nrpn: 114, range: unknown}
+  mod_8_destination:                            {label: Mod 8 Destination, nrpn: 115, range: unknown}
   mod_8_depth:                                  {label: Mod 8 Depth, nrpn: 116, range: [0, 255]}
   ctrl_sequencer_enable:                        {label: Ctrl Sequencer Enable, nrpn: 117, range: [0, 1], choices: {"off": 0, "on": 1}}
   ctrl_sequencer_clock_divider:                 {label: Ctrl Sequencer Clock Divider, nrpn: 118, range: [0, 15]}
@@ -556,6 +570,8 @@ controls:
   arp_swing:                                    {label: Arp Swing, nrpn: 163, range: [0, 25]}
   arp_octaves:                                  {label: Arp Octaves, nrpn: 164, range: [0, 5]}
   fx_routing:                                   {label: FX Routing, nrpn: 165, range: [0, 9]}
+  # THE FOUR FX TYPES' `0-33` IS AS PRINTED, AND DOUBTED: this edition lists 35 effects (p. 95)
+  # and the range holds 34 values - see the account.
   fx_1_type:                                    {label: FX 1 Type, nrpn: 166, range: [0, 33]}
   fx_2_type:                                    {label: FX 2 Type, nrpn: 179, range: [0, 33]}
   fx_3_type:                                    {label: FX 3 Type, nrpn: 192, range: [0, 33]}

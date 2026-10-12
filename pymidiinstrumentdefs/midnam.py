@@ -515,7 +515,11 @@ def to_yaml (definition: pymidiinstrumentdefs.definition.Definition) -> str:
 			if control.nrpn is not None:
 				lines.append(f"    nrpn: {control.nrpn}")
 
-			if control.range != (0, 127):
+			# The widest a message carries is not a range anybody stated, so it is not
+			# written out as one.
+			if not control.range_known:
+				lines.append("    range: unknown")
+			elif control.range != (0, 127):
 				lines.append(f"    range: [{control.range[0]}, {control.range[1]}]")
 
 			if control.default is not None:

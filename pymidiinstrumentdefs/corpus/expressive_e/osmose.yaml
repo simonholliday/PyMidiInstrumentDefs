@@ -212,7 +212,7 @@ midi:
 # member channels are 2-14, narrowing to 2-12 on some presets. CC 87 carries "LSB value of
 # Aftertouch or Pressure (see MPE+)" (midi_impl p. 3), which is the extra resolution MPE+ adds.
 # Pressure is required rather than optional: "To produce a sound in the first place, you are always
-# required to send Channel Pressure messages (sometimes called "mono aftertouch") alongside your
+# required to send Channel Pressure messages (sometimes called 'mono aftertouch') alongside your
 # Note On messages", because "a constant flow of Channel Pressure messages is used to describe a
 # sound's envelope, specifically its attack trajectory" (sound_engine_input). None of that fits in a
 # boolean, so it is here.
@@ -242,7 +242,7 @@ voice:
   velocity:
     # IGNORED ON THE PATH THE INSTRUMENT IS BUILT FOR, AND NOT ON THE OTHER, which one field
     # cannot say. The chart marks note-on and note-off velocity No in both directions and
-    # remarks "MPE+" against each; the article says why: "MIDI Velocity ("MPE Strike") is
+    # remarks "MPE+" against each; the article says why: "MIDI Velocity ('MPE Strike') is
     # ignored entirely by the EaganMatrix's when it comes to the MPE implementation" - the
     # stray apostrophe is theirs. Driven instead by legacy mono-channel MIDI on channel 1,
     # "MIDI Velocity will be interpreted as a first Pressure (Z) data value for the

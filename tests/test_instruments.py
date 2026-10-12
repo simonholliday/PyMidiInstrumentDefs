@@ -12522,7 +12522,7 @@ class TestProphet5:
 
 		assert "the transmitted table has \"Channel Pressure\" (p. 3) and no polyphonic row at " \
 			"all" in account
-		assert "The Prophet-5 provides monophonic (or \"channel\") aftertouch" in account
+		assert "The Prophet-5 provides monophonic (or 'channel') aftertouch" in account
 
 	def test_the_bend_range_is_per_program_and_counted_two_ways (self) -> None:
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_5", [CORPUS])

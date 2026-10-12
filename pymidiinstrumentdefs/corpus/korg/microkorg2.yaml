@@ -121,9 +121,27 @@ source: >-
   This MIDI channel is used to transmit and receive note messages, bend messages and
   control change messages for Timbre 1" (p. 84), and "Sets the MIDI channel that Timbre 2
   will send and receive MIDI messages on" (p. 84). The chart's own note says the same of the
-  parameters: the channel for Timbre 2's timbre parameters is Timbre 2 Channel. So every
-  control change below reaches whichever timbre's channel it arrives on, which is why none
-  of them names a part. A THIRD CHANNEL ONLY TRANSMITS: "Sets the MIDI channel used for
+  parameters: the channel for Timbre 2's timbre parameters is Timbre 2 Channel. So a timbre
+  parameter reaches whichever timbre's channel it arrives on. **A control naming no part is
+  written on the global channel, which is Timbre 1's, and six standard controllers are written
+  again for Timbre 2**, keyed `timbre_2_`: modulation, portamento time, timbre level, timbre
+  pan, hold and portamento mode, numbers 1, 5, 7, 10, 64 and 65. Four of the six are timbre
+  parameters, which the chart's note covers in so many words. Modulation and hold are not:
+  the chart puts the note's mark, `*C`, on their rows as it does on every controller row but
+  bank select's, and they rest, for sending as for receiving, on the manual's sentence above,
+  that Timbre 2's channel is the one it sends and receives MIDI messages on. Every other
+  timbre parameter below reaches Timbre 2 on its channel in the same way, and names no part
+  only because the rule this follows covers the standard controllers. The effect and
+  equaliser controllers, and the NRPNs that are the program's and not a timbre's, belong to
+  neither timbre: they carry the same mark, and no page says which channel they use. Bank
+  select is not written again: its row is the one controller row that carries `*P` instead,
+  the mark it shares with the program change row, and no page says which channel it, or a
+  program change, is received on. **Timbre 2 is used only in a program whose Timbre Mode is
+  Dual.** "Single: Only one timbre is used." (p. 51), and Timbre 2's level and its pan each
+  carry the note "This is enabled when Timbre Mode is set to 'Dual'." (p. 49). No page says
+  what Timbre 2's channel does in a Single program.
+
+  A THIRD CHANNEL ONLY TRANSMITS: "Sets the MIDI channel used for
   transmitting note messages corresponding to the pitch that's detected by the vocal
   processor" (p. 84), which can be any of the sixteen or Disable. It is not a part, because
   nothing can be sent to it.
@@ -320,10 +338,11 @@ voice:
     programmable: true
 
 parts:
-  # Two timbres, each on a channel the player sets. Neither is a part a control change is
-  # addressed to - the same numbers reach whichever timbre's channel they arrive on - so no
-  # control below names one. The voices are shared, which is why neither carries a polyphony:
-  # eight between them in Single mode and four each in Dual.
+  # Two timbres, each on a channel the player sets. A timbre parameter reaches whichever
+  # timbre's channel it arrives on. A control naming no part is written on the global channel,
+  # Timbre 1's, and six standard controllers are written again for Timbre 2: see the account.
+  # The voices are shared, which is why neither carries a polyphony: eight in Single mode,
+  # where only one timbre is used, and four in Dual, where the two are played together (p. 51).
   timbre_1:
     label: Timbre 1
     # It has no channel of its own: it is the global channel. "This MIDI channel is used to
@@ -340,8 +359,8 @@ parts:
     # "Are the MIDI 'Global Ch' and 'Timb2 Ch' set to different channels?" (p. 122).
     channel: assigned
     addressing: pitches
-    # NOT program change: a program change selects a program, which contains both timbres, so
-    # there is nothing a second channel could select on its own.
+    # NOT program change: no page says which channel a program change is received on, and a
+    # program holds both timbres, so there is nothing a second channel could select on its own.
     receives: [notes, controls]
 
 groups:
@@ -454,6 +473,16 @@ controls:
   reverb_control3:             {label: Reverb Control3, cc: 116, group: reverb}
   reverb_control4:             {label: Reverb Control4, cc: 117, group: reverb}
   reverb_control1:             {label: Reverb Control1, cc: 118, group: reverb}
+
+  # ── The same six for Timbre 2, on its own channel ────────────────────────────
+  # See the account. Each control above names no part and is written on the global channel, which
+  # is Timbre 1's; the effect and equaliser controllers among them belong to neither timbre.
+  timbre_2_modulation:         {label: Modulation, cc: 1, part: timbre_2, group: performance}
+  timbre_2_portamento_time:    {label: Portamento Time, cc: 5, part: timbre_2, group: portamento}
+  timbre_2_timbre_level:       {label: Timbre Level, cc: 7, part: timbre_2, group: timbre}
+  timbre_2_timbre_pan:         {label: Timbre Pan, cc: 10, part: timbre_2, group: timbre}
+  timbre_2_hold:               {label: Hold, cc: 64, part: timbre_2, group: performance}
+  timbre_2_portamento_mode:    {label: Portamento Mode, cc: 65, values: {"fingered": 0, "always": 64}, part: timbre_2, group: portamento}
 
   # ── Bank select, by hand rather than by the script ───────────────────────────
   # Carried, as it is wherever a maker numbers it: `Bank Select(MSB)` and `Bank Select(LSB)` in both

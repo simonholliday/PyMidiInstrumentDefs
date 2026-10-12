@@ -13542,15 +13542,17 @@ class TestMicroKORG2:
 	def test_the_whole_map_arrives (self) -> None:
 		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
 
-		assert len(microkorg2.controls) == 183
+		assert len(microkorg2.controls) == 189
 		assert len(microkorg2.groups) == 23
 
 		by_control_change = [c for c in microkorg2.controls.values() if c.cc is not None]
 		by_nrpn = [c for c in microkorg2.controls.values() if c.nrpn is not None]
 
 		# 71 from the implementation's panel table, plus the modulation wheel and the damper
-		# pedal, which it keeps in its channel-message tables instead, and bank select's two.
-		assert len(by_control_change) == 75
+		# pedal, which it keeps in its channel-message tables instead, and bank select's two:
+		# 75 numbers, six of them written a second time for Timbre 2.
+		assert len({c.cc for c in by_control_change}) == 75
+		assert len(by_control_change) == 81
 
 		# Every one of the implementation's NRPN rows, including the eight whose address it
 		# garbles and the manual supplies.
@@ -13611,8 +13613,8 @@ class TestMicroKORG2:
 		assert not any(control.label.startswith("Pitch Bend")
 			for control in microkorg2.controls.values())
 
-	def test_two_timbres_on_two_channels_and_no_control_names_either (self) -> None:
-		"""The same numbers reach whichever timbre's channel they arrive on."""
+	def test_two_timbres_on_two_channels_and_six_controllers_written_for_the_second (self) -> None:
+		"""A timbre parameter reaches whichever timbre's channel it arrives on."""
 		microkorg2 = pymidiinstrumentdefs.load("korg/microkorg2", [CORPUS])
 
 		assert set(microkorg2.parts) == {"timbre_1", "timbre_2"}
@@ -13626,7 +13628,17 @@ class TestMicroKORG2:
 		assert "program_change" in (microkorg2.parts["timbre_1"].receives or ())
 		assert "program_change" not in (microkorg2.parts["timbre_2"].receives or ())
 
-		assert not any(control.part for control in microkorg2.controls.values())
+		# **A control naming no part is written on the global channel, Timbre 1's**, and the
+		# standard controllers are written again for Timbre 2, which has a channel of its own.
+		# Until 2026-10-12 no control here named a part.
+		second = {key: control for key, control in microkorg2.controls.items() if control.part}
+
+		assert {control.part for control in second.values()} == {"timbre_2"}
+		assert sorted(control.cc for control in second.values() if control.cc is not None) == [1, 5, 7, 10, 64, 65]
+		assert all(key.startswith("timbre_2_") for key in second)
+		assert all(microkorg2.controls[key[len("timbre_2_"):]].cc == control.cc for key, control in second.items())
+		assert [control.name for control in microkorg2.controls_reaching("timbre_2")] == list(second)
+		assert not microkorg2.warnings
 
 	def test_the_firmware_is_behind_the_release_notes_on_purpose (self) -> None:
 		"""Which is what `docs/adding-an-instrument.md` says to do, and why this flags itself."""

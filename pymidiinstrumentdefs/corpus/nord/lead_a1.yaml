@@ -1,0 +1,449 @@
+# **A GLOBAL CHANNEL THAT SENDS AND RECEIVES, AND FOUR SLOTS THAT EACH RECEIVE ON A CHANNEL OF
+# THEIR OWN.** The keyboard and the panel send on the Global channel alone. A control here that
+# names no part is that channel's. Each of the four Slots can be given a channel too, on which
+# it is played and set and never answers back.
+#
+# **ON THE GLOBAL CHANNEL A PARAMETER GOES TO THE SLOT THAT HAS THE PANEL'S FOCUS.** There are four
+# Slots and one list of controller numbers, so which Slot a parameter's number moves there is a
+# state of the panel, and it can be more than one. On a Slot's own channel it moves that Slot. The
+# volume and the pan are the two the manual says otherwise of: as read here, on the Global channel
+# they set the Performance.
+#
+# **SEVEN STANDARD CONTROLLERS ARE WRITTEN TWICE**, once for the Global channel and once, keyed
+# `slot_`, for a Slot on its own. The sound's parameters reach a Slot on its channel too and are
+# written once: the rule this follows covers the standard controllers.
+
+definition: 1
+
+model:
+  # THE NAME ON THE INSTRUMENT. The manual's cover names two products and one company: `Nord Lead
+  # A1`, `Nord Lead A1R` and `Copyright Clavia DMI AB` (manual p. 1).
+  manufacturer: Nord
+  # One manual for the keyboard and for the A1R, the table-top unit without keys, wheel or stick
+  # (manual pp. 5, 6). The A1R cannot send what it has no control for: see the account.
+  name: Lead A1
+  # THE NEWEST OPERATING SYSTEM, WHICH THE MANUAL'S `OS Version 1.3x` COVERS BY ITS PATTERN AND NOT
+  # BY ITS DATE. Nord's page gives "Latest version: 1.36" (downloads_page), and its update history
+  # lists nine releases, 1.02 to 1.36 (update_history). From 1.30 on they mend faults, add a way to
+  # make Morphs and change the sound in three places, among them "FX rate 0 now switches off
+  # effect." (update_history); one line of 1.34 is about pitch bend, "Update pitch bend when
+  # adjusting range." (update_history); and 1.36 changes only how the updater is bundled. None of
+  # them names a controller number or a channel. The manual's file was made between 1.32 and 1.34.
+  firmware: "1.36"
+
+source: >-
+  **NORD IS THE THIRTY-SIXTH MAKER HERE AND THIS IS ITS FIRST INSTRUMENT.** The company is Clavia
+  DMI AB and the name on its instruments is Nord, "The Nord logo is a trademark of Clavia DMI AB."
+  (manual p. 2), which is the name the folder and `manufacturer` carry.
+
+  **ONE MANUAL IN ENGLISH, WITH A MIDI CHAPTER OF FOUR PAGES.** Nord's downloads page lists the
+  English manual as `English User Manual, OS v1.3x, Print Edition F` (downloads_page). It is 40
+  sheets, its page number the sheet number, for the Lead A1 and the A1R both. Chapter 11 is MIDI:
+  how the two kinds of channel work (manual p. 32), the kinds of message (manual p. 33), a list of
+  controller numbers (manual p. 34) and an implementation chart (manual p. 35). The MIDI menu's ten
+  items are in the chapter before (manual p. 31). No other document about MIDI is listed. The page
+  lists the manual in five other languages too, four in an earlier print edition and one with none
+  given, which were not read (downloads_page).
+
+  **THE GLOBAL CHANNEL SENDS AND RECEIVES.** "Keys you play on a Nord Lead A1 keyboard, and any
+  tweaks that you do on the Lead A1 panel will generate MIDI messages on the Global Channel."
+  (manual p. 32). It is heard as well: "MIDI that enters the Nord Lead A1 on the Global MIDI channel
+  will play all the Slots that are active." (manual p. 32), with a Performance's splits and layers
+  kept: "If a Performance includes layers and/or splits, or actions with the Morph controls, those
+  aspects will be reproduced in the same way as if you played on the keyboard itself." (manual p.
+  32). It can be set from 1 to 16 or to off, and is 1 as shipped (manual p. 31). Of the three
+  settings the manual says transpose, one moves the notes sent as well, the keyboard's octave shift:
+  "MIDI Note messages at the MIDI output will be transposed." (manual p. 18). A Slot's `Octave
+  Shift` and the System menu's transpose do not (manual pp. 18, 30).
+
+  **A SLOT'S CHANNEL ONLY RECEIVES, AND A SLOT ANSWERS ON IT WHETHER OR NOT IT IS ACTIVE.** "A Slot
+  MIDI Channel is only receiving MIDI messages." (manual p. 32). "By using the individual Slot MIDI
+  Channels in the Nord Lead A1, you have individual control of the Slots, for notes as well as for
+  parameters." (manual p. 32). "A Slot does not have to be active in a Performance, it will always
+  respond to incoming MIDI on its MIDI Channel." (manual p. 32). Each of the four can be set from 1
+  to 16 or to off, and all four are off as shipped (manual p. 31). So `slot` is a part below, four
+  of them, each on a channel its owner assigns. Where the two conflict the Global channel takes
+  precedence, by the update history's note on a fault mended in 1.12: "Fixed bug where Global MIDI
+  channel did not take precedence over slot channel if in conflict." (update_history). It does not
+  say what a conflict is, which is read here as the two set to the same channel; the manual has none
+  of those words. A system exclusive dump is matched to a channel of either kind too, "the Global
+  (or Slot) MIDI Channel" (manual p. 33).
+
+  **ON THE GLOBAL CHANNEL A PARAMETER'S CONTROLLER MOVES THE FOCUSED SLOT.** "There are more
+  parameters available in the Nord Lead A1 Slots than there are available MIDI Control Change
+  numbers. This means that the Slot buttons on the panel will be used to set the transmitting and
+  receiving Slot focus of panel generated CC messages." (manual p. 32). So a parameter's controller
+  sent to the Global channel changes the Slot the panel is focused on, or the Slots: "By using Multi
+  Focus, Slot focus can be set to multiple Slots simultaneously." (manual p. 11). One sent to a
+  Slot's channel changes that Slot. The wheel and the pedal are another matter: "Pitch Stick,
+  Modulation Wheel and Control Pedal reaches all Slots regardless of focus and their active state."
+  (manual p. 11), and "The global channel acts just like playing on the keyboard." (manual p. 11).
+  That 1 and 11 arriving on the Global channel reach every Slot is a reading of those two sentences;
+  no sentence says it of those two numbers. Of 7 and of 10 a sentence does speak, and not of the
+  focus: sent on the Global channel or a Slot's they set "The output level of an Performance or an
+  individual Slot" (manual p. 33) and "The position of an Performance or a individual Slot" (manual
+  p. 33), read here as the Performance on the Global channel and the one Slot on its own. So `Pan`,
+  a program's parameter (manual p. 36), is by that sentence an exception to the focus. The list has
+  a `Slot Focus`, 119, and a `Slot Enable`, 115, with no word on the values either takes. The
+  manual's own words for a Slot the keyboard plays are active and Slot Activation (manual pp. 11,
+  12), and no page joins them to `Slot Enable`.
+
+  **THE LIST IS 61 ROWS, AND ALL ARE CARRIED.** It is headed `MIDI Controller list`, in two tables
+  of `Nord Lead A1 parameter` and `MIDI CC` (manual p. 34): 45 rows in the left and 17 in the right,
+  one of the right's empty: 61 rows with a name and a number. There are 60 different numbers. 11 is
+  there twice, once as what the control pedal sends when it is a Morph source and once as what
+  arrives: both rows are controls here, one sent and one received. What arrives on 11 is a Morph
+  source, beside the wheel, when the control pedal is set to volume; and when the wheel is set to
+  vibrato alone as well, it is the only one from wheel or pedal. As shipped the pedal is at volume,
+  `P1 Volume (default)`, and the wheel at `L1 Morph + Vibrato (default)` (manual p. 30), so the
+  pedal sends 7 and not 11 until its owner says otherwise. What arrives on 1 is the wheel's, and the
+  wheel sends it: "The Modulation Wheel will transmit MIDI CC 01." (manual p. 19), with the Morph's
+  sources on another page (manual p. 13). "Most of the parameters on the Nord Lead A1 panel will
+  generate a CC message if operated, and the reception of these messages will change the parameter
+  accordingly." (manual p. 33). The specifications put it more widely, "All control knobs and
+  switches send and receive control change messages." (manual p. 36), and the chart has control
+  change both ways and sends its reader to this list (manual p. 35). So the others state no
+  direction. **For three of them a sentence gives one way only**: the one sentence about 64 is "The
+  sustain pedal transmits CC64." (manual p. 33), with none that it is received, and bank select on 0
+  and 32 is described only as arriving (manual p. 33). What covers the other way is the chart, and
+  one sentence wider than the two above: "By using the Global MIDI Channel, all MIDI notes and
+  Control Change messages can be transmitted and/or received on a single MIDI channel." (manual p.
+  32). The list prints no range for any row. Its two notes say that a button for an on/off function
+  is 0 at off and 127 at on, and that a button that steps through settings starts at 0 and rises by
+  steps whose size turns on how many settings there are (manual p. 34). The three rows the list
+  itself names `On/Off` carry those two values as `choices`; which other rows are such buttons the
+  list does not say. The specifications call an envelope's velocity and its inversion on/off as well
+  (manual p. 36), and no value is printed for those rows or for any `Enable`. No step is printed for
+  any selector.
+
+  **NO NRPN, AND THE LIST IS WHY.** An NRPN is addressed on controllers 98 and 99 and its value
+  travels on 6 and 38. The list gives 98 to `Reverb Amount`, 99 to `Delay On/Off` and 38 to `Mod
+  Envelope Invert` (manual p. 34), and the manual names neither NRPN nor RPN on any page. So
+  `nrpn` is `none`, as a reading of the list and not a sentence of the manual's.
+
+  **SEVEN STANDARD CONTROLLERS ARE WRITTEN TWICE.** The mod wheel, the volume, the pan, the Morph on
+  11, the sustain pedal and the two halves of bank select each have a part-less control for the
+  Global channel and a twin keyed `slot_` that names the part and is received only. Two are named by
+  the manual as reaching a Slot on its channel: the output level "can be set by transmitting CC7 to
+  the Nord Lead A1 on the Global, or any of the Slot MIDI Channels." (manual p. 33), and the pan
+  "can be set by transmitting CC10 to the Nord Lead A1 on the Global Channel, or any of the Slot
+  MIDI Channels." (manual p. 33). Bank select goes with program change, which a Slot takes on its
+  channel. The other three are written on the strength of the sentence that a Slot's channel carries
+  its parameters, and of another: "If you want to make parameter changes on more than one Nord Lead
+  A1 Slot at the same time, the Slot MIDI Channel approach will be more suitable." (manual p. 32).
+  **The rows that are a program's parameters reach a Slot on its channel by that same sentence**,
+  and are left part-less only because the rule this file follows covers the standard controllers.
+  Four rows are not such parameters. `Ctrl Pedal` is marked by the list as a transmission, and a
+  Slot's channel only receives. `Slot Focus` and `Hold` are settings a Performance holds for all
+  four Slots, "Slot Focus, Slot Activation, Hold" (manual p. 12) among them, and `Slot Enable` is a
+  name no other page uses; what any of the three does on a Slot's own channel is not said.
+
+  **PROGRAM CHANGE MEANS THREE THINGS BY WHERE IT ARRIVES.** "The Slots will respond to incoming
+  Program Change messages on their individual Slot MIDI Channels." (manual p. 33). "Incoming Program
+  Change messages on the Global MIDI Channel will change the performance, if Performance Mode is
+  enabled." (manual p. 33). And otherwise: "Incoming Program Change on the Global MIDI Channel will
+  change programs on the focused Slot if Performance Mode is not enabled." (manual p. 33). It is
+  sent on the Global channel alone, as all that the instrument itself sends is: "MIDI output is
+  always sent on the global channel." (manual p. 11). Bank select picks a bank first: "Bank Select
+  messages (CC00, CC32) are used to select the 8 program banks (CC00, value 0 + CC32 values 0-7) or
+  the 4 performance banks (CC00, value 0 + CC32, value 0-3) when Performance Mode is active."
+  (manual p. 33), and "Bank Select messages should be immediately followed by a Program Change
+  message when you wish to select a bank from an external unit." (manual p. 33). No page says which
+  program change number picks which of a bank's fifty.
+
+  **HOW MANY PROGRAMS A BANK HOLDS IS PRINTED TWO WAYS.** "The memory contains 400 Programs divided
+  into 8 banks, and 200 Performances divided into 4 banks." (manual p. 12), which is fifty to a
+  bank, and the specifications say the same (manual p. 36). The chart gives program change as
+  `O, 0-98`, ninety-nine values (manual p. 35), and the menu's dump of a bank speaks of "all of
+  the 99 Programs or Performances in the current Bank" (manual p. 31). `presets` records the
+  400, and the 200 performances are in no field.
+
+  **THE CHART.** Channels 1 to 16 both ways, with the remark `Indiv. channels for Slot A, B, C & D`.
+  Its default mode is printed `Mode 1, 3` in both columns, which is two modes and not one, so `mode`
+  is not recorded. Note numbers 0 to 127 both ways, with the line for the true voice left empty.
+  Velocity on note on both ways, `O, v= 1 - 127`, and none on note off. Neither kind of aftertouch,
+  either way. Pitch bend, control change and system exclusive both ways. Clock received and not
+  sent. `Commands`, under System Realtime, has an `X` under `Transmitted` and an empty cell beside
+  it, so `transport` is not recorded: the chart denies the sending and is silent on the hearing. The
+  four lines under Aux Message, local control and all notes off among them, are empty in both
+  columns (manual p. 35).
+
+  **THREE OF THE KINDS OF MESSAGE CAN BE SWITCHED OFF OR MADE ONE-WAY.** The MIDI menu has a mode
+  each for control change, program change and pitch bend, over send and receive, receive only, send
+  only and off, each shipped at send and receive (manual p. 31). The control change mode is printed
+  in the menu as governing the panel's knobs and buttons (manual p. 31), and in the MIDI chapter
+  without that limit: "If you do not want the Nord Lead A1 to transmit or respond to Control Change
+  messages, this can be turned off in the MIDI Menu." (manual p. 33). Neither names the wheel or the
+  pedals. Local control "disables or enables the connection between the keyboard and panel and the
+  actual Lead A1 synthesizer." (manual p. 31), and goes back to on at each power-on.
+
+  **NOTES ON ONE CHANNEL ARE PASSED THROUGH, AND MIDI GOES BY USB AS WELL.** The menu's Soft Thru
+  channel is 1 to 16 or off, and 10 as shipped: "Incoming MIDI note on/off data that is received at
+  either the 5-pin or the USB MIDI on the Soft Thru Channel, will be re-routed to the 5-pin MIDI OUT
+  connector." (manual p. 31). So the MIDI OUT can carry notes that are not the Global channel's; on
+  what channel they leave is not said. "The USB connection on the Nord Lead A1 can also transmit and
+  receive MIDI messages." (manual p. 8).
+
+  **CLOCK IS RECEIVED AND NEVER SENT.** "The Nord Lead A1 Master Clock will automatically sync to
+  incoming MIDI Clock." (manual p. 33), and "The Nord Lead A1 does not transmit MIDI Clock
+  messages." (manual p. 33).
+
+  **26 VOICES AND FOUR SLOTS.** The introduction has "a 26-voice polyphony and four simultaneous
+  synthesizer parts" (manual p. 5), and the specifications `26 voices` (manual p. 36). That is one
+  figure for the instrument, given in one breath with its four parts, and no Slot is given a figure
+  of its own. So `polyphony_shared` is true, as a reading: no sentence says how the four Slots draw
+  on the 26. A note in unison takes more than one of them, "Unison 2 is four slightly detuned and
+  panned voices." (manual p. 19), and the nearest any page comes to how they are shared is the
+  update history's "Improved allocator: better at keeping mono voices and adopts to unison overload
+  in a better way." (update_history), which names no Slot. A Slot can be made monophonic or stacked
+  in unison, and the list has both among its parameters (manual p. 34). The bend range is the
+  program's too: "Bend Ranges can be different for each program and can be set to a maximum of +/-
+  48 semitones." (manual p. 19). It can be off as well, and two settings bend 2 semitones upward and
+  12 or 24 downward (manual p. 19).
+
+  **THE A1R SENDS LESS AND ANSWERS ALIKE.** "Physical Pitch Bend and Mod Wheel controls are not
+  available on the Nord Lead A1R but it will have an identical performance as the keyboard model
+  when it responds to incoming MIDI Pitch Bend and Mod Wheel messages." (manual p. 6), and it has no
+  keys, the keybed being "(keyboard version only)" (manual p. 5). So the A1R has no means to send
+  `Mod Wheel`, pitch bend, or notes from keys; no page limits any other control here to the keyboard
+  version. That it answers alike is printed of those two messages; for the rest it is this file's
+  reading of one manual serving both. The A1R alone has a Note Trig, "Press Shift + Note Trig to
+  trigger a note on the Nord Lead A1R." (manual p. 26); whether that note is sent is not said.
+
+  NOT RECORDED: `mode`, the chart printing two; `transport`, the chart's cell for hearing it being
+  empty; a range or a step for any parameter, the list printing none; which rows are on/off buttons
+  beyond the three named so; the values of `Slot Focus` and `Slot Enable`; by what rule the Slots
+  share the 26 voices; the 200 performances; which program change number picks which program of a
+  bank; whether pitch bend reaches a Slot on its own channel, which no page says; and
+  what the three dump items of the MIDI menu send (manual p. 31), the focused program's parameters
+  as control changes, a program or a performance as system exclusive, and a bank of either as system
+  exclusive, of which no format is printed.
+
+sources:
+  manual:
+    kind: manual
+    title: Nord Lead A1 User Manual
+    edition: OS Version 1.3x, Print Edition F
+    dated: 2014-08-28
+    landing: "https://www.nordkeyboards.com/products/nord-lead-a1/downloads/"
+    url: "https://www.nordkeyboards.com/wt/documents/88/Nord%20Lead%20A1%20English%20User%20Manual%20v1.3x%20Edition%20F.pdf"
+    sha256: 35f674902e79edde7aedad825cb9162cae920f490bae933a075a531d9f10dcfb
+    retrieved: 2026-10-11
+    # 40 sheets, the page number the sheet number. The edition is the cover's two lines, `OS
+    # Version 1.3x` and `Print Edition: F`. It prints no date: this is the day the file was made,
+    # by its own metadata. The file's name has spaces in it, which this address encodes.
+    page_offset: 0
+  downloads_page:
+    kind: web_page
+    title: "Downloads | Nord"
+    landing: "https://www.nordkeyboards.com/products/nord-lead-a1/downloads/"
+    url: "https://www.nordkeyboards.com/products/nord-lead-a1/downloads/"
+    sha256: 92c12346188d29f2deaff89232f262746391b912486c0db1a57641154bf24437
+    retrieved: 2026-10-11
+    paginated: false
+    # Cited for what Nord serves for the Lead A1 and for the newest operating system. The digest
+    # is of the page's visible text; the markup as served is kept beside it.
+  update_history:
+    kind: release_notes
+    title: "Nord Lead A1 - Update History | Nord"
+    edition: v1.36
+    dated: 2024-09-12
+    landing: "https://www.nordkeyboards.com/products/nord-lead-a1/downloads/"
+    url: "https://www.nordkeyboards.com/update-history/nord-lead-a1-update-history/"
+    sha256: 92146e4770f88f269865620fc85de0463d942e706e730d2cefb028d5040cb16b
+    retrieved: 2026-10-11
+    paginated: false
+    # Cited for what each release changed, from the first, 1.02, to 1.36, whose date this is. The
+    # digest is of the page's visible text.
+
+midi:
+  # The Global channel: 1 to 16 or off, and 1 as shipped (manual p. 31). A Slot's channel is the
+  # part's, below. Which channels an instrument is on belongs to its owner's rig, not here.
+  channels: [1, 16]
+  # "The Nord Lead A1 does not transmit MIDI Clock messages." (manual p. 33), and its Master Clock
+  # follows one that arrives.
+  clock: receives
+  program_change:
+    # Both ways by the chart, and a menu item can make it one way or neither (manual p. 31). Sent
+    # on the Global channel alone.
+    receives: true
+    sends: true
+    # "The memory contains 400 Programs divided into 8 banks, and 200 Performances divided into 4
+    # banks." (manual p. 12). The performances are in no field.
+    presets: 400
+  # A READING OF THE CONTROLLER LIST, WHICH GIVES 98, 99 AND 38 TO PARAMETERS: see the account.
+  nrpn: none
+  # Both ways by the chart. Sent from the MIDI menu: a program or a performance, or a bank of either
+  # (manual p. 31). Received: a single program into the edit buffer, and a complete bank over the
+  # active program bank (manual p. 33); receiving a performance is not described. No format is
+  # printed.
+  sysex: true
+  # NOT RECORDED: `mode`, printed `Mode 1, 3`; `transport`, denied one way and unsaid the other.
+
+voice:
+  addressing: pitches
+  # `26 voices` (manual p. 36), one figure for the instrument and none for a Slot. Shared, as a
+  # reading: by what rule the four Slots draw on them is not said.
+  polyphony: 26
+  polyphony_shared: true
+  # The chart's note numbers, both ways (manual p. 35). Its line for the true voice is empty, so
+  # this is what is taken in and not what is said to sound.
+  note_range: [0, 127]
+  velocity:
+    # `O, v= 1 - 127` both ways on note on, and `X` both ways on note off (manual p. 35).
+    note_on: both
+    note_off: false
+  # `X` in both columns for the key's and for the channel's (manual p. 35).
+  aftertouch: none
+  aftertouch_transmits: false
+  pitch_bend:
+    # A program's setting, up to 48 semitones each way (manual p. 19).
+    programmable: true
+
+parts:
+  # FOUR SLOTS, EACH A SYNTHESIZER OF ITS OWN: "The synthesizers are divided into Slots, where each
+  # Slot contains one synthesizer." (manual p. 11). On the Global channel the active Slots are
+  # played together; this part is a Slot addressed alone, on its own channel.
+  slot:
+    label: Slot
+    count: 4
+    # Each Slot has a channel in the MIDI menu, 1 to 16 or off, and all four are off as shipped
+    # (manual p. 31). So a Slot is given a channel and has none until it is.
+    channel: assigned
+    addressing: pitches
+    # Notes and parameters by one sentence and program change by another, both quoted in the account
+    # (manual pp. 32, 33). It only receives. No page says whether pitch bend, the wheel or the
+    # sustain pedal reaches it there: the wheel and the pedal are written as twins on a reading, see
+    # the account, and pitch bend is left out of this list. A system exclusive dump is matched to
+    # its channel as well (manual p. 33).
+    receives: [notes, controls, program_change]
+
+groups:
+  # The list on p. 34 is two tables with no headings among their rows. Ten of these groups are
+  # named by a word the rows themselves carry (`Arp`, `LFO`, `Mod Envelope`, `Osc`, `Filter`,
+  # `Amp Envelope`, `FX`, `Delay`, `Output`, `Reverb`); the other three are this file's own.
+  arpeggiator: Arpeggiator
+  voice: Glide, voice mode, bend and vibrato
+  lfo: LFO
+  mod_envelope: Mod Envelope
+  oscillator: Oscillator
+  filter: Filter
+  amp_envelope: Amp Envelope
+  fx: FX
+  delay: Delay
+  output: Output
+  reverb: Reverb
+  performance: Octave shift, hold and the Slots
+  controllers: Pedals, wheel and bank select
+
+controls:
+
+  # **EVERY NUMBER AND LABEL IS THE LIST'S (manual p. 34), ROW FOR ROW AND IN ITS ORDER.** A control
+  # that names no part is the Global channel's, which sends and receives. The Slot's twins are last.
+
+  # Arpeggiator ─────────────────────────────────────────────────
+  arp_run:                           {label: Arp Run, cc: 90, group: arpeggiator}
+  arp_tempo_clk_divisions:           {label: Arp Tempo/Clk Divisions, cc: 9, group: arpeggiator}
+  arp_master_clock_enable:           {label: Arp Master Clock Enable, cc: 86, group: arpeggiator}
+  arp_range:                         {label: Arp Range, cc: 88, group: arpeggiator}
+  arp_direction:                     {label: Arp Direction, cc: 89, group: arpeggiator}
+
+  # Glide, voice mode, bend and vibrato ─────────────────────────
+  glide_rate:                        {label: Glide Rate, cc: 5, group: voice}
+  mono_selector:                     {label: Mono Selector, cc: 15, group: voice}
+  voice_mode_unison:                 {label: Voice Mode Unison, cc: 16, group: voice}
+  pitch_bend_range:                  {label: Pitch Bend Range, cc: 118, group: voice}
+  vibrato_select:                    {label: Vibrato Select, cc: 56, group: voice}
+
+  # LFO ─────────────────────────────────────────────────────────
+  lfo_rate_clk_divisions:            {label: LFO Rate/Clk Divisions, cc: 19, group: lfo}
+  lfo_waveform_selector:             {label: LFO Waveform Selector, cc: 20, group: lfo}
+  lfo_master_clock_enable:           {label: LFO Master Clock Enable, cc: 2, group: lfo}
+  lfo_envelope_selector:             {label: LFO Envelope Selector, cc: 34, group: lfo}
+
+  # Mod Envelope ────────────────────────────────────────────────
+  mod_envelope_attack:               {label: Mod Envelope Attack, cc: 26, group: mod_envelope}
+  mod_envelope_decay_sustain:        {label: Mod Envelope Decay/Sustain, cc: 27, group: mod_envelope}
+  mod_envelope_release:              {label: Mod Envelope Release, cc: 28, group: mod_envelope}
+  mod_envelope_invert:               {label: Mod Envelope Invert, cc: 38, group: mod_envelope}
+  mod_envelope_velocity:             {label: Mod Envelope Velocity, cc: 29, group: mod_envelope}
+
+  # Oscillator ──────────────────────────────────────────────────
+  osc_lfo_modulation_amount:         {label: Osc LFO Modulation Amount, cc: 68, group: oscillator}
+  osc_mod_envelope_amount:           {label: Osc Mod Envelope Amount, cc: 69, group: oscillator}
+  osc_control:                       {label: Osc Control, cc: 31, group: oscillator}
+  osc_waveform_selector:             {label: Osc Waveform Selector, cc: 30, group: oscillator}
+  osc_configuration:                 {label: Osc Configuration, cc: 33, group: oscillator}
+
+  # Filter ──────────────────────────────────────────────────────
+  filter_lfo_modulation_amount:      {label: Filter LFO Modulation Amount, cc: 48, group: filter}
+  filter_mod_envelope_amount:        {label: Filter Mod Envelope Amount, cc: 43, group: filter}
+  filter_frequency:                  {label: Filter Frequency, cc: 74, group: filter}
+  filter_type:                       {label: Filter Type, cc: 44, group: filter}
+  filter_keyboard_tracking:          {label: Filter Keyboard Tracking, cc: 46, group: filter}
+  filter_drive:                      {label: Filter Drive, cc: 47, group: filter}
+  filter_resonance:                  {label: Filter Resonance, cc: 42, group: filter}
+
+  # Amp Envelope ────────────────────────────────────────────────
+  amp_envelope_attack:               {label: Amp Envelope Attack, cc: 73, group: amp_envelope}
+  amp_envelope_decay:                {label: Amp Envelope Decay, cc: 36, group: amp_envelope}
+  amp_envelope_release:              {label: Amp Envelope Release, cc: 72, group: amp_envelope}
+  amp_envelope_velocity:             {label: Amp Envelope Velocity, cc: 35, group: amp_envelope}
+
+  # FX ──────────────────────────────────────────────────────────
+  fx_amount:                         {label: FX Amount, cc: 55, group: fx}
+  fx_selection:                      {label: FX Selection, cc: 53, group: fx}
+  # 0 at off and 127 at on, by the list's own note on buttons that control on/off functions, here
+  # and on the two other rows the list itself names `On/Off`.
+  fx_on_off:                         {label: FX On/Off, cc: 52, choices: {"off": 0, "on": 127}, group: fx}
+
+  # Delay ───────────────────────────────────────────────────────
+  delay_tempo_clk_divisions:         {label: Delay Tempo/Clk Divisions, cc: 78, group: delay}
+  delay_master_clock_enable:         {label: Delay Master Clock Enable, cc: 51, group: delay}
+  delay_feedback:                    {label: Delay Feedback, cc: 79, group: delay}
+  delay_ping_pong:                   {label: Delay Ping Pong, cc: 100, group: delay}
+  delay_amount:                      {label: Delay Amount, cc: 76, group: delay}
+  delay_on_off:                      {label: Delay On/Off, cc: 99, choices: {"off": 0, "on": 127}, group: delay}
+
+  # Output ──────────────────────────────────────────────────────
+  output_level:                      {label: Output Level, cc: 71, group: output}
+  pan:                               {label: Pan, cc: 10, group: output}
+
+  # Reverb ──────────────────────────────────────────────────────
+  reverb_amount:                     {label: Reverb Amount, cc: 98, group: reverb}
+  reverb_selector:                   {label: Reverb Selector, cc: 96, group: reverb}
+  reverb_on_off:                     {label: Reverb On/Off, cc: 97, choices: {"off": 0, "on": 127}, group: reverb}
+
+  # Octave shift, hold and the Slots ────────────────────────────
+  octave_shift:                      {label: Octave Shift, cc: 17, group: performance}
+  hold:                              {label: Hold, cc: 58, group: performance}
+  hold_enable:                       {label: Hold Enable, cc: 54, group: performance}
+  # No page says what values these two take.
+  slot_focus:                        {label: Slot Focus, cc: 119, group: performance}
+  slot_enable:                       {label: Slot Enable, cc: 115, group: performance}
+
+  # Pedals, wheel and bank select ───────────────────────────────
+  # Printed `Volume Pedal (transmits if enabled as Volume in System menu)`. Received as well: the
+  # output level of a Performance or of a Slot is set by this number (manual p. 33).
+  volume_pedal:                      {label: Volume Pedal, cc: 7, group: controllers}
+  # **11 IS IN THE LIST TWICE**, once for what the pedal sends and once for what arrives. Printed
+  # `Ctrl Pedal (transmits if enabled as Morph in System menu)`.
+  ctrl_pedal:                        {label: Ctrl Pedal, cc: 11, direction: transmits, group: controllers}
+  mod_wheel:                         {label: Mod Wheel, cc: 1, group: controllers}
+  # Printed `Wheel/Pedal Morph (incoming CC)`.
+  wheel_pedal_morph:                 {label: Wheel/Pedal Morph, cc: 11, direction: receives, group: controllers}
+  sustain_pedal:                     {label: Sustain Pedal, cc: 64, group: controllers}
+  bank_select_msb:                   {label: Bank Select MSB, cc: 0, group: controllers}
+  bank_select_lsb:                   {label: Bank Select LSB, cc: 32, group: controllers}
+
+  # The Slot's twins ────────────────────────────────────────────
+  # **SEVEN STANDARD CONTROLLERS ARE WRITTEN AGAIN FOR A SLOT ON ITS OWN CHANNEL, WHICH ONLY
+  # RECEIVES.** The manual names two of them as reaching a Slot there, 7 and 10 (manual p. 33); the
+  # others are written on the strength of a Slot's channel carrying its parameters. See the account.
+  slot_volume_pedal:                 {label: Volume Pedal, cc: 7, direction: receives, part: slot, group: controllers}
+  slot_pan:                          {label: Pan, cc: 10, direction: receives, part: slot, group: output}
+  slot_mod_wheel:                    {label: Mod Wheel, cc: 1, direction: receives, part: slot, group: controllers}
+  slot_wheel_pedal_morph:            {label: Wheel/Pedal Morph, cc: 11, direction: receives, part: slot, group: controllers}
+  slot_sustain_pedal:                {label: Sustain Pedal, cc: 64, direction: receives, part: slot, group: controllers}
+  slot_bank_select_msb:              {label: Bank Select MSB, cc: 0, direction: receives, part: slot, group: controllers}
+  slot_bank_select_lsb:              {label: Bank Select LSB, cc: 32, direction: receives, part: slot, group: controllers}

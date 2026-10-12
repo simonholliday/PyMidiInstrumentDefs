@@ -245,6 +245,7 @@ class TestBundledCorpus:
 			"moog/subsequent_37",
 			"moog/theremini",
 			"native_instruments/maschine_plus",
+			"nord/lead_a1",
 			"novation/bass_station_ii",
 			"novation/circuit",
 			"novation/circuit_rhythm",
@@ -1741,6 +1742,7 @@ class TestAftertouch:
 			"waldorf/microwave": ("both", None),
 			"roland/juno_x": ("both", True),
 			"sequential/pro_3": ("both", True),
+			"nord/lead_a1": ("none", False),
 		}
 
 
@@ -17706,7 +17708,7 @@ class TestThirdWave:
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"alesis", "ensoniq", "ten_ten_music"}) == 32
+		assert len(makers - {"alesis", "ensoniq", "ten_ten_music", "nord"}) == 32
 		assert "GROOVE SYNTHESIS IS THE THIRTY-SECOND MAKER HERE" in prose_of("groove_synthesis", "third_wave")
 
 
@@ -17952,7 +17954,7 @@ class TestCascadia:
 		# deleted: Intellijel is still one maker of the thirty-one that came before Groove Synthesis.
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"groove_synthesis", "alesis", "ensoniq", "ten_ten_music"}) == 31
+		assert len(makers - {"groove_synthesis", "alesis", "ensoniq", "ten_ten_music", "nord"}) == 31
 
 
 class TestMontage:
@@ -19845,7 +19847,7 @@ class TestSR16:
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"ensoniq", "ten_ten_music"}) == 33
+		assert len(makers - {"ensoniq", "ten_ten_music", "nord"}) == 33
 		assert "ALESIS IS THE THIRTY-THIRD MAKER HERE" in prose_of("alesis", "sr_16")
 
 	def test_firmware_and_the_one_source (self) -> None:
@@ -20229,7 +20231,7 @@ class TestESQ1:
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers - {"ten_ten_music"}) == 34
+		assert len(makers - {"ten_ten_music", "nord"}) == 34
 		assert "ENSONIQ IS THE THIRTY-FOURTH MAKER HERE" in prose_of("ensoniq", "esq_1")
 
 	def test_four_controllers_for_the_keyboard_and_for_each_track (self) -> None:
@@ -20310,14 +20312,14 @@ class TestBlackbox:
 	"""Three parts on three kinds of channel, a learned note map, and a voice pool two pad modes stand outside."""
 
 	def test_the_first_1010music_and_the_thirty_fifth_maker (self) -> None:
-		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		"""Counted rather than claimed; the current count moved to `TestLeadA1` when Nord arrived."""
 		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("ten_ten_music/")]
 
 		assert names == ["ten_ten_music/blackbox"]
 
 		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
 
-		assert len(makers) == 35
+		assert len(makers - {"nord"}) == 35
 		assert "1010MUSIC IS THE THIRTY-FIFTH MAKER HERE" in prose_of("ten_ten_music", "blackbox")
 		assert pymidiinstrumentdefs.load("ten_ten_music/blackbox", [CORPUS]).model.manufacturer == "1010music"
 
@@ -21302,3 +21304,101 @@ class TestSteampipe:
 		assert (steampipe.model.manufacturer, steampipe.model.name, steampipe.model.firmware) == ("Erica Synths", "Steampipe", "1.1")
 		assert list(steampipe.sources) == ["manual", "product_page"]
 		assert (steampipe.sources["manual"].edition, steampipe.sources["product_page"].paginated) == ("V3", False)
+
+
+class TestLeadA1:
+
+	"""A Global channel that sends and receives, four Slots that each receive on their own, and one list of 61 rows."""
+
+	def test_the_first_nord_and_the_thirty_sixth_maker (self) -> None:
+		"""Counted rather than claimed, and the current count lives here until a newer maker arrives."""
+		names = [name for name in pymidiinstrumentdefs.available([CORPUS]) if name.startswith("nord/")]
+
+		assert names == ["nord/lead_a1"]
+
+		makers = {name.split("/")[0] for name in pymidiinstrumentdefs.available([CORPUS])}
+
+		assert len(makers) == 36
+		assert "NORD IS THE THIRTY-SIXTH MAKER HERE" in prose_of("nord", "lead_a1")
+		assert pymidiinstrumentdefs.load("nord/lead_a1", [CORPUS]).model.manufacturer == "Nord"
+
+	def test_sixty_one_rows_of_one_list_and_eleven_is_there_twice (self) -> None:
+		lead = pymidiinstrumentdefs.load("nord/lead_a1", [CORPUS])
+
+		global_ = [control for control in lead.controls.values() if control.part is None]
+		numbers = [control.cc for control in global_ if control.cc is not None]
+
+		assert len(global_) == 61 and len(set(numbers)) == 60
+		assert [number for number in sorted(set(numbers)) if numbers.count(number) > 1] == [11]
+
+		# One row for what the pedal sends as a Morph source, one for what arrives.
+		eleven = {control.name: control.direction for control in global_ if control.cc == 11}
+		assert eleven == {"ctrl_pedal": "transmits", "wheel_pedal_morph": "receives"}
+		assert all(control.direction == "both" for control in global_ if control.cc != 11)
+
+		# The list prints no range; the three rows it names `On/Off` carry its note's two values.
+		named = {control.name: control.choices for control in global_ if control.choices}
+		assert named == {key: {"off": 0, "on": 127} for key in ("fx_on_off", "delay_on_off", "reverb_on_off")}
+		assert all(control.range == (0, 127) for control in global_)
+
+	def test_seven_standard_controllers_are_written_again_for_a_slot_that_only_receives (self) -> None:
+		lead = pymidiinstrumentdefs.load("nord/lead_a1", [CORPUS])
+
+		assert list(lead.parts) == ["slot"]
+		slot = lead.parts["slot"]
+		assert (slot.count, slot.channel, slot.addressing, slot.receives) == (4, "assigned", "pitches",
+			("notes", "controls", "program_change"))
+
+		twins = {control.cc: control for control in lead.controls.values()
+			if control.part == "slot" and control.cc is not None}
+
+		assert sorted(twins) == [0, 1, 7, 10, 11, 32, 64] and len(lead.controls) == 68
+		assert all(control.direction == "receives" and control.name.startswith("slot_") for control in twins.values())
+
+		said = " ".join(prose_of("nord", "lead_a1").split())
+
+		assert "**A SLOT'S CHANNEL ONLY RECEIVES, AND A SLOT ANSWERS ON IT WHETHER OR NOT IT IS ACTIVE.**" in said
+		assert "**ON THE GLOBAL CHANNEL A PARAMETER'S CONTROLLER MOVES THE FOCUSED SLOT.**" in said
+		assert "**The rows that are a program's parameters reach a Slot on its channel by that same sentence**" in said
+
+	def test_no_nrpn_is_a_reading_of_the_list_and_says_so (self) -> None:
+		"""98, 99 and 38 are a reverb's amount, a delay's switch and an envelope's: the numbers an NRPN travels on."""
+		lead = pymidiinstrumentdefs.load("nord/lead_a1", [CORPUS])
+
+		assert lead.midi.nrpn == "none"
+		assert (lead.controls["reverb_amount"].cc, lead.controls["delay_on_off"].cc,
+			lead.controls["mod_envelope_invert"].cc) == (98, 99, 38)
+
+		said = " ".join(prose_of("nord", "lead_a1").split())
+
+		assert "**NO NRPN, AND THE LIST IS WHY.**" in said
+		assert "as a reading of the list and not a sentence of the manual's" in said
+
+	def test_what_the_chart_gives_and_what_it_leaves_unsaid (self) -> None:
+		lead = pymidiinstrumentdefs.load("nord/lead_a1", [CORPUS])
+
+		assert (lead.midi.channels, lead.midi.clock, lead.midi.sysex) == ((1, 16), "receives", True)
+		# Two modes printed for the default, and a cell left empty: neither is recorded.
+		assert (lead.midi.mode, lead.midi.transport, lead.midi.control_change) == (None, None, None)
+		assert lead.midi.program_change is not None
+		assert (lead.midi.program_change.receives, lead.midi.program_change.sends,
+			lead.midi.program_change.presets) == (True, True, 400)
+
+		assert (lead.voice.addressing, lead.voice.polyphony, lead.voice.polyphony_shared, lead.voice.note_range) == \
+			("pitches", 26, True, (0, 127))
+		assert lead.voice.velocity is not None and lead.voice.pitch_bend is not None
+		assert (lead.voice.velocity.note_on, lead.voice.velocity.note_off) == ("both", False)
+		assert (lead.voice.aftertouch, lead.voice.aftertouch_transmits) == ("none", False)
+		assert lead.voice.pitch_bend.programmable is True
+
+		said = " ".join(prose_of("nord", "lead_a1").split())
+
+		assert "**HOW MANY PROGRAMS A BANK HOLDS IS PRINTED TWO WAYS.**" in said
+
+	def test_the_firmware_is_the_newest_and_the_manual_covers_it (self) -> None:
+		lead = pymidiinstrumentdefs.load("nord/lead_a1", [CORPUS])
+
+		assert (lead.model.name, lead.model.firmware) == ("Lead A1", "1.36")
+		assert list(lead.sources) == ["manual", "downloads_page", "update_history"]
+		assert lead.sources["manual"].edition == "OS Version 1.3x, Print Edition F"
+		assert (lead.sources["update_history"].edition, lead.sources["update_history"].paginated) == ("v1.36", False)

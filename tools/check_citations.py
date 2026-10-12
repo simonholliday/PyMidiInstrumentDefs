@@ -37,6 +37,24 @@ It exits non-zero if any number is missing, if a citation names a page its
 document does not have, if a cited document cannot be found, or if a definition
 cannot be read at all — four faults with four different fixes, reported apart
 from each other and never as a traceback.
+
+**A number is looked for in the order of what finding it proves.**  Printed whole
+on a cited page is the result this tool calls found.  Everything after that is a
+weaker check, reported apart and never counted with it: an NRPN as two
+hexadecimal bytes side by side, as two halves in decimal, a controller inside a
+range the maker prints, the digits of a number with a gap between them on one
+line, and last a byte in hexadecimal.  **The digits with a gap came first once,
+with the numbers printed whole**, and so `5: 0.5      21: 2.1` was a found 521:
+nine of one definition's NRPNs were counted as found on pages that print none of
+them whole, and the bytes that are on those pages were never looked at.
+
+**With ``--attribute``, a page is read only in the document its citation names.**
+Without it, every page the account cites is read in every document that has
+pages, so `manual p. 2` turns the chart to its second sheet as well, and the more
+a definition cites the less a pass proves.  The switch is off until what it
+changes has been agreed: over the 171 definitions bundled when it was written
+it moved 22 numbers in seven of them out of found, each into a weaker check or
+into the numbers nothing here can look for.
 """
 
 import argparse
@@ -69,6 +87,20 @@ _CITATION: typing.Final[re.Pattern[str]] = re.compile(
 
 # What separates one page or range from the next inside a citation.
 _BETWEEN: typing.Final[re.Pattern[str]] = re.compile(r"\s*,\s*(?:and\s+)?|\s+and\s+")
+
+# The word standing before a citation, where one does: `implementation p. 9` and
+# `manual, pp. 26-27` each name the document the page is in.  Whether the word is one
+# of the definition's own source keys is asked afterwards, since most words before a
+# `p.` are `at` and `on`.
+_KEYED: typing.Final[re.Pattern[str]] = re.compile(
+	r"(?:(?<![\w\-\u2010\u2011\u2012\u2013])([a-z][a-z0-9_]*),?\s+)?" + _CITATION.pattern)
+
+# A number the maker marks as hexadecimal, `0x21`.  Its digits are not a decimal number,
+# so no reading of a page in decimal takes them for one: not as printed, not with a gap
+# closed, and not as the end of a range.  **A word of its own**, so the `0x8` in
+# `1280x800` and in `12.0x8.5 in` is left as the dimensions it is.
+_MARKED_HEX: typing.Final[re.Pattern[str]] = re.compile(
+	r"(?<![0-9A-Za-z])(?<![0-9]\.)0[xX][0-9A-Fa-f]+(?![0-9A-Za-z]|\.[0-9])")
 
 # Spaces a PDF's text layer opened up *inside* a number, never a line break:
 # joining across lines would fuse two separate numbers into a third.
@@ -148,38 +180,90 @@ def cited_pages (prose: str) -> set[int]:
 	pages: set[int] = set()
 
 	for citation in _CITATION.finditer(prose):
-		for part in _BETWEEN.split(citation.group(1)):
-			edges = [int(digits) for digits in re.findall(r"\d+", part)]
-
-			if len(edges) == 2:
-				pages.update(range(edges[0], edges[1] + 1))
-			elif edges:
-				pages.add(edges[0])
+		pages.update(listed_pages(citation.group(1)))
 
 	return pages
 
 
-def numbers_on (text: str) -> set[int]:
+def listed_pages (listed: str) -> set[int]:
 
-	"""Every number a page prints, read two ways because extraction is lossy.
+	"""The pages one citation lists after its `p.`: single pages, and ranges with both their ends."""
+
+	pages: set[int] = set()
+
+	for part in _BETWEEN.split(listed):
+		edges = [int(digits) for digits in re.findall(r"\d+", part)]
+
+		if len(edges) == 2:
+			pages.update(range(edges[0], edges[1] + 1))
+		elif edges:
+			pages.add(edges[0])
+
+	return pages
+
+
+def cited_by_key (prose: str, keys: typing.Collection[str]) -> tuple[dict[str, set[int]], set[int]]:
+
+	"""The pages a ``source`` line cites, sorted by the document each citation names.
+
+	Two answers.  The first is the pages cited with one of these source keys standing
+	before them, under that key: `implementation p. 9` is page 9 of `implementation`
+	and of no other document.  The second is the pages cited with no key, as `(p. 9)`
+	or `at pp. 30-31` are: nothing says which document those are in, so they are
+	every document's.
+
+	**Only the word standing directly before the `p.` is asked**, and only as it is
+	written under ``sources``.  So `Chart p. 1`, `the chart (p. 2)` and `the manual's
+	p. 4` name no document here, and in `manual p. 3 and p. 4` the 4 is nobody's.  And
+	`see the chart p. 4 of the manual` credits page 4 to `chart`, which no pattern can
+	tell from the citation it looks like.
+	"""
+
+	keyed: dict[str, set[int]] = {}
+	bare: set[int] = set()
+
+	for citation in _KEYED.finditer(prose):
+		word, pages = citation.group(1), listed_pages(citation.group(2))
+
+		if word in keys:
+			keyed.setdefault(word, set()).update(pages)
+		else:
+			bare.update(pages)
+
+	return keyed, bare
+
+
+def numbers_as_printed (text: str) -> set[int]:
+
+	"""Every number a page prints, each as the run of digits it stands in.
+
+	Not the digits of a form marked as hexadecimal: `0x21` prints no 0 and no 21.
+	"""
+
+	return {int(digits) for digits in re.findall(r"\d+", _MARKED_HEX.sub("x", text))}
+
+
+def numbers_closed_up (text: str) -> set[int]:
+
+	"""The numbers a page yields once the gaps between digits on a line are closed.
 
 	A PDF's text layer often breaks a number apart: one manual's table renders
 	``35 (LSB)`` as ``3 5(LSB)``, so reading it plainly loses 13 of that
-	definition's 55 numbers.  Closing same-line gaps between digits recovers all
-	55 — but it is not free the other way round, because where a table's value
-	range abuts the next row's number, ``0-127 72`` becomes ``12772`` and loses
-	both.  Measured across four documents, closing the gaps rescues 13 numbers on
-	one and destroys 29 across two others.
+	definition's 55 numbers.  Closing same-line gaps between digits recovers them
+	— and makes numbers the page never printed: where a table's value range abuts
+	the next row's number, ``0-127 72`` becomes ``12772``, and ``5: 0.5      21:
+	2.1`` holds a 521.
 
-	So the two readings are combined rather than one replacing the other, which
-	finds every number that either way of reading finds.  The cost is that a
-	number can be matched by digits the page never printed side by side, which is
-	why a pass here means the page carries the number and nothing stronger.
+	So this is a reading of its own and a weaker one, tried only for a number that
+	is not printed whole, is not an NRPN's bytes or halves, and is not inside a
+	printed range.  Read together with the numbers as printed, as it was at first,
+	it counted nine of one definition's NRPNs as found on pages that print each as
+	two bytes and none of them whole.  **Nothing reads the two together now**: the
+	halves of an NRPN are looked for among the numbers as printed alone, since a half
+	made by closing a gap is a number the page may never have printed.
 	"""
 
-	closed = _SPLIT_DIGITS.sub("", text)
-
-	return {int(digits) for digits in re.findall(r"\d+", f"{text} {closed}")}
+	return {int(digits) for digits in re.findall(r"\d+", _SPLIT_DIGITS.sub("", _MARKED_HEX.sub("x", text)))}
 
 
 def wanted_numbers (
@@ -237,7 +321,7 @@ def as_a_byte_pair (nrpn: int, text: str) -> bool:
 	**Both bytes must be on one line with nothing but spaces or tabs between
 	them**, each as two digits in capitals, the pair standing as words of its own
 	and not against a full stop, a colon, a stroke or a hash.  Standing together
-	is what lets a byte made only of digits count here, where `in_hexadecimal`
+	is what lets a byte made only of digits count here, where `hexadecimal_form`
 	refuses one on its own: a lone ``60`` is far likelier sixty than 96.
 
 	**A pair is read wherever two such words stand together, and no column is
@@ -274,12 +358,65 @@ def as_a_byte_pair (nrpn: int, text: str) -> bool:
 	with a bar, a comma or a colon between them, and not with an H after each.
 	"""
 
-	if not 0 <= nrpn <= 0x3FFF:
+	return 0 <= nrpn <= 0x3FFF and pair_of_bytes(nrpn).search(text) is not None
+
+
+def pair_of_bytes (nrpn: int) -> re.Pattern[str]:
+
+	"""An NRPN's two bytes side by side, as `as_a_byte_pair` says a page must print them."""
+
+	return re.compile(
+		rf"(?<![0-9A-Za-z.#:/]){nrpn // 128:02X}[ \t]+{nrpn % 128:02X}(?![0-9A-Za-z.#:/])")
+
+
+def beside_its_label (nrpn: int, label: str | None, text: str) -> bool:
+
+	"""Whether one line carries an NRPN's two bytes and its control's label as well.
+
+	**This is the one check here that is of a row and not of a page.**  A pair of
+	bytes is matched wherever it stands, and every row of a table is on the page,
+	so a number taken from the row above is found as readily as the right one: a
+	slip made on every row passes entire.  The label is what tells the rows apart.
+	Where a definition's labels are the table's own words, each pair stands on the
+	line that also carries its label, and a number from another row does not:
+	measured on the two definitions whose NRPNs are printed so, 108 of 108 and 29
+	of 29 are beside their labels, and with every number moved down one row, none.
+
+	The label is compared with its spaces, case and punctuation out, as a text
+	layer may set any of them differently, and it has to stand as words of its own
+	in what the line holds besides the pair: `Pan` is not beside the row of a
+	`Panpot`, `Band1` is not beside `Band14`, and no label is found in the two bytes
+	themselves.  A label with no letter in it is beside nothing, since a row's own
+	range of values would answer for it.
+
+	**It says nothing where the labels are not the table's words**, which is why it
+	is reported as a count and fails no definition.  It says no of a label the table
+	wraps onto a second line, or abbreviates.  **And it does not make the columns
+	hexadecimal.**  Two decimal numbers on a label's line are read as bytes like any
+	others, so a number no page prints may stand "beside its label" too.
+
+	A definition that gives a control no label has the control's own key for one,
+	and that is compared in the same way.
+	"""
+
+	if not label or not re.search(r"[A-Za-z]", label) or not 0 <= nrpn <= 0x3FFF:
 		return False
 
-	msb, lsb = f"{nrpn // 128:02X}", f"{nrpn % 128:02X}"
+	# The label's letters and digits in order, with anything or nothing between them.
+	wanted = re.compile(r"(?<![a-z0-9])"
+		+ r"[^a-z0-9]*".join(re.findall(r"[a-z0-9]", label.lower())) + r"(?![a-z0-9])")
+	pair = pair_of_bytes(nrpn)
 
-	return re.search(rf"(?<![0-9A-Za-z.#:/]){msb}[ \t]+{lsb}(?![0-9A-Za-z.#:/])", text) is not None
+	for line in text.split("\n"):
+		found = pair.search(line)
+
+		if found is None:
+			continue
+
+		if wanted.search((line[:found.start()] + " " + line[found.end():]).lower()):
+			return True
+
+	return False
 
 
 # A range wide enough to cover most of the controller space says nothing useful:
@@ -296,9 +433,11 @@ _PRINTED_RANGE: typing.Final[re.Pattern[str]] = re.compile(
 	r"#?\s*(\d{1,3})\s*(?:[-\u2013\u2014\u2026]|\.\.\.)\s*#?\s*(\d{1,3})")
 
 
-def inside_a_range (number: int, text: str) -> bool:
+def ranges_holding (number: int, text: str) -> dict[str, str]:
 
-	"""Whether a page names a number only by printing the range it falls in.
+	"""Each short range a page prints that a number falls inside, and the line it stands on.
+
+	The range as it stands there, against the whole of its line with the spaces closed up.
 
 	Korg's wavestate is the case: its MIDI CC Assign table gives "Layer A Mod
 	Knobs 1...8" as "80...87" and never prints 81 to 86, so a definition that
@@ -316,24 +455,50 @@ def inside_a_range (number: int, text: str) -> bool:
 	rather than against the row that means it.  It is reported separately for that
 	reason, and never counted as found.
 
+	**Which range it was is the whole of what this reading proves, so every one is
+	given**, in the order of the page, each once.  One definition's fine half 53
+	was found inside `49-54`, which is a row of a table of clock divisions and no
+	controller's; and two of another's controllers were inside `1-16`, the chart's
+	Basic Channel row, which stands above the `12-31` of its Control Change row.
+	The first on the page is as likely the wrong one as the right.  **And the line a range
+	stands on is what tells a group of controls from a row of a chart**: `80...87` after
+	`Layer A Mod Knobs 1...8` names six controls, and `67-95` in a row of eight ranges
+	names none of them.
+
 	Only the inside of a range counts, because an endpoint is already found by
 	looking for the number itself, and only a short range counts at all: a manual
 	that prints "0-127" for its note numbers would otherwise answer for every
-	controller number in the file.
+	controller number in the file.  The digits of a form marked as hexadecimal are
+	the end of no range.
 	"""
 
-	for found in _PRINTED_RANGE.finditer(text):
+	# Rubbed out letter for letter, so that a place in one text is the same place in the
+	# other and the line can be given as the page has it.
+	scrubbed = _MARKED_HEX.sub(lambda marked: "x" * len(marked.group(0)), text)
+	holding: dict[tuple[int, int], tuple[str, str]] = {}
+
+	for found in _PRINTED_RANGE.finditer(scrubbed):
 		low, high = int(found.group(1)), int(found.group(2))
 
-		if low < number < high and high - low <= RANGE_SPAN:
-			return True
+		# One range printed twice, or once as `32 - 63` and once as `32-63`, is one range.
+		if low < number < high and high - low <= RANGE_SPAN and (low, high) not in holding:
+			# From the number itself: the pattern may begin in the white space before it,
+			# which is the end of the line above.
+			begins = scrubbed.rfind("\n", 0, found.start(1)) + 1
+			ends = scrubbed.find("\n", found.end())
+			line = text[begins:len(text) if ends < 0 else ends]
 
-	return False
+			holding[low, high] = (" ".join(found.group(0).split()), " ".join(line.split()))
+
+	return dict(holding.values())
 
 
-def in_hexadecimal (number: int, text: str) -> bool:
+def hexadecimal_form (number: int, text: str) -> str | None:
 
-	"""Whether a page prints a number only as the two hexadecimal digits of its byte.
+	"""The hexadecimal form a page prints a number in, as it stands there, if it prints one.
+
+	The form is the two hexadecimal digits of its byte, or any number of them where the
+	maker marks the form as hexadecimal.
 
 	Behringer's TD-3-MO is the case: its guide's message table gives its one
 	controller as ``Bn 4A xx`` and never prints 74, so a definition holding 74
@@ -344,23 +509,40 @@ def in_hexadecimal (number: int, text: str) -> bool:
 	likelier to be a decimal number than a byte, so ``40`` never stands for 64,
 	and a word such as ``B4A`` or ``4AH`` is not ``4A``.
 
+	**Unless the maker marks it as hexadecimal.**  Behringer's Neutron prints its
+	modulation wheel's two halves as ``MIDI CC 0x01 (MSB) & MIDI CC 0x21 (LSB)``,
+	and ``0x21`` is 33 and nothing else, digits or not.  That form is read in
+	either case, since ``0x2a`` is written as often as ``0x2A``, and at any width:
+	``0x7`` is 7, and ``0x12C`` is the 300 no two digits can hold.  **A marked form
+	is read as one number and never as two bytes**: ``0x045D`` is 1117, where a
+	table that means MSB 04 and LSB 5D means 605, and two marked bytes side by
+	side, ``0x04 0x5D``, are not read as a pair either.  No definition here cites
+	such a page.
+
 	This is a **weaker** check than finding the number: a page of MIDI bytes is
 	full of short hexadecimal words, and one is matched wherever it appears rather
 	than against the row that means it.  Prose has them too - a Nymphes manual's
 	power adapter "rated for at least 1A" reads as 26.  So it is tried last, only
 	for a number that would otherwise be missing, and each number found this way
 	is named in the report beside the form that matched, never counted as found.
+	Where a page has both forms, the marked one is the one named.
 	"""
 
-	if not 0 <= number <= 0xFF:
-		return False
+	if not 0 <= number <= 0x3FFF:
+		return None
+
+	marked = re.search(
+		rf"(?<![0-9A-Za-z])(?<![0-9]\.)0[xX]0*(?i:{number:X})(?![0-9A-Za-z]|\.[0-9])", text)
+
+	if marked is not None:
+		return marked.group(0)
 
 	form = f"{number:02X}"
 
-	if form.isdigit():
-		return False
+	if number > 0xFF or form.isdigit():
+		return None
 
-	return re.search(rf"(?<![0-9A-Za-z]){form}(?![0-9A-Za-z])", text) is not None
+	return form if re.search(rf"(?<![0-9A-Za-z]){form}(?![0-9A-Za-z])", text) is not None else None
 
 
 def as_ranges (numbers: typing.Iterable[int]) -> str:
@@ -394,6 +576,9 @@ class Followed:
 	extent: int | None = None
 	pages: list[int] = dataclasses.field(default_factory=list)
 	text: str = ""
+
+	# The printed pages turned to in this document: those cited for it that it has.
+	cited: set[int] = dataclasses.field(default_factory=set)
 
 	# A scan of a printed manual is a PDF of pictures: it has pages, and turning to
 	# one is still worth checking, but there is no text in it to search.  Saying so
@@ -459,8 +644,41 @@ class Result:
 	as_byte_pairs: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	as_halves: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	in_a_range: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+	across_a_gap: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	as_hex: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
 	unverifiable: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+
+	# The form each number in `as_hex` was found in, as the page has it: `4A`, or `0x21`.
+	hex_forms: dict[str, str] = dataclasses.field(default_factory=dict)
+
+	# The ranges each number in `in_a_range` was found inside, as the page has them, the
+	# line each range stands on, and those of the numbers whose digits also stand on one
+	# line with a gap between them.
+	range_forms: dict[str, list[str]] = dataclasses.field(default_factory=dict)
+	range_lines: dict[str, str] = dataclasses.field(default_factory=dict)
+	also_across_a_gap: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+
+	# The NRPNs whose two bytes stand side by side somewhere on a cited page, whatever else
+	# found them, and those of them that stand so on a line that also carries their
+	# control's label.
+	paired: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+	beside_label: list[tuple[str, str, int]] = dataclasses.field(default_factory=list)
+
+	# Whether each cited page was read only in the document its citation names, and the
+	# pages that were cited with no document named and so read in all of them.
+	attributed: bool = False
+	unattributed: set[int] = dataclasses.field(default_factory=set)
+
+
+	@property
+	def found (self) -> list[tuple[str, str, int]]:
+
+		"""The numbers printed whole on a cited page, which is the one result called found."""
+
+		weaker = (self.missing + self.as_byte_pairs + self.as_halves + self.in_a_range
+			+ self.across_a_gap + self.as_hex + self.unverifiable)
+
+		return [entry for entry in self.wanted if entry not in weaker]
 
 
 	@property
@@ -505,19 +723,33 @@ def follow (
 	definition: pymidiinstrumentdefs.definition.Definition,
 	name: str,
 	index: dict[str, pathlib.Path],
+	attribute: bool = False,
 ) -> Result:
 
 	"""Follow one definition's citations into its documents and see what is there.
 
-	Where a definition names several documents, its prose does not say which
-	pages belong to which — so the cited pages are looked for in all of them, and
-	a number counts as found if any cited page of any of them carries it.  That
-	makes the check weaker the more documents a definition cites, and it is the
-	honest reading of a citation that does not attribute its own pages.
+	**Unless ``attribute`` is set, a cited page is looked for in every document.**
+	A number then counts as found if any cited page of any of them carries it,
+	which makes the check weaker the more documents a definition cites: `manual
+	p. 2` turns the chart to its second sheet too, and seven of one definition's
+	numbers were found there and nowhere its account points.
+
+	With it, a page cited as `chart p. 2` is read in `chart` alone.  A page cited
+	with no document named is still every document's, because nothing says whose
+	it is, and the result holds those pages.
 	"""
 
-	result = Result(name = name, cited = cited_pages(definition.source or ""))
+	result = Result(name = name, cited = cited_pages(definition.source or ""), attributed = attribute)
 	result.wanted = wanted_numbers(definition)
+
+	keyed, bare = cited_by_key(definition.source or "", set(definition.sources))
+	result.unattributed = bare if attribute else set()
+
+	def cited_in (key: str) -> set[int]:
+
+		"""The printed pages to turn to in one document."""
+
+		return keyed.get(key, set()) | bare if attribute else result.cited
 
 	for key, source in definition.sources.items():
 		document = Followed(key = key, source = source)
@@ -537,7 +769,16 @@ def follow (
 
 		result.documents.append(document)
 
-	result.unreachable = unreachable_pages(result.cited, result.documents)
+	# A page credited to one document has to be in that document.  Read in all of them it
+	# was reachable if any had it, which is how a page of the wrong document passed.  A
+	# document with no pages has no page to be cited by, so a page credited to one is
+	# unreachable like any other.
+	if attribute:
+		result.unreachable = unreachable_pages(bare, result.documents) | {
+			printed for document in result.documents
+			for printed in keyed.get(document.key, set()) if not document.covers(printed)}
+	else:
+		result.unreachable = unreachable_pages(result.cited, result.documents)
 
 	for document in result.documents:
 		if document.path is None:
@@ -547,9 +788,9 @@ def follow (
 			document.text = whole_text(document.path)
 			continue
 
+		document.cited = {printed for printed in cited_in(document.key) if document.covers(printed)}
 		document.pages = sorted({
-			page for printed in result.cited
-			if document.covers(printed)
+			page for printed in document.cited
 			for page in [document.source.file_page(printed)]
 			if page is not None
 		})
@@ -562,7 +803,7 @@ def follow (
 		# A declared pictured page counts only if the definition cites it and the
 		# document has it, and it is then checked for carrying an image at all.
 		for printed in document.source.pictured_pages:
-			if printed not in result.cited or not document.covers(printed):
+			if printed not in document.cited:
 				continue
 
 			page = document.source.file_page(printed)
@@ -584,16 +825,27 @@ def follow (
 
 		# Nothing on the cited pages is either a scan or a run of blank pages, and
 		# those need different answers, so ask the whole document before deciding.
+		# **Where each page is read in its own document, a document read on no page is
+		# not asked**: a scan nobody cites a page of excuses no number.
 
-		if not document.text.strip():
+		if not document.text.strip() and (document.pages or not attribute):
 			whole = "".join(page.extract_text() or "" for page in opened.pages)
 			document.scanned = not whole.strip()
 
 	# One document ends and the next begins on a new line, never on the same one: a
-	# space between them is a gap `numbers_on` closes, so the last digit of one
+	# space between them is a gap `numbers_closed_up` closes, so the last digit of one
 	# document and the first of the next would be read as a number neither printed.
 	printed_text = "\n".join(document.text for document in result.documents)
-	printed_numbers = numbers_on(printed_text)
+	printed_numbers = numbers_as_printed(printed_text)
+	closed_numbers = numbers_closed_up(printed_text)
+
+	# The one check of a row, made of every NRPN whatever else finds it: see the function.
+	labels = {control.name: control.label for control in definition.controls.values()}
+	result.paired = [entry for entry in result.wanted
+		if entry[1] == "nrpn" and as_a_byte_pair(entry[2], printed_text)]
+	result.beside_label = [entry for entry in result.paired
+		if beside_its_label(entry[2], labels.get(entry[0]), printed_text)]
+	paired = set(result.paired)
 
 	unreadable = any(document.scanned for document in result.documents)
 
@@ -610,16 +862,38 @@ def follow (
 		if number in printed_numbers:
 			continue
 
-		if kind == "nrpn" and as_a_byte_pair(number, printed_text):
+		if entry in paired:
 			result.as_byte_pairs.append(entry)
 			continue
 
+		# Both halves as the page prints them.  A half made by closing a gap is not one:
+		# `Level 1 | 10 1` holds no 101, and was once a found 229.
 		if kind == "nrpn" and halves_on(number, printed_numbers):
 			result.as_halves.append(entry)
 			continue
 
-		if kind in ("cc", "lsb") and inside_a_range(number, printed_text):
+		# **A range before a gap, and both said where both hold.**  Neither order is right
+		# for every page: one definition's 53 is printed `5 3` and is also inside a table
+		# of clock divisions' `49-54`, and another's 74 is inside the `71-76` that means it
+		# and is also the `7 4` of a postcode.  So the range is named, and so is the gap.
+		within = ranges_holding(number, printed_text) if kind in ("cc", "lsb") else {}
+
+		if within:
 			result.in_a_range.append(entry)
+			result.range_forms[f"{name}.{kind}"] = list(within)
+
+			for spelt, line in within.items():
+				result.range_lines.setdefault(spelt, line)
+
+			if number in closed_numbers:
+				result.also_across_a_gap.append(entry)
+
+			continue
+
+		# The digits with a gap between them on one line: after the readings above,
+		# because this one finds numbers nobody printed.
+		if number in closed_numbers:
+			result.across_a_gap.append(entry)
 			continue
 
 		# A number absent from the text of a definition that also cites a scan may
@@ -634,8 +908,11 @@ def follow (
 		# Last of all, and only for a number that would otherwise be missing: a byte
 		# is the weakest match there is, and prose prints short hexadecimal words too.
 
-		if in_hexadecimal(number, printed_text):
+		form = hexadecimal_form(number, printed_text)
+
+		if form is not None:
 			result.as_hex.append(entry)
+			result.hex_forms[f"{name}.{kind}"] = form
 			continue
 
 		result.missing.append(entry)
@@ -670,20 +947,27 @@ def render (result: Result, verbose: bool) -> None:
 			print(f"        ⚠ DECLARES printed {printed} as pictured AND IT CARRIES NO IMAGE")
 
 		if document.pages:
-			print(f"        printed {as_ranges(result.cited)} → file {as_ranges(document.pages)}")
+			cited = document.cited if result.attributed else result.cited
+
+			print(f"        printed {as_ranges(cited)} → file {as_ranges(document.pages)}")
 		elif document.extent is None:
 			print("        no pages to turn to, so the whole document was read")
+		else:
+			print("        no page cited is in it, so none of it was read")
 
 	if result.unreachable:
 		print(f"    ⚠ cited but in no document read: printed {as_ranges(result.unreachable)}")
 
-	found = (len(result.wanted) - len(result.missing) - len(result.as_byte_pairs) - len(result.as_halves)
-		- len(result.in_a_range) - len(result.as_hex) - len(result.unverifiable))
+	paged = [document for document in result.documents if document.extent]
+
+	if result.attributed and result.unattributed and len(paged) > 1:
+		print(f"    printed {as_ranges(result.unattributed)} cited with no document named, so "
+			f"read in every document that has pages")
 
 	if not result.wanted:
 		print("    no numbers to check")
 	else:
-		print(f"    {found} of {len(result.wanted)} numbers found")
+		print(f"    {len(result.found)} of {len(result.wanted)} numbers found")
 
 	if result.as_byte_pairs:
 		print(
@@ -724,20 +1008,103 @@ def render (result: Result, verbose: bool) -> None:
 			for name, kind, number in result.as_halves:
 				print(f"            {name}.{kind} = {number}, as {number // 128} and {number % 128} in decimal")
 
+	# **THE ROW CHECK, SAID WHEREVER A NUMBER RESTS ON ITS PAIR OR MOST PAIRS STAND BESIDE A LABEL.**
+	# A pair is matched wherever it stands, so a slip made on every row passes entire; a pair
+	# on the line that carries its control's label is that control's row.  Where most of the
+	# NRPNs whose pair is on a cited page at all stand beside their labels, the table's words
+	# are the labels, and an NRPN that is not beside its own is named.
+	#
+	# **One found as itself is named only where it is below 128**, and it is what the naming
+	# is for: a byte of the first bank read as decimal, `00 14` held as 14, is printed whole
+	# while its own pair, `00 0E`, is nowhere.  That slip cannot make a bigger number.  One of
+	# 128 or more printed whole is a number read off another table that prints it so, and
+	# naming every row of that table was the price of the measure below.  Those found as
+	# decimal halves are not named here either: where both halves and pairs were found, the
+	# block above names the fewer.
+	#
+	# **Measured over the pairs and not over every NRPN**, which was the first measure: a
+	# second table, printed in decimal, then diluted the count, and a definition with one
+	# table of each named nobody.  **And never on one pair alone**, since where one or two
+	# pairs are on the pages in all, a single address row that happens to carry a control's
+	# label would otherwise set the naming off.
+	#
+	# The first set is every pair on a page; a result made by hand may hold the pairs a
+	# number rests on and not that, so both are taken.
+	on_a_page = set(result.paired) | set(result.as_byte_pairs)
+	beside = set(result.beside_label)
+	mostly = len(beside) >= 2 and 2 * len(beside) > len(on_a_page)
+
+	if result.as_byte_pairs or mostly:
+		whole = set(result.found)
+		passed_over = beside | set(result.as_halves) | {entry for entry in whole if entry[2] >= 128}
+
+		print(
+			f"        {len(beside)} of {len(on_a_page)} NRPNs whose two bytes stand side by side on a cited "
+			f"page stand so on a line that also carries their control's label, which is the sign that "
+			f"a number is its own row's"
+		)
+
+		if mostly:
+			for name, kind, number in result.wanted:
+				if kind == "nrpn" and (name, kind, number) not in passed_over:
+					print(f"            not beside its label: {name}.{kind} = {number}, "
+						f"which would be {number // 128:02X} {number % 128:02X}"
+						+ (", and is printed whole on a cited page" if (name, kind, number) in whole else ""))
+
 	if result.in_a_range:
 		print(
 			f"        {len(result.in_a_range)} controller numbers found only inside a range the maker "
 			f"prints, which is a weaker check"
 		)
 
+		# A range is matched wherever it stands, so which range it was is what there is to
+		# read: every one that holds a number is named, with the numbers found inside it, and
+		# under them the line each range stands on, once, where the line has more on it.
+		inside: dict[tuple[str, ...], list[str]] = {}
+		shown: set[str] = set()
+
+		for name, kind, number in result.in_a_range:
+			gapped = ""
+
+			if (name, kind, number) in result.also_across_a_gap:
+				gapped = " (and by closing a gap between digits)"
+
+			inside.setdefault(tuple(result.range_forms.get(f"{name}.{kind}", [])), []).append(
+				f"{name}.{kind} = {number}{gapped}")
+
+		for ranges, numbers in inside.items():
+			if not ranges:
+				continue
+
+			print(f"            inside {' and '.join(ranges)}: {', '.join(numbers)}")
+
+			for spelt in ranges:
+				line = result.range_lines.get(spelt, spelt)
+
+				if line != spelt and spelt not in shown:
+					print(f"                {spelt} stands in: "
+						+ (line if len(line) <= 96 else line[:93] + "..."))
+
+				shown.add(spelt)
+
+	if result.across_a_gap:
+		print(
+			f"        {len(result.across_a_gap)} numbers found only by closing a gap the page leaves "
+			f"between digits on one line, which is a weaker check, so each is named to be read on its page"
+		)
+
+		for name, kind, number in result.across_a_gap:
+			print(f"            {name}.{kind} = {number}")
+
 	if result.as_hex:
 		print(
-			f"        {len(result.as_hex)} numbers found only as the hexadecimal byte the maker prints, "
+			f"        {len(result.as_hex)} numbers found only in hexadecimal, as the maker prints them, "
 			f"which is a weaker check, so each is named to be read on its page"
 		)
 
 		for name, kind, number in result.as_hex:
-			print(f"            {name}.{kind} = {number}, printed as {number:02X}")
+			print(f"            {name}.{kind} = {number}, printed as "
+				f"{result.hex_forms.get(f'{name}.{kind}', f'{number:02X}')}")
 
 	if result.unverifiable:
 		why = ("a cited page publishes its numbers only in a picture"
@@ -752,10 +1119,24 @@ def render (result: Result, verbose: bool) -> None:
 	for name, kind, number in result.missing:
 		print(f"        not on any cited page: {name}.{kind} = {number}")
 
+	# **A tick is for a number printed whole on a cited page, and for no other.**  Every
+	# number that was not missing was ticked, one nobody could look for among them, beneath
+	# a line saying it was not checked at all.
 	if verbose:
+		how = {entry: said for said, entries in (
+			("as two bytes side by side", result.as_byte_pairs),
+			("as two halves", result.as_halves),
+			("inside a range", result.in_a_range),
+			("across a gap", result.across_a_gap),
+			("in hexadecimal", result.as_hex),
+			("not checked", result.unverifiable),
+			("not found", result.missing)) for entry in entries}
+
 		for name, kind, number in result.wanted:
-			mark = " " if (name, kind, number) in result.missing else "✓"
-			print(f"        {mark} {name}.{kind} = {number}")
+			weaker = how.get((name, kind, number))
+
+			print(f"        {' ' if weaker else '✓'} {name}.{kind} = {number}"
+				+ (f"  ({weaker})" if weaker else ""))
 
 	print()
 
@@ -783,6 +1164,8 @@ def main (argv: list[str] | None = None) -> int:
 	parser.add_argument("names", nargs = "*", help = "definition names or paths; default is all of them")
 	parser.add_argument("--library", help = "the folder of maker's documents to read")
 	parser.add_argument("--verbose", "-v", action = "store_true", help = "list every number, found or not")
+	parser.add_argument("--attribute", action = "store_true",
+		help = "read a page cited with a source key before it, as `chart p. 2`, in that document alone")
 
 	arguments = parser.parse_args(argv)
 	given = arguments.library or os.environ.get(LIBRARY_VARIABLE)
@@ -796,7 +1179,12 @@ def main (argv: list[str] | None = None) -> int:
 		parser.error(f"{root} is not a folder of documents")
 
 	index = library_index(root)
-	print(f"{len(index)} documents in {root}\n")
+	print(f"{len(index)} documents in {root}")
+
+	if arguments.attribute:
+		print("each page cited with a source key before it is read in that document alone")
+
+	print()
 
 	names = arguments.names or sorted(pymidiinstrumentdefs.available())
 	faults = 0
@@ -812,7 +1200,7 @@ def main (argv: list[str] | None = None) -> int:
 			faults += 1
 			continue
 
-		result = follow(definition, name, index)
+		result = follow(definition, name, index, attribute = arguments.attribute)
 
 		render(result, arguments.verbose)
 		faults += not result.sound

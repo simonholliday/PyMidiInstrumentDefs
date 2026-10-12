@@ -389,6 +389,12 @@ its own, in capitals. It names each number it found only that way, so read each 
 its page: prose prints short hexadecimal words too, and a power adapter rated at `1A`
 would answer for controller 26. It never reads a form made only of digits as
 hexadecimal on its own, because a page printing `40` far more likely means forty than 64.
+The exception is a form the maker marks: `0x21` is 33 whatever its digits, and is read in
+either case and at any width. Its digits are never read as a decimal number, so a definition
+holding 21 is not found on a page that prints only `0x21`. **A marked form is read as one
+number and never as two bytes**: `0x045D` is 1117, so an NRPN whose two bytes a maker runs
+together that way, meaning MSB `04` and LSB `5D`, is reported missing and has to be read by
+hand.
 
 **An NRPN printed as two hexadecimal bytes is one decimal number too.** Korg's RADIAS
 gives Vocoder Band14 Panpot as `04  5D`: write 4 x 128 + 93 = 605. The citation check
@@ -404,11 +410,28 @@ are anywhere on the cited pages in decimal. Where a definition's NRPNs are found
 ways, some as pairs and some only as decimal halves, it names the fewer of the two, or
 all of them where there are as many each way, and those are the ones to look at first.
 That catches a slip on one row. It does not catch one made on every row: the wrong
-numbers are then the many, or are other rows' pairs. And a number found as itself is
-never named: a byte of the first bank read as decimal is found that way, `00 14` held
-as 14. No other way of setting two bytes down is read: not with a bar, a comma or a
-colon between them, not with an `H` after each, and not set tight against a full stop, a
-colon, a stroke or a hash.
+numbers are then the many, or are other rows' pairs.
+
+**So the check also asks whether each pair stands beside its label.** It counts the NRPNs
+whose two bytes are on a line that also carries the control's `label`, spacing, case and
+punctuation aside, the label standing as words of its own in what the line holds besides
+the pair. A control that gives no label is compared by its key. Where your labels are the
+table's own words that line is the control's row, and a number taken from another row is not
+on it: on the two definitions here whose NRPNs are printed as pairs, every one is beside its
+label, and with each number moved down a row, none is. Once two or more are beside their
+labels, and they are most of the NRPNs whose two bytes stand side by side on a cited page at
+all, an NRPN that is not beside its own is named, and that is how a byte of the first bank
+read as decimal shows: `00 14` held as 14 is found as itself, because the page prints a 14,
+and is not beside its label. Two kinds are not named: one found as two halves in decimal,
+which the report sets out above, and one of 128 or more printed whole, which is a number read
+off another table and no byte misread. A number named that way is not thereby wrong, and the
+report says of each whether it is printed whole. Where your labels are your own words the
+count is
+nought, which says nothing about your numbers, so it fails no definition. And it is a check
+of the row and not of the base: two decimal numbers on a label's line are read as bytes too.
+No other way of setting two bytes down is read: not with a bar, a comma or a colon between
+them, not with an `H` after each, and not set tight against a full stop, a colon, a stroke or
+a hash.
 
 **Stepped controls: bands and exact values are different things.**
 
@@ -1007,6 +1030,31 @@ control number, LSB, NRPN and note number that is **not** printed there.
 export PYMIDIINSTRUMENTDEFS_LIBRARY=/path/to/your/manuals
 python tools/check_citations.py moog/minitaur       # or no name, for all of them
 ```
+
+**It looks for a number in the order of what finding it proves.** Printed whole on a
+cited page is what it calls found. After that come the weaker checks, each reported apart
+and never counted as found: an NRPN as two hexadecimal bytes side by side, or as two halves
+in decimal; a controller inside a short range the maker prints; the digits of the number
+with a gap between them on one line, which is how some text layers set a number and is also
+how `5: 0.5      21: 2.1` comes to hold a 521; and last a byte in hexadecimal. Each number
+found by any of the last three is named, to be read on its page, and one found inside a range
+is named with every short range it falls inside, and with the line a range stands on where
+that line holds more than the range, because a range is matched wherever it stands: one
+definition's 53 was "inside" the `49-54` of a table of clock divisions. **Where
+the range it names is a row of an implementation chart, cite the page that prints the numbers
+themselves.** A chart's Control Change row gives `12-31` and names nothing. The list that
+gives each of those numbers a name is usually a page or two away, and with that page cited
+the numbers are found whole.
+
+**Every page you cite is read in every document that has pages**, so `manual p. 2` turns
+your chart to its second sheet too, and a number printed only there counts as found. Name the
+document before each page, `(chart p. 2)`, and run it with `--attribute` to have each page
+read in the document its citation names and in no other. That is not yet the default.
+**The key has to be the word directly before the `p.`, written as it is under `sources`.**
+`Chart p. 1`, `the chart (p. 2)` and `the manual's p. 4` name no document, so those pages are
+still read in all of them, and the report lists the pages it read that way. And a key that
+stands there by accident is believed: `see the chart p. 4 of the manual` credits page 4 to
+the chart. So write the citation as a citation, `(manual p. 4)`, and not into a sentence.
 
 It separates four faults, because they have four different fixes: a number that is not
 on the page you cited, a page the document does not have, a document whose hash matches

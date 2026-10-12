@@ -121,21 +121,816 @@ class TestReadingNumbersOffAPage:
 
 		Reading that page plainly loses 13 of the definition's 55 numbers.
 		"""
-		assert 35 in tool.numbers_on("3(MSB)\n3 5(LSB)\n0-127")
+		assert 35 in tool.numbers_closed_up("3(MSB)\n3 5(LSB)\n0-127")
+		assert 35 not in tool.numbers_as_printed("3(MSB)\n3 5(LSB)\n0-127")
 
 	def test_closing_gaps_does_not_lose_numbers_that_were_already_apart (self) -> None:
 		"""Where a value range abuts the next row's number, "0-127 72" fuses to "12772".
 
 		Closing the gaps is therefore not a substitute for reading the page
-		plainly, and combining the two readings is what keeps both numbers.
+		plainly, which is the reading that keeps both numbers.
 		"""
-		found = tool.numbers_on("70 String Registration 0-127 72 Solo Tone 0-127")
+		page = "70 String Registration 0-127 72 Solo Tone 0-127"
 
-		assert {70, 72, 127} <= found
+		assert {70, 72, 127} <= tool.numbers_as_printed(page)
+		assert 12772 in tool.numbers_closed_up(page) and 72 not in tool.numbers_closed_up(page)
 
 	def test_digits_are_never_joined_across_a_line_break (self) -> None:
 		"""Joining down a column would invent a number the page never printed."""
-		assert 12 not in tool.numbers_on("1\n2")
+		assert 12 not in tool.numbers_closed_up("1\n2")
+
+	def test_the_digits_of_a_marked_hexadecimal_form_are_not_a_decimal_number (self) -> None:
+		"""`0x21` is 33.  Its 21 was found whole, for a definition that held twenty-one."""
+		page = "MIDI CC 0x01 (MSB) & MIDI CC 0x21 (LSB), 5 0x10 7"
+
+		assert tool.numbers_as_printed(page) == {5, 7}
+		assert tool.numbers_closed_up(page) == {5, 7}, "nor are 5 and 7 joined across it"
+
+
+class TestDigitsWithAGapBetweenThem:
+
+	"""Closing a gap between digits is a reading of its own, and the weakest but one.
+
+	It was read together with the numbers as printed, so `5: 0.5      21: 2.1` was a found
+	521.  Nine of the RADIAS's NRPNs were counted as found on pages that print each as two
+	bytes and none of them whole, and the bytes were never looked at.
+	"""
+
+	PAGE = "5: 0.5      21: 2.1\n"
+
+	def test_the_two_readings_are_apart (self) -> None:
+		"""The number made by closing the gap is in one reading and not in the other."""
+		assert 521 not in tool.numbers_as_printed(self.PAGE)
+		assert 521 in tool.numbers_closed_up(self.PAGE)
+		assert {5, 21} <= tool.numbers_as_printed(self.PAGE)
+
+	def test_a_number_made_by_closing_a_gap_is_not_found (self, tmp_path: pathlib.Path) -> None:
+		"""It is not missing either: it is the weaker result, and the definition stands."""
+		result = followed(tmp_path, "patch: {nrpn: 521}", self.PAGE)
+
+		assert result.across_a_gap == [("patch", "nrpn", 521)]
+		assert not result.missing and result.sound
+
+	def test_the_bytes_on_the_page_are_looked_at_first (self, tmp_path: pathlib.Path) -> None:
+		"""521 is 04 09, and that is what the page prints."""
+		result = followed(tmp_path, "patch: {nrpn: 521}", self.PAGE + "04  09   Patch2 Destination\n")
+
+		assert result.as_byte_pairs == [("patch", "nrpn", 521)]
+		assert not result.across_a_gap
+
+	def test_a_number_a_text_layer_split_is_still_not_missing (self, tmp_path: pathlib.Path) -> None:
+		"""Which is what closing the gaps was for: `3 5(LSB)` is a 35 the page does print."""
+		result = followed(tmp_path, "wheel: {cc: 3, lsb: 35}", "3 (MSB) 3 5(LSB) Mod Wheel\n")
+
+		assert result.across_a_gap == [("wheel", "lsb", 35)]
+		assert not result.missing
+
+	def test_it_is_reported_as_weaker_and_each_is_named (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Counted apart from the numbers found, with each one named to be read on its page."""
+		result = followed(tmp_path, "patch: {nrpn: 521}", self.PAGE)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "0 of 1 numbers found" in printed
+		assert "1 numbers found only by closing a gap the page leaves between digits" in printed
+		assert "patch.nrpn = 521" in printed
+
+	def test_a_half_made_by_closing_a_gap_is_no_half (self, tmp_path: pathlib.Path) -> None:
+		"""`Level 1 | 10 1` holds no 101, and 229 is 1 and 101."""
+		result = followed(tmp_path, "mute: {nrpn: 229}", "Level 1 | 10 1\n")
+
+		assert not result.as_halves
+		assert result.missing == [("mute", "nrpn", 229)]
+
+	def test_an_nrpn_a_text_layer_split_is_across_a_gap_and_not_two_halves (
+			self, tmp_path: pathlib.Path) -> None:
+		"""35 is 0 and 35, and the 0 of `0-127` with a 35 made of `3 5` was "the two halves"."""
+		result = followed(tmp_path, "cutoff: {nrpn: 35}", "0-127\nCutoff 3 5\n")
+
+		assert not result.as_halves
+		assert result.across_a_gap == [("cutoff", "nrpn", 35)]
+
+	def test_a_range_is_tried_before_a_gap_and_both_are_said (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The Minitaur's `5 3(LSB)` beside a table of clock divisions that prints `49-54`."""
+		result = followed(tmp_path, "resonance: {cc: 21, lsb: 53}",
+			"21 (MSB)\n5 3(LSB)\nDotted 1/4 Note Triplet    1/4 DOT    49-54\n")
+
+		assert result.in_a_range == [("resonance", "lsb", 53)]
+		assert result.also_across_a_gap == [("resonance", "lsb", 53)]
+		assert not result.across_a_gap
+
+		tool.render(result, verbose = False)
+
+		assert "inside 49-54: resonance.lsb = 53 (and by closing a gap between digits)" in capsys.readouterr().out
+
+	def test_a_gap_is_tried_before_what_excuses_a_number_and_before_hexadecimal (
+			self, tmp_path: pathlib.Path) -> None:
+		"""`4 A` is no byte, and the `7 4` on the page is found before any byte is looked for."""
+		result = followed(tmp_path, "cutoff: {cc: 74}", "Bn 4A xx\nRG7 4SA\n")
+
+		assert result.across_a_gap == [("cutoff", "cc", 74)]
+		assert not result.as_hex
+
+
+class TestAPairOfBytesBesideItsLabel:
+
+	"""The one check of a row: a pair of bytes on the line that carries its control's label.
+
+	A pair is matched wherever it stands and every row of a table is on the page, so a
+	number taken from the row above is found as readily as the right one, and a slip made
+	on every row passes entire.  On the RADIAS's pages 108 of 108 pairs are beside their
+	labels, and with every number moved down a row, none.
+	"""
+
+	TABLE = (
+		"04  5C   Vocoder Band13 Panpot   0~127\n"
+		"04  5D   Vocoder Band14 Panpot   0~127\n"
+		"00  14   Arp Octaves             0~3\n")
+
+	def test_a_pair_on_its_label_s_line (self) -> None:
+		"""The row as the table prints it."""
+		assert tool.beside_its_label(605, "Vocoder Band14 Panpot", self.TABLE)
+
+	def test_spacing_case_and_punctuation_do_not_matter (self) -> None:
+		"""A text layer may set any of them differently from the definition's label."""
+		assert tool.beside_its_label(605, "vocoder band 14: pan-pot", self.TABLE)
+
+	def test_another_row_s_label_is_not_beside_it (self) -> None:
+		"""Which is the whole use of it: the row above is on the page too."""
+		assert not tool.beside_its_label(605, "Vocoder Band13 Panpot", self.TABLE)
+		assert not tool.beside_its_label(604, "Vocoder Band14 Panpot", self.TABLE)
+
+	def test_a_label_on_another_line_is_not_beside_it (self) -> None:
+		"""A row is one line, so a label wrapped onto the next is not seen."""
+		assert not tool.beside_its_label(605, "Vocoder Band14 Panpot", "Vocoder Band14 Panpot\n04  5D\n")
+
+	def test_no_label_is_beside_nothing (self) -> None:
+		"""For a caller that has none: a loaded control has its own key where it gives no label."""
+		assert not tool.beside_its_label(605, None, self.TABLE)
+		assert not tool.beside_its_label(605, " - ", self.TABLE)
+
+	def test_a_label_is_not_found_inside_another_word_or_in_the_pair (self) -> None:
+		"""Each of these was beside the row, as a run of letters somewhere on its line."""
+		for label in ("A", "D", "5D", "Pan", "Band1", "ocoder"):
+			assert not tool.beside_its_label(605, label, self.TABLE), label
+
+	def test_a_label_with_no_letter_is_beside_nothing (self) -> None:
+		"""The row's own range of values would answer for it."""
+		for label in ("4", "0", "127", "0~127"):
+			assert not tool.beside_its_label(605, label, self.TABLE), label
+
+	def test_a_word_of_the_row_is_beside_it (self) -> None:
+		"""Part of the table's words, standing as a word: a weaker label, and still the row's."""
+		assert tool.beside_its_label(605, "Vocoder", self.TABLE)
+		assert tool.beside_its_label(605, "Band14 Panpot", self.TABLE)
+
+	def test_a_control_with_no_label_is_compared_by_its_key (self, tmp_path: pathlib.Path) -> None:
+		"""The loader stands the key in for a label, and `arp_octaves` is the row's words."""
+		result = followed(tmp_path, "arp_octaves: {nrpn: 20}", self.TABLE)
+
+		assert result.beside_label == [("arp_octaves", "nrpn", 20)]
+
+	def test_each_row_s_own_number_is_beside_its_label (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Both counted, and nothing named, where each number is its own row's."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, band14: {label: Vocoder Band14 Panpot, nrpn: 605}",
+			self.TABLE)
+
+		assert result.beside_label == [("band13", "nrpn", 604), ("band14", "nrpn", 605)]
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert ("2 of 2 NRPNs whose two bytes stand side by side on a cited page stand so on a line that"
+			" also carries their control's label") in printed
+		assert "not beside its label" not in printed
+
+	def test_a_slip_on_every_row_passes_as_pairs_and_is_beside_no_label (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Each control holds the other row's number: both pairs are on the page."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 605}, band14: {label: Vocoder Band14 Panpot, nrpn: 604}",
+			self.TABLE)
+
+		assert len(result.as_byte_pairs) == 2 and not result.missing
+		assert result.beside_label == []
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert ("0 of 2 NRPNs whose two bytes stand side by side on a cited page stand so on a line that"
+			" also carries their control's label") in printed
+		assert "not beside its label" not in printed, "none is named until most are beside theirs"
+
+	def test_a_byte_of_the_first_bank_read_as_decimal_is_named (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""`00 14` is NRPN 20.  Held as 14, it is found as itself, because the page prints a 14."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, band14: {label: Vocoder Band14 Panpot, nrpn: 605},"
+			" octaves: {label: Arp Octaves, nrpn: 14}",
+			self.TABLE)
+
+		assert not result.missing and ("octaves", "nrpn", 14) not in result.as_byte_pairs
+		assert len(result.beside_label) == 2
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		# Its own pair, `00 0E`, is nowhere, so it is not one of the two the count is of.
+		assert result.paired == [("band13", "nrpn", 604), ("band14", "nrpn", 605)]
+		assert "2 of 2 NRPNs whose two bytes stand side by side" in printed
+		assert "not beside its label: octaves.nrpn = 14, which would be 00 0E, and is printed whole" in printed
+
+	def test_a_second_table_printed_in_decimal_does_not_dilute_the_count (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Measured over every NRPN this was 2 of 6, nobody was named, and the slip went unsaid."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, band14: {label: Vocoder Band14 Panpot, nrpn: 605},"
+			" octaves: {label: Arp Octaves, nrpn: 14},"
+			" mute: {label: Mute, nrpn: 229}, volume: {label: Volume, nrpn: 166}, pan: {label: Pan, nrpn: 203}",
+			self.TABLE + "Mute 94 1 101\nVolume 95 1 38\nPan 96 1 75\n")
+
+		assert len(result.as_halves) == 3 and len(result.paired) == 2
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "2 of 2 NRPNs whose two bytes stand side by side" in printed
+		assert "not beside its label: octaves.nrpn = 14" in printed
+
+		# Those found as decimal halves have lines of their own above, and are not named here.
+		assert "not beside its label: mute" not in printed
+
+	def test_one_pair_beside_its_label_names_nobody (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""One NRPN in a hundred has its pair on a row that carries its label by coincidence."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, octaves: {label: Arp Octaves, nrpn: 14}",
+			"04  5C   Vocoder Band13 Panpot   0~127\n00  14   Arp Octaves   0~3\n")
+
+		assert result.beside_label == [("band13", "nrpn", 604)]
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		# The 14 is below 128 and printed whole, which is what would be named were one pair enough.
+		assert "1 of 1 NRPNs whose two bytes stand side by side" in printed
+		assert "not beside its label" not in printed
+
+	def test_half_beside_their_labels_is_not_most (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Two of four: the other two hold numbers whose pairs are other rows'."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, octaves: {label: Arp Octaves, nrpn: 20},"
+			" alpha: {label: Alpha, nrpn: 605}, beta: {label: Beta, nrpn: 604}",
+			self.TABLE)
+
+		assert (len(result.paired), len(result.beside_label)) == (4, 2)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "2 of 4 NRPNs whose two bytes stand side by side" in printed
+		assert "not beside its label" not in printed
+
+	def test_only_an_nrpn_is_asked_whether_it_stands_beside_its_label (self, tmp_path: pathlib.Path) -> None:
+		"""A controller's number is one byte, and `00 05` beside its label is nobody's pair."""
+		result = followed(tmp_path, "pan: {label: Vocoder Band14 Panpot, cc: 5}", "00  05   Vocoder Band14 Panpot\n")
+
+		assert (result.paired, result.beside_label) == ([], [])
+
+	def test_one_not_printed_whole_is_named_without_saying_it_is (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""`04 5C` is on the page for both controls, and one of them holds the other's number."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, band14: {label: Vocoder Band14 Panpot, nrpn: 605},"
+			" octaves: {label: Arp Octaves, nrpn: 20}, level: {label: Level, nrpn: 604}",
+			self.TABLE)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "3 of 4 NRPNs whose two bytes stand side by side" in printed
+		assert "not beside its label: level.nrpn = 604, which would be 04 5C\n" in printed
+
+	def test_the_line_is_said_where_most_are_beside_a_label_though_none_rests_on_its_pair (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Every number is printed whole as well, so nothing was found only as a pair."""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, band14: {label: Vocoder Band14 Panpot, nrpn: 605}",
+			self.TABLE + "604 605\n")
+
+		assert not result.as_byte_pairs and len(result.beside_label) == 2
+
+		tool.render(result, verbose = False)
+
+		assert "2 of 2 NRPNs whose two bytes stand side by side" in capsys.readouterr().out
+
+	def test_a_number_of_128_or_more_printed_whole_is_another_table_s_and_is_not_named (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The slip the naming is for is a byte read as decimal, and no byte makes a number so big.
+
+		Naming every NRPN not beside its label named every row of a second table that prints
+		its numbers whole, and that list grew with the table.
+		"""
+		result = followed(tmp_path,
+			"band13: {label: Vocoder Band13 Panpot, nrpn: 604}, band14: {label: Vocoder Band14 Panpot, nrpn: 605},"
+			" octaves: {label: Arp Octaves, nrpn: 14}, bend: {label: Bend Range, nrpn: 1234},"
+			" glide: {label: Glide, nrpn: 1235}, last: {label: Last Byte, nrpn: 127},"
+			" first: {label: First Past, nrpn: 128}, volume: {label: Volume, cc: 7}",
+			self.TABLE + "NRPN 1234 Bend Range\nNRPN 1235 Glide\n127 Last Byte\n128 First Past\n7 Volume\n")
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "not beside its label: octaves.nrpn = 14, which would be 00 0E, and is printed whole" in printed
+		assert "not beside its label: bend" not in printed and "not beside its label: glide" not in printed
+
+		# The line is at 128: a byte holds 127 and no more.
+		assert "not beside its label: last.nrpn = 127" in printed
+		assert "not beside its label: first" not in printed
+
+		# And only an NRPN is ever named: the controller on the same page is no row of this table.
+		assert "not beside its label: volume" not in printed
+
+	def test_nothing_is_said_where_no_number_is_printed_as_bytes (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""A definition whose NRPNs are printed whole has no rows to ask about."""
+		result = followed(tmp_path, "cutoff: {label: Cutoff, nrpn: 300}", "300 Cutoff\n")
+
+		tool.render(result, verbose = False)
+
+		assert "two bytes stand side by side" not in capsys.readouterr().out
+
+
+class TestReadingAPageInTheDocumentItsCitationNames:
+
+	"""With `attribute`, a page cited as `chart p. 2` is read in `chart` alone.
+
+	Read in every document, the manual's `p. 2` turns the chart to its second sheet too:
+	seven of the JU-06A's controller numbers are on that sheet, its account cited `chart
+	p. 1` and `manual p. 2` and no `chart p. 2`, and all seven were found.
+	"""
+
+	PAGES = {
+		"manual.pdf": ["the manual's first page", "the manual's second page"],
+		"chart.pdf": ["1 2 3 the chart's first sheet", "47 70 79 the chart's second sheet"],
+	}
+
+	def follow (
+			self,
+			monkeypatch: pytest.MonkeyPatch,
+			account: str,
+			attribute: bool | None,
+			pages: dict[str, list[str]] | None = None,
+			sources: str = "manual: {sha256: aa}, chart: {sha256: bb}",
+			pictures: tuple[tuple[str, int], ...] = ()) -> typing.Any:
+
+		"""Follow a definition of three controllers into a manual and a chart of two pages each.
+
+		``attribute`` of ``None`` asks for nothing, which is how the switch is left alone.
+		``pictures`` names the sheets that carry an image, by file and sheet.
+		"""
+
+		held = pages or self.PAGES
+
+		class Page:
+
+			"""One sheet of a document: its text, and its images."""
+
+			def __init__ (self, said: str, images: int) -> None:
+
+				"""A sheet that says this and carries so many pictures."""
+
+				self.said = said
+				self.images: list[typing.Any] = [object()] * images
+
+			def extract_text (self) -> str:
+
+				"""What the sheet says."""
+
+				return self.said
+
+		class Reader:
+
+			"""What the tool asks of a PDF it has opened: its pages."""
+
+			def __init__ (self, path: pathlib.Path) -> None:
+
+				"""Open the document of this name."""
+
+				self.pages = [Page(said, (path.name, sheet) in pictures)
+					for sheet, said in enumerate(held[path.name], 1)]
+
+		monkeypatch.setattr(tool, "reader_for", Reader)
+
+		definition = pymidiinstrumentdefs.parse(
+			"definition: 1\nmodel: {name: X}\n"
+			f"source: >-\n  {account}\n"
+			f"sources: {{{sources}}}\n"
+			"controls: {range: {cc: 47}, chorus: {cc: 70}, hpf: {cc: 79}}\n",
+			source = "x.yaml",
+		)
+		index = {"aa": pathlib.Path("manual.pdf"), "bb": pathlib.Path("chart.pdf")}
+
+		if attribute is None:
+			return tool.follow(definition, "x", index)
+
+		return tool.follow(definition, "x", index, attribute = attribute)
+
+	def test_the_switch_is_off_unless_it_is_asked_for (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Asked for nothing, every page is read in every document, as it always was."""
+		result = self.follow(monkeypatch, "The chart (chart p. 1) and the mode (manual p. 2).", None)
+
+		assert not result.attributed and not result.missing
+
+	def test_the_command_line_leaves_it_off_and_its_flag_turns_it_on (
+			self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The flag is the one way in, and it has to reach the check."""
+		asked: list[bool] = []
+
+		def follow (definition: typing.Any, name: str, index: typing.Any, attribute: bool = False) -> typing.Any:
+
+			"""Note what was asked for, and find nothing."""
+
+			asked.append(attribute)
+
+			return tool.Result(name = name, attributed = attribute)
+
+		monkeypatch.setattr(tool, "follow", follow)
+
+		assert tool.main(["--library", str(tmp_path), "moog/minitaur"]) == 0
+		assert "read in that document alone" not in capsys.readouterr().out
+
+		assert tool.main(["--library", str(tmp_path), "--attribute", "moog/minitaur"]) == 0
+		assert "each page cited with a source key before it is read in that document alone" in capsys.readouterr().out
+
+		assert asked == [False, True]
+
+	def test_the_command_line_fails_where_a_definition_does (
+			self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""One number missing in one definition of two: the run says which fraction is sound, and fails."""
+
+		def follow (definition: typing.Any, name: str, index: typing.Any, attribute: bool = False) -> typing.Any:
+
+			"""Find one number missing in the Minitaur and nothing wrong in the other."""
+
+			result = tool.Result(name = name, wanted = [("volume", "cc", 7)])
+
+			if name == "moog/minitaur":
+				result.missing = list(result.wanted)
+
+			return result
+
+		monkeypatch.setattr(tool, "follow", follow)
+
+		assert tool.main(["--library", str(tmp_path), "moog/minitaur", "moog/dfam"]) == 1
+
+		printed = capsys.readouterr().out
+
+		assert "not on any cited page: volume.cc = 7" in printed
+		assert "1 of 2 definitions check out" in printed
+
+	def test_a_definition_that_cannot_be_read_is_a_fault_and_not_a_traceback (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""It is an answer about that definition, and the run goes on to the next."""
+		assert tool.main(["--library", str(tmp_path), "zz/no_such_instrument"]) == 1
+
+		printed = capsys.readouterr().out
+
+		assert "zz/no_such_instrument\n    could not be read:" in printed
+		assert "0 of 1 definitions check out" in printed
+
+	def test_a_citation_is_sorted_by_the_key_before_it (self) -> None:
+		"""With a comma or without, and a page with no key before it is nobody's."""
+		keyed, bare = tool.cited_by_key(
+			"The table is at manual p. 2 and chart, pp. 1-2, with a note on p. 9 and (p. 4).",
+			{"manual", "chart"})
+
+		assert keyed == {"manual": {2}, "chart": {1, 2}}
+		assert bare == {4, 9}
+
+	def test_a_word_that_is_no_key_names_no_document (self) -> None:
+		"""`manual` and `guide` are words in a sentence unless the sources have them."""
+		keyed, bare = tool.cited_by_key("User manual pp. 19-20 and guide p. 3.", {"reference"})
+
+		assert keyed == {}
+		assert bare == {3, 19, 20}
+
+	def test_a_key_is_a_word_of_its_own_and_is_written_as_the_sources_write_it (self) -> None:
+		"""`flow-chart` is not `chart`, and neither is `Chart`."""
+		keyed, bare = tool.cited_by_key("See the flow-chart p. 2 and Chart p. 3.", {"chart"})
+
+		assert keyed == {}
+		assert bare == {2, 3}
+
+		# Whichever hyphen it is: a text layer may set a non-breaking one, or a dash for one.
+		for hyphen in ("\u2010", "\u2011", "\u2012", "\u2013"):
+			assert tool.cited_by_key(f"See the re{hyphen}chart p. 2.", {"chart"}) == ({}, {2}), hyphen
+
+		# A long dash is punctuation between two clauses, and the word after it is a word.
+		assert tool.cited_by_key("The tables\u2014chart p. 2\u2014are two.", {"chart"}) == ({"chart": {2}}, set())
+
+	def test_only_the_word_directly_before_the_page_is_asked (self) -> None:
+		"""What the rule cannot see, set down so that nobody takes it for more than it is."""
+		keyed, bare = tool.cited_by_key(
+			"The chart (p. 2), the manual's p. 4, and manual p. 3 and p. 5.", {"manual", "chart"})
+
+		assert keyed == {"manual": {3}}
+		assert bare == {2, 4, 5}
+
+		# And a key by accident: the page is the manual's, and the word before it is `chart`.
+		assert tool.cited_by_key("see the chart p. 4 of the manual", {"manual", "chart"}) == ({"chart": {4}}, set())
+
+	def test_read_in_every_document_another_s_page_finds_the_numbers (
+			self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""The fault as it was: the manual's page 2 turns the chart to its second sheet."""
+		result = self.follow(monkeypatch, "The chart (chart p. 1) and the mode (manual p. 2).", False)
+
+		assert not result.missing
+
+	def test_read_in_its_own_document_they_are_missing (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""The chart is cited by its first sheet alone, and the numbers are on its second."""
+		result = self.follow(monkeypatch, "The chart (chart p. 1) and the mode (manual p. 2).", True)
+
+		assert [number for _, _, number in result.missing] == [47, 70, 79]
+
+	def test_and_found_once_the_account_cites_their_page (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""The remedy is in the account and not in the tool."""
+		result = self.follow(monkeypatch,
+			"The chart (chart p. 1), its second sheet (chart p. 2) and the mode (manual p. 2).", True)
+
+		assert not result.missing and result.sound
+
+	def test_a_page_with_no_document_named_is_every_document_s (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Nothing says whose it is, so it is read in each, and the report says which pages were."""
+		result = self.follow(monkeypatch, "The chart (chart p. 1) and its second sheet (p. 2).", True)
+
+		assert not result.missing
+		assert result.unattributed == {2}
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "printed 2 cited with no document named, so read in every document that has pages" in printed
+
+	def test_that_is_not_said_where_only_one_document_has_pages (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""There is then one document a page could be in, and nothing to say."""
+		result = self.follow(monkeypatch, "Its second sheet (p. 2).", True,
+			sources = "manual: {sha256: aa, paginated: false}, chart: {sha256: bb}")
+
+		tool.render(result, verbose = False)
+
+		assert result.unattributed == {2}
+		assert "cited with no document named" not in capsys.readouterr().out
+
+	ONE_PAGE_MANUAL = {
+		"manual.pdf": ["the manual's only page"],
+		"chart.pdf": ["1 2 3 the chart's first sheet", "47 70 79 the chart's second sheet"],
+	}
+
+	def test_a_page_its_own_document_has_not_got_is_unreachable (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Though another document has a page of that number, which is how it used to pass."""
+		account = "The chart (chart p. 2) and the mode (manual p. 2)."
+		pooled = self.follow(monkeypatch, account, False, pages = self.ONE_PAGE_MANUAL)
+
+		assert not pooled.unreachable and pooled.sound
+
+		result = self.follow(monkeypatch, account, True, pages = self.ONE_PAGE_MANUAL)
+
+		assert result.unreachable == {2}
+		assert not result.sound
+
+	def test_a_page_with_no_document_named_that_none_has_is_unreachable (
+			self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""As it is where every page is read in every document."""
+		result = self.follow(monkeypatch, "The chart (chart p. 2) and a note (p. 9).", True)
+
+		assert result.unreachable == {9}
+
+	def test_a_page_credited_to_a_document_with_no_pages_is_unreachable (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""It was reported read in every document, and said nothing at all read in its own."""
+		account = "The numbers are at chart p. 2, and the mode at manual p. 1."
+		sources = "manual: {sha256: aa}, chart: {sha256: bb, paginated: false}"
+		pages = {"manual.pdf": ["the manual's only page"], "chart.pdf": ["47 70 79 the chart"]}
+		pooled = self.follow(monkeypatch, account, False, pages = pages, sources = sources)
+
+		assert pooled.unreachable == {2}
+
+		result = self.follow(monkeypatch, account, True, pages = pages, sources = sources)
+
+		assert result.unreachable == {2}
+		assert not result.sound
+
+		tool.render(result, verbose = False)
+
+		assert "⚠ cited but in no document read: printed 2" in capsys.readouterr().out
+
+	def test_read_in_every_document_each_line_names_every_page_cited (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""As it always did, and nothing is said of pages that name no document."""
+		result = self.follow(monkeypatch, "The chart (chart p. 2), the mode (manual p. 1) and a note (p. 1).", False)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "manual: manual.pdf  [2 pages]\n        printed 1-2 → file 1-2\n" in printed
+		assert "chart: chart.pdf  [2 pages]\n        printed 1-2 → file 1-2\n" in printed
+		assert "cited with no document named" not in printed
+
+		# Every page cited, and the pages of the file that were read for them: a manual of one
+		# page is turned to that page alone, and its line still says what was asked of it.
+		result = self.follow(monkeypatch, "The chart (chart p. 2) and the mode (manual p. 1).", False,
+			pages = self.ONE_PAGE_MANUAL)
+
+		tool.render(result, verbose = False)
+
+		assert "manual: manual.pdf  [1 pages]\n        printed 1-2 → file 1\n" in capsys.readouterr().out
+
+	def test_a_page_with_no_document_named_is_listed_only_for_a_document_that_has_it (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Page 2 is read in every document, and the manual has one page."""
+		result = self.follow(monkeypatch, "The mode (manual p. 1), the chart (chart p. 1) and a note (p. 2).",
+			True, pages = self.ONE_PAGE_MANUAL)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "manual: manual.pdf  [1 pages]\n        printed 1 → file 1\n" in printed
+		assert "chart: chart.pdf  [2 pages]\n        printed 1-2 → file 1-2\n" in printed
+
+	def test_a_document_with_no_pages_is_read_whole_and_says_that (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""It has no page to be cited by, which is not the same as none of its pages being cited."""
+		result = self.follow(monkeypatch, "The chart (chart p. 2).", True,
+			sources = "manual: {sha256: aa, paginated: false}, chart: {sha256: bb}")
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "manual: manual.pdf  [no pages]\n        no pages to turn to, so the whole document was read\n" in printed
+		assert "no page cited is in it" not in printed
+
+	def test_a_gap_is_closed_before_a_scan_excuses_and_a_byte_is_read_only_after (
+			self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Beside a scan: `4 7` is still a 47 the page has, and `4F` is a byte nobody need read."""
+		pages = {"manual.pdf": ["", ""], "chart.pdf": ["the code is 4 7 here, and Bn 4F xx", "nothing"]}
+		result = self.follow(monkeypatch, "The chart (chart p. 1) and the manual (manual p. 2).", False, pages = pages)
+
+		assert result.documents[0].scanned
+		assert result.across_a_gap == [("range", "cc", 47)]
+		assert result.unverifiable == [("chorus", "cc", 70), ("hpf", "cc", 79)]
+		assert not result.as_hex and not result.missing
+
+	def test_each_document_s_line_names_the_pages_cited_for_it (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""And not every page the account cites, which is what the line said of each."""
+		result = self.follow(monkeypatch, "The chart (chart p. 2) and the mode (manual p. 1).", True)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "manual: manual.pdf  [2 pages]\n        printed 1 → file 1\n" in printed
+		assert "chart: chart.pdf  [2 pages]\n        printed 2 → file 2\n" in printed
+
+	def test_two_printed_pages_on_one_sheet_are_not_both_one_document_s (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Page 4 is the chart's.  The manual prints two to a sheet, and its sheet 2 holds a page 4."""
+		result = self.follow(monkeypatch, "The mode (manual p. 3) and the chart (chart p. 2).", True,
+			sources = "manual: {sha256: aa, pages_per_sheet: 2}, chart: {sha256: bb}")
+
+		tool.render(result, verbose = False)
+
+		assert "manual: manual.pdf  [2 pages]\n        printed 3 → file 2\n" in capsys.readouterr().out
+
+	def test_a_document_read_on_no_page_says_so (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""A line with nothing under it could not be told from a document nobody cites."""
+		result = self.follow(monkeypatch, "The chart (chart p. 2).", True)
+
+		tool.render(result, verbose = False)
+
+		printed = capsys.readouterr().out
+
+		assert "manual: manual.pdf  [2 pages]\n        no page cited is in it, so none of it was read\n" in printed
+
+	def test_a_pictured_page_excuses_only_where_it_is_cited_for_its_document (
+			self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""The manual declares its page 2 a picture, and page 2 is cited for the chart."""
+		sources = "manual: {sha256: aa, pictured_pages: [2]}, chart: {sha256: bb}"
+		pages = {"manual.pdf": ["one", "two"], "chart.pdf": ["1 2 3", "nothing wanted here"]}
+		pictures = (("manual.pdf", 2),)
+		account = "The mode (manual p. 1) and the chart (chart p. 2)."
+		pooled = self.follow(monkeypatch, account, False, pages = pages, sources = sources, pictures = pictures)
+
+		assert len(pooled.unverifiable) == 3 and pooled.documents[0].pictured == [2]
+
+		result = self.follow(monkeypatch, account, True, pages = pages, sources = sources, pictures = pictures)
+
+		assert result.documents[0].pictured == []
+		assert len(result.missing) == 3 and not result.unverifiable
+
+	def test_a_declared_picture_on_a_page_cited_for_its_document_is_checked_for_an_image (
+			self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""The declaration holds where the page is the document's own, and is still checked."""
+		sources = "manual: {sha256: aa, pictured_pages: [2]}, chart: {sha256: bb}"
+		account = "The mode (manual p. 2) and the chart (chart p. 1)."
+		result = self.follow(monkeypatch, account, True, sources = sources, pictures = (("manual.pdf", 2),))
+
+		assert result.documents[0].pictured == [2] and not result.misdeclared
+		assert len(result.unverifiable) == 3
+
+		result = self.follow(monkeypatch, account, True, sources = sources)
+
+		assert result.misdeclared == [("manual", 2)]
+
+	def test_a_scan_nobody_cites_a_page_of_excuses_no_number (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Read in every document it is turned to and found blank, and every number is excused."""
+		pages = {"manual.pdf": ["", ""], "chart.pdf": ["1 2 3", "nothing wanted here"]}
+		account = "The chart (chart p. 2)."
+		pooled = self.follow(monkeypatch, account, False, pages = pages)
+
+		assert pooled.documents[0].scanned and len(pooled.unverifiable) == 3
+
+		result = self.follow(monkeypatch, account, True, pages = pages)
+
+		assert not result.documents[0].scanned
+		assert len(result.missing) == 3
+
+	def test_a_scan_that_is_cited_still_excuses (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Its numbers are where nothing can look for them, as before."""
+		pages = {"manual.pdf": ["", ""], "chart.pdf": ["1 2 3", "nothing wanted here"]}
+		result = self.follow(monkeypatch, "The numbers (manual p. 2) and the chart (chart p. 2).", True, pages = pages)
+
+		assert result.documents[0].scanned and len(result.unverifiable) == 3
+
+	def test_a_lost_document_fails_a_definition_whose_pages_are_all_reachable (
+			self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Nothing can be checked against a file nobody has, whatever the others hold."""
+		result = self.follow(monkeypatch, "The chart (chart p. 2).", False,
+			sources = "manual: {sha256: zz}, chart: {sha256: bb}")
+
+		assert [document.key for document in result.lost] == ["manual"]
+		assert not result.unreachable and not result.missing
+		assert not result.sound
+
+	def test_every_number_is_listed_with_how_it_was_found_and_only_the_found_are_ticked (
+			self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+		"""A number nobody could look for was ticked, under a line saying it was not checked at all."""
+		pages = {"manual.pdf": ["", ""], "chart.pdf": ["47 and the code is 7 0 here", "nothing"]}
+		result = self.follow(monkeypatch, "The chart (chart p. 1) and the manual (manual p. 2).", False, pages = pages)
+
+		tool.render(result, verbose = True)
+		printed = capsys.readouterr().out
+
+		assert "        ✓ range.cc = 47\n" in printed
+		assert "          chorus.cc = 70  (across a gap)\n" in printed
+		assert "          hpf.cc = 79  (not checked)\n" in printed
+		assert printed.count("✓") == 1
+
+	def test_each_weaker_way_of_finding_a_number_has_its_own_words (self, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Seven ways a number is not simply found, and none of them is a tick."""
+		ways = (
+			("as_byte_pairs", "as two bytes side by side"), ("as_halves", "as two halves"),
+			("in_a_range", "inside a range"), ("across_a_gap", "across a gap"), ("as_hex", "in hexadecimal"),
+			("unverifiable", "not checked"), ("missing", "not found"))
+		result = tool.Result(name = "x", documents = [])
+		result.wanted = [("whole", "cc", 7)] + [(field, "nrpn", 200 + at) for at, (field, _) in enumerate(ways)]
+
+		for at, (field, _) in enumerate(ways):
+			setattr(result, field, [(field, "nrpn", 200 + at)])
+
+		tool.render(result, verbose = True)
+		printed = capsys.readouterr().out
+
+		assert "        ✓ whole.cc = 7\n" in printed and printed.count("✓") == 1
+
+		for at, (field, said) in enumerate(ways):
+			assert f"          {field}.nrpn = {200 + at}  ({said})\n" in printed, field
+
+	def test_a_document_that_is_not_in_the_library_is_still_lost (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""And the page credited to it is one nobody could turn to."""
+		result = self.follow(monkeypatch, "The chart (chart p. 2) and the mode (manual p. 2).", True,
+			sources = "manual: {sha256: zz}, chart: {sha256: bb}")
+
+		assert [document.key for document in result.lost] == ["manual"]
+		assert result.unreachable == {2}
+		assert not result.sound
+
+	def test_a_page_offset_is_followed_in_the_document_it_belongs_to (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""The chart's printed page 1 is its second sheet, and the manual's is its first."""
+		result = self.follow(monkeypatch, "The chart (chart p. 1) and the mode (manual p. 1).", True,
+			sources = "manual: {sha256: aa}, chart: {sha256: bb, page_offset: 1}")
+
+		assert not result.missing
+		assert [document.pages for document in result.documents] == [[1], [2]]
 
 
 class TestFindingAnNrpnThatIsPrintedAsTwoHalves:
@@ -527,23 +1322,23 @@ class TestFindingANumberThatIsOnlyInsideAPrintedRange:
 		"""Korg's wavestate prints "80...87" for eight knobs and never prints 81 to 86."""
 		page = "Layer A Mod Knobs 1...8 80...87"
 
-		assert tool.inside_a_range(83, page)
-		assert tool.inside_a_range(86, page)
+		assert tool.ranges_holding(83, page)
+		assert tool.ranges_holding(86, page)
 
 	def test_an_endpoint_is_not_this_rule_s_business (self) -> None:
 		"""It is on the page as itself, and is found by looking for it."""
-		assert not tool.inside_a_range(80, "80...87")
-		assert not tool.inside_a_range(87, "80...87")
+		assert not tool.ranges_holding(80, "80...87")
+		assert not tool.ranges_holding(87, "80...87")
 
 	def test_a_wide_range_names_nothing (self) -> None:
 		"""A note row reading 0-127 would otherwise answer for every controller in the file."""
-		assert not tool.inside_a_range(74, "Note Number 0-127 0-127")
-		assert not tool.inside_a_range(99, "0 - 127")
+		assert not tool.ranges_holding(74, "Note Number 0-127 0-127")
+		assert not tool.ranges_holding(99, "0 - 127")
 
 	def test_the_dashes_a_maker_actually_uses (self) -> None:
 		"""One Korg page prints an ellipsis, a hyphen and an en dash on the same sheet."""
 		for printed in ("102...109", "102-109", "102\u2013109", "102 \u2026 109"):
-			assert tool.inside_a_range(105, printed), printed
+			assert tool.ranges_holding(105, printed), printed
 
 	def test_a_fine_half_given_by_a_rule_is_found_inside_the_range_the_rule_prints (self, tmp_path: pathlib.Path) -> None:
 		"""Moog's Theremini gives every controller below 32 a fine control "at locations 32 - 63".
@@ -556,7 +1351,85 @@ class TestFindingANumberThatIsOnlyInsideAPrintedRange:
 		result = followed(tmp_path, "scan_rate: {cc: 9, lsb: 41}", page)
 
 		assert result.in_a_range == [("scan_rate", "lsb", 41)]
-		assert not result.missing
+		assert result.range_forms == {"scan_rate.lsb": ["32 - 63"]}
+		assert not result.missing and not result.also_across_a_gap
+
+	def test_each_range_is_named_with_the_numbers_found_inside_it (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Which range it was is what there is to read, since one is matched wherever it stands."""
+		result = followed(tmp_path, "knob_2: {cc: 81}, knob_3: {cc: 82}, vector: {cc: 17}",
+			"Layer A Mod Knobs 1...8 80...87\nVector 16 - 19\n")
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "3 controller numbers found only inside a range the maker prints" in printed
+		assert "inside 80...87: knob_2.cc = 81, knob_3.cc = 82\n" in printed
+		assert "inside 16 - 19: vector.cc = 17\n" in printed
+
+	def test_every_range_that_holds_a_number_is_named_and_not_the_first_alone (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The S-1's chart: the Basic Channel row stands above the Control Change row that means it."""
+		page = "Basic Channel  Changed  1\u201316  1\u201316\nControl Change\n11\n12\u201331\n64, 65\n"
+
+		assert list(tool.ranges_holding(14, page)) == ["1\u201316", "12\u201331"]
+		assert list(tool.ranges_holding(17, page)) == ["12\u201331"]
+
+		# One range printed twice, in whatever spacing, is named once and as it first stands.
+		assert list(tool.ranges_holding(41, "at locations 32 - 63, and again 32-63")) == ["32 - 63"]
+
+		# **And each is given with the line it stands on**, which is what tells a row of a chart
+		# from a group of controls.
+		assert tool.ranges_holding(14, page) == {
+			"1\u201316": "Basic Channel Changed 1\u201316 1\u201316", "12\u201331": "12\u201331"}
+
+		result = followed(tmp_path, "osc_range: {cc: 14}, osc_pulse_width: {cc: 15}, lfo: {cc: 17}", page)
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "inside 1\u201316 and 12\u201331: osc_range.cc = 14, osc_pulse_width.cc = 15\n" in printed
+		assert "inside 12\u201331: lfo.cc = 17\n" in printed
+
+		# The line is said once, and not at all where the range is alone on it.
+		assert printed.count("1\u201316 stands in: Basic Channel Changed 1\u201316 1\u201316\n") == 1
+		assert "12\u201331 stands in" not in printed
+
+	def test_a_range_two_groups_share_has_its_line_said_once (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""The wavestate's chart row holds the numbers of two of its tables' rows."""
+		result = followed(tmp_path, "a_2: {cc: 81}, b_2: {cc: 89}",
+			"Layer A Mod Knobs 1...8 80...87\nLayer B Mod Knobs 1...8 88...95\n2-6, 8-9, 67-95, 102-119\n")
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "inside 80...87 and 67-95: a_2.cc = 81\n" in printed
+		assert "inside 88...95 and 67-95: b_2.cc = 89\n" in printed
+		assert printed.count("67-95 stands in: 2-6, 8-9, 67-95, 102-119\n") == 1
+
+	def test_the_line_is_given_as_the_page_has_it_and_says_where_it_is_cut (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""A marked hexadecimal form is no end of a range, and is still on the line it is on."""
+		long = "status 0xB0 values 20 - 30, " + "and so on " * 12
+		result = followed(tmp_path, "depth: {cc: 25}", long + "\n")
+
+		assert result.range_lines == {"20 - 30": " ".join(long.split())}
+
+		tool.render(result, verbose = False)
+
+		assert f"20 - 30 stands in: {long[:93]}...\n" in capsys.readouterr().out
+
+	def test_an_nrpn_is_not_looked_for_inside_a_range (self, tmp_path: pathlib.Path) -> None:
+		"""A range of controller numbers names no parameter number."""
+		result = followed(tmp_path, "knob: {nrpn: 83}", "Layer A Mod Knobs 1...8 80...87\n")
+
+		assert result.missing == [("knob", "nrpn", 83)]
+		assert not result.in_a_range
+
+	def test_the_digits_of_a_marked_hexadecimal_form_end_no_range (self) -> None:
+		"""`0x10 - 40` is sixteen to forty, and was read as ten to forty."""
+		assert tool.ranges_holding(25, "values 0x10 - 40") == {}
 
 	def test_a_fine_half_inside_no_printed_range_is_still_missing (self, tmp_path: pathlib.Path) -> None:
 		"""The rule is what names it. A table that prints the coarse number alone has not."""
@@ -582,25 +1455,107 @@ class TestFindingANumberPrintedOnlyInHexadecimal:
 
 	def test_a_byte_with_a_letter_names_its_number (self) -> None:
 		"""Behringer's TD-3-MO prints its one controller as "Bn 4A xx" and never prints 74."""
-		assert tool.in_hexadecimal(74, "Bn 4A xx \u2014 Filter Cutoff")
+		assert tool.hexadecimal_form(74, "Bn 4A xx \u2014 Filter Cutoff")
 
 	def test_a_form_of_digits_alone_is_never_read_as_hexadecimal (self) -> None:
 		"""A page that prints 40 is far likelier to mean forty than 64."""
-		assert not tool.in_hexadecimal(64, "Bn 40 xx")
-		assert not tool.in_hexadecimal(16, "Bn 10 xx")
+		assert not tool.hexadecimal_form(64, "Bn 40 xx")
+		assert not tool.hexadecimal_form(16, "Bn 10 xx")
 
 	def test_it_must_stand_as_a_word_of_its_own (self) -> None:
 		"""Part of a longer word is not the byte, whatever letters surround it."""
-		for printed in ("B4A", "4A7", "4AH", "0x4A", "x4Ay"):
-			assert not tool.in_hexadecimal(74, printed), printed
+		for printed in ("B4A", "4A7", "4AH", "x4Ay", "0x4AB", "10x4A"):
+			assert not tool.hexadecimal_form(74, printed), printed
+
+	def test_a_form_the_maker_marks_as_hexadecimal_is_read_digits_or_not (self) -> None:
+		"""Behringer's Neutron prints its modulation wheel's fine half as 0x21 and never as 33.
+
+		A form of digits alone is refused because `21` is far likelier twenty-one.  With
+		`0x` before it, it is 33 and nothing else.
+		"""
+		printed = "Modulation wheel or lever - MIDI CC 0x01 (MSB) & MIDI CC 0x21 (LSB)"
+
+		assert tool.hexadecimal_form(33, printed)
+		assert tool.hexadecimal_form(1, printed)
+		assert tool.hexadecimal_form(33, printed) == "0x21"
+		assert not tool.hexadecimal_form(33, "MIDI CC 21 (LSB)")
+		assert not tool.hexadecimal_form(21, printed), "0x21 is not twenty-one"
+
+	def test_a_marked_form_is_read_in_either_case (self) -> None:
+		"""`0x2a` is written as often as `0x2A`, where a bare `2a` is a label."""
+		assert tool.hexadecimal_form(42, "CC 0x2a") == "0x2a"
+		assert tool.hexadecimal_form(74, "CC 0X4A") == "0X4A"
+		assert tool.hexadecimal_form(74, "Bn 4A xx") == "4A"
+
+	def test_a_marked_form_is_named_as_the_page_has_it (
+			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""Both halves, since the digits of neither are read as a decimal number."""
+		result = followed(tmp_path, "modulation: {cc: 1, lsb: 33}",
+			"Modulation wheel or lever - MIDI CC 0x01 (MSB) & MIDI CC 0x21 (LSB)\n")
+
+		assert result.as_hex == [("modulation", "cc", 1), ("modulation", "lsb", 33)]
+		assert not result.missing
+
+		tool.render(result, verbose = False)
+		printed = capsys.readouterr().out
+
+		assert "0 of 2 numbers found" in printed
+		assert "modulation.cc = 1, printed as 0x01" in printed
+		assert "modulation.lsb = 33, printed as 0x21" in printed
+
+	def test_a_marked_form_is_read_at_any_width (self) -> None:
+		"""`0x7` is 7, and `0x12C` is the 300 that no two digits hold."""
+		assert tool.hexadecimal_form(7, "CC 0x7") == "0x7"
+		assert tool.hexadecimal_form(10, "CC 0xA") == "0xA"
+		assert tool.hexadecimal_form(33, "CC 0x0021") == "0x0021"
+		assert tool.hexadecimal_form(300, "NRPN 0x12C") == "0x12C"
+		assert tool.hexadecimal_form(300, "NRPN 0x012c") == "0x012c"
+
+		for printed in ("0x210", "10x21", "0x21h", "CC0x21", "0 x21"):
+			assert not tool.hexadecimal_form(33, printed), printed
+
+	def test_a_marked_form_is_a_word_of_its_own (self) -> None:
+		"""A screen of 1280x800 and a box of 12.0x8.5 inches hold no hexadecimal number."""
+		assert tool.numbers_as_printed("1280x800 and 12.0x8.5 in") == {1280, 800, 12, 0, 8, 5}
+		assert 21 in tool.numbers_as_printed("0x21h") and 4 in tool.numbers_as_printed("0x4AH")
+		assert not tool.hexadecimal_form(8, "12.0x8.5 in") and not tool.hexadecimal_form(128, "1280x800")
+
+		# A decimal point on one side alone is enough, whichever side.
+		assert tool.numbers_as_printed("12.0x8 in") == {12, 0, 8} and not tool.hexadecimal_form(8, "12.0x8 in")
+		assert tool.numbers_as_printed("0x8.5 in") == {0, 8, 5} and not tool.hexadecimal_form(8, "0x8.5 in")
+
+		# The full stop that ends a sentence is not a decimal point.
+		assert tool.hexadecimal_form(33, "It is CC 0x21.") == "0x21"
+		assert tool.numbers_as_printed("It is CC 0x21.") == set()
+
+	def test_a_marked_form_is_one_number_and_never_two_bytes (self, tmp_path: pathlib.Path) -> None:
+		"""What this does not read, set down so that nobody takes it for more than it is."""
+		assert tool.hexadecimal_form(1117, "NRPN 0x045D   Vocoder Band14 Panpot") == "0x045D"
+
+		for number, page in enumerate(("NRPN 0x045D   Vocoder Band14 Panpot\n", "NRPN 0x04 0x5D   Vocoder Band14 Panpot\n")):
+			library = tmp_path / str(number)
+			library.mkdir()
+			result = followed(library, "band14: {nrpn: 605}", page)
+
+			assert result.missing == [("band14", "nrpn", 605)], page
+
+	def test_the_marked_form_is_the_one_named_where_a_page_has_both (self) -> None:
+		"""It is the form that can mean nothing else."""
+		assert tool.hexadecimal_form(74, "Bn 4A xx, which is CC 0x4A") == "0x4A"
+
+	def test_twenty_one_is_not_found_in_a_marked_thirty_three (self, tmp_path: pathlib.Path) -> None:
+		"""It was found whole: the digits after `0x` were read as a decimal number."""
+		result = followed(tmp_path, "wrong: {cc: 21}", "MIDI CC 0x01 (MSB) & MIDI CC 0x21 (LSB)\n")
+
+		assert result.missing == [("wrong", "cc", 21)]
 
 	def test_it_must_be_printed_in_capitals (self) -> None:
 		"""Makers print bytes in capitals, and "4a" in running text is far likelier a label."""
-		assert not tool.in_hexadecimal(74, "Bn 4a xx")
+		assert not tool.hexadecimal_form(74, "Bn 4a xx")
 
 	def test_a_number_wider_than_a_byte_has_no_two_digit_form (self) -> None:
-		"""An NRPN of 300 would be 12C, which this rule does not read."""
-		assert not tool.in_hexadecimal(300, "12C 2C")
+		"""An NRPN of 300 would be 12C, which is read only where the maker marks it."""
+		assert not tool.hexadecimal_form(300, "12C 2C")
 
 	def test_it_is_reported_as_weaker_and_never_counted_as_found (self, capsys: pytest.CaptureFixture[str]) -> None:
 		"""A page that prints a byte has not printed the number in the base the definition holds."""
@@ -613,7 +1568,7 @@ class TestFindingANumberPrintedOnlyInHexadecimal:
 
 		assert result.sound
 		assert "0 of 1 numbers found" in printed
-		assert "1 numbers found only as the hexadecimal byte the maker prints" in printed
+		assert "1 numbers found only in hexadecimal, as the maker prints them" in printed
 
 	def test_each_number_found_this_way_is_named_with_its_form (self, capsys: pytest.CaptureFixture[str]) -> None:
 		"""Prose prints short hexadecimal words too: a Nymphes manual's adapter rated at 1A reads as 26.

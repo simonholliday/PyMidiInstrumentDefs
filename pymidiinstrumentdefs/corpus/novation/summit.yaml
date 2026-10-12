@@ -5,8 +5,10 @@
 # **The Peak's manual numbers all sixteen of the Peak's slots**, 1:0 to 16:3, and this guide says
 # in its own words that the two share an engine: "Summit is essentially a two-part, multi-timbral
 # hybrid instrument built around a dual implementation of Peak's synth core." (guide p. 4). So the
-# sixty controls below take their names, ranges and defaults from this guide and their numbers from
-# the Peak's manual, cited as `sibling_manual` and marked there as another model's document.
+# sixty controls below take their names and defaults from this guide and their numbers from the
+# Peak's manual, cited as `sibling_manual` and marked there as another model's document. The
+# range this guide prints is carried for the fifteen depths alone: the sources' and the
+# destinations' do not fit its own lists, and say `range: unknown`.
 # **The sixty-first is the high-pass noise filter**, NRPN 0:12. This guide documents the filter in
 # its body (guide p. 26) and its list has no row for it at all, so its number is the Peak's too.
 #
@@ -205,14 +207,17 @@ source: >-
   which Part's matrix a number reaches is left to the channel it arrives on, as it is for every
   control here.
 
-  **AND THE RANGES CARRIED FOR THE MATRIX DO NOT FIT THE LISTS THEY SELECT FROM**, in this guide
+  **AND THE RANGES PRINTED FOR THE MATRIX DO NOT FIT THE LISTS THEY SELECT FROM**, in this guide
   before any addendum. Every source row gives 0-16, seventeen values, where the guide lists 23
   sources (guide p. 46). Every destination row gives 0-36, thirty-seven values, where the guide
   lists 38 destinations (guide p. 46). The Peak's manual lists 37 (sibling_manual p. 39), and
   `FfreqSep`, the last in this guide's list, is not among them. **Which value selects which
   destination no page says**, so nothing here says the range stops short of that one in particular:
-  only that 38 names cannot fit 37 values. The printed ranges are carried for all sixteen slots, as
-  what the maker printed and not as what the instrument accepts.
+  only that 38 names cannot fit 37 values. **So the sources and the destinations of all sixteen
+  slots say `range: unknown`.** Their numbers are not in doubt, and their ranges are: a row and
+  the list it selects from cannot both be right, and no document says which the instrument
+  follows. Until 2026-10-12 they carried the printed ranges, because a control with no range
+  reads as 0 to 127 and the format then had no way to say that a range is not established.
 
   THIS GUIDE'S LIST HAS THE PEAK'S ROWS IN THE PEAK'S ORDER, ALL BUT ONE, AND NO ROW OF ITS OWN.
   The row it lacks is `Osc Common Noise HPF`, NRPN 0:12 (sibling_manual p. 40), for a filter this
@@ -260,10 +265,15 @@ source: >-
   to shout, because a false refusal looks exactly like diligence.
 
   TWO ROWS HAVE NO RANGE AT ALL, `Effects Routing` (NRPN 0:89) and `Chorus Type` (NRPN 0:111).
-  Their neighbours are complete, their own rows are single-height with nothing in the column, and
-  no other page of this instrument's own documents gives either a range. The Peak's list prints
-  `0-6 (0 to +6)` and `0-2 (0 to +2)` for the same two rows (sibling_manual p. 42); those are the
-  Peak's, and no range is taken from it here. `Effects Routing` therefore keeps no default either:
+  Their neighbours are complete, and their own rows are single-height with nothing in the column.
+  **The guide's body gives each a set of settings and no number for any of them**: seven
+  routings, "Range of adjustment: Parallel, D->R->C, D->C->R, R->D->C, R->C->D, C->D->R,
+  C->R->D" (guide p. 36), and three chorus programs "named 2 Tap, 4 Tap and Ensemble"
+  (guide p. 35). Until 2026-10-12 this said no other page gave either a range. The Peak's list
+  prints `0-6 (0 to +6)` and `0-2 (0 to +2)` for the same two rows (sibling_manual p. 42), seven
+  values and three; those are the Peak's, and no range is taken from it here. Both controls
+  are left with no `range`, which reads as 0 to 127 and is nobody's finding. `Effects Routing`
+  therefore keeps no default either:
   its column reads `0 (0)`, and with no range there is no arithmetic to check its two halves by,
   which is a different thing from two statements that disagree.
 
@@ -751,76 +761,80 @@ controls:
   animate_2_hold:                   {label: Animate 2 Hold, cc: 115, range: [0, 1], default: 0, group: animate}
 
   # MODULATION MATRIX -----------------------------------------------
+  # EVERY SOURCE AND DESTINATION SAYS `range: unknown`. The rows print 0-16 and 0-36
+  # (guide pp. 48-49), and this guide's own lists have 23 sources and 38 destinations
+  # (guide p. 46), so neither figure is carried: see the source account. The depths are as
+  # printed.
   mod_matrix_selection:             {label: Mod Matrix Selection, nrpn: 125, range: [0, 15], default: 0, group: mod_matrix}
-  mod_matrix_1_source1:             {label: Mod Matrix 1 Source1, nrpn: 128, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_1_source2:             {label: Mod Matrix 1 Source2, nrpn: 129, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_1_source1:             {label: Mod Matrix 1 Source1, nrpn: 128, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_1_source2:             {label: Mod Matrix 1 Source2, nrpn: 129, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_1_depth:               {label: Mod Matrix 1 Depth, nrpn: 130, default: 64, group: mod_matrix}
-  mod_matrix_1_destination:         {label: Mod Matrix 1 Destination, nrpn: 131, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_1_destination:         {label: Mod Matrix 1 Destination, nrpn: 131, range: unknown, default: 0, group: mod_matrix}
   # **SLOTS 2 TO 16 TAKE THEIR NUMBERS FROM THE PEAK'S MANUAL**, cited as `sibling_manual`. This
   # guide prints each row's name, range and default and leaves its Control Number empty, so the
   # sixty below are an inference from another model's document and not a reading of this
   # instrument's own: see the source account, which also says why the ranges are doubted. Slot n is
   # NRPN n:0 to n:3 there, recorded here as n x 128 plus 0 to 3.
-  mod_matrix_2_source1:             {label: Mod Matrix 2 Source1, nrpn: 256, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_2_source2:             {label: Mod Matrix 2 Source2, nrpn: 257, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_2_source1:             {label: Mod Matrix 2 Source1, nrpn: 256, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_2_source2:             {label: Mod Matrix 2 Source2, nrpn: 257, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_2_depth:               {label: Mod Matrix 2 Depth, nrpn: 258, default: 64, group: mod_matrix}
-  mod_matrix_2_destination:         {label: Mod Matrix 2 Destination, nrpn: 259, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_3_source1:             {label: Mod Matrix 3 Source1, nrpn: 384, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_3_source2:             {label: Mod Matrix 3 Source2, nrpn: 385, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_2_destination:         {label: Mod Matrix 2 Destination, nrpn: 259, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_3_source1:             {label: Mod Matrix 3 Source1, nrpn: 384, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_3_source2:             {label: Mod Matrix 3 Source2, nrpn: 385, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_3_depth:               {label: Mod Matrix 3 Depth, nrpn: 386, default: 64, group: mod_matrix}
-  mod_matrix_3_destination:         {label: Mod Matrix 3 Destination, nrpn: 387, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_4_source1:             {label: Mod Matrix 4 Source1, nrpn: 512, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_4_source2:             {label: Mod Matrix 4 Source2, nrpn: 513, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_3_destination:         {label: Mod Matrix 3 Destination, nrpn: 387, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_4_source1:             {label: Mod Matrix 4 Source1, nrpn: 512, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_4_source2:             {label: Mod Matrix 4 Source2, nrpn: 513, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_4_depth:               {label: Mod Matrix 4 Depth, nrpn: 514, default: 64, group: mod_matrix}
-  mod_matrix_4_destination:         {label: Mod Matrix 4 Destination, nrpn: 515, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_5_source1:             {label: Mod Matrix 5 Source1, nrpn: 640, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_5_source2:             {label: Mod Matrix 5 Source2, nrpn: 641, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_4_destination:         {label: Mod Matrix 4 Destination, nrpn: 515, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_5_source1:             {label: Mod Matrix 5 Source1, nrpn: 640, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_5_source2:             {label: Mod Matrix 5 Source2, nrpn: 641, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_5_depth:               {label: Mod Matrix 5 Depth, nrpn: 642, default: 64, group: mod_matrix}
-  mod_matrix_5_destination:         {label: Mod Matrix 5 Destination, nrpn: 643, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_6_source1:             {label: Mod Matrix 6 Source1, nrpn: 768, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_6_source2:             {label: Mod Matrix 6 Source2, nrpn: 769, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_5_destination:         {label: Mod Matrix 5 Destination, nrpn: 643, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_6_source1:             {label: Mod Matrix 6 Source1, nrpn: 768, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_6_source2:             {label: Mod Matrix 6 Source2, nrpn: 769, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_6_depth:               {label: Mod Matrix 6 Depth, nrpn: 770, default: 64, group: mod_matrix}
-  mod_matrix_6_destination:         {label: Mod Matrix 6 Destination, nrpn: 771, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_7_source1:             {label: Mod Matrix 7 Source1, nrpn: 896, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_7_source2:             {label: Mod Matrix 7 Source2, nrpn: 897, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_6_destination:         {label: Mod Matrix 6 Destination, nrpn: 771, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_7_source1:             {label: Mod Matrix 7 Source1, nrpn: 896, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_7_source2:             {label: Mod Matrix 7 Source2, nrpn: 897, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_7_depth:               {label: Mod Matrix 7 Depth, nrpn: 898, default: 64, group: mod_matrix}
-  mod_matrix_7_destination:         {label: Mod Matrix 7 Destination, nrpn: 899, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_8_source1:             {label: Mod Matrix 8 Source1, nrpn: 1024, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_8_source2:             {label: Mod Matrix 8 Source2, nrpn: 1025, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_7_destination:         {label: Mod Matrix 7 Destination, nrpn: 899, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_8_source1:             {label: Mod Matrix 8 Source1, nrpn: 1024, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_8_source2:             {label: Mod Matrix 8 Source2, nrpn: 1025, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_8_depth:               {label: Mod Matrix 8 Depth, nrpn: 1026, default: 64, group: mod_matrix}
-  mod_matrix_8_destination:         {label: Mod Matrix 8 Destination, nrpn: 1027, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_9_source1:             {label: Mod Matrix 9 Source1, nrpn: 1152, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_9_source2:             {label: Mod Matrix 9 Source2, nrpn: 1153, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_8_destination:         {label: Mod Matrix 8 Destination, nrpn: 1027, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_9_source1:             {label: Mod Matrix 9 Source1, nrpn: 1152, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_9_source2:             {label: Mod Matrix 9 Source2, nrpn: 1153, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_9_depth:               {label: Mod Matrix 9 Depth, nrpn: 1154, default: 64, group: mod_matrix}
-  mod_matrix_9_destination:         {label: Mod Matrix 9 Destination, nrpn: 1155, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_10_source1:            {label: Mod Matrix 10 Source1, nrpn: 1280, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_10_source2:            {label: Mod Matrix 10 Source2, nrpn: 1281, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_9_destination:         {label: Mod Matrix 9 Destination, nrpn: 1155, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_10_source1:            {label: Mod Matrix 10 Source1, nrpn: 1280, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_10_source2:            {label: Mod Matrix 10 Source2, nrpn: 1281, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_10_depth:              {label: Mod Matrix 10 Depth, nrpn: 1282, default: 64, group: mod_matrix}
-  mod_matrix_10_destination:        {label: Mod Matrix 10 Destination, nrpn: 1283, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_11_source1:            {label: Mod Matrix 11 Source1, nrpn: 1408, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_11_source2:            {label: Mod Matrix 11 Source2, nrpn: 1409, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_10_destination:        {label: Mod Matrix 10 Destination, nrpn: 1283, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_11_source1:            {label: Mod Matrix 11 Source1, nrpn: 1408, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_11_source2:            {label: Mod Matrix 11 Source2, nrpn: 1409, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_11_depth:              {label: Mod Matrix 11 Depth, nrpn: 1410, default: 64, group: mod_matrix}
-  mod_matrix_11_destination:        {label: Mod Matrix 11 Destination, nrpn: 1411, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_12_source1:            {label: Mod Matrix 12 Source1, nrpn: 1536, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_12_source2:            {label: Mod Matrix 12 Source2, nrpn: 1537, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_11_destination:        {label: Mod Matrix 11 Destination, nrpn: 1411, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_12_source1:            {label: Mod Matrix 12 Source1, nrpn: 1536, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_12_source2:            {label: Mod Matrix 12 Source2, nrpn: 1537, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_12_depth:              {label: Mod Matrix 12 Depth, nrpn: 1538, default: 64, group: mod_matrix}
-  mod_matrix_12_destination:        {label: Mod Matrix 12 Destination, nrpn: 1539, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_13_source1:            {label: Mod Matrix 13 Source1, nrpn: 1664, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_13_source2:            {label: Mod Matrix 13 Source2, nrpn: 1665, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_12_destination:        {label: Mod Matrix 12 Destination, nrpn: 1539, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_13_source1:            {label: Mod Matrix 13 Source1, nrpn: 1664, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_13_source2:            {label: Mod Matrix 13 Source2, nrpn: 1665, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_13_depth:              {label: Mod Matrix 13 Depth, nrpn: 1666, default: 64, group: mod_matrix}
-  mod_matrix_13_destination:        {label: Mod Matrix 13 Destination, nrpn: 1667, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_14_source1:            {label: Mod Matrix 14 Source1, nrpn: 1792, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_14_source2:            {label: Mod Matrix 14 Source2, nrpn: 1793, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_13_destination:        {label: Mod Matrix 13 Destination, nrpn: 1667, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_14_source1:            {label: Mod Matrix 14 Source1, nrpn: 1792, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_14_source2:            {label: Mod Matrix 14 Source2, nrpn: 1793, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_14_depth:              {label: Mod Matrix 14 Depth, nrpn: 1794, default: 64, group: mod_matrix}
-  mod_matrix_14_destination:        {label: Mod Matrix 14 Destination, nrpn: 1795, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_15_source1:            {label: Mod Matrix 15 Source1, nrpn: 1920, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_15_source2:            {label: Mod Matrix 15 Source2, nrpn: 1921, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_14_destination:        {label: Mod Matrix 14 Destination, nrpn: 1795, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_15_source1:            {label: Mod Matrix 15 Source1, nrpn: 1920, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_15_source2:            {label: Mod Matrix 15 Source2, nrpn: 1921, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_15_depth:              {label: Mod Matrix 15 Depth, nrpn: 1922, default: 64, group: mod_matrix}
-  mod_matrix_15_destination:        {label: Mod Matrix 15 Destination, nrpn: 1923, range: [0, 36], default: 0, group: mod_matrix}
-  mod_matrix_16_source1:            {label: Mod Matrix 16 Source1, nrpn: 2048, range: [0, 16], default: 0, group: mod_matrix}
-  mod_matrix_16_source2:            {label: Mod Matrix 16 Source2, nrpn: 2049, range: [0, 16], default: 0, group: mod_matrix}
+  mod_matrix_15_destination:        {label: Mod Matrix 15 Destination, nrpn: 1923, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_16_source1:            {label: Mod Matrix 16 Source1, nrpn: 2048, range: unknown, default: 0, group: mod_matrix}
+  mod_matrix_16_source2:            {label: Mod Matrix 16 Source2, nrpn: 2049, range: unknown, default: 0, group: mod_matrix}
   mod_matrix_16_depth:              {label: Mod Matrix 16 Depth, nrpn: 2050, default: 64, group: mod_matrix}
-  mod_matrix_16_destination:        {label: Mod Matrix 16 Destination, nrpn: 2051, range: [0, 36], default: 0, group: mod_matrix}
+  mod_matrix_16_destination:        {label: Mod Matrix 16 Destination, nrpn: 2051, range: unknown, default: 0, group: mod_matrix}
 
   # SETTINGS --------------------------------------------------------
   atouch_scale:                     {label: Atouch Scale, nrpn: 8195, range: [1, 10], default: 5, group: settings}

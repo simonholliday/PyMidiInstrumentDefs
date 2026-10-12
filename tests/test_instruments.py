@@ -6312,14 +6312,26 @@ class TestPeak:
 		assert peak.controls["lfo_2_range"].nrpn is None
 
 	def test_three_ranges_do_not_fit_the_lists_they_select_from (self) -> None:
-		"""Carried as printed, because the range is what the row gives and the list has none."""
+		"""The matrix's say their range is not established, and the delay's is carried as printed."""
 		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
 
-		# 17 values for a table of 23 sources, where the 37 destinations do fit 0-36.
-		for slot in (1, 8, 16):
-			assert peak.controls[f"mod_matrix_{slot}_source1"].range == (0, 16)
-			assert peak.controls[f"mod_matrix_{slot}_source2"].range == (0, 16)
-			assert peak.controls[f"mod_matrix_{slot}_destination"].range == (0, 36)
+		# 17 values for a table of 23 sources.  And 37 values for 37 destinations in the
+		# manual, which the addendum for this file's firmware makes 48.  Neither is carried.
+		for slot in range(1, 17):
+			for half in ("source1", "source2", "destination"):
+				control = peak.controls[f"mod_matrix_{slot}_{half}"]
+
+				assert (control.range_known, control.range) == (False, (0, 16383)), (slot, half)
+
+			# The depth's 0-127 is as printed, and nothing disputes it.
+			assert peak.controls[f"mod_matrix_{slot}_depth"].range_known is True
+
+		assert sum(not control.range_known for control in peak.controls.values()) == 48
+
+		said = " ".join(prose_of("novation", "peak").split())
+
+		assert "**So the thirty-two source controls say `range: unknown`**" in said
+		assert "**And so do the sixteen destinations.**" in said
 
 		# 19 values for a table of 16 divisions - the arpeggiator's range, which has 19.
 		assert peak.controls["delay_sync_time"].range == (0, 18)
@@ -6469,19 +6481,29 @@ class TestSummit:
 		assert "those are the Peak's, and no range is taken from it here." in flat
 		assert summit.controls["effects_routing"].range == (0, 127)
 
-	def test_the_matrix_s_printed_ranges_are_carried_and_doubted (self) -> None:
+	def test_the_matrix_s_ranges_are_not_established_and_say_so (self) -> None:
 		"""The guide lists more sources and destinations than its own ranges reach."""
 		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
 
 		for slot in range(1, 17):
-			assert summit.controls[f"mod_matrix_{slot}_source1"].range == (0, 16)
-			assert summit.controls[f"mod_matrix_{slot}_source2"].range == (0, 16)
-			assert summit.controls[f"mod_matrix_{slot}_destination"].range == (0, 36)
+			for half in ("source1", "source2", "destination"):
+				control = summit.controls[f"mod_matrix_{slot}_{half}"]
+
+				assert (control.range_known, control.range) == (False, (0, 16383)), (slot, half)
+
+			# The depth's 0-127 is as printed, and nothing disputes it.
+			assert summit.controls[f"mod_matrix_{slot}_depth"].range_known is True
+
+		# The forty-eight in the matrix and no other: the two rows with an empty cell keep
+		# no range of their own, since the guide's body counts their settings.
+		assert sum(not control.range_known for control in summit.controls.values()) == 48
 
 		flat = " ".join(prose_of("novation", "summit").split())
 
-		assert "**AND THE RANGES CARRIED FOR THE MATRIX DO NOT FIT THE LISTS THEY SELECT FROM**" \
+		assert "**AND THE RANGES PRINTED FOR THE MATRIX DO NOT FIT THE LISTS THEY SELECT FROM**" \
 			in flat
+		assert "**So the sources and the destinations of all sixteen slots say `range: unknown`.**" in flat
+		assert "**The guide's body gives each a set of settings and no number for any of them**" in flat
 		assert "the guide lists 23 sources (guide p. 46)" in flat
 		assert "lists 38 destinations (guide p. 46)" in flat
 		assert "**Which value selects which destination no page says**" in flat

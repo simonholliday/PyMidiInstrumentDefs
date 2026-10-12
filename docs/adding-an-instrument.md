@@ -660,7 +660,7 @@ parts:
   solo:    {channel_offset: 1, receives: [notes], addressing: pitches}
 ```
 
-Seven rules worth holding on to:
+Eight rules worth holding on to:
 
 - **A control naming no part is on the base channel.** In a file that declares parts there
   is no single part to fall back on, so that is what leaving `part` off means. It is a real
@@ -738,6 +738,22 @@ Seven rules worth holding on to:
   ```yaml
   parts:
     fx: {channel: assigned, receives: [notes, controls], addressing: voices, voices: {tap_tempo: 127}}
+  ```
+- **A part's notes may be where the owner starts, and `note_map: learned` says so.** A RADIAS
+  kit puts its sixteen instruments on the same keys in every factory kit, and each key is a
+  setting an owner can move. Give the part its `voices` and `note_map: learned`, as
+  `voice.note_map` says of an instrument's own map; `fixed` says the maker fixes them, and
+  leaving it out says nobody recorded which. It is said of notes the part takes, so it is
+  refused on a part that takes none or whose notes are `unrecorded`.
+
+  ```yaml
+  parts:
+    kit:
+      channel: assigned
+      receives: [notes]
+      addressing: voices
+      note_map: learned          # each key is a setting of the kit, and these are the factory's
+      voices: {inst_1: 36, inst_2: 37}
   ```
 
 **Some instruments change shape with a setting.** A Korg drumlogue answers on one channel

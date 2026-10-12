@@ -551,7 +551,12 @@ class Part:
 	instrument's, for notes that reach this part and each do one named thing.  A
 	note here need not sound: an MC-707's control channel works sixteen Scatter
 	pads with notes 60 to 75, and a Digitone II's effects channel taps the tempo
-	with one note.
+	with one note.  ``note_map`` says of that map what ``Voice.note_map`` says of
+	the instrument's: ``learned`` where the owner assigns the notes, so that the
+	``voices`` given are where the part starts and not fixed facts, as a RADIAS's
+	sixteen kit instruments sit on C2 to D#3 in every factory kit and each can be
+	moved.  ``fixed`` is the maker's map and no setting changes it, and ``None`` is
+	nobody having recorded which.
 
 	``mode`` names the one mode this part exists in, and ``None`` is every mode.
 
@@ -580,6 +585,7 @@ class Part:
 	nrpn_msb: int | None = None
 	within: str | None = None
 	unrecorded: tuple[str, ...] = ()
+	note_map: str | None = None
 
 
 	@property

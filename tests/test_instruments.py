@@ -2494,7 +2494,8 @@ voice:
   pitch_bend: {semitones: 2, programmable: true}
   voices: {kick: 36}
 parts:
-  p: {label: P, channel: assigned, count: 2, receives: [notes, controls], addressing: pitches, voices: {tap: 127}}
+  p: {label: P, channel: assigned, count: 2, receives: [notes, controls], addressing: pitches, voices: {tap: 127},
+      note_map: learned}
   q: {channel_offset: 1, receives: [controls], unrecorded: [notes], mode: split}
 modes:
   single: {label: Single, factory: true, unparted: true, channels: [1, 8]}
@@ -3549,6 +3550,78 @@ class TestPartNoteMaps:
 
 		assert fx.voices == {"tap_tempo": 127}
 		assert fx.receives == ("notes", "controls") and fx.addressing == "voices"
+
+
+class TestAPartsNoteMapTheOwnerCanMove:
+
+	"""`parts.<name>.note_map`: whether a part's notes are the maker's or where the owner starts.
+
+	The instrument's own map could say `learned` and a part's could not, so a RADIAS kit's
+	sixteen factory keys read as sixteen fixed notes.
+	"""
+
+	HEAD = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+
+	def part (self, body: str) -> pymidiinstrumentdefs.definition.Part:
+		return pymidiinstrumentdefs.parse(
+			self.HEAD + f"parts: {{kit: {{channel_offset: 0, {body}}}}}\n", source = "x.yaml").parts["kit"]
+
+	def test_a_part_says_its_notes_are_where_the_owner_starts (self) -> None:
+		part = self.part("receives: [notes], addressing: voices, note_map: learned, voices: {inst_1: 36}")
+
+		assert part.note_map == "learned"
+		assert part.voices == {"inst_1": 36}
+
+	def test_or_that_the_maker_fixes_them_or_nothing (self) -> None:
+		assert self.part("receives: [notes], note_map: fixed").note_map == "fixed"
+		assert self.part("receives: [notes]").note_map is None
+
+	def test_any_other_word_is_refused (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.part("receives: [notes], note_map: assignable")
+
+		assert "parts.kit.note_map" in str(raised.value)
+		assert "'assignable' is not one of ['fixed', 'learned']" in str(raised.value)
+
+	def test_it_is_refused_on_a_part_that_takes_no_notes (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.part("receives: [controls], note_map: learned")
+
+		assert "parts.kit.note_map" in str(raised.value)
+		assert "this file says takes no notes" in str(raised.value)
+
+	def test_and_on_one_whose_notes_no_document_ties_to_it (self) -> None:
+		"""With `receives` beside it or without, and said as what it is and not as "takes no notes"."""
+		for body in ("unrecorded: [notes]", "receives: [controls], unrecorded: [notes]"):
+			for word in ("learned", "fixed"):
+				with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+					self.part(f"{body}, note_map: {word}")
+
+				assert "parts.kit.note_map" in str(raised.value), (body, word)
+				assert "no document ties to it" in str(raised.value), (body, word)
+
+	def test_it_stands_where_nobody_recorded_what_the_part_receives (self) -> None:
+		"""A part that leaves `receives` out is not one recorded as taking no notes."""
+		assert self.part("note_map: learned, voices: {inst_1: 36}").note_map == "learned"
+
+	def test_it_needs_no_map_beside_it (self) -> None:
+		"""The owner assigns the notes and the maker prints no starting point: there are such kits."""
+		part = self.part("receives: [notes], note_map: learned")
+
+		assert (part.note_map, part.voices) == ("learned", {})
+
+	def test_a_part_does_not_take_the_instrument_s_word_for_its_own (self) -> None:
+		definition = pymidiinstrumentdefs.parse(
+			self.HEAD + "voice: {note_map: learned}\nparts: {kit: {channel_offset: 0, receives: [notes]}}\n",
+			source = "x.yaml")
+
+		assert (definition.voice.note_map, definition.parts["kit"].note_map) == ("learned", None)
+
+	def test_it_is_added_after_every_field_a_part_had (self) -> None:
+		"""So that nothing a caller gave by position moved."""
+		names = [field.name for field in dataclasses.fields(pymidiinstrumentdefs.definition.Part)]
+
+		assert names.index("note_map") > names.index("within")
 
 
 class TestSearchPath:

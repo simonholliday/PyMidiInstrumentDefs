@@ -88,7 +88,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	"modes": frozenset({"label", "factory", "unparted", "channels"}),
 	"parts": frozenset({
 		"label", "channel", "channel_offset", "count", "receives", "unrecorded", "addressing",
-		"polyphony", "polyphony_shared", "voices", "mode", "nrpn_msb", "within",
+		"polyphony", "polyphony_shared", "voices", "note_map", "mode", "nrpn_msb", "within",
 	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
@@ -569,6 +569,23 @@ class _Reader:
 			if voices and fields.get("receives") is not None and "notes" not in receives:
 				self.refuse(f"{where}.voices", "names notes on a part this file says takes no notes")
 
+			# Whether the part's notes are the maker's or where the owner starts.  It is
+			# said of notes the part takes, so on a part recorded as taking none it is
+			# said of nothing.
+
+			note_map = self.word(fields, "note_map", where, _NOTE_MAPS)
+
+			# Who assigns a part's notes is a record of how notes reach it, as its map is.
+
+			if note_map is not None and "notes" in unrecorded:
+				self.refuse(
+					f"{where}.note_map",
+					"says how notes are assigned on a part whose notes this file says no document ties to it",
+				)
+
+			if note_map is not None and fields.get("receives") is not None and "notes" not in receives:
+				self.refuse(f"{where}.note_map", "says how notes are assigned on a part this file says takes no notes")
+
 			# Instances addressed by MSB run upwards from the first, so the last must
 			# still be an MSB: eight instances from 121 would need a 128th.
 
@@ -604,6 +621,7 @@ class _Reader:
 				polyphony        = polyphony,
 				polyphony_shared = shared,
 				voices           = voices,
+				note_map         = note_map,
 				mode             = mode,
 				nrpn_msb         = msb,
 				within           = within,

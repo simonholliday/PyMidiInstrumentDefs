@@ -18225,6 +18225,29 @@ class TestSeqtrak:
 		# 72 is absent because the chart writes `71,73-75` rather than `71-75`.
 		assert 72 not in numbers
 
+	def test_two_ranges_are_the_data_list_s_and_pan_keeps_the_one_both_documents_give (self) -> None:
+		"""Sixteen arpeggio templates and twelve algorithms, where the User Guide's table says more: #4897.
+
+		Both documents are one edition for one firmware, so neither is the later word.  The
+		Data List's own preset list and algorithm chart agree with its control change list
+		for those two.  For pan they do not: its parameter table has 1 to 127, as the User
+		Guide has, so pan stays as it was.
+		"""
+		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
+
+		assert seqtrak.controls["synth_arp_type"].range == (0, 15)
+		assert seqtrak.controls["dx_arp_type"].range == (0, 15)
+		assert seqtrak.controls["fm_algorithm"].range == (0, 11)
+
+		for kind in ("drum", "synth", "dx", "sampler"):
+			assert seqtrak.controls[f"{kind}_track_pan"].range == (1, 127), kind
+
+		account = " ".join((seqtrak.source or "").split())
+
+		assert "AND THE DATA LIST IS CARRIED FOR TWO OF THEM.**" in account
+		assert "**Controller 10 keeps 18.3's range, because the Data List gives it two.**" in account
+		assert '"Selects from 12 different FM algorithms" (user_guide p. 108)' in account
+
 	def test_five_are_received_only_on_two_documents_word (self) -> None:
 		"""The chart crosses their transmitted column, and the guide says so in prose for all five."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])

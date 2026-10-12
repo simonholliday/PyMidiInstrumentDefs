@@ -16,7 +16,8 @@
 # with its lists on every one. What the User Guide adds is its section 18.3, which names forty
 # of the controllers in four tables with the channels each reaches and a range for each, and of
 # direction says only that five are received and not sent. Its names are the labels below
-# wherever it gives one, and where its ranges differ from the Data List's the account says so.
+# wherever it gives one. Its ranges differ from the Data List's control change lists for three
+# controllers, and the account says which is carried for each.
 #
 # **THE COUNT RECONCILES TO FORTY-TWO, AND NOT ONE PART OF IT IS A HAND COUNT.** The chart's
 # sixteen cells expand to fifty controller numbers; eight of those are addressing machinery or
@@ -115,15 +116,21 @@ source: >-
   and 11, which this file once said 18.3 did not name. The other two, bank select at 0 and 32,
   are in the Data List and not in 18.3.
 
-  **WHERE THE DATA LIST AND 18.3 GIVE DIFFERENT RANGES, THIS FILE CARRIES 18.3'S, AND IT IS THREE
-  CONTROLLERS.** Controller 10 is `TRACK PAN` over `1-127` in 18.3 (user_guide p. 100) and `PAN`
-  over `0 - 127` in both of the Data List's lists (data_list p. 113). Controller 27 is
-  `ARP TYPE` over `0-16` in 18.3 (user_guide p. 100) and `ARP TEMPLATE` over `0 - 15 (0:OFF)` in
-  the Data List (data_list p. 114). Controller 116, `FM ALGORITHM`, is `0-127` in 18.3
-  (user_guide p. 100) and `0 - 11` in the Data List (data_list p. 114). The other thirty-seven
-  that both documents give agree. Both are edition D0 for the same firmware, so neither is the
-  later word, and a reader sending the top or bottom of one of these three ranges should expect
-  one document to be wrong.
+  **THE DATA LIST'S CONTROL CHANGE LISTS AND 18.3 GIVE DIFFERENT RANGES FOR THREE CONTROLLERS, AND
+  THE DATA LIST IS CARRIED FOR TWO OF THEM.** Controller 27 is `ARP TYPE` over `0-16` in 18.3
+  (user_guide p. 100) and `ARP TEMPLATE` over `0 - 15 (0:OFF)` in the Data List
+  (data_list p. 114), whose own list of arpeggio presets has sixteen rows, the first of them
+  `Off` (data_list p. 59). It carries 0 to 15. Controller 116, `FM ALGORITHM`, is `0-127` in 18.3
+  (user_guide p. 100) and `0 - 11` in the Data List (data_list p. 114), which draws twelve
+  algorithms in its chart (data_list p. 161); and the User Guide says elsewhere what its own
+  table does not, "Selects from 12 different FM algorithms" (user_guide p. 108). It carries 0 to
+  11. **Controller 10 keeps 18.3's range, because the Data List gives it two.** It is `TRACK PAN`
+  over `1-127` in 18.3 (user_guide p. 100) and `PAN` over `0 - 127` in both of the Data List's
+  control change lists (data_list p. 113), and the Data List's parameter table gives the same
+  pan as `01 - 7F`, from `L63` through `C` to `R63` (data_list p. 135), which is 1 to 127 and
+  has no place for a nought. The other thirty-seven that both documents give agree. Both are
+  edition D0 for the same firmware, so neither is the later word. Until 2026-10-12 this file
+  carried 18.3's range for all three.
 
   **BANK SELECT CHOOSES WHAT THE NEXT PROGRAM CHANGE LOADS, AND THE DATA LIST SAYS WHICH BANKS
   ARE ANSWERED.** Its full table puts a project at MSB 64, a sound at 63, a sampler element at 62
@@ -379,8 +386,9 @@ controls:
   synth_track_volume:                 {label: TRACK VOLUME, cc: 7, part: synth, group: mix}
   dx_track_volume:                    {label: TRACK VOLUME, cc: 7, part: dx, group: mix}
   sampler_track_volume:               {label: TRACK VOLUME, cc: 7, part: sampler, group: mix}
-  # **1 to 127 in 18.3, the one row it gives that range, and 0 - 127 in the Data List** (p. 113).
-  # This file carries 18.3's: see the account.
+  # **1 to 127 in 18.3, the one row it gives that range, and 0 - 127 in the Data List's control
+  # change lists** (data_list p. 113), **whose own parameter table has 1 to 127 as well**
+  # (data_list p. 135). This file carries 1 to 127: see the account.
   drum_track_pan:                     {label: TRACK PAN, cc: 10, range: [1, 127], part: drum, group: mix}
   synth_track_pan:                    {label: TRACK PAN, cc: 10, range: [1, 127], part: synth, group: mix}
   dx_track_pan:                       {label: TRACK PAN, cc: 10, range: [1, 127], part: dx, group: mix}
@@ -428,14 +436,18 @@ controls:
   # **EXACT VALUES WHERE THE MUTE AND THE SOSTENUTO TAKE BANDS** - see the account.
   synth_portamento_switch:            {label: PORTAMENTO SWITCH, cc: 65, choices: {"off": 0, "on": 1}, part: synth, group: portamento}
   dx_portamento_switch:               {label: PORTAMENTO SWITCH, cc: 65, choices: {"off": 0, "on": 1}, part: dx, group: portamento}
-  synth_arp_type:                     {label: ARP TYPE, cc: 27, range: [0, 16], part: synth, group: arpeggio}
-  dx_arp_type:                        {label: ARP TYPE, cc: 27, range: [0, 16], part: dx, group: arpeggio}
+  # **0 - 15 in the Data List, where 0 is off** (data_list p. 114), **and 0-16 in 18.3.** The Data
+  # List's is carried, and its list of sixteen presets agrees with it: see the account.
+  synth_arp_type:                     {label: ARP TYPE, cc: 27, range: [0, 15], part: synth, group: arpeggio}
+  dx_arp_type:                        {label: ARP TYPE, cc: 27, range: [0, 15], part: dx, group: arpeggio}
   synth_arp_gate:                     {label: ARP GATE, cc: 28, part: synth, group: arpeggio}
   dx_arp_gate:                        {label: ARP GATE, cc: 28, part: dx, group: arpeggio}
   synth_arp_speed:                    {label: ARP SPEED, cc: 29, range: [0, 9], part: synth, group: arpeggio}
   dx_arp_speed:                       {label: ARP SPEED, cc: 29, range: [0, 9], part: dx, group: arpeggio}
-  # The DX track alone, channel 10.
-  fm_algorithm:        {label: FM ALGORITHM, cc: 116, part: dx, group: fm}
+  # The DX track alone, channel 10. **The algorithm is 0 - 11 in the Data List** (data_list
+  # p. 114) **and 0-127 in 18.3**; there are twelve algorithms, and the Data List's is carried:
+  # see the account.
+  fm_algorithm:        {label: FM ALGORITHM, cc: 116, range: [0, 11], part: dx, group: fm}
   fm_modulation_amount: {label: FM MODULATION AMOUNT, cc: 117, part: dx, group: fm}
   fm_modulator_frequency: {label: FM MODULATOR FREQUENCY, cc: 118, part: dx, group: fm}
   fm_modulator_feedback: {label: FM MODULATOR FEEDBACK, cc: 119, part: dx, group: fm}

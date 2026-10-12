@@ -89,13 +89,38 @@ source: >-
   Exclusive) is Enable, respectively." (basic_guide p. 137). The Parameter Guide describes each box
   and says only of the exclusive one how it is normally set.
 
-  THREE NUMBERS REACH THE GLOBAL CHANNEL ONLY AND THE FORMAT CANNOT SAY SO. Most rows carry the
-  status `Bn`, glossed "MIDI Channel No. (0 - 15) ...... Usually Global Channel." (implementation),
-  with each timbre's or track's channel in Combination, Sequencer and Song Play modes. Controllers
-  92, 94 and 95 carry `Bg`, "Always Global Channel No. (0 - 15)" (implementation): they switch the
-  insert effects and the two master effects off for the whole instrument. A control is placed by its
-  `part` here and there is no part for the instrument itself, so they are ordinary controls below
-  and the restriction is said only here.
+  THIRTEEN STANDARD CONTROLLERS ARE WRITTEN TWICE, AND THREE NUMBERS REACH THE GLOBAL CHANNEL ONLY.
+  Most rows carry the status `Bn`, glossed "MIDI Channel No. (0 - 15) ...... Usually Global
+  Channel." (implementation), with each timbre's or track's channel in Combination, Sequencer and
+  Song Play modes. **So a control naming no part is on the global channel, and the standard
+  controllers have a twin keyed `track_` that names the part**: bank select's two halves and numbers
+  1, 2, 4, 5, 7, 10, 11 and 64 to 67. The Basic Guide says the same of every channel message and
+  names no number: "Tracks whose 'Status' is INT or BTH will receive channel messages of the
+  matching MIDI channel" (basic_guide p. 114). A twin goes both ways because the implementation's
+  two legends end differently: a timbre or track answers while its status is INT or BTH, and sends
+  while it is EXT, EX2 or BTH (implementation). Each timbre, and each track in Sequencer mode, also
+  has switches of its own for the damper, the portamento switch, the joystick's two directions,
+  the foot pedal, every other control change, and program change, which bank select goes with
+  (parameter_guide pp. 35-36, 57-59; basic_guide p. 115), so such a part can refuse its twin.
+
+  **THE GLOBAL CHANNEL IS PROGRAM AND SAMPLING MODES', AND THE OTHER MODES ANSWER LITTLE ON IT.** In
+  Combination mode it is used "for selecting a combination and turning effects on/off, and to
+  transmit/receive exclusive data" (basic_guide p. 114), though what the panel does is still sent
+  on it. So there one of the thirteen naming no part moves only the timbres on `Gch` or on the
+  global channel's own number (parameter_guide p. 222), and bank select does two jobs: on the
+  global channel it goes with the program change that selects the combination, and on a timbre's
+  or track's channel it selects that part's program (basic_guide p. 115). In Sequencer and Song
+  Play modes the global channel carries exclusive data and the effect switches (basic_guide
+  p. 114), and a track has no `Gch` to follow it with.
+
+  Every other `Bn` row that the list does not footnote reaches a track on its channel as the
+  thirteen do, the sound controllers 70 to 79 among them, and names no part only because the rule
+  this follows covers the standard controllers. Controller 8 and the arpeggiator's three numbers
+  are footnoted, and the two paragraphs after this one say where each travels. Controllers 92, 94
+  and 95 carry `Bg`, "Always Global Channel No. (0 - 15)" (implementation): they switch the insert
+  effects and the two master effects off for the whole instrument. They name no part either, and
+  nothing in a control says that it stays on the global channel where its neighbours do not, so
+  the restriction is said only here.
 
   THE EFFECT SENDS ARE CROSSED, AS THEY ARE ON THE KRONOS. Controller 91, named Effect 1 Depth in
   both lists, is received "for Send 2 Level control" (implementation), and 93, Effect 3 Depth, "for
@@ -330,6 +355,8 @@ parts:
   # mode they cannot move: "In Song Play mode, MIDI channels 1–16 correspond to tracks 1–16."
   # (parameter_guide p. 101). A timbre may also follow the global channel, `Gch`
   # (parameter_guide p. 33), and a track may not (parameter_guide p. 55).
+  # A CONTROL NAMING THIS PART IS ON A TRACK'S OR TIMBRE'S OWN CHANNEL, and one naming no part is on
+  # the global channel: see the account.
   track:
     label: Track
     count: 16
@@ -439,3 +466,21 @@ controls:
   eg_attack_time:              {label: EG Attack Time, nrpn: 227, direction: receives, group: gs_nrpn}
   eg_decay_time:               {label: EG Decay Time, nrpn: 228, direction: receives, group: gs_nrpn}
   eg_release_time:             {label: EG Release Time, nrpn: 230, direction: receives, group: gs_nrpn}
+
+  # The standard controllers on a track's own channel ───────
+  # The thirteen again, for a track in Sequencer or Song Play mode or a timbre in Combination mode:
+  # see the account. Each control above names no part and is on the global channel. A timbre whose
+  # Portamento is set to PRG takes the switch and not the time (parameter_guide p. 33).
+  track_bank_select_msb:       {label: Bank Select(MSB), cc: 0, part: track}
+  track_bank_select_lsb:       {label: Bank Select(LSB), cc: 32, part: track}
+  track_modulation_1:          {label: Modulation 1 (Joystick +Y), cc: 1, part: track, group: continuous}
+  track_modulation_2:          {label: Modulation 2 (Joystick -Y), cc: 2, part: track, group: continuous}
+  track_foot_pedal:            {label: Foot Pedal, cc: 4, part: track, group: continuous}
+  track_portamento_time:       {label: Portamento Time, cc: 5, part: track, group: continuous}
+  track_volume:                {label: Volume, cc: 7, part: track, group: continuous}
+  track_panpot:                {label: Panpot, cc: 10, part: track, group: continuous}
+  track_expression:            {label: Expression, cc: 11, part: track, group: continuous}
+  track_hold_1:                {label: Hold 1 (Damper), cc: 64, part: track, group: switch}
+  track_portamento:            {label: Portamento Off/On, cc: 65, values: {"off": 0, "on": 64}, part: track, group: switch}
+  track_sostenuto:             {label: Sostenuto Off/On, cc: 66, values: {"off": 0, "on": 64}, part: track, group: switch}
+  track_soft_pedal:            {label: Soft Pedal, cc: 67, part: track, group: switch}

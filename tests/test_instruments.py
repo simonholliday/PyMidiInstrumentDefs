@@ -20729,7 +20729,7 @@ class TestTRITON:
 		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
 
 		numbered = [control for control in triton.controls.values() if control.cc is not None]
-		assert sorted(cc for cc in (control.cc for control in numbered) if cc is not None) == [0, 1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 16, 17,
+		assert sorted({cc for cc in (control.cc for control in numbered) if cc is not None}) == [0, 1, 2, 4, 5, 7, 8, 10, 11, 12, 13, 16, 17,
 			18, 19, 20, 21, 32, 64, 65, 66, 67, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 91, 92, 93, 94, 95]
 		assert all(control.direction == "both" for control in numbered)
 		assert not {control.cc for control in numbered} & {6, 38, 96, 97, 98, 99, 100, 101}
@@ -20741,7 +20741,8 @@ class TestTRITON:
 		assert by_nrpn == {2: "both", 10: "both", 11: "both", 136: "receives", 137: "receives", 138: "receives",
 			160: "receives", 161: "receives", 227: "receives", 228: "receives", 230: "receives"}
 		assert triton.controls["arpeggiator_on_off"].values == {"off": 0, "on": 64}
-		assert triton.midi.nrpn == "supported" and len(triton.controls) == 52
+		# Forty-one numbers and eleven NRPNs, and thirteen numbers written a second time for a track.
+		assert triton.midi.nrpn == "supported" and len(triton.controls) == 65
 
 	def test_the_crossed_sends_and_the_three_on_the_global_channel (self) -> None:
 		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])
@@ -20749,7 +20750,20 @@ class TestTRITON:
 		assert (triton.controls["send_2_level"].cc, triton.controls["send_1_level"].cc) == (91, 93)
 		assert all(triton.controls[name].values == {"off": 0, "on": 1} for name in ("all_insert_fx", "master_fx_1", "master_fx_2"))
 		account = " ".join((triton.source or "").split())
-		assert "THREE NUMBERS REACH THE GLOBAL CHANNEL ONLY AND THE FORMAT CANNOT SAY SO." in account
+		assert "AND THREE NUMBERS REACH THE GLOBAL CHANNEL ONLY." in account
+		assert all(triton.controls[name].part is None for name in ("all_insert_fx", "master_fx_1", "master_fx_2"))
+
+		# **A control naming no part is on the global channel**, and the standard controllers are
+		# written again for a track, which has a channel of its own. Until 2026-10-12 no control here
+		# named a part.
+		own = {key: control for key, control in triton.controls.items() if control.part}
+
+		assert {control.part for control in own.values()} == {"track"}
+		assert sorted(control.cc for control in own.values() if control.cc is not None) == [0, 1, 2, 4, 5, 7, 10, 11, 32, 64, 65, 66, 67]
+		assert len(own) == 13 and all(key.startswith("track_") for key in own)
+		assert all(triton.controls[key[len("track_"):]].cc == control.cc for key, control in own.items())
+		assert all(triton.controls[key[len("track_"):]].label == control.label for key, control in own.items())
+		assert [control.name for control in triton.controls_reaching("track")] == list(own)
 
 	def test_sixteen_tracks_on_sixty_two_shared_voices (self) -> None:
 		triton = pymidiinstrumentdefs.load("korg/triton", [CORPUS])

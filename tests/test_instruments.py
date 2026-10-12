@@ -22236,6 +22236,10 @@ class TestWebPageTitles:
 		("elektron/digitakt_ii", "support_page"): "Digitakt II - Elektron",
 		("elektron/digitone_ii", "support_page"): "Digitone II - Elektron",
 		("elektron/tonverk", "download_page"): "Tonverk - Elektron",
+		("expressive_e/osmose", "chart_article"): "Osmose sound engine MIDI Implementation Chart - Help Center",
+		("expressive_e/osmose", "sound_engine_input"): "Triggering Osmose's sound engine (the EaganMatrix) from an external device - Help Center",
+		("expressive_e/osmose", "preset_changes"): "Changing Osmose's sound presets from an external device with Bank Select and Program Change messages - Help Center",
+		("expressive_e/osmose", "product_page"): "Expressive MPE Polyphonic Synthesizer",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

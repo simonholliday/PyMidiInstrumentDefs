@@ -471,8 +471,9 @@ parts:
   # factory kit and what sounds on them differs by kit, which is why the names here are the
   # instruments' numbers. C2 is note 36 by the implementation's own scale, `0~127=C-1~G9`
   # (implementation p. 27). Each instrument's note is a setting of the kit, `PlayNote [C-1…G9]`
-  # (manual p. 111), so a kit an owner has edited may answer on other notes. The format has no word
-  # for a part's notes being defaults.
+  # (manual p. 111), so a kit an owner has edited may answer on other notes. `note_map: learned`
+  # says that of this part: the sixteen below are where a factory kit starts. Until 2026-10-12
+  # a part had no way to say it.
   # A kit is changed from outside as a program is, by bank select 32 and 64 and then a program
   # change of 0 to 31 (implementation p. 2): "Drum kit changes are transmitted and received on the
   # global MIDI channel." (manual p. 147). The implementation marks those bank numbers `(only
@@ -497,6 +498,7 @@ parts:
     channel_offset: 0
     addressing: voices
     receives: [notes, program_change]
+    note_map: learned
     voices:
       inst_1: 36
       inst_2: 37

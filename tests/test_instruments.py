@@ -21376,6 +21376,10 @@ class TestRadias:
 
 		# The keys every factory kit's table prints, C2 to D#3. An owner can move each.
 		assert kit.voices == {f"inst_{number}": 35 + number for number in range(1, 17)}
+
+		# Each key is a setting of the kit, so those sixteen are where a factory kit starts.
+		assert kit.note_map == "learned"
+		assert (timbre.note_map, vocoder.note_map) == (None, None)
 		assert kit.takes("notes") and kit.takes("program_change") and not kit.takes("controls")
 
 		assert (radias.voice.polyphony, radias.voice.polyphony_shared, radias.voice.voicing_modes) == \

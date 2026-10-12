@@ -22254,6 +22254,7 @@ class TestWebPageTitles:
 		("make_noise/zero_coast", "product_page"): "0-COAST – Make Noise Music",
 		("moog/little_phatty", "forum_post"): "New Firmware v3.1 for Slim Phatty, LP Stage and Tribute - Little Phatty & Slim Phatty Forum - Moog Forum",
 		("moog/slim_phatty", "forum_post"): "New Firmware v3.1 for Slim Phatty, LP Stage and Tribute - Little Phatty & Slim Phatty Forum - Moog Forum",
+		("native_instruments/maschine_plus", "downloads_page"): "Maschine Downloads – Native Instruments",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

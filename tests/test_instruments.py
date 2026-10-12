@@ -1817,6 +1817,7 @@ class TestAftertouch:
 			"sequential/fourm": ("both", True),
 			"sequential/prophet_6": ("both", True),
 			"ensoniq/esq_1": ("both", None),
+			"novation/peak": ("both", None),
 		}
 
 
@@ -6426,7 +6427,7 @@ class TestPeak:
 		peak = pymidiinstrumentdefs.load("novation/peak", [CORPUS])
 
 		assert peak.voice.polyphony == 8
-		assert peak.voice.aftertouch == "poly"
+		assert peak.voice.aftertouch == "both"
 
 		# Voicing is a setting saved with the Patch: three mono modes and two poly ones.
 		assert peak.voice.voicing_modes == (1, 8)

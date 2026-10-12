@@ -22259,6 +22259,8 @@ class TestWebPageTitles:
 		("novation/circuit_tracks", "download_page"): "Circuit Tracks | Novation Downloads",
 		("novation/peak", "download_page"): "Peak | Novation Downloads",
 		("novation/summit", "download_page"): "Summit | Novation Downloads",
+		("oberheim/ob_x8", "product_page"): "OB-X8 analog synthesizer - Oberheim",
+		("oberheim/teo_5", "product_page"): "TEO-5 Synthesizer - Oberheim",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

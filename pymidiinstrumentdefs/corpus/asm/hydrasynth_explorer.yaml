@@ -194,17 +194,25 @@ voice:
     # 60 / 80 / 100 / 110 / 127" with eight curves (p. 81) - and the manual is careful that this
     # is about the keyboard and not about what arrives: "This only affects local response and
     # outgoing MIDI; incoming velocity response is unaffected" (p. 81).
-  # POLYPHONIC, WHICH IS THE KEYBED'S OWN AND NOT ONLY MPE'S. The comparison chart calls it a
-  # "Polytouch® polyphonic aftertouch" keybed, and the transmit setting offers both kinds:
-  # "Aftertouch transmit Off, Mono, Poly ... Mono enables Channel aftertouch values to be sent
-  # (one value for all active voices); Poly allows polyphonic aftertouch values to be sent"
-  # (p. 82). The manual joins the two surfaces itself: "Hydrasynth Explorer already supports
-  # polyphonic aftertouch, so MPE pressure is mapped automatically to Poly aftertouch" (p. 83).
-  aftertouch: poly
-  # Sent, as channel or polyphonic aftertouch or not at all, by the `Aftertouch transmit` setting
-  # quoted above (p. 82). Enabling MPE locks it - "At TX = MPE Lock" (p. 83), by one of the three
-  # cross-references the account finds misnamed - and pressure then goes out as MPE data. The
-  # Leviasynth's file records its own matching setting the same way.
+  # RECEIVED, AND THE ONE STATEMENT OF RECEIVING IS ABOUT MPE. "Hydrasynth Explorer already
+  # supports polyphonic aftertouch, so MPE pressure is mapped automatically to Poly aftertouch"
+  # (p. 83), and with MPE on, a patch that uses the `PolyAftT` source answers to the pressure an
+  # MPE controller sends (p. 83). **No page says what it does with aftertouch that arrives
+  # outside MPE.** The MIDI pages have a `Mod wheel receive` setting and none for aftertouch
+  # (pp. 82-84), the manual has no implementation chart, and a search of every page for aftertouch
+  # or pressure beside receive, incoming, accept or respond finds the MPE passage and nothing
+  # else. The engine has both kinds as modulation sources, "MonoAftT (Channel Aftertouch),
+  # PolyAftT (Polyphonic Aftertouch)" (p. 70), which says what a patch can be modulated by and
+  # not what arrives. So it answers to aftertouch, and which kind outside MPE no page states.
+  # This held `poly` until 2026-10-12, on the keybed's kind, which is the sending side below.
+  aftertouch: received
+  # Sent, as channel or polyphonic aftertouch or not at all, by a setting: "Aftertouch transmit
+  # Off, Mono, Poly ... Mono enables Channel aftertouch values to be sent (one value for all
+  # active voices); Poly allows polyphonic aftertouch values to be sent" (p. 82). The comparison
+  # chart calls the keybed "Polytouch® polyphonic aftertouch" (comparison_chart p. 1). Enabling
+  # MPE locks the setting - "At TX = MPE Lock" (p. 83), by one of the three cross-references the
+  # account finds misnamed - and pressure then goes out as MPE data. The Leviasynth's file
+  # records its own matching setting the same way.
   aftertouch_transmits: true
   # NOT RECORDED, the pitch bend depth: MPE gives each note its own bend and no page states the
   # instrument's own range or whether it is settable.

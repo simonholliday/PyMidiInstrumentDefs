@@ -1723,7 +1723,7 @@ class TestAftertouch:
 			"korg/multi_poly": ("both", False),
 			"moog/minimoog_model_d": (None, True),
 			"yamaha/dx7": ("none", True),
-			"asm/leviasynth": ("poly", True),
+			"asm/leviasynth": ("received", True),
 			"elektron/analog_rytm_mkii": ("received", True),
 			"polyend/tracker": (None, True),
 			"akai/mpc_live": ("both", True),
@@ -1735,7 +1735,7 @@ class TestAftertouch:
 			"arturia/polybrute_12": ("received", True),
 			"arturia/microfreak": (None, True),
 			"behringer/deepmind_12": ("channel", True),
-			"asm/hydrasynth_explorer": ("poly", True),
+			"asm/hydrasynth_explorer": ("received", True),
 			"expressive_e/osmose": ("channel", True),
 			"korg/kronos": ("both", True),
 			"korg/m1": ("channel", True),
@@ -8162,7 +8162,28 @@ class TestHydrasynthExplorer:
 		assert explorer.midi.per_voice_channels is True
 		assert explorer.midi.channels == (1, 16)
 		assert explorer.voice.polyphony == 8
-		assert explorer.voice.aftertouch == "poly"
+
+	def test_both_asm_instruments_answer_to_aftertouch_of_a_kind_stated_for_mpe_alone (self) -> None:
+		"""Each held `poly` on its keybed's kind, which is what it sends (#4891).
+
+		The one sentence about receiving is the same in both manuals and is about MPE:
+		pressure from an MPE controller is mapped to the polyphonic source.  No page says
+		what either does with aftertouch arriving outside MPE.
+		"""
+		for name in ("asm/hydrasynth_explorer", "asm/leviasynth"):
+			voice = pymidiinstrumentdefs.load(name, [CORPUS]).voice
+
+			assert (voice.aftertouch, voice.aftertouch_transmits) == ("received", True), name
+
+		explorer = " ".join(prose_of("asm", "hydrasynth_explorer").split())
+
+		assert "RECEIVED, AND THE ONE STATEMENT OF RECEIVING IS ABOUT MPE." in explorer
+		assert "**No page says what it does with aftertouch that arrives outside MPE.**" in explorer
+
+		levia = " ".join(prose_of("asm", "leviasynth").split())
+
+		assert "AFTERTOUCH IS SENT IN TWO KINDS, AND WHAT IS RECEIVED IS STATED FOR MPE ALONE." in levia
+		assert "`voice.aftertouch` holds `received`, as `asm/hydrasynth_explorer` does" in levia
 
 	def test_the_sibling_models_are_distinguished_from_a_chart_of_the_makers_own (self) -> None:
 		"""Four Hydrasynths, three manuals, and one document that compares them."""

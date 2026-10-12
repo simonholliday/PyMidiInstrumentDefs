@@ -284,6 +284,7 @@ class TestBundledCorpus:
 			"roland/tr_8",
 			"roland/tr_909",
 			"sequential/fourm",
+			"sequential/pro_3",
 			"sequential/prophet_10",
 			"sequential/prophet_5",
 			"sequential/prophet_6",
@@ -1727,6 +1728,7 @@ class TestAftertouch:
 			"korg/radias": ("channel", True),
 			"waldorf/microwave": ("both", None),
 			"roland/juno_x": ("both", True),
+			"sequential/pro_3": ("both", True),
 		}
 
 
@@ -9255,13 +9257,14 @@ class TestProphet6:
 		# rather than in the body, and the words are the same again. The Fourm, four years
 		# later than the Prophet-6, still says it in the user guide rather than the
 		# implementation, and says it about the same two things: the range NRPN covers and
-		# the 128 a controller is limited to.
+		# the 128 a controller is limited to. The Pro 3's guide says it twice, in its chapter on
+		# the global menu and again in its appendix.
 		preferred = sorted(name for name in pymidiinstrumentdefs.available([CORPUS])
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn == "preferred")
 
 		assert preferred == ["elektron/digitone_ii", "groove_synthesis/third_wave", "groove_synthesis/third_wave_24m",
 			"groove_synthesis/third_wave_8m", "oberheim/ob_x8", "oberheim/teo_5",
-			"sequential/fourm", "sequential/prophet_10", "sequential/prophet_5",
+			"sequential/fourm", "sequential/pro_3", "sequential/prophet_10", "sequential/prophet_5",
 			"sequential/prophet_6", "sequential/prophet_x", "sequential/take_5"]
 
 	def test_one_file_covers_the_keyboard_and_the_module (self) -> None:
@@ -21148,3 +21151,90 @@ class TestTheremini:
 		assert (theremini.sources["manual"].edition, theremini.sources["german_manual"].edition) == (None, "OS 1.1.X")
 		assert theremini.sources["downloads_list"].sha256 == \
 			pymidiinstrumentdefs.load("moog/little_phatty", [CORPUS]).sources["downloads_list"].sha256
+
+
+class TestPro3:
+
+	"""106 controllers by name and no range, sixteen NRPNs, and 353 program parameters counted and not carried."""
+
+	def test_a_hundred_and_six_controllers_with_no_range_and_no_direction (self) -> None:
+		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
+
+		by_controller = [control for control in pro_3.controls.values() if control.cc is not None]
+		numbers = sorted(control.cc for control in by_controller if control.cc is not None)
+
+		# Six unassigned, eight that carry an NRPN, eight channel mode messages: 128 less 22.
+		left_out = [10, 15, 39, 117, 118, 119] + [6, 38, 96, 97, 98, 99, 100, 101] + list(range(120, 128))
+		assert numbers == [number for number in range(128) if number not in left_out] and len(numbers) == 106
+
+		# The table prints no range, so each has a controller's own, and each goes both ways.
+		assert all(control.range == (0, 127) and not control.choices for control in by_controller)
+		assert all(control.direction == "both" and control.nrpn is None for control in by_controller)
+
+	def test_the_table_is_followed_where_the_short_lists_disagree_with_it (self) -> None:
+		"""Expression is 11 and the paraphonic switch 13, whatever byte the transmitted list prints."""
+		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
+
+		assert (pro_3.controls["expression"].cc, pro_3.controls["paraphonic_on_off"].cc) == (11, 13)
+		assert (pro_3.controls["bank_select_msb"].label, pro_3.controls["bank_select_lsb"].label) == \
+			("Bank Select Course", "Bank Select Fine")
+
+		said = " ".join(prose_of("sequential", "pro_3").split())
+
+		assert "**THE SHORT LISTS BEFORE THE TABLE DISAGREE WITH IT ON A NUMBER TWICE, AND THE TABLE IS FOLLOWED.**" in said
+
+	def test_sixteen_nrpns_and_no_program_parameter_among_them (self) -> None:
+		"""Fifteen global rows that the table and the guide's own chapter agree on, and the sequencer's play and stop."""
+		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
+
+		by_nrpn = {control.nrpn: control for control in pro_3.controls.values() if control.nrpn is not None}
+
+		assert sorted(by_nrpn) == [4098, 4100, 4101, 4102, 4103, 4104, 4107, 4109, 4110, 4113, 4114, 4116, 4117, 4118,
+			4123, 4188]
+		assert all(control.cc is None for control in by_nrpn.values())
+		assert [control.group for number, control in sorted(by_nrpn.items())] == ["global"] * 15 + ["clock"]
+
+		# The program parameters run from 0 to 352, and none is here.
+		assert min(by_nrpn) >= 4096 and len(pro_3.controls) == 122
+
+		assert by_nrpn[4102].choices == by_nrpn[4103].choices == {"nrpn": 0, "cc": 1, "off": 2}
+		assert by_nrpn[4101].choices == {"midi_1_port": 0, "midi_2_port": 1, "usb": 2, "midi_all": 3, "all": 4}
+		assert (by_nrpn[4098].range, by_nrpn[4113].range, by_nrpn[4114].range) == ((0, 16), (0, 7), (0, 3))
+		assert by_nrpn[4188].label == "Seq Play/Stop" and by_nrpn[4188].range == (0, 1)
+
+		said = " ".join(prose_of("sequential", "pro_3").split())
+
+		assert "**353 PROGRAM PARAMETERS HAVE AN NRPN AND A NAME, AND NO RANGE, SO NONE IS CARRIED.**" in said
+		assert "**FIFTEEN GLOBAL SETTINGS ARE CARRIED BY NRPN, AND THIRTY ARE NOT.**" in said
+		assert "**THE THIRTY LEFT OUT, AND WHY EACH.**" in said
+		assert "**No page says what the two settings are as shipped**" in said
+
+	def test_what_its_midi_and_its_voices_are_recorded_as (self) -> None:
+		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
+
+		assert (pro_3.midi.channels, pro_3.midi.clock, pro_3.midi.transport, pro_3.midi.nrpn, pro_3.midi.sysex) == \
+			((1, 16), "both", "receives", "preferred", True)
+		assert pro_3.midi.program_change is not None
+		assert (pro_3.midi.program_change.receives, pro_3.midi.program_change.sends,
+			pro_3.midi.program_change.presets) == (True, True, 1024)
+		assert (pro_3.midi.mode, pro_3.midi.control_change) == (None, None)
+
+		assert (pro_3.voice.addressing, pro_3.voice.paraphonic, pro_3.voice.voicing_modes, pro_3.voice.polyphony) == \
+			("pitches", True, (1, 2, 3), None)
+		assert pro_3.voice.velocity is not None and pro_3.voice.pitch_bend is not None
+		assert (pro_3.voice.velocity.note_on, pro_3.voice.velocity.note_off) == ("both", False)
+		assert (pro_3.voice.aftertouch, pro_3.voice.aftertouch_transmits) == ("both", True)
+		assert (pro_3.voice.pitch_bend.programmable, pro_3.voice.pitch_bend.semitones) == (True, None)
+
+	def test_the_firmware_is_the_second_addendum_s_and_the_guide_s_version_is_its_own (self) -> None:
+		pro_3 = pymidiinstrumentdefs.load("sequential/pro_3", [CORPUS])
+
+		assert pro_3.model.firmware == "1.2"
+		assert list(pro_3.sources) == ["guide", "addendum_1_1", "addendum_1_2", "documentation_page", "os_page"]
+		assert (pro_3.sources["guide"].edition, pro_3.sources["guide"].page_offset) == ("Version 1.2", 12)
+		assert pro_3.sources["os_page"].edition == "Main OS 1.2.1.0, Panel OS 1.1.0.13"
+
+		said = " ".join(prose_of("sequential", "pro_3").split())
+
+		assert "**THE GUIDE READS AS THE FIRST OPERATING SYSTEM'S, WHATEVER ITS TITLE SHEET SAYS.**" in said
+		assert "**A SETTING CHOOSES WHICH HALF OF THIS FILE THE INSTRUMENT HEARS.**" in said

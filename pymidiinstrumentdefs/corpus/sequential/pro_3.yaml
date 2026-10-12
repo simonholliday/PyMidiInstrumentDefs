@@ -1,0 +1,518 @@
+# **106 CONTROLLERS BY NAME AND NO RANGE, AND 353 NRPNS THAT ARE COUNTED AND NOT CARRIED.** The
+# guide's appendix has a row for every controller number from 0 to 127 and prints no range for any.
+# It gives 353 program parameters an NRPN and a name, again with no range, so those are counted in
+# the account and no control is made of one.
+#
+# **A SETTING CHOOSES WHICH HALF OF THIS FILE THE INSTRUMENT HEARS.** `MIDI Param Receive` is CC,
+# NRPN or off, and `MIDI Param Send` the same for what it sends. By the guide's sentences the 106
+# controllers are heard with it at CC, and the sixteen NRPNs here, fifteen global settings and the
+# sequencer's play and stop, with it at NRPN. No page says which it is set to as shipped.
+#
+# **THE GUIDE READS AS THE FIRST OPERATING SYSTEM'S, AND TWO ADDENDA FOLLOW IT.** Neither addendum
+# reprints a table, and, the five NRPNs the second adds apart, no document says a number in the
+# guide's tables changed or stood. Where the guide's table of global settings disagrees with the
+# guide's own chapter on them, or an addendum changes the setting, the row is left out and the
+# account says which and why.
+
+definition: 1
+
+model:
+  manufacturer: Sequential
+  name: Pro 3
+  # OS 1.2, WHICH THE SECOND ADDENDUM IS WRITTEN FOR: "Pro 3 OS version 1.2 adds Patch Morphing"
+  # (addendum_1_2 p. 1). Sequential's page gives the newest files their full numbers, "The newest
+  # version of the Pro 3 Main OS is Pro3_Main_1.2.1.0" (os_page) and "The newest version of the Pro
+  # 3 Panel OS is Pro3Panel_v1.1.0.13" (os_page), calls the two together the parts of the OS 1.2
+  # update, and lists no changes. The guide's own `Version 1.2` is taken here to be the document's:
+  # see the account.
+  firmware: "1.2"
+
+source: >-
+  **THE GUIDE'S APPENDIX F IS THE IMPLEMENTATION.** Sequential's documentation page lists five
+  documents for the Pro 3: `User Guide`, `User Guide 1.1 Addendum`, `User Guide 1.2 Addendum`,
+  `Sound List` and a German `Benutzerhandbuch` (documentation_page). The guide is 168 sheets,
+  with `Version 1.2` and `Feb, 2021` on its title sheet. Its Appendix F, MIDI Implementation, has
+  the settings that govern MIDI (guide pp. 134-135), the messages received and transmitted
+  (guide pp. 136-137), a table of all 128 controller numbers (guide pp. 138-139), the NRPN
+  messages (guide pp. 140-141), the program parameters by NRPN (guide pp. 141-144), the global
+  parameters by NRPN (guide pp. 145-146), one control NRPN (guide p. 147) and system exclusive
+  (guide pp. 147-150). No separate MIDI document is listed.
+
+  **THE GUIDE READS AS THE FIRST OPERATING SYSTEM'S, WHATEVER ITS TITLE SHEET SAYS.** Its global
+  menu has a setting called `MIDI Arp Notes` (guide p. 98), and the addendum for OS 1.1.0.0 says of
+  that setting: "What was originally the midi arp notes setting in the global menu in OS v1.0 is now
+  called midi arp/seq notes" (addendum_1_1 p. 10). The same addendum says the clock's modes were
+  renamed from master and slave to out and in (addendum_1_1 p. 1), and the guide prints master and
+  slave. It adds a duophonic mode (addendum_1_1 p. 9) that the guide does not have. So `Version 1.2`
+  is taken here to be the guide's own: no page says what it counts, and what the guide describes of
+  MIDI is OS 1.0 with none of the addenda's named changes worked in. One step of the guide already
+  has sequenced notes going out (guide p. 57), which the addendum dates to 1.1.0.0, though the
+  guide's sequencer tracks can also send notes by their destination (guide pp. 71, 121). **Neither
+  addendum reprints a table of the appendix, and no document says the controller table or the NRPN
+  numbers changed in OS 1.1.0.0 or 1.2**, beyond the five the second addendum adds (addendum_1_2 p.
+  4); none says they did not. The guide's numbers are taken to stand. Both addenda tell the owner to
+  reset the global settings after updating, the first because the update "adds new commands to the
+  global menu" (addendum_1_1 p. 2).
+
+  **THE CONTROLLER TABLE HAS A ROW FOR ALL 128 NUMBERS AND GIVES NONE A RANGE.** It is headed
+  `Additional Continuous Controllers Transmitted/Received`, with two columns, `CC#` and `Param`, and
+  a row for every number from 0 to 127 (guide pp. 138-139). 106 are carried below. Six are printed
+  `Unassigned`: 10, 15, 39, 117, 118 and 119. Eight are the machinery of NRPN and RPN and are not
+  parameters: 6 and 38 for data entry, 96 and 97 for increment and decrement, 98 and 99 for the
+  NRPN's number and 100 and 101 for the RPN's. Eight are the channel mode messages, 120 to 127. 106,
+  six, eight and eight are 128.
+
+  **EVERY ONE OF THE 106 GOES BOTH WAYS, BEHIND A SETTING FOR EACH WAY.** "They are transmitted when
+  MIDI Param Send is set to CC, and recognized/received when MIDI Param Receive is set to CC."
+  (guide p. 138). So no control states a direction. **The table prints no range for any**, so each
+  has a controller's own 0 to 127 here, and for no switch but the sustain pedal is the value that
+  turns it on given. The guide's chapters do print the panel's range for many of the parameters,
+  among them "Cutoff: 0...164" (guide p. 27) and "Frequency: 0...150" (guide p. 43), and no page
+  says how a controller's 128 values are laid over one. **No page says what the two settings are as
+  shipped**, or after the reset of the globals that Sequential's page tells an owner to do after
+  every update (os_page), so which of the two an instrument hears, if either, is for its owner to
+  look at. The labels are the table's, with its spellings: `Bank Select Course`, `FX2 On/Off` beside
+  `FX 1 On/Off`, `Noise level`, and `LFO 1 Freq` beside `LFO 2 Frequency`.
+
+  **THE SHORT LISTS BEFORE THE TABLE DISAGREE WITH IT ON A NUMBER TWICE, AND THE TABLE IS
+  FOLLOWED.** The list of transmitted controllers gives Expression the byte `0000 1101`, which is 13
+  (guide p. 137), where the table has Expression at 11 and `Paraphonic On/Off` at 13 (guide p. 138);
+  11 would be 0000 1011. And the list of received NRPN messages gives the RPN number's two halves
+  the bytes `0010 0101` and `0010 0100`, 37 and 36 (guide p. 141), where the table has `RPN Param
+  MSB` at 101 and `RPN Param LSB` at 100 (guide p. 139). The table is the one place that accounts
+  for every number, so its numbers are the ones recorded.
+
+  **WHAT THE SHORT LISTS ADD.** Six of the 106 are also on the list of received controllers, 1, 4,
+  7, 32, 64 and 74, which states no condition of a setting (guide p. 136), and the chapter puts the
+  wheels, pedal, breath, volume and expression behind another setting, `MIDI Control Enable`: "When
+  On, the synth will respond to MIDI controllers, including Pitch Wheel, Mod Wheel, Pedal, Breath,
+  Volume, and Expression." (guide p. 97). The appendix gives that setting a shorter list, without
+  breath and expression (guide p. 135). So two pages each put a setting over those six, or over some
+  of them (guide pp. 97, 138), and no page says how the two settings combine: whether any of the six
+  is heard with `MIDI Param Receive` at NRPN or off. The sustain pedal is the one switch with its
+  values printed: received, "Damper pedal: Holds envelopes in Sustain if 0100 0000 or higher" (guide
+  p. 136), which is 64, and sent, "Damper pedal: Sends 0 if off, 0111 1111 when on" (guide p. 137),
+  which is 127. The panel's volume knob sends 7 (guide p. 137). Breath and expression are on the
+  transmitted list alone, each when a pedal or a control voltage is assigned to it (guide p. 137).
+  And two of the channel mode messages left out below are given as received, 123 to clear all notes
+  and 121 to reset the controllers (guide p. 136).
+
+  **BANK SELECT IS PRINTED THREE WAYS.** The table has `Bank Select Course` at 0 and `Bank Select
+  Fine` at 32, and both are controls here. The two short lists have it at 32 alone, received as
+  "Bank Select: 1 - 4 select user banks 1 - 4; 5 - 8 select factory banks 1 - 4; 9 - 12 select
+  add-on banks 1 - 4 others ignored" (guide p. 136) and transmitted as "Bank Select: 0 - 9"
+  (guide p. 137). The guide gives the instrument eight banks, four of the owner's and four of
+  the factory's, and names no add-on bank anywhere else. No range is recorded for either
+  control.
+
+  **353 PROGRAM PARAMETERS HAVE AN NRPN AND A NAME, AND NO RANGE, SO NONE IS CARRIED.** "The
+  following table lists Pro 3 program parameters 0-352. Subsequent parameters can be found on the
+  Pro 3 Support page of the Sequential website." (guide p. 141). The table has two columns, `NRPN`
+  and `Param Name`, and 353 rows from 0 to 352 (guide pp. 141-144), fifty of them placeholders with
+  `Unused` in the name. No column gives a range, and the documentation page lists no document that
+  would (documentation_page). The guide's own reason for preferring NRPN is that its ranges are not
+  a controller's: "NRPNs are the preferred method of parameter transmission, since they cover the
+  complete range of all parameters, while CCs are limited to a range of 128." (guide p. 97). A
+  control with an NRPN and no printed range could only state a guessed one: the guide says a
+  controller's 128 values are not the whole range of every parameter, its chapters print the panel's
+  range for many parameters and not for all, and no page says an NRPN's value is the panel's. So the
+  353 are counted here and not carried. **Nor is an NRPN paired with a controller.** `Osc1Octave`
+  and `Osc. 1 Octave` read as one parameter, and no page says so of any pair.
+
+  **THE SECOND ADDENDUM NAMES FIVE OF THE NUMBERS THE GUIDE PRINTS AS UNUSED.** 304 to 308 are
+  Morph Source, Morph Target Bank, Morph Target Program, Morph Target Mode and Morph Amount
+  (addendum_1_2 p. 4), again with no range, and are not carried either.
+
+  **FIFTEEN GLOBAL SETTINGS ARE CARRIED BY NRPN, AND THIRTY ARE NOT.** "The table shows the global
+  data sent and received on global parameter dumps, and corresponding NRPN number when sent/received
+  individually." (guide p. 145). It has 45 rows, 4096 to 4140, each with a range and a description
+  and some with their values by name (guide pp. 145-146). **It disagrees with the guide's own
+  chapter on the global menu in row after row** (guide pp. 96-102), and it carries the first
+  operating system's names, `MIDI Arp Notes` and `Master` and `Slave` (guide p. 145). So a row is
+  carried only where the table and the chapter give the same number of values, under names that
+  agree where the table names them, the table does not print the row's description against a second
+  number or leave one of its set out, and no addendum changes the setting. The fifteen are in the
+  `global` group below, each with the table's range and the table's names. Five of those names
+  differ from the chapter's by a word or by capitals: the table's `MIDI 1 Port` and `MIDI 2 Port`
+  are the chapter's `MIDI 1` and `MIDI 2`, its `MIDI All` and `All` the chapter's `MIDI ALL` and
+  `ALL` (guide pp. 97, 145), and its `PassThru` the chapter's `Passthru` (guide pp. 98, 145). Three
+  descriptions differ: the table's `Pressure Curve` and `Pressure Enable` are the chapter's
+  Aftertouch Curve and Aftertouch Enable, and its `MIDI SysEx Enable` the chapter's `MIDI Sysex
+  Enable`.
+
+  **THE THIRTY LEFT OUT, AND WHY EACH.** Master Fine Tune and Master Coarse Tune, 4096 and 4097, are
+  printed 0-24 and 0-100, where the chapter's coarse tune has 25 steps and its fine tune 101 (guide
+  p. 96): each range fits the other row's name. MIDI Clock Mode, 4099, names four modes where the
+  chapter has five (guide p. 96), under names the first addendum changes. MIDI SysEx Cable, 4105,
+  has two values where the chapter has three, and MIDI Out Select, 4106, a range of 0-2 over four
+  named values where the chapter has six (guide p. 97). Local Control, 4108, is off and on where the
+  chapter has three states (guide p. 98). Seq Pedal Mode, 4111, is in no item of the chapter. MIDI
+  Arp Notes, 4112, agrees with the chapter and is the setting the first addendum replaces. Scale,
+  4115, is 0-64, the 65 values of the chapter's text and not of its heading, which runs from 1 to 17
+  (guide p. 100); the chapter disagreeing with itself, the row is left out. Pedal 1 Assign, 4119,
+  and Sustain Pedal Mode, 4122, are each 0-4 with no names. The guide calls the choice among
+  Footswitch Function's three values the sustain pedal's mode, "There are three modes to choose
+  from:" (guide p. 56), so that row has five values against three (guide p. 99). Pedal 1 Assign is
+  set here against the chapter's Pedal Function, a pairing no page makes, which has two (guide p.
+  99). Pedal 1 Polarity, 4120, Sustain Pedal Polarity, 4121, and Arp Sync, 4124, each have two
+  values under other names than the chapter's (guide pp. 98-99). And the sixteen rows for the
+  control voltages, 4125 to 4140, have the chapter's count of values, 0-255 against -127 to +128
+  (guide pp. 100-102), but their descriptions cannot be relied on: they print `CV1 In Scale` twice
+  and no CV2, the four input offsets twice, and no output scale, of which the chapter has four. The
+  four output offsets, 4137 to 4140, are printed once and whole, and are left out with the block
+  they stand in.
+
+  **THE GLOBAL TABLE HAS TWO MARKS AND NO FOOTNOTE.** An asterisk follows `MIDI Param Send` and
+  `Local Control` and a dagger follows `MIDI Param Receive` (guide p. 145), and the appendix has no
+  text for either mark. Another page gives a dump of the globals as "50 nibbles (LS then MS) for 25
+  Global parameters" (guide p. 150), which is not 45, and says of it: "The Global Parameters Data
+  Dump is not recognized when received. It is only transmitted when requested. NRPN messages are
+  used to change Globals." (guide p. 150). That is against the table's own sentence, which has the
+  globals sent and received on dumps.
+
+  **ONE CONTROL NRPN, AND IT IS ABOVE THE NUMBERS THE GUIDE ALLOWS FOR.** `Seq Play/Stop` is NRPN
+  4188, 0-1: "It is received and transmitted but not saved as part of a program." (guide p. 147). It
+  is a control here; the table does not say which of the two values plays. The guide says of an
+  NRPN's number and value that the upper half is small, "though in most cases the MSB will be zero
+  or one, and never more than two" (guide p. 140); 4096 and above need an upper half of 32.
+
+  **NRPNS GO BOTH WAYS TOO, BEHIND THE SAME TWO SETTINGS.** "They are transmitted when MIDI
+  Parameter Send is set to NRPN in globals, and received when MIDI Parameter Receive is set to NRPN
+  in globals." (guide p. 140). By that sentence a global setting is not heard as an NRPN while
+  parameters are received as controllers, and `MIDI Param Receive` is itself one of the fifteen: set
+  to CC or to off by NRPN, it could not be set back by one, and the dump of the globals is not heard
+  either.
+
+  **HOW AN NRPN IS HEARD.** The instrument sends one as the number's upper half on 99, its lower on
+  98, then the value's upper half on 6 and its lower on 38 (guide p. 140), and the list of what it
+  receives has the same four controllers (guide p. 141). "When receiving an NRPN, all messages do
+  not necessarily need to be transmitted, since the synth will track the most recent NRPN number"
+  (guide p. 140), and "Once an NRPN is selected, the synth will also respond to NRPN Data Increment
+  and Decrement commands" (guide p. 140).
+
+  **CLOCK BOTH WAYS, AND START AND STOP RECEIVED.** The clock mode has five settings: off, master,
+  "MIDI Clock is sent, but not received." (guide p. 96), slave, "MIDI Clock is received, but not
+  sent." (guide p. 96), slave with the clock passed on, and slave that ignores start and stop.
+  "The Pro 3 Sequencer will start and stop playback in response to MIDI Start/Stop/Continue
+  messages." (guide p. 115). No sentence says the instrument sends a start or a stop, and the
+  list of real-time messages has one row, the timing clock (guide p. 136). So `transport` is
+  `receives`.
+
+  **PROGRAMS: 1024, AND THE TWO LISTS MISCOUNT A BANK.** "The Pro 3 contains a total of 1024
+  programs." (guide p. 7), in eight banks of 128. Program change goes both ways, each behind a
+  setting, and the two lists give it as "0-127 for Programs 1-127 within current Bank"
+  (guide p. 136) and "0-127 for Programs 00-128 within current Bank" (guide p. 137), which are
+  127 and 129 programs for 128 values.
+
+  **ONE VOICE, OR THREE THAT SHARE A FILTER, OR TWO.** "The Pro 3 was designed primarily as a
+  monophonic instrument. But we added a 3-voice paraphonic playback mode for extra performance
+  power." (guide p. 12), and "(However, the filter and its envelope are shared between the three
+  oscillators.)" (guide p. 12). OS 1.1.0.0 added a third way: "The Pro 3 now features duophonic
+  playback mode." (addendum_1_1 p. 9), reached with the paraphonic button and then a second step,
+  "On Oscillator 3, press the low freq button." (addendum_1_1 p. 9). Program parameter 29 is
+  `Osc3LowFreq` (guide p. 141) and controller 87 `Osc. 3 LFO Mode On/Off` (guide p. 138), names that
+  read as that button's: "Low Freq: Turns Oscillator 3 into an LFO" (guide p. 19). No page says so
+  in words. The paraphonic mode is the program's: program parameter 64 is `ParaphonicOn` (guide p.
+  142), and controller 13 `Paraphonic On/Off`. So `voicing_modes` is one, two and three, and
+  `polyphony` is not recorded.
+
+  NOT RECORDED: a range for any controller or program parameter, neither table printing one; the
+  thirty global rows above; the 353 program parameters and the five the second addendum names;
+  `mode`, there being no chart, though the table names 124 to 127 as the omni, mono and poly
+  messages; a note range, the two lists' legends giving a note's number as 0 to 127 (guide pp.
+  136-137) and the sequence editor a step's note as C0 to G10 (guide p. 73), and no page a range of
+  notes the keyboard has or the oscillators will sound; a bend range, which is the program's; what,
+  if anything, Main OS 1.2.1.0 changed from 1.2, the page that serves it listing no changes
+  (os_page); what the two settings are as shipped; and what the two marks in the global table point
+  to.
+
+sources:
+  guide:
+    kind: manual
+    title: Pro 3 User's Guide
+    edition: Version 1.2
+    dated: "2021-02"
+    landing: "https://sequential.com/support/download/pro-3-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/02/Pro-3-Users-Guide-1.2.pdf"
+    sha256: ef7213925f5eced3caaea0f0ff43ad65738d4042bec3bc7ec9688854b42a43de
+    retrieved: 2026-10-11
+    # 168 sheets. Twelve sheets of cover, imprint and contents come before page 1, so the printed
+    # page is the sheet less twelve: p. 134 is sheet 146. The edition and the date are the title
+    # sheet's, `Version 1.2` and `Feb, 2021`, over a copyright of 2020. **THE VERSION IS TAKEN HERE
+    # TO BE THE DOCUMENT'S AND NOT THE OPERATING SYSTEM'S**: see the account. The last five pages of
+    # the appendix, 151 to 155, carry a running foot and nothing else.
+    page_offset: 12
+  addendum_1_1:
+    kind: firmware_addendum
+    title: Pro 3 OS 1.1.0.0 Addendum
+    dated: 2020-07-28
+    landing: "https://sequential.com/support/download/pro-3-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2020/07/Pro-3-Manual-Addendum-OS-v1.1.0.0-1.pdf"
+    sha256: 60efe97db306934a2e04c352c9b82f1f853ee085665b06602ab10691cd9d24e9
+    retrieved: 2026-10-11
+    # 11 sheets, each printing its own number. The title is its first page's head; the page that
+    # serves it calls it `User Guide 1.1 Addendum`. It prints no date: this is the day the file
+    # was made, by its own metadata. Cited for what OS 1.1.0.0 changed that bears on MIDI. It
+    # prints no controller number and no NRPN.
+  addendum_1_2:
+    kind: firmware_addendum
+    title: Pro 3 OS 1.2. Addendum
+    dated: 2021-07-08
+    landing: "https://sequential.com/support/download/pro-3-documentation/"
+    url: "https://sequential.com/wp-content/uploads/2021/12/Pro-3-OS-1.2-Manual-Addendum.pdf"
+    sha256: d3231fb33181238890b41ef53b013b370dc0bf0a7631b54e78076151758cefc6
+    retrieved: 2026-10-11
+    # 4 sheets, each printing its own number. The title is its first page's head, full stop and
+    # all. It prints no date: this is the day the file was made, by its own metadata. Cited for
+    # the version and for the five NRPNs of Patch Morphing.
+  documentation_page:
+    kind: web_page
+    title: "Pro 3 Documentation - Sequential"
+    landing: "https://sequential.com/support/download/pro-3-documentation/"
+    url: "https://sequential.com/support/download/pro-3-documentation/"
+    sha256: 7e3261dd4773382c0fd43620d701f25d9eaa3a37d3fb66024065c705c04f0374
+    retrieved: 2026-10-11
+    paginated: false
+    # Cited for what Sequential serves for the Pro 3: the five documents named in the account,
+    # and no list of parameters among them. The digest is of the page's visible text; the markup
+    # as served is kept beside it.
+  os_page:
+    kind: release_notes
+    title: "Pro 3 Operating System - Sequential"
+    edition: Main OS 1.2.1.0, Panel OS 1.1.0.13
+    landing: "https://sequential.com/support/download/pro-3-operating-system/"
+    url: "https://sequential.com/support/download/pro-3-operating-system/"
+    sha256: 8b58d4464a8678cdc94a18f45d757340e79ca70def23ace1c4edb007609f3c47
+    retrieved: 2026-10-11
+    paginated: false
+    # Cited for which operating system was newest when this was checked, and for nothing about
+    # MIDI but that the operating system is sent to the instrument by system exclusive. The
+    # digest is of the page's visible text. The page lists no changes.
+
+midi:
+  # "Choosing all receives on all 16 channels." (guide p. 96), and otherwise one of 1 to 16, to
+  # send and to receive. Which one an instrument is on belongs to its owner's rig, not here.
+  channels: [1, 16]
+  # A setting: sent as master, received as slave. See the account.
+  clock: both
+  # Start, stop and continue are answered by the sequencer (guide p. 115). No sentence has the
+  # instrument send them.
+  transport: receives
+  program_change:
+    # Both ways within the current bank (guide pp. 136-137), each behind a global setting (guide p.
+    # 97).
+    receives: true
+    sends: true
+    # "The Pro 3 contains a total of 1024 programs." (guide p. 7).
+    presets: 1024
+  # "NRPNs are the preferred method of parameter transmission, since they cover the complete range
+  # of all parameters, while CCs are limited to a range of 128." (guide p. 97). **WHICH OF THE TWO
+  # IT SENDS, AND WHICH IT HEARS, ARE TWO GLOBAL SETTINGS**, and by the table's own sentence the 106
+  # controllers below are heard with the second at CC (guide p. 138).
+  nrpn: preferred
+  # A program, the edit buffer, the globals and the play lists each have a message (guide pp.
+  # 147-150); a bank is dumped from the global menu (guide p. 102); and the operating system is sent
+  # to the instrument by it (os_page).
+  sysex: true
+  # NOT RECORDED: `mode`, the guide having no chart, and `control_change`, which wants no word
+  # where controllers are listed.
+
+voice:
+  addressing: pitches
+  # One voice, or three that share one filter, or since OS 1.1.0.0 two: see the account. NOT
+  # RECORDED: `polyphony`, the mode being a program's parameter and a controller, 13.
+  paraphonic: true
+  voicing_modes: [1, 2, 3]
+  velocity:
+    # Received on note on, whose row is "Note On. Note off if vvvvvvv = 0" (guide p. 136); no page
+    # says outright that a received velocity is used. Sent: the transmitted Note On has a value for
+    # its third byte where the transmitted Note Off's is printed as zeros (guide p. 137), and a
+    # sequencer step sends a note on only where a velocity above zero is set for it (guide p. 71).
+    # "Note Off. Velocity is ignored" (guide p. 136).
+    note_on: both
+    note_off: false
+  # Polyphonic key pressure and channel pressure are both in the list of what is received (guide p.
+  # 136), and channel pressure alone in the list of what is transmitted (guide p. 137); the
+  # keyboard's own is the channel kind (guide p. 89), and no page says what polyphonic pressure does
+  # when it arrives. One setting governs both ways: "If disabled, the Pro 3 will neither respond to
+  # nor transmit aftertouch/key pressure data." (guide p. 100).
+  aftertouch: both
+  aftertouch_transmits: true
+  pitch_bend:
+    # A program's two settings, up to 12 semitones upward and 24 downward (guide p. 95).
+    programmable: true
+
+groups:
+  # NOT THE MAKER'S WORDS. The controller table is one flat list of `CC#` and `Param`, so the
+  # sorting below is this file's own and no page's. The labels of the controls are the table's.
+  performance: Performance controllers
+  oscillators: Oscillators and mixer
+  glide: Glide
+  filter: Filters
+  feedback: Feedback and distortion
+  envelopes: Envelopes
+  lfo: Low frequency oscillators
+  effects: Effects
+  clock: Clock, arpeggiator and sequencer
+  global: Global settings
+
+controls:
+
+  # **EVERY NUMBER AND LABEL OF THE FIRST 106 IS THE CONTROLLER TABLE'S (guide pp. 138-139), AND
+  # NONE HAS A RANGE, THE TABLE PRINTING NONE.** Each is sent and received.
+
+  # Performance controllers ─────────────────────────────────────
+  bank_select_msb:                       {label: Bank Select Course, cc: 0, group: performance}
+  bank_select_lsb:                       {label: Bank Select Fine, cc: 32, group: performance}
+  mod_wheel:                             {label: Mod Wheel, cc: 1, group: performance}
+  breath_controller:                     {label: Breath Controller, cc: 2, group: performance}
+  foot_controller:                       {label: Foot Controller, cc: 4, group: performance}
+  midi_volume:                           {label: MIDI Volume, cc: 7, group: performance}
+  expression:                            {label: Expression, cc: 11, group: performance}
+  sustain_pedal:                         {label: Sustain Pedal, cc: 64, group: performance}
+  brightness:                            {label: Brightness, cc: 74, group: performance}
+  slider_1_position:                     {label: Slider 1 Position, cc: 14, group: performance}
+  voice_volume:                          {label: Voice Volume, cc: 12, group: performance}
+  paraphonic_on_off:                     {label: Paraphonic On/Off, cc: 13, group: performance}
+
+  # Oscillators and mixer ───────────────────────────────────────
+  osc_1_octave:                          {label: Osc. 1 Octave, cc: 66, group: oscillators}
+  osc_1_fine_frequency:                  {label: Osc. 1 Fine Frequency, cc: 67, group: oscillators}
+  osc_1_level:                           {label: Osc. 1 Level, cc: 68, group: oscillators}
+  osc_1_shape:                           {label: Osc. 1 Shape, cc: 69, group: oscillators}
+  osc_1_shape_mod:                       {label: Osc. 1 Shape Mod, cc: 70, group: oscillators}
+  osc_1_sync_on_off:                     {label: Osc. 1 Sync On/Off, cc: 71, group: oscillators}
+  osc_1_slop:                            {label: Osc. 1 Slop, cc: 72, group: oscillators}
+  noise_level:                           {label: Noise level, cc: 73, group: oscillators}
+  osc_2_octave:                          {label: Osc. 2 Octave, cc: 75, group: oscillators}
+  osc_2_fine_frequency:                  {label: Osc. 2 Fine Frequency, cc: 76, group: oscillators}
+  osc_2_level:                           {label: Osc. 2 Level, cc: 77, group: oscillators}
+  osc_2_shape:                           {label: Osc. 2 Shape, cc: 78, group: oscillators}
+  osc_2_shape_mod:                       {label: Osc. 2 Shape Mod, cc: 79, group: oscillators}
+  osc_2_sync_on_off:                     {label: Osc. 2 Sync On/Off, cc: 80, group: oscillators}
+  osc_2_slop:                            {label: Osc. 2 Slop, cc: 81, group: oscillators}
+  osc_3_octave:                          {label: Osc. 3 Octave, cc: 82, group: oscillators}
+  osc_3_fine_frequency:                  {label: Osc. 3 Fine Frequency, cc: 83, group: oscillators}
+  osc_3_level:                           {label: Osc. 3 Level, cc: 84, group: oscillators}
+  osc_3_shape:                           {label: Osc. 3 Shape, cc: 85, group: oscillators}
+  osc_3_shape_mod:                       {label: Osc. 3 Shape Mod, cc: 86, group: oscillators}
+  osc_3_lfo_mode_on_off:                 {label: Osc. 3 LFO Mode On/Off, cc: 87, group: oscillators}
+  osc_3_slop:                            {label: Osc. 3 Slop, cc: 88, group: oscillators}
+  audio_in_level:                        {label: Audio In Level, cc: 8, group: oscillators}
+  audio_in_gain:                         {label: Audio In Gain, cc: 9, group: oscillators}
+  ext_in_env_follower_attack:            {label: Ext. In Env. Follower Attack, cc: 93, group: oscillators}
+  ext_in_env_follower_release:           {label: Ext. In Env. Follower Release, cc: 94, group: oscillators}
+  ext_in_gain_threshold:                 {label: Ext. In Gain Threshold, cc: 95, group: oscillators}
+
+  # Glide ───────────────────────────────────────────────────────
+  oscillator_glide_on_off:               {label: Oscillator Glide On/Off, cc: 65, group: glide}
+  glide_mode:                            {label: Glide Mode (Portamento Time), cc: 5, group: glide}
+  osc_1_glide_rate:                      {label: Osc. 1 Glide Rate, cc: 54, group: glide}
+  osc_2_glide_rate:                      {label: Osc. 2 Glide Rate, cc: 55, group: glide}
+  osc_3_glide_rate:                      {label: Osc. 3 Glide Rate, cc: 56, group: glide}
+
+  # Filters ─────────────────────────────────────────────────────
+  filter_cutoff:                         {label: Filter Cutoff, cc: 33, group: filter}
+  filter_resonance:                      {label: Filter Resonance, cc: 34, group: filter}
+  filter_keyboard_tracking_amount:       {label: Filter Keyboard Tracking Amount, cc: 35, group: filter}
+  filter_drive:                          {label: Filter Drive, cc: 36, group: filter}
+  filter_type:                           {label: Filter Type, cc: 37, group: filter}
+  ladder_res_comp:                       {label: Ladder Res Comp, cc: 102, group: filter}
+  state_variable_filter_mode:            {label: State Variable Filter Mode (LP-Notch-HP), cc: 103, group: filter}
+  state_variable_filter_normal_bandpass: {label: State Variable Filter Normal/Bandpass, cc: 104, group: filter}
+
+  # Feedback and distortion ─────────────────────────────────────
+  feedback_amount:                       {label: Feedback Amount, cc: 89, group: feedback}
+  feedback_tuning:                       {label: Feedback Tuning, cc: 90, group: feedback}
+  distortion_amount:                     {label: Distortion Amount, cc: 91, group: feedback}
+  grunge_on_off:                         {label: Grunge On/Off, cc: 92, group: feedback}
+
+  # Envelopes ───────────────────────────────────────────────────
+  vca_env_amount:                        {label: VCA Env. Amount, cc: 40, group: envelopes}
+  vca_env_velocity_on_off:               {label: VCA Env. Velocity On/Off, cc: 41, group: envelopes}
+  vca_env_delay:                         {label: VCA Env. Delay, cc: 42, group: envelopes}
+  vca_env_attack:                        {label: VCA Env. Attack, cc: 43, group: envelopes}
+  vca_env_decay:                         {label: VCA Env. Decay, cc: 44, group: envelopes}
+  vca_env_sustain:                       {label: VCA Env. Sustain, cc: 45, group: envelopes}
+  vca_env_release:                       {label: VCA Env. Release, cc: 46, group: envelopes}
+  filter_env_amount:                     {label: Filter Env. Amount, cc: 47, group: envelopes}
+  filter_env_velocity_on_off:            {label: Filter Env. Velocity On/Off, cc: 48, group: envelopes}
+  filter_env_delay:                      {label: Filter Env. Delay, cc: 49, group: envelopes}
+  filter_env_attack:                     {label: Filter Env. Attack, cc: 50, group: envelopes}
+  filter_env_decay:                      {label: Filter Env. Decay, cc: 51, group: envelopes}
+  filter_env_sustain:                    {label: Filter Env. Sustain, cc: 52, group: envelopes}
+  filter_env_release:                    {label: Filter Env. Release, cc: 53, group: envelopes}
+
+  # Low frequency oscillators ───────────────────────────────────
+  lfo_1_freq:                            {label: LFO 1 Freq, cc: 105, group: lfo}
+  lfo_1_amount:                          {label: LFO 1 Amount, cc: 106, group: lfo}
+  lfo_1_shape:                           {label: LFO 1 Shape, cc: 107, group: lfo}
+  lfo_1_sync_on_off:                     {label: LFO 1 Sync On/Off, cc: 108, group: lfo}
+  lfo_2_frequency:                       {label: LFO 2 Frequency, cc: 109, group: lfo}
+  lfo_2_amount:                          {label: LFO 2 Amount, cc: 110, group: lfo}
+  lfo_2_shape:                           {label: LFO 2 Shape, cc: 111, group: lfo}
+  lfo_2_sync_on_off:                     {label: LFO 2 Sync On/Off, cc: 112, group: lfo}
+  lfo_3_frequency:                       {label: LFO 3 Frequency, cc: 113, group: lfo}
+  lfo_3_amount:                          {label: LFO 3 Amount, cc: 114, group: lfo}
+  lfo_3_shape:                           {label: LFO 3 Shape, cc: 115, group: lfo}
+  lfo_3_sync_on_off:                     {label: LFO 3 Sync On/Off, cc: 116, group: lfo}
+
+  # Effects ─────────────────────────────────────────────────────
+  fx_1_on_off:                           {label: FX 1 On/Off, cc: 16, group: effects}
+  fx_1_type:                             {label: FX 1 Type, cc: 17, group: effects}
+  fx_1_mix:                              {label: FX 1 Mix, cc: 18, group: effects}
+  fx_1_param_1:                          {label: FX 1 Param 1, cc: 19, group: effects}
+  fx_1_param_2:                          {label: FX 1 Param 2, cc: 20, group: effects}
+  fx_1_param_3:                          {label: FX 1 Param 3, cc: 21, group: effects}
+  fx_1_sync_on_off:                      {label: FX 1 Sync On/Off, cc: 22, group: effects}
+  fx_1_sync_rate:                        {label: FX 1 Sync Rate, cc: 23, group: effects}
+  fx_2_on_off:                           {label: FX2 On/Off, cc: 24, group: effects}
+  fx_2_select:                           {label: FX 2 Select, cc: 25, group: effects}
+  fx_2_mix:                              {label: FX 2 Mix, cc: 26, group: effects}
+  fx_2_param_1:                          {label: FX 2 Param 1, cc: 27, group: effects}
+  fx_2_param_2:                          {label: FX 2 Param 2, cc: 28, group: effects}
+  fx_2_param_3:                          {label: FX 2 Param 3, cc: 29, group: effects}
+  fx_2_sync_on_off:                      {label: FX 2 Sync On/Off, cc: 30, group: effects}
+  fx_2_sync_rate:                        {label: FX 2 Sync Rate, cc: 31, group: effects}
+
+  # Clock, arpeggiator and sequencer ────────────────────────────
+  bpm:                                   {label: BPM, cc: 3, group: clock}
+  swing:                                 {label: Swing, cc: 57, group: clock}
+  arp_on_off:                            {label: Arp. On/Off, cc: 58, group: clock}
+  arp_mode:                              {label: Arp. Mode, cc: 59, group: clock}
+  arp_range:                             {label: Arp. Range, cc: 60, group: clock}
+  arp_relatch_on_off:                    {label: Arp. Relatch On/Off, cc: 61, group: clock}
+  clock_divide:                          {label: Clock Divide, cc: 62, group: clock}
+  arp_repeats:                           {label: Arp. Repeats, cc: 63, group: clock}
+
+  # The one row of the Control NRPN Data table (guide p. 147): received and transmitted, and not
+  # saved with a program. Which of its two values plays is not said.
+  seq_play_stop:                         {label: Seq Play/Stop, nrpn: 4188, range: [0, 1], group: clock}
+
+  # Global settings ──────────────────────────────────────────────
+  # FIFTEEN OF THE TABLE'S 45 ROWS (guide pp. 145-146): see the account for the rule and for the
+  # thirty left out. Each range and each named value is the table's, and each is an NRPN alone.
+  # 0 is All, the one value the table names.
+  midi_channel:                          {label: MIDI Channel, nrpn: 4098, range: [0, 16], group: global}
+  midi_clock_cable_in:                   {label: MIDI Clock Cable In, nrpn: 4100, range: [0, 1], choices: {midi_port: 0, usb: 1}, group: global}
+  midi_clock_cable_out:                  {label: MIDI Clock Cable Out, nrpn: 4101, range: [0, 4], choices: {midi_1_port: 0, midi_2_port: 1, usb: 2, midi_all: 3, all: 4}, group: global}
+  # **SETTING THIS CHANGES WHAT THE INSTRUMENT SENDS**: NRPNs, the controllers above, or neither.
+  # Its row has an asterisk in the table, and the appendix no footnote.
+  midi_param_send:                       {label: MIDI Param Send, nrpn: 4102, range: [0, 2], choices: {nrpn: 0, cc: 1, "off": 2}, group: global}
+  # **SETTING THIS CHANGES WHAT THE INSTRUMENT HEARS**: NRPNs, the controllers above, or neither. By
+  # the guide's sentences (guide pp. 140, 150), once it is off NRPN no documented message sets it
+  # back. Its row has a dagger and no footnote.
+  midi_param_receive:                    {label: MIDI Param Receive, nrpn: 4103, range: [0, 2], choices: {nrpn: 0, cc: 1, "off": 2}, group: global}
+  midi_control_enable:                   {label: MIDI Control Enable, nrpn: 4104, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  midi_sysex_enable:                     {label: MIDI SysEx Enable, nrpn: 4107, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  mono_stereo:                           {label: Mono/Stereo, nrpn: 4109, range: [0, 1], choices: {stereo: 0, mono: 1}, group: global}
+  pot_mode:                              {label: Pot Mode, nrpn: 4110, range: [0, 2], choices: {relative: 0, passthru: 1, jump: 2}, group: global}
+  # Eight curves, which the table does not name.
+  velocity_curve:                        {label: Velocity Curve, nrpn: 4113, range: [0, 7], group: global}
+  # The global menu's Aftertouch Curve, four curves.
+  pressure_curve:                        {label: Pressure Curve, nrpn: 4114, range: [0, 3], group: global}
+  midi_program_send:                     {label: MIDI Program Send, nrpn: 4116, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  midi_program_receive:                  {label: MIDI Program Receive, nrpn: 4117, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  screen_saver:                          {label: Screen Saver, nrpn: 4118, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}
+  # The global menu's Aftertouch Enable.
+  pressure_enable:                       {label: Pressure Enable, nrpn: 4123, range: [0, 1], choices: {"off": 0, "on": 1}, group: global}

@@ -22268,6 +22268,7 @@ class TestWebPageTitles:
 		("roland/tr_8", "manuals_page"): "Roland - Support - TR-8 - Owner's Manuals",
 		("teenage_engineering/op_xy", "product_page"): "OP–XY - teenage engineering",
 		("teenage_engineering/op_z", "product_page"): "OP–Z - teenage engineering",
+		("udo_audio/super_6", "support_page"): "Super 6 | Support & Downloads",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

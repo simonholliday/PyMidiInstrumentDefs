@@ -111,9 +111,26 @@ source: >-
   controllers recorded here are not. "In MULTI mode the Wavestation responds to Performance
   selections in each channel" (reference p. 77). So each part receives notes, controllers and
   program changes. A further channel, set per setup, takes effects modulation: "This is the MIDI
-  channel that will receive controller data for effects modulation sources" (reference p. 77). The
-  controls below name no part, because which channel carries them depends on the mode, which this
-  format cannot say.
+  channel that will receive controller data for effects modulation sources" (reference p. 77).
+
+  **SO FIVE CONTROLLERS ARE WRITTEN TWICE.** Naming no part a control is on the basic channel: what
+  POLY mode listens on, and what the keyboard sends on unless Xmit Mode is PART CHANNEL (reference
+  p. 74). As shipped, in OMNI, it is answered on any channel. Keyed `multiset_` it names the part, a
+  channel of a multimode setup, which MULTI mode uses and MONO mode too (addendum p. 12): modulation
+  wheel, foot control, volume, sustain and bank select's lower half, numbers 1, 4, 7, 64 and 32.
+  Volume is the one of the five that a page names for these channels, and from software 3.0 the one
+  that is sent there as well, when a setup's level is changed on the instrument: "Whenever you
+  change the volume of a Performance in a Multiset, a MIDI Volume message is sent out on its
+  channel" (addendum p. 10). The other four rest on the exclusion above and are received only,
+  since what the keyboard sends goes out on the basic channel or on the channels of a Performance's
+  Parts (reference p. 74). Sustain has a switch on every Part of a Performance as well, which
+  "Chooses whether the Part responds to the Sustain." (reference p. 86). The joystick's two numbers
+  reach a channel's Performance as the four do, and name no part only because the rule this follows
+  covers the standard controllers. Bank select's upper half is sent and never received, so it has
+  no twin. **A setup's rows are MIDI channels 1 to 16 whatever the basic channel is.** So the row
+  that shares the basic channel's number, which is the first by the fiction recorded under `parts`,
+  is told each of the five numbers twice, once under each key. The two keys are one message on
+  that channel in two different modes.
 
   IT ANSWERS TO BOTH KINDS OF AFTERTOUCH AND ITS KEYBOARD SENDS ONE. "Monophonic and polyphonic
   aftertouch are recognized but may or may not have an obvious effect, depending on the specific
@@ -262,11 +279,14 @@ voice:
     programmable: true
 
 parts:
-  # **SIXTEEN CHANNELS, A PERFORMANCE EACH, IN MULTI MODE ONLY.** `channel_offset` carries the
+  # **SIXTEEN CHANNELS, A PERFORMANCE EACH, IN MULTI AND MONO MODES.** `channel_offset` carries the
   # fiction it carries in `roland/jd_xi` and `yamaha/seqtrak`: the field says a part's channel is
   # derived from a base, and in MULTI mode the basic channel is "ignored in favor of the Multi-Mode
   # Setups" (reference p. 69) - each setup row is a channel, 1 to 16, and cannot be moved. The
   # numbers a consumer sends are right, and the fiction is recorded here.
+  # A CONTROL NAMING THIS PART IS ON A MULTIMODE SETUP'S CHANNEL, and one naming no part is on the
+  # basic channel: see the account. The row sharing the basic channel's number, the first by the
+  # same fiction, is given both.
   multiset:
     label: Multiset channel
     count: 16
@@ -296,3 +316,12 @@ controls:
   # Sent and never received, `Always 0` (reference p. 109), and crossed under `Recognized` on the
   # chart (player p. 66).
   bank_select_msb:  {label: Bank Select MSB, cc: 0, range: [0, 0], direction: transmits}
+
+  # THE SAME FIVE ON A MULTIMODE SETUP'S CHANNEL: see the account. Each control above names no part
+  # and is on the basic channel. Volume is sent there as well as received, from software 3.0
+  # (addendum p. 10), and the other four are received only.
+  multiset_modulation_wheel: {label: Modulation Wheel, cc: 1, direction: receives, part: multiset}
+  multiset_foot_control:     {label: Foot Control, cc: 4, direction: receives, part: multiset}
+  multiset_volume:           {label: Volume, cc: 7, part: multiset}
+  multiset_sustain_switch:   {label: Sustain Switch, cc: 64, values: {"off": 0, "on": 64}, direction: receives, part: multiset}
+  multiset_bank_select_lsb:  {label: Bank Select LSB, cc: 32, range: [0, 1], values: {ram1_ram2: 0, rom_card: 1}, direction: receives, part: multiset}

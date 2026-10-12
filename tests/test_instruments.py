@@ -19302,6 +19302,10 @@ class TestWavestation:
 		assert {control.cc for control in wavestation.controls.values()} == {0, 1, 4, 7, 16, 17, 32, 64}
 		assert wavestation.controls["volume"].direction == "both"
 
+		# Eight numbers, five of them written a second time for a channel of a multimode setup.
+		assert len(wavestation.controls) == 13
+		assert len([control for control in wavestation.controls.values() if control.part is None]) == 8
+
 		account = " ".join((wavestation.source or "").split())
 
 		assert "This parameter has always responded to MIDI Volume (Controller #7); now, MIDI " \
@@ -19342,6 +19346,25 @@ class TestWavestation:
 		assert (multiset.count, multiset.channel_offset) == (16, 0)
 		assert multiset.receives == ("notes", "controls", "program_change")
 		assert wavestation.parts["fx_control"].receives == ("controls",)
+
+		# **A control naming no part is on the basic channel**, and five standard controllers are
+		# written again for a channel of a multimode setup. Until 2026-10-12 no control here named
+		# a part. Volume alone is sent there too, which the 1991 addendum says in so many words.
+		own = {key: control for key, control in wavestation.controls.items() if control.part}
+
+		assert {control.part for control in own.values()} == {"multiset"}
+		assert sorted(control.cc for control in own.values() if control.cc is not None) == [1, 4, 7, 32, 64]
+		assert all(key.startswith("multiset_") for key in own)
+		assert all(wavestation.controls[key[len("multiset_"):]].label == control.label for key, control in own.items())
+		assert {key: control.direction for key, control in own.items()} == {
+			"multiset_modulation_wheel": "receives", "multiset_foot_control": "receives",
+			"multiset_volume": "both", "multiset_sustain_switch": "receives",
+			"multiset_bank_select_lsb": "receives"}
+
+		# The first of the sixteen is on the basic channel by the field's fiction, so it is told
+		# both keys; the other fifteen get the five that name them.
+		assert [control.name for control in wavestation.controls_reaching("multiset", 1)] == list(own)
+		assert len(wavestation.controls_reaching("multiset", 0)) == 13
 
 	def test_thirty_two_voices_spent_one_two_or_four_a_note (self) -> None:
 		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])

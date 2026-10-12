@@ -15513,8 +15513,12 @@ class TestProtein:
 			if control.cc is not None) == [1, 2, 11, 32, 64, 74]
 		assert protein.controls["bank_select_lsb"].direction == "receives"
 
+		# The five sources are things the modulation matrix reads, and no page says one is sent.
+		assert {control.direction for control in protein.controls.values()} == {"receives"}
+
 		flat = " ".join(prose_of("waldorf", "protein").split())
 
+		assert "**THE FIVE SOURCES ARE RECEIVED, AND `direction` SAYS SO.**" in flat
 		assert "**AND TEN MORE NUMBERS ARE NOT BELOW, BECAUSE THE MAKER PRINTED A RANGE AND NOT" \
 			" A LIST.**" in flat
 		assert "**Only 22 and 31 are printed.**" in flat
@@ -15575,12 +15579,13 @@ class TestProtein:
 		for mode in ("single", "layered", "round_robin", "random_robin"):
 			assert not protein.parts_in(mode), mode
 
-		# No control names the part, so every mode has every control, and in Midi Split the
-		# six reach the base channel's layer and no other. No page says that of them.
+		# No control names the part, so every mode has every control. And a layer is recorded
+		# as taking notes on its channel and nothing more, which is all the page says of it, so
+		# the six stay with the instrument and are filed under no layer.
 		assert all(len(protein.controls_in(mode)) == len(protein.controls) for mode in protein.modes)
-		assert len(protein.controls_reaching("layer", 0)) == len(protein.controls)
+		assert protein.parts["layer"].receives == ("notes",)
 
-		for instance in (1, 2, 3):
+		for instance in range(4):
 			assert not protein.controls_reaching("layer", instance), instance
 
 		said = prose_of("waldorf", "protein")
@@ -15593,6 +15598,7 @@ class TestProtein:
 		assert "**THE LAYERS TAKE CHANNELS OF THEIR OWN IN ONE MODE OF FIVE, AND THE PART NAMES" \
 			" IT.**" in flat
 		assert "**IN THE OTHER FOUR MODES NO LAYER HAS A CHANNEL OF ITS OWN**" in flat
+		assert "**A LAYER TAKES NOTES ON ITS CHANNEL, AND NOTHING MORE IS CLAIMED.**" in flat
 
 	def test_eight_voices_shared_where_the_ob_x8_has_four_to_a_half (self) -> None:
 		"""One figure is the whole answer here, where the OB-X8 needs two."""

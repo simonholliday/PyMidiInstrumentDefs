@@ -203,10 +203,10 @@ sources:
     page_offset: 0
   downloads_page:
     kind: download_page
-    title: FAQ / Downloads | Protein | Waldorf Music
+    title: FAQ Protein – Waldorf Music
     landing: "https://waldorfmusic.com/protein/"
     url: "https://waldorfmusic.com/faq-protein/"
-    sha256: d6e2a030b2990f3be8d191a99d63ed3ad90244559b99c8b0cfe22ad8797a335f
+    sha256: 0a0147fd53cd9d15cd9b891bc427d370b5952fc5806d8f6cb6f76f284b91aa93
     retrieved: 2026-10-06
     paginated: false
     # **Cited for what is offered and for one of the five being unnamed.** The product page at
@@ -214,12 +214,16 @@ sources:
     # shares are, and it is reached by a link reading `go to protein FAQ / Downloads`.
     # The digest is of the extraction, which pairs each share token with the words that label it -
     # and the changelog's row has the address as its own label, because it is written into the
-    # body of an answer rather than offered as a download. **THE EXTRACTION HOLDS THE PAGE'S
-    # TITLE AND ITS FOUR SHARES AND NOTHING ELSE.** The answer this file quotes twice, and
-    # `Deep Dive`, a link to a video, are in the served markup saved beside the extraction as
-    # `.html`, whose own digest is
-    # 3dc6c2be9f96f2cf80adfc062f741c84f2747d7a10a1d716521644e12445a731. So the two quotations
-    # cited to this source rest on that markup and not on the text the digest above is of.
+    # body of an answer rather than offered as a download. **THE EXTRACTION WAS MADE AGAIN ON
+    # 2026-10-12, FROM THE MARKUP SAVED ON 2026-10-06, AND NOW HOLDS THE ANSWER THIS FILE
+    # QUOTES.** The first one held the four shares and nothing else of the page, under a title
+    # the page does not serve, so the two quotations cited to this source were in the markup
+    # and not in the text the digest was of, and no tool could check them. This one holds the
+    # title as served; the four shares; `Deep Dive`, a link to an address at `youtu.be` that
+    # stands under the page's `Downloads` heading beside three of the shares; and the one
+    # answer a share is written into, with its heading and, from the markup around it, a
+    # writer's name and a date. The markup it was made from is saved with it, and that file's
+    # digest is 3dc6c2be9f96f2cf80adfc062f741c84f2747d7a10a1d716521644e12445a731.
     # **No file address appears on it at all**: four share tokens, no file names, and the
     # `.zip` that comes back is the only thing that says what each is.
 
@@ -335,16 +339,23 @@ parts:
     # counts on round to 1; what the mode does with Omni Mode on, or with MPE active, for which
     # the instrument has a setting of its own for "the number of used channels" (manual p. 53);
     # and what is sent, there being one Send Channel for the instrument.
-    # **`controls` IN `receives` IS MORE THAN ANY PAGE SAYS.** The page speaks of notes on each
-    # layer's channel and of nothing else. The nearest thing is a fault firmware 1.02 fixed,
-    # which implies pitch bend is per layer - see the `changelog` source. No page says a
-    # controller on a layer's channel reaches that layer, and no control below names the part:
-    # the six sit on the base channel, which in this mode is Layer A's.
+    # **A LAYER TAKES NOTES ON ITS CHANNEL, AND NOTHING MORE IS CLAIMED.** The manual's entry
+    # for Midi Split speaks of notes on each layer's channel and of nothing else (manual
+    # p. 18). The nearest thing is a fault firmware 1.02 fixed, which implies pitch bend is per
+    # layer - see the `changelog` source. No page says a controller on a layer's channel reaches
+    # that layer, and no control below names the part, so the six stay with the instrument and
+    # are filed under no layer. This format puts a control that names no part on the base
+    # channel, which here is the Receive Channel, in this mode the channel Layer A's notes
+    # arrive on; no page says on which channel a controller is read in this mode, and MPE Y's
+    # arrives where MPE puts it: "each note is assigned its own channel" (manual p. 53).
+    # **Until 2026-10-12 `receives` listed controls as well**, which told a consumer that a
+    # layer takes controllers on its channel, Layer A the six and Layers B to D none. No page
+    # says any of that.
     # Where the OB-X8's voices are four to each half in Split mode, and its eight stand beside
     # those fours, this instrument's layers share theirs, which `voice.polyphony_shared` records.
     channel_offset: 0
     addressing: pitches
-    receives: [notes, controls]
+    receives: [notes]
     # NOT RECORDED, a per-part polyphony, and here that is a fact rather than a gap - see
     # `voice.polyphony_shared`.
 
@@ -419,26 +430,27 @@ controls:
   # name there is. **There is nothing here to decline.**
   # The labels are the maker's own words from the Source column, so a reader of this list is
   # reading what the modulation matrix will show them; bank select's is the changelog's.
-  # **THE FIVE SOURCES STATE NO `direction`, WHICH THIS FORMAT READS AS BOTH WAYS, AND THAT IS
-  # MORE THAN THE PAGES GIVE.** Each is listed as a source for the modulation matrix, which is
-  # a thing the instrument reads; no page says it sends any of the five. What a dial sends is
-  # what a player has mapped to it: "only those dials send MIDI CC data for which this data
-  # has been defined" (manual p. 51), and a mapping is learned, the last edited parameter
-  # taking the next controller to arrive (manual p. 55).
+  # **THE FIVE SOURCES ARE RECEIVED, AND `direction` SAYS SO.** Each is listed as a source for
+  # the modulation matrix, which is a thing the instrument reads; no page says it sends any of
+  # the five. What a dial sends is what a player has mapped to it: "only those dials send MIDI
+  # CC data for which this data has been defined" (manual p. 51), and a mapping is learned, the
+  # last edited parameter taking the next controller to arrive (manual p. 55). **Until
+  # 2026-10-12 the five stated no direction, which this format reads as both ways**, and that
+  # was more than the pages give.
 
   # Named sources ─────────────────────────────────────────
-  mod_wheel:        {label: Mod Wheel, cc: 1, group: modulation}
+  mod_wheel:        {label: Mod Wheel, cc: 1, direction: receives, group: modulation}
   # **THE MAKER MISPRINTS THIS ONE'S NUMBER AND IT IS STILL LEGIBLE**: the row reads `Breath MIDI
   # breath control (cCC #2)` (manual p. 56), with a leading lower-case `c` on `CC` that none of
   # the other four rows has. Carried as 2, which is what the digits say and what breath control
   # is; the typo is recorded rather than tidied away.
-  breath:           {label: Breath, cc: 2, group: modulation}
-  expression:       {label: Expression, cc: 11, group: modulation}
-  pedal:            {label: Pedal, cc: 64, group: modulation}
+  breath:           {label: Breath, cc: 2, direction: receives, group: modulation}
+  expression:       {label: Expression, cc: 11, direction: receives, group: modulation}
+  pedal:            {label: Pedal, cc: 64, direction: receives, group: modulation}
   # The one of the five whose number is not on p. 56. The Sources table there has the row,
   # `MPE Y`, and the number is where MPE is explained, as the message the Y axis arrives on
   # (manual p. 53).
-  mpe_y:            {label: MPE Y, cc: 74, group: modulation}
+  mpe_y:            {label: MPE Y, cc: 74, direction: receives, group: modulation}
 
   # Bank select ───────────────────────────────────────────
   # Received only, from the one document that numbers it: "Recognizing MIDI Bank Select (LSB aka

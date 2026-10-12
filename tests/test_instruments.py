@@ -1820,6 +1820,11 @@ class TestAftertouch:
 			"novation/peak": ("both", None),
 			"elektron/digitakt": (None, True),
 			"elektron/octatrack": (None, True),
+			"moog/little_phatty": ("none", False),
+			"moog/matriarch": ("channel", True),
+			"moog/messenger": ("channel", True),
+			"moog/minitaur": ("none", False),
+			"moog/slim_phatty": ("none", False),
 		}
 
 

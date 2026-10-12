@@ -127,6 +127,10 @@ voice:
     note_on: received
     note_off: false
   aftertouch: channel
+  # Sent, as channel pressure: the MIDI table has `Channel Aftertouch` Yes under Transmit and `Poly
+  # (Key) Aftertouch` No (manual p. 70), from a keyboard "with velocity and channel aftertouch"
+  # (manual p. 10).
+  aftertouch_transmits: true
   pitch_bend:
     programmable: true   # RPN 00 pitch bend sensitivity is recognised
 

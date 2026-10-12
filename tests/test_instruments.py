@@ -22227,6 +22227,7 @@ class TestWebPageTitles:
 		("arturia/minifreak", "resources_page"): "Arturia - MiniFreak",
 		("arturia/polybrute", "resources_page"): "Arturia - PolyBrute",
 		("arturia/polybrute_12", "resources_page"): "Arturia - PolyBrute 12",
+		("asm/leviasynth", "downloads"): "Downloads | Ashun Sound Machines",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

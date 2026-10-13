@@ -252,6 +252,12 @@ voice:
   # and VCFs" (guide p. 6). There is no specifications page in the guide, so this is the prose.
   polyphony: 5
   velocity:
+    # The list of received channel messages has Note On with a third byte it writes `0vvvvvvv`,
+    # and remarks only "Note On. Note off if vvvvvvv = 0" (p. 3). Velocity is named in that list
+    # once, as ignored, on the Note Off row. **So received is read from a listing, and no
+    # sentence says it**: the row does not call the byte velocity, and the list's notes give
+    # `0vvvvvvv` as `Value`. The transmitted list has Note On with the same byte (p. 4), which
+    # this value does not say.
     note_on: received
     # "Note Off. Velocity is ignored" (p. 3). Its own keyboard has seven velocity curves to
     # choose between, "Velocity Curve: Curve 1... Curve 7" (guide p. 22) - which is seven names

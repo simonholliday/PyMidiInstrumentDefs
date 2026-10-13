@@ -6401,16 +6401,21 @@ class TestPeak:
 			# The depth's 0-127 is as printed, and nothing disputes it.
 			assert peak.controls[f"mod_matrix_{slot}_depth"].range_known is True
 
-		assert sum(not control.range_known for control in peak.controls.values()) == 48
+		# The forty-eight of the matrix, and the delay's sync time since 2026-10-13.
+		unknown = [name for name, control in peak.controls.items() if not control.range_known]
+
+		assert len(unknown) == 49 and [name for name in unknown if not name.startswith("mod_matrix_")] == ["delay_sync_time"]
 
 		said = " ".join(prose_of("novation", "peak").split())
 
 		assert "**So the thirty-two source controls say `range: unknown`**" in said
 		assert "**And so do the sixteen destinations.**" in said
 
-		# 19 values for a table of 16 divisions - the arpeggiator's range, which has 19.
-		assert peak.controls["delay_sync_time"].range == (0, 18)
+		# 19 values for a table of 16 divisions - the arpeggiator's range, which has 19. So the
+		# delay's says its range is unknown, and the arpeggiator's is as printed.
+		assert (peak.controls["delay_sync_time"].range_known, peak.controls["delay_sync_time"].range) == (False, (0, 16383))
 		assert peak.controls["arp_clock_sync_rate"].range == (0, 18)
+		assert "it says `range: unknown` as they do: a row and the table it selects from cannot both be right" in said
 
 	def test_the_fx_modulation_matrix_reaches_no_number_at_all (self) -> None:
 		"""Sixteen main matrix slots are numbered in full and the four FX slots are not."""
@@ -6552,9 +6557,15 @@ class TestSummit:
 		assert "a \"Range of adjustment: 0 to 127\" (guide p. 26)" in flat
 		assert "NRPN 0:12 (sibling_manual p. 40)" in flat
 
-		# The two ranges the same list leaves blank are not borrowed.
-		assert "those are the Peak's, and no range is taken from it here." in flat
-		assert summit.controls["effects_routing"].range == (0, 127)
+		# The two ranges the same list leaves blank: how many values is the guide's own count, from
+		# its body, and that they start at nought is the Peak's row. Until 2026-10-13 neither
+		# control had a range.
+		assert "**So `Effects Routing` carries `[0, 6]` and `Chorus Type` `[0, 2]`, and each rests on two things.**" in flat
+		assert (summit.controls["effects_routing"].range, summit.controls["chorus_type"].range) == ((0, 6), (0, 2))
+		# Neither default moved with the ranges. The chorus's `2` is the row's, and the account
+		# doubts it: the Peak's panel numbers the three programs from one.
+		assert (summit.controls["effects_routing"].default, summit.controls["chorus_type"].default) == (None, 2)
+		assert "**THAT MAKES ONE DEFAULT DOUBTFUL, AND BOTH ARE AS THEY WERE.**" in flat
 
 	def test_the_matrix_s_ranges_are_not_established_and_say_so (self) -> None:
 		"""The guide lists more sources and destinations than its own ranges reach."""
@@ -6569,9 +6580,13 @@ class TestSummit:
 			# The depth's 0-127 is as printed, and nothing disputes it.
 			assert summit.controls[f"mod_matrix_{slot}_depth"].range_known is True
 
-		# The forty-eight in the matrix and no other: the two rows with an empty cell keep
-		# no range of their own, since the guide's body counts their settings.
-		assert sum(not control.range_known for control in summit.controls.values()) == 48
+		# The forty-eight in the matrix, and the delay's sync time, whose printed range runs past
+		# the table it selects from. The two rows with an empty cell state a range, since the
+		# guide's body counts their settings.
+		unknown = [name for name, control in summit.controls.items() if not control.range_known]
+
+		assert len(unknown) == 49 and [name for name in unknown if not name.startswith("mod_matrix_")] == ["delay_sync_time"]
+		assert "**AND ONE RANGE RUNS PAST THE TABLE IT SELECTS FROM.**" in " ".join(prose_of("novation", "summit").split())
 
 		flat = " ".join(prose_of("novation", "summit").split())
 

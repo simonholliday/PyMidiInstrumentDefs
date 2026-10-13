@@ -236,8 +236,8 @@ source: >-
   "We've added a High-pass noise filter to the Osc menu to match Summit" (addendum p. 13). And
   this guide's list copies every other row the Peak's manual numbers and leaves out exactly this
   one, which may be an omission and may be deliberate. The two ranges this list leaves blank are
-  a different kind of fact and are not taken: see below. Until 2026-10-12 the noise filter was
-  described here and not carried.
+  a different kind of fact again: see below. Until 2026-10-12 the noise filter was described
+  here and not carried.
 
   The two printings are not identical all the same. 17 of this list's rows are printed differently
   from the Peak's in a range or a default cell, six of them in a value, and no matrix range is
@@ -271,11 +271,48 @@ source: >-
   C->R->D" (guide p. 36), and three chorus programs "named 2 Tap, 4 Tap and Ensemble"
   (guide p. 35). Until 2026-10-12 this said no other page gave either a range. The Peak's list
   prints `0-6 (0 to +6)` and `0-2 (0 to +2)` for the same two rows (sibling_manual p. 42), seven
-  values and three; those are the Peak's, and no range is taken from it here. Both controls
-  are left with no `range`, which reads as 0 to 127 and is nobody's finding. `Effects Routing`
-  therefore keeps no default either:
-  its column reads `0 (0)`, and with no range there is no arithmetic to check its two halves by,
-  which is a different thing from two statements that disagree.
+  values and three. **So `Effects Routing` carries `[0, 6]` and `Chorus Type` `[0, 2]`, and each
+  rests on two things.** How many values there are is this instrument's own, counted in its
+  guide's body. That they are numbered from nought is the Peak's row, taken from a sibling on
+  the engine this guide states, as the sixty numbers are. Neither is a range this guide prints.
+  Until 2026-10-13 both controls were left with no `range`, which reads as 0 to 127.
+
+  **NO NAME IS GIVEN TO A VALUE OF EITHER.** No page of either instrument pairs a routing with
+  a number. A chorus program is paired with a number in one place, the Peak's panel, and from
+  one: "Peak has three stereo Chorus programs (simply numbered 1, 2 and 3)" (sibling_manual
+  p. 31), a two-tap chorus, four taps and an ensemble in that order, which is the order this
+  guide names its three in. The Peak's row numbers the same three from nought, so the panel's
+  number is not the row's, and no page says which program a value on the wire selects.
+
+  **THAT MAKES ONE DEFAULT DOUBTFUL, AND BOTH ARE AS THEY WERE.** `Chorus Type` keeps
+  `default: 2`, the bare `2` its row prints (guide p. 48). On a row numbered from nought 2 is
+  the third of three, and the third program if the row keeps the panel's order; on the Peak's
+  panel 2 is the second. The Peak's list prints the same `2` (sibling_manual p. 42). So does
+  its Init Patch table, `Chorus Type` `2` (sibling_manual p. 39). That table's `Reverb Type`
+  is `2` beside a `Reverb RevSize` of `64`, and the three reverb presets set `RevSize` to 0, 64
+  or 127 in turn (sibling_manual p. 31), so its reverb `2` is the panel's 2, and its chorus
+  `2` reads as the panel's as well. The Peak's definition records no default for it, as
+  neither definition records one for the reverb's type, whose presets both bodies number 1 to
+  3 (guide p. 35, sibling_manual p. 31). This one was recorded because this guide's body
+  names its three programs and numbers none, so nothing here contradicted the `2`.
+  `Effects Routing` still keeps no default: its column reads `0 (0)`, and its own row prints
+  no range to check those two halves by, which is a different thing from two statements that
+  disagree.
+
+  **AND THE GUIDE USES THE NAME `FX Routing` TWICE.** The FX Menu's is the seven-way setting
+  (guide p. 36). The Settings menu's `FX Routing` page has a setting for each Part, sending
+  its effects to an output, `Main, AUX` (guide p. 43), and the Peak's manual has no such
+  setting. NRPN 0:89 is read as the FX Menu's: the list calls it `Effects Routing` between
+  `Effects Master Bypass` and `Delay Level` (guide p. 48), and the Peak's row for the same
+  number counts seven.
+
+  **AND ONE RANGE RUNS PAST THE TABLE IT SELECTS FROM.** `Delay Sync Time` (NRPN 0:94) is printed
+  `0-18 (0 to +18)` (guide p. 48), nineteen values, where the Delay Sync Rate table lists sixteen
+  divisions (guide p. 45). The Arp/Clock Sync Rate table above it lists nineteen, and the three
+  the delay's table lacks are the arpeggiator's three longest, so the delay's row reads as copied
+  from the arpeggiator's, which is printed `0-18` too. A row and the table it selects from
+  cannot both be right, so the control says `range: unknown`, as the matrix's do where their
+  ranges run short. Until 2026-10-13 it carried `[0, 18]` as printed.
 
   THE ADDENDUM COVERS THIS INSTRUMENT AND THE PEAK AND MARKS WHAT BELONGS TO WHICH, under
   "Update Features Exclusive to Peak" (addendum p. 12) and "Update Features Exclusive to Summit"
@@ -713,12 +750,17 @@ controls:
   # EFFECTS ---------------------------------------------------------
   distortion_level:                 {label: Distortion level, cc: 104, default: 0, group: effects}
   effects_master_bypass:            {label: Effects Master Bypass, nrpn: 88, range: [0, 1], default: 0, group: effects}
-  effects_routing:                  {label: Effects Routing, nrpn: 89, group: effects}
+  # `Effects Routing` TAKES `[0, 6]`: seven routings in this guide's body (guide p. 36), numbered
+  # from nought on the Peak's row (sibling_manual p. 42). Its own row prints no range: see the
+  # account.
+  effects_routing:                  {label: Effects Routing, nrpn: 89, range: [0, 6], group: effects}
   delay_level:                      {label: Delay Level, cc: 108, default: 0, group: effects}
   delay_time:                       {label: Delay Time, cc: 109, group: effects}
   delay_width:                      {label: Delay Width, nrpn: 92, group: effects}
   delay_sync:                       {label: Delay Sync, nrpn: 93, range: [0, 1], default: 0, group: effects}
-  delay_sync_time:                  {label: Delay Sync Time, nrpn: 94, range: [0, 18], group: effects}
+  # `Delay Sync Time` SAYS `range: unknown`: its row prints 0-18, nineteen values (guide p. 48),
+  # and the Delay Sync Rate table it selects from lists sixteen divisions (guide p. 45).
+  delay_sync_time:                  {label: Delay Sync Time, nrpn: 94, range: unknown, group: effects}
   delay_feedback:                   {label: Delay Feedback, cc: 110, group: effects}
   delay_lp_damp:                    {label: Delay LP Damp, nrpn: 95, default: 85, group: effects}
   delay_hp_damp:                    {label: Delay HP Damp, nrpn: 96, default: 0, group: effects}
@@ -735,7 +777,11 @@ controls:
   reverb_high_pass:                 {label: Reverb High Pass, nrpn: 108, default: 0, group: effects}
   reverb_pre_delay:                 {label: Reverb Pre Delay, nrpn: 109, default: 40, group: effects}
   chorus_level:                     {label: Chorus Level, cc: 105, default: 0, group: effects}
-  chorus_type:                      {label: Chorus Type, nrpn: 111, default: 2, group: effects}
+  # `Chorus Type` TAKES `[0, 2]`: three chorus programs in this guide's body (guide p. 35),
+  # numbered from nought on the Peak's row (sibling_manual p. 42). Its `default: 2` is the row's
+  # bare `2` (guide p. 48) and is doubted, since the Peak's panel numbers the three from one:
+  # see the account.
+  chorus_type:                      {label: Chorus Type, nrpn: 111, range: [0, 2], default: 2, group: effects}
   chorus_rate:                      {label: Chorus Rate, cc: 118, default: 20, group: effects}
   chorus_mod_depth:                 {label: Chorus Mod Depth, nrpn: 112, group: effects}
   chorus_feedback:                  {label: Chorus Feedback, cc: 107, default: 64, group: effects}

@@ -140,7 +140,9 @@ source: >-
   Time` is given 0-18, 19 values, where the Delay Sync Rate table (manual p. 37) lists 16
   divisions; the Arp/Clock Sync Rate table lists 19, and the three divisions the delay table
   lacks are exactly the arpeggiator's three longest, so 0:94's range reads as copied from
-  0:116's. It runs past its list where the matrix's run short, and is carried as printed.
+  0:116's. It runs past its list where the matrix's run short, and it says `range: unknown` as
+  they do: a row and the table it selects from cannot both be right. Until 2026-10-13 it
+  carried `[0, 18]` as printed.
 
   THE PATCH COUNT IS STATED TWICE AND SPLIT DIFFERENTLY EACH TIME. The feature list claims the
   instrument is "Pre-loaded with 286 brand new Patches" (manual p. 4) with "Memory for 226
@@ -458,7 +460,9 @@ controls:
   delay_time:                       {label: Delay Time, cc: 109, group: effects}
   delay_width:                      {label: Delay Width, nrpn: 92, group: effects}
   delay_sync:                       {label: Delay Sync, nrpn: 93, range: [0, 1], default: 0, group: effects}
-  delay_sync_time:                  {label: Delay Sync Time, nrpn: 94, range: [0, 18], group: effects}
+  # `Delay Sync Time` SAYS `range: unknown`: its row prints 0-18, nineteen values (manual p. 42),
+  # and the Delay Sync Rate table it selects from lists sixteen divisions (manual p. 37).
+  delay_sync_time:                  {label: Delay Sync Time, nrpn: 94, range: unknown, group: effects}
   delay_feedback:                   {label: Delay Feedback, cc: 110, group: effects}
   delay_lp_damp:                    {label: Delay LP Damp, nrpn: 95, default: 85, group: effects}
   delay_hp_damp:                    {label: Delay HP Damp, nrpn: 96, default: 0, group: effects}

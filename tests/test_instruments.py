@@ -22990,6 +22990,7 @@ class TestWebPageTitles:
 		("ableton/move", "release_notes"): "Move Release Notes | Ableton",
 		("ableton/move", "manual"): "Ableton Move Manual | Ableton",
 		("ableton/move", "tech_specs"): "Move tech specs | Ableton",
+		("dreadbox/typhon", "release_notes"): "Typhon Update v4.2.1 - Dreadbox Synthesizers",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

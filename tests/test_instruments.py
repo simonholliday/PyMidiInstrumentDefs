@@ -23000,6 +23000,10 @@ class TestWebPageTitles:
 		("erica_synths/perkons_hd_01", "firmware_1_2"): "Pērkons HD-01 1.2 firmware update! - Blog - Erica Synths",
 		("erica_synths/perkons_hd_01", "firmware_1_1"): "Pērkons 1.1 update! - Blog - Erica Synths",
 		("erica_synths/perkons_hd_01", "firmware_1_0"): "Pērkons HD-01 1.0 firmware update! - Blog - Erica Synths",
+		("korg/microkorg2", "release_notes"): "Downloads | microKORG2 - System Updater | KORG (USA)",
+		("korg/monologue", "updater"): "Downloads | monologue - System Updater | KORG (USA)",
+		("korg/volca_beats", "updater"): "Downloads | volca beats - System Updater | KORG (USA)",
+		("korg/volca_drum", "release_notes"): "Downloads | volca drum - System Updater | KORG (USA)",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

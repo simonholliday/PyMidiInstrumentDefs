@@ -170,7 +170,9 @@ source: >-
   (manual p. 110). **No note range**, because the keybed is given as "61 full-size semi-weighted
   Fatar keybed with Velocity and channel Aftertouch" (manual p. 116) and a key count is not a
   span of note numbers; "KB OCTAVE Shifts the octave of the keyboard down" (manual p. 13) moves
-  it and the manual never says how far. **No note-off velocity.** And nothing from the Quickstart
+  it and the manual never says how far. **No note-off velocity.** **No kind of aftertouch
+  received**: no page names aftertouch among what arrives, and the comment beside
+  `aftertouch_transmits` has the sentence that comes nearest. And nothing from the Quickstart
   Guide, which carries no controller number and no MIDI setting.
 
 sources:
@@ -297,13 +299,30 @@ voice:
     # VELOCITY, AFTERTOUCH, and MIDI CCs messages" (manual p. 110) - and answered to, since
     # velocity is a modulation source and two of the rows below switch it per envelope.
     note_on: both
-  # CHANNEL, AND NOT POLY. "61 full-size semi-weighted Fatar keybed with Velocity and channel
-  # Aftertouch" (manual p. 116), transmitted on the keyboard channel (manual p. 110), and 1.4.0
-  # added "Slew/filtering applied to aftertouch MIDI output, matching filtering applied to panel
-  # knobs" (release_notes p. 6). Polyphonic aftertouch is named nowhere in any document.
-  aftertouch: channel
-  # Sent, on the keyboard channel (manual p. 110), as the 1.4.0 sentence above says of its
-  # "aftertouch MIDI output" (release_notes p. 6).
+  # SENT, AND NO PAGE NAMES IT AS RECEIVED. The keybed's own kind is channel, "61 full-size
+  # semi-weighted Fatar keybed with Velocity and channel Aftertouch" (manual p. 116), and it is
+  # sent on the keyboard channel (manual p. 110). 1.4.0 added "Slew/filtering applied to
+  # aftertouch MIDI output, matching filtering applied to panel knobs" (release_notes p. 6).
+  # Polyphonic aftertouch is named nowhere in any document.
+  # **ONE SENTENCE COMES NEAR TO SAYING IT IS RECEIVED, AND STOPS SHORT.** With MULTI MODE off,
+  # "Muse will handle incoming MIDI messages as if the local keyboard were being used." (manual
+  # p. 110). That treats what arrives as the keyboard's own and names no message. Where the
+  # release notes mean a message is answered they name it: "Muse will now respond to incoming
+  # sustain pedal messages on MIDI CC64." (release_notes p. 8), and the same of the expression
+  # pedal's CC11 (release_notes p. 8). No sentence of that kind names aftertouch.
+  # **IT IS A MODULATION SOURCE, AND EVERY PAGE THAT SAYS WHOSE CALLS IT THE KEYBOARD'S.**
+  # `AFTER TOUCH` is in the lists of modulation sources and controllers (manual pp. 98, 100),
+  # and its button "Enters quick assign using keyboard AFTERTOUCH as modulation source."
+  # (manual p. 62). No page says that source follows MIDI. The release notes say exactly that
+  # of the expression pedal, "If an Expression pedal CC is received, the EXPRESSION mod map
+  # source will output that unipolar normalized CC value until the voltage at the EXPRESSION IN
+  # jack changes." (release_notes p. 8), and no such sentence names aftertouch.
+  # This field records what a page says is answered, so `aftertouch` is unset, as `moog/sub_37`
+  # and `moog/minimoog_model_d` leave it. Until 2026-10-13 it held `channel`, the keybed's kind.
+  # **THE VELOCITY COMMENT ABOVE COUNTS THE SAME KIND OF EVIDENCE AS ANSWERED.** Velocity is in
+  # the same lists and is called the keyboard's on the same page (manual p. 62), and the
+  # envelopes' switch that comment also counts follows "the VELOCITY of a key press" (manual
+  # p. 39). The two fields are not yet held to one standard, and this one is the stricter.
   aftertouch_transmits: true
   pitch_bend:
     # "Pitch bend defaults to +/- 7 Semitones" (manual p. 14), which the setting confirms from the

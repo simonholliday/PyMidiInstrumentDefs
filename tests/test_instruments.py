@@ -1750,7 +1750,7 @@ class TestAftertouch:
 			"korg/minilogue_xd": ("channel", False),
 			"korg/wavestate": ("both", False),
 			"moog/mother_32": ("channel", False),
-			"moog/muse": ("channel", True),
+			"moog/muse": (None, True),
 			"moog/sub_37": (None, True),
 			"moog/subsequent_37": (None, True),
 			"novation/mininova": ("channel", False),
@@ -7127,7 +7127,10 @@ class TestMuse:
 		# A shared pool and a part with voices of its own cannot both be true.
 		assert muse.parts["timbre"].polyphony is None
 
-		assert muse.voice.aftertouch == "channel"
+		# **Sent, and no page names it as received**: the keybed's kind is channel, and the one
+		# sentence about incoming MIDI names no message. Until 2026-10-13 this held `channel`.
+		assert (muse.voice.aftertouch, muse.voice.aftertouch_transmits) == (None, True)
+		assert "**ONE SENTENCE COMES NEAR TO SAYING IT IS RECEIVED, AND STOPS SHORT.**" in " ".join(prose_of("moog", "muse").split())
 		assert muse.voice.pitch_bend is not None
 		assert muse.voice.pitch_bend.semitones == 7
 		assert muse.voice.pitch_bend.programmable is True

@@ -538,6 +538,14 @@ each of its physical controllers ships on, and every one can be moved. The parag
 `assignment` below is how a control says the owner can move it. Leave `control_change` out
 where neither word is so.
 
+**`learned` is for numbers that are the owner's and that no file can list.** A number the
+file does list and the owner can move says `assignment: default` on its control, and a table
+of such numbers does not call for the word: a microKORG's panel numbers are factory
+assignments an owner can change, every one of them in its table, so each of those controls
+says `assignment: default` and `control_change` stays out. And where the owner picks only
+what a fixed number reaches, as with the four inputs of an OP-1 field's MIDI LFO, no number
+is the owner's: those controls say `assignment: slot` and `control_change` stays out.
+
 ```yaml
 midi:
   # "the maker's sentence about giving a parameter a controller" (manual p. 12)
@@ -549,9 +557,12 @@ controls:
 ```
 
 `voice.note_map: learned` is the same word for the notes in `voice.voices`: the owner assigns
-which note plays which voice, and a map the file gives is then where the instrument starts and
-not a fixed fact. `fixed` says the maker's map cannot be changed, and leaving it out says
-nobody has recorded which.
+which note plays which voice, by MIDI learn or in a menu of the instrument, and a map the file
+gives is then where the instrument starts and not a fixed fact. A voice has no `assignment` of
+its own, so the word is also how a file says that the notes it lists can be moved. `fixed`
+says the maker's map cannot be changed. Leaving it out says nobody has recorded which, or that
+neither word is so: a setting that switches between maps, or moves a whole map up or down,
+gives the owner no note to assign, and a comment has to say that.
 
 **A voice that answers to more than one note lists them, and the first is the one to send.**
 A TR-08's bass drum sounds on 36 and on 35, and the instrument itself sends 36 for it, so its

@@ -2163,6 +2163,48 @@ class TestLearnedMaps:
 		assert drm1.voice.note_map == "learned"
 		assert drm1.voice.voices["kick"] == 36
 
+	def test_every_definition_whose_owner_can_move_its_notes_says_so (self) -> None:
+		"""By MIDI learn or in a menu of the instrument: the word covers both, and a map given is where it starts."""
+		learned = {name for name in pymidiinstrumentdefs.available([CORPUS])
+			if pymidiinstrumentdefs.load(name, [CORPUS]).voice.note_map == "learned"}
+
+		assert learned == {
+			"arturia/drumbrute", "arturia/drumbrute_impact", "soma/pulsar_23", "synthstrom_audible/deluge",
+			"ten_ten_music/blackbox", "vermona/drm1_mkiv",
+			# Said since the sweep of 2026-10-13, each from a page that has the owner change the notes:
+		}
+
+	def test_every_definition_that_says_learned_beside_controls_it_lists (self) -> None:
+		"""`learned` is for numbers no file can list, and the controls beside it are the maker's own."""
+		beside = set()
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
+			definition = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			if definition.midi.control_change == "learned" and definition.controls:
+				beside.add(name)
+
+		assert beside == {
+			"intellijel/cascadia", "native_instruments/maschine_plus", "soma/pulsar_23", "ten_ten_music/blackbox",
+			"waldorf/blofeld", "waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2", "waldorf/microwave",
+			"waldorf/protein", "yamaha/montage_6_7_8",
+			# Said since the sweep of 2026-10-13, where a file had left the word out as unable to say both:
+		}
+
+	def test_a_file_that_lists_every_number_the_owner_can_move_does_not_say_learned (self) -> None:
+		"""Where the word stops: a table of movable defaults says `assignment: default` on each row, and no more."""
+		for name in ("korg/microkorg", "korg/wavestate", "korg/radias", "erica_synths/perkons_hd_01", "korg/kronos"):
+			definition = pymidiinstrumentdefs.load(name, [CORPUS])
+
+			assert definition.midi.control_change is None, name
+			assert any(control.assignment == "default" for control in definition.controls.values()), name
+
+		# And one whose owner picks only what four fixed numbers reach.
+		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
+
+		assert field.midi.control_change is None
+		assert sum(control.assignment == "slot" for control in field.controls.values()) == 4
+
 	def test_an_unknown_note_map_is_refused (self) -> None:
 		body = "definition: 1\nmodel: {name: X}\nvoice: {note_map: guessed}\n"
 

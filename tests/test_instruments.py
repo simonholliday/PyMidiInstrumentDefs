@@ -4558,17 +4558,21 @@ class TestOP1Field:
 		assert op1.midi.learns_control_change
 		assert op1.controls == {}
 
-		# This one leaves the field unset rather than claiming the whole map is learned,
-		# because 48 of its 52 controllers are the maker's and four are the player's.
+		# This one leaves the field unset: every number is the maker's, and what the player picks
+		# for four of them is where each goes, which is `assignment: slot` and not `learned`.
 		assert field.midi.control_change is None
 		assert not field.midi.learns_control_change
 		assert not field.midi.refuses_control_change
 
 		said = prose_of("teenage_engineering", "op_1_field")
 
-		assert "This is the first definition here with both kinds at once" in \
-			" ".join((CORPUS / "teenage_engineering" / "op_1_field.yaml").read_text().split())
-		assert "it cannot say \"48 fixed and 4" in said
+		flat = " ".join(said.split())
+
+		assert "**This was the first definition here to carry both a factory map and numbers whose " \
+			"destination the player picks.**" in flat
+		assert "This instrument has no such number: every number below is the maker's" in flat
+		assert "its maker publishes no number for any of them" in flat
+		assert len(field.controls) == 52
 
 		# The four are the slots, and the format says so now.
 		slots = sorted(key for key, control in field.controls.items() if control.assignment == "slot")

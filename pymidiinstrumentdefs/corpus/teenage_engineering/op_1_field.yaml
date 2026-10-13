@@ -137,14 +137,20 @@ source: >-
   Which is which was established from the page titles rather than from the addresses.
 
   **AND THE FOUR MIDI LFO INPUTS ARE THE ONE THING BOTH INSTRUMENTS HAVE, RECORDED TWO WAYS.**
-  The original's four incoming control changes are routed to a destination the player picks, so
-  that definition records `control_change: learned` and no controls - there is no factory map to
-  publish. This instrument has the same four and a factory map of 48 besides, and
-  `control_change` holds one word for a whole instrument, so it cannot say "48 fixed and 4
-  assignable". The four are therefore carried as controls, which is true of their numbers - the
-  maker fixes 1 to 4 and the player fixes only what they reach - and `control_change` is left
-  unset rather than claiming the instrument learns its whole map. Each of the four says
-  `assignment: slot`. **This is the first definition here with both kinds at once.**
+  The original's four incoming control changes are routed to a destination the player picks, and
+  its maker publishes no number for any of them. That definition records
+  `control_change: learned` and no controls. This instrument has the same four inputs and a
+  factory map of 48 besides, and the PDF of its guide gives the four their numbers, 1 to 4
+  (pdf p. 31). `learned` says there are controller numbers that are the owner's and that no file
+  can list, and it may stand beside the numbers a maker fixes. This instrument has no such
+  number: every number below is the maker's, and what the player chooses for four of them is the
+  destination. So the four are carried as controls, which is true of their numbers - the maker
+  fixes 1 to 4 and the player fixes only what they reach - each says `assignment: slot`, and
+  `control_change` is left unset. Whether the original's `learned` holds by that reading is an
+  open question: its four may be fixed numbers that nobody printed. Until 2026-10-13 the reason
+  given here was that one word could not say both of a whole instrument, which the format has
+  since settled the other way. **This was the first definition here to carry both a factory map
+  and numbers whose destination the player picks.**
 
 sources:
   guide:

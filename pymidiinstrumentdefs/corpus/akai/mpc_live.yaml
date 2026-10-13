@@ -40,7 +40,7 @@ source: >-
   preference on p. 65; the keyboard screen on p. 102; the pad note map on pp. 81 and 128; the MIDI
   track's controller sliders on p. 255; the CV chapter on p. 256; the track's automation on
   p. 310; the Q-Link modes on p. 314; the track settings on p. 267; the controller filter on
-  p. 268; MIDI Learn on p. 320; Controller Mode on pp. 334 and 335; the hardware chapter's own
+  p. 268; MIDI Learn on p. 320; MIDI Control Mode on pp. 333 to 337; the hardware chapter's own
   scope on pp. 344 and 358; this machine's panels on pp. 352 and 353; the glossary on p. 386; MIDI
   Machine Control on p. 456; the specifications on pp. 468, 472 and 479; and the unlisted addenda
   on pp. 487 and 528. MPC 3.9 Release Notes and MPC 3.9.1 Release Notes, for which firmware the
@@ -113,19 +113,21 @@ source: >-
   EVERY ASSIGNMENT BUT TWO IS THE OWNER'S. "You can use the MIDI Learn function to assign
   external MIDI controllers to various parameters in your specific MPC project" (p. 320) - mixer
   parameters, pad parameters, track parameters and effect parameters - and "These assignments will
-  be saved with your MPC project" (p. 320). The same is true in the other direction: in Controller
-  Mode each button and each knob has a "CC Number: This determines what MIDI Control Change number
-  the button will send to the software" (p. 335). So apart from the two below, which number
-  reaches which parameter is not a property of the instrument.
+  be saved with your MPC project" (p. 320). The same is true in the other direction: in MIDI
+  Control Mode each button has a "CC Number: This determines what MIDI Control Change number the
+  button will send to the software" (p. 335), and each Q-Link knob has the same field for itself
+  (p. 336). So apart from the two below, which number reaches which parameter is not a property
+  of the instrument.
 
   THE TWO ARE 1 AND 11, AND THEY ARE CARRIED, RECEIVED ONLY. The arpeggiator's modifiers "enable
   Expression messages (MIDI CC #11) from external MIDI controllers to modify the arpeggiator"
   (p. 85), and the same for "Modulation messages (MIDI CC #1) from external MIDI controllers"
   (p. 85); a keygroup's LFO has a knob "to adjust how much control mod wheel data (MIDI CC1) has
   over the LFO." (p. 239). Each effect is one the owner switches on or turns up, and each number
-  is fixed, the MIDI specification's own modulation and expression. `control_change` holds one
-  word for a whole instrument, and this one is both kinds at once, two fixed numbers and the rest
-  the owner's, so the field is left unset, as `teenage_engineering/op_1_field` leaves it.
+  is fixed, the MIDI specification's own modulation and expression. **`control_change` IS
+  `learned`**: the word says there are numbers that are the owner's and that no file can list,
+  and it stands beside the numbers a maker fixes, which here are these two. Until 2026-10-13 the
+  field was left unset, the word having been read as one that could not say both.
 
   AND THE GUIDE SAYS A FIXED SET EXISTS WITHOUT PRINTING IT. "MIDI: In this mode, the Q-Links are
   fixed to a selection of MIDI performance controls, allowing you to control modulation, pitch
@@ -305,12 +307,12 @@ sources:
 midi:
   # "MIDI Channels 1-16 are available for this purpose" is the glossary (p. 386) and is not a
   # statement about this machine. What is: a track's input and output each take a channel
-  # (p. 267), and every Controller Mode control chooses one of "(1-16)" (p. 335).
+  # (p. 267), and every MIDI Control Mode control chooses one of `(1–16)` (pp. 334 to 337).
   channels: [1, 16]
-  # NOT RECORDED, AND ON PURPOSE: two numbers are fixed, 1 and 11, carried below, and every other
-  # is the owner's, assigned by MIDI Learn and saved with the project rather than with the
-  # instrument (p. 320). One word cannot say both, so `control_change` is left unset, as
-  # `teenage_engineering/op_1_field` leaves it.
+  # Two numbers are fixed, 1 and 11, carried below, and others are the owner's, assigned by
+  # MIDI Learn and saved with the project rather than with the instrument (p. 320). `learned`
+  # says the second of those, and stands beside the two.
+  control_change: learned
   # Clock travels both ways and either direction may be switched off. MIDI Time Code and Ableton
   # Link are the other two choices of the same pair of settings, and no field here holds them.
   clock: both

@@ -101,10 +101,11 @@ source: >-
   105), with nothing saying that leaves by a port. **So this instrument does answer to two fixed
   numbers**, the MIDI specification's own modulation and expression, and both are carried,
   received only. Each effect is one the owner switches on or sets the depth of - the arpeggiator's
-  boxes, the LFO's knob - but the number is fixed. `control_change` holds one word for a whole
-  instrument, and this one is both kinds at once, so the field is left unset, as
-  `teenage_engineering/op_1_field` leaves it; `akai/mpc_live` carries the same two from a guide
-  with the same arpeggiator and LFO passages.
+  boxes, the LFO's knob - but the number is fixed. **`control_change` IS `learned`**, which says
+  there are numbers that are the owner's and that no file can list, and it stands beside these
+  two. Until 2026-10-13 the field was left unset, the word having been read as one that could
+  not say both. `akai/mpc_live` carries the same two from a guide with the same arpeggiator and
+  LFO passages.
 
   THE ONE LIST OF CONTROLLER NUMBERS IS A FILTER, NOT A MAP. "MIDI CC Filter: Check these boxes to
   allow the listed MIDI Control Change messages to pass through the track." (guide p. 296), and it
@@ -259,10 +260,10 @@ midi:
   # A track takes "Any" channel or one of 1-16 for its input and one of 1-16 for its output
   # (p. 54), and every MIDI Control Mode control chooses one of `(1–16)` (p. 369).
   channels: [1, 16]
-  # NOT RECORDED, AND ON PURPOSE: two numbers are fixed, 1 and 11, carried below, and every other
-  # is the owner's, by MIDI Learn inward and MIDI Control Mode outward, both saved with the project
-  # (pp. 358, 368). One word cannot say both, so `control_change` is left unset, as
-  # `teenage_engineering/op_1_field` leaves it.
+  # Two numbers are fixed, 1 and 11, carried below, and others are the owner's, by MIDI Learn
+  # inward and MIDI Control Mode outward, both saved with the project (pp. 358, 368). `learned`
+  # says the second of those, and stands beside the two.
+  control_change: learned
   # Clock both ways, and either direction may be switched off; MIDI Time Code is the other choice of
   # both settings, and Ableton Link one more of Receive's (p. 65).
   clock: both

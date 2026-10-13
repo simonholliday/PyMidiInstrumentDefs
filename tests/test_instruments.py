@@ -2189,6 +2189,7 @@ class TestLearnedMaps:
 			"waldorf/blofeld", "waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2", "waldorf/microwave",
 			"waldorf/protein", "yamaha/montage_6_7_8",
 			# Said since the sweep of 2026-10-13, where a file had left the word out as unable to say both:
+			"akai/mpc_key_37", "akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl",
 		}
 
 	def test_a_file_that_lists_every_number_the_owner_can_move_does_not_say_learned (self) -> None:
@@ -13222,12 +13223,12 @@ class TestMpcLive:
 	"""
 
 	def test_two_numbers_are_fixed_and_every_other_is_the_owners (self) -> None:
-		"""1 and 11 received only, and control_change unset because it is both kinds."""
+		"""1 and 11 received only, and `learned` beside them for every number that is the owner's."""
 		live = pymidiinstrumentdefs.load("akai/mpc_live", [CORPUS])
 
 		assert {name: (control.cc, control.direction) for name, control in live.controls.items()} \
 			== {"modulation_wheel": (1, "receives"), "expression": (11, "receives")}
-		assert live.midi.control_change is None
+		assert live.midi.control_change == "learned" and live.midi.learns_control_change
 
 		account = " ".join((live.source or "").split())
 
@@ -13235,6 +13236,7 @@ class TestMpcLive:
 			in account
 		assert "These assignments will be saved with your MPC project" in account
 		assert "THE TWO ARE 1 AND 11, AND THEY ARE CARRIED, RECEIVED ONLY." in account
+		assert "**`control_change` IS `learned`**: the word says there are numbers that are the owner's" in account
 
 		# The MPC Sample has no controls, and nobody has established what it would do with one.
 		# **That is a different answer**, and the corpus keeps them apart.
@@ -17301,7 +17303,7 @@ class TestMpcKey37:
 		assert key_37.controls["modulation"].assignment == "default"
 		assert sorted((control.cc, control.direction) for name, control in key_37.controls.items()
 			if name != "modulation") == [(1, "receives"), (11, "receives")]
-		assert key_37.midi.control_change is None
+		assert key_37.midi.control_change == "learned"
 
 		said = prose_of("akai", "mpc_key_37")
 
@@ -19917,7 +19919,7 @@ class TestMpcLiveIII:
 
 		assert {name: (control.cc, control.direction) for name, control in live.controls.items()} \
 			== {"modulation_wheel": (1, "receives"), "expression": (11, "receives")}
-		assert live.midi.control_change is None
+		assert live.midi.control_change == "learned"
 
 		account = " ".join((live.source or "").split())
 
@@ -20455,7 +20457,7 @@ class TestMpcXl:
 		xl = pymidiinstrumentdefs.load("akai/mpc_xl", [CORPUS])
 		live = pymidiinstrumentdefs.load("akai/mpc_live_iii", [CORPUS])
 
-		assert xl.controls == live.controls and xl.midi.control_change is None
+		assert xl.controls == live.controls and xl.midi.control_change == "learned"
 		assert xl.midi == live.midi
 		assert xl.voice == live.voice
 		assert xl.model.firmware == live.model.firmware == "3.9.1"
@@ -20487,7 +20489,7 @@ class TestMpcXl:
 		assert "where this machine's inputs are `MIDI In 1/2` (guide p. 396)" in account
 
 	def test_1_and_11_are_carried_as_in_both_siblings (self) -> None:
-		"""Received only, in all three, with control_change unset because each is both kinds."""
+		"""Received only, in all three, with `learned` beside them for the numbers that are the owner's."""
 		xl = pymidiinstrumentdefs.load("akai/mpc_xl", [CORPUS])
 		account = " ".join((xl.source or "").split())
 
@@ -20499,7 +20501,7 @@ class TestMpcXl:
 
 			assert sorted((control.cc, control.direction) for control in other.controls.values()) \
 				== [(1, "receives"), (11, "receives")]
-			assert other.midi.control_change is None
+			assert other.midi.control_change == "learned"
 			assert other.voice.aftertouch == "both"
 			assert other.voice.aftertouch_transmits is True
 

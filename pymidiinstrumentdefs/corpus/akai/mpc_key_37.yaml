@@ -150,11 +150,12 @@ midi:
     sends: true
     # NOT RECORDED, the preset count: what a program change selects here is a sequence or a track,
     # which is a setting rather than a number of presets.
-  # NOT RECORDED, AND ON PURPOSE: two received numbers are fixed, 1 and 11, carried below, and
-  # every other is the owner's: "You can use the MIDI Learn function to assign external MIDI
-  # controllers to various parameters in your specific MPC project" (guide p. 320), saved with the
-  # project rather than with the instrument. One word cannot say both, so `control_change` is left
-  # unset, as `akai/mpc_live` leaves it.
+  # Two received numbers are fixed, 1 and 11, carried below, and others are the owner's: "You
+  # can use the MIDI Learn function to assign external MIDI controllers to various parameters in
+  # your specific MPC project" (guide p. 320), saved with the project rather than with the
+  # instrument. `learned` says the second of those, and stands beside the numbers carried. Until
+  # 2026-10-13 the field was left unset, as `akai/mpc_live` left it.
+  control_change: learned
   # NOT RECORDED: NRPN and system exclusive. Neither word is anywhere in the 530 sheets or in
   # either set of release notes - a silence `akai/mpc_live` established by enumeration, and one
   # this definition inherits rather than re-proving.

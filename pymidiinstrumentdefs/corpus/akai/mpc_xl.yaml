@@ -102,9 +102,9 @@ source: >-
   modulation control" (guide p. 104) and "to control the MIDI CC11 expression control" (guide p.
   105), with nothing saying those two modes send by a port; MIDI Control Mode can give the strip a
   channel and number of its own (guide p. 371). Both are carried, received only, as
-  `akai/mpc_live_iii` and `akai/mpc_live` carry them; and `control_change`, which holds one word
-  for a whole instrument, is left unset in all three, because each is both kinds at once, as
-  `teenage_engineering/op_1_field` is.
+  `akai/mpc_live_iii` and `akai/mpc_live` carry them; and `control_change` is `learned` in all
+  three, which says there are numbers that are the owner's and that no file can list, and stands
+  beside the two. Until 2026-10-13 it was left unset in all three.
 
   THE ONE LIST OF CONTROLLER NUMBERS IS A FILTER, NOT A MAP. "MIDI CC Filter: Check these boxes to
   allow the listed MIDI Control Change messages to pass through the track." (guide p. 296), listing
@@ -236,10 +236,10 @@ sources:
 midi:
   # A track takes "Any" channel or one of 1-16 for its input and its output alike (p. 54).
   channels: [1, 16]
-  # NOT RECORDED, AND ON PURPOSE: two numbers are fixed, 1 and 11, carried below, and every other
-  # is the owner's, by MIDI Learn inward and MIDI Control Mode outward, both saved with the project
-  # (pp. 358, 368). One word cannot say both, so `control_change` is left unset, as
-  # `teenage_engineering/op_1_field` leaves it.
+  # Two numbers are fixed, 1 and 11, carried below, and others are the owner's, by MIDI Learn
+  # inward and MIDI Control Mode outward, both saved with the project (pp. 358, 368). `learned`
+  # says the second of those, and stands beside the two.
+  control_change: learned
   # Clock both ways; MIDI Time Code is the other choice of both settings, Ableton Link one more of
   # Receive's (p. 65).
   clock: both

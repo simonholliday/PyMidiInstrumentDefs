@@ -74,8 +74,10 @@ import pymidiinstrumentdefs.definition
 LIBRARY_VARIABLE: typing.Final[str] = "PYMIDIINSTRUMENTDEFS_LIBRARY"
 
 # What can be read for text.  A maker's MIDI implementation is as likely to be
-# plain text as a PDF, and a plain-text one has no pages at all.
-READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt"})
+# plain text as a PDF, and a plain-text one has no pages at all.  A web page as it
+# was served is read the same way, markup and all: a definition cites one where what
+# it cites is in the page's script payload and so not in its visible text.
+READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt", ".html"})
 
 # A page citation, however a source line phrases it: "p. 8", "pp. 30-31",
 # "pp. 26-27, 30, 32-33, 40 and 50", "(p. 1)".

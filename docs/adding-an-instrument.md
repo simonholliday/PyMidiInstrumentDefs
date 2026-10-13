@@ -121,7 +121,10 @@ the maker's word, but unlike a PDF it serves different bytes to everyone and can
 edited overnight. Save a copy — its visible text is enough to cite, and keep the page
 as fetched beside it — record the SHA-256 of the copy you cite, and say when you read
 it. No later fetch will match that hash, and it is not meant to: it proves what the
-page said on the day.
+page said on the day. Where what you cite is not in the visible text, because the page
+carries it in a script, cite the page as fetched as a source of its own, with its own
+SHA-256: a TD-3's product pages list their downloads that way, and the citation check
+reads a saved `.html` file as it reads a text file.
 
 The worked case is a string machine whose manual never states its polyphony. Its
 maker's hardware page does — *"128 voice fully polyphonic Strings section"* and

@@ -25,10 +25,14 @@ model:
   # guide carries its own edition on its cover, V 5.0, which is the document's version and not
   # the instrument's; it says firmware updates exist - "The firmware file can be downloaded and
   # stored on your computer, and then used to update the TD-3" (p. 38) - and names no version.
-  # The Synthtribe application has versions of its own, and three of this instrument's product
-  # pages advertise three different ones: 2.9.1 for Windows and 2.9.0 for Mac on the TD-3-RD's
-  # page, 3.2.4 on the TD-3-BK's. Those are the application's numbers, not the instrument's.
-  # This is the Model D's situation exactly, from the same maker.
+  # The Synthtribe application has versions of its own, and two of this instrument's product
+  # pages list different ones among their downloads. The TD-3-RD's, as served on 2026-10-03,
+  # has it for Windows in a file named `SYNTHTRIBE_V2.9.1(Windows).zip`, with no version
+  # stated, and for Mac at version `2.9.0` (product_page_html). The TD-3-BK's, as served on
+  # 2026-10-13, has it at `3.2.4` for both (bk_product_page). Each list is in its page's
+  # script payload and not in its visible text. Those are the application's numbers, not the
+  # instrument's. This is the Model D's situation exactly, from the same maker. Until
+  # 2026-10-13 this said three pages, named two, and cited no document that held a version.
 
 source: >-
   Quick Start Guide (55 sheets, 107 printed pages, V 5.0), in every language Behringer
@@ -125,7 +129,10 @@ source: >-
   it.
 
   THE COLOUR VARIANTS ARE FINISHES. The TD-3-BK's and TD-3-RD's product pages carry the same
-  nine feature lines, word for word apart from one missing space, and the same specifications.
+  eleven feature lines, word for word apart from a comma and a missing space
+  (product_page_html, bk_product_page), and neither carries a specification. Until 2026-10-13
+  this said nine lines, one difference and the same specifications, and the TD-3-BK's page
+  was not among the sources.
   Nothing distinguishes them in MIDI, and the guide that covers them is named after a third,
   the TD-3-SR.
 
@@ -143,15 +150,18 @@ source: >-
   setting for it. The table's worked examples end "Note: 1, MIDI input channel 1" (p. 94),
   which is an example and not a statement that 1 is the only one.
 
-  THE MAKER DOES CLAIM A CHANNEL SETTING AND IT IS NOT CITABLE, WHICH IS WORTH KNOWING ABOUT
-  THIS SITE AND NOT ONLY THIS INSTRUMENT. Every one of these product pages carries a list of
-  feature lines, and one of them claims a MIDI and USB implementation with MIDI channel and
-  Voice Priority selection. **That list is delivered inside the page's script payload rather
-  than its markup**, so the visible-text copy a citation here rests on does not contain it -
-  and stripping scripts is the right rule for rendering a page, not a defect to work around.
-  The same goes for the feature line about the TD-3-MO's filter above. Both are described and
-  neither is quoted, and the channel stays unrecorded rather than resting on a sentence that
-  cannot be looked up in the saved file.
+  THE MAKER DOES CLAIM THE CHANNEL CAN BE SELECTED, IN A PLACE A PAGE'S VISIBLE TEXT DOES NOT
+  REACH, WHICH IS WORTH KNOWING ABOUT THIS SITE AND NOT ONLY THIS INSTRUMENT. Every one of
+  these product pages carries a list of feature lines, and one of them is "MIDI and USB
+  implementation with MIDI channel and Voice Priority selection" (product_page_html). **That
+  list is delivered inside the page's script payload rather than its markup**, so the
+  visible-text copy of the page does not contain it - and stripping scripts is the right rule
+  for rendering a page, not a defect to work around. Until 2026-10-13 the visible text was
+  the only copy cited, so the line was described and not quoted; the page as served is a
+  source now, and the line can be looked up in it. **The channel stays unrecorded all the
+  same**: the line says a channel can be selected, gives no range and names no setting. The
+  feature line about the TD-3-MO's filter above is still described and not quoted, because
+  that page is not a source here.
 
   ALSO NOT RECORDED: velocity, since the note-on row carries a `vv` byte in `[0, 7F]` and no
   page says the instrument does anything with it; the note range; and how far pitch bend bends,
@@ -197,15 +207,44 @@ sources:
     sha256: 7f244484a401a6920537907bbc17e902f988db94a6937d59c61ee2df1e332525
     retrieved: 2026-10-03
     paginated: false
-    # The visible text of the page, which is the copy cited. It is where the maker states the
-    # instrument monophonic in the same breath as its sixteen-voice chaining, and where the
-    # list of downloads was read from. The feature lines quoted in the source account are in
-    # the page's script payload rather than its visible text, and are described rather than
-    # quoted for that reason.
+    # The visible text of the page, and the copy this record cites. It is where the maker states
+    # the instrument monophonic in the same breath as its sixteen-voice chaining. **The list of
+    # downloads and the list of feature lines are not in it**: both are in the page's script
+    # payload, so they are cited from the page as served, the next source.
+  product_page_html:
+    kind: product_page
+    title: "TD-3-RD | Behringer"
+    landing: "https://www.behringer.com/en/products/0718-AAQ"
+    url: "https://www.behringer.com/en/products/0718-AAQ"
+    sha256: 7f394d144d3aba2c04fdfb1bd3e27c9b307c366891c2fd9af5390c01f14c920d
+    retrieved: 2026-10-03
+    paginated: false
+    # THE SAME PAGE AS IT WAS SERVED, the bytes the text above was rendered from. Cited for two
+    # things the visible text lacks, each carried as JSON in the page's script payload. **The
+    # list of downloads**, five entries: three quick start guides, `Behringer SYNTHTRIBE for
+    # Windows` with no version but its file name's `V2.9.1`, and `Behringer SYNTHTRIBE for Mac`
+    # at version `2.9.0`. No full manual is among them. The page types the Mac entry `Firmware`
+    # and the Windows entry `Driver`; each is the application all the same, by its title and
+    # its file's name, and the TD-3-BK's page types both `Software`. **And the eleven feature
+    # lines**, one of which the account quotes.
+  bk_product_page:
+    kind: product_page
+    title: "TD-3-BK | Behringer"
+    landing: "https://www.behringer.com/en/products/0718-ABP"
+    url: "https://www.behringer.com/en/products/0718-ABP"
+    sha256: fc604a0328dab37a1918a0879e9794f14dccd055a8f5fc0ac733c50b853d3751
+    retrieved: 2026-10-13
+    paginated: false
+    # THE TD-3-BK'S PAGE, AS SERVED. The digest is of the served bytes because both things
+    # cited are in its script payload: its eleven feature lines, and four downloads, `Synthtribe
+    # App` at version `3.2.4` for Windows and again for Mac and two guides titled `TD 3 QSG CN`
+    # and `TD 3 QSG JP`. Its visible text is saved beside it in the library and holds neither
+    # list.
 
 midi:
   # NOT RECORDED, the channel range: no document cited here prints one. See the source account,
-  # which also says where the maker does claim a channel setting and why that is not citable.
+  # which also says where the maker does claim the channel can be selected, and why that settles
+  # no range.
   # CLOCK AND TRANSPORT ARE RECEIVED AND NOTHING SAYS THEY ARE SENT. The table gives F8 Timing
   # Clock, FA Start, FB Continue and FC Stop (p. 94), and the clock source is a front-panel
   # setting with four states: "Selector switches 1, 2, 3, or 4 represent clock source INT, MIDI,

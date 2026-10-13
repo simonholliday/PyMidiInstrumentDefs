@@ -148,8 +148,9 @@ import pymidiinstrumentdefs
 
 
 # What can be read for text.  A scanned PDF has pages and no text in them, which is
-# reported rather than counted as a failure.
-READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt"})
+# reported rather than counted as a failure.  A web page as it was served is read as
+# text, markup and all, for a source that cites what only the page's script holds.
+READABLE: typing.Final[frozenset[str]] = frozenset({".pdf", ".txt", ".html"})
 
 # **A QUOTATION AND WHATEVER LOCATOR FOLLOWS IT ARE TAKEN WHOLE AND PARSED AFTERWARDS.**
 # Twelve characters is the shortest quotation worth checking; below that a phrase matches
@@ -577,7 +578,7 @@ def pages_of (path: pathlib.Path) -> list[str]:
 
 	"""Each page of the document as text, or one entry for a file with no pages."""
 
-	if path.suffix.lower() == ".txt":
+	if path.suffix.lower() in (".txt", ".html"):
 		return [path.read_text(encoding = "utf-8", errors = "replace")]
 
 	logging.disable(logging.WARNING)

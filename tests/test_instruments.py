@@ -22619,6 +22619,8 @@ class TestWebPageTitles:
 		("arturia/polybrute_12", "resources_page"): "Arturia - PolyBrute 12",
 		("asm/leviasynth", "downloads"): "Downloads | Ashun Sound Machines",
 		("behringer/td_3", "product_page"): "TD-3-RD | Behringer",
+		("behringer/td_3", "product_page_html"): "TD-3-RD | Behringer",
+		("behringer/td_3", "bk_product_page"): "TD-3-BK | Behringer",
 		("dirtywave/m8", "downloads"): "Resources & Downloads – Dirtywave",
 		("dreadbox/nymphes", "support_page"): "support - Dreadbox Synthesizers",
 		("dreadbox/typhon", "support_page"): "support - Dreadbox Synthesizers",

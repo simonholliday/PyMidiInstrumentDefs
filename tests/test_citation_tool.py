@@ -1306,6 +1306,14 @@ class TestADocumentWithNoPageToTurnTo:
 
 		assert "Filter Cutoff" in tool.whole_text(made)
 
+	def test_a_page_as_served_is_read_as_text_and_found_by_its_digest (self, tmp_path: pathlib.Path) -> None:
+		"""Markup and all: a definition cites the served page where its visible text lacks the thing."""
+		made = tmp_path / "page.html"
+		made.write_text('<script>{"title":"Synthtribe App","version":"3.2.4"}</script>\n', encoding = "utf-8")
+
+		assert '"version":"3.2.4"' in tool.whole_text(made)
+		assert tool.library_index(tmp_path) == {hashlib.sha256(made.read_bytes()).hexdigest(): made}
+
 	def test_the_bytes_of_a_pdf_are_never_read_as_text (self, tmp_path: pathlib.Path) -> None:
 		"""Which is what used to happen, and yielded a page of binary with no words in it."""
 		made = tmp_path / "unnumbered.pdf"

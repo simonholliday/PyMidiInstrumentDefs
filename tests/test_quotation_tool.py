@@ -1061,6 +1061,15 @@ class TestCheckingAPlaceAgainstDocumentsOnDisk:
 
 		assert tool.read_whole_again(path) is None
 
+	def test_a_page_as_served_is_read_as_one_page_of_text (self, tmp_path: pathlib.Path) -> None:
+		"""A saved web page is text with no pages, markup and all, and has no second reading either."""
+		path = tmp_path / "page.html"
+		path.write_text('<script>{"title":"Synthtribe App","version":"3.2.4"}</script>\n', encoding = "utf-8")
+
+		assert tool.pages_of(path) == ['<script>{"title":"Synthtribe App","version":"3.2.4"}</script>\n']
+		assert tool.library_index(tmp_path) == {hashlib.sha256(path.read_bytes()).hexdigest(): path}
+		assert tool.read_whole_again(path) is None
+
 	def test_a_passage_only_the_second_reading_holds_passes_and_is_listed (
 			self, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str],
 			monkeypatch: pytest.MonkeyPatch) -> None:

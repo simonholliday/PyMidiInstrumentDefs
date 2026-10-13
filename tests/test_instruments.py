@@ -23010,6 +23010,7 @@ class TestWebPageTitles:
 		("teenage_engineering/op_z", "os_updates"): "downloads op-z - teenage engineering",
 		("elektron/model_cycles", "downloads"): "Model:Cycles - Elektron",
 		("elektron/model_samples", "downloads"): "Model:Samples - Elektron",
+		("korg/electribe", "downloads"): "Downloads | electribe | KORG (USA)",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

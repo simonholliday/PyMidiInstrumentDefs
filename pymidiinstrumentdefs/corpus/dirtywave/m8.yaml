@@ -293,8 +293,13 @@ voice:
   # instrument's eight is therefore stated against the part below, once, where it is true.
   polyphony_shared: false
   velocity:
-    # Received: recordable as note velocity (manual p. 44) and available as a modulation source
-    # that affects instrument volume unless taken over (manual p. 21).
+    # Received: "RECORD VELOCITY - Enables recording note velocity when recording MIDI notes."
+    # (manual p. 44), beside the channel "for recording incoming MIDI notes" (manual p. 44),
+    # and firmware 1.1.0 lists "MIDI Note input: Improved velocity curve" (changelog). The
+    # manual says it of recording, and no page of it says a note arriving on a track's channel
+    # sounds by its velocity. Apart from that, velocity is a source of the Tracking modulation,
+    # and affects instrument volume unless the source `VELOCITY TAKEOVER` is chosen
+    # (manual p. 21), on a page that does not say whose velocity it is.
     note_on: received
     # **NOT RECORDED EITHER WAY FOR WHAT IT SENDS**, because the manual names one column two
     # ways: "phrases contain the notes, velocities, instrument assignments" (manual p. 5)

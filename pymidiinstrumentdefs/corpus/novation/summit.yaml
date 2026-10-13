@@ -330,13 +330,21 @@ source: >-
   Delay. So the Delay is not a control below, and the noise filter is one only on the Peak's
   number, as set out above. Until 2026-10-11 this said the list numbered both.
 
-  VELOCITY ARRIVES AND DOES NOTHING UNTIL A PATCH TURNS IT UP, which is why it is recorded as
-  gated. The Amp Envelope's Velocity parameter has an initial value of 0 and "If set to zero, the
+  VELOCITY DOES NOTHING UNTIL A PATCH MOVES IT OFF ZERO, AND NO PAGE SAYS AN ARRIVING NOTE'S IS
+  USED.
+  The Amp Envelope's Velocity parameter has an initial value of 0 and "If set to zero, the
   volume is the same regardless of how the keys are played" (guide p. 30). The two Modulation
-  Envelopes have the same parameter and the same initial value. So a velocity lane can appear
-  dead on a correctly wired Summit, and the three controls that explain it are named in
-  `gated_by`. The Peak has the same three parameters at the same defaults and records `received`;
-  which of the two is right for that instrument is a question about that definition, not this one.
+  Envelopes have the same parameter and the same initial value. So velocity can appear dead on a
+  Summit played from its own keys, until a patch moves `amp_envelope_velocity`,
+  `mod_envelope_1_velocity` or `mod_envelope_2_velocity` off zero, or gives a matrix slot
+  Velocity as its source (guide p. 34). Where a sentence says where velocity comes from it is
+  the keys or the keyboard, or once an arp pattern's own steps (guide p. 34); none names MIDI.
+  The matrix's source is `Keyboard velocity` (guide p. 46); the guide says of
+  aftertouch that it is taken "either from Summit's own keyboard or as external MIDI data"
+  (guide p. 39), and has no such sentence for velocity. **So `velocity` is not recorded.** Until
+  2026-10-13 it said `note_on: gated`, with those three controls in `gated_by`. The Peak has the
+  same three parameters at the same defaults and records `received`; which is right for that
+  instrument is a question about that definition, not this one.
 
   NOT RECORDED, AND WHY. The note range: the keyboard is 61 notes (guide p. 4) and no page says
   which 61, nor what octave shifting reaches. Transport: neither document mentions start, stop,
@@ -507,16 +515,15 @@ voice:
   # polyphonic" (guide p. 22), and in Poly "up to 16 voices of a Single Patch can sound
   # simultaneously" (guide p. 22). In a Multi Patch the ceiling is the eight on each part below.
   voicing_modes: [1, 16]
-  velocity:
-    # IT ARRIVES AND DOES NOTHING UNTIL A PATCH TURNS IT UP. The Amp Envelope's Velocity
-    # parameter has an initial value of 0, and "If set to zero, the volume is the same regardless
-    # of how the keys are played" (guide p. 30). The two Modulation Envelopes carry the same
-    # parameter at the same initial value. So a velocity lane can appear dead on a correctly
-    # wired Summit, which is what this value is for, and `gated_by` names the three controls
-    # that explain it. A global `VelCurve` (guide p. 44) shapes the keyboard's own response and
-    # gates nothing.
-    note_on: gated
-    gated_by: [amp_envelope_velocity, mod_envelope_1_velocity, mod_envelope_2_velocity]
+  # NOT RECORDED, velocity: no page says an arriving note's velocity is used, and where a
+  # sentence says where it comes from it is the keys, the keyboard or an arp pattern's own
+  # steps, never MIDI. The Amp Envelope's Velocity parameter has an initial value of 0, and "If
+  # set to zero, the volume is the same regardless of how the keys are played" (guide p. 30).
+  # The two Modulation Envelopes carry the same parameter at the same initial value, so
+  # velocity can appear dead on a Summit played from its own keys until a patch moves one of
+  # the three off zero or routes Velocity in the matrix (guide p. 34). A global `VelCurve`
+  # (guide p. 44) shapes the keyboard's own response. Until 2026-10-13 this said
+  # `note_on: gated`, with the three in `gated_by`. See the account.
   # CHANNEL AFTERTOUCH FROM ITS OWN KEYBOARD OR FROM OUTSIDE, AND POLY ACCEPTED FROM OUTSIDE, so
   # `both`. The modulation matrix's AftTouch source "will accept either channel aftertouch,
   # either from Summit's own keyboard or as external MIDI data" (guide p. 39), and "Summit will

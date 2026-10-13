@@ -4939,6 +4939,10 @@ class TestBassStationII:
 		# The keyboard has aftertouch and the table a row for it, and no page gives a direction or a kind.
 		assert (synth.voice.aftertouch, synth.voice.aftertouch_transmits) == (None, None)
 
+		# And velocity has two destinations worded for the keys, and no page says an arriving
+		# note's is used. Until 2026-10-13 this said `received`.
+		assert synth.voice.velocity is None
+
 	def test_what_the_guide_establishes_and_what_it_leaves_alone (self) -> None:
 		"""Clock only one way, and transport not at all."""
 		synth = pymidiinstrumentdefs.load("novation/bass_station_ii", [CORPUS])
@@ -6933,20 +6937,19 @@ class TestSummit:
 		# Every control is unparted: which channel reaches it is a mode, not a property of it.
 		assert all(c.part is None for c in summit.controls.values())
 
-	def test_velocity_arrives_and_does_nothing_until_a_patch_turns_it_up (self) -> None:
-		"""Three envelope parameters start at zero, and the guide says what that means."""
+	def test_velocity_does_nothing_until_a_patch_moves_it_off_zero_and_is_not_recorded (self) -> None:
+		"""Three envelope parameters start at zero, and no page says an arriving note's velocity is used."""
 		summit = pymidiinstrumentdefs.load("novation/summit", [CORPUS])
 
-		assert summit.voice.velocity is not None
-		assert summit.voice.velocity.note_on == "gated"
-		assert summit.voice.velocity.gated_by == (
-			"amp_envelope_velocity", "mod_envelope_1_velocity", "mod_envelope_2_velocity")
+		# Every sentence about velocity is about the keys. Until 2026-10-13 this said `gated`,
+		# with the three controls below in `gated_by`.
+		assert summit.voice.velocity is None
 
-		# Each gate is a real control, and each starts in the middle of a signed range, which
-		# is zero on the display - the value the guide says silences the touch response.  The
-		# file omits the range because it is the whole of a controller's span, which the
+		# Each of the three is a real control, and each starts in the middle of a signed range,
+		# which is zero on the display - the value the guide says silences the touch response.
+		# The file omits the range because it is the whole of a controller's span, which the
 		# loader fills back in, so writing it out would say nothing.
-		for gate in summit.voice.velocity.gated_by:
+		for gate in ("amp_envelope_velocity", "mod_envelope_1_velocity", "mod_envelope_2_velocity"):
 			assert summit.controls[gate].default == 64
 			assert summit.controls[gate].range == (0, 127)
 
@@ -8004,6 +8007,10 @@ class TestCircuitTracks:
 
 		# The pads' notes follow the chosen scale, and nothing bounds what arrives.
 		assert tracks.voice.note_range is None
+
+		# Velocity is a modulation source and a pad's own; the sentence about notes that arrive
+		# does not mention it. Until 2026-10-13 this said `received`.
+		assert tracks.voice.velocity is None
 
 		# No implementation chart in either document.
 		assert tracks.midi.mode is None
@@ -14201,6 +14208,10 @@ class TestCircuitRhythm:
 		# Project's channel instead, which is why the two parts receive different things.
 		assert rhythm.parts["sample_track"].receives == ("controls",)
 		assert rhythm.parts["project"].receives == ("notes", "program_change")
+
+		# The pads sense velocity and a step stores one; no page says an arriving note's is used.
+		# Until 2026-10-13 this said `received`.
+		assert rhythm.voice.velocity is None
 
 		assert rhythm.voice.voices == {
 			"sample_track_1": 36, "sample_track_2": 38, "sample_track_3": 40,

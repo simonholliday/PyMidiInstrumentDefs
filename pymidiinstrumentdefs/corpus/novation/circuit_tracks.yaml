@@ -336,12 +336,16 @@ voice:
   # track reads a note as a pitch and the drum tracks read one as a choice of four drums.
   # Each synth has six voices of its own rather than drawing on a shared pool - see `parts.synth`.
   polyphony_shared: false
-  velocity:
-    # The engine is modulated by it: "velocity" is one of the ten named sources in the modulation
-    # matrix (guide p. 9), and a synth track is played by incoming notes - "You can also create a
-    # synth pattern in Circuit Tracks by sending it MIDI note data from an external controller"
-    # (user_guide p. 38). Nothing states what it does with a note-off velocity.
-    note_on: received
+  # NOT RECORDED, velocity: no page says an arriving note's velocity is used. The engine can be
+  # modulated by it: "velocity" is one of the ten named sources in the modulation matrix
+  # (guide p. 9), and a synth track is played by incoming notes - "You can also create a synth
+  # pattern in Circuit Tracks by sending it MIDI note data from an external controller"
+  # (user_guide p. 38). But that passage does not mention velocity, and where the user guide
+  # says what sets a note's velocity it is the panel: how hard a pad is struck
+  # (user_guide p. 41), or a fixed 96 or a pad in Velocity View (user_guide p. 43). Nothing
+  # states what the instrument does with a note-off velocity. Until 2026-10-13 this said
+  # `note_on: received`.
+  #
   # The drum tracks' four notes, from the Drum Notes Table (guide p. 11). FIXED, AS FAR AS EITHER
   # DOCUMENT GOES: neither says these may be changed, unlike the rhythm machines here that print a
   # settable range beside the same table.

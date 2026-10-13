@@ -51,7 +51,9 @@
 # what an assignable button, slider, pedal or wheel can be set to, and the factory scenes ship
 # with their sliders on six of them. See the account. So the fifteen state no direction, as
 # the eight do not, which in this format says both. **One number is in the transmission half
-# alone** - `Foot Type`, CC 4 - and it still says `transmits`, with a doubt beside it.
+# alone** - `Foot Type`, CC 4 - and it states no direction either. Until 2026-10-13 it said
+# `transmits`, and it lost that as the fifteen lost `receives`: a heading missing from one half
+# denies nothing.
 #
 # **AND THERE IS NO CHART IN ANY OF THE ELEVEN DOCUMENTS.** No `MIDI Implementation Chart`
 # heading, no Basic Channel row, no True Voice row, on any of the 377 sheets. That is why `mode` is
@@ -450,14 +452,15 @@ groups:
 
 controls:
 
-  # **ONE NUMBER HERE STATES A DIRECTION, FOOT TYPE'S ON ITS TWO CONTROLS, AND 23 DO NOT.** This
+  # **NO NUMBER HERE STATES A DIRECTION, AND UNTIL 2026-10-13 FOOT TYPE'S TWO CONTROLS DID.** This
   # maker publishes reception and transmission as two prose halves and no chart. Of the 24
   # numbers, eight have a heading in both. Fifteen have one under reception alone; the sentence
   # that opens the transmission half's controllers says any controller can be sent, and the
   # address map lets a button, slider, pedal or wheel be set to each of them: see the account.
   # **Until 2026-10-12 those fifteen said `direction: receives`.** One, Foot Type, has a heading
-  # under transmission alone and says `transmits`. `roland/fantom_6_7_8` and `roland/juno_x`
-  # record nearly the same list with no direction on any control.
+  # under transmission alone, and **until 2026-10-13 it said `transmits`**: a missing heading
+  # denies nothing, whichever half it is missing from. `roland/fantom_6_7_8` and `roland/juno_x`
+  # record nearly the same list with no direction on any control, as this file now does.
   # Eight of them are relative rather than absolute - `00H - 40H - 7FH (-64 - 0 - +63)`, which the
   # implementation calls a "relative change" (implementation p. 2) - and **this format has no
   # word for that**, so the
@@ -482,21 +485,21 @@ controls:
   part_modulation:                   {label: Modulation, cc: 1, part: part, group: continuous}
   # **THE ONE NUMBER ONLY THE TRANSMISSION HALF NAMES.** It is in the transmission half
   # (implementation p. 6) and in no entry of the reception half, which lists every other number
-  # below. **And `transmits` is doubted here**: the reception half's Reset All Controllers list
+  # below. **It states no direction all the same**: the reception half's Reset All Controllers list
   # resets a `Foot Type` with the rest (implementation p. 4), which a number nothing receives
   # would not need. And 4 is among what a control source can be set to, as `FOOT:CC04`, in the
   # scene's lists and in the MFX's (implementation pp. 13, 85 and 86), and the reception half's
   # controllers open "If you select a controller number that corresponds to an MFX Src 1–4
   # parameter, the respective effect is applied according to the setting." (implementation
   # p. 1). So the instrument can be made to answer 4 as a source of modulation, which is not to
-  # say it answers it as Foot Type.
-  part_foot_type:                    {label: Foot Type, cc: 4, direction: transmits, part: part, group: continuous}
+  # say it answers it as Foot Type: no page says what a received Foot Type does.
+  part_foot_type:                    {label: Foot Type, cc: 4, part: part, group: continuous}
   part_portamento_time:              {label: Portamento Time, cc: 5, part: part, group: continuous}
   part_volume:                       {label: Volume, cc: 7, part: part, group: continuous}
   part_panpot:                       {label: Panpot, cc: 10, part: part, group: continuous}
   part_expression:                   {label: Expression, cc: 11, part: part, group: continuous}
   drum_modulation:                   {label: Modulation, cc: 1, part: drum, group: continuous}
-  drum_foot_type:                    {label: Foot Type, cc: 4, direction: transmits, part: drum, group: continuous}
+  drum_foot_type:                    {label: Foot Type, cc: 4, part: drum, group: continuous}
   drum_volume:                       {label: Volume, cc: 7, part: drum, group: continuous}
   drum_panpot:                       {label: Panpot, cc: 10, part: drum, group: continuous}
   drum_expression:                   {label: Expression, cc: 11, part: drum, group: continuous}

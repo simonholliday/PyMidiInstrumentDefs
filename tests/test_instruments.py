@@ -16106,16 +16106,17 @@ class TestJupiterX:
 			control.direction for control in jupiter.controls.values() if control.part == "part")
 
 		# **Fifteen said `receives` until 2026-10-12**, on a heading missing from the transmission
-		# half, which denies nothing: four places in the documents say they can be sent.
-		assert directions == {"both": 23, "transmits": 1}
+		# half, which denies nothing: four places in the documents say they can be sent. **And Foot
+		# Type said `transmits` until 2026-10-13**, on a heading missing from the reception half.
+		assert directions == {"both": 24}
 
 		every = collections.Counter(control.direction for control in jupiter.controls.values())
 
-		assert every == {"both": 39, "transmits": 2}
+		assert every == {"both": 41}
 
 		for key in ("part_foot_type", "drum_foot_type"):
 			assert jupiter.controls[key].cc == 4
-			assert jupiter.controls[key].direction == "transmits"
+			assert jupiter.controls[key].direction == "both"
 
 		# **AND THE SIBLING WITH THE SAME LIST RECORDS NO DIRECTION AT ALL**, which is the
 		# comparison worth pinning: the difference is in the reading, not in the instruments.
@@ -16127,8 +16128,9 @@ class TestJupiterX:
 
 		assert "**One number is in the transmission half alone**" in flat
 
-		# And the definition doubts it, because the reception half resets a Foot Type.
-		assert "**And `transmits` is doubted here**" in flat
+		# And the definition says why that is not a direction: the reception half resets a Foot Type.
+		assert "**It states no direction all the same**" in flat
+		assert "**NO NUMBER HERE STATES A DIRECTION, AND UNTIL 2026-10-13 FOOT TYPE'S TWO CONTROLS DID.**" in flat
 
 	def test_fifteen_numbers_state_no_direction_and_the_account_says_what_sends_them (self) -> None:
 		"""A heading missing from the transmission half denies nothing, as on the JUNO-X."""

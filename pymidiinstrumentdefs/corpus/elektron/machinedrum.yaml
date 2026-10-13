@@ -153,7 +153,8 @@ source: >-
   section describes that editor: "The MAP EDITOR is used to setup how the Machinedrum will react
   to incoming MIDI notes. You can trigger drum sounds, patterns and the start, stop and play
   functions of the sequencer" (p. 67). So `voices` below is where the instrument starts, not what
-  it is - the same state as `korg/microkorg`'s controller numbers.
+  it is - the same state as `korg/microkorg`'s controller numbers - and `note_map` is `learned`,
+  which until 2026-10-13 only these words said.
 
   **THE MANUAL NAMES NOTES THREE INCOMPATIBLE WAYS AND NUMBERS THEM ONE WAY**, which is why
   `voices` below carries numbers and no names. Appendix B prints "3c 60 | C4", making note 0 a
@@ -252,6 +253,9 @@ midi:
 voice:
   addressing: voices
   # NOT RECORDED: polyphony. No page states a voice count. See the source account.
+  # The map editor changes which note triggers which track (p. 67), so the map is the owner's to
+  # change and the sixteen below are where it starts.
+  note_map: learned
   # THE DEFAULTS, AND THEY ARE EDITABLE - see the source account. Appendix B's first table, "hex
   # dec | note | track", from "24 36 | C2 | 1" to "3e 62 | D4 | 16". The names are the maker's
   # own two letters for each track, as the control change table prints them.

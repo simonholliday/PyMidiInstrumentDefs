@@ -100,8 +100,8 @@ source: >-
   nothing else - an LFO's seven shapes, the thirteen polyphony modes, the eleven arpeggiator modes.
   Notes that name some values and not others, such as `20 bpm (0) to 275 bpm (255)`, are left as
   ranges. Twenty-four rows' Notes point to a list printed elsewhere, such as `See Modulation
-  Matrix Source List`, and none of them carries names. Sixteen, the matrix's sources and
-  destinations, carry no range either, and the four FX Types' range is doubted: see below.
+  Matrix Source List`, and none of them carries names. Twenty of them carry no range either, the
+  matrix's sixteen sources and destinations and the four FX Types: see below.
 
   **THE CHART IS ONE STAMP OVER TWO EDITIONS, AND THEY DISAGREE ABOUT TRANSPORT.** Both print
   `Version:1.0` and `01 September 2016` (manual p. 132; earlier_manual p. 113). The later fills in
@@ -154,13 +154,18 @@ source: >-
   2026-10-12 they carried the table's ranges, because a control with no range reads as 0-127 and
   this format then had no way to say that a range is not established.
 
-  **THE FOUR FX TYPES FALL SHORT THE SAME WAY, AND STILL CARRY THE TABLE'S RANGE.** Each prints
+  **THE FOUR FX TYPES FALL SHORT THE SAME WAY, AND SAY `range: unknown` TOO.** Each prints
   `0-33` with the note `See FX Type list`, in the cited edition (manual p. 139) and in the
   earlier one (earlier_manual pp. 119-120). The earlier edition's Effects Table runs 1-34
-  (earlier_manual p. 79), which thirty-four values fit, and the cited edition's runs 1-35
+  (earlier_manual p. 79), which thirty-four values would fit, and the cited edition's runs 1-35
   (manual p. 95): `Vintage Pitch` is new at 34 and `RotarySpkr` moves from 34 to 35. So the
   table was not raised here either, and a value may name a different effect in each edition.
-  `[0, 33]` is carried as printed, and it is doubted for the reason the matrix's ranges are.
+  Its thirty-four values cannot reach the thirty-fifth effect of the list it points to, so the
+  four state no range, for the reason the matrix's sixteen do not. A slot can also hold no
+  effect at all: the FX OVERVIEW screen shows each slot's TYPE as `None` (manual p. 22,
+  earlier_manual p. 21), which neither Effects Table numbers and no page gives a value for. If
+  `None` is one of the row's values, the table stops two short of its list and not one. Until
+  2026-10-13 the four carried `[0, 33]` as printed.
 
   **FOUR MORE DISAGREEMENTS, NONE REACHING A FIELD.** The Global Commands' `Pedal CC` lists "Foot
   Control (CC4), Breath (CC3), Volume (CC7), Expression (CC11)" (manual p. 139), where the
@@ -570,12 +575,13 @@ controls:
   arp_swing:                                    {label: Arp Swing, nrpn: 163, range: [0, 25]}
   arp_octaves:                                  {label: Arp Octaves, nrpn: 164, range: [0, 5]}
   fx_routing:                                   {label: FX Routing, nrpn: 165, range: [0, 9]}
-  # THE FOUR FX TYPES' `0-33` IS AS PRINTED, AND DOUBTED: this edition lists 35 effects (p. 95)
-  # and the range holds 34 values - see the account.
-  fx_1_type:                                    {label: FX 1 Type, nrpn: 166, range: [0, 33]}
-  fx_2_type:                                    {label: FX 2 Type, nrpn: 179, range: [0, 33]}
-  fx_3_type:                                    {label: FX 3 Type, nrpn: 192, range: [0, 33]}
-  fx_4_type:                                    {label: FX 4 Type, nrpn: 205, range: [0, 33]}
+  # THE FOUR FX TYPES SAY `range: unknown`. The table prints 0-33 for each (p. 139), which is 34
+  # values, and this edition lists 35 effects (p. 95), so the table's figure stops short of the
+  # list it points to and is not carried - see the account.
+  fx_1_type:                                    {label: FX 1 Type, nrpn: 166, range: unknown}
+  fx_2_type:                                    {label: FX 2 Type, nrpn: 179, range: unknown}
+  fx_3_type:                                    {label: FX 3 Type, nrpn: 192, range: unknown}
+  fx_4_type:                                    {label: FX 4 Type, nrpn: 205, range: unknown}
   fx_1_output_gain:                             {label: FX 1 Output Gain, nrpn: 218, range: [0, 150]}
   # FX 2 and FX 3 print `—` for their range; 0-150 is a reading of FX 4's note,
   # `Output gain for FX slots 1-4` (p. 139), beside the 0-150 of FX 1 and FX 4.

@@ -21162,9 +21162,13 @@ class TestDeepMind12:
 		"""The table prints 0-22 and 0-129, and the lists it points to run to 24 and 132."""
 		deep = pymidiinstrumentdefs.load("behringer/deepmind_12", [CORPUS])
 		unknown = [name for name, control in deep.controls.items() if not control.range_known]
+		matrix = [f"mod_{slot}_{end}" for slot in range(1, 9) for end in ("source", "destination")]
 
-		assert unknown == [f"mod_{slot}_{end}" for slot in range(1, 9) for end in ("source", "destination")]
+		# **And the four FX Types with them, since 2026-10-13**: the table's 0-33 is thirty-four
+		# values, and the list it points to has thirty-five effects.
+		assert unknown == matrix + [f"fx_{slot}_type" for slot in range(1, 5)]
 		assert all(deep.controls[name].range == (0, 16383) for name in unknown)
+		assert [deep.controls[f"fx_{slot}_type"].nrpn for slot in range(1, 5)] == [166, 179, 192, 205]
 
 		# The depth beside each is printed once and is carried.
 		assert all(deep.controls[f"mod_{slot}_depth"].range == (0, 255) for slot in range(1, 9))
@@ -21173,6 +21177,7 @@ class TestDeepMind12:
 
 		assert "**AND THE CITED EDITION'S OWN LISTS OUTGROW ITS NRPN TABLE.**" in flat
 		assert "**The sixteen source and destination NRPNs say `range: unknown`.**" in flat
+		assert "**THE FOUR FX TYPES FALL SHORT THE SAME WAY, AND SAY `range: unknown` TOO.**" in flat
 
 	def test_names_printed_twice_keep_their_numbers (self) -> None:
 		"""Five labels are printed twice; each is carried as printed, and its key carries its number."""

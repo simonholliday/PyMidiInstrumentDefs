@@ -23005,6 +23005,9 @@ class TestWebPageTitles:
 		("korg/volca_beats", "updater"): "Downloads | volca beats - System Updater | KORG (USA)",
 		("korg/volca_drum", "release_notes"): "Downloads | volca drum - System Updater | KORG (USA)",
 		("synthstrom_audible/deluge", "release_notes"): "Deluge firmware V3.1.5 released — Synthstrom Audible",
+		("teenage_engineering/op_1", "os_updates"): "downloads OP–1 original - teenage engineering",
+		("teenage_engineering/op_xy", "os_updates"): "downloads OP–XY - teenage engineering",
+		("teenage_engineering/op_z", "os_updates"): "downloads op-z - teenage engineering",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

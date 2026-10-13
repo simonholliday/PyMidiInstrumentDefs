@@ -7599,6 +7599,11 @@ class TestAstroLab:
 
 		assert astrolab.voice.aftertouch == "channel"
 
+		# The keyboard's own sensitivity and what the Looper records are all the manual has about
+		# velocity, so the received side is unset. Until 2026-10-13 this said `both`.
+		assert astrolab.voice.velocity is not None
+		assert (astrolab.voice.velocity.note_on, astrolab.voice.velocity.transmits) == (None, True)
+
 		# A Part's switch turns pitch bend on or off, which is not a settable range, so
 		# `pitch_bend` is left out, as the AstroLab 37's is.
 		assert astrolab.voice.pitch_bend is None
@@ -12021,6 +12026,15 @@ class TestPolyBrute12:
 
 		assert (twelve.voice.aftertouch, twelve.voice.aftertouch_transmits) == ("received", True)
 		assert six.voice.aftertouch == "channel"
+
+		# Each is recorded as receiving velocity on one passage of the editor's manual, which both
+		# resources pages offer at one address; neither instrument's own manual says it. So the
+		# 12 cites the very file its sibling does.
+		for brute in (twelve, six):
+			assert brute.voice.velocity is not None and brute.voice.velocity.note_on == "received"
+
+		assert twelve.sources["connect_manual"].sha256 == six.sources["connect_manual"].sha256
+		assert twelve.sources["connect_manual"].url == six.sources["connect_manual"].url
 
 		said = prose_of("arturia", "polybrute_12")
 
@@ -21506,7 +21520,11 @@ class TestMatrixBrute:
 		assert (lower.channel, lower.receives, lower.addressing) == ("assigned", ("notes",), "pitches")
 		assert (brute.voice.polyphony, brute.voice.voicing_modes, brute.voice.paraphonic) == (None, (), True)
 		assert brute.voice.aftertouch is None and brute.voice.note_range is None
-		assert brute.voice.velocity is not None and brute.voice.velocity.note_on == "received"
+
+		# Every sentence about velocity is about the keys. Until 2026-10-13 this said `received`.
+		assert brute.voice.velocity is None
+		assert "**VELOCITY IS NOT RECORDED AS RECEIVED.**" in " ".join(prose_of("arturia", "matrixbrute").split())
+
 		assert brute.voice.pitch_bend is not None
 		assert (brute.voice.pitch_bend.programmable, brute.voice.pitch_bend.semitones) == (True, None)
 

@@ -149,7 +149,9 @@ source: >-
   document is already in this library under the sibling, where it was read in full: 77 pages, one
   mention of the controller surface as a setting, **no chart and no controller number**. And this
   manual does not defer to it - it points at itself, "See the Specifications [p.122] chapter for a
-  chart of the CC numbers" (manual p. 116) - so it is not cited here.
+  chart of the CC numbers" (manual p. 116) - so no number here is cited to it. **It is cited for
+  one passage, about the velocity of notes played from the editor's on-screen keys**, which is
+  what `voice.velocity` rests on here as it does in `arturia/polybrute`.
 
   NOT RECORDED: system exclusive and NRPN. **The words SysEx, System Exclusive, NRPN and RPN
   appear nowhere in these 137 pages**, which is a checked absence and still not enough to record
@@ -200,6 +202,20 @@ sources:
     # The Sync pages use an en dash inside their bracket - `[Assign 1-2]` at p. 112 - where every
     # other page uses a hyphen, `[Assign 1-4]` at p. 116. A quotation keeps its source's own
     # characters, so the three Sync quotations below carry the en dash and the rest do not.
+  connect_manual:
+    kind: manual
+    title: User Manual PolyBrute Connect
+    edition: "2.0.0"
+    landing: "https://www.arturia.com/products/hardware-synths/polybrute-12/resources"
+    url: "https://www.arturia.com/api/download/products/polybrute-connect/manual/polybrute-connect_Manual_2_0_0_EN.pdf"
+    sha256: eb5a2051342a180347286058de3afde42e45983410bc3428ebfed7f7a0639536
+    retrieved: 2026-10-03
+    page_offset: 5
+    # The editor's manual, and the same file `arturia/polybrute` cites. This instrument's
+    # resources page lists it as its sibling's does, at 2.0.0, 31.96 MB and 12/3/2021, and the
+    # page's HTML as saved links it at the same address. The bytes were fetched once, for the
+    # sibling, on the date above. 77 pages. Cited for one passage, about the velocity of notes
+    # played from the editor's on-screen keys.
   resources_page:
     kind: product_page
     title: "Arturia - PolyBrute 12"
@@ -209,7 +225,8 @@ sources:
     retrieved: 2026-10-04
     paginated: false
     # The visible text of the page. Cited for what the manual does not carry: which edition it is,
-    # when it was published, and which firmware is current.
+    # when it was published, which firmware is current, and that the editor's manual is offered
+    # for this instrument.
     # **THIS PAGE DOES NOT REPEAT THE SIBLING'S HABIT.** On the PolyBrute's page the same week,
     # the English manual was 3.0.1 and the French, Spanish, German and Japanese were all 3.0.0
     # across ten days. Here all five are "3.1.0" (resources_page), dated across two days - so a translation would
@@ -298,10 +315,19 @@ voice:
   # twelve, so one, two, three, six and twelve are what a zone can be set to.
   voicing_modes: [1, 2, 3, 6, 12]
   velocity:
-    # "These affect the MIDI velocity transmitted to the PolyBrute based on how hard your fingers
-    # play the keys" (manual p. 113), and the curve is a setting: "Use [Assign 1] to set the
-    # velocity and aftertouch curves, and [Assign 2] to set the aftertouch sensitivity" (manual
-    # p. 113). Three curves each, named at pp. 113-114.
+    # **RECEIVED, ON ONE PASSAGE OF THE CONNECT MANUAL**, the one `arturia/polybrute` rests on,
+    # in the same file. Of the editor's on-screen keys, "The Y axis of any black or white key
+    # controls velocity." (connect_manual p. 48), and "Make sure the VCA Envelope’s Velocity
+    # slider is set to maximum in order for this to work." (connect_manual p. 48). That manual
+    # is dated 2021 and speaks of the six-voice PolyBrute; this instrument's resources page
+    # offers it as its editor's. So that the on-screen keys play the 12 as it says they play
+    # the PolyBrute is one inference more than the sibling needs. The 12's own manual says no
+    # such thing of a note that arrives: its source list has
+    # `Output voltage based on MIDI velocity value` (manual p. 55), which names no note's origin.
+    # ITS OWN KEYS: "These affect the MIDI velocity transmitted to the PolyBrute based on how
+    # hard your fingers play the keys" (manual p. 113), and the curve is a setting: "Use
+    # [Assign 1] to set the velocity and aftertouch curves, and [Assign 2] to set the aftertouch
+    # sensitivity" (manual p. 113). Three curves each, named at p. 113.
     note_on: received
   # RECEIVED, AND THE ONE KIND A PAGE NAMES AS RECEIVED IS CHANNEL PRESSURE UNDER MPE. This field
   # is what the instrument answers to, and one sentence in the manual says what arrives: "When

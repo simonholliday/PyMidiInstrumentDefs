@@ -122,13 +122,14 @@ source: >-
   no page gives the one it starts in. **`paraphonic` is recorded**, because in that mode "all 3 of
   the oscillators share the same filters and VCA settings" (manual p. 21).
 
-  **VELOCITY RECEIVED IS A READING.** Velocity is row K of the matrix's sources (manual p. 39), two
-  sliders set how much it moves ENV 1 and ENV 2 (manual p. 32), and in monophonic mode "all the
-  oscillators will play when you press a key (or send MIDI or CV information)." (manual p. 21). No
-  page says in so many words that a note's velocity received over MIDI does what the keyboard's
-  does; `note_on: received` reads it from those three pages together, as `novation/bass_station_ii`
-  does. Firmware 2.0 fixed "No more note OFF when note velocity value is 0" (release_notes), which
-  does not say whether it means notes played or notes received, and is not used.
+  **VELOCITY IS NOT RECORDED AS RECEIVED.** Velocity is row K of the matrix's sources (manual
+  p. 39), two sliders set how much it moves ENV 1 and ENV 2 (manual p. 32), and in monophonic mode
+  "all the oscillators will play when you press a key (or send MIDI or CV information)."
+  (manual p. 21). No page says in so many words that a note's velocity received over MIDI does
+  what the keyboard's does, so the field is left out. Until 2026-10-13 it said `received`, read
+  from those three pages together. Firmware 2.0 fixed "No more note OFF when note velocity value is
+  0" (release_notes), which does not say whether it means notes played or notes received, and is
+  not used.
 
   **NOT RECORDED, AFTERTOUCH, ALTHOUGH THE KEYBOARD HAS IT.** "The keys are pressure-sensitive when
   you keep pushing after the note is triggered." (manual p. 38), it is row J of the matrix's
@@ -274,9 +275,8 @@ voice:
   # settings" (manual p. 21). NOT RECORDED, `polyphony` and `voicing_modes`: the voice mode is a
   # setting, and two pages give paraphonic mode three notes and two. See the account.
   paraphonic: true
-  velocity:
-    # A reading - see the account.
-    note_on: received
+  # NOT RECORDED, velocity: no page says an arriving note's is used. What the manual has is
+  # about the keys and the sequencer's accent. See the account.
   # NOT RECORDED, aftertouch: the keys have it, and no page says which kind, or that it travels over
   # MIDI. See the account.
   pitch_bend:

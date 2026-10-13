@@ -328,10 +328,16 @@ voice:
   # some forty of them, so no `polyphony` is recorded - see the source account.
   polyphony_shared: false
   velocity:
-    # "Keyboard Velocity Here you can set the overall velocity sensitivity of AstroLab's
-    # keyboard from Light to Medium to Heavy" (manual p. 28), and the Looper "records all MIDI
-    # notes with velocity as well as Pitch Bend, Modwheel, and Aftertouch" (manual p. 70).
-    note_on: both
+    # **NO PAGE SAYS AN ARRIVING NOTE'S VELOCITY IS USED, SO THE RECEIVED SIDE IS NOT RECORDED.**
+    # What the manual has is the keyboard's own: "Keyboard Velocity Here you can set the overall
+    # velocity sensitivity of AstroLab's keyboard from Light to Medium to Heavy" (manual p. 28),
+    # and the Looper, which records what is played on the keyboard, "records all MIDI notes with
+    # velocity as well as Pitch Bend, Modwheel, and Aftertouch" (manual p. 70). Its table of
+    # controllers has no row for a note (manual pp. 105-106). Until 2026-10-13 this said
+    # `note_on: both`. **`transmits` IS TRUE AS RELEASED, AND NO PAGE NAMES VELOCITY AMONG WHAT
+    # IS SENT**: the keyboard's channel is "what MIDI channel your keyboard transmits notes and
+    # data on" (manual p. 28).
+    transmits: true
   # THE WORD IS NEVER QUALIFIED, AND POLYPHONIC AFTERTOUCH IS NAMED NOWHERE in any document held
   # here. "Semi-weighted keys with velocity and aftertouch" (manual p. 11), and the setting that
   # shapes it speaks of one pressure: "The desired amount of pressure needed to trigger

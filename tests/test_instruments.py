@@ -23004,6 +23004,7 @@ class TestWebPageTitles:
 		("korg/monologue", "updater"): "Downloads | monologue - System Updater | KORG (USA)",
 		("korg/volca_beats", "updater"): "Downloads | volca beats - System Updater | KORG (USA)",
 		("korg/volca_drum", "release_notes"): "Downloads | volca drum - System Updater | KORG (USA)",
+		("synthstrom_audible/deluge", "release_notes"): "Deluge firmware V3.1.5 released — Synthstrom Audible",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

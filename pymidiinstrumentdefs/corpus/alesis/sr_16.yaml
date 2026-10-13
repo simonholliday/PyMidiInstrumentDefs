@@ -42,8 +42,8 @@ source: >-
   names that put 36 at C1 and so middle C at C3: "Middle C is 60." (manual p. 63). The table names
   each row by its sound and prints no pad numbers, so the voices below are named as it names them.
   Twelve notes is the default and not a rule: two pads given one note stack into one sound (manual
-  p. 60). The map is changed on the instrument itself, so `note_map` is left unset, as
-  `behringer/rd_9` and `behringer/lm_drum` leave theirs.
+  p. 60). The map is changed on the instrument itself, so `note_map` is `learned`, and the twelve
+  below are where it starts. Until 2026-10-13 the field was left unset.
 
   AND A SECOND MAP REACHES 120 NOTES. In the Note Map's MULTI-DRUMSET mode the twelve pads of ten
   drum sets answer to notes 0 to 119, twelve to a drum set with pad 1 on every C (manual pp. 47 and
@@ -134,6 +134,11 @@ voice:
     # Received on two curves (manual p. 43) and sent with each note (manual p. 63); see the account
     # for the pads' eight levels.
     note_on: both
+  # A page of the instrument sets which note triggers each pad and which note each pad sends
+  # (manual p. 44), so the map is the owner's to change. That is the Note Map's normal mode,
+  # whose twelve notes are below. Its other mode puts the twelve pads of ten drum sets on notes
+  # 0 to 119, pad 1 on every C (manual pp. 47 and 48), and is not what this word is said of.
+  note_map: learned
   # The default note assignments, in the table's order (manual p. 44). Each is a setting, global to
   # every pattern; see the account.
   voices:

@@ -2173,6 +2173,7 @@ class TestLearnedMaps:
 			"arturia/drumbrute", "arturia/drumbrute_impact", "soma/pulsar_23", "synthstrom_audible/deluge",
 			"ten_ten_music/blackbox", "vermona/drm1_mkiv",
 			# Said since the sweep of 2026-10-13, each from a page that has the owner change the notes:
+			"alesis/sr_16",
 			"behringer/lm_drum", "behringer/rd_9",
 		}
 
@@ -21142,7 +21143,7 @@ class TestSR16:
 	def test_twelve_voices_at_the_default_notes (self) -> None:
 		sr = pymidiinstrumentdefs.load("alesis/sr_16", [CORPUS])
 
-		assert sr.voice.addressing == "voices" and sr.voice.note_map is None
+		assert sr.voice.addressing == "voices" and sr.voice.note_map == "learned"
 		assert sr.voice.voices == {"kick": 36, "snare": 38, "cls_hat": 42, "open_hat": 46, "claps": 39,
 			"perc_2": 67, "tom_1": 48, "tom_2": 45, "tom_3": 41, "ride": 51, "crash": 49, "perc_1": 65}
 		assert sr.voice.polyphony == 16

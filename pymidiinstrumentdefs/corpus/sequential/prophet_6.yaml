@@ -68,8 +68,9 @@ source: >-
   NOT RECORDED: which number means which named state, except where the Global table spells it
   out, because the implementation gives ranges and nothing else; what changed in the OS releases
   after 1.6.7, which Sequential publishes no notes for; the range of MIDI Clock Mode and MIDI Out
-  Select, for the reason above; the number of aftertouch curves, because the manual says four and
-  the addendum says eight; and the thirteen NRPN blocks that address a program's stored data
+  Select, for the reason above; the range of Aftertouch Response, which says `range: unknown`,
+  since the manual gives four curves in its tables and its text and the addendum says eight
+  and prints no table; and the thirteen NRPN blocks that address a program's stored data
   rather than a control - its name at 236-255 and its sequence at 256-1023, six notes and six
   velocities for each of 64 steps. The manual also says a Global dump carries "50 nibbles (LS
   then MS) for 25 Global parameters" (p. 83) while the Global table names eighteen, so **seven
@@ -443,6 +444,12 @@ controls:
   seq_jack:                    {label: Seq Jack, nrpn: 1039, range: [0, 3], group: global}
   sustain_polarity:            {label: Sustain Polarity, nrpn: 1040, range: [0, 3], group: global}
   velocity_response:           {label: Velocity Response, nrpn: 1041, range: [0, 3], group: global}
-  aftertouch_response:         {label: Aftertouch Response, nrpn: 1042, range: [0, 3], group: global}
+  # THE RANGE OF AFTERTOUCH RESPONSE IS NOT SETTLED, SO IT SAYS `range: unknown`. Both of the
+  # manual's tables print `0-3` for 1042 (pp. 78 and 80), and its text has "AT Response: 0-3
+  # (Curve 0, Curve 1, Curve 2, Curve 3)" (p. 16). The addendum for OS 1.6.7, the release this
+  # file names, says "There are now a total of eight curves to choose from" (addendum p. 5),
+  # numbered 0 to 7 in the step that chooses one. It describes the panel and prints no table, so
+  # no page gives 1042 a range of 0 to 7. Until 2026-10-13 this carried the manual's `[0, 3]`.
+  aftertouch_response:         {label: Aftertouch Response, nrpn: 1042, range: unknown, group: global}
   stereo_mono:                 {label: Mono/Stereo, nrpn: 1043, range: [0, 1], group: global}
   alt_tuning:                  {label: Alt Tuning, nrpn: 1044, range: [0, 16], group: global}

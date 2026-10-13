@@ -23011,6 +23011,7 @@ class TestWebPageTitles:
 		("elektron/model_cycles", "downloads"): "Model:Cycles - Elektron",
 		("elektron/model_samples", "downloads"): "Model:Samples - Elektron",
 		("korg/electribe", "downloads"): "Downloads | electribe | KORG (USA)",
+		("voce/electric_piano", "manual"): "VOCE® Electric Piano Manual",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

@@ -278,10 +278,11 @@ def wanted_numbers (
 
 	"""Every number in the definition that a cited page ought to carry.
 
-	Controller numbers, their fine halves, NRPN numbers, and the notes a fixed
-	note map assigns.  Bands, ranges and defaults are left out: they are numbers
-	the document prints too, but a band boundary is a claim about *meaning*, and
-	finding the digits on the page would not check it.
+	Controller numbers, their fine halves, NRPN numbers, every note a voice of the
+	instrument's own map answers to, and every note the instrument sends for one.
+	Bands, ranges and defaults are left out: they are numbers the document prints
+	too, but a band boundary is a claim about *meaning*, and finding the digits on
+	the page would not check it.
 	"""
 
 	wanted: list[tuple[str, str, int]] = []
@@ -291,8 +292,13 @@ def wanted_numbers (
 			if number is not None:
 				wanted.append((control.name, kind, number))
 
-	for name, note in definition.voice.voices.items():
-		wanted.append((name, "note", note))
+	for name, notes in definition.voice.voice_notes.items():
+		for note in notes:
+			wanted.append((name, "note", note))
+
+	for setting, sent in definition.voice.voices_sent.items():
+		for name, note in sent.notes.items():
+			wanted.append((f"{setting}.{name}", "sent", note))
 
 	return wanted
 

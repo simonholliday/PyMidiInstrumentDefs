@@ -62,6 +62,7 @@ Midi = pymidiinstrumentdefs.definition.Midi
 Mode = pymidiinstrumentdefs.definition.Mode
 Model = pymidiinstrumentdefs.definition.Model
 Part = pymidiinstrumentdefs.definition.Part
+SentMap = pymidiinstrumentdefs.definition.SentMap
 Source = pymidiinstrumentdefs.definition.Source
 Voice = pymidiinstrumentdefs.definition.Voice
 
@@ -89,6 +90,7 @@ __all__ = [
 	"Mode",
 	"Model",
 	"Part",
+	"SentMap",
 	"Source",
 	"Voice",
 	"available",

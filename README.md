@@ -109,6 +109,26 @@ format has no place for. Either way a program cannot count on that kind, sent
 on the part's channel, reaching the part, and it is not a no: a page that
 leaves out what a part does not take should not leave that out.
 
+Some instruments are played a voice to a note, as a drum machine is, and a
+definition names each voice and gives its note number. A voice may answer to
+more than one number, and what the instrument sends for it may be another
+number again, chosen by a setting:
+
+```python
+tr_08 = pymidiinstrumentdefs.load("roland/tr_08")
+
+tr_08.voice.voices["bass_drum"]            # 36 - the number to send for it
+tr_08.voice.voice_notes["bass_drum"]       # (36, 35) - every number it answers to
+
+drums = pymidiinstrumentdefs.load("roland/tr_707").parts["drum_voices"]
+
+drums.voices_sent["setting_b"].label              # 'Setting B'
+drums.voices_sent["setting_b"].notes["low_tom"]   # 40 - where it answers to 41 and 43
+```
+
+`voices_sent` is empty where nobody has recorded what the instrument sends,
+which is not the same as sending the numbers it answers to.
+
 Some instruments change shape with a setting, and a definition says so with
 `modes`: a part may exist in one mode only, a mode may silence the controls
 that name no part, and a mode may give the base channel a range of its own,

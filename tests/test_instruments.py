@@ -3694,6 +3694,151 @@ class TestPartNoteMaps:
 		assert fx.receives == ("notes", "controls") and fx.addressing == "voices"
 
 
+class TestAVoiceOnMoreThanOneNote:
+
+	"""A voice may list every note number it answers to, and the first is the one to send for it."""
+
+	HEAD = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+
+	def test_the_first_number_stays_the_voice_s_number (self) -> None:
+		parsed = pymidiinstrumentdefs.parse(
+			self.HEAD + "voice: {addressing: voices, voices: {low_tom: [41, 43], rim_shot: 37}}", source = "x.yaml")
+
+		assert parsed.voice.voices == {"low_tom": 41, "rim_shot": 37}
+		assert parsed.voice.voice_notes == {"low_tom": (41, 43), "rim_shot": (37,)}
+		assert parsed.warnings == ()
+
+	def test_the_order_written_is_the_order_kept (self) -> None:
+		"""The first is the one to send, and it need not be the lower."""
+		parsed = pymidiinstrumentdefs.parse(
+			self.HEAD + "voice: {addressing: voices, voices: {bass_drum: [36, 35]}}", source = "x.yaml")
+
+		assert parsed.voice.voices == {"bass_drum": 36}
+		assert parsed.voice.voice_notes == {"bass_drum": (36, 35)}
+
+	def test_a_part_lists_them_too (self) -> None:
+		part = pymidiinstrumentdefs.parse(
+			self.HEAD + "parts: {kit: {channel_offset: 0, receives: [notes], addressing: voices, "
+			"voices: {low_tom: [41, 43], rim_shot: 37}}}", source = "x.yaml").parts["kit"]
+
+		assert part.voices == {"low_tom": 41, "rim_shot": 37}
+		assert part.voice_notes == {"low_tom": (41, 43), "rim_shot": (37,)}
+
+	@pytest.mark.parametrize(("listed", "said"), [
+		("[]", "lists no note number"),
+		("[41, 41]", "lists 41 twice"),
+		("[41, 128]", "128 is outside 0-127"),
+		("[41, true]", "expected a whole number"),
+		("[41, [43]]", "expected a whole number"),
+	])
+	def test_a_list_that_cannot_be_read_is_refused (self, listed: str, said: str) -> None:
+		body = self.HEAD + f"voice: {{addressing: voices, voices: {{low_tom: {listed}}}}}"
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "voice.voices.low_tom" in str(raised.value) and said in str(raised.value)
+
+	def test_a_map_built_from_voices_alone_gives_each_voice_its_one_number (self) -> None:
+		"""As the MIDNAM importer builds one, and as any caller did before the second attribute."""
+		voice = pymidiinstrumentdefs.definition.Voice(voices = {"kick": 36, "snare": 38})
+		part = pymidiinstrumentdefs.definition.Part(voices = {"tap_tempo": 127})
+
+		assert voice.voice_notes == {"kick": (36,), "snare": (38,)}
+		assert part.voice_notes == {"tap_tempo": (127,)}
+		assert pymidiinstrumentdefs.definition.Voice().voice_notes == {}
+
+	@pytest.mark.parametrize("numbers", [{"kick": (35, 36)}, {"snare": (38,)}, {"kick": ()}])
+	def test_numbers_that_disagree_with_voices_are_refused (self, numbers: dict[str, tuple[int, ...]]) -> None:
+		with pytest.raises(ValueError) as raised:
+			pymidiinstrumentdefs.definition.Voice(voices = {"kick": 36}, voice_notes = numbers)
+
+		assert "has to begin with the number voices gives" in str(raised.value)
+
+
+class TestTheNotesAnInstrumentSends:
+
+	"""`voices_sent`: the numbers an instrument sends for its voices, one named map to a setting.
+
+	`voices` is what a voice answers to.  A TR-707 sends each voice on one number from
+	Setting A or from Setting B, and a single map of what is sent could not hold both.
+	"""
+
+	HEAD = "definition: 1\nmodel: {name: X}\nsource: hand\n"
+	VOICES = "addressing: voices, voices: {kick: 36, snare: [38, 40]}"
+
+	def voice (self, sent: str) -> pymidiinstrumentdefs.definition.Voice:
+		return pymidiinstrumentdefs.parse(
+			self.HEAD + f"voice: {{{self.VOICES}, voices_sent: {sent}}}", source = "x.yaml").voice
+
+	def test_two_settings_each_with_its_own_numbers (self) -> None:
+		voice = self.voice("{setting_a: {label: Setting A, factory: true, notes: {kick: 36, snare: 38}}, "
+			"setting_b: {label: Setting B, notes: {kick: 35}}}")
+
+		assert list(voice.voices_sent) == ["setting_a", "setting_b"]
+
+		first, second = voice.voices_sent.values()
+
+		assert isinstance(first, pymidiinstrumentdefs.SentMap)
+		assert (first.label, first.factory, first.notes) == ("Setting A", True, {"kick": 36, "snare": 38})
+		assert (second.label, second.factory, second.notes) == ("Setting B", False, {"kick": 35})
+
+	def test_absent_is_nobody_having_recorded_what_it_sends (self) -> None:
+		parsed = pymidiinstrumentdefs.parse(self.HEAD + f"voice: {{{self.VOICES}}}", source = "x.yaml")
+
+		assert parsed.voice.voices_sent == {}
+		assert parsed.warnings == ()
+
+	def test_one_map_needs_no_label_and_no_flag (self) -> None:
+		voice = self.voice("{transmitted: {notes: {kick: 36, snare: 38}}}")
+		sent = voice.voices_sent["transmitted"]
+
+		assert (sent.label, sent.factory, sent.notes) == (None, False, {"kick": 36, "snare": 38})
+
+	def test_a_part_with_its_own_voices_carries_its_own (self) -> None:
+		parsed = pymidiinstrumentdefs.parse(
+			self.HEAD + "parts: {kit: {channel_offset: 0, receives: [notes], addressing: voices, "
+			"voices: {kick: 36}, voices_sent: {b: {label: Setting B, notes: {kick: 35}}}}}", source = "x.yaml")
+
+		assert parsed.parts["kit"].voices_sent["b"].notes == {"kick": 35}
+		assert parsed.voice.voices_sent == {}
+		assert parsed.warnings == ()
+
+	@pytest.mark.parametrize(("sent", "where", "said"), [
+		("{b: {notes: {tom: 41}}}", "voice.voices_sent.b.notes.tom", "is not a voice in the `voices` beside this map"),
+		("{b: {notes: {kick: 128}}}", "voice.voices_sent.b.notes.kick", "128 is outside 0-127"),
+		("{b: {notes: {kick: [36, 35]}}}", "voice.voices_sent.b.notes.kick", "expected a whole number"),
+		("{b: {label: Setting B}}", "voice.voices_sent.b.notes", "gives no note number"),
+		("{b: {notes: {}}}", "voice.voices_sent.b.notes", "gives no note number"),
+		("{a: {factory: true, notes: {kick: 36}}, b: {factory: true, notes: {kick: 35}}}",
+			"voice.voices_sent.b.factory", "marks a second factory setting beside 'a'"),
+		("{b: {factory: 1, notes: {kick: 35}}}", "voice.voices_sent.b.factory", "expected true or false"),
+		("{Setting B: {notes: {kick: 35}}}", "voice.voices_sent", "is not a name"),
+		("[36, 38]", "voice.voices_sent", "expected a mapping"),
+	])
+	def test_a_map_that_cannot_be_read_is_refused (self, sent: str, where: str, said: str) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.voice(sent)
+
+		assert where in str(raised.value) and said in str(raised.value)
+
+	def test_a_part_s_map_names_the_part_s_voices_and_not_the_instrument_s (self) -> None:
+		body = (self.HEAD + f"voice: {{{self.VOICES}}}\n"
+			"parts: {kit: {channel_offset: 0, receives: [notes], voices: {tom: 41}, voices_sent: {b: {notes: {kick: 35}}}}}")
+
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			pymidiinstrumentdefs.parse(body, source = "x.yaml")
+
+		assert "parts.kit.voices_sent.b.notes.kick" in str(raised.value)
+
+	def test_a_field_this_reader_does_not_know_is_warned_about (self) -> None:
+		voice_warnings = pymidiinstrumentdefs.parse(
+			self.HEAD + f"voice: {{{self.VOICES}, voices_sent: {{b: {{notes: {{kick: 35}}, velocity: 100}}}}}}",
+			source = "x.yaml").warnings
+
+		assert len(voice_warnings) == 1 and "voice.voices_sent.b.velocity" in voice_warnings[0]
+
+
 class TestAPartsNoteMapTheOwnerCanMove:
 
 	"""`parts.<name>.note_map`: whether a part's notes are the maker's or where the owner starts.
@@ -19618,7 +19763,7 @@ class TestTR08:
 
 		assert "**THE CONTROLLER NUMBERS ARE THE TR-8's, AND ELEVEN OF THEM CARRY ANOTHER NAME.**" in flat
 
-	def test_two_note_tables_and_the_sent_one_is_carried (self) -> None:
+	def test_two_note_tables_and_both_are_carried (self) -> None:
 		"""Sixteen instruments; seven answer to a second number; no single range covers them."""
 		tr_08 = pymidiinstrumentdefs.load("roland/tr_08", [CORPUS])
 
@@ -19628,6 +19773,26 @@ class TestTR08:
 		assert tr_08.voice.voices["snare_drum"] == 38
 		assert tr_08.voice.voices["cow_bell"] == 56
 		assert tr_08.voice.note_range is None
+
+		# **The recognised table**: seven on two numbers, each pair with the one the instrument sends first.
+		answered = tr_08.voice.voice_notes
+
+		assert {name: notes for name, notes in answered.items() if len(notes) > 1} == {
+			"bass_drum": (36, 35), "snare_drum": (38, 40), "closed_hi_hat": (42, 44), "low_tom": (43, 41),
+			"mid_tom": (47, 45), "high_tom": (50, 48), "cow_bell": (56, 51)}
+		assert sorted(note for notes in answered.values() for note in notes) == [*range(35, 52), 56, 62, 63, 64, 70, 75]
+
+		# **The transmitted table** is the one map of what is sent, and it is the first number of each.
+		assert list(tr_08.voice.voices_sent) == ["transmitted"]
+
+		sent = tr_08.voice.voices_sent["transmitted"]
+
+		assert (sent.label, sent.factory) == (None, False)
+		assert sent.notes == tr_08.voice.voices
+		assert not tr_08.warnings
+
+		# The README's example of a voice on two numbers.
+		assert (tr_08.voice.voices["bass_drum"], answered["bass_drum"]) == (36, (36, 35))
 
 		account = " ".join((tr_08.source or "").split())
 
@@ -21936,7 +22101,7 @@ class TestTr707:
 		assert "The two mode messages are controllers 124 and 125" in said
 
 	def test_fifteen_voices_at_the_lower_number_of_each_pair (self) -> None:
-		"""Four voices answer to two numbers from the factory; the one carried is the one the instrument sends."""
+		"""Four voices answer to two numbers from the factory; the first of each is the one the instrument sends."""
 		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
 
 		drums = tr.parts["drum_voices"]
@@ -21946,6 +22111,11 @@ class TestTr707:
 			"high_tom": 48, "crash_cymbal": 49, "ride_cymbal": 51, "tambourine": 54, "cowbell": 56}
 		assert (drums.addressing, drums.note_map, drums.receives) == ("voices", "learned", ("notes",))
 		assert not set(drums.voices.values()) & {43, 44, 47, 50}
+
+		# The higher of each pair is the voice's second number, and the nineteen are the chart's `35-51, 54, 56`.
+		assert {name: notes for name, notes in drums.voice_notes.items() if len(notes) > 1} == {
+			"low_tom": (41, 43), "closed_hi_hat": (42, 44), "mid_tom": (45, 47), "high_tom": (48, 50)}
+		assert sorted(note for notes in drums.voice_notes.values() for note in notes) == [*range(35, 52), 54, 56]
 
 		# **The manual has notes exchanged in one of its five modes** (manual pp. 8, 42 and 55),
 		# so the voices are that mode's part and the instrument has no map of its own.
@@ -21963,6 +22133,42 @@ class TestTr707:
 		assert "**FIFTEEN VOICES ON NINETEEN NOTE NUMBERS FROM THE FACTORY.**" in said
 		assert "**AND THE OWNER CAN TEACH IT OTHER NUMBERS, WHICH IS WHY `note_map` IS `learned`.**" in said
 		assert "**WHAT IT SENDS HAS TWO SETTINGS, AND IT SENDS IN PLACE OF SOUNDING.**" in said
+
+	def test_what_it_sends_has_two_settings_and_both_are_carried (self) -> None:
+		"""Setting A is the first number of each voice, and Setting B is 36 to 50 in another order."""
+		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])
+
+		drums = tr.parts["drum_voices"]
+		sent = drums.voices_sent
+
+		assert list(sent) == ["setting_a", "setting_b"]
+		assert (sent["setting_a"].label, sent["setting_b"].label) == ("Setting A", "Setting B")
+
+		# The implementation calls Setting A normal, and no page says which one the instrument ships in.
+		assert (sent["setting_a"].factory, sent["setting_b"].factory) == (False, False)
+		assert sent["setting_a"].notes == drums.voices
+		assert sent["setting_b"].notes == {"bass_drum_1": 36, "bass_drum_2": 37, "rim_shot": 43, "snare_drum_1": 38,
+			"hand_clap": 45, "snare_drum_2": 39, "low_tom": 40, "closed_hi_hat": 47, "mid_tom": 41, "open_hi_hat": 48,
+			"high_tom": 42, "crash_cymbal": 49, "ride_cymbal": 50, "tambourine": 46, "cowbell": 44}
+		assert sorted(sent["setting_b"].notes.values()) == list(range(36, 51))
+
+		# **A TR-707 sending Setting B does not play a factory TR-707 as itself**: two voices
+		# of the fifteen arrive on a number the same voice answers to.
+		assert [name for name, note in sent["setting_b"].notes.items() if note in drums.voice_notes[name]] == \
+			["snare_drum_1", "crash_cymbal"]
+
+		# The maps are the part's, as its voices are, and the instrument has none of its own.
+		assert tr.voice.voices_sent == {} and not tr.warnings
+
+		# The README's example of a number sent that is not one answered to.
+		assert (sent["setting_b"].label, sent["setting_b"].notes["low_tom"], drums.voice_notes["low_tom"]) == \
+			("Setting B", 40, (41, 43))
+
+		said = " ".join(prose_of("roland", "tr_707").split())
+
+		assert "**WHAT IT SENDS FOR EACH VOICE, IN ITS TWO SETTINGS.**" in said
+		assert "**NEITHER IS MARKED `factory`, BECAUSE NO PAGE SAYS WHICH ONE THE INSTRUMENT SHIPS IN.**" in said
+		assert "The format has no field for a map of what is sent." not in said
 
 	def test_mode_one_received_and_three_sent_with_clock_and_transport_both_ways (self) -> None:
 		tr = pymidiinstrumentdefs.load("roland/tr_707", [CORPUS])

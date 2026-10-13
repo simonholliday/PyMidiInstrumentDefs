@@ -1843,3 +1843,17 @@ class TestAPageThatPublishesItsNumbersOnlyInAPicture:
 		tool.render(result, verbose = False)
 
 		assert "DECLARES printed 99 as pictured AND IT CARRIES NO IMAGE" in capsys.readouterr().out
+
+
+class TestTheNotesADefinitionOwesItsPages:
+
+	"""Every note a voice answers to should be on a cited page, and so should every note sent for one."""
+
+	def test_a_second_number_and_a_sent_number_are_both_wanted (self) -> None:
+		definition = pymidiinstrumentdefs.parse(
+			"definition: 1\nmodel: {name: X}\nsource: hand\n"
+			"voice: {addressing: voices, voices: {kick: [36, 35], snare: 38}, "
+			"voices_sent: {b: {notes: {kick: 37}}}}\n", source = "x.yaml")
+
+		assert tool.wanted_numbers(definition) == [
+			("kick", "note", 36), ("kick", "note", 35), ("snare", "note", 38), ("b.kick", "sent", 37)]

@@ -93,10 +93,12 @@ source: >-
   same sixteen instruments. **Seven answer to two numbers and send one**: bass drum 35 and 36, snare
   38 and 40, closed hi-hat 42 and 44, low tom 41 and 43, mid tom 45 and 47, high tom 48 and 50, and
   cowbell 51 and 56. The number sent is one of the pair, and not always the higher - the snare sends
-  38 and the closed hi-hat 42. `voices` below holds the transmitted table, every number of which is
-  also answered to. Twenty-three numbers are answered to in all: every one from 35 to 51, then 56,
-  62, 63, 64, 70 and 75. **So no note range is recorded**, because 35 to 75 would claim eighteen
-  numbers the table does not have.
+  38 and the closed hi-hat 42. `voices` below lists both numbers of each pair, the one sent first,
+  and `voices_sent` holds the transmitted table, every number of which is also answered to. Until
+  2026-10-13 `voices` held the transmitted table, and the seven second numbers were in these words.
+  Twenty-three numbers are answered to in all: every one from 35 to 51, then 56, 62, 63, 64, 70 and
+  75. **So no note range is recorded**, because 35 to 75 would claim eighteen numbers the table
+  does not have.
 
   THE CHART'S FOOTNOTE MARKS EACH DO TWO JOBS, AND ONE OF THEM IS EXPLAINED NOWHERE. `*1` heads the
   transmitted note table and is also printed in the Remarks of the Mode row's Default and Messages
@@ -323,28 +325,54 @@ voice:
   aftertouch: none
   # Never sent: both rows are crossed as transmitted (chart p. 1).
   aftertouch_transmits: false
-  # **THE TRANSMITTED TABLE, `*1`** (chart p. 1): one number for each of the sixteen instruments,
-  # in its own order and its own names, and every one of them is also in the recognised table.
-  # Seven instruments answer to a second number as well - see the source account. The names are
-  # the chart's, which spell some instruments otherwise than the groups do: `high_tom` and
-  # `cow_bell` here, `HI TOM` and `COWBELL` there.
+  # **THE RECOGNISED TABLE, `*2`** (chart p. 1): the sixteen instruments in its own order and
+  # under its own names, seven of them on two numbers. The table prints each pair lower first.
+  # Here each pair has first the number the instrument sends for it, by the transmitted table
+  # below, which is the higher of the two for all but the snare drum and the closed hi-hat. The
+  # names are the chart's, which spell some instruments otherwise than the groups do: `high_tom`
+  # and `cow_bell` here, `HI TOM` and `COWBELL` there. Until 2026-10-13 this was the transmitted
+  # table, one number to an instrument, and the second numbers were in the account.
   voices:
-    bass_drum: 36
+    bass_drum: [36, 35]
     rim_shot: 37
-    snare_drum: 38
+    snare_drum: [38, 40]
     hand_clap: 39
-    closed_hi_hat: 42
-    low_tom: 43
+    closed_hi_hat: [42, 44]
+    low_tom: [43, 41]
     open_hi_hat: 46
-    mid_tom: 47
+    mid_tom: [47, 45]
     cymbal: 49
-    high_tom: 50
-    cow_bell: 56
+    high_tom: [50, 48]
+    cow_bell: [56, 51]
     high_conga: 62
     mid_conga: 63
     low_conga: 64
     maracas: 70
     claves: 75
+  # **THE TRANSMITTED TABLE, `*1`** (chart p. 1): one number for each of the sixteen, in the same
+  # order and under the same names, and each is the first number of its instrument above. The
+  # chart gives one such table and no document gives a setting that changes it, so there is one
+  # map. It has no name on the sheet: `transmitted` is the heading of the chart's column, which
+  # points at the table with `*1`.
+  voices_sent:
+    transmitted:
+      notes:
+        bass_drum: 36
+        rim_shot: 37
+        snare_drum: 38
+        hand_clap: 39
+        closed_hi_hat: 42
+        low_tom: 43
+        open_hi_hat: 46
+        mid_tom: 47
+        cymbal: 49
+        high_tom: 50
+        cow_bell: 56
+        high_conga: 62
+        mid_conga: 63
+        low_conga: 64
+        maracas: 70
+        claves: 75
 
 groups:
   # The select switch's own expansion of each code (manual p. 1), in its order. `accent` is the

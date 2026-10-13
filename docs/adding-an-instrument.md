@@ -553,6 +553,52 @@ which note plays which voice, and a map the file gives is then where the instrum
 not a fixed fact. `fixed` says the maker's map cannot be changed, and leaving it out says
 nobody has recorded which.
 
+**A voice that answers to more than one note lists them, and the first is the one to send.**
+A TR-08's bass drum sounds on 36 and on 35, and the instrument itself sends 36 for it, so its
+entry is `bass_drum: [36, 35]`. A program reading `voices` gets 36, as it did when the entry
+was one number, and one reading `voice_notes` gets both. Where the documents give the number
+the instrument sends for the voice and it is one of them, put that one first; otherwise keep
+the document's order. List only numbers a document gives the voice. Where the owner can
+teach it others, that is `note_map: learned`, and the list is where it starts. **A list needs
+a reader that knows it**: one older than the release that added it refuses the file, where it
+only warns about a field it does not know, such as `voices_sent`.
+
+**What an instrument sends for its voices goes in `voices_sent`, one named map to a
+setting.** `voices` is what each voice answers to. A drum machine also sends a note for each
+voice it plays, and that number need not be one the voice answers to. A TR-707 sends from one
+of two sets, which its implementation calls Setting A and Setting B, and thirteen of its
+fifteen voices have a different number in each. Give each setting a short name, the maker's
+`label` for it, and its `notes` under the names `voices` uses:
+
+```yaml
+voice:
+  addressing: voices
+  voices: {bass_drum_1: 35, bass_drum_2: 36, low_tom: [41, 43]}   # what each answers to
+  voices_sent:                                                     # what is sent for each
+    setting_a:
+      label: Setting A
+      notes: {bass_drum_1: 35, bass_drum_2: 36, low_tom: 41}
+    setting_b:
+      label: Setting B
+      notes: {bass_drum_1: 36, bass_drum_2: 37, low_tom: 40}
+```
+
+- **Leave it out where no document gives the numbers the instrument sends.** Absent says
+  nobody recorded them. It does not say the instrument sends the numbers it answers to, so
+  where a document does give them, write the entry even when the numbers are the same.
+- **An instrument with one set of sent numbers has one entry**, under a short name of the
+  file's own, with no label where the maker prints none.
+- **A map gives a voice one number, names only voices that `voices` has, and need not name
+  them all.** A name `voices` lacks is refused, and so is a map with no numbers.
+- **`factory: true` marks the setting the instrument ships in, on one map at most and only
+  where a document says so**, as for a mode. The TR-707's implementation calls Setting A normal
+  and no page says which of the two it ships in, so neither is marked.
+- **A part with `voices` of its own takes its `voices_sent` beside them.** The example above
+  is written on the instrument to keep it short. The TR-707's own file has its voices, and
+  so its two settings, on a part of the one mode in which it exchanges notes.
+- **A setting that changes only the numbers sent is not a mode.** A mode is a state in which
+  other parts or controls answer, and the word stays for that.
+
 **Bank select is in the MIDI specification too, and it is carried anyway, wherever the
 maker numbers it.** CC 0 and CC 32 choose a bank of programs rather than shaping a sound,
 and they go in as controls all the same, with the maker's labels and ranges:

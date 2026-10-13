@@ -66,8 +66,9 @@ source: >-
   keyboard headed "Drum Voices and corresponding Key Numbers. (MIDI IN)" (manual p. 44). Eleven
   voices have one number and four have two: Low Tom 41 and 43, Closed Hi-Hat 42 and 44, Mid Tom 45
   and 47, High Tom 48 and 50. The chart gives the same nineteen as `35-51, 54, 56` (manual p. 50).
-  `voices` holds one number for each voice and takes the lower of each pair, because that is the
-  number the instrument itself sends for the voice in its normal setting, described below.
+  `voices` lists both numbers of each pair, the lower first, which is the page's order and puts
+  first the number the instrument itself sends for the voice in its normal setting, described
+  below. Until 2026-10-13 it held the lower alone, and the higher was in these words.
 
   **AND THE OWNER CAN TEACH IT OTHER NUMBERS, WHICH IS WHY `note_map` IS `learned`.** In the key
   number setting mode, "Select a drum voice and hold the corresponding Main Key down, and without
@@ -91,13 +92,14 @@ source: >-
   one of two sets that, in the same state, Shift held with MIDI Channel and Last Step alternates
   between (manual p. 46). The implementation calls them Setting A and Setting B (manual p. 55) and
   the MIDI chapter draws them as two keyboards (manual p. 46). Setting A, "Setting A: Normal."
-  (manual p. 55), is the fifteen numbers of `voices` below. Setting B is the fifteen numbers from
+  (manual p. 55), is the first number of each voice in `voices` below. Setting B is the numbers from
   36 to 50 in another order: Bass Drum 1 on 36 and 2 on 37, Snare Drum 1 on 38 and 2 on 39, Low Tom
   40, Mid Tom 41, High Tom 42, Rim Shot 43, Cowbell 44, Hand Clap 45, Tambourine 46, Closed Hi-Hat
   47, Open Hi-Hat 48, Crash Cymbal 49 and Ride Cymbal 50. So a TR-707 sending Setting B does not
   play a factory TR-707 as itself: only Snare Drum 1 on 38 and Crash Cymbal on 49 arrive as
-  themselves, and its second bass drum, on 37, arrives as the rim shot. The format has no field
-  for a map of what is sent.
+  themselves, and its second bass drum, on 37, arrives as the rim shot. Both settings are in
+  `voices_sent` below. Until 2026-10-13 the format had no field for a map of what is sent, and
+  Setting B was in these words alone.
 
   **VELOCITY BOTH WAYS, AND NO NOTE OFF HEARD.** Received as `vvvvvvv = 1 - 127` and sent as
   `vvvvvvv = 40 - 124` (manual p. 55), which the chart gives as `v=1-127` and `9n v=40-124`
@@ -257,8 +259,9 @@ parts:
     # (manual p. 45), so the numbers below are the factory's.
     note_map: learned
     # **THE FACTORY'S RECEIVED NUMBERS**, under the implementation's names and in its order
-    # (manual p. 55), at the lower number where a voice has two. Low Tom also answers to 43,
-    # Closed Hi-Hat to 44, Mid Tom to 47 and High Tom to 50.
+    # (manual p. 55). Four voices have two, each pair as the page has it, lower first, and the
+    # first is also the number Setting A sends for the voice. Until 2026-10-13 a voice held one
+    # number here, and the higher of each pair was in words.
     voices:
       bass_drum_1: 35
       bass_drum_2: 36
@@ -266,15 +269,67 @@ parts:
       snare_drum_1: 38
       hand_clap: 39
       snare_drum_2: 40
-      low_tom: 41
-      closed_hi_hat: 42
-      mid_tom: 45
+      low_tom: [41, 43]
+      closed_hi_hat: [42, 44]
+      mid_tom: [45, 47]
       open_hi_hat: 46
-      high_tom: 48
+      high_tom: [48, 50]
       crash_cymbal: 49
       ride_cymbal: 51
       tambourine: 54
       cowbell: 56
+    # **WHAT IT SENDS FOR EACH VOICE, IN ITS TWO SETTINGS.** The implementation's note on the
+    # transmitted note numbers is a table with a column headed `Setting A` and one headed
+    # `Setting B` (manual p. 55), and the MIDI chapter draws each as a keyboard (manual p. 46).
+    # The table and the keyboards agree on all thirty numbers, and where the listing leaves a
+    # digit in doubt the key's place on its keyboard settles it. Setting A is the first number of
+    # each voice above. **NEITHER IS MARKED `factory`, BECAUSE NO PAGE SAYS WHICH ONE THE
+    # INSTRUMENT SHIPS IN.** The implementation has "Setting A: Normal." (manual p. 55) and gives
+    # Setting B as what holding Shift and pressing two buttons selects (manual p. 55). But the
+    # same press alternates between the two (manual p. 46), the operation table draws them as a
+    # loop (manual p. 54), and the one keyboard in that table headed `Key numbers of MIDI out`
+    # has labels on the keys from 36 to 50, as Setting B has (manual p. 53), which the account
+    # takes up where it says what restoring the key numbers restores. No page calls either one
+    # the initial setting, as the MIDI chapter does the received numbers (manual p. 44), and
+    # none says whether the choice is kept with the power off. Until 2026-10-13 Setting B was in
+    # the account alone.
+    voices_sent:
+      setting_a:
+        label: Setting A
+        notes:
+          bass_drum_1: 35
+          bass_drum_2: 36
+          rim_shot: 37
+          snare_drum_1: 38
+          hand_clap: 39
+          snare_drum_2: 40
+          low_tom: 41
+          closed_hi_hat: 42
+          mid_tom: 45
+          open_hi_hat: 46
+          high_tom: 48
+          crash_cymbal: 49
+          ride_cymbal: 51
+          tambourine: 54
+          cowbell: 56
+      setting_b:
+        label: Setting B
+        notes:
+          bass_drum_1: 36
+          bass_drum_2: 37
+          rim_shot: 43
+          snare_drum_1: 38
+          hand_clap: 45
+          snare_drum_2: 39
+          low_tom: 40
+          closed_hi_hat: 47
+          mid_tom: 41
+          open_hi_hat: 48
+          high_tom: 42
+          crash_cymbal: 49
+          ride_cymbal: 50
+          tambourine: 46
+          cowbell: 44
 
 voice:
   # A note names a drum voice: "here, each drum voice is represented by key number" (manual p. 42).

@@ -81,14 +81,15 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	"voice": frozenset({
 		"addressing", "reference_note", "note_map", "note_range", "polyphony",
 		"polyphony_shared", "paraphonic", "voicing_modes", "velocity", "aftertouch",
-		"aftertouch_transmits", "pitch_bend", "voices",
+		"aftertouch_transmits", "pitch_bend", "voices", "voices_sent",
 	}),
 	"voice.velocity": frozenset({"note_on", "note_off", "gated_by", "transmits"}),
 	"voice.pitch_bend": frozenset({"semitones", "programmable"}),
+	"voices_sent": frozenset({"label", "factory", "notes"}),
 	"modes": frozenset({"label", "factory", "unparted", "channels"}),
 	"parts": frozenset({
 		"label", "channel", "channel_offset", "count", "receives", "unrecorded", "addressing",
-		"polyphony", "polyphony_shared", "voices", "note_map", "mode", "nrpn_msb", "within",
+		"polyphony", "polyphony_shared", "voices", "voices_sent", "note_map", "mode", "nrpn_msb", "within",
 	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
@@ -552,7 +553,7 @@ class _Reader:
 			if shared is not None and count == 1:
 				self.refuse(f"{where}.polyphony_shared", "says whether instances share their voices, and this part has one instance")
 
-			voices = self.note_map(fields.get("voices"), f"{where}.voices")
+			voices, voice_notes = self.note_map(fields.get("voices"), f"{where}.voices")
 
 			# A note map on a part the file says takes no notes would name notes that
 			# reach nothing, which is the same silent failure as a control on a part
@@ -573,6 +574,10 @@ class _Reader:
 
 			if voices and fields.get("receives") is not None and "notes" not in receives:
 				self.refuse(f"{where}.voices", "names notes on a part this file says takes no notes")
+
+			# What the instrument sends for this part's voices, by the names the map above gives them.
+
+			voices_sent = self.sent_maps(fields.get("voices_sent"), f"{where}.voices_sent", voices)
 
 			# Whether the part's notes are the maker's or where the owner starts.  It is
 			# said of notes the part takes, so on a part recorded as taking none it is
@@ -627,6 +632,8 @@ class _Reader:
 				polyphony        = polyphony,
 				polyphony_shared = shared,
 				voices           = voices,
+				voice_notes      = voice_notes,
+				voices_sent      = voices_sent,
 				note_map         = note_map,
 				mode             = mode,
 				nrpn_msb         = msb,
@@ -747,17 +754,89 @@ class _Reader:
 		)
 
 
-	def note_map (self, value: object, where: str) -> dict[str, int]:
+	def note_map (self, value: object, where: str) -> tuple[dict[str, int], dict[str, tuple[int, ...]]]:
 
-		"""Read a name-to-note map, the instrument's or a part's: each name addressable, each note 0-127."""
+		"""Read a name-to-note map, the instrument's or a part's: each name addressable, each note 0-127.
 
-		voices: dict[str, int] = {}
+		A voice that answers to more than one number lists them, the one to send for it
+		first.  Returned as the first number of each voice, then every number of each.
+		"""
+
+		first: dict[str, int] = {}
+		every: dict[str, tuple[int, ...]] = {}
 
 		for name, note in self.mapping(value, where).items():
 			key = self.name(name, where)
-			voices[key] = self.integer(note, f"{where}.{key}", 0, 127)
+			spot = f"{where}.{key}"
 
-		return voices
+			if not isinstance(note, list):
+				first[key] = self.integer(note, spot, 0, 127)
+				every[key] = (first[key],)
+
+				continue
+
+			if not note:
+				self.refuse(spot, "lists no note number - give the voice its number, or leave the voice out")
+
+			numbers = tuple(self.integer(number, spot, 0, 127) for number in note)
+			twice = sorted({number for number in numbers if numbers.count(number) > 1})
+
+			if twice:
+				self.refuse(spot, f"lists {twice[0]} twice")
+
+			first[key] = numbers[0]
+			every[key] = numbers
+
+		return first, every
+
+
+	def sent_maps (
+		self,
+		value: object,
+		where: str,
+		voices: dict[str, int],
+	) -> dict[str, pymidiinstrumentdefs.definition.SentMap]:
+
+		"""Read ``voices_sent``: the note numbers the instrument sends for its voices, one map to a setting.
+
+		A map names voices by the names of the ``voices`` beside it, so a number sent
+		for a name that map lacks is refused: nothing would say which voice it is.  A
+		map with no numbers says nothing, and is refused too.  And as with modes, one
+		setting at most is the one the instrument ships in.
+		"""
+
+		found: dict[str, pymidiinstrumentdefs.definition.SentMap] = {}
+
+		for name, entry in self.mapping(value, where).items():
+			key = self.name(name, where)
+			spot = f"{where}.{key}"
+			fields = self.fields(entry, spot, "voices_sent")
+			notes: dict[str, int] = {}
+
+			for voice, note in self.mapping(fields.get("notes"), f"{spot}.notes").items():
+				if voice not in voices:
+					self.refuse(f"{spot}.notes.{voice}", "is not a voice in the `voices` beside this map")
+
+				notes[voice] = self.integer(note, f"{spot}.notes.{voice}", 0, 127)
+
+			if not notes:
+				self.refuse(f"{spot}.notes", "gives no note number - a sent map is its numbers, so leave the map out")
+
+			found[key] = pymidiinstrumentdefs.definition.SentMap(
+				label   = self.optional_text(fields, "label", spot),
+				factory = False if fields.get("factory") is None else self.flag(fields["factory"], f"{spot}.factory"),
+				notes   = notes,
+			)
+
+		factory = [name for name, sent in found.items() if sent.factory]
+
+		if len(factory) > 1:
+			self.refuse(
+				f"{where}.{factory[1]}.factory",
+				f"marks a second factory setting beside {factory[0]!r} - the instrument ships in one",
+			)
+
+		return found
 
 
 	def mode (self, value: object) -> tuple[int | None, int | None, int | None]:
@@ -811,7 +890,8 @@ class _Reader:
 		if note_map is not None and note_map not in _NOTE_MAPS:
 			self.refuse("voice.note_map", f"{note_map!r} is not one of {sorted(_NOTE_MAPS)}")
 
-		voices = self.note_map(section.get("voices"), "voice.voices")
+		voices, voice_notes = self.note_map(section.get("voices"), "voice.voices")
+		voices_sent = self.sent_maps(section.get("voices_sent"), "voice.voices_sent", voices)
 
 		return pymidiinstrumentdefs.definition.Voice(
 			addressing = addressing,
@@ -835,6 +915,8 @@ class _Reader:
 				else self.flag(section["aftertouch_transmits"], "voice.aftertouch_transmits"),
 			pitch_bend   = self.pitch_bend(section.get("pitch_bend")),
 			voices       = voices,
+			voice_notes  = voice_notes,
+			voices_sent  = voices_sent,
 		)
 
 

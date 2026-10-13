@@ -296,6 +296,44 @@ class PitchBend:
 
 
 @dataclasses.dataclass(frozen=True)
+class SentMap:
+
+	"""The note numbers an instrument sends for its voices, under one setting.
+
+	``voices`` is what each voice **answers to**.  What the instrument **sends**
+	for a voice is another fact, and where a setting chooses between sets of
+	numbers it is more than one.  A TR-707 sends each of its fifteen voices on one
+	number from Setting A or from Setting B, and thirteen of the fifteen differ
+	between the two.
+
+	``label`` is the setting's name as the maker prints it.  ``factory`` marks the
+	setting a document says the instrument ships in, on one map at most.  ``notes``
+	gives a voice's number under this setting, by the names ``voices`` uses, and
+	need not name every voice.
+	"""
+
+	label: str | None = None
+	factory: bool = False
+	notes: dict[str, int] = dataclasses.field(default_factory=dict)
+
+
+def _every_note (voices: dict[str, int], voice_notes: dict[str, tuple[int, ...]]) -> dict[str, tuple[int, ...]]:
+
+	"""Every number each voice answers to, the first being the one ``voices`` gives it.
+
+	A map built from ``voices`` alone, as the MIDNAM importer builds one, gets each
+	voice its one number.  Numbers that disagree with ``voices`` are refused: whichever
+	attribute a program reads, it has to find the same voices and the same first number.
+	"""
+
+	for name, notes in voice_notes.items():
+		if name not in voices or not notes or notes[0] != voices[name]:
+			raise ValueError(f"voice_notes[{name!r}] has to begin with the number voices gives {name!r}")
+
+	return {name: voice_notes.get(name, (note,)) for name, note in voices.items()}
+
+
+@dataclasses.dataclass(frozen=True)
 class Voice:
 
 	"""What the instrument sounds, and what it will answer to.
@@ -324,6 +362,16 @@ class Voice:
 	``learned`` where the owner assigns the notes, by MIDI learn or by setting them in a
 	menu, in which case any ``voices`` given are the factory defaults rather than fixed facts.
 
+	``voices`` gives each named voice the note number to send for it, and
+	``voice_notes`` every number the voice answers to, that one first.  A TR-08's
+	bass drum answers to 36 and to 35, so ``voices`` has 36 for it and
+	``voice_notes`` has ``(36, 35)``; a voice with one number has a tuple of one.
+
+	``voices_sent`` is what the instrument itself sends for its voices: a
+	``SentMap`` for each setting an owner can choose, under a short name, and one
+	entry where there is no setting.  Empty is nobody having recorded what it sends,
+	which is not the same as sending the numbers it answers to.
+
 	``aftertouch`` says which kind of aftertouch the instrument answers to:
 	``channel``, ``poly``, ``both`` (both kinds, even where a setting picks which
 	one reaches the sound, since the setting is the player's and the model answers
@@ -349,6 +397,15 @@ class Voice:
 	aftertouch_transmits: bool | None = None
 	pitch_bend: PitchBend | None = None
 	voices: dict[str, int] = dataclasses.field(default_factory=dict)
+	voice_notes: dict[str, tuple[int, ...]] = dataclasses.field(default_factory=dict)
+	voices_sent: dict[str, SentMap] = dataclasses.field(default_factory=dict)
+
+
+	def __post_init__ (self) -> None:
+
+		"""Give every voice its numbers, so ``voice_notes`` names each voice that ``voices`` does."""
+
+		object.__setattr__(self, "voice_notes", _every_note(self.voices, self.voice_notes))
 
 
 	def plays_note (self, note: int) -> bool:
@@ -563,6 +620,10 @@ class Part:
 	moved.  ``fixed`` is the maker's map and no setting changes it, and ``None`` is
 	nobody having recorded which.
 
+	``voice_notes`` and ``voices_sent`` are a part's as they are the instrument's:
+	every number each of its voices answers to, the one in ``voices`` first, and
+	the numbers the instrument sends for those voices under each setting.
+
 	``mode`` names the one mode this part exists in, and ``None`` is every mode.
 
 	``nrpn_msb`` addresses a part's instances by NRPN MSB rather than by
@@ -591,6 +652,15 @@ class Part:
 	within: str | None = None
 	unrecorded: tuple[str, ...] = ()
 	note_map: str | None = None
+	voice_notes: dict[str, tuple[int, ...]] = dataclasses.field(default_factory=dict)
+	voices_sent: dict[str, SentMap] = dataclasses.field(default_factory=dict)
+
+
+	def __post_init__ (self) -> None:
+
+		"""Give every voice its numbers, so ``voice_notes`` names each voice that ``voices`` does."""
+
+		object.__setattr__(self, "voice_notes", _every_note(self.voices, self.voice_notes))
 
 
 	@property

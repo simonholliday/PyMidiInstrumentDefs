@@ -2189,6 +2189,7 @@ class TestLearnedMaps:
 			"waldorf/blofeld", "waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2", "waldorf/microwave",
 			"waldorf/protein", "yamaha/montage_6_7_8",
 			# Said since the sweep of 2026-10-13, where a file had left the word out as unable to say both:
+			"moog/theremini",
 			"akai/mpc_key_37", "akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl",
 		}
 
@@ -22577,11 +22578,15 @@ class TestTheremini:
 
 		assert "**The last two filter types are printed as `Animoog 3` and `Etherwave`" in said
 
-	def test_no_channel_no_note_and_no_word_for_what_it_sends (self) -> None:
+	def test_no_channel_no_note_and_learned_for_the_two_numbers_it_sends (self) -> None:
 		theremini = pymidiinstrumentdefs.load("moog/theremini", [CORPUS])
 
 		assert (theremini.midi.channels, theremini.midi.control_change, theremini.midi.program_change,
-			theremini.midi.clock, theremini.midi.sysex) == (None, None, None, None, True)
+			theremini.midi.clock, theremini.midi.sysex) == (None, "learned", None, None, True)
+
+		# The word is for the two numbers an owner gives the antennas, and the 28 listed are received.
+		assert {control.direction for control in theremini.controls.values()} == {"receives"}
+		assert "**`control_change` IS `learned`**" in " ".join(prose_of("moog", "theremini").split())
 		assert (theremini.voice.addressing, theremini.voice.polyphony, theremini.voice.note_range) == (None, None, None)
 		assert not theremini.parts
 

@@ -66,9 +66,12 @@ source: >-
   picture of a setting and not a statement of the factory's; 20 is also the number the table gives
   Scan Amount. No page says what number carries the fine half of an antenna's 14-bit output: the
   sentence about fine halves, below, stands over the table and speaks of implemented controller
-  numbers, and whether it covers a number an owner gives an antenna is not said. `control_change` is
-  left unset: no word of the format says that a maker fixes the numbers received and leaves those
-  sent to the owner.
+  numbers, and whether it covers a number an owner gives an antenna is not said. **`control_change`
+  IS `learned`**: the word says there are numbers that are the owner's and that no file can list,
+  whichever way they travel, and here those are the two the antennas send. It stands beside the
+  28 below, which the maker fixes and which are all received. Until 2026-10-13 the field was left
+  unset, for want of a word that said a maker fixes what is received and leaves what is sent to
+  the owner.
 
   **THE LATER EDITION GIVES EACH OF THE TWO A CHANNEL, AND NO PAGE GIVES ONE TO WHAT IS RECEIVED.**
   The German manual adds a setting beside each number, "PITCH CC CH. (MIDI Kanal)"
@@ -178,8 +181,11 @@ sources:
     # one in the library.
 
 midi:
-  # NOT RECORDED, the channel: see the account. NOT RECORDED EITHER: `control_change`, clock,
-  # transport and program change.
+  # NOT RECORDED, the channel: see the account. NOT RECORDED EITHER: clock, transport and program
+  # change.
+  # The two numbers the antennas send are the owner's, set on the MIDI CC OUT page (manual p. 18).
+  # The word stands beside the 28 below, which the maker fixes and which are all received.
+  control_change: learned
   # Two messages, each printed in full (manual p. 35).
   sysex: true
 

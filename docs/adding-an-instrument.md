@@ -544,7 +544,9 @@ of such numbers does not call for the word: a microKORG's panel numbers are fact
 assignments an owner can change, every one of them in its table, so each of those controls
 says `assignment: default` and `control_change` stays out. And where the owner picks only
 what a fixed number reaches, as with the four inputs of an OP-1 field's MIDI LFO, no number
-is the owner's: those controls say `assignment: slot` and `control_change` stays out.
+is the owner's: those controls say `assignment: slot` and `control_change` stays out. The word
+is said whichever way a number travels: a Theremini's maker fixes the 28 controllers its table
+lists and its owner sets the two its antennas send, so it says `learned` beside the 28.
 
 ```yaml
 midi:

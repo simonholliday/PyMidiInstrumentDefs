@@ -1,0 +1,722 @@
+# **NINETY-NINE CONTROLLERS, AND ONE LIST FOR THREE MODELS.** The MicroWave II takes two rack
+# spaces. The XT is the same instrument with a control for most parameters, an audio input and
+# three more effects, and the XTk is an XT with four octaves of keys and two wheels. One manual,
+# one controller list and one implementation chart are printed for all three, and the manual says
+# one operating system runs in all of them. By the manual every important parameter has a
+# controller number, sent when the parameter is moved at the panel and answered when it arrives.
+#
+# **IN MULTI MODE EACH OF EIGHT INSTRUMENTS HAS A CHANNEL, AND THE CONTROLLERS GO THERE.** So every
+# control is written twice: once for Sound mode, on the instrument's own channel, and once for an
+# Instrument of a Multi program.
+#
+# **THE LIST IS OF SOFTWARE 2.28 AND THE CHART OF 2.18.** Both are in the manual Waldorf serves from
+# its legacy page. An older list, for 2.09, is in the same archive and differs in the ways set out
+# below. Waldorf's system archive holds a later system, named 2.33, which no document describes.
+
+definition: 1
+
+model:
+  manufacturer: Waldorf
+  # `Model: Waldorf MicroWave II/XT/XTk` on the chart (manual p. 122). The manual's running foot
+  # sets the three apart, "User’s Manual MicroWave II • MicroWave XT • XTk" (manual p. 5), and its
+  # prose writes `MicroWave II/XT/XTk` throughout. Waldorf's page today has
+  # `Microwave II / XT / XTk`.
+  name: MicroWave II/XT/XTk
+  # THE RELEASE THE CONTROLLER LIST AND THE SYSTEM EXCLUSIVE SPECIFICATION ARE HEADED FOR: "Software
+  # release 2.28" (manual p. 103), and again (manual p. 106). The chart in the same manual is
+  # `Version: 2.18` (manual p. 122). See the account for both, and for the later system Waldorf
+  # serves.
+  firmware: "2.28"
+
+source: >-
+  **WALDORF'S OWN MANUAL, FROM ITS LEGACY PAGE.** The page for these instruments lists `Audio
+  Demos`, `Documentation`, `Sounds`, `System` and `Tools` under "Microwave II Downloads"
+  (legacy_page). The second is one archive of three files: a user's manual of 126 pages for all
+  three models, a controller list of three pages for software 2.09, and a system exclusive
+  specification of 26 pages for software 2.16. The manual carries later issues of both, and its own
+  MIDI implementation chart, so it is what this file is read from. The older list is cited for what
+  changed; the older specification is not cited.
+
+  **THREE MODELS, AND THE MAKER DOCUMENTS THEM AS ONE.** "The MicroWave XT features the same
+  controls and connectors as the MicroWave II. In addition it offers individual controls for the
+  most parameters." (manual p. 8), and "The XTk features the same controls and connectors as the
+  MicroWave XT. In addition it offers a 4 octave keyboard, a pitchbend and a modulation wheel, as
+  well as numeric keys and a select button for easy program access." (manual p. 9). The chart is
+  headed for all three (manual p. 122), and so is the controller list: "Waldorf Microwave 2/XT/XTk
+  Controller Number Assignment" (manual p. 103). Of the software the manual says, where it describes
+  sending the system to another unit: "You can also update an XT/XTk using a MWII or any other
+  combination because the operating system is the same for all devices." (manual p. 98). The XT has
+  more than the controls: an input, "Analog In jack for processing external audio signals" (manual
+  p. 8), which the XTk has as well (manual p. 15), and three effect types the II's column of the
+  effects table lacks, `Delay`, `Pan Delay` and `Mod Delay` (manual p. 60). The list has no row for
+  the input's level, `External` (manual p. 48), and none for the Effect page's type or its three
+  parameters (manual p. 60); the `Chorus` on 12 is the switch on the Amplifier page, `off / on`:
+  "Enables the chorus effect." (manual p. 59). So one definition covers the three, and what only the
+  XTk does is said in words where it arises: its keys, its two wheels, its pedal sockets and the
+  aftertouch of its keyboard.
+
+  **THE SOFTWARE IS 2.28, THE CHART IS OF 2.18, AND WALDORF SERVES 2.33.** The manual's file is
+  titled `MWII/XT/XTk Manual 2.3 E` and its foreword is dated: "Revision Date: 25.10.99" (manual
+  p. 10). Its controller list is headed "Software release 2.28" (manual p. 103), and its system
+  exclusive specification the same (manual p. 106). Its chart is older: `Date: 16.08.99` and
+  `Version: 2.18` (manual p. 122), which is also the version on the power-up display the manual
+  pictures (manual p. 23). Of the XTk the manual says "Software version 2.1.8 or later is required
+  for the XTk model." (manual p. 100), read here as the chart's 2.18 written another way; no page
+  says the two are one number. No page says what changed between 2.18 and 2.28. Every row of the
+  chart is carried where the list and the prose do not say otherwise, and the places where they do
+  are set out below. **Waldorf's `System` archive, read for its file names alone, holds
+  `mw2_xt_xtk_sys_v233.mid`** beside fifty older systems, among them `mw2v228.mid` and
+  `mw2v229.mid`. Nothing in the archive was opened or run, and no document Waldorf serves describes
+  2.29 or 2.33, so `firmware` is the release the list is headed for.
+
+  **TWO MODES, AND SOUND MODE WHEN FIRST POWERED UP.** The memory holds "256 Sound programs (Program
+  A001…B128)" (manual p. 23) and "128 Multi programs (Program 001…128)" (manual p. 23). "When the
+  MicroWave II/XT/XTk is first powered up, Sound mode is selected." (manual p. 24). The system
+  exclusive data have a global setting for what a unit starts in, `Startup Soundbank or 2:Multi
+  Mode` with the values `A,B,Multi` (manual p. 115), which no page of the prose describes; `factory`
+  below is the first power-up's. A Multi program plays several sounds at once: "In Multi mode, you
+  can combine up to 8 sounds. Each sound in a Multi program is called an Instrument because it has
+  some additional settings that belong to the Multi and therefore are not stored in the Sound
+  program itself." (manual p. 20).
+
+  **CHANNELS 1 TO 16, OR OMNI, AND NO `mode` IS CARRIED.** The global Channel is `omni / 1…16`:
+  "Sets the basic send and receive channel for the MicroWave II/XT/XTk." (manual p. 93), and "If
+  omni is selected, the MicroWave II/XT/XTk sends on channel 1 and receives on all channels."
+  (manual p. 93). The Quick Start chapter gives the factory setting: "When you power up for the very
+  first time, channel 1 is selected." (manual p. 16), which is the chart's default channel too, `1`
+  both ways, beside a changed range of 1 to 16 (manual p. 122). The chart crosses all three rows of
+  Mode: `Default`, `Messages` and `Altered` are `x` as recognised (manual p. 122). So omni is off as
+  shipped, by the Quick Start page; the chart names no mode; and whether a sound plays
+  polyphonically is the sound's own setting, `Poly / Mono` (manual p. 67). `mode` is left out.
+
+  **AN INSTRUMENT'S CHANNEL IS ITS OWN, THE GLOBAL ONE, OR OMNI.** Its Channel is `global / omni /
+  1…16`: "Determines the MIDI receive channel for the instrument." (manual p. 88), with "If global
+  is selected, the MIDI channel defined in the global parameters is used." (manual p. 88). Two
+  Instruments may share one: "Both Instruments 2 and 3 now receive on MIDI channel 2 and therefore
+  two Sound programs are played when you use this MIDI channel." (manual p. 22). An initialised
+  Multi spreads them out: "Each Instrument is assigned to Sound program A001 and its MIDI receive
+  channel is set to the same value as the Instrument no." (manual p. 21), and "As default, only
+  Instrument 1 is active after initializing." (manual p. 21).
+
+  **CONTROLLERS GO TO THE INSTRUMENT'S CHANNEL IN MULTI MODE, SO EVERY CONTROL IS WRITTEN TWICE.**
+  "All controller messages are sent and received via the channel defined in the global parameters
+  or, if in Multi mode, selected for the corresponding Instrument." (manual p. 97). So a control
+  naming no part is Sound mode's, on the global channel, and its twin keyed `instrument_` is an
+  Instrument's, on that Instrument's channel; Multi mode is `unparted: false`. An Instrument whose
+  Channel is `global` sits on the global channel all the same, which the format has no word for. The
+  list is one list and says nothing of modes, so that every row reaches an Instrument is that
+  sentence's word and not a row-by-row statement. Effects are narrower than the sentence: "Please
+  note that only Instruments 1…3 of a Multi program can use effects." (manual p. 60). No page says
+  whether that takes in the Chorus switch on controller 12.
+
+  **A PARAMETER MOVED AT THE PANEL IS SENT, AND TWO SETTINGS GOVERN BOTH WAYS.** "Every important
+  parameter is assigned a controller number through which the parameter can be changed. If a
+  parameter is changed at the device, then this change is sent along with the appropriate controller
+  number via MIDI." (manual p. 97). Sending has four settings, `off / Ctl only / SysEx / Ctl+SysEx`:
+  "If Ctl only is selected, only controller messages are sent. Parameters without dedicated
+  controller assignment are not sent at all." (manual p. 94). Receiving has two: "Enables or
+  disables the receiving of parameter control messages via MIDI. These messages include controller
+  and system exclusive data." (manual p. 94). No page gives either a factory setting in words; the
+  display pictured for them reads `Ctl+SysEx` and `on` (manual p. 93), which is a picture and not a
+  statement. So the sound parameters below travel both ways, and whether a given unit sends or
+  answers them is its owner's setting.
+
+  **THE LIST HAS 102 ROWS AND 99 ARE CONTROLS.** It runs from 1 to 123 over three pages (manual
+  pp. 103-105). Three rows are channel mode messages, which belong to the MIDI specification and not
+  to this instrument: `All Sound Off` on 120, `Reset All Controllers` on 121 and `All notes off` on
+  123 (manual p. 105). The other 99 are below, each under the name the list prints. Bank select on
+  32 is among them, as bank select is wherever a maker numbers it. The list gives every row a range
+  and most a list of values; the ranges are carried and the value names are left in the list. No row
+  names a fine half, and the older list's `MSB` after the first three names is gone from this one.
+
+  **THE CHART NAMES SEVEN OF THEM AND MARKS THREE AS NOT SENT.** Its Control Change rows are `1`
+  `Modwheel`, `2` `Breath Control`, `5` `Portamento Time`, `7` `Master Volume`, `10` `Panning`, `32`
+  `Bank Select` and `64` `Sustain Pedal`, all seven `o` as recognised; as transmitted, 1, 5, 10 and
+  64 are `o` and 2, 7 and 32 are `x` (manual p. 122), with the note "*Note: See MIDI Controller
+  Assignments for more information." (manual p. 122). So breath, volume and bank select are
+  `direction: receives`. The foot controller on 4 is received as well and not on the chart: the
+  table of modulation sources has "MIDI foot control (controller #4)" (manual p. 81). **That it is
+  not sent is a reading.** The XTk's two sockets are "for connecting foot controllers or analog
+  voltages" (manual p. 9); the one use a page gives either of them is the sustain pedal's, at `Pedal
+  / CV In 1` (manual p. 95); and no page says a socket sends controller 4, and none says it does
+  not. So it is `receives` too, on that silence. The same table has "MIDI modulation wheel
+  (controller #1)" (manual p. 81), "MIDI sustain pedal (controller #64)" (manual p. 81) and "MIDI
+  breath control (controller #2)" (manual p. 81). The chart calls 5 `Portamento Time` and 7 `Master
+  Volume` where the list has `Glide Time` and `Channel Volume`; the labels below are the list's.
+  Only the XTk has a wheel or a pedal socket. Its page shows both wheels and the `Pedal / CV In`
+  jacks under "The items labeled on this page indicate special features that are available on the
+  XTk only." (manual p. 9), and the technical data give `Pedal` and `CV In` as `n/a` for the II and
+  the XT (manual p. 102). **No page says in words that the wheel's or the pedal's movement is
+  sent**: the chart's `o` beside 1 and 64 as transmitted, printed for all three models together, is
+  what says so.
+
+  **THREE ROWS PRINT A RANGE THEIR OWN VALUES OUTRUN, AND THE VALUES ARE FOLLOWED.** `Filter 1 Type`
+  on 54 is printed `0…5` beside ten named types, 0 to 9 (manual p. 104), and the manual's own system
+  exclusive list has the same parameter at `0-9` (manual p. 111), with a table of ten types numbered
+  0 to 9 (manual p. 114); so `[0, 9]`. **The parameter's own page has thirteen settings.** After the
+  ten come `24dBNotch`, `12dBNotch` and `Band Stop` (manual p. 54), each described in its turn
+  (manual p. 56), and the section on Filter 1 opens by allowing for more: "Further types might be
+  added in the future." (manual p. 52). Neither issue of the list gives any of the three a number,
+  and nor does the system exclusive data's table, so no page says which values select them; `[0, 9]`
+  is the range the pages number. `Osc 1 Pitchbend Scale` on 36 and `Osc 2 Pitchbend Scale` on 42 are
+  printed `0…121` beside `0…120:semitones 121:harmonic 122:global` (manual pp. 103-104), and the
+  system exclusive list has `0-122` (manual p. 111); so `[0, 122]`. `LFO 1 Sync` on 112 and `LFO 2
+  Sync` on 115 are `0…3` with 0, 1 and 3 named, `0:off 1:on 3:Clock` (manual p. 105); the system
+  exclusive list reads `off/on/on/Clock` (manual p. 112), so 2 is `on` again and the range stands.
+  The manual's page for LFO 2 gives its Sync `off / on` alone (manual p. 80), where LFO 1's has `off
+  / on / Clock` (manual p. 78); the list and the system exclusive data give Clock to both. The older
+  list had `0..9` for the filter type, the same `0..121` beside a 122 for both scales, and `0..1`
+  for both syncs (controller_list pp. 1-3).
+
+  **THE VALUE NAMES ARE LEFT IN THE LIST, AND ONE ROW'S ARE IN A DOUBTED ORDER.** `Glide Type` on 22
+  is `0:portamento 1:fingered port. 2:glissando 3:fingered gliss.` in both issues of the list
+  (manual p. 103), where the parameter's own page has `porta / glissando / fingered / f.gliss`
+  (manual p. 65) and the system exclusive data `porta,gliss,fp.,fg.` (manual p. 111). No value name
+  is carried below, so nothing here rests on which is right. The system exclusive data also give
+  some of the same parameters other scales, the oscillators' octaves `16-112` and their keytrack
+  `0-76` among them (manual p. 111); those are that message's and not the controllers'.
+
+  **AGAINST THE LIST FOR 2.09.** The older list has 100 rows. This one adds `FM Amount` on 13 and
+  `Mod 1 Amount` and `Mod 2 Amount` on 94 and 95, and drops "Sostenuto Switch" (controller_list
+  p. 2) on 66. It renumbers two scales: the octaves of both oscillators were `16..112` in steps of
+  12 and are `0…8`, and their semitones were `56..76` and are `0…24`. And 65, `Glide on/off` here,
+  was "Portamento Switch" (controller_list p. 2). So the two issues give those four controllers
+  different numbers for the same settings, and no page says what this software does with the older
+  ones.
+
+  **`control_change` IS `learned`, FOR FOUR NUMBERS THE OWNER SETS.** Control W, X, Y and Z are
+  `0…120`: "These parameters are used to define modulation sources that are freely definable MIDI
+  controllers. Each value represents a MIDI controller number that is used when you assign its
+  parameter as modulation source in the Modifiers or the Modulation Matrix." (manual p. 95). A Multi
+  program has four of its own, `0…120 / global` (manual p. 87). The MIDI chapter gives the range
+  another way, "X…Z stands for definable controller numbers 1…120." (manual p. 97), leaving out both
+  W and 0; the parameter's own page is followed. No page prints a factory number for any of the
+  four: the displays pictured read `004`, `008`, `011` and `012` (manual pp. 87, 93), which are
+  pictures. A number an owner assigns is not a property of the model, so the four are not controls,
+  as `waldorf/blofeld` and `waldorf/microwave` treat their own.
+
+  **PROGRAM CHANGE AND BANK SELECT, RECEIVED AND NOT SENT.** "As the device contains 128 programs in
+  each bank, it recognizes program number 0…127." (manual p. 97), with "Bank 0 contains Sound
+  Programs A001…A128" (manual p. 97) and "Bank 1 contains Sound Programs B001…B128" (manual p. 97);
+  the list puts the bank on controller 32, `0:Bank A 1:Bank B` (manual p. 103). The chart marks
+  program change and bank select `x` as transmitted and `o` as recognised (manual p. 122). `presets`
+  is the 256 Sound programs. The glossary counts from 1, "Program numbers 1 through 128 can be
+  changed via program change messages." (manual p. 120), where the chart and the MIDI chapter count
+  from 0. In Multi mode a global setting, `sound / multi / combined`, says what a program change
+  does: "If multi is selected, the whole Multi program is switched by program changes, that are
+  received on the basic channel set above." (manual p. 94), and "If combined is selected, Instrument
+  programs can be changed by using the Instrument’s channel, the Multi can be changed by using the
+  basic channel." (manual p. 94). So an Instrument takes program changes at two of the three
+  settings, and at two of the three the basic channel takes them for the Multi program itself.
+
+  **CLOCK BOTH WAYS, AND TRANSPORT ON THE CHART ALONE.** The chart marks Clock `o` in both columns
+  and Commands `o` in both, with the remark `Start, Stop, Continue` (manual p. 122). Clock is used
+  by the arpeggiator and the LFOs: "The arpeggiator can be used as a master as well as a slave via
+  the MIDI clock" (manual p. 69), and "If Clock is selected, the LFO is synchronised to an incoming
+  MIDI Clock signal." (manual p. 78). It is sent only when asked: "Enables or disables the sending
+  of MIDI clock." (manual p. 94). **No sentence in the manual says what a start, a stop or a
+  continue does, or when one is sent**; `transport: both` is the chart's two marks. Song position is
+  marked recognised and not transmitted (manual p. 122), and of the arpeggiator as a slave the
+  manual says "In this mode, the MIDI Song Position Pointer is also recognized." (manual p. 69).
+
+  **TEN VOICES, AND THIRTY WITH AN EXPANSION THE MANUAL NAMES ONLY IN A TABLE OF CODES.** "if you
+  play just one note, all 10 voices of the MicroWave II/XT/XTk are used for this note." (manual
+  p. 67), said of the unisono setting. The system exclusive specification's device inquiry lists
+  family members, among them one with ten voices on an expandable board and one expanded to thirty
+  (manual p. 115); no other page mentions an expansion, and `polyphony` is the ten the prose gives.
+  No page says how the Instruments of a Multi divide the voices. `polyphony_shared` is a reading:
+  the count is given once, for the instrument, and nothing gives an Instrument voices of its own.
+
+  **NOTES 0 TO 127 BOTH WAYS ON THE CHART.** Note Number is `0 - 127` as transmitted and as
+  recognised, and True Voice `0 - 127` (manual p. 122). What transmits notes is the XTk's keyboard,
+  "that can be used to play internal sounds as well as to generate MIDI notes for external devices"
+  (manual p. 32), over four octaves that two buttons shift by one either way (manual p. 32), and the
+  arpeggiator, whose notes "can be used to control other devices" (manual p. 69). By their names,
+  two settings decide whether and where the arpeggiator's notes leave the instrument, and only the
+  system exclusive data show them: `Arpeggiator Note out Channel`, `off/Chnl1-16`, among the global
+  parameters (manual p. 115), and `Arpeggiator Notes out`, `off/Ch1-16/Inst/global`, among an
+  Instrument's (manual p. 114). No page of the prose describes either. The keyboard has a send
+  channel of its own, `off / 1…16`: "Sets the MIDI send channel for the XTk keyboard." (manual
+  p. 95). In Multi mode a Multi's MIDI Send is `global / specific`, and two pages say two things of
+  `global`: "If global is selected, notes are sent on the basic channel selected in the global
+  parameters section." (manual p. 87), and that it is "the global channel set by this parameter"
+  (manual p. 95), the keyboard's own. With `specific`, "notes are sent according to the settings of
+  the specific instruments." (manual p. 87): each Instrument of an XTk has a MIDI Send of its own,
+  `off / on`, and "If set to on, this instrument will send notes on the instrument’s selected MIDI
+  channel." (manual p. 89). An Instrument of an XTk can be told to hear the keys, MIDI or both: "On
+  the XTk, you can determine whether the selected instrument is played from the internal keyboard,
+  incoming MIDI notes or both." (manual p. 89).
+
+  **VELOCITY BOTH WAYS, AND RELEASE VELOCITY RECEIVED.** The chart marks Note ON velocity `o` in
+  both columns and Note OFF `x` as transmitted and `o` as recognised (manual p. 122). The sources a
+  sound can use include "MIDI note velocity" (manual p. 81) and "MIDI note release velocity" (manual
+  p. 81). What sends velocity is the XTk's keyboard, which has a curve for it (manual p. 95). **The
+  manual has the XTk send release velocity too, which the chart of 2.18 crosses**: with the
+  keyboard's release curve off, "a '90' message is sent for 'Note off' instead of the '80' message
+  that is sent if release velocity is enabled." (manual p. 95). The field below is what is received,
+  so the two do not meet in it.
+
+  **BOTH KINDS OF AFTERTOUCH RECEIVED, AND CHANNEL PRESSURE SENT.** Key's is `x` as transmitted and
+  `o` as recognised, and Ch's is `o` in both columns (manual p. 122). Both are sources: "MIDI
+  aftertouch" (manual p. 81) and "MIDI polyphonic pressure" (manual p. 81). What can send it is the
+  XTk's keyboard, the only keys among the three, which has a curve of its own for pressure:
+  "Determines the dynamic response of the XTk’s keyboard aftertouch." (manual p. 95). No page says
+  in words that it is sent; the chart's mark is what says so.
+
+  **PITCH BEND IS RECEIVED, ITS RANGE IS THE SOUND'S, AND THE CHART SAYS IT IS NOT SENT.** Each
+  oscillator has a Pitchbend Range of `0...120 / harmonic / global`: "Determines the intensity of
+  the pitchbend via MIDI Pitchbend messages in semitones." (manual p. 40), and `global` hands it to
+  a global setting, BendRange, of `0…120 / harmonic` (manual p. 94). No page gives either a factory
+  value, so the range is programmable and no figure is recorded. **The XTk has a pitchbend wheel and
+  the chart marks Pitch Bender `x` as transmitted** (manual p. 122). No page says the wheel's
+  movement is sent, and none says it is not; the chart is older than the manual and is what there
+  is.
+
+  **THE PANIC FUNCTION IS SAID TO SEND WHAT THE CHART SAYS IS NOT SENT.** "The Panic function sends
+  and executes an 'All Notes Off' command." (manual p. 30), and the chart marks All Notes Off `x` as
+  transmitted and `o` as recognised (manual p. 122). It is a channel mode message and no control
+  here either way.
+
+  **NO NRPN.** No page of the manual, of the older list or of the older specification names a
+  registered or a non-registered parameter: neither word is in any of the three, and the letters
+  `rpn` are nowhere as a run, only inside `Arp Note Order` once its spaces are taken out. A
+  parameter with no controller is reached by system exclusive: "All parameters of the MicroWave
+  II/XT/XTk can be controlled by system exclusive data." (manual p. 97).
+
+  **SYSTEM EXCLUSIVE, UNDER A DEVICE NUMBER.** The chart marks it both ways (manual p. 122). The
+  specification gives the identifiers, "Waldorf MIDI ID = 3Eh" (manual p. 106) and "Equipment ID =
+  0Eh for MicroWave 2" (manual p. 106), and the device number, "00h to 7Eh, 7Fh = broadcast" (manual
+  p. 106), which the manual sets as Device ID, `0…126`: "Device ID 127 is a so-called broadcast ID
+  that addresses all connected MicroWave II/XT/XTks." (manual p. 94).
+
+  **WHERE THE MANUAL DISAGREES WITH ITSELF.** The chart against the prose, three times: release
+  velocity sent, All Notes Off sent, and a pitchbend wheel beside a crossed Pitch Bender. The range
+  of Control W to Z, from 0 on its own page and from 1 in the MIDI chapter. Three rows of the list
+  whose range is smaller than the values named beside it, and one whose value names are in another
+  order elsewhere. The filter types, ten in the list and thirteen on their own page. What `global`
+  means for the XTk keyboard's send channel in a Multi. And program numbers, from 0 or from 1. Each
+  is set out above.
+
+  NOT RECORDED: `mode`, which the chart crosses; a single bend range; the four controllers an owner
+  assigns; a factory setting for the two parameter control settings; how the voices are divided
+  between Instruments; which values select the three filter types the list does not number; what the
+  XTk's other pedal socket does, read here as the technical data's `CV In`; whether the XTk's wheel
+  sends pitch bend; and anything about software 2.29 or 2.33.
+
+sources:
+  manual:
+    kind: manual
+    title: User's Manual MicroWave II, MicroWave XT, XTk
+    edition: MWII/XT/XTk Manual 2.3 E
+    dated: 1999-10-25
+    landing: "https://waldorfmusic.com/legacy-microwave-ii-xt-xtk-series/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/2BLZXbKrMw3x26N/download"
+    sha256: f2ddd324d32c6df2ae13b5214905b5b4a2eda40d6878b3677c7f0efcd938e157
+    retrieved: 2026-10-13
+    # A FILE INSIDE WALDORF'S ARCHIVE. The address serves `Documentation EN.zip`, 2,053,766 bytes,
+    # digest 9b544c45ba35c4ba8d8b3502fd30763ec8bc510f18aa8ea403119a9373ff3c85, and the digest above
+    # is of its member `mw2_XT_XTk_eng.pdf`. 126 pages, with a text layer on all but three: pages
+    # 2 and 125 are blank, and page 123 is a scanned declaration of conformity that a text search
+    # does not see. **A PRINTED PAGE IS THE SAME PAGE OF THE FILE**: pages 5 to 121 print their own
+    # number, and the chart is on page 122, which prints none. The title is the cover's and the
+    # running foot's; the edition is the file's own title, and the date its foreword's, `25.10.99`
+    # (p. 10), which is the day the file was made. The text layer of the controller list writes
+    # the page's ellipsis and its degree sign as other characters, so its ranges are given here in
+    # backticks and not as quotations.
+    page_offset: 0
+  controller_list:
+    kind: midi_implementation
+    title: Waldorf Microwave 2/XT Controller Number Assignment
+    edition: Software release 2.09
+    landing: "https://waldorfmusic.com/legacy-microwave-ii-xt-xtk-series/"
+    url: "https://downloads.waldorfmusic.com/cloud/index.php/s/2BLZXbKrMw3x26N/download"
+    sha256: 5816cf968936a848e3489f1467a06f62835ac399f4cdde6dfe7488ead86ec893
+    retrieved: 2026-10-13
+    # The archive's member `mw2_XT_controls.pdf`: three pages that print no number, cited by the
+    # page of the file. AN OLDER ISSUE of the list the manual prints for 2.28, and it does not name
+    # the XTk. Cited only for what changed between the two. No number below is taken from it.
+    page_offset: 0
+  legacy_page:
+    kind: download_page
+    title: Legacy Microwave II / XT / XTk Series – Waldorf Music
+    landing: "https://waldorfmusic.com/legacy/"
+    url: "https://waldorfmusic.com/legacy-microwave-ii-xt-xtk-series/"
+    sha256: ee6499907778f4ff5d689199a9df8b0e18a6e2a726b982bad64dc303b4c50a0e
+    retrieved: 2026-10-13
+    paginated: false
+    # Its visible text; the bytes as served are kept beside it. The link behind `Documentation` is
+    # the archive the two documents above come from. The link behind `System` serves `System.zip`,
+    # 3,894,794 bytes, digest fdd794e51c864b919dc7529b49c4495f3d011c1bcfb221f4138c711457e63138,
+    # whose list of names is what the account says of later systems. The page names no software
+    # version.
+
+midi:
+  # 1 to 16 in the Changed row, both ways (manual p. 122); the setting is omni or 1 to 16
+  # (manual p. 93), and 1 at the very first power-up (manual p. 16). No `mode`: the chart
+  # crosses it. See the account.
+  channels: [1, 16]
+  # `o` in both columns (manual p. 122). Sent only with MIDI Clock Send on (manual p. 94).
+  clock: both
+  # `o` in both columns, remarked `Start, Stop, Continue` (manual p. 122), and no sentence
+  # anywhere. See the account.
+  transport: both
+  program_change:
+    # `x` as transmitted and `o` as recognised over `0 - 127` (manual p. 122).
+    receives: true
+    sends: false
+    # Two banks of 128 Sound programs, chosen by bank select on 32; and 128 Multi programs.
+    presets: 256
+  # Four numbers are the owner's to set, Control W to Z, beside the 99 the maker fixes; see the
+  # account.
+  control_change: learned
+  # No page of any of the three documents names one; see the account.
+  nrpn: none
+  # Marked in both columns (manual p. 122).
+  sysex: true
+
+voice:
+  addressing: pitches
+  # `0 - 127` as recognised, and True Voice the same (manual p. 122).
+  note_range: [0, 127]
+  # "all 10 voices of the MicroWave II/XT/XTk" (manual p. 67). An expansion to thirty is named
+  # only in a table of codes; shared is a reading. See the account.
+  polyphony: 10
+  polyphony_shared: true
+  velocity:
+    # `o` as transmitted and as recognised (manual p. 122); sent by the XTk's keyboard.
+    note_on: both
+    # `o` as recognised (manual p. 122), and a source a sound can use (manual p. 81).
+    note_off: true
+  # Key's and Ch's both `o` as recognised (manual p. 122).
+  aftertouch: both
+  # Ch's is `o` as transmitted and Key's `x` (manual p. 122): channel pressure, from the XTk's
+  # keyboard (manual p. 95).
+  aftertouch_transmits: true
+  pitch_bend:
+    # A range for each oscillator, 0 to 120 semitones, harmonic or the global setting
+    # (manual p. 40); no factory value is printed.
+    programmable: true
+
+modes:
+  sound:
+    label: Sound mode
+    # "When the MicroWave II/XT/XTk is first powered up, Sound mode is selected." (manual p. 24).
+    factory: true
+  multi:
+    label: Multi mode
+    # Controller messages go to the channel "selected for the corresponding Instrument"
+    # (manual p. 97). Program changes still reach the basic channel (manual p. 94).
+    unparted: false
+
+parts:
+  # Up to eight, each with a channel that may be another's, the global one or omni
+  # (manual pp. 20, 88). An initialised Multi has Instrument 1 active, each on the channel of its
+  # own number (manual p. 21).
+  instrument:
+    label: Instrument
+    mode: multi
+    count: 8
+    channel: assigned
+    addressing: pitches
+    receives: [notes, controls, program_change]
+
+groups:
+  controllers:   Controllers
+  glide:         Glide
+  osc_1:         Oscillator 1
+  osc_2:         Oscillator 2
+  mixer:         Mixer
+  wave_1:        Wave 1
+  wave_2:        Wave 2
+  filter_1:      Filter 1
+  filter_2:      Filter 2
+  amplifier:     Amplifier
+  pan:           Pan
+  filter_env:    Filter Envelope
+  amp_env:       Amplifier Envelope
+  free_env:      Free Envelope
+  trigger:       Trigger
+  lfo_1:         LFO 1
+  lfo_2:         LFO 2
+  modulation:    Modulation Matrix
+  arpeggiator:   Arpeggiator
+
+controls:
+
+  # ═══ IN SOUND MODE, ON THE INSTRUMENT'S CHANNEL ═══════════════════════════════════════════
+
+  # Controllers ─────────────────────────────────────────────────
+  modulation_wheel:                      {label: Modulation wheel, cc: 1, group: controllers}
+  breath_control:                        {label: Breath control, cc: 2, direction: receives, group: controllers}
+  foot_controller:                       {label: Foot controller, cc: 4, direction: receives, group: controllers}
+  channel_volume:                        {label: Channel Volume, cc: 7, direction: receives, group: controllers}
+  bank_select:                           {label: Bank Select, cc: 32, range: [0, 1], direction: receives, group: controllers}
+  sustain_switch:                        {label: Sustain Switch, cc: 64, group: controllers}
+
+  # Glide ───────────────────────────────────────────────────────
+  glide_time:                            {label: Glide Time, cc: 5, group: glide}
+  glide_type:                            {label: Glide Type, cc: 22, range: [0, 3], group: glide}
+  glide_mode:                            {label: Glide Mode, cc: 23, range: [0, 1], group: glide}
+  glide_on_off:                          {label: Glide on/off, cc: 65, group: glide}
+
+  # Oscillator 1 ────────────────────────────────────────────────
+  fm_amount:                             {label: FM Amount, cc: 13, group: osc_1}
+  osc_1_octave:                          {label: Osc 1 Octave, cc: 33, range: [0, 8], group: osc_1}
+  osc_1_semitone:                        {label: Osc 1 Semitone, cc: 34, range: [0, 24], group: osc_1}
+  osc_1_detune:                          {label: Osc 1 Detune, cc: 35, group: osc_1}
+  osc_1_pitchbend_scale:                 {label: Osc 1 Pitchbend Scale, cc: 36, range: [0, 122], group: osc_1}
+  osc_1_keytrack:                        {label: Osc 1 Keytrack, cc: 37, group: osc_1}
+
+  # Oscillator 2 ────────────────────────────────────────────────
+  osc_2_octave:                          {label: Osc 2 Octave, cc: 38, range: [0, 8], group: osc_2}
+  osc_2_semitone:                        {label: Osc 2 Semitone, cc: 39, range: [0, 24], group: osc_2}
+  osc_2_detune:                          {label: Osc 2 Detune, cc: 40, group: osc_2}
+  osc_2_sync:                            {label: Osc 2 Sync, cc: 41, range: [0, 1], group: osc_2}
+  osc_2_pitchbend_scale:                 {label: Osc 2 Pitchbend Scale, cc: 42, range: [0, 122], group: osc_2}
+  osc_2_keytrack:                        {label: Osc 2 Keytrack, cc: 43, group: osc_2}
+  osc_2_link:                            {label: Osc 2 Link, cc: 44, range: [0, 1], group: osc_2}
+
+  # Mixer ───────────────────────────────────────────────────────
+  wave_1_level:                          {label: Wave 1 Level, cc: 45, group: mixer}
+  wave_2_level:                          {label: Wave 2 Level, cc: 46, group: mixer}
+  ringmod_level:                         {label: RingMod Level, cc: 47, group: mixer}
+  noise_level:                           {label: Noise Level, cc: 48, group: mixer}
+
+  # Wave 1 ──────────────────────────────────────────────────────
+  wavetable:                             {label: Wavetable, cc: 70, group: wave_1}
+  wave_1_startwave:                      {label: Wave 1 Startwave, cc: 71, range: [0, 63], group: wave_1}
+  wave_1_phase:                          {label: Wave 1 Phase, cc: 72, group: wave_1}
+  wave_1_env_amount:                     {label: Wave 1 Env Amnt., cc: 73, group: wave_1}
+  wave_1_env_velocity_amount:            {label: Wave 1 Env Vel. Amnt., cc: 74, group: wave_1}
+  wave_1_keytrack:                       {label: Wave 1 Keytrack, cc: 75, group: wave_1}
+  wave_1_limit:                          {label: Wave 1 Limit, cc: 76, range: [0, 1], group: wave_1}
+
+  # Wave 2 ──────────────────────────────────────────────────────
+  wave_2_startwave:                      {label: Wave 2 Startwave, cc: 77, range: [0, 63], group: wave_2}
+  wave_2_phase:                          {label: Wave 2 Phase, cc: 78, group: wave_2}
+  wave_2_env_amount:                     {label: Wave 2 Env Amnt., cc: 79, group: wave_2}
+  wave_2_env_velocity_amount:            {label: Wave 2 Env Vel. Amnt., cc: 80, group: wave_2}
+  wave_2_keytrack:                       {label: Wave 2 Keytrack, cc: 81, group: wave_2}
+  wave_2_limit:                          {label: Wave 2 Limit, cc: 82, range: [0, 1], group: wave_2}
+  wave_2_link:                           {label: Wave 2 Link, cc: 83, range: [0, 1], group: wave_2}
+
+  # Filter 1 ────────────────────────────────────────────────────
+  filter_1_cutoff:                       {label: Filter 1 Cutoff, cc: 50, group: filter_1}
+  filter_1_keytrack:                     {label: Filter 1 Keytrack, cc: 51, group: filter_1}
+  filter_1_env_amount:                   {label: Filter 1 Env Amount, cc: 52, group: filter_1}
+  filter_1_env_velocity:                 {label: Filter 1 Env Velocity, cc: 53, group: filter_1}
+  filter_1_type:                         {label: Filter 1 Type, cc: 54, range: [0, 9], group: filter_1}
+  filter_1_resonance:                    {label: Filter 1 Resonance, cc: 56, group: filter_1}
+
+  # Filter 2 ────────────────────────────────────────────────────
+  filter_2_cutoff:                       {label: Filter 2 Cutoff, cc: 60, group: filter_2}
+  filter_2_type:                         {label: Filter 2 Type, cc: 61, range: [0, 1], group: filter_2}
+  filter_2_keytrack:                     {label: Filter 2 Keytrack, cc: 62, group: filter_2}
+
+  # Amplifier ───────────────────────────────────────────────────
+  chorus:                                {label: Chorus, cc: 12, range: [0, 1], group: amplifier}
+  amp_keytrack:                          {label: Amp Keytrack, cc: 55, group: amplifier}
+  amp_volume:                            {label: Amp Volume, cc: 57, group: amplifier}
+  amp_env_velocity:                      {label: Amp Env Velocity, cc: 58, group: amplifier}
+
+  # Pan ─────────────────────────────────────────────────────────
+  panning:                               {label: Panning, cc: 10, group: pan}
+
+  # Filter Envelope ─────────────────────────────────────────────
+  filter_env_attack:                     {label: Filter Env Attack, cc: 14, group: filter_env}
+  filter_env_decay:                      {label: Filter Env Decay, cc: 15, group: filter_env}
+  filter_env_sustain:                    {label: Filter Env Sustain, cc: 16, group: filter_env}
+  filter_env_release:                    {label: Filter Env Release, cc: 17, group: filter_env}
+
+  # Amplifier Envelope ──────────────────────────────────────────
+  amp_env_attack:                        {label: Amp Env Attack, cc: 18, group: amp_env}
+  amp_env_decay:                         {label: Amp Env Decay, cc: 19, group: amp_env}
+  amp_env_sustain:                       {label: Amp Env Sustain, cc: 20, group: amp_env}
+  amp_env_release:                       {label: Amp Env Release, cc: 21, group: amp_env}
+
+  # Free Envelope ───────────────────────────────────────────────
+  free_env_time_1:                       {label: Free Env Time 1, cc: 85, group: free_env}
+  free_env_level_1:                      {label: Free Env Level 1, cc: 86, group: free_env}
+  free_env_time_2:                       {label: Free Env Time 2, cc: 87, group: free_env}
+  free_env_level_2:                      {label: Free Env Level 2, cc: 88, group: free_env}
+  free_env_time_3:                       {label: Free Env Time 3, cc: 89, group: free_env}
+  free_env_level_3:                      {label: Free Env Level 3, cc: 90, group: free_env}
+  free_env_release_time:                 {label: Free Env Release Time, cc: 91, group: free_env}
+  free_env_release_level:                {label: Free Env Release Level, cc: 92, group: free_env}
+
+  # Trigger ─────────────────────────────────────────────────────
+  filter_env_trigger:                    {label: Filter Env Trigger, cc: 29, range: [0, 2], group: trigger}
+  amp_env_trigger:                       {label: Amp Env Trigger, cc: 31, range: [0, 2], group: trigger}
+  free_env_trigger:                      {label: Free Env Trigger, cc: 93, range: [0, 2], group: trigger}
+
+  # LFO 1 ───────────────────────────────────────────────────────
+  lfo_1_rate:                            {label: LFO1 Rate, cc: 24, group: lfo_1}
+  lfo_1_shape:                           {label: LFO1 Shape, cc: 25, range: [0, 5], group: lfo_1}
+  lfo_1_delay:                           {label: LFO1 Delay, cc: 30, group: lfo_1}
+  lfo_1_sync:                            {label: LFO 1 Sync, cc: 112, range: [0, 3], group: lfo_1}
+  lfo_1_symmetry:                        {label: LFO 1 Symmetry, cc: 113, group: lfo_1}
+  lfo_1_humanize:                        {label: LFO 1 Humanize, cc: 114, group: lfo_1}
+
+  # LFO 2 ───────────────────────────────────────────────────────
+  lfo_2_rate:                            {label: LFO2 Rate, cc: 26, group: lfo_2}
+  lfo_2_delay:                           {label: LFO2 Delay, cc: 27, group: lfo_2}
+  lfo_2_shape:                           {label: LFO2 Shape, cc: 28, range: [0, 5], group: lfo_2}
+  lfo_2_sync:                            {label: LFO 2 Sync, cc: 115, range: [0, 3], group: lfo_2}
+  lfo_2_symmetry:                        {label: LFO 2 Symmetry, cc: 116, group: lfo_2}
+  lfo_2_humanize:                        {label: LFO 2 Humanize, cc: 117, group: lfo_2}
+  lfo_2_phase:                           {label: LFO 2 Phase, cc: 118, group: lfo_2}
+
+  # Modulation Matrix ───────────────────────────────────────────
+  mod_1_amount:                          {label: Mod 1 Amount, cc: 94, group: modulation}
+  mod_2_amount:                          {label: Mod 2 Amount, cc: 95, group: modulation}
+
+  # Arpeggiator ─────────────────────────────────────────────────
+  arp_active:                            {label: Arp Active, cc: 102, range: [0, 2], group: arpeggiator}
+  arp_range:                             {label: Arp Range, cc: 103, range: [0, 9], group: arpeggiator}
+  arp_clock:                             {label: Arp Clock, cc: 104, range: [0, 15], group: arpeggiator}
+  arp_tempo:                             {label: Arp Tempo, cc: 105, group: arpeggiator}
+  arp_direction:                         {label: Arp Direction, cc: 106, range: [0, 3], group: arpeggiator}
+  arp_pattern:                           {label: Arp Pattern, cc: 107, range: [0, 16], group: arpeggiator}
+  arp_note_order:                        {label: Arp Note Order, cc: 108, range: [0, 3], group: arpeggiator}
+  arp_velocity:                          {label: Arp Velocity, cc: 109, range: [0, 1], group: arpeggiator}
+  arp_reset:                             {label: Arp Reset, cc: 110, range: [0, 1], group: arpeggiator}
+  arp_pattern_length:                    {label: Arp Pattern Length, cc: 111, range: [0, 15], group: arpeggiator}
+
+  # ═══ IN MULTI MODE, ON AN INSTRUMENT'S CHANNEL ════════════════════════════════════════════
+
+  # Controllers ─────────────────────────────────────────────────
+  instrument_modulation_wheel:           {label: Modulation wheel, cc: 1, part: instrument, group: controllers}
+  instrument_breath_control:             {label: Breath control, cc: 2, direction: receives, part: instrument, group: controllers}
+  instrument_foot_controller:            {label: Foot controller, cc: 4, direction: receives, part: instrument, group: controllers}
+  instrument_channel_volume:             {label: Channel Volume, cc: 7, direction: receives, part: instrument, group: controllers}
+  instrument_bank_select:                {label: Bank Select, cc: 32, range: [0, 1], direction: receives, part: instrument, group: controllers}
+  instrument_sustain_switch:             {label: Sustain Switch, cc: 64, part: instrument, group: controllers}
+
+  # Glide ───────────────────────────────────────────────────────
+  instrument_glide_time:                 {label: Glide Time, cc: 5, part: instrument, group: glide}
+  instrument_glide_type:                 {label: Glide Type, cc: 22, range: [0, 3], part: instrument, group: glide}
+  instrument_glide_mode:                 {label: Glide Mode, cc: 23, range: [0, 1], part: instrument, group: glide}
+  instrument_glide_on_off:               {label: Glide on/off, cc: 65, part: instrument, group: glide}
+
+  # Oscillator 1 ────────────────────────────────────────────────
+  instrument_fm_amount:                  {label: FM Amount, cc: 13, part: instrument, group: osc_1}
+  instrument_osc_1_octave:               {label: Osc 1 Octave, cc: 33, range: [0, 8], part: instrument, group: osc_1}
+  instrument_osc_1_semitone:             {label: Osc 1 Semitone, cc: 34, range: [0, 24], part: instrument, group: osc_1}
+  instrument_osc_1_detune:               {label: Osc 1 Detune, cc: 35, part: instrument, group: osc_1}
+  instrument_osc_1_pitchbend_scale:      {label: Osc 1 Pitchbend Scale, cc: 36, range: [0, 122], part: instrument, group: osc_1}
+  instrument_osc_1_keytrack:             {label: Osc 1 Keytrack, cc: 37, part: instrument, group: osc_1}
+
+  # Oscillator 2 ────────────────────────────────────────────────
+  instrument_osc_2_octave:               {label: Osc 2 Octave, cc: 38, range: [0, 8], part: instrument, group: osc_2}
+  instrument_osc_2_semitone:             {label: Osc 2 Semitone, cc: 39, range: [0, 24], part: instrument, group: osc_2}
+  instrument_osc_2_detune:               {label: Osc 2 Detune, cc: 40, part: instrument, group: osc_2}
+  instrument_osc_2_sync:                 {label: Osc 2 Sync, cc: 41, range: [0, 1], part: instrument, group: osc_2}
+  instrument_osc_2_pitchbend_scale:      {label: Osc 2 Pitchbend Scale, cc: 42, range: [0, 122], part: instrument, group: osc_2}
+  instrument_osc_2_keytrack:             {label: Osc 2 Keytrack, cc: 43, part: instrument, group: osc_2}
+  instrument_osc_2_link:                 {label: Osc 2 Link, cc: 44, range: [0, 1], part: instrument, group: osc_2}
+
+  # Mixer ───────────────────────────────────────────────────────
+  instrument_wave_1_level:               {label: Wave 1 Level, cc: 45, part: instrument, group: mixer}
+  instrument_wave_2_level:               {label: Wave 2 Level, cc: 46, part: instrument, group: mixer}
+  instrument_ringmod_level:              {label: RingMod Level, cc: 47, part: instrument, group: mixer}
+  instrument_noise_level:                {label: Noise Level, cc: 48, part: instrument, group: mixer}
+
+  # Wave 1 ──────────────────────────────────────────────────────
+  instrument_wavetable:                  {label: Wavetable, cc: 70, part: instrument, group: wave_1}
+  instrument_wave_1_startwave:           {label: Wave 1 Startwave, cc: 71, range: [0, 63], part: instrument, group: wave_1}
+  instrument_wave_1_phase:               {label: Wave 1 Phase, cc: 72, part: instrument, group: wave_1}
+  instrument_wave_1_env_amount:          {label: Wave 1 Env Amnt., cc: 73, part: instrument, group: wave_1}
+  instrument_wave_1_env_velocity_amount: {label: Wave 1 Env Vel. Amnt., cc: 74, part: instrument, group: wave_1}
+  instrument_wave_1_keytrack:            {label: Wave 1 Keytrack, cc: 75, part: instrument, group: wave_1}
+  instrument_wave_1_limit:               {label: Wave 1 Limit, cc: 76, range: [0, 1], part: instrument, group: wave_1}
+
+  # Wave 2 ──────────────────────────────────────────────────────
+  instrument_wave_2_startwave:           {label: Wave 2 Startwave, cc: 77, range: [0, 63], part: instrument, group: wave_2}
+  instrument_wave_2_phase:               {label: Wave 2 Phase, cc: 78, part: instrument, group: wave_2}
+  instrument_wave_2_env_amount:          {label: Wave 2 Env Amnt., cc: 79, part: instrument, group: wave_2}
+  instrument_wave_2_env_velocity_amount: {label: Wave 2 Env Vel. Amnt., cc: 80, part: instrument, group: wave_2}
+  instrument_wave_2_keytrack:            {label: Wave 2 Keytrack, cc: 81, part: instrument, group: wave_2}
+  instrument_wave_2_limit:               {label: Wave 2 Limit, cc: 82, range: [0, 1], part: instrument, group: wave_2}
+  instrument_wave_2_link:                {label: Wave 2 Link, cc: 83, range: [0, 1], part: instrument, group: wave_2}
+
+  # Filter 1 ────────────────────────────────────────────────────
+  instrument_filter_1_cutoff:            {label: Filter 1 Cutoff, cc: 50, part: instrument, group: filter_1}
+  instrument_filter_1_keytrack:          {label: Filter 1 Keytrack, cc: 51, part: instrument, group: filter_1}
+  instrument_filter_1_env_amount:        {label: Filter 1 Env Amount, cc: 52, part: instrument, group: filter_1}
+  instrument_filter_1_env_velocity:      {label: Filter 1 Env Velocity, cc: 53, part: instrument, group: filter_1}
+  instrument_filter_1_type:              {label: Filter 1 Type, cc: 54, range: [0, 9], part: instrument, group: filter_1}
+  instrument_filter_1_resonance:         {label: Filter 1 Resonance, cc: 56, part: instrument, group: filter_1}
+
+  # Filter 2 ────────────────────────────────────────────────────
+  instrument_filter_2_cutoff:            {label: Filter 2 Cutoff, cc: 60, part: instrument, group: filter_2}
+  instrument_filter_2_type:              {label: Filter 2 Type, cc: 61, range: [0, 1], part: instrument, group: filter_2}
+  instrument_filter_2_keytrack:          {label: Filter 2 Keytrack, cc: 62, part: instrument, group: filter_2}
+
+  # Amplifier ───────────────────────────────────────────────────
+  instrument_chorus:                     {label: Chorus, cc: 12, range: [0, 1], part: instrument, group: amplifier}
+  instrument_amp_keytrack:               {label: Amp Keytrack, cc: 55, part: instrument, group: amplifier}
+  instrument_amp_volume:                 {label: Amp Volume, cc: 57, part: instrument, group: amplifier}
+  instrument_amp_env_velocity:           {label: Amp Env Velocity, cc: 58, part: instrument, group: amplifier}
+
+  # Pan ─────────────────────────────────────────────────────────
+  instrument_panning:                    {label: Panning, cc: 10, part: instrument, group: pan}
+
+  # Filter Envelope ─────────────────────────────────────────────
+  instrument_filter_env_attack:          {label: Filter Env Attack, cc: 14, part: instrument, group: filter_env}
+  instrument_filter_env_decay:           {label: Filter Env Decay, cc: 15, part: instrument, group: filter_env}
+  instrument_filter_env_sustain:         {label: Filter Env Sustain, cc: 16, part: instrument, group: filter_env}
+  instrument_filter_env_release:         {label: Filter Env Release, cc: 17, part: instrument, group: filter_env}
+
+  # Amplifier Envelope ──────────────────────────────────────────
+  instrument_amp_env_attack:             {label: Amp Env Attack, cc: 18, part: instrument, group: amp_env}
+  instrument_amp_env_decay:              {label: Amp Env Decay, cc: 19, part: instrument, group: amp_env}
+  instrument_amp_env_sustain:            {label: Amp Env Sustain, cc: 20, part: instrument, group: amp_env}
+  instrument_amp_env_release:            {label: Amp Env Release, cc: 21, part: instrument, group: amp_env}
+
+  # Free Envelope ───────────────────────────────────────────────
+  instrument_free_env_time_1:            {label: Free Env Time 1, cc: 85, part: instrument, group: free_env}
+  instrument_free_env_level_1:           {label: Free Env Level 1, cc: 86, part: instrument, group: free_env}
+  instrument_free_env_time_2:            {label: Free Env Time 2, cc: 87, part: instrument, group: free_env}
+  instrument_free_env_level_2:           {label: Free Env Level 2, cc: 88, part: instrument, group: free_env}
+  instrument_free_env_time_3:            {label: Free Env Time 3, cc: 89, part: instrument, group: free_env}
+  instrument_free_env_level_3:           {label: Free Env Level 3, cc: 90, part: instrument, group: free_env}
+  instrument_free_env_release_time:      {label: Free Env Release Time, cc: 91, part: instrument, group: free_env}
+  instrument_free_env_release_level:     {label: Free Env Release Level, cc: 92, part: instrument, group: free_env}
+
+  # Trigger ─────────────────────────────────────────────────────
+  instrument_filter_env_trigger:         {label: Filter Env Trigger, cc: 29, range: [0, 2], part: instrument, group: trigger}
+  instrument_amp_env_trigger:            {label: Amp Env Trigger, cc: 31, range: [0, 2], part: instrument, group: trigger}
+  instrument_free_env_trigger:           {label: Free Env Trigger, cc: 93, range: [0, 2], part: instrument, group: trigger}
+
+  # LFO 1 ───────────────────────────────────────────────────────
+  instrument_lfo_1_rate:                 {label: LFO1 Rate, cc: 24, part: instrument, group: lfo_1}
+  instrument_lfo_1_shape:                {label: LFO1 Shape, cc: 25, range: [0, 5], part: instrument, group: lfo_1}
+  instrument_lfo_1_delay:                {label: LFO1 Delay, cc: 30, part: instrument, group: lfo_1}
+  instrument_lfo_1_sync:                 {label: LFO 1 Sync, cc: 112, range: [0, 3], part: instrument, group: lfo_1}
+  instrument_lfo_1_symmetry:             {label: LFO 1 Symmetry, cc: 113, part: instrument, group: lfo_1}
+  instrument_lfo_1_humanize:             {label: LFO 1 Humanize, cc: 114, part: instrument, group: lfo_1}
+
+  # LFO 2 ───────────────────────────────────────────────────────
+  instrument_lfo_2_rate:                 {label: LFO2 Rate, cc: 26, part: instrument, group: lfo_2}
+  instrument_lfo_2_delay:                {label: LFO2 Delay, cc: 27, part: instrument, group: lfo_2}
+  instrument_lfo_2_shape:                {label: LFO2 Shape, cc: 28, range: [0, 5], part: instrument, group: lfo_2}
+  instrument_lfo_2_sync:                 {label: LFO 2 Sync, cc: 115, range: [0, 3], part: instrument, group: lfo_2}
+  instrument_lfo_2_symmetry:             {label: LFO 2 Symmetry, cc: 116, part: instrument, group: lfo_2}
+  instrument_lfo_2_humanize:             {label: LFO 2 Humanize, cc: 117, part: instrument, group: lfo_2}
+  instrument_lfo_2_phase:                {label: LFO 2 Phase, cc: 118, part: instrument, group: lfo_2}
+
+  # Modulation Matrix ───────────────────────────────────────────
+  instrument_mod_1_amount:               {label: Mod 1 Amount, cc: 94, part: instrument, group: modulation}
+  instrument_mod_2_amount:               {label: Mod 2 Amount, cc: 95, part: instrument, group: modulation}
+
+  # Arpeggiator ─────────────────────────────────────────────────
+  instrument_arp_active:                 {label: Arp Active, cc: 102, range: [0, 2], part: instrument, group: arpeggiator}
+  instrument_arp_range:                  {label: Arp Range, cc: 103, range: [0, 9], part: instrument, group: arpeggiator}
+  instrument_arp_clock:                  {label: Arp Clock, cc: 104, range: [0, 15], part: instrument, group: arpeggiator}
+  instrument_arp_tempo:                  {label: Arp Tempo, cc: 105, part: instrument, group: arpeggiator}
+  instrument_arp_direction:              {label: Arp Direction, cc: 106, range: [0, 3], part: instrument, group: arpeggiator}
+  instrument_arp_pattern:                {label: Arp Pattern, cc: 107, range: [0, 16], part: instrument, group: arpeggiator}
+  instrument_arp_note_order:             {label: Arp Note Order, cc: 108, range: [0, 3], part: instrument, group: arpeggiator}
+  instrument_arp_velocity:               {label: Arp Velocity, cc: 109, range: [0, 1], part: instrument, group: arpeggiator}
+  instrument_arp_reset:                  {label: Arp Reset, cc: 110, range: [0, 1], part: instrument, group: arpeggiator}
+  instrument_arp_pattern_length:         {label: Arp Pattern Length, cc: 111, range: [0, 15], part: instrument, group: arpeggiator}

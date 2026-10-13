@@ -310,6 +310,7 @@ class TestBundledCorpus:
 			"waldorf/iridium_core",
 			"waldorf/iridium_mk2",
 			"waldorf/microwave",
+			"waldorf/microwave_ii_xt_xtk",
 			"waldorf/protein",
 			"waldorf/streichfett",
 			"yamaha/dx7",
@@ -1843,6 +1844,7 @@ class TestAftertouch:
 			"waldorf/iridium_mk2": ("both", None),
 			"korg/radias": ("channel", True),
 			"waldorf/microwave": ("both", False),
+			"waldorf/microwave_ii_xt_xtk": ("both", True),
 			"roland/juno_x": ("both", True),
 			"sequential/pro_3": ("both", True),
 			"nord/lead_a1": ("none", False),
@@ -2211,7 +2213,7 @@ class TestLearnedMaps:
 		assert beside == {
 			"intellijel/cascadia", "native_instruments/maschine_plus", "soma/pulsar_23", "ten_ten_music/blackbox",
 			"waldorf/blofeld", "waldorf/iridium", "waldorf/iridium_core", "waldorf/iridium_mk2", "waldorf/microwave",
-			"waldorf/protein", "yamaha/montage_6_7_8",
+			"waldorf/microwave_ii_xt_xtk", "waldorf/protein", "yamaha/montage_6_7_8",
 			# Said since the sweep of 2026-10-13, where a file had left the word out as unable to say both:
 			"moog/theremini",
 			"akai/mpc_key_37", "akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl",
@@ -22951,6 +22953,96 @@ class TestLeadA1:
 		assert list(lead.sources) == ["manual", "downloads_page", "update_history"]
 		assert lead.sources["manual"].edition == "OS Version 1.3x, Print Edition F"
 		assert (lead.sources["update_history"].edition, lead.sources["update_history"].paginated) == ("v1.36", False)
+
+
+class TestMicrowaveII:
+
+	"""One list of 99 controllers for three models, each written for Sound mode and again for an Instrument."""
+
+	def test_ninety_nine_controllers_each_written_twice (self) -> None:
+		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])
+
+		own = {key: control for key, control in mw.controls.items() if control.part is None}
+		twins = {key: control for key, control in mw.controls.items() if control.part == "instrument"}
+
+		assert len(own) == len(twins) == 99 and len(mw.controls) == 198
+		assert {"instrument_" + key for key in own} == set(twins)
+
+		for key, control in own.items():
+			twin = twins["instrument_" + key]
+
+			assert (twin.cc, twin.label, twin.range, twin.direction, twin.group) == \
+				(control.cc, control.label, control.range, control.direction, control.group), key
+
+		# The list runs from 1 to 118 with gaps, and its three channel mode rows are not controls.
+		numbers = sorted(control.cc for control in own.values() if control.cc is not None)
+
+		assert len(numbers) == 99 and (numbers[0], numbers[-1]) == (1, 118)
+		assert not {120, 121, 123} & set(numbers)
+		assert all(control.group in mw.groups for control in mw.controls.values())
+
+	def test_sound_mode_at_power_on_and_an_instruments_channel_in_multi_mode (self) -> None:
+		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])
+
+		assert mw.factory_mode == "sound" and mw.modes["multi"].unparted is False
+		assert {control.part for control in mw.controls_in("sound")} == {None}
+		assert {control.part for control in mw.controls_in("multi")} == {"instrument"}
+
+		instrument = mw.parts["instrument"]
+
+		assert (instrument.mode, instrument.count, instrument.channel) == ("multi", 8, "assigned")
+		assert instrument.receives == ("notes", "controls", "program_change")
+
+	def test_four_are_received_only_and_the_rest_travel_both_ways (self) -> None:
+		"""The chart crosses breath, volume and bank select as transmitted, and no page says the foot controller is sent."""
+		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])
+
+		assert {control.cc for control in mw.controls.values() if control.direction == "receives"} == {2, 4, 7, 32}
+		assert {control.direction for control in mw.controls.values()} == {"both", "receives"}
+
+	def test_three_ranges_follow_the_values_named_and_not_the_range_printed (self) -> None:
+		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])
+
+		assert mw.controls["filter_1_type"].range == (0, 9)
+		assert mw.controls["osc_1_pitchbend_scale"].range == (0, 122)
+		assert mw.controls["osc_2_pitchbend_scale"].range == (0, 122)
+		# The two syncs name 0, 1 and 3 in a range of 0 to 3, which stands.
+		assert mw.controls["lfo_1_sync"].range == mw.controls["lfo_2_sync"].range == (0, 3)
+		assert mw.controls["bank_select"].range == (0, 1)
+
+		said = " ".join((mw.source or "").split())
+
+		assert "**THREE ROWS PRINT A RANGE THEIR OWN VALUES OUTRUN, AND THE VALUES ARE FOLLOWED.**" in said
+
+	def test_what_the_chart_and_the_manual_give (self) -> None:
+		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])
+
+		# The chart crosses all three rows of Mode, so none is recorded.
+		assert (mw.midi.channels, mw.midi.mode, mw.midi.clock, mw.midi.transport) == ((1, 16), None, "both", "both")
+		assert mw.midi.program_change is not None
+		assert (mw.midi.program_change.receives, mw.midi.program_change.sends,
+			mw.midi.program_change.presets) == (True, False, 256)
+		assert (mw.midi.control_change, mw.midi.nrpn, mw.midi.sysex) == ("learned", "none", True)
+
+		assert (mw.voice.polyphony, mw.voice.polyphony_shared, mw.voice.note_range) == (10, True, (0, 127))
+		assert mw.voice.velocity is not None
+		assert (mw.voice.velocity.note_on, mw.voice.velocity.note_off) == ("both", True)
+		# Channel pressure is what is sent, and what sends it is the XTk's keyboard.
+		assert (mw.voice.aftertouch, mw.voice.aftertouch_transmits) == ("both", True)
+		assert mw.voice.pitch_bend is not None
+		assert (mw.voice.pitch_bend.programmable, mw.voice.pitch_bend.semitones) == (True, None)
+
+	def test_the_later_system_is_in_the_account_and_not_in_the_firmware (self) -> None:
+		"""The list is headed for 2.28; a system named 2.33 is served and no document describes it."""
+		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])
+
+		assert mw.model.firmware == "2.28"
+
+		said = " ".join((mw.source or "").split())
+
+		assert "**THE SOFTWARE IS 2.28, THE CHART IS OF 2.18, AND WALDORF SERVES 2.33.**" in said
+		assert "`mw2_xt_xtk_sys_v233.mid`" in said
+		assert set(mw.sources) == {"manual", "controller_list", "legacy_page"}
 
 
 class TestWebPageTitles:

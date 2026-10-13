@@ -997,7 +997,16 @@ The `source` field is prose, and it is the authority for the whole file. Make it
   read from the page as you saved it, with the site's name and the punctuation as they
   come and white space run together. So `Downloads | volca drum | KORG (USA)` and not
   `volca drum downloads`. A shorter description of a page is not its title, and nobody
-  searching for it will find the page;
+  searching for it will find the page. **That holds for every source cited from a web page,
+  whatever its `kind`**: release notes, a manual or a chart published as pages are titled as
+  their pages serve them, **with three exceptions, where the served title leaves out
+  something a reader needs and the file gives a fuller title of its own.** A chapter of a
+  teenage engineering guide that is served a chapter to a page prints its number at its
+  head, and the served title drops the number: the file's title names the guide and gives
+  the number and the name the page prints. A Roland system program page serves a title that
+  names its listing and no version: the file's title is the heading the page prints over the
+  entry. And a chart page of a Roland HTML manual serves the chart's heading, with no
+  instrument: the file's title puts the manual's name before it, marked `(HTML)`;
 - **its edition or revision, and its date**, as the document states them — not as the
   download page states them;
 - **where it can be obtained**, so a reader is not left searching;

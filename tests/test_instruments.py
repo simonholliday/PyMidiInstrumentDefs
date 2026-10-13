@@ -22919,6 +22919,13 @@ class TestWebPageTitles:
 	read from the `<title>` of the page as it was saved, white space run together, and replaces
 	a title somebody wrote for the page.  They are pinned because nothing in the repository
 	holds the saved page to read again.
+
+	Since 2026-10-13 the rule reaches every source cited from a web page, whatever its kind:
+	release notes, a manual or specifications published as pages.  Three kinds of page are
+	excepted and have a fuller title of the file's own: a chapter of a teenage engineering
+	guide, whose served title drops the chapter's number; a Roland system program page, whose
+	served title names its listing and no version; and a chart page of a Roland HTML manual,
+	which serves the chart's heading with no instrument.
 	"""
 
 	SERVED = {

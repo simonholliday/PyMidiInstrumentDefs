@@ -240,10 +240,17 @@ voice:
   # notes than using one.
   polyphony_shared: true
   velocity:
+    # Received as a voltage at a jack: the MIDI B outputs "can be configured to react in various
+    # ways to MIDI data. For example, the CV output can be assigned to velocity, note number, mod
+    # wheel, or aftertouch." (p. 17), and velocity is what that output carries as it ships
+    # (p. 14). No page says the MIDI B output changes the sound without a patch cable: the
+    # manual's example patches it to MULTIPLY "to brighten notes that are played harder" (p. 14).
+    # CC 104 and 106 give channel A's CV and gate outputs a velocity choice too (p. 15), and
+    # those two are "always connected to Oscillator Pitch, and Contour Gate" (p. 17).
     note_on: received
-    # Three ways over: CC 112 and 113 set a minimum velocity (p. 15); the MIDI B CV output can be
-    # assigned to velocity, so that notes get brighter the harder they are played (p. 14); and
-    # the MIDI B gate can be set to open "when Velocity > 50%" (p. 14).
+    # Settings that bear on it: CC 112 and 113 set a minimum velocity (p. 15); the MIDI B CV
+    # output can be assigned to velocity (p. 14); and the MIDI B gate can be set to open "when
+    # Velocity > 50%" (p. 14).
   pitch_bend:
     # "PitchBendScale CH. A=108 Amount of bend in semitones, centered on active pitch (so 1/2up,
     # 1/2 down)" and the same for channel B at 109 (p. 15). So bend is received and the depth is

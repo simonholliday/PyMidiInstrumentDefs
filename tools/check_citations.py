@@ -48,13 +48,17 @@ with the numbers printed whole**, and so `5: 0.5      21: 2.1` was a found 521:
 nine of one definition's NRPNs were counted as found on pages that print none of
 them whole, and the bytes that are on those pages were never looked at.
 
-**With ``--attribute``, a page is read only in the document its citation names.**
-Without it, every page the account cites is read in every document that has
-pages, so `manual p. 2` turns the chart to its second sheet as well, and the more
-a definition cites the less a pass proves.  The switch is off until what it
-changes has been agreed: over the 171 definitions bundled when it was written
-it moved 22 numbers in seven of them out of found, each into a weaker check or
-into the numbers nothing here can look for.
+**A page is read only in the document its citation names.**  `chart p. 2` turns
+the chart to its second sheet and no other document.  A page cited with no source
+key before it is nobody's, so it is still read in every document that has pages:
+the report says which pages were read that way, and at its end how many.
+
+``--pool`` reads every cited page in every document, which is what this tool did
+until 2026-10-13.  Then `manual p. 2` turned the chart to its second sheet as
+well, and the more a definition cited the less a pass proved.  Over the 171
+definitions bundled when reading by key was written it moved 22 numbers in seven
+of them out of found, each into a weaker check or into the numbers nothing here
+can look for.  It is kept for comparing against, and is not a gate.
 """
 
 import argparse
@@ -668,7 +672,7 @@ class Result:
 
 	# Whether each cited page was read only in the document its citation names, and the
 	# pages that were cited with no document named and so read in all of them.
-	attributed: bool = False
+	attributed: bool = True
 	unattributed: set[int] = dataclasses.field(default_factory=set)
 
 
@@ -725,20 +729,21 @@ def follow (
 	definition: pymidiinstrumentdefs.definition.Definition,
 	name: str,
 	index: dict[str, pathlib.Path],
-	attribute: bool = False,
+	attribute: bool = True,
 ) -> Result:
 
 	"""Follow one definition's citations into its documents and see what is there.
 
-	**Unless ``attribute`` is set, a cited page is looked for in every document.**
-	A number then counts as found if any cited page of any of them carries it,
-	which makes the check weaker the more documents a definition cites: `manual
-	p. 2` turns the chart to its second sheet too, and seven of one definition's
-	numbers were found there and nowhere its account points.
+	**A page cited as `chart p. 2` is read in `chart` alone.**  A page cited with
+	no document named is still every document's, because nothing says whose it
+	is, and the result holds those pages.
 
-	With it, a page cited as `chart p. 2` is read in `chart` alone.  A page cited
-	with no document named is still every document's, because nothing says whose
-	it is, and the result holds those pages.
+	With ``attribute`` off, every cited page is looked for in every document, as
+	it was until 2026-10-13.  A number then counts as found if any cited page of
+	any of them carries it, which makes the check weaker the more documents a
+	definition cites: `manual p. 2` turns the chart to its second sheet too, and
+	seven of one definition's numbers were found there and nowhere its account
+	points.
 	"""
 
 	result = Result(name = name, cited = cited_pages(definition.source or ""), attributed = attribute)
@@ -960,10 +965,10 @@ def render (result: Result, verbose: bool) -> None:
 	if result.unreachable:
 		print(f"    ⚠ cited but in no document read: printed {as_ranges(result.unreachable)}")
 
-	paged = [document for document in result.documents if document.extent]
+	nobodys = read_in_every_document(result)
 
-	if result.attributed and result.unattributed and len(paged) > 1:
-		print(f"    printed {as_ranges(result.unattributed)} cited with no document named, so "
+	if nobodys:
+		print(f"    printed {as_ranges(nobodys)} cited with no document named, so "
 			f"read in every document that has pages")
 
 	if not result.wanted:
@@ -1155,6 +1160,19 @@ def resolve (name: str) -> tuple[str, pymidiinstrumentdefs.definition.Definition
 	return name, pymidiinstrumentdefs.load(name)
 
 
+def read_in_every_document (result: Result) -> set[int]:
+
+	"""The pages a definition cites with no document named, where that leaves a choice.
+
+	A definition with one paged document has nothing to choose between, so a page it
+	cites with no key is not one of these.
+	"""
+
+	paged = [document for document in result.documents if document.extent]
+
+	return set(result.unattributed) if result.attributed and len(paged) > 1 else set()
+
+
 def main (argv: list[str] | None = None) -> int:
 
 	"""Check the named definitions, or every one on the search path."""
@@ -1167,9 +1185,18 @@ def main (argv: list[str] | None = None) -> int:
 	parser.add_argument("--library", help = "the folder of maker's documents to read")
 	parser.add_argument("--verbose", "-v", action = "store_true", help = "list every number, found or not")
 	parser.add_argument("--attribute", action = "store_true",
-		help = "read a page cited with a source key before it, as `chart p. 2`, in that document alone")
+		help = "what is done without asking since 2026-10-13, and kept so an older command still runs: "
+			"read a page cited with a source key before it, as `chart p. 2`, in that document alone")
+	parser.add_argument("--pool", action = "store_true",
+		help = "read every cited page in every document that has pages, as before: a weaker check, "
+			"kept for comparing against")
 
 	arguments = parser.parse_args(argv)
+
+	if arguments.attribute and arguments.pool:
+		parser.error("--attribute and --pool ask for opposite things")
+
+	attribute = not arguments.pool
 	given = arguments.library or os.environ.get(LIBRARY_VARIABLE)
 
 	if not given:
@@ -1183,13 +1210,16 @@ def main (argv: list[str] | None = None) -> int:
 	index = library_index(root)
 	print(f"{len(index)} documents in {root}")
 
-	if arguments.attribute:
+	if attribute:
 		print("each page cited with a source key before it is read in that document alone")
+	else:
+		print("every cited page is read in every document that has pages (--pool)")
 
 	print()
 
 	names = arguments.names or sorted(pymidiinstrumentdefs.available())
 	faults = 0
+	nobodys: list[int] = []
 
 	for given_name in names:
 		# A definition too broken to load is still an answer, and a gate that
@@ -1202,10 +1232,17 @@ def main (argv: list[str] | None = None) -> int:
 			faults += 1
 			continue
 
-		result = follow(definition, name, index, attribute = arguments.attribute)
+		result = follow(definition, name, index, attribute = attribute)
 
 		render(result, arguments.verbose)
 		faults += not result.sound
+		nobodys.append(len(read_in_every_document(result)))
+
+	# How much of the run was still read the weaker way, so that a pass is not taken for
+	# more than it is.  Said before the last line, which is the one a gate reads.
+	if any(nobodys):
+		print(f"{sum(nobodys)} page(s) in {sum(1 for count in nobodys if count)} definition(s) are cited "
+			f"with no document named where there is more than one to turn to, and were read in every one")
 
 	print(f"{len(names) - faults} of {len(names)} definitions check out")
 

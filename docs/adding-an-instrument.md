@@ -1263,10 +1263,13 @@ themselves.** A chart's Control Change row gives `12-31` and names nothing. The 
 gives each of those numbers a name is usually a page or two away, and with that page cited
 the numbers are found whole.
 
-**Every page you cite is read in every document that has pages**, so `manual p. 2` turns
-your chart to its second sheet too, and a number printed only there counts as found. Name the
-document before each page, `(chart p. 2)`, and run it with `--attribute` to have each page
-read in the document its citation names and in no other. That is not yet the default.
+**A page you cite with its document's key before it is read in that document and in no
+other.** `(chart p. 2)` turns your chart to its second sheet and leaves the manual shut. A
+page cited with no key is read in every document that has pages, so a bare `p. 2` turns the
+manual and the chart to their second sheets alike, and a number printed on either counts as
+found: name the document before each page. The check ends by counting the pages it read
+that way. Until 2026-10-13 it read every page in every document, and `--pool` still does,
+for comparing against.
 **The key has to be the word directly before the `p.`, written as it is under `sources`.**
 `Chart p. 1`, `the chart (p. 2)` and `the manual's p. 4` name no document, so those pages are
 still read in all of them, and the report lists the pages it read that way. And a key that

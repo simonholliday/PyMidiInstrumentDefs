@@ -40,12 +40,13 @@ def load_tool () -> typing.Any:
 tool = load_tool()
 
 
-def followed (tmp_path: pathlib.Path, controls: str, *pages: str, extra: str = "") -> typing.Any:
+def followed (tmp_path: pathlib.Path, controls: str, *pages: str, extra: str = "", account: str = "") -> typing.Any:
 
 	"""Follow a definition of these controls into one chart with no pages for each text given.
 
 	The check itself, run on documents written for the test. ``extra`` is more of the
-	``sources`` mapping, for a document that is not a chart of text.
+	``sources`` mapping, for a document that is not a chart of text, and ``account`` is the
+	definition's source account, for a test that needs a page of such a document cited.
 	"""
 
 	sources = []
@@ -56,8 +57,11 @@ def followed (tmp_path: pathlib.Path, controls: str, *pages: str, extra: str = "
 		digest = hashlib.sha256(chart.read_bytes()).hexdigest()
 		sources.append(f"chart{position}: {{sha256: {digest}, paginated: false}}")
 
+	said = f"source: >-\n  {account}\n" if account else ""
+
 	definition = pymidiinstrumentdefs.parse(
 		"definition: 1\nmodel: {name: X}\n"
+		f"{said}"
 		f"sources: {{{', '.join(sources)}{extra}}}\n"
 		f"controls: {{{controls}}}\n",
 		source = "x.yaml",
@@ -469,11 +473,12 @@ class TestAPairOfBytesBesideItsLabel:
 
 class TestReadingAPageInTheDocumentItsCitationNames:
 
-	"""With `attribute`, a page cited as `chart p. 2` is read in `chart` alone.
+	"""A page cited as `chart p. 2` is read in `chart` alone, since 2026-10-13 without asking.
 
 	Read in every document, the manual's `p. 2` turns the chart to its second sheet too:
 	seven of the JU-06A's controller numbers are on that sheet, its account cited `chart
-	p. 1` and `manual p. 2` and no `chart p. 2`, and all seven were found.
+	p. 1` and `manual p. 2` and no `chart p. 2`, and all seven were found.  That reading is
+	still there to compare against, as `attribute = False` and as `--pool`.
 	"""
 
 	PAGES = {
@@ -492,7 +497,7 @@ class TestReadingAPageInTheDocumentItsCitationNames:
 
 		"""Follow a definition of three controllers into a manual and a chart of two pages each.
 
-		``attribute`` of ``None`` asks for nothing, which is how the switch is left alone.
+		``attribute`` of ``None`` asks for nothing, which is how the tool is run by default.
 		``pictures`` names the sheets that carry an image, by file and sheet.
 		"""
 
@@ -542,18 +547,19 @@ class TestReadingAPageInTheDocumentItsCitationNames:
 
 		return tool.follow(definition, "x", index, attribute = attribute)
 
-	def test_the_switch_is_off_unless_it_is_asked_for (self, monkeypatch: pytest.MonkeyPatch) -> None:
-		"""Asked for nothing, every page is read in every document, as it always was."""
+	def test_asked_for_nothing_a_keyed_page_is_read_in_its_own_document (self, monkeypatch: pytest.MonkeyPatch) -> None:
+		"""Which is the stronger reading, and the one a gate should be: the three are missing."""
 		result = self.follow(monkeypatch, "The chart (chart p. 1) and the mode (manual p. 2).", None)
 
-		assert not result.attributed and not result.missing
+		assert result.attributed
+		assert [number for _, _, number in result.missing] == [47, 70, 79]
 
-	def test_the_command_line_leaves_it_off_and_its_flag_turns_it_on (
+	def test_the_command_line_reads_by_key_and_one_flag_pools_the_pages (
 			self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
-		"""The flag is the one way in, and it has to reach the check."""
+		"""`--pool` is the one way back to the weaker reading, and it has to reach the check."""
 		asked: list[bool] = []
 
-		def follow (definition: typing.Any, name: str, index: typing.Any, attribute: bool = False) -> typing.Any:
+		def follow (definition: typing.Any, name: str, index: typing.Any, attribute: bool = True) -> typing.Any:
 
 			"""Note what was asked for, and find nothing."""
 
@@ -564,12 +570,53 @@ class TestReadingAPageInTheDocumentItsCitationNames:
 		monkeypatch.setattr(tool, "follow", follow)
 
 		assert tool.main(["--library", str(tmp_path), "moog/minitaur"]) == 0
-		assert "read in that document alone" not in capsys.readouterr().out
+		assert "each page cited with a source key before it is read in that document alone" in capsys.readouterr().out
 
+		# The flag from when this was a switch still runs, and asks for what is done anyway.
 		assert tool.main(["--library", str(tmp_path), "--attribute", "moog/minitaur"]) == 0
 		assert "each page cited with a source key before it is read in that document alone" in capsys.readouterr().out
 
-		assert asked == [False, True]
+		assert tool.main(["--library", str(tmp_path), "--pool", "moog/minitaur"]) == 0
+		assert "every cited page is read in every document that has pages (--pool)" in capsys.readouterr().out
+
+		assert asked == [True, True, False]
+
+		with pytest.raises(SystemExit):
+			tool.main(["--library", str(tmp_path), "--attribute", "--pool", "moog/minitaur"])
+
+	def test_the_run_ends_by_counting_the_pages_that_named_no_document (
+			self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+		"""So that a pass is not taken for more than it is, and before the line a gate reads."""
+
+		def follow (definition: typing.Any, name: str, index: typing.Any, attribute: bool = True) -> typing.Any:
+
+			"""Two paged documents in each, and bare pages in the Minitaur alone."""
+
+			result = tool.Result(name = name, attributed = attribute)
+			result.documents = [tool.Followed(key = key, source = None) for key in ("manual", "chart")]
+
+			for document in result.documents:
+				document.path = tmp_path / f"{document.key}.pdf"
+				document.extent = 2
+
+			result.unattributed = {2, 9} if name == "moog/minitaur" else set()
+
+			return result
+
+		monkeypatch.setattr(tool, "follow", follow)
+		monkeypatch.setattr(tool, "render", lambda result, verbose: None)
+
+		assert tool.main(["--library", str(tmp_path), "moog/minitaur", "moog/dfam"]) == 0
+
+		lines = capsys.readouterr().out.strip().splitlines()
+
+		assert lines[-2] == ("2 page(s) in 1 definition(s) are cited with no document named where there is "
+			"more than one to turn to, and were read in every one")
+		assert lines[-1] == "2 of 2 definitions check out"
+
+		# Pooled, every page is everybody's, so there is nothing of the kind to count.
+		assert tool.main(["--library", str(tmp_path), "--pool", "moog/minitaur", "moog/dfam"]) == 0
+		assert "cited with no document named" not in capsys.readouterr().out
 
 	def test_the_command_line_fails_where_a_definition_does (
 			self, monkeypatch: pytest.MonkeyPatch, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -1119,7 +1166,9 @@ class TestFindingAnNrpnPrintedAsTwoBytesSideBySide:
 	def test_a_pair_on_a_page_of_text_is_found_beside_a_scan (self, tmp_path: pathlib.Path) -> None:
 		"""A number whose pair is on a readable page was looked for, whatever else is cited.
 
-		Only what is on no readable page is left as not checked, where a scan is cited too.
+		Only what is on no readable page is left as not checked, where a page of a scan is
+		cited too.  The scan's page has to be cited: read by key, a scan nobody cites a page
+		of excuses no number.
 		"""
 		scan = tmp_path / "scan.pdf"
 		writer = pypdf.PdfWriter()
@@ -1130,6 +1179,7 @@ class TestFindingAnNrpnPrintedAsTwoBytesSideBySide:
 		result = followed(
 			tmp_path, "band14_panpot: {nrpn: 605}, band15_panpot: {nrpn: 606}", self.ROW,
 			extra = f", scan: {{sha256: {digest}, page_offset: 0}}",
+			account = "The second table is a scan (scan p. 1).",
 		)
 
 		assert [document.scanned for document in result.documents] == [False, True]

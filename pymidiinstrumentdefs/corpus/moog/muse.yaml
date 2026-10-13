@@ -295,10 +295,15 @@ voice:
   # (manual p. 105), so how many it takes depends on what is already sounding.
   voicing_modes: [1, 8]
   velocity:
-    # Transmitted with the keyboard - the keyboard channel carries "MIDI NOTE, NOTE ON/ OFF,
-    # VELOCITY, AFTERTOUCH, and MIDI CCs messages" (manual p. 110) - and answered to, since
-    # velocity is a modulation source and two of the rows below switch it per envelope.
-    note_on: both
+    # **SENT, AND NO PAGE SAYS AN ARRIVING NOTE'S IS USED.** The keyboard channel carries "MIDI
+    # NOTE, NOTE ON/ OFF, VELOCITY, AFTERTOUCH, and MIDI CCs messages" (manual p. 110), so
+    # `transmits` is true. Every sentence about what velocity does is about the keyboard, the
+    # sequencer's or arpeggiator's own notes, or names no note: it is a modulation source
+    # (manual p. 98), and two of the rows below switch it for an envelope. The manual has no
+    # MIDI implementation chart: its one MIDI table lists controller numbers
+    # (manual pp. 120-122). Until 2026-10-13 this said `note_on: both`, on that source and those
+    # two rows.
+    transmits: true
   # SENT, AND NO PAGE NAMES IT AS RECEIVED. The keybed's own kind is channel, "61 full-size
   # semi-weighted Fatar keybed with Velocity and channel Aftertouch" (manual p. 116), and it is
   # sent on the keyboard channel (manual p. 110). 1.4.0 added "Slew/filtering applied to
@@ -319,10 +324,10 @@ voice:
   # jack changes." (release_notes p. 8), and no such sentence names aftertouch.
   # This field records what a page says is answered, so `aftertouch` is unset, as `moog/sub_37`
   # and `moog/minimoog_model_d` leave it. Until 2026-10-13 it held `channel`, the keybed's kind.
-  # **THE VELOCITY COMMENT ABOVE COUNTS THE SAME KIND OF EVIDENCE AS ANSWERED.** Velocity is in
-  # the same lists and is called the keyboard's on the same page (manual p. 62), and the
-  # envelopes' switch that comment also counts follows "the VELOCITY of a key press" (manual
-  # p. 39). The two fields are not yet held to one standard, and this one is the stricter.
+  # **VELOCITY ABOVE IS HELD TO THE SAME STANDARD SINCE 2026-10-13.** Velocity is in the same
+  # lists and is called the keyboard's on the same page (manual p. 62), and the envelopes'
+  # switch follows "the VELOCITY of a key press" (manual p. 39). Until then that was counted as
+  # answered, and its received side is now unset as this field is.
   aftertouch_transmits: true
   pitch_bend:
     # "Pitch bend defaults to +/- 7 Semitones" (manual p. 14), which the setting confirms from the

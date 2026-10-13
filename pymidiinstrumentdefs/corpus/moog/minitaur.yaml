@@ -122,9 +122,12 @@ voice:
   note_range: [0, 72]
   polyphony: 1
   velocity:
-    # Received, but it does nothing at all unless one of the two sensitivity
-    # parameters is up. That is why a velocity lane can appear dead on a
-    # correctly wired Minitaur.
+    # The manual's MIDI implementation chart marks Velocity, Note On `YES` under `RECOGNIZED`
+    # and `NO` under `TRANSMITTED`, and Note Off `NO` under both (manual p. 25).
+    # Received, but it does nothing at all unless one of the two sensitivity parameters is up.
+    # That is why a velocity lane can appear dead on a correctly wired Minitaur. **NO PAGE SAYS
+    # THAT**: the manual gives each sensitivity a default of 64 (manual p. 13; manual p. 15) and
+    # does not say what 0 does, so `gated` is as released and is not from these documents.
     note_on: gated
     note_off: false
     gated_by: [filter_velocity_sensitivity, volume_velocity_sensitivity]

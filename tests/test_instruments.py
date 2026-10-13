@@ -1526,6 +1526,12 @@ class TestTheTwoMoog37s:
 			assert (moog.voice.aftertouch, moog.voice.aftertouch_transmits) == (None, True), name
 			assert "SENT, AND NO PAGE SAYS IT IS RECEIVED." in " ".join(prose_of(*name.split("/")).split()), name
 
+		# **Neither manual says an arriving note's velocity is used either**, so the received side
+		# is unset in both and what the keys send stays. Until 2026-10-13 each said `both`.
+		for moog in (sub, subsequent):
+			assert moog.voice.velocity is not None
+			assert (moog.voice.velocity.note_on, moog.voice.velocity.transmits) == (None, True)
+
 		assert sub.midi.channels == subsequent.midi.channels
 		assert sub.midi.clock == subsequent.midi.clock
 		assert sub.midi.transport == subsequent.midi.transport
@@ -7420,8 +7426,11 @@ class TestMuse:
 		assert muse.voice.pitch_bend.semitones == 7
 		assert muse.voice.pitch_bend.programmable is True
 
+		# **Sent, and no page says an arriving note's is used**: the keyboard channel's list has
+		# velocity in it, and every sentence about what it does is about a key press or names no
+		# note. Until 2026-10-13 this said `both`.
 		assert muse.voice.velocity is not None
-		assert muse.voice.velocity.note_on == "both"
+		assert (muse.voice.velocity.note_on, muse.voice.velocity.transmits) == (None, True)
 		assert muse.voice.velocity.note_off is None
 
 		# The keybed is 61 keys, which is a panel and not a span of note numbers.

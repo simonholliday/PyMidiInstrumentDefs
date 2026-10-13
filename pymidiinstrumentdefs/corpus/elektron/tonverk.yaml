@@ -316,8 +316,13 @@ voice:
   addressing: pitches
   note_range: [0, 127]
   velocity:
-    # Received: the appendix gives `TRIG velocity` a controller number of its own on every kind of
-    # track, and the sequencer records the velocity of notes played in.
+    # Received: "Both the VEL parameter on the TRIG PARAMETERS page and the velocity of incoming
+    # MIDI notes sent to the Tonverk from external devices affects the assigned parameters."
+    # (manual p. 52), and VELOCITY TO VOL "Selects how MIDI velocity affects volume when playing
+    # the preset from a MIDI keyboard." (manual p. 53). The sequencer records the velocity of
+    # notes played in from a controller (manual p. 42). Apart from that, the appendix gives
+    # `TRIG velocity` a controller number on each of the four kinds of track it lists
+    # (manual p. 120), which is a trig's parameter and not a note's velocity.
     note_on: received
   # RECEIVED AND SENT, AND THE KIND IS NOT STATED. It is plainly received - "Opens a menu where
   # you can assign up to four parameters to the MIDI aftertouch command." (manual p. 52) - a

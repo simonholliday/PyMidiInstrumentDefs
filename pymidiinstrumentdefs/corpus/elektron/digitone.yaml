@@ -136,8 +136,12 @@ voice:
   polyphony: 8
   polyphony_shared: true
   velocity:
-    # Received, with VELOCITY TO VOL choosing OFF, LOG, LIN or EXP (p. 30), so how much it
-    # reaches the volume is a setting and one of its positions is off.
+    # Received: "Both the VEL parameter on the TRIG menu and the velocity of incoming MIDI notes
+    # sent to the Digitone from external devices affects the assigned parameters." (p. 30).
+    # VELOCITY TO VOL chooses OFF, LOG, LIN or EXP (p. 30), so how much it reaches the volume is
+    # a setting and one of its positions is off. A MIDI track sends one, which this value does
+    # not say: "Trig Velocity controls the velocity of the notes the MIDI track sends out."
+    # (p. 57).
     note_on: received
   # RECEIVED AND SENT, AND THE KIND IS NOT STATED: p. 31 names the MIDI aftertouch
   # command without saying channel or poly, and a MIDI track sends it - "Aftertouch

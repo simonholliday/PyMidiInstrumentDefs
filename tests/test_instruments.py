@@ -2173,11 +2173,20 @@ class TestLearnedMaps:
 			"arturia/drumbrute", "arturia/drumbrute_impact", "soma/pulsar_23", "synthstrom_audible/deluge",
 			"ten_ten_music/blackbox", "vermona/drm1_mkiv",
 			# Said since the sweep of 2026-10-13, each from a page that has the owner change the notes:
+			"roland/tr8s", "roland/tr_1000", "roland/tr_6s",
 			"elektron/machinedrum",
 			"korg/m1",
 			"alesis/sr_16",
 			"behringer/lm_drum", "behringer/rd_9",
 		}
+
+	def test_a_map_that_a_setting_switches_or_shifts_whole_is_neither_word (self) -> None:
+		"""The SP-404MKII: one setting picks between two published maps, and another shifts one of them."""
+		sp = pymidiinstrumentdefs.load("roland/sp_404mkii", [CORPUS])
+
+		assert sp.voice.addressing == "voices" and sp.voice.note_map is None
+		assert "**And the map is neither fixed nor learned**: `learned` says the owner assigns which note" in \
+			" ".join((sp.source or "").split())
 
 	def test_every_definition_that_says_learned_beside_controls_it_lists (self) -> None:
 		"""`learned` is for numbers no file can list, and the controls beside it are the maker's own."""

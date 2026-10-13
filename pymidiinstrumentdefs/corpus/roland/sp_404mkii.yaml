@@ -228,9 +228,11 @@ source: >-
 
   A NOTE NUMBER HERE ADDRESSES A PAD AND NOT A PITCH, EXCEPT ON TWO CHANNELS WHERE IT DOES BOTH.
   Hence `addressing: voices` on the instrument and `pitches` on the vocoder and the chromatic
-  parts. **And the map is neither fixed nor learned**: `MIDI Mode` switches between two
-  published maps and `Note offset` shifts one of them by up to 35 semitones, so `note_map` is
-  left unset rather than called either.
+  parts. **And the map is neither fixed nor learned**: `learned` says the owner assigns which
+  note plays which voice, by MIDI learn or in a menu, and here the owner assigns none of them.
+  `MIDI Mode` switches between two published maps and `Note offset` moves the pads of one of
+  them together, by up to 11 note numbers down or 35 up, so `note_map` is left unset rather than
+  called either.
 
 
   EIGHT DEFECTS IN THE CHART'S OWN APPARATUS, AND SEVEN OF THEM ARE IN BOTH EDITIONS.
@@ -387,7 +389,8 @@ voice:
   # holds a depth and a settability and would have to be empty to carry the fact. See the
   # source account.
   # NOT RECORDED, the note map: `MIDI Mode` switches between two published maps and `Note
-  # offset` shifts one of them, so it is neither `fixed` nor `learned`.
+  # offset` moves the pads of one of them together, so it is not `fixed`; and no note is the
+  # owner's to assign by itself, so it is not `learned`.
 
 parts:
   # **THE FOUR EFFECT BUSES AND THE INPUT, ON CHANNELS 1 TO 5**, from "CH 1: BUS 1" through

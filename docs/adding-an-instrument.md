@@ -702,6 +702,23 @@ senses any, so it records `aftertouch_transmits: false` with the remark in a com
 Somebody choosing a controller, or a program deciding whether to expect pressure from a
 keyboard, is asking whether the instrument makes any.
 
+**Velocity is recorded as received only where a page says an arriving note's velocity is
+used.** `voice.velocity.note_on` takes `received`, `both` for received and sent, `gated` for
+velocity that arrives and is inaudible until something is turned up, or `ignored`. A chart
+that marks Velocity, Note On in its Recognized column says it, and so does a listing of the
+messages received that sets out a Note On with its velocity byte. So does a sentence about a
+note that arrives: a Digitone's manual has `the velocity of incoming MIDI notes sent to the
+Digitone from external devices` affect the parameters assigned to velocity. A keyboard
+described as velocity sensitive does not say it, and neither does velocity in a list of
+modulation sources: the first is about the instrument's own keys and the second is about no
+note in particular. Where the pages give no more than that, leave `note_on` out, however
+sure you are, and say in a comment what the pages do give. `ignored` is a statement too: a
+chart's Velocity, Note On cell marked no under Recognized, or a sentence that says an
+arriving velocity does nothing. What the instrument **sends** is `transmits`, a statement of
+its own that can stand where `note_on` does not: a Muse's manual lists velocity among what
+its keyboard channel carries and says nothing of the velocity of a note that arrives, so it
+records `transmits: true` and no `note_on`.
+
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
 section answers one channel above its strings. A Voce plays three parts across three

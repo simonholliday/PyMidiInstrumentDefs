@@ -105,6 +105,12 @@ voice:
   # that names its document.
   polyphony: 5
   velocity:
+    # The list of received channel messages has Note On with a third byte it writes `0vvvvvvv`,
+    # and remarks only "Note On. Note off if vvvvvvv = 0" (p. 2). Velocity is named in that list
+    # once, as ignored, on the Note Off row. **So received is read from a listing, and no
+    # sentence says it**: the row does not call the byte velocity, and the list's notes give
+    # `0vvvvvvv` as `Value`. The transmitted list has Note On with the same byte (p. 3), which
+    # this value does not say.
     note_on: received
     note_off: false          # "Note Off. Velocity is ignored" (p. 2)
   # Polyphonic key pressure and channel pressure are both received (p. 2), and channel pressure

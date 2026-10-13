@@ -2173,6 +2173,7 @@ class TestLearnedMaps:
 			"arturia/drumbrute", "arturia/drumbrute_impact", "soma/pulsar_23", "synthstrom_audible/deluge",
 			"ten_ten_music/blackbox", "vermona/drm1_mkiv",
 			# Said since the sweep of 2026-10-13, each from a page that has the owner change the notes:
+			"korg/m1",
 			"alesis/sr_16",
 			"behringer/lm_drum", "behringer/rd_9",
 		}

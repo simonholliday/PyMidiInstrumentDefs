@@ -160,9 +160,15 @@ source: >-
 
   NOT RECORDED: a drum note map. The M1 has four Drum Kits of up to 30 sounds, and **the key each
   sound sits on is set by the player**: "Key sets the key (C0 to G8) to which the sound is
-  assigned" (p. 114), with "Two or more sounds cannot be assigned to the same key". So there is
-  no factory map to publish, which is the same state as `soma/pulsar_23` reached by a different
-  road - that instrument learns its notes, this one has them assigned in a menu.
+  assigned" (p. 114), with "Two or more sounds cannot be assigned to the same key". **The manual
+  prints no factory assignment of them**, which is the same state as `soma/pulsar_23` reached by
+  a different road - that instrument learns its notes, this one has them assigned in a menu.
+  `note_map` is `learned` in both: the word covers a note an owner assigns either way, and here
+  it is said of the Drum Kits and of a Program that plays one. Until 2026-10-13 the field was
+  left unset here. The manual draws drum sounds on a keyboard twice, and neither drawing is a
+  map of a kit: one is headed `Example:` and numbers twenty-two keys without naming one (p. 7),
+  and the other shows how one sound fills the keys beneath it (p. 115). Korg's download page
+  lists `M1/Factory Preload Data`, a file that was not read (download_page).
 
 sources:
   manual:
@@ -226,6 +232,10 @@ midi:
 
 voice:
   addressing: pitches
+  # Said of the Drum Kits, whose sounds sit on keys the player sets in the Global mode
+  # (p. 114), and so of a Program whose oscillator is a Drum Kit and not of one that is Single
+  # or Double (p. 7). The manual prints no factory assignment: see NOT RECORDED in the account.
+  note_map: learned
   # "16 voice, 16 oscillator (Single mode)" and "8 voice, 16 oscillator (Double mode)" (p. 134).
   # Sixteen is the figure a player gets unless a Program uses two oscillators per voice, so it is
   # the default and both are listed.

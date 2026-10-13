@@ -2173,6 +2173,7 @@ class TestLearnedMaps:
 			"arturia/drumbrute", "arturia/drumbrute_impact", "soma/pulsar_23", "synthstrom_audible/deluge",
 			"ten_ten_music/blackbox", "vermona/drm1_mkiv",
 			# Said since the sweep of 2026-10-13, each from a page that has the owner change the notes:
+			"behringer/lm_drum", "behringer/rd_9",
 		}
 
 	def test_every_definition_that_says_learned_beside_controls_it_lists (self) -> None:
@@ -20333,10 +20334,8 @@ class TestLMDrum:
 		assert len(lm.voice.voices) == 16
 		assert (lm.voice.voices["bass_drum"], lm.voice.voices["snare_drum"], lm.voice.voices["cabasa"]) == (36, 40, 69)
 
-		# Changed in the instrument's own menu, which `roland/tr8s` and `elektron/machinedrum` leave unflagged.
-		assert lm.voice.note_map is None
-		assert pymidiinstrumentdefs.load("roland/tr8s", [CORPUS]).voice.note_map is None
-		assert pymidiinstrumentdefs.load("elektron/machinedrum", [CORPUS]).voice.note_map is None
+		# Changed in the instrument's own menu, which is `learned` as much as a map taught by MIDI learn is.
+		assert lm.voice.note_map == "learned"
 		account = " ".join((lm.source or "").split())
 
 		assert "Note that the same note is used both for TX and Rx." in account
@@ -20397,9 +20396,9 @@ class TestRD9:
 		assert list(rd9.voice.voices.values()) == [36, 38, 45, 47, 50, 37, 39, 49, 51, 46, 42]
 		assert rd9.voice.voices["rim_shot"] == 37 and rd9.voice.voices["closed_hat"] == 42
 
-		# Changed on the instrument's own MAP page, as the LM DRUM's are, so unflagged like it.
-		assert rd9.voice.note_map is None
-		assert pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS]).voice.note_map is None
+		# Changed on the instrument's own MAP page, as the LM DRUM's are in its menu, so `learned` like it.
+		assert rd9.voice.note_map == "learned"
+		assert pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS]).voice.note_map == "learned"
 
 	def test_ten_sound_at_once (self) -> None:
 		"""A count of what sounds at once, stated alike in both documents."""

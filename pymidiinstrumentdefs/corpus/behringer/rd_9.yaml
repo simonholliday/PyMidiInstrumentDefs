@@ -52,8 +52,8 @@ source: >-
   "The MIDI map is set globally and is the same for all songs and patterns." (manual p. 17). The DAW
   chapter sends a reader back to it: "This allows complex programming from your computer using the
   note numbers as described in section 11.4 MAP." (manual p. 29). No page says the RD-9 sends these
-  notes. The map is changed on the instrument itself, so `note_map` is left unset, as
-  `behringer/lm_drum` leaves its own.
+  notes. The map is changed on the instrument itself, so `note_map` is `learned`, and the eleven
+  below are where it starts. Until 2026-10-13 the field was left unset.
 
   THE SPECIFICATIONS SAY TEN VOICES SOUND TOGETHER. "Number of simultaneous voices 10" (manual p.
   33), and the guide's specifications say the same (guide p. 51), against eleven sounds and eleven
@@ -160,6 +160,9 @@ voice:
     # "via MIDI any velocity value can be used in order for crescendos to be programmed" (manual
     # p. 10). Sending is not stated.
     note_on: received
+  # The MAP page changes the note that triggers each voice, to any number from 0 to 127
+  # (manual p. 17), so the map is the owner's to change.
+  note_map: learned
   # THE MANUAL'S DEFAULTS, changed on the MAP page (manual p. 17), so a machine in front of you may
   # answer to others. In the table's order and with its names.
   voices:

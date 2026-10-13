@@ -55,11 +55,11 @@ source: >-
   note assigned to each drum to be re-assigned. Note that the same note is used both for TX and Rx.
   The defaults are:" (manual p. 24), and the table names 36 C1 the bass drum. The guide's table has
   the same sixteen rows and says "The individual drum voices of the LM DRUM can be triggered over
-  MIDI IN or recorded over MIDI OUT." (guide p. 18). The map is changed on the instrument itself, so
-  `note_map` is left unset - the state of `roland/tr8s` and `elektron/machinedrum`, whose maps are
-  changed on the instrument too - and `learned` is what this corpus uses for maps set by MIDI learn
-  or in an editor on a computer. Which the format should say for a map the instrument's own menu
-  changes is open on the tracker.
+  MIDI IN or recorded over MIDI OUT." (guide p. 18). The map is changed in the instrument's own
+  menu, so `note_map` is `learned`: the word covers notes an owner assigns by MIDI learn or by
+  setting them in a menu, and the sixteen below are where the instrument starts. Until 2026-10-13
+  the field was left unset, the word having been kept for maps set by MIDI learn or in an editor
+  on a computer.
 
   EACH DRUM CAN ALSO BE PLAYED AT PITCH ON A CHANNEL OF ITS OWN. "This can also be achieved using an
   external MIDI keyboard by switching Chromatic MIDI on in the options sub-menu. When using an
@@ -147,6 +147,9 @@ voice:
   velocity:
     # "each sample will respond to MIDI velocity" (manual p. 24). Sending is not stated.
     note_on: received
+  # The MIDI Map sub-menu re-assigns the note of each drum (manual p. 24), so the map is the
+  # owner's to change and the numbers below are where it starts.
+  note_map: learned
   # THE MANUAL'S DEFAULTS, which the MIDI Map sub-menu changes (manual p. 24), so a machine in
   # front of you may answer to others. Named as the table names them; the guide's table matches.
   voices:

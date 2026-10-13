@@ -22991,6 +22991,12 @@ class TestWebPageTitles:
 		("ableton/move", "manual"): "Ableton Move Manual | Ableton",
 		("ableton/move", "tech_specs"): "Move tech specs | Ableton",
 		("dreadbox/typhon", "release_notes"): "Typhon Update v4.2.1 - Dreadbox Synthesizers",
+		("elektron/analog_rytm_mkii", "release_notes"): "Analog Rytm MKII OS Release Notes - Elektron",
+		("elektron/digitakt", "release_notes"): "Digitakt OS Release Notes - Elektron",
+		("elektron/digitone", "release_notes"): "Digitone & Digitone Keys OS Release Notes - Elektron",
+		("elektron/digitone_ii", "release_notes"): "Digitone II OS Release Notes - Elektron",
+		("elektron/syntakt", "release_notes"): "Syntakt OS Release Notes - Elektron",
+		("elektron/tonverk", "release_notes"): "Tonverk OS Release Notes - Elektron",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

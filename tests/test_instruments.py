@@ -1280,9 +1280,43 @@ class TestTonverk:
 		# Patterns, not presets: eight banks of sixteen.
 		assert tonverk.midi.program_change.presets == 128
 
-		# And the controls travel both ways, so none carries a direction of its own.
+		# And the controls travel both ways, so none carries a direction of its own, but the two
+		# pedals from outside the appendix.
+		pedals = {"audio_sustain_pedal", "audio_sostenuto_pedal"}
+
 		assert all(control.direction == pymidiinstrumentdefs.definition.BOTH
-			for control in tonverk.controls.values())
+			for control in tonverk.controls.values() if control.name not in pedals)
+
+	def test_four_controllers_the_appendix_leaves_out_are_on_the_audio_tracks (self) -> None:
+		"""Two the track setup menu numbers, and two pedals from one line of the release notes (#4919).
+
+		Until 2026-10-13 they were named in the account and not carried.  The mod wheel and the
+		breath controller are two-way: an audio track receives them and a track running the MIDI
+		machine sends them (#4988).  The pedals are received only: no page names either among
+		what a track sends, and the note for them does not say which tracks answer.
+		"""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+
+		assert len(tonverk.controls) == 246
+
+		for name, number, direction in (("audio_mod_wheel", 1, "both"), ("audio_breath_controller", 2, "both"),
+				("audio_sustain_pedal", 64, "receives"), ("audio_sostenuto_pedal", 66, "receives")):
+			control = tonverk.controls[name]
+
+			assert (control.cc, control.part, control.direction, control.group) == (number, "audio", direction, None), name
+
+		# None of the four numbers was the appendix's on any kind of track.
+		assert not [control.name for control in tonverk.controls.values()
+			if control.cc in (1, 2, 64, 66) and not control.name.startswith("audio_")]
+
+		said = " ".join(prose_of("elektron", "tonverk").split())
+
+		assert ("FOUR CONTROLLERS OUTSIDE THE APPENDIX ARE CONTROLS BELOW: TWO OF THEM TWO-WAY, AND TWO PEDALS "
+			"RECEIVED ONLY.") in said
+		assert "Added support for MIDI sustain pedal (CC64) and MIDI sostenuto pedal (CC66)." in said
+		assert "the note says neither which kinds of track answer" in said
+		assert "**THE PEDALS ARE `direction: receives`: NO PAGE NAMES EITHER AMONG WHAT A TRACK SENDS.**" in said
+		assert "So the text prints six controller numbers the appendix lacks, and four are carried." in said
 
 	def test_four_things_are_left_out_and_each_says_why (self) -> None:
 		"""Two the manual half-states, one it states per machine, one it never mentions."""

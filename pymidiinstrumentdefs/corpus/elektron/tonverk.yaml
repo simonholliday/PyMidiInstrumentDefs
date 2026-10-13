@@ -1,5 +1,6 @@
 # THIS MAKER ADDRESSES ONE INSTRUMENT TWO WAYS AT ONCE, AND EACH HAS A SHAPE OF ITS OWN HERE.
-# 242 controls out of an appendix of 74 controller numbers and 92 parameter numbers:
+# 242 of the 246 controls below come out of an appendix of 74 controller numbers and 92
+# parameter numbers:
 #
 #   **ACROSS**, by the kind of track. The CC table prints a column for each of four - audio, bus,
 #   send FX, mix - and fills between one and four of them per row, so a number can name the same
@@ -93,11 +94,12 @@ source: >-
   puts the tables in the manual's own Appendix D: "This appendix lists the CC and NRPN
   specification for Tonverk." (manual p. 120).
 
-  EVERY NUMBER BELOW COMES FROM THAT APPENDIX, which is pp. 120-124 and three tables. D.1 gives 74
-  controller numbers against four columns of track kind; D.2 gives 43 NRPNs for audio tracks, every
-  MSB nought; D.3 gives 49 more whose MSB is the subtrack. `Notes/4606_extract_tonverk.py` reads
-  all three off the grid the publisher drew, and `Notes/4606_write_controls.py` wrote the block
-  below as it stood until 2026-10-11; the subtrack rows' keys, labels and part were changed by
+  EVERY NUMBER BELOW BUT FOUR COMES FROM THAT APPENDIX, which is pp. 120-124 and three tables.
+  D.1 gives 74 controller numbers against four columns of track kind; D.2 gives 43 NRPNs for
+  audio tracks, every MSB nought; D.3 gives 49 more whose MSB is the subtrack.
+  `Notes/4606_extract_tonverk.py` reads all three off the grid the publisher drew, and
+  `Notes/4606_write_controls.py` wrote the block below as it stood until 2026-10-11; the
+  subtrack rows' keys, labels and part were changed by
   hand that day. **The appendix's one word on how the audio column bears on a track running the
   Subtracks machine is a footnote** to its `Audio tracks*` heading, "* = Several of the Subtracks
   SRC machines' parameters are controlled using NPRN values." (manual p. 120), in its spelling.
@@ -157,8 +159,10 @@ source: >-
   not." (manual p. 76). Program change both ways, with a channel for each direction. And the
   controls: "RECEIVE CC/NRPN will, when active, make it possible to control Tonverk's parameters
   from an external MIDI device sending CC and NRPN data." (manual p. 76), against a channel that
-  is "used to receive or send" (manual p. 76) - so every control below is two-way and none carries
-  a direction of its own.
+  is "used to receive or send" (manual p. 76) - so every control of the appendix is two-way and
+  none of them carries a direction of its own. Of the four controllers outside the appendix,
+  the mod wheel and the breath controller are two-way as well and the two pedals are received
+  only, for the reasons given below.
 
   WHAT THE MANUAL GETS WRONG, RECORDED AND NOT TIDIED. **Two consecutive sections print the same
   sentence.** 11.1.11 is headed PITCH BEND and 11.1.12 AFTERTOUCH, and both read "Opens a menu
@@ -168,12 +172,46 @@ source: >-
   availble` for available, once on p. 50 and once on p. 51. And the appendix's footnote spells
   NRPN `NPRN` (manual p. 120), while two of its rows drop the slash their neighbours print.
 
-  NUMBERED IN PRINT AND NOT AMONG THE CONTROLS BELOW: four controllers outside the appendix. The
-  track setup menu assigns parameters to "the MIDI mod wheel command (CC #1)" (manual p. 52) and
-  to "the MIDI breath controller command (CC #2)" (manual p. 52), and the 1.3.0 notes have
-  "Added support for MIDI sustain pedal (CC64) and MIDI sostenuto pedal (CC66)."
-  (release_notes). None of the four is in Appendix D, which is this file's map, and whether
-  they join it is an open question.
+  FOUR CONTROLLERS OUTSIDE THE APPENDIX ARE CONTROLS BELOW: TWO OF THEM TWO-WAY, AND TWO PEDALS
+  RECEIVED ONLY. The track setup menu assigns parameters to "the MIDI mod wheel command
+  (CC #1)" (manual p. 52) and to "the MIDI breath controller command (CC #2)" (manual p. 52),
+  among settings that "are only available for audio tracks (Track 1–8)" (manual p. 50). So each
+  is a modulation source the player routes to up to four parameters, as aftertouch and pitch
+  bend are here, and not a parameter with a place of its own.
+
+  **THOSE TWO CARRY NO DIRECTION, WHICH SAYS BOTH WAYS, AND THAT IS TRUE OF THE TRACK AND OF NO
+  ONE MACHINE.** A track with a sound machine answers to them. The same track can hold the
+  MIDI machine instead, "which then converts the audio track into a MIDI track" (manual
+  p. 20), and that machine has a parameter of its own for each: "MW (Mod Wheel) controls the
+  modulation wheel data sent on the MIDI track." (manual p. 99) and "BC (Breath Controller)
+  controls the breath control data sent on the MIDI track." (manual p. 99). Those two lines
+  print no number, and that they are 1 and 2 is the menu's naming. Each is off until it is
+  switched on (manual p. 98), and it goes out on the channel the machine's own CHAN parameter
+  names (manual pp. 77, 98), a setting apart from the track's channel. The bus tracks can hold
+  the MIDI machine too, with the same pages of parameters (manual pp. 64, 86), and so send the
+  same two, and no control here says so: the bus part carries the appendix's column for a
+  bus, which has neither number.
+
+  **THE PEDALS ARE `direction: receives`: NO PAGE NAMES EITHER AMONG WHAT A TRACK SENDS.** The
+  1.3.0 notes have "Added support for MIDI sustain pedal (CC64) and MIDI sostenuto pedal
+  (CC66)." (release_notes), and that line is all any document says of them: the manual never
+  mentions a pedal, and the note says neither which kinds of track answer nor, in so many
+  words, that the instrument receives them. They are read as received, and they are written
+  on the audio part because a pedal holds notes and the audio tracks' presets are what an
+  outside keyboard plays (manual p. 36). That is a reading and not a statement. The MIDI
+  machine also has sixteen slots a player sets to any standard controller, "The selectable
+  commands are the standard MIDI Control Change Messages." (manual p. 99), so a track can be
+  made to send 64, 66 or any other standard controller. That is the player's choice and not
+  the instrument's map, and no direction here counts it.
+
+  None of the four is in Appendix D, where the other 242 come from, so none has a group. The
+  manual's text prints two more numbers the appendix lacks, the MIDI machine's bank changes
+  on CC 0 and CC 32 (manual p. 98). They are not controls here: no page has this instrument
+  answer to either, and they would be the only numbers carried for what the MIDI machine
+  alone sends. So the text prints six controller numbers the appendix lacks, and four are
+  carried. A picture of that machine's screen shows eight numbers in its slots, as examples
+  (manual p. 99); two of them, 8 and 40, are controller numbers that no table and no sentence
+  gives. Until 2026-10-13 the four were named here and not carried.
 
   NOT CARRIED: what each machine puts on each data entry knob. Appendix A runs thirty pages and
   names the parameters of every SRC and FX machine, and the MIDI appendix publishes the slots
@@ -199,9 +237,10 @@ sources:
     # numbers as high as y 746, which is how the one is kept out of the other.
     # **The edition above is the document's own**, from the last line of the copyright notice
     # at the foot of p. 13. Its cover reads `Tonverk / User Manual` and nothing else. See `model`.
-    # Appendix D, pp. 120-124, is the source of every number below. Everything else is cited for
-    # the structure, the settings, the four absences, the document's own edition, and two
-    # controller numbers it prints outside the appendix.
+    # Appendix D, pp. 120-124, is the source of every number below but four. Everything else is
+    # cited for the structure, the settings, the four absences, the document's own edition, and
+    # four controller numbers its text prints outside the appendix: 1 and 2, which are controls
+    # below, and 0 and 32, which a track running the MIDI machine sends and which are not.
     page_offset: 0
   download_page:
     kind: download_page
@@ -261,7 +300,7 @@ midi:
     # **PATTERNS, NOT PRESETS**: "MIDI program change messages 0-127 will select pattern 1-128
     # (A01-H16) on Tonverk." (manual p. 30), which is eight banks of sixteen.
     presets: 128
-  # 92 of the 242 controls below are addressed by NRPN and by nothing else, and counted out over
+  # 92 of the 246 controls below are addressed by NRPN and by nothing else, and counted out over
   # the subtracks they come to 435, 43 and eight times 49, which the `subtrack` part's eight
   # instances give - see the comment above the definition.
   # The maker names the two together as one switch -
@@ -319,7 +358,8 @@ parts:
     addressing: pitches
     # "Tracks 1-8 can be used as audio tracks" (manual p. 20), each holding a preset. They can
     # also run a MIDI machine instead, which turns the track into a sequencer for something else
-    # and is not a thing this format describes.
+    # and is not a thing this format describes. One trace of it is below: the mod wheel and the
+    # breath controller are two-way, because that machine has a parameter of its own for each.
     receives: [notes, controls]
   bus:
     label: Bus track
@@ -645,3 +685,17 @@ controls:
   subtrack_mod_env_reset:                     {label: "MOD ENV reset", nrpn: 250, part: subtrack, group: subtrack}
   subtrack_mod_env_delay:                     {label: "MOD ENV delay", nrpn: 251, part: subtrack, group: subtrack}
   subtrack_mod_env_depth:                     {label: "MOD ENV depth", nrpn: 253, part: subtrack, group: subtrack}
+  # OUTSIDE THE APPENDIX ----------------------------------------
+  # The four controllers carried from outside Appendix D, two that the manual numbers and two
+  # that the release notes do, so they have no group of the maker's. The first two are
+  # modulation sources the player routes to up to four parameters each (manual p. 52), among
+  # settings for the audio tracks alone (manual p. 50). **They are two-way, for the track and
+  # for no one machine**: a track with a sound machine answers to them, and with the MIDI
+  # machine in its place it sends them, each off until switched on (manual pp. 98, 99). **The
+  # two pedals are received only**: they rest on one line of the 1.3.0 notes (release_notes),
+  # which says they are supported and not which tracks answer, and no page names either among
+  # what a track sends. They are on the audio part as a reading. See the source account.
+  audio_mod_wheel:                            {label: "MODULATION WHEEL", cc: 1, part: audio}
+  audio_breath_controller:                    {label: "BREATH CONTROLLER", cc: 2, part: audio}
+  audio_sustain_pedal:                        {label: "MIDI sustain pedal", cc: 64, part: audio, direction: receives}
+  audio_sostenuto_pedal:                      {label: "MIDI sostenuto pedal", cc: 66, part: audio, direction: receives}

@@ -869,6 +869,10 @@ class TestAbsences:
 		assert "THE MAKER CLAIMS A MIDI IMPLEMENTATION AND PUBLISHES NO PART OF IT" in ub_xa
 		assert "Neither word this format has is true here" in ub_xa
 
+		# It leaves velocity out both ways as well: the keys sense it, and no page says an arriving
+		# note's is used or that the keys' is sent. Until 2026-10-13 this said `received`.
+		assert pymidiinstrumentdefs.load("behringer/ub_xa", [CORPUS]).voice.velocity is None
+
 		# **THE MOVE STATES THE ABSENCE IN THE PLAINEST WORDS OF THE FIVE**, and is the only
 		# definition in this corpus built against its maker's manual rather than on it: that
 		# manual is three years of releases out of date and says nothing about being so, which

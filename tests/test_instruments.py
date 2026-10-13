@@ -2028,7 +2028,7 @@ class TestAssignment:
 		assert "controls.a.assignment" in str(raised.value)
 
 	def test_each_definition_marks_what_its_own_pages_say_the_owner_can_change (self) -> None:
-		"""A factory assignment, a fixed slot, and a recommendation switched off - eight files, three words."""
+		"""A factory assignment, a fixed slot, and a recommendation switched off - nine files, three words."""
 		said: dict[str, dict[str, int]] = {}
 
 		for name in pymidiinstrumentdefs.available([CORPUS]):
@@ -2046,6 +2046,7 @@ class TestAssignment:
 			"korg/kronos": {"off": 27, "default": 2},
 			"akai/mpc_key_37": {"default": 1},
 			"korg/radias": {"default": 60},
+			"yamaha/montage_6_7_8": {"default": 16},
 		}
 
 	def test_the_kronos_ships_its_karma_controls_and_pads_off_and_its_joystick_on (self) -> None:
@@ -18935,23 +18936,32 @@ class TestMontage:
 	moved in four and a half years anyway.
 	"""
 
-	def test_thirty_one_controls_and_fourteen_are_only_the_factory_choice (self) -> None:
+	def test_thirty_two_numbers_and_fifteen_are_only_the_factory_choice (self) -> None:
 		"""The chart gives 1 to 95 as assignable, and a footnote gives the shipped numbers."""
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
 		numbers = sorted({control.cc for control in montage.controls.values()
 			if control.cc is not None})
 
-		# Thirty-one numbers, eleven of them written a second time for a part on its own channel.
-		assert len(montage.controls) == 42
+		# Thirty-two numbers, eleven of them written a second time for a part on its own channel.
+		# The thirty-second is the Super Knob's own, carried since 2026-10-13.
+		assert len(montage.controls) == 43
 		assert numbers == [0, 1, 2, 5, 7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-			32, 64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 94]
+			32, 64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 94, 95]
 
-		# **Fourteen of the thirty-one are a default rather than a fixture**, and they are
-		# in a group of their own so a consumer can read them as one.
+		# **Fourteen are the footnote's defaults rather than fixtures**, in a group of their own
+		# so a consumer can read them as one. The Super Knob's is a fifteenth, from another
+		# table, with no group. Each says `assignment: default` since 2026-10-13, and so does
+		# the breath controller's twin for a part.
 		assignable = [name for name, control in montage.controls.items()
 			if control.group == "assignable" and control.part is None]
 
 		assert len(assignable) == 14
+		assert sorted(name for name, control in montage.controls.items()
+			if control.assignment == "default") == sorted(assignable + ["part_breath", "super_knob"])
+
+		knob = montage.controls["super_knob"]
+
+		assert (knob.cc, knob.group, knob.part, knob.direction) == (95, None, None, "both")
 		assert montage.midi.learns_control_change is True
 		assert montage.groups["assignable"] == "Assignable Cntrl"
 
@@ -18959,18 +18969,34 @@ class TestMontage:
 		for machinery in (6, 38, 96, 97, 100, 101):
 			assert machinery not in numbers, machinery
 
-	def test_three_are_received_and_never_transmitted (self) -> None:
-		"""The maker prints two lists and the transmitted one is a subset."""
+	def test_two_are_received_and_never_transmitted (self) -> None:
+		"""The maker prints two lists and the transmitted one is a subset.
+
+		Three numbers are in the received list alone, and one of them is sent all the same: the
+		chart marks Expression's row transmitted, and Foot Controller 1 ships sending 11.  Until
+		2026-10-13 `expression` and its part twin said `receives`.
+		"""
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
 		receives = sorted({control.cc for control in montage.controls.values()
 			if control.direction == "receives" and control.cc is not None})
 
-		assert receives == [11, 65, 66]
-		assert montage.controls["expression"].cc == 11
+		assert receives == [65, 66]
+		assert (montage.controls["expression"].cc, montage.controls["expression"].direction) == (11, "both")
+		assert montage.controls["part_expression"].direction == "both"
 		assert montage.controls["portamento_switch"].cc == 65
 		assert montage.controls["sostenuto"].cc == 66
 
-		# The other twenty-six travel both ways, which is this format's default.
+		flat = " ".join((montage.source or "").split())
+
+		assert ("**EXPRESSION IS SENT ALL THE SAME, SO TWO CONTROLS ARE `direction: receives` AND NOT "
+			"THREE.**") in flat
+
+		# And one number of the Super Knob's kind is left out, because its default is printed two ways.
+		assert ("**SCENES HAVE ONE TOO, AND IT IS NOT A CONTROL BELOW, BECAUSE ITS DEFAULT IS PRINTED TWO "
+			"WAYS.**") in flat
+		assert not [name for name in montage.controls if "scene" in name]
+
+		# The others travel both ways, which is this format's default.
 		assert {control.direction for control in montage.controls.values()} == {"both", "receives"}
 
 	def test_two_controllers_are_named_differently_depending_on_direction (self) -> None:

@@ -16,6 +16,9 @@
 # July 2016, September 2019 and May 2020 editions and compared **cell for cell**. Every cell
 # agrees, and so does the table of default assignable numbers. So the chart's unchanging claim
 # about itself is true, and this definition describes the instrument at every firmware it has had.
+# **One control below is newer than the first of those editions**: the Super Knob's own number
+# came with firmware 1.20 (supplementary_manual p. 113), and the first Data List's system table
+# has its address reserved (data_list_first p. 181).
 #
 # **TWO IMPLEMENTATION CHARTS, AND THEY ANSWER DIFFERENTLY.** Yamaha charts a `synthesizer part`
 # and a `sequencer part` on facing sheets. The `synthesizer part` takes channel pressure and refuses key
@@ -56,13 +59,23 @@ source: >-
   out and the MIDI specification's name coming in. The labels below use the received name, because
   what a consumer sends is what the instrument receives, and the transmitted name is here.
 
-  **NOTHING IS TRANSMITTED THAT IS NOT ALSO RECEIVED, AND SEVEN NUMBERS ARE RECEIVED ONLY.** The
-  two lists were compared rather than read one from the other: the transmitted list is a subset.
-  The seven are 6 and 38 (data entry), 96 and 97 (data entry increment and decrement), and three
-  real controls - 11 "EXPRESSION" (data_list p. 191), 65 "PORTAMENTO SWITCH" (data_list p. 191)
-  and 66 "SOSTENUTO" (data_list p. 191),
-  which are `direction: receives` below. The other fourteen go both ways, bank select's two among
-  them.
+  **NOTHING IS IN THE TRANSMITTED LIST THAT IS NOT IN THE RECEIVED ONE, AND SEVEN NUMBERS ARE IN
+  THE RECEIVED LIST ALONE.** The two lists were compared rather than read one from the other: the
+  transmitted list is a subset. The seven are 6 and 38 (data entry), 96 and 97 (data entry
+  increment and decrement), and three real controls - 11 "EXPRESSION" (data_list p. 191), 65
+  "PORTAMENTO SWITCH" (data_list p. 191) and 66 "SOSTENUTO" (data_list p. 191). The other
+  fourteen go both ways, bank select's two among them.
+
+  **EXPRESSION IS SENT ALL THE SAME, SO TWO CONTROLS ARE `direction: receives` AND NOT THREE.**
+  The chart's row `1,11` is marked `O` in both columns, where the rows for 65 and for 66 are
+  `X` transmitted (data_list p. 225), and that row is what the direction rests on. Foot
+  Controller 1's jack, for an optional pedal, is also shipped set to 11: the footnote of
+  default numbers has `FOOT CONTROLLER 1 11` (data_list p. 191), and the Performance Common
+  table gives its control number the default `0B` (data_list p. 201). The transmitted list
+  ends with the line `c = 1..95 ASSIGNABLE CONTROLLER` (data_list p. 191), and 11 lies in
+  that range as that jack's default. The page does not say why the list leaves Expression
+  out. Until 2026-10-13 `expression` and its part twin said `direction: receives`, as the
+  list reads.
 
   **SIX NUMBERS ARE ADDRESSING MACHINERY AND ARE NOT CONTROLS**: 6 and 38 are "Data Entry", 96 and
   97 "RPN Inc,Dec" and 100 and 101 "RPN LSB,MSB" (data_list p. 225). They address a parameter
@@ -71,17 +84,48 @@ source: >-
 
   **FOURTEEN MORE CONTROLLERS ARE FACTORY ASSIGNMENTS RATHER THAN FIXTURES, AND THE DEFINITION SAYS
   WHICH.** The chart gives "1-95" against "Assignable Cntrl" (data_list p. 225), and a footnote
-  prints the shipped assignment of each physical controller: the breath controller to 2, the ribbon
-  to 16, the eight assignable knobs to 17 to 24, the two assignable functions to 86 and 87, and the
-  motion sequencer's hold and trigger to 88 and 89 (data_list p. 191). Those are the `assignable`
-  group below, and every one of them can be moved to any number in 1 to 95. `midi.control_change:
-  learned` is what says the rest of that range is the owner's - the same reading
-  `waldorf/iridium` carries beside fifteen published controls.
+  prints the default number of each assignable controller: the breath controller's is 2, the
+  ribbon's 16, the eight assignable knobs' 17 to 24, the two assignable functions' 86 and 87, and
+  the motion sequencer's hold and trigger 88 and 89 (data_list p. 191). Those are the
+  `assignable` group below, and every one of them can be set to `Off` or moved to any number in
+  1 to 95 (data_list p. 201), so each says `assignment: default`, since 2026-10-13.
+  `midi.control_change: learned` is what says the rest of that range is the owner's - the same
+  reading `waldorf/iridium` carries beside fifteen published controls.
 
   **TWO OF THE SEVENTEEN ROWS IN THAT FOOTNOTE HAVE A WORD WHERE THE OTHERS HAVE A NUMBER**, and
   they are not controls at all: foot controller 2 is shipped pointing at the Super Knob and the foot
   switch at Arp SW (data_list p. 191). A fifteenth number, foot controller 1 at 11, is a number the
   fixed list already uses for Expression. So fourteen new controls rather than seventeen.
+  **And foot controller 2 is given a second default in the same Data List**: its row of the
+  Performance Common table prints `04` (data_list p. 201), a controller number, where the
+  footnote has the Super Knob. The Reference Manual's picture of that display shows 4
+  (reference_manual p. 153) and the Supplementary Manual's shows `Super Knob`
+  (supplementary_manual p. 120). The footnote is the one followed here, and the two are not
+  reconciled.
+
+  **THE SUPER KNOB HAS A CONTROLLER NUMBER OF ITS OWN, AND IT IS A CONTROL BELOW.** Firmware
+  1.20 added it (supplementary_manual p. 113). The setting, Super Knob CC, "Determines the
+  Control Change number generated by using the Super Knob." (supplementary_manual p. 118), and
+  the same number arriving is read as the knob: "the instrument assumes that the message is
+  generated by using the Super Knob" (supplementary_manual p. 118). Its settings are
+  `Off, 1 – 95`. The Data List's default is `5F`, which is 95 (data_list p. 198), and the
+  picture of the setting shows 95 (supplementary_manual p. 118). It is kept with the system
+  and not with a Performance (supplementary_manual p. 120), and it is the owner's to move, so
+  the control says `assignment: default`. Set to `Off`, the knob is sent as system exclusive
+  (supplementary_manual p. 118).
+
+  **SCENES HAVE ONE TOO, AND IT IS NOT A CONTROL BELOW, BECAUSE ITS DEFAULT IS PRINTED TWO
+  WAYS.** Firmware 1.50 added it (supplementary_manual p. 94). The setting, Scene CC,
+  "Determines the Control Change Number generated by switching Scenes." (supplementary_manual
+  p. 106), and it is received the same way, over `Off, 1 – 95`, with the value choosing the
+  Scene in steps of sixteen: 0 to 15 for Scene 1, up to 112 to 127 for Scene 8
+  (supplementary_manual p. 106). The Data List's default is `5E`, which is 94 (data_list
+  p. 198). The picture of the setting on its own page shows 92 (supplementary_manual p. 106).
+  And 94 is `EFFECTS 4 DEPTH` in both fixed lists (data_list p. 191), a control below. A
+  number set for Scenes is read as a Scene switch when it arrives, since "the instrument
+  assumes that the message is generated by switching Scenes" (supplementary_manual p. 106),
+  so with the number at 94 a received 94 would be read that way, and no page says what then
+  becomes of Effects 4 Depth. No page settles which default the instrument ships with.
 
   **EVERY RECEIVED MESSAGE IS BEHIND A SWITCH, AND NO DOCUMENT SAYS WHICH WAY IT POINTS WHEN THE
   INSTRUMENT ARRIVES.** The chart marks almost every recognised row "O *1", with "*1
@@ -117,8 +161,9 @@ source: >-
   page lists what that channel answers to.** One sentence, about a keyboard plugged into the USB TO
   DEVICE socket, says that in Single mode control changes "regarded as Common parameters"
   (supplementary_manual p. 62) are not passed to a part, and it names none of them. One controller
-  is given that channel by name, and it is not among those below: the Super Knob's is sent on
-  channel 1 in Multi mode and on the MIDI I/O channel in Single (supplementary_manual p. 118). And
+  is given that channel by name, the Super Knob's: it is sent on channel 1 in Multi mode and on
+  the MIDI I/O channel in Single (supplementary_manual p. 118), and it is a control below, naming
+  no part. That page states no channel for receiving it. And
   where a Performance uses zones, "the Zone setting for the Performance is given priority over the
   'MIDI I/O Mode' setting" (supplementary_manual p. 128). Every other controller below reaches a
   part on its channel too, since the receive flow puts every control change behind `[SW1]`, whose
@@ -286,8 +331,8 @@ sources:
     # names every one: "New Functions in MONTAGE Version 3.50" (supplementary_manual p. 3) down
     # to 1.1. Published the same
     # month as the MW-J0 Data List, which corroborates that Data List's label from inside the
-    # document set rather than from the page. No control below comes from it; the account rests the
-    # MIDI I/O mode and its channel on it.
+    # document set rather than from the page. One control below rests on it, the Super Knob's, and
+    # so do the account's MIDI I/O mode and its channel. Until 2026-10-13 no control did.
   downloads_page:
     kind: download_page
     title: "MONTAGE - Downloads - Synthesizers - Synthesizers & Music Production Tools - Products -
@@ -314,7 +359,7 @@ midi:
   # part's chart alone would have said `receives`; see the account.
   clock: both
   transport: both
-  # **Two learnable jacks' worth of range and fourteen published defaults.** The chart gives
+  # **Two learnable jacks' worth of range and fifteen published defaults.** The chart gives
   # controllers 1 to 95 as assignable, so most of that range means whatever a Performance says -
   # the reading `teenage_engineering/op_1` established and `waldorf/iridium` carries beside
   # fifteen published controls.
@@ -411,37 +456,55 @@ controls:
   effects_1_depth:       {label: Effects 1 Depth, cc: 91, group: effect_depth}
   effects_4_depth:       {label: Effects 4 Depth, cc: 94, group: effect_depth}
 
-  # FIXED, AND RECEIVED ONLY -------------------------------------------------
-  # Three numbers in the received list and not in the transmitted one.
+  # FIXED, AND IN THE RECEIVED LIST ALONE ------------------------------------
+  # Three numbers in the received list and not in the transmitted one. Two are received only.
+  # **Expression is sent too**: the chart marks its row transmitted (data_list p. 225), and the
+  # jack for Foot Controller 1 is shipped set to 11 (data_list pp. 191, 201). Until 2026-10-13
+  # it said `direction: receives`. See the account.
 
-  expression:            {label: Expression, cc: 11, direction: receives, group: mix}
+  expression:            {label: Expression, cc: 11, group: mix}
   # Two bands rather than two exact values: the maker prints "0 - 63: OFF, 64 - 127: ON"
   # (data_list p. 191) for each of the two.
   portamento_switch:     {label: Portamento Switch, cc: 65, values: {"off": 0, "on": 64}, direction: receives, group: portamento}
   sostenuto:             {label: Sostenuto, cc: 66, values: {"off": 0, "on": 64}, direction: receives, group: pedals}
 
   # THE FACTORY ASSIGNMENTS --------------------------------------------------
-  # **Every one of these is a default and not a fixture.** Each is the number its physical
-  # controller is shipped sending, and each can be moved anywhere in 1 to 95 - which is what
-  # `midi.control_change: learned` above says. A consumer offering them should say so.
+  # **Every one of these is a default and not a fixture.** Each is the number its controller is
+  # shipped set to, and each can be set to `Off` or moved anywhere in 1 to 95 (data_list
+  # p. 201) - which is what `midi.control_change: learned` above says, and what
+  # `assignment: default` says on each since 2026-10-13. A consumer offering them should say
+  # so. **The breath controller is not a part of the instrument**: its number is the one
+  # "received from the external equipment such as a Breath Controller." (reference_manual
+  # p. 153), and the maker's lists of the instrument's controllers and connectors have no
+  # breath controller and no jack for one (manual p. 63).
   # Two more rows of the same footnote are shipped pointing at something that is not a controller
   # at all, so they are not here: foot controller 2 at the Super Knob and the foot switch at
   # Arp SW. A third, foot controller 1, is shipped at 11, which is Expression above.
 
-  breath:                {label: Breath Controller, cc: 2, group: assignable}
-  ribbon:                {label: Ribbon Controller, cc: 16, group: assignable}
-  assignable_knob_1:     {label: Assignable Knob 1, cc: 17, group: assignable}
-  assignable_knob_2:     {label: Assignable Knob 2, cc: 18, group: assignable}
-  assignable_knob_3:     {label: Assignable Knob 3, cc: 19, group: assignable}
-  assignable_knob_4:     {label: Assignable Knob 4, cc: 20, group: assignable}
-  assignable_knob_5:     {label: Assignable Knob 5, cc: 21, group: assignable}
-  assignable_knob_6:     {label: Assignable Knob 6, cc: 22, group: assignable}
-  assignable_knob_7:     {label: Assignable Knob 7, cc: 23, group: assignable}
-  assignable_knob_8:     {label: Assignable Knob 8, cc: 24, group: assignable}
-  assignable_function_1: {label: Assignable Function 1, cc: 86, group: assignable}
-  assignable_function_2: {label: Assignable Function 2, cc: 87, group: assignable}
-  motion_seq_hold:       {label: Motion Seq Hold, cc: 88, group: assignable}
-  motion_seq_trigger:    {label: Motion Seq Trigger, cc: 89, group: assignable}
+  breath:                {label: Breath Controller, cc: 2, assignment: default, group: assignable}
+  ribbon:                {label: Ribbon Controller, cc: 16, assignment: default, group: assignable}
+  assignable_knob_1:     {label: Assignable Knob 1, cc: 17, assignment: default, group: assignable}
+  assignable_knob_2:     {label: Assignable Knob 2, cc: 18, assignment: default, group: assignable}
+  assignable_knob_3:     {label: Assignable Knob 3, cc: 19, assignment: default, group: assignable}
+  assignable_knob_4:     {label: Assignable Knob 4, cc: 20, assignment: default, group: assignable}
+  assignable_knob_5:     {label: Assignable Knob 5, cc: 21, assignment: default, group: assignable}
+  assignable_knob_6:     {label: Assignable Knob 6, cc: 22, assignment: default, group: assignable}
+  assignable_knob_7:     {label: Assignable Knob 7, cc: 23, assignment: default, group: assignable}
+  assignable_knob_8:     {label: Assignable Knob 8, cc: 24, assignment: default, group: assignable}
+  assignable_function_1: {label: Assignable Function 1, cc: 86, assignment: default, group: assignable}
+  assignable_function_2: {label: Assignable Function 2, cc: 87, assignment: default, group: assignable}
+  motion_seq_hold:       {label: Motion Seq Hold, cc: 88, assignment: default, group: assignable}
+  motion_seq_trigger:    {label: Motion Seq Trigger, cc: 89, assignment: default, group: assignable}
+
+  # THE SUPER KNOB -----------------------------------------------------------
+  # Its own controller number, from `Off` to 95, shipped at 95: the Data List's default is `5F`
+  # (data_list p. 198) and the picture of the setting shows 95 (supplementary_manual p. 118).
+  # Sent when the knob is turned, and read as the knob when it arrives (supplementary_manual
+  # p. 118). A system setting the owner can move, so `assignment: default`. It is not one of
+  # the footnote's fourteen, so it has no group. Sent on channel 1 in Multi mode and on the MIDI
+  # I/O channel in Single. **Scenes have a number of the same kind, and it is not here**: its
+  # default is printed two ways. See the account.
+  super_knob:            {label: Super Knob, cc: 95, assignment: default}
 
   # THE STANDARD CONTROLLERS AGAIN, FOR A PART ON ITS OWN CHANNEL -------------
   # Eleven numbers, each named and directed as its control above is: see the account. Each control
@@ -454,8 +517,8 @@ controls:
   part_pan:               {label: Pan, cc: 10, part: part, group: mix}
   part_portamento_time:   {label: Portamento Time, cc: 5, part: part, group: portamento}
   part_sustain:           {label: Sustain Switch, cc: 64, part: part, group: pedals}
-  part_expression:        {label: Expression, cc: 11, direction: receives, part: part, group: mix}
+  part_expression:        {label: Expression, cc: 11, part: part, group: mix}
   part_portamento_switch: {label: Portamento Switch, cc: 65, values: {"off": 0, "on": 64}, direction: receives, part: part, group: portamento}
   part_sostenuto:         {label: Sostenuto, cc: 66, values: {"off": 0, "on": 64}, direction: receives, part: part, group: pedals}
   # The breath controller's shipped number, a default like the fourteen above it.
-  part_breath:            {label: Breath Controller, cc: 2, part: part, group: assignable}
+  part_breath:            {label: Breath Controller, cc: 2, assignment: default, part: part, group: assignable}

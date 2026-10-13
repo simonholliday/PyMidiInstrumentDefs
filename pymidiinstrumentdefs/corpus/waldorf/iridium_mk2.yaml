@@ -272,7 +272,12 @@ voice:
   # "all sound layers will share the maximum polyphony of 16 voices." (manual p. 22).
   polyphony_shared: true
   velocity:
-    # `MIDI Velocity` and `MIDI Release Velocity` among the modulation sources (manual p. 220).
+    # Received: the amplifier's velocity amount sets "how much volume will be affected by MIDI
+    # keyboard velocity." (manual p. 166), and in a sample map "the incoming velocity determines
+    # which sample is played" (manual p. 212). "With a setting of 0.0% velocity will have no
+    # effect on the volume" (manual p. 166), and this manual prints no default for it.
+    # `MIDI Velocity` and `MIDI Release Velocity` are among the modulation sources
+    # (manual p. 220), and `note_off` below rests on that table alone.
     note_on: received
     note_off: true
   # BOTH KINDS: polyphonic, with Mono AT folding it to one value (manual p. 167), and channel

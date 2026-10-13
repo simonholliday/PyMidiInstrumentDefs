@@ -272,8 +272,12 @@ voice:
   # "If you set Layer 1 to 9 voices, Layer 2 automatically switches to 3 voices" (manual p. 154).
   polyphony_shared: true
   velocity:
-    # `MIDI Velocity` among the modulation sources (manual p. 211); release velocity is not in the
-    # table - see the account.
+    # Received: the amplifier's velocity amount "Specifies how much volume will be affected by
+    # MIDI keyboard velocity." (manual p. 148), and in a sample map "the incoming velocity
+    # determines which sample is played" (manual p. 190). That amount's default is +0.00 %, and
+    # "With a setting of 0.0% velocity will have no effect on the volume." (manual p. 148), so
+    # whether velocity reaches the volume is the patch's to say. `MIDI Velocity` is among the
+    # modulation sources (manual p. 211); release velocity is not in the table - see the account.
     note_on: received
   # BOTH KINDS: Poly AT by default and Mono AT by choice (manual p. 149), and channel aftertouch
   # as the MPE Z axis (manual p. 178), which is what settles channel pressure. No page says it

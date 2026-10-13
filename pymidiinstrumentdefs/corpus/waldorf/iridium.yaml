@@ -321,10 +321,23 @@ voice:
   # p. 171).
   polyphony_shared: true
   velocity:
-    # The keybed is velocity sensitive and velocity is in the modulation-source table. Release
-    # velocity is named once, among the kinds of unipolar source, "Velocity; Release Velocity;
-    # Aftertouch (Pressure; and Polyphonic Pressure)." (manual p. 149), and the table on p. 234,
-    # which lists what a patch can route, has no row for it, so `note_off` is left out.
+    # Received: the amplifier's velocity amount "Specifies how much volume will be affected by
+    # MIDI keyboard velocity." (manual p. 165), and in a sample map "the incoming velocity
+    # determines which sample is played" (manual p. 213). The Desktop has no keys: "To play the
+    # Iridium Desktop you need a MIDI master keyboard" (manual p. 13), or it is played from its
+    # 16 pads. That amount's default is +0.00 %, and "With a setting of 0.0% velocity will have
+    # no effect on the volume." (manual p. 165), so whether velocity reaches the volume is the
+    # patch's to say.
+    # **THE SENT HALF OF `both` IS AS RELEASED, AND NO PAGE NAMES VELOCITY AMONG WHAT IS SENT**:
+    # the Keyboard has "49 light-weighted sensitive keys" (manual p. 20) and a velocity curve
+    # for them (manual p. 210), and the arpeggiator and "the step Sequencer will send MIDI notes
+    # for enabled MIDI outputs" (manual p. 202).
+    # Velocity is in the modulation-source table. Release velocity is named once in this
+    # manual, among the kinds of unipolar source, "Velocity; Release Velocity; Aftertouch
+    # (Pressure; and Polyphonic Pressure)." (manual p. 149), and its table on p. 234, which
+    # lists what a patch can route, has no row for it, so `note_off` is left out. The MK2's
+    # manual has that row, `Release Velocity | MIDI Release Velocity` (mk2_manual p. 220), and
+    # it is the later instrument's.
     note_on: both
   # BOTH KINDS, AND THE MANUAL HAS A SECTION ON THE POLYPHONIC: the Keyboard has "49
   # light-weighted sensitive keys with polyphonic" aftertouch (manual p. 20), and the distinction

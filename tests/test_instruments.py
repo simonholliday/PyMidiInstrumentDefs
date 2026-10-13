@@ -23008,6 +23008,8 @@ class TestWebPageTitles:
 		("teenage_engineering/op_1", "os_updates"): "downloads OP–1 original - teenage engineering",
 		("teenage_engineering/op_xy", "os_updates"): "downloads OP–XY - teenage engineering",
 		("teenage_engineering/op_z", "os_updates"): "downloads op-z - teenage engineering",
+		("elektron/model_cycles", "downloads"): "Model:Cycles - Elektron",
+		("elektron/model_samples", "downloads"): "Model:Samples - Elektron",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

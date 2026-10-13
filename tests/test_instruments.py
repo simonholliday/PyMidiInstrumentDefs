@@ -22987,6 +22987,9 @@ class TestWebPageTitles:
 		("waldorf/iridium", "product_page"): "Iridium EN – Waldorf Music",
 		("waldorf/iridium", "keyboard_page"): "Iridium Keyboard EN – Waldorf Music",
 		("yamaha/montage_6_7_8", "downloads_page"): "MONTAGE - Downloads - Synthesizers - Synthesizers & Music Production Tools - Products - Yamaha USA",
+		("ableton/move", "release_notes"): "Move Release Notes | Ableton",
+		("ableton/move", "manual"): "Ableton Move Manual | Ableton",
+		("ableton/move", "tech_specs"): "Move tech specs | Ableton",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

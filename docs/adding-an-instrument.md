@@ -706,15 +706,26 @@ Eight rules worth holding on to:
   that part receives `notes`, and nothing more is claimed. A control sent to a channel an
   instrument ignores does nothing, and says nothing about why. So a control naming a part
   whose `receives` leaves out `controls` is refused: the file would be saying both.
-- **Where a kind of message reaches the instrument and no page ties it to the part, say
-  `unrecorded`.** A volca drum on its single channel receives notes there, and its chart gives
-  each of the six parts its controllers and never says which part a note sounds. With
-  `receives: [controls]` alone, a program reads the part as taking no notes and draws no keys
-  for an instrument that plays from them. `unrecorded: [notes]` says the third thing: notes
-  arrive here, and how they reach this part is not in the documents. The words are those of
-  `receives`, a kind goes in one list or the other, and `takes()` answers `None` for it. A part
-  whose notes are unrecorded cannot have `voices`, and one whose controls are cannot be named
-  by a control it receives: either would be the record the word says is missing.
+- **Where a kind of message arrives where a part sits, or reaches the part by a route the
+  format has no place for, and it cannot go in the part's `receives`, say `unrecorded`.** The
+  two cases are opposite in what is known. In the first the kind arrives where the part sits,
+  and no page says whether or how it reaches this part: a volca drum on its single channel
+  receives notes there, and its chart gives each of the six parts its controllers and never
+  says which part a note sounds. In the second the kind does reach the part, by a route the
+  pages give and the format has no place for: a Tracker's selected instrument is played from a
+  controller on the Tracker's Notes Input Channel, a setting apart from the channel its
+  controls arrive on, and a part has one channel. Before choosing the second, check that the
+  route really is another one. Where the pages give the kind no channel setting of its own and
+  put it on the part's channel, it belongs in `receives`. A setting of its own is the second
+  case even where an example sets it to the same number. With `receives: [controls]` alone, a
+  program reads either part as taking no notes and draws no keys for an instrument that plays
+  from them. `unrecorded: [notes]` says the third thing: the instrument takes notes, and this
+  file cannot say how to send one to this part. Say in a comment which case it is. The words
+  are those of `receives`, a kind goes in one list or the other, and `takes()` answers `None`
+  for it. A part whose notes are unrecorded cannot have `voices`, and one whose controls are
+  cannot be named by a control it receives: a map or a control is addressed to the part on its
+  channel, and that is what the file has said it cannot give. Until 2026-10-13 the word covered
+  the first case alone.
 
   ```yaml
   parts:

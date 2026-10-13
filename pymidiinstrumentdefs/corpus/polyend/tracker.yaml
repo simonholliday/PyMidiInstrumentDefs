@@ -215,18 +215,28 @@ parts:
   # used to receive CC (control change) messages" (manual p. 251), and the mode's setup asks
   # that "the MIDI configuration is matched, for example same MIDI channel" (manual p. 266). So
   # the part sits on the base channel, and what tells the two sets apart is the mode and not
-  # the channel. **`receives` claims controls, and that is not a statement that the part takes
-  # no notes.** A controller plays the instruments in this mode too, "controlling up to 8 voices
-  # across MIDI" (manual p. 264), but notes come in on the Notes Input Channel, a separate
-  # setting, which one base channel cannot say. On which instrument a note plays, the mode's
-  # setup has the selected one "as the destination target from the MIDI controller and as the
-  # synthesizer instrument" (manual p. 266), and an example setup has "The keyboard will control
-  # the current instrument in Channel 1." (manual p. 255).
+  # the channel. **`notes` is `unrecorded`: the part takes them, on a channel that is set apart
+  # from the part's own.** A controller plays the instruments in this mode too, "controlling up
+  # to 8 voices across MIDI" (manual p. 264), but notes come in on the Notes Input Channel,
+  # which "Sets the MIDI channel for external note inputs." (manual p. 251), a setting of its
+  # own beside the CC In channel. The two may hold the same number or different ones: the
+  # mode's own example shows both at channel 1 (manual p. 264), and an example setup outside
+  # the mode shows notes on 1 and control changes on 2 (manual p. 255). On which instrument a
+  # note plays, the mode's setup has the selected one "as the destination target from the MIDI
+  # controller and as the synthesizer instrument" (manual p. 266), and that example outside the
+  # mode has "The keyboard will control the current instrument in Channel 1." (manual p. 255).
+  # **So the manual gives the route, its channel (manual p. 251) and its instrument (manual
+  # pp. 255, 266), and the format has no place for it**: a part has one channel, and this one's
+  # is the CC In channel. That is the second of the two cases the word has, and not the volca
+  # drum's, where no page ties a note to a part. No sentence says the Notes Input Channel
+  # governs in this mode; the mode's own example shows it set (manual p. 264). Until 2026-10-13
+  # `notes` was only left out of `receives`, which reads as a part that takes none.
   synthesizer:
     label: Selected instrument
     mode: synthesizer
     channel_offset: 0
     receives: [controls]
+    unrecorded: [notes]
 
 voice:
   addressing: pitches
@@ -235,6 +245,14 @@ voice:
   # can now be sequenced on 12 tracks in total" (downloads), which the manual does not
   # mention.
   polyphony: 8
+  # ONE POOL, AND THE SELECTED INSTRUMENT PLAYS FROM IT. The Tracker has eight voices in all,
+  # the figure above (manual p. 236). MIDI Synthesizer mode has a controller "controlling up to
+  # 8 voices across MIDI" (manual p. 264), with the sequencer stopped (manual p. 265). No
+  # sentence says those eight are the tracks' eight, and no page gives the Tracker any other,
+  # so they are read as the Tracker's eight and not eight more. How many of them one selected
+  # instrument can hold at once is not said. The field is here since 2026-10-13: the part now
+  # says notes reach it, and the loader then asks whether a part's voices are its own.
+  polyphony_shared: true
   velocity:
     # Sent with every step, and recordable from outside: "To be able to record velocity, the
     # Config > General > 'Recording Options' would need a velocity option to be set"

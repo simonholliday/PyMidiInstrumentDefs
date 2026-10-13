@@ -3036,10 +3036,15 @@ class TestParts:
 
 class TestAKindOfMessageNoDocumentTiesToAPart:
 
-	"""`unrecorded`: the kind reaches the instrument here, and no page says how it reaches the part.
+	"""`unrecorded`: the instrument does not ignore the kind, and the file cannot say how to send it to the part.
 
 	A file can leave `notes` out of `receives` and say in a comment that this is no finding
-	that the part takes none, as `korg/volca_drum` does.  The data then says it takes none.
+	that the part takes none, as `korg/volca_drum` did.  The data then says it takes none.
+
+	The class keeps the name it had when the word covered one case: the kind arrives where
+	the part sits and no page ties it to the part.  Since 2026-10-13 it covers a second: the
+	kind does reach the part, by a route the pages give and the format has no place for, as
+	with the Tracker's notes on a channel set apart from its controls'.
 	"""
 
 	HEAD = "definition: 1\nmodel: {name: X}\nsource: hand\n"
@@ -3092,7 +3097,7 @@ class TestAKindOfMessageNoDocumentTiesToAPart:
 			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
 				self.part(f"receives: [], unrecorded: [{kind}]")
 
-			assert f"lists '{kind}' as reaching this part" in str(raised.value), kind
+			assert f"lists '{kind}' as a kind this file cannot give the part's route for" in str(raised.value), kind
 
 	def test_left_empty_in_yaml_s_own_way_it_is_as_if_left_out (self) -> None:
 		"""`unrecorded:` with nothing after it is a field with no value, which every field allows."""
@@ -3116,7 +3121,7 @@ class TestAKindOfMessageNoDocumentTiesToAPart:
 				self.part(f"{body}, voices: {{kick: 36}}")
 
 			assert "parts.one.voices" in str(raised.value), body
-			assert "no document ties to it" in str(raised.value), body
+			assert "lists notes as unrecorded" in str(raised.value), body
 
 	def test_a_note_map_stands_where_it_is_the_controls_that_are_unrecorded (self) -> None:
 		part = self.part("receives: [notes], unrecorded: [controls], voices: {kick: 36}")
@@ -3128,7 +3133,7 @@ class TestAKindOfMessageNoDocumentTiesToAPart:
 			self.part("unrecorded: [controls]", "controls: {level: {cc: 7, part: one}}\n")
 
 		assert "controls.level.part" in str(raised.value)
-		assert "no document ties to it" in str(raised.value)
+		assert "lists controls as unrecorded" in str(raised.value)
 
 	def test_a_control_stands_where_it_is_the_notes_that_are_unrecorded (self) -> None:
 		"""The shape the word was added for: the part's controllers are recorded and its notes are not."""
@@ -3735,7 +3740,7 @@ class TestAPartsNoteMapTheOwnerCanMove:
 					self.part(f"{body}, note_map: {word}")
 
 				assert "parts.kit.note_map" in str(raised.value), (body, word)
-				assert "no document ties to it" in str(raised.value), (body, word)
+				assert "lists notes as unrecorded" in str(raised.value), (body, word)
 
 	def test_it_stands_where_nobody_recorded_what_the_part_receives (self) -> None:
 		"""A part that leaves `receives` out is not one recorded as taking no notes."""
@@ -10438,9 +10443,19 @@ class TestPolyendTracker:
 		assert tracker.modes["synthesizer"].label == "MIDI Synthesizer"
 		assert tracker.factory_mode is None
 
-		# The part claims controls; the comment beside it says that is not a refusal of notes.
+		# The part claims controls, and its notes are `unrecorded` since 2026-10-13: a
+		# controller plays the selected instrument on the Notes Input Channel, a setting of
+		# its own, and a part has one channel.  The manual gives the route; the format cannot.
 		assert tracker.parts["synthesizer"].mode == "synthesizer"
 		assert tracker.parts["synthesizer"].receives == ("controls",)
+		assert tracker.parts["synthesizer"].unrecorded == ("notes",)
+		assert tracker.parts["synthesizer"].takes("notes") is None
+
+		# A part that notes reach makes the loader ask whose voices it plays.  The Tracker has
+		# eight in all, and no page gives it any other for this mode.
+		assert (tracker.voice.polyphony, tracker.voice.polyphony_shared) == (8, True)
+		assert ("**So the manual gives the route, its channel (manual p. 251) and its instrument (manual "
+			"pp. 255, 266), and the format has no place for it**") in " ".join(prose_of("polyend", "tracker").split())
 
 		always = {control.cc for control in tracker.controls.values()
 			if control.group in ("performance_effects", "master")}

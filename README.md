@@ -103,9 +103,11 @@ streichfett.controls_reaching("strings")   # all 19 - the strings sit on the bas
 
 `takes()` answers `True` for a kind of message the part is recorded as taking
 and `False` for any other, with one exception. It answers `None` where the file
-says a kind of message reaches the instrument there and no document ties it to
-the part: neither yes nor no, so a page that leaves out what a part does not
-take should not leave that out.
+lists the kind as `unrecorded`: it arrives where the part sits and no document
+says whether or how it reaches the part, or it reaches the part by a route the
+format has no place for. Either way a program cannot count on that kind, sent
+on the part's channel, reaching the part, and it is not a no: a page that
+leaves out what a part does not take should not leave that out.
 
 Some instruments change shape with a setting, and a definition says so with
 `modes`: a part may exist in one mode only, a mode may silence the controls

@@ -496,9 +496,11 @@ class _Reader:
 
 				receives.append(kind)
 
-			# The kinds that reach the instrument where this part is, with no document saying
-			# how they reach the part.  The same words as `receives`, and never the same kind
-			# in both: a file cannot record that a part takes notes and that nobody says so.
+			# The kinds the instrument does not ignore and that this file cannot say how to send
+			# to the part: they arrive where the part sits with no document saying whether or
+			# how they reach it, or they reach it by a route the format has no place for.  The
+			# same words as `receives`, and never the same kind in both: `receives` says the
+			# kind is the part's on its channel, and this says the file cannot say that.
 
 			unrecorded: list[str] = []
 
@@ -528,7 +530,7 @@ class _Reader:
 			if unrecorded and fields.get("receives") is not None and not receives:
 				self.refuse(
 					f"{where}.unrecorded",
-					f"lists {unrecorded[0]!r} as reaching this part by a route no document gives, "
+					f"lists {unrecorded[0]!r} as a kind this file cannot give the part's route for, "
 					f"where receives says the part was found to receive nothing",
 				)
 
@@ -556,14 +558,17 @@ class _Reader:
 			# reach nothing, which is the same silent failure as a control on a part
 			# that takes no controls.
 
-			# And a map of which note does what is a record of how notes reach the part, so
-			# it cannot stand where the file says no document gives that.  Asked before the
-			# other: such a part is not one the file "says takes no notes".
+			# And a map of which note does what is for notes sent to the part on its channel, so
+			# it cannot stand where the file says it cannot give how notes reach the part: in
+			# one case nothing ties a note to the part, and in the other the notes may arrive on
+			# a channel other than the part's.  Asked before the other: such a part is not one
+			# the file "says takes no notes".
 
 			if voices and "notes" in unrecorded:
 				self.refuse(
 					f"{where}.voices",
-					"names notes on a part whose notes this file says no document ties to it",
+					"names notes on a part that lists notes as unrecorded: this file cannot give how "
+					"they reach it",
 				)
 
 			if voices and fields.get("receives") is not None and "notes" not in receives:
@@ -580,7 +585,8 @@ class _Reader:
 			if note_map is not None and "notes" in unrecorded:
 				self.refuse(
 					f"{where}.note_map",
-					"says how notes are assigned on a part whose notes this file says no document ties to it",
+					"says how notes are assigned on a part that lists notes as unrecorded: this file cannot "
+					"give how they reach it",
 				)
 
 			if note_map is not None and fields.get("receives") is not None and "notes" not in receives:
@@ -1433,7 +1439,8 @@ def build (
 		if pymidiinstrumentdefs.definition.CONTROLS in part.unrecorded:
 			reader.refuse(
 				f"controls.{control.name}.part",
-				f"names {control.part!r}, whose controls this file says no document ties to it",
+				f"names {control.part!r}, a part that lists controls as unrecorded: this file cannot give "
+				f"how they reach it",
 			)
 
 		if part.receives is not None and not part.takes(pymidiinstrumentdefs.definition.CONTROLS):

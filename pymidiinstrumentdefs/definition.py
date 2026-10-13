@@ -531,12 +531,17 @@ class Part:
 	knowing not to draw one.  ``addressing`` says how
 	notes are read **when** the part takes them, and means nothing when it does not.
 
-	``unrecorded`` is the third answer, for a kind of message that reaches the
-	instrument where this part is and that no document ties to the part: a volca drum
-	on its single channel receives notes there, and no page says which of its six
-	parts a note sounds.  Left out of ``receives`` alone, that kind reads as one the
-	part does not take, which the documents do not say either.  ``takes()`` answers
-	``None`` for it.
+	``unrecorded`` is the third answer, for a kind of message the instrument does
+	not ignore and that this file cannot tell a program how to send to the part.
+	There are two cases, opposite in what is known.  The kind arrives where the part
+	sits and no document says whether or how it reaches this part: a volca drum on
+	its single channel receives notes there, and no page says which of its six parts
+	a note sounds.  Or the kind does reach the part, by a route the documents give
+	and this format has no place for: a Tracker's selected instrument is played on a
+	channel that has a setting of its own, apart from the setting for the channel
+	its controls arrive on, and a part has one channel.  Left out of ``receives``
+	alone, that kind reads as one the part does not take, which is not what the
+	documents say.  ``takes()`` answers ``None`` for it.
 
 	``polyphony`` is how many voices a part has to itself, and it counts **each
 	instance**: three parts at eight voices is eight each.  Voices shared across
@@ -605,10 +610,14 @@ class Part:
 
 		"""Whether this part answers to a kind of message — notes, controls, program change.
 
-		``True`` where the file records it, and ``None`` where the file says the kind
-		reaches the instrument here and no document gives how it reaches this part:
-		neither yes nor no, and a panel that drew nothing for it would be answering
-		for the maker.  ``None`` is false to a caller that asks only yes or no.
+		``True`` where the file records it, and ``None`` where the file lists the kind
+		as ``unrecorded``: it arrives where the part sits with no document saying
+		whether or how it reaches the part, or it reaches the part by a route the format
+		has no place for.  Either way a program cannot count on the kind, sent on the
+		part's channel, reaching this part: in the first case which part it reaches is
+		unsaid, and in the second the channel may be another.  And it is not a no: a
+		panel that drew nothing for it would be saying the part takes none.  ``None``
+		is false to a caller that asks only yes or no.
 
 		A part that says nothing about what it receives answers ``False`` to
 		everything it does not name as unrecorded, which is honest: nobody recorded

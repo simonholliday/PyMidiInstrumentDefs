@@ -68,7 +68,8 @@ source: >-
   Cascadia's MIDI CC jack" (manual p. 109), over the full `(0 - 127)` - or by channel pressure. So these two
   are what a Cascadia answers to **as it leaves the factory**, and a consumer offering them should
   say as much rather than present them as fixtures. `akai/mpc_key_37` carries its single control on
-  exactly this footing.
+  exactly this footing. The Cascadia's two say `assignment: default`, the format's word for a
+  factory number an owner can move; until 2026-10-13 only this paragraph said so.
 
   **SENDING EITHER OF THEM TO A NEW CASCADIA MOVES A VOLTAGE THAT IS CONNECTED TO NOTHING.** Four
   of the eight jacks are patched internally when the instrument arrives and four are not, and the
@@ -363,7 +364,8 @@ controls:
   # THE TWO FACTORY ASSIGNMENTS ----------------------------------------------
   # Each is the default source for one jack and can be changed to any controller in 0 to 127, or
   # to channel pressure. Each drives a jack that is patched to nothing until somebody patches it.
-  # In Dual Mono mode both stop being controller destinations altogether.
+  # In Dual Mono mode both stop being controller destinations altogether. `assignment: default`
+  # says the number is the factory's and the owner can move it.
 
-  midi_cc_output:      {label: MIDI CC Output, cc: 2, direction: receives, group: midi_cv}
-  midi_mod_output:     {label: MIDI MOD Output, cc: 1, direction: receives, group: midi_cv}
+  midi_cc_output:      {label: MIDI CC Output, cc: 2, direction: receives, group: midi_cv, assignment: default}
+  midi_mod_output:     {label: MIDI MOD Output, cc: 1, direction: receives, group: midi_cv, assignment: default}

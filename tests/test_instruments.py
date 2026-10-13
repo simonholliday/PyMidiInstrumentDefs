@@ -2028,7 +2028,7 @@ class TestAssignment:
 		assert "controls.a.assignment" in str(raised.value)
 
 	def test_each_definition_marks_what_its_own_pages_say_the_owner_can_change (self) -> None:
-		"""A factory assignment, a fixed slot, and a recommendation switched off - nine files, three words."""
+		"""A factory assignment, a fixed slot, and a recommendation switched off - ten files, three words."""
 		said: dict[str, dict[str, int]] = {}
 
 		for name in pymidiinstrumentdefs.available([CORPUS]):
@@ -2047,6 +2047,7 @@ class TestAssignment:
 			"akai/mpc_key_37": {"default": 1},
 			"korg/radias": {"default": 60},
 			"yamaha/montage_6_7_8": {"default": 16},
+			"intellijel/cascadia": {"default": 2},
 		}
 
 	def test_the_kronos_ships_its_karma_controls_and_pads_off_and_its_joystick_on (self) -> None:
@@ -18925,9 +18926,11 @@ class TestCascadia:
 		assert cascadia.controls["portamento_time"].cc == 5
 		assert "**Neither is learnable and neither can be reassigned**" in flat
 
-		# The other two are the default source for a jack, over the full range.
+		# The other two are the default source for a jack, over the full range, and say so.
 		assert cascadia.controls["midi_mod_output"].cc == 1
 		assert cascadia.controls["midi_cc_output"].cc == 2
+		assert {name: control.assignment for name, control in cascadia.controls.items()} == {
+			"portamento": None, "portamento_time": None, "midi_cc_output": "default", "midi_mod_output": "default"}
 		assert "what a Cascadia answers to **as it leaves the factory**" in flat
 
 	def test_the_portamento_switch_carries_choices_because_a_band_would_invent_a_boundary (self) -> None:

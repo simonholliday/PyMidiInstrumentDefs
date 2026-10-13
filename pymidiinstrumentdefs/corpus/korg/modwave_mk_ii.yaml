@@ -114,10 +114,16 @@ source: >-
   Select when assigned in UTILITY > MIDI CC Assign; also received as programmable modulation
   sources" (manual p. 107). All five lie inside the assignable range, so they are a factory
   assignment a player can change. **The four Mod Knob numbers are stated twice**: Korg's
-  Property Exchange Resource List carries an X-ParameterList giving `"controlcc": 24` to 27, and
-  although it is marked "(e.g.)" and its parameter names belong to whichever Program it was
-  taken from, the numbers are the same four. The manual says the same thing in prose: "Each
-  knob sends and receives a MIDI CC" (manual p. 70), which is where their direction comes from.
+  Property Exchange Resource List carries an `X-ParameterList (e.g.)` whose four entries give
+  `"controlcc": 24` to 27 (resource_list). **That file never names a Mod Knob.** The tie is
+  the four numbers, and two of its four names: its entries are `Balance`, `Envelope`,
+  `Animator` and `Process`, each with a default, and the manual's picture of the Mod Knobs
+  screen shows `BALANCE` on knob 1 and `PROCESS` on knob 4, with `GROOVE` and `WOBBLE` between
+  them (manual p. 70). The knobs can be named, and the two documents name the middle two
+  differently, so the names are one sound's: the file's Channel List example, which links to
+  this list, gives its `programTitle` as `Cassini`. None of the names or defaults is taken.
+  The numbers are the same four. The manual says the same thing in prose: "Each knob sends
+  and receives a MIDI CC" (manual p. 70), which is where their direction comes from.
 
   THE ONE BLOCK OF CONTROLLER NUMBERS THE CHART ACCOUNTS FOR NOWHERE IS 96 TO 101, and that is
   why no NRPN is recorded. Its Control Change section runs from 1 to 95 without a gap, between
@@ -213,9 +219,26 @@ sources:
     paginated: false
     # THE DOCUMENT KORG PUBLISHES UNDER THE NAME THIS CORPUS WANTS, AND IT IS NOT A CONTROL
     # MAP. 310 lines describing the five Property Exchange system exclusive messages -
-    # Discovery, Capabilities, Get Property Data, Subscription and Shutdown - and no controller
-    # number anywhere in it. Cited for the device identity below and for that absence. The same
-    # shape as the opsix's and the multi/poly's.
+    # Discovery, Capabilities, Get Property Data, Subscription and Invalidate MUID - and no
+    # controller number anywhere in it. Cited for the device identity below and for that
+    # absence. The same shape as the opsix's and the multi/poly's. Until 2026-10-13 this named
+    # the fifth message `Shutdown`, which the file does not.
+  resource_list:
+    kind: midi_implementation
+    title: modwave Property Exchange Resource List
+    edition: Version 1.1
+    dated: 2025-09-08
+    landing: "https://www.korg.com/us/support/download/product/0/928/"
+    url: "https://cdn.korg.com/us/support/download/files/6b9c344df29db877d958199a759f1e88.txt"
+    sha256: 37c25b500846b480513d415f6767d2f5dc3388d65dba4c3fc44be64feb97ce38
+    retrieved: 2026-10-03
+    paginated: false
+    # THE COMPANION TO THE FILE ABOVE, WHICH REFERS TO IT BY ITS FILE NAME, AND THE ONE OF THE
+    # TWO THAT CARRIES A CONTROLLER NUMBER. Cited for one thing: its example `X-ParameterList`
+    # gives `"controlcc"` 24, 25, 26 and 27, the four Mod Knob numbers of the manual's table.
+    # Nothing else is taken from it. Its examples are marked `(e.g.)`, several of its strings
+    # are quoted with curly quotation marks, and its Device Info block reports version
+    # `2.1.9`. Until 2026-10-13 the account quoted this file and no source named it.
   about_mk_ii:
     kind: release_notes
     title: About the modwave mkII

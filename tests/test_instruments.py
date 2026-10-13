@@ -6816,7 +6816,11 @@ class TestModwaveMkII:
 		for number in (1, 7, 10, 11, 18, 19, 64, 66, 67):
 			assert number in {c.cc for c in mw.controls.values()}, f"cc {number} is missing"
 
-		# The five the "MIDI CC Assign" table gives a default assignment for.
+		# The five the "MIDI CC Assign" table gives a default assignment for. The four knobs'
+		# numbers have a second witness, Korg's Property Exchange Resource List, which is a
+		# source of its own since 2026-10-13: the account quoted it before and cited nothing.
+		assert mw.sources["resource_list"].title == "modwave Property Exchange Resource List"
+		assert "**That file never names a Mod Knob.**" in " ".join((mw.source or "").split())
 		assert mw.controls["scale_select"].cc == 9
 
 		for which in (1, 2, 3, 4):
@@ -6897,11 +6901,12 @@ class TestModwaveMkII:
 		assert mw.model.name == "modwave mk II"
 		assert mw.model.firmware == "3.0"
 
-		# Five documents, including the sibling's download page, fetched to prove the two
-		# products are served one document set.
+		# Six documents, including the sibling's download page, fetched to prove the two
+		# products are served one document set. The Resource List is the sixth, since 2026-10-13.
 		assert set(mw.sources) == {
-			"manual", "property_exchange", "about_mk_ii", "download_page",
+			"manual", "property_exchange", "resource_list", "about_mk_ii", "download_page",
 			"download_page_modwave"}
+		assert mw.sources["resource_list"].paginated is False
 
 		# The chart is printed five pages lower than its file page.
 		assert mw.sources["manual"].page_offset == 5

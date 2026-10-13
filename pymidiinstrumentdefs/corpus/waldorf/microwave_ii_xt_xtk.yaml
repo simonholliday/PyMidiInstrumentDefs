@@ -126,8 +126,9 @@ source: >-
   to this instrument: `All Sound Off` on 120, `Reset All Controllers` on 121 and `All notes off` on
   123 (manual p. 105). The other 99 are below, each under the name the list prints. Bank select on
   32 is among them, as bank select is wherever a maker numbers it. The list gives every row a range
-  and most a list of values; the ranges are carried and the value names are left in the list. No row
-  names a fine half, and the older list's `MSB` after the first three names is gone from this one.
+  and most a list of values; the ranges are carried, all but those of the three rows set out below,
+  and the value names are left in the list. No row names a fine half, and the older list's `MSB`
+  after the first three names is gone from this one.
 
   **THE CHART NAMES SEVEN OF THEM AND MARKS THREE AS NOT SENT.** Its Control Change rows are `1`
   `Modwheel`, `2` `Breath Control`, `5` `Portamento Time`, `7` `Master Volume`, `10` `Panning`, `32`
@@ -150,23 +151,28 @@ source: >-
   sent**: the chart's `o` beside 1 and 64 as transmitted, printed for all three models together, is
   what says so.
 
-  **THREE ROWS PRINT A RANGE THEIR OWN VALUES OUTRUN, AND THE VALUES ARE FOLLOWED.** `Filter 1 Type`
-  on 54 is printed `0…5` beside ten named types, 0 to 9 (manual p. 104), and the manual's own system
-  exclusive list has the same parameter at `0-9` (manual p. 111), with a table of ten types numbered
-  0 to 9 (manual p. 114); so `[0, 9]`. **The parameter's own page has thirteen settings.** After the
-  ten come `24dBNotch`, `12dBNotch` and `Band Stop` (manual p. 54), each described in its turn
-  (manual p. 56), and the section on Filter 1 opens by allowing for more: "Further types might be
-  added in the future." (manual p. 52). Neither issue of the list gives any of the three a number,
-  and nor does the system exclusive data's table, so no page says which values select them; `[0, 9]`
-  is the range the pages number. `Osc 1 Pitchbend Scale` on 36 and `Osc 2 Pitchbend Scale` on 42 are
-  printed `0…121` beside `0…120:semitones 121:harmonic 122:global` (manual pp. 103-104), and the
-  system exclusive list has `0-122` (manual p. 111); so `[0, 122]`. `LFO 1 Sync` on 112 and `LFO 2
-  Sync` on 115 are `0…3` with 0, 1 and 3 named, `0:off 1:on 3:Clock` (manual p. 105); the system
-  exclusive list reads `off/on/on/Clock` (manual p. 112), so 2 is `on` again and the range stands.
-  The manual's page for LFO 2 gives its Sync `off / on` alone (manual p. 80), where LFO 1's has `off
-  / on / Clock` (manual p. 78); the list and the system exclusive data give Clock to both. The older
-  list had `0..9` for the filter type, the same `0..121` beside a 122 for both scales, and `0..1`
-  for both syncs (controller_list pp. 1-3).
+  **THREE ROWS PRINT A RANGE THEIR OWN VALUES OUTRUN. TWO FOLLOW THE VALUES, AND THE FILTER TYPE'S
+  RANGE IS NOT KNOWN.** `Filter 1 Type` on 54 is printed `0…5` beside ten named types, 0 to 9
+  (manual p. 104), and the manual's own system exclusive list has the same parameter at `0-9`
+  (manual p. 111), with a table of ten types numbered 0 to 9 (manual p. 114). **The parameter's own
+  page has thirteen settings.** After the ten come `24dBNotch`, `12dBNotch` and `Band Stop` (manual
+  p. 54), each described in its turn (manual p. 56), and the section on Filter 1 opens by allowing
+  for more: "Further types might be added in the future." (manual p. 52). Neither issue of the list
+  gives any of the three a number, and nor does the system exclusive data's table, so no page says
+  which values select them. That is three figures for the top of one setting, 5, 9 and a list of
+  thirteen, and none of them can be carried as its range: the control says `range: unknown`, and 0
+  to 9 are the ten values the pages do number. `Osc 1 Pitchbend Scale` on 36 and `Osc 2 Pitchbend
+  Scale` on 42 are printed `0…121` beside `0…120:semitones 121:harmonic 122:global` (manual
+  pp. 103-104), and the system exclusive list has `0-122` (manual p. 111). The oscillators' own
+  pages call the setting Pitchbend Range and give it as `0...120 / harmonic / global` (manual
+  pp. 40-41), which is 123 settings, as many as the row's values 0 to 122. So `[0, 122]`: there the
+  parameter's own page agrees with the values named beside the row, where the filter type's outruns
+  them. `LFO 1 Sync` on 112 and `LFO 2 Sync` on 115 are `0…3` with 0, 1 and 3 named, `0:off 1:on
+  3:Clock` (manual p. 105); the system exclusive list reads `off/on/on/Clock` (manual p. 112), so 2
+  is `on` again and the range stands. The manual's page for LFO 2 gives its Sync `off / on` alone
+  (manual p. 80), where LFO 1's has `off / on / Clock` (manual p. 78); the list and the system
+  exclusive data give Clock to both. The older list had `0..9` for the filter type, the same
+  `0..121` beside a 122 for both scales, and `0..1` for both syncs (controller_list pp. 1-3).
 
   **THE VALUE NAMES ARE LEFT IN THE LIST, AND ONE ROW'S ARE IN A DOUBTED ORDER.** `Glide Type` on 22
   is `0:portamento 1:fingered port. 2:glissando 3:fingered gliss.` in both issues of the list
@@ -505,7 +511,9 @@ controls:
   filter_1_keytrack:                     {label: Filter 1 Keytrack, cc: 51, group: filter_1}
   filter_1_env_amount:                   {label: Filter 1 Env Amount, cc: 52, group: filter_1}
   filter_1_env_velocity:                 {label: Filter 1 Env Velocity, cc: 53, group: filter_1}
-  filter_1_type:                         {label: Filter 1 Type, cc: 54, range: [0, 9], group: filter_1}
+  # Printed `0…5` beside ten named types, 0 to 9 (manual p. 104). The system exclusive data have
+  # `0-9` (manual p. 111), and the parameter's own page lists thirteen settings (manual p. 54).
+  filter_1_type:                         {label: Filter 1 Type, cc: 54, range: unknown, group: filter_1}
   filter_1_resonance:                    {label: Filter 1 Resonance, cc: 56, group: filter_1}
 
   # Filter 2 ────────────────────────────────────────────────────
@@ -644,7 +652,9 @@ controls:
   instrument_filter_1_keytrack:          {label: Filter 1 Keytrack, cc: 51, part: instrument, group: filter_1}
   instrument_filter_1_env_amount:        {label: Filter 1 Env Amount, cc: 52, part: instrument, group: filter_1}
   instrument_filter_1_env_velocity:      {label: Filter 1 Env Velocity, cc: 53, part: instrument, group: filter_1}
-  instrument_filter_1_type:              {label: Filter 1 Type, cc: 54, range: [0, 9], part: instrument, group: filter_1}
+  # Printed `0…5` beside ten named types, 0 to 9 (manual p. 104). The system exclusive data have
+  # `0-9` (manual p. 111), and the parameter's own page lists thirteen settings (manual p. 54).
+  instrument_filter_1_type:              {label: Filter 1 Type, cc: 54, range: unknown, part: instrument, group: filter_1}
   instrument_filter_1_resonance:         {label: Filter 1 Resonance, cc: 56, part: instrument, group: filter_1}
 
   # Filter 2 ────────────────────────────────────────────────────

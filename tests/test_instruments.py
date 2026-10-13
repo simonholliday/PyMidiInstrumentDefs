@@ -23000,19 +23000,25 @@ class TestMicrowaveII:
 		assert {control.cc for control in mw.controls.values() if control.direction == "receives"} == {2, 4, 7, 32}
 		assert {control.direction for control in mw.controls.values()} == {"both", "receives"}
 
-	def test_three_ranges_follow_the_values_named_and_not_the_range_printed (self) -> None:
+	def test_three_rows_print_a_range_their_own_values_outrun (self) -> None:
 		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])
 
-		assert mw.controls["filter_1_type"].range == (0, 9)
+		# Two follow the values named beside them, which the manual's system exclusive data bear out.
 		assert mw.controls["osc_1_pitchbend_scale"].range == (0, 122)
 		assert mw.controls["osc_2_pitchbend_scale"].range == (0, 122)
+		# The filter type is printed to 5, named to 9, and has thirteen settings on its own page.
+		unknown = [key for key, control in mw.controls.items() if not control.range_known]
+
+		assert unknown == ["filter_1_type", "instrument_filter_1_type"]
+		assert mw.controls["filter_1_type"].range == (0, 127)
 		# The two syncs name 0, 1 and 3 in a range of 0 to 3, which stands.
 		assert mw.controls["lfo_1_sync"].range == mw.controls["lfo_2_sync"].range == (0, 3)
 		assert mw.controls["bank_select"].range == (0, 1)
 
 		said = " ".join((mw.source or "").split())
 
-		assert "**THREE ROWS PRINT A RANGE THEIR OWN VALUES OUTRUN, AND THE VALUES ARE FOLLOWED.**" in said
+		assert ("**THREE ROWS PRINT A RANGE THEIR OWN VALUES OUTRUN. TWO FOLLOW THE VALUES, AND THE FILTER TYPE'S "
+			"RANGE IS NOT KNOWN.**") in said
 
 	def test_what_the_chart_and_the_manual_give (self) -> None:
 		mw = pymidiinstrumentdefs.load("waldorf/microwave_ii_xt_xtk", [CORPUS])

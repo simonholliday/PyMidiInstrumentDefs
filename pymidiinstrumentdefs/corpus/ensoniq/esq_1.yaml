@@ -127,8 +127,12 @@ source: >-
   sensing, reset and tune request neither way (manual p. 213). Pressure reaches it from outside -
   "The ESQ 1, and its Sequencer, can receive Pressure via MIDI from those keyboards which send it."
   (manual p. 32) - and `PRESS` chooses off, channel or key pressure; no page says its own keyboard
-  senses any, which the chart's remark fits. What is sent and received is a setting, the MIDI page's
-  ENABLE, from `KEY EVENTS ONLY` to `KEYS + CT + PC + SS + SX` (manual p. 34).
+  senses any, which the chart's remark fits. So `aftertouch_transmits` is `false`: any pressure
+  that goes out came from another instrument. A Track plays back what it recorded, and the
+  overflow mode of 3.0, below, echoes inbound controllers, a word the manual uses of pressure
+  too (manual p. 34). Passing it on is not the instrument making pressure of its own. What is
+  sent and received is a setting, the MIDI page's ENABLE, from `KEY EVENTS ONLY` to
+  `KEYS + CT + PC + SS + SX` (manual p. 34).
 
   **NOTES 21 TO 108, FROM A KEYBOARD OF 36 TO 96.** The chart's `21 - 108` is wider than the 61
   keys, which the diagram on p. 80 numbers 36 to 96. The split key takes the same 21 to 108, and a
@@ -223,12 +227,17 @@ voice:
     note_off: true
   # Key and channel pressure both `O` received (manual p. 213), chosen by `PRESS` (manual p. 32).
   # Until 2026-10-12 this said `poly`, the stronger of two words where the field had no third.
-  # NOT RECORDED, whether it is sent: the chart has both kinds `O` transmitted beside the remark
-  # `Transmitted only if recorded` (manual p. 213), and "the Sequencer will Record and Play back
-  # Pressure, if a Track is recorded from an external instrument which sends it." (manual
-  # p. 46). That page heads the pressure modulator `(MIDI only)`; with the chart's `only`, the
-  # keyboard makes none.
   aftertouch: both
+  # NEVER MADE BY THE INSTRUMENT ITSELF, SO `false`. The chart has both kinds `O` transmitted
+  # beside the remark `Transmitted only if recorded` (manual p. 213), and "the Sequencer will
+  # Record and Play back Pressure, if a Track is recorded from an external instrument which sends
+  # it." (manual p. 46). That page heads the pressure modulator `(MIDI only)`; with the chart's
+  # `only`, the keyboard makes none. So any pressure that goes out came from another instrument:
+  # a Track plays back what it recorded, and by 3.0 the overflow mode echoes inbound
+  # controllers at MIDI Out (second_copy p. 225), a word the manual uses of pressure too
+  # (manual p. 34). Passing on another instrument's pressure is not the instrument sending
+  # pressure of its own, which is what this field says. Until 2026-10-13 it was left unset.
+  aftertouch_transmits: false
   pitch_bend:
     # Global, 0 to 12 semitones (manual p. 29); no default is printed, and the display's 02 is an
     # example (manual p. 28).

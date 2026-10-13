@@ -1816,7 +1816,7 @@ class TestAftertouch:
 			"waldorf/protein": ("both", None),
 			"sequential/fourm": ("both", True),
 			"sequential/prophet_6": ("both", True),
-			"ensoniq/esq_1": ("both", None),
+			"ensoniq/esq_1": ("both", False),
 			"novation/peak": ("both", None),
 			"elektron/digitakt": (None, True),
 			"elektron/octatrack": (None, True),
@@ -1832,6 +1832,22 @@ class TestAftertouch:
 			"yamaha/reface_dx": ("none", False),
 			"yamaha/seqtrak": ("none", False),
 		}
+
+
+class TestReplayIsNotSending:
+
+	"""`aftertouch_transmits` is whether the instrument makes pressure, not whether its sequencer plays some back."""
+
+	def test_two_instruments_whose_sequencers_replay_pressure_say_false (self) -> None:
+		"""Neither has keys that sense pressure, and each says in a comment what its sequencer does."""
+		for maker, model, words in (
+			("ensoniq", "esq_1", "`Transmitted only if recorded` (manual p. 213)"),
+			("roland", "jd_xi", '"Recorded messages are transmitted during playback."'),
+		):
+			voice = pymidiinstrumentdefs.load(f"{maker}/{model}", [CORPUS]).voice
+
+			assert (voice.aftertouch, voice.aftertouch_transmits) == ("both", False), model
+			assert words in " ".join(prose_of(maker, model).split()), model
 
 
 class TestNrpnFromTheChart:

@@ -621,6 +621,16 @@ omits aftertouch and its MIDI Out line has it, so the Model D records
 `aftertouch_transmits: true` and leaves `aftertouch` unset. Which kind is sent has no field.
 Say it in a comment beside the flag, as a Leviasynth's does for the setting that chooses it.
 
+**Sending means making the message, and playing one back is not that.**
+`aftertouch_transmits` is true where the instrument makes pressure messages of its own, from
+keys, pads, a ribbon or a track's own parameter. A sequencer that plays back pressure it
+recorded from another instrument does not make it true, and neither does a setting that
+echoes at the output what arrives at the input. An ESQ-1's chart marks pressure as
+transmitted beside the remark `Transmitted only if recorded`, and no page says its keyboard
+senses any, so it records `aftertouch_transmits: false` with the remark in a comment.
+Somebody choosing a controller, or a program deciding whether to expect pressure from a
+keyboard, is asking whether the instrument makes any.
+
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
 section answers one channel above its strings. A Voce plays three parts across three

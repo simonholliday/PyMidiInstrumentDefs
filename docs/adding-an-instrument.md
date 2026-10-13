@@ -358,6 +358,15 @@ and remarks "Each sound does not correspond to a note number": the channel picks
 the note says nothing more. That is `any`. Keep `none` for the DFAM's case, where there is
 nothing to send a note to.
 
+**Search for what sends a controller, and not only for the word.** A manual can have its
+instrument answer to a controller without naming one. A Model D's manual never says
+`control change`, and it has `the modulation wheel on a MIDI keyboard` adjust a depth. So
+before writing `control_change: none`, look for a wheel, a pedal, a footswitch, a joystick,
+a ribbon, breath, modulation, expression, sustain and volume too, and read every hit. Where
+the instrument answers to one and the maker prints no number, leave `control_change` unset
+and quote the sentence: `none` would be untrue, and a control needs a number its maker
+prints.
+
 **For `nrpn`, a chart that lists every controller number is a search of every page.** An
 NRPN travels on controllers 98 and 99, with its value on 6 and 38, and its registered
 counterpart, the RPN, travels on 100 and 101 with the same two for its value. So where a

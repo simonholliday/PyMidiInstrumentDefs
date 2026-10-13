@@ -3,8 +3,8 @@ definition: 1
 # ELEVEN DRUMS ON ELEVEN NOTES, TEN VOICES AT ONCE, AND NOT ONE CONTROLLER. The manual's MAP page
 # gives each drum a default note, and its specifications say ten voices sound together. It describes
 # the MIDI and USB settings, the clock, a start message and a SysEx dump, and in 38 pages never
-# names a control change - the search `behringer/model_d` rests its `none` on, so this says `none`
-# too. The reason, and why it is not the EDGE's unset field, is in the account.
+# names a control change, nor a wheel or a pedal that would send one, so this says `none`. The
+# reason, and why it is not the EDGE's unset field or the Model D's, is in the account.
 
 model:
   manufacturer: Behringer
@@ -22,15 +22,28 @@ source: >-
   specifications. And Behringer's product page, for its claim to send clock and for counts that
   disagree with the manual.
 
-  NO CONTROLLER IS NAMED IN A WHOLE MANUAL, WHICH IS THE MODEL D'S ROUTE TO `none`. No page of the
-  manual, and no half-page of the guide, names a control change, a controller number, NRPN, program
-  change or bank select, swept with the text reduced to letters and digits and every hit read. This
-  is a 38-page user manual with a chapter of MIDI and USB settings, a chapter on DAW control and a
-  glossary that defines MIDI clock and MIDI messages, not a quick start guide, so its silence is the
-  evidence `behringer/model_d` rests its `none` on - a search of a 44-page manual - rather than the
-  short-document silence `behringer/edge` leaves unset. Neither document prints a MIDI
-  implementation chart, so this is the weaker of the two routes `behringer/td_3` names, a search
-  rather than an enumeration.
+  NO CONTROLLER IS NAMED IN A WHOLE MANUAL, AND THAT SEARCH IS THIS FILE'S ROUTE TO `none`. No page
+  of the manual, and no half-page of the guide, names a control change, a controller number, NRPN,
+  program change or bank select, swept with the text reduced to letters and digits and every hit
+  read. This is a 38-page user manual with a chapter of MIDI and USB settings, a chapter on DAW
+  control and a glossary that defines MIDI clock and MIDI messages, not a quick start guide, so its
+  silence is evidence, where the short-document silence `behringer/edge` leaves unset is not.
+  Neither document prints a MIDI implementation chart, so this is the weaker of the two routes
+  `behringer/td_3` names, a search rather than an enumeration.
+
+  **AND A SEARCH BY A CONTROLLER'S NAMES IS NOT ENOUGH, WHICH `behringer/model_d` SHOWED.** Until
+  2026-10-13 this file called its route the Model D's. That manual names no controller message
+  outside a glossary entry and still has a MIDI keyboard's modulation wheel adjust a depth, so the
+  Model D no longer says `none`. Both documents here were swept again on 2026-10-13, the same
+  way, for what sends a controller and is not called one: a wheel, a pedal, a footswitch, a
+  joystick, a ribbon, breath, modulation, expression, sustain and volume, and for aftertouch,
+  pressure and pitch bend with them. Every `sustain` is the Wave Designer's knob or its
+  glossary entry, every `volume` is the panel's Volume Section, with its master and phones
+  knobs, or the glossary's entry for Master, and the one `pressure` is the glossary's air
+  pressure (manual p. 35). The other words are on no page of either document. So this `none`
+  stands on both sweeps. **One doubt is left, and it is the maker's application**: "The
+  Synthtool, found on the Behringer website can be used to control many of the functions of
+  the RD-9." (manual p. 5), and no document says by what messages.
 
   THE NOTES ARE DEFAULTS, SET ON THE INSTRUMENT. "The map function allows you to change the MIDI
   notes that trigger the RD-9 voices either via the USB or MIDI ports." (manual p. 17), and "The
@@ -127,8 +140,8 @@ midi:
   # "A MIDI start message is required in order for playback to start." (manual p. 19). Nothing
   # else is named, and nothing says one is sent.
   transport: receives
-  # A CHECKED ABSENCE, by a search of every page of a 38-page manual: the Model D's route. See the
-  # account.
+  # A CHECKED ABSENCE, by two searches of every page of a 38-page manual: one for a controller's
+  # names, and one for the wheels and pedals that send one. See the account.
   control_change: none
   # IT FOLLOWS FROM THE LINE ABOVE. A non-registered parameter is addressed and set with
   # controller messages, 98 and 99 and then 6 and 38, so an instrument that takes no control
@@ -162,7 +175,7 @@ voice:
     open_hat: 46
     closed_hat: 42
 
-# NO CONTROLS BLOCK: see midi.control_change above. The same shape as `behringer/model_d`.
+# NO CONTROLS BLOCK: see midi.control_change above.
 
 sources:
   manual:

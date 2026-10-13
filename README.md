@@ -186,11 +186,11 @@ self-contained YAML file, and you share it by sending it.
 | `behringer/deepmind_12` | Behringer DeepMind 12: 269 controls from a retailer's copy of Behringer's own manual, which Behringer does not serve - 105 controllers and 177 NRPNs, on one control only where both tables print one name, thirteen times |
 | `behringer/edge` | Behringer EDGE: no controls and deliberately not `none` - everything its maker publishes for it is a quick start guide, and the 16-voice poly chain its page sells is documented nowhere but a diagram |
 | `behringer/lm_drum` | Behringer LM DRUM: 17 controllers, all received, and sixteen drum notes from the manual for firmware 1.1.5 - the quick start guide in the box numbers six of them for other drums, from before every drum could be tuned - and each drum playable at pitch on a channel of its own |
-| `behringer/model_d` | Behringer MODEL D: no control changes at all; its remote surface is SysEx |
+| `behringer/model_d` | Behringer MODEL D: no controls and deliberately not `none` - its settings are reached by SysEx, and its manual has a MIDI keyboard's modulation wheel adjust the modulation depth without printing a controller number |
 | `behringer/neutron` | Behringer NEUTRON: two controllers, and the maker counts them for you - everything else this semi-modular answers to is system exclusive, and a note outside its stated range is clamped rather than silenced |
 | `behringer/pro_800` | Behringer PRO-800: 70 controls out of a table whose six columns say what each number is - 34 of them 14-bit, paired to a fine half by name alone, at three different offsets and none of them the MIDI specification's |
 | `behringer/rd_6` | Behringer RD-6: eight drums on eight fixed notes and eight voices at once, out of a quick start guide's MIDI message table that names no controller - `none` by enumeration, as for the TD-3 |
-| `behringer/rd_9` | Behringer RD-9: eleven drum notes, ten voices at once, a start message and a SysEx dump, and no controls - a search of its whole 38-page manual finds no controller, the route the Model D's `none` takes |
+| `behringer/rd_9` | Behringer RD-9: eleven drum notes, ten voices at once, a start message and a SysEx dump, and no controls - a search of its whole 38-page manual finds no controller, and no wheel or pedal that would send one |
 | `behringer/td_3` | Behringer TD-3: no control changes either, established from the channel messages in the maker's own MIDI message table - its "Modded Out" sibling adds exactly one and needs a definition of its own |
 | `behringer/td_3_mo` | Behringer TD-3-MO: the TD-3's MIDI message table with one row more - Filter Cutoff on controller 74, printed only in hexadecimal, the one control it answers to |
 | `behringer/ub_xa` | Behringer UB-Xa: no controls, because the maker advertises a comprehensive MIDI implementation and publishes no part of one - two quick start guides covering two products name a controller number nowhere, and the keyboard's leaves its last two pages blank |
@@ -336,9 +336,11 @@ self-contained YAML file, and you share it by sending it.
 
 The set is a starting point rather than a catalogue. `moog/dfam` is five lines,
 because the DFAM has no MIDI at all and saying so is worth more than saying
-nothing. Three others - the Labyrinth, the MODEL D and the DRM1 - are nearly
-as short for the same reason: somebody read the whole manual and found no
-control changes, and the file records that it looked.
+nothing. Two others - the Labyrinth and the DRM1 - are nearly as short for
+the same reason: somebody read the whole manual and found no control
+changes, and the file records that it looked. The MODEL D is as short and
+does not say so: its manual has a keyboard's modulation wheel reach it, and
+prints no number for it.
 
 ### Starting from a MIDNAM file
 

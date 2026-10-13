@@ -1,7 +1,9 @@
 # Nearly empty for the opposite reason to the DFAM's. The DFAM has no MIDI at
-# all; the Model D is remotely controllable, but only by System Exclusive, and
-# the format has no way yet to describe a SysEx surface. What it can say, it
-# says: that somebody looked for control changes and there are none.
+# all; the Model D's settings are reached by System Exclusive, and the format
+# has no way yet to describe a SysEx surface. **It carries no control and does
+# not say there are none.** Its manual has a MIDI keyboard's modulation wheel
+# adjust the modulation depth and prints no controller number, so
+# `control_change` is unset. Until 2026-10-13 it said `none`.
 
 definition: 1
 
@@ -19,10 +21,29 @@ source: >-
   User manual, 44 pages: the MIDI and USB connections at p. 8, the rear-panel
   MIDI channel switches at p. 11, the Poly Chain system at p. 29, the System
   Exclusive format and command table at pp. 30-31, setting the channel in a
-  Eurorack at p. 33, and the specifications at p. 34. Every page was searched
-  for "control change", "CC" and "controller number": the only hit is the
-  glossary defining a continuous controller (p. 36), so the absence of controls
-  below is checked rather than assumed.
+  Eurorack at p. 33, and the specifications at p. 34.
+
+  **NO CONTROL IS CARRIED, AND `control_change` IS UNSET, NOT `none`.** Every
+  page was searched for `control change`, `CC` and `controller number`. None
+  of the three is on any page as a MIDI term: the only `cc` is a byte of the
+  System Exclusive format (manual p. 30), and the nearest thing is the
+  glossary's entry for a Continuous Controller (manual p. 36). Until
+  2026-10-13 that was taken for a checked absence, and this file said `none`.
+  It is not one. The manual has the instrument answer to a controller without
+  using any of those words: "The modulation depth can also be adjusted using
+  the modulation wheel on a MIDI keyboard." (manual p. 8), "Use the MOD DEPTH
+  knob, and/or the Modulation wheel of your keyboard to increase the effect."
+  (manual p. 13), and with OSC 3 CONTROL off "the keyboard, Pitch wheel, and
+  Modulation wheel, will have no effect on OSC 3." (manual p. 9). A MIDI
+  keyboard's modulation wheel sends controller 1, by the MIDI specification.
+  The manual prints no number for it, and a control is written here only with
+  a number its maker prints, so there is no `controls` block and the field
+  says nothing. The manual also draws a footswitch and an expression pedal
+  plugged into that keyboard, in two hook-up diagrams (manual pp. 27, 28), and
+  its glossary defines an expression pedal and a sustain pedal (manual pp. 37,
+  39). No sentence says the instrument answers to either, and no number is
+  printed for them. **A search for a controller's names cannot find one the
+  manual names by the wheel that sends it.**
 
   NOT RECORDED: velocity, note range and
   the factory pitch-bend range, which the manual does not state.
@@ -43,10 +64,13 @@ midi:
   # when the unit is racked and the switches are gone (pp. 11, 33). Which one
   # yours is on belongs to your project, not here.
   channels: [1, 16]
-  control_change: none
+  # `control_change` IS UNSET, AND SAID `none` UNTIL 2026-10-13. A MIDI
+  # keyboard's modulation wheel adjusts the modulation depth (manual pp. 8, 13),
+  # which is a controller answered to, and no page prints its number. See the
+  # account.
   # F0 00 20 32 aa bb cc dd ee ff F7, where bb is a device ID that is "the same
   # as the Poly Chain ID. It is not the MIDI Channel" (p. 30). The command table
-  # at p. 31 sets MIDI channel, key priority, multi trigger, pitch-bend range,
+  # at p. 30 sets MIDI channel, key priority, multi trigger, pitch-bend range,
   # MIDI-in transpose, the note at zero volts, Poly Chain and its style, device
   # ID, the channel switches, and the modulation curve.
   sysex: true

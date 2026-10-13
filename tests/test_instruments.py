@@ -650,13 +650,24 @@ class TestAbsences:
 
 		assert labyrinth.voice.polyphony is None
 
-	def test_the_model_d_is_reached_only_by_sysex (self) -> None:
+	def test_the_model_d_carries_no_control_and_does_not_say_there_are_none (self) -> None:
+		"""Its manual has a keyboard's modulation wheel adjust a depth, and prints no number.
+
+		Until 2026-10-13 this said `none`, on a search for a controller's names that the
+		wheel is not among.
+		"""
 		model_d = pymidiinstrumentdefs.load("behringer/model_d", [CORPUS])
 
-		assert model_d.midi.refuses_control_change
+		assert model_d.midi.control_change is None and not model_d.midi.refuses_control_change
+		assert model_d.midi.nrpn is None
 		assert model_d.midi.sysex is True
 		assert model_d.voice.polyphony == 1
 		assert model_d.controls == {}
+
+		account = " ".join((model_d.source or "").split())
+
+		assert "**NO CONTROL IS CARRIED, AND `control_change` IS UNSET, NOT `none`.**" in account
+		assert "the modulation wheel on a MIDI keyboard." in account
 
 	def test_the_malevolent_claims_no_absence_nobody_checked (self) -> None:
 		"""Its only document is a quick-start guide, which lists no controllers.
@@ -706,8 +717,14 @@ class TestAbsences:
 		set out the channel and the sockets, and no message. The twenty-third is
 		`akai/mpc_xl`, `learned` from the MPC Live III's own book. The twenty-first was
 		`arturia/drumbrute`, `learned` for the DrumBrute Impact's reason from its own
-		manual, and the twenty-second is `behringer/rd_9`, `none` for the Model D's
-		reason: a whole user manual searched, not a quick start guide.
+		manual, and the twenty-second is `behringer/rd_9`, `none` on a whole user
+		manual searched, not a quick start guide.
+
+		**THE MODEL D LEFT ``none`` ON 2026-10-13.**  Its ``none`` rested on a search
+		for a controller's names, and its manual has a MIDI keyboard's modulation wheel
+		adjust a depth without using one of them.  No number is printed, so no control
+		is carried and no word is recorded: a seventh with no word, for a reason of
+		its own.
 
 		**The fifth reason arrived with the UB-Xa and the format has no word for it.**
 		Its maker claims "comprehensive MIDI implementation" and publishes no part of
@@ -758,19 +775,18 @@ class TestAbsences:
 			key = "stated_none" if definition.midi.stated_none else definition.midi.control_change
 			kinds.setdefault(key, set()).add(name)
 
-		assert kinds["none"] == {"ableton/move", "alesis/sr_16", "behringer/model_d", "behringer/rd_6", "behringer/rd_9", "behringer/td_3",
+		assert kinds["none"] == {"ableton/move", "alesis/sr_16", "behringer/rd_6", "behringer/rd_9", "behringer/td_3",
 			"erica_synths/hexdrums", "korg/ms_20_mini", "moog/labyrinth", "roland/tr_707", "roland/tr_909",
 			"vermona/drm1_mkiv"}
 		# **NO CONTROL CHANGE, SO NO NON-REGISTERED PARAMETER (#4900).** One is addressed and set
 		# with controllers 98, 99, 6 and 38, so each of these records `nrpn: none` as well, as
 		# `korg/ms_20_mini` did from the first, and `roland/tr_909` does since its chart was read
-		# (#4899). One does not yet: `behringer/model_d`'s manual has it answer to a MIDI
-		# keyboard's modulation wheel, so its own `none` is in question (#4982) and nothing is
-		# built on it.
+		# (#4899). `behringer/model_d` was the one that did not, and it left this set on
+		# 2026-10-13 (#4982): its manual has it answer to a MIDI keyboard's modulation wheel.
 		unset = {name for name in kinds["none"]
 			if pymidiinstrumentdefs.load(name, [CORPUS]).midi.nrpn != "none"}
 
-		assert unset == {"behringer/model_d"}
+		assert unset == set()
 
 		for name in ("ableton/move", "alesis/sr_16", "behringer/rd_6", "behringer/rd_9",
 				"behringer/td_3", "erica_synths/hexdrums", "moog/labyrinth", "vermona/drm1_mkiv"):
@@ -784,9 +800,17 @@ class TestAbsences:
 			"teenage_engineering/op_1"}
 		assert kinds["stated_none"] == {"moog/dfam"}
 
-		# And the six that record no word at all, for three different reasons now.
+		# And the seven that record no word at all, for four different reasons now.
 		assert kinds[None] == {"akai/mpc_sample", "pwm/malevolent", "behringer/ub_xa",
-			"behringer/edge", "behringer/b2600", "erica_synths/steampipe"}
+			"behringer/edge", "behringer/b2600", "erica_synths/steampipe", "behringer/model_d"}
+
+		# **THE MODEL D IS THE SEVENTH, AND THE ONLY ONE THAT SAID `none` FIRST.** A whole manual
+		# searched for a controller's names, and a MIDI keyboard's modulation wheel in it all the
+		# same: a controller answered to with no number printed is neither `none` nor a control.
+		model_d = " ".join((pymidiinstrumentdefs.load("behringer/model_d", [CORPUS]).source or "").split())
+
+		assert ("**A search for a controller's names cannot find one the manual names by the wheel that "
+			"sends it.**") in model_d
 
 		# **THE STEAMPIPE IS THE SIXTH.** Its manual says a factory mapping exists and its owner can
 		# change it, so neither `none` nor `learned` is true of it, and the mapping is printed nowhere.
@@ -825,13 +849,15 @@ class TestAbsences:
 		assert pymidiinstrumentdefs.load("behringer/td_3", [CORPUS]).midi.control_change == "none"
 		assert pymidiinstrumentdefs.load("behringer/edge", [CORPUS]).midi.control_change is None
 
-		# **THE RD-9 TAKES THE MODEL D'S ROUTE, NOT THE EDGE'S.** Thirty-eight pages that set
-		# channels, map notes, follow a start message and dump SysEx, and never name a controller:
-		# a whole manual searched, which is what the Model D's `none` rests on. The EDGE stays
-		# unset because quick start guides are all its maker publishes.
+		# **THE RD-9 SAYS `none` ON A WHOLE MANUAL SEARCHED, WHICH THE EDGE CANNOT.** Thirty-eight
+		# pages that set channels, map notes, follow a start message and dump SysEx, and never name
+		# a controller, nor a wheel or a pedal that would send one. That second sweep is what the
+		# Model D's `none` lacked. The EDGE stays unset because quick start guides are all its
+		# maker publishes.
 		rd_9 = " ".join((pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS]).source or "").split())
 
-		assert "WHICH IS THE MODEL D'S ROUTE TO `none`." in rd_9
+		assert "AND THAT SEARCH IS THIS FILE'S ROUTE TO `none`." in rd_9
+		assert "**AND A SEARCH BY A CONTROLLER'S NAMES IS NOT ENOUGH, WHICH `behringer/model_d` SHOWED.**" in rd_9
 		assert pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS]).midi.control_change == "none"
 
 		# **TWO OF THOSE CLAIM NOTHING BECAUSE NOBODY HAS ESTABLISHED ANYTHING. THE THIRD
@@ -4122,7 +4148,7 @@ class TestOP1:
 		assert op1.groups == {}
 
 		# Which is not the same as answering to no controller at all, where somebody
-		# checked and found none: that is the MODEL D, and it reads differently.
+		# checked and found none: that is the TD-3, and it reads differently.
 		assert not op1.midi.refuses_control_change
 
 	def test_every_one_of_its_sources_has_no_pages (self) -> None:
@@ -14855,11 +14881,11 @@ class TestVirusTI:
 		assert "Neither contains the other" in said
 
 	def test_it_is_the_other_kind_of_empty_definition (self) -> None:
-		"""`behringer/model_d` has no controls by design; this one has them and no document."""
+		"""`erica_synths/hexdrums` has no controls by design; this one has them and no document."""
 		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
-		model_d = pymidiinstrumentdefs.load("behringer/model_d", [CORPUS])
+		hexdrums = pymidiinstrumentdefs.load("erica_synths/hexdrums", [CORPUS])
 
-		assert len(model_d.controls) == 0
+		assert len(hexdrums.controls) == 0 and hexdrums.midi.refuses_control_change
 		assert len({control.cc for control in virus.controls.values()}) == 4
 
 		said = " ".join(prose_of("access", "virus_ti").split())
@@ -20091,12 +20117,13 @@ class TestRD9:
 		assert pymidiinstrumentdefs.load("behringer/lm_drum", [CORPUS]).voice.polyphony is None
 
 	def test_a_whole_manual_names_no_controller (self) -> None:
-		"""A search of every page, the Model D's route to `none` rather than the EDGE's unset field."""
+		"""A search of every page says `none`, where the EDGE's guides leave the field unset."""
 		rd9 = pymidiinstrumentdefs.load("behringer/rd_9", [CORPUS])
 
 		assert rd9.controls == {}
 		assert rd9.midi.control_change == "none" and rd9.midi.refuses_control_change
-		assert pymidiinstrumentdefs.load("behringer/model_d", [CORPUS]).midi.control_change == "none"
+		# The Model D said `none` on a search too, until its manual's modulation wheel was read.
+		assert pymidiinstrumentdefs.load("behringer/model_d", [CORPUS]).midi.control_change is None
 		# No controller, so no non-registered parameter, which is made of controllers.
 		assert (rd9.midi.program_change, rd9.midi.nrpn) == (None, "none")
 

@@ -22997,6 +22997,9 @@ class TestWebPageTitles:
 		("elektron/digitone_ii", "release_notes"): "Digitone II OS Release Notes - Elektron",
 		("elektron/syntakt", "release_notes"): "Syntakt OS Release Notes - Elektron",
 		("elektron/tonverk", "release_notes"): "Tonverk OS Release Notes - Elektron",
+		("erica_synths/perkons_hd_01", "firmware_1_2"): "Pērkons HD-01 1.2 firmware update! - Blog - Erica Synths",
+		("erica_synths/perkons_hd_01", "firmware_1_1"): "Pērkons 1.1 update! - Blog - Erica Synths",
+		("erica_synths/perkons_hd_01", "firmware_1_0"): "Pērkons HD-01 1.0 firmware update! - Blog - Erica Synths",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:

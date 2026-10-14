@@ -365,14 +365,19 @@ voice:
     programmable: true
 
 parts:
-  # Each Layer is given a channel by the player or follows the global one, so neither derives a
-  # channel from the other: there is no offset to record. A control naming this part is for a
-  # Layer on a channel of its own, and one naming no part is on the Global Channel: see the
-  # account.
+  # Each Layer's Use Global MIDI Channel is on by default, which puts the Layer on the Global
+  # Channel; turned off, the Layer receives on a MIDI Channel set for it (manual p. 13). So it
+  # says both: `assigned`, and `follows_base`. A control naming this part is for a Layer on a
+  # channel of its own, and one naming no part is on the Global Channel. A program asking what
+  # reaches a Layer left on the Global Channel is handed the Global Channel's fifteen, which
+  # carry the numbers of the seven `layer_` controls; asking about a Layer moved to a channel of
+  # its own, it is handed the seven. SINCE 2026-10-14: until then a Layer said `assigned` alone,
+  # and was handed the seven either way.
   layer:
     label: Layer
     count: 2
     channel: assigned
+    follows_base: true
     addressing: pitches
     # NOTES AND CONTROLLERS, AND NOT PROGRAM CHANGE, which is global by way of the Set List.
     receives: [notes, controls]

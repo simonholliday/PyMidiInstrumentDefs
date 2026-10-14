@@ -7373,6 +7373,10 @@ class TestModwaveMkII:
 		assert layer.is_assigned is True
 		assert layer.channel_offset is None
 
+		# On the Global Channel as it ships, until the player gives it one: since 2026-10-14.
+		assert layer.follows_base is True
+		assert [layer.channel_for(9, instance) for instance in (0, 1)] == [9, 9]
+
 		# Notes and controllers reach a Layer; program change does not.
 		assert layer.receives == ("notes", "controls")
 
@@ -7386,8 +7390,17 @@ class TestModwaveMkII:
 		assert all(key.startswith("layer_") for key in own)
 		assert all(mw.controls[key[len("layer_"):]].cc == control.cc for key, control in own.items())
 		assert all(control.direction == pymidiinstrumentdefs.definition.RECEIVES for control in own.values())
-		assert [control.name for control in mw.controls_reaching("layer")] == list(own)
 		assert not mw.warnings
+
+		# Moved, a Layer is handed its seven. As it ships it is handed the Global Channel's
+		# controls, and its seven are left to them, so no number is told twice.
+		unparted = [key for key, control in mw.controls.items() if control.part is None]
+
+		for instance in (0, 1):
+			assert [control.name for control in mw.controls_reaching("layer", instance, moved = True)] == list(own)
+			assert [control.name for control in mw.controls_reaching("layer", instance)] == unparted
+
+		assert len(unparted) == 15
 
 		# Sixty voices are a ceiling across the pair, not a figure each can count on.
 		assert mw.voice.polyphony == 60

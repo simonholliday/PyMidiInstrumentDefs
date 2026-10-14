@@ -23,8 +23,8 @@
 # the first as the display shows it, which the row's own Range column gives the arithmetic for: a
 # range of `0-127 (-64 to +63)` says the display is the wire value less 64, so `64 (0)` checks out
 # on it, and Glide Time's range of `0-127 (0 to +127)` says the display is the wire value, so its
-# `0 (60)` cannot. Nothing in either document explains either column. Five ways the rule found a
-# row the guide does not settle:
+# `0 (60)` cannot. Nothing in either document explains either column. Five ways a row was found
+# that the guide does not settle:
 #
 #   28 rows where the two halves cannot both be right, by the row's own range;
 #    3 where the body states a range shifted from the MIDI one and the default then lands
@@ -34,14 +34,20 @@
 #      1 to 3;
 #    3 that print no default at all, the FM NRPNs the addendum gives in a bug-fix bullet;
 #    1 that prints no wire value at all, the Arp/Clock Sync Rate's "16th.";
-#    1 whose row carries no range for the arithmetic to use, `Effects Routing`.
+#    1 whose programs the Peak's panel numbers from one and the Peak's row from nought,
+#      `Chorus Type`.
 #
 # A default is recorded only where every statement the documents make about it agrees.
-# `Notes/4599_write_controls.py` applies that rule and names each of the 36 refusals with the
-# arithmetic that refused it. **THE REVERB IS THE ONE THE GUIDE DISPROVES TWICE**, and it is the
-# same parameter of the same engine that the Peak's manual disproves twice (sibling_manual p. 31):
-# its three presets "are simply numbered 1, 2 and 3, and set the RevSize parameter (see page 37) to
-# values of 0, 64 or 127 respectively" (guide p. 35), and `RevSize`'s own initial value is 64 -
+# `Notes/4599_write_controls.py` applies that rule and names 35 of the 36 refusals with the
+# arithmetic that refused it. It also refuses `Effects Routing`, whose row carries no range for
+# the arithmetic to use; the file has given it a range since 2026-10-13, and its `0 (0)` checks
+# out on the Peak's row for the same parameter, so it carries that default since 2026-10-14.
+# The 36th refusal, `Chorus Type`'s, was made by hand the same day: see the source account.
+#
+# **THE REVERB IS THE ONE THE GUIDE DISPROVES TWICE**, and it is the same parameter of the same
+# engine that the Peak's manual disproves twice (sibling_manual pp. 31-32): its three presets "are
+# simply numbered 1, 2 and 3, and set the RevSize parameter (see page 37) to values of 0, 64 or
+# 127 respectively" (guide p. 35), and `RevSize`'s own initial value is 64 -
 # which is preset 2, where the Default Value column's 2 on a range of 0-2 would be preset 3.
 #
 # AND THE SECOND WITNESS THIS GUIDE HAS CANNOT BE JOINED TO ITS OWN TABLE. The Peak's manual prints
@@ -284,20 +290,24 @@ source: >-
   guide names its three in. The Peak's row numbers the same three from nought, so the panel's
   number is not the row's, and no page says which program a value on the wire selects.
 
-  **THAT MAKES ONE DEFAULT DOUBTFUL, AND BOTH ARE AS THEY WERE.** `Chorus Type` keeps
-  `default: 2`, the bare `2` its row prints (guide p. 48). On a row numbered from nought 2 is
-  the third of three, and the third program if the row keeps the panel's order; on the Peak's
-  panel 2 is the second. The Peak's list prints the same `2` (sibling_manual p. 42). So does
-  its Init Patch table, `Chorus Type` `2` (sibling_manual p. 39). That table's `Reverb Type`
-  is `2` beside a `Reverb RevSize` of `64`, and the three reverb presets set `RevSize` to 0, 64
-  or 127 in turn (sibling_manual p. 31), so its reverb `2` is the panel's 2, and its chorus
-  `2` reads as the panel's as well. The Peak's definition records no default for it, as
-  neither definition records one for the reverb's type, whose presets both bodies number 1 to
-  3 (guide p. 35, sibling_manual p. 31). This one was recorded because this guide's body
-  names its three programs and numbers none, so nothing here contradicted the `2`.
-  `Effects Routing` still keeps no default: its column reads `0 (0)`, and its own row prints
-  no range to check those two halves by, which is a different thing from two statements that
-  disagree.
+  **SO `Chorus Type` RECORDS NO DEFAULT, AND `Effects Routing` RECORDS 0.** The chorus's row
+  prints a bare `2` (guide p. 48). On a row numbered from nought 2 is the third of three, and
+  the third program if the row keeps the panel's order; on the Peak's panel 2 is the second.
+  The Peak's list prints the same `2` (sibling_manual p. 42). So does its Init Patch table,
+  `Chorus Type` `2` (sibling_manual p. 39). That table's `Reverb Type` is `2` beside a `Reverb
+  RevSize` of `64`, and the three reverb presets set `RevSize` to 0, 64 or 127 in turn
+  (sibling_manual p. 31), so its reverb `2` is the panel's 2, and its chorus `2` reads as the
+  panel's as well. The Peak's definition records no default for it, as neither definition
+  records one for the reverb's type, whose presets both bodies number 1 to 3 (guide p. 35,
+  sibling_manual p. 31). Until 2026-10-14 this one carried the `2`, because this guide's body
+  names its three programs and numbers none, so nothing here contradicted it. The routing's
+  column reads `0 (0)` (guide p. 48), and this guide's row prints no range to check it by. The
+  Peak's row for the same NRPN prints `0-6 (0 to +6)` and the same `0 (0)` (sibling_manual
+  p. 42), where the display is the wire value, so on the range this file takes from it the two
+  halves agree. Its body gives "Initial value: Parallel" (guide p. 36), the first routing its
+  range of adjustment lists, which agrees with 0 if the values follow that list's order; no page
+  says they do. Until 2026-10-14 it carried no default, because its own row prints no range to
+  check the two halves by.
 
   **AND THE GUIDE USES THE NAME `FX Routing` TWICE.** The FX Menu's is the seven-way setting
   (guide p. 36). The Settings menu's `FX Routing` page has a setting for each Part, sending
@@ -759,8 +769,9 @@ controls:
   effects_master_bypass:            {label: Effects Master Bypass, nrpn: 88, range: [0, 1], default: 0, group: effects}
   # `Effects Routing` TAKES `[0, 6]`: seven routings in this guide's body (guide p. 36), numbered
   # from nought on the Peak's row (sibling_manual p. 42). Its own row prints no range: see the
-  # account.
-  effects_routing:                  {label: Effects Routing, nrpn: 89, range: [0, 6], group: effects}
+  # account. Its `default: 0` is the row's `0 (0)` (guide p. 48), which checks out on the Peak's
+  # `0-6 (0 to +6)` for the same NRPN (sibling_manual p. 42).
+  effects_routing:                  {label: Effects Routing, nrpn: 89, range: [0, 6], default: 0, group: effects}
   delay_level:                      {label: Delay Level, cc: 108, default: 0, group: effects}
   delay_time:                       {label: Delay Time, cc: 109, group: effects}
   delay_width:                      {label: Delay Width, nrpn: 92, group: effects}
@@ -785,10 +796,10 @@ controls:
   reverb_pre_delay:                 {label: Reverb Pre Delay, nrpn: 109, default: 40, group: effects}
   chorus_level:                     {label: Chorus Level, cc: 105, default: 0, group: effects}
   # `Chorus Type` TAKES `[0, 2]`: three chorus programs in this guide's body (guide p. 35),
-  # numbered from nought on the Peak's row (sibling_manual p. 42). Its `default: 2` is the row's
-  # bare `2` (guide p. 48) and is doubted, since the Peak's panel numbers the three from one:
-  # see the account.
-  chorus_type:                      {label: Chorus Type, nrpn: 111, range: [0, 2], default: 2, group: effects}
+  # numbered from nought on the Peak's row (sibling_manual p. 42). It records no default: the
+  # row's bare `2` (guide p. 48) may be a panel number, as the Peak's panel counts from one, or
+  # the wire's: see the account.
+  chorus_type:                      {label: Chorus Type, nrpn: 111, range: [0, 2], group: effects}
   chorus_rate:                      {label: Chorus Rate, cc: 118, default: 20, group: effects}
   chorus_mod_depth:                 {label: Chorus Mod Depth, nrpn: 112, group: effects}
   chorus_feedback:                  {label: Chorus Feedback, cc: 107, default: 64, group: effects}

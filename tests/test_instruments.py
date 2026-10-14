@@ -6867,10 +6867,11 @@ class TestSummit:
 		# control had a range.
 		assert "**So `Effects Routing` carries `[0, 6]` and `Chorus Type` `[0, 2]`, and each rests on two things.**" in flat
 		assert (summit.controls["effects_routing"].range, summit.controls["chorus_type"].range) == ((0, 6), (0, 2))
-		# Neither default moved with the ranges. The chorus's `2` is the row's, and the account
-		# doubts it: the Peak's panel numbers the three programs from one.
-		assert (summit.controls["effects_routing"].default, summit.controls["chorus_type"].default) == (None, 2)
-		assert "**THAT MAKES ONE DEFAULT DOUBTFUL, AND BOTH ARE AS THEY WERE.**" in flat
+		# Since 2026-10-14 the routing carries its row's `0 (0)`, which the range now checks, and the
+		# chorus carries no default: its bare `2` may be the Peak's panel number, counted from one.
+		assert (summit.controls["effects_routing"].default, summit.controls["chorus_type"].default) == (0, None)
+		assert "**SO `Chorus Type` RECORDS NO DEFAULT, AND `Effects Routing` RECORDS 0.**" in flat
+		assert '"Initial value: Parallel" (guide p. 36)' in flat
 
 	def test_the_matrix_s_ranges_are_not_established_and_say_so (self) -> None:
 		"""The guide lists more sources and destinations than its own ranges reach."""

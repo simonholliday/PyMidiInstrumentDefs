@@ -6633,7 +6633,7 @@ class TestModelSamples:
 		assert ms.voice.polyphony_shared is False
 
 		assert ms.voice.velocity is not None
-		assert ms.voice.velocity.note_on == "received"
+		assert ms.voice.velocity.note_on == "both"
 
 		# Silences rather than checked absences: no page says either way.
 		assert ms.voice.aftertouch is None

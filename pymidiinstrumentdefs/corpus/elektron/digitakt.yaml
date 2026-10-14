@@ -188,6 +188,19 @@ voice:
   # on the MIDI track." (p. 52), a parameter that is OFF until it is set. No page says an audio
   # track answers to any, so `aftertouch` is not recorded.
   aftertouch_transmits: true
+  velocity:
+    # Received from outside by the sequencer. Live and grid recording take an external
+    # controller's "NOTE, TRIG VELOCITY, and TRIG LENGTH data" (p. 34) and "NOTE and TRIG VELOCITY
+    # data" (p. 33), each page adding "On MIDI tracks, you can add up to a four note chord to
+    # every trig" (p. 33), so the rest is not the MIDI tracks' alone. Step recording sets "the
+    # trig's VEL (velocity) value" (p. 35) from the controller's velocity, unless [FUNC] is held,
+    # and an audio track's Trig Velocity "sets the velocity of the sequencer's note trigs"
+    # (p. 44). The two pages that name a track for recording over the AUTO channel name the MIDI
+    # tracks (pp. 33 and 71), and no page says what a velocity played in live does to an audio
+    # track's sound. This is what `elektron/model_cycles` counts as received. And sent, by a MIDI
+    # track: "Trig Velocity controls the velocity of the notes the MIDI track sends out."
+    # (p. 51). Until 2026-10-14 nothing was recorded here.
+    note_on: both
 
 groups:
   # Elektron's own names, from the headings over the tables these numbers were read from:

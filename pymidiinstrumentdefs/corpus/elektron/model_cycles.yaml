@@ -241,9 +241,10 @@ voice:
     # Received from outside by the sequencer: "You can use an external MIDI controller such as a
     # keyboard to input NOTE and VELOCITY data in LIVE RECORDING mode." (p. 26), and the same is
     # said of GRID RECORDING (p. 25). No page says that a note played live from outside sounds
-    # by its velocity. A track set to send over MIDI sends it too (MOUT, p. 26), which this value
-    # does not say: "Each track sends note, note length and velocity data over MIDI." (p. 16).
-    note_on: received
+    # by its velocity. A track set to send over MIDI sends it too (MOUT, p. 26): "Each track sends
+    # note, note length and velocity data over MIDI." (p. 16). So it is sent as well as received;
+    # until 2026-10-14 this said `received`.
+    note_on: both
     # "The responsive pads are made of sturdy synthetic rubber and are velocity sensitive"
     # (p. 19), and a fixed velocity may be set instead. What velocity reaches is a volume depth
     # and a destination chosen from APPENDIX B, so it is a menu rather than a controller - and

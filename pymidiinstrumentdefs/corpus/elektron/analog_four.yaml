@@ -219,7 +219,10 @@ voice:
   polyphony: 4
   polyphony_shared: true
   velocity:
-    note_on: received
+    # Sent as well as received: "Each track sends note on/off and velocity data over MIDI."
+    # (p. 38), for a track whose SEND MIDI is checked (p. 47). Until 2026-10-14 this said
+    # `received`.
+    note_on: both
     # "The synth voices are also possible to play with an external MIDI keyboard connected to
     # the Analog Four" (p. 36), and what velocity reaches is two menu settings rather than a
     # controller: VELOCITY TO VOL, whose "OFF means velocity will not affect the volume of the

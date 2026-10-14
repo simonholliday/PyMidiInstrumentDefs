@@ -170,7 +170,10 @@ voice:
   # Nothing above 59 is documented, so the range is the outer bound of what the manual states.
   note_range: [0, 59]
   velocity:
-    note_on: received
+    # Sent as well as received: "Each track sends note on/off and velocity data over MIDI."
+    # (p. 37), for a track whose TRK SEND MIDI is checked (p. 45). Until 2026-10-14 this said
+    # `received`.
+    note_on: both
     # "If you use an external MIDI controller, the trig's VEL (velocity) value is determined by
     # the velocity sent from these" (p. 41). What velocity reaches is a pair of menu settings
     # rather than a controller: VELOCITY TO VOL, whose "OFF means velocity will not affect the

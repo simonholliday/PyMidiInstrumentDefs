@@ -142,7 +142,9 @@ voice:
   # reaches, and the manual never reconciles them.
   note_range: [0, 84]
   velocity:
-    note_on: received
+    # Sent as well as received: "Trig Velocity controls the velocity of the notes the MIDI track
+    # sends out." (p. 58). Until 2026-10-14 this said `received`.
+    note_on: both
     # "VELOCITY TO VOL Selects how MIDI velocity affects volume when playing the sound from a
     # MIDI keyboard", whose settings include OFF, LOG and LIN, and "OFF means velocity does not
     # affect the volume of the sound" (pp. 30-31). And VELOCITY MOD assigns up to four

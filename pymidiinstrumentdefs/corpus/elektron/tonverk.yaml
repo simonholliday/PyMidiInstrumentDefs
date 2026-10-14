@@ -353,9 +353,22 @@ parts:
   # track." (manual p. 20). Every one has a channel of its own, chosen rather than derived, so all
   # four say `assigned`.
   #
-  # **ONLY THE AUDIO TRACKS TAKE NOTES**, because a note plays a track's preset and only tracks
-  # 1-8 hold one. The other three kinds are a bus, a send effect and the mixer: they take
-  # controls and nothing else.
+  # **THE AUDIO TRACKS TAKE NOTES, AND THE BUS AND SEND FX TRACKS MAY BE REACHED BY THEM: NO PAGE
+  # SETTLES WHETHER, AND NONE SAYS HOW.** A note plays the active track's preset (manual p. 30),
+  # and a preset is loaded only to tracks 1-8 (manual p. 34). But "The Shape machine is only
+  # available on Bus and Send FX tracks." (manual p. 95), and its amp envelope is written for a
+  # note from outside: "If you set HOLD to NOTE and use an external keyboard to trigger the
+  # envelope, the sound will be sustained (if DEC is set to a value less than 127) for as long as
+  # you press a key on the keyboard." (manual p. 97). That may have been copied: the same
+  # sentences stand word for word on the audio tracks' AMP page (manual p. 58), and the setting
+  # they depend on, ENVELOPE MODE, is among settings "only available for audio tracks"
+  # (manual p. 53). And for the send FX tracks the manual says both that "There are no SRC
+  # machines available for SEND FX and MIX tracks." (manual p. 52) and that Shape is "the only
+  # selectable SRC machine for the Send FX tracks" (manual p. 95). No page says on which channel a
+  # note would reach a bus or send FX track, or what its number would do there. So `bus` and
+  # `fx_send` say `unrecorded: [notes]`. The mix track takes controls and nothing else: no page
+  # has a note reach it. Until 2026-10-14 the bus and send FX tracks were said to take controls
+  # and nothing else, as the mix track does.
   audio:
     label: Audio track
     channel: assigned
@@ -372,12 +385,14 @@ parts:
     count: 4
     # "Tonverk has four separate buses, each with its own sequencer track" (manual p. 20).
     receives: [controls]
+    unrecorded: [notes]
   fx_send:
     label: Send FX track
     channel: assigned
     count: 3
     # "Tonverk has three Send FX tracks" (manual p. 20).
     receives: [controls]
+    unrecorded: [notes]
   mix:
     label: Mix track
     channel: assigned
@@ -692,15 +707,20 @@ controls:
   subtrack_mod_env_depth:                     {label: "MOD ENV depth", nrpn: 253, part: subtrack, group: subtrack}
   # OUTSIDE THE APPENDIX ----------------------------------------
   # The four controllers carried from outside Appendix D, two that the manual numbers and two
-  # that the release notes do, so they have no group of the maker's. The first two are
-  # modulation sources the player routes to up to four parameters each (manual p. 52), among
-  # settings for the audio tracks alone (manual p. 50). **They are two-way, for the track and
-  # for no one machine**: a track with a sound machine answers to them, and with the MIDI
-  # machine in its place it sends them, each off until switched on (manual pp. 98, 99). **The
-  # two pedals are received only**: they rest on one line of the 1.3.0 notes (release_notes),
-  # which says they are supported and not which tracks answer, and no page names either among
-  # what a track sends. They are on the audio part as a reading. See the source account.
-  audio_mod_wheel:                            {label: "MODULATION WHEEL", cc: 1, part: audio}
-  audio_breath_controller:                    {label: "BREATH CONTROLLER", cc: 2, part: audio}
+  # that the release notes do. The first two are modulation sources the player routes to up to
+  # four parameters each (manual p. 52), among settings for the audio tracks alone (manual
+  # p. 50). **THEY TAKE THE GROUP OF THE PAGE THAT PRINTS THEM**, the TRACK SETUP menu's page
+  # headed 11.1 TRIG (manual pp. 50, 52), so they are in `trig` with the appendix's TRIG rows,
+  # which belong to another page the same key opens (manual p. 55). **They are two-way, for the
+  # track and for no one machine**: a track with a sound machine answers to them, and with the
+  # MIDI machine in its place it sends them, each off until switched on (manual pp. 98, 99),
+  # on the channel that machine's own CHAN sets (manual p. 98), not the channel the settings
+  # menu gives the track (manual pp. 76, 77). **The two pedals are received only**: they rest
+  # on one line of the 1.3.0 notes (release_notes), which says they are supported and not which
+  # tracks answer, and no page names either among what a track sends. They are on the audio
+  # part as a reading, **and in no group**: that line stands under a version number, and no
+  # page of the manual names a pedal. See the source account.
+  audio_mod_wheel:                            {label: "MODULATION WHEEL", cc: 1, part: audio, group: trig}
+  audio_breath_controller:                    {label: "BREATH CONTROLLER", cc: 2, part: audio, group: trig}
   audio_sustain_pedal:                        {label: "MIDI sustain pedal", cc: 64, part: audio, direction: receives}
   audio_sostenuto_pedal:                      {label: "MIDI sostenuto pedal", cc: 66, part: audio, direction: receives}

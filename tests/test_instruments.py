@@ -1186,13 +1186,19 @@ class TestTonverk:
 		# And one part that is no track: the eight subtracks inside an audio track.
 		assert list(tonverk.parts) == ["audio", "bus", "fx_send", "mix", "subtrack"]
 
-		# **ONLY THE AUDIO TRACKS TAKE NOTES**, because a note plays a track's preset and only
-		# tracks 1 to 8 hold one.
+		# The audio tracks take notes, because a note plays a track's preset and only tracks 1 to
+		# 8 hold one.
 		assert tonverk.parts["audio"].takes("notes")
 
-		for key in ("bus", "fx_send", "mix"):
-			assert not tonverk.parts[key].takes("notes")
-			assert tonverk.parts[key].receives == ("controls",)
+		# **The bus and send FX tracks are reached by notes in a way no page gives**: the Shape
+		# machine runs only on them and has a note from outside trigger its envelope. Until
+		# 2026-10-14 they said no. The mix track still does.
+		for key in ("bus", "fx_send"):
+			assert tonverk.parts[key].takes("notes") is None
+			assert (tonverk.parts[key].receives, tonverk.parts[key].unrecorded) == (("controls",), ("notes",))
+
+		assert tonverk.parts["mix"].takes("notes") is False
+		assert tonverk.parts["mix"].receives == ("controls",)
 
 	def test_six_numbers_name_different_parameters_on_different_kinds (self) -> None:
 		"""Which is a different thing from a number present on one kind and absent on another."""
@@ -1310,11 +1316,15 @@ class TestTonverk:
 
 		assert len(tonverk.controls) == 246
 
-		for name, number, direction in (("audio_mod_wheel", 1, "both"), ("audio_breath_controller", 2, "both"),
-				("audio_sustain_pedal", 64, "receives"), ("audio_sostenuto_pedal", 66, "receives")):
+		# The two the track setup menu numbers take its page's heading, 11.1 TRIG, as their group;
+		# the pedals, from a release note under no heading, take none. Until 2026-10-14 all four
+		# had none.
+		for name, number, direction, group in (("audio_mod_wheel", 1, "both", "trig"),
+				("audio_breath_controller", 2, "both", "trig"),
+				("audio_sustain_pedal", 64, "receives", None), ("audio_sostenuto_pedal", 66, "receives", None)):
 			control = tonverk.controls[name]
 
-			assert (control.cc, control.part, control.direction, control.group) == (number, "audio", direction, None), name
+			assert (control.cc, control.part, control.direction, control.group) == (number, "audio", direction, group), name
 
 		# None of the four numbers was the appendix's on any kind of track.
 		assert not [control.name for control in tonverk.controls.values()

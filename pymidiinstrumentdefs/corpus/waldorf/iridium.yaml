@@ -328,17 +328,19 @@ voice:
     # 16 pads. That amount's default is +0.00 %, and "With a setting of 0.0% velocity will have
     # no effect on the volume." (manual p. 165), so whether velocity reaches the volume is the
     # patch's to say.
-    # **THE SENT HALF OF `both` IS AS RELEASED, AND NO PAGE NAMES VELOCITY AMONG WHAT IS SENT**:
-    # the Keyboard has "49 light-weighted sensitive keys" (manual p. 20) and a velocity curve
-    # for them (manual p. 210), and the arpeggiator and "the step Sequencer will send MIDI notes
-    # for enabled MIDI outputs" (manual p. 202).
+    # **NO PAGE NAMES VELOCITY AMONG WHAT IS SENT, SO THE SENT SIDE IS NOT RECORDED**: the
+    # Keyboard has "49 light-weighted sensitive keys" (manual p. 20) and a velocity curve for
+    # them (manual p. 210); "The arpeggiator outputs MIDI notes in case the MIDI Out function on
+    # the Global menu page is enabled." (manual p. 175), and "the step Sequencer will send MIDI
+    # notes for enabled MIDI outputs" (manual p. 202). Each names notes and not their velocity.
+    # Until 2026-10-14 this said `both`.
     # Velocity is in the modulation-source table. Release velocity is named once in this
     # manual, among the kinds of unipolar source, "Velocity; Release Velocity; Aftertouch
     # (Pressure; and Polyphonic Pressure)." (manual p. 149), and its table on p. 234, which
     # lists what a patch can route, has no row for it, so `note_off` is left out. The MK2's
     # manual has that row, `Release Velocity | MIDI Release Velocity` (mk2_manual p. 220), and
     # it is the later instrument's.
-    note_on: both
+    note_on: received
   # BOTH KINDS, AND THE MANUAL HAS A SECTION ON THE POLYPHONIC: the Keyboard has "49
   # light-weighted sensitive keys with polyphonic" aftertouch (manual p. 20), and the distinction
   # is drawn explicitly - "Polyphonic aftertouch, that is transmitted individually" (manual

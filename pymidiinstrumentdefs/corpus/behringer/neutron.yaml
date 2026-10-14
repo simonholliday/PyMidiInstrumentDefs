@@ -246,6 +246,11 @@ voice:
     # RECEIVED, AND WHAT IT REACHES IS THE PLAYER'S CHOICE rather than a fixed destination - the
     # filter, as one of three modulation sources, or the assignable control voltage jack. See the
     # account. Nothing here is gated by it, and it is not routed anywhere by default.
+    # IT HAS NO KEYS, SO THE VELOCITY IT USES ARRIVES OVER MIDI, and that is what `received`
+    # rests on: its manual has it played by "an external keyboard with MIDI output" (manual
+    # p. 10), the filter's sources name "Note-On velocity" (manual p. 14), and the assignable
+    # output can carry "'Note On' velocity" (manual p. 13) as a voltage at its jack. No page says
+    # in so many words that an arriving note's velocity is used.
     note_on: received
     # NOT RECORDED, release velocity: no page mentions it. What the release note does say about
     # a note off is that **a note-on of velocity nought became one in 2.0.2**.

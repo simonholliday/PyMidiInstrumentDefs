@@ -388,7 +388,12 @@ voice:
     # Received, with its depth a per-sound setting rather than a global one: "You can also use
     # Select to define the Vel Amnt (Velocity Amount), so that the volume will be affected by
     # keyboard velocity." (manual p. 32), with "With a setting of 0, velocity will have no
-    # effect on the volume." (manual p. 32). It is also a modulation source in its own right (manual p. 56).
+    # effect on the volume." (manual p. 32). It is also a modulation source in its own right
+    # (manual p. 56). IT HAS NO KEYS, SO A VELOCITY PLAYED INTO IT ARRIVES OVER MIDI, and that is
+    # what `received` rests on: "To play notes, you need a MIDI master keyboard." (manual p. 10),
+    # and the source `Velocity` is described as "MIDI Velocity" (manual p. 56). The one velocity
+    # the manual gives that does not arrive over MIDI is its step sequencer's, set for each step
+    # (manual p. 48).
     note_on: received
     # **AND SO IS RELEASE VELOCITY**, which few instruments here read: `Rel Velo` is "MIDI note
     # release velocity" (manual p. 56), one of the modulation sources.

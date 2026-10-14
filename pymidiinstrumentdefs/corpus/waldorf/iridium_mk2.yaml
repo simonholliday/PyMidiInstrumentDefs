@@ -107,9 +107,10 @@ source: >-
   compatible" (specification p. 2), and these paragraphs are what that means here.
 
   **VELOCITY ON AND OFF, AND POLYPHONIC AFTERTOUCH, ALL RECEIVED.** The modulation sources include
-  "MIDI Velocity" (manual p. 220) and "MIDI Release Velocity" (manual p. 220), so release velocity
-  is answered to. The Iridium's manual names it only among the kinds of unipolar source, "Velocity;
-  Release Velocity; Aftertouch (Pressure; and Polyphonic Pressure)." (iridium_manual p. 149), and
+  `Velocity` and `Release Velocity`, which the table describes as "MIDI Velocity" (manual p. 220)
+  and "MIDI Release Velocity" (manual p. 220), so release velocity is answered to. The Iridium's
+  manual names it only among the kinds of unipolar source, "Velocity; Release Velocity;
+  Aftertouch (Pressure; and Polyphonic Pressure)." (iridium_manual p. 149), and
   its table has no such row. Aftertouch: "Here you can select, how the Iridium MK2 reacts on
   incoming polyphonic aftertouch MIDI messages: The default setting Poly AT interprets the
   aftertouch in a polyphonic way." (manual p. 167). Channel pressure is answered too: the MPE Z axis
@@ -276,8 +277,13 @@ voice:
     # keyboard velocity." (manual p. 166), and in a sample map "the incoming velocity determines
     # which sample is played" (manual p. 212). "With a setting of 0.0% velocity will have no
     # effect on the volume" (manual p. 166), and this manual prints no default for it.
-    # `MIDI Velocity` and `MIDI Release Velocity` are among the modulation sources
-    # (manual p. 220), and `note_off` below rests on that table alone.
+    # `Velocity` and `Release Velocity` are among the modulation sources, described as "MIDI
+    # Velocity" and "MIDI Release Velocity" (manual p. 220), and `note_off` below rests on that
+    # table alone. THAT IS ENOUGH HERE: the instrument has no keybed, "To play the Iridium MK2
+    # you need a MIDI master keyboard." (manual p. 10). Its pads play at one velocity set for
+    # all sixteen (manual p. 187) and its sequencer sets one per step (manual p. 177); neither
+    # they nor the Gate input, which plays a note from a voltage (manual p. 207), is given a
+    # release velocity, so a release velocity can only arrive over MIDI.
     note_on: received
     note_off: true
   # BOTH KINDS: polyphonic, with Mono AT folding it to one value (manual p. 167), and channel

@@ -303,24 +303,27 @@ voice:
   # the chord has, which the guide does not put a number on.
   voicing_modes: [1, 8]
   velocity:
-    # RECEIVED, AND THE AMOUNT IS A SETTING: the Additional Parameters menu has
-    # "VCA Velocity Amount" (guide p. 21) and a VCF one beside it, and controllers 31, 32, 107 and 108 below
-    # are those two amounts. **Whether it sends velocity is not stated and it has no keys of its
-    # own to send any from**, so only reception is recorded.
+    # RECEIVED, AND THE AMOUNT IS A SETTING: the Additional Parameters menu has "VCA Velocity
+    # Amount" (guide p. 20) and a VCF one below it, and controllers 31, 32, 107 and 108 below
+    # are those two amounts. **IT HAS NO KEYBOARD OF ITS OWN, SO THE VELOCITY THOSE AMOUNTS
+    # SCALE ARRIVES OVER MIDI**, from "an attached MIDI keyboard" (guide p. 21), and that is
+    # what `received` rests on. **Whether it sends velocity is not stated**, of the notes its
+    # sequencer and arpeggiator play or of any other, so only reception is recorded.
     note_on: received
   # RECEIVED, AND THE KIND IS NOT STATED. Three parameters set how far a received pressure reaches -
-  # "VCA Aftertouch Amount" (guide p. 21) and "LFO Aftertouch Amount" (guide p. 21) among them, on
+  # "VCA Aftertouch Amount" (guide p. 20) and "LFO Aftertouch Amount" (guide p. 20) among them, on
   # controllers 39 to 41 below - so pressure arrives and is acted on. **No page says whether that is
   # channel pressure or polyphonic**, and this instrument has no keybed of its own to settle it from
   # the other side.
   aftertouch: received
   pitch_bend:
-    # TWENTY-FOUR SEMITONES AND SETTABLE, from the Preset Parameters menu: "Pitchbend Range 0-24" (guide p. 21). Twenty-four is as far as it will go; the setting reaches down to
+    # TWENTY-FOUR SEMITONES AND SETTABLE, from the Additional Parameters menu: "Pitchbend Range
+    # 0-24" (guide p. 20). Twenty-four is as far as it will go; the setting reaches down to
     # none, which is a bend of nothing rather than a narrower one.
     semitones: 24
     programmable: true
     # **AND WHERE A BEND GOES IS ALSO A SETTING**, which is rarer than the range being one:
-    # "Pitchbend Target  Off / VCO / VCF / Volume" (guide p. 21). So a pitch bend message
+    # "Pitchbend Target  Off / VCO / VCF / Volume" (guide p. 20). So a pitch bend message
     # may move the filter or the level instead of the pitch, and controller 66 below is that
     # target. The format has no field for it and this comment is where it lives.
   # NOT RECORDED: the note range. No page states what this instrument answers to across a

@@ -268,8 +268,15 @@ voice:
   addressing: pitches
   # NOT RECORDED: polyphony. An average, a maximum and a caveat - see the source account.
   velocity:
-    # "Velocity Curve > -64 to +63: Keyboard dynamics sensitivity" (manual p. 157), which is a
-    # curve applied to what arrives.
+    # RECEIVED, ON THE MANUAL'S OWN WORDS: the Velocity Map pages "give you access to several
+    # fixed destinations for MIDI velocity data (i.e. how hard a key is struck)." (manual
+    # p. 132). The desktop has no keys and is played by connecting "the MIDI OUT from a keyboard
+    # or sequencer to the MIDI IN socket on the Virus." (manual p. 11), so on it a played
+    # velocity can only have arrived over MIDI, though most of the arpeggiator's patterns carry
+    # velocity data of their own that the same parameters apply (manual p. 77). "Velocity Curve
+    # > -64 to +63: Keyboard dynamics sensitivity" (manual p. 157) is the keyboard versions'
+    # setting, as the pressure curve below is. Until 2026-10-14 this comment rested `received`
+    # on that curve.
     note_on: received
   # CHANNEL. "Pressure Curve > -64 to +63: Channel aftertouch sensitivity. Adjust this parameter
   # to suit your playing style" (manual p. 157), and the modulation matrix offers "Chan Pressure"

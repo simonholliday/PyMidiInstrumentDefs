@@ -360,8 +360,9 @@ midi:
 voice:
   addressing: pitches
   velocity:
-    # The chart gives note on as transmitted and recognised with v=1-127.
-    note_on: received
+    # The chart gives note on as transmitted and recognised with v=1-127 (dl p. 14), so it is sent
+    # as well as received. Until 2026-10-14 this said `received`.
+    note_on: both
     # **AND NOTE OFF VELOCITY NEITHER WAY.** The chart marks it x in both columns, and the data
     # format says of the note off message that velocity `is ignored` (dl p. 11).
     note_off: false

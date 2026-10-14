@@ -19909,12 +19909,21 @@ class TestSeqtrak:
 		assert seqtrak.midi.channels == (1, 11)
 		assert sorted(seqtrak.parts) == ["drum", "dx", "sampler", "synth"]
 
-		# The counts sum to the eleven channels, and the offsets lay them out in order.
-		assert [(part.count, part.channel_offset) for name, part in
-			sorted(seqtrak.parts.items(), key = lambda pair: pair[1].channel_offset or 0)] == \
-			[(7, 0), (2, 7), (1, 9), (1, 10)]
+		# The counts sum to the eleven channels, and the numbers lay them out in order: since
+		# 2026-10-14 each the channel it is, where they were offsets from the base channel.
+		assert [(part.count, part.fixed_channel) for name, part in
+			sorted(seqtrak.parts.items(), key = lambda pair: pair[1].fixed_channel or 0)] == \
+			[(7, 1), (2, 8), (1, 10), (1, 11)]
 
 		assert sum(part.count for part in seqtrak.parts.values()) == 11
+		assert [part.channel_for(5, instance) for part in seqtrak.parts.values() for instance in range(part.count)] \
+			== list(range(1, 12))
+
+		# So the eleven master and send effect controls, naming no part, reach no track.
+		unparted = {name for name, control in seqtrak.controls.items() if control.part is None}
+
+		assert len(unparted) == 11
+		assert not unparted & {control.name for control in seqtrak.controls_reaching("drum", 0)}
 
 	def test_each_controller_is_written_once_for_every_kind_of_track_it_reaches (self) -> None:
 		"""18.3's `AVAILABLE ON` column, kind by kind. One copy naming no part until 2026-10-11."""

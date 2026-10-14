@@ -98,8 +98,10 @@ source: >-
   effects' five and the two send effects' six (user_guide p. 101): 18.3 gives them channel 1 and
   no track, and `part: drum` would claim all seven drum channels. They are the project's master
   and send effects, which the address map files under `Project Common` (data_list p. 119), and not
-  the first drum track's sound, though a reader asking what that track answers to is given them
-  too, since it sits on channel 1. Until 2026-10-11 each of those now written per kind was written
+  the first drum track's sound, and since 2026-10-14 a reader asking what that track answers to
+  is not given them: each track gives its channel as a number, and only a part on the base
+  channel by an offset is handed the controls naming no part. Until 2026-10-11 each of those now
+  written per kind was written
   once, naming no part, and its released key took the kind as a prefix, `track_volume` becoming
   `drum_track_volume` and its three siblings; the damper pedal's became `synth_damper_pedal` and
   its two siblings, after its label.
@@ -311,16 +313,14 @@ parts:
   # and send effects', where it is blank - so the grouping
   # is the maker's twice over rather than this file's invention.
   #
-  # **`channel_offset` CARRIES THE SAME FICTION IT CARRIES IN `roland/jd_xi`**, and for the same
-  # reason: the field says a part's channel is derived from a base and cannot be set on its own.
-  # The second half is exactly right - the chart crosses the Changed row - and the first half is
-  # a fiction, there being no base to derive from because the base never moves. The numbers a
-  # consumer sends are right, 1 through 11, and the fiction is recorded here rather than left for
-  # somebody to find. One for the format specification's list of what it cannot say.
+  # **EACH GIVES ITS CHANNEL AS THE NUMBER IT IS**, 1 to 11, which no setting moves: the chart
+  # crosses the Changed row. Until 2026-10-14 they were written as offsets from the base channel,
+  # a fiction this comment recorded, since they derive nothing from it, and the format then had
+  # no other way to say so.
   drum:
     label: Drum
     count: 7
-    channel_offset: 0
+    channel: 1
     addressing: pitches
     receives: [notes, controls, program_change]
     # Channels 1 to 7: a kick, a snare, a clap, two hats and two percussion tracks, each its own
@@ -329,21 +329,21 @@ parts:
   synth:
     label: Synth
     count: 2
-    channel_offset: 7
+    channel: 8
     addressing: pitches
     receives: [notes, controls, program_change]
     # Channels 8 and 9. With the DX part, the two kinds the portamento, arpeggio and
     # mono/poly/chord controllers are given for, so each of those is written twice below.
   dx:
     label: DX
-    channel_offset: 9
+    channel: 10
     addressing: pitches
     receives: [notes, controls, program_change]
     # Channel 10, the four-operator FM track, and **the only part the four FM controllers reach**.
     # Also the one part the system exclusive bend-range parameters exclude.
   sampler:
     label: SAMPLER
-    channel_offset: 10
+    channel: 11
     addressing: pitches
     receives: [notes, controls, program_change]
     # Channel 11. Named in capitals because that is how both the track table and the controller

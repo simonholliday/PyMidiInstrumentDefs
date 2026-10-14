@@ -703,21 +703,45 @@ Somebody choosing a controller, or a program deciding whether to expect pressure
 keyboard, is asking whether the instrument makes any.
 
 **Velocity is recorded as received only where a page says an arriving note's velocity is
-used.** `voice.velocity.note_on` takes `received`, `both` for received and sent, `gated` for
-velocity that arrives and is inaudible until something is turned up, or `ignored`. A chart
-that marks Velocity, Note On in its Recognized column says it, and so does a listing of the
-messages received that sets out a Note On with its velocity byte. So does a sentence about a
-note that arrives: a Digitone's manual has `the velocity of incoming MIDI notes sent to the
-Digitone from external devices` affect the parameters assigned to velocity. A keyboard
-described as velocity sensitive does not say it, and neither does velocity in a list of
-modulation sources: the first is about the instrument's own keys and the second is about no
-note in particular. Where the pages give no more than that, leave `note_on` out, however
-sure you are, and say in a comment what the pages do give. `ignored` is a statement too: a
-chart's Velocity, Note On cell marked no under Recognized, or a sentence that says an
-arriving velocity does nothing. What the instrument **sends** is `transmits`, a statement of
-its own that can stand where `note_on` does not: a Muse's manual lists velocity among what
-its keyboard channel carries and says nothing of the velocity of a note that arrives, so it
-records `transmits: true` and no `note_on`.
+used.** `voice.velocity.note_on` takes `received`; `both`, for received and sent; `gated`, for
+velocity that arrives and is inaudible as the instrument ships, until a setting is changed; or
+`ignored`. A chart that marks Velocity, Note On in its Recognized column says it, and so does a
+listing of the messages received that sets out a Note On with its velocity byte. So does a
+sentence about a note that arrives: a Digitone's manual has `the velocity of incoming MIDI
+notes sent to the Digitone from external devices` affect the parameters assigned to velocity.
+So does a page that has the maker's own editor play the instrument over USB, a sequencer record
+an arriving note's velocity, an output turn that velocity into a voltage at a jack, or an amount
+scale MIDI keyboard velocity. Keys or pads described as velocity sensitive do not say it, and
+neither do velocity in a list of modulation sources and an amount that names no MIDI: the first
+are about the instrument's own keys or pads, and the others are about no note in particular.
+Where the pages give no more than that, leave `note_on` out, however sure you are, and say in
+a comment what the pages do give.
+
+**An instrument with no keys or pads of its own is the exception.** A velocity a player gives
+it arrives over MIDI, so a page that describes it as velocity sensitive (whatever the page
+calls that velocity), or puts velocity in a list of modulation sources or under an amount, does
+say an arriving note's velocity is used. Record `received`, or `both` or `gated` as the rest of
+this section says, and say in a comment that the value rests on the instrument having no keys
+or pads of its own. A Voce Electric Piano's timbre follows `key velocity`, and its manual says
+it needs a MIDI keyboard or another MIDI device to be played, so it records `received`, and
+its comment says why.
+
+**`gated` is how the instrument ships, not what an owner can do to it.** A Minitaur's two
+velocity sensitivities each default to half, so it records `received`, though either can be
+turned down. An amount held in a patch is the patch's, and a definition cannot say what every
+patch holds, so it stays `received` too. Use `gated`, with `gated_by` naming the controls,
+where the documents say the instrument ships ignoring velocity until one of them is changed.
+
+`ignored` is a statement too: a chart's Velocity, Note On cell marked no under Recognized,
+or a sentence that says an arriving velocity does nothing. What the instrument **sends** is
+`transmits`, a statement of its own that can stand where `note_on` does not, and it needs a
+page as `note_on` does: a chart's Transmitted cell, a listing of what is sent, or a sentence
+that names velocity among what is sent. Keys or pads described as velocity sensitive, beside a
+sentence that the instrument sends notes, do not say it. A sequencer track's own velocity
+counts as sent where the track sends its notes over MIDI, as a track's own parameter does for
+pressure. A Muse's manual lists velocity among what its keyboard channel carries and says
+nothing of the velocity of a note that arrives, so it records `transmits: true` and no
+`note_on`.
 
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo

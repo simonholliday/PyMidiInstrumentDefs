@@ -268,8 +268,8 @@ class Velocity:
 	"""How the instrument treats how hard a note was played.
 
 	``note_on`` is ``received``, ``both`` (received, and sent as well),
-	``ignored``, or ``gated`` — the last meaning it arrives but is inaudible
-	unless something else is turned up, in which case ``gated_by`` names the
+	``ignored``, or ``gated``: the last meaning it arrives but is inaudible as the
+	instrument ships, until something else is changed; ``gated_by`` names the
 	controls that do the gating.  A panel can use that to explain a velocity lane
 	that appears to do nothing.  Any other word is refused.
 

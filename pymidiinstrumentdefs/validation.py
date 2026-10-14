@@ -45,7 +45,8 @@ _NOTE_MAPS: typing.Final[frozenset[str]] = frozenset({"fixed", "learned"})
 _FLOWS: typing.Final[frozenset[str]] = frozenset({"both", "receives", "sends", "none"})
 
 # What the instrument does with a note-on's velocity.  ``both`` is received and
-# sent too; ``gated`` is received and inaudible until something else is turned up.
+# sent too; ``gated`` is received and inaudible as the instrument ships, until
+# something else is changed.
 _NOTE_ON: typing.Final[frozenset[str]] = frozenset({"received", "both", "ignored", "gated"})
 
 # Which kind of aftertouch the instrument answers to.  ``both`` is both kinds, even

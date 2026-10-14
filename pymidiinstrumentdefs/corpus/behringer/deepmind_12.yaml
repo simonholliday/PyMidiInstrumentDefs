@@ -100,8 +100,9 @@ source: >-
   nothing else - an LFO's seven shapes, the thirteen polyphony modes, the eleven arpeggiator modes.
   Notes that name some values and not others, such as `20 bpm (0) to 275 bpm (255)`, are left as
   ranges. Twenty-four rows' Notes point to a list printed elsewhere, such as `See Modulation
-  Matrix Source List`, and none of them carries names. Twenty of them carry no range either, the
-  matrix's sixteen sources and destinations and the four FX Types: see below.
+  Matrix Source List`, and none of them carries names. Twenty-one of them carry no range either,
+  the matrix's sixteen sources and destinations, the four FX Types and the Control Sequencer's
+  Clock Divider: see below.
 
   **THE CHART IS ONE STAMP OVER TWO EDITIONS, AND THEY DISAGREE ABOUT TRANSPORT.** Both print
   `Version:1.0` and `01 September 2016` (manual p. 132; earlier_manual p. 113). The later fills in
@@ -166,6 +167,14 @@ source: >-
   earlier_manual p. 21), which neither Effects Table numbers and no page gives a value for. If
   `None` is one of the row's values, the table stops two short of its list and not one. Until
   2026-10-13 the four carried `[0, 33]` as printed.
+
+  **THE CONTROL SEQUENCER'S CLOCK DIVIDER FALLS SHORT BY FOUR, AND SAYS `range: unknown`.** Its
+  row prints `0-15` with the note `See Control Sequencer divider table`, in the cited edition
+  (manual p. 138) and in the earlier one (earlier_manual p. 119). The table it points to lists
+  twenty divisions in both, from 4 down to 1/64 (manual p. 55, earlier_manual p. 46), and the
+  appendix's timing table has seventeen rows (manual p. 150, earlier_manual p. 133), so no
+  divider or timing table in either edition has sixteen. Until 2026-10-14 it carried `[0, 15]`
+  as printed.
 
   **FOUR MORE DISAGREEMENTS, NONE REACHING A FIELD.** The Global Commands' `Pedal CC` lists "Foot
   Control (CC4), Breath (CC3), Volume (CC7), Expression (CC11)" (manual p. 139), where the
@@ -527,7 +536,10 @@ controls:
   mod_8_destination:                            {label: Mod 8 Destination, nrpn: 115, range: unknown}
   mod_8_depth:                                  {label: Mod 8 Depth, nrpn: 116, range: [0, 255]}
   ctrl_sequencer_enable:                        {label: Ctrl Sequencer Enable, nrpn: 117, range: [0, 1], choices: {"off": 0, "on": 1}}
-  ctrl_sequencer_clock_divider:                 {label: Ctrl Sequencer Clock Divider, nrpn: 118, range: [0, 15]}
+  # THE CONTROL SEQUENCER'S CLOCK DIVIDER SAYS `range: unknown`. The table prints 0-15 for it
+  # (p. 138), which is 16 values, and the divider table it points to lists twenty (p. 55), so the
+  # table's figure stops short of the list it points to and is not carried - see the account.
+  ctrl_sequencer_clock_divider:                 {label: Ctrl Sequencer Clock Divider, nrpn: 118, range: unknown}
   sequence_length:                              {label: Sequence Length, nrpn: 119, range: [0, 31]}
   sequencer_swing_timing:                       {label: Sequencer Swing Timing, nrpn: 120, range: [0, 25]}
   key_sync_and_loop:                            {label: "Key Sync & Loop", nrpn: 121, range: [0, 2], choices: {loop_on: 0, key_sync_on: 1, loop_and_key_sync_on: 2}}

@@ -21602,10 +21602,12 @@ class TestDeepMind12:
 		matrix = [f"mod_{slot}_{end}" for slot in range(1, 9) for end in ("source", "destination")]
 
 		# **And the four FX Types with them, since 2026-10-13**: the table's 0-33 is thirty-four
-		# values, and the list it points to has thirty-five effects.
-		assert unknown == matrix + [f"fx_{slot}_type" for slot in range(1, 5)]
+		# values, and the list it points to has thirty-five effects. **And the Control Sequencer's
+		# Clock Divider, since 2026-10-14**: 0-15 printed, and a table of twenty divisions.
+		assert unknown == matrix + ["ctrl_sequencer_clock_divider"] + [f"fx_{slot}_type" for slot in range(1, 5)]
 		assert all(deep.controls[name].range == (0, 16383) for name in unknown)
 		assert [deep.controls[f"fx_{slot}_type"].nrpn for slot in range(1, 5)] == [166, 179, 192, 205]
+		assert deep.controls["ctrl_sequencer_clock_divider"].nrpn == 118
 
 		# The depth beside each is printed once and is carried.
 		assert all(deep.controls[f"mod_{slot}_depth"].range == (0, 255) for slot in range(1, 9))
@@ -21615,6 +21617,8 @@ class TestDeepMind12:
 		assert "**AND THE CITED EDITION'S OWN LISTS OUTGROW ITS NRPN TABLE.**" in flat
 		assert "**The sixteen source and destination NRPNs say `range: unknown`.**" in flat
 		assert "**THE FOUR FX TYPES FALL SHORT THE SAME WAY, AND SAY `range: unknown` TOO.**" in flat
+		assert "**THE CONTROL SEQUENCER'S CLOCK DIVIDER FALLS SHORT BY FOUR, AND SAYS `range: unknown`.**" in flat
+		assert "Twenty-one of them carry no range either" in flat
 
 	def test_names_printed_twice_keep_their_numbers (self) -> None:
 		"""Five labels are printed twice; each is carried as printed, and its key carries its number."""

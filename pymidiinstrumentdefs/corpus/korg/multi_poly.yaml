@@ -91,8 +91,31 @@ source: >-
   WHICH LAYER A MOD KNOB REACHES IS DECIDED BY THE CHANNEL AND NOT BY THE NUMBER. There are four
   Layers and one set of four Mod Knob numbers: "MIDI CCs received by and sent from the Program
   Mod Knobs, for any Layer with Use Global MIDI Channel enabled" (p. 118). So a Layer given a
-  channel of its own answers to 24 to 27 on that channel. The format has no way to say "whichever
-  part received it", so those four name no part and this says so instead.
+  channel of its own answers to 24 to 27 on that channel. The format cannot write one control for
+  whichever part receives it, and the rule this follows writes per-part copies of the standard
+  controllers alone, so those four name no part and this says so instead.
+
+  SEVEN STANDARD CONTROLLERS ARE WRITTEN FIVE TIMES, SINCE 2026-10-14: once for the Global
+  Channel and once for each Layer taken off it. A control naming no part is on the Global
+  Channel, where a Layer left on it receives them. The seven keyed `layer_a_` to `layer_d_` are
+  modulation, volume, pan, expression, damper, sostenuto and soft, numbers 1, 7, 10, 11, 64, 66
+  and 67, for a Layer whose Use Global MIDI Channel is off: its channel setting "sets the
+  channel on which the Layer will receive MIDI" (p. 13). **No page names the channel on which
+  such a Layer receives any of the seven.** They rest on that sentence and on the Layer's two
+  switches: with `Rx Other CCs` on, the Layer "will respond normally to MIDI CCs" (p. 13), and
+  the only number either switch names is 64, since with `Rx Damper` on the Layer "will respond
+  to the connected damper pedal and to MIDI CC#64" (p. 13). Each of the seven is received only,
+  since what the keyboard and its controllers send goes out on the Global Channel, "except for
+  Program Mod Knobs" (p. 118). This is the modwave's arrangement, on the same sentences.
+
+  THE MOD KNOBS' 24 TO 27 ARE NOT WRITTEN FOR EACH LAYER, because the rule this follows writes
+  per part only the standard controllers. The sentence of p. 13 covers their controllers as
+  much as the seven, and p. 118 says more of them than any page says of the seven: the Global
+  Channel carries their controllers "for any Layer with Use Global MIDI Channel enabled"
+  (p. 118), and what the controllers send goes there "except for Program Mod Knobs" (p. 118).
+  So, though no page says it in terms, 24 to 27 reach a Layer taken off the Global Channel on
+  its own channel, as the paragraph on the Mod Knobs above says, and no control here carries
+  that.
 
   BOTH KINDS OF AFTERTOUCH ARE RECEIVED AND NEITHER IS SENT. The chart marks both Polyphonic (Key)
   and Channel aftertouch as recognised and neither as transmitted, and a setting chooses which
@@ -191,17 +214,22 @@ parts:
   # a time. A Performance has four Layers (A...D), Kaoss Physics, an Arpeggiator, and a master
   # reverb and EQ. Each Layer contains a Program, and other settings such as MIDI channel, key
   # and velocity zones, etc." (p. 3).
-  # EACH IS ON THE GLOBAL CHANNEL UNTIL THE PLAYER MOVES IT, which is why every one of them
-  # carries channel_offset 0 rather than a channel of its own: "Use Global MIDI Channel ... the
-  # default. The Layer will play from the built-in keyboard, and receive on the Global Channel",
-  # and "This is shown only if Use Global MIDI Channel is Off. It sets the channel on which the
-  # Layer will receive MIDI" (p. 13). So a Layer becomes separately addressable only
-  # when somebody turns that off, and which channel it then takes belongs to their project.
+  # EACH IS ON THE GLOBAL CHANNEL BY DEFAULT, UNTIL THE PLAYER MOVES IT, which is what
+  # `channel: assigned` beside `follows_base: true` says. "Use Global MIDI Channel ... the
+  # default. The Layer will play from the built-in keyboard, and receive on the Global Channel"
+  # (p. 13), and "This is shown only if Use Global MIDI Channel is Off. It sets the channel on
+  # which the Layer will receive MIDI" (p. 13). So a Layer becomes separately addressable only
+  # when somebody turns that off, and which channel it then takes belongs to their project. A
+  # program asking what reaches a Layer left on the Global Channel is handed the controls naming
+  # no part, and asking about one moved to a channel of its own, that Layer's seven below; the
+  # Mod Knobs' 24 to 27 reach it there too, which the source account says in words. Until
+  # 2026-10-14 each Layer carried `channel_offset: 0`, which said where it starts and not that it
+  # can move.
   # This is the wavestate's arrangement exactly, down to the wording.
-  layer_a: {label: Layer A, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
-  layer_b: {label: Layer B, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
-  layer_c: {label: Layer C, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
-  layer_d: {label: Layer D, channel_offset: 0, addressing: pitches, receives: [notes, controls]}
+  layer_a: {label: Layer A, channel: assigned, follows_base: true, addressing: pitches, receives: [notes, controls]}
+  layer_b: {label: Layer B, channel: assigned, follows_base: true, addressing: pitches, receives: [notes, controls]}
+  layer_c: {label: Layer C, channel: assigned, follows_base: true, addressing: pitches, receives: [notes, controls]}
+  layer_d: {label: Layer D, channel: assigned, follows_base: true, addressing: pitches, receives: [notes, controls]}
 
 voice:
   addressing: pitches
@@ -299,3 +327,39 @@ controls:
   # The chart gives 67 to this row and then begins its assignable range at 67 as well. The
   # dedicated row is followed; see the source account.
   soft:                      {label: Soft, cc: 67, direction: receives, group: pedals}
+
+  # THE SEVEN STANDARD CONTROLLERS AGAIN, FOR EACH LAYER TAKEN OFF THE GLOBAL CHANNEL, and
+  # received only, since 2026-10-14: see the source account. Each control above names no part,
+  # so a program finds it on the Global Channel; the Mod Knobs' 24 to 27 reach a Layer taken off
+  # it as well, on its own channel, which the source account says in words.
+  layer_a_modulation:        {label: Modulation, cc: 1, direction: receives, part: layer_a, group: controllers}
+  layer_a_volume:            {label: Volume, cc: 7, direction: receives, part: layer_a, group: controllers}
+  layer_a_pan:               {label: Pan, cc: 10, direction: receives, part: layer_a, group: controllers}
+  layer_a_expression:        {label: Expression, cc: 11, direction: receives, part: layer_a, group: controllers}
+  layer_a_damper:            {label: Damper, cc: 64, direction: receives, part: layer_a, group: pedals}
+  layer_a_sostenuto:         {label: Sostenuto, cc: 66, direction: receives, part: layer_a, group: pedals}
+  layer_a_soft:              {label: Soft, cc: 67, direction: receives, part: layer_a, group: pedals}
+
+  layer_b_modulation:        {label: Modulation, cc: 1, direction: receives, part: layer_b, group: controllers}
+  layer_b_volume:            {label: Volume, cc: 7, direction: receives, part: layer_b, group: controllers}
+  layer_b_pan:               {label: Pan, cc: 10, direction: receives, part: layer_b, group: controllers}
+  layer_b_expression:        {label: Expression, cc: 11, direction: receives, part: layer_b, group: controllers}
+  layer_b_damper:            {label: Damper, cc: 64, direction: receives, part: layer_b, group: pedals}
+  layer_b_sostenuto:         {label: Sostenuto, cc: 66, direction: receives, part: layer_b, group: pedals}
+  layer_b_soft:              {label: Soft, cc: 67, direction: receives, part: layer_b, group: pedals}
+
+  layer_c_modulation:        {label: Modulation, cc: 1, direction: receives, part: layer_c, group: controllers}
+  layer_c_volume:            {label: Volume, cc: 7, direction: receives, part: layer_c, group: controllers}
+  layer_c_pan:               {label: Pan, cc: 10, direction: receives, part: layer_c, group: controllers}
+  layer_c_expression:        {label: Expression, cc: 11, direction: receives, part: layer_c, group: controllers}
+  layer_c_damper:            {label: Damper, cc: 64, direction: receives, part: layer_c, group: pedals}
+  layer_c_sostenuto:         {label: Sostenuto, cc: 66, direction: receives, part: layer_c, group: pedals}
+  layer_c_soft:              {label: Soft, cc: 67, direction: receives, part: layer_c, group: pedals}
+
+  layer_d_modulation:        {label: Modulation, cc: 1, direction: receives, part: layer_d, group: controllers}
+  layer_d_volume:            {label: Volume, cc: 7, direction: receives, part: layer_d, group: controllers}
+  layer_d_pan:               {label: Pan, cc: 10, direction: receives, part: layer_d, group: controllers}
+  layer_d_expression:        {label: Expression, cc: 11, direction: receives, part: layer_d, group: controllers}
+  layer_d_damper:            {label: Damper, cc: 64, direction: receives, part: layer_d, group: pedals}
+  layer_d_sostenuto:         {label: Sostenuto, cc: 66, direction: receives, part: layer_d, group: pedals}
+  layer_d_soft:              {label: Soft, cc: 67, direction: receives, part: layer_d, group: pedals}

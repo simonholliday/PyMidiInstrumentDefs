@@ -5992,9 +5992,11 @@ class TestMultiPoly:
 		"""The chart's rows are properties of the model; the CC Assign table's are not."""
 		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
 
-		assert len(multi.controls) == 22
+		# 22 on the Global Channel, and since 2026-10-14 seven more for each of four Layers.
+		assert len(multi.controls) == 22 + 28
 
 		fixed = sorted(control.cc for name, control in multi.controls.items()
+			if control.part is None
 			if control.group in ("controllers", "pedals")
 			or name in ("kaoss_pad_x", "kaoss_pad_y", "kaoss_button")
 			if control.cc is not None)
@@ -6029,7 +6031,7 @@ class TestMultiPoly:
 		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
 
 		receives = sorted(name for name, control in multi.controls.items()
-			if control.direction == "receives")
+			if control.direction == "receives" and control.part is None)
 
 		assert receives == ["expression", "pan", "soft", "sostenuto", "volume"]
 
@@ -6041,8 +6043,23 @@ class TestMultiPoly:
 		multi = pymidiinstrumentdefs.load("korg/multi_poly", [CORPUS])
 
 		assert sorted(multi.parts) == ["layer_a", "layer_b", "layer_c", "layer_d"]
-		assert all(part.channel_offset == 0 for part in multi.parts.values())
-		assert all(not part.is_assigned for part in multi.parts.values())
+
+		# Until 2026-10-14 each said `channel_offset: 0`, which could not say it moves.
+		assert all(part.follows_base and part.is_assigned for part in multi.parts.values())
+		assert all(part.channel_offset is None for part in multi.parts.values())
+
+		# As it ships, a Layer is handed the 22 on the Global Channel; moved, its seven, each
+		# on a number one of the 22 carries, and received only.
+		unparted = [name for name, control in multi.controls.items() if control.part is None]
+
+		for layer in multi.parts:
+			own = [name for name, control in multi.controls.items() if control.part == layer]
+
+			assert [control.name for control in multi.controls_reaching(layer)] == unparted
+			assert [control.name for control in multi.controls_reaching(layer, moved = True)] == own
+			assert [multi.controls[name].cc for name in own] == [1, 7, 10, 11, 64, 66, 67]
+			assert all(multi.controls[name].direction == "receives" for name in own)
+			assert all(multi.controls[name[len(layer) + 1:]].cc == multi.controls[name].cc for name in own)
 
 		# Sixty voices for the instrument, drawn on by whichever Layer plays next.
 		assert multi.voice.polyphony == 60

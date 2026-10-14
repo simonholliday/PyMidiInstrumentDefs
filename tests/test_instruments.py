@@ -6192,7 +6192,7 @@ class TestMessenger:
 		assert messenger.voice.aftertouch == "channel"
 
 		assert messenger.voice.velocity is not None
-		assert messenger.voice.velocity.note_on == "received"
+		assert messenger.voice.velocity.note_on == "both"
 		assert messenger.voice.velocity.note_off is False
 
 		# The bend range is stated in the panel chapter and settable four ways.

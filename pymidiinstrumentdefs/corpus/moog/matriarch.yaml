@@ -128,9 +128,9 @@ voice:
     # Note-Off Velocity `No` (manual p. 70). It is a voltage at a jack: of the keys, "There are
     # no hardwired connections for Velocity and Aftertouch" (manual p. 86), and since 1.3.0
     # KB VEL OUT and three other jacks "correctly update when MIDI notes are played."
-    # (release_notes p. 2). The same row has `Yes` under `Transmit / Export`, which this value
-    # does not say.
-    note_on: received
+    # (release_notes p. 2). The same row has `Yes` under `Transmit / Export`, so it is sent as
+    # well as received. Until 2026-10-14 this said `received`.
+    note_on: both
     note_off: false
   aftertouch: channel
   # Sent, as channel pressure: the MIDI table has `Channel Aftertouch` Yes under Transmit and `Poly

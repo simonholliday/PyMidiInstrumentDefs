@@ -226,8 +226,9 @@ voice:
   # each time they are pressed" (p. 5) - but what the instrument will sound is the chart's figure.
   note_range: [0, 127]
   velocity:
-    # "Velocity Note On 0-127" (midi_impl p. 1) in both columns.
-    note_on: received
+    # "Velocity Note On 0-127" (midi_impl p. 1) in both columns, so it is sent as well as
+    # received. Until 2026-10-14 this said `received`.
+    note_on: both
     # "Note Off X" transmitted and "0-127" received (midi_impl), so it arrives and is never sent.
     note_off: true
   # "Aftertouch Key's X" (midi_impl p. 1) in both columns, and its Channel row is X transmitted and

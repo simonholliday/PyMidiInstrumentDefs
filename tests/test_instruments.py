@@ -23226,6 +23226,23 @@ class TestWebPageTitles:
 		("elektron/model_samples", "downloads"): "Model:Samples - Elektron",
 		("korg/electribe", "downloads"): "Downloads | electribe | KORG (USA)",
 		("voce/electric_piano", "manual"): "VOCE® Electric Piano Manual",
+		# Since 2026-10-14: a page whose data is the cited copy, saved beside it for its title.
+		("moog/dfam", "downloads_list"): "Downloads | Moog Music",
+		("moog/labyrinth", "downloads_list"): "Downloads | Moog Music",
+		("moog/little_phatty", "downloads_list"): "Downloads | Moog Music",
+		("moog/minimoog_model_d", "downloads"): "Downloads | Moog Music",
+		("moog/mother_32", "downloads"): "Downloads | Moog Music",
+		("moog/slim_phatty", "downloads_list"): "Downloads | Moog Music",
+		("moog/theremini", "downloads_list"): "Downloads | Moog Music",
+		("moog/sub_37", "product_page"): "Subsequent 37 | Moog Music",
+		("moog/subsequent_37", "product_page"): "Subsequent 37 | Moog Music",
+		# A listing built from six pages, each serving the same title.
+		("erica_synths/perkons_hd_01", "news_listing"): "Blog - Erica Synths",
+		# A guide's contents page, which has no chapter number for the exception to keep.
+		("teenage_engineering/op_1", "guide_contents"): "OP-1 guide - teenage engineering",
+		("teenage_engineering/op_xy", "guide_contents"): "OP–XY guide - teenage engineering",
+		("teenage_engineering/op_z", "guide_index"): "OP-Z guide - teenage engineering",
+		("teenage_engineering/op_1_field", "guide"): "OP–1 field guide - teenage engineering",
 	}
 
 	def test_each_swept_page_is_titled_as_it_is_served (self) -> None:
@@ -23235,3 +23252,10 @@ class TestWebPageTitles:
 			definition = pymidiinstrumentdefs.load(name, [CORPUS])
 
 			assert definition.sources[key].title == served, (name, key)
+
+	def test_a_pdf_is_not_a_web_page_and_keeps_its_printed_title (self) -> None:
+		"""The Deluge's community guide is a PDF, so the served-title rule does not reach it."""
+		guide = pymidiinstrumentdefs.load("synthstrom_audible/deluge", [CORPUS]).sources["community_guide"]
+
+		assert (guide.kind, guide.title) == ("guide", "Deluge Community Guide")
+		assert (guide.url or "").endswith(".pdf")

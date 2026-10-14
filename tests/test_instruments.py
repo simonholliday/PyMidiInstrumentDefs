@@ -4828,10 +4828,19 @@ class TestOP1Field:
 		assert field.parts["track"].count == 4
 		assert field.parts["sound_slot"].count == 8
 
+		# Fixed at 1 to 4 and 1 to 8 whatever the base channel, since 2026-10-14, and handed
+		# their own controls alone: the 48 naming no part answer on any channel.
+		for name, count in (("track", 4), ("sound_slot", 8)):
+			part = field.parts[name]
+
+			assert part.fixed_channel == 1
+			assert [part.channel_for(9, instance) for instance in range(count)] == list(range(1, count + 1))
+			assert all(control.part == name for control in field.controls_reaching(name, 0))
+
 		# **BOTH START AT THE SAME PLACE**, which is what the overlap means: channel 2 is
 		# tape track 2 and sound slot 2 at once.
-		assert field.parts["track"].channel_offset == 0
-		assert field.parts["sound_slot"].channel_offset == 0
+		assert field.parts["track"].fixed_channel == 1
+		assert field.parts["sound_slot"].fixed_channel == 1
 
 		# Neither takes notes - a note plays the active sound on any of the sixteen.
 		for part in field.parts.values():

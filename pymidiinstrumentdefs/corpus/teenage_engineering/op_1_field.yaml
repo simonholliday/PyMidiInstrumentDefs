@@ -38,10 +38,11 @@
 #
 # TWO CHANNEL SCHEMES, AND THEY OVERLAP. Three controllers answer on channels 1 to 4, where
 # "channel 1 - 4 = track 1 - 4" (guide); one answers on channels 1 to 8, where "channel 1 - 8
-# = sound slot 1 - 8" (guide); and the other 48 answer on any channel. So channel 2 is tape
-# track 2 for a mixer controller and sound slot 2 for the slot selector, at the same time, and
-# both are recorded as parts below. **Both footnotes are printed as a single asterisk** against
-# two different things, which is the SP-404MKII's `*7` defect in a shorter table.
+# = sound slot 1 - 8" (guide); and of the other 48 recorded, 44 are among the 45 the guide marks
+# "any" and answer on any channel, and the MIDI LFO's four are given no channel. So channel 2 is
+# tape track 2 for a mixer controller and sound slot 2 for the slot selector, at the same time,
+# and both are recorded as parts below. **Both footnotes are printed as a single asterisk**
+# against two different things, which is the SP-404MKII's `*7` defect in a shorter table.
 #
 # NOT RECORDED, AND WHY. Aftertouch: the word occurs in neither PDF nor on the page, in 78
 # pages and two tables. System exclusive: likewise, in any spelling. NRPN: likewise. The note
@@ -213,8 +214,9 @@ sources:
 
 midi:
   # The incoming table gives "play synth/drum note" (guide) on channels 1 to 16, and pitch bend
-  # and program change the same sixteen. The 48 unparted controllers below answer on any of them;
-  # the four that are parted answer on the channels their part names.
+  # and program change the same sixteen. Of the 48 unparted controllers below, 44 are among the
+  # 45 the guide marks "any" and answer on any of them, and the MIDI LFO's four are given no
+  # channel; the four that are parted answer on the channels their part names.
   channels: [1, 16]
   # RECEIVES, AND THE PROSE ALMOST SAYS MORE - see the source account for the three sentences
   # that describe a clock being sent without saying it is a MIDI one, and for the sync output
@@ -252,22 +254,27 @@ parts:
   # for a mixer controller and sound slot 2 for the slot selector **at the same time**, and a
   # consumer reading one part's channel cannot conclude anything about the other's.
   #
-  # **THESE CHANNELS ARE FIXED AND THE FORMAT HAS NO WORD FOR THAT.** The tables state them as
-  # 1 to 4 and 1 to 8 flatly and no document says a base channel moves them. `channel_offset` is
-  # used because its stated meaning is that a channel cannot be set on its own, which is true;
-  # what it also implies, that the channel is derived from a base channel, is not. That is the
-  # SP-404MKII's gap met a second time, and the overlap is new.
+  # **THESE CHANNELS ARE FIXED, AS FAR AS THE DOCUMENTS GO.** The guide's table states them as
+  # 1 to 4 and 1 to 8 flatly. The 1.6.0 PDF's MIDI settings name an incoming channel (previous
+  # p. 61) and the 1.7.0 PDF's only an outgoing one (pdf p. 60), and no document says either
+  # moves them. So each part gives its first channel as the number it is, and its instances count
+  # up from it. Of the 48 controllers naming no part, 44 are among the 45 the guide marks "any"
+  # (the 45th, CC 123, is left out: see the account) and answer on any channel, and the MIDI
+  # LFO's four are given none; no track or slot is handed them. Until 2026-10-14 both parts were
+  # written as offsets from the base channel, the nearest field the format then had, which
+  # implied a derivation no document states and handed the first track and the first slot all
+  # 48.
   #
   # **NEITHER PART TAKES NOTES.** A note plays the active sound on any of the sixteen channels
   # and reaches no track and no slot of its own, so both parts receive controls and nothing else.
   track:
     label: Tape track
-    channel_offset: 0
+    channel: 1
     count: 4
     receives: [controls]
   sound_slot:
     label: Sound slot
-    channel_offset: 0
+    channel: 1
     count: 8
     receives: [controls]
 

@@ -16345,9 +16345,19 @@ class TestJDXi:
 
 		assert list(jd_xi.parts) == ["digital_synth", "analog_synth", "drum"]
 		assert jd_xi.parts["digital_synth"].count == 2
-		assert jd_xi.parts["digital_synth"].channel_offset == 0
-		assert jd_xi.parts["analog_synth"].channel_offset == 2
-		assert jd_xi.parts["drum"].channel_offset == 9
+
+		# Since 2026-10-14 each channel is the number it is, whatever the base channel.
+		channels = [part.channel_for(base, instance) for base in (1, 5) for part in jd_xi.parts.values() for instance in range(part.count)]
+
+		assert channels == [1, 2, 3, 10] * 2
+		assert all(part.channel_offset is None for part in jd_xi.parts.values())
+
+		# So the five program effects, which name no part, are handed to none of them.
+		effects = {"reverb", "delay", "effect_1", "effect_2", "vocoder_level"}
+
+		for name, part in jd_xi.parts.items():
+			for instance in range(part.count):
+				assert not effects & {control.name for control in jd_xi.controls_reaching(name, instance)}
 
 		said = prose_of("roland", "jd_xi")
 
@@ -16355,12 +16365,11 @@ class TestJDXi:
 			" channel 2 for the Digital Synth 2 part, channel 10 for the Drum part, and" \
 			" channel 3 for the Analog Synth part." in said
 
-		# **And the format cannot say they are absolute rather than derived**, which the
-		# definition records rather than glossing.
+		# **Until 2026-10-14 the format could not say they are absolute rather than derived**,
+		# which the definition recorded rather than glossing, and says it once did.
 		flat = " ".join(said.split())
 
-		assert "the first half is a fiction, there being no base to derive from because the" \
-			" base never moves" in flat
+		assert "Until 2026-10-14 they were written as offsets from the base channel, a fiction" in flat
 
 		# **And the address map's channel for each part is named rather than denied**: a first
 		# reading said no document offered a setting, and the implementation has one per part.

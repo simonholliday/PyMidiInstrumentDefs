@@ -342,19 +342,19 @@ voice:
     programmable: true
 
 parts:
-  # **FOUR PARTS ON FOUR FIXED CHANNELS, EXPRESSED AS OFFSETS FROM ONE BECAUSE THAT IS WHAT THIS
-  # FORMAT HAS.** The channels are 1, 2, 3 and 10, which the owner's manual gives twice and calls
-  # fixed; the address map's `Receive Channel` for each part is the one sign of a setting, and no
-  # page explains it (see the comment above the definition). `channel_offset` says a part's
-  # channel is derived from a base and cannot be set on its own; the second half of that is the
-  # manual's word here and the first half is a fiction, there being no base to derive from because
-  # the base never moves. **The numbers a consumer sends are right** - 1 + 0, 1 + 1, 1 + 2, 1 + 9 -
-  # and the fiction is recorded here rather than left for somebody to find. One for the format
-  # specification's list of what it cannot say.
+  # **FOUR PARTS ON FOUR FIXED CHANNELS.** The channels are 1, 2, 3 and 10, which the owner's
+  # manual gives twice and calls fixed. The address map's `Receive Channel` for each part
+  # (implementation p. 10) is the one sign of a setting that names a part, and the chart's Basic
+  # Channel, changeable 1 to 16 both ways (implementation p. 17), names none; no page explains
+  # either (see the comment above the definition). Each part gives its channel as the number it
+  # is, whatever the base channel, and the digital synth's second instance is on the next channel
+  # up. Until 2026-10-14 they were written as offsets from the base channel, a fiction the
+  # comment here recorded: they derive nothing from it, and the format then had no other way to
+  # say so.
   digital_synth:
     label: Digital Synth
     count: 2
-    channel_offset: 0
+    channel: 1
     addressing: pitches
     receives: [notes, controls, program_change]
     # **TWO PARTS WITH ONE MAP**, on channels 1 and 2. Each is a SuperNATURAL Synth Tone of
@@ -363,7 +363,7 @@ parts:
     # controller, 103.
   analog_synth:
     label: Analog Synth
-    channel_offset: 2
+    channel: 3
     addressing: pitches
     receives: [notes, controls, program_change]
     # **ONE TONE WITH ONE PARTIAL, TAKING THE FIRST ADDRESS OF EACH OF THE DIGITAL PART'S RUNS.**
@@ -372,7 +372,7 @@ parts:
     # has no counterpart for, a pulse width at NRPN 37.
   drum:
     label: Drum
-    channel_offset: 9
+    channel: 10
     addressing: voices
     receives: [notes, controls, program_change]
     # **ITS OWN PARAMETERS ARE NOT CARRIED, AND THAT IS A DECISION RATHER THAN A GAP.** Four of
@@ -496,8 +496,9 @@ controls:
   # p. 13), and the address map has a `Program Control Channel (0 - 16)` with the same range,
   # `1 - 16, OFF` (implementation p. 9), though no page says the two are one setting. No page puts
   # these five on that channel in so many words, so they name no part, which in this format means
-  # the base channel, channel 1, the first digital synth's. If they do not answer there, Prog Rx/Tx
-  # Ch is the setting to look at.
+  # the base channel, and no part is handed them, each part's channel being fixed. If they do not
+  # answer where they are sent, Prog Rx/Tx Ch is the setting to look at. Until 2026-10-14 the
+  # parts were offsets from the base channel, which handed these five to the first digital synth.
   reverb:                           {label: Reverb, cc: 12, group: effects}
   delay:                            {label: Delay, cc: 13, group: effects}
   effect_1:                         {label: Effect 1, cc: 14, group: effects}

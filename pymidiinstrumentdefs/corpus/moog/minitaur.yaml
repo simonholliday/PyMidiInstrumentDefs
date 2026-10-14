@@ -124,13 +124,17 @@ voice:
   velocity:
     # The manual's MIDI implementation chart marks Velocity, Note On `YES` under `RECOGNIZED`
     # and `NO` under `TRANSMITTED`, and Note Off `NO` under both (manual p. 25).
-    # Received, but it does nothing at all unless one of the two sensitivity parameters is up.
-    # That is why a velocity lane can appear dead on a correctly wired Minitaur. **NO PAGE SAYS
-    # THAT**: the manual gives each sensitivity a default of 64 (manual p. 13; manual p. 15) and
-    # does not say what 0 does, so `gated` is as released and is not from these documents.
-    note_on: gated
+    # Received, and used at the defaults the manual gives. The two sensitivities that scale it
+    # each default to 64: "FILTER VELOCITY SENSITIVITY (CC# 89): Sets the amount OF MIDI Note
+    # velocity to the Filter. Default = 64." (manual p. 13), and "OUTPUT (VCA) VELOCITY
+    # SENSITIVITY (CC# 90): Sets the amount of MIDI Note velocity to the Amplifier. Default = 64
+    # (50%)." (manual p. 15), which the controller tables call 50% for both (manual pp. 22 and
+    # 23). No page gives the settings its stored presets hold, or says what either does at 0.
+    # Until 2026-10-14 this said `gated`, by those two, beside a sentence about a velocity lane
+    # that looks dead, which no page prints. `gated` is for velocity the instrument ignores as
+    # it ships.
+    note_on: received
     note_off: false
-    gated_by: [filter_velocity_sensitivity, volume_velocity_sensitivity]
   aftertouch: none
   # Never sent: the chart's AFTER TOUCH row is NO as transmitted, as it is as recognized (manual
   # p. 25).

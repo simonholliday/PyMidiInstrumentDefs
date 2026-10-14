@@ -9023,7 +9023,7 @@ class TestTyphon:
 		assert typhon.voice.pitch_bend.semitones is None
 
 	def test_velocity_arrives_and_does_nothing_until_it_is_routed (self) -> None:
-		"""The Minitaur's case: a velocity lane can look dead on a correctly wired machine."""
+		"""A velocity lane can look dead on a correctly wired machine, as it ships."""
 		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
 
 		assert typhon.voice.velocity is not None
@@ -21575,6 +21575,27 @@ class TestProphet6ResponseCurves:
 		assert "the range of Velocity Response, which says `range: unknown` too" in flat
 		assert '"Sets one of eight velocity curves' in flat
 		assert '"Vel Response: 0-3 (Kurve 0, Kurve 1, Kurve 2, Kurve 3)" (handbuch p. 15)' in flat
+
+
+class TestMinitaurVelocity:
+
+	"""Velocity received and heard as it ships, since the two sensitivities that scale it default to half."""
+
+	def test_it_is_received_and_not_gated (self) -> None:
+		minitaur = pymidiinstrumentdefs.load("moog/minitaur", [CORPUS])
+
+		assert minitaur.voice.velocity is not None
+		assert (minitaur.voice.velocity.note_on, minitaur.voice.velocity.note_off) == ("received", False)
+
+		# Until 2026-10-14 it said `gated` by these two, whose own defaults are half.
+		assert minitaur.voice.velocity.gated_by == ()
+		assert minitaur.controls["filter_velocity_sensitivity"].default == 64
+		assert minitaur.controls["volume_velocity_sensitivity"].default == 64
+
+		flat = " ".join(prose_of("moog", "minitaur").split())
+
+		assert "`gated` is for velocity the instrument ignores as it ships." in flat
+		assert "correctly wired" not in flat
 
 
 class TestDeepMind12:

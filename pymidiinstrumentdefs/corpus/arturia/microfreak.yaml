@@ -155,15 +155,16 @@ voice:
   # note (p. 89), which settles nothing, and p. 64 says "the whole pitch range is eight
   # octaves", which is narrower than either reading of C-2 to G8. "Middle C" appears once in
   # the whole manual, on p. 43, with no number beside it.
-  # NOT RECORDED, velocity and aftertouch. The keyboard generates one or the other, never
-  # both: "These dots will register your touch as aftertouch or as velocity" (p. 61),
-  # chosen per preset at Utility > Preset > Press mode [Aftertouch, Velocity] (p. 88).
-  # Each has its own response curve, [Lin, Log, Exp] (p. 90), and Velo Amp Mod [0 ... 10]
-  # sets how much velocity affects volume (p. 88). What the sound engine does with either
-  # when it arrives over MIDI is not stated - the one use of incoming velocity is the step
-  # sequencer's, which "can also record notes and velocities you play on an external
-  # keyboard into the MIDI In port" (p. 80) - and nor is whether its aftertouch is channel
-  # or polyphonic, so neither `aftertouch` nor `velocity` is filled in.
+  # NOT RECORDED, aftertouch. The keyboard generates it or velocity, never both: "These dots
+  # will register your touch as aftertouch or as velocity" (p. 61), chosen per preset at
+  # Utility > Preset > Press mode [Aftertouch, Velocity] (p. 88). Each has its own response
+  # curve, [Lin, Log, Exp] (p. 90), and Velo Amp Mod [0 ... 10] sets how much velocity affects
+  # volume (p. 88). What the sound engine does with either when it arrives over MIDI is not
+  # stated. The one specific use of incoming velocity given is the sequencer's, below; Appendix
+  # D counts "a velocity value" (p. 128) among the messages a DAW sends, and says of them no
+  # more than that "The MicroFreak interprets these messages and plays your DAW sequence the
+  # way you intended it to sound." (p. 128). Nor is it stated whether its aftertouch is channel
+  # or polyphonic, so `aftertouch` is not filled in.
   # What is stated is that aftertouch is sent: "If you play chords on the MicroFreak, either
   # with the keyboard or using the sequencer, everything will be transmitted via MIDI
   # including aftertouch and velocity" (p. 78). The account lists that sentence among the
@@ -171,6 +172,14 @@ voice:
   # preset's Press mode (p. 88); either way, aftertouch is among what is sent. Which kind is
   # not said in this instrument's own documents.
   aftertouch_transmits: true
+  velocity:
+    # RECEIVED BY THE SEQUENCER, AND SENT. In step mode the sequencer "can also record notes and
+    # velocities you play on an external keyboard into the MIDI In port" (p. 80), which is what
+    # `elektron/model_cycles` counts as received; no page says what the sound engine does with
+    # a velocity played in live. And the sentence above names it as sent: "everything will be
+    # transmitted via MIDI including aftertouch and velocity" (p. 78). Until 2026-10-14 nothing
+    # was recorded here.
+    note_on: both
   # NOT RECORDED, pitch_bend. Bend Range is a preset parameter and the manual gives its
   # extent three ways that do not fit together: the Utility table says [0 ... 24], "From
   # zero to two octaves" (p. 88), while p. 69 says "By default the bend range is set to 24

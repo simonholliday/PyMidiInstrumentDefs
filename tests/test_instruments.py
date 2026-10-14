@@ -1381,14 +1381,30 @@ class TestWavestate:
 		assert wavestate.midi.clock == "both"
 
 	def test_four_layers_sit_on_the_global_channel_until_moved (self) -> None:
-		"""Which is why each carries an offset of zero rather than a channel of its own."""
+		"""Which each says beside a channel of its own: until 2026-10-14, with an offset of zero."""
 		wavestate = pymidiinstrumentdefs.load("korg/wavestate", [CORPUS])
 
 		assert sorted(wavestate.parts) == ["layer_a", "layer_b", "layer_c", "layer_d"]
 
 		for part in wavestate.parts.values():
-			assert part.channel_offset == 0
+			assert part.follows_base and part.is_assigned
+			assert part.channel_offset is None
 			assert part.takes("notes")
+
+		# Left on the Global Channel, a Layer is handed what names no part and its eight Mod
+		# Knobs; moved, its eight and the seven standard controllers, received only.
+		unparted = [name for name, control in wavestate.controls.items() if control.part is None]
+
+		for layer in wavestate.parts:
+			knobs = [name for name in wavestate.controls if name.startswith(f"{layer}_mod_")]
+			seven = [name for name, control in wavestate.controls.items()
+				if control.part == layer and name not in knobs]
+
+			assert len(knobs) == 8
+			assert [control.name for control in wavestate.controls_reaching(layer)] == unparted[:9] + knobs + unparted[9:]
+			assert [control.name for control in wavestate.controls_reaching(layer, moved = True)] == knobs + seven
+			assert [wavestate.controls[name].cc for name in seven] == [1, 7, 10, 11, 64, 66, 67]
+			assert all(wavestate.controls[name].direction == "receives" for name in seven)
 
 
 class TestSubsequent37:

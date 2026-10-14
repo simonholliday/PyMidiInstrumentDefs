@@ -188,8 +188,9 @@ voice:
     # "O 8n, V=0-127" recognised, remarked "Received Note Off Velocity values are clipped at
     # 64" (chart). So release velocity is both sent and received, which is rare enough to be
     # worth saying: the specifications call the keyboard "velocity and release-velocity
-    # sensitive" (p. 105).
-    note_on: received
+    # sensitive" (p. 105). The chart's Transmitted O on Note On says velocity is sent as well as
+    # received; until 2026-10-14 this said `received`.
+    note_on: both
     note_off: true
   # BOTH KINDS ARE RECOGNISED AND NEITHER IS SENT ON THIS MODEL. A setting chooses which kind
   # reaches the sound, and the chart's footnote gives sending to the SE alone. See the source

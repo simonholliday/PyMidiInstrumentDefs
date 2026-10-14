@@ -316,9 +316,11 @@ voice:
   polyphony: 8
   polyphony_shared: true
   velocity:
-    # The chart: Note On is O 9n, V=1-127 in both columns. A global curve shapes what the
-    # keyboard produces, "Curve 1...8, Const Max" (p. 81).
-    note_on: received
+    # The chart: Note On is O 9n, V=1-127 in both columns (p. 133), so Note On velocity is sent
+    # as well as received; until 2026-10-14 this said `received`. A global curve shapes what the
+    # keyboard produces, "Curve 1...8, Const Max" (p. 81), and Const Max "Plays at the maximum
+    # velocity value (127)." (p. 81).
+    note_on: both
     # IT NEITHER SENDS NOR READS A RELEASE VELOCITY. The chart's Note Off row is "X 8n, V=64"
     # transmitted and X recognised, so what it sends is a fixed 64 and what it receives is
     # discarded.

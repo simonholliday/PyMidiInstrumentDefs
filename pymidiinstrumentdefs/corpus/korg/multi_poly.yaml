@@ -251,8 +251,9 @@ voice:
     # "Note On O 9n, V=1-127" in both columns. Note Off is "O 8n, V=1-64" transmitted against
     # "O 8n, V=0-127" recognised, remarked "Received Note Off Velocity values are clipped at 64",
     # so release velocity travels both ways; the specification calls the keyboard "velocity and
-    # release-velocity sensitive" (p. 126).
-    note_on: received
+    # release-velocity sensitive" (p. 126). The chart's Transmitted O on Note On (p. 127) says
+    # velocity is sent as well as received; until 2026-10-14 this said `received`.
+    note_on: both
     note_off: true
   # BOTH KINDS ARE RECOGNISED AND NEITHER IS SENT, and a four-way setting chooses which reaches
   # the sound. See the source account.

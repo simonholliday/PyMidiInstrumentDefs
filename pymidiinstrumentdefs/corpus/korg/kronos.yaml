@@ -423,8 +423,11 @@ voice:
   # this field says so without pretending to a figure the maker does not give.
   polyphony_shared: true
   velocity:
-    # "9n kk (kk) vv (vv) Note On (vv) = 1-127" (implementation p. 3) in the received table.
-    note_on: received
+    # "9n kk (kk) vv (vv) Note On (vv) = 1-127" (implementation p. 3) in the received table. And
+    # it is sent: the transmitted table lists the same Note On with its velocity byte
+    # (implementation p. 1), and the chart marks Note On velocity in its Transmitted column
+    # (operation p. 296). Until 2026-10-14 this said `received`.
+    note_on: both
     # **AND THE KEYBOARD SENDS A RELEASE VELOCITY, WHICH IS RARE.** The transmitted table reads
     # "Note Off(vv)=1-64 ( Key Off )" (implementation p. 1), so a real figure travels rather
     # than a constant - except from the sequencer, where "(vv) = 64 is always transmitted at

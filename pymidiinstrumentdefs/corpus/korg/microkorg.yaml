@@ -184,8 +184,14 @@ voice:
   # between and `polyphony_shared` says nothing here.
   velocity:
     # "37 notes (mini keyboard, velocity sensitive, no aftertouch)" (p. 67), and the
-    # recognised note on row is "Note On vv=1~127".
-    note_on: received
+    # recognised note on row is "Note On vv=1~127". It is sent too: the implementation lists the
+    # same row among its transmitted data, and "When you play the keyboard of the microKORG,
+    # note-on/off messages are transmitted" (p. 52), where vv is "velocity". With POSITION at Post
+    # KBD, a fixed value can be set instead: "The fixed velocity you specify here will be output
+    # regardless of how strongly you play the keyboard." (p. 47); at Pre TG the keyboard's data
+    # goes out unaffected by any setting but OCTAVE SHIFT (p. 47). Until 2026-10-14 this said
+    # `received`.
+    note_on: both
     # "The note-off velocity is transmitted at a fixed 64, but is not received" (p. 52), which
     # is both halves of the question in one sentence.
     note_off: false

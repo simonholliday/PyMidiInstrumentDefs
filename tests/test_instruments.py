@@ -5161,7 +5161,7 @@ class TestOpsix:
 		opsix = pymidiinstrumentdefs.load("korg/opsix", [CORPUS])
 
 		assert opsix.voice.velocity is not None
-		assert opsix.voice.velocity.note_on == "received"
+		assert opsix.voice.velocity.note_on == "both"
 		assert opsix.voice.velocity.note_off is True
 
 		assert (opsix.voice.aftertouch, opsix.voice.aftertouch_transmits) == ("both", False)
@@ -5336,7 +5336,7 @@ class TestMicroKorg:
 		assert microkorg.voice.aftertouch == "none"
 
 		assert microkorg.voice.velocity is not None
-		assert microkorg.voice.velocity.note_on == "received"
+		assert microkorg.voice.velocity.note_on == "both"
 		assert microkorg.voice.velocity.note_off is False
 
 	def test_four_voices_and_a_settable_bend (self) -> None:
@@ -14423,7 +14423,7 @@ class TestMicroKORG2:
 		assert microkorg2.voice.aftertouch == "none"
 
 		assert microkorg2.voice.velocity is not None
-		assert microkorg2.voice.velocity.note_on == "received"
+		assert microkorg2.voice.velocity.note_on == "both"
 		assert microkorg2.voice.velocity.note_off is False
 
 		# A checked absence rather than a silence: the chart's Commands row is X both ways.
@@ -15155,7 +15155,7 @@ class TestM1:
 
 		assert m1.voice.aftertouch == "channel"
 		assert m1.voice.velocity is not None
-		assert m1.voice.velocity.note_on == "received"
+		assert m1.voice.velocity.note_on == "both"
 		assert m1.voice.velocity.note_off is False
 
 		# No bend range is printed anywhere, so the field is absent rather than guessed.

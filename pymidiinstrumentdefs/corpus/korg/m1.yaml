@@ -253,8 +253,9 @@ voice:
   velocity:
     # "Velocity Note on o 9n, V=10 ~ 127" transmitted against "o 9n, V=1 ~ 127" received, and
     # **note off is "x" in both columns** (p. 135). So a release velocity is neither sent nor
-    # answered to. The keyboard's own floor is 10 where it answers down to 1.
-    note_on: received
+    # answered to. The keyboard's own floor is 10 where it answers down to 1. So Note On velocity
+    # is sent as well as received; until 2026-10-14 this said `received`.
+    note_on: both
     note_off: false
   # CHANNEL, AND THE CHART IS EXPLICIT: "After Touch Keys x / x" against "Ch's o / o" (p. 135).
   # Polyphonic key pressure is refused in both directions, which is a denial rather than a

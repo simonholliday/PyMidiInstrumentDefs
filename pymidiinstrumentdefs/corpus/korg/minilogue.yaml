@@ -169,7 +169,11 @@ voice:
   # rather than by how many notes sound, and are not counted here.
   voicing_modes: [1, 2, 4]
   velocity:
-    note_on: received      # "Note On  vv=1~127" (midi_impl); a note on with vv=0 is a note off
+    # SENT AND RECEIVED: the chart marks Note On velocity in both columns, "O 9n, V=1–127"
+    # (manual p. 63), and the implementation gives "Note On  vv=1~127" (midi_impl) among its
+    # transmitted channel messages as well as its received. A note on with vv=0 is a note off.
+    # Until 2026-10-14 this said `received`.
+    note_on: both
     # The chart's Velocity row says Note Off is X received and "X 8n, V=64" (manual p. 63)
     # transmitted: it sends
     # a fixed 64 and does nothing with what it gets. The implementation's receiving table prints

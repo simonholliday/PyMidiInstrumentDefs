@@ -272,8 +272,9 @@ voice:
   # The chart's Note Number is `0 - 127` received, true voice the same (player p. 66).
   note_range: [0, 127]
   velocity:
-    # "O (9N, v=1~127)" (player p. 66), both ways.
-    note_on: received
+    # "O (9N, v=1~127)" (player p. 66), both ways, so it is sent as well as received; until
+    # 2026-10-14 this said `received`.
+    note_on: both
     # Crossed both ways (player p. 66); a key off's velocity is `Ignored` (reference p. 106).
     note_off: false
   # Received, both kinds; the keyboard sends channel aftertouch. See the source account.

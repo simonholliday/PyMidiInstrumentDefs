@@ -179,7 +179,11 @@ voice:
   # rather than what any one sound will answer with.
   note_range: [0, 127]
   velocity:
-    note_on: received
+    # SENT AND RECEIVED: the MIDI implementation chart marks Note On velocity in both columns,
+    # 1 to 127 (manual p. 94), and "Pre-MIDI: This is the default. Transpose and
+    # Velocity/Aftertouch Curves affect MIDI output." (manual p. 86). Until 2026-10-14 this said
+    # `received`.
+    note_on: both
     note_off: true
     # Note On is marked "O 9n, V=1-127" in both columns. Note Off is marked "O 8n, V=1-64"
     # transmitted and "O 8n, V=0-127" recognized, with the remark "Received Note Off Velocity

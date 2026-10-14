@@ -121,7 +121,11 @@ voice:
   addressing: pitches
   polyphony: 4             # "Maximum polyphony 4 voices" (manual p. 66)
   velocity:
-    note_on: received      # "Note On vv=1~127", and a note on with vv=0 is read as a note off
+    # SENT AND RECEIVED: the chart marks Note On velocity O in both columns (manual p. 67, the
+    # number the contents give a sheet that prints none), and the implementation gives
+    # "Note On  vv=1~127" (midi_impl) among its transmitted channel messages as well as its
+    # received. A note on with vv=0 is read as a note off. Until 2026-10-14 this said `received`.
+    note_on: both
     # NOT RECORDED whether it acts on note-off velocity. The received Note Off row prints
     # vv=0~127, which says the byte is carried, not what the instrument does with it. What
     # it transmits is a fixed 64.

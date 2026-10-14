@@ -318,20 +318,22 @@ voice:
   # slider and a note slider (p. 17).
   addressing: pitches
   velocity:
-    # GATED: IT ARRIVES AND DOES NOTHING UNTIL SOMEBODY ROUTES IT. "Velocity" is on the accept
-    # list (manual p. 23) and the menu has it, but
-    # the targets are what it does - the row reads "Velocity targets 0-100" (manual p. 20) -
-    # and there are none to begin with: "You must setup a Velocity target from the menu in order
-    # for this to work" (p. 17). **So a velocity lane can look
-    # dead on a correctly wired Typhon**, which is the Minitaur's case exactly and is what this
-    # value is for. `gated_by` is empty because it names controls and the gate here is a menu
-    # setting with no controller number of its own.
+    # RECEIVED, AND THE MENU'S TARGETS DECIDE WHAT IT DOES. "Velocity" is on the accept list
+    # (manual p. 23), and the menu's targets are what it does - the row reads "Velocity targets
+    # 0-100" (manual p. 20) - set "for the Velocity parameter", which "can be sent either by an
+    # external midi controller, or by velocity values in the note sequencer" (p. 21). With none
+    # set it does nothing: "You must setup a Velocity target from the menu in order for this to
+    # work" (p. 17). But the targets appear to be a preset's: the menu sets them apart from its
+    # Global settings (p. 20), and the master volume is "the only control that cannot be stored
+    # in a preset" (p. 8). No page prints the targets of the factory presets, so this is
+    # `received`: `gated` is for an instrument whose documents say it ships ignoring velocity.
+    # Until 2026-10-14 it said `gated`.
     #
     # **And it is not recorded as sent, because nothing says it is.** "Velocity orders can be
     # sent either by an external midi controller, or by velocity values in the note sequencer"
     # (p. 21) is about where a velocity comes from inside the instrument rather than about
     # sending one out, and no switch anywhere in the menu sends notes.
-    note_on: gated
+    note_on: received
   # RECEIVED, AND WHICH KIND IS NOT RECORDED, BECAUSE THE MANUAL NEVER SAYS. It plainly answers
   # to it - "Aftertouch" is on the accept list (manual p. 23) and the menu's row reads
   # "Aftertouch targets 0-100" (manual p. 20) - but MIDI has two aftertouch messages and no page

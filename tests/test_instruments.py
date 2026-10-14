@@ -9353,15 +9353,12 @@ class TestTyphon:
 		assert typhon.voice.pitch_bend.programmable is True
 		assert typhon.voice.pitch_bend.semitones is None
 
-	def test_velocity_arrives_and_does_nothing_until_it_is_routed (self) -> None:
-		"""A velocity lane can look dead on a correctly wired machine, as it ships."""
+	def test_velocity_is_received_and_a_presets_routing_decides_what_it_does (self) -> None:
+		"""No page prints the factory presets' velocity targets, so it is received. Gated until 2026-10-14."""
 		typhon = pymidiinstrumentdefs.load("dreadbox/typhon", [CORPUS])
 
 		assert typhon.voice.velocity is not None
-		assert typhon.voice.velocity.note_on == "gated"
-
-		# The gate is a menu setting rather than a control with a number, so there is nothing
-		# for `gated_by` to name.
+		assert typhon.voice.velocity.note_on == "received"
 		assert typhon.voice.velocity.gated_by == ()
 
 	def test_it_receives_transport_and_is_not_said_to_send_it (self) -> None:
@@ -11410,13 +11407,13 @@ class TestPerkonsHD01:
 			assert switch.states == []
 			assert switch.kind == pymidiinstrumentdefs.CONTINUOUS
 
-	def test_velocity_arrives_but_a_setting_gates_it (self) -> None:
-		"""Nothing to name as the gate, because the gate is not a control."""
+	def test_velocity_arrives_and_a_setting_decides_whether_it_is_recorded (self) -> None:
+		"""No page prints the position the setting ships in, so it is received. Gated until 2026-10-14."""
 		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
 
 		assert perkons.voice is not None
 		assert perkons.voice.velocity is not None
-		assert perkons.voice.velocity.note_on == "gated"
+		assert perkons.voice.velocity.note_on == "received"
 		assert perkons.voice.velocity.gated_by == ()
 
 	def test_it_holds_presets_and_no_program_change_reaches_them (self) -> None:
@@ -19447,16 +19444,13 @@ class TestCascadia:
 		assert " ".join(prose_of("intellijel", "cascadia").split()).count(
 			"**A few words either side of a match is not the sentence**") == 1
 
-	def test_velocity_is_gated_by_a_switch_that_has_no_controller_number (self) -> None:
-		"""The manual itself describes the silence this value exists to explain."""
+	def test_velocity_is_received_and_a_switch_decides_whether_it_is_used (self) -> None:
+		"""No edition prints the switch's shipped position, so it is received. Gated until 2026-10-14."""
 		cascadia = pymidiinstrumentdefs.load("intellijel/cascadia", [CORPUS])
 
 		assert cascadia.voice.velocity is not None
-		assert cascadia.voice.velocity.note_on == "gated"
+		assert cascadia.voice.velocity.note_on == "received"
 		assert cascadia.voice.velocity.note_off is False
-
-		# **Empty, because the thing doing the gating is a panel switch.** The Perkons
-		# HD-01 is the precedent for recording `gated` with nothing to name.
 		assert cascadia.voice.velocity.gated_by == ()
 
 		flat = " ".join((cascadia.source or "").split())

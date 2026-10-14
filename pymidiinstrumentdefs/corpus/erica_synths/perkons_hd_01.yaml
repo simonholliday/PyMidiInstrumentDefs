@@ -356,12 +356,13 @@ voice:
   polyphony: 4
   polyphony_shared: false
   velocity:
-    # IT ARRIVES AND DOES NOTHING UNTIL A SETTING IS TURNED ON, which is what `gated` says here:
-    # "If the setting is ON in the configuration menu, MIDI notes will be recorded with velocity.
-    # Higher velocity means higher volume" (p. 34). The setting is MIDI VELOCITY on the
-    # configuration page (p. 31) and is not a control this instrument answers to, so there is
-    # nothing to name in `gated_by`.
-    note_on: gated
+    # RECEIVED, AND A SETTING DECIDES WHETHER NOTES ARE RECORDED WITH IT: "If the setting is ON
+    # in the configuration menu, MIDI notes will be recorded with velocity. Higher velocity means
+    # higher volume" (p. 34). The setting is MIDI VELOCITY on the configuration page, ON or OFF
+    # (p. 31), and no page prints the position it ships in, or says what it does to a note played
+    # live. `gated` is for an instrument whose documents say it ships ignoring velocity until a
+    # setting is changed, so this is `received`. Until 2026-10-14 it said `gated`.
+    note_on: received
   # NOT RECORDED: note off, aftertouch, pitch bend and the note range. None of the four is
   # mentioned anywhere in the manual, and a drum machine's silence about pitch bend is not the same
   # as a chart's X against it.

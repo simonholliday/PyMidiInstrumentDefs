@@ -167,11 +167,13 @@ source: >-
   is patched into the CTRL IN [4.B] jack, then MIDI VELOCITY [1.E] is used" (manual p. 32) by
   envelope A. But the switch beside that jack has three positions, and at one of them "The envelope
   ignore any signal present at the CTRL IN jack, and always outputs a full (+5V) envelope" (manual
-  p. 32) - the maker's own missing letter. The manual even names the failure this field exists to
-  explain: "it will have no audible effect until a higher voltage is patched into the jack" (manual
-  p. 32). **No edition prints which position that switch ships in**, so `gated` is recorded, and
-  `gated_by` is empty because the thing doing the gating is a switch with no controller number of
-  its own. `erica_synths/perkons_hd_01` is the precedent for both halves of that.
+  p. 32) - the maker's own missing letter. The manual even names a silence an owner can meet,
+  with the switch at LEVEL after a velocity of zero: "it will have no audible effect until a
+  higher voltage is patched into the jack" (manual p. 32). **No edition prints which position
+  that switch ships in**, so velocity is recorded as `received`: `gated` is for an instrument
+  whose documents say it ships ignoring velocity until a setting is changed, and where this
+  switch stands is the owner's. Until 2026-10-14 this said `gated`, with an empty `gated_by`, as
+  `erica_synths/perkons_hd_01` did.
 
   **AFTERTOUCH IS CHANNEL PRESSURE, SAID TWICE AND IN THOSE WORDS.** "The MIDI CC jack outputs a
   voltage derived from Channel Aftertouch, rather than from a MIDI CC value" (manual p. 109), and
@@ -334,9 +336,9 @@ voice:
   voicing_modes: [1, 2]
   velocity:
     # It arrives, and whether it is audible depends on a three-position panel switch whose shipped
-    # position no edition prints. See the account - the manual itself describes the silence this
-    # value exists to explain.
-    note_on: gated
+    # position no edition prints, so it is `received`: see the account. Until 2026-10-14 it said
+    # `gated`.
+    note_on: received
     note_off: false
   aftertouch: channel
   pitch_bend:

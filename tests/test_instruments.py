@@ -1533,11 +1533,14 @@ class TestTheTwoMoog37s:
 			assert (moog.voice.aftertouch, moog.voice.aftertouch_transmits) == (None, True), name
 			assert "SENT, AND NO PAGE SAYS IT IS RECEIVED." in " ".join(prose_of(*name.split("/")).split()), name
 
-		# **Neither manual says an arriving note's velocity is used either**, so the received side
-		# is unset in both and what the keys send stays. Until 2026-10-13 each said `both`.
+		# **Neither manual says an arriving note's velocity is used either, or names velocity among
+		# what the keys send**, so neither side is recorded in either. Until 2026-10-13 each said
+		# `both`, and until 2026-10-14 `transmits: true`.
 		for moog in (sub, subsequent):
-			assert moog.voice.velocity is not None
-			assert (moog.voice.velocity.note_on, moog.voice.velocity.transmits) == (None, True)
+			assert moog.voice.velocity is None
+
+		for name in ("moog/sub_37", "moog/subsequent_37"):
+			assert "SO THE SENT SIDE IS NOT RECORDED EITHER." in " ".join(prose_of(*name.split("/")).split()), name
 
 		assert sub.midi.channels == subsequent.midi.channels
 		assert sub.midi.clock == subsequent.midi.clock

@@ -278,28 +278,28 @@ voice:
   # which note numbers
   # arriving over MIDI the instrument will sound. Those are different questions, and a panel
   # that greyed out note 10 on the strength of the first would be claiming the second.
-  velocity:
-    # **NO PAGE SAYS AN ARRIVING NOTE'S VELOCITY IS USED, SO THE RECEIVED SIDE IS NOT RECORDED.**
-    # Velocity reaches both envelopes, through FILTER EG VEL AMT and AMP EG VEL AMT below, and
-    # either modulation bus, through MOD 1 VELOCITY AMT and MOD 2 VELOCITY AMT. Every sentence
-    # that says whose velocity it is names the keys, the sequencer's own step (p. 18) or an
-    # arpeggiated note (release_notes p. 4): the filter's amount works "as you press the keys
-    # slower on the keyboard" (p. 32). A note from outside is said to give a gate and a pitch
-    # (p. 11), and the source list's `VELOCITY: Latest Note On velocity` names no keyboard and
-    # no port (p. 50). The manual has no MIDI implementation chart: its tables list CC and NRPN
-    # numbers (pp. 52-59), and none has a row for Note On, Note Off or a note's velocity. Their
-    # velocity rows are amounts, the four named above among them. Until 2026-10-13 this said
-    # `note_on: both`.
-    # **`transmits` IS TRUE AS RELEASED, AND NO PAGE NAMES VELOCITY AMONG WHAT IS SENT**: "When
-    # set to ON (default) the keys transmit MIDI note data including channel pressure
-    # (aftertouch) messages" (p. 36), which the OUT FILTERS sub menu can turn off, and the
-    # keyboard "has both velocity sensitivity and aftertouch" (p. 9).
-    transmits: true
-    # NOT RECORDED: note-off velocity, which the manual never mentions.
-    # AND WHAT THE NOTES IT SENDS ARE IS A SETTING: SEQ OPTIONS offers "MIDI OUTPUT: SEQ,
-    # KEYS" (p. 43), and "SEQ is the default" (p. 47), which sends the notes the arpeggiator
-    # or sequencer generates rather than the keys being played. What is sent while neither is
-    # playing is not said.
+  # NOT RECORDED, VELOCITY, EITHER WAY.
+  # **NO PAGE SAYS AN ARRIVING NOTE'S VELOCITY IS USED, SO THE RECEIVED SIDE IS NOT RECORDED.**
+  # Velocity reaches both envelopes, through FILTER EG VEL AMT and AMP EG VEL AMT below, and
+  # either modulation bus, through MOD 1 VELOCITY AMT and MOD 2 VELOCITY AMT. Every sentence
+  # that says whose velocity it is names the keys, the sequencer's own step (p. 18) or an
+  # arpeggiated note (release_notes p. 4): the filter's amount works "as you press the keys
+  # slower on the keyboard" (p. 32). A note from outside is said to give a gate and a pitch
+  # (p. 11), and the source list's `VELOCITY: Latest Note On velocity` names no keyboard and
+  # no port (p. 50). The manual has no MIDI implementation chart: its tables list CC and NRPN
+  # numbers (pp. 52-59), and none has a row for Note On, Note Off or a note's velocity. Their
+  # velocity rows are amounts, the four named above among them. Until 2026-10-13 this said
+  # `note_on: both`.
+  # **AND NO PAGE NAMES VELOCITY AMONG WHAT IS SENT, SO THE SENT SIDE IS NOT RECORDED EITHER.**
+  # "When set to ON (default) the keys transmit MIDI note data including channel pressure
+  # (aftertouch) messages" (p. 36), which the OUT FILTERS sub menu can turn off, names pressure
+  # and not velocity, and the keyboard "has both velocity sensitivity and aftertouch" (p. 9).
+  # Until 2026-10-14 this said `transmits: true`.
+  # NOT RECORDED: note-off velocity, which the manual never mentions.
+  # AND WHAT THE NOTES IT SENDS ARE IS A SETTING: SEQ OPTIONS offers "MIDI OUTPUT: SEQ,
+  # KEYS" (p. 43), and "SEQ is the default" (p. 47), which sends the notes the arpeggiator
+  # or sequencer generates rather than the keys being played. What is sent while neither is
+  # playing is not said.
   # SENT, AND NO PAGE SAYS IT IS RECEIVED. The keybed has it, "TYPE OF KEYS: Semi-Weighted with
   # After Pressure" (p. 61) and "CONTROLLERS: Pitch Bend, Mod Wheel, After Pressure, Velocity"
   # (p. 61), and it is channel pressure rather than polyphonic: the keys "transmit MIDI note data

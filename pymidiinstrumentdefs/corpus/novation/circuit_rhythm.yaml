@@ -352,8 +352,10 @@ parts:
   project:
     label: Project
     # Channel 16, which no track may use. It takes the program change that selects a project,
-    # and the eight notes that trigger the sample tracks.
-    channel: assigned
+    # and the eight notes that trigger the sample tracks. So the part gives its channel as the
+    # number it is, where until 2026-10-14 it said `channel: assigned`, the nearest the format
+    # then had.
+    channel: 16
     addressing: voices
     receives: [notes, program_change]
 

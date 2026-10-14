@@ -323,13 +323,14 @@ parts:
     # software via MIDI" (user_guide p. 57), so there is no engine here for a message to reach.
   project:
     label: Project
-    channel: assigned
+    channel: 16
     receives: [controls, program_change]
     # Channel 16, and the one channel a player cannot move: "Channel 16 is reserved for the
     # Project" (user_guide p. 103), against the eight tracks that may take any of 1 to 15. It takes
     # no notes - it is the two effects, the master filter, the sidechains and the mixer - and it
     # takes a program change of its own, which selects a project rather than a patch: 0 to 63
-    # instant and 64 to 127 queued (guide p. 10).
+    # instant and 64 to 127 queued (guide p. 10). So the part gives its channel as the number it
+    # is, where until 2026-10-14 it said `channel: assigned`, the nearest the format then had.
 
 voice:
   # NOT GIVEN FOR THE INSTRUMENT, because its parts do not agree and each says its own: a synth

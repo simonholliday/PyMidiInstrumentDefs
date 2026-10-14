@@ -240,17 +240,16 @@ parts:
     # selection is CC 8, 18, 44 and 50.
   session:
     label: Session
-    channel: assigned
+    channel: 16
     receives: [controls, program_change]
     # **CHANNEL 16, AND THE ONE CHANNEL A PLAYER CANNOT MOVE**: "Channel 16 is reserved for the
     # session" (update_1_8 p. 7), against the six tracks that may take any of 1 to 15. It takes
     # no notes - it is the reverb, the delay, the master filter, the sidechains and the mixer -
     # and it takes a program change of its own, which selects a session rather than a patch.
     #
-    # `channel: assigned` IS THE NEAREST THIS FORMAT HAS and it is not quite right: this channel
-    # is fixed, not chosen. The field has `assigned` for a channel the player picks and
-    # `channel_offset` for one derived from a base, and no way to say "always 16". Recorded as
-    # assigned so that a consumer can address it at all, with the number said here.
+    # So the part gives its channel as the number it is, and a program offers no channel to
+    # choose for it. Until 2026-10-14 it said `channel: assigned`, the nearest the format then
+    # had, with the number in this comment.
 
 # How to read the controls below. Every one is **received**; what the Circuit transmits is the
 # same map in reverse, by the Settings View's Tx switches, and the guide publishes one table for

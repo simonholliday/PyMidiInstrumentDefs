@@ -8328,6 +8328,9 @@ class TestCircuitTracks:
 		assert tracks.parts["midi_track"].receives is None
 		assert tracks.parts["project"].receives == ("controls", "program_change")
 
+		# On 16, which no setting moves: a number since 2026-10-14, where it said `assigned`.
+		assert (tracks.parts["project"].fixed_channel, tracks.parts["project"].is_assigned) == (16, False)
+
 	def test_the_misprinted_number_ships_as_printed (self) -> None:
 		"""One sidechain parameter is in the wrong NRPN block and the doubt is in the file."""
 		tracks = pymidiinstrumentdefs.load("novation/circuit_tracks", [CORPUS])
@@ -11248,6 +11251,10 @@ class TestCircuit:
 
 		assert "Channel 16 is reserved for the session" in said
 		assert circuit.parts["session"].receives == ("controls", "program_change")
+
+		# On 16, which no setting moves: a number since 2026-10-14, where it said `assigned`.
+		assert (circuit.parts["session"].fixed_channel, circuit.parts["session"].is_assigned) == (16, False)
+		assert circuit.parts["session"].channel_for(3) == 16
 		assert circuit.parts["synth"].polyphony == 6
 
 	def test_the_guide_is_stale_about_its_own_channels (self) -> None:
@@ -14579,6 +14586,9 @@ class TestCircuitRhythm:
 		# Project's channel instead, which is why the two parts receive different things.
 		assert rhythm.parts["sample_track"].receives == ("controls",)
 		assert rhythm.parts["project"].receives == ("notes", "program_change")
+
+		# On 16, which no track may use: a number since 2026-10-14, where it said `assigned`.
+		assert (rhythm.parts["project"].fixed_channel, rhythm.parts["project"].is_assigned) == (16, False)
 
 		# The pads sense velocity and a step stores one; no page says an arriving note's is used.
 		# Until 2026-10-13 this said `received`.

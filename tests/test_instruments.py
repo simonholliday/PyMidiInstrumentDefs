@@ -2077,7 +2077,7 @@ class TestAssignment:
 			"korg/kronos": {"off": 27, "default": 2},
 			"akai/mpc_key_37": {"default": 1},
 			"korg/radias": {"default": 60},
-			"yamaha/montage_6_7_8": {"default": 16},
+			"yamaha/montage_6_7_8": {"default": 17},
 			"intellijel/cascadia": {"default": 2},
 		}
 
@@ -19233,22 +19233,23 @@ class TestMontage:
 		numbers = sorted({control.cc for control in montage.controls.values()
 			if control.cc is not None})
 
-		# Thirty-two numbers, eleven of them written a second time for a part on its own channel.
-		# The thirty-second is the Super Knob's own, carried since 2026-10-13.
-		assert len(montage.controls) == 43
+		# Thirty-three numbers, eleven of them written a second time for a part on its own channel.
+		# The thirty-second is the Super Knob's own, carried since 2026-10-13, and the
+		# thirty-third the Scenes', since 2026-10-14.
+		assert len(montage.controls) == 44
 		assert numbers == [0, 1, 2, 5, 7, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-			32, 64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 94, 95]
+			32, 64, 65, 66, 71, 72, 73, 74, 75, 86, 87, 88, 89, 91, 92, 94, 95]
 
 		# **Fourteen are the footnote's defaults rather than fixtures**, in a group of their own
 		# so a consumer can read them as one. The Super Knob's is a fifteenth, from another
-		# table, with no group. Each says `assignment: default` since 2026-10-13, and so does
-		# the breath controller's twin for a part.
+		# table, with no group, and the Scenes' a sixteenth. Each says `assignment: default`
+		# since 2026-10-13, and so does the breath controller's twin for a part.
 		assignable = [name for name, control in montage.controls.items()
 			if control.group == "assignable" and control.part is None]
 
 		assert len(assignable) == 14
 		assert sorted(name for name, control in montage.controls.items()
-			if control.assignment == "default") == sorted(assignable + ["part_breath", "super_knob"])
+			if control.assignment == "default") == sorted(assignable + ["part_breath", "scene", "super_knob"])
 
 		knob = montage.controls["super_knob"]
 
@@ -19282,10 +19283,17 @@ class TestMontage:
 		assert ("**EXPRESSION IS SENT ALL THE SAME, SO TWO CONTROLS ARE `direction: receives` AND NOT "
 			"THREE.**") in flat
 
-		# And one number of the Super Knob's kind is left out, because its default is printed two ways.
-		assert ("**SCENES HAVE ONE TOO, AND IT IS NOT A CONTROL BELOW, BECAUSE ITS DEFAULT IS PRINTED TWO "
-			"WAYS.**") in flat
-		assert not [name for name in montage.controls if "scene" in name]
+		# And one number of the Super Knob's kind is carried at the 92 its screens show, though the
+		# Data List's default is 94, which the fixed list gives to Effects 4 Depth. Until
+		# 2026-10-14 it was left out.
+		assert ("**SCENES HAVE ONE TOO, AND IT IS A CONTROL BELOW AT THE 92 ITS SCREENS SHOW, THOUGH ITS "
+			"DEFAULT IS PRINTED TWO WAYS.**") in flat
+
+		scene = montage.controls["scene"]
+
+		assert (scene.cc, scene.assignment, scene.direction, scene.part, scene.group) == (92, "default", "both", None, None)
+		assert scene.values == {f"scene_{n}": 16 * (n - 1) for n in range(1, 9)}
+		assert montage.controls["effects_4_depth"].cc == 94
 
 		# The others travel both ways, which is this format's default.
 		assert {control.direction for control in montage.controls.values()} == {"both", "receives"}

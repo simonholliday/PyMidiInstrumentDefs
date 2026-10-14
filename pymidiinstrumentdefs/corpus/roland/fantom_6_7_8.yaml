@@ -210,7 +210,11 @@ voice:
   # NOT RECORDED, the polyphony. See the source account: the Reference Manual refers to the sound
   # generator's maximum twice and never gives it, and the one figure printed is the pad sampler's.
   velocity:
-    note_on: received
+    # Sent as well as received: the sound generator's chart marks Note On "o" in both columns
+    # (reference p. 128), and with Keyboard Velocity at REAL, "The transmitted velocity value will
+    # correspond to the force with which you strike the key" (reference p. 113); set to a number
+    # from 1 to 127, that number is sent instead. Until 2026-10-14 this said `received`.
+    note_on: both
     # The chart marks Note On and Note Off "o" in both columns, so release velocity travels too.
     note_off: true
   # BOTH KINDS ARE RECEIVED. The sound generator section's chart (reference p. 128) gives the

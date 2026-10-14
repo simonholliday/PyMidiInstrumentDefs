@@ -12258,7 +12258,7 @@ class TestP6:
 		assert p6.voice.aftertouch == "none"
 		assert p6.voice.pitch_bend is None
 		assert p6.voice.velocity is not None
-		assert p6.voice.velocity.note_on == "received"
+		assert p6.voice.velocity.note_on == "both"
 		assert p6.voice.velocity.note_off is False
 
 	def test_continue_is_received_and_does_what_start_does (self) -> None:

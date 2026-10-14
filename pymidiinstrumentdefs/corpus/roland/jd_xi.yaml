@@ -318,8 +318,12 @@ voice:
   note_range: [0, 127]
   velocity:
     # "Velocity Note On Note Off o o o o" (implementation p. 17) - circled in all four cells, so
-    # both a striking and a release velocity travel in both directions.
-    note_on: received
+    # both a striking and a release velocity travel in both directions. The sound source's
+    # transmitted listing gives "vv = note on velocity: 01H - 7FH (1 - 127)" (implementation p. 5),
+    # and with the keyboard's Velocity setting at REAL, "Actual keyboard velocity will be
+    # transmitted." (manual p. 13); set to a number from 1 to 127, that number is sent instead.
+    # Until 2026-10-14 this said `received`.
+    note_on: both
     note_off: true
   # **BOTH KINDS RECEIVED, AND EACH CAN BE SWITCHED OFF.** The sound source's chart crosses both
   # transmitted After Touch cells and circles both recognised ones, each under the `*1`

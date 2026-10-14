@@ -233,8 +233,10 @@ voice:
   # the chart's figure is what it will sound.
   note_range: [0, 127]
   velocity:
-    # "o" in both columns of the chart's Note On row (manual p. 73).
-    note_on: received
+    # "o" in both columns of the chart's Note On row (manual p. 73), so it is sent as well as
+    # received. The keyboard's velocity is a setting, Key Velocity: "1–127 Sets the keyboard
+    # velocity." (manual p. 69). Until 2026-10-14 this said `received`.
+    note_on: both
     # "x" in both columns of its Note Off row (manual p. 73), so release velocity is neither sent
     # nor acted on.
     note_off: false

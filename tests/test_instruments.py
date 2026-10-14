@@ -2075,7 +2075,7 @@ class TestAssignment:
 		assert "controls.a.assignment" in str(raised.value)
 
 	def test_each_definition_marks_what_its_own_pages_say_the_owner_can_change (self) -> None:
-		"""A factory assignment, a fixed slot, and a recommendation switched off - ten files, three words."""
+		"""A factory assignment, a fixed slot, and a recommendation switched off - twelve files, three words."""
 		said: dict[str, dict[str, int]] = {}
 
 		for name in pymidiinstrumentdefs.available([CORPUS]):
@@ -2095,6 +2095,8 @@ class TestAssignment:
 			"korg/radias": {"default": 60},
 			"yamaha/montage_6_7_8": {"default": 17},
 			"intellijel/cascadia": {"default": 2},
+			"korg/multi_poly": {"default": 14},
+			"korg/modwave_mk_ii": {"default": 5},
 		}
 
 	def test_the_kronos_ships_its_karma_controls_and_pads_off_and_its_joystick_on (self) -> None:
@@ -2254,6 +2256,7 @@ class TestLearnedMaps:
 			"akai/mpc_key_37", "akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl",
 			# Said since 2026-10-14, where every number the owner can move is listed:
 			"korg/microkorg", "korg/wavestate", "korg/radias", "erica_synths/perkons_hd_01", "korg/kronos",
+			"korg/multi_poly", "korg/modwave_mk_ii",
 		}
 
 	def test_a_number_the_owner_can_move_means_learned (self) -> None:
@@ -2270,7 +2273,8 @@ class TestLearnedMaps:
 				movable.add(name)
 				assert definition.midi.control_change == "learned", name
 
-		assert {"korg/microkorg", "korg/wavestate", "korg/radias", "erica_synths/perkons_hd_01", "korg/kronos"} <= movable
+		assert {"korg/microkorg", "korg/wavestate", "korg/radias", "erica_synths/perkons_hd_01", "korg/kronos",
+			"korg/multi_poly", "korg/modwave_mk_ii"} <= movable
 
 		# And one whose owner picks only what four fixed numbers reach.
 		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])

@@ -32,7 +32,7 @@
 # the voice count. So the chart stands for this instrument because the maker says the rest is
 # the same, not because the chart mentions it.
 #
-# FIVE OF THE FOURTEEN CONTROLS BELOW ARE A FACTORY ASSIGNMENT RATHER THAN A FACT. Scale Select
+# FIVE OF THE TWENTY-TWO CONTROLS BELOW ARE A FACTORY ASSIGNMENT RATHER THAN A FACT. Scale Select
 # and the four Mod Knobs are listed under "MIDI CC Assign" as a "Default CC assignment" (manual
 # pp. 101-102), and the chart's own footnote says they are "Sent and received by Mod Knobs and Scale
 # Select when assigned in UTILITY > MIDI CC Assign" (manual p. 107). All five numbers lie
@@ -302,6 +302,10 @@ midi:
     # "A Set List has 64 Slots, arranged into four banks A- D, corresponding to MIDI Program
     # Change messages 1-64" (manual p. 5), the maker's own spacing kept.
     presets: 64
+  # LEARNED, SINCE 2026-10-14: Scale Select and the four Mod Knobs take a "Default CC
+  # assignment" (manual pp. 101-102) the player can move, so each says `assignment: default`,
+  # and the number each is moved to is the owner's choice, which no file can list.
+  control_change: learned
   # NONE, AND IT IS CHECKED RATHER THAN UNREAD - see the source account. The chart has no NRPN
   # row, and the one block of controller numbers it accounts for nowhere is 96 to 101, which is
   # the NRPN and RPN block itself.
@@ -409,13 +413,13 @@ controls:
   soft:                  {label: Soft, cc: 67, direction: receives, group: pedals}
 
   # SCALE ------------------------------------------------------------
-  scale_select:          {label: Scale Select, cc: 9, group: scale}
+  scale_select:          {label: Scale Select, cc: 9, group: scale, assignment: default}
 
   # MOD KNOBS --------------------------------------------------------
-  mod_knob_1:            {label: Mod Knob 1, cc: 24, group: mod_knobs}
-  mod_knob_2:            {label: Mod Knob 2, cc: 25, group: mod_knobs}
-  mod_knob_3:            {label: Mod Knob 3, cc: 26, group: mod_knobs}
-  mod_knob_4:            {label: Mod Knob 4, cc: 27, group: mod_knobs}
+  mod_knob_1:            {label: Mod Knob 1, cc: 24, group: mod_knobs, assignment: default}
+  mod_knob_2:            {label: Mod Knob 2, cc: 25, group: mod_knobs, assignment: default}
+  mod_knob_3:            {label: Mod Knob 3, cc: 26, group: mod_knobs, assignment: default}
+  mod_knob_4:            {label: Mod Knob 4, cc: 27, group: mod_knobs, assignment: default}
 
   # A LAYER ON A CHANNEL OF ITS OWN ----------------------------------
   # The seven standard controllers again, for a Layer taken off the Global Channel, and received

@@ -201,6 +201,13 @@ midi:
     sends: true
     # "A Set List has 64 Slots" (p. 5), which is what the chart's 1-64 counts.
     presets: 64
+  # LEARNED, SINCE 2026-10-14: the MIDI CC Assign table gives its numbers as a "Default CC
+  # assignment" (pp. 121-122), and the Kaoss Physics page says "To change the Kaoss Physics CC
+  # assignments, see See 'MIDI CC Assign' on page 121." (p. 100), the doubled word the maker's.
+  # So each control from the table says `assignment: default`, and where each is moved is the
+  # owner's choice, which no file can list. The nine Kaoss Physics numbers are one row of the
+  # table and one setting on its page (p. 121), and no page says what else that setting can be.
+  control_change: learned
   # Marked O in both columns, with footnote *2: "Also supports universal system exclusive
   # messages device inquiry, master volume, master fine tuning, and master coarse tuning". Its
   # remark names what else travels that way: "Kaoss Physics".
@@ -277,16 +284,17 @@ controls:
   # FROM MIDI CC ASSIGN, printed pp. 121-122. EVERY NUMBER IN THIS SECTION IS A DEFAULT, not a
   # property of the model: the table's own column is headed "Default CC assignment", and the
   # player can reassign any of them. The page also says which cannot be used: "Some dedicated CCs
-  # cannot be assigned (CCs 1, 7, etc.)".
+  # cannot be assigned (CCs 1, 7, etc.)". So each says `assignment: default`, as do the Kaoss
+  # Pad's 18 and 19 below, which the same table lists. Until 2026-10-14 none of the fourteen did.
 
-  scale_select:              {label: Scale Select, cc: 9, group: scale_select}
+  scale_select:              {label: Scale Select, cc: 9, group: scale_select, assignment: default}
 
   # "Mod Knobs 1...4", CC 24 to 27. Which Layer one reaches is decided by the channel it arrives
   # on rather than by the number; see the source account.
-  mod_knob_1:                {label: Mod Knob 1, cc: 24, group: mod_knobs}
-  mod_knob_2:                {label: Mod Knob 2, cc: 25, group: mod_knobs}
-  mod_knob_3:                {label: Mod Knob 3, cc: 26, group: mod_knobs}
-  mod_knob_4:                {label: Mod Knob 4, cc: 27, group: mod_knobs}
+  mod_knob_1:                {label: Mod Knob 1, cc: 24, group: mod_knobs, assignment: default}
+  mod_knob_2:                {label: Mod Knob 2, cc: 25, group: mod_knobs, assignment: default}
+  mod_knob_3:                {label: Mod Knob 3, cc: 26, group: mod_knobs, assignment: default}
+  mod_knob_4:                {label: Mod Knob 4, cc: 27, group: mod_knobs, assignment: default}
 
   # "Kaoss Physics 18-20, 105-110", and the page says what the nine carry: "For Kaoss Physics,
   # the first three CCs correspond to x/y position and finger on/finger off, and the last six CCs
@@ -296,13 +304,13 @@ controls:
   # WHICH OF THE SIX CARRIES WHICH IS NOT STATED. The manual names three things and gives six
   # numbers, and never says which is which, so they are numbered in the order it prints them and
   # the sentence above is what a reader has to go on.
-  kaoss_finger:              {label: Kaoss Physics Finger On/Off, cc: 20, group: kaoss_physics}
-  kaoss_throw_1:             {label: Kaoss Physics Throw 1, cc: 105, group: kaoss_physics}
-  kaoss_throw_2:             {label: Kaoss Physics Throw 2, cc: 106, group: kaoss_physics}
-  kaoss_throw_3:             {label: Kaoss Physics Throw 3, cc: 107, group: kaoss_physics}
-  kaoss_throw_4:             {label: Kaoss Physics Throw 4, cc: 108, group: kaoss_physics}
-  kaoss_throw_5:             {label: Kaoss Physics Throw 5, cc: 109, group: kaoss_physics}
-  kaoss_throw_6:             {label: Kaoss Physics Throw 6, cc: 110, group: kaoss_physics}
+  kaoss_finger:              {label: Kaoss Physics Finger On/Off, cc: 20, group: kaoss_physics, assignment: default}
+  kaoss_throw_1:             {label: Kaoss Physics Throw 1, cc: 105, group: kaoss_physics, assignment: default}
+  kaoss_throw_2:             {label: Kaoss Physics Throw 2, cc: 106, group: kaoss_physics, assignment: default}
+  kaoss_throw_3:             {label: Kaoss Physics Throw 3, cc: 107, group: kaoss_physics, assignment: default}
+  kaoss_throw_4:             {label: Kaoss Physics Throw 4, cc: 108, group: kaoss_physics, assignment: default}
+  kaoss_throw_5:             {label: Kaoss Physics Throw 5, cc: 109, group: kaoss_physics, assignment: default}
+  kaoss_throw_6:             {label: Kaoss Physics Throw 6, cc: 110, group: kaoss_physics, assignment: default}
 
   # FROM THE MIDI IMPLEMENTATION CHART, printed p. 127, which is where the fixed controllers are.
   # Direction follows its two mark columns, read by their position between the page's own
@@ -319,9 +327,12 @@ controls:
   pan:                       {label: Pan, cc: 10, direction: receives, group: controllers}
   expression:                {label: Expression, cc: 11, direction: receives, group: controllers}
   # "Kaoss Pad X, Y" in one cell against "18, 19", which the CC Assign table's first three
-  # confirm: x and y are the first two of the nine Kaoss Physics numbers.
-  kaoss_pad_x:               {label: Kaoss Pad X, cc: 18, group: kaoss_physics}
-  kaoss_pad_y:               {label: Kaoss Pad Y, cc: 19, group: kaoss_physics}
+  # confirm: x and y are the first two of the nine Kaoss Physics numbers. They say
+  # `assignment: default` too, though the chart gives them a row of their own: the table lists
+  # them, and the Kaoss Physics page sends them "as two MIDI CCs (18 and 19 by default)"
+  # (p. 100).
+  kaoss_pad_x:               {label: Kaoss Pad X, cc: 18, group: kaoss_physics, assignment: default}
+  kaoss_pad_y:               {label: Kaoss Pad Y, cc: 19, group: kaoss_physics, assignment: default}
 
   damper:                    {label: Damper, cc: 64, group: pedals}
   sostenuto:                 {label: Sostenuto, cc: 66, direction: receives, group: pedals}

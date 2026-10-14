@@ -70,7 +70,9 @@ source: >-
   after 1.6.7, which Sequential publishes no notes for; the range of MIDI Clock Mode and MIDI Out
   Select, for the reason above; the range of Aftertouch Response, which says `range: unknown`,
   since the manual gives four curves in its tables and its text and the addendum says eight
-  and prints no table; and the thirteen NRPN blocks that address a program's stored data
+  and prints no table; the range of Velocity Response, which says `range: unknown` too, since
+  the tables of both editions and the German text print four values and the English text names
+  eight curves; and the thirteen NRPN blocks that address a program's stored data
   rather than a control - its name at 236-255 and its sequence at 256-1023, six notes and six
   velocities for each of 64 steps. The manual also says a Global dump carries "50 nibbles (LS
   then MS) for 25 Global parameters" (p. 83) while the Global table names eighteen, so **seven
@@ -113,8 +115,10 @@ sources:
     # same tables in English inside German prose. It is five years older than the English and
     # carries the Dave Smith Instruments name, so a difference between them is either a misprint
     # or a change the instrument made, and this cannot tell those apart. Cited only for the three
-    # places the two editions differ, recorded in the source note above. Its own date is from its
-    # file rather than its cover, which carries none.
+    # places the two editions' controller tables differ, recorded in the source note above, and
+    # at Velocity Response below, for the four velocity curves its text and tables give. Its own
+    # date is from its file. Its cover carries none, and its title page, two sheets in, prints
+    # Version 1.0 and Juni 2015.
   operating_system:
     kind: download_page
     title: "Prophet-6 Operating System - Sequential"
@@ -449,7 +453,16 @@ controls:
   pot_mode:                    {label: Pot Mode, nrpn: 1037, range: [0, 2], group: global}
   seq_jack:                    {label: Seq Jack, nrpn: 1039, range: [0, 3], group: global}
   sustain_polarity:            {label: Sustain Polarity, nrpn: 1040, range: [0, 3], group: global}
-  velocity_response:           {label: Velocity Response, nrpn: 1041, range: [0, 3], group: global}
+  # THE RANGE OF VELOCITY RESPONSE IS NOT SETTLED EITHER, SO IT SAYS `range: unknown`. Both of
+  # the manual's tables print `0-3` for 1041 (pp. 78 and 80), and its own text, in the entry just
+  # before Aftertouch Response, has "Vel Response: 0-7 (Curve 0, Curve 1, Curve 2, Curve 3, Curve
+  # 4, Curve 5, Curve 6, Curve 7)" (p. 16): it "Sets one of eight velocity curves to adjust the
+  # keyboard's velocity response to your playing style." (p. 16). The older German Handbuch
+  # prints four in its text, "Vel Response: 0-3 (Kurve 0, Kurve 1, Kurve 2, Kurve 3)" (handbuch
+  # p. 15), and `0-3` in both its tables (handbuch pp. 82 and 84), so the eight curves are the
+  # later English text's alone. The addendum never mentions velocity, and no page says which
+  # count the instrument follows. Until 2026-10-14 this carried the tables' `[0, 3]`.
+  velocity_response:           {label: Velocity Response, nrpn: 1041, range: unknown, group: global}
   # THE RANGE OF AFTERTOUCH RESPONSE IS NOT SETTLED, SO IT SAYS `range: unknown`. Both of the
   # manual's tables print `0-3` for 1042 (pp. 78 and 80), and its text has "AT Response: 0-3
   # (Curve 0, Curve 1, Curve 2, Curve 3)" (p. 16). The addendum for OS 1.6.7, the release this

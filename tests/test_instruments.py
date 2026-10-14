@@ -21554,25 +21554,26 @@ class TestMatrixBrute:
 		assert "**THREE VOICE MODES, AND TWO PAGES DISAGREE ABOUT ONE OF THEM.**" in account
 
 
-class TestProphet6AftertouchResponse:
+class TestProphet6ResponseCurves:
 
-	"""One range the maker's documents do not settle: a table of four curves, and an addendum that says eight."""
+	"""Two ranges the maker's documents do not settle: tables of four curves, against eight in the addendum and the text."""
 
-	def test_it_says_its_range_is_unknown_and_no_other_control_of_the_file_does (self) -> None:
+	def test_both_curve_settings_say_their_range_is_unknown_and_no_other_control_of_the_file_does (self) -> None:
 		prophet = pymidiinstrumentdefs.load("sequential/prophet_6", [CORPUS])
 		unknown = [name for name, control in prophet.controls.items() if not control.range_known]
 
-		assert unknown == ["aftertouch_response"]
+		assert unknown == ["velocity_response", "aftertouch_response"]
+		assert (prophet.controls["velocity_response"].nrpn, prophet.controls["velocity_response"].range) == (1041, (0, 16383))
 		assert (prophet.controls["aftertouch_response"].nrpn, prophet.controls["aftertouch_response"].range) == (1042, (0, 16383))
 		assert prophet.model.firmware == "1.6.7"
-
-		# Its neighbour in the same table is printed once and keeps what is printed.
-		assert prophet.controls["velocity_response"].range == (0, 3)
 
 		flat = " ".join(prose_of("sequential", "prophet_6").split())
 
 		assert "the range of Aftertouch Response, which says `range: unknown`" in flat
 		assert '"There are now a total of eight curves to choose from"' in flat
+		assert "the range of Velocity Response, which says `range: unknown` too" in flat
+		assert '"Sets one of eight velocity curves' in flat
+		assert '"Vel Response: 0-3 (Kurve 0, Kurve 1, Kurve 2, Kurve 3)" (handbuch p. 15)' in flat
 
 
 class TestDeepMind12:

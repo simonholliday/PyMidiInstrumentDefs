@@ -874,6 +874,12 @@ class TestAbsences:
 		# note's is used or that the keys' is sent. Until 2026-10-13 this said `received`.
 		assert pymidiinstrumentdefs.load("behringer/ub_xa", [CORPUS]).voice.velocity is None
 
+		# And aftertouch, for the same reason: polyphonic keys and a menu, and no page about an
+		# arriving message. Until 2026-10-14 this said `poly`.
+		ub_xa_voice = pymidiinstrumentdefs.load("behringer/ub_xa", [CORPUS]).voice
+
+		assert (ub_xa_voice.aftertouch, ub_xa_voice.aftertouch_transmits) == (None, None)
+
 		# **THE MOVE STATES THE ABSENCE IN THE PLAINEST WORDS OF THE FIVE**, and is the only
 		# definition in this corpus built against its maker's manual rather than on it: that
 		# manual is three years of releases out of date and says nothing about being so, which

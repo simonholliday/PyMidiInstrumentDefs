@@ -575,9 +575,20 @@ class Part:
 	channel above its strings section, and a Voce plays three parts on three
 	adjacent channels.
 
+	``fixed_channel`` is a third, for a part on a channel no setting moves,
+	whatever the base channel is: a JD-Xi's drum part is on channel 10.  The file
+	gives the number in ``channel``, and ``channel`` is then ``None`` here.
+
+	``follows_base`` is said of an assigned part that starts on the base channel,
+	until its owner gives it a channel of its own: each of a Korg wavestate's
+	Layers has a setting, on by default, that puts it on the Global Channel until
+	its owner turns it off.  It is said only where a page says the part starts
+	there.
+
 	``count`` is how many identical instances there are, so four synth tracks are
 	described once rather than four times.  Where a part derives its channel, its
-	instances run consecutively from the offset.
+	instances run consecutively from the offset, and on a fixed channel they run
+	up from its number.
 
 	``receives`` is what a consumer reads to know what a part is *for*: which kinds
 	of message reach it at all.  It is a list rather than a flag because the cases
@@ -654,6 +665,8 @@ class Part:
 	note_map: str | None = None
 	voice_notes: dict[str, tuple[int, ...]] = dataclasses.field(default_factory=dict)
 	voices_sent: dict[str, SentMap] = dataclasses.field(default_factory=dict)
+	fixed_channel: int | None = None
+	follows_base: bool = False
 
 
 	def __post_init__ (self) -> None:
@@ -670,7 +683,9 @@ class Part:
 
 		False for a part that says neither, which nothing can address: offering a
 		channel picker for it would claim something nobody recorded.  False too
-		for a part ``within`` another, which takes that part's channel.
+		for a part ``within`` another, which takes that part's channel, and for a
+		part on a fixed channel, where there is nothing to choose.  True for a
+		part that ``follows_base``, since its owner can give it a channel.
 		"""
 
 		return self.channel == ASSIGNED
@@ -705,9 +720,15 @@ class Part:
 
 		"""Which MIDI channel one instance of this part sits on, given a base channel.
 
-		``None`` where the part is assigned a channel instead, or sits ``within``
-		another part and takes its channel, so a caller asking is told the
-		question does not apply rather than handed a number.
+		``None`` where the part is assigned a channel instead and does not follow
+		the base channel, or sits ``within`` another part and takes its channel,
+		so a caller asking is told the question does not apply rather than handed
+		a number.
+
+		A part that ``follows_base`` is on the base channel, every instance of it,
+		which is where it starts: once its owner gives it a channel, which one is
+		their setting and not this file's.  A part on a fixed channel ignores the
+		base, and its instances count up from its number.
 
 		Channels wrap at 16, which is documented behaviour rather than arithmetic
 		convenience: a Voce on a base channel of 15 plays its three parts on 15,
@@ -724,10 +745,34 @@ class Part:
 		if not 0 <= instance < self.count:
 			raise ValueError(f"instance {instance} is outside 0-{self.count - 1}, as this part has {self.count}")
 
+		if self.fixed_channel is not None:
+			return self.fixed_channel + instance
+
+		if self.follows_base:
+			return base
+
 		if self.channel_offset is None:
 			return None
 
 		return (base - 1 + self.channel_offset + instance) % 16 + 1
+
+
+def _numbers (control: Control) -> set[tuple[str, int]]:
+
+	"""The numbers a control is sent on, told apart by kind: its controller's, its fine half's and its NRPN's."""
+
+	numbers: set[tuple[str, int]] = set()
+
+	if control.cc is not None:
+		numbers.add(("cc", control.cc))
+
+	if control.lsb is not None:
+		numbers.add(("cc", control.lsb))
+
+	if control.nrpn is not None:
+		numbers.add(("nrpn", control.nrpn))
+
+	return numbers
 
 
 # ── Where the facts came from ────────────────────────────────────────────────
@@ -986,25 +1031,42 @@ class Definition:
 		return parts
 
 
-	def controls_reaching (self, part: str, instance: int = 0) -> list[Control]:
+	def controls_reaching (self, part: str, instance: int = 0, moved: bool = False) -> list[Control]:
 
 		"""The controls one instance of a part answers to on its channel, in file order.
 
 		A part's own controls, and — for the one instance sitting on the base
-		channel, where the part is recorded as receiving controls — the controls
-		that name no part, since those are sent on the base channel too.  So a
-		Streichfett's strings part gets all nineteen, because its channel *is* the
-		base channel and it takes controls there, while its solo part gets none.
+		channel, or every instance of a part that follows it, where the part is
+		recorded as receiving controls — the controls that name no part, since
+		those are sent on the base channel too.  So a Streichfett's strings part
+		gets all nineteen, because its channel *is* the base channel and it takes
+		controls there, while its solo part gets none.
 
 		A Voce is why the rule asks what the part receives.  Its three parts start
 		on the base channel but take only notes and program change, and its effect
 		controls are "global to all three": they stay with the instrument rather
 		than being filed under its first part.
 
-		An assigned part gets only its own.  Whether a player happens to put it
-		on the base channel is their project's business, not this file's.  A
-		control the instrument only transmits, or ignores both ways, is included
-		like any other; read ``is_sendable`` for which a panel may send.
+		An assigned part that does not follow the base channel gets only its own.
+		Whether a player happens to put it on the base channel is their project's
+		business, not this file's.  A part on a fixed channel gets only its own
+		too, whether or not the base channel is set to its number.  A control the
+		instrument only transmits, or ignores both ways, is included like any
+		other; read ``is_sendable`` for which a panel may send.
+
+		A part that ``follows_base`` has two answers, and ``moved`` picks one.
+		Where it starts, every instance sits on the base channel and gets the
+		controls naming no part, where it takes controls and its mode lets them
+		answer, and its own, leaving out, where it is handed them, any of its own
+		on a number one of them already carries: a controller number, a fine
+		half's or an NRPN.  Those are the part's copies for when it is moved, as a
+		modwave's Layers have seven: on the base channel the number is the
+		instrument's, so it is told once, whichever way each copy travels.  A
+		control of its own carrying two numbers is left out where either is
+		carried.
+		Moved to a channel of its own, the part gets its own controls only.  Asking
+		for the moved state of a part that does not follow the base channel is
+		refused, as asking for an instance it does not have is.
 
 		A part existing in one mode gets the controls naming no part only where
 		that mode lets them answer: in a mode saying ``unparted: false`` the
@@ -1020,17 +1082,32 @@ class Definition:
 		if not 0 <= instance < found.count:
 			raise ValueError(f"instance {instance} is outside 0-{found.count - 1}, as {part!r} has {found.count}")
 
+		if moved and not found.follows_base:
+			raise ValueError(f"{part!r} does not follow the base channel, so it has no moved state")
+
 		# Offsets wrap at 16 like channels do, so an instance is on the base
 		# channel whenever its offset comes round to a whole number of sixteen.
 
-		on_base = found.channel_offset is not None \
-			and (found.channel_offset + instance) % 16 == 0 \
+		on_offset = found.channel_offset is not None and (found.channel_offset + instance) % 16 == 0
+
+		on_base = (on_offset or (found.follows_base and not moved)) \
 			and found.takes(CONTROLS) \
 			and (found.mode is None or self.modes[found.mode].unparted)
 
+		# A following part's own copy of a number the instrument's map carries is for
+		# when the part is moved, so on the base channel it is left to the map.
+
+		shared: set[tuple[str, int]] = set()
+
+		if on_base and found.follows_base:
+			for control in self.controls.values():
+				if control.part is None:
+					shared |= _numbers(control)
+
 		return [
 			control for control in self.controls.values()
-			if control.part == part or (control.part is None and on_base)
+			if (control.part == part and not shared & _numbers(control))
+				or (control.part is None and on_base)
 		]
 
 

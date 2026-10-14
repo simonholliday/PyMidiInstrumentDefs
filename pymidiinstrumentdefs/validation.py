@@ -91,6 +91,7 @@ _FIELDS: typing.Final[dict[str, frozenset[str]]] = {
 	"parts": frozenset({
 		"label", "channel", "channel_offset", "count", "receives", "unrecorded", "addressing",
 		"polyphony", "polyphony_shared", "voices", "voices_sent", "note_map", "mode", "nrpn_msb", "within",
+		"follows_base",
 	}),
 	"controls": frozenset({
 		"label", "cc", "lsb", "nrpn", "values", "choices", "range", "nrpn_range", "default",
@@ -435,8 +436,8 @@ class _Reader:
 
 		Most instruments have none, and an absent section is the ordinary case
 		rather than an omission.  What is checked is that a part which *is*
-		declared can be addressed: a channel it is given or one it derives, never
-		both, because a reader could not tell which to believe.
+		declared can be addressed: a channel it is given, a fixed one or one it
+		derives, never two, because a reader could not tell which to believe.
 		"""
 
 		found = {}
@@ -446,14 +447,25 @@ class _Reader:
 			where = f"parts.{name}"
 			fields = self.fields(entry, where, "parts")
 
-			channel = self.optional_text(fields, "channel", where)
+			# A channel is the word for one the owner gives, or the number of one no
+			# setting moves.  YAML hands over a number as a number, whole or not, and the
+			# word as text, so a number is looked for first and refused unless it is a
+			# whole one from 1 to 16.
+
+			raw = fields.get("channel")
+			fixed = None
+
+			if isinstance(raw, (int, float)) and not isinstance(raw, bool):
+				fixed = self.integer(raw, f"{where}.channel", 1, 16)
+
+			channel = None if fixed is not None else self.optional_text(fields, "channel", where)
 			assigned = pymidiinstrumentdefs.definition.ASSIGNED
 
 			if channel is not None and channel != assigned:
 				self.refuse(
 					f"{where}.channel",
-					f"{channel!r} is not {assigned!r} — a part is either given a channel "
-					f"or derives one with channel_offset",
+					f"{channel!r} is not {assigned!r} or a channel number from 1 to 16 — a part is given a "
+					f"channel, sits on a fixed one, or derives one with channel_offset",
 				)
 
 			offset = None if fields.get("channel_offset") is None \
@@ -462,19 +474,39 @@ class _Reader:
 			if channel is not None and offset is not None:
 				self.refuse(where, "has both channel and channel_offset — a part is given a channel or derives one, not both")
 
+			if fixed is not None and offset is not None:
+				self.refuse(
+					where,
+					f"sits on channel {fixed} whatever the base channel is, and channel_offset derives one "
+					f"from the base — say one",
+				)
+
+			# Following the base channel is said of a channel the owner can change, so it
+			# stands only beside the word that says they can.
+
+			follows = False if fields.get("follows_base") is None \
+				else self.flag(fields["follows_base"], f"{where}.follows_base")
+
+			if follows and channel != assigned:
+				self.refuse(
+					f"{where}.follows_base",
+					f"says this part sits on the base channel until its owner gives it one, and only a part "
+					f"with channel: {assigned} is given one",
+				)
+
 			# A part inside another takes that part's channel, so a channel of its own
 			# would be a second answer to where it is.  Whether the part it names
 			# exists, and has a channel to give, is checked once every part is read.
 
 			within = None if fields.get("within") is None else self.name(fields["within"], f"{where}.within")
 
-			if within is not None and (channel is not None or offset is not None):
+			if within is not None and (channel is not None or offset is not None or fixed is not None):
 				self.refuse(
 					f"{where}.within",
 					"sits on another part's channel, and this part also gives a channel of its own — say one",
 				)
 
-			if channel is None and offset is None and within is None:
+			if channel is None and offset is None and within is None and fixed is None:
 				self.warn(where, "says neither channel nor channel_offset, so nothing can address it")
 
 			addressing = self.optional_text(fields, "addressing", where)
@@ -537,6 +569,14 @@ class _Reader:
 				)
 
 			count = self.integer(fields["count"], f"{where}.count", 1, 16) if "count" in fields else 1
+
+			# A fixed channel's instances count up from it, and there is no seventeenth.
+
+			if fixed is not None and fixed + count - 1 > 16:
+				self.refuse(
+					f"{where}.channel",
+					f"{fixed} with {count} instances runs to channel {fixed + count - 1}, past 16",
+				)
 
 			polyphony = None if fields.get("polyphony") is None \
 				else self.integer(fields["polyphony"], f"{where}.polyphony", 0, 256)
@@ -614,7 +654,7 @@ class _Reader:
 			# of their own and on MSBs of their own would leave a consumer two answers
 			# to where the third one is.
 
-			if msb is not None and count > 1 and (channel is not None or offset is not None):
+			if msb is not None and count > 1 and (channel is not None or offset is not None or fixed is not None):
 				self.refuse(
 					f"{where}.nrpn_msb",
 					"counts this part's instances by MSB, and its channel counts them too — say one",
@@ -639,6 +679,8 @@ class _Reader:
 				mode             = mode,
 				nrpn_msb         = msb,
 				within           = within,
+				fixed_channel    = fixed,
+				follows_base     = follows,
 			)
 
 		return found
@@ -1005,7 +1047,9 @@ class _Reader:
 			)
 
 		if voice.polyphony is not None and own and not moded:
-			unmoded = [name for name in own if parts[name].mode is None]
+			# Where every part with voices names the only mode, none is outside one to name,
+			# and a part in the only mode exists in every mode: the first of them is named.
+			unmoded = [name for name in own if parts[name].mode is None] or own
 			self.refuse(
 				"voice.polyphony",
 				f"gives one figure for the whole instrument, and parts.{unmoded[0]} gives voices of its own "
@@ -1408,7 +1452,7 @@ def build (
 
 		parent = parts[part.within]
 
-		if parent.channel is None and parent.channel_offset is None:
+		if parent.channel is None and parent.channel_offset is None and parent.fixed_channel is None:
 			reader.refuse(
 				f"parts.{name}.within",
 				f"names {part.within!r}, which has no channel of its own to share",

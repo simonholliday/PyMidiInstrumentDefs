@@ -3133,6 +3133,236 @@ class TestParts:
 		assert definition.parts == {}
 
 
+class TestAPartOnAFixedChannel:
+
+	"""`channel: 10`: a part on a channel no setting moves, whatever the base channel is."""
+
+	def make (self, body: str) -> pymidiinstrumentdefs.Definition:
+		"""Parse a fragment that declares parts."""
+		return pymidiinstrumentdefs.parse(f"definition: 1\nmodel: {{name: X}}\n{body}", source = "x.yaml")
+
+	def test_a_fixed_part_ignores_the_base_channel (self) -> None:
+		"""A JD-Xi's drum part is on 10 wherever the instrument's own channel is set."""
+		part = self.make("parts: {drum: {channel: 10}}").parts["drum"]
+
+		assert (part.fixed_channel, part.channel, part.is_assigned) == (10, None, False)
+		assert [part.channel_for(base) for base in (1, 7, 16)] == [10, 10, 10]
+
+	def test_its_instances_count_up_from_its_number (self) -> None:
+		part = self.make("parts: {digital_synth: {channel: 1, count: 2}}").parts["digital_synth"]
+
+		assert [part.channel_for(5, instance) for instance in (0, 1)] == [1, 2]
+
+	def test_sixteen_instances_from_channel_one_reach_sixteen (self) -> None:
+		part = self.make("parts: {multiset: {channel: 1, count: 16}}").parts["multiset"]
+
+		assert part.channel_for(9, 15) == 16
+
+	def test_instances_running_past_sixteen_are_refused (self) -> None:
+		"""There is no seventeenth channel for the last of them to sit on."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {multiset: {channel: 9, count: 9}}")
+
+		assert "parts.multiset.channel" in str(raised.value)
+		assert "past 16" in str(raised.value)
+
+	def test_a_number_outside_the_sixteen_is_refused (self) -> None:
+		for number in (0, 17, 10.5):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.make(f"parts: {{drum: {{channel: {number}}}}}")
+
+			assert "parts.drum.channel" in str(raised.value)
+
+	def test_a_word_other_than_assigned_is_still_refused (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {drum: {channel: ten}}")
+
+		assert "parts.drum.channel" in str(raised.value)
+		assert "is not 'assigned'" in str(raised.value)
+
+	def test_a_number_beside_an_offset_is_refused (self) -> None:
+		"""One says the base channel does not matter and the other counts from it."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {drum: {channel: 10, channel_offset: 9}}")
+
+		assert "parts.drum" in str(raised.value)
+		assert "say one" in str(raised.value)
+
+	def test_a_fixed_part_answers_only_to_its_own_controls (self) -> None:
+		"""Whether the base channel is set to the same number is the owner's business."""
+		definition = self.make(
+			"parts: {multiset: {channel: 1, count: 16, receives: [notes, controls]}}\n"
+			"controls:\n"
+			"  multiset_volume: {cc: 7, part: multiset}\n"
+			"  vector_x: {cc: 16}\n"
+		)
+		reaching = [[control.name for control in definition.controls_reaching("multiset", instance)] for instance in (0, 15)]
+
+		assert reaching == [["multiset_volume"], ["multiset_volume"]]
+
+	def test_a_part_may_sit_inside_a_fixed_part (self) -> None:
+		"""A fixed part has a channel to give, so a part inside it is not refused or warned about."""
+		definition = self.make(
+			"parts:\n"
+			"  track: {channel: 3, receives: [controls]}\n"
+			"  subtrack: {within: track, receives: [controls]}\n"
+		)
+
+		assert definition.parts["subtrack"].within == "track"
+		assert not [warning for warning in definition.warnings if "parts.subtrack" in warning]
+
+	def test_a_part_inside_another_gives_no_number_of_its_own (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {track: {channel: 3}, subtrack: {within: track, channel: 4}}")
+
+		assert "parts.subtrack.within" in str(raised.value)
+
+	def test_instances_counted_by_a_fixed_channel_and_by_msb_are_refused (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {track: {channel: 1, count: 2, nrpn_msb: 1}}")
+
+		assert "parts.track.nrpn_msb" in str(raised.value)
+
+
+class TestAPartThatFollowsTheBaseChannel:
+
+	"""`follows_base`: on the base channel where it starts, until its owner gives it a channel."""
+
+	LAYER = (
+		"parts: {layer: {count: 2, channel: assigned, follows_base: true, receives: [notes, controls]}}\n"
+		"controls:\n"
+		"  mod_wheel: {cc: 1}\n"
+		"  volume: {cc: 7}\n"
+		"  cutoff: {cc: 74}\n"
+		"  layer_mod_wheel: {cc: 1, part: layer}\n"
+		"  layer_volume: {cc: 7, part: layer}\n"
+		"  layer_timbre: {cc: 20, part: layer}\n"
+	)
+
+	def make (self, body: str) -> pymidiinstrumentdefs.Definition:
+		"""Parse a fragment that declares parts."""
+		return pymidiinstrumentdefs.parse(f"definition: 1\nmodel: {{name: X}}\n{body}", source = "x.yaml")
+
+	def test_a_following_part_is_still_one_its_owner_gives_a_channel (self) -> None:
+		"""So a program asking whether to offer a channel for it is told yes."""
+		part = self.make(self.LAYER).parts["layer"]
+
+		assert (part.follows_base, part.is_assigned, part.channel, part.fixed_channel) == (True, True, "assigned", None)
+
+	def test_where_it_starts_every_instance_is_on_the_base_channel (self) -> None:
+		part = self.make(self.LAYER).parts["layer"]
+
+		assert [part.channel_for(base, instance) for base in (1, 9) for instance in (0, 1)] == [1, 1, 9, 9]
+
+	def test_where_it_starts_it_answers_to_the_map_and_to_each_of_its_own_numbers_once (self) -> None:
+		"""A Layer's own copy of a number the instrument's map carries is for when it is moved."""
+		definition = self.make(self.LAYER)
+
+		for instance in (0, 1):
+			reaching = [control.name for control in definition.controls_reaching("layer", instance)]
+
+			assert reaching == ["mod_wheel", "volume", "cutoff", "layer_timbre"]
+
+	def test_moved_it_answers_to_its_own_alone (self) -> None:
+		definition = self.make(self.LAYER)
+		reaching = [control.name for control in definition.controls_reaching("layer", 1, moved = True)]
+
+		assert reaching == ["layer_mod_wheel", "layer_volume", "layer_timbre"]
+
+	def test_asking_for_the_moved_state_of_a_part_that_does_not_follow_is_refused (self) -> None:
+		"""It has one state, and a second answer would be made up."""
+		definition = self.make("parts: {synth: {channel: assigned}, solo: {channel_offset: 1}, drum: {channel: 10}}")
+
+		for name in ("synth", "solo", "drum"):
+			with pytest.raises(ValueError):
+				definition.controls_reaching(name, moved = True)
+
+	def test_a_following_part_that_takes_no_controls_is_not_handed_the_map (self) -> None:
+		definition = self.make(
+			"parts: {layer: {channel: assigned, follows_base: true, receives: [notes]}}\n"
+			"controls: {volume: {cc: 7}}\n"
+		)
+
+		assert definition.controls_reaching("layer") == []
+
+	def test_in_a_mode_that_silences_the_map_it_gets_its_own (self) -> None:
+		definition = self.make(
+			"modes: {single: {label: Single}, layered: {label: Layered, unparted: false}}\n"
+			"parts: {layer: {mode: layered, channel: assigned, follows_base: true, receives: [notes, controls]}}\n"
+			"controls:\n"
+			"  volume: {cc: 7}\n"
+			"  layer_volume: {cc: 7, part: layer}\n"
+		)
+
+		assert [control.name for control in definition.controls_reaching("layer")] == ["layer_volume"]
+
+	def test_following_needs_a_channel_its_owner_can_give (self) -> None:
+		"""Without `assigned` there is no channel for the owner to give, so nothing to follow until then."""
+		for part in ("{channel_offset: 0, follows_base: true}", "{channel: 10, follows_base: true}", "{follows_base: true}"):
+			with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+				self.make(f"parts: {{layer: {part}}}")
+
+			assert "parts.layer.follows_base" in str(raised.value)
+
+	def test_a_part_inside_another_does_not_follow_the_base_channel (self) -> None:
+		"""It takes the channel of the part it sits in, so it has none of its own to be given."""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {track: {channel: assigned}, layer: {within: track, channel: assigned, follows_base: true}}")
+
+		assert "parts.layer.within" in str(raised.value)
+
+	def test_a_number_is_told_once_whichever_kind_it_is (self) -> None:
+		"""A controller number, a fine half's and an NRPN each count, and the kinds are kept apart."""
+		definition = self.make(
+			"parts: {layer: {channel: assigned, follows_base: true, receives: [notes, controls]}}\n"
+			"controls:\n"
+			"  data: {cc: 6, lsb: 38}\n"
+			"  tilt: {nrpn: 300}\n"
+			"  layer_fine: {cc: 38, part: layer}\n"
+			"  layer_tilt: {nrpn: 300, part: layer}\n"
+			"  layer_six: {nrpn: 6, part: layer}\n"
+			"  layer_both: {cc: 20, nrpn: 300, part: layer}\n"
+		)
+
+		assert [control.name for control in definition.controls_reaching("layer")] == ["data", "tilt", "layer_six"]
+		assert [control.name for control in definition.controls_reaching("layer", moved = True)] == [
+			"layer_fine", "layer_tilt", "layer_six", "layer_both"]
+
+	def test_a_following_part_whose_receiving_nobody_recorded_is_not_handed_the_map (self) -> None:
+		"""As an offset part on the base channel is not: nobody said it takes controls there."""
+		definition = self.make(
+			"parts: {layer: {channel: assigned, follows_base: true}}\n"
+			"controls:\n"
+			"  volume: {cc: 7}\n"
+			"  layer_volume: {cc: 7, part: layer}\n"
+		)
+
+		assert [control.name for control in definition.controls_reaching("layer")] == ["layer_volume"]
+
+	def test_moved_in_a_mode_that_silences_the_map_it_gets_its_own (self) -> None:
+		definition = self.make(
+			"modes: {single: {label: Single}, layered: {label: Layered, unparted: false}}\n"
+			"parts: {layer: {mode: layered, channel: assigned, follows_base: true, receives: [notes, controls]}}\n"
+			"controls:\n"
+			"  volume: {cc: 7}\n"
+			"  layer_volume: {cc: 7, part: layer}\n"
+		)
+
+		assert [control.name for control in definition.controls_reaching("layer", moved = True)] == ["layer_volume"]
+
+	def test_follows_base_is_true_or_false (self) -> None:
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("parts: {layer: {channel: assigned, follows_base: sometimes}}")
+
+		assert "parts.layer.follows_base" in str(raised.value)
+
+	def test_false_reads_as_saying_nothing (self) -> None:
+		part = self.make("parts: {synth: {channel: assigned, follows_base: false}}").parts["synth"]
+
+		assert part.follows_base is False
+		assert part.channel_for(1) is None
+
+
 class TestAKindOfMessageNoDocumentTiesToAPart:
 
 	"""`unrecorded`: the instrument does not ignore the kind, and the file cannot say how to send it to the part.
@@ -3378,6 +3608,18 @@ class TestPolyphonyAcrossParts:
 		assert definition.voice.polyphony == 5
 		assert definition.voice.polyphony_shared is None
 		assert definition.warnings == ()
+
+	def test_voices_on_a_part_in_the_only_mode_are_refused_in_words (self) -> None:
+		"""A part in the only mode exists in every mode, so the two figures answer one question.
+
+		Until 2026-10-14 this raised an IndexError, which a caller catching
+		DefinitionError did not catch.
+		"""
+		with pytest.raises(pymidiinstrumentdefs.DefinitionError) as raised:
+			self.make("voice: {polyphony: 6}\nmodes: {x: {}}\nparts: {p: {channel_offset: 0, polyphony: 4, mode: x}}\n")
+
+		assert "voice.polyphony" in str(raised.value)
+		assert "parts.p gives voices of its own" in str(raised.value)
 
 
 class TestPartsSharingVoices:

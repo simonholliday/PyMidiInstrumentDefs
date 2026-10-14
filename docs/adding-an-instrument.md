@@ -785,7 +785,32 @@ parts:
   solo:    {channel_offset: 1, receives: [notes], addressing: pitches}
 ```
 
-Eight rules worth holding on to:
+Where a part sits on a channel no setting moves, whatever the base channel is, give that
+channel's number. A JD-Xi's two digital synth parts are on channels 1 and 2 and its drum part
+on 10, and a part's instances count up from its number:
+
+```yaml
+parts:
+  digital_synth: {label: Digital Synth, count: 2, channel: 1}
+  drum:          {label: Drum, channel: 10}
+```
+
+**A channel number needs a reader that knows it**: one older than the release that added it
+refuses the file, where it only warns about a field it does not know.
+
+And where a part starts on the base channel, as a setting on by default puts it, until its owner
+gives it a channel of its own, say both: `channel: assigned`, because the owner can, and
+`follows_base: true`, for where it starts. A Korg wavestate's four Layers each have a Use
+Global MIDI Channel setting, on by default, which puts the Layer on the Global Channel until its
+owner turns it off. Say `follows_base` only where a page says the part starts there, as a
+setting on by default does:
+
+```yaml
+parts:
+  layer_a: {label: Layer A, channel: assigned, follows_base: true, receives: [notes, controls]}
+```
+
+Nine rules worth holding on to:
 
 - **A control naming no part is on the base channel.** In a file that declares parts there
   is no single part to fall back on, so that is what leaving `part` off means. It is a real
@@ -800,6 +825,18 @@ Eight rules worth holding on to:
   kind of part instead. A JUPITER-X's four parts are one kind and its drum part another,
   so its standard controllers are written twice, and the drum part's list is shorter
   because its documents give it fewer.
+- **Only a part on the base channel is handed the controls naming no part.** A program asking
+  `controls_reaching()` what one instance of a part answers to gets the part's own controls,
+  and the instrument's own map as well where that instance's offset brings it to the base
+  channel, the part takes controls and its mode lets the map answer. A part its owner gives a
+  channel, or one on a fixed channel, gets its own alone: whether the base channel is set to
+  the same number is the owner's business. A part that follows the base channel has two
+  answers, and the program says which it wants. Where the part starts, it gets its own
+  controls and, on the same conditions, the instrument's map, and any of its own on a number
+  the map already carries is given once. Asked with `moved=True`, it gets its own alone. So
+  where a page gives a Layer a standard controller on its own channel, write the Layer's own
+  copy, as a modwave's seven are written: it reaches the Layer once it is moved, and is not told
+  twice before.
 - **`receives` is a list because one flag is not enough.** A Voce's three parts each take
   notes *and their own program change*, while its effect controls are global to all three.
   No single true-or-false can say that. Leave `receives` out where the document does not

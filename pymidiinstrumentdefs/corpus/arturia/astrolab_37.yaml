@@ -108,10 +108,12 @@ source: >-
   2.0.0 notes change Synthx and Sampler polyphony. No figure is recorded, and `polyphony_shared` is
   false.
 
-  **CHANNEL AFTERTOUCH, STATED THIS TIME**: "AstroLab 37’s keyboard features 37 Slim Keys that sense
-  both velocity and channel aftertouch." (manual p. 17). The 61's manual leaves the word
-  unqualified; this one does not. It is said of the keyboard; that the sounds answer to it is read
-  from each Part's Aftertouch switch (manual p. 36).
+  **CHANNEL AFTERTOUCH, STATED THIS TIME, AND OF THE KEYS**: "AstroLab 37’s keyboard features 37
+  Slim Keys that sense both velocity and channel aftertouch." (manual p. 17). The 61's manual
+  leaves the word unqualified; this one does not. It is said of the keyboard. Each Part has a
+  switch for whether it is affected by aftertouch (manual p. 36), which is a setting, and no page
+  says that an aftertouch message arriving over MIDI is used, so `aftertouch` is not recorded.
+  Until 2026-10-14 it said `channel`, the keys' kind.
 
   CLOCK IS RECEIVED, AND START IS SAID ONCE. "USB: AstroLab 37 syncs to incoming MIDI clock over
   USB." (manual p. 62) and "MIDI: AstroLab 37 syncs to incoming MIDI clock over the 5-pin MIDI
@@ -126,8 +128,9 @@ source: >-
   **NOT RECORDED**: program change, which neither this manual nor the 37's release notes mention -
   the 61's evidence for it is its own release notes, from versions before the 37's first, and the
   resources page's "MIDI program change support" (resources_page) is in a blurb about the AstroLab
-  1.5 update; how incoming velocity is treated, since the keys "sense both velocity and channel
-  aftertouch" (manual p. 17) and no page says what an incoming velocity does; the note range; pitch
+  1.5 update; how incoming velocity and aftertouch are treated, since the keys "sense both
+  velocity and channel aftertouch" (manual p. 17) and no page says what an incoming velocity or
+  aftertouch does; the note range; pitch
   bend's range and whether it can be set, a Part's switch turning bend on or off (manual p. 36)
   being neither, so `pitch_bend` is left out; `mode`, system exclusive and NRPN, which no page
   mentions.
@@ -199,9 +202,8 @@ voice:
   addressing: pitches
   # Voices per Part, from 1 to 48 by the loaded engine (manual pp. 37-39); see the account.
   polyphony_shared: false
-  # "37 Slim Keys that sense both velocity and channel aftertouch" (manual p. 17), of the keyboard;
-  # see the account.
-  aftertouch: channel
+  # NOT RECORDED: aftertouch. "37 Slim Keys that sense both velocity and channel aftertouch"
+  # (manual p. 17) is of the keyboard, and no page says an arriving one is used; see the account.
   # NOT RECORDED: `pitch_bend`. A Part may be "affected by Pitch Bend" (manual p. 36) or not, which
   # is not a settable range, and no range is given. NOT RECORDED: velocity; see the account.
 

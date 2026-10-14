@@ -229,13 +229,17 @@ voice:
     # ITS OWN KEYS: "Keyboard: 5-octave, velocity-sensitive, channel aftertouch, adjustable
     # curves" (p. 114), and the curve is a setting: "Use [Assign 1] to set the velocity and
     # aftertouch curves" (p. 106).
-  # Stated outright, in the specifications and again in the overview: "Keyboard:
-  # velocity-sensitive, channel aftertouch" (p. 6).
-  # The duophonic option is NOT polyphonic pressure and must not be read as it. It restricts
-  # which voices respond: "AT Monophonic: Aftertouch affects all voices" against "AT Duophonic:
-  # Aftertouch only affects the last played note, or group of notes that was played
+  # NOT RECORDED, aftertouch received. The keys sense channel pressure, stated outright in the
+  # specifications and again in the overview: "Keyboard: velocity-sensitive, channel aftertouch"
+  # (p. 6). The duophonic option is NOT polyphonic pressure and must not be read as it. It
+  # restricts which voices respond: "AT Monophonic: Aftertouch affects all voices" against "AT
+  # Duophonic: Aftertouch only affects the last played note, or group of notes that was played
   # simultaneously" (p. 100). One pressure message, two ways of applying it.
-  aftertouch: channel
+  # **NO PAGE SAYS AN ARRIVING AFTERTOUCH MESSAGE IS ACTED ON.** The Mod Matrix's source is
+  # "Output voltage based on key pressure" (p. 52), and "The PolyBrute keyboard also features
+  # Aftertouch (i.e., pressure sensitivity)" (p. 42); and the Connect manual, whose on-screen
+  # keys play velocity into the instrument (connect_manual p. 48), says nothing of pressure
+  # from them. Until 2026-10-14 this said `aftertouch: channel`, the keys' kind.
   # NOT RECORDED, pitch bend. The instrument has a pitch wheel - "Pitch and Modulation wheels"
   # (p. 114) - and no page states how far it bends or whether that is settable, which is what
   # this field holds. See the source account.

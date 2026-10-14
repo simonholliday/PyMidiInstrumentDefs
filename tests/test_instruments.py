@@ -7606,12 +7606,14 @@ class TestAstroLab:
 		assert astrolab.voice.polyphony is None
 		assert part.polyphony is None
 
-		assert astrolab.voice.aftertouch == "channel"
+		# The keys' pressure, and a Part's switch for being affected by it, are all the manual has
+		# about aftertouch, so it is unset. Until 2026-10-14 this said `channel`.
+		assert (astrolab.voice.aftertouch, astrolab.voice.aftertouch_transmits) == (None, None)
 
 		# The keyboard's own sensitivity and what the Looper records are all the manual has about
-		# velocity, so the received side is unset. Until 2026-10-13 this said `both`.
-		assert astrolab.voice.velocity is not None
-		assert (astrolab.voice.velocity.note_on, astrolab.voice.velocity.transmits) == (None, True)
+		# velocity, and no page names it among what is sent, so neither side is recorded. Until
+		# 2026-10-13 this said `both`, and until 2026-10-14 `transmits: true`.
+		assert astrolab.voice.velocity is None
 
 		# A Part's switch turns pitch bend on or off, which is not a settable range, so
 		# `pitch_bend` is left out, as the AstroLab 37's is.
@@ -9508,11 +9510,13 @@ class TestPolyBrute:
 		assert poly.voice.polyphony_shared is True
 		assert poly.voice.voicing_modes == (1, 6)
 
-	def test_the_aftertouch_is_channel_pressure_whatever_duophonic_sounds_like (self) -> None:
-		"""A setting that restricts which voices respond is not polyphonic pressure."""
+	def test_the_keys_sense_channel_pressure_and_no_page_says_an_arriving_one_is_used (self) -> None:
+		"""A setting that restricts which voices respond is not polyphonic pressure, and the keys' kind is not what arrives."""
 		poly = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
 
-		assert poly.voice.aftertouch == "channel"
+		# Until 2026-10-14 this said `channel`, the keys' kind.
+		assert (poly.voice.aftertouch, poly.voice.aftertouch_transmits) == (None, None)
+		assert "**NO PAGE SAYS AN ARRIVING AFTERTOUCH MESSAGE IS ACTED ON.**" in prose_of("arturia", "polybrute")
 
 		account = " ".join((poly.source or "").split())
 		flowed = " ".join(line.lstrip().lstrip("#").strip() for line
@@ -12034,7 +12038,9 @@ class TestPolyBrute12:
 		six = pymidiinstrumentdefs.load("arturia/polybrute", [CORPUS])
 
 		assert (twelve.voice.aftertouch, twelve.voice.aftertouch_transmits) == ("received", True)
-		assert six.voice.aftertouch == "channel"
+
+		# The six has no such sentence, so its field is unset. Until 2026-10-14 it said `channel`.
+		assert six.voice.aftertouch is None
 
 		# Each is recorded as receiving velocity on one passage of the editor's manual, which both
 		# resources pages offer at one address; neither instrument's own manual says it. So the
@@ -21840,11 +21846,14 @@ class TestAstroLab37:
 		assert (directions.count("both"), directions.count("receives"), directions.count("none")) == (13, 21, 1)
 		assert ours["master_volume"] == (7, "Master Volume", "none", "master")
 
-	def test_two_parts_channel_aftertouch_and_no_program_change (self) -> None:
+	def test_two_parts_no_received_aftertouch_and_no_program_change (self) -> None:
 		small = pymidiinstrumentdefs.load("arturia/astrolab_37", [CORPUS])
 
 		assert (small.parts["part"].count, small.parts["part"].channel) == (2, "assigned")
-		assert (small.voice.aftertouch, small.voice.polyphony, small.voice.polyphony_shared) == ("channel", None, False)
+
+		# The keys sense channel pressure, and no page says an arriving one is used. Until
+		# 2026-10-14 this said `channel`.
+		assert (small.voice.aftertouch, small.voice.polyphony, small.voice.polyphony_shared) == (None, None, False)
 		assert small.voice.velocity is None and small.midi.program_change is None
 		assert (small.midi.clock, small.midi.transport, small.midi.channels) == ("receives", "receives", (1, 16))
 

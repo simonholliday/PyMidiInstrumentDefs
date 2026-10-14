@@ -127,10 +127,16 @@ source: >-
   "Chooses whether the Part responds to the Sustain." (reference p. 86). The joystick's two numbers
   reach a channel's Performance as the four do, and name no part only because the rule this follows
   covers the standard controllers. Bank select's upper half is sent and never received, so it has
-  no twin. **A setup's rows are MIDI channels 1 to 16 whatever the basic channel is.** So the row
-  that shares the basic channel's number, which is the first by the fiction recorded under `parts`,
-  is told each of the five numbers twice, once under each key. The two keys are one message on
-  that channel in two different modes.
+  no twin. **A setup's rows are MIDI channels 1 to 16 whatever the basic channel is** (reference
+  pp. 77, 78, 118 and 119), which the part says with `channel: 1`, so a program asking about a
+  row is handed the five keyed `multiset_` and not the controls naming no part. In MONO mode
+  only the rows from the basic channel up, as many as the # MONO CHANNELS parameter asks for and
+  no further than 16, are received (addendum p. 12), which the part cannot say. Where a row
+  shares the basic channel's number, the two keys are one message on that channel: the key
+  naming no part is the one that answers in POLY mode and the `multiset_` key the one in MULTI
+  mode, and in MONO mode, where the basic channel is the first row received, both describe it at
+  once. Until 2026-10-14 the part gave its rows as an offset of 0 from the basic channel, which
+  handed the first row each of the five numbers twice.
 
   IT ANSWERS TO BOTH KINDS OF AFTERTOUCH AND ITS KEYBOARD SENDS ONE. "Monophonic and polyphonic
   aftertouch are recognized but may or may not have an obvious effect, depending on the specific
@@ -279,18 +285,21 @@ voice:
     programmable: true
 
 parts:
-  # **SIXTEEN CHANNELS, A PERFORMANCE EACH, IN MULTI AND MONO MODES.** `channel_offset` carries the
-  # fiction it carries in `roland/jd_xi` and `yamaha/seqtrak`: the field says a part's channel is
-  # derived from a base, and in MULTI mode the basic channel is "ignored in favor of the Multi-Mode
-  # Setups" (reference p. 69) - each setup row is a channel, 1 to 16, and cannot be moved. The
-  # numbers a consumer sends are right, and the fiction is recorded here.
+  # **SIXTEEN CHANNELS, A PERFORMANCE EACH, IN MULTI AND MONO MODES.** A multimode setup holds a
+  # Performance for each MIDI channel, its rows 1 to 16 (reference pp. 77, 78, 118 and 119), and
+  # stores no channel for a row; no page offers a setting that moves one. So the part gives the
+  # first row's channel, 1, and its sixteen count up from it. In MULTI mode "the basic channel is
+  # ignored in favor of the Multi-Mode Setups" (reference p. 69). In MONO mode the rows keep their
+  # channels, and only those from the basic channel up, as many as the # MONO CHANNELS parameter
+  # asks for and no further than 16, are received (addendum p. 12). Until 2026-10-14 the part
+  # gave an offset of 0 from the basic channel, a fiction, since the rows' channel numbers derive
+  # nothing from it.
   # A CONTROL NAMING THIS PART IS ON A MULTIMODE SETUP'S CHANNEL, and one naming no part is on the
-  # basic channel: see the account. The row sharing the basic channel's number, the first by the
-  # same fiction, is given both.
+  # basic channel: see the account.
   multiset:
     label: Multiset channel
     count: 16
-    channel_offset: 0
+    channel: 1
     addressing: pitches
     receives: [notes, controls, program_change]
   # The channel a multimode setup reads effects modulation from, set per setup, or KBD for the

@@ -20097,7 +20097,10 @@ class TestWavestation:
 
 		multiset = wavestation.parts["multiset"]
 
-		assert (multiset.count, multiset.channel_offset) == (16, 0)
+		# Channels 1 to 16 whatever the basic channel is: since 2026-10-14 a number, where it was
+		# an offset of 0.
+		assert (multiset.count, multiset.fixed_channel, multiset.channel_offset) == (16, 1, None)
+		assert [multiset.channel_for(9, instance) for instance in range(16)] == list(range(1, 17))
 		assert multiset.receives == ("notes", "controls", "program_change")
 		assert wavestation.parts["fx_control"].receives == ("controls",)
 
@@ -20115,10 +20118,10 @@ class TestWavestation:
 			"multiset_volume": "both", "multiset_sustain_switch": "receives",
 			"multiset_bank_select_lsb": "receives"}
 
-		# The first of the sixteen is on the basic channel by the field's fiction, so it is told
-		# both keys; the other fifteen get the five that name them.
-		assert [control.name for control in wavestation.controls_reaching("multiset", 1)] == list(own)
-		assert len(wavestation.controls_reaching("multiset", 0)) == 13
+		# Each of the sixteen gets the five that name it, and none of the controls naming no
+		# part. Until 2026-10-14 the first was handed both keys, thirteen controls.
+		for instance in range(16):
+			assert [control.name for control in wavestation.controls_reaching("multiset", instance)] == list(own)
 
 	def test_thirty_two_voices_spent_one_two_or_four_a_note (self) -> None:
 		wavestation = pymidiinstrumentdefs.load("korg/wavestation", [CORPUS])

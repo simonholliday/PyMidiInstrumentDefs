@@ -211,8 +211,8 @@ voice:
 
 parts:
   # Every part is given its own channel and none derives one from a base, because there is no base
-  # channel here: six tracks are each set to a channel of the player's choosing, and the session
-  # answers on one reserved for it.
+  # channel here: three tracks, the two synths and the drums, are each set to a channel of the
+  # player's choosing, and the session answers on one reserved for it.
   synth:
     label: Synth
     count: 2
@@ -233,9 +233,9 @@ parts:
     receives: [notes, controls]
     # FOUR DRUMS AND ONE PART, because the control table enumerates all four on one channel:
     # "Messages on MIDI Channel 10" (guide p. 10) heads all 28 of its rows, and the rows name
-    # drum 1 to drum 4 individually. **Firmware 1.8 lets each drum take a channel of its own**,
-    # and the guide published three years later still prints them on one; what the controller
-    # numbers do when the drums are separated is not stated anywhere, so this follows the table.
+    # drum 1 to drum 4 individually. Firmware 1.8, which made the channel settable, keeps them
+    # together: "Drum 1/2/3/4 is a single MIDI track." (update_1_8 p. 7). Until 2026-10-14 this
+    # said 1.8 lets each drum take a channel of its own.
     # No program change: the guide sends the reader to the drum table instead, where patch
     # selection is CC 8, 18, 44 and 50.
   session:
@@ -243,7 +243,7 @@ parts:
     channel: 16
     receives: [controls, program_change]
     # **CHANNEL 16, AND THE ONE CHANNEL A PLAYER CANNOT MOVE**: "Channel 16 is reserved for the
-    # session" (update_1_8 p. 7), against the six tracks that may take any of 1 to 15. It takes
+    # session" (update_1_8 p. 7), against the three tracks that may take any of 1 to 15. It takes
     # no notes - it is the reverb, the delay, the master filter, the sidechains and the mixer -
     # and it takes a program change of its own, which selects a session rather than a patch.
     #

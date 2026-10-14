@@ -128,6 +128,11 @@ midi:
     # "Program Change O 1-64" both ways, with the remark "Selects Slots in the current Set
     # List", and a True Number row of 0-63. So the 64 are the slots of whichever Set List is
     # loaded rather than a fixed bank of sounds.
+  # LEARNED, SINCE 2026-10-14: the MIDI CC Assign table's column is headed "Default CC
+  # assignment" (p. 88) and the player can reassign any of its numbers, so each control from it
+  # says `assignment: default`, and the numbers they can be moved to are the owner's, which no
+  # file can list.
+  control_change: learned
   sysex: true
   # "*2: Supports universal system exclusive messages device inquiry, master volume, master
   # fine tuning, and master coarse tuning" - so what it answers to is the universal set

@@ -53,8 +53,8 @@
 # whole of, and the controllers another instrument's keyboard sends it.
 #
 # NOT RECORDED, each for a reason the account gives: the bend range, the thirteen vocoder
-# parameters, what an arriving panel controller edits in Drum mode, the channel messages that are
-# commands and not controls, and `control_change`.
+# parameters, what an arriving panel controller edits in Drum mode, and the channel messages that
+# are commands and not controls.
 
 definition: 1
 
@@ -237,8 +237,9 @@ source: >-
   inference: see the `kit` part. The channel messages the implementation recognises beside its
   controllers, All Sound Off, Reset All Controllers and All Note Off at 120, 121 and 123, and the
   two Omni messages at 124 and 125 of which the next paragraph says more (implementation p. 9):
-  they are commands and not controls. And `control_change`, because the map is neither learned nor
-  fixed: it is a table of defaults, which `assignment` says control by control.
+  they are commands and not controls. Until 2026-10-14 `control_change` was here too, as a map
+  neither learned nor fixed; a table of movable defaults now says `learned`, beside
+  `assignment: default` on each of the 57 controls from the table (manual p. 151).
 
   OTHER PLACES THE DOCUMENTS DISAGREE, ON WHICH NO FIELD TURNS. They were met in the reading and
   are not a search for every one. The implementation's recognised table has rows for controllers
@@ -358,6 +359,11 @@ midi:
   # the reason in a sentence: NRPNs carry the knobs and buttons "that are not included in the
   # control messages described above" (manual p. 149).
   nrpn: supported
+  # LEARNED, SINCE 2026-10-14: "You can assign control changes CC#00–CC#95 and CC#102–CC#119 to
+  # the main parameter controllers (knobs and buttons) of the front panel." (manual p. 149). The
+  # 57 numbers below are the table's `Initial` column (manual p. 151), each `assignment:
+  # default`, and the numbers they can be moved to are the owner's, which no file can list.
+  control_change: learned
   # "Program data and global data can be transmitted as MIDI exclusive data." (manual p. 150), and
   # the implementation gives the dumps, and a parameter change for the parameters of a program and
   # of a drum kit; its table of global parameters gives none (implementation p. 28). The family

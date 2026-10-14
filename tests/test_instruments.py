@@ -2236,15 +2236,25 @@ class TestLearnedMaps:
 			# Said since the sweep of 2026-10-13, where a file had left the word out as unable to say both:
 			"moog/theremini",
 			"akai/mpc_key_37", "akai/mpc_live", "akai/mpc_live_iii", "akai/mpc_xl",
+			# Said since 2026-10-14, where every number the owner can move is listed:
+			"korg/microkorg", "korg/wavestate", "korg/radias", "erica_synths/perkons_hd_01", "korg/kronos",
 		}
 
-	def test_a_file_that_lists_every_number_the_owner_can_move_does_not_say_learned (self) -> None:
-		"""Where the word stops: a table of movable defaults says `assignment: default` on each row, and no more."""
-		for name in ("korg/microkorg", "korg/wavestate", "korg/radias", "erica_synths/perkons_hd_01", "korg/kronos"):
+	def test_a_number_the_owner_can_move_means_learned (self) -> None:
+		"""A movable default's other numbers are the owner's, so every file with one says `learned`.
+
+		Until 2026-10-14 five files that listed every movable number left the word out.
+		"""
+		movable = set()
+
+		for name in pymidiinstrumentdefs.available([CORPUS]):
 			definition = pymidiinstrumentdefs.load(name, [CORPUS])
 
-			assert definition.midi.control_change is None, name
-			assert any(control.assignment == "default" for control in definition.controls.values()), name
+			if any(control.assignment == "default" for control in definition.controls.values()):
+				movable.add(name)
+				assert definition.midi.control_change == "learned", name
+
+		assert {"korg/microkorg", "korg/wavestate", "korg/radias", "erica_synths/perkons_hd_01", "korg/kronos"} <= movable
 
 		# And one whose owner picks only what four fixed numbers reach.
 		field = pymidiinstrumentdefs.load("teenage_engineering/op_1_field", [CORPUS])
@@ -11001,11 +11011,12 @@ class TestPerkonsHD01:
 		assert "THE NUMBERS ARE A FACTORY ASSIGNMENT AND THE PLAYER CAN REWRITE THEM" in said
 		assert "single-midi-cc.json" in said
 
-		# `learned` would be wrong here: there is a published map, and it is this one.
+		# There is a published map, and it is this one; since 2026-10-14 `learned` stands beside
+		# it, because the owner can move every number in it.
 		perkons = pymidiinstrumentdefs.load("erica_synths/perkons_hd_01", [CORPUS])
 
-		assert perkons.midi.control_change is None
-		assert not perkons.midi.learns_control_change
+		assert perkons.midi.control_change == "learned"
+		assert perkons.midi.learns_control_change
 
 	def test_the_other_channel_mode_is_a_part_of_four_voices (self) -> None:
 		"""Four voices on four channels, answering to voice 1's eleven numbers.
@@ -22211,7 +22222,7 @@ class TestRadias:
 		assert radias.midi.program_change is not None
 		assert (radias.midi.program_change.receives, radias.midi.program_change.sends,
 			radias.midi.program_change.presets) == (True, True, 256)
-		assert (radias.midi.nrpn, radias.midi.sysex, radias.midi.control_change) == ("supported", True, None)
+		assert (radias.midi.nrpn, radias.midi.sysex, radias.midi.control_change) == ("supported", True, "learned")
 
 	def test_the_manual_s_chart_is_followed_where_the_implementation_s_table_stops_short (self) -> None:
 		"""The chart marks 4 and the range to 119 as recognised. The implementation's table has neither."""

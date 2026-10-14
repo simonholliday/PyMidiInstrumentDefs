@@ -529,24 +529,27 @@ express goes in a comment, never in an invented field.
 **`control_change` says two things a list of controls cannot.** `control_change: none` is a
 checked absence: somebody read the documents and the instrument answers to no controller, as
 `midi: none` says of MIDI altogether. `control_change: learned` says the owner assigns
-controller numbers, by MIDI learn or by setting a number in a menu, so no file can publish
-them. **`learned` may stand beside controls.** The controls are then the numbers the maker
-fixes, or the ones it prints as what the instrument ships sending, and the word says the rest
-is the owner's. Waldorf's Iridiums have fifteen or sixteen numbers their maker fixes, most of
-them modulation sources, and map any other parameter by learning; a MONTAGE prints the number
-each of its physical controllers ships on, and every one can be moved. The paragraph on
-`assignment` below is how a control says the owner can move it. Leave `control_change` out
-where neither word is so.
+controller numbers, by MIDI learn, by setting a number in a menu or by editing a settings file
+the instrument reads, so no definition can publish them. **`learned` may stand beside
+controls.** The controls are then the numbers the maker fixes, or the ones it prints as what
+the instrument ships sending or recommends the owner switch on, and the word says the rest is
+the owner's. Waldorf's Iridiums
+have fifteen or sixteen numbers their maker fixes, most of them modulation sources, and map
+any other parameter by learning; a MONTAGE prints the number each of its physical controllers
+ships on, and every one can be moved. The paragraph on `assignment` below is how a control
+says the owner can move it. Leave `control_change` out where neither word is so.
 
-**`learned` is for numbers that are the owner's and that no file can list.** A number the
-file does list and the owner can move says `assignment: default` on its control, and a table
-of such numbers does not call for the word: a microKORG's panel numbers are factory
-assignments an owner can change, every one of them in its table, so each of those controls
-says `assignment: default` and `control_change` stays out. And where the owner picks only
-what a fixed number reaches, as with the four inputs of an OP-1 field's MIDI LFO, no number
-is the owner's: those controls say `assignment: slot` and `control_change` stays out. The word
-is said whichever way a number travels: a Theremini's maker fixes the 28 controllers its table
-lists and its owner sets the two its antennas send, so it says `learned` beside the 28.
+**`learned` goes with every number the owner can move.** A number the file lists and the
+owner can move says so with `assignment` on its control, `default` where the instrument ships
+on that number and `"off"` where it ships switched off, and the instrument says `learned` as
+well: the numbers it can be moved to are the owner's, and no definition can list which are in
+use. A microKORG's panel numbers are factory assignments an owner can change, every one of them in
+its table, so each of those controls says `assignment: default` and `control_change` says
+`learned`. Where the owner picks only what a fixed number reaches, as with the four inputs of
+an OP-1 field's MIDI LFO, no number is the owner's: those controls say `assignment: slot` and
+`control_change` stays out. The word is said whichever way a number travels: a Theremini's
+maker fixes the 28 controllers its table lists and its owner sets the two its antennas send,
+so it says `learned` beside the 28.
 
 ```yaml
 midi:

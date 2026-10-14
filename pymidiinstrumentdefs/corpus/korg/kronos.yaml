@@ -390,6 +390,13 @@ midi:
   # in the archive beside it. Worth knowing that the factory filter has it switched off:
   # "Enable Exclusive [Off, On] ... Normally you will leave this unchecked." (guide p. 787).
   sysex: true
+  # LEARNED, SINCE 2026-10-14: the chart's note on its rows for the KARMA controllers and for the
+  # pads and vector joystick reads "Valid if assigned as a MIDI control change in Global P2
+  # Controller. The number shown here is the CC default assignment." (operation p. 296). Of
+  # those numbers 27 are a recommendation shipped switched off (guide p. 793) and two are
+  # defaults (guide p. 784), each saying so with `assignment`, and the numbers any of them can be
+  # moved to are the owner's, which no file can list.
+  control_change: learned
 
 voice:
   addressing: pitches

@@ -4,7 +4,8 @@
 # changes can be assigned to each front panel knob/key of the microKORG so that the changes
 # in sound as controlled by knob/key operations can be transmitted as performance data"
 # (p. 56). So a microKORG somebody has reassigned does not answer to the table below, and
-# each of the 41 from that table says so with `assignment: default`. CC 1, the one control
+# each of the 41 from that table says so with `assignment: default`; the numbers they can be
+# moved to are the owner's, which is what `control_change: learned` says. CC 1, the one control
 # here whose number the player cannot reassign, carries no such word.
 #
 # EACH NUMBER MEANS TWO THINGS, AND WHICH ONE DEPENDS ON THE PROGRAM, not on the channel.
@@ -161,6 +162,11 @@ midi:
     presets: 128
   # NUMBERS PER CONTROL, below, 29 of them.
   nrpn: supported
+  # LEARNED, SINCE 2026-10-14: "Control changes can be assigned to each front panel knob/key of
+  # the microKORG" (p. 56), so the 41 numbers from that page's table are where the panel starts,
+  # each says `assignment: default`, and the numbers they can be moved to are the owner's, which
+  # no file can list.
+  control_change: learned
   # It answers a device inquiry with an identity reply naming Korg, the MS2000 series family
   # and member ID 11 for this model, and has system exclusive sections of its own in both
   # directions - current program dump, program write request and the rest. Of the universal

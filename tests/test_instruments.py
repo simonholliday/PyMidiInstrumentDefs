@@ -9716,10 +9716,18 @@ class TestSp404Mkii:
 	"""A Roland sampler whose buses and input sit on fixed channels 1 to 5."""
 
 	def test_the_bus_controls_are_written_once_for_each_kind_of_part (self) -> None:
-		"""A control naming no part would mean channel 1, bus 1, alone. Part-less until 2026-10-11."""
+		"""A control naming no part would mean the base channel, which no bus is. Part-less until 2026-10-11."""
 		sp = pymidiinstrumentdefs.load("roland/sp_404mkii", [CORPUS])
 
 		assert len(sp.controls) == 41
+
+		# Fixed channels, given as the numbers they are since 2026-10-14, where they were offsets.
+		channels = {name: [part.channel_for(7, instance) for instance in range(part.count)] for name, part in sp.parts.items()}
+
+		assert channels == {"bus_1_2": [1, 2], "bus_3_4": [3, 4], "input_fx": [5], "vocoder": [11], "chromatic": [16]}
+
+		# So the first bus is handed its own eight and none of the seventeen naming no part.
+		assert [control.part for control in sp.controls_reaching("bus_1_2", 0)] == ["bus_1_2"] * 8
 
 		reaches: dict[int, set[str]] = {}
 

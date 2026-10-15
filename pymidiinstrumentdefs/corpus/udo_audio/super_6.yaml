@@ -277,8 +277,12 @@ voice:
     # `Note On` and `Note Off` are both Yes in both columns of the Channel Messages table (manual
     # p. 120), and velocity has to be switched on for MPE to use it: "Note On Velocity: For this
     # MIDI message to take effect in MPE mode, set the DYNAMICS switch in the VCA section to
-    # either 1/2 or ON." (manual p. 105).
-    note_on: both
+    # either 1/2 or ON." (manual p. 105). **RECEIVED, AND NOT RECORDED AS SENT**: the table has
+    # no Velocity row, and no page names velocity among what the Super 6 sends, though the
+    # keyboard model's Fatar keyboard is "velocity sensitive" (manual p. 69). A Yes for Note On
+    # in the Transmit column does not say what velocity the sent Note On carries. Until
+    # 2026-10-15 this said `both`.
+    note_on: received
     # **NOTE OFF VELOCITY IS REAL HERE, WHICH IS RARE**: the same page gives it its own bullet -
     # "Note Off Velocity: For this MIDI message to take effect in MPE mode, set the DYNAMICS
     # switch in the VCA section to either 1/2 or ON." (manual p. 105).

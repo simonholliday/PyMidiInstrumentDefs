@@ -13412,7 +13412,7 @@ class TestSuper6:
 		assert super_6.voice.aftertouch_transmits is True
 
 		assert super_6.voice.velocity is not None
-		assert super_6.voice.velocity.note_on == "both"
+		assert super_6.voice.velocity.note_on == "received"
 		assert super_6.voice.velocity.note_off is True
 
 		account = " ".join((super_6.source or "").split())

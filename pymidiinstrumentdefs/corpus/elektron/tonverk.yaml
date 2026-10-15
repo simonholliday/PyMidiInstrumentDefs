@@ -1,5 +1,5 @@
 # THIS MAKER ADDRESSES ONE INSTRUMENT TWO WAYS AT ONCE, AND EACH HAS A SHAPE OF ITS OWN HERE.
-# 242 of the 246 controls below come out of an appendix of 74 controller numbers and 92
+# 242 of the 250 controls below come out of an appendix of 74 controller numbers and 92
 # parameter numbers:
 #
 #   **ACROSS**, by the kind of track. The CC table prints a column for each of four - audio, bus,
@@ -172,25 +172,27 @@ source: >-
   availble` for available, once on p. 50 and once on p. 51. And the appendix's footnote spells
   NRPN `NPRN` (manual p. 120), while two of its rows drop the slash their neighbours print.
 
-  FOUR CONTROLLERS OUTSIDE THE APPENDIX ARE CONTROLS BELOW: TWO OF THEM TWO-WAY, AND TWO PEDALS
-  RECEIVED ONLY. The track setup menu assigns parameters to "the MIDI mod wheel command
-  (CC #1)" (manual p. 52) and to "the MIDI breath controller command (CC #2)" (manual p. 52),
-  among settings that "are only available for audio tracks (Track 1–8)" (manual p. 50). So each
-  is a modulation source the player routes to up to four parameters, as aftertouch and pitch
+  FOUR CONTROLLERS OUTSIDE THE APPENDIX ARE CARRIED AS RECEIVED ON THE AUDIO TRACKS, AND THE MIDI
+  MACHINE NAMES FOUR IT SENDS. The track setup menu assigns parameters to "the MIDI mod wheel
+  command (CC #1)" (manual p. 52) and to "the MIDI breath controller command (CC #2)" (manual p.
+  52), among settings that "are only available for audio tracks (Track 1–8)" (manual p. 50). So
+  each is a modulation source the player routes to up to four parameters, as aftertouch and pitch
   bend are here, and not a parameter with a place of its own.
 
-  **THOSE TWO CARRY NO DIRECTION, WHICH SAYS BOTH WAYS, AND THAT IS TRUE OF THE TRACK AND OF NO
-  ONE MACHINE.** A track with a sound machine answers to them. The same track can hold the
+  **THOSE TWO ARE RECEIVED BY THE TRACK AND SENT ON THE CHANNEL ITS MIDI MACHINE'S CHAN SETS, SO
+  EACH IS WRITTEN TWICE.** A track with a sound machine answers to them. The same track can hold the
   MIDI machine instead, "which then converts the audio track into a MIDI track" (manual
   p. 20), and that machine has a parameter of its own for each: "MW (Mod Wheel) controls the
   modulation wheel data sent on the MIDI track." (manual p. 99) and "BC (Breath Controller)
   controls the breath control data sent on the MIDI track." (manual p. 99). Those two lines
   print no number, and that they are 1 and 2 is the menu's naming. Each is off until it is
   switched on (manual p. 98), and it goes out on the channel the machine's own CHAN parameter
-  names (manual pp. 77, 98), a setting apart from the track's channel. The bus tracks can hold
-  the MIDI machine too, with the same pages of parameters (manual pp. 64, 86), and so send the
-  same two, and no control here says so: the bus part carries the appendix's column for a
-  bus, which has neither number.
+  names (manual pp. 77, 98), a setting apart from the track's channel. So the audio part's two
+  say `direction: receives`, and the sending is on the `midi_out` part, whose channel is that
+  CHAN. The bus tracks can hold the MIDI machine too, with the same SRC, FLTR and AMP pages
+  (manual pp. 20, 64, 86), so `midi_out` counts twelve, one for each of tracks 1 to 12. Until
+  2026-10-15 the two carried no direction on the audio part, which said both ways on the track's
+  channel.
 
   **THE PEDALS ARE `direction: receives`: NO PAGE NAMES EITHER AMONG WHAT A TRACK SENDS.** The
   1.3.0 notes have "Added support for MIDI sustain pedal (CC64) and MIDI sostenuto pedal
@@ -204,14 +206,15 @@ source: >-
   made to send 64, 66 or any other standard controller. That is the player's choice and not
   the instrument's map, and no direction here counts it.
 
-  None of the four is in Appendix D, where the other 242 come from, so none has a group. The
-  manual's text prints two more numbers the appendix lacks, the MIDI machine's bank changes
-  on CC 0 and CC 32 (manual p. 98). They are not controls here: no page has this instrument
-  answer to either, and they would be the only numbers carried for what the MIDI machine
-  alone sends. So the text prints six controller numbers the appendix lacks, and four are
-  carried. A picture of that machine's screen shows eight numbers in its slots, as examples
-  (manual p. 99); two of them, 8 and 40, are controller numbers that no table and no sentence
-  gives. Until 2026-10-13 the four were named here and not carried.
+  None of the four is in Appendix D, where 242 of the 250 come from. The manual's text prints two
+  more numbers the appendix lacks, the MIDI machine's bank changes: "BANK (Bank) sends a bank
+  change message on CC 0 MSB." (manual p. 98) and "SBNK (Sub Bank) sends a bank change message
+  on CC 32 LSB." (manual p. 98). They are on the `midi_out` part, sent and not received, beside
+  the machine's mod wheel and breath: no page has this instrument answer to either. So the text
+  prints six controller numbers the appendix lacks, and all six are carried. A picture of that
+  machine's screen shows eight numbers in its slots, as examples (manual p. 99); two of them, 8
+  and 40, are controller numbers that no table and no sentence gives. Until 2026-10-13 the four
+  were named here and not carried, and until 2026-10-15 the bank changes were not carried.
 
   NOT CARRIED: what each machine puts on each data entry knob. Appendix A runs thirty pages and
   names the parameters of every SRC and FX machine, and the MIDI appendix publishes the slots
@@ -237,10 +240,10 @@ sources:
     # numbers as high as y 746, which is how the one is kept out of the other.
     # **The edition above is the document's own**, from the last line of the copyright notice
     # at the foot of p. 13. Its cover reads `Tonverk / User Manual` and nothing else. See `model`.
-    # Appendix D, pp. 120-124, is the source of every number below but four. Everything else is
+    # Appendix D, pp. 120-124, is the source of every number below but six. Everything else is
     # cited for the structure, the settings, the four absences, the document's own edition, and
-    # four controller numbers its text prints outside the appendix: 1 and 2, which are controls
-    # below, and 0 and 32, which a track running the MIDI machine sends and which are not.
+    # four controller numbers its text prints outside the appendix: 1 and 2, and 0 and 32, which
+    # a track running the MIDI machine sends. All four are controls below.
     page_offset: 0
   download_page:
     kind: download_page
@@ -300,7 +303,7 @@ midi:
     # **PATTERNS, NOT PRESETS**: "MIDI program change messages 0-127 will select pattern 1-128
     # (A01-H16) on Tonverk." (manual p. 30), which is eight banks of sixteen.
     presets: 128
-  # 92 of the 246 controls below are addressed by NRPN and by nothing else, and counted out over
+  # 92 of the 250 controls below are addressed by NRPN and by nothing else, and counted out over
   # the subtracks they come to 435, 43 and eight times 49, which the `subtrack` part's eight
   # instances give - see the comment above the definition.
   # The maker names the two together as one switch -
@@ -383,9 +386,9 @@ parts:
     count: 8
     addressing: pitches
     # "Tracks 1-8 can be used as audio tracks" (manual p. 20), each holding a preset. They can
-    # also run a MIDI machine instead, which turns the track into a sequencer for something else
-    # and is not a thing this format describes. One trace of it is below: the mod wheel and the
-    # breath controller are two-way, because that machine has a parameter of its own for each.
+    # also run a MIDI machine instead, which turns the track into a sequencer for something else.
+    # The controllers that machine sends by name are on the `midi_out` part below, on its own
+    # channel.
     receives: [notes, controls]
   bus:
     label: Bus track
@@ -406,6 +409,21 @@ parts:
     channel: assigned
     # One, and the only kind whose column in the appendix names the external inputs.
     receives: [controls]
+
+  # THE MIDI MACHINE'S OUTPUT, ON THE CHANNEL ITS OWN CHAN SETS. Tracks 1 to 8 can run the MIDI
+  # machine in place of a sound, and the bus tracks 9 to 12 alongside their bussing (manual
+  # pp. 20, 86). What it sends goes out on a setting of its own: "CHAN (Channel) sets the MIDI
+  # channel to which the track sends MIDI data." (manual p. 98), a setting apart from the track's
+  # own channel (manual p. 76), and several tracks can share one (manual p. 20). So it is a part
+  # of its own, assigned, one instance for each track that can run the machine, and its controls
+  # are the controllers the machine sends by name.
+  # **WHAT REACHES IT IS NOT STATED, SO `receives` IS NOT GIVEN**: a MIDI track is recorded from
+  # outside through the AUTO channel (manual p. 77), and no page says what arrives on a CHAN.
+  # Since 2026-10-15.
+  midi_out:
+    label: MIDI machine
+    channel: assigned
+    count: 12
 
   # THE EIGHT SUBTRACKS INSIDE AN AUDIO TRACK THAT RUNS THE SUBTRACKS MACHINE, which is what the
   # appendix's last table is for: its column is headed "Audio tracks using the Subtracks SRC
@@ -714,21 +732,31 @@ controls:
   subtrack_mod_env_delay:                     {label: "MOD ENV delay", nrpn: 251, part: subtrack, group: subtrack}
   subtrack_mod_env_depth:                     {label: "MOD ENV depth", nrpn: 253, part: subtrack, group: subtrack}
   # OUTSIDE THE APPENDIX ----------------------------------------
-  # The four controllers carried from outside Appendix D, two that the manual numbers and two
+  # The four on the audio part from outside Appendix D, two that the manual numbers and two
   # that the release notes do. The first two are modulation sources the player routes to up to
   # four parameters each (manual p. 52), among settings for the audio tracks alone (manual
   # p. 50). **THEY TAKE THE GROUP OF THE PAGE THAT PRINTS THEM**, the TRACK SETUP menu's page
   # headed 11.1 TRIG (manual pp. 50, 52), so they are in `trig` with the appendix's TRIG rows,
-  # which belong to another page the same key opens (manual p. 55). **They are two-way, for the
-  # track and for no one machine**: a track with a sound machine answers to them, and with the
-  # MIDI machine in its place it sends them, each off until switched on (manual pp. 98, 99),
-  # on the channel that machine's own CHAN sets (manual p. 98), not the channel the settings
-  # menu gives the track (manual pp. 76, 77). **The two pedals are received only**: they rest
+  # which belong to another page the same key opens (manual p. 55). **They are received here, by
+  # the track**: a track with a sound machine answers to them. With the MIDI machine in its place
+  # the track sends them, each off until switched on (manual pp. 98, 99), on the channel that
+  # machine's own CHAN sets (manual p. 98), a setting apart from the channel the settings menu
+  # gives the track (manual pp. 76, 77), so that sending is on the `midi_out` part below. Until
+  # 2026-10-15 they were two-way here. **The two pedals are received only**: they rest
   # on one line of the 1.3.0 notes (release_notes), which says they are supported and not which
   # tracks answer, and no page names either among what a track sends. They are on the audio
   # part as a reading, **and in no group**: that line stands under a version number, and no
   # page of the manual names a pedal. See the source account.
-  audio_mod_wheel:                            {label: "MODULATION WHEEL", cc: 1, part: audio, group: trig}
-  audio_breath_controller:                    {label: "BREATH CONTROLLER", cc: 2, part: audio, group: trig}
+  audio_mod_wheel:                            {label: "MODULATION WHEEL", cc: 1, part: audio, direction: receives, group: trig}
+  audio_breath_controller:                    {label: "BREATH CONTROLLER", cc: 2, part: audio, direction: receives, group: trig}
   audio_sustain_pedal:                        {label: "MIDI sustain pedal", cc: 64, part: audio, direction: receives}
   audio_sostenuto_pedal:                      {label: "MIDI sostenuto pedal", cc: 66, part: audio, direction: receives}
+  # THE CONTROLLERS THE MIDI MACHINE NAMES, on its own part and its own channel: the four its SRC
+  # page names, each off until switched on (manual p. 98). The bank changes give their numbers
+  # (manual p. 98); the mod wheel and breath print none (manual p. 99), and that they are 1 and 2
+  # is the TRACK SETUP menu's naming (manual p. 52). The machine's sixteen slots for any standard
+  # controller (manual p. 99) are the player's and are not carried. Since 2026-10-15.
+  midi_out_bank_select_msb:                   {label: "Bank", cc: 0, part: midi_out, direction: transmits, group: src}
+  midi_out_bank_select_lsb:                   {label: "Sub Bank", cc: 32, part: midi_out, direction: transmits, group: src}
+  midi_out_mod_wheel:                         {label: "Mod Wheel", cc: 1, part: midi_out, direction: transmits, group: src}
+  midi_out_breath_controller:                 {label: "Breath Controller", cc: 2, part: midi_out, direction: transmits, group: src}

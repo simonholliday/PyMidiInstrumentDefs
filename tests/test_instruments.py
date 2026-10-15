@@ -1176,15 +1176,17 @@ class TestTonverk:
 		"""Eight audio, four bus, three send FX and one mix, each with a channel of its own."""
 		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
 
-		tracks = {key: part for key, part in tonverk.parts.items() if part.within is None}
+		tracks = {key: part for key, part in tonverk.parts.items()
+			if part.within is None and key != "midi_out"}
 
 		assert list(tracks) == ["audio", "bus", "fx_send", "mix"]
 		assert [part.count for part in tracks.values()] == [8, 4, 3, 1]
 		assert sum(part.count for part in tracks.values()) == 16
 		assert all(part.is_assigned for part in tracks.values())
 
-		# And one part that is no track: the eight subtracks inside an audio track.
-		assert list(tonverk.parts) == ["audio", "bus", "fx_send", "mix", "subtrack"]
+		# And two parts that are no track: what the MIDI machine sends, on its own channel, and the
+		# eight subtracks inside an audio track.
+		assert list(tonverk.parts) == ["audio", "bus", "fx_send", "mix", "midi_out", "subtrack"]
 
 		# The audio tracks take notes, because a note plays a track's preset and only tracks 1 to
 		# 8 hold one.
@@ -1206,8 +1208,9 @@ class TestTonverk:
 
 		byte: dict[int, dict[str, str]] = {}
 
+		# Among the kinds of track: the MIDI machine's part sends 1 and 2 under its own names.
 		for control in tonverk.controls.values():
-			if control.cc is not None and control.part is not None:
+			if control.cc is not None and control.part not in (None, "midi_out"):
 				byte.setdefault(control.cc, {})[control.part] = control.label
 
 		conflicting = sorted(number for number, kinds in byte.items()
@@ -1297,47 +1300,76 @@ class TestTonverk:
 		# Patterns, not presets: eight banks of sixteen.
 		assert tonverk.midi.program_change.presets == 128
 
-		# And the controls travel both ways, so none carries a direction of its own, but the two
-		# pedals from outside the appendix.
-		pedals = {"audio_sustain_pedal", "audio_sostenuto_pedal"}
+		# And the appendix's controls travel both ways, so none carries a direction of its own.
+		# The eight from outside it do: the pedals and, since 2026-10-15, the mod wheel and breath
+		# are received, and the MIDI machine's four are sent.
+		outside = {name for name in tonverk.controls if name.startswith("midi_out_")} | {
+			"audio_sustain_pedal", "audio_sostenuto_pedal", "audio_mod_wheel", "audio_breath_controller"}
 
+		assert len(outside) == 8
 		assert all(control.direction == pymidiinstrumentdefs.definition.BOTH
-			for control in tonverk.controls.values() if control.name not in pedals)
+			for control in tonverk.controls.values() if control.name not in outside)
 
 	def test_four_controllers_the_appendix_leaves_out_are_on_the_audio_tracks (self) -> None:
 		"""Two the track setup menu numbers, and two pedals from one line of the release notes (#4919).
 
-		Until 2026-10-13 they were named in the account and not carried.  The mod wheel and the
-		breath controller are two-way: an audio track receives them and a track running the MIDI
-		machine sends them (#4988).  The pedals are received only: no page names either among
-		what a track sends, and the note for them does not say which tracks answer.
+		Until 2026-10-13 they were named in the account and not carried.  An audio track
+		receives the mod wheel and the breath controller, and a track running the MIDI machine
+		sends them on the machine's own channel, which the `midi_out` part carries; until
+		2026-10-15 they were two-way on the audio part (#4988).  The pedals are received only: no
+		page names either among what a track sends, and the note for them does not say which
+		tracks answer.
 		"""
 		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
 
-		assert len(tonverk.controls) == 246
+		assert len(tonverk.controls) == 250
 
 		# The two the track setup menu numbers take its page's heading, 11.1 TRIG, as their group;
 		# the pedals, from a release note under no heading, take none. Until 2026-10-14 all four
 		# had none.
-		for name, number, direction, group in (("audio_mod_wheel", 1, "both", "trig"),
-				("audio_breath_controller", 2, "both", "trig"),
+		for name, number, direction, group in (("audio_mod_wheel", 1, "receives", "trig"),
+				("audio_breath_controller", 2, "receives", "trig"),
 				("audio_sustain_pedal", 64, "receives", None), ("audio_sostenuto_pedal", 66, "receives", None)):
 			control = tonverk.controls[name]
 
 			assert (control.cc, control.part, control.direction, control.group) == (number, "audio", direction, group), name
 
-		# None of the four numbers was the appendix's on any kind of track.
+		# None of the four numbers was the appendix's on any kind of track; the MIDI machine's
+		# own part sends two of them.
 		assert not [control.name for control in tonverk.controls.values()
-			if control.cc in (1, 2, 64, 66) and not control.name.startswith("audio_")]
+			if control.cc in (1, 2, 64, 66) and not control.name.startswith(("audio_", "midi_out_"))]
 
 		said = " ".join(prose_of("elektron", "tonverk").split())
 
-		assert ("FOUR CONTROLLERS OUTSIDE THE APPENDIX ARE CONTROLS BELOW: TWO OF THEM TWO-WAY, AND TWO PEDALS "
-			"RECEIVED ONLY.") in said
+		assert ("FOUR CONTROLLERS OUTSIDE THE APPENDIX ARE CARRIED AS RECEIVED ON THE AUDIO TRACKS, AND THE "
+			"MIDI MACHINE NAMES FOUR IT SENDS.") in said
 		assert "Added support for MIDI sustain pedal (CC64) and MIDI sostenuto pedal (CC66)." in said
 		assert "the note says neither which kinds of track answer" in said
 		assert "**THE PEDALS ARE `direction: receives`: NO PAGE NAMES EITHER AMONG WHAT A TRACK SENDS.**" in said
-		assert "So the text prints six controller numbers the appendix lacks, and four are carried." in said
+		assert "So the text prints six controller numbers the appendix lacks, and all six are carried." in said
+
+	def test_the_midi_machine_sends_on_a_part_of_its_own (self) -> None:
+		"""Its named output goes out on the channel its own CHAN sets, so it is a part of its own.
+
+		Any of tracks 1 to 12 can run it, and what reaches it on that channel no page states.
+		Since 2026-10-15.
+		"""
+		tonverk = pymidiinstrumentdefs.load("elektron/tonverk", [CORPUS])
+		part = tonverk.parts["midi_out"]
+
+		assert (part.count, part.is_assigned, part.receives) == (12, True, None)
+
+		sent = {name: control for name, control in tonverk.controls.items() if control.part == "midi_out"}
+
+		assert {name: (control.cc, control.direction) for name, control in sent.items()} == {
+			"midi_out_bank_select_msb": (0, "transmits"),
+			"midi_out_bank_select_lsb": (32, "transmits"),
+			"midi_out_mod_wheel": (1, "transmits"),
+			"midi_out_breath_controller": (2, "transmits"),
+		}
+
+		# An assigned part gets its own controls alone.
+		assert [control.name for control in tonverk.controls_reaching("midi_out", 0)] == list(sent)
 
 	def test_four_things_are_left_out_and_each_says_why (self) -> None:
 		"""Two the manual half-states, one it states per machine, one it never mentions."""

@@ -19930,27 +19930,34 @@ class TestSeqtrak:
 		assert seqtrak.controls["synth_sostenuto"].choices == {}
 
 	def test_eleven_tracks_on_eleven_channels_that_cannot_be_moved (self) -> None:
-		"""Four groups, because that is how both documents group the eleven."""
+		"""Four groups of tracks, as both documents group the eleven, and a part for the project."""
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 
 		assert seqtrak.midi.channels == (1, 11)
-		assert sorted(seqtrak.parts) == ["drum", "dx", "sampler", "synth"]
+		assert sorted(seqtrak.parts) == ["drum", "dx", "project", "sampler", "synth"]
+		tracks = {name: part for name, part in seqtrak.parts.items() if name != "project"}
 
 		# The counts sum to the eleven channels, and the numbers lay them out in order: since
 		# 2026-10-14 each the channel it is, where they were offsets from the base channel.
 		assert [(part.count, part.fixed_channel) for name, part in
-			sorted(seqtrak.parts.items(), key = lambda pair: pair[1].fixed_channel or 0)] == \
+			sorted(tracks.items(), key = lambda pair: pair[1].fixed_channel or 0)] == \
 			[(7, 1), (2, 8), (1, 10), (1, 11)]
 
-		assert sum(part.count for part in seqtrak.parts.values()) == 11
-		assert [part.channel_for(5, instance) for part in seqtrak.parts.values() for instance in range(part.count)] \
-			== list(range(1, 12))
+		assert sum(part.count for part in tracks.values()) == 11
+		assert [part.channel_for(5, instance)
+			for part in tracks.values() for instance in range(part.count)] == list(range(1, 12))
 
-		# So the eleven master and send effect controls, naming no part, reach no track.
-		unparted = {name for name, control in seqtrak.controls.items() if control.part is None}
+		# The eleven master and send effect controls name a part of their own on channel 1,
+		# which takes controls alone, so they reach no track and are on channel 1 whatever the
+		# base channel. Until 2026-10-15 they named no part.
+		project = seqtrak.parts["project"]
+		effects = {name for name, control in seqtrak.controls.items() if control.part == "project"}
 
-		assert len(unparted) == 11
-		assert not unparted & {control.name for control in seqtrak.controls_reaching("drum", 0)}
+		assert (project.fixed_channel, project.count, project.channel_for(5)) == (1, 1, 1)
+		assert project.takes("controls") and not project.takes("notes")
+		assert len(effects) == 11
+		assert not [name for name, control in seqtrak.controls.items() if control.part is None]
+		assert not effects & {control.name for control in seqtrak.controls_reaching("drum", 0)}
 
 	def test_each_controller_is_written_once_for_every_kind_of_track_it_reaches (self) -> None:
 		"""18.3's `AVAILABLE ON` column, kind by kind. One copy naming no part until 2026-10-11."""
@@ -19977,13 +19984,15 @@ class TestSeqtrak:
 		for number in (116, 117, 118, 119):
 			assert reaches[number] == {"dx"}, number
 
-		# The master and send effects are on channel 1 alone, the base the offsets count from.
+		# The master and send effects are on channel 1 alone, in a part of their own since
+		# 2026-10-15.
 		for number in (102, 103, 104, 105, 106, 110, 111, 112, 113, 114, 115):
-			assert reaches[number] == {""}, number
+			assert reaches[number] == {"project"}, number
 
-		# A key names its kind first, as `roland/jd_xi`'s do.
+		# A key names its kind of track first, as `roland/jd_xi`'s do. The project's eleven keep
+		# the keys they had when they named no part.
 		for name, control in seqtrak.controls.items():
-			if control.part is not None and not name.startswith(("drum_pitch", "fm_")):
+			if control.part not in (None, "project") and not name.startswith(("drum_pitch", "fm_")):
 				assert name.startswith(control.part + "_"), name
 
 	def test_aftertouch_is_none_without_needing_a_judgement (self) -> None:
@@ -20077,7 +20086,7 @@ class TestSeqtrak:
 		seqtrak = pymidiinstrumentdefs.load("yamaha/seqtrak", [CORPUS])
 
 		assert "DRUMKIT" in (seqtrak.source or "")
-		assert len(seqtrak.parts) == 4
+		assert set(seqtrak.parts) - {"project"} == {"drum", "dx", "sampler", "synth"}
 
 
 class TestWavestation:

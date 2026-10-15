@@ -86,21 +86,24 @@ source: >-
   directions is the strongest thing said about this instrument's addressing.
 
   **SO EACH CONTROLLER IS WRITTEN ONCE FOR EVERY KIND OF TRACK IT REACHES, AND THE FORTY-TWO
-  NUMBERS ARE 105 CONTROLS.** A control naming no part is on the base channel, which here is
-  channel 1, the first drum track's, so a volume naming no part would reach that track alone.
+  NUMBERS ARE 105 CONTROLS.** A control naming no part is on the base channel, which a program
+  would usually take to be channel 1, the first drum track's (user_guide p. 99), so a volume
+  naming no part would reach that track alone.
   Every controller 18.3 gives for some tracks is written below once for each kind its `AVAILABLE
   ON` column names: four times for those on channels 1 to 11, twice for the mono/poly/chord,
   portamento and arpeggio controllers on 8 to 10, three times for the damper pedal on 8 to 11 and
   twice for the sostenuto on 8, 9 and 11. The drum pitch and the four FM controllers already named
   their one kind. Bank select is written for all four, since the control change format gives every
   channel, `n = 0 - 10` (data_list p. 113), though what it chooses is often not that track's: see
-  its note below. **The eleven 18.3 gives for channel 1 alone name no part**, the three master
-  effects' five and the two send effects' six (user_guide p. 101): 18.3 gives them channel 1 and
-  no track, and `part: drum` would claim all seven drum channels. They are the project's master
-  and send effects, which the address map files under `Project Common` (data_list p. 119), and not
-  the first drum track's sound, and since 2026-10-14 a reader asking what that track answers to
-  is not given them: each track gives its channel as a number, and only a part on the base
-  channel by an offset is handed the controls naming no part. Until 2026-10-11 each of those now
+  its note below. **The eleven 18.3 gives for channel 1 alone have a part**, the five of MASTER
+  EFFECT 1, 2 and 3 and the six of the two send effects (user_guide p. 101): 18.3 gives them
+  channel 1 and no track, and `part: drum` would claim all seven drum channels. They are the
+  project's master and send effects, which the address map files under `Project Common`
+  (data_list p. 119), and not the first drum track's sound. **So since 2026-10-15 they name a
+  part of their own, `project`, on channel 1 and taking controls alone**, and a program sends
+  them on channel 1 whatever it takes the base channel to be. Until then they named no part,
+  which put them on the base channel; until 2026-10-14 the first drum track was an offset from
+  that base too, so it was handed them. Until 2026-10-11 each of those now
   written per kind was written
   once, naming no part, and its released key took the kind as a prefix, `track_volume` becoming
   `drum_track_volume` and its three siblings; the damper pedal's became `synth_damper_pedal` and
@@ -348,6 +351,15 @@ parts:
     receives: [notes, controls, program_change]
     # Channel 11. Named in capitals because that is how both the track table and the controller
     # tables' `AVAILABLE ON` column print it.
+  project:
+    label: Project
+    channel: 1
+    receives: [controls]
+    # Channel 1, which KICK's track has too (user_guide p. 99), for the five controls of MASTER
+    # EFFECT 1, 2 and 3 and the six of the two send effects: 18.3 gives them channel 1 and no
+    # track (user_guide p. 101), and the address map files those effects under `Project Common`
+    # (data_list p. 119). It takes controls alone. Since 2026-10-15 those eleven name it, so they
+    # are sent on channel 1 whatever a program takes the base channel to be.
 
 groups:
   mix: Mix
@@ -458,12 +470,12 @@ controls:
 
   # ---- 18.3.2 Effect parameters: assigned-parameter slots, so what each one does depends on
   # ---- which effect type the track or the master bus is using. The master and send effects
-  # ---- are on channel 1 alone and name no part; the single effect is each track's.
-  master_effect_1_parameter_1: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 1, cc: 102, group: effect}
-  master_effect_1_parameter_2: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 2, cc: 103, group: effect}
-  master_effect_1_parameter_3: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 3, cc: 104, group: effect}
-  master_effect_2_parameter:   {label: MASTER EFFECT 2 - ASSIGNED PARAMETER, cc: 105, group: effect}
-  master_effect_3_parameter:   {label: MASTER EFFECT 3 - ASSIGNED PARAMETER, cc: 106, group: effect}
+  # ---- are on channel 1 alone and name the project part; the single effect is each track's.
+  master_effect_1_parameter_1: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 1, cc: 102, part: project, group: effect}
+  master_effect_1_parameter_2: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 2, cc: 103, part: project, group: effect}
+  master_effect_1_parameter_3: {label: MASTER EFFECT 1 - ASSIGNED PARAMETER 3, cc: 104, part: project, group: effect}
+  master_effect_2_parameter:   {label: MASTER EFFECT 2 - ASSIGNED PARAMETER, cc: 105, part: project, group: effect}
+  master_effect_3_parameter:   {label: MASTER EFFECT 3 - ASSIGNED PARAMETER, cc: 106, part: project, group: effect}
   drum_single_effect_parameter_1:     {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, part: drum, group: effect}
   synth_single_effect_parameter_1:    {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, part: synth, group: effect}
   dx_single_effect_parameter_1:       {label: SINGLE EFFECT - ASSIGNED PARAMETER 1, cc: 107, part: dx, group: effect}
@@ -476,12 +488,12 @@ controls:
   synth_single_effect_parameter_3:    {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, part: synth, group: effect}
   dx_single_effect_parameter_3:       {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, part: dx, group: effect}
   sampler_single_effect_parameter_3:  {label: SINGLE EFFECT - ASSIGNED PARAMETER 3, cc: 109, part: sampler, group: effect}
-  send_reverb_parameter_1:     {label: SEND REVERB - ASSIGNED PARAMETER 1, cc: 110, group: effect}
-  send_reverb_parameter_2:     {label: SEND REVERB - ASSIGNED PARAMETER 2, cc: 111, group: effect}
-  send_reverb_parameter_3:     {label: SEND REVERB - ASSIGNED PARAMETER 3, cc: 112, group: effect}
-  send_delay_parameter_1:      {label: SEND DELAY - ASSIGNED PARAMETER 1, cc: 113, group: effect}
-  send_delay_parameter_2:      {label: SEND DELAY - ASSIGNED PARAMETER 2, cc: 114, group: effect}
-  send_delay_parameter_3:      {label: SEND DELAY - ASSIGNED PARAMETER 3, cc: 115, group: effect}
+  send_reverb_parameter_1:     {label: SEND REVERB - ASSIGNED PARAMETER 1, cc: 110, part: project, group: effect}
+  send_reverb_parameter_2:     {label: SEND REVERB - ASSIGNED PARAMETER 2, cc: 111, part: project, group: effect}
+  send_reverb_parameter_3:     {label: SEND REVERB - ASSIGNED PARAMETER 3, cc: 112, part: project, group: effect}
+  send_delay_parameter_1:      {label: SEND DELAY - ASSIGNED PARAMETER 1, cc: 113, part: project, group: effect}
+  send_delay_parameter_2:      {label: SEND DELAY - ASSIGNED PARAMETER 2, cc: 114, part: project, group: effect}
+  send_delay_parameter_3:      {label: SEND DELAY - ASSIGNED PARAMETER 3, cc: 115, part: project, group: effect}
 
   # ---- 18.3.3 Mute/Solo, receive only on two documents' word ----
   drum_mute:                          {label: MUTE, cc: 23, values: {"off": 0, "on": 64}, direction: receives, part: drum, group: mix}

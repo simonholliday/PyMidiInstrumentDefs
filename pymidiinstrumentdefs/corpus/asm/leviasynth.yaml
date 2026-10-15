@@ -217,14 +217,16 @@ source: >-
   and is here. Until 2026-10-12 both files held `poly`.
 
 
-  VELOCITY IS RECEIVED, AND THE SENTENCE THAT ESTABLISHES IT IS WORD FOR WORD THIS MAKER'S OTHER
-  MANUAL'S. "To disable velocity sensitivity for the pads, select a fixed value (Fix 60, Fix 80,
-  etc.). This only affects local response and outgoing MIDI; incoming velocity response is
-  unaffected" (p. 156). The Hydrasynth Explorer's manual carries the same two sentences about its
-  keybed, four years earlier. **Shared prose is usually how a document comes to say something
-  false** - it is what put a ribbon in the Desktop manual two paragraphs above - and here it
-  happens to be true of both instruments, which is the point: the reuse tells you nothing about
-  the truth either way, so the pad page was read rather than assumed.
+  VELOCITY IS RECEIVED AND SENT, AND THE SENTENCE THAT ESTABLISHES IT IS WORD FOR WORD THIS
+  MAKER'S OTHER MANUAL'S. "To disable velocity sensitivity for the pads, select a fixed value
+  (Fix 60, Fix 80, etc.). This only affects local response and outgoing MIDI; incoming velocity
+  response is unaffected" (desktop p. 156). The Hydrasynth Explorer's manual carries the same
+  two sentences about its keybed, the first naming the keyboard where this one names the pads,
+  as the Leviasynth Keyboard's manual does (keyboard p. 155). **Shared prose is usually how a
+  document comes to say something false** - it is what put a ribbon in the Desktop manual two
+  paragraphs above - and here it happens to be true of both instruments, which is the point:
+  the reuse tells you nothing about the truth either way, so the pad page was read rather than
+  assumed.
 
 
   PITCH BEND IS SETTABLE TO 24 SEMITONES AND SAVED WITH THE PATCH, so the figure below is a
@@ -394,8 +396,14 @@ voice:
   polyphony_shared: false
   velocity:
     # "This only affects local response and outgoing MIDI; incoming velocity response is
-    # unaffected" (p. 156), of the pads' own fixed-velocity setting.
-    note_on: received
+    # unaffected" (desktop p. 156), of the pads' own fixed-velocity setting. So velocity is sent
+    # as well as received: notes played on the pads or keys go out with their velocity, or with
+    # the fixed value where one is chosen. The desktop's pads: "To disable velocity sensitivity
+    # for the pads, select a fixed value" (desktop p. 156). The keyboard's keys: "To disable
+    # keyboard velocity sensitivity, select a fixed value (Fix 60, Fix 80, etc.). This only
+    # affects local response and outgoing MIDI" (keyboard p. 155). Until 2026-10-15 this said
+    # `received`.
+    note_on: both
   # RECEIVED, AND STATED FOR MPE ALONE: "Leviasynth already supports polyphonic aftertouch, so
   # MPE pressure is mapped automatically to Poly aftertouch" (p. 151). No page says what it does
   # with aftertouch that arrives outside MPE, so the kind is left open: see the source account.

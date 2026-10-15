@@ -189,7 +189,11 @@ voice:
   # is why the chart is cited.
   polyphony: 8
   velocity:
-    note_on: received
+    # Sent as well as received: the keyboard's velocity setting says what goes out. "To disable
+    # keyboard velocity sensitivity, select a fixed value (Fix 60, Fix 80, etc.). This only
+    # affects local response and outgoing MIDI" (p. 81), so outgoing notes carry the keyboard's
+    # velocity, or the fixed value where one is chosen. Until 2026-10-15 this said `received`.
+    note_on: both
     # The keyboard's own sensitivity is a setting with a fixed-value option - "Velocity On, Fix
     # 60 / 80 / 100 / 110 / 127" with eight curves (p. 81) - and the manual is careful that this
     # is about the keyboard and not about what arrives: "This only affects local response and

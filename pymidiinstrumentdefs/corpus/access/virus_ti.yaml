@@ -36,7 +36,8 @@
 # PUBLISHED.** Those are different states and this corpus has both: `erica_synths/hexdrums` has no
 # control changes at all, by its maker's design, where this one has a controller for every
 # parameter and no document saying which. A third-party map exists; it is not evidence and
-# nothing from it is here.
+# nothing from it is here. The maker's manual for an earlier model, the Virus C, does have a
+# chart, and it is cited for one number's direction and for where that stops: see the account.
 #
 # AND WHETHER A CONTROL CHANGE DOES ANYTHING AT ALL IS A SETTING. "Page A > SysEx: Page A
 # parameters are transmitted/received as system exclusive packets. **Controller data reception is
@@ -124,6 +125,30 @@ source: >-
   glossary's "Modulation wheel = CC 01, volume control = CC 07, hold/sustain pedal = CC 64" is
   the MIDI specification** rather than this instrument.
 
+  **THE VIRUS C'S MANUAL SAYS PANORAMA IS SENT AS CONTROLLER 10, AND IT IS CITED FOR THAT AND FOR
+  WHERE THAT STOPS.** It is an earlier Virus model's own document, created in 2002 where this
+  instrument's manual is dated 2006, and served on the same manuals page. Its parameter table gives
+  Page A's parameter 10 as Panorama (predecessor_manual p. 166); with Page A set to controllers,
+  "the VIRUS sends MIDI Control Change on parameter movement" (predecessor_manual p. 162), each
+  message carrying the Page A parameter's number (predecessor_manual p. 163); and its
+  implementation chart marks controller 10, Panorama, as transmitted and recognised both
+  (predecessor_manual p. 185). This instrument's documents say "Page A parameters are
+  transmitted/received in the form of MIDI CC" (manual p. 157), and that a knob's data can be sent
+  to MIDI Out (manual p. 160), Panorama being reached with SHIFT on the OSC BALANCE knob
+  (manual p. 36). They give 10 as a number Panorama "Reacts to" (manual p. 129), as the reference
+  does (reference p. 48), and print no list of Page A. The nearest they come to saying Panorama is
+  sent as controller 10 is a note on hosts, after advising the 'Virus Default' template in Remote
+  Mode for sending CC data to a host: "Some hosts, such as Apple Logic for instance, do assign
+  Ctrl #7 and Ctrl #10 to the channel strip controls and therefore filter those data."
+  (manual p. 56). That implies Panorama's data can reach a host as controller 10. It prints no
+  template, and does not say Page A sends it. So no value is drawn from the C's pages: `panorama`
+  gives no direction, which says both ways, and those pages are why it is left open rather than
+  narrowed to received. They speak of the Single's Panorama. The C's Multi parameters give a part
+  no panorama of its own (predecessor_manual pp. 110-113); a C part is panned by its Single's
+  (predecessor_manual p. 111). `part_panorama` follows the Single's because a Part's Panorama
+  "Overrides/overwrites the Single parameter of the same name" (manual p. 167), and not because the
+  C prints a panorama for a part.
+
   **THE SHARPEST TRAP IS NOT A NUMBER AT ALL.** The patch-name appendix (manual pp. 192-208)
   prints each sound's number beside its designer's initials, and one designer's initials are
   **CC**. A reader keyed on "CC" beside a number would produce 128 false controller rows from one
@@ -144,11 +169,13 @@ source: >-
   value between two of the 128. A maker that answers seven-bit resolution with a matrix trick is
   not using fourteen-bit controllers, but it never says so, so this stays a silence.
 
-  NOT RECORDED: `transport`. **No page of either document mentions MIDI start, stop, continue or
-  song position**, searched for by name. The clock is described and the transport is not, which is
-  a real absence in a document that describes the clock in three states.
+  NOT RECORDED: `transport`. **No page of either of this instrument's documents mentions MIDI
+  start, stop, continue or song position**, searched for by name. The clock is described and the
+  transport is not, which is a real absence in a document that describes the clock in three
+  states.
 
-  NOT RECORDED: `mode`. There is no MIDI implementation chart in either document.
+  NOT RECORDED: `mode`. There is no MIDI implementation chart in either of this instrument's
+  documents.
 
   NOT RECORDED: a bend range in semitones. The instrument has two parameters rather than one, and
   they are not symmetrical: "Bend Up > -64 to +63 semitones: How much pitch bend is applied to the
@@ -230,21 +257,37 @@ sources:
     paginated: false
     # Cited for the absence: this is where the maker's own pointer leads, and it names thirteen
     # categories of file without naming a parameter list, a MIDI document or a sysex document.
+  predecessor_manual:
+    kind: manual
+    title: Access Virus C Series User Manual OS5
+    edition: Virus C Series
+    dated: 2004-04-23
+    landing: "https://www.virus.info/support/manuals"
+    url: "https://www.virus.info/download/170"
+    sha256: b974b47390fc36ec95c69ee6f018d179afa30eaba960b7273b1670deff3701c5
+    retrieved: 2026-10-15
+    # **ANOTHER MODEL'S MANUAL, THE VIRUS C'S.** Served as `Manual_Virus_C_English_Web.pdf` under
+    # "Virus C Series" on this instrument's manuals page, 198 pages, its cover reading "USER
+    # MANUAL OS5". The date is the PDF's own; it was created in 2002. Cited for Panorama's
+    # direction, and its Multi pages for where that stops; no value below is read from it: see
+    # the account. The format has no field yet for marking a source as another model's, so this
+    # comment does it.
+    page_offset: 2
 
 midi:
   # "MIDI Global Channel > 1 to 16: Specifies a MIDI channel used for SINGLE mode, as well as
   # for switching between MULTI mode programs via the MIDI message 'Program Change'" (manual
   # p. 152). In Multi mode each part has its own; see the parts below.
   channels: [1, 16]
-  # NOT RECORDED: mode. No implementation chart in either document.
+  # NOT RECORDED: mode. No implementation chart in either of this instrument's own documents.
   # BOTH, AND IT IS ONE SETTING WITH THREE STATES. "MIDI Clock > Internal Sync: Any received MIDI
   # Clock will be ignored. An internally generated clock is used instead. > Sync to External:
   # Received MIDI Clock will be recognized. This is the standard setting. > Send: Internally
   # generated MIDI Clock is sent to the MIDI output" (manual p. 153). So it receives by default
   # and sends on request, and never does both at once.
   clock: both
-  # NOT RECORDED: transport. No page of either document names start, stop, continue or song
-  # position - see the source account.
+  # NOT RECORDED: transport. No page of either of this instrument's own documents names start,
+  # stop, continue or song position - see the source account.
   program_change:
     # "Program Change > Disabled, Enabled: Specifies whether the MIDI message 'Program Change'
     # will switch Single programs. This applies to programs in Single mode as well as PARTs in

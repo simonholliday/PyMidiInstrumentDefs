@@ -15543,8 +15543,8 @@ class TestVirusTI:
 
 		said = " ".join(prose_of("access", "virus_ti").split())
 
-		assert "No page of either document mentions MIDI start, stop, continue or song position" \
-			in said
+		assert "No page of either of this instrument's documents mentions MIDI start, stop, continue or " \
+			"song position" in said
 		assert "only allows for a resolution of 128 values per parameter" in said
 		assert "there is no single number that is the bend range" in said
 
@@ -15561,7 +15561,8 @@ class TestVirusTI:
 		"""The 2013 reference adds a later OS and drops whole categories of MIDI material."""
 		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
 
-		assert set(virus.sources) == {"manual", "reference", "manuals_page", "downloads_page"}
+		assert set(virus.sources) == {"manual", "reference", "manuals_page", "downloads_page",
+			"predecessor_manual"}
 		assert virus.sources["manual"].edition == "Virus TI1 Series"
 		assert virus.sources["reference"].edition == "Virus TI2 Series"
 
@@ -15569,6 +15570,23 @@ class TestVirusTI:
 
 		assert "THE TWO DOCUMENTS ARE NOT ONE SUPERSEDING THE OTHER" in said
 		assert "Neither contains the other" in said
+
+	def test_panorama_keeps_no_direction_beside_the_virus_c_s_chart (self) -> None:
+		"""The Virus C's manual says the C sends Panorama as controller 10; no value is read from it."""
+		virus = pymidiinstrumentdefs.load("access/virus_ti", [CORPUS])
+
+		for name in ("panorama", "part_panorama"):
+			control = virus.controls[name]
+
+			assert (control.cc, control.direction) == (10, pymidiinstrumentdefs.definition.BOTH), name
+
+		manual = virus.sources["predecessor_manual"]
+
+		assert (manual.edition, manual.page_offset) == ("Virus C Series", 2)
+
+		said = " ".join(prose_of("access", "virus_ti").split())
+
+		assert "THE VIRUS C'S MANUAL SAYS PANORAMA IS SENT AS CONTROLLER 10" in said
 
 	def test_it_is_the_other_kind_of_empty_definition (self) -> None:
 		"""`erica_synths/hexdrums` has no controls by design; this one has them and no document."""

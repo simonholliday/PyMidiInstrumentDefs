@@ -8550,7 +8550,8 @@ class TestDigitoneII:
 		# What is established is recorded.
 		assert digitone.voice.note_range == (0, 84)
 		assert digitone.voice.velocity is not None
-		assert digitone.voice.velocity.note_on == "received"
+		# Sent as well, by a MIDI track: `received` until 2026-10-15.
+		assert digitone.voice.velocity.note_on == "both"
 
 		assert digitone.midi.clock == "both"
 		assert digitone.midi.transport == "both"

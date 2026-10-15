@@ -322,8 +322,16 @@ voice:
     # the preset from a MIDI keyboard." (manual p. 53). The sequencer records the velocity of
     # notes played in from a controller (manual p. 42). Apart from that, the appendix gives
     # `TRIG velocity` a controller number on each of the four kinds of track it lists
-    # (manual p. 120), which is a trig's parameter and not a note's velocity.
-    note_on: received
+    # (manual p. 120), which is a trig's parameter and not a note's velocity. Sent as well: a MIDI
+    # track's own velocity goes out with its notes. On a MIDI track "the sequencer data is
+    # transmitted through the MIDI OUT or USB ports." (manual p. 20), and "Each MIDI track can
+    # trigger up to 16 notes per step with adjustable parameters, including velocity and length"
+    # (manual p. 20). The MIDI machine's VEL: "Trig Velocity sets the velocity of the sequencer's
+    # note trigs." (manual p. 97). No one sentence says velocity is sent; the two on p. 20 are
+    # read together. A MIDI track's notes go out on the channel its MIDI machine's CHAN sets
+    # (manual pp. 77, 98), not on the track's own channel (manual p. 76). Until 2026-10-15 this
+    # said `received`.
+    note_on: both
   # RECEIVED AND SENT, AND THE KIND IS NOT STATED. It is plainly received - "Opens a menu where
   # you can assign up to four parameters to the MIDI aftertouch command." (manual p. 52) - a
   # MIDI track sends it, since its AT "controls the aftertouch data sent on the MIDI track"

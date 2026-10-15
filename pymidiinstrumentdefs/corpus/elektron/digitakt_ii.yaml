@@ -231,7 +231,13 @@ voice:
   # that naming standards differ and says it uses Elektron's own; it does not reconcile this.
   note_range: [0, 84]
   velocity:
-    note_on: received
+    # Sent as well as received: a MIDI track's own velocity goes out with its notes. "Each MIDI
+    # track can trigger a chord of up to four notes with adjustable parameters such as velocity
+    # and length" (p. 17), and on a MIDI track "the sequencer data is instead transmitted through
+    # the MIDI OUT or USB ports." (p. 17). The MIDI machine's VEL: "Trig Velocity sets the
+    # velocity of the sequencer's note trigs." (p. 102). No one sentence says velocity is sent;
+    # the two on p. 17 are read together. Until 2026-10-15 this said `received`.
+    note_on: both
     # "VELOCITY TO VOL Selects how MIDI velocity affects volume when playing the preset from a
     # MIDI keyboard", with OFF, LOG, LIN, EXP and EXP 2 curves, where "OFF means velocity does
     # not affect the volume of the sound" (p. 38). And VELOCITY MOD assigns up to four

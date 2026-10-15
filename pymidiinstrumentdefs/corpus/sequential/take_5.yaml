@@ -107,11 +107,15 @@ voice:
   velocity:
     # The list of received channel messages has Note On with a third byte it writes `0vvvvvvv`,
     # and remarks only "Note On. Note off if vvvvvvv = 0" (p. 2). Velocity is named in that list
-    # once, as ignored, on the Note Off row. **So received is read from a listing, and no
-    # sentence says it**: the row does not call the byte velocity, and the list's notes give
-    # `0vvvvvvv` as `Value`. The transmitted list has Note On with the same byte (p. 3), which
-    # this value does not say.
-    note_on: received
+    # once, as ignored, on the Note Off row. The transmitted list has Note On with the same byte,
+    # where its Note Off's is printed `0000000` (p. 3). **So received is read from a listing, and
+    # no sentence says it**: neither Note On row calls the byte velocity, and each list's notes
+    # give `0vvvvvvv` as `Value`. A Note On's third byte is its velocity by MIDI's own
+    # definition, so it is sent as well, and sent has sentences besides: the step sequencer
+    # "records note and velocity data, but not timing." (guide p. 48), and with sequencer playback
+    # "The external device will be triggered by the arpeggiated or sequenced notes." (guide p. 45).
+    # Until 2026-10-15 this said `received`.
+    note_on: both
     note_off: false          # "Note Off. Velocity is ignored" (p. 2)
   # Polyphonic key pressure and channel pressure are both received (p. 2), and channel pressure
   # alone is in the transmitted table (p. 3); the guide says the keyboard provides monophonic, or

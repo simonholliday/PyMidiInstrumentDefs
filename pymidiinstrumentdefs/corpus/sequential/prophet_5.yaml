@@ -312,9 +312,14 @@ voice:
   # a polyphony that depends on what is plugged in.
   polyphony: 5
   velocity:
-    # "Note On. Note off if vvvvvvv = 0" is received (p. 2). What the keyboard produces is shaped
-    # by a global curve, "Vel Response: 0-6" (p. 16).
-    note_on: received
+    # "Note On. Note off if vvvvvvv = 0" (implementation p. 2) is received. What the keyboard
+    # produces is shaped by a global curve, "Vel Response: 0-6" (guide p. 16).
+    # It is sent as well: the transmitted list has Note On with the same third byte, `0vvvvvvv`,
+    # where its Note Off's is printed `0000000` (implementation p. 3). The list's notes give that
+    # byte only as "Value", but a Note On's third byte is its velocity by MIDI's own definition,
+    # and the received list calls the same byte velocity on its Note Off row. Until 2026-10-15
+    # this said `received`.
+    note_on: both
     # "Note Off. Velocity is ignored" (p. 2), and what it sends is a literal zero (p. 3).
     note_off: false
   # IT RECEIVES BOTH KINDS OF PRESSURE AND ITS KEYBOARD SENDS CHANNEL PRESSURE: `aftertouch` for

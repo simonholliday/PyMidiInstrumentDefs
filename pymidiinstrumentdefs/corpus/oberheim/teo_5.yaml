@@ -254,11 +254,15 @@ voice:
   velocity:
     # The list of received channel messages has Note On with a third byte it writes `0vvvvvvv`,
     # and remarks only "Note On. Note off if vvvvvvv = 0" (p. 3). Velocity is named in that list
-    # once, as ignored, on the Note Off row. **So received is read from a listing, and no
-    # sentence says it**: the row does not call the byte velocity, and the list's notes give
-    # `0vvvvvvv` as `Value`. The transmitted list has Note On with the same byte (p. 4), which
-    # this value does not say.
-    note_on: received
+    # once, as ignored, on the Note Off row. The transmitted list has Note On with the same byte,
+    # where its Note Off's is printed `0000000` (p. 4). **So received is read from a listing, and
+    # no sentence says it**: neither Note On row calls the byte velocity, and each list's notes
+    # give `0vvvvvvv` as `Value`. A Note On's third byte is its velocity by MIDI's own
+    # definition, so it is sent as well, and sent has sentences besides: the step sequencer
+    # "records note and velocity data, but not timing." (guide p. 56), and with sequencer playback
+    # "The external device will be triggered by the arpeggiated or sequenced notes." (guide p. 54).
+    # Until 2026-10-15 this said `received`.
+    note_on: both
     # "Note Off. Velocity is ignored" (p. 3). Its own keyboard has seven velocity curves to
     # choose between, "Velocity Curve: Curve 1... Curve 7" (guide p. 22) - which is seven names
     # against the global table's range of 0-7, one of the many places this maker is out by one.

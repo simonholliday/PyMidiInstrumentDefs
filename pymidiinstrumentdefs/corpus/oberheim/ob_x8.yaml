@@ -315,8 +315,13 @@ voice:
   # aftertouch/key pressure data" (manual p. 23).
   aftertouch_transmits: true
   velocity:
-    # "Note On. Note off if vvvvvvv = 0" against "Note Off. Velocity is ignored" (manual p. 123).
-    note_on: received
+    # Received: "Note On. Note off if vvvvvvv = 0" (manual p. 123), against "Note Off. Velocity is
+    # ignored" (manual p. 123). Sent as well: the transmitted list has Note On with the same third
+    # byte, `0vvvvvvv`, where its Note Off's is printed `0000000` (manual p. 124). The lists'
+    # notes give that byte only as "Value", but a Note On's third byte is its velocity by MIDI's
+    # own definition, and the received list calls the same byte velocity on its Note Off row.
+    # Until 2026-10-15 this said `received`.
+    note_on: both
     note_off: false
   pitch_bend:
     # "Bend Lever Amount: Use this parameter to limit the range of the Bend lever, from ¼ to 12

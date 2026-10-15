@@ -192,11 +192,13 @@ voice:
   velocity:
     # The manual's list of received channel messages has Note On with a third byte it writes
     # `0vvvvvvv`, and remarks only "Note On. Note off if vvvvvvv = 0" (p. 73). Velocity is named
-    # in that list once, as ignored, on the Note Off row. **So received is read from a listing,
-    # and no sentence says it**: the row does not call the byte velocity, and the list's notes
-    # give `0vvvvvvv` as `Value`. The transmitted list has Note On with the same byte (p. 74),
-    # which this value does not say.
-    note_on: received
+    # in that list once, as ignored, on the Note Off row. The transmitted list has Note On with
+    # the same byte, where its Note Off's is printed `0000000` (p. 74). **So both directions are
+    # read from listings, and no sentence says either**: neither Note On row calls the byte
+    # velocity, and each list's notes give `0vvvvvvv` as `Value`. A Note On's third byte is its
+    # velocity by MIDI's own definition, so it is sent as well as received. Until 2026-10-15
+    # this said `received`.
+    note_on: both
     note_off: false          # "Note Off. Velocity is ignored" (p. 73)
   # Both kinds are received - Polyphonic Key Pressure and Channel Pressure are each listed at
   # p. 73 - while the instrument's own keyboard sends only the one: "The Prophet-6 provides

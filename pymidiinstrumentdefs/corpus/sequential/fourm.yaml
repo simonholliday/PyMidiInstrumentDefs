@@ -198,8 +198,13 @@ voice:
   # states a voice count.
   polyphony: 4
   velocity:
-    # Received on note on, and the document says of note off that "Velocity is ignored".
-    note_on: received
+    # Received on note on, and the document says of note off that "Velocity is ignored" (midi
+    # p. 2). Sent as well: the transmitted list has Note On with a third byte written `0vvvvvvv`
+    # where its Note Off's is printed `0000000` (midi p. 3). The list's notes give that byte only
+    # as "Value", but a Note On's third byte is its velocity by MIDI's own definition, and the
+    # received list calls the same byte velocity on its Note Off row. Until 2026-10-15 this said
+    # `received`.
+    note_on: both
   # **BOTH KINDS RECEIVED** - see the account. The received table carries polyphonic key
   # pressure and channel pressure both; the transmitted table carries channel pressure alone.
   # Until 2026-10-12 this said `poly`, the stronger of two words where the field had no third.

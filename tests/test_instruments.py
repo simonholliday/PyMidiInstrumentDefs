@@ -6534,7 +6534,8 @@ class TestTeo5:
 		assert teo.voice.addressing == "pitches"
 
 		assert teo.voice.velocity is not None
-		assert teo.voice.velocity.note_on == "received"
+		# Sent as well, on the transmitted Note On's byte: `received` until 2026-10-15.
+		assert teo.voice.velocity.note_on == "both"
 		assert teo.voice.velocity.note_off is False
 
 		assert teo.voice.pitch_bend is not None

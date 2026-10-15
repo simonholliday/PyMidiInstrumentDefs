@@ -746,6 +746,15 @@ pressure. A Muse's manual lists velocity among what its keyboard channel carries
 nothing of the velocity of a note that arrives, so it records `transmits: true` and no
 `note_on`.
 
+Four kinds of page sit near that line. A listing counts where its transmitted Note On has a
+third byte that varies, against a Note Off printed as zeros, even where its key calls that byte
+only a value, as Sequential's listings do. A setting that can fix the velocity of outgoing
+notes, as a Hydrasynth's can, counts too, since unfixed it follows the playing. A chart that
+prints one fixed sent value, as a TR-8S's chart prints `v=80`, does not count: by that chart
+what is sent does not follow the playing, so the comment gives the value and `note_on` stays
+what is received. Nor does a table that marks Note On as transmitted and has no velocity byte
+or row, as a Super 6's does.
+
 **Some instruments are several instruments.** A Digitone is four synth tracks, four MIDI
 tracks and an effects unit, each answering on its own MIDI channel. A Streichfett's solo
 section answers one channel above its strings. A Voce plays three parts across three

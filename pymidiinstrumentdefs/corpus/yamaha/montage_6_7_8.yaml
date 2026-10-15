@@ -379,10 +379,35 @@ midi:
 parts:
   # A CONTROL NAMING THIS PART IS ON THE PART'S OWN CHANNEL, and one naming no part is on the MIDI
   # I/O channel: see the account.
+  # PART N ANSWERS ON CHANNEL N IN MULTI MODE, FROM MIDI IN OR USB TO HOST, whichever the MIDI
+  # IN/OUT setting chooses (reference_manual p. 169), and no per-Part setting changes that: "The
+  # MIDI Receive Channel complies with the Part number." (data_list p. 191), and under Recognized
+  # the chart's Basic Channel gives Default "1 - 16" and Changed "X" (data_list p. 225). So the
+  # part gives its first channel, 1, and its sixteen count up from it. The sentence and the row
+  # name no mode. They are unchanged from the earliest Data List held
+  # (data_list_first pp. 175, 208), which does not yet print the MIDI I/O Mode setting: the
+  # addresses of it and of MIDI I/O Channel are "reserved" (data_list_first p. 181). The current
+  # one reprints them though it names Single (data_list pp. 193, 198). So they speak for Multi at
+  # least. Version 1.10 added Single (supplementary_manual pp. 124, 128) and 3.00 added Hybrid
+  # (supplementary_manual pp. 23, 61). In Hybrid, "MIDI data received via a channel other than
+  # that set in the MIDI I/O Channel parameter or on Parts with Keyboard Control Switch set to
+  # Off, is received via the corresponding Part." (supplementary_manual p. 61), and data on the
+  # MIDI I/O channel reaches the Parts with Keyboard Control on; the page leaves open which takes
+  # the Part whose number is the MIDI I/O channel, with Keyboard Control off. **No page prints how
+  # Parts receive from MIDI IN or USB TO HOST in Single mode.** The setting's own page speaks of
+  # data communication "using only the specified MIDI channel" (supplementary_manual p. 128),
+  # which reads against Part N on channel N, while its Settings line describes only what is sent.
+  # So in Single mode the number is what the Data List's sentence implies, and no page settles it.
+  # A keyboard on the USB TO DEVICE socket is the one receiving case printed for every mode: a
+  # Part with Keyboard Control off receives on its own channel, and the Parts with it on take each
+  # other's channels too, except that in Single a control change regarded as a Common parameter
+  # goes to the Common parameters and not to a Part (supplementary_manual p. 62).
+  # Until 2026-10-15 the part said `channel: assigned`, which a program reads as a channel the
+  # owner picks.
   part:
     label: Part
     count: 16
-    channel: assigned
+    channel: 1
     receives: [notes, controls, program_change]
     addressing: pitches
 

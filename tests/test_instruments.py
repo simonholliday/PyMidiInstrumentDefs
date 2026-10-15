@@ -19719,8 +19719,12 @@ class TestMontage:
 		montage = pymidiinstrumentdefs.load("yamaha/montage_6_7_8", [CORPUS])
 		part = montage.parts["part"]
 
+		# Part N on channel N in Multi mode, from MIDI IN or USB TO HOST, which no per-Part
+		# setting changes: a number since 2026-10-15, where it said `assigned`, so a program
+		# offered a channel to choose.
 		assert part.count == 16
-		assert part.is_assigned is True
+		assert (part.fixed_channel, part.is_assigned) == (1, False)
+		assert [part.channel_for(9, instance) for instance in range(16)] == list(range(1, 17))
 		assert part.takes("notes") and part.takes("controls") and part.takes("program_change")
 		assert part.addressing == "pitches"
 

@@ -10,14 +10,14 @@
 # packs, and **the words "parameter", "MIDI" and "SysEx" appear nowhere on it**. So the pointer
 # still resolves and what it pointed at is gone.
 #
-# CHECKED EIGHT WAYS BEFORE BEING WRITTEN DOWN, because "the maker publishes nothing" is the
+# CHECKED EIGHT WAYS BEFORE BEING WRITTEN DOWN, because saying the maker publishes nothing is the
 # strongest claim a definition can make, and the second reader was asked to break it rather than
-# confirm it. Between the two readings: every spelling of controller terminology was searched;
-# every integer 0 to 127 was bucketed by its position on the page to find a numeric column;
-# the later document's **tagged structure tree** was read, giving 43 tables of which every one is
-# a value-and-meaning table; both files were checked for optional content, forms, attachments and
-# raster images that might hide a chart; the landscape and fold-out pages were chased down; and
-# the manual's own index was read, whose MIDI entries are exactly five and name no chart.
+# confirm it. Between the two readings: every spelling of controller terminology was searched; every
+# integer 0 to 127 was bucketed by its position on the page to find a numeric column; the later
+# document's **tagged structure tree** was read, giving 43 tables, none of which numbers a
+# controller; both files were checked for optional content, forms, attachments and raster images
+# that might hide a chart; the landscape and fold-out pages were chased down; and the manual's own
+# index was read, whose MIDI entries are exactly five and name no chart.
 # **Neither document contains a controller table, and neither contains a MIDI implementation
 # chart.** The only controller numbers either document names are the four below and the settings
 # that choose what a pedal or a wheel sends.
@@ -40,40 +40,43 @@
 # chart, and it is cited for one number's direction and for where that stops: see the account.
 #
 # AND WHETHER A CONTROL CHANGE DOES ANYTHING AT ALL IS A SETTING. "Page A > SysEx: Page A
-# parameters are transmitted/received as system exclusive packets. **Controller data reception is
-# disabled.**" and "> Controller Data: Page A parameters are transmitted/received in the form of
-# MIDI CC (see glossary) data" (manual p. 157). Page B has a third state the corpus has not met
-# before: "Poly Pressure: Page B parameters are transmitted and received in the form of
-# Poly-pressure (see glossary) data" (manual p. 158) - **polyphonic key pressure used as a
-# parameter transport rather than as aftertouch**.
+# parameters are transmitted/received as system exclusive packets. Controller data reception is
+# disabled." (manual p. 157) and "> Controller Data: Page A parameters are transmitted/received in
+# the form of MIDI CC (see glossary) data" (manual p. 157). Page B has a third state the corpus has
+# not met before: "Poly Pressure: Page B parameters are transmitted and received in the form of
+# Poly-pressure (see glossary) data" (manual p. 158) - **polyphonic key pressure used as a parameter
+# transport rather than as aftertouch**.
 
 definition: 1
 
 model:
   manufacturer: Access
   name: Virus TI
-  # NOT RECORDED: firmware. Neither document names an operating system version for the
-  # instrument, and the maker publishes no update history that names one against these manuals.
+  # NOT RECORDED: firmware. Neither document says which operating system version it describes - the
+  # manual mentions revision 1.1 in passing (manual p. 166), and the reference TIOS 4.5, OS 4.2 and
+  # OS5, each for a feature (reference pp. 30, 41, 47) - and the maker publishes no update history
+  # that names one against these manuals.
   # The two documents are dated by their own files - 2006 and 2013 - and the manuals page files
-  # them under "Virus TI1 Series" and "Virus TI2 Series", which is a hardware generation rather
-  # than a software version.
+  # them under "Virus TI1 Series" (manuals_page) and "Virus TI2 Series" (manuals_page), which is a
+  # hardware generation rather than a software version.
 
 source: >-
   Two documents, and **neither carries a control change map**: the Virus TI manual (218 sheets,
-  2006), which the maker files under "Virus TI1 Series", and the Virus TI Reference (80 sheets,
-  2013), filed under "Virus TI2 Series" and headed "PARAMETER REFERENCE MANUAL" on its pages. The
-  manuals page and the downloads page are cited for what the maker offers and for the list that
-  is not among it.
+  2006), which the maker files under "Virus TI1 Series" (manuals_page), and the Virus TI Reference
+  (80 sheets, 2013), filed under "Virus TI2 Series" (manuals_page) and headed "PARAMETER REFERENCE
+  MANUAL" (reference p. 6) on its pages. The manuals page and the downloads page are cited for what
+  the maker offers and for the list that is not among it.
 
   WHAT IS HERE INSTEAD OF A MAP is the configuration reference - the manual's pp. 153 to 158 and
   the Reference's config menu - which states how the instrument behaves over MIDI without ever
   numbering a controller. Every field below comes from there.
 
   THREE MACHINES, NAMED WHERE A DOCUMENT HAS TO BE EXACT. The manual's declaration of conformity
-  lists "ACCESS VIRUS TI DESKTOP", "ACCESS VIRUS TI KEYBOARD" and "ACCESS VIRUS TI POLAR"
-  (manual p. 174) - the maker spells the third **Pølar** in its body text and **Polar** in the
-  later document. The later document adds the TI2 and the Snow, and distinguishes them where the
-  panels differ. **The manual names no Virus A, B, C, Indigo or Rack anywhere.**
+  lists "ACCESS VIRUS TI DESKTOP" (manual p. 174), "ACCESS VIRUS TI KEYBOARD" (manual p. 174) and
+  "ACCESS VIRUS TI POLAR" (manual p. 174) - the maker spells the third **Pølar** in its body text
+  and **Polar** in the later document. The later document adds the TI2 and the Snow, and
+  distinguishes them where the panels differ. **The manual names no earlier model anywhere**, a
+  ROM-K patch called Virus B (manual p. 202) aside.
 
   **AND ONE MIDI DIFFERENCE BETWEEN THEM IS STATED**: "Note: The 'Keyboard' pages are only
   available in keyboard versions of the Virus" (manual p. 155). Those pages are local control, the
@@ -122,8 +125,8 @@ source: >-
   third party's**: it appears in a worked example of writing a remote template for a plug-in
   "which according to it's user manual, has MIDI number 70 assigned to it" (manual p. 73), and a
   definition recording 70 as a cutoff would be describing somebody else's instrument. **And the
-  glossary's "Modulation wheel = CC 01, volume control = CC 07, hold/sustain pedal = CC 64" is
-  the MIDI specification** rather than this instrument.
+  glossary's "Modulation wheel = CC 01, volume control = CC 07, hold/sustain pedal = CC
+  64" (manual p. 179) is the MIDI specification** rather than this instrument.
 
   **THE VIRUS C'S MANUAL SAYS PANORAMA IS SENT AS CONTROLLER 10, AND IT IS CITED FOR THAT AND FOR
   WHERE THAT STOPS.** It is an earlier Virus model's own document, created in 2002 where this
@@ -160,14 +163,14 @@ source: >-
   resources i.e. using certain features can lower polyphony to well below these figures" (manual
   p. 17). A figure that is an average with a maximum and a caveat is not a voice count.
 
-  NOT RECORDED: `nrpn`. **"NRPN", "RPN", "registered parameter" and "non-registered" appear
-  nowhere in either document**, and nor do "MSB" or "LSB". The nearest thing to a statement points
-  the same way and is worth knowing, because it is the maker explaining what it did instead: "The
-  internal resolution of the parameters in the Virus sound engine is 24-bit... The MIDI
-  specification, however, only allows for a resolution of 128 values per parameter" (reference
-  p. 30), after which it offers a constant offset in the modulation matrix as the way to reach a
-  value between two of the 128. A maker that answers seven-bit resolution with a matrix trick is
-  not using fourteen-bit controllers, but it never says so, so this stays a silence.
+  NOT RECORDED: `nrpn`. **`NRPN`, `RPN`, `registered parameter` and `non-registered` appear nowhere
+  in either document**, and nor do `MSB` or `LSB`. The nearest thing to a statement points the same
+  way and is worth knowing, because it is the maker explaining what it did instead: "The internal
+  resolution of the parameters in the Virus sound engine is 24-bit... The MIDI specification,
+  however, only allows for a resolution of 128 values per parameter" (reference p. 30), after which
+  it offers a constant offset in the modulation matrix as the way to reach a value between two of
+  the 128. A maker that answers seven-bit resolution with a matrix trick is not using fourteen-bit
+  controllers, but it never says so, so this stays a silence.
 
   NOT RECORDED: `transport`. **No page of either of this instrument's documents mentions MIDI
   start, stop, continue or song position**, searched for by name. The clock is described and the
@@ -219,9 +222,10 @@ sources:
     url: "https://www.virus.info/download/166"
     sha256: f85f01b171e1be42d221a1e0eabcdbc80776476d42f041e789d506db09c9f07c
     retrieved: 2026-10-04
-    # The maker serves it as `User_Manual_English.pdf` from a numbered download link, with no
-    # version in the file or on the page; "Virus TI1 Series" is the heading it sits under. The
-    # date is the PDF's own, and its `/Title` is "Virus TI Manual.book".
+    # The maker serves it as `User_Manual_English.pdf` from a numbered download link, and the page
+    # gives no edition. The file's only edition statement, `VTIMEU 05/06 Revision B`, is on its back
+    # cover, a sheet that prints no page number. "Virus TI1 Series" (manuals_page) is the heading it
+    # sits under. The date is the PDF's own, and its `/Title` is `Virus TI Manual.book`.
     # **`file(1)` says this document has 10 pages. It has 218.**
   reference:
     kind: reference
@@ -232,7 +236,8 @@ sources:
     url: "https://www.virus.info/download/200"
     sha256: 990e72e7922d99efe54f2f9dc747f035b115b57e247b02ff647d49c2b270071c
     retrieved: 2026-10-04
-    # Served as `Virus TI Reference.pdf` and headed "PARAMETER REFERENCE MANUAL" on its pages.
+    # Served as `Virus TI Reference.pdf` and headed "PARAMETER REFERENCE MANUAL" (reference p. 6) on
+    # its pages.
     # **`file(1)` says 120 pages. It has 80.** Its sheets print page numbers that run ahead of
     # them - sheet 48 is headed 86 and sheet 67 is headed 117 - and it is cited here by sheet.
   manuals_page:
@@ -244,9 +249,11 @@ sources:
     retrieved: 2026-10-04
     paginated: false
     # **THIS PAGE LISTS MORE THAN THE SURVEY RECORDED.** It groups manuals under "Virus TI2
-    # Series", "Virus TI1 Series", "Virus C Series", "Virus B Series" and "Virus A Series", plus
-    # Rack XL and Rack Classic and four tutorials. The Snow manuals are listed and **are behind a
-    # login**: the Snow Reference's link answers 302 to a login page. No account was created.
+    # Series" (manuals_page), "Virus TI1 Series" (manuals_page), "Virus C Series" (manuals_page),
+    # "Virus B Series" (manuals_page) and "Virus A Series" (manuals_page), with the Rack XL and Rack
+    # Classic manuals among them, and six tutorial entries. The Snow manuals are listed and **are
+    # behind a login**: the Snow Reference's link answers 302 to a login page. No account was
+    # created.
   downloads_page:
     kind: download_page
     title: "Downloads | The Virus TI - Totally Integrated Synthesizers"
@@ -266,12 +273,12 @@ sources:
     url: "https://www.virus.info/download/170"
     sha256: b974b47390fc36ec95c69ee6f018d179afa30eaba960b7273b1670deff3701c5
     retrieved: 2026-10-15
-    # **ANOTHER MODEL'S MANUAL, THE VIRUS C'S.** Served as `Manual_Virus_C_English_Web.pdf` under
-    # "Virus C Series" on this instrument's manuals page, 198 pages, its cover reading "USER
-    # MANUAL OS5". The date is the PDF's own; it was created in 2002. Cited for Panorama's
-    # direction, and its Multi pages for where that stops; no value below is read from it: see
-    # the account. The format has no field yet for marking a source as another model's, so this
-    # comment does it.
+    # **ANOTHER MODEL'S MANUAL, THE VIRUS C'S.** Served on this instrument's manuals page as
+    # `Manual_Virus_C_English_Web.pdf`, under "Virus C Series" (manuals_page), 198 pages, its cover
+    # reading "USER MANUAL OS5". The date is the PDF's own; it was created in 2002. Cited for
+    # Panorama's direction, and its Multi pages for where that stops; no value below is read from
+    # it: see the account. The format has no field yet for marking a source as another model's, so
+    # this comment does it.
     page_offset: 2
 
 midi:
@@ -323,8 +330,8 @@ voice:
     note_on: received
   # CHANNEL. "Pressure Curve > -64 to +63: Channel aftertouch sensitivity. Adjust this parameter
   # to suit your playing style" (manual p. 157), and the modulation matrix offers "Chan Pressure"
-  # as a source. **The curve is a keyboard-version setting and the response is not**: a desktop
-  # has no Keyboard pages at all, and still answers to a channel pressure that arrives.
+  # (manual p. 39) as a source. **The curve is a keyboard-version setting and the response is not**:
+  # a desktop has no Keyboard pages at all, and still answers to a channel pressure that arrives.
   # **AND POLYPHONIC KEY PRESSURE IS USED FOR SOMETHING ELSE ENTIRELY HERE**: it is one of the
   # three ways the Page B parameters travel, not a way of playing. See the header comment.
   aftertouch: channel
@@ -335,10 +342,9 @@ voice:
 
 parts:
   # SIXTEEN, EACH WITH ITS OWN CHANNEL IN MULTI MODE AND A FIXED ONE IN SEQUENCER MODE. The
-  # channel is "a few additional parameters such as MIDI channel" that a Multi part carries
-  # (manual p. 14), so it is the player's; in Sequencer mode "the MIDI channel is always equal to
-  # the PART number" (manual p. 128). `assigned` records the first, and the source account the
-  # second.
+  # channel is "a few additional parameters such as MIDI channel" (manual p. 14) that a Multi part
+  # carries, so it is the player's; in Sequencer mode "the MIDI channel is always equal to the PART
+  # number" (manual p. 128). `assigned` records the first, and the source account the second.
   # NOT RECORDED: a `receives` list. Neither document enumerates one. Notes (manual p. 168),
   # program change, volume and the hold pedal (manual p. 169) are each stated to reach a part,
   # and nothing says which other messages do.

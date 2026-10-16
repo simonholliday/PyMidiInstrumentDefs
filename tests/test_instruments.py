@@ -15472,7 +15472,7 @@ class TestVirusTI:
 
 		assert "CHECKED EIGHT WAYS BEFORE BEING WRITTEN DOWN" in said
 		assert "the second reader was asked to break it rather than confirm it" in said
-		assert "43 tables of which every one is a value-and-meaning table" in said
+		assert "43 tables, none of which numbers a controller" in said
 
 	def test_the_traps_that_would_put_wrong_numbers_in_this_corpus (self) -> None:
 		"""A designer's initials, a third party's controller, and the specification's own list."""

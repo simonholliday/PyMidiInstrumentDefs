@@ -17,8 +17,9 @@
 # same table. Both rows are kept and each names the other, because the guide prints both.
 #
 # THE PARAMETER NAMES ARE THE GUIDE'S OWN, VERBATIM, including its inconsistent capitals -
-# "osc 1 fine" beside "Mod Env attack" beside "Bend Amount". Where a maker styles a table
-# uniformly this corpus normalises it; there is no uniform styling here to normalise.
+# "osc 1 fine" (guide p. 71) beside "Mod Env attack" (guide p. 72) beside "Bend Amount"
+# (guide p. 73). Where a maker styles a table uniformly this corpus normalises it; there is no
+# uniform styling here to normalise.
 
 definition: 1
 
@@ -27,10 +28,10 @@ model:
   name: Bass Station II
   # NOT RECORDED. The guide states a version for itself - "Version 5.0" on its title page - and
   # no firmware version for the instrument anywhere in its 82 pages. Novation's downloads page
-  # offers a Librarian and Firmware Updater 1.2 "only for users not using newer firmware",
-  # whose own notes say it upgrades "from r540 to r554"; the current firmware is delivered
-  # through Novation Components, which serves nothing a fetch here can read. So the newest
-  # firmware is not stated on any page this was read from. Checked 2026-10-02.
+  # offers a Librarian and Firmware Updater 1.2 "Only for users not using newer firmware"
+  # (download_page), whose own notes say it upgrades "from r540 to r554" (download_page); the
+  # current firmware is delivered through Novation Components, which serves nothing a fetch here can
+  # read. So the newest firmware is not stated on any page this was read from. Checked 2026-10-02.
 
 source: >-
   Bass Station II user guide, version 5.0, 82 pages, dated 2025-08-15 by its own metadata. Its
@@ -77,8 +78,8 @@ source: >-
   external equipment via Bass Station II's MIDI DIN ports" (p. 14).
 
   NOT RECORDED: the note range, which the guide never states for what the instrument receives -
-  its keyboard is "25-note (two octaves) velocity-sensitive" with octave shift keys, and that is
-  the panel rather than the span it answers to. Whether it transmits MIDI clock, since the guide
+  its keyboard is "25-note (two octaves) velocity-sensitive" (p. 8) with octave shift keys, and that
+  is the panel rather than the span it answers to. Whether it transmits MIDI clock, since the guide
   describes only the other direction. Transport, which no sentence in the guide mentions at all -
   not start, not stop, not continue, not song position. And whether program change is received:
   the only thing in 82 pages that bears on it is the table's own two rows, patch inc and patch
@@ -86,8 +87,8 @@ source: >-
   for the same reason - its row is in the same list - and its kind, which no page gives.
 
   ONE MORE TYPOGRAPHICAL SLIP, CARRIED AS PRINTED: the envelope section has an "amp env fixed
-  sustatin duration" where its neighbour four rows down is spelled "Mod Env fixed sustain
-  duration". The label below is the guide's, misspelling and all.
+  sustatin duration" (p. 72) where its neighbour four rows down is spelled "Mod Env fixed sustain
+  duration" (p. 72). The label below is the guide's, misspelling and all.
 
 sources:
   guide:
@@ -129,7 +130,7 @@ midi:
   # says it sends clock, so `both` would be claiming the half that was not established.
   clock: receives
   program_change:
-    # "Pre-loaded with 64 brand new Killer Patches" and "Memory for 64 additional User
+    # "Pre-loaded with 64 brand new Killer Patches" (p. 4) and "Memory for 64 additional User
     # Patches" (p. 4), which the panel reaches as "one of the 64 Factory or 64 User Patches"
     # (p. 8).
     presets: 128
@@ -145,8 +146,8 @@ voice:
   # MONOPHONIC, AND THE MAKER SAYS SO IN THOSE WORDS: "The Bass Station II is at its core a
   # monophonic synthesiser. However, enabling paraphonic mode gives you different playing
   # possibilities" (p. 37). In that mode the two oscillators track separate keys and still
-  # "share the same amplifier and filter", which is what paraphonic means and why it is a flag
-  # of its own rather than a polyphony of two.
+  # "share the same amplifier and filter" (p. 37), which is what paraphonic means and why it is a
+  # flag of its own rather than a polyphony of two.
   polyphony: 1
   paraphonic: true
   # NOT RECORDED, velocity: no page says an arriving note's velocity is used. The keyboard is
@@ -167,11 +168,12 @@ voice:
   pitch_bend:
     # SETTABLE, AND THE GUIDE GIVES THREE DIFFERENT ANSWERS FOR HOW FAR, so no number is
     # written. Page 17 says "The maximum range of operation is 12 semitones up or down, but
-    # this may be adjusted using On-Key function Oscillator: Pitch Bend Range". Page 61 gives
-    # that function as "Range: -24 to +24" and says "A maximum of two octaves can be
-    # selected". The MIDI parameters list gives Bend Amount as cc 107 with the range "1 to
+    # this may be adjusted using On-Key function Oscillator: Pitch Bend Range" (p. 17). Page 61
+    # gives that function as "Range: -24 to +24" (p. 61) and says "A maximum of two octaves can be
+    # selected" (p. 61). The MIDI parameters list gives Bend Amount as cc 107 with the range "1 to
     # 12". Twelve, twenty-four and twelve, in one document. The init patch table (p. 70)
-    # gives the default as "12 (oct up and down)", which settles the default and not the span.
+    # gives the default as "12 (oct up and down)" (p. 70), which settles the default and not the
+    # span.
     programmable: true
 groups:
   master: Master

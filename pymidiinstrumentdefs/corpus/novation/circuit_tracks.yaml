@@ -41,9 +41,9 @@
 # 22 to 29. Each is a control in its own right, with its own range and its own off and on.
 #
 # THE CONTENTS PAGE IS WRONG FOR NINETEEN OF ITS TWENTY-TWO ENTRIES, each by one page: every
-# heading from "Macro Knobs" to "Format of a Synth Patch (Bank) Sysex File" is printed one page
-# earlier than the contents claims. Only the first two and the last are right. Nothing below takes
-# a locator from it, and every heading's real page was asserted before it was read.
+# heading from "Macro Knobs" to "Format of a Synth Patch (Bank) Sysex File" (guide p. 14) is printed
+# one page earlier than the contents claims. Only the first two and the last are right. Nothing
+# below takes a locator from it, and every heading's real page was asserted before it was read.
 
 definition: 1
 
@@ -121,11 +121,12 @@ source: >-
 
   THE REFERENCE GUIDE HAS A PAGE ITS CONTENTS DOES NOT LIST, and it is the page that states the
   channel defaults: p. 15, "Setup View", which gives "Default MIDI channel for Synth 1 is Channel
-  1", the same for Synth 2 on 2 and "Drums 1-4 is Channel 10", and "MIDI 1 and MIDI 2 are set to
-  use their default MIDI channels - 3 and 4 respectively" (guide p. 15). It also labels the channel
-  pads "MIDI channels 1 -16" while saying on the same page that "MIDI Channel 16 is reserved for
-  the Project" (guide p. 15), which is the one place the two documents together leave it unclear
-  whether a track may be put on 16 at all. Nothing here rests on that; `channels` records the span.
+  1" (guide p. 15), the same for Synth 2 on 2 and "Drums 1-4 is Channel 10" (guide p. 15), and "MIDI
+  1 and MIDI 2 are set to use their default MIDI channels - 3 and 4 respectively" (guide p. 15). It
+  also labels the channel pads "MIDI channels 1 -16" (guide p. 15) while saying on the same page
+  that "MIDI Channel 16 is reserved for the Project" (guide p. 15), which is the one place the two
+  documents together leave it unclear whether a track may be put on 16 at all. Nothing here rests on
+  that; `channels` records the span.
 
   FOUR RANGES BELOW SELECT FROM LISTS THAT ARE PRINTED NOWHERE, which is this guide's largest hole.
   Every `macro knob n destination` runs 0 to 70 and no table names any of those 71 destinations -
@@ -133,7 +134,7 @@ source: >-
   and rate sync, the chorus rate sync and the project delay's time sync. Each `drum n patch select`
   runs 0 to 63 and no document names a sample. And the eight switches packed into NRPN `0:122`
   leave values 0 to 11 and 20 to 21 unaccounted for, where the Synth Patch Format shows the same
-  byte is a bit field - "LFO1_OneShot (bit 0), LFO1_KeySync (bit 1)" and so on (guide p. 17).
+  byte is a bit field - "LFO1_OneShot (bit 0), LFO1_KeySync (bit 1)" (guide p. 17) and so on.
 
   THE PATCH FORMAT REACHES FURTHER THAN THE CONTROL MAP IN ONE PLACE. It names modulation matrix
   slots 1 to 20 where the control map stops at 12, so slots 13 to 20 exist inside a patch and no
@@ -209,7 +210,7 @@ sources:
     # one. EVERY PAGE PRINTS ITS NUMBER TWICE, at the top and again at the bottom right, and both
     # are the file's page index, so nothing is added. The second folio is worth recording because
     # the bottom one falls inside the last row of the table above it: the last Notes cell on p. 4
-    # comes out of a grid reader as "See Mod Matrix Table 4".
+    # comes out of a grid reader as `See Mod Matrix Table 4`.
     page_offset: 0
   user_guide:
     kind: manual
@@ -252,23 +253,24 @@ midi:
   clock: both
   # BOTH, AND THAT IS AN ANSWER FOR THE WHOLE FAMILY RATHER THAN A READING OF THIS DOCUMENT
   # ALONE. The reference guide lists start, stop, continue and timing clock under "Supported
-  # Realtime Messages" and song position pointer and song select under "Supported System Common
-  # Messages" (guide p. 10), and says of none of them which direction it goes. All three Circuit
-  # references print that heading in those words and all three are silent in the same way, so one
-  # reading has to serve the three. The switch is what settles it, and this guide carries it like
-  # the others: Clock Rx and Clock Tx are separate settings, "By default, both MIDI Rx and MIDI Tx
-  # are ON (buttons brightly lit) for all data categories" (user_guide p. 104), and the clock is
-  # one of those categories. Start, stop and continue travel with the clock.
+  # Realtime Messages" (guide p. 10) and song position pointer and song select under "Supported
+  # System Common Messages" (guide p. 10), and says of none of them which direction it goes. All
+  # three Circuit references print that heading in those words and all three are silent in the same
+  # way, so one reading has to serve the three. The switch is what settles it, and this guide
+  # carries it like the others: Clock Rx and Clock Tx are separate settings, "By default, both MIDI
+  # Rx and MIDI Tx are ON (buttons brightly lit) for all data categories" (user_guide p. 104), and
+  # the clock is one of those categories. Start, stop and continue travel with the clock.
   #
   # THIS FILE RECORDED `receives` UNTIL THE THIRD CIRCUIT ARRIVED. The reasoning was that every
-  # other table in this reference says "Send messages on", so a table that does not is about
-  # what the instrument answers to. That argument is good about this document and holds for
-  # neither sibling's, which is why it could not settle the family.
+  # other table in this reference says "Send messages on" (guide pp. 3, 12), so a table that does
+  # not is about what the instrument answers to. That argument is good about this document and holds
+  # for neither sibling's, which is why it could not settle the family.
   transport: both
   program_change:
     # Both ways, and both switchable: pads 29 and 30 in Setup View are "MIDI Program Change Rx
-    # on/off" and "MIDI Program Change Tx on/off" (user_guide p. 104), and "By default, both MIDI
-    # Rx and MIDI Tx are ON (buttons brightly lit) for all data categories" (user_guide p. 104).
+    # on/off" (user_guide p. 104) and "MIDI Program Change Tx on/off" (user_guide p. 104), and "By
+    # default, both MIDI Rx and MIDI Tx are ON (buttons brightly lit) for all data categories"
+    # (user_guide p. 104).
     receives: true
     sends: true
     # "Each of the two synth tracks can use any one of 128 pre-loaded Patches" (user_guide p. 33).

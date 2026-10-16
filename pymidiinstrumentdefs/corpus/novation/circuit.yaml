@@ -9,8 +9,9 @@
 # every cell, so nothing is lost and nothing has to be chosen between - but a reader who counts
 # rows gets 307 where the instrument has 233.
 #
-# AND THE GUIDE IS STALE ABOUT ITS OWN CHANNELS. It says "Send messages on MIDI Channel 1 for
-# Synth 1 and Channel 2 for Synth" and "Messages on MIDI Channel 10", as if those were fixed.
+# AND THE GUIDE IS STALE ABOUT ITS OWN CHANNELS. It says "Send messages on MIDI Channel 1 for Synth
+# 1 and Channel 2 for Synth" (guide p. 3) and "Messages on MIDI Channel 10" (guide p. 10), as if
+# those were fixed.
 # **Firmware 1.8 made them settable** - three years before this edition of the guide was issued.
 
 definition: 1
@@ -19,7 +20,7 @@ model:
   manufacturer: Novation
   name: Circuit
   # The newest firmware any document here describes. The user guide is edition 1.6, the addendum
-  # covers 1.7, and the "Circuit 1.8 User Guide" covers 1.8 - which is where the assignable MIDI
+  # covers 1.7, and the `Circuit 1.8 User Guide` covers 1.8 - which is where the assignable MIDI
   # channels come from. The Programmer's Reference Guide is version 1.3 and names no firmware at
   # all, though it was issued in 2022, three years after 1.8.
   firmware: "1.8"
@@ -74,11 +75,12 @@ source: >-
   can move. **Firmware 1.8
   changed that**: "MIDI channels for each track can now be changed from the setup menu. Synth 1,
   Synth 2 and Drum 1/2/3/4 can now be set to MIDI channels 1-15. Channel 16 is reserved for the
-  session." The 1.8 guide is dated 2019 and this edition of the reference guide was made in 2022,
-  so the newer document describes the older instrument. The channels below follow 1.8.
+  session." (update_1_8 p. 7). The 1.8 guide is dated 2019 and this edition of the reference guide
+  was made in 2022, so the newer document describes the older instrument. The channels below follow
+  1.8.
 
   **The guide's own sentence about those channels is cut short**: it reads "Channel 2 for Synth"
-  where it means Synth 2.
+  (guide p. 3) where it means Synth 2.
 
   NOVATION SERVES THIS GUIDE TWICE AT ONE NAME, and the second copy is not listed. The download
   page offers `Circuit Programmer's Reference Guide 1.3_2.pdf`; `_1` is live at the same path and
@@ -94,9 +96,9 @@ source: >-
 
   ONE NOTE IS SET IN THE NEXT ROW'S CELL. The Filter `routing` note wraps over four printed lines
   and the fourth - the single word `filter` - is typeset inside the `drive` row's Notes cell. Read
-  row by row, `routing` ends mid-sentence at "bypasses the" and `drive` acquires a one-word note
-  that means nothing. They are put back together, by name rather than by position, so that a
-  re-issue which fixes the typesetting simply stops matching.
+  row by row, `routing` ends mid-sentence at "bypasses the" (guide p. 3) and `drive` acquires a
+  one-word note that means nothing. They are put back together, by name rather than by position, so
+  that a re-issue which fixes the typesetting simply stops matching.
 
   AND ONE SESSION ROW LOOKS LIKE A TYPO THAT IS NOT CORRECTED HERE. The Sidechain section's
   `synth 2 depth` is NRPN 1:69 where its five siblings run 2:65 to 2:68 and synth 1's equivalent
@@ -182,15 +184,15 @@ midi:
     sends: true
     # A PROGRAM CHANGE MEANS DIFFERENT THINGS ON DIFFERENT CHANNELS. On a synth channel it picks
     # one of that synth's patches - the guide's table gives "0 – 63" against "select synth 1
-    # patch" (guide p. 9) - and on channel 16 it picks a session, "select session (instant)"
-    # and "select session (queued)" (guide p. 9). A drum patch is not a program change at all:
-    # "Note, for drum patch selection see Drum Control table" (guide p. 9), where it is a
-    # control change. **The count here is
+    # patch" (guide p. 9) - and on channel 16 it picks a session, "select session
+    # (instant)" (guide p. 9) and "select session (queued)" (guide p. 9). A drum patch is not a
+    # program change at all: "Note, for drum patch selection see Drum Control table" (guide p. 9),
+    # where it is a control change. **The count here is
     # the synth patches**, which is what a program change on a track channel reaches.
     presets: 64
   # 204 of the 299 controls below are addressed by NRPN and 95 by control change, and the maker
-  # never ranks the two: the Settings View switch is a single "MIDI CC data" category covering
-  # both, so `supported` is as far as the documents go.
+  # never ranks the two: the Settings View switch is a single "MIDI CC data" (user_guide p. 67)
+  # category covering both, so `supported` is as far as the documents go.
   nrpn: supported
   # Patch dumps, in both directions, with the byte layout published in full: "Replace Current
   # Patch" (guide p. 12), "Replace Patch" (guide p. 12) and "Patch Dump Request" (guide p. 13),
@@ -262,9 +264,9 @@ parts:
 #
 # `choices` appears where the guide names **every** value a control can take, either in its Notes
 # column or in a value table it points at. **A note that names some of them does not count**:
-# Keyboard Octave runs 58 to 69 and its note reads "60=-4 Octaves, 64=0 Octaves, 68=+4 Octaves",
-# three of the twelve steps named to show a reader where the middle is. Recording those three
-# would say the other nine do not exist.
+# Keyboard Octave runs 58 to 69 and its note reads "60=-4 Octaves, 64=0 Octaves, 68=+4 Octaves"
+# (guide p. 3), three of the twelve steps named to show a reader where the middle is. Recording
+# those three would say the other nine do not exist.
 #
 # NOTHING IS SET ASIDE. Neither the guide's tables nor its value tables hold a mechanism row -
 # no bank select, no data entry - so every row of all three tables is below, once.

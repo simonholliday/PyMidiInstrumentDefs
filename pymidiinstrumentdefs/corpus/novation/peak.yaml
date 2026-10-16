@@ -33,9 +33,9 @@
 # heading, so `Atouch Scale` - NRPN 64:3, printed in the shared MIDI parameters list on p. 18 -
 # is left out: the Peak has no keyboard to scale. And three FM NRPNs, 25:13, 25:17 and 25:21,
 # are named only in a bug-fix list beside fixes for "voices 9-16", which the Peak does not
-# have; they address an "FM ... Manual Amount" that appears nowhere in the Peak's own manual,
-# whose only FM is a modulation matrix destination. A number in a document two instruments
-# share is not this instrument's number until the document says so.
+# have; they address an "FM ... Manual Amount" (addendum p. 15) that appears nowhere in the Peak's
+# own manual, whose only FM is a modulation matrix destination. A number in a document two
+# instruments share is not this instrument's number until the document says so.
 #
 # NO CONTROL HERE HAS `choices`, ALTHOUGH DOZENS OF THEM ARE SELECTORS. The manual names the
 # states of its stepped parameters in prose and numbers none of them, and the one place the
@@ -63,9 +63,9 @@ model:
 
 source: >-
   Peak user guide, 44 pages, for firmware v1.2, created 2019-08-07 by its own metadata, and the
-  "Summit and Peak User Guide Addendum Version 2.1", 18 pages, created 2022-07-27. Novation
-  publishes no programmer's reference and no separate MIDI implementation for this instrument,
-  unlike its Circuit, so these two documents are the whole of the published map.
+  "Summit and Peak User Guide Addendum Version 2.1" (addendum p. 1), 18 pages, created 2022-07-27.
+  Novation publishes no programmer's reference and no separate MIDI implementation for this
+  instrument, unlike its Circuit, so these two documents are the whole of the published map.
 
   BOTH END IN A MIDI PARAMETERS LIST and the two together are this definition: 230 rows over
   the manual's pp. 40-43 and 19 more on the addendum's p. 18, each row giving the parameter,
@@ -100,8 +100,8 @@ source: >-
   30) - is reachable by no message. And the addendum's `Atouch Scale` is the Summit's, by that
   document's own heading.
 
-  ONE PARAMETER IS RENAMED RATHER THAN ADDED. NRPN 0:5 is "Voice Unison Spread" in the manual
-  and "Spread" in the addendum, which says so itself: "The Voice panning setting 'Spread'
+  ONE PARAMETER IS RENAMED RATHER THAN ADDED. NRPN 0:5 is "Voice Unison Spread" (manual p. 40) in
+  the manual and "Spread" in the addendum, which says so itself: "The Voice panning setting 'Spread'
   (formerly known as 'UniSpread') has broken out into four unique Spread Modes" (addendum p.
   3). It is one control under the later name.
 
@@ -180,9 +180,9 @@ source: >-
   MIDI parameters list gives no number for.
 
   ONE FURTHER DOCUMENT COULD NOT BE READ. The downloads page offers "an online version of this
-  user guide and translations" at userguides.novationmusic.com, which answers a fetch with a
-  Cloudflare challenge rather than the guide. Whether it is a later edition than the 1.2 manual
-  is therefore not established, and nothing here rests on it.
+  user guide and translations" (download_page) at userguides.novationmusic.com, which answers a
+  fetch with a Cloudflare challenge rather than the guide. Whether it is a later edition than the
+  1.2 manual is therefore not established, and nothing here rests on it.
 
 sources:
   manual:
@@ -224,8 +224,8 @@ sources:
     # programmer's reference and no separate MIDI implementation, unlike this maker's Circuit.
 
 midi:
-  # "MIDI protocol provides for 16 channels of data" and the setting that chooses one is
-  # MidiChan, "Default value: 1 ... Range of adjustment: 1 to 16" (manual p. 35). The maker
+  # "MIDI protocol provides for 16 channels of data" (manual p. 35) and the setting that chooses one
+  # is MidiChan, "Default value: 1 ... Range of adjustment: 1 to 16" (manual p. 35). The maker
   # states both the span and the default: "MidiChan lets you set Peak to receive and transmit
   # MIDI data on a particular channel" (manual p. 35).
   channels: [1, 16]
@@ -236,11 +236,11 @@ midi:
   # established.
   clock: receives
   program_change:
-    # "This setting controls how Peak handles MIDI Program Change and Bank Change messages",
-    # defaulting to Rec+Tran, which "allows Peak to send a Program/Bank Change message whenever
-    # a new Patch is loaded, and also lets you load a Patch from an external MIDI controller"
-    # (manual p. 35). Both directions, and both can be switched off independently of the
-    # controllers, which have a setting of their own.
+    # "This setting controls how Peak handles MIDI Program Change and Bank Change
+    # messages" (manual p. 35), defaulting to Rec+Tran, which "allows Peak to send a Program/Bank
+    # Change message whenever a new Patch is loaded, and also lets you load a Patch from an external
+    # MIDI controller" (manual p. 35). Both directions, and both can be switched off independently
+    # of the controllers, which have a setting of their own.
     receives: true
     sends: true
     # "Peak can store 512 Patches in memory, arranged in four Banks of 128" (manual p. 11).

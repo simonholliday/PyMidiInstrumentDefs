@@ -66,15 +66,15 @@ sources:
     retrieved: 2026-09-30
     paginated: false
     # Cited only for which firmware was newest when this was checked: "The newest version
-    # of the Take 5 Main OS is Take5_Main_2.1.0.2" and "the Take 5 Panel OS is
-    # Take5_Panel_1.1.2", as saved on 2026-09-30. The sha256 is of the page's visible text;
-    # the page as served hashes to
+    # of the Take 5 Main OS is Take5_Main_2.1.0.2" (release_notes) and "the Take 5 Panel OS is
+    # Take5_Panel_1.1.2" (release_notes), as saved on 2026-09-30. The sha256 is of the page's
+    # visible text; the page as served hashes to
     # 2d5f27f607fcedefee260515ab441214ec80b9a23c58aded7f3c9545b5da106a.
     #
     # So this file describes an older OS than Sequential ships. What changed between them is
     # NOT RECORDED: Sequential publishes no release notes for its dot releases, and says only
-    # that most "fix only minor bugs", which says nothing about MIDI. Nothing here is known to
-    # be stale; nothing here is known to be current either.
+    # that most "fix only minor bugs" (release_notes), which says nothing about MIDI. Nothing here
+    # is known to be stale; nothing here is known to be current either.
 
 midi:
   # 1-16, or All to receive on every channel (p. 1). Which one yours is on
@@ -141,11 +141,11 @@ voice:
 
 groups:
   # The implementation's control-change table is a flat list of CC# | Param | Range, so these
-  # are the User's Guide's own section names, from Chapter 2, "Take 5 Controls": Global
-  # Settings p. 10, Oscillators p. 16 with Mixer Parameters p. 20 under it, Filter p. 21,
-  # Envelopes p. 23, Low Frequency Oscillators p. 30, Modulation p. 34, Unison p. 38, Effects
-  # p. 40, Arpeggiator p. 43, Sequencer p. 48, Glide p. 51. Where the panel prints a shorter
-  # name the panel wins, because that is what a player is looking at: "lfo 1", "env 1", "mod 3".
+  # are the User's Guide's own section names, from Chapter 2, "Take 5 Controls" (guide p. 10):
+  # Global Settings p. 10, Oscillators p. 16 with Mixer Parameters p. 20 under it, Filter p. 21,
+  # Envelopes p. 23, Low Frequency Oscillators p. 30, Modulation p. 34, Unison p. 38, Effects p. 40,
+  # Arpeggiator p. 43, Sequencer p. 48, Glide p. 51. Where the panel prints a shorter name the panel
+  # wins, because that is what a player is looking at: "lfo 1", "env 1", "mod 3".
   # The order is the order the control-change table lists them, which is the order below.
   # Two of these are not the maker's name for a section, because the maker has none that holds
   # what the group holds, and both are marked where they fall.
@@ -157,9 +157,9 @@ groups:
   # of the two envelopes reaches the filter, the amplifier, both, or an auxiliary destination.
   envelopes: Envelopes
   # Which envelope is which is the guide's, not an inference: "turn the amount knob of Env 1
-  # (which is routed to the Filter by default)" (p. 25), "In the env 1 (Filter) section" and
-  # "env 2 (Amp)" (p. 62). Env 1 is also the one that can be made the auxiliary envelope
-  # (p. 29), which is why it alone carries an Aux Dest.
+  # (which is routed to the Filter by default)" (p. 25), "In the env 1 (Filter)
+  # section" (guide p. 62) and "env 2 (Amp)" (p. 62). Env 1 is also the one that can be made the
+  # auxiliary envelope (p. 29), which is why it alone carries an Aux Dest.
   envelope_1: Env 1 (Filter)
   envelope_2: Env 2 (Amp)
   lfo_1: LFO 1
@@ -174,7 +174,8 @@ groups:
   keyboard: Keyboard
   sequencer: Sequencer
   # The guide's section is Modulation (p. 34); the display numbers each slot the way the panel
-  # shows it, "MOD 3  Env 1  +5  Osc2Fine", above the words "Indicates mod slot number" (p. 61).
+  # shows it, "MOD 3  Env 1  +5  Osc2Fine" (guide p. 61), above the words "Indicates mod slot
+  # number" (p. 61).
   mod_1: Mod 1
   mod_2: Mod 2
   mod_3: Mod 3
@@ -361,7 +362,7 @@ controls:
 
   minus_1_oct:           {label: "-1 Oct",               cc: 29, nrpn: 169, range: [0, 1],  group: keyboard}
   minus_2_oct:           {label: "-2 Oct",               cc: 30, nrpn: 171, range: [0, 1],  group: keyboard}
-  key_split_note:        {label: Key Split Note,         cc: 89, nrpn: 170, range: [0, 44], group: keyboard}   # NRPN printed "Key Slit Note"
+  key_split_note:        {label: Key Split Note,         cc: 89, nrpn: 170, range: [0, 44], group: keyboard}   # NRPN printed "Key Slit Note" (midi_impl p. 12)
   pitch_bend_range_up:   {label: Pitch Bend Range Up,    cc: 85, nrpn: 75,  range: [0, 12], group: keyboard}
   pitch_bend_range_down: {label: Pitch Bend Range Down,  cc: 86, nrpn: 76,  range: [0, 24], group: keyboard}
 
@@ -429,7 +430,8 @@ controls:
   # talks MIDI at all, so a panel sending them can cut itself off. Scale is
   # 0-63 here; the guide offers equal temperament and 65 others (guide p. 13),
   # the addendum 64. Three names are corrected from print: "Master Course
-  # Tune", "Pedal Polatiry" and "Foot Funtion".
+  # Tune" (midi_impl p. 13), "Pedal Polatiry" (midi_impl p. 13) and "Foot
+  # Funtion" (midi_impl p. 13).
 
   master_coarse_tune:   {label: Master Coarse Tune,   nrpn: 4096, range: [0, 24],  group: global}
   master_fine_tune:     {label: Master Fine Tune,     nrpn: 4097, range: [0, 100], group: global}

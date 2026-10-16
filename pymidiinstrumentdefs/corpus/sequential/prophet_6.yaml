@@ -5,11 +5,11 @@
 #
 # ONE DEFINITION, TWO INSTRUMENTS. Sequential makes a Prophet-6 keyboard and a Prophet-6 desktop
 # module, and this file describes both, because the maker treats them as one: the operating
-# system page serves one file for "the Prophet-6 keyboard and desktop module", the addendum says
-# MPE "enables the Prophet-6 keyboard and module to respond", and the manual's only mention of
-# the module is about chaining one to the other. **Everything here but the keyboard's own
-# aftertouch is true of both.** The Prophet-5 and Prophet-10 are different instruments with
-# their own documents and are not covered.
+# system page serves one file for "the Prophet-6 keyboard and desktop module" (operating_system),
+# the addendum says MPE "enables the Prophet-6 keyboard and module to respond" (addendum p. 1), and
+# the manual's only mention of the module is about chaining one to the other. **Everything here but
+# the keyboard's own aftertouch is true of both.** The Prophet-5 and Prophet-10 are different
+# instruments with their own documents and are not covered.
 #
 # THE MAKER PUBLISHES THIS APPENDIX THREE TIMES and no two printings agree. See the source note.
 
@@ -59,9 +59,9 @@ source: >-
   separates one edition's slips from the instrument's facts.
 
   THE CONTROL NRPN TABLE CONTRADICTS ITSELF. Page 81 says its four rows are "received and
-  transmitted but not saved as part of a program", and three of the four are NRPN 1, 2 and 3 -
-  `Osc 1 Sync`, `Osc 1 Level`, `Osc 1 Shape` - with the same numbers, the same ranges and the
-  same names as three rows of the **program** table on p. 79. They cannot be both. They are
+  transmitted but not saved as part of a program" (manual p. 81), and three of the four are NRPN 1,
+  2 and 3 - `Osc 1 Sync`, `Osc 1 Level`, `Osc 1 Shape` - with the same numbers, the same ranges and
+  the same names as three rows of the **program** table on p. 79. They cannot be both. They are
   recorded here as program parameters, which is where two of the three printings put them, and
   only NRPN 1088 Seq Play/Stop is taken from the control table.
 
@@ -100,8 +100,9 @@ sources:
     url: "https://sequential.com/wp-content/uploads/2022/02/Prophet-6-Manual-Addendum-OS-v1.6.7.pdf"
     sha256: 91f96af10ad564621db1ed1e427eae1948a0e2eb8e47d1c7fd9ab1a7187a73ab
     retrieved: 2026-10-04
-    # Listed as "User Guide Addendum"; its own first line is "Prophet-6 OS 1.6.7 Addendum" and
-    # its internal title is the one above. Six pages, and the only document that mentions MPE.
+    # Listed as "User Guide Addendum" (operating_system); its own first line is "Prophet-6 OS 1.6.7
+    # Addendum" (addendum p. 1) and its internal title is the one above. Six pages, and the only
+    # document that mentions MPE.
   handbuch:
     kind: manual
     title: Prophet-6 Handbuch
@@ -131,7 +132,7 @@ sources:
     # Cited for two things and nothing else. **Which firmware Sequential ships**: "Main 1.7.5",
     # as saved on 2026-10-04, where the newest document describing the instrument is written for
     # 1.6.7. And **that one OS serves both models**: "The downloadable file below contains the
-    # latest operating system for the Prophet-6 keyboard and desktop module."
+    # latest operating system for the Prophet-6 keyboard and desktop module." (operating_system)
     #
     # The sha256 is of the page's visible text; the page as served hashes to
     # 96c02a0a372576085968b1c95651ba66c8fda105634e9c8fec9251b90598916a.
@@ -160,7 +161,7 @@ midi:
     sends: true
     # "The Prophet-6 contains a total of 1000 programs. 500 are permanent and 500 can be
     # overwritten" (p. 2), in ten banks of a hundred: "Banks 0-4 are User Banks that can be
-    # overwritten. Banks 5-9 are Factory Banks that are permanent." A program change carries
+    # overwritten. Banks 5-9 are Factory Banks that are permanent." (p. 2) A program change carries
     # "0-99 for Programs 1-100 within current Bank" (p. 73) and the bank comes from Bank Select.
     presets: 1000
   # "NRPNs are the preferred method of parameter transmission, since they cover the complete
@@ -174,9 +175,10 @@ midi:
   # own keyboard, you can connect an MPE-driven controller such as the LinnStrument via MIDI to
   # control the Prophet-6" (addendum p. 2). The zone is fixed rather than negotiated: "the six
   # individual voices of the Prophet-6 correspond to MIDI channels 2-7 and are driven by the
-  # Lower Zone setup on the connected MPE controller". Two pitch bend ranges are set separately,
-  # master and per-voice, each 1-96 semitones, and the controller's Y axis reaches one of four
-  # destinations - low-pass cutoff or a pulse width - unipolar or bipolar (addendum pp. 3-4).
+  # Lower Zone setup on the connected MPE controller" (addendum p. 2). Two pitch bend ranges are set
+  # separately, master and per-voice, each 1-96 semitones, and the controller's Y axis reaches one
+  # of four destinations - low-pass cutoff or a pulse width - unipolar or bipolar
+  # (addendum pp. 3-4).
   # Neither a boolean nor the one word of `mpe` below can carry any of that.
   per_voice_channels: true
   # Received and never sent, by the addendum's own sentence above.
@@ -202,9 +204,9 @@ voice:
     note_off: false          # "Note Off. Velocity is ignored" (p. 73)
   # Both kinds are received - Polyphonic Key Pressure and Channel Pressure are each listed at
   # p. 73 - while the instrument's own keyboard sends only the one: "The Prophet-6 provides
-  # monophonic (or 'channel') aftertouch, which means that applying pressure to any key" affects
-  # the whole sound (p. 59), and the transmitted table at p. 74 has no Polyphonic Key Pressure
-  # in it.
+  # monophonic (or 'channel') aftertouch, which means that applying pressure to any key" (p. 59)
+  # affects the whole sound, and the transmitted table at p. 74 has no Polyphonic Key Pressure in
+  # it.
   # Until 2026-10-12 this said `poly`, the stronger of two words where the field had no third.
   aftertouch: both
   # Sent, as channel pressure, by the keyboard: the transmitted table has Channel Pressure and no
@@ -246,8 +248,8 @@ voice:
 groups:
   # The maker's own panel sections, as the panel prints them and the manual's chapters echo
   # them, in the order the controls below run. Where the panel and the contents page differ the
-  # panel wins, because that is what a player is looking at: the panel's "LOW FREQUENCY
-  # OSCILLATOR" over the contents' plural.
+  # panel wins, because that is what a player is looking at: the panel's "LOW FREQUENCY OSCILLATOR"
+  # (p. 1) over the contents' plural.
   #
   # NOT THE MAKER'S WORD. The manual has no section that holds the five controllers a player's
   # hands and feet send, because they are not on the panel at all.

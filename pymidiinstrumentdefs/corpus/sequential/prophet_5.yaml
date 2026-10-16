@@ -17,7 +17,8 @@
 # not by this one: THE IMPLEMENTATION ITSELF NEVER MENTIONS THE PROPHET-10, not once in thirteen
 # pages. What settles it is that one documentation page offers this file in both products'
 # sections, that the two User's Guides differ in their MIDI material only by the model name, and
-# that the instrument's own USB port calls itself "Prophet-5/10". See the source account.
+# that the instrument's own USB port calls itself "Prophet-5/10" (guide p. 4). See the source
+# account.
 #
 # THE IMPLEMENTATION IS OLDER THAN THE INSTRUMENT'S FEATURES. It is version 1.4 of March 2021,
 # and two operating system addenda have followed it - 2.0 of September 2021 and 2.1.0 of May 2025
@@ -130,16 +131,17 @@ source: >-
   Edit Buffer (p. 12) is byte for byte the Request Program Dump of the page before, command byte
   and all.
 
-  The fifth: **a program is addressed three incompatible ways.** "Bank Number, 0 - 7" with
-  "Program Number, 0 - 127" (p. 11); "Group Number: 0 - 9" with "Program Number: 0 - 39" (p. 12);
-  and the received program change's own banks on p. 2.
+  The fifth: **a program is addressed three incompatible ways.** "Bank Number, 0 -
+  7" (implementation p. 11) with "Program Number, 0 - 127" (p. 11); "Group Number: 0 - 9"
+  (implementation p. 12) with "Program Number: 0 - 39" (p. 12); and the received program change's
+  own banks on p. 2.
 
-  The sixth: the NRPN tables are headed "Control NRPN Data" and introduced with "It is received
-  and transmitted but not saved as part of a program" (p. 9) - **over the parameters the document
-  later says are saved**, "The 128 'packed' parameter bytes in the program dump follow the order
-  of the NRPN list" (p. 13). The chapter before them promises "the two tables below, one for
-  global parameters, and the other for program parameters" (p. 6), and neither table is headed
-  that way.
+  The sixth: the NRPN tables are headed "Control NRPN Data" (implementation p. 8) and introduced
+  with "It is received and transmitted but not saved as part of a program" (p. 8) - **over the
+  parameters the document later says are saved**, "The 128 'packed' parameter bytes in the program
+  dump follow the order of the NRPN list" (p. 13). The chapter before them promises "the two tables
+  below, one for global parameters, and the other for program parameters" (p. 6), and neither table
+  is headed that way.
 
   THE SYSTEM EXCLUSIVE CHAPTER IS FOUR LAYOUTS, not a mention. A universal device inquiry, a
   request program dump, a program data dump and a global parameters data dump, each byte by byte
@@ -224,9 +226,9 @@ sources:
     sha256: 5b86f304689a958a3cdd7f2e53a7c4c12be05da6edf09fb7597a794630dd219a
     retrieved: 2026-10-04
     # 13 pages, printed page = file page, measured on every sheet. The date above is the PDF's
-    # own creation date; the document prints none. ITS OWN METADATA MISSPELLS ITS TITLE,
-    # "Prophet-5 MIDI Implemenation", which is how a file can be found by name and still not be
-    # the file somebody meant.
+    # own creation date; the document prints none. ITS OWN METADATA MISSPELLS ITS TITLE, `Prophet-5
+    # MIDI Implemenation`, which is how a file can be found by name and still not be the file
+    # somebody meant.
     page_offset: 0
   guide:
     kind: manual
@@ -252,7 +254,7 @@ sources:
     retrieved: 2026-10-04
     # Four pages. Cited for which operating system is current and for the fact that it says
     # nothing about MIDI. It covers both machines, "OS version 2.1.0 for the Prophet-5 and
-    # Prophet-10".
+    # Prophet-10" (addendum_2_1_0 p. 1).
     page_offset: 0
   addendum_2_0:
     kind: firmware_addendum
@@ -264,9 +266,9 @@ sources:
     sha256: ca6316c065d81b3eea5bf22fc1f3f9450c05af8ab65d5fcc5a6f6e70909bccff
     retrieved: 2026-10-04
     # Nine pages, cited for nothing. ITS PDF TITLE IS ANOTHER PRODUCT'S AND ANOTHER VERSION'S,
-    # "Prophet-10 OS 1.5.6. Addendum", where the document itself reads "Prophet-5/10 OS 2.0
-    # Addendum" - so a file's metadata is not evidence of what it is. Held because it is the
-    # release between the implementation and the current one.
+    # `Prophet-10 OS 1.5.6. Addendum`, where the document itself reads "Prophet-5/10 OS 2.0
+    # Addendum" (addendum_2_0 p. 1) - so a file's metadata is not evidence of what it is. Held
+    # because it is the release between the implementation and the current one.
     page_offset: 0
   sibling_guide:
     kind: manual
@@ -292,7 +294,7 @@ midi:
   # 71 controls carry an NRPN, 50 of them beside a controller number; see the source account.
   nrpn: preferred
   program_change:
-    # "Program change, 0-39" received (p. 2); "Program change" transmitted (p. 3).
+    # "Program change, 0-39" (p. 2) received; "Program change" (p. 3) transmitted.
     receives: true
     sends: true
     # "The Prophet-5 contains a total of 400 programs" (p. 6). A single program change reaches

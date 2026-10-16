@@ -87,10 +87,10 @@ source: >-
 
 
   **THE DOCUMENT CONTRADICTS ITSELF ABOUT HOW MANY PROGRAMS A BANK HOLDS, THREE WAYS.** Program
-  change is "0-127 for Programs 1-127 within current Bank" on one page and "0-127 for Programs
-  00-128 within current Bank" on the next, which are 127 and 129 programs for 128 values. The
-  user guide gives the instrument 512 programs in four banks, so 128 a bank, and `presets`
-  records the 512 rather than either of the two wrong statements.
+  change is "0-127 for Programs 1-127 within current Bank" (midi p. 2) on one page and "0-127 for
+  Programs 00-128 within current Bank" (midi p. 3) on the next, which are 127 and 129 programs for
+  128 values. The user guide gives the instrument 512 programs in four banks, so 128 a bank, and
+  `presets` records the 512 rather than either of the two wrong statements.
 
 
   **AND ABOUT HOW BANKS ARE NUMBERED, ALSO THREE WAYS**: the controller table gives bank select
@@ -132,8 +132,8 @@ source: >-
 
 
   One more sign that this document was adapted from a sibling's: it says it "lists Fourm program
-  parameters 0-352" and the table it introduces runs 1 to 726 and has no row 0. Neither bound is
-  right, and no other product is named anywhere in the file.
+  parameters 0-352" (midi p. 8) and the table it introduces runs 1 to 726 and has no row 0. Neither
+  bound is right, and no other product is named anywhere in the file.
 
 sources:
   midi:
@@ -144,9 +144,8 @@ sources:
     url: "https://sequential.com/wp-content/uploads/2025/12/Fourm-MIDI-Implementation-Document_V1.1.pdf"
     sha256: 19871a644b92bd3dd29835595d893f56e82c8d717daf9cd5ba10584a5b067afd
     retrieved: 2026-10-05
-    # 15 sheets, one printed page to a sheet. Adobe InDesign 20.5 on 12 December 2025. Its own
-    # title is "Fourm MIDI Implementation Document" and its author field reads
-    # "Brian Tester/Sequential".
+    # 15 sheets, one printed page to a sheet. Adobe InDesign 20.5 on 12 December 2025. Its own title
+    # is `Fourm MIDI Implementation Document` and its author field reads `Brian Tester/Sequential`.
     # **THE SHEET A TABLE SITS ON OPENS WITH ITS OWN FOLIO**, which looks exactly like a row.
     # The controller table spans sheets 5 and 6, so an unguarded reader invents a controller 5
     # and a controller 6 out of the running head.
@@ -177,8 +176,8 @@ midi:
   # Real-Time Messages table lists only the timing clock.
   transport: sends
   program_change:
-    # Both directions, each behind a global - "MIDI Prog Send: Off, On" and "MIDI Prog Rcv:
-    # Off, On" (midi p. 2). Program change selects within the current bank only.
+    # Both directions, each behind a global - "MIDI Prog Send: Off, On" (midi p. 2) and "MIDI Prog
+    # Rcv: Off, On" (midi p. 2). Program change selects within the current bank only.
     receives: true
     sends: true
     # "The Fourm contains 512 program locations. These are divided into two sets of 256

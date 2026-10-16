@@ -1,13 +1,13 @@
 # THE MAKER PUBLISHES NO SEPARATE MIDI IMPLEMENTATION DOCUMENT FOR THIS INSTRUMENT, and the
 # implementation is a sixteen-sheet section inside the User's Guide, headed "OB-X8 MIDI
-# Implementation". So this definition is read out of a user manual that happens to contain a
-# complete implementation, which is not the same thing as a user-manual-only instrument.
+# Implementation" (manual p. 122). So this definition is read out of a user manual that happens to
+# contain a complete implementation, which is not the same thing as a user-manual-only instrument.
 #
-# AND THE GUIDE WAS BUILT FROM A SEQUENTIAL DOCUMENT. Its PDF metadata says so: `/Title` is
-# "Pro 3 User's Guide" and `/Author` is "Mark Wilcox/Sequential". **That is the explanation of
-# the sibling.** `oberheim/teo_5`'s own implementation document says in as many words that its
-# control map is the Pro 3's, and nineteen pages of the TEO-5's guide carry the Sequential Take
-# 5's running headers. The same production line made both.
+# AND THE GUIDE WAS BUILT FROM A SEQUENTIAL DOCUMENT. Its PDF metadata says so: `/Title` is `Pro 3
+# User's Guide` and `/Author` is `Mark Wilcox/Sequential`. **That is the explanation of the
+# sibling.** `oberheim/teo_5`'s own implementation document says in as many words that its control
+# map is the Pro 3's, and nineteen pages of the TEO-5's guide carry the Sequential Take 5's running
+# headers. The same production line made both.
 #
 # **THIS DOCUMENT'S BODY IS CLEAN, THOUGH, AND THAT WAS CHECKED RATHER THAN ASSUMED.** All 137
 # sheets were searched for "Pro 3", "Sequential", "Prophet", "Take 5", "Trigon" and "OB-6".
@@ -40,15 +40,15 @@ model:
   # Filter` and `23. LFO Volume Dest`. Searched for by name in both tables and in neither.
   # ONE DEFINITION COVERS TWO BODIES, the keyboard and the Module, which share one product page
   # and one guide. **The MIDI section carries no keyboard-or-Module qualification anywhere** -
-  # sheets 122 to 137 were searched for "(Keyboard only)" and "(Module only)" and have none,
-  # while every such marker in the document falls between sheets 7 and 83. The differences the
-  # guide states are the keybed, the levers and where a parameter is reached from: "Master Tune
-  # (Keyboard only)... On the Module, Master Tune is found in the Global menu" (manual p. 46),
-  # "Lever Calibration (Keyboard only)" (manual p. 28), "Master Tune Fine (Module only)"
-  # (manual p. 22), "Lever Box (Keyboard only)" (manual p. 50). None of those names appears in
-  # either table. The Module has no keybed and no levers, so it has no local source for a note,
-  # a channel pressure or a pitch bend; **that is an inference from the absence of the hardware
-  # and not something either document states**, and what either body *receives* is the same.
+  # sheets 122 to 137 were searched for `(Keyboard only)` and `(Module only)` and have none, while
+  # every such marker in the document falls between sheets 7 and 83. The differences the guide
+  # states are the keybed, the levers and where a parameter is reached from: "Master Tune (Keyboard
+  # only)... On the Module, Master Tune is found in the Global menu" (manual p. 46), "Lever
+  # Calibration (Keyboard only)" (manual p. 28), "Master Tune Fine (Module only)" (manual p. 22),
+  # "Lever Box (Keyboard only)" (manual p. 50). None of those names appears in either table. The
+  # Module has no keybed and no levers, so it has no local source for a note, a channel pressure or
+  # a pitch bend; **that is an inference from the absence of the hardware and not something either
+  # document states**, and what either body *receives* is the same.
   firmware: "2.0"
 
 source: >-
@@ -87,7 +87,8 @@ source: >-
   Mod 2 Ramp Up and Mod Box Arp Speed are 0-27 by NRPN, where Mod 2's own twin is 0-127 in both
   tables, and Page 2 Chord Key Limit is "0-1207". **Two are genuinely two-sided.** Env Type is
   0-1 by control change and 0-2 by NRPN, and the prose supports the control change: Page 2's
-  Envelope Type sets the envelopes "to either OB-X/Xa or OB-8 contours", which is two states.
+  Envelope Type sets the envelopes "to either OB-X/Xa or OB-8 contours" (manual p. 61), which is two
+  states.
   Mod Box LFO 2 Bend Amount is 0-255 by control change and 0-12 by NRPN, twenty-one times apart,
   and here the prose supports the **NRPN**: the Bend Lever Amount runs "from ¼ to 12 semitones"
   (manual p. 67). Both figures are published in both cases and neither is resolved.
@@ -110,7 +111,7 @@ source: >-
   pairs it with neither**, which is a disagreement recorded rather than resolved. The other two
   are NRPN 25 `FILTER KBD TRACK` against control change 36 `FILTER KEYBOARD`, and NRPN 123 `PAGE
   2 FILTER KBD TRACK` against control change 37 `PAGE 2 FILTER KBD ON LEVEL`: plausible both
-  times, and "keyboard track" and "on level" are not the same words.
+  times, and `keyboard track` and `on level` are not the same words.
 
   CONTROL CHANGE 12 IS PRINTED TWICE, for `OSC 1 XMOD` and for `OSC 1 FILTER ENV MOD`. The NRPN
   table gives those 9 and 12, so the second row's "12" is very likely its NRPN number repeated
@@ -127,21 +128,21 @@ source: >-
   six Banks, each of which contain 128 preset locations (organized as 16 Groups of 8 Programs)"
   (manual p. 15); a global transmits "the entire 640 program sound set" (manual p. 27); bank
   select is "1 - 5 select user banks 1 - 5; 6 - 9 select factory banks 1 - 4" (manual p. 123),
-  which is nine banks against six, while the transmitted table gives "Bank Select: 1 - 5"; the
-  program dump request takes a "Bank Number, 0 - 7" (manual p. 135) and the program data dump a
-  "Group Number: 0 - 9" with "Program Number: 0 - 39" (manual p. 136); and the program change row
-  announces "0-39" and then enumerates 0 to 127 across sixteen groups (manual p. 123). Six
-  statements of one number. `receives` and `sends` are recorded because every account agrees
-  that program change travels both ways.
+  which is nine banks against six, while the transmitted table gives "Bank Select: 1 - 5"
+  (manual p. 124); the program dump request takes a "Bank Number, 0 - 7" (manual p. 135) and the
+  program data dump a "Group Number: 0 - 9" (manual p. 136) with "Program Number: 0 - 39"
+  (manual p. 136); and the program change row announces "0-39" and then enumerates 0 to 127 across
+  sixteen groups (manual p. 123). Six statements of one number. `receives` and `sends` are recorded
+  because every account agrees that program change travels both ways.
 
   WHAT IS ABSENT, CHECKED RATHER THAN ASSUMED. **There is no MIDI implementation chart** - the
   conventional grid - in either document, so `mode` is not recorded: the control change table
   lists Omni and Mono and Poly Mode messages as received, and no page gives a default mode.
-  Neither document states a note range for the sound engine beyond "Note number 0-127" in the
-  message tables, so `note_range` is not recorded. And **neither message table is a complete
-  statement of what is received**: control changes 2 and 4 are absent from the control change
-  table and present in the message tables, while a global says the synth responds to "Pitch
-  Wheel, Mod Wheel, Pedal, Breath, Volume, and Expression".
+  Neither document states a note range for the sound engine beyond "Note number 0-127"
+  (manual p. 123) in the message tables, so `note_range` is not recorded. And **neither message
+  table is a complete statement of what is received**: control changes 2 and 4 are absent from the
+  control change table and present in the message tables, while a global says the synth responds to
+  "Pitch Wheel, Mod Wheel, Pedal, Breath, Volume, and Expression" (manual p. 26).
 
   FOUR THINGS THAT LOOK LIKE MISPRINTS AND ARE NOT, established from the prose by the second
   reader, and recorded here so nobody "fixes" them. **Portamento Mode's 0-66 is right**: Page 2
@@ -167,14 +168,14 @@ source: >-
 
   WHAT THIS FILE DOES NOT CARRY, and a reader implementing system exclusive needs to know:
   **the document gives this instrument two different SysEx IDs.** The device inquiry reply says
-  "OB-X8  ID  (Family LS)" against 0011 0011, which is 0x33, and every one of the seven other
-  SysEx messages says "OB-X8 ID" against 0011 0001, which is 0x31. One is wrong and no page
-  tells which. The dump sizes do not agree either - 599 bytes for a program dump against 597 for
-  an edit buffer dump of the same data, and "The 128 'packed' parameter bytes in the program
-  dump follow the order of the NRPN list" - and a "Save Edit Buffer" table is byte-for-byte the
-  "Request Program Dump" table above it, command byte and description included. `sysex: true`
-  records that the instrument has system exclusive, which is not in doubt; the messages
-  themselves are beyond what this format holds.
+  "OB-X8  ID  (Family LS)" (manual p. 134) against 0011 0011, which is 0x33, and every one of the
+  seven other SysEx messages says "OB-X8 ID" against 0011 0001, which is 0x31. One is wrong and no
+  page tells which. The dump sizes do not agree either - 599 bytes for a program dump against 597
+  for an edit buffer dump of the same data, and "The 128 'packed' parameter bytes in the program
+  dump follow the order of the NRPN list" (manual p. 137) - and a "Save Edit Buffer" (manual p. 136)
+  table is byte-for-byte the "Request Program Dump" (manual p. 135) table above it, command byte and
+  description included. `sysex: true` records that the instrument has system exclusive, which is not
+  in doubt; the messages themselves are beyond what this format holds.
 
 sources:
   manual:
@@ -237,12 +238,13 @@ midi:
   # PREFERRED, IN THE MAKER'S OWN WORDS, and the same words it uses for the sibling: "NRPNs are
   # the preferred method of parameter transmission, since they cover the complete range of all
   # parameters, while CCs are limited to a range of 128" (manual p. 122). Which of the two a
-  # parameter change travels as is a setting - "Param Param Send: Off, CC, NRPN" and "Param
-  # Param Receive: Off, CC, NRPN" (manual p. 122), the doubled word being the maker's typo - so a
-  # control below carrying both numbers is one parameter reachable either way.
+  # parameter change travels as is a setting - "Param Param Send: Off, CC, NRPN" (manual p. 122) and
+  # "Param Param Receive: Off, CC, NRPN" (manual p. 122), the doubled word being the maker's typo -
+  # so a control below carrying both numbers is one parameter reachable either way.
   # **AND THE CLAIM IS NOT QUITE TRUE OF THIS INSTRUMENT**: four real controls have no NRPN at
   # all - 9 Transpose Up/Down, 74 Brightness, 95 Lower/Upper/No Select and 119 Normal/Split/
-  # Double Mode - so NRPN does not "cover the complete range of all parameters" here.
+  # Double Mode - so NRPN does not "cover the complete range of all parameters" (manual p. 122)
+  # here.
   # **ONE OF THOSE IS THE ROW THAT NAMES THE MODES, AND THE SPLIT'S OWN PARAMETERS ARE NRPN
   # ONLY.** The controllers "are transmitted when Param Xmit is set to CC, and
   # recognized/received when Param Rcv is set to CC." (manual p. 125), and the NRPNs are
@@ -260,13 +262,13 @@ midi:
   # chosen by selecting "MPE Enabled" in the same global that sets the MIDI channel. So this is
   # true of the instrument and not true all the time, which is the same shape as
   # `expressive_e/osmose` and is why that flag exists. The three axes are "X-axis, or left-right
-  # movement, sent as Pitch Bend", "Y-axis, or front-to-back movement, sent as MIDI CC74
-  # (assignable per preset)" and "Z-axis, or up-down movement, sent as Channel Pressure/
-  # Aftertouch" (addendum p. 4). Whether MPE transmits as well as receives, and whether there is
-  # a master channel, are unstated - the addendum says only "eight MPE MIDI channels". MPE
-  # Enabled and a channel number are two values of the one global, which cannot hold both. The
-  # separate channels below are stated for a channel number, and what a Split or a Double does
-  # under MPE Enabled is not described.
+  # movement, sent as Pitch Bend" (addendum p. 4), "Y-axis, or front-to-back movement, sent as MIDI
+  # CC74 (assignable per preset)" (addendum p. 4) and "Z-axis, or up-down movement, sent as Channel
+  # Pressure/Aftertouch" (addendum p. 4). Whether MPE transmits as well as receives, and whether
+  # there is a master channel, are unstated - the addendum says only "eight MPE MIDI channels"
+  # (addendum p. 4). MPE Enabled and a channel number are two values of the one global, which cannot
+  # hold both. The separate channels below are stated for a channel number, and what a Split or a
+  # Double does under MPE Enabled is not described.
   per_voice_channels: true
   # Received, "the OB-X8 will respond to any MPE-capable controller" (addendum p. 4); whether it
   # sends MPE is unstated, as above.
@@ -361,10 +363,11 @@ modes:
 parts:
   # TWO PARTS, AND ONLY IN SPLIT MODE. "This new feature allows you to control the Lower and
   # Upper programs of a Split program over separate MIDI channels. The Lower and Upper voices
-  # transmit and receive on separate MIDI channels" (addendum p. 2). They are "active whenever
-  # Split mode is enabled with the Global MIDI Channel set to any channel but All", and **"The
-  # Upper MIDI channel is automatically assigned as Lower channel +1"** - which is what
-  # `channel_offset` holds. What the Upper channel is when the global is 16 is not stated.
+  # transmit and receive on separate MIDI channels" (addendum p. 2). They are "active whenever Split
+  # mode is enabled with the Global MIDI Channel set to any channel but All" (addendum p. 2), and
+  # **"The Upper MIDI channel is automatically assigned as Lower channel +1" (addendum p. 2)** -
+  # which is what `channel_offset` holds. What the Upper channel is when the global is 16 is not
+  # stated.
   # Not available in Double mode: "The Double program will only transmit and receive on the
   # Global MIDI channel" (addendum p. 2).
   # **ON ITS OWN CHANNEL A PROGRAM TAKES THE WHOLE KEYBOARD, AND THE SPLIT POINT IS THE LOCAL

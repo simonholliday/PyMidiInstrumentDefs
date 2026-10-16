@@ -5,9 +5,10 @@
 # own control map another product's, and nothing in these sixteen pages corrects it.
 #
 # THE USER'S GUIDE HAS THE SAME FAULT MORE VISIBLY. Nineteen of its pages carry the Sequential
-# Take 5's running headers: ten read "Take 5 User's Guide" and nine read "Sequential", and one
-# of those nine sits above a section headed "Using Low Split (TEO-5 Keyboard only)". Oberheim
-# and Sequential are sister brands and these documents were built from that instrument's.
+# Take 5's running headers: ten read "Take 5 User's Guide" (guide p. 10) and nine read "Sequential",
+# and one of those nine sits above a section headed "Using Low Split (TEO-5 Keyboard only)"
+# (guide p. 17).
+# Oberheim and Sequential are sister brands and these documents were built from that instrument's.
 #
 # SO THE TAKE 5 IS WORTH READING BESIDE THIS, and `sequential/take_5` is in this corpus. The two
 # number their global parameters identically from 4096, which is how the same document family
@@ -29,9 +30,10 @@ model:
   # version, not the instrument's; the implementation document carries no version and no date in
   # its pages at all, only `_v2` in its file name.
   # WHAT OBERHEIM'S PAGE SAYS, for anyone who needs to know how current this is: "Latest TEO-5
-  # OS - v1.1.0.4", uploaded the same month as these documents, and "TEO-5 Poly Chain OS BETA -
-  # v1.2.0.15", uploaded four months later and still offered as a beta when this was fetched
-  # eleven months after that. Poly chaining is a feature these tables cannot describe.
+  # OS - v1.1.0.4" (product_page), uploaded the same month as these documents, and "TEO-5 Poly Chain
+  # OS BETA - v1.2.0.15" (product_page), uploaded four months later and still offered as a beta when
+  # this was fetched eleven months after that. Poly chaining is a feature these tables cannot
+  # describe.
   # ONE DEFINITION COVERS TWO PRODUCTS, the keyboard and the module, which share the page and
   # both documents. The guide names the two differences and neither touches MIDI: Low Split is
   # "TEO-5 Keyboard only" (guide p. 17) and the module has a selector the keyboard does not,
@@ -46,11 +48,11 @@ source: >-
   parameters step through; its pages are cited as file pages, because its front matter is
   unnumbered.
 
-  NRPN IS THE MAKER'S PREFERRED WAY IN, AND WHICH ONE IT USES IS A SETTING. "MIDI Param Send:
-  Off, CC, NRPN" and "MIDI Param Receive: Off, CC, NRPN - Sets the method by which parameter
-  changes are received via MIDI. As with transmission, NRPNs are the preferred method"
-  (pp. 1-2). So a control below with both numbers is one parameter reachable either way, and
-  which way depends on how the instrument is set.
+  NRPN IS THE MAKER'S PREFERRED WAY IN, AND WHICH ONE IT USES IS A SETTING. "MIDI Param Send: Off,
+  CC, NRPN" (p. 1) and "MIDI Param Receive: Off, CC, NRPN - Sets the method by which parameter
+  changes are received via MIDI. As with transmission, NRPNs are the preferred method" (pp. 1-2). So
+  a control below with both numbers is one parameter reachable either way, and which way depends on
+  how the instrument is set.
 
   SIXTEEN PARAMETERS GET A DIFFERENT RANGE IN EACH TABLE, and `nrpn_range` carries the NRPN's.
   Thirteen of those are NRPN being finer, which is the maker's own reason for preferring it -
@@ -94,21 +96,21 @@ source: >-
   and once as "Volume knob", both on CC 7.
 
   THE DOCUMENT CANNOT AGREE WITH ITSELF ABOUT BANKS AND PROGRAMS, in five places. Received
-  program change is "0-127 for Programs 1-127 within current Bank" and transmitted is "0-127 for
-  Programs 00-128 within current Bank" (pp. 3-4) - one is 127 programs for 128 numbers and the
-  other is 129. Received bank select is "1 - 4 select user banks 1 - 4; 5 - 8 select factory
-  banks 1 - 4; 9 - 12 select add-on banks 1 - 4 others ignored" and transmitted bank select is
-  "0 - 9" (pp. 3-4). The dump request takes "Bank Number, 0 - 15" and "Program Number, 0 - 127"
-  while the dump itself carries "Bank Number: 0 - 9" and "Program Number: 0 - 99" (pp. 13-14).
-  `presets` below is the guide's plain count of the instrument instead: "The TEO-5 contains 512
-  programs. These are divided into two sets of 256 programs - a Factory set and a User set"
-  (guide p. 13), which the four user and four factory banks of the received bank select agree
-  with at sixty-four programs a bank.
+  program change is "0-127 for Programs 1-127 within current Bank" (midi_impl p. 3) and transmitted
+  is "0-127 for Programs 00-128 within current Bank" (pp. 3-4) - one is 127 programs for 128 numbers
+  and the other is 129. Received bank select is "1 - 4 select user banks 1 - 4; 5 - 8 select factory
+  banks 1 - 4; 9 - 12 select add-on banks 1 - 4 others ignored" (midi_impl p. 3) and transmitted
+  bank select is "0 - 9" (pp. 3-4). The dump request takes "Bank Number, 0 - 15" (midi_impl p. 13)
+  and "Program Number, 0 - 127" (midi_impl p. 13) while the dump itself carries "Bank Number: 0 - 9"
+  (midi_impl p. 14) and "Program Number: 0 - 99" (pp. 13-14). `presets` below is the guide's plain
+  count of the instrument instead: "The TEO-5 contains 512 programs. These are divided into two sets
+  of 256 programs - a Factory set and a User set" (guide p. 13), which the four user and four
+  factory banks of the received bank select agree with at sixty-four programs a bank.
 
   THE GLOBAL TABLE CONTRADICTS THE PROSE TWO PAGES EARLIER, twice. MIDI Clock Mode is given six
   settings in words - "Off", "Out", "Out No S/S", "In", "In/Thru", "In No S/S" (p. 1) - and four
   in the table, 0-3 as Off, Out, In and In Thru (p. 11), so the two that suppress start and stop
-  have no number. MIDI Out Select is "Off, MIDI, USB, All" in words (p. 2) and 0-2 as MIDI, USB
+  have no number. MIDI Out Select is "Off, MIDI, USB, All" (p. 2) in words and 0-2 as MIDI, USB
   and All in the table, so Off has none.
 
   THE SISTER DOCUMENT AGREES WITH THE PROSE BOTH TIMES, which is as close to an answer as
@@ -121,7 +123,8 @@ source: >-
   ONE GLOBAL'S DESCRIPTION IS ANOTHER'S, copied and not corrected: "MIDI Sysex On: Off, On -
   When set to On, the synth will respond to MIDI controllers, including pitch wheel, mod wheel,
   pedal, and volume" (p. 2), which is word for word what the line above says about MIDI Control.
-  What MIDI SysEx On does is said instead by the table, which calls 4105 "MIDI SysEx Enable".
+  What MIDI SysEx On does is said instead by the table, which calls 4105 "MIDI SysEx
+  Enable" (midi_impl p. 11).
 
   AND THE TWO SISTER DOCUMENTS SWAP TWO RANGES. Here Master Coarse Tune is 0-100 and Master Fine
   Tune is 0-24 (p. 11); the Take 5's document, at those same two numbers, gives 0-24 and 0-100.
@@ -136,15 +139,15 @@ source: >-
   the same fault as the guide's nineteen Take 5 headers seen from the other side.
 
   FIVE MORE THINGS IN IT DO NOT ADD UP, and none changes a number below. The program table is
-  introduced as "TEO-5 program parameters 0-352" and then runs 1 to 187 in 159 rows with no
-  parameter 0 and nothing above 187 (p. 8). The page describing how an NRPN travels says "the
-  parameter number can be found in the two tables below" where there are three, and says the
-  number's high byte "will be zero or one, and never more than two" where every global is 4096
-  or above and so has a high byte of 32 (p. 7). MIDI Param Send and MIDI Param Receive carry an
-  asterisk and a dagger in the global table and **no footnote exists anywhere in the sixteen
-  pages** for either. The system real-time table lists MIDI Timing Clock and has no row for
-  Start or Stop (p. 3), although the clock settings two pages earlier send and receive both -
-  which is why `transport` below is `both` on the strength of the prose rather than the table.
+  introduced as "TEO-5 program parameters 0-352" (p. 8) and then runs 1 to 187 in 159 rows with no
+  parameter 0 and nothing above 187. The page describing how an NRPN travels says "The parameter
+  number can be found in the two tables below" (midi_impl p. 7) where there are three, and says the
+  number's high byte "will be zero or one, and never more than two" (p. 7) where every global is
+  4096 or above and so has a high byte of 32. MIDI Param Send and MIDI Param Receive carry an
+  asterisk and a dagger in the global table and **no footnote exists anywhere in the sixteen pages**
+  for either. The system real-time table lists MIDI Timing Clock and has no row for Start or Stop
+  (p. 3), although the clock settings two pages earlier send and receive both - which is why
+  `transport` below is `both` on the strength of the prose rather than the table.
   The dump request's bank byte is written 0000 00vv, which holds two bits and four values, under
   a stated range of 0 to 15 (p. 13).
 
@@ -161,13 +164,13 @@ source: >-
 
   NOT RECORDED: which number means which named state for any *program* parameter. The
   implementation document gives those as bare ranges, and the guide names the states in words
-  without numbering them - "Shape: Triangle, Sawtooth, Reverse Sawtooth, Square, S&H" against a
-  range of 0-4 (guide p. 33) tells you there are five and not which is which. The globals are
+  without numbering them - "Shape: Triangle, Sawtooth, Reverse Sawtooth, Square, S&H" (guide p. 42)
+  against a range of 0-4 (pp. 6, 9) tells you there are five and not which is which. The globals are
   different, and `choices` below carries their states because that table does number them.
 
   NOT RECORDED: the note range and the key numbers. The guide gives the keyboard as "its
   44-note keyboard" (p. 17) and names no note number for either end of it; the implementation
-  document says only "Note number 0 - 127" for what it receives.
+  document says only "Note number 0-127" (p. 3) for what it receives.
 
   NOT RECORDED: any system exclusive layout. The messages are published - device inquiry, three
   dump requests, three dumps, and the packed-data format - but a program dump is "4096 bytes
@@ -176,9 +179,9 @@ source: >-
   eight makes 4096 into 4682, which both readings worked out separately. Three more details in
   that section are worth a reader's attention: the instrument's own identity byte is written
   `0b1011010` where every other byte in the document is two binary nibbles; the manufacturer
-  byte labelled "Oberheim ID" is 0000 0010, the same byte as the "Inquiry Reply" label directly
-  above it in the same table; and the global dump says it carries "50 nibbles (LS then MS) for
-  25 Global parameters" (p. 15) where the table on the page before lists twenty-seven.
+  byte labelled "Oberheim ID" is 0000 0010, the same byte as the "Inquiry Reply" (midi_impl p. 12)
+  label directly above it in the same table; and the global dump says it carries "50 nibbles (LS
+  then MS) for 25 Global parameters" (p. 15) where the table on the page before lists twenty-seven.
 
   NOT RECORDED, DELIBERATELY: `parts`. The instrument splits its keyboard and stays one
   instrument while it does - "The program is the same for both key ranges" (guide p. 17) - so
@@ -219,8 +222,8 @@ sources:
     retrieved: 2026-10-02
     paginated: false
     # Cited for the two things that are on it and in neither PDF: the OS versions, and the
-    # connections - "5-pin DIN MIDI In, Out, Thru" and "USB MIDI". Its document links are in
-    # the markup as served, so nothing had to be guessed to find the PDFs above.
+    # connections - "5-pin DIN MIDI In, Out, Thru" (product_page) and "USB MIDI". Its document links
+    # are in the markup as served, so nothing had to be guessed to find the PDFs above.
 
 midi:
   # "MIDI Channel: All, 1...16 - Selects which MIDI channel to send and receive data, 1 to 16.
@@ -233,7 +236,8 @@ midi:
   clock: both
   transport: both
   program_change:
-    # One switch each: "MIDI Prog Send: Off, On" and "MIDI Prog Receive: Off, On" (p. 2).
+    # One switch each: "MIDI Prog Send: Off, On" (midi_impl p. 2) and "MIDI Prog Receive: Off, On"
+    # (p. 2).
     receives: true
     sends: true
     # The guide's count of the instrument. See the source account for the five figures in the
@@ -248,8 +252,9 @@ midi:
 
 voice:
   addressing: pitches
-  # "five voices, classic analog warmth" and "a five-voice architecture with genuine analog VCOs
-  # and VCFs" (guide p. 6). There is no specifications page in the guide, so this is the prose.
+  # "five voices, classic analog warmth" (guide p. 6) and "a five-voice architecture with genuine
+  # analog VCOs and VCFs" (guide p. 6). There is no specifications page in the guide, so this is the
+  # prose.
   polyphony: 5
   velocity:
     # The list of received channel messages has Note On with a third byte it writes `0vvvvvvv`,

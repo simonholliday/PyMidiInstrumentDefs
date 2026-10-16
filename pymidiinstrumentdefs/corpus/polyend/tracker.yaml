@@ -4,8 +4,8 @@
 # forty-eight for the selected instrument's own parameters, **only in MIDI Synthesizer mode,
 # which the manual says needs the sequencer stopped**. The two sets share no number. **The
 # second set is on a part that exists in the `synthesizer` mode only.** Until 2026-10-11 this
-# format had no field that said "in this mode", and the groups below were the only thing
-# distinguishing the two.
+# format had no field to say that a control answers in one mode only, and the groups below were the
+# only thing distinguishing the two.
 #
 # NOTHING BELOW IS TRANSMITTED. The Tracker's outgoing controllers are not a map at all: six slots
 # per MIDI instrument, A to F, each of which the player sets to any number. So this file describes
@@ -13,7 +13,8 @@
 #
 # THE ONE CONTROLLER THAT IS NOT IN EITHER TABLE. The manual's Synthesizer Mode table has the
 # whole panning automation and no row for panning itself - and the picture of the instrument's own
-# screen two pages earlier reads "Panning = 10". It ships, from the screen, and is marked.
+# screen two pages earlier reads "Panning = 10" (manual p. 265). It ships, from the screen, and is
+# marked.
 
 definition: 1
 
@@ -44,16 +45,16 @@ source: >-
   before weighing it against the instrument: where this book and the Tracker's own screen
   disagree, the screen is the instrument and the book is a description of it.
 
-  **AND THAT IS NOT HYPOTHETICAL HERE.** The "Synthesizer Mode - MIDI CC Configurations" table
-  (manual p. 267) lists forty-seven controller numbers and **has no row for panning**, although
-  it carries the whole panning automation at 26 to 31. Two pages earlier, a picture of the
+  **AND THAT IS NOT HYPOTHETICAL HERE.** The "Synthesizer Mode - MIDI CC Configurations"
+  (manual p. 267) table lists forty-seven controller numbers and **has no row for panning**,
+  although it carries the whole panning automation at 26 to 31. Two pages earlier, a picture of the
   Tracker's own display lists the same parameters in the same unusual order - Tune, FineTune,
-  Volume, **Panning**, Filter type, Cutoff, Resonance - with their numbers beside them, and
-  gives "Panning = 10" (manual p. 265). The picture shows thirteen lines of a list that
-  scrolls, and the twelve other pairs in it carry the table's numbers. **So the table has
-  dropped a line the screen has**, and CC 10 is recorded below on the screen's authority,
-  marked. The picture runs from Delay Send at 15 straight to Volume Automation Type at 20, so
-  the table's 16 and 17, the wavetable and granular pair, rest on the table alone.
+  Volume, **Panning**, Filter type, Cutoff, Resonance - with their numbers beside them, and gives
+  "Panning = 10" (manual p. 265). The picture shows thirteen lines of a list that scrolls, and the
+  twelve other pairs in it carry the table's numbers. **So the table has dropped a line the screen
+  has**, and CC 10 is recorded below on the screen's authority, marked. The picture runs from Delay
+  Send at 15 straight to Volume Automation Type at 20, so the table's 16 and 17, the wavetable and
+  granular pair, rest on the table alone.
 
   THE OTHER THING THE TABLE IS SHORT OF, AND THIS ONE IS NOT RECORDED. Five of the six automation
   blocks have six rows - Automation Type, Attack, Decay, Sustain, Release and Amount - and
@@ -84,8 +85,8 @@ source: >-
   on a fixed number.**
 
   AND THE MANUAL CONTRADICTS ITSELF ABOUT WHICH NUMBER PROGRAM CHANGE IS. Page 260 gives 128, and
-  page 263 says "Program change is configured as a CC parameter using number 129" - which is the
-  number p. 260 gives to Channel Aftertouch. Neither is recorded.
+  page 263 says "Program change is configured as a CC parameter using number 129" (manual p. 263) -
+  which is the number p. 260 gives to Channel Aftertouch. Neither is recorded.
 
   NOT RECORDED: whether the Tracker answers to a program change at all, because the configuration
   menu enumerates its four inputs - clock, transport, notes and CC - and program change is not
@@ -117,10 +118,10 @@ source: >-
   Instrument Parameters > More" (downloads), and it says that page need not be displayed.
 
   ONE LINE OF THIS MANUAL BELONGS TO ANOTHER INSTRUMENT. The settings table at p. 50 explains
-  Clock Out as "Sets the Tracker Mini clock output" - in a book about the Tracker, whose cover,
-  running head and every other page say Tracker. It is the only such line, and the same setting is
-  described without the Mini at p. 251. Recorded because a manual that carries a sibling's text in
-  one place may carry it in others.
+  Clock Out as "Sets the Tracker Mini clock output" (manual p. 50) - in a book about the Tracker,
+  whose cover, running head and every other page say Tracker. It is the only such line, and the same
+  setting is described without the Mini at p. 251. Recorded because a manual that carries a
+  sibling's text in one place may carry it in others.
 
 sources:
   manual:
@@ -305,8 +306,8 @@ voice:
 
 groups:
   # Neither table has a sub-heading, so these are taken from **the maker's own prefix inside the
-  # rows**: every row of the first block begins "Performance Effect", every row of the second
-  # "Master -", and each automation block is named for the parameter it shapes.
+  # rows**: every row of the first block begins "Performance Effect" (manual p. 262), every row of
+  # the second "Master -", and each automation block is named for the parameter it shapes.
   performance_effects: Performance Effect
   master: Master
   # The plain instrument parameters of Synthesizer Mode, as against the automation blocks below.

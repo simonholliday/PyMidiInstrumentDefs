@@ -6,8 +6,8 @@ model:
   # The chart names no firmware, and Roland's own update history settles which ones it
   # covers: across all fourteen releases, from Ver.1.02 (Mar 2018) to Ver.3.00 (Sep 2023),
   # the word MIDI appears once - "MIDI sometimes becomes unsynchronized when a pattern is
-  # changed", a fix in Ver.2.01. No release adds, removes or renumbers a controller. So
-  # every row below holds for the current system program, which is what this records. (The
+  # changed" (release_notes), a fix in Ver.2.01. No release adds, removes or renumbers a controller.
+  # So every row below holds for the current system program, which is what this records. (The
   # chart's own version, 1.10 dated October 2018, sits between system program 1.10 of
   # August 2018 and 1.11 of December 2018; Roland does not say the two numbering schemes
   # are the same thing, so nothing here rests on that.)
@@ -47,9 +47,9 @@ source: >-
   read correctly rather than a misreading. It was changed because of what the claim does to a
   reader: `false` says this instrument has no system exclusive in either direction, so a panel
   would hide every sysex feature of a machine whose maker documents a device ID for matching
-  sysex messages. A chart's "x" on that row conventionally means "no published system
-  exclusive implementation", which is a weaker thing to say and is consistent with both
-  documents. The two Rolands are recorded the same way for the same reason.
+  sysex messages. A chart's "x" on that row is read here as no published system exclusive
+  implementation, which is a weaker thing to say and is consistent with both documents. The two
+  Rolands are recorded the same way for the same reason.
 
 sources:
   midi_impl:
@@ -99,7 +99,7 @@ midi:
   program_change:
     receives: true
     sends: true
-    presets: 128             # "True Number 0-127", both ways
+    presets: 128             # "True Number 0-127" (midi_impl p. 1), both ways
   # NOT RECORDED: sysex. The chart marks System Exclusive "x" in both columns and the
   # Reference Manual gives a Device ID for it, so the two documents disagree and neither is
   # recorded. See the source account. Song Position and Song Select are "x" both ways too,
@@ -126,7 +126,7 @@ voice:
   # there. So the map is the owner's to change and the numbers below are where it starts.
   note_map: learned
   # The chart's INST map. Both it and the second, ALT map it prints are factory
-  # defaults, "configurable on UTILITY:MIDI:Inst Note". The ALT map is:
+  # defaults, "configurable on UTILITY:MIDI:Inst Note" (midi_impl p. 1). The ALT map is:
   #   bd 35, sd 40, lt 41, mt 45, ht 48, rs 56, hc 54, ch 44, oh 55, cc 61, rc 63
   # The TRIGGER OUT voice has no note.
   voices:

@@ -11,9 +11,9 @@
 #
 # THREE KEYBOARDS, ONE DEFINITION. The FANTOM-6, -7 and -8 differ in their keyboards alone - 61,
 # 76 and 88 keys, the last with a different action - and the implementation documents are headed
-# "FANTOM-6/7/8" for all three. "FANTOM EX" is a system upgrade for these same keyboards and is
-# covered. Roland's other Fantoms are not: the 2001 Fantom, the Fantom-S, -X and -G, and the
-# FANTOM-0 are different instruments that share a name.
+# "FANTOM-6/7/8" (implementation p. 1) for all three. "FANTOM EX" is a system upgrade for these same
+# keyboards and is covered. Roland's other Fantoms are not: the 2001 Fantom, the Fantom-S, -X and
+# -G, and the FANTOM-0 are different instruments that share a name.
 
 definition: 1
 
@@ -21,9 +21,9 @@ model:
   manufacturer: Roland
   name: FANTOM-6/7/8
   # THE NEWEST RELEASE, AND THE MAP IS CHECKED UNCHANGED ACROSS EVERY ONE BEFORE IT. No document
-  # here states which firmware it describes - the implementation document says only "Version：
-  # 1.00" of itself, and the only firmware-shaped data in 67 pages is an Identity Reply whose
-  # software revision distinguishes the three models rather than naming a version.
+  # here states which firmware it describes - the implementation document says only "Version： 1.00"
+  # (implementation p. 1) of itself, and the only firmware-shaped data in 67 pages is an Identity
+  # Reply whose software revision distinguishes the three models rather than naming a version.
   # What is checked: Roland publishes a supplementary manual for each release, and **all seven
   # were fetched and read** - 1.10, 1.50, 1.60, 2.00, 2.10, 2.50 and 3.00. **Not one adds,
   # removes or renumbers a controller.** Three of them print the same list of modulation sources,
@@ -55,11 +55,11 @@ source: >-
   entry under reception and none under transmission. That looks like an asymmetry worth
   recording and it is not, because section 2 opens with this: "By selecting a controller number
   that corresponds to the setting of parameters of controllers, the FANTOM-6/7/8 can transmit
-  any control change message." (p. 8) It then prints one numberless entry, "General Controller",
-  whose second byte is "Controller number: 00H - 77H (0 - 31, 33 - 95)" (p. 10) - a range that
-  covers all five. The Reference Manual's chart says the same thing in its own way, marking the
-  row "1-31, 33-95" transmitted. So every control below is `both`, which is this format's
-  default and is why none of them says so.
+  any control change message." (p. 8) It then prints one numberless entry, "General
+  Controller" (implementation p. 10), whose second byte is "Controller number: 00H - 77H (0 - 31, 33
+  - 95)" (p. 10) - a range that covers all five. The Reference Manual's chart says the same thing in
+  its own way, marking the row "1-31, 33-95" transmitted. So every control below is `both`, which is
+  this format's default and is why none of them says so.
 
   AND THAT SENTENCE CONTRADICTS ITSELF IN ONE CHARACTER. "00H - 77H" is 0 to **119**, not 0 to
   95; for the range the same line glosses, the hex would be 00H-1FH and 21H-5FH. The hex and the
@@ -117,12 +117,12 @@ source: >-
   NOT RECORDED: the sound generator's polyphony, which no document here states. The Reference
   Manual mentions the maximum polyphony twice (reference pp. 124 and 126) without a figure, and
   its specifications give one only for the pad sampler, "Maximum Polyphony: 8" (reference p. 130).
-  And the preset count: program change reaches "Program Number 1-128" per the chart and Bank
-  Select chooses the bank. The specifications count the scenes, "128 Scenes x 4 Bank" (reference
-  p. 130), but give the tones only as "Over 3,500 Tones" (reference p. 130). The parameter guide
-  names the tone banks by kind (parameter_guide p. 11), and the bank select table prints the first
-  LSB of each and elides the rest of most (implementation p. 1), so no document here says how many
-  128-program banks of tones there are.
+  And the preset count: program change reaches "Program Number 1-128" (reference p. 128) per the
+  chart and Bank Select chooses the bank. The specifications count the scenes, "128 Scenes x 4 Bank"
+  (reference p. 130), but give the tones only as "Over 3,500 Tones" (reference p. 130). The
+  parameter guide names the tone banks by kind (parameter_guide p. 11), and the bank select table
+  prints the first LSB of each and elides the rest of most (implementation p. 1), so no document
+  here says how many 128-program banks of tones there are.
 
 sources:
   implementation:
@@ -169,10 +169,10 @@ sources:
     # specifications table that distinguishes the three keyboards.
 
 midi:
-  # Every channel message in the implementation document repeats "n = MIDI channel number: 0H -
-  # FH (ch.1 - 16)", and the chart's Basic Channel row gives 1-16 as both the default and what it
-  # can be changed to. Each zone is given one: "Receive Channel 1-16 Specifies the MIDI channel
-  # assigned to each zone" (parameter_guide p. 11).
+  # Every channel message in the implementation document repeats "n = MIDI channel number: 0H - FH
+  # (ch.1 - 16)" (implementation p. 1), and the chart's Basic Channel row gives 1-16 as both the
+  # default and what it can be changed to. Each zone is given one: "Receive Channel 1-16 Specifies
+  # the MIDI channel assigned to each zone" (parameter_guide p. 11).
   channels: [1, 16]
   # The chart's Mode row: "Default Mode 3" in both columns, and Mode 3 is Omni Off, Poly.
   mode: 3
@@ -189,7 +189,7 @@ midi:
   program_change:
     # "Receive Program Change OFF, ON Specifies whether program change messages will be received"
     # (reference p. 115), and the sound generator's chart marks Program Change "o" in both
-    # columns with "Program Number 1-128" against its True Number row.
+    # columns with "Program Number 1-128" (reference p. 128) against its True Number row.
     receives: true
     sends: true
     # NOT RECORDED, the preset count: 1-128 is what one bank holds and Bank Select chooses the
@@ -233,9 +233,10 @@ voice:
   aftertouch_transmits: true
   pitch_bend:
     # Settable over RPN, which the implementation document lists first among the four it
-    # receives: RPN 00 00H is Pitch Bend Sensitivity, "mm: 00H - 18H (0 - 24 semitones)" with
-    # "Up to 2 octave can be specified in semitone steps" (p. 4). The factory depth is not
-    # stated, so `semitones` is unrecorded; what it can be set to is 0 to 24.
+    # receives: RPN 00 00H is Pitch Bend Sensitivity, "mm: 00H - 18H (0 - 24
+    # semitones)" (implementation p. 4) with "Up to 2 octave can be specified in semitone steps"
+    # (p. 4). The factory depth is not stated, so `semitones` is unrecorded; what it can be set to
+    # is 0 to 24.
     programmable: true
 
 parts:

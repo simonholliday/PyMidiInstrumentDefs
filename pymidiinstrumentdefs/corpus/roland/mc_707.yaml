@@ -6,23 +6,23 @@
 # controller numbers stand unchanged through all three**, and what moved is program change, in
 # two steps: at Version 1.00 it was x in both columns with a True Number of `**********`; at
 # Version 1.20 it became o in both with a True Number of `0-15` and a footnote giving "Scene
-# change (0-7)"; at Version 1.60 the True Number reached `0-127` and the footnote's scene range
-# widened with it, and a third footnote put the Scatter Pad on the Note Number row.
-# `Notes/4249_extract_mc_707_charts.py` reads all three and prints every difference - seven of
-# them, leaving aside the header stamp.
+# change (0-7)" (chart_1_20 p. 1); at Version 1.60 the True Number reached `0-127` and the
+# footnote's scene range widened with it, and a third footnote put the Scatter Pad on the Note
+# Number row. `Notes/4249_extract_mc_707_charts.py` reads all three and prints every difference -
+# seven of them, leaving aside the header stamp.
 #
 # THE CHART IS STILL TWO FIRMWARE RELEASES BEHIND THE INSTRUMENT. It is Version 1.60 of
 # September 2020; the update notes document functions added in Ver.1.71 and Ver.1.80, and
 # **three controller numbers are named there and nowhere in the chart** - CC 2, CC 4 and CC 93.
 # They are below, on the update notes' authority.
 #
-# CC 83 IS FOOTNOTED "FOR MC-101 COMPATIBILITY" AND IS KEPT ANYWAY. It was nearly dropped: this
-# instrument has no physical SOUND knob - "[FILTER] knob, [MOD] knob, [FX] knob These knobs
-# adjust the assigned parameters" (reference p. 5), with [SOUND] a button - so the footnote
+# CC 83 IS FOOTNOTED "FOR MC-101 COMPATIBILITY" (chart p. 1) AND IS KEPT ANYWAY. It was nearly
+# dropped: this instrument has no physical SOUND knob - "[FILTER] knob, [MOD] knob, [FX] knob These
+# knobs adjust the assigned parameters" (reference p. 5), with [SOUND] a button - so the footnote
 # reads at first like a note that the row belongs to the smaller sibling. Two things decide it
-# the other way. **The chart is headed "Model: MC-707" and marks the row o in both columns**,
-# which is a statement about this instrument and not about another; and Ver.1.60 gave this
-# instrument the knob after all, as "A virtual knob (the SOUND knob) that can be used for
+# the other way. **The chart is headed "Model: MC-707" (chart p. 1) and marks the row o in both
+# columns**, which is a statement about this instrument and not about another; and Ver.1.60 gave
+# this instrument the knob after all, as "A virtual knob (the SOUND knob) that can be used for
 # motions" (update p. 10). So the footnote explains why the number exists rather than excluding
 # it, and nothing is left out of this chart.
 #
@@ -79,9 +79,11 @@ source: >-
   treating a knob's number as a property of the model.
 
   NINETY-FOUR MORE NUMBERS ARE USABLE AND NONE OF THEM IS ASSIGNED TO ANYTHING. The reference
-  manual's Matrix Control and MFX Control source lists both offer "CC01-31 Controller number
-  1-31" and "CC33-95 Controller number 33-95" (reference p. 74), beside BEND, AFT and four
-  SYS-CTRL slots. **CC 32 is the one number the range steps over**, which is bank select LSB.
+  manual's Matrix Control and MFX Control source lists both offer them: "CC01-31, CC33-95 Controller
+  number 1-31, 33-95" (reference p. 73) in the first, and "CC01-31 Controller number 1-31"
+  (reference p. 74) and "CC33-95 Controller number 33-95" (reference p. 74) in the second, beside
+  BEND, AFT and four SYS-CTRL slots. **CC 32 is the one number the range steps over**, which is bank
+  select LSB.
   Nothing says what any of the 94 does, because that is a player's routing, so there is no
   control below for any of them.
 
@@ -91,10 +93,10 @@ source: >-
   whose TRACK 1-8 parameter "Specifies how polyphony resources are allocated to each tone/drum
   track" (reference p. 18).
 
-  AND A NINTH CHANNEL THAT MAKES NO SOUND. The chart's footnotes name a "control channel" twice
-  and the reference manual never mentions it; it is defined in the update notes, as "Control
-  Channel CH1, CH2, CH3... CH16" which "Specifies the MIDI channel that switches scenes" (update
-  p. 18). Two kinds of message reach it and nothing else does.
+  AND A NINTH CHANNEL THAT MAKES NO SOUND. The chart's footnotes name a "control channel"
+  (chart p. 1) twice and the reference manual never mentions it; it is defined in the update notes,
+  as "Control Channel CH1, CH2, CH3... CH16" (update p. 18) which "Specifies the MIDI channel that
+  switches scenes" (update p. 18). Two kinds of message reach it and nothing else does.
 
   EVERY CONTROL BELOW NAMES THE TRACK, BECAUSE THE TRACKS ARE THE ONLY PART THAT TAKES ONE. The
   chart's footnotes give the control channel a scene change and the Scatter Pad's notes and no
@@ -320,10 +322,10 @@ voice:
   aftertouch_transmits: false
   pitch_bend:
     # RECEIVED AND NEVER SENT - the chart's Pitch Bend row is x transmitted, o recognized - and
-    # settable up and down separately, by a tone's "Bend Range Up 0-48 [semitone]" and "Bend
-    # Range Down 0-48 [semitone]" (reference p. 62), each with a fine adjustment in cents. A
-    # clip has a "Bend Range 0-24, TONE" (reference p. 64) of its own. No default is stated for any of them, so no
-    # figure is recorded.
+    # settable up and down separately, by a tone's "Bend Range Up 0-48 [semitone]" (reference p. 62)
+    # and "Bend Range Down 0-48 [semitone]" (reference p. 62), each with a fine adjustment in cents.
+    # A clip has a "Bend Range 0-24, TONE" (reference p. 64) of its own. No default is stated for
+    # any of them, so no figure is recorded.
     programmable: true
 
 parts:
@@ -373,7 +375,7 @@ groups:
   # NONE OF THESE FIVE LABELS IS THE MAKER'S WORD, because the chart heads nothing over its
   # control change rows - all twenty-five sit under the single heading "Control Change". The
   # control *names* below are the chart's own, verbatim, including its lower-case "Attack time"
-  # and its two "General Purpose Effect" rows.
+  # and its two "General Purpose Effect" (chart p. 1) rows.
   controllers: Controllers
   portamento: Portamento
   pedals: Pedals

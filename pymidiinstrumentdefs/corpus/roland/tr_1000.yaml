@@ -2,12 +2,13 @@
 # corpus than it ought to be: one page, sixty-six control changes with a remark naming what each
 # reaches, and a table of note numbers for eleven instruments.
 #
-# AND THE CHART IS NINE RELEASES BEHIND THE INSTRUMENT. It is marked "Version 1.11" and dated
-# October 1, 2025; the reference manual beside it is marked "Version 1.20 and later"; and the
+# AND THE CHART IS NINE RELEASES BEHIND THE INSTRUMENT. It is marked "Version 1.11" (chart p. 1) and
+# dated October 1, 2025; the reference manual beside it is marked "Version 1.20 and later"; and the
 # system program Roland offers is Ver.1.22 of September 2026. **Version 1.20 added a MIDI mode
-# this chart cannot describe** - "We've added a MIDI MODE that allows you to assign each track to
-# its own MIDI channel. SLICE can be triggered via MIDI" - and both the release note and the
-# manual say to see the MIDI Implementation Chart for the detail. The chart predates the feature.
+# this chart cannot describe** - "We've added a 'MIDI MODE' that allows you to assign each track to
+# its own MIDI channel. SLICE can be triggered via MIDI" (release_notes) - and both the release note
+# and the manual say to see the MIDI Implementation Chart for the detail. The chart predates the
+# feature.
 #
 # SO EVERYTHING BELOW IS THE DEFAULT MODE, Single Channel, where the whole machine answers on one
 # channel. What the other mode does is in the source account in words, because the only document
@@ -20,8 +21,9 @@ model:
   name: TR-1000
   # The reference manual states it: "Version 1.20 and later", on its first page. The two releases
   # since say nothing changed - Ver.1.21 and Ver.1.22 each read "The version number has been
-  # updated due to management-related circumstances. Product specifications are unaffected" - so
-  # 1.20 is the newest firmware any document describes, and 1.22 is the newest that exists.
+  # updated due to management-related circumstances. Product specifications are
+  # unaffected" (release_notes) - so 1.20 is the newest firmware any document describes, and 1.22 is
+  # the newest that exists.
   # THE CHART IS OLDER THAN THAT, and the control map below is the chart's. See the head of this
   # file. Checked 2026-10-02.
   firmware: "1.20"
@@ -55,16 +57,16 @@ source: >-
   chart does not say why.
 
   THE LABELS ARE THE CHART'S OWN WORDS, in its own capitals, because the remark column is all it
-  gives: "BD TUNE", "SD CTRL1", "MASTER FX CTRL3". The manual names none of these numbers, so
-  there is nothing to reconcile them against.
+  gives: "BD TUNE", "SD CTRL1", "MASTER FX CTRL3" (chart p. 1). The manual names none of these
+  numbers, so there is nothing to reconcile them against.
 
   ELEVEN INSTRUMENTS HAVE NOTE NUMBERS AND THEY ARE DEFAULTS. The chart's note table gives three
   columns - Note Number, Note Number (Layer A only), and Note Number (Layer B and Alt.) - and
-  footnotes all of them: "These note numbers are configurable on MENU>SYSTEM>MIDI>Inst Note",
-  which the manual confirms under its own Inst Note setting: "Specify the MIDI note number for
-  each track's instrument, instrument alternate sound, and TRIGGER OUT" (p. 47). `voices` below holds
-  the first column. The other two are recorded here because the format has one map and this
-  instrument has three:
+  footnotes all of them: "These note numbers are configurable on MENU>SYSTEM>MIDI>Inst
+  Note" (chart p. 1), which the manual confirms under its own Inst Note setting: "Specify the MIDI
+  note number for each track's instrument, instrument alternate sound, and TRIGGER OUT" (p. 47).
+  `voices` below holds the first column. The other two are recorded here because the format has one
+  map and this instrument has three:
   Layer A only - BD 35, SD 40, LT 41, HT 48, and a dash for every other instrument.
   Layer B and Alt. - BD 99, SD 104, LT 105, HT 112, RS 56, HC 54, CH 44, OH 58, CC 61, RC 63, and
   a dash for TRG.
@@ -76,10 +78,10 @@ source: >-
   two the chart has run together.
 
   TWO CHANNELS, NOT ONE, and this format holds one range for both. "Pattern Ch. 1-16 ... the MIDI
-  transmit/receive channel of the pattern sequencer", default 10, and "Kit Ch. 1-16 ... the MIDI
-  transmit/receive channel for program change messages that switch kits", default 1 (chart p. 1, and
-  p. 47). So the controls and the notes arrive on one channel and the kit changes on another, and
-  `midi.channels` records the span each may take.
+  transmit/receive channel of the pattern sequencer" (manual p. 47), default 10, and "Kit Ch. 1-16
+  ... the MIDI transmit/receive channel for program change messages that switch kits"
+  (manual p. 47), default 1 (chart p. 1). So the controls and the notes arrive on one
+  channel and the kit changes on another, and `midi.channels` records the span each may take.
 
   THE SECOND MIDI MODE IS UNPUBLISHED. "MIDI Mode ... Single Ch. (Single Channel): Uses the MIDI
   channel specified in the Pattern Ch. parameter. Each Track Ch. (Each Track Channel): Splits
@@ -164,18 +166,18 @@ sources:
     # at it for. Roland adds releases to this page, so no later fetch will match.
 
 midi:
-  # Two settings, one range: "Pattern Ch. 1-16" and "Kit Ch. 1-16" (p. 47), whose chart defaults
-  # are 10 and 1, both remarked "Memorized".
+  # Two settings, one range: "Pattern Ch. 1-16" (manual p. 47) and "Kit Ch. 1-16" (p. 47), whose
+  # chart defaults are 10 and 1, both remarked "Memorized".
   channels: [1, 16]
   # "System Real Time: Clock" is marked o in both columns.
   clock: both
   # Start, Continue and Stop are each marked o in both columns, and Song Position too, remarked
-  # "When selected Song Mode". "Rx Start Stop Cont OFF, ON ... Specifies whether real-time
-  # messages are received" is the setting behind one direction (p. 47).
+  # "When selected Song Mode" (chart p. 1). "Rx Start Stop Cont OFF, ON ... Specifies whether
+  # real-time messages are received" (manual p. 47) is the setting behind one direction.
   transport: both
   program_change:
-    # Marked o in both columns with "True Number 0-127", and the settings are separate: "Tx
-    # Program Change OFF, ON" and "RX Program Change OFF, ON" (p. 47).
+    # Marked o in both columns with "True Number 0-127" (chart p. 1), and the settings are separate:
+    # "Tx Program Change OFF, ON" (manual p. 47) and "RX Program Change OFF, ON" (p. 47).
     receives: true
     sends: true
     # "User Drum Kits 2,048 (128 kits x 16 projects)" (p. 75), and the kit channel is "the MIDI
@@ -197,8 +199,9 @@ voice:
   # are where it starts. See the account for the mode it does not describe.
   note_map: learned
   # The chart's note table, first column. EVERY ONE IS A FACTORY DEFAULT: "These note numbers are
-  # configurable on MENU>SYSTEM>MIDI>Inst Note", and the manual gives the range each may take,
-  # "OFF, C-1(0)-G9(127)" (p. 47). The other two columns of that table are in the source account.
+  # configurable on MENU>SYSTEM>MIDI>Inst Note" (chart p. 1), and the manual gives the range each
+  # may take, "OFF, C-1(0)-G9(127)" (p. 47). The other two columns of that table are in the source
+  # account.
   voices:
     bd: 36
     sd: 38

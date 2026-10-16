@@ -14,10 +14,10 @@
 # controls that do nothing and would miss one that does.
 #
 # AND THE CHART IS THREE RELEASES BEHIND THE INSTRUMENT, which is this maker's habit and is
-# harmless here. It is marked "Version 1.00" and dated April 2020; Roland offers Ver.2.00 of
-# September 2023. Across all six releases since, the word MIDI appears once, in a bug fix: "MIDI
-# sometimes becomes unsynchronized when a pattern is changed". No release adds, removes or
-# renumbers anything below.
+# harmless here. It is marked "Version 1.00" (chart p. 1) and dated April 2020; Roland offers
+# Ver.2.00 of September 2023. Across all six releases since, the word MIDI appears once, in a bug
+# fix: "MIDI sometimes becomes unsynchronized when a pattern is changed" (release_notes). No release
+# adds, removes or renumbers anything below.
 
 definition: 1
 
@@ -45,9 +45,9 @@ source: >-
   trigger and BEAT.
 
   THE LABELS ARE THE CHART'S OWN WORDS IN ITS OWN CAPITALS, because its remark column is all
-  there is: "BD TUNE", "MASTER FX CTRL" and "FILL IN TRIG" (p. 1). The committed `roland/tr8s`
-  writes the same names in title case because it had a second source - a working map of that
-  machine, whose names it follows - and this instrument has nothing of the kind.
+  there is: "BD TUNE", "MASTER FX CTRL" (chart p. 1) and "FILL IN TRIG" (chart p. 1). The committed
+  `roland/tr8s` writes the same names in title case because it had a second source - a working map
+  of that machine, whose names it follows - and this instrument has nothing of the kind.
 
   THIRTY-TWO OF THE THIRTY-FOUR GO BOTH WAYS AND TWO DO NOT, and they are not the same case.
   cc 70, FILL IN TRIG, is marked "o *2" transmitted against "x" recognised, and the footnote says
@@ -162,9 +162,9 @@ sources:
     sha256: 9e29e530f52dd6d0494d8e5207ff753bc3ef1329ff6b0ca04816140691a438c5
     retrieved: 2026-10-04
     # One sheet, cited as p. 1. The date above is the one printed on it; the edition is the one
-    # in the file name, because the sheet's own "Version 1.00" does not identify its contents -
-    # the earlier file at eng01 prints the same version and the same date with a different
-    # alternate note number for OH. See the source account.
+    # in the file name, because the sheet's own "Version 1.00" (chart p. 1) does not identify its
+    # contents - the earlier file at eng01 prints the same version and the same date with a
+    # different alternate note number for OH. See the source account.
     page_offset: 0
   chart_eng01:
     kind: midi_implementation
@@ -178,7 +178,7 @@ sources:
     # THE EARLIER SERVED EDITION, HELD SO THAT THE ONE NUMBER THE TWO DISAGREE ABOUT CAN BE
     # TURNED TO. Roland no longer offers it: the listing links eng02 only, and this file is still
     # served at its own name. Nothing below is read from it. It prints the same "Version 1.00"
-    # and the same date as the edition above.
+    # (chart_eng01 p. 1) and the same date as the edition above.
     page_offset: 0
   sibling_chart:
     kind: midi_implementation
@@ -240,7 +240,7 @@ sources:
     # this page, so no later fetch will match either.
 
 midi:
-  # Two settings, one range: "Pattern Ch 1-16" and "Kit Ch 1-16" (p. 14). The chart's Basic
+  # Two settings, one range: "Pattern Ch 1-16" (p. 14) and "Kit Ch 1-16" (p. 14). The chart's Basic
   # Channel row gives a default of 10 both ways, remarked "Memorized", and a Changed range of
   # "1-16, OFF" - so either channel may also be switched off entirely.
   channels: [1, 16]
@@ -254,9 +254,9 @@ midi:
   # recognised, so this instrument answers to a Continue it will never send.
   transport: both
   program_change:
-    # Marked o in both columns with "True Number 0-127", and the settings are separate: "Tx Prog
-    # Chg OFF, ON" and "Rx Prog Chg OFF, ON" (p. 14). They arrive on the kit channel rather than
-    # the pattern channel.
+    # Marked o in both columns with "True Number 0-127" (chart p. 1), and the settings are separate:
+    # "Tx Prog Chg OFF, ON" (guide p. 14) and "Rx Prog Chg OFF, ON" (guide p. 14). They arrive on
+    # the kit channel rather than the pattern channel.
     receives: true
     sends: true
     # "Start Kit LAST, 001-128" (p. 13), and the data layout names "128 KITs" beside "128
@@ -289,9 +289,9 @@ voice:
   # the map is the owner's to change and the numbers below are where it starts.
   note_map: learned
   # The chart's note table, first column. EVERY ONE IS A FACTORY DEFAULT: "These note numbers are
-  # configurable on UTILITY:MIDI:Inst Note", and the Parameter Guide gives the range each may
-  # take, "OFF (---), 0 (C -)-127 (G 9)" (p. 14). The second column, the alternate sounds, is in
-  # the source account because this format has one map.
+  # configurable on UTILITY:MIDI:Inst Note" (chart p. 1), and the Parameter Guide gives the range
+  # each may take, "OFF (---), 0 (C -)-127 (G 9)" (p. 14). The second column, the alternate sounds,
+  # is in the source account because this format has one map.
   voices:
     bd: 36
     sd: 38
@@ -305,8 +305,9 @@ groups:
   # six INST and neither other document expands one. The order is the order the chart lists the
   # controls, which is the order they appear below.
   # The first group is every control that belongs to no one instrument. The Parameter Guide files
-  # the effects under KIT - "KIT: MASTER FX" and "KIT: DELAY" at pp. 2-3 - and the shuffle under
-  # SYSTEM (p. 13), and the accent is a sequencer track of its own beside the six (p. 8).
+  # the effects under KIT - "KIT: MASTER FX" (guide p. 3) and "KIT: DELAY" (guide p. 2) - and the
+  # shuffle under SYSTEM (p. 13), and the accent is a sequencer track of its own beside the six
+  # (p. 8).
   global: Kit and pattern
   bd: BD
   sd: SD

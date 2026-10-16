@@ -45,13 +45,13 @@ source: >-
 
   THE MIDI FUNCTION SWITCH IS WHY THE CHART HAS THREE COLUMNS A SIDE. A three-position
   switch beside the MIDI jacks decides what travels, and the chart's "Transmitted" and
-  "Recognized" columns are headed 1, 2 and 3 for it. Position I is "communication of only
-  Keyboard and Hold information"; II is "the Keyboard, Hold, Bender on/off control, and
-  Patch Selection information"; III is "the information of II plus tone color parameter
-  information by means of System Exclusive message" (p. 27). So both controls below exist
-  only in the positions their comments give, and the implementation at p. 35 says the same
-  thing a second way, section by section. Which position a player leaves the switch in is
-  a rig setting and is not recorded here.
+  "Recognized" columns are headed 1, 2 and 3 for it. Position I is "communication of only Keyboard
+  and Hold information" (p. 27); II is "the Keyboard, Hold, Bender on/off control, and Patch
+  Selection information" (p. 27); III is "the information of II plus tone color parameter
+  information by means of System Exclusive message" (p. 27). So both controls below exist only in
+  the positions their comments give, and the implementation at p. 35 says the same thing a second
+  way, section by section. Which position a player leaves the switch in is a rig setting and is not
+  recorded here.
 
   EVERY ROW OF THE CHART IS ACCOUNTED FOR. Twelve function blocks, twenty-six rows in all,
   and a Notes row.
@@ -74,7 +74,7 @@ source: >-
 
   NOT RECORDED, PITCH BEND. It is received and transmitted in positions II and III, and
   how far it bends is two front-panel knobs rather than a number: DCO Bend Sens sets "the
-  variable range of the DCO's pitch, when it is controlled by the Bender", to a maximum of
+  variable range of the DCO's pitch, when it is controlled by the Bender" (p. 23), to a maximum of
   plus or minus one octave, and VCF Bend Sens sets its maximum effect on the filter
   (p. 23). Nothing over
   MIDI sets either, so `programmable` would be false in a sense no other definition here
@@ -129,7 +129,7 @@ sources:
 
 midi:
   # "Pressing the MIDI Channel Button will cause the Display Window to show the MIDI
-  # Channel number currently set (1 to 16)", and one channel serves both directions:
+  # Channel number currently set (1 to 16)" (p. 25), and one channel serves both directions:
   # "changing the channel to '2' will turn both recieve and transmit to Channel '2'"
   # (p. 25), Roland's own spelling. The chart says the same as Tx = Rx. It powers up on
   # channel 1.
@@ -153,20 +153,19 @@ midi:
   # message types at p. 35, all with Roland's ID $41 - $30 when a group, bank or patch
   # number changes, $31 when the Manual button is pressed, and $32 when any one of the
   # eighteen parameters moves. It is "available only when the MIDI Function Switch is set
-  # to III" (p. 28), in a sentence that spells it "Exclussive Message".
+  # to III" (p. 28), in a sentence that spells it "Exclussive Message" (p. 28).
   sysex: true
   program_change:
     # Received in positions II and III, and sent in II alone: "Regarding Patch Selection
-    # information, it can be received by the Juno-106, but is not transmitted from it" in
-    # III (p. 27), which is what the chart's crossed third column means and what the
-    # implementation says a third time by listing Program Change under FUNCTION 2 and not
-    # under FUNCTION 3.
+    # information, it can be received by the Juno-106, but is not transmitted from it" (p. 27) in
+    # III, which is what the chart's crossed third column means and what the implementation says a
+    # third time by listing Program Change under FUNCTION 2 and not under FUNCTION 3.
     receives: true
     sends: true
     presets: 128
   # Two patch tables at p. 27 print the whole mapping: Group A is banks 1 to 8 by patches
   # 1 to 8, program 0 to 63, and Group B is the same again, 64 to 127. Roland writes a
-  # patch as its bank and patch digits, so the range reads "Group A-11 to Group B-88".
+  # patch as its bank and patch digits, so the range reads "Group A-11 to Group B-88" (p. 27).
 
 voice:
   addressing: pitches
@@ -178,15 +177,15 @@ voice:
   # accepts, as the DX7's is, and the sounding range is in this comment rather than in a
   # field that would make an out-of-range note look dropped.
   note_range: [0, 127]
-  # "6 Voice programmable Polyphonic Synthesizer", says the specifications (p. 32). The two
+  # "6 Voice programmable Polyphonic Synthesizer" (p. 32), says the specifications. The two
   # assign modes, Poly 1 and Poly 2, are both six voices and differ in how they retrigger,
   # so they are not voicing modes.
   polyphony: 6
   velocity:
-    # "velocity ignored", twice over, in the received note on and note off rows (p. 35) -
+    # "velocity ignored" (p. 35), twice over, in the received note on and note off rows -
     # Roland's own word, and the same one the Osmose's definition uses. Its keyboard is
     # not velocity sensitive either way: the chart crosses both rows on both sides, and
-    # what it sends is "9n v=64 fixed" for a note on and "9n v=0" for a note off.
+    # what it sends is "9n v=64 fixed" (p. 34) for a note on and "9n v=0" for a note off.
     note_on: ignored
     note_off: false
   # Crossed in all six columns of the chart, so neither kind of aftertouch, neither
@@ -205,14 +204,14 @@ controls:
   lfo_modulation:
     label: LFO Modulation
     cc: 1
-    # Positions II and III. The name is the implementation's, which heads all three of its
-    # rows "LFO Modulation"; the chart's Remarks column shortens it to "Modulation".
+    # Positions II and III. The name is the implementation's, which heads all three of its rows "LFO
+    # Modulation" (p. 35); the chart's Remarks column shortens it to "Modulation".
     # What it is on the instrument is the bender lever pushed away from you: "If the
     # Bender Lever is being pushed back, LFO output controls the DCO (vibrato effect)"
     # (p. 23), and the MIDI Bus list calls it "Modulation by Bender" (p. 25).
     # Continuous rather than a switch, because that is what it accepts: "LFO Modulation
     # v = 0 ( min ) --> 127 ( max )" (p. 35). What it *sends* is only ever 0 or 127, since
-    # the lever is a switch - "Modulation value is 0 or 127", says the chart - so a
+    # the lever is a switch - "Modulation value is 0 or 127" (p. 34), says the chart - so a
     # recorded performance from this instrument has two values in it and the instrument
     # will answer to all 128.
   hold:
@@ -222,6 +221,6 @@ controls:
     # Sent from the pedal: "Hold on from rear panel jack" (p. 35), and the MIDI Bus list
     # has "Hold (when a Pedal Switch is used)" (p. 25).
     values: {"off": 0, "on": 1}
-    # On at 1 rather than at the usual 64, because that is what Roland states: "hold ON
-    # vvvvvvv = 1 - 127" against "hold OFF" with a third byte of 0 (p. 35). What it sends
-    # is 127 for on and 0 for off.
+    # On at 1 rather than at the usual 64, because that is what Roland states: "hold ON vvvvvvv = 1
+    # - 127" (p. 35) against "hold OFF" with a third byte of 0 (p. 35). What it sends is 127 for on
+    # and 0 for off.

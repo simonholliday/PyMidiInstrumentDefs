@@ -15,8 +15,9 @@ model:
   # where this one has six, and the two it lacks are Sound Engine Mode and Advanced Users.
   # THE MAKER SPELLS THE FIRMWARE THREE WAYS for one release, and 2.3 is what they agree
   # on: the cover says "rev. 2.3 for osmose 49/61 synth - firmware 2.3", p. 2 says
-  # "published September 24th, 2026 for firmware versions 2.3.12+", and the chart says
-  # "Version: 2.3.x rev. A" with a stamp on every page reading "valid for firmware 2.3".
+  # "published September 24th, 2026 for firmware versions 2.3.12+" (manual p. 2), and the chart says
+  # "Version: 2.3.x rev. A" (midi_impl p. 1) with a stamp on every page reading "valid for firmware
+  # 2.3".
   firmware: "2.3"
 
 source: >-
@@ -76,10 +77,10 @@ sources:
     # the only PDFs linked anywhere in it are the chart below and the firmware 1.x edition
     # of this manual, offered to anybody who stays on old firmware. This address was derived
     # from that one by putting in the version the help centre tells every owner to upgrade
-    # to, and the file's own PDF title is "Osmose_UserManualFW2.3_EN", so the name is the
+    # to, and the file's own PDF title is `Osmose_UserManualFW2.3_EN`, so the name is the
     # maker's. The two are the same manual in two forms, which was checked and not assumed:
-    # seven distinctive clauses of printed p. 15 appear word for word in the article "osmose
-    # usb midi ports", the differences being layout and one warning glyph.
+    # seven distinctive clauses of printed p. 15 appear word for word in the article `osmose usb
+    # midi ports`, the differences being layout and one warning glyph.
     # Sheet 1 is an unnumbered cover and each of sheets 2-92 prints its own number, checked
     # on all 92. The contents list sends two sections to a p. 93 that does not exist.
   midi_impl:
@@ -93,8 +94,9 @@ sources:
     retrieved: 2026-10-02
     page_offset: 0
     # The title is the chart form's version published by the MIDI Association, not this
-    # instrument's: every page heads itself "MIDI Implementation Chart v.2.0" and names the
-    # instrument beneath, "Model: Osmose Version: 2.3.x rev. A Date: 2026-07".
+    # instrument's: every page heads itself "MIDI Implementation Chart v.2.0" (midi_impl pp. 1-3)
+    # and names the instrument beneath, "Model: Osmose Version: 2.3.x rev. A Date: 2026-07"
+    # (midi_impl pp. 1-3).
     # EACH PAGE CARRIES A STAMP THAT NO TEXT EXTRACTION RETURNS, because it is a PDF
     # annotation rather than page content: "valid for firmware 2.3 - all information refers
     # to USB MIDI Port 2, the 'sound engine' port", added 2026-09-24. So the chart states
@@ -152,9 +154,9 @@ sources:
     # match either, which is the point of saving it.
 
 midi:
-  # "MIDI channels 1-14" in each direction, with the remark "MPE channel master 1" (midi_impl
-  # p. 1). The other two are spoken for: "Individual notes must be sent on MIDI channels #2
-  # to #14 (#2 to #12 for some presets). The Master Channel, according to the MPE standard,
+  # "MIDI channels 1-14" (midi_impl p. 1) in each direction, with the remark "MPE channel master 1"
+  # (midi_impl p. 1). The other two are spoken for: "Individual notes must be sent on MIDI channels
+  # #2 to #14 (#2 to #12 for some presets). The Master Channel, according to the MPE standard,
   # is #1. MIDI channels #15 & #16 are used for communication with the Haken Editor
   # exclusively, so make sure to not send note data on these channels" (sound_engine_input).
   channels: [1, 14]
@@ -182,27 +184,28 @@ midi:
     # "Osmose expects MIDI Bank Select (CC#0) and Program Change (PC) messages on its USB
     # MIDI Port 2 input (the sound engine port)" (preset_changes), or on the DIN input with
     # din mode set to dsp in, dsp in/out or cvc. The chart agrees on its CC 0 row and
-    # contradicts itself on p. 1, where "Bank Select response?" is answered No - with the
-    # transmit cell left blank, where every other row of that section is filled.
+    # contradicts itself where "Bank Select response?" (midi_impl p. 1) is answered No - with its
+    # transmit cell shaded out, as the Modes supported row's is.
     receives: true
     # Not sent: the chart marks program change as recognised and not transmitted, and no
     # setting anywhere in the manual sends one.
     sends: false
     # COUNTED FROM THE MAKER'S OWN TWO LISTS, read as table rows because the page renders
     # each preset as four cells and a line-by-line reading interleaves them: 529 under
-    # "Factory sounds (firmware 1.0 and higher)" across bank select 30 to 34, and 80 under
-    # "Expansion 01 sounds (firmware 2.1 and higher)" on bank 34, which continues from the
-    # first list at program 17. This is what the maker names and numbers, not a ceiling:
-    # the product page says "up to 2048 preset slots", user presets are addressable too,
-    # and that same page says "580 factory presets", which is neither 529 nor 609.
+    # "Factory sounds (firmware 1.0 and higher)" (preset_changes) across bank select 30 to 34, and
+    # 80 under "Expansion 01 sounds (firmware 2.1 and higher)" (preset_changes) on bank 34, which
+    # continues from the first list at program 17. This is what the maker names and numbers, not a
+    # ceiling: the product page says "up to 2048 preset slots" (product_page), user presets are
+    # addressable too, and that same page says "580 factory presets" (product_page), which is
+    # neither 529 nor 609.
     presets: 609
-  # "NRPNs (Yes/No) No No", and RPN 00 to 05 the same (midi_impl p. 1). The two NRPN and two
+  # "NRPNs (Yes/No) No No" (midi_impl p. 1), and RPN 00 to 05 the same. The two NRPN and two
   # RPN controller numbers are printed in the control table and marked No both ways as well,
   # which is the same answer twice over.
   nrpn: none
   # Every system exclusive row of the chart is No in both directions, the whole Universal
-  # block and "Manufacturer or Non-Commercial System Exclusive" with it. Worth knowing that
-  # the Haken Editor nonetheless talks to the sound engine over MIDI channels 15 and 16
+  # block and "Manufacturer or Non-Commercial System Exclusive" (midi_impl p. 1) with it. Worth
+  # knowing that the Haken Editor nonetheless talks to the sound engine over MIDI channels 15 and 16
   # (sound_engine_input), on a port the chart does not describe, so this is an answer about
   # port 2 and not about the instrument's every socket.
   sysex: false
@@ -214,9 +217,9 @@ midi:
 # Aftertouch or Pressure (see MPE+)" (midi_impl p. 3), which is the extra resolution MPE+ adds.
 # Pressure is required rather than optional: "To produce a sound in the first place, you are always
 # required to send Channel Pressure messages (sometimes called 'mono aftertouch') alongside your
-# Note On messages", because "a constant flow of Channel Pressure messages is used to describe a
-# sound's envelope, specifically its attack trajectory" (sound_engine_input). None of that fits in a
-# boolean, so it is here.
+# Note On messages" (sound_engine_input), because "a constant flow of Channel Pressure messages is
+# used to describe a sound's envelope, specifically its attack trajectory" (sound_engine_input).
+# None of that fits in a boolean, so it is here.
 
 voice:
   addressing: pitches
@@ -225,9 +228,10 @@ voice:
   # maker's, and 24 is recorded as the number they publish.
   polyphony: 24
   # THE KEYBED IS THE INSTRUMENT'S WHOLE POINT, and the manual puts it in three axes:
-  # "extended polyphonic pressure", "hi-resolution polyphonic aftertouch" and "polyphonic
-  # pitch bending" (p. 14). They reach the engine as MPE+ on member channels, which is why
-  # the chart answers No to poly key aftertouch while the keyboard is polyphonic throughout.
+  # "extended polyphonic pressure" (manual p. 14), "hi-resolution polyphonic
+  # aftertouch" (manual p. 14) and "polyphonic pitch bending" (p. 14). They reach the engine as MPE+
+  # on member channels, which is why the chart answers No to poly key aftertouch while the keyboard
+  # is polyphonic throughout.
   aftertouch: channel
   # SENT, BY THE MANUAL'S ACCOUNT OF WHAT GOES OUT TO ANOTHER INSTRUMENT, and which kind depends
   # on the configuration and on the adjust menu. In the classic keyboard configuration "the
@@ -244,14 +248,14 @@ voice:
     # IGNORED ON THE PATH THE INSTRUMENT IS BUILT FOR, AND NOT ON THE OTHER, which one field
     # cannot say. The chart marks note-on and note-off velocity No in both directions and
     # remarks "MPE+" against each; the article says why: "MIDI Velocity ('MPE Strike') is
-    # ignored entirely by the EaganMatrix's when it comes to the MPE implementation" - the
-    # stray apostrophe is theirs. Driven instead by legacy mono-channel MIDI on channel 1,
-    # "MIDI Velocity will be interpreted as a first Pressure (Z) data value for the
-    # respective note to start with", and on that path it is channel pressure that is
-    # "ignored completely" while "Polyphonic Key Pressure (Polyphonic Aftertouch) messages
-    # can be used to modulate Pressure (Z) on a per-note basis over time"
-    # (sound_engine_input). So aftertouch above and velocity here both record the MPE path,
-    # which is the chart's scope, and the legacy path is the reverse of both.
+    # ignored entirely by the EaganMatrix's when it comes to the MPE
+    # implementation" (sound_engine_input) - the stray apostrophe is theirs. Driven instead by
+    # legacy mono-channel MIDI on channel 1, "MIDI Velocity will be interpreted as a first Pressure
+    # (Z) data value for the respective note to start with" (sound_engine_input), and on that path
+    # it is channel pressure that is "ignored completely" (sound_engine_input) while "Polyphonic Key
+    # Pressure (Polyphonic Aftertouch) messages can be used to modulate Pressure (Z) on a per-note
+    # basis over time" (sound_engine_input). So aftertouch above and velocity here both record the
+    # MPE path, which is the chart's scope, and the legacy path is the reverse of both.
     note_on: ignored
     note_off: false
     # SENT ALL THE SAME, FROM THE KEYS TO OTHER INSTRUMENTS: in External MIDI mode's classic
@@ -269,15 +273,15 @@ voice:
 
 groups:
   # THE MANUAL'S OWN TAB NAMES, which are its headings for the parts of the sound these
-  # controls reach, printed in lower case as every heading in this manual is: "macros tab",
-  # "global fx tab", "eq tab", "comp & drive tab", "voice tab" (manual p. 29) and
-  # "mod/pedal tab" (manual p. 35). The word "tab" names the screen a group is on rather
-  # than the group, so it is left off.
+  # controls reach, printed in lower case as every heading in this manual is: "macros tab"
+  # (manual p. 29), "global fx tab" (manual p. 29), "eq tab" (manual p. 29), "comp & drive tab"
+  # (manual p. 29), "voice tab" (manual p. 29) and "mod/pedal tab" (manual p. 35). The word "tab"
+  # names the screen a group is on rather than the group, so it is left off.
   # **AND THE MANUAL NAMES THAT LAST ONE TWICE, DIFFERENTLY.** Page 29 introduces the Synth
   # menu's tabs and calls it "assign tab", on a line reading "define the parameters controlled
-  # by the modulation slider and the pedals" (manual p. 29). Page 35, where the tab is
-  # described, heads it "mod/pedal tab" instead. **So citing page 29 for the name this file
-  # uses was wrong**, and it stayed invisible for as long as the locator could not be parsed.
+  # by the modulation slider and the pedals" (manual p. 29). The page where the tab is described
+  # heads it "mod/pedal tab" (manual p. 35) instead. **So citing page 29 for the name this file uses
+  # was wrong**, and it stayed invisible for as long as the locator could not be parsed.
   # Page 29 also names a seventh, "save tab", which is an action rather than a part of the
   # sound, and is why "all six" was wrong twice over.
   # NOT THE MAKER'S WORD: "Program", for the one bank select row. The manual heads nothing
@@ -299,7 +303,7 @@ controls:
     label: Bank Select (MSB)
     cc: 0
     # The only row in the chart recognised but not transmitted, and the only remarked row
-    # whose remark is the bare "range: [0-127]" without the master channel prefix.
+    # whose remark is the bare "range: [0-127]" (midi_impl p. 2) without the master channel prefix.
     direction: receives
     group: program
 
@@ -350,7 +354,7 @@ controls:
   # depends on the algorithm - predelay, diffuse, LPF, HPF, damping and decay for the two
   # reverbs; depth, rate, feedback and time for the modulated delays; noise, offset,
   # feedback and time for the analog echo (pp. 31-32). The maker calls the section
-  # "Recirculator" in the Haken Editor (p. 32).
+  # "Recirculator" (p. 32) in the Haken Editor.
 
   global_fx_parameter_1:
     label: Global FX Parameter 1
@@ -383,9 +387,9 @@ controls:
   # "The comp & drive tab lets you choose between two different output stages to round off a
   # sound" (p. 33), compressor or drive. Both have a pregain, an amount, a mix and a
   # postgain; the chart numbers the two gains and the compressor's mix, and neither amount.
-  # "pregain sets the level that enters the compressor", and at high settings "an aggressive
-  # distortion to the audio that is reminiscent of a wave folding effect"; "postgain changes
-  # the overall volume of the sound" (p. 34).
+  # "pregain sets the level that enters the compressor" (manual p. 34), and at high settings "an
+  # aggressive distortion to the audio that is reminiscent of a wave folding effect" (manual p. 34);
+  # "postgain changes the overall volume of the sound" (p. 34).
 
   pre_gain:
     label: Pre Gain
@@ -422,34 +426,34 @@ controls:
   pedal_1:
     label: Pedal 1
     cc: 64
-    # CONTINUOUS, THOUGH CC 64 IS CONVENTIONALLY A SWITCH, and the maker means it: the chart
-    # gives it "range: [0-127]" like every other control here, the specification calls them
-    # "2 continuous pedal inputs, assignable to sustain or synth parameters"
-    # (product_page), and the manual explains what that is for. "The sustain and sostenuto
-    # functions in Osmose work differently compared with regular keyboard instruments.
+    # CONTINUOUS, THOUGH CC 64 IS CONVENTIONALLY A SWITCH, and the maker means it: the chart gives
+    # it "range: [0-127]" (midi_impl p. 3) like every other control here, the specification calls
+    # them "2 continuous pedal inputs, assignable to sustain or synth parameters" (product_page),
+    # and the manual explains what that is for. "The sustain and sostenuto functions in Osmose work
+    # differently compared with regular keyboard instruments.
     # Usually, sustain takes the current pressure/position of the notes played and keeps
     # them in that state. On Osmose, Sustain, and Sostenuto are continuous controls that
     # allow fading and swelling sustained notes when moving the expression pedal" (p. 36).
     group: mod_pedal
 
 # THE EQ'S TWO NUMBERS, RECORDED HERE RATHER THAN AS CONTROLS, because the chart will not
-# have them: CC 83 "EQ tilt value" and CC 84 "EQ frequency" are marked No in both
-# directions, yet carry the same "Master Channel (channel 1) range: [0-127]" remark as the
-# eighteen rows that do answer, and the manual describes both as adjustable - "tilt:
-# Positive values will lead to more highs and fewer lows" and "frequency: choice of the
-# central frequency that defines the threshold between lows and highs" (p. 33). A number and
-# a range are printed for two controls the chart says answer to nothing. Making them
-# controls would assert what no document states, so they are not below, and the
+# have them: CC 83 "EQ tilt value" (midi_impl p. 3) and CC 84 "EQ frequency" (midi_impl p. 3) are
+# marked No in both directions, yet carry the same "Master Channel (channel 1) range: [0-127]"
+# (midi_impl p. 3) remark as the eighteen rows that do answer, and the manual describes both as
+# adjustable - "tilt: Positive values will lead to more highs and fewer lows" (manual p. 33) and
+# "frequency: choice of the central frequency that defines the threshold between lows and highs"
+# (p. 33). A number and a range are printed for two controls the chart says answer to nothing.
+# Making them controls would assert what no document states, so they are not below, and the
 # contradiction is recorded instead of resolved. The eq tab's third parameter, mix, has no
 # controller number at all.
 #
 # TWO MORE PLACES THE CHART ARGUES WITH ITSELF, neither of them changing anything above.
-# CC 74 "Aftertouch" is marked No both ways with the remark "Aftertouch values send on
-# member channel" - the maker's "send" for "sent" - which says where aftertouch does go
-# rather than that it goes nowhere, and agrees with p. 1 marking channel aftertouch Yes both
-# ways. And note-on and note-off velocity are marked No in both directions for a keyboard
-# whose every key is velocity-sensitive, with "MPE+" as the whole explanation; the article
-# quoted under voice is what makes sense of it.
+# CC 74 "Aftertouch" is marked No both ways with the remark "Aftertouch values send on member
+# channel" (midi_impl p. 3) - the maker's "send" for "sent" - which says where aftertouch does go
+# rather than that it goes nowhere, and agrees with p. 1 marking channel aftertouch Yes both ways.
+# And note-on and note-off velocity are marked No in both directions for a keyboard whose every key
+# is velocity-sensitive, with "MPE+" as the whole explanation; the article quoted under voice is
+# what makes sense of it.
 #
-# THE MAKER'S OWN SPELLING, KEPT: the chart prints CC 87 as "MPE+ LSB Aftertouch / Presure",
-# one s, while the same row's remark spells Pressure correctly.
+# THE MAKER'S OWN SPELLING, KEPT: the chart prints CC 87 as "MPE+ LSB Aftertouch / Presure"
+# (midi_impl p. 3), one s, while the same row's remark spells Pressure correctly.

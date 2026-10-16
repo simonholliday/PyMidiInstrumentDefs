@@ -31,9 +31,9 @@ sources:
     sha256: bc6b8a14d6a11b1f5cca71cefba331db1f9fbce11b6d4d15c0b85f133f92a2c2
     retrieved: 2026-09-30
     paginated: false
-    # Cited only for the firmware Modal ships: "Firmware v1.1 - update via MODALapp",
-    # under Downloads, as saved on 2026-09-30. The sha256 is of the page's visible text;
-    # the page as served hashes to
+    # Cited only for the firmware Modal ships: "Firmware v1.1 - update via
+    # MODALapp" (release_notes), under Downloads, as saved on 2026-09-30. The sha256 is of the
+    # page's visible text; the page as served hashes to
     # efa5b80263fb9a2d5d740b372e8e5cc80a76571be617fa89239698bc97ec64ca. Modal's shop
     # refuses a plain user-agent, so it was fetched with a browser's headers.
   manual:
@@ -64,8 +64,8 @@ midi:
   program_change:
     receives: true
     # "Sending a bank change (0-4) followed by a program change (0-99) ... will
-    # load the relevant preset" (p. 60): five banks of 100, the "500 patch
-    # memories" of the specification (p. 6).
+    # load the relevant preset" (p. 60): five banks of 100, the "500 patch memories" (p. 6) of the
+    # specification.
     presets: 500
 
 # MPE is supported (pp. 64-65), with a settable master channel and member
@@ -115,7 +115,7 @@ groups:
   sequencer: Sequencer
   fx: FX
   # The manual's Modulation section calls them mod slots (p. 44); the chart compresses that to
-  # "ModSlot 1 Source" for want of room in a four-column table.
+  # "ModSlot 1 Source" (p. 63) for want of room in a four-column table.
   modslot_1: Mod Slot 1
   modslot_2: Mod Slot 2
   modslot_3: Mod Slot 3
@@ -167,8 +167,7 @@ controls:
   octave:
     label: Octave
     cc: 40
-    # Transposes incoming notes only when the "In Oct Offset" setting is on
-    # (p. 48).
+    # Transposes incoming notes only when the "In Oct Offset" (p. 48) setting is on.
     group: voice
   transpose:
     label: Transpose
@@ -250,8 +249,8 @@ controls:
   filter_type:
     label: Filter Type
     cc: 42
-    # Stepped. The manual says 34 types twice (pp. 5, 27) and "31 filter types
-    # in total" once (p. 27); its own list at pp. 28-29 has 34.
+    # Stepped. The manual says 34 types twice (pp. 5, 27), 33 filters once (p. 4) and "31 filter
+    # types in total" (p. 27) once; its own list at pp. 28-29 has 34.
     group: filter
 
   # ── Envelopes ─────────────────────────────────────────────────────────────
@@ -539,8 +538,8 @@ controls:
   patch_gain:
     label: Patch Gain
     cc: 119
-    # "Values in the range 0-100 should be transparent"; above that it can
-    # begin to saturate the limiter (p. 50).
+    # "Values in the range 0-100 should be transparent" (p. 51); above that it can begin to saturate
+    # the limiter on some patches.
     group: output
   main_volume:
     label: Main Volume

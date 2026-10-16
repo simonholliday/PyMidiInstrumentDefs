@@ -5,7 +5,8 @@
 # `elektron/model_samples` in this corpus is the one to read beside this.
 #
 # SO THE SAME PROMISE IS MADE AND KEPT ONCE. The column says MSB, which means every parameter
-# has a less significant half, and exactly one row gives it: the LFO's depth, "109 (LSB: 110)".
+# has a less significant half, and exactly one row gives it: the LFO's depth, "109 (LSB:
+# 110)" (p. 52).
 # Twenty-nine of the thirty are left with one number each.
 #
 # AND THE SAME SILENCE ABOUT NRPN. "RCV CC will when active make it possible to control
@@ -51,9 +52,9 @@ source: >-
 
   WHICH PART A CONTROL ANSWERS ON COMES FROM THE CHANNEL MENUS AND NOT THE APPENDIX, and the
   manual draws the line in one sentence each way: "T1-6 IN selects the dedicated MIDI channel
-  that is used to receive parameter data to a specific track" and "FX IN selects the dedicated
-  MIDI channel for the DELAY and REVERB parameters" (p. 44). So twenty-six of the thirty answer
-  on a track's own channel and four on the effects' channel. Delay Send and Reverb Send stay
+  that is used to receive parameter data to a specific track" (p. 44) and "FX IN selects the
+  dedicated MIDI channel for the DELAY and REVERB parameters" (p. 44). So twenty-six of the thirty
+  answer on a track's own channel and four on the effects' channel. Delay Send and Reverb Send stay
   with the track, because they are a track's amount of an effect rather than the effect.
 
   THERE IS NO BASE CHANNEL AND SEVERAL TRACKS MAY SHARE ONE. "Any MIDI channel can be assigned
@@ -68,7 +69,7 @@ source: >-
   no mapping. The order above is the order pp. 35-36 print them in, and the manual nowhere says
   that is the order the menu uses.
 
-  AND THE PAGE THAT WOULD ANSWER "WHAT DOES CC 16 DO" IS NOT IN THE TEXT LAYER. The table on
+  AND THE PAGE THAT WOULD ANSWER WHAT CC 16 DOES IS NOT IN THE TEXT LAYER. The table on
   p. 36 sets the six machines against their four macro controls, and only the Chord machine's
   row can be extracted - that row is moreover left in the file invisibly on two other pages,
   which is what a reader of the raw text sees instead of the other five. Read by eye off the
@@ -78,17 +79,18 @@ source: >-
   envelope depth; for METAL, tune offset A, modulation amount and feedback, tune offset B,
   modulation envelope depth; for PERC, inharmonicity amount, modulation amount, pitch sweep,
   modulation envelope depth; for TONE, modulator ratio, modulation amount, feedback amount,
-  modulation envelope depth; and for CHORD, "Chord: Interval mix and osc balance. Unison:
-  Detune", unison or chord, wavetable sweep, filter cutoff envelope depth. **Those twenty-four
-  readings are the one thing in this file that a second method could not corroborate**, because
-  no text engine can see five of the six rows.
+  modulation envelope depth; and for CHORD, "Chord: Interval mix and osc balance. Unison: Detune"
+  (p. 36), unison or chord, wavetable sweep, filter cutoff envelope depth. **Those twenty-four
+  readings are the one thing in this file that a second method could not corroborate**, because no
+  text engine can see five of the six rows.
 
   THE INDEX STILL CARRIES THE SAMPLER'S PARAMETERS, which is the plainest evidence of where this
-  document came from. It lists "SAMPLE LOCKS" and, on the previous page, "LOOP" and "REVERSE" -
-  and LOOP and REVERSE appear nowhere else in these fifty-six pages, because this instrument has
-  neither. The Model:Samples has both, at CC 17 and 18, where this one has Shape and Sweep. The
-  body slips the same way once: p. 18 offers to "backup up your projects and samples", on an
-  instrument whose own foreword asks "how do we accomplish that without using samples?".
+  document came from. It lists "SAMPLE LOCKS" (p. 55) and, on the previous page, "LOOP" and
+  "REVERSE" - and LOOP and REVERSE appear nowhere else in these fifty-six pages, because this
+  instrument has neither. The Model:Samples has both, at CC 17 and 18, where this one has Shape and
+  Sweep. The body slips the same way once: p. 18 offers to "backup up your projects and samples"
+  (p. 18), on an instrument whose own foreword asks "how do we accomplish that without using
+  samples?" (p. 9).
 
   AND FOUR CONTROLS CHANGE MEANING WITH THE MACHINE, which is the thing that most distinguishes
   this instrument from its sibling. "The four parameters, COLOR, SHAPE, SWEEP, and CONTOUR,
@@ -122,9 +124,9 @@ source: >-
 
   NOT RECORDED: any `range`, and the reason is the sibling's. The appendix has two columns,
   Parameter and CC MSB, and nothing else. The parameter chapters do give ranges, but in the
-  instrument's own units: Pitch is "(-24-+24, equivalent to four octaves.)" and bipolar (p. 37),
+  instrument's own units: Pitch is "(-24-+24, equivalent to four octaves.)" (p. 37) and bipolar,
   and both sends are "(OFF, 1-127)" (p. 37), whose bottom is a word. **And two of them a single
-  controller could not carry**: Delay Feedback is "(0-198)" and Delay Time "(1.00-128.00)",
+  controller could not carry**: Delay Feedback is "(0-198)" and Delay Time "(1.00-128.00)" (p. 41),
   "relative to the current BPM and measured in 128th notes" (p. 41), each with one number in the
   appendix and no LSB - exactly as on the sibling, whose own Delay Feedback is the same 0 to 198.
   Nothing says how any of those becomes a controller value, so every control below keeps the
@@ -149,7 +151,7 @@ sources:
     # `file(1)` gives **no page count at all** for this document, where it gave a wrong one for
     # the sibling - 174 against a real 58. Two libraries agree this one has 56.
     # READ IT WITH PyMuPDF RATHER THAN pypdf, as with the sibling: pypdf splits glyphs on this
-    # maker's pages, so the appendix's own title comes out as "SPECIFICA TIONS".
+    # maker's pages, so the appendix's own title comes out as `SPECIFICA TIONS`.
     page_offset: 0
   downloads:
     kind: download_page
@@ -159,11 +161,12 @@ sources:
     sha256: 78d46cbf8b3ef5c6ae3e97f004dd5b2cf0840e7a3003b8a0a2ebb46cc3923cef
     retrieved: 2026-10-13
     paginated: false
-    # Cited for the one thing the manual does not say: "Model:Cycles OS 1.13" dated "May 26,
-    # 2021", against "Model:Cycles User Manual - EN" dated "Oct 31, 2024" - the same two dates
-    # as the Model:Samples', to the day. **Fetched again on 2026-10-13 for the title the page
-    # serves**: the copy of 2026-10-02 was saved as text alone. The two copies say the same of
-    # both dates, and differ in a `Skip to content` line and a final newline.
+    # Cited for the one thing the manual does not say: "Model:Cycles OS 1.13" (downloads) dated "May
+    # 26, 2021" (downloads), against "Model:Cycles User Manual - EN" (downloads) dated "Oct 31,
+    # 2024" (downloads) - the same two dates as the Model:Samples', to the day. **Fetched again on
+    # 2026-10-13 for the title the page serves**: the copy of 2026-10-02 was saved as text alone.
+    # The two copies say the same of both dates, and differ in a `Skip to content` line and a final
+    # newline.
   release_notes:
     kind: release_notes
     title: "Model:Cycles OS release notes"
@@ -219,8 +222,8 @@ parts:
     # "Note numbers 0-5 correspond to notes C0 through to F0 ... These notes trigger the preset
     # of track 1 through track 6, respectively (provided they are set to their default channels
     # 1-6). These note values map to each of the six tracks, regardless of which track is
-    # active." And "MIDI note numbers 12-60 ... trigger the preset of the active track in any of
-    # its 49 chromatic variations" (p. 19), which is the active track only.
+    # active." (p. 19). And "MIDI note numbers 12-60 ... trigger the preset of the active track in
+    # any of its 49 chromatic variations" (p. 19), which is the active track only.
   fx:
     label: Delay and Reverb
     channel: assigned

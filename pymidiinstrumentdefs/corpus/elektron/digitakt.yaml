@@ -5,15 +5,15 @@ model:
   name: Digitakt
   firmware: "1.53"
   # The manual says so itself, on p. 11: "This manual for Digitakt OS version 1.53 was
-  # last updated August 12, 2026." Elektron's own file name and the date it serves the
+  # last updated August 12, 2026." (p. 11). Elektron's own file name and the date it serves the
   # file with both say 2026-09-09, a month later, which is why the document's own date is
   # what the source below records.
   # The version is checked as well as quoted: the release notes say what each OS added,
   # and this manual carries
-  # them. OS 1.52 "Added a second LFO", "Added a base/width filter", "Added a filter
-  # envelope delay parameter" and sample rate reduction, and every one of those is in
-  # the appendix below - LFO 2, Base, Width, Env. Delay, Sample Rate Reduction and SRR
-  # Routing. So the document describes the firmware Elektron currently ships, which was
+  # them. OS 1.52 "Added a second LFO" (release_notes), "Added a base/width filter" (release_notes),
+  # "Added a filter envelope delay parameter" (release_notes) and sample rate reduction, and every
+  # one of those is in the appendix below - LFO 2, Base, Width, Env. Delay, Sample Rate Reduction
+  # and SRR Routing. So the document describes the firmware Elektron currently ships, which was
   # 1.53 when this was checked on 2026-10-01.
   # This is the Digitakt of 2017. The Digitakt II is a separate instrument with its own
   # manual and its own MIDI map, and is not described here.
@@ -29,9 +29,9 @@ source: >-
   above it, so each is recorded as a note on the row it duplicates rather than as a
   parameter nobody can address separately. The manual explains why on p. 59: the DUAL
   parameter "sets if the inputs are processed as two separate mono inputs or as a single
-  stereo input", and switching it off "changes the rest of the parameters from being
+  stereo input" (p. 59), and switching it off "changes the rest of the parameters from being
   separate controls for the left and right channel to single controls for both audio
-  channels. The PAN parameters changes to a BAL (Balance) parameter." So one address
+  channels. The PAN parameters changes to a BAL (Balance) parameter." (p. 59). So one address
   means one thing or the other depending on that switch, which is itself the Stereo
   Input control below.
 
@@ -140,15 +140,17 @@ midi:
   # can share the same channel" (p. 17).
   # SIXTEEN IS THE PROTOCOL'S NUMBER, NOT THIS MAKER'S STATEMENT. **No page of this manual
   # prints the range a channel setting takes.** The highest it names is 8, as the eight tracks'
-  # defaults (p. 24); "any MIDI channel" is what carries `[1, 16]`.
+  # defaults (p. 24); "[a]ny MIDI channel" (p. 17) is what carries `[1, 16]`.
   channels: [1, 16]
   # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and
   # TRANSPORT SEND (p. 69), so both travel both ways and either can be switched off.
   clock: both
   transport: both
   program_change:
-    receives: true         # PRG CH RECEIVE, "useful when wanting to select patterns externally"
-    sends: true            # PRG CH SEND, "send program change messages when patterns are changed"
+    receives: true         # PRG CH RECEIVE, "useful when wanting to select patterns
+                           # externally" (p. 70)
+    sends: true            # PRG CH SEND, "send program change messages when patterns are
+                           # changed" (p. 70)
     presets: 128           # 128 patterns per project (p. 16)
     # Which channel carries them is its own setting, PROGRAM CHG IN CH and OUT CH, each
     # of which may instead follow the auto channel (p. 71).
@@ -164,25 +166,24 @@ voice:
   # "the Digitakt sound architecture, with its eight audio voices" (p. 15), and it has
   # eight audio tracks (p. 17): one voice each, rather than a pool they draw on as a
   # Digitone's tracks do.
-  # The manual never writes "one voice per track" in those words, so here is what it does
-  # write. It speaks of "the voice of the active track", in the singular and definite,
-  # four times over (pp. 23, 31, 61, 64). It gives exactly as many voices as audio
-  # tracks. And it promises a chord - "up to four notes" - only for a MIDI track (p. 17),
-  # which sounds nothing and sends what it is given. Those three together are the reading
-  # recorded here; none of them alone would be.
+  # The manual never writes `one voice per track` in those words, so here is what it does
+  # write. It speaks of "the voice of the active track" (pp. 23, 31, 61, 64), in the singular and
+  # definite, four times over. It gives exactly as many voices as audio tracks. And it promises a
+  # chord - "up to four notes" (p. 17) - only for a MIDI track, which sounds nothing and sends what
+  # it is given. Those three together are the reading recorded here; none of them alone would be.
   # The figure that means something is therefore the one on the audio part, and there is
   # no single number for the instrument to carry: eight tracks of one voice is what
-  # "eight audio voices" amounts to.
+  # "eight audio voices" (p. 15) amounts to.
   polyphony_shared: false
   # Two bands of notes do something, and the manual gives both (p. 24). "Note numbers 0-7
   # ... will trigger the Sound of track 1 through track 8, respectively (provided they are
-  # set to their default channels 1-8) ... regardless of which track is active." And
+  # set to their default channels 1-8) ... regardless of which track is active." (p. 24). And
   # "MIDI note numbers 12-84 ... will trigger the Sound of the active track in any of its
-  # 73 chromatic variations". What notes 8 to 11 do, and anything above 84, the manual
+  # 73 chromatic variations" (p. 24). What notes 8 to 11 do, and anything above 84, the manual
   # does not say, so the range recorded is the outer bound of what it documents.
   # This maker also does what few do: it says which note name is which number, and warns
   # that others differ. "Note numbers 0-7 correspond to notes C0 through to G0 ... (which
-  # is sometimes called C-2-G-2 in certain applications)", and note 60 is C5, middle C.
+  # is sometimes called C-2-G-2 in certain applications)" (p. 24), and note 60 is C5, middle C.
   note_range: [0, 84]
   # Sent, by a MIDI track, and the kind is not stated: "Aftertouch controls the aftertouch data sent
   # on the MIDI track." (p. 52), a parameter that is OFF until it is set. No page says an audio

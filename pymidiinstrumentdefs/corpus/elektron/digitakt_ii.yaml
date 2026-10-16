@@ -12,15 +12,16 @@
 # that - a control's meaning depending on a setting rather than on a channel is a gap the format
 # has not closed - and until it does, the groups below are what tells them apart.
 #
-# THE APPENDIX NUMBERS ITS OWN SECTIONS WRONGLY, TWICE. It runs B.1 to B.10 and then prints
-# "B.8 VAL PARAMETERS" and "B.9 MISC PARAMETERS" after B.10, so two sections are numbered B.8
-# and two B.9. It also prints the caption AMP over three different tables - B.5's amp
-# parameters, B.6's Euclidean sequencer and B.7's effects. Both were read off the rendered page
-# as well as out of the text layer, and both are the document rather than the reading.
+# THE APPENDIX NUMBERS ITS OWN SECTIONS WRONGLY, TWICE. It runs B.1 to B.10 and then prints "B.8 VAL
+# PARAMETERS" (p. 113) and "B.9 MISC PARAMETERS" (p. 113) after B.10, so two sections are numbered
+# B.8 and two B.9. It also prints the caption AMP over three different tables - B.5's amp
+# parameters, B.6's Euclidean sequencer and B.7's effects. Both were read off the rendered page as
+# well as out of the text layer, and both are the document rather than the reading.
 # IT IS NOT A SLIP ON ONE PAGE: the contents page carries the same sequence, listing
-# "B.10 MIXER PARAMETERS" and then "B.8 VAL PARAMETERS" and "B.9 MISC PARAMETERS" after it
-# (p. 8). The same page lists "A.3.5 COMB+" and "A.3.5  LEGACY", so Appendix A repeats a number
-# too. A reader or a tool should key a table on its heading and never on its number.
+# "B.10 MIXER PARAMETERS" (p. 8) and then "B.8 VAL PARAMETERS" (p. 8) and "B.9 MISC PARAMETERS"
+# (p. 8) after it. The same page lists "A.3.5 COMB+" and "A.3.5  LEGACY" (p. 8), so Appendix A
+# repeats a number too. A reader or a tool should key a table on its heading and never on its
+# number.
 
 definition: 1
 
@@ -28,8 +29,8 @@ model:
   manufacturer: Elektron
   name: Digitakt II
   # The manual says so itself, on p. 11: "This manual for Digitakt II OS version 1.17 was last
-  # updated September 24, 2026." Five dates describe this one file and none of them agree: that
-  # one, the 23 September in its PDF metadata, the 260930 in Elektron's file name, the
+  # updated September 24, 2026." (p. 11). Five dates describe this one file and none of them agree:
+  # that one, the 23 September in its PDF metadata, the 260930 in Elektron's file name, the
   # 2026-10-01 its server sent as last-modified, and the "Oct 1, 2025" printed beside the
   # download link, which is a year out. The document's own is what this records, and the same
   # five disagreed the same way for the Analog Rytm MKII a day earlier.
@@ -37,9 +38,9 @@ model:
   # and its release notes cover every release from 1.00. Four entries mention NRPN and three
   # mention controller numbers, and all of them are early - "Some of the CC and NPRN values were
   # the same for several parameters" (1.01), "Several of the chorus and delay parameters shared
-  # the same NRPN values" (1.02), "Some NRPN parameters were missing" and "Some NRPN parameters
-  # regarding the Euclidean sequencer didn't work as intended" (1.10). Nothing since 1.10 adds,
-  # removes or renumbers a controller.
+  # the same NRPN values" (1.02), "Some NRPN parameters were missing" (release_notes) and "Some NRPN
+  # parameters regarding the Euclidean sequencer didn't work as intended" (1.10). Nothing since 1.10
+  # adds, removes or renumbers a controller.
   firmware: "1.17"
 
 source: >-
@@ -71,11 +72,11 @@ source: >-
 
   THEY ARE RECORDED RATHER THAN CORRECTED, and the reason is this maker's own history. Its
   release notes for this instrument say "Some of the CC and NPRN values were the same for several
-  parameters" against OS 1.01 and "Several of the chorus and delay parameters shared the same
-  NRPN values" against 1.02, so Elektron has twice shipped a release to stop two parameters
-  sharing a number. A pair that still shares one at 1.17 is therefore a fact about the document
-  and possibly about the instrument, and not obviously a misprint. The CC numbers do not collide
-  anywhere.
+  parameters" (release_notes) against OS 1.01 and "Several of the chorus and delay parameters shared
+  the same NRPN values" (release_notes) against 1.02, so Elektron has twice shipped a release to
+  stop two parameters sharing a number. A pair that still shares one at 1.17 is therefore a fact
+  about the document and possibly about the instrument, and not obviously a misprint. The CC numbers
+  do not collide anywhere.
 
   FIVE MORE PAIRS SHARE A NUMBER ON PURPOSE. The external input mixer is printed twice over, once
   for two mono inputs and once for a stereo pair, and DUAL MONO on CC 82 is the switch between
@@ -90,8 +91,8 @@ source: >-
 
   AFTERTOUCH AND PITCH BEND ARE BOTH RECEIVED AND NEITHER IS CHARACTERISED. The AFTERTOUCH menu
   "[o]pens a menu where you can assign up to four PARAMETER page parameters to the MIDI
-  aftertouch command", and PITCH BEND the same, where "[t]he pitch bend from incoming MIDI sent
-  to the Digitakt II from external devices affects the assigned parameters" (p. 39). The manual
+  aftertouch command" (p. 39), and PITCH BEND the same, where "[t]he pitch bend from incoming MIDI
+  sent to the Digitakt II from external devices affects the assigned parameters" (p. 39). The manual
   never says whether the aftertouch is channel pressure or polyphonic key pressure, so
   `voice.aftertouch` says `received` and no more; and the bend reaches assigned parameters by a
   depth setting rather than a range in semitones, so there is no `pitch_bend` block to put a
@@ -166,10 +167,12 @@ midi:
   clock: both
   transport: both
   program_change:
-    receives: true         # PRG CH RECEIVE, "useful when wanting to select patterns externally"
-    sends: true            # PRG CH SEND, "send program change messages when patterns are changed"
+    receives: true         # PRG CH RECEIVE, "useful when wanting to select patterns
+                           # externally" (p. 77)
+    sends: true            # PRG CH SEND, "send program change messages when patterns are
+                           # changed" (p. 77)
     # "MIDI program change messages 0-127 will select pattern 1-128 (A01-H16)" (p. 25), and a
-    # project holds "up to 128 patterns" in eight banks of sixteen (p. 16).
+    # project holds "up to 128 patterns" (p. 16) in eight banks of sixteen.
     presets: 128
     # Which channel carries them is its own setting, PROGRAM CHG IN CH and OUT CH, either of
     # which may instead follow the auto channel (p. 79).
@@ -201,7 +204,7 @@ parts:
     # other depending on the machine assigned, so sixteen is the whole instrument.
     # One voice each, and three things say so rather than one. The architecture gives "16 stereo
     # audio voices" (p. 15) against sixteen tracks. The manual speaks of "the voice of the active
-    # track", singular and definite, three times over (pp. 24, 69, 71). And NOTE PRIORITY sets
+    # track" (pp. 24, 36, 69, 71), singular and definite, four times over. And NOTE PRIORITY sets
     # "what note is played if more than one note is played at the same time" (p. 38), which is a
     # monophonic voice answering. A chord is promised only for a MIDI track, which sounds nothing
     # and sends what it is given (p. 17).
@@ -222,13 +225,13 @@ voice:
   # Two bands of notes do something and the manual gives both, at 8.4 MIDI NOTES (p. 25). "Note
   # numbers 0-15 correspond to notes C0 through to D#1, the leftmost octave. These notes will
   # trigger the preset of track 1 through track 16, respectively (provided they are set to their
-  # default channels 1-16)." And "MIDI note numbers 16-84 ... will trigger the preset of the
-  # active track in it's chromatic variations". Nothing above 84 is documented, so the range is
-  # the outer bound of what the manual states.
+  # default channels 1-16)." (p. 25). And "MIDI note numbers 16-84 ... will trigger the preset of
+  # the active track in it's chromatic variations" (p. 25). Nothing above 84 is documented, so the
+  # range is the outer bound of what the manual states.
   # THE MANUAL'S OWN NOTE NAMES DO NOT FOLLOW FROM ITS OWN NUMBERS, and both are left standing.
   # If note 0 is C0 then note 16 is E1, and the same sentence calls notes 16-84 "E2-C7". It also
-  # gives "C5, MIDI note 60, being middle C", which agrees with note 0 being C0. The page warns
-  # that naming standards differ and says it uses Elektron's own; it does not reconcile this.
+  # gives "C5, MIDI note 60, being middle C" (p. 25), which agrees with note 0 being C0. The page
+  # warns that naming standards differ and says it uses Elektron's own; it does not reconcile this.
   note_range: [0, 84]
   velocity:
     # Sent as well as received: a MIDI track's own velocity goes out with its notes. "Each MIDI
@@ -239,8 +242,8 @@ voice:
     # the two on p. 17 are read together. Until 2026-10-15 this said `received`.
     note_on: both
     # "VELOCITY TO VOL Selects how MIDI velocity affects volume when playing the preset from a
-    # MIDI keyboard", with OFF, LOG, LIN, EXP and EXP 2 curves, where "OFF means velocity does
-    # not affect the volume of the sound" (p. 38). And VELOCITY MOD assigns up to four
+    # MIDI keyboard" (p. 38), with OFF, LOG, LIN, EXP and EXP 2 curves, where "OFF means velocity
+    # does not affect the volume of the sound" (p. 38). And VELOCITY MOD assigns up to four
     # parameter-page parameters to velocity, where "the velocity of incoming MIDI notes sent to
     # the Digitakt II from external devices affects the assigned parameters" (p. 39).
     # So velocity always arrives, and what it reaches is two menu settings rather than a

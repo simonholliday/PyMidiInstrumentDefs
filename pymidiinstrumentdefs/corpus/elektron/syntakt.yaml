@@ -5,17 +5,18 @@ model:
   name: Syntakt
   firmware: "1.42"
   # The manual says so itself, on p. 11: "This manual for Syntakt OS version 1.42 was last
-  # updated September 24, 2026." Three dates describe this one file and none of them agree:
+  # updated September 24, 2026." (p. 11). Three dates describe this one file and none of them agree:
   # that one, the 260930 in Elektron's file name, and the 2026-10-01 its server sent as
   # last-modified. The document's own is what the source line records.
   # The version is checked as well as quoted, because a file name is not evidence. Elektron's
   # release notes say what each OS changed, and four of those changes are about the numbers
-  # below: OS 1.01 fixed that "The parameters on the SYN page had incorrect MIDI mapping";
-  # OS 1.20 "Added support for Sustain pedal (Sustain and Sostenuto) over MIDI", which are
-  # the two in MISC; OS 1.30B fixed that "The machines added in OS 1.30 had wrong CC and NRPN
-  # mappings"; and OS 1.40A fixed that "The FX track's FPAN parameter was not assigned a MIDI
-  # CC value", which is the FX track's Filter Pan at CC 93. So this appendix describes 1.42
-  # and several of its numbers were wrong or absent in earlier firmware.
+  # below: OS 1.01 fixed that "The parameters on the SYN page had incorrect MIDI
+  # mapping" (release_notes); OS 1.20 "Added support for Sustain pedal (Sustain and Sostenuto) over
+  # MIDI" (release_notes), which are the two in MISC; OS 1.30B fixed that "The machines added in OS
+  # 1.30 had wrong CC and NRPN mappings" (release_notes); and OS 1.40A fixed that "The FX track's
+  # FPAN parameter was not assigned a MIDI CC value" (release_notes), which is the FX track's Filter
+  # Pan at CC 93. So this appendix describes 1.42 and several of its numbers were wrong or absent in
+  # earlier firmware.
   # A SURVEY OF THIS MAKER'S SITE IN SEPTEMBER 2026 FOUND THE ENGLISH MANUAL AS OS 1.41,
   # dated 2026-09-09. Elektron replaced it with this one before it was ever fetched, which is
   # why a definition cites bytes it holds rather than a page it once read.
@@ -96,8 +97,8 @@ midi:
   # share the same channel" (p. 20). The twelve tracks default to "their default channels 1-12"
   # (p. 27), but which channel yours are on belongs to your project rather than here.
   # SIXTEEN IS THE PROTOCOL'S NUMBER, NOT THIS MAKER'S STATEMENT. **No page of this manual
-  # prints the range a channel setting takes.** The highest it names is 12; "any MIDI channel"
-  # is what carries `[1, 16]`.
+  # prints the range a channel setting takes.** The highest it names is 12; "[a]ny MIDI channel"
+  # (p. 20) is what carries `[1, 16]`.
   channels: [1, 16]
   # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
   # SEND (p. 75), so both travel both ways and either can be switched off.
@@ -130,13 +131,14 @@ voice:
   # "Note numbers 0-11 correspond to notes C0 through to B0 ... These notes will trigger the
   # sound of track 1 through track 12, respectively (provided they are set to their default
   # channels 1-12). These notes values map to each of the 12 tracks, regardless of which track
-  # is active." And "MIDI note numbers 12-84, that corresponds to notes C1-C7 (C5, MIDI note
-  # 60, being middle C) will trigger the sound of the active track in its 73 note variations".
+  # is active." (p. 27). And "MIDI note numbers 12-84, that corresponds to notes C1-C7 (C5, MIDI
+  # note 60, being middle C) will trigger the sound of the active track in its 73 note
+  # variations" (p. 27).
   # Nothing above 84 is documented, so the range is the outer bound of what the manual states.
   # THE MANUAL DISAGREES WITH ITSELF ABOUT HOW MANY PITCHES A TRACK HAS, and both readings are
   # left standing. 7.12 gives 73 note variations, which is notes 12 to 84 inclusive, a little
   # over six octaves. 7.9 KEYBOARD MODE (p. 24) says "The full range you can trig for audio
-  # track with Digital voice types spans 10 octaves: middle, 4 up and 5 down", and eight
+  # track with Digital voice types spans 10 octaves: middle, 4 up and 5 down" (p. 24), and eight
   # octaves for the Analog Drum and Analog Cymbal voice types. Those are the [TRIG] keys with
   # their own transpose, which is not the same question as what an incoming note number
   # reaches, and the manual never reconciles them.
@@ -146,11 +148,11 @@ voice:
     # sends out." (p. 58). Until 2026-10-14 this said `received`.
     note_on: both
     # "VELOCITY TO VOL Selects how MIDI velocity affects volume when playing the sound from a
-    # MIDI keyboard", whose settings include OFF, LOG and LIN, and "OFF means velocity does not
-    # affect the volume of the sound" (pp. 30-31). And VELOCITY MOD assigns up to four
-    # parameter-page parameters to velocity, where "Both the VEL parameter on the TRIG menu and
-    # the velocity of incoming MIDI notes sent to the Syntakt from external devices affects the
-    # assigned parameters" (p. 32).
+    # MIDI keyboard" (p. 30), whose settings include OFF, LOG and LIN, and "OFF means velocity does
+    # not affect the volume of the sound" (p. 31). And VELOCITY MOD assigns up to four
+    # parameter-page parameters to velocity, where "Both the VEL parameter on the TRIG menu and the
+    # velocity of incoming MIDI notes sent to the Syntakt from external devices affects the assigned
+    # parameters" (p. 32).
     # So velocity always arrives, and what it reaches is a pair of menu settings rather than a
     # controller. `gated_by` names controls, and neither of these has a controller number, so
     # it stays empty and the fact is here instead.
@@ -166,7 +168,7 @@ parts:
     receives: [notes, controls]
     polyphony: 1
     # "TRACK 1-12 selects the dedicated MIDI channel that is used to receive or send (by
-    # turning the knobs) parameter data to or from a specific audio/MIDI track", and
+    # turning the knobs) parameter data to or from a specific audio/MIDI track" (p. 77), and
     # RECEIVE NOTES "make[s] it possible to play Syntakt using an external MIDI keyboard"
     # (p. 77). The twelve default to channels 1 to 12 (p. 27), and which channel yours are
     # on belongs to your project rather than here.
@@ -241,7 +243,7 @@ controls:
   # B.3 SYN PARAMETERS, and the eight rows below are knobs rather than parameters: "The
   # parameters on the SYN parameter page vary depending on which machine is selected. The
   # CC/NRPN value for a specific parameter is instead based on its position in the UI and
-  # is denoted here by which data entry knob controls that parameter." A panel can show
+  # is denoted here by which data entry knob controls that parameter." (p. 115). A panel can show
   # these eight and name none of them, which is what the maker itself does.
   source_data_entry_knob_a:    {label: Data entry knob A, cc: 17, nrpn: 129, part: track, group: source}
   source_data_entry_knob_b:    {label: Data entry knob B, cc: 18, nrpn: 130, part: track, group: source}
@@ -275,7 +277,7 @@ controls:
   amp_volume:                  {label: Volume, cc: 7, nrpn: 159, part: track, group: amp}
 
   # B.6 LFO PARAMETERS. The appendix says "Note that the LFO 1/2 depth are high-resolution
-  # parameters, with CC LSB values", and then prints a CC LSB on four rows, not two: both
+  # parameters, with CC LSB values" (p. 116), and then prints a CC LSB on four rows, not two: both
   # Speeds as well as both Depths. The table is followed.
   lfo_1_speed:                 {label: Speed, cc: 102, lsb: 60, range: [0, 16383], nrpn: 160, part: track, group: lfo_1}
   lfo_1_multiplier:            {label: Multiplier, cc: 103, nrpn: 161, part: track, group: lfo_1}
@@ -318,7 +320,7 @@ controls:
   # THE ONE PART ASSIGNMENT HERE THAT IS AN INFERENCE, and it is marked rather than
   # buried. The appendix prints these five under B.7 FX PARAMETERS with the delay and the
   # reverb, so they are filed on the FX track's channel with them. But p. 77 names only
-  # "the FX track and the DELAY and REVERB parameter pages" for that channel, and the
+  # "the FX track and the DELAY and REVERB parameter pages" (p. 77) for that channel, and the
   # mixer page these belong to (13.6 MIXER PAGE 3, p. 71) is in a chapter of its own. No
   # page of this manual says outright which channel they answer on.
   external_in_input_lr:        {label: Input LR, cc: 16, nrpn: 286, part: fx, group: external_in}
@@ -328,7 +330,7 @@ controls:
   external_in_input_fx_routing: {label: Input FX Routing, cc: 20, nrpn: 294, part: fx, group: external_in}
 
   # B.8 VAL PARAMETERS: "These are the CC VAL parameters on the [FLTR] page for MIDI
-  # tracks." A track is a MIDI track when a MIDI machine is assigned to it (p. 21), so
+  # tracks." (p. 117). A track is a MIDI track when a MIDI machine is assigned to it (p. 21), so
   # these eight reach a track only in that state, and reach nothing in any other.
   val1:                        {label: VAL1, cc: 70, part: track, group: cc_val}
   val2:                        {label: VAL2, cc: 71, part: track, group: cc_val}
@@ -344,13 +346,13 @@ controls:
   # Portamento On/Off, is three sections earlier under TRIG and carries an NRPN where
   # these two do not. A reader scanning this table alone would think 65 unassigned.
   # Sustain and Sostenuto arrived in firmware: OS 1.20 "Added support for Sustain pedal
-  # (Sustain and Sostenuto) over MIDI". Which channel they act on is not stated.
+  # (Sustain and Sostenuto) over MIDI" (release_notes). Which channel they act on is not stated.
   pattern_mute:                {label: Pattern Mute, cc: 110, nrpn: 232, part: track, group: misc}
   sustain:                     {label: Sustain, cc: 64, part: track, group: misc}
   sostenuto:                   {label: Sostenuto, cc: 66, part: track, group: misc}
 
   # B.10 FX TRACK PARAMETERS: "These are the parameters for the parameter on the [SYN],
-  # [FLTR], and [AMP] pages on the FX track" - the maker's own sentence, printed with that
+  # [FLTR], and [AMP] pages on the FX track" (p. 118) - the maker's own sentence, printed with that
   # stumble in it. EVERY NUMBER BELOW COLLIDES WITH ONE ABOVE and means something else:
   # the FX track's filter frequency is CC 70 where a track's filter attack time is CC 70,
   # and so on through the table. The part is what tells them apart.
@@ -370,7 +372,7 @@ controls:
   fx_filter_env_depth:         {label: Env. Depth, cc: 73, part: fx, group: fx_filter}
   fx_filter_env_delay:         {label: Env. Delay, cc: 74, part: fx, group: fx_filter}
   # This one did not work before firmware 1.40A, whose notes say "The FX track's FPAN
-  # parameter was not assigned a MIDI CC value".
+  # parameter was not assigned a MIDI CC value" (release_notes).
   fx_filter_pan:               {label: Filter Pan, cc: 93, part: fx, group: fx_filter}
 
   # The FX track's AMP is not the audio tracks' AMP on another channel: it carries three

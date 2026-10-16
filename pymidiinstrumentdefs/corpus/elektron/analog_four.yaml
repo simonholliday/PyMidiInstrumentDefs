@@ -14,7 +14,7 @@ model:
   name: Analog Four
   firmware: "1.56"
   # The manual states it of itself, on p. 11: "This manual for Analog Four OS version 1.56, was
-  # last updated September 24, 2026."
+  # last updated September 24, 2026." (manual p. 11).
   # The version is checked and not only quoted. The release notes cover five releases, OS 1.51
   # to 1.56, and exactly one entry in all of them mentions MIDI, a bug fix: "MIDI messages were
   # sometimes not sent if the device tempo was set to very low BPMs" (1.55D). No release adds,
@@ -177,7 +177,7 @@ midi:
   # the auto channel and for program change in and out, each selected or set to OFF (pp. 59-60).
   # SIXTEEN IS THE PROTOCOL'S NUMBER, NOT THIS MAKER'S STATEMENT. No page of this manual prints
   # the range a channel setting takes. `[1, 16]` is what a MIDI device has and what "selects the
-  # MIDI channel" must mean, and it is recorded here rather than attributed to a page.
+  # MIDI channel" (p. 60) must mean, and it is recorded here rather than attributed to a page.
   channels: [1, 16]
   # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
   # SEND, the latter covering "system realtime messages like play, stop, continue and song
@@ -188,8 +188,8 @@ midi:
     receives: true
     sends: true
     # "PRG CH RECEIVE will when active make the Analog Four respond to incoming program change
-    # messages, which is useful when wanting to select patterns externally", and "PRG CH SEND
-    # will when active send program change messages when patterns are changed" (p. 58). So a
+    # messages, which is useful when wanting to select patterns externally" (manual p. 58), and "PRG
+    # CH SEND will when active send program change messages when patterns are changed" (p. 58). So a
     # preset here is a pattern: "For each of the 8 banks, 16 patterns are available, which means
     # 128 patterns are always available" (p. 16).
     presets: 128
@@ -202,7 +202,7 @@ midi:
   # rather than a statement by the maker.
   nrpn: supported
   # "In the SYSEX DUMP menu, kits, Sounds, patterns, songs and global slots can be sent and
-  # received" over the MIDI ports or USB (p. 64). No byte layout is published.
+  # received" (p. 64) over the MIDI ports or USB. No byte layout is published.
   sysex: true
 
 voice:
@@ -226,11 +226,11 @@ voice:
     # "The synth voices are also possible to play with an external MIDI keyboard connected to
     # the Analog Four" (p. 36), and what velocity reaches is two menu settings rather than a
     # controller: VELOCITY TO VOL, whose "OFF means velocity will not affect the volume of the
-    # Sound", and VELOCITY MOD, where "up to 5 PARAMETER page parameters can be assigned to the
-    # velocity parameter. Both the VEL parameter of the NOTE menu and the velocity of incoming
-    # MIDI notes sent to the Analog Four from external devices will affect the assigned
-    # parameters" (p. 35). `gated_by` names controls and neither of those has a controller
-    # number, so it stays empty and the fact is here instead.
+    # Sound" (p. 35), and VELOCITY MOD, where "up to 5 PARAMETER page parameters can be assigned to
+    # the velocity parameter. Both the VEL parameter of the NOTE menu and the velocity of incoming
+    # MIDI notes sent to the Analog Four from external devices will affect the assigned parameters"
+    # (p. 35). `gated_by` names controls and neither of those has a controller number, so it stays
+    # empty and the fact is here instead.
   pitch_bend:
     programmable: true
     # Not a bend depth but an assignment: "Gives access to a menu where up to 5 PARAMETER page
@@ -259,9 +259,9 @@ parts:
     addressing: pitches
     receives: [notes, controls]
     # Notes as well as controls, and both are switched on globally: RECEIVE NOTES "will when
-    # active make it possible to play the Analog Four using an external MIDI keyboard" and
-    # RECEIVE CC/NRPN "will when active make it possible to control Analog Four parameters from
-    # an external MIDI device sending CC/NRPN data" (p. 59).
+    # active make it possible to play the Analog Four using an external MIDI
+    # keyboard" (manual p. 59) and RECEIVE CC/NRPN "will when active make it possible to control
+    # Analog Four parameters from an external MIDI device sending CC/NRPN data" (p. 59).
     # No polyphony is stated against a part, because a track does not own voices: see
     # voice.polyphony_shared and the four voices the four tracks share.
   fx:
@@ -270,7 +270,7 @@ parts:
     receives: [controls]
     # The external inputs and the three send effects, with two LFOs of its own, on a channel of
     # its own in the same menu: "The FX track controls the Analog Four internal send effects"
-    # and its five parameter pages are EXT IN, CHORUS, DELAY, REVERB and LFO (p. 36). It has no
+    # (p. 36) and its five parameter pages are EXT IN, CHORUS, DELAY, REVERB and LFO. It has no
     # sound generator, so nothing here plays a note.
   cv:
     label: CV Track

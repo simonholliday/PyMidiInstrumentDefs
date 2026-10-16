@@ -5,18 +5,18 @@
 #
 # THAT HEADING IS A PROMISE THE PAGE DOES NOT KEEP. "MSB" says each parameter has a less
 # significant half, and exactly one row in the appendix gives it: the LFO's depth, "109
-# (LSB: 110)". The other twenty-eight are left with one number each.
+# (LSB: 110)" (p. 51). The other twenty-eight are left with one number each.
 #
 # AND THE INSTRUMENT ANSWERS TO NRPN, WHICH THE APPENDIX NEVER MENTIONS. Printed page 40 says it
 # plainly - "RCV CC ON makes it possible to control Model:Samples parameters from an external
-# MIDI device sending CC/NRPN data" - and NRPN appears on that page and nowhere else in
+# MIDI device sending CC/NRPN data" (p. 40) - and NRPN appears on that page and nowhere else in
 # fifty-eight pages. **No NRPN number is published for any parameter.** So `midi.nrpn` below
 # says the instrument answers to them and no control carries one, which is the distinction this
 # corpus had to go back and make for three other Elektrons once already.
 #
-# THE NAME HERE DROPS A COLON. Elektron writes the product "Model:Samples"; a definition name
+# THE NAME HERE DROPS A COLON. Elektron writes the product "Model:Samples" (p. 8); a definition name
 # has to match `[a-z][a-z0-9_]*`, so this is `model_samples`. The maker is not consistent about
-# it either - its own cable cheatsheet writes "Model Samples" with a space.
+# it either - its own cable cheatsheet writes "Model Samples" (downloads) with a space.
 
 definition: 1
 
@@ -46,10 +46,11 @@ source: >-
 
   WHICH PART A CONTROL ANSWERS ON COMES FROM THE CHANNEL MENUS AND NOT THE APPENDIX, and the
   manual draws the line in one sentence each way: "T1-6 IN selects the dedicated MIDI channel
-  that is used to receive parameter data to a specific track" and "FX IN selects the dedicated
-  MIDI channel for the DELAY and REVERB parameters" (p. 39). So twenty-five of the twenty-nine
-  answer on a track's own channel and four on the effects' channel. Delay Send and Reverb Send
-  stay with the track, because they are a track's amount of an effect rather than the effect.
+  that is used to receive parameter data to a specific track" (p. 39) and "FX IN selects the
+  dedicated MIDI channel for the DELAY and REVERB parameters" (p. 39). So twenty-five of the
+  twenty-nine answer on a track's own channel and four on the effects' channel. Delay Send and
+  Reverb Send stay with the track, because they are a track's amount of an effect rather than the
+  effect.
 
   THERE IS NO BASE CHANNEL AND SEVERAL TRACKS MAY SHARE ONE. "Any MIDI channel can be assigned
   to a track and several tracks can share the same channel. If several tracks are assigned to
@@ -80,11 +81,11 @@ source: >-
   THE MANUAL SENDS YOU FOUR TIMES TO A MENU IT DOES NOT HAVE, which matters only to a reader
   trying to follow it on the instrument. Its MIDI chapter contains IN CHAN and OUT CHAN and
   nothing called CHANNELS - yet p. 20 says to set the AUTO channel in "SETTINGS > MIDI >
-  CHANNELS", p. 23 says the track's channel is "set in the CHANNELS menu", and pp. 38 twice says
-  "the MIDI CHANNELS menu". Each of the four carries the right numbered cross-reference straight
-  after the wrong name, so no reader is actually lost. The menu's own name is unsettled too: the
-  chapter is "11. CONFIG MENU", the screen reads "Config Menu", and the index files it as
-  "SETTINGS MENU".
+  CHANNELS" (p. 20), p. 23 says the track's channel is "set in the CHANNELS menu" (p. 23), and
+  pp. 38 twice says "the MIDI CHANNELS menu" (p. 38). Each of the four carries the right numbered
+  cross-reference straight after the wrong name, so no reader is actually lost. The menu's own name
+  is unsettled too: the chapter is "11. CONFIG MENU" (p. 37), the screen reads "Config Menu", and
+  the index files it as "SETTINGS MENU" (p. 56).
 
   AND ONE DIRECTION HAS NO AUTO CHANNEL. The input menu has nine entries, six tracks and FX and
   AUTO and PCH; the output menu has eight, six tracks and FX and PCH. So the AUTO channel
@@ -93,8 +94,8 @@ source: >-
   NOT RECORDED: the kind of MIDI socket, which is worth a line because it is not a DIN. The
   specification gives "3.5 mm dual polarity TRS MIDI In, Out/Thru jacks" (p. 50), the output's
   polarity is a setting - "STD Standard ('Type A' ...)" (p. 40) and "INV Inverted ('Type B' ...)"
-  (p. 40) - and "The MIDI IN port accepts any polarity and does not need to be configured". There is
-  no field for a connector, so it is here.
+  (p. 40) - and "The MIDI IN port accepts any polarity and does not need to be configured" (p. 40).
+  There is no field for a connector, so it is here.
 
 sources:
   manual:
@@ -111,7 +112,7 @@ sources:
     # printed numbers run to 56. That tool has now been wrong about six documents in this
     # corpus, and here it gives exactly three times the real figure.
     # READ IT WITH PyMuPDF RATHER THAN pypdf: pypdf splits glyphs on this maker's pages, so the
-    # appendix's own title comes out as "SPECIFICA TIONS" and chapter 13's as "ST ARTUP". The
+    # appendix's own title comes out as `SPECIFICA TIONS` and chapter 13's as `ST ARTUP`. The
     # split is the extractor's and not the document's.
     page_offset: 0
   downloads:
@@ -122,11 +123,11 @@ sources:
     sha256: 9a59dec4b19410d06e16f27543dc2da579dfb82d531caff6715ab5ea9c4de197
     retrieved: 2026-10-13
     paginated: false
-    # Cited for the one thing the manual does not say: "Model:Samples OS 1.13" dated "May 26,
-    # 2021", against "Model:Samples User Manual - EN" dated "Oct 31, 2024". **Fetched again on
-    # 2026-10-13 for the title the page serves**: the copy of 2026-10-02 was saved as text
-    # alone. The two copies say the same of both dates, and differ in a `Skip to content` line
-    # and a final newline.
+    # Cited for the one thing the manual does not say: "Model:Samples OS 1.13" (downloads) dated
+    # "May 26, 2021" (downloads), against "Model:Samples User Manual - EN" (downloads) dated "Oct
+    # 31, 2024" (downloads). **Fetched again on 2026-10-13 for the title the page serves**: the copy
+    # of 2026-10-02 was saved as text alone. The two copies say the same of both dates, and differ
+    # in a `Skip to content` line and a final newline.
   release_notes:
     kind: release_notes
     title: "Model:Samples OS release notes"
@@ -138,7 +139,7 @@ sources:
     # Cited because it is what makes the appendix current rather than merely old. The one change
     # in 1.13 that touches MIDI moves no number: "Tracks set to MOUT now also forwards the
     # incoming note data on the AUTO channel from external MIDI controllers to the MIDI OUT port
-    # for control of an external device."
+    # for control of an external device." (release_notes).
 
 midi:
   # ANY OF THE SIXTEEN, AND THE MANUAL NEVER PRINTS THAT RANGE. What it says is that a channel
@@ -155,8 +156,8 @@ midi:
   transport: both
   program_change:
     # "PCH IN will, when set to ON, make Model:Samples respond to incoming program change
-    # messages, which is useful when wanting to select patterns externally" and PCH OUT sends
-    # one "when one pattern changes to another" (p. 38).
+    # messages, which is useful when wanting to select patterns externally" (p. 38) and PCH OUT
+    # sends one "when one pattern changes to another" (p. 38).
     receives: true
     sends: true
     # "MIDI program change messages 0-95 selects pattern 1-96 (A01-F16)" (p. 20), which is six
@@ -186,8 +187,8 @@ parts:
     # Notes reach a track two ways. "Note numbers 0-5 correspond to notes C0 through to F0 ...
     # These notes trigger the sample of track 1 through track 6, respectively (provided they are
     # set to their default channels 1-6). These note values map to each of the six tracks,
-    # regardless of which track is active" - so those six notes address the six tracks on any
-    # channel. And "MIDI note numbers 12-60 ... trigger the sample of the active track in any of
+    # regardless of which track is active" (p. 19) - so those six notes address the six tracks on
+    # any channel. And "MIDI note numbers 12-60 ... trigger the sample of the active track in any of
     # its 49 chromatic variations" (p. 19), which is the active track only.
   fx:
     label: Delay and Reverb
@@ -217,8 +218,8 @@ voice:
     note_on: both
     # "The responsive pads are made of sturdy synthetic rubber and are velocity sensitive"
     # (p. 19), and a fixed velocity may be set instead, "FIX Pad velocity set the pads to trig
-    # with a fixed velocity ... (1-127, OFF)". What velocity reaches is VDEP for the volume and
-    # a destination chosen from APPENDIX B, so it is a menu rather than a controller, which is
+    # with a fixed velocity ... (1-127, OFF)" (p. 19). What velocity reaches is VDEP for the volume
+    # and a destination chosen from APPENDIX B, so it is a menu rather than a controller, which is
     # why `gated_by` is empty and the fact is here.
   # NOT RECORDED: aftertouch and pitch bend. Neither is mentioned anywhere in the manual.
 
@@ -236,13 +237,13 @@ controls:
   # NO CONTROL CARRIES A `range` EITHER, and that needs more care than it looks. The appendix
   # gives none: it has two columns, Parameter and CC MSB, and nothing else. The parameter
   # chapters *do* give ranges - but **in the instrument's own units rather than in MIDI values**,
-  # and the manual never says how one becomes the other. Delay Time is "(1.00-128.00)" and is
-  # "relative to the current BPM and measured in 128th notes" with a table of divide ratios
-  # beside it (p. 36); Reverb Size is "(1-127, INF)", whose top is a word; and Delay Feedback is
-  # **"(0-198)" (p. 36)**, which no single controller can carry at all and for which the
-  # appendix gives one number, CC 86, and no LSB. So writing any of those into `range` would be
-  # claiming a mapping this maker has not published. Every control below keeps the format's
-  # default of 0 to 127.
+  # and the manual never says how one becomes the other. Delay Time is "(1.00-128.00)" (p. 36) and
+  # is "relative to the current BPM and measured in 128th notes" (p. 36) with a table of divide
+  # ratios beside it; Reverb Size is "(1-127, INF)" (p. 36), whose top is a word; and Delay Feedback
+  # is **"(0-198)" (p. 36)**, which no single controller can carry at all and for which the appendix
+  # gives one number, CC 86, and no LSB. So writing any of those into `range` would be claiming a
+  # mapping this maker has not published. Every control below keeps the format's default of 0 to
+  # 127.
 
   # TRACK -----------------------------------------------------------------
   note:                     {label: Note, cc: 3, part: track, group: track}

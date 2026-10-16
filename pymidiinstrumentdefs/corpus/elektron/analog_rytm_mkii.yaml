@@ -13,7 +13,7 @@ model:
   name: Analog Rytm MKII
   firmware: "1.74"
   # The manual says so itself, on p. 9: "This manual for Analog Rytm MKII OS version 1.74 was
-  # last updated September 24, 2026." Five dates describe this one file and none of them
+  # last updated September 24, 2026." (p. 9). Five dates describe this one file and none of them
   # agree: that one, the 23 September in its PDF metadata, the 260930 in Elektron's file name,
   # the 2026-10-01 its server sent as last-modified, and the "Oct 1, 2025" printed beside the
   # download link, which is a year out. The document's own is what this records.
@@ -122,7 +122,7 @@ midi:
   # SIXTEEN IS THE PROTOCOL'S NUMBER, NOT THIS MAKER'S STATEMENT. **No page of this manual
   # prints the range a channel setting takes.** The highest channel it names anywhere is 12, as
   # the tracks' defaults; `[1, 16]` is what a MIDI device has and what "selects the MIDI
-  # channel" must mean, and it is recorded here rather than attributed to a page.
+  # channel" (p. 63) must mean, and it is recorded here rather than attributed to a page.
   channels: [1, 16]
   # CLOCK RECEIVE and CLOCK SEND are separate settings, as are TRANSPORT RECEIVE and TRANSPORT
   # SEND, the latter covering "play, stop, continue and song position pointer" (p. 61). So
@@ -137,9 +137,9 @@ midi:
     # CH RECEIVE and PRG CH SEND switching each direction on (p. 61) and PROGRAM CH IN CH and
     # OUT CH choosing the channel, either of which may instead follow the auto channel (p. 63).
   sysex: true
-  # "kits, Sounds, patterns, songs and global slots can be sent and received" through the
-  # SYSEX DUMP menu, over the MIDI ports or USB (p. 63). Samples are not among them: they go
-  # through the SAMPLES menu and Elektron's Transfer application instead.
+  # "kits, Sounds, patterns, songs and global slots can be sent and received" (p. 63) through the
+  # SYSEX DUMP menu, over the MIDI ports or USB. Samples are not among them: they go through the
+  # SAMPLES menu and Elektron's Transfer application instead.
   # Every control below has both numbers, and which one the knobs send is a setting: "PARAM
   # OUTPUT selects what type of MIDI messages the DATA ENTRY knobs will send ... NRPN will
   # make the knobs send out NRPN MIDI messages ... CC will make the knobs send out CC MIDI
@@ -164,9 +164,10 @@ voice:
   # again in the appendix. "Of the 128 notes in the standard MIDI range, 0-11 corresponds to
   # notes C0 through to B0 ... will trigger the Sound of track 1 through to track 12,
   # respectively (provided they are set to their default channels 1-12). These note values map
-  # to each of the twelve tracks, regardless of which track is active." And "MIDI note values
-  # 12-59 ... will trigger the Sound of the active track in any of its 48 chromatic variations
-  # ... The track Sound must be enabled for chromatic play if any variation is to be heard."
+  # to each of the twelve tracks, regardless of which track is active." (p. 22). And "MIDI note
+  # values 12-59 ... will trigger the Sound of the active track in any of its 48 chromatic
+  # variations ... The track Sound must be enabled for chromatic play if any variation is to be
+  # heard." (p. 22).
   # Nothing above 59 is documented, so the range is the outer bound of what the manual states.
   note_range: [0, 59]
   velocity:
@@ -177,9 +178,9 @@ voice:
     # "If you use an external MIDI controller, the trig's VEL (velocity) value is determined by
     # the velocity sent from these" (p. 41). What velocity reaches is a pair of menu settings
     # rather than a controller: VELOCITY TO VOL, whose "OFF means velocity will not affect the
-    # volume of the Sound", and VELOCITY MOD, which assigns "up to four PARAMETER page
-    # parameters" to it (p. 34). `gated_by` names controls and neither of those has a
-    # controller number, so it stays empty and the fact is here instead.
+    # volume of the Sound" (p. 34), and VELOCITY MOD, which assigns "up to four PARAMETER page
+    # parameters" (p. 34) to it. `gated_by` names controls and neither of those has a controller
+    # number, so it stays empty and the fact is here instead.
   # RECEIVED AND SENT, AND THE KIND IS NOT STATED. AFTERTOUCH "gives access to a menu where
   # up to four PARAMETER page parameters can be assigned to the [PADS] or external MIDI unit
   # aftertouch command" (p. 34), so it arrives from outside as well as from the pads. The
@@ -200,7 +201,7 @@ parts:
     addressing: pitches
     receives: [notes, controls]
     # "TRACK 1-12, FX selects MIDI channel for the tracks that controls the drum and FX
-    # tracks. An OFF setting will make the track disregard any incoming MIDI messages", and
+    # tracks. An OFF setting will make the track disregard any incoming MIDI messages" (p. 63), and
     # RECEIVE NOTES "make[s] it possible to play Analog Rytm MKII using an external MIDI
     # keyboard" (p. 63).
     # No polyphony is stated against a part, because a track does not have voices of its own:

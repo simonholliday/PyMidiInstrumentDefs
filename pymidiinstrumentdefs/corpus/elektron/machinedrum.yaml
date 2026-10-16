@@ -9,8 +9,8 @@
 # PAGE.** It reads "By using four channels in total, we have avoided using 'non-registered
 # parameters' ('NRPN')" - and the two extractors in this project disagree about this file's
 # hyphens. PyMuPDF reads 3,764 of them and `pypdf` reads 2,816, and where `pypdf` loses one it
-# often puts an "x" in its place: this page gives "nonxregistered", and elsewhere the same file
-# yields "hixhat", "highxpass", "lowxpass", "bandxpass", "prexdelay" and "prexlistening".
+# often puts an "x" in its place: this page gives "nonxregistered" (p. 67), and elsewhere the same
+# file yields `hixhat`, `highxpass`, `lowxpass`, `bandxpass`, `prexdelay` and `prexlistening`.
 # **`check_quotations.py` reads with `pypdf`**, so a quotation crossing one of those words can
 # never be found however exactly it is transcribed. The quotations here are cut to fall either
 # side of it rather than adapted, because the page prints the hyphen and this file is not going
@@ -20,8 +20,8 @@
 # matters: the body is set in a subset of Arial whose character map is broken, and **Appendix B
 # and Appendix C are set in Courier New and are unaffected**. So every hyphen in the control
 # change map and the system exclusive reference is a true hyphen, and the fault reaches only the
-# prose. Raised as its own bug, because the gate's wording for it reads as "you transcribed this
-# wrongly".
+# prose. Raised as its own bug, because the gate's wording for it reads as if the passage had been
+# transcribed wrongly.
 #
 # So sixteen tracks of twenty-six parameters are reached by control change alone, four tracks to
 # a channel, and `nrpn: none` below is a decision the maker states rather than a silence.
@@ -60,10 +60,10 @@
 # out the sixteen levels and sixteen mutes that the appendix prints in full. 384 is not quoted
 # as a figure anywhere in this file, and 416 is not published as controls.
 #
-# AND THE INSTRUMENT IS FIVE MACHINES, by the manual's own file: its PDF keywords read
-# "SPS-1; SPS-1UW; SPS-1 MKII; SPS-1UW MKII; SPS-1UW+ MKII". The maker's download page says the
-# same from the other side - "OS compatible with all Machinedrum versions" - and serves this one
-# document from two product pages, byte for byte identical.
+# AND THE INSTRUMENT IS FIVE MACHINES, by the manual's own file: its PDF keywords read `SPS-1;
+# SPS-1UW; SPS-1 MKII; SPS-1UW MKII; SPS-1UW+ MKII`. The maker's download page says the same from
+# the other side - "OS compatible with all Machinedrum versions" (support_page) - and serves this
+# one document from two product pages, byte for byte identical.
 
 definition: 1
 
@@ -82,15 +82,15 @@ model:
   # 1.63 as its subject, and it gates nothing on 1.63 the way it gates the Turbo menu on 1.53.
   # **What cannot be established from the document** is whether the program change section below
   # describes 1.63's handling or an earlier OS's - the release note says 1.63 "adds improved
-  # handling of program change messages", and the changelog that would settle it is inside an
-  # upgrade zip the library does not hold.
+  # handling of program change messages" (support_page), and the changelog that would settle it is
+  # inside an upgrade zip the library does not hold.
   firmware: "1.63"
 
 source: >-
   Machinedrum User's Manual for OS 1.63, 126 sheets. **The MIDI material is two sheets**:
-  Appendix B, "MIDI CONTROL REFERENCE", on pp. 113-114, which carries the control change map and
-  the default note map. Appendix C, "SYSEX REFERENCE", is pp. 115-120 and is beyond what this
-  format holds. The global settings that govern MIDI response are pp. 65-90, and the sysex
+  Appendix B, "MIDI CONTROL REFERENCE" (p. 113), on pp. 113-114, which carries the control change
+  map and the default note map. Appendix C, "SYSEX REFERENCE" (p. 115), is pp. 115-120 and is beyond
+  what this format holds. The global settings that govern MIDI response are pp. 65-90, and the sysex
   transfer pages pp. 72-82. The two support pages are cited for which documents the maker offers
   and for the OS covering every model.
 
@@ -122,7 +122,7 @@ source: >-
   channel-and-value pairs, and the eight it calls Distortion through LFO Shape address six named
   things - **so two of the eight are undetermined, and the manual does not say which**. One of
   the six is "PCHG", a controller that makes the instrument send a program change. The same holds
-  for the control machines. A consumer reading "controller 32 is Distortion" will be wrong on
+  for the control machines. A consumer reading `controller 32 is Distortion` will be wrong on
   every track holding one of those, and this file cannot say which tracks those are because it is
   the player's choice.
 
@@ -149,12 +149,12 @@ source: >-
   machine's is not something to infer from the track count.
 
   THE NOTE MAP IS A DEFAULT AND THE MANUAL SAYS SO TWICE. Appendix B heads it "DEFAULT MIDI
-  MAPPINGS" and closes it "This mapping can be changed in the MIDI map editor", and the global
-  section describes that editor: "The MAP EDITOR is used to setup how the Machinedrum will react
-  to incoming MIDI notes. You can trigger drum sounds, patterns and the start, stop and play
-  functions of the sequencer" (p. 67). So `voices` below is where the instrument starts, not what
-  it is - the same state as `korg/microkorg`'s controller numbers - and `note_map` is `learned`,
-  which until 2026-10-13 only these words said.
+  MAPPINGS" (p. 113) and closes it "This mapping can be changed in the MIDI map editor" (p. 113),
+  and the global section describes that editor: "The MAP EDITOR is used to setup how the Machinedrum
+  will react to incoming MIDI notes. You can trigger drum sounds, patterns and the start, stop and
+  play functions of the sequencer" (p. 67). So `voices` below is where the instrument starts, not
+  what it is - the same state as `korg/microkorg`'s controller numbers - and `note_map` is
+  `learned`, which until 2026-10-13 only these words said.
 
   **THE MANUAL NAMES NOTES THREE INCOMPATIBLE WAYS AND NUMBERS THEM ONE WAY**, which is why
   `voices` below carries numbers and no names. Appendix B prints "3c 60 | C4", making note 0 a
@@ -169,12 +169,12 @@ source: >-
   let MIDI notes control the transport control of the Machinedrum" (p. 67).
 
   WHAT THE FIVE MACHINES DIFFER BY, AND NONE OF IT IS MIDI. The global settings list marks three
-  entries by model - "Mechanical settings (MKII units only)", "Sample manager (Machinedrum UW
-  models only)" and "+Drive settings (+Drive models only)" (p. 65) - and the first is the
+  entries by model - "Mechanical settings (MKII units only)" (p. 65), "Sample manager (Machinedrum
+  UW models only)" (p. 65) and "+Drive settings (+Drive models only)" (p. 65) - and the first is the
   encoder resolution, the second moves samples by system exclusive, and the third is storage.
   **None of them is a control change number, and the appendix carries no model qualification at
   all.** So one definition covers the five, which is what the maker's own "OS compatible with all
-  Machinedrum versions" says.
+  Machinedrum versions" (support_page) says.
 
 sources:
   manual:
@@ -209,8 +209,8 @@ sources:
     retrieved: 2026-10-04
     paginated: false
     # Held because it is the page that answers the two-product question: it serves the same
-    # manual and heads its OS entry "Machinedrum / Machinedrum UW OS 1.63", with "OS compatible
-    # with all Machinedrum versions" (uw_support_page).
+    # manual and heads its OS entry "Machinedrum / Machinedrum UW OS 1.63" (uw_support_page), with
+    # "OS compatible with all Machinedrum versions" (uw_support_page).
 
 midi:
   # NOT RECORDED: channels. The manual never prints the range the base channel can take - see
@@ -246,8 +246,8 @@ midi:
   # four channels in total it has avoided non-registered parameters, "which are usually hard to
   # make good use of from keyboards and from many computer sequencers" (p. 67).
   nrpn: none
-  # The global settings offer "Sysex send of pattern, song and kit data" and "Sysex receive of
-  # pattern, song and kit data" (p. 65), and Appendix C defines the messages.
+  # The global settings offer "Sysex send of pattern, song and kit data" (p. 65) and "Sysex receive
+  # of pattern, song and kit data" (p. 65), and Appendix C defines the messages.
   sysex: true
 
 voice:
@@ -257,8 +257,8 @@ voice:
   # change and the sixteen below are where it starts.
   note_map: learned
   # THE DEFAULTS, AND THEY ARE EDITABLE - see the source account. Appendix B's first table, "hex
-  # dec | note | track", from "24 36 | C2 | 1" to "3e 62 | D4 | 16". The names are the maker's
-  # own two letters for each track, as the control change table prints them.
+  # dec | note | track" (p. 113), from "24 36 | C2 | 1" (p. 113) to "3e 62 | D4 | 16" (p. 113). The
+  # names are the maker's own two letters for each track, as the control change table prints them.
   voices:
     bd: 36
     sd: 38
@@ -287,11 +287,11 @@ voice:
 # SIXTEEN TRACKS, FOUR TO A CHANNEL, and `channel_offset` holds which. "The MIDI base channel is
 # the first MIDI channel that the Machinedrum will listen to and send data to. If the base
 # channel is set to 1, the Machinedrum will use channels 1 through 4" (p. 67), and the appendix
-# heads its four tables "MIDI base channel + 0" to "MIDI base channel + 3".
+# heads its four tables "MIDI base channel + 0" (p. 113) to "MIDI base channel + 3" (p. 114).
 #
 # **A LABEL BELOW IS THE PARAMETER AND THE PART IS THE TRACK.** The maker writes every row as
-# "Track 1 BD - Level"; the track half of that is what `part` holds, so repeating it in all 416
-# labels would say the same thing twice.
+# "Track 1 BD - Level" (p. 113); the track half of that is what `part` holds, so repeating it in all
+# 416 labels would say the same thing twice.
 parts:
   track_1:
     label: Track 1 BD

@@ -42,15 +42,17 @@ model:
   manufacturer: Elektron
   name: Digitone II
   # The manual says so itself, on p. 11: "This manual for Digitone II OS version 1.12 was last
-  # updated September 24, 2026." That agrees with the OS1.12 in Elektron's file name and with the
-  # "Digitone II OS 1.12" the support page offers for download, which is three statements agreeing
+  # updated September 24, 2026." (p. 11). That agrees with the OS1.12 in Elektron's file name and
+  # with the "Digitone II OS 1.12" (support_page) the support page offers for download, which is
+  # three statements agreeing
   # - where the Digitakt II had five dates for one file and no two of them agreed.
   # The version is checked and not only quoted. 1.12 is the newest system Elektron publishes, and
   # the release notes cover every release from 1.00. Four entries mention controllers and all of
   # them are at 1.10 or earlier: "Some NRPN parameters regarding the Euclidean sequencer didn't
-  # work as intended", "Some NRPN parameters had incorrect values", "The MIDI machines SEL 1-8 and
-  # SEL 9-16 parameters now have unique default SEL CCs", and one about MIDI messages at very low
-  # tempos. Nothing since 1.10 adds, removes or renumbers a controller.
+  # work as intended" (release_notes), "Some NRPN parameters had incorrect values" (release_notes),
+  # "The MIDI machines SEL 1-8 and SEL 9-16 parameters now have unique default SEL CCs"
+  # (release_notes), and one about MIDI messages at very low tempos. Nothing since 1.10 adds,
+  # removes or renumbers a controller.
   firmware: "1.12"
 
 source: >-
@@ -105,8 +107,9 @@ source: >-
 
   THE EUCLIDEAN SEQUENCER'S TABLE IS CAPTIONED `AMP`, which is the caption of the table above it
   carried down, so its group is taken from the section heading - "C.6 EUCLIDEAN SEQUENCER
-  PARAMETERS" - rather than from the caption. The Digitakt II's manual does the same thing three
-  times over. **A reader or a tool should key a table on its section and never on its caption.**
+  PARAMETERS" (p. 114) - rather than from the caption. The Digitakt II's manual does the same thing
+  three times over. **A reader or a tool should key a table on its section and never on its
+  caption.**
 
   THE SECTION NUMBERING, THOUGH, IS RIGHT, and that is worth recording because its sibling's is
   not. This appendix runs C.1 to C.12 with no number used twice, and the contents page gives the
@@ -114,10 +117,10 @@ source: >-
   the page and on its contents page both.
 
   THE FOUR SYN PAGES ARE FOUR GROUPS AND NOT ONE, because each prints the same eight parameter
-  names - "Data entry knob A (machine dependent)" to H - and only the caption tells the thirty-two
-  apart. What each knob does follows from the machine assigned to the track, which is why the maker
-  names none of them: Appendix A lists the machines over seventeen pages and none of its parameter
-  names is tied to a knob letter there.
+  names - "Data entry knob A (machine dependent)" (pp. 112-113) to H - and only the caption tells
+  the thirty-two apart. What each knob does follows from the machine assigned to the track, which is
+  why the maker names none of them: Appendix A lists the machines over seventeen pages and none of
+  its parameter names is tied to a knob letter there.
 
   SIXTEEN TRACKS ARE ONE PART AND NOT TWO, so the sixteen CC VAL controls and the audio-track
   parameters below are two maps reached on the same sixteen channels, never both at once. That is
@@ -158,11 +161,11 @@ source: >-
 
   THE MANUAL'S OWN NOTE NAMES DO NOT FOLLOW FROM ITS OWN NUMBERS, and both are left standing. If
   note 0 is C0 then note 16 is E1, and the same page calls notes 16-84 "E2-C7"; the page's own "C5,
-  MIDI note 60, being middle C" agrees with note 0 being C0. The manual warns that "there are
-  several different naming standards for note names and their corresponding MIDI note values. Here,
-  we use the same naming standard as the one used internally in Elektron devices" (p. 24), which
-  explains the offset from the common convention but not the disagreement with itself. The numbers
-  are what this definition records; the names are not.
+  MIDI note 60, being middle C" (p. 24) agrees with note 0 being C0. The manual warns that "there
+  are several different naming standards for note names and their corresponding MIDI note values.
+  Here, we use the same naming standard as the one used internally in Elektron devices" (p. 24),
+  which explains the offset from the common convention but not the disagreement with itself. The
+  numbers are what this definition records; the names are not.
 
   NOT RECORDED: whether the aftertouch it answers to is channel pressure or per-note pressure. The
   instrument does answer to it - "Opens a menu where you can assign up to four parameters to the
@@ -174,9 +177,10 @@ source: >-
 
   ALSO NOT RECORDED: the default controller numbers the MIDI tracks' sixteen CC SEL parameters
   carry. The release notes say "The MIDI machines SEL 1-8 and SEL 9-16 parameters now have unique
-  default SEL CCs", so those defaults exist and changed at OS 1.10, and the appendix lists the VAL
-  parameters that send the values but not the SEL parameters that choose which controller each one
-  sends on. A player sets them, so they are a project's business rather than the instrument's.
+  default SEL CCs" (release_notes), so those defaults exist and changed at OS 1.10, and the appendix
+  lists the VAL parameters that send the values but not the SEL parameters that choose which
+  controller each one sends on. A player sets them, so they are a project's business rather than the
+  instrument's.
 
 sources:
   manual:
@@ -215,7 +219,7 @@ sources:
     # Cited for the firmware check above: nine releases from OS 1.00 to 1.12, with every entry
     # that mentions a controller at 1.10 or earlier. **The address had to be found rather than
     # guessed**: the pattern the Digitakt II's notes are served under,
-    # `/release-notes/digitakt-ii-os-release-notes`, answers "Page not found" for this product,
+    # `/release-notes/digitakt-ii-os-release-notes`, answers `Page not found` for this product,
     # whose notes are at `/release-notes/digitone-ii`. The 404 was fetched, recognised and
     # deleted rather than kept as a document.
 
@@ -231,10 +235,12 @@ midi:
   clock: both
   transport: both
   program_change:
-    receives: true         # PRG CH RECEIVE, "useful when wanting to select patterns externally"
-    sends: true            # PRG CH SEND, "send program change messages when patterns are changed"
+    receives: true         # PRG CH RECEIVE, "useful when wanting to select patterns
+                           # externally" (p. 74)
+    sends: true            # PRG CH SEND, "send program change messages when patterns are
+                           # changed" (p. 74)
     # "MIDI program change messages 0-127 will select pattern 1-128 (A01-H16)" (p. 24), and "A
-    # project contains 128 patterns" in eight banks (p. 16).
+    # project contains 128 patterns" (p. 16) in eight banks.
     presets: 128
     # Which channel carries them is its own setting, PROGRAM CHG IN CH and OUT CH, either of which
     # may instead follow the auto channel (p. 76).

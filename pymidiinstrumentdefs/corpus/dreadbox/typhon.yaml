@@ -30,15 +30,15 @@ model:
   firmware: "4.2"
 
 source: >-
-  User's Manual, 24 pages, firmware 4.2 of April 2026. **Section 11, "MIDI
-  implementation", at printed pages 23-24** is the whole of the controller map and
-  the list of messages the instrument accepts. The settings that are not controllers
-  are on printed p. 20, where the menu table gives the channel options, the master
-  clock, the program change switches and the pitch wheel range, and printed p. 22,
-  where the same settings are described in prose. The preset count is printed p. 9,
-  the note range printed p. 19, the sockets printed p. 24. Plus the product page, the
-  support page and the notes for the one firmware release since the manual, each named
-  below for what it settles.
+  User's Manual, 24 pages, firmware 4.2 of April 2026. **Section 11, "MIDI implementation"
+  (pp. 23-24)** is the whole of the controller map and the list of messages the instrument accepts.
+  The settings that are not controllers are on printed p. 20, where the menu table gives the channel
+  options, the master clock, the program change switches and the pitch wheel range, and printed
+  pp. 21-22, where the channels, the clock and the pitch wheel are described in prose; program
+  change appears there only in a note under the CC switch, which says that switch covers it too, and
+  the PC IN and PC OUT switches have no prose. The preset count is printed p. 9, the note range
+  printed p. 19, the sockets printed p. 24. Plus the product page, the support page and the notes
+  for the one firmware release since the manual, each named below for what it settles.
 
   THERE IS NO MIDI IMPLEMENTATION CHART IN THE CONVENTIONAL SENSE, and what stands in
   its place is a list with a claim in it: "Typhon can accept the following MIDI
@@ -92,13 +92,13 @@ source: >-
   definitions already here keep their makers' capitals for the same reason.
 
   WHAT THE INSTRUMENT SENDS IS A SHORTER LIST THAN WHAT IT ACCEPTS, and notes are not
-  on it. The menu offers "CC OUT Enable or Disable", "PC OUT Enable or Disable" and a
-  master clock whose "Transmit" is "Enable or Disable" (manual p. 20), and the output
-  channel setting is "Through or 1-16" (p. 20), where `Through` is MIDI thru rather
-  than a channel. **Nothing in 24 pages says the note sequencer sends its notes out**,
-  so velocity is recorded as received rather than as both, and `transport` as received
-  rather than both - the transport messages are in the accept list and no switch sends
-  them.
+  on it. The menu offers "CC OUT Enable or Disable" (manual p. 20), "PC OUT Enable or
+  Disable" (manual p. 20) and a master clock whose "Transmit" is "Enable or Disable" (manual p. 20),
+  and the output channel setting is "Through or 1-16" (p. 20), where `Through` reads as MIDI thru
+  rather than a channel, though no page says what it does. **Nothing in 24 pages says the note
+  sequencer sends its notes out**, so velocity is recorded as received rather than as both, and
+  `transport` as received rather than both - the transport messages are in the accept list and no
+  switch sends them.
 
   THE CC SWITCH ALSO GOVERNS PROGRAM CHANGE, WHICH IS WORTH KNOWING BEFORE DEBUGGING
   ONE. "CC - ENABLED / DISABLED. This will also include the program change messeges.
@@ -107,16 +107,15 @@ source: >-
   controller has turned program change off as well, and no page says so twice. The
   misspelling is the manual's.
 
-  AND THE MENU IS DESCRIBED TWICE, WITH THE TWO DESCRIPTIONS DISAGREEING. The table on
-  printed p. 20 lists eleven items under "10. Global settings" - Midi channels, Master
-  clock, Port Configuration, MIDI CC, MIDI PC, Control Handling, Preset Preview,
-  Master Tune, Screensaver, Hardware check, Firmware version. The prose at "10.9
-  Global settings" on p. 22 lists six, renumbered, and leaves out Port Configuration,
-  MIDI CC, MIDI PC, Preset Preview and Master Tune - the first three of which are the
-  MIDI ones. The same pair disagrees about a word: the table's control handling offers
-  "Catch or Jump" and the prose offers "JUMP" or "GRAB". **Every MIDI value in this
-  file is taken from the table**, which is the fuller of the two, and the prose is
-  cited only where it says something the table does not.
+  AND THE MENU IS DESCRIBED TWICE, WITH THE TWO DESCRIPTIONS DISAGREEING. The table lists eleven
+  items in its tenth row, "Global settings" (p. 20) - Midi channels, Master clock, Port
+  Configuration, MIDI CC, MIDI PC, Control Handling, Preset Preview, Master Tune, Screensaver,
+  Hardware check, Firmware version. The prose at "10.9 Global settings" (p. 22) lists six,
+  renumbered, and leaves out Port Configuration, MIDI CC, MIDI PC, Preset Preview and Master Tune -
+  the first three of which are the MIDI ones. The same pair disagrees about a word: the table's
+  control handling offers "Catch or Jump" (p. 20) and the prose offers "JUMP" or "GRAB". **Every
+  MIDI value in this file is taken from the table**, which is the fuller of the two, and the prose
+  is cited only where it says something the table does not.
 
   WHAT NOTES IT SOUNDS IS STATED AND STILL NOT RECORDED, BECAUSE THE DOCUMENT USES TWO
   OCTAVE CONVENTIONS. The range is given plainly - "the note range that the synth can
@@ -125,7 +124,7 @@ source: >-
   Iridium's `note_range` turned on. **But a note name is not a number until the octave
   numbering is settled, and this page settles it the other way.** Four lines above, the
   same paragraph calls middle C "the middle C note found on a keyboard controller
-  (C3)", and middle C is MIDI note 60 - so C3 is 60, which puts A0 at 33 and C8 at 120.
+  (C3)" (p. 19), and middle C is MIDI note 60 - so C3 is 60, which puts A0 at 33 and C8 at 120.
   Read as the scientific pitch notation that `A0 to C8` is the idiom of - it is exactly
   an 88-key piano's compass - the same two names are 21 and 108. **The two readings are
   twelve semitones apart and the document supports both**, so neither is recorded: a
@@ -163,7 +162,7 @@ source: >-
   note output and an aftertouch whose kind is unstated. **A claim to completeness is a
   claim like any other**, which is the EP-133's lesson about a chapter that called
   itself a complete list and was short by two. The page also disagrees with the manual
-  about the socket: "MIDI Din IN and OUT" there against "MIDI Din5 IN and OUT"
+  about the socket: "MIDI Din IN and OUT" (product_page) against "MIDI Din5 IN and OUT"
   (manual p. 24), which is the same fact written two ways rather than two facts.
 
   ONE THING ABOUT GETTING THE DOCUMENTS AT ALL, because the next person will meet it.
@@ -228,7 +227,7 @@ sources:
     # in Adobe InDesign 21.1. **OFFSET 0**, and not sampled: 22 of the 24 pages print their own
     # number and every one matches the file's; the two without are the cover and the contents.
     # The maker prints no version beside this file on its support page, unlike the Artemis's
-    # "User Manual v1.2.0", so the edition had to come from inside the document.
+    # "User Manual v1.2.0" (support_page), so the edition had to come from inside the document.
     page_offset: 0
   release_notes:
     kind: release_notes
@@ -277,26 +276,28 @@ sources:
 
 midi:
   # ALL SIXTEEN EACH WAY, AND AN ALL AND A THROUGH BESIDE THEM. The menu's first global setting
-  # is "1. Midi channels" with "Input 1-16 or All" and "Output Through or 1-16" (manual p. 20),
-  # and the prose says what the input one is for: "Here you can sellect at what channel your
-  # synth responds to" (p. 22). The misspelling is the manual's. What the field cannot hold is the
-  # two settings that are not channels: **All** receives on every channel at once, and
-  # **Through** passes incoming MIDI to the output instead of choosing a channel to send on.
+  # is "1. Midi channels" (manual p. 20) with "Input 1-16 or All" (manual p. 20) and "Output Through
+  # or 1-16" (manual p. 20), and the prose says what the input one is for: "Here you can sellect at
+  # what channel your synth responds to" (p. 22). The misspelling is the manual's. What the field
+  # cannot hold is the two settings that are not channels, **All** and **Through**. No page says
+  # what either does; read as the words usually mean, All receives on every channel at once, and
+  # Through passes incoming MIDI to the output instead of choosing a channel to send on.
   channels: [1, 16]
-  # BOTH, AND THE MENU IS THE ONLY PLACE THAT SAYS SO. "2. Master clock" offers "Receive
-  # Internal or External" and "Transmit Enable or Disable" (manual p. 20). The prose version of
-  # the same menu gives the receiving half only - "MASTER CLOCK - INTERNAL / EXTERNAL" (p. 22) -
-  # which is why the table is what this file reads and the prose is not.
+  # BOTH, AND THE MENU IS THE ONLY PLACE THAT SAYS SO. "2. Master clock" (manual p. 20) offers
+  # "Receive Internal or External" (manual p. 20) and "Transmit Enable or Disable" (manual p. 20).
+  # The prose version of the same menu gives the receiving half only - "MASTER CLOCK - INTERNAL /
+  # EXTERNAL" (p. 22) - which is why the table is what this file reads and the prose is not.
   clock: both
-  # RECEIVED, BECAUSE NOTHING SAYS IT SENDS THEM. "Transport messages" is the last of the ten
-  # items on the accept list (manual p. 23), and the settings menu has a switch for sending
-  # controllers, one for sending program change and one for transmitting clock - and **none for
-  # sending transport**. So this is the DrumBrute Impact's reading in reverse: there the manual
-  # said `sends` and never claimed to receive, here it says received and never claims to send.
+  # RECEIVED, BECAUSE NOTHING SAYS IT SENDS THEM. "Transport messages" (manual p. 23) is the last of
+  # the ten items on the accept list, and the settings menu has a switch for sending controllers,
+  # one for sending program change and one for transmitting clock - and **none for sending
+  # transport**. So this is the DrumBrute Impact's reading in reverse: there the manual said `sends`
+  # and never claimed to receive, here it says received and never claims to send.
   transport: receives
   program_change:
-    # BOTH WAYS, WITH A SWITCH EACH. "5. MIDI PC" offers "PC IN Enable or Disable" and "PC OUT
-    # Enable or Disable" (manual p. 20), and program changes are on the accept list (p. 23).
+    # BOTH WAYS, WITH A SWITCH EACH. "5. MIDI PC" offers "PC IN Enable or Disable" (manual p. 20)
+    # and "PC OUT Enable or Disable" (manual p. 20), and program changes are on the accept list
+    # (p. 23).
     #
     # **THE CONTROLLER SWITCH TURNS THIS OFF TOO, AND ONLY ONE PAGE SAYS SO**: "CC - ENABLED /
     # DISABLED. This will also include the program change messeges" (p. 22). So a player who
@@ -306,9 +307,9 @@ midi:
     sends: true
     # 256, STATED TWICE AND IN TWO DOCUMENTS. "The Typhon has a 256 preset storage, divided
     # into 4 banks for easy access" (manual p. 9), "- 256 presets (Bank A and half the Bank B
-    # only contain factory presets)" (p. 3), and "256 preset memory" on the product page. The
-    # three agree, which is worth saying because this corpus has had a maker disagree with
-    # itself about a count twice in the last five instruments.
+    # only contain factory presets)" (p. 3), and the product page's "256 preset memory"
+    # (product_page). The three agree, which is worth saying because this corpus has had a maker
+    # disagree with itself about a count twice in the last five instruments.
     presets: 256
 
 voice:
@@ -320,8 +321,8 @@ voice:
   velocity:
     # RECEIVED, AND THE MENU'S TARGETS DECIDE WHAT IT DOES. "Velocity" is on the accept list
     # (manual p. 23), and the menu's targets are what it does - the row reads "Velocity targets
-    # 0-100" (manual p. 20) - set "for the Velocity parameter", which "can be sent either by an
-    # external midi controller, or by velocity values in the note sequencer" (p. 21). With none
+    # 0-100" (manual p. 20) - set "for the Velocity parameter" (p. 21), which "can be sent either by
+    # an external midi controller, or by velocity values in the note sequencer" (p. 21). With none
     # set it does nothing: "You must setup a Velocity target from the menu in order for this to
     # work" (p. 17). But the targets appear to be a preset's: the menu sets them apart from its
     # Global settings (p. 20), and the master volume is "the only control that cannot be stored
@@ -345,9 +346,9 @@ voice:
   pitch_bend:
     # SETTABLE FROM ONE TO TWELVE SEMITONES, WITH NO DEFAULT PRINTED. The menu's row reads
     # "Pitch wheel 1-12" (manual p. 20), and the prose describes the control without a figure:
-    # "Here you can choose the maximum number of semitones" (manual p. 21), the sentence
-    # finishing "the pitch will bend up or down" on the next page. So `semitones` is absent
-    # rather than guessed at - the range is a range of settings and none of them is marked as
+    # "Here you can choose the maximum number of semitones" (manual p. 21), the sentence finishing
+    # on the next page with "the pitch will bend up or down" (manual p. 22). So `semitones` is
+    # absent rather than guessed at - the range is a range of settings and none of them is marked as
     # the one the instrument arrives with.
     programmable: true
 

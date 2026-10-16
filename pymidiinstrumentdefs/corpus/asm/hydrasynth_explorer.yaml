@@ -15,9 +15,10 @@ definition: 1
 model:
   manufacturer: ASM
   name: Hydrasynth Explorer
-  # The manual's own version, which this maker ties to the firmware: the downloads page serves
-  # "Hydrasynth Explorer Owner's Manual 2.2.0" beside "Hydrasynth Explorer Firmware Pack 2.2.0",
-  # one pack per model and all four at 2.2.0 on the day this was read.
+  # The version in the manual's download name, which this maker ties to the firmware, while its
+  # cover says Version 2.0 (p. 1): the downloads page serves `Hydrasynth Explorer Owner's Manual
+  # 2.2.0` beside `Hydrasynth Explorer Firmware Pack 2.2.0`, one pack per model and all four at
+  # 2.2.0 on the day this was read.
   firmware: "2.2.0"
 
 source: >-
@@ -28,11 +29,11 @@ source: >-
   Keyboard and Desktop's manual for nothing at all - see below.
 
   THE CHART IS PRINTED TWICE AND THAT IS WHAT VERIFIED IT. Pages 94-96 carry the same list under
-  two headings, "Sorted by Module" and "Sorted by CC Number". They are the same facts in two
-  orders, so the reading could be checked against the document before any second reader saw it:
-  **both printings hold the same 117 entries with the same module and the same controller number
-  every time.** A maker who publishes one list twice has given a reader a free verification, and
-  it is worth looking for.
+  two headings, "Sorted by Module" (p. 94) and "Sorted by CC Number" (p. 95). They are the same
+  facts in two orders, so the reading could be checked against the document before any second reader
+  saw it: **both printings hold the same 117 entries with the same module and the same controller
+  number every time.** A maker who publishes one list twice has given a reader a free verification,
+  and it is worth looking for.
 
   AND THEY NAME NINETEEN PARAMETERS TWO WAYS. Same module, same number, two spellings: `Filter 1
   Cutoff` against `Filter1 Cutoff` at 74, `Filter 2 Cutoff` against `Flt2 Cutoff` at 55, `OSC 1
@@ -100,11 +101,11 @@ source: >-
   chart has 123 beside them doing its standard job, so this is not a maker who has mistaken the
   block for free space.
 
-  This format refuses all four, on the rule that a channel mode message "means the same on every
-  instrument that has them" - **which is exactly what this instrument makes untrue**. The four
-  are therefore published, named, numbered and absent from the controls below, which is a real
-  loss and the only one here. Recorded rather than worked around, and raised where the format's
-  questions are kept. That leaves **112 of the chart's 117 rows**.
+  This format refuses all four, on the rule that a channel mode message means the same on every
+  instrument that has one - **which is exactly what this instrument makes untrue**. The four are
+  therefore published, named, numbered and absent from the controls below, which is a real loss and
+  the only one here. Recorded rather than worked around, and raised where the format's questions are
+  kept. That leaves **112 of the chart's 117 rows**.
 
   THE GAPS ARE MOSTLY THE SPECIFICATION'S OWN. The chart uses 117 of the numbers between 0 and
   125 and the nine it does not are 2 and 4 (breath and foot controller), 6 and 38 (data entry),
@@ -117,10 +118,10 @@ source: >-
   abbreviations and are not expanded.
 
   NRPN IS OFFERED AND NOT PUBLISHED. Two settings choose the format a parameter edit travels in -
-  "Knob 1 Param TX Off, NRPN, CC" and "Knob 2 Param RX Off, NRPN, CC" (p. 83) - and the manual
-  sends the reader to the CC charts for the one and publishes nothing at all for the other: no
-  NRPN number, no parameter list, no address. So `midi.nrpn` says `supported`, which is what the
-  setting establishes, and no NRPN appears on any control below because none is published.
+  "Knob 1 Param TX Off, NRPN, CC" (manual p. 83) and "Knob 2 Param RX Off, NRPN, CC" (p. 83) - and
+  the manual sends the reader to the CC charts for the one and publishes nothing at all for the
+  other: no NRPN number, no parameter list, no address. So `midi.nrpn` says `supported`, which is
+  what the setting establishes, and no NRPN appears on any control below because none is published.
 
   NOT RECORDED: the note range, which no page states; the pitch bend depth, which the manual
   does not give for the instrument itself; and system exclusive, which the manual never mentions
@@ -145,37 +146,39 @@ sources:
     url: "https://www.mecldata.com/download/asm/Hydrasynth_Comparison_Chart_2.0.0"
     sha256: 59098b8d833cddaa74f1fb409da5053ef21e5a253ccee9865cae5de8ad73cc9e
     retrieved: 2026-10-03
-    # One page, four columns, one per model. Cited for the two rows that separate this
-    # instrument from its siblings: its voice count and its MIDI connectors. It is served from
-    # an address with no file extension on it.
+    # One page, which prints no page number, so it is cited by sheet; four columns, one per model.
+    # Cited for its voice count, which it shares with two of its siblings, its MIDI connectors,
+    # where it alone has no Thru, and its MPE, patch memory and keybed rows. It is served from an
+    # address with no file extension on it.
 
 midi:
-  # "MIDI TX 1-16 Set MIDI transmission channel" and "MIDI RX Omni, 1-16 Set MIDI receive
-  # channel" (p. 82). So sixteen channels, and the receive side can be told to answer to all of
-  # them - which is a setting rather than a mode this format records.
+  # "MIDI TX 1-16 Set MIDI transmission channel" (manual p. 82) and "MIDI RX Omni, 1-16 Set MIDI
+  # receive channel" (p. 82). So sixteen channels, and the receive side can be told to answer to all
+  # of them - which is a setting rather than a mode this format records.
   channels: [1, 16]
   # Four sources, and the instrument is one of them: "Clock Sync Internal, USB, MIDI In, Auto"
   # (p. 82), where "Int run: selects Hydrasynth Explorer as the master tempo clock. Sync signals
-  # are sent to MIDI, USB, and the CV Clock output" and "MIDI in: slaves the Hydrasynth Explorer
-  # to incoming MIDI clock data".
+  # are sent to MIDI, USB, and the CV Clock output" (manual p. 82) and "MIDI in: slaves the
+  # Hydrasynth Explorer to incoming MIDI clock data" (manual p. 82).
   clock: both
   program_change:
-    # One setting per direction: "Pgm Chg TX Off, On" and "Pgm Chg RX Off, On Receive MIDI
-    # Program Change commands" (p. 83).
+    # One setting per direction: "Pgm Chg TX Off, On" (manual p. 83) and "Pgm Chg RX Off, On Receive
+    # MIDI Program Change commands" (p. 83).
     receives: true
     sends: true
     # Eight banks of 128, per the comparison chart, and both halves of bank select are needed to
     # move between them - see the source account.
     presets: 1024
-  # A SETTING SAYS SO AND NOTHING PUBLISHES A NUMBER: "Knob 1 Param TX Off, NRPN, CC" and "Knob 2
-  # Param RX Off, NRPN, CC" (p. 83) make NRPN one of two formats a parameter edit may travel in,
-  # and the manual publishes a chart for the other and nothing for this one. See the source.
+  # A SETTING SAYS SO AND NOTHING PUBLISHES A NUMBER: "Knob 1 Param TX Off, NRPN, CC" (manual p. 83)
+  # and "Knob 2 Param RX Off, NRPN, CC" (p. 83) make NRPN one of two formats a parameter edit may
+  # travel in, and the manual publishes a chart for the other and nothing for this one. See the
+  # source.
   nrpn: supported
   # ITS VOICES TAKE A CHANNEL EACH WHEN MPE IS ON: "When active, the voices of your Hydrasynth
   # Explorer break into individual channels so each note can have its own pitch bend, timbre and
   # pressure control" (p. 82), switched by a setting whose own description is "Send / receive MPE data" (p. 82) - so
-  # it is received and transmitted. The comparison chart marks all four Hydrasynths "Supports MPE
-  # in / out: Yes".
+  # it is received and transmitted. The comparison chart's row "Supports MPE in / out"
+  # (comparison_chart p. 1) reads Yes for all four Hydrasynths.
   per_voice_channels: true
   # Both ways, by the setting quoted above, "Send / receive MPE data" (p. 82).
   mpe: both
@@ -194,10 +197,10 @@ voice:
     # affects local response and outgoing MIDI" (p. 81), so outgoing notes carry the keyboard's
     # velocity, or the fixed value where one is chosen. Until 2026-10-15 this said `received`.
     note_on: both
-    # The keyboard's own sensitivity is a setting with a fixed-value option - "Velocity On, Fix
-    # 60 / 80 / 100 / 110 / 127" with eight curves (p. 81) - and the manual is careful that this
-    # is about the keyboard and not about what arrives: "This only affects local response and
-    # outgoing MIDI; incoming velocity response is unaffected" (p. 81).
+    # The keyboard's own sensitivity is a setting with a fixed-value option - "Velocity On, Fix 60 /
+    # 80 / 100 / 110 / 127" (p. 81) with eight curves - and the manual is careful that this is about
+    # the keyboard and not about what arrives: "This only affects local response and outgoing MIDI;
+    # incoming velocity response is unaffected" (p. 81).
   # RECEIVED, AND THE ONE STATEMENT OF RECEIVING IS ABOUT MPE. "Hydrasynth Explorer already
   # supports polyphonic aftertouch, so MPE pressure is mapped automatically to Poly aftertouch"
   # (p. 83), and with MPE on, a patch that uses the `PolyAftT` source answers to the pressure an

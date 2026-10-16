@@ -8,13 +8,14 @@
 # (p. 85), and a keygroup's LFO to 1 as well (p. 239).
 #
 # AND THE GUIDE IS NOT ABOUT THIS MACHINE. It is about an operating system that runs on ten of
-# them, and it says so: "MPC hardware" unless otherwise noted. So every statement below was
-# checked against the document's own scoping before being recorded - and the machines are told
-# apart in five different places, of which only the first can be searched for: a parenthetical
-# after a parameter name; a section's opening sentence, which binds everything under it and marks
-# none of it; an inheritance rule between two models, which exists for two pairs and not for this
-# machine and its successor; an absence from this machine's own specification table; and the
-# instrument's own screen, which the guide warns offers controls the machine does not have.
+# them, and it says so: its Introduction lists the ten, and it calls eight of them "MPC hardware"
+# (guide p. 7) unless otherwise noted. So every statement below was checked against the document's
+# own scoping before being recorded - and the machines are told apart in five different places, of
+# which only the first can be searched for: a parenthetical after a parameter name; a section's
+# opening sentence, which binds everything under it and marks none of it; an inheritance rule
+# between two models, which exists for two pairs and not for this machine and its successor; an
+# absence from this machine's own specification table; and the instrument's own screen, which the
+# guide warns offers controls the machine does not have.
 #
 # THE ABSENCE IS ESTABLISHED BY ENUMERATION RATHER THAN BY SEARCHING FOR WHAT WAS EXPECTED, and
 # twelve phrases that are certainly in the document were searched for as well, because a PDF
@@ -30,7 +31,8 @@ model:
   # newest is 3.9.1, and both its release notes and 3.9's name this instrument among the fourteen
   # the release is for. The newest user guide is v3.9. What 3.9.1 adds is "Internal improvements
   # and maintenance updates to support future enhancements and improve overall system stability"
-  # and nothing else, so the 3.9 guide still describes the shipping machine. Checked 2026-10-04.
+  # (release_notes p. 1) and nothing else, so the 3.9 guide still describes the shipping machine.
+  # Checked 2026-10-04.
   firmware: "3.9.1"
 
 source: >-
@@ -284,11 +286,12 @@ sources:
     url: "https://cdn.inmusicbrands.com/Software/MPC/MVSU391APC/MPC%203.9.1%20-%20Release%20Notes.pdf"
     sha256: 593cb2064df3387eb5461b027ab8a4f6f17c69bb538e8ab2dfaf39ca85ec5899
     retrieved: 2026-10-04
-    # Two pages. Cited for which firmware is current and for the fact that nothing in it touches
-    # MIDI. ITS COMPATIBILITY LIST IS LONGER THAN THE GUIDE'S: fourteen machines, adding the MPC
-    # XL, the MPC Live III and the Force to the guide's ten. So a machine the operating system
-    # runs on is not necessarily a machine this guide describes, and the guide says which two of
-    # them have a user guide of their own.
+    # Two pages, neither printing a page number, so it is cited by sheet. Cited for which firmware
+    # is current and for the fact that nothing in it touches MIDI. ITS COMPATIBILITY LIST IS LONGER
+    # THAN THE GUIDE'S: fourteen names for thirteen machines, MPC X SE beside MPC X Special Edition,
+    # adding the MPC XL, the MPC Live III and the Force to the guide's ten. So a machine the
+    # operating system runs on is not necessarily a machine this guide describes, and the guide says
+    # which two of them have a user guide of their own.
     page_offset: 0
   earlier_release_notes:
     kind: release_notes
@@ -305,7 +308,7 @@ sources:
     page_offset: 0
 
 midi:
-  # "MIDI Channels 1-16 are available for this purpose" is the glossary (p. 386) and is not a
+  # "MIDI Channels 1-16 are available for this purpose" (p. 386) is the glossary and is not a
   # statement about this machine. What is: a track's input and output each take a channel
   # (p. 267), and every MIDI Control Mode control chooses one of `(1–16)` (pp. 334 to 337).
   channels: [1, 16]

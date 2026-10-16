@@ -23,9 +23,9 @@ model:
   # The guide's own file name says v1.3.0, which is the guide's version. What ties it to the
   # instrument's firmware is that the guide carries both features the 1.3.0 release notes
   # attribute to that release: Normalize Sample (p. 24) and the Knob Takeover modes (p. 61),
-  # which those notes place "in the MIDI Config menu, by holding down SHIFT and pressing Pad 8".
-  # Akai publishes no later edition: the same path serves v1.0 and v1.0 (RevB), and v1.3.1,
-  # v1.4.0 and v2.0 are not there.
+  # which those notes place "in the MIDI Config menu, by holding down SHIFT and pressing Pad 8"
+  # (release_notes p. 1). Akai publishes no later edition: the same path serves v1.0 and v1.0
+  # (RevB), and v1.3.1, v1.4.0 and v2.0 are not there.
   # AND THE ONE PLACE THIS INSTRUMENT'S OWN VERSION IS LEGIBLE SAYS 1.2.0. The screenshot of the
   # MIDI Configuration menu on p. 60 shows the screen's own header reading "v1.2.0", so a guide
   # published as v1.3.0 illustrates itself with a screen from the release before. That is in a
@@ -55,10 +55,10 @@ source: >-
   triggers the pads and whether the pads send, sync in and out, Thru, and program change.
 
   TWO OF THOSE SETTINGS SAY SOMETHING THE FIELDS BELOW CANNOT HOLD. Sync in and sync out each
-  offer "Off, Midi Clock, MTC", so this instrument answers to MIDI Time Code as well as to clock,
-  and `midi.clock` has no room for the second of those. And "MIDI Thru ... When set to ON, MIDI
-  data received by the MIDI IN port is also forwarded through the MIDI OUT port" - a soft thru on
-  a two-socket instrument, which no field here records.
+  offer "Off, Midi Clock, MTC" (guide p. 60), so this instrument answers to MIDI Time Code as well
+  as to clock, and `midi.clock` has no room for the second of those. And "MIDI Thru ... When set to
+  ON, MIDI data received by the MIDI IN port is also forwarded through the MIDI OUT port"
+  (guide p. 60) - a soft thru on a two-socket instrument, which no field here records.
 
   NOT RECORDED: ANYTHING ABOUT NOTES. The pads are "16 velocity-sensitive pads with
   poly-aftertouch" (p. 20) and "Pad MIDI In ... determines whether MIDI Input can be used to
@@ -73,11 +73,12 @@ source: >-
   anywhere in 67 pages responds to aftertouch, and nothing says it is sent or received. So a
   reader cannot learn what the feature does, and this file does not say.
 
-  TWO MORE GAPS IN THE ONE MENU THAT IS PUBLISHED. "Pad MIDI Out" takes three values, "Never,
-  Always, Empty", and its description explains the first two and never says what Empty means. And
-  the three Takeover settings are rows of this same menu - the release notes place them "in the
-  MIDI Config menu, by holding down SHIFT and pressing Pad 8" - yet they appear in neither of the
-  guide's two tables of it, only as prose beneath them with no values column.
+  TWO MORE GAPS IN THE ONE MENU THAT IS PUBLISHED. "Pad MIDI Out" (guide p. 60) takes three values,
+  "Never, Always, Empty" (guide p. 60), and its description explains the first two and never says
+  what Empty means. And the three Takeover settings are rows of this same menu - the release notes
+  place them "in the MIDI Config menu, by holding down SHIFT and pressing Pad 8"
+  (release_notes p. 1) - yet they appear in neither of the guide's two tables of it, only as prose
+  beneath them with no values column.
 
   NOT RECORDED: system exclusive, NRPN, transport, and whether the instrument sends program
   change. None of the four is mentioned in either document, which is silence rather than a
@@ -105,18 +106,18 @@ sources:
     url: "https://cdn.inmusicbrands.com/akai/sample/MPC%20Sample%201.3%20Release%20Notes.pdf"
     sha256: 2c4b33217ce42d3346956b3b369bb81a0ebbd9bd6b8ddc211f50caacf58c3c91
     retrieved: 2026-10-02
-    # Two pages. Cited for dating the guide, and for the fact that nothing in this release
-    # touches a controller number or a channel.
+    # Two pages, neither printing a page number, so it is cited by sheet. Cited for dating the
+    # guide, and for the fact that nothing in this release touches a controller number or a channel.
     page_offset: 0
 
 midi:
   # "MIDI In Channel ... Select All to receive MIDI input data from all channels, or select a
-  # specific channel. All, 1-16", and "MIDI Out Channel ... 1-16" (p. 60). Two settings and one
-  # field: this records the span each of them may take, and the input's extra All is in the
-  # prose above rather than in a number.
+  # specific channel. All, 1-16" (guide p. 60), and "MIDI Out Channel ... 1-16" (p. 60). Two
+  # settings and one field: this records the span each of them may take, and the input's extra All
+  # is in the prose above rather than in a number.
   channels: [1, 16]
-  # "MIDI Sync In ... Off, Midi Clock, MTC" and "MIDI Sync Out ... Off, Midi Clock, MTC"
-  # (p. 60), so clock travels both ways and either direction can be switched off. MIDI Time
+  # "MIDI Sync In ... Off, Midi Clock, MTC" (guide p. 60) and "MIDI Sync Out ... Off, Midi Clock,
+  # MTC" (p. 60), so clock travels both ways and either direction can be switched off. MIDI Time
   # Code is the other half of each setting and this field has no room for it.
   clock: both
   program_change:
@@ -134,7 +135,7 @@ midi:
 
 voice:
   # "Polyphony 32 stereo voices" (p. 65), with "Disk Streaming Fast onboard disk streaming (up to
-  # 32 voices)" beside it.
+  # 32 voices)" (guide p. 65) beside it.
   polyphony: 32
   # EVERYTHING ELSE HERE IS UNRECORDED AND THE SOURCE ACCOUNT SAYS WHY. Notes reach the pads and
   # which note reaches which pad is not published; the pads produce poly aftertouch and nothing

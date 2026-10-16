@@ -34,7 +34,7 @@ source: >-
 
   NEVER TAKE A LOCATOR FROM THIS MANUAL'S TABLE OF CONTENTS. It is short by one through its
   whole middle: the controller list is listed at 14 and printed at 15, "MIDI and CV/Gate
-  Controllers" at 10 and printed at 11, the arpeggiator at 16 and printed at 17. Every page
+  Controllers" (p. 11) at 10 and printed at 11, the arpeggiator at 16 and printed at 17. Every page
   cited here was taken from the page itself.
 
   THERE IS NO MIDI IMPLEMENTATION CHART AND NO SPECIFICATIONS SECTION. Forty-four pages, and the
@@ -54,7 +54,7 @@ source: >-
   label of every group it applies to.
 
   AND THE MAKER IS AMBIGUOUS ABOUT HOW FAR THE CONDITION REACHES, so three tiers are recorded
-  rather than one. The sentence above is about "these parameters", meaning the Program Page
+  rather than one. The sentence above is about "these parameters" (p. 15), meaning the Program Page
   parameters. It is then followed by: "There are also some additional parameters tha may be
   edited by MIDI CC. These are Pitch Bend, AfterTouch and Velocity Scale and TEMPO IN Divisor."
   (p. 15). The "tha" is the maker's typing. Those seven - CC 108 to 113 and 116 - are introduced *after*
@@ -65,8 +65,8 @@ source: >-
   heading of its own with no condition mentioned anywhere near it, as a performance feature:
   "Using MIDI CC 5 and 65, analog, fully programmable, clock-synchronized PORTAMENTO is
   possible." (p. 15). Even those two are not wholly clear, because the page's own heading -
-  "ACCESSING PROGRAM PAGE FUNCTIONS VIA MIDI CC:" - sits above everything on it, including that
-  box.
+  "ACCESSING PROGRAM PAGE FUNCTIONS VIA MIDI CC:", in lettering that no text layer of the page holds
+  - sits above everything on it, including that box.
 
   AND THE CONDITION CANNOT BE READ LITERALLY, WHICH IS WHY ALL NINETEEN ARE CARRIED RATHER THAN
   TWO. It is phrased as applying to Program Page parameters, and **three of the numbers under it
@@ -122,24 +122,25 @@ source: >-
   than filled in.
 
   WHAT THE NUMBERS SAY ABOUT WHAT ELSE IS RECEIVED, since the manual has no chart to say it
-  plainly. CC 108 and 109 set the "Amount of bend in semitones", so pitch bend is received and
-  its depth is settable; no factory depth is printed, so `semitones` is unrecorded. CC 112 and
+  plainly. CC 108 and 109 set the "Amount of bend in semitones" (p. 15), so pitch bend is received
+  and its depth is settable; no factory depth is printed, so `semitones` is unrecorded. CC 112 and
   113 set a minimum velocity, and velocity can be a CV source or open a gate above half, so
-  velocity is received. **CC 110 and 111 are "Aftertouch in semitones", so aftertouch is
+  velocity is received. **CC 110 and 111 are "Aftertouch in semitones" (p. 15), so aftertouch is
   received too - and no page says which kind.** So `voice.aftertouch` says `received` and no
   more.
 
   TWO PLACES WHERE THE DOCUMENT DISAGREES WITH ITSELF, recorded and not resolved. The Program
   Page at p. 14 gives four sources for the MIDI B CV output - note number, velocity, mod wheel
   and an LFO - and CC 105's own value list agrees, "0-Note; 1-velocity; 2-mod; 3 to 127 LFO"
-  (p. 15). **The prose at p. 17 says the output "can be assigned to velocity, note number, mod
-  wheel, or aftertouch"**, naming aftertouch where the other two name an LFO. The value names
-  below follow the two that agree, and the third is recorded here.
+  (p. 15). **The prose says the output "can be assigned to velocity, note number, mod wheel, or
+  aftertouch" (p. 17)**, naming aftertouch, which the other two do not; its next sentence names the
+  LFO as well. The value names below follow the two that agree, and the third is recorded here.
 
   And at p. 16 the manual promises a section it does not contain. It says there are two ways to
   modify the MIDI settings, Local Programming and Sysex programming, and sends the reader on:
   "For more information, see the section titled: 'Using the 0-Coast with Other Devices' in the
-  second half of this manual." **That section is p. 36 and it holds no system exclusive at all**
+  second half of this manual." (p. 16). **That section is p. 36 and it holds no system exclusive at
+  all**
   - signal levels and two CV and gate figures. The word appears nowhere else in 44 pages, and no
   message, manufacturer identifier, format or parameter map is published anywhere. So either
   system exclusive exists and is undocumented, or the maker wrote Sysex where it meant
@@ -161,12 +162,13 @@ source: >-
   named so that a later reader with the instrument in front of them knows where to look.
 
   THE MAKER'S OWN SLIPS, REPRODUCED AND NOT TIDIED. The condition sentence reads "additional
-  parameters tha may be edited". One value cell prints "> 50%" and the next "> %50". The CC 116
-  cell runs the name and the range together as "TEMPO IN Div.=116 0 to 127", so a careless parse
-  reads three numbers in it. CC 114 is the only switch on the page whose values stop at 1 where
-  its neighbours all say "1 to 127"; what 2 to 127 do is not stated. And the last paragraph of
-  p. 13 breaks off mid-sentence - "While on this page, the MIDI_A Activity Window" is followed
-  straight by "learn both at once" - which is the page's own doing and not an extraction fault.
+  parameters tha may be edited" (p. 15). Each Gate row's value cell prints "> 50%" for velocity and
+  then "> %50" for the mod wheel. The CC 116 cell runs the name and the range together as "TEMPO IN
+  Div.=116 0 to 127" (p. 15), so a careless parse reads three numbers in it. CC 114 is the only
+  switch on the page whose values stop at 1 where its neighbours all say "1 to 127"; what 2 to 127
+  do is not stated. And the last paragraph of p. 13 breaks off mid-sentence - "While on this page,
+  the MIDI_A Activity Window" (p. 13) is followed straight by "learn both at once" (p. 13) - which
+  is the page's own doing and not an extraction fault.
 
   NOT RECORDED: transport, which no page mentions; program change, likewise; the note range,
   which no page states - the nearest is that the oscillator "can be expected to track reasonably
@@ -214,14 +216,14 @@ sources:
     # makers' pages, this one puts its feature list in its markup, so it is citable at all.
 
 midi:
-  # "Value of 0-15 sets a channel; 16-127 is MIDI CH. ALL" for each of CC 102 and 103 (p. 15),
+  # "Value of 0-15 sets a channel; 16-127 is MIDI CH. ALL" (p. 15) for each of CC 102 and 103,
   # which is sixteen channels said by the maker rather than assumed from the protocol.
   channels: [1, 16]
-  # "Tempo follows the rate of the incoming MIDI clock" when Program Page 6 is on, which is off
-  # by default (p. 14), and CC 114 switches it. Nothing is sent, so this cannot be `both`.
+  # "Tempo follows the rate of the incoming MIDI clock" (p. 14) when Program Page 6 is on, which is
+  # off by default, and CC 114 switches it. Nothing is sent, so this cannot be `both`.
   clock: receives
-  # NOT RECORDED, system exclusive: the manual names "Sysex programming" once and documents none.
-  # NOT RECORDED, transport and program change: no page mentions either.
+  # NOT RECORDED, system exclusive: the manual names "Sysex programming" (p. 16) once and documents
+  # none. NOT RECORDED, transport and program change: no page mentions either.
   # `control_change` is left unset because a map is published - see the controls below.
 
 voice:
@@ -252,8 +254,8 @@ voice:
     # output can be assigned to velocity (p. 14); and the MIDI B gate can be set to open "when
     # Velocity > 50%" (p. 14).
   pitch_bend:
-    # "PitchBendScale CH. A=108 Amount of bend in semitones, centered on active pitch (so 1/2up,
-    # 1/2 down)" and the same for channel B at 109 (p. 15). So bend is received and the depth is
+    # "PitchBendScale CH. A=108 Amount of bend in semitones, centered on active pitch (so 1/2up, 1/2
+    # down)" (p. 15) and the same for channel B at 109. So bend is received and the depth is
     # settable per part; no factory depth is printed, so `semitones` stays unrecorded.
     programmable: true
   # RECEIVED, AND THE KIND IS NOT STATED. "AfterScale CH. A=110 Aftertouch in semitones" (p. 15)
@@ -262,10 +264,10 @@ voice:
   aftertouch: received
 
 parts:
-  # The two "Channels of MIDI to CV and MIDI to Gate" the product page advertises. Each is given
-  # a channel by the player and neither derives one: the {MIDI Learn} page exists so that MIDI A
-  # and MIDI B can receive on separate channels (p. 13), set either by playing into that page or
-  # by CC 102 and 103.  (The manual's own sentence is not quoted here because its text layer
+  # The product page advertises two "Channels of MIDI to CV and MIDI to Gate" (product_page). Each
+  # is given a channel by the player and neither derives one: the {MIDI Learn} page exists so that
+  # MIDI A and MIDI B can receive on separate channels (p. 13), set either by playing into that page
+  # or by CC 102 and 103.  (The manual's own sentence is not quoted here because its text layer
   # spells "different" with an ff ligature, which no quotation should have to carry.)
   # THE DEFAULT IS BOTH ON EVERY CHANNEL: "The 0-COAST defaults to receiving MIDI on ALL
   # Channels" (p. 11), and "The Default Behavior is for both MIDI_A and MIDI_B channels to
@@ -324,10 +326,11 @@ controls:
   arp_on_off:            {label: ArpON/OFF, cc: 117, values: {"off": 0, "on": 1}, direction: receives, group: arpeggiator}
   arp_type:              {label: ArpType, cc: 119, values: {traditional: 0, latch_and_shift: 1}, direction: receives, group: arpeggiator}
   legato_control:        {label: LegatoControl, cc: 118, values: {"off": 0, "on": 1}, direction: receives, group: legato}
-  # "Value of 0-15 sets a channel; 16-127 is MIDI CH. ALL" - and WHICH value is which channel is
-  # never printed, so the two bands below are the whole of what the maker states. The page's own
-  # screenshot of its Max for Live device shows "MIDI A Channel: 1" against a control that takes
-  # 0 to 15, so whether the value is the channel less one is exactly what is not established.
+  # "Value of 0-15 sets a channel; 16-127 is MIDI CH. ALL" (p. 15) - and WHICH value is which
+  # channel is never printed, so the two bands below are the whole of what the maker states. The
+  # page's own screenshot of its Max for Live device shows the menu labelled MIDI A Channel set to
+  # 1, and MIDI B Channel set to 3, while CC 102 sets a channel with values 0 to 15, so whether the
+  # value is the channel less one is exactly what is not established.
   midi_a_channel:        {label: MIDI A Channel, cc: 102, values: {channel: 0, all: 16}, direction: receives, part: midi_a, group: channel}
   midi_b_channel:        {label: MIDI B Channel, cc: 103, values: {channel: 0, all: 16}, direction: receives, part: midi_b, group: channel}
   # The A rows of these two pairs have no Program Page at all - pages 4 and 5 are MIDI B only -
@@ -347,10 +350,11 @@ controls:
   # This one's value column stops at 1, where every other switch on the page says "1 to 127".
   # What 2 to 127 do is not stated and is not guessed at.
   midi_clock:            {label: MIDIClk, cc: 114, values: {"off": 0, "on": 1}, direction: receives, group: clock}
-  # "Divisions of the TEMPO IN as reflected at the CLOCK OUT", and "0 and 1= 1/1; 2 = 1/2; 3 =
-  # 1/3; 4 = 1/4; etc. Does not affect tap tempo or MIDI Clock." Left continuous rather than
-  # banded, because that is a series with an "etc." on the end rather than a table: four named
-  # bands would say that everything from 4 upwards is a quarter, and the maker says it is not.
-  # NEITHER THAT DESCRIPTION NOR THOSE VALUES ARE IN THE DOCUMENT'S TEXT LAYER. They are vector
-  # outlines, invisible to every text extraction, and were read off the rendered page by eye.
+  # The last row on p. 15 reads "Divisions of the TEMPO IN as reflected at the CLOCK OUT" and "0 and
+  # 1= 1/1; 2 = 1/2; 3 = 1/3; 4 = 1/4; etc. Does not affect tap tempo or MIDI Clock." Left
+  # continuous rather than banded, because that is a series with an "etc." on the end rather than a
+  # table: four named bands would say that everything from 4 upwards is a quarter, and the maker's
+  # "etc." says the series goes on. NEITHER THAT DESCRIPTION NOR THOSE VALUES ARE IN THE DOCUMENT'S
+  # TEXT LAYER. They are vector outlines, invisible to every text extraction, and were read off the
+  # rendered page by eye.
   tempo_in_divisor:      {label: TEMPO IN Div., cc: 116, direction: receives, group: clock, panel_only: true}

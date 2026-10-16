@@ -4,9 +4,9 @@ model:
   manufacturer: Arturia
   name: MiniFreak
   # The file's own front matter says "Product version: 4.0.0", revision date 4 July 2025, and
-  # its chapter 1.2 is headed "Firmware 4.0: Added content and features", so the document
+  # its chapter 1.2 is headed "Firmware 4.0: Added content and features" (p. 4), so the document
   # claims 4.0 twice over and the string "4.0.1" appears nowhere in its 124 pages. The file's
-  # own PDF metadata says it a third time, in a keyword: "minifreak__4.0.0__20250704__en". Arturia
+  # own PDF metadata says it a third time, in a keyword: `minifreak__4.0.0__20250704__en`. Arturia
   # names the file 4.0.1 and lists it as 4.0.1; the document is quoted instead. The file
   # Arturia names 4.0.0 is a different file, 123 pages revised 3 June 2025, whose front
   # matter also says 4.0.0, and whose implementation chart is identical row for row.
@@ -14,24 +14,23 @@ model:
   # one (see the resources_page source). Its release notes, cited below, say 5.0.0 added a
   # user-import feature for wavetables and samples, sample transfer with the MiniFreak V
   # software, and three bugfixes, one of them MIDI-adjacent: "Sustain pedal Off messages
-  # don't cut notes held on the keyboard". None of that adds, moves or renames a controller
-  # number, so every number here still describes a MiniFreak running 5.0.0.
+  # don't cut notes held on the keyboard" (release_notes). None of that adds, moves or renames a
+  # controller number, so every number here still describes a MiniFreak running 5.0.0.
   firmware: "4.0.0"
 
 source: >-
   User manual (124pp), the edition Arturia names 4.0.1: pp. 3, 18, 79-81, 83-86, 88, 90,
   108, 113-117.
 
-  The control-change map is section 16.2.5, "MIDI Control Change Messages", pp. 116-117,
-  introduced as "Here is the MIDI implementation chart:" and printed in three columns,
-  Section | Parameter | CC. It holds 41 rows and every one of them is here. It prints no
-  values, no band boundaries, no 14-bit pairings and no NRPNs, so each control carries the
-  maker's own name and its number and claims nothing else. Nor does the manual state a
-  controller's range anywhere: the string "127" does not appear on any of its 124 pages, in
-  either extraction mode, so the 0 to 127 every control here spans is the MIDI
-  specification's and not this document's. Arturia publishes no MIDI implementation chart
-  for this instrument either, so the user manual is the whole of what its maker documents
-  about it.
+  The control-change map is section 16.2.5, "MIDI Control Change Messages" (pp. 116-117), introduced
+  as "Here is the MIDI implementation chart:" (p. 116) and printed in three columns, Section |
+  Parameter | CC. It holds 41 rows and every one of them is here. It prints no values, no band
+  boundaries, no 14-bit pairings and no NRPNs, so each control carries the maker's own name and its
+  number and claims nothing else. Nor does the manual state a controller's range anywhere: the
+  string "127" does not appear on any of its 124 pages, in either extraction mode, so the 0 to 127
+  every control here spans is the MIDI specification's and not this document's. Arturia publishes no
+  MIDI implementation chart for this instrument either, so the user manual is the whole of what its
+  maker documents about it.
 
   A control's label is the chart's parameter, prefixed by the chart's own section word
   where the parameter alone would be ambiguous: the chart's columns read "OSC 1" and
@@ -40,13 +39,13 @@ source: >-
 
   Both directions, for every charted control: "Incoming Control Change messages are always
   accepted, unless the MiniFreak is currently in communication with the MiniFreak V
-  software", and "The Wheel Touch Strip, the Sustain pedal, and most of the front-panel
-  knobs send unique CC messages", which Utility > MIDI > Knob Send CC can switch off
-  (p. 117). So no control here needs a direction, except the one that is not in the chart.
+  software" (p. 117), and "The Wheel Touch Strip, the Sustain pedal, and most of the front-panel
+  knobs send unique CC messages" (p. 117), which Utility > MIDI > Knob Send CC can switch off. So no
+  control here needs a direction, except the one that is not in the chart.
 
   ONE CONTROL IS NOT IN THE MANUAL, and is marked in place: CC 7, volume. Arturia's firmware
-  release notes say of version 2.0.0 "CC7 now controls the volume", and this manual, written
-  for 4.0.0, does not mention CC 7 anywhere: searched for "CC 7", "CC7" and "volume" across
+  release notes say of version 2.0.0 "CC7 now controls the volume" (release_notes), and this manual,
+  written for 4.0.0, does not mention CC 7 anywhere: searched for "CC 7", "CC7" and "volume" across
   all 124 pages. Two of the maker's own documents therefore disagree, one by silence. The
   release notes are cited for it, it is recorded as received only since nothing says the
   Volume knob transmits, and the chart's silence is recorded here rather than resolved.
@@ -55,7 +54,7 @@ source: >-
   note number for anything; what the instrument does with velocity that arrives over MIDI,
   as opposed to velocity its own keyboard senses; the pitch bend range as one number, since
   Bend Range is a per-preset setting of 1 to 12 semitones; system exclusive and NRPN, since
-  neither "sysex", "system exclusive", "NRPN", "MSB", "LSB" nor "14-bit" appears anywhere in
+  neither `sysex`, `system exclusive`, `NRPN`, `MSB`, `LSB` nor `14-bit` appears anywhere in
   the manual in either extraction mode, and a silence in a user manual is not a statement
   that the instrument has none - this one exchanges whole samples with its own software over
   USB and never says how.
@@ -66,7 +65,8 @@ source: >-
   `aftertouch_transmits` is true, for the fact that it sends; the kind it sends has no field,
   and is in a comment beside the flag.
   CC 64 does more than the chart says. The release notes, version 2.0.0: "Hold now sends
-  CC64 with value of 1 when Arp/Seq is enabled, and holds Sequencer but does not Sustain".
+  CC64 with value of 1 when Arp/Seq is enabled, and holds Sequencer but does not
+  Sustain" (release_notes).
   The chart lists CC 64 as Pedals | Sustain and says nothing of the Hold button or of the
   value 1; both readings are recorded against that control.
 
@@ -126,19 +126,18 @@ midi:
   # here.
   channels: [1, 16]
   # "Clock Source: determines the source of clock sync data, whether internal or via USB,
-  # MIDI, or the rear-panel Clock In jack - or a prioritized auto-sensing routine", and
+  # MIDI, or the rear-panel Clock In jack - or a prioritized auto-sensing routine" (p. 108), and
   # "Clock Send: sets whether or not the MiniFreak sends out clock signals" (p. 108). So it
   # both sends and follows, and the release notes date the send switch to firmware 2.0.0.
   clock: both
   # "Transport Receive: sets whether or not the MiniFreak accepts external transport
-  # control" and "Transport Send: sets whether or not the MiniFreak sends out transport
-  # control" (p. 108). Two switches, and one message is named rather than left to
-  # "transport control": Start, received, is what retriggers the Cycling Envelope in Run
-  # mode - "The only way to force it to retrigger is by sending the MiniFreak a MIDI Start
-  # command" (p. 81). Stop and Continue are never named as messages anywhere in the manual,
-  # nor is song position, so what the two switches cover beyond Start is not stated. The
-  # release notes have Transport Receive arriving in firmware 1.1.0 and the pair of options
-  # in 2.0.0.
+  # control" (p. 108) and "Transport Send: sets whether or not the MiniFreak sends out transport
+  # control" (p. 108). Two switches, and one message is named rather than left to "transport
+  # control" (p. 108): Start, received, is what retriggers the Cycling Envelope in Run mode - "The
+  # only way to force it to retrigger is by sending the MiniFreak a MIDI Start command" (p. 81).
+  # Stop and Continue are never named as messages anywhere in the manual, nor is song position, so
+  # what the two switches cover beyond Start is not stated. The release notes have Transport Receive
+  # arriving in firmware 1.1.0 and the pair of options in 2.0.0.
   transport: both
   program_change:
     receives: true      # "They can be selected externally by sending the MiniFreak an
@@ -172,14 +171,14 @@ voice:
   # MiniFreak has twelve" (p. 80). Paraphony is one of four voicing modes here rather than
   # the instrument's nature: the Mode button selects Mono, Poly, Para or Uni (p. 79).
   paraphonic: true
-  # Mono is "Only one voice plays at a time", Poly is one voice per note out of six, and
+  # Mono is "Only one voice plays at a time" (p. 79), Poly is one voice per note out of six, and
   # Para is twelve (pp. 79-80). Uni is the fourth mode and is not a fourth count: it sets
   # how many of the six voices one key takes, from two to six. The mode is chosen on the
   # panel; nothing in the manual sets it over MIDI, and which mode a new instrument starts
   # in is not stated, so polyphony names the count the manual repeats rather than a default.
   voicing_modes: [1, 6, 12]
   # NOT RECORDED, note_range. The keybed is "a 37-note Arturia Slim Keys keybed" (p. 3) and
-  # the Octave buttons transpose it "by up to three octaves" either way (p. 8), but the
+  # the Octave buttons transpose it "by up to three octaves" (p. 12) either way, but the
   # manual never gives a MIDI note number for anything: searched for "note number", "C-2",
   # "G8" and "middle C" across all 124 pages, and the one use of "Middle C" is about
   # guitars, with no number beside it. The manual does name one key: the keyboard's "center
@@ -194,8 +193,8 @@ voice:
   # What it answers to: "When receiving external MIDI, the MiniFreak's sound engine is
   # compatible with polyphonic aftertouch MIDI messages, where aftertouch modulation is
   # applied in different amounts to each note individually" (p. 86), and the release notes
-  # date "Improved Poly Aftertouch support" to firmware 2.0.0. Whether incoming channel
-  # aftertouch is answered to as well is not stated anywhere.
+  # date "Improved Poly Aftertouch support" (release_notes) to firmware 2.0.0. Whether incoming
+  # channel aftertouch is answered to as well is not stated anywhere.
   aftertouch: poly
   # What it sends is the other kind, which the flag does not say: "The keyboard sends
   # monophonic aftertouch messages, where all sounding voices are modulated by the same
@@ -253,8 +252,8 @@ controls:
     group: pedals
     # The chart gives no values for it. The release notes, firmware 2.0.0: "Hold now sends
     # CC64 with value of 1 when Arp/Seq is enabled, and holds Sequencer but does not
-    # Sustain". So this number carries two meanings in one direction and the manual records
-    # neither; no states are claimed here because no document states a full set.
+    # Sustain" (release_notes). So this number carries two meanings in one direction and the manual
+    # records neither; no states are claimed here because no document states a full set.
   glide:                  {label: Glide, cc: 5, group: pedals}
 
   osc1_tune:              {label: OSC 1 Tune, cc: 70, group: osc_1}
@@ -273,9 +272,9 @@ controls:
   filter_resonance:       {label: Analog Filter Resonance, cc: 71, group: analog_filter}
   filter_vcf_env_amt:     {label: VCF Env Amt, cc: 24, group: analog_filter}
   filter_velocity_env_mod: {label: Velocity Env Mod, cc: 94, group: analog_filter}
-  # The release notes, firmware 1.1.0: "Gate, Spice and VCF Velo Amt now send MIDI CC",
-  # which names three of these rows (CC 24, 115 and 116) and dates the chart to 1.1.0 or
-  # later. The notes call this one VCF Velo Amt where the chart calls it Velocity Env Mod.
+  # The release notes, firmware 1.1.0: "Gate, Spice and VCF Velo Amt now send MIDI
+  # CC" (release_notes), which names three of these rows (CC 24, 115 and 116) and dates the chart to
+  # 1.1.0 or later. The notes call this one VCF Velo Amt where the chart calls it Velocity Env Mod.
 
   cycling_env_rise_shape: {label: Cycling Env Rise Shape, cc: 68, group: cycling_env}
   cycling_env_rise:       {label: Cycling Env Rise, cc: 76, group: cycling_env}
@@ -313,8 +312,8 @@ controls:
   macro_m2:               {label: Macros M2, cc: 118, group: macros}
 
   # Not in the manual. Arturia's firmware release notes, version 2.0.0: "CC7 now controls
-  # the volume". The implementation chart written for firmware 4.0.0, two major versions
-  # later, does not list CC 7, and the manual never mentions it; this is recorded as
+  # the volume" (release_notes). The implementation chart written for firmware 4.0.0, two major
+  # versions later, does not list CC 7, and the manual never mentions it; this is recorded as
   # received because nothing in either document says the Volume knob transmits, and because
   # the chart is the list of what the panel sends.
   volume:                 {label: Volume, cc: 7, direction: receives, group: performance}

@@ -45,12 +45,12 @@ source: >-
   because nothing in the file rests on them, and two others sit beside the facts they
   bear on, at CC 64 and at the bend range. The four: p. 108 says it transmits on all
   channels by default where p. 109 says channel 1, and the Utility table offers no
-  "All" value for the output channel at all; p. 78 says notes arriving at MIDI In
-  have "the same priority" as the keyboard's and, four lines on, that the keyboard is
-  "first in line, then incoming MIDI notes"; the Utility table's value lists for Output
-  dest and for the tempo source (p. 89) are not the lists the same settings are given
-  in the MIDI Control Center prose (p. 92); and p. 78 has aftertouch and velocity both
-  transmitted where everywhere else they are alternatives.
+  "All" value for the output channel at all; the manual says notes arriving at MIDI In have "the
+  same priority" (p. 78) as the keyboard's and, at the foot of the same page, that the keyboard is
+  "first in line, then incoming MIDI notes" (p. 78); the Utility table's value lists for Output dest
+  and for the tempo source (p. 89) are not the lists the same settings are given in the MIDI Control
+  Center prose (p. 92); and p. 78 has aftertouch and velocity both transmitted where everywhere else
+  they are alternatives.
 
   NOT RECORDED, and marked in place: the note range as numbers, since p. 35 gives it as
   "C-2 to G8", p. 64 calls the whole pitch range eight octaves, and the manual never
@@ -151,10 +151,10 @@ voice:
   # NOT RECORDED, note_range. The Digital Oscillator "can play notes in the range from C-2
   # to G8" (p. 35), but the manual never states which note name is which number: if C-2 is
   # note 0 then G8 is 127 and the range is everything, and if C-1 is note 0 then C-2 is
-  # below the MIDI range altogether. Its own CV rows use "[C-1 ... G8]" for a reference
-  # note (p. 89), which settles nothing, and p. 64 says "the whole pitch range is eight
-  # octaves", which is narrower than either reading of C-2 to G8. "Middle C" appears once in
-  # the whole manual, on p. 43, with no number beside it.
+  # below the MIDI range altogether. Its own CV rows use "[C-1 ... G8]" (p. 89) for a reference
+  # note, which settles nothing, and the manual says "the whole pitch range is eight octaves"
+  # (p. 64), which is narrower than either reading of C-2 to G8. "Middle C" appears once in the
+  # whole manual, on p. 43, with no number beside it.
   # NOT RECORDED, aftertouch. The keyboard generates it or velocity, never both: "These dots
   # will register your touch as aftertouch or as velocity" (p. 61), chosen per preset at
   # Utility > Preset > Press mode [Aftertouch, Velocity] (p. 88). Each has its own response
@@ -182,12 +182,12 @@ voice:
     note_on: both
   # NOT RECORDED, pitch_bend. Bend Range is a preset parameter and the manual gives its
   # extent three ways that do not fit together: the Utility table says [0 ... 24], "From
-  # zero to two octaves" (p. 88), while p. 69 says "By default the bend range is set to 24
-  # chromatic steps: 12 from the center to the left and 12 from the center to the right" and
-  # that the range can be set "with a maximum of 48 steps (= four octaves)". So 24 is the
-  # table's maximum and the prose's default, and whether the number counts semitones each
-  # way or in total is not settled. Nor does the manual say whether the setting governs
-  # pitch bend arriving over MIDI, or whether the Bend strip sends pitch bend at all.
+  # zero to two octaves" (p. 88), while the prose says "By default the bend range is set to 24
+  # chromatic steps: 12 from the center to the left and 12 from the center to the right" (p. 69) and
+  # that the range can be set "with a maximum of 48 steps (= four octaves)" (p. 69). So 24 is the
+  # table's maximum and the prose's default, and whether the number counts semitones each way or in
+  # total is not settled. Nor does the manual say whether the setting governs pitch bend arriving
+  # over MIDI, or whether the Bend strip sends pitch bend at all.
 
 groups:
   # Appendix D prints two columns, Parameter and CC number, and no section at all, so these
@@ -196,13 +196,13 @@ groups:
   # 9.6 The Cycling Envelope Generator (p. 57), 10. The Keyboard Section (p. 61), and the
   # Arpeggio and Sequencer Section, which is the running head over 12. The Arpeggiator (p. 70)
   # and 13. The Sequencer (p. 76). A leading "The" is dropped and a chapter's subtitle with it,
-  # so chapter 7, "The Filter: sound in close-up", gives "Filter".
+  # so chapter 7, "The Filter: sound in close-up" (p. 48), gives "Filter".
   # The order is the order the appendix lists the controls, which is the order they appear
   # below.
   # The first group is the one the manual does not cover in a single place: Arturia calls
-  # Spice one of "the three live controls: Spice, Dice, and Bend" in the panel overview
-  # (p. 9), while Glide has its own part of the keyboard chapter (10.3, p. 63). So its label
-  # is not the maker's word for a section, because the maker has no one section for it.
+  # Spice one of "the three live controls: Spice, Dice, and Bend" (p. 18) in its panel overview,
+  # while Glide has its own part of the keyboard chapter (10.3, p. 63). So its label is not the
+  # maker's word for a section, because the maker has no one section for it.
   performance: Performance
   oscillator: Digital Oscillator
   filter: Filter
@@ -233,10 +233,10 @@ controls:
   # CC 64 is the specification's Damper Pedal, and holding notes is what Arturia uses it
   # for. The table prints "(toggle)" in the name but gives no on and off values, so this
   # stays continuous rather than being a switch whose two states nobody published.
-  # Read p. 66 beside this one: "Hold does not work with external MIDI. If you need to hold
-  # external MIDI note(s), send the MicroFreak a Sustain message." So the panel's Hold
-  # button does not hold notes that arrive over MIDI, and a Sustain message does - which is
-  # what CC 64 is in the specification. The manual never says the two are the same message,
+  # Read beside this one what the manual says of Hold: "Hold does not work with external MIDI. If
+  # you need to hold external MIDI note(s), send the MicroFreak a Sustain message." (p. 66) So the
+  # panel's Hold button does not hold notes that arrive over MIDI, and a Sustain message does -
+  # which is what CC 64 is in the specification. The manual never says the two are the same message,
   # and this file does not say so either.
   keyboard_hold:          {label: Keyboard Hold (toggle), cc: 64, group: keyboard}
 
@@ -246,7 +246,7 @@ controls:
   lfo_rate_free:          {label: LFO rate (free), cc: 93, group: lfo}
   lfo_rate_sync:          {label: LFO rate (sync), cc: 94, group: lfo}
 
-  # The manual's own tutorial on p. 111 calls CC 5 "the CC# number of the Rise parameter",
+  # The manual's own tutorial calls CC 5 "the CC# number of the Rise parameter" (p. 111),
   # which contradicts this table twice over: 5 is Glide, and Rise is 102. The table is
   # followed, since it names every parameter and the tutorial is describing what a third
   # party's software displayed.

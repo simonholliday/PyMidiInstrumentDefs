@@ -203,8 +203,9 @@ voice:
   addressing: pitches
   # "6-voice polyphonic analog synthesizer with split/layer capability", and the three modes are
   # named at p. 38: "Poly (polyphonic) allows all six voices to be triggered independently by
-  # different notes", "Unison stacks multiple voices on a single key", and "Mono (monophonic)
-  # limits the keyboard to playing only one dual-oscillator voice".
+  # different notes" (manual p. 38), "Unison stacks multiple voices on a single key" (manual p. 38),
+  # and "Mono (monophonic) limits the keyboard to playing only one dual-oscillator voice"
+  # (manual p. 38).
   polyphony: 6
   # The two zones draw on the one pool of six: in Split "the keyboard has two zones" (p. 39) and
   # the voice modes are per zone, so six is a ceiling across both together rather than each.
@@ -232,9 +233,9 @@ voice:
   # NOT RECORDED, aftertouch received. The keys sense channel pressure, stated outright in the
   # specifications and again in the overview: "Keyboard: velocity-sensitive, channel aftertouch"
   # (p. 6). The duophonic option is NOT polyphonic pressure and must not be read as it. It
-  # restricts which voices respond: "AT Monophonic: Aftertouch affects all voices" against "AT
-  # Duophonic: Aftertouch only affects the last played note, or group of notes that was played
-  # simultaneously" (p. 100). One pressure message, two ways of applying it.
+  # restricts which voices respond: "AT Monophonic: Aftertouch affects all voices" (manual p. 100)
+  # against "AT Duophonic: Aftertouch only affects the last played note, or group of notes that was
+  # played simultaneously" (p. 100). One pressure message, two ways of applying it.
   # **NO PAGE SAYS AN ARRIVING AFTERTOUCH MESSAGE IS ACTED ON.** The Mod Matrix's source is
   # "Output voltage based on key pressure" (p. 52), and "The PolyBrute keyboard also features
   # Aftertouch (i.e., pressure sensitivity)" (p. 42); and the Connect manual, whose on-screen
@@ -246,9 +247,9 @@ voice:
 
 parts:
   # The two keyboard zones, which exist only in one of the three Timbrality modes: "Single: the
-  # keyboard has one zone", "Layer: ... the keyboard has one zone, with two morphing voices per
-  # note", "Split: the keyboard has two zones. The lower zone is always sound A; the upper zone
-  # can morph between sounds A + B" (p. 39).
+  # keyboard has one zone" (manual p. 39), "Layer: ... the keyboard has one zone, with two morphing
+  # voices per note" (manual p. 39), "Split: the keyboard has two zones. The lower zone is always
+  # sound A; the upper zone can morph between sounds A + B" (p. 39).
   # THEY ARE PARTS BECAUSE EACH HAS ITS OWN CHANNELS, not because the keyboard is divided: the
   # MIDI settings give an Input Channel and an Output Channel for each, and "The pages for the
   # upper and lower zones are identical, so both are described here" (p. 109).

@@ -84,9 +84,8 @@ source: >-
   a dash in both columns. Two sentences show the pool is finite without numbering it - a
   pad set to sound 000 "can hold midi without stealing any voices" (how_to), and the
   sustain pedal is "for key and legato voices" (system) - and a sound's own play mode
-  decides whether it is polyphonic at all: "key is polyphonic, and allows you to play
-  multiples of the same sample at once" against oneshot and legato, which are not
-  (modes).
+  decides whether it is polyphonic at all: "key is polyphonic, and allows you to play multiples of
+  the same sample at once" (modes) against oneshot and legato, which are not.
 
   THE GUIDE HAS NO CHAPTER 13. Its chapters run 1 to 12 and then 14 to 18, the
   chapter-to-chapter navigation steps straight across the gap, and no page carries a 13.x
@@ -97,8 +96,8 @@ source: >-
   map existed.
 
 midi:
-  # "Receive all channels, send on MIDI channel 1" is one setting and sixteen more give a channel
-  # each (system), which is what the chart's basic channel row prints as default 1, changed 1-16.
+  # "Receive all channels, send on MIDI channel 1" (system) is one setting and sixteen more give a
+  # channel each, which is what the chart's basic channel row prints as default 1, changed 1-16.
   channels: [1, 16]
   # MODE 1 IS OMNI ON, WHICH LOOKS WRONG BESIDE A SETTABLE CHANNEL AND IS NOT. The chart prints
   # its own legend - "Mode 1: OMNI ON, POLY" (system) - and gives the basic channel's default as
@@ -114,9 +113,10 @@ midi:
   # the settings list marks ten defaults and none of them is in the channel group.
   mode: 1
   # Ticked in both columns of the chart's clock row. **But it does one direction at a time and
-  # neither by default**: the three settings behind it are "MIDI Clock Off (default)", "MIDI Clock
-  # in (receive only)" and "MIDI Clock Out (send only)" (system). There is no both-at-once option,
-  # which `clock: both` cannot say - what it says is that each direction is implemented.
+  # neither by default**: the three settings behind it are "MIDI Clock Off (default)" (system),
+  # "MIDI Clock in (receive only)" (system) and "MIDI Clock Out (send only)" (system). There is no
+  # both-at-once option, which `clock: both` cannot say - what it says is that each direction is
+  # implemented.
   clock: both
   # System realtime commands and song position are ticked in both columns. Song select and tune
   # request are marked x in both, which is a stated absence rather than silence. The sync sockets
@@ -143,13 +143,13 @@ voice:
   # Forty-eight pads rather than forty-eight pitches - until keys mode, for which see note_range.
   addressing: voices
   # 0 TO 127, FROM THE CHART'S OWN NOTE NUMBER ROW, which gives the four group ranges and then
-  # "keys mode: 0-127" in both columns. The note map says the same in prose: "if you are in keys
-  # mode, this will change to a chromatic keyboard" (system). So the pads below are what the
+  # "keys mode: 0-127" (system) in both columns. The note map says the same in prose: "if you are in
+  # keys mode, this will change to a chromatic keyboard" (system). So the pads below are what the
   # instrument answers to ordinarily and the whole range is what it answers to in keys mode, one
   # sound at a time. **The guide is not of one mind about how chromatic that is**: the how-to
   # chapter says the pads "become a keyboard that have the chosen sample transposed across a
-  # scale", with knobs for the key and the scale, where the note map says chromatic. Both are
-  # recorded and neither is resolved; what both agree on is the range.
+  # scale" (how_to), with knobs for the key and the scale, where the note map says chromatic. Both
+  # are recorded and neither is resolved; what both agree on is the range.
   note_range: [0, 127]
   velocity:
     # Ticked in both columns of the chart's note on row, and marked x in both of its note off row.

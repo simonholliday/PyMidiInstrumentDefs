@@ -15,8 +15,8 @@
 # twelfth is recorded here and nowhere else. It is not resolvable by trying it: this
 # instrument is not one the bundled definitions were measured against.
 #
-# WHAT EACH OF THE 36 NUMBERS ADDRESSES IS NOT PUBLISHED ANYWHERE. The guide names the row
-# "track parameters" and stops. There is no second table, in either edition: section 23 is
+# WHAT EACH OF THE 36 NUMBERS ADDRESSES IS NOT PUBLISHED ANYWHERE. The guide names the row "track
+# parameters" (guide p. 122) and stops. There is no second table, in either edition: section 23 is
 # the only table of controller numbers in all 135 pages.
 
 definition: 1
@@ -57,13 +57,15 @@ source: >-
   edition of that same section is the only other place any of them is printed.
 
   THE TWO EDITIONS OF ONE GUIDE DISAGREE IN FOUR PLACES, and only the first changes a number.
-  Section 23's fourth row reads "track parameters" at CC "12-47" in the printable guide and at
-  CC "46" on the website, so no control for it is written. Its seventh row is "delay scene" in
-  the printable guide and "scene (delayed switch)" on the website, both at CC 82; the release
-  notes settle what it does - "add midi command for setting delayed scene" (os_updates, 1.1.0)
+  Section 23's fourth row reads "track parameters" (guide p. 122) at CC "12-47" in the printable
+  guide and at CC "46" on the website, so no control for it is written. Its seventh row is "delay
+  scene" in the printable guide and "scene (delayed switch)" (midi_cc_table) on the website, both at
+  CC 82; the release notes settle what it does - "add midi command for setting delayed scene"
+  (os_updates, 1.1.0)
   - so the printable guide's shorter name is used below and the other is recorded here. The
-  printable guide's specifications say "midi over bluetooth le" where the website says
-  "bluetooth LE midi", and its section 1 says "midi over bluetooth ble", contradicting itself.
+  printable guide's specifications say "midi over bluetooth le" (p. 3) where the website says
+  "bluetooth LE midi" (hardware_overview), and its section 1 says "midi over bluetooth ble" (p. 1),
+  contradicting itself.
   And the website's section 10 states the voice pool and the per-track channel outright where
   the printable guide states neither anywhere in its 135 pages.
 
@@ -86,29 +88,29 @@ source: >-
 
   SIXTEEN TRACKS, EACH ON A CHANNEL THE PLAYER SETS: "the midi settings page in project
   settings allows you to set the midi channel on each of the 16 tracks" (project), which the
-  product page states as "midi channels selectable per track" and the table's own channel
-  column shows as 1-16. Eight of the sixteen are instrument tracks and eight are auxiliary -
+  product page states as "midi channels selectable per track" (product_page) and the table's own
+  channel column shows as 1-16. Eight of the sixteen are instrument tracks and eight are auxiliary -
   "8 individually sequenceable instrument tracks" (product_page) - and the four track controls
   below reach any of them, so they are one part rather than two.
 
-  THREE WAYS IN, which is why no transport is called the MIDI one: "3.5 mm midi in", "usb
-  type-c audio/midi host & device" and "bluetooth LE midi" (hardware_overview). The multi-out
-  jack is the way out, and only when set to it - "you can choose between: midi cv/gate sync8
-  sync16 sync24 audio" (p. 87). A DIN synthesiser needs "a type a trs to midi cable" (p. 111),
-  which is the only statement of the wiring anywhere.
+  THREE WAYS IN, which is why no transport is called the MIDI one: "3.5 mm midi in"
+  (hardware_overview), "usb type-c audio/midi host & device" (hardware_overview) and "bluetooth LE
+  midi" (hardware_overview). The multi-out jack is the way out, and only when set to it - "you can
+  choose between: midi cv/gate sync8 sync16 sync24 audio" (p. 87). A DIN synthesiser needs "a type a
+  trs to midi cable" (p. 111), which is the only statement of the wiring anywhere.
 
   NOT RECORDED, each for its own reason.
 
   SYSTEM EXCLUSIVE and NRPN: neither word appears on
-  any of the 135 pages or on any section page, searched for as "sysex", "system exclusive",
-  "exclusive", "NRPN" and "RPN". The only mention in any document here is a release note,
-  "avoid crash on certain sysex messages" (os_updates, 1.0.29), which says the messages arrive
-  and are parsed, not that any of them is implemented - and that is the difference from the
-  OP-1, whose release notes describe an identity reply that actually answers.
+  any of the 135 pages or on any section page, searched for as `sysex`, `system exclusive`,
+  `exclusive`, `NRPN` and `RPN`. The only mention in any document here is a release note, "avoid
+  crash on certain sysex messages" (os_updates, 1.0.29), which says the messages arrive and are
+  parsed, not that any of them is implemented - and that is the difference from the OP-1, whose
+  release notes describe an identity reply that actually answers.
 
   THE NOTE RANGE:
-  never stated. The built-in keyboard is "a two octave keyboard" with octave buttons, which is
-  the panel and not what arrives.
+  never stated. The built-in keyboard is "a two octave keyboard" (p. 6) with octave buttons, which
+  is the panel and not what arrives.
 
   RECEIVING A PROGRAM CHANGE: the words never appear; what is
   described is this instrument sending one.
@@ -119,7 +121,7 @@ source: >-
   THE BEND RANGE IN SEMITONES: settable, but no range and no default is
   printed.
 
-  THE PRESET COUNT: there are preset folders and "thousands of projects", and no
+  THE PRESET COUNT: there are preset folders and "thousands of projects" (guide p. 6), and no
   count addressable by program change.
 
   WHERE THE SEARCH DOES NOT REACH, said plainly. It covers both editions of the guide, the OS
@@ -186,8 +188,8 @@ sources:
     paginated: false
     # The section that states the voice pool and the per-track channel. BOTH ARE ABSENT FROM
     # THE PRINTABLE EDITION of the same guide, which is why this page is cited rather than a
-    # page number: the strings "24 voices", "voices of polyphony" and "midi channel on each"
-    # appear nowhere in its 135 pages.
+    # page number: the strings "24 voices", "voices of polyphony" (project) and "midi channel on
+    # each" (project) appear nowhere in its 135 pages.
   instrument:
     kind: manual
     title: "OP-XY guide, section 14: instrument"
@@ -256,18 +258,18 @@ midi:
   # pressing play sends one - relaying what came in is not originating it - and no document
   # here says otherwise, so `both` would be claiming the half that was not established.
   # The multi-out's sync8, sync16 and sync24 settings are not this: those are analogue sync
-  # pulses, and the guide describes them carrying "clock, start, stop and reset" over a DIN
-  # sync cable (p. 113), which is a different wire and a different standard.
+  # pulses, and the guide describes them carrying "clock, start, stop and reset" (p. 113) over a DIN
+  # sync cable, which is a different wire and a different standard.
   transport: receives
   program_change:
     # SENDS, VIA THE EXTERNAL MIDI TRACK, which is the only direction either edition
     # describes: "in the external midi track you can control which midi channel, bank and
     # program you want to control" (p. 56), with "rotate the light gray knob to select a
-    # program". The release notes treat it as a sequencer parameter too - "fix: midi program
+    # program" (p. 56). The release notes treat it as a sequencer parameter too - "fix: midi program
     # change param locks not working" (os_updates, 1.1.15).
-    # WHAT IT DOES ON RECEIVING ONE IS NOT RECORDED. The words "program change" appear in
-    # neither edition, and loading a project over MIDI is a control change here, not a
-    # program change: CC 86 below.
+    # WHAT IT DOES ON RECEIVING ONE IS NOT RECORDED. The words `program change` appear in neither
+    # edition, and loading a project over MIDI is a control change here, not a program change: CC 86
+    # below.
     sends: true
 
 parts:
@@ -306,10 +308,10 @@ controls:
   track_pan:       {label: Track Pan, cc: 10, part: track}
   tempo:           {label: Tempo, cc: 80}
   groove:          {label: Groove, cc: 81}
-  # "delay scene" in the printable guide and "scene (delayed switch)" on the website. What it
-  # does is in the release notes: "add midi command for setting delayed scene" (os_updates,
-  # 1.1.0), and the guide describes the gesture it automates - "by default, when switching
-  # scenes this change will happen immediately, to delay this change and queue up the next
+  # "delay scene" in the printable guide and "scene (delayed switch)" (midi_cc_table) on the
+  # website. What it does is in the release notes: "add midi command for setting delayed scene"
+  # (os_updates, 1.1.0), and the guide describes the gesture it automates - "by default, when
+  # switching scenes this change will happen immediately, to delay this change and queue up the next
   # selected scene hold shift, tap play and then select a scene" (p. 67).
   delay_scene:     {label: Delay Scene, cc: 82}
   previous_scene:  {label: Previous Scene, cc: 83}
@@ -332,9 +334,9 @@ voice:
   # TWENTY-FOUR, AND SHARED ACROSS THE SIXTEEN TRACKS, in the maker's own sentence: "the
   # voices settings page in project settings allows you to assign voices to specific tracks,
   # OP-XY has 24 voices of polyphony and by default automatically assigns voices" (project).
-  # The product page says the same of the sound - "24-voice multitimbral synthesis" - and the
-  # printable guide shows the pool running out rather than describing it, with an indicator
-  # that is "only visible when 17 or more voices are in use".
+  # The product page says the same of the sound - "24-voice multitimbral synthesis" (product_page) -
+  # and the printable guide shows the pool running out rather than describing it, with an indicator
+  # that is "only visible when 17 or more voices are in use" (guide p. 35).
   polyphony: 24
   polyphony_shared: true
   # THREE PLAY MODES AND NO COUNT FOR ANY OF THEM: "rotate the dark gray knob to select
@@ -350,8 +352,9 @@ voice:
     # enable or disable clock, notes, other (CCs, and other controls), timestamp and velocity."
     # (p. 116). Until 2026-10-14 this cited p. 90 for that switch, in words the page's text
     # layer carries and the printed page does not show.
-    # The guide's other velocity setting is not this one: "off", "soft (for gentler playing)"
-    # and "hard (for more vigorous playing)" (p. 110) set what the built-in keyboard sends.
+    # The guide's other velocity setting is not this one: "off", "soft (for gentler
+    # playing)" (p. 110) and "hard (for more vigorous playing)" (p. 110) set what the built-in
+    # keyboard sends.
     # Until 2026-10-14 this said `received`.
     note_on: both
     # Note-off velocity is never mentioned in either edition.

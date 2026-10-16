@@ -18,14 +18,15 @@
 # FIFTEEN NUMBERS ARE THE INSTRUMENT'S OWN, AND FOURTEEN ARE IN A TABLE OF MODULATION SOURCES.
 # Printed page 234 lists 36 sources a patch can route, and five of its rows name controller
 # numbers: the modulation wheel at 1, breath control at 2, the expression pedal at 11, the sustain
-# pedal at 64, and a row reading "CC 22 - CC 31" against "MIDI CC #22 - #31". The fifteenth is in
-# the MPE section: "Front-back / Y-axis (sent as MIDI CC 74)" (manual p. 201).
+# pedal at 64, and a row reading "CC 22 - CC 31" (manual p. 234) against "MIDI CC #22 - #31"
+# (manual p. 234). The fifteenth is in the MPE section: "Front-back / Y-axis (sent as MIDI CC 74)"
+# (manual p. 201).
 #
 # **THE TEN IN THAT RANGE ARE CONTROLS WHERE THE MODWAVE'S HUNDRED AND ONE WERE NOT**, which is a
-# distinction worth stating. The modwave's chart published a block of numbers "Assignable for
-# controllers and modulation" - a statement about what a player may do. This row is a **named
-# source in the mod matrix**: a patch selects "CC 24" the way it selects "LFO 2", and the number is
-# fixed. So each of the ten is addressable and does something definite.
+# distinction worth stating. The modwave's chart published a block of numbers as assignable for
+# controllers and modulation - a statement about what a player may do. This row is a **named source
+# in the mod matrix**: a patch selects "CC 24" the way it selects "LFO 2", and the number is fixed.
+# So each of the ten is addressable and does something definite.
 #
 # IT SENDS NRPN AND DOES NOT ANSWER TO IT, WHICH NOTHING ELSE HERE DOES. "Send NRPN: if set to On,
 # the physical panel elements send out MIDI NRPN data. For parameter automation please use MIDI CC
@@ -36,10 +37,10 @@
 # AND THE ONE STATEMENT ABOUT RECEIVING PROGRAM CHANGE IS ON A WEB PAGE, UNDER A TITLE THAT DENIES
 # IT. The manual's 246 pages name the message twice, in the glossary and in the list of what a Macro
 # button can send (manual p. 194), and neither says what the instrument does on receiving one. The
-# product page's FAQ is titled "This device does not react to Program Change Messages!" and then
-# explains how to make it work - which is how every entry on that page is built, the title being the
-# complaint and the body the answer. A picture in the manual supports it, the `Favorites` tab
-# numbering each filled slot for MIDI (manual p. 174). See the source account.
+# product page's FAQ is titled "This device does not react to Program Change Messages!"
+# (product_page) and then explains how to make it work - which is how every entry on that page is
+# built, the title being the complaint and the body the answer. A picture in the manual supports it,
+# the `Favorites` tab numbering each filled slot for MIDI (manual p. 174). See the source account.
 
 definition: 1
 
@@ -47,11 +48,11 @@ model:
   manufacturer: Waldorf
   name: Iridium
   # OS 3 IS THE MAKER'S OWN FILE NAME AND THE MANUAL NAMES NO VERSION INSIDE ITSELF - its running
-  # head is "Iridium Manual" throughout and its imprint reads "© 2023 Waldorf Music GmbH" while
-  # the file was created 2026-01-28. Waldorf serves operating-system updates from a `myWaldorf`
-  # account rather than a public page, so what the newest OS is cannot be read from anything
-  # fetched here. **This is the edition the maker offers for this instrument**, which is as far as
-  # the documents go. Checked 2026-10-03.
+  # head is "Iridium Manual" (manual p. 3) throughout and its imprint reads "© 2023 Waldorf Music
+  # GmbH" while the file was created 2026-01-28. Waldorf serves operating-system updates from a
+  # `myWaldorf` account rather than a public page, so what the newest OS is cannot be read from
+  # anything fetched here. **This is the edition the maker offers for this instrument**, which is as
+  # far as the documents go. Checked 2026-10-03.
   firmware: "3"
 
 source: >-
@@ -79,11 +80,12 @@ source: >-
   voices against this instrument's 16. Each needs its own reading.
 
   FIFTEEN CONTROLLER NUMBERS ARE THE INSTRUMENT'S OWN. Fourteen come from the modulation-source
-  table on printed page 234, where five rows name a number: "Modulation wheel (CC #1)", "MIDI
-  Breath Controller (CC #2)", "MIDI Expression pedal (CC #11)", "MIDI Sustain pedal (CC #64)", and
-  one row covering ten, "MIDI CC #22 - #31" (manual p. 234). The fifteenth is in the MPE section: "Front-back /
-  Y-axis (sent as MIDI CC 74)" (manual p. 201), whose own row in the table is described as "Second
-  MPE parameter" with no number against it, so the two have to be joined by hand.
+  table, where five rows name a number: "Modulation wheel (CC #1)" (manual p. 234), "MIDI Breath
+  Controller (CC #2)" (manual p. 234), "MIDI Expression pedal (CC #11)" (manual p. 234), "MIDI
+  Sustain pedal (CC #64)" (manual p. 234), and one row covering ten, "MIDI CC #22 - #31"
+  (manual p. 234). The fifteenth is in the MPE section: "Front-back / Y-axis (sent as MIDI CC 74)"
+  (manual p. 201), whose own row in the table is described as "Second MPE parameter" (manual p. 234)
+  with no number against it, so the two have to be joined by hand.
 
   **That table is set two-up and Waldorf draws each rule as one segment per row**, at three x
   positions a fraction of a point apart. A reader that clusters the rules but takes the first
@@ -95,10 +97,10 @@ source: >-
   a reader checking this definition against the manual would otherwise find no page saying 26.
 
   THE TEN IN THE RANGE ARE RECORDED AND THE MODWAVE'S HUNDRED AND ONE WERE NOT. That chart gave a
-  block of numbers against "Assignable for controllers and modulation", which says what a player
-  may do. This gives a row in the list of things a patch can be modulated by, beside "LFO 2" and
-  "Velocity", and the numbers are fixed. A player cannot move CC 24; they can only choose whether
-  a patch listens to it.
+  block of numbers as assignable for controllers and modulation, which says what a player may do.
+  This gives a row in the list of things a patch can be modulated by, beside "LFO 2" and "Velocity",
+  and the numbers are fixed. A player cannot move CC 24; they can only choose whether a patch
+  listens to it.
 
   EVERY ONE OF THE FIFTEEN IS RECORDED AS RECEIVED, WHICH IS THE DOCUMENTED HALF. All fifteen are
   described as things the sound engine is modulated **by**. The manual's one statement about
@@ -116,23 +118,23 @@ source: >-
   no field and is here instead.
 
   MPE, WITH AN OPTIONAL SECOND ZONE. The three axes are given outright: "Left-right / X-axis (sent
-  as MIDI Pitch Bend)", "Front-back / Y-axis (sent as MIDI CC 74)" and "Pressure / Z-axis (sent as
-  MIDI Channel Aftertouch)" (manual p. 201). It configures itself when told to - "if a connected
-  MPE Controller sends MCM (MPE Configuration Messages), these will be detected and will
-  automatically put Iridium into MPE mode" (manual p. 201) - and "Iridium supports an optional
-  second MPE zone" (manual p. 201), which is why `parts` below has two.
+  as MIDI Pitch Bend)" (manual p. 201), "Front-back / Y-axis (sent as MIDI CC 74)" (manual p. 201)
+  and "Pressure / Z-axis (sent as MIDI Channel Aftertouch)" (manual p. 201). It configures itself
+  when told to - "if a connected MPE Controller sends MCM (MPE Configuration Messages), these will
+  be detected and will automatically put Iridium into MPE mode" (manual p. 201) - and "Iridium
+  supports an optional second MPE zone" (manual p. 201), which is why `parts` below has two.
 
   RECEIVING PROGRAM CHANGE IS STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT. The
   manual never says what the instrument does on receiving one: it names the message in the
   glossary that begins on printed page 239 and in the list of what a Macro button can send (manual
   p. 194), and nowhere else. The product page's FAQ is
-  titled "This device does not react to Program Change Messages!" and answers "You will have to
-  use the Favorites list in order to get the Prog CH working", then "This device uses only to the
-  entries in the Favorites lis when Prog CH messages are used. As soon as you have put the most
-  needed patches there, you can call them up by MIDI" (product_page) - the maker's own "uses only
-  to" and "lis". **Every entry on that page is titled as a user would phrase the complaint and
-  answered in the body**, so the instrument does answer to program change and what it selects is a
-  "Favorites" entry rather than a patch.
+  titled "This device does not react to Program Change Messages!" (product_page) and answers "You
+  will have to use the Favorites list in order to get the Prog CH working" (product_page), then
+  "This device uses only to the entries in the Favorites lis when Prog CH messages are used. As soon
+  as you have put the most needed patches there, you can call them up by MIDI" (product_page) - the
+  maker's own "uses only to" (product_page) and "lis". **Every entry on that page is titled as a
+  user would phrase the complaint and answered in the body**, so the instrument does answer to
+  program change and what it selects is a "Favorites" entry rather than a patch.
 
   **A SUPPORT PAGE SHOULD CONFIRM A FACT RATHER THAN CARRY IT ALONE, AND A PICTURE SUPPORTS THIS
   ONE.** The `Favorites` screenshot, captioned "The Favorites tab for Iridium Keyboard" (manual
@@ -144,9 +146,9 @@ source: >-
   in their own manuals, and all three record program change as received.
 
   **No preset count is recorded**, because nothing says how far program change reaches. The
-  "Favorites" hold "20 sound programs per Set" over "up to six Sets, which means faster access to
-  120 sound programs with just two taps" (manual p. 173), and no document says whether program
-  change reaches one Set or all six.
+  "Favorites" hold "20 sound programs per Set" (manual p. 173) over "up to six Sets, which means
+  faster access to 120 sound programs with just two taps" (manual p. 173), and no document says
+  whether program change reaches one Set or all six.
 
   A SENTENCE THAT IS WRONG IN TWO WAYS, AND IS NOT ABOUT WHAT IT FIRST LOOKS LIKE. The split
   range is given as "The lowest setting is 0 (note C-2); the highest is 60 (note C8)" (manual
@@ -269,7 +271,8 @@ midi:
   # the maker's own curly apostrophe - against "MIDI Clock means that Iridium automatically syncs
   # to incoming MIDI Clock if it is sent by an external device" (manual p. 202). The three sync
   # sources are Internal, MIDI Clock and CV Clock, and **none of them is a sending mode**, so the
-  # "nor does it send" describes Internal rather than implying some other setting does.
+  # "nor does it send" (manual p. 202) describes Internal rather than implying some other setting
+  # does.
   clock: receives
   program_change:
     # STATED ONCE, ON A WEB PAGE, UNDER A TITLE THAT DENIES IT, AND SUPPORTED BY A PICTURE - see
@@ -341,15 +344,15 @@ voice:
     # manual has that row, `Release Velocity | MIDI Release Velocity` (mk2_manual p. 220), and
     # it is the later instrument's.
     note_on: received
-  # BOTH KINDS, AND THE MANUAL HAS A SECTION ON THE POLYPHONIC: the Keyboard has "49
-  # light-weighted sensitive keys with polyphonic" aftertouch (manual p. 20), and the distinction
-  # is drawn explicitly - "Polyphonic aftertouch, that is transmitted individually" (manual
-  # p. 21) against monophonic channel aftertouch. The modulation-source table carries "After
-  # Touch" described as "Polyphonic Keyboard Pressure Data". **The MPE Z axis is channel
-  # aftertouch** (manual p. 201), which is a different message from polyphonic key pressure;
-  # both are answered to, the channel kind on that page's word alone. Until 2026-10-12 this
-  # said `poly`, the stronger of two words where the field had no third; `waldorf/iridium_core`
-  # and `waldorf/iridium_mk2` say `both` of the same engine.
+  # BOTH KINDS, AND THE MANUAL HAS A SECTION ON THE POLYPHONIC: the Keyboard has "49 light-weighted
+  # sensitive keys with polyphonic" (manual p. 20) aftertouch, and the distinction is drawn
+  # explicitly - "Polyphonic aftertouch, that is transmitted individually" (manual p. 21) against
+  # monophonic channel aftertouch. The modulation-source table carries "After Touch" described as
+  # "Polyphonic Keyboard Pressure Data" (manual p. 234). **The MPE Z axis is channel aftertouch**
+  # (manual p. 201), which is a different message from polyphonic key pressure; both are answered
+  # to, the channel kind on that page's word alone. Until 2026-10-12 this said `poly`, the stronger
+  # of two words where the field had no third; `waldorf/iridium_core` and `waldorf/iridium_mk2` say
+  # `both` of the same engine.
   aftertouch: both
   pitch_bend:
     # PER OSCILLATOR, WHICH IS UNUSUAL: "PB Range Osc 1, 2, or 3" (manual p. 38), "Determines the

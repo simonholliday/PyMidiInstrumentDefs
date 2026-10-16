@@ -4,8 +4,8 @@ model:
   manufacturer: Waldorf
   name: Streichfett
   # The manual states no firmware. Waldorf's product page, saved and hashed below, offers
-  # exactly one - "Streichfett firmware 1.14", under Other Downloads - so 1.14 is both the
-  # newest and the only firmware published, and the unit the one measured fact below came
+  # exactly one - "Streichfett firmware 1.14" (product_page), under Other Downloads - so 1.14 is
+  # both the newest and the only firmware published, and the unit the one measured fact below came
   # from was running it. What the manual's own facts held true for before 1.14 is not
   # recorded anywhere Waldorf publishes.
   firmware: "1.14"
@@ -57,27 +57,26 @@ midi:
   channels: [1, 16]
   program_change:
     receives: true
-    presets: 12              # "Program number (0 - 11)", where pp = preset + 4 x bank (p. 22)
+    presets: 12              # "Program number (0 - 11)" (p. 22), where pp = preset + 4 x bank
 
 parts:
   # Two sections, and every control below is deliberately unparted - that is, on
-  # the base channel. The manual prints one *generic* control change (p. 22,
-  # "Bc cc vv", "c : MIDI channel (0 - 15)") over a single flat list of 70-94,
-  # and never ties a controller number to a section or to a channel.
+  # the base channel. The manual prints one *generic* control change, "Bc cc vv" with "c : MIDI
+  # channel (0 - 15)" (p. 22), over a single flat list of 70-94, and never ties a controller number
+  # to a section or to a channel.
   strings:
     label: Strings
     channel_offset: 0
     addressing: pitches
     receives: [notes, controls, program_change]
-    polyphony: 128           # "128 voice fully polyphonic Strings section" (product page)
+    polyphony: 128           # "128 voice fully polyphonic Strings section" (product_page)
   solo:
     label: Solo
     channel_offset: 1
     addressing: pitches
-    # Notes only. p. 18 documents that the Solo section "can be triggered
-    # independently of the Strings section on the next channel, with split
-    # settings being ignored", and p. 22 ties no control change to any channel -
-    # so the manual settles the notes and leaves the controls open.
+    # Notes only. The Solo section "can be triggered independently of the Strings section on the
+    # next channel, with split settings being ignored" (p. 18), and p. 22 ties no control change to
+    # any channel - so the manual settles the notes and leaves the controls open.
     #
     # MEASURED, not stated by the maker: on one unit running OS 1.14, over USB MIDI,
     # with the base channel set to 2, on 2026-09-14. CC 76, 70 and 77 sent on the
@@ -88,7 +87,7 @@ parts:
     #
     # Only when the base channel is 1-14.
     receives: [notes]
-    polyphony: 8             # "Eight voice polyphonic Solo section" (product page)
+    polyphony: 8             # "Eight voice polyphonic Solo section" (product_page)
 
 voice:
   addressing: pitches
@@ -122,8 +121,8 @@ groups:
 controls:
 
   # Two conventions share this table, and each control keeps its own. Sustain
-  # Pedal's "0 = Off, 64 = On" is a band, as it is everywhere. Five others are
-  # exact values - "0 = Base, 1 = Both, 2 = 8va" means 0, 1 and 2, and nothing
+  # Pedal's "0 = Off, 64 = On" (p. 21) is a band, as it is everywhere. Five others are
+  # exact values - "0 = Base, 1 = Both, 2 = 8va" (p. 21) means 0, 1 and 2, and nothing
   # above 2 - so they are choices, sent exactly as printed.
 
   # ── Performance ───────────────────────────────────────────────────────────

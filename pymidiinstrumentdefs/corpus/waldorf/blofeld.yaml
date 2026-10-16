@@ -49,13 +49,13 @@ source: >-
   whole of the published controller map, and the specification is cited below only for
   the parameter ranges it gives differently and for the device ID.
 
-  SIXTEEN ROWS ARE NOT CONTROLS, each left out for a stated reason. Twelve read
-  "- not used -" in the maker's own hand: 0, 3, 6, 8, 9, 11, 63, 119 and 124 to 127 -
-  0 among them, the chart's `Bank Select MSB`. Four are channel mode messages, which
-  belong to the MIDI specification rather than to this instrument and which the
-  validator refuses - All Sound Off, Reset All Controllers, Local Control and All Notes
-  Off at 120 to 123. Bank select LSB at 32 is a control, as bank select is wherever a
-  maker numbers it, and its banks are under program_change below too.
+  SIXTEEN ROWS ARE NOT CONTROLS, each left out for a stated reason. Twelve read "- not used -"
+  (pp. 113-117) in the maker's own hand: 0, 3, 6, 8, 9, 11, 63, 119 and 124 to 127 - 0 among them,
+  the chart's `Bank Select MSB`. Four are channel mode messages, which belong to the MIDI
+  specification rather than to this instrument and which the validator refuses - All Sound Off,
+  Reset All Controllers, Local Control and All Notes Off at 120 to 123. Bank select LSB at 32 is a
+  control, as bank select is wherever a maker numbers it, and its banks are under program_change
+  below too.
 
   TEN CONTROLS CARRY AN ASTERISK IN THE CHART, which is a footnote marker and not part
   of a name, so it is not in their labels: "Controllers marked with * don’t change the
@@ -81,7 +81,7 @@ source: >-
   THIS INSTRUMENT CANNOT DO NRPN OR RPN, AND THE CHART IS WHY. Neither the manual nor
   Waldorf's System Exclusive specification mentions either, on any page of either. More
   than that, the chart gives away the six controller numbers the mechanism needs: CC 6,
-  Data Entry, is marked "- not used -"; CC 38, its LSB, is Osc 2 FM; and 98, 99, 100 and
+  Data Entry, is marked "- not used -" (p. 113); CC 38, its LSB, is Osc 2 FM; and 98, 99, 100 and
   101 - the NRPN and RPN pairs - are the filter envelope's Decay 2, Sustain 2 and Release
   and the amplifier envelope's Attack. A fine parameter change travels by system exclusive
   here instead, which the Global menu offers as a choice: "Determines how Real-Time Sound
@@ -136,8 +136,8 @@ source: >-
   NO CONTROL HAS A DEFAULT, because the chart gives none and nothing else states any.
 
   AND NO CONTROL NAMES ITS STATES, though eighteen of them have states to name. The chart
-  prints a value range beside each - "off, on" for four, "serial/parallel" for the filter
-  routing, six waveform names for each LFO shape, six for each oscillator shape - but it
+  prints a value range beside each - "off, on" for four, "serial/parallel" (manual p. 115) for the
+  filter routing, six waveform names for each LFO shape, six for each oscillator shape - but it
   never says which controller value selects which state, and in every one of those rows
   the controller range is wider than the list: four states against 0…3, two states against
   0…127. Two rows show the gap plainly, Filter 1 and 2 FM, whose range is 0…127 and whose
@@ -156,14 +156,14 @@ source: >-
 
   THE FOUR ENVELOPES ARE ABBREVIATED IN THE CHART AND EXPANDED SIX PAGES EARLIER. FE, AE,
   E3 and E4 are nowhere explained where they are used, but the appendix's table of
-  modulation destinations gives them in full - "FE Attack Attack rate of Filter Envelope"
-  and "AE Attack Attack rate of Amp Envelope" (p. 107) - which is where the group names
-  below come from rather than from a guess at what the letters stand for.
+  modulation destinations gives them in full - "FE Attack Attack rate of Filter
+  Envelope" (manual p. 107) and "AE Attack Attack rate of Amp Envelope" (p. 107) - which is where
+  the group names below come from rather than from a guess at what the letters stand for.
 
 midi:
   # "Sets the basic send and receive channel for the Blofeld" (p. 82), printed as
-  # "omni, 1...16" - so 1 to 16 are the channels it can be set to, and omni is a mode rather
-  # than a channel: "If omni is selected, the Blofeld sends on channel 1 and receives on all
+  # "omni, 1...16" (manual p. 82) - so 1 to 16 are the channels it can be set to, and omni is a mode
+  # rather than a channel: "If omni is selected, the Blofeld sends on channel 1 and receives on all
   # channels" (p. 82).
   channels: [1, 16]
   # IT TAKES CLOCK, AND NOTHING SAYS IT EVER SENDS ONE. The setting has two values and those
@@ -228,10 +228,10 @@ voice:
   # TWENTY-FIVE IS A CEILING THE PATCH LOWERS, and the maker writes it that way: "up to 25
   # Voices" (product_page), which is the only published voice count - the manual gives none, and
   # its Technical Data page is power supply and dimensions only (p. 112). The manual says what
-  # moves it: "This saves DSP Power and therefore can contribute to increased polyphony" of an
-  # oscillator switched off (p. 37), and "The usage of effects requires DSP Power and can lead to
-  # decreased polyphony" (p. 64). So 25 is the maximum the specification states rather than a
-  # count that holds whatever the player does, which is the multi/poly's arrangement exactly.
+  # moves it: "This saves DSP Power and therefore can contribute to increased polyphony" (p. 37) of
+  # an oscillator switched off, and "The usage of effects requires DSP Power and can lead to
+  # decreased polyphony" (p. 64). So 25 is the maximum the specification states rather than a count
+  # that holds whatever the player does, which is the multi/poly's arrangement exactly.
   polyphony: 25
   # The sixteen parts draw on that one pool: nothing gives a part voices of its own, and the
   # voice count is stated once for the instrument.
@@ -246,11 +246,12 @@ voice:
     # RELEASE VELOCITY IS A MODULATION SOURCE, which is a stronger statement than merely
     # receiving it: a patch can route it. The appendix's table of sources gives "Rel. Velo" as
     # "MIDI note release velocity" (p. 106), and the prose lists "Velocity, Release Velocity,
-    # Aftertouch (Pressure) and Polyphonic Pressure" among the unipolar sources (p. 60).
+    # Aftertouch (Pressure) and Polyphonic Pressure" (p. 60) among the unipolar sources.
     note_off: true
-  # BOTH KINDS OF PRESSURE, from the same table: "Pressure" is "MIDI channel pressure" and "Poly
-  # Prs." is "MIDI polyphonic pressure" (p. 106), each a modulation source a patch can select. A
-  # Multi part can be told to ignore them - "Pressure receive / ignore" (p. 27).
+  # BOTH KINDS OF PRESSURE, from the same table: "Pressure" is "MIDI channel
+  # pressure" (manual p. 106) and "Poly Prs." is "MIDI polyphonic pressure" (p. 106), each a
+  # modulation source a patch can select. A Multi part can be told to ignore them - "Pressure
+  # receive / ignore" (p. 27).
   # Until 2026-10-12 this said `poly`, the stronger of two words where the field had no third.
   aftertouch: both
   pitch_bend:
@@ -271,7 +272,8 @@ parts:
     count: 16
     # "Channel sets the MIDI Channel for the selected Instrument. This MIDI channel is used to
     # send MIDI messages and to receive MIDI messages for this Part when Status is set to play"
-    # (p. 25), over "global, omni, 1…16" - so a part is given a channel rather than deriving one.
+    # (p. 25), over "global, omni, 1…16" (manual p. 25) - so a part is given a channel rather than
+    # deriving one.
     channel: assigned
     addressing: pitches
     # Notes, controls and program change all reach a part, and each can be refused: the Receive

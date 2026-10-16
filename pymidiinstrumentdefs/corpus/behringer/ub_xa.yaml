@@ -2,15 +2,16 @@
 #
 # This instrument has **no controls here because its maker publishes none**, and that was
 # established rather than assumed. Behringer's product page claims "comprehensive MIDI
-# implementation" and the only document behind it is a Quick Start Guide that names MIDI 158
-# times and never once names a controller number, a control change, an NRPN or a chart.
+# implementation" (product_page) and the only document behind it is a Quick Start Guide that names
+# MIDI 158 times and never once names a controller number, a control change, an NRPN or a chart.
 #
 # **THE PANEL CALLOUTS ARE THE TRAP, AND THEY ARE CONVINCING.** Both this guide and the UB-Xa
 # D's pair a parenthesised integer with a parameter name, contiguously, in all nine languages:
-# "(22) VOLUME MOD", "(47) MODULATION", "(54) ATTACK", "(81) MIDI IN". That reads exactly like a
-# controller map and is not one - they are figure callouts keyed to the panel drawing. The proof
-# is that **the same control carries a different number in each document**: VOLUME is callout
-# (1) in this guide and (11) in the desktop's, and OSC 1 MOD is (76) here and (22) there.
+# "(22) VOLUME MOD" (guide p. 15), "(47) MODULATION" (desktop_guide p. 16), "(54) ATTACK"
+# (desktop_guide p. 16), "(81) MIDI IN" (desktop_guide p. 17). That reads exactly like a controller
+# map and is not one - they are figure callouts keyed to the panel drawing. The proof is that **the
+# same control carries a different number in each document**: VOLUME is callout (1) in this guide
+# and (11) in the desktop's, and OSC 1 MOD is (76) here and (22) there.
 # A contiguous run to 95 is not how controller numbers are assigned. Anything scraped from
 # those would be fiction.
 #
@@ -33,10 +34,11 @@ source: >-
   **THE MAKER CLAIMS A MIDI IMPLEMENTATION AND PUBLISHES NO PART OF IT.** The product page says
   this synthesiser is "filled to the brim with modern features such as velocity and after-touch,
   512 user program memories and comprehensive MIDI implementation" (product_page). No document
-  behind that sentence names a single controller number. Across both guides the words "Control
-  Change", "controller", "NRPN", "RPN", "Program Change", "SysEx", "System Exclusive",
-  "implementation", "Chart" and "Appendix" occur **nought times each**, in a pair of documents
-  that say "MIDI" 158 and 179 times.
+  behind that sentence names a single controller number. Across both guides the words `Control
+  Change`, `controller`, `NRPN`, `RPN`, `Program Change`, `SysEx`, `System Exclusive`,
+  `implementation`, `Chart` and `Appendix` occur **nought times each**, in a pair of documents that
+  say "MIDI" 158 and 179 times; `CC` comes nought times in this guide and 18 in the desktop guide,
+  each in "MIDI CC" with no number, the English reading "via MIDI CC" (desktop_guide p. 15).
 
 
   Checked eight ways by two readers, the second asked to break the finding rather than confirm
@@ -61,10 +63,10 @@ source: >-
 
 
   WHAT IT DOES PUBLISH, AND IT IS FOUR SENTENCES. The specifications give "16-voice bi-timbral"
-  and "MIDI In/out/thru 5-pin DIN / 16 channels" and "USB (MIDI) USB 2.0, type B" (guide
-  p. 60) and "61 full-size keys with velocity and polyphonic aftertouch" (guide p. 61). The
-  sockets are described one by one, the MIDI IN being "to input MIDI from an external MIDI
-  device such as a sequencer or DAW" (guide p. 17).
+  (guide p. 60) and "MIDI In/out/thru 5-pin DIN / 16 channels" (guide p. 60) and "USB (MIDI) USB
+  2.0, type B" (guide p. 60) and "61 full-size keys with velocity and polyphonic aftertouch"
+  (guide p. 61). The sockets are described one by one, the MIDI IN being "to input MIDI from an
+  external MIDI device such as a sequencer or DAW" (guide p. 17).
 
 
   **THE MENUS ARE DESCRIBED AND NEVER OPENED.** "Set MIDI channels for the USB and MIDI ports.
@@ -76,13 +78,13 @@ source: >-
   setting exists, and what it can be set to is not written down.
 
 
-  THE TWO LAYERS EACH TAKE A MIDI CHANNEL, AND NO NUMBER IS GIVEN FOR EITHER. In Split "Each
-  section can be set to the same or different MIDI channel", and in Dual the two layers "can
-  have the same or independent MIDI channels which allows external MIDI-enabled devices to
-  trigger the UB-Xa" (guide p. 42). **So this instrument has parts and this file records none**,
-  because a part needs a channel or an offset from one and the maker states neither: both are
-  the player's to choose, in a menu whose contents are not published. Recording a part with an
-  invented channel would be the one thing worse than recording nothing.
+  THE TWO LAYERS EACH TAKE A MIDI CHANNEL, AND NO NUMBER IS GIVEN FOR EITHER. In Split "Each section
+  can be set to the same or different MIDI channel" (guide p. 42), and in Dual the two layers "can
+  have the same or independent MIDI channels which allows external MIDI-enabled devices to trigger
+  the UB-Xa" (guide p. 42). **So this instrument has parts and this file records none**, because a
+  part needs a channel or an offset from one and the maker states neither: both are the player's to
+  choose, in a menu whose contents are not published. Recording a part with an invented channel
+  would be the one thing worse than recording nothing.
 
 
   THE DOCUMENT DISAGREES WITH ITSELF ABOUT HOW MANY THINGS IT IS AT ONCE. Its cover calls it a
@@ -135,8 +137,11 @@ source: >-
   nothing to record it from.
 
 
-  NOT RECORDED: a bend range. The guide describes a "PITCH BEND LEVER" and gives no interval for
-  it anywhere.
+  NOT RECORDED: a bend range. The PITCH BEND lever "has a range of up or down one whole step"
+  (guide p. 17), or an octave, by its AMOUNT switch, and no page says what range the UB-Xa gives
+  received pitch bend. The UB-Xa D's guide repeats the two ranges, under its AMOUNT switch, which
+  its text calls NARROW (desktop_guide p. 15), for a unit whose panel has no lever
+  (desktop_guide p. 14), and says no more.
 
 sources:
   guide:
@@ -189,7 +194,7 @@ sources:
     # "Comprehensive MIDI implementation (including NRPN/CC control of all parameters and bulk
     # load/save)" is in the page as served, exactly once, inside a `script` element, and is
     # therefore absent from this text copy and uncitable. The claim a reader can actually see
-    # says only "comprehensive MIDI implementation", with no number in it.
+    # says only "comprehensive MIDI implementation" (product_page), with no number in it.
     # The sha256 is of the page's visible text; the page as served hashes to
     # f58a353dcc1acda58101de0a4d8f84f22b7a66bddc9a8de8d1a4872b3a7b3832.
 

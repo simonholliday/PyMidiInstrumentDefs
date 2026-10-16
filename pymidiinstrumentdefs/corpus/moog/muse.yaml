@@ -72,7 +72,7 @@ source: >-
   `cc 114`, the arpeggiator's direction, names its first band "ODR" (manual p. 120) where the
   arpeggiator's own DIRECTION switch is "ORD" - "the order the notes were played (ORD)" (manual
   p. 23), and "Arpeggiated notes will play in the same order they were originally played on the
-  keyboard" under the heading ORD (manual p. 69). **A transposition the same manual disproves
+  keyboard" (manual p. 69) under the heading ORD. **A transposition the same manual disproves
   twice**, which is a better position than `cc 28`'s: no arithmetic is needed, only the two other
   places the word is printed. The definition carries `ord`.
 
@@ -107,25 +107,28 @@ source: >-
 
   TRANSMITTED ON TWO CHANNELS, NEITHER OF THEM A TIMBRE'S. On the way out the instrument splits
   its own controls between two settings rather than between its timbres: "KEYBOARD MIDI OUT
-  CHANNEL (ALL, 1-16. DEFAULT: 1)" carries "MIDI NOTE, NOTE ON/ OFF, VELOCITY, AFTERTOUCH, and
-  MIDI CCs messages" (manual p. 110), and "LHC MIDI OUT CHANNEL (ALL, 1-16. DEFAULT: 1)" (manual
-  p. 110) carries "PITCH WHEEL and MOD WHEEL" (manual p. 110) alone. So `cc 1` below goes out on
-  a different channel from every other row, and `part` describes what a received message reaches
-  rather than what a transmitted one leaves on.
+  CHANNEL (ALL, 1-16. DEFAULT: 1)" (manual p. 110) carries "MIDI NOTE, NOTE ON/ OFF, VELOCITY,
+  AFTERTOUCH, and MIDI CCs messages" (manual p. 110), and "LHC MIDI OUT CHANNEL (ALL, 1-16. DEFAULT:
+  1)" (manual p. 110) carries "PITCH WHEEL and MOD WHEEL" (manual p. 110) alone. So `cc 1` below
+  goes out on a different channel from every other row, and `part` describes what a received message
+  reaches rather than what a transmitted one leaves on.
 
-  SENT BY DEFAULT AND NOT ANSWERED BY DEFAULT. "SEND CC (ON/OFF. DEFAULT: ON)" with "Sets whether
-  Muse sends CC messages via the MIDI OUT and USB outputs" (manual p. 111), against "RECIEVE CC
-  (ON/OFF. DEFAULT: OFF)" with "Sets whether Muse receives CC messages via the MIDI IN and USB
-  inputs" (manual p. 111) - the maker's own spelling of "recieve", kept. Program change the same
-  way round: "SEND PGM CHNG (ON, OFF. DEFAULT: ON)" and "RECIEVE PGM CHNG (ON, OFF. DEFAULT:
-  OFF)" (manual p. 111). Every control below is `both` because the instrument does both; the
-  factory position of two switches is not a direction.
+  SENT BY DEFAULT AND NOT ANSWERED BY DEFAULT. "SEND CC (ON/OFF. DEFAULT: ON)" (manual p. 111) with
+  "Sets whether Muse sends CC messages via the MIDI OUT and USB outputs" (manual p. 111), against
+  "RECIEVE CC (ON/OFF. DEFAULT: OFF)" (manual p. 111) with "Sets whether Muse receives CC messages
+  via the MIDI IN and USB inputs" (manual p. 111) - the maker's own spelling of "recieve", kept.
+  Program change the same way round: "SEND PGM CHNG (ON, OFF. DEFAULT: ON)" (manual p. 111) and
+  "RECIEVE PGM CHNG (ON, OFF.
+  DEFAULT: OFF)" (manual p. 111). Every control below is `both` because the instrument does both;
+  the factory position of two switches is not a direction.
 
   TWO CONTROLLER NUMBERS ARE STATED A SECOND TIME, IN BOTH DIRECTIONS, AND THEY ARE THE PEDALS.
   The v1.1.0 change list gives each as a pair of sentences: "Sustain pedal will output on MIDI
-  CC64" and "Muse will now respond to incoming sustain pedal messages on MIDI CC64" (release_notes p. 8); "Expression pedal connected to EXPRESSION IN will output on MIDI CC11" and
-  "Muse will now respond to incoming expression pedal messages on CC11" (release_notes
-  p. 8). So for two of the 102 the appendix's silence about direction is filled in by prose.
+  CC64" (release_notes p. 8) and "Muse will now respond to incoming sustain pedal messages on MIDI
+  CC64" (release_notes p. 8); "Expression pedal connected to EXPRESSION IN will output on MIDI CC11"
+  (release_notes p. 8) and "Muse will now respond to incoming expression pedal messages on CC11"
+  (release_notes p. 8). So for two of the 102 the appendix's silence about direction is filled in by
+  prose.
 
   THE OLDEST RELEASE NOTES CARRY THE FULLEST ACCOUNT OF THE CHANGE THAT MATTERS. The v1.1.0 list
   appears in all three sets, and 1.2.0's is the longest: it alone carries "If SUSTAIN PEDAL
@@ -155,25 +158,25 @@ source: >-
   CLOCK AND TRANSPORT BOTH WAYS, AND BOTH ARE OFF ON THE WAY OUT. "CLOCK SOURCE (AUTO, INTERNAL,
   ANALOG, MIDI IN, USB. DEFAULT: AUTO)" (manual p. 66) takes a clock in; "MIDI CLOCK OUT (OFF,
   SEQ, ON. DEFAULT: OFF)" (manual p. 66) sends one. "MIDI START/STOP OUT (ON, OFF. DEFAULT: OFF)"
-  (manual p. 66) against "SEQ START/STOP IN (ON, IGNORE. DEFAULT: ON)" and "ARP START/STOP IN
-  (ON, IGNORE. DEFAULT: ON)" (manual p. 66). All of it arrived at once: "MIDI CLOCK IN/OUT and
-  START/STOP functionality fully implemented" (release_notes p. 5), so a Muse on an earlier
-  firmware is a different instrument in this respect.
+  (manual p. 66) against "SEQ START/STOP IN (ON, IGNORE. DEFAULT: ON)" (manual p. 66) and "ARP
+  START/STOP IN (ON, IGNORE. DEFAULT: ON)" (manual p. 66). All of it arrived at once: "MIDI CLOCK
+  IN/OUT and START/STOP functionality fully implemented" (release_notes p. 5), so a Muse on an
+  earlier firmware is a different instrument in this respect.
 
-  NOT RECORDED, AND EACH FOR A STATED REASON. **No system exclusive**, because the words "system
-  exclusive" and "sysex" appear in none of the five documents - a silence over 161 pages rather
-  than a denial, so the field is left out instead of being set to false. **No NRPN**, and that one
-  is checked: the appendix's gaps are 2, 4, 6, 32, 38, 63, 74, 84 and 96 to 101, which is the
-  whole of the MIDI specification's data-entry and NRPN and RPN block left alone, and the words
-  NRPN and RPN appear nowhere either. **No mode**, because Moog publishes no implementation chart
-  and the only statement near it is that OMNI is one of the choices for the receive channel
-  (manual p. 110). **No note range**, because the keybed is given as "61 full-size semi-weighted
-  Fatar keybed with Velocity and channel Aftertouch" (manual p. 116) and a key count is not a
-  span of note numbers; "KB OCTAVE Shifts the octave of the keyboard down" (manual p. 13) moves
-  it and the manual never says how far. **No note-off velocity.** **No kind of aftertouch
-  received**: no page names aftertouch among what arrives, and the comment beside
-  `aftertouch_transmits` has the sentence that comes nearest. And nothing from the Quickstart
-  Guide, which carries no controller number and no MIDI setting.
+  NOT RECORDED, AND EACH FOR A STATED REASON. **No system exclusive**, because the words `system
+  exclusive` and `sysex` appear in none of the five documents - a silence over 161 pages rather than
+  a denial, so the field is left out instead of being set to false. **No NRPN**, and that one is
+  checked: the appendix's gaps are 2, 4, 6, 32, 38, 63, 74, 84 and 96 to 101, which is the whole of
+  the MIDI specification's data-entry and NRPN and RPN block left alone, and the words NRPN and RPN
+  appear nowhere either. **No mode**, because Moog publishes no implementation chart and the only
+  statement near it is that OMNI is one of the choices for the receive channel (manual p. 110). **No
+  note range**, because the keybed is given as "61 full-size semi-weighted Fatar keybed with
+  Velocity and channel Aftertouch" (manual p. 116) and a key count is not a span of note numbers;
+  "KB OCTAVE Shifts the octave of the keyboard down" (manual p. 13) moves it and the manual never
+  says how far. **No note-off velocity.** **No kind of aftertouch received**: no page names
+  aftertouch among what arrives, and the comment beside `aftertouch_transmits` has the sentence that
+  comes nearest. And nothing from the Quickstart Guide, which carries no controller number and no
+  MIDI setting.
 
 sources:
   manual:
@@ -249,22 +252,23 @@ sources:
 midi:
   # "MIDI IN CHANNEL (OMNI, 1-16. DEFAULT: 1)" (manual p. 110), and the same range on the other
   # three channel settings - the keyboard's and the LHC's outputs, which also take ALL, and
-  # "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)".
+  # "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)" (manual p. 110).
   channels: [1, 16]
   # BOTH, AND NEITHER IS A DEFAULT. In: "CLOCK SOURCE (AUTO, INTERNAL, ANALOG, MIDI IN, USB.
   # DEFAULT: AUTO)" (manual p. 66). Out: "MIDI CLOCK OUT (OFF, SEQ, ON. DEFAULT: OFF)" (manual
   # p. 66), so sending is off until somebody turns it on.
   clock: both
   # BOTH. Out: "MIDI START/STOP OUT (ON, OFF. DEFAULT: OFF)" (manual p. 66). In, twice over, once
-  # per sequencer: "SEQ START/STOP IN (ON, IGNORE. DEFAULT: ON)" and "ARP START/STOP IN (ON,
-  # IGNORE. DEFAULT: ON)" (manual p. 66). Song position and song select are named nowhere.
+  # per sequencer: "SEQ START/STOP IN (ON, IGNORE. DEFAULT: ON)" (manual p. 66) and "ARP START/STOP
+  # IN (ON, IGNORE. DEFAULT: ON)" (manual p. 66). Song position and song select are named nowhere.
   transport: both
   program_change:
     # "RECIEVE PGM CHNG (ON, OFF. DEFAULT: OFF)" (manual p. 111) - the maker's spelling. It
     # answers; the factory position of the switch is off.
     receives: true
     # "SEND PGM CHNG (ON, OFF. DEFAULT: ON)" (manual p. 111), and 1.4.0 added "Output MIDI
-    # program change when patches are loaded via PATCH select buttons or sequence".
+    # program change when patches are loaded via PATCH select buttons or
+    # sequence" (release_notes p. 5).
     sends: true
     # "Each of the 16 banks contains 16 patches (for a total of 256 available patches)" (manual
     # p. 95). Addressed as "MSB is 0, LSB is 1-16 (selecting a BANK), PC is 1-16 (selecting a
@@ -346,9 +350,9 @@ parts:
     # per-patch basis" (manual p. 95).
     count: 2
     # A CHANNEL EACH, SET BY THE PLAYER, SO NEITHER DERIVES FROM THE OTHER. "MIDI IN CHANNEL
-    # (OMNI, 1-16. DEFAULT: 1)" for timbre A and "MULTI IN B CHANNEL (OMNI, 1-16. DEFAULT: 1)"
-    # for timbre B (manual p. 110) - both default to 1, which is why 1.4.0 lists "Prevent
-    # collisions between MIDI IN channel numbers" (release_notes p. 6).
+    # (OMNI, 1-16. DEFAULT: 1)" (manual p. 110) for timbre A and "MULTI IN B CHANNEL (OMNI, 1-16.
+    # DEFAULT: 1)" (manual p. 110) for timbre B - both default to 1, which is why 1.4.0 lists
+    # "Prevent collisions between MIDI IN channel numbers" (release_notes p. 6).
     channel: assigned
     addressing: pitches
     # NOTES AND CONTROLLERS. Notes reach a timbre by channel, and a 1.4.0 bug fix shows how

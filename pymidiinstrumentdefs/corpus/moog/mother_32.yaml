@@ -10,7 +10,8 @@
 # converted to control voltage and gate: "MIDI Note values received are converted into a
 # 1V/Octave Keyboard CV, and then routed to the VCO and KB CV output jack" (p. 56). There is one
 # MIDI socket and it is an input, which the specifications give in four words - "MIDI INPUT:
-# Din Jack" with "DATA: Note, Clock, CC, etc." beside it (p. 70). No output, no thru, no USB.
+# Din Jack" (manual p. 70) with "DATA: Note, Clock, CC, etc." (p. 70) beside it. No output, no thru,
+# no USB.
 
 definition: 1
 
@@ -81,8 +82,8 @@ sources:
   manual:
     kind: manual
     title: Mother 32 Users Guide
-    # The guide's own back page calls itself "Mother-32 User Manual Version 2", which is a
-    # printing of the document and not a firmware: see the model block above for that.
+    # The guide's own back page calls itself "Mother-32 User Manual Version 2" (manual p. 71), which
+    # is a printing of the document and not a firmware: see the model block above for that.
     edition: User Manual Version 2
     landing: "https://www.moogmusic.com/downloads/?type=User%20Manual"
     url: "https://cdn.inmusicbrands.com/Moog/Mother32/Mother_32_Users_Manual.pdf"
@@ -122,19 +123,19 @@ sources:
     # for an instrument and of what it does not.
 
 midi:
-  # The Setup mode page for the channel lists all sixteen by name, "MIDI Channel 1" to "MIDI
-  # Channel 16" (p. 59), and the chapter gives the default: "The Default MIDI Channel is 1"
+  # The Setup mode page for the channel lists all sixteen by name, "MIDI Channel 1" (manual p. 59)
+  # to "MIDI Channel 16" (p. 59), and the chapter gives the default: "The Default MIDI Channel is 1"
   # (p. 56).
   channels: [1, 16]
   # RECEIVES, AND NOTHING SAYS IT SENDS. "When Mother-32 detects a MIDI Clock signal, the Tempo
   # LED blinks green at the detected tempo and the panel TEMPO knob becomes a clock divider"
-  # (p. 57), and Setup page 8 carries a "Follow MIDI Clock" switch, on by default. The clock
-  # this instrument puts out is a voltage at a jack, not a MIDI message.
+  # (p. 57), and Setup page 8 carries a "Follow MIDI Clock" (pp. 60-61) switch, on by default. The
+  # clock this instrument puts out is a voltage at a jack, not a MIDI message.
   clock: receives
   # RECEIVES, ALL THREE, each with a sentence of its own: "MIDI START: A MIDI Start message runs
   # the pattern from Step 1. MIDI STOP: A MIDI Stop message stops the pattern on the last active
   # step. MIDI CONTINUE: A MIDI Continue message will start the pattern on the next active step"
-  # (p. 57). Setup page 8 carries a "Follow MIDI Start / Stop" switch, on by default, and
+  # (p. 57). Setup page 8 carries a "Follow MIDI Start / Stop" (p. 61) switch, on by default, and
   # nothing is transmitted - there is no MIDI output to transmit on.
   # SONG POSITION POINTER IS IMPLIED AND NOT STATED, which is worth the distinction. No
   # sentence in either document says it is received; the only mention is an aside in the
@@ -160,8 +161,8 @@ voice:
     # RECEIVED, AND WHAT IT REACHES IS A SETTING: "MIDI Note On Velocity values from 0 to 127
     # can be output from the Assignable output as a -5V to +5V CV signal" (p. 57). It also
     # does one fixed thing: in the sequencer's record and step-edit functions, "MIDI Note On
-    # Velocity values 96 or greater or will turn Accent ON for the currently edited step" -
-    # the maker's own doubled word is left as printed.
+    # Velocity values 96 or greater or will turn Accent ON for the currently edited
+    # step" (manual p. 57) - the maker's own doubled word is left as printed.
     note_on: received
   # CHANNEL, AND THE MAKER SAYS WHICH IN TWO PLACES: "MIDI Channel Aftertouch can be output as
   # a -5V to +5V signal on the assignable output" (p. 57), and the assignable output's own list

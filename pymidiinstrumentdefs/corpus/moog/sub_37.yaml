@@ -5,20 +5,21 @@ model:
   name: Sub 37
   # THE FIRMWARE IS BETTER EVIDENCED HERE THAN ON THE INSTRUMENT THAT REPLACED THIS ONE.
   # Moog publishes one firmware for it, 1.2.0, and the document inside that package is
-  # headed "MOOG SUB 37 - FIRMWARE UPDATE 1.2.0" and "MOOG SUB 37 - CHANGE LOG", naming
-  # this instrument on every page. The same files are in Moog's Subsequent 37 package,
-  # where they name this instrument and not that one. Checked 2026-10-01.
+  # headed "MOOG SUB 37 - FIRMWARE UPDATE 1.2.0" (release_notes) and "MOOG SUB 37 - CHANGE
+  # LOG" (release_notes), naming this instrument on every page. The same files are in Moog's
+  # Subsequent 37 package, where they name this instrument and not that one. Checked 2026-10-01.
   # What rests on it: two of the controller numbers below. The change log says 1.2.0
-  # "Fixed LFO 2 Rate MIDI CC response" and "Fixed Sustain Pedal function (MIDI CC 64 /
-  # CV Mapping: SUST PED)", so CC 8 and CC 64 do not behave as charted on anything earlier.
+  # "Fixed LFO 2 Rate MIDI CC response" (release_notes) and "Fixed Sustain Pedal function (MIDI CC
+  # 64 / CV Mapping: SUST PED)" (release_notes), so CC 8 and CC 64 do not behave as charted on
+  # anything earlier.
   firmware: "1.2.0"
   # MOOG CALLS THIS INSTRUMENT THREE THINGS AND ITS MANUAL CALLS IT ONE. The manual is
-  # headed Sub 37 and says "The Sub 37 is a 2-note paraphonic analog synthesizer"; the word
+  # headed Sub 37 and says "The Sub 37 is a 2-note paraphonic analog synthesizer" (p. 9); the word
   # "Tribute" appears nowhere in its 62 pages. Moog's own page for the instrument that
-  # replaced it uses "Sub 37 Tribute Edition", "the Sub 37" and "the original Sub 37" for
-  # the same thing, in the notice quoted in the source line below. So this definition is
-  # named for what the manual says, and covers the Tribute Edition because Moog's notice
-  # says the Tribute Edition is what was discontinued.
+  # replaced it uses "Sub 37 Tribute Edition" (product_page), "the Sub 37" and "the original Sub
+  # 37" (product_page) for the same thing, in the notice quoted in the source line below. So this
+  # definition is named for what the manual says, and covers the Tribute Edition because Moog's
+  # notice says the Tribute Edition is what was discontinued.
   # NO REVISION IS RECORDED, because no document distinguishes one. Moog no longer has a
   # product page for this instrument at all: both the page-data addresses its site uses
   # return 404 where the Subsequent 37's returns 200, checked 2026-10-01.
@@ -49,15 +50,15 @@ source: >-
   which is a channel mode message and so is a control in neither file. Four of this chart's
   names differ from that one's only in how the PDF spaces the letters - this file uses Type
   1 fonts where the newer manual uses a subset CID font, so an extractor infers word gaps
-  differently and reads "AR PEGG IATOR L ATCH" for a string that is identical in both. The
+  differently and reads `AR PEGG IATOR L ATCH` for a string that is identical in both. The
   raw show-string operands were read in both files to confirm the words are the same.
 
   AND MOOG NAMES NO MIDI DIFFERENCE BETWEEN THEM. Every change its notice claims is sonic:
   "The SUBSEQUENT 37 is a (2-note) paraphonic analog synthesizer with double the mixer
   headroom of the Sub 37 ... the gain-staging of the Ladder filter has been reshaped to
   boost harmonic saturation and analog compression ... a re-tuned Multidrive circuit that
-  extends well beyond the grit and growl of the original Sub 37", and "Each enhancement
-  maintains the magic and character of its predecessor" (product page).
+  extends well beyond the grit and growl of the original Sub 37" (product_page), and "Each
+  enhancement maintains the magic and character of its predecessor" (product_page).
 
   WHAT IS STILL NOT SETTLED, and is marked here rather than resolved: whether an instrument
   of this model answers to CC 123, which the newer manual documents and this one does not
@@ -71,18 +72,17 @@ source: >-
   the maker marks RESERVED and 1 is a channel mode message. 98 of the 123 NRPN rows are
   named and 25 are the maker's own (RESERVED).
   57 PARAMETERS ARE IN BOTH CHARTS UNDER DIFFERENT NAMES, which no page points out:
-  "FILTER EG ATTACK TIME" on one page is "F EG ATTACK" on the next, "FILTER MULTIDRIVE" is
-  "FILTER DRIVE", "GLIDE" is "GLIDE ON". The pairings come from the maker's own list of
-  parameter names on p. 51, printed there as the choices for the programmable modulation
-  destination, which expands every abbreviation the charts use.
-  41 CONTROLS CAN BE REACHED BY NRPN ALONE: the arpeggiator's rate, range, pattern, gate
-  length and clock division, each LFO's sync, clock division, clock source and keyboard
-  tracking, each modulation bus's mod wheel, velocity, pressure and controller 4 amounts,
-  the five mixer mute switches, and the filter envelope's sync, loop, latch and clock
-  division. The maker says why: "Since the Sub 37 has over 150 parameters saved with each
-  sound, it is not possible to assign a standard MIDI CC to every parameter. For complete
-  MIDI output from every panel knob and button, you will need to set the KNB NRPN/CC
-  parameter to NRPN mode" (p. 56).
+  "FILTER EG ATTACK TIME" (p. 53) in the CC chart is "F EG ATTACK" (p. 58) in the NRPN chart,
+  "FILTER MULTIDRIVE" (p. 53) is "FILTER DRIVE" (p. 58), "GLIDE" is "GLIDE ON". The pairings come
+  from the maker's own list of parameter names on p. 51, printed there as the choices for the
+  programmable modulation destination, which expands every abbreviation the charts use. 41 CONTROLS
+  CAN BE REACHED BY NRPN ALONE: the arpeggiator's rate, range, pattern, gate length and clock
+  division, each LFO's sync, clock division, clock source and keyboard tracking, each modulation
+  bus's mod wheel, velocity, pressure and controller 4 amounts, the five mixer mute switches, and
+  the filter envelope's sync, loop, latch and clock division. The maker says why: "Since the Sub 37
+  has over 150 parameters saved with each sound, it is not possible to assign a standard MIDI CC to
+  every parameter. For complete MIDI output from every panel knob and button, you will need to set
+  the KNB NRPN/CC parameter to NRPN mode" (p. 56).
 
   THE AMPLIFIER ENVELOPE IS THE OTHER WAY ROUND: ten controller numbers below and no NRPN
   at all. The NRPN chart stops four rows into reserved space at 524, having given the filter
@@ -105,7 +105,7 @@ source: >-
 
   ONE NAMED ROW HAS NO VALUE RANGE PRINTED AT ALL: NRPN 500, FILTER RESONANCE. That is the
   page rather than the reading, and the Subsequent 37's manual prints the row the same way.
-  28 CONTROLS ARE 14-BIT PAIRS, printed as "0-127 [MSB], 0-16383[MSB,LSB]" with the fine
+  28 CONTROLS ARE 14-BIT PAIRS, printed as "0-127 [MSB], 0-16383[MSB,LSB]" (p. 53) with the fine
   half 32 above the coarse one, which is the MMA's own pairing. Three further rows are pairs
   and are reserved. Whether the instrument sends both halves is a setting: CC FORMAT offers
   7-BIT and 14-BIT and "use 7-bit (default)" (p. 37).
@@ -136,12 +136,12 @@ sources:
     # Checked rather than assumed: of the 62 pages, 56 print a number in their footer and
     # every one prints its own, pages 3 and 7 to 62. The six that print nothing are the
     # cover, the two safety pages, the contents and two at the front.
-    # NOT RECORDED, dated: the document states no date of its own. Its last page carries
-    # "(c)2015 MOOG MUSIC INC." and its PDF was made on 28 April 2015 with Adobe InDesign
-    # CC 2014, which is a fact about the file rather than a date the maker states. Moog
-    # serves it from a `BackOffice/` path where the Subsequent 37's files sit under
-    # `Subsequent37/`, and its downloads page builds its list in the browser, so the
-    # landing page here is an address a reader can follow rather than a page to hash.
+    # NOT RECORDED, dated: the document states no date of its own. Its last page carries "©2015 MOOG
+    # MUSIC INC." (p. 62) and its PDF was made on 28 April 2015 with Adobe InDesign CC 2014, which
+    # is a fact about the file rather than a date the maker states. Moog serves it from a
+    # `BackOffice/` path where the Subsequent 37's files sit under `Subsequent37/`, and its
+    # downloads page builds its list in the browser, so the landing page here is an address a reader
+    # can follow rather than a page to hash.
   release_notes:
     kind: release_notes
     title: MOOG SUB 37 - FIRMWARE UPDATE 1.2.0
@@ -154,11 +154,11 @@ sources:
     # it is cited by its own two headings, FIRMWARE UPDATE 1.2.0 and CHANGE LOG.
     paginated: false
     # The sha256 is of the PDF itself, which is a member of the zip at the url above rather
-    # than a file Moog serves on its own: "Sub_37_Firmware_v1.2.0_Download/Manual Install/
-    # Sub_37_Update_Instructions_v1.2.0.pdf". The zip hashes to
+    # than a file Moog serves on its own: `Sub_37_Firmware_v1.2.0_Download/Manual
+    # Install/Sub_37_Update_Instructions_v1.2.0.pdf`. The zip hashes to
     # 6d6901524f7ed4060ccd7008f22e882c05bd444b16d31bb224bdb84ae26bbc28.
-    # The same file is in Moog's Subsequent 37 package under the name
-    # "Firmware Update Instructions.pdf", byte for byte, and names this instrument.
+    # The same file is in Moog's Subsequent 37 package under the name `Firmware Update
+    # Instructions.pdf`, byte for byte, and names this instrument.
   product_page:
     kind: product_page
     title: "Subsequent 37 | Moog Music"
@@ -175,8 +175,8 @@ sources:
     # of the page-data addresses the site would use for it return 404.
     # It carries Moog's notice - "Aug. 28, 2017, Asheville, NC - In the spirit of continuous
     # improvement, the award-winning Sub 37 Tribute Edition has been discontinued from
-    # production to make way for a new standard: THE SUBSEQUENT 37" - and the list of what
-    # changed, which names nothing about MIDI.
+    # production to make way for a new standard: THE SUBSEQUENT 37" (product_page) - and the list of
+    # what changed, which names nothing about MIDI.
     # The sha256 is of the text rendering rather than of the JSON as served, because Moog
     # builds its pages in the browser and the words are in the site's own data file. The
     # JSON hashes to
@@ -189,21 +189,21 @@ midi:
   # separate settings, both defaulting to 1: IN CHANNEL offers "1 - 16 and ALL which puts
   # the Sub 37 in Omni Mode" (p. 36).
   # WHAT OUT CHANNEL OFFERS, THE MANUAL SAYS TWO WAYS: the menu listing on p. 35 prints
-  # "OUT CHANNEL: 1 - 16, ALL" and the description of it on p. 36 says "The choices are
-  # 1 - 16". The pair recorded here is the range both pages agree on.
+  # "OUT CHANNEL: 1 - 16, ALL" (p. 35) and the description of it on p. 36 says "The choices are
+  # 1 - 16" (p. 36). The pair recorded here is the range both pages agree on.
   channels: [1, 16]
   # Received at 24 ppqn: "MIDI clock messages are 24 ppq (pulses-per-quarter-note) messages"
-  # (p. 15). Sent under a three-way setting, SEND CLOCK, whose choices are OFF, ARP ("only
-  # when the Arp or Seq is running") and ON (p. 37).
+  # (p. 15). Sent under a three-way setting, SEND CLOCK, whose choices are OFF, ARP ("only when the
+  # Arp or Seq is running" (p. 37)) and ON.
   clock: both
   # SENT, and what it does with a transport message that arrives is not stated. "When ON
   # (default) MIDI Start and Stop messages are sent when starting and stopping the
   # sequencer" (p. 37). FOLLOW SPP makes the sequencer follow song position pointer "if MIDI
-  # Sync is active", so it acts on a system common message; and the firmware change log's
+  # Sync is active" (p. 37), so it acts on a system common message; and the firmware change log's
   # 1.0.4 entry reads "Change in External Sync behavior: does not require MIDI Start
-  # message", which says a Start was once needed to begin. A synchronised arpeggiator runs
-  # on clock alone: "When SYNC is ON, and you are not in TAP TEMPO mode, the arp/sequencer
-  # will not play unless MIDI clock is received" (p. 15).
+  # message" (release_notes), which says a Start was once needed to begin. A synchronised
+  # arpeggiator runs on clock alone: "When SYNC is ON, and you are not in TAP TEMPO mode, the
+  # arp/sequencer will not play unless MIDI clock is received" (p. 15).
   transport: sends
   program_change:
     receives: true
@@ -211,8 +211,8 @@ midi:
     # "The Sub 37 ships with 256 user-editable preset locations, which are arranged in 16
     # banks of 16 patches" (p. 12), and SEND PGM CHG and RCV PGM CHG both default to ON
     # (p. 36). The 256 are reached with bank select, which the chart's own value column is
-    # the only place to say: CC 32 takes "0 = PRESET BANKS 1...8, 1 = PRESET BANKS 9...16",
-    # and CC 0 "ALWAYS TRANSMITS 0, SHOULD ALWAYS SEND 0 WHEN SENDING THIS CC".
+    # the only place to say: CC 32 takes "0 = PRESET BANKS 1...8, 1 = PRESET BANKS 9...16" (p. 53),
+    # and CC 0 "ALWAYS TRANSMITS 0, SHOULD ALWAYS SEND 0 WHEN SENDING THIS CC" (p. 53).
     presets: 256
   # "For complete MIDI output from every panel knob and button, you will need to set the KNB
   # NRPN/CC parameter to NRPN mode" (p. 56), and that setting's choices are "CC (default)
@@ -222,10 +222,10 @@ midi:
   # Five dumps the player starts from the front panel - the edit buffer, the current
   # sequence, the current preset, all 256 presets, and a bulk dump (pp. 35, 37-38) - and a
   # received buffer dump "will go into its edit buffer, but not yet be stored into a Preset
-  # location" (p. 37). It also answers to the MMA's tuning messages: "the Sub 37 also
-  # supports the MIDI tuning standards for Single-Note Tuning Change and Bulk Tuning Dump
-  # (full 128-note tunings), in addition to the Scale/Octave format", holding "a single
-  # 128-note tuning table in its active memory, which is not saved on power-down" (p. 44).
+  # location" (p. 37). It also answers to the MMA's tuning messages: "[t]he Sub 37 also supports the
+  # MIDI tuning standards for Single-Note Tuning Change and Bulk Tuning Dump (full 128-note
+  # tunings), in addition to the Scale/Octave format" (p. 44), holding "a single 128-note tuning
+  # table in its active memory, which is not saved on power-down" (p. 44).
   # NOT RECORDED: a manufacturer system exclusive layout, which this manual gives nowhere.
   # Moog publishes a Sub 37 Editor, so one exists and is not written down.
   # NOT per_voice_channels, although MIDI MENU 3 looks like it: POLY NUMBER and POLY MAX
@@ -360,7 +360,7 @@ controls:
   # concludes something is missing here: it steps from 89 straight to 91 and from 119 to 122,
   # so CC 90, 120 and 121 appear nowhere, with none of the RESERVED placeholders the chart
   # gives 84 and 96 to 101. And one of those placeholders carries a value range anyway: CC 2
-  # is marked <RESERVED - MIDI BREATH CTRL> and still prints "0-127 [MSB], 0-16383[MSB,LSB]"
+  # is marked <RESERVED - MIDI BREATH CTRL> and still prints "0-127 [MSB], 0-16383[MSB,LSB]" (p. 53)
   # with a fine half at 34.
 
   mod_wheel:
@@ -372,7 +372,7 @@ controls:
     group: wheels
   # THE COLUMN IS READ LITERALLY HERE, and the Grandmother's manual reads the same parameter
   # the other way, so it is worth saying which this is. The column is headed CC VALUE RANGE
-  # and the cell says "0..+24 SEMITONES", so the controller takes 0 to 24 and a step is a
+  # and the cell says "0..+24 SEMITONES" (p. 55), so the controller takes 0 to 24 and a step is a
   # semitone. On the Grandmother the same two amounts get a 25-row table of band starts
   # spread over 0-127 instead, and this manual prints no such table.
   pitch_bend_up_amount:
@@ -389,8 +389,8 @@ controls:
     group: wheels
 
   # IT DID NOT WORK BEFORE FIRMWARE 1.2.0, whose change log reads "Fixed Sustain Pedal
-  # function (MIDI CC 64 / CV Mapping: SUST PED)". This is one of the two reasons the model
-  # above names a firmware at all.
+  # function (MIDI CC 64 / CV Mapping: SUST PED)" (release_notes). This is one of the two reasons
+  # the model above names a firmware at all.
   hold_pedal_sustain:
     label: Hold Pedal/Sustain
     cc: 64
@@ -402,7 +402,7 @@ controls:
     values: {"minus_2": 0, "minus_1": 26, "zero": 51, "plus_1": 77, "plus_2": 102}
     group: keyboard
   # ITS PRINTED RANGE CANNOT BE A CONTROLLER VALUE, so none is recorded: the cell reads
-  # "RECEIVE ONLY: -12...+13 SEMITONES", and a control change carries 0 to 127. What arrives
+  # "RECEIVE ONLY: -12...+13 SEMITONES" (p. 55), and a control change carries 0 to 127. What arrives
   # at CC 119 must map onto those 26 steps somehow and the manual does not say how, so the
   # control keeps the default range and the printed text is here instead. RECEIVE ONLY is
   # the chart's own words and is what direction carries.
@@ -418,10 +418,10 @@ controls:
     group: keyboard
 
   # THE MANUAL USES THIS CONTROL'S FINE HALF FOR SOMETHING ELSE ON ANOTHER PAGE. Page 44
-  # says a tuning scale is chosen by setting RPN MSB 0, LSB 3 and then sending "Data Entry
-  # (CC #39) value 0-31", while this chart gives 39 as the fine half of master volume and
-  # gives data entry as 6 and 38. 38 is the number that agrees with the chart and with the
-  # MMA; 39 is what the page prints. Both are recorded and neither is corrected.
+  # says a tuning scale is chosen by setting RPN MSB 0, LSB 3 and then sending "Data Entry (CC #39)
+  # value 0 -31" (p. 44), while this chart gives 39 as the fine half of master volume and gives data
+  # entry as 6 and 38. 38 is the number that agrees with the chart and with the MMA; 39 is what the
+  # page prints. Both are recorded and neither is corrected.
   master_volume:
     label: Master Volume
     cc: 7
@@ -478,7 +478,7 @@ controls:
     nrpn_range: [0, 1]
     group: arpeggiator
   # THE TWO CHARTS CALL THIS TWO THINGS, and p. 51 is what joins them: the CC chart's ARP
-  # ON/OFF and the NRPN chart's ARP RUN are both "Arpeggiator Run/Stop" in the maker's own
+  # ON/OFF and the NRPN chart's ARP RUN are both "Arpeggiator Run/Stop" (p. 51) in the maker's own
   # parameter list, and that list has no other arpeggiator on/off in it.
   arp_on_off:
     label: Arp On/Off
@@ -546,7 +546,7 @@ controls:
 
   # THE ONE VALUE TABLE THIS MANUAL PRINTS FOR A CONTROLLER IS FOR THIS ONE, under a name
   # the chart does not use, so it is quoted here rather than carried as values. Page 52 is
-  # headed "MIDI CC VALUES FOR THE LFO 1 CLOCK DIVIDER (CC #3), LFO 2 CLOCK DIVIDER (CC #8)"
+  # headed "MIDI CC VALUES FOR THE LFO 1 CLOCK DIVIDER (CC #3), LFO 2 CLOCK DIVIDER (CC #8)" (p. 52)
   # and gives 21 bands; this chart gives CC 3 as LFO 1 RATE, 0-16383. Both are the same
   # knob: "When the SYNC button is illuminated, the LFO rate is synchronized to the
   # Sub 37's internal clock, or external MIDI clock. In this mode, the LFO RATE knob
@@ -579,7 +579,7 @@ controls:
   # over the three bands below it; every other band is six or seven wide and they run
   # consecutively from 0 to 127, so 25-30 is the only reading that fits, and 25-30 is not
   # what the page says. And the ninth row's two names disagree with each other: its time
-  # value is "DOTTED 1/4 NOTE TRIPLET" where its division is "1/4 DOT", which cannot both
+  # value is "DOTTED 1/4 NOTE TRIPLET" (p. 52) where its division is "1/4 DOT", which cannot both
   # be true. The 21 bands are also what the NRPN chart's count of 21 agrees with, for LFO 1
   # Clock Division, LFO 2 Clock Division and Arp Clock Division.
   lfo_1_rate:
@@ -604,9 +604,9 @@ controls:
     range: [0, 16383]
     group: mod_1
   # THE CHARTS GIVE THIS TWO NAMES AND THE MAKER'S OWN LIST JOINS THEM: the CC chart's MOD
-  # 1 PGM DEST AMT and the NRPN chart's MOD 1 PGM AMT are both "Mod Bus 1 Programmable
-  # Destination Amount" on p. 51. The destination it is the amount of is Mod 1 Programmable
-  # Destination below, which has no controller number.
+  # 1 PGM DEST AMT and the NRPN chart's MOD 1 PGM AMT are both "Mod Bus 1 Programmable Destination
+  # Amount" (p. 51). The destination it is the amount of is Mod 1 Programmable Destination below,
+  # which has no controller number.
   mod_1_pgm_dest_amt:
     label: Mod 1 Programmable Destination Amount
     cc: 20
@@ -639,7 +639,7 @@ controls:
   # same typographic slip appears as "LF01 Rate" on MOD 2 DEST. The state names here read
   # lfo_2_rate and lfo_1_rate, which is how the rest of the manual spells both. Each bus's
   # sixth destination is the programmable one: "This parameter allows you to specify the
-  # MOD's sixth modulation destination from the default of EG TIME" to any of 89 parameters
+  # MOD's sixth modulation destination from the default of EG TIME" (p. 51) to any of 89 parameters
   # listed by name on p. 51, which is what eg_time_or_pgm means here.
   mod_1_dest:
     label: Mod 1 Destination
@@ -833,7 +833,7 @@ controls:
     range: [0, 88]
     group: mod_2
 
-  # NRPN 489 prints a count of 2 where p. 51 gives OSC1 LEV as "Oscillator 1 Level" and this
+  # NRPN 489 prints a count of 2 where p. 51 gives OSC1 LEV as "Oscillator 1 Level" (p. 51) and this
   # chart gives CC 114 as 0-127. See Oscillator 2 Frequency above.
   osc_1_level:
     label: Osc 1 Level
@@ -865,7 +865,7 @@ controls:
     nrpn_range: [0, 16383]
     group: mixer
   # NRPN 490 prints a count of 21 where p. 51 gives OSC1 ON as "Oscillator 1 ON/OFF
-  # Control". See Oscillator 2 Frequency above.
+  # Control" (p. 51). See Oscillator 2 Frequency above.
   # THE FIVE MUTE BUTTONS ARE NRPN-ONLY, which is this group's whole story: every mixer
   # source has a level with a controller number and a mute with none. "Each mixer source has
   # a dedicated knob for controlling its relative level as well as a mute button" (p. 27).
@@ -902,7 +902,7 @@ controls:
     range: [0, 16383]
     group: oscillators
   # ITS NRPN VALUE COUNT IS ONE OF THE FIVE THE MAKER'S OWN LIST CONTRADICTS. NRPN 487
-  # prints a count of 3 where p. 51 gives OSC2FREQ as "Oscillator 2 Frequency Offset" and
+  # prints a count of 3 where p. 51 gives OSC2FREQ as "Oscillator 2 Frequency Offset" (p. 51) and
   # this chart gives CC 12 as a 14-bit pair. The NRPN is carried; no range is derived from a
   # count that cannot be right. The same is true of the four rows after it in that chart,
   # which are Oscillator 2 Beat Frequency, Oscillator 2 Duo Mode, Oscillator 1 Level and
@@ -915,7 +915,7 @@ controls:
     range: [0, 16383]
     group: oscillators
   # NRPN 488 prints a count of 2 where p. 51 gives OSC2BEAT as "Oscillator 2 Beat Frequency
-  # Offset" and CC 13 is a 14-bit pair. See Oscillator 2 Frequency above.
+  # Offset" (p. 51) and CC 13 is a 14-bit pair. See Oscillator 2 Frequency above.
   osc_2_beat_freq:
     label: Osc 2 Beat Frequency
     cc: 13
@@ -959,7 +959,7 @@ controls:
     nrpn_range: [0, 1]
     group: oscillators
   # NRPN 486 prints a count of 16384 where p. 51 gives OSC2 DUO as "Oscillator 2 Duophonic
-  # mode ON/OFF" and this chart gives it two bands. See Oscillator 2 Frequency above.
+  # mode ON/OFF" (p. 51) and this chart gives it two bands. See Oscillator 2 Frequency above.
   # IT IS ALSO WHAT MAKES THIS INSTRUMENT TWO-VOICE, which is why voice above records no
   # single polyphony: "When DUO MODE is engaged, the Sub 37 has the ability to
   # control the pitch of OSC 1 independently of OSC 2" (p. 26).
@@ -970,7 +970,7 @@ controls:
     values: {"off": 0, "on": 64}
     group: oscillators
   # THE TWO CHARTS NAME ITS THREE STATES DIFFERENTLY. This chart gives "0 = NEITHER, 32 =
-  # LO, 64 = HI", which is what the state names below follow, and p. 51 gives the same
+  # LO, 64 = HI" (p. 55), which is what the state names below follow, and p. 51 gives the same
   # parameter as "OSC2KCTL: Oscillator 2 Keyboard Control for Duo Mode (DRONE, LOW NOTE,
   # HIGH NOTE)". NEITHER and DRONE are the same state: with neither LED lit, oscillator 2
   # follows no key and holds its pitch.
@@ -1077,7 +1077,7 @@ controls:
   # contradicts in words rather than by implication. NRPN 518 prints a count of 2, where
   # p. 41 says of this parameter "The first value is 4, which means that the filter envelope
   # is triggered every 4 whole notes (384 MIDI clocks). The highest value is 1/64T ... Please
-  # refer to the chart on page 52 for a list of available clock divisions" - which is the
+  # refer to the chart on page 52 for a list of available clock divisions" (p. 41) - which is the
   # 21-band table quoted at LFO 1 Rate. The chart's three other clock divisions all print 21.
   # So the NRPN is carried and no range is derived from it.
   filter_eg_clk_div:
@@ -1127,7 +1127,7 @@ controls:
     range: [0, 16383]
     group: filter
   # The maker prints its four bands as "-6dB, -12dB, -18dB, -24dB" and its own
-  # specifications line as "6/12/18/24 dB/Oct Filter Slopes", so the state names drop the
+  # specifications line as "6/12/18/24 dB/Oct Filter Slopes" (p. 61), so the state names drop the
   # sign the way Moog does. All four are attenuation; none is a boost.
   filter_slopes_poles:
     label: Filter Slopes (Poles)

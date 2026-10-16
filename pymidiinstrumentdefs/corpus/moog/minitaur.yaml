@@ -10,11 +10,11 @@ model:
   # 2.1, read with their columns resolved by coordinates because their change log is one wide
   # artwork drawn three times rather than three pages of text:
   # v2.2.0 added RPN 2 coarse tuning over -64 to +63 semitones, and a system exclusive message
-  # for the CV start note, "F0 04 08 23 18 00 nn F7, where nn = start note in hex", moving that
-  # start note's default from 20 to 0. v2.2.1's two entries are a MIDI-sync LFO trigger fault and
-  # an envelope-release fault, and whether they are faults it fixed or faults still open is not
-  # settled by the document: they sit under a bare version heading in a change log, which says
-  # fixed, and are phrased as present-tense symptoms where every other entry says "Fixed".
+  # for the CV start note, "F0 04 08 23 18 00 nn F7, where nn = start note in hex" (release_notes),
+  # moving that start note's default from 20 to 0. v2.2.1's two entries are a MIDI-sync LFO trigger
+  # fault and an envelope-release fault, and whether they are faults it fixed or faults still open
+  # is not settled by the document: they sit under a bare version heading in a change log, which
+  # says fixed, and are phrased as present-tense symptoms where every other entry says "Fixed".
   # NO CONTROLLER NUMBER CHANGED between 2.1 and 2.2.1, so every number below still describes a
   # current instrument. The notes name no CC at all, and no NRPN, no bank select, no MIDI channel
   # and no velocity anywhere in either of them.
@@ -22,8 +22,9 @@ model:
 source: >-
   User manual (c)2012 pp. 21-24 for the control-change chart, and THE FIRMWARE v2.1 ADDENDUM
   BOUND INTO THE SAME FILE, after its last numbered page. The addendum is not a separate document
-  and never was: two pages headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM" follow the manual, and
-  its corrections are the section headed CORRECTIONS TO THE MANUAL on the second of them.
+  and never was: two pages headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM" (addendum) follow the
+  manual, and its corrections are the section headed CORRECTIONS TO THE MANUAL on the second of
+  them.
 
   THE ADDENDUM'S PAGES PRINT NO NUMBER, so it is cited by its own section headings rather than by
   page, the way a document with no pagination is cited anywhere here. The manual's own folios stop
@@ -35,9 +36,10 @@ source: >-
   addendum sheets after them are portrait, carry one page each, and are headed but not numbered.
 
   Two band boundaries below are those corrections and differ from the chart, and the addendum
-  quotes the error it is fixing: "TRIGGER MODE - CC 73 (values) 0-42 (LEGATO ON), 43-85 (LEGATO
-  OFF) 86-127 (EG RESET) [was incorrectly given as 85-127 in manual]", and "KEY PRIORITY - CC 91
-  (values) 0-42 (LOW) 43-85 (HIGH) 86-127 (LAST) [was incorrectly given as 87-127 in manual]".
+  quotes the error it is fixing: "TRIGGER MODE - CC 73 (values) 0-42(LEGATO ON), 43-85(LEGATO OFF)
+  86-127(EG RESET) [was incorrectly given as 85-127 in manual]" (addendum), and "KEY PRIORITY - CC
+  91 (values) 0-42(LOW) 43-85(HIGH) 86-127(LAST) [was incorrectly given as 87-127 in manual]"
+  (addendum).
   So the chart leaves 85-86 unassigned for key priority, which is the printing error the addendum
   fixes - and the widely shared Moog_Minitaur.midnam has it as 85, which is wrong.
 
@@ -66,8 +68,8 @@ sources:
     paginated: false
     # THE SAME FILE AS THE MANUAL ABOVE, and the same hash, which is why it is a second
     # source rather than a second document: the addendum is two pages bound into the back
-    # of the manual, headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM", and they print no page
-    # number where every page of the manual proper does. It is recorded apart from the
+    # of the manual, headed "MOOG MINITAUR FIRMWARE v2.1 ADDENDUM" (addendum), and they print no
+    # page number where every page of the manual proper does. It is recorded apart from the
     # manual because it cannot be cited the same way. The manual's pages are reached by a
     # printed number, two to a sheet; the addendum's are reached by its own headings, and
     # `paginated: false` is how this format says a document has no page to turn to.
@@ -85,18 +87,19 @@ sources:
     paginated: false
     # Cited for the firmware Moog ships and for what changed around the one this definition
     # describes - no controller number among it. The sha256 is of the release notes PDF, which is
-    # a member of the zip at the url above rather than a file Moog serves on its own:
-    # "Minitaur Firmware v2.2.1/Minitaur Firmware v2.2.1 Release Notes.pdf". The zip hashes to
-    # 462f8d3b153529822d27f05be575c2d04f837bd8b9e428168af5406f6e00d5d0 and re-extracting that
-    # member reproduces the cited bytes, which was asserted rather than assumed.
+    # a member of the zip at the url above rather than a file Moog serves on its own: `Minitaur
+    # Firmware v2.2.1/Minitaur Firmware v2.2.1 Release Notes.pdf`. The zip hashes to
+    # 462f8d3b153529822d27f05be575c2d04f837bd8b9e428168af5406f6e00d5d0 and re-extracting that member
+    # reproduces the cited bytes, which was asserted rather than assumed.
     # NOT RECORDED, dated: the document prints no date of its own.
     # READ IT BY COORDINATES. Its change log is a single artwork about 1880 points wide, drawn on
     # each of three pages with a translation and a clip, so every page's content stream holds the
     # whole log and a plain reading returns it three times with the columns interleaved. Which
     # version a line belongs to is the x position of the heading above it, not reading order.
     # It defers to a document of its own for the firmware this definition describes: "See
-    # separate v2_1 new-features documentation for complete details", in its v2.1.0 column. That
-    # document is the addendum bound into the manual above, after its last numbered page.
+    # separate v2_1 new-features documentation for complete details" (release_notes), in its v2.1.0
+    # column. That document is the addendum bound into the manual above, after its last numbered
+    # page.
 
 midi:
   channels: [1, 16]
@@ -109,13 +112,13 @@ midi:
 voice:
   addressing: pitches
   # C-1 to C5, and the range this records is the PITCH range, which is the one a panel needs:
-  # note 72 is as high as the oscillators go, "which is a hardware limitation" in the maker's
-  # words. THE INSTRUMENT HAS TWO CEILINGS, and one field cannot hold both. From firmware 1.0.6,
-  # "VCA Gate responds to MIDI notes above note 72 (VCO pitch still limited to note 72, which is
-  # a hardware limitation)" (release notes, column 3 under the v1.0.6 heading) - so a note above
-  # 72 is answered to, and sounds at 72 rather than not at all. From v2.1 the addendum's WRAP TOP
-  # OCTAVE setting makes "a note which is above C5 ... play the equivalent pitch (C, D, E etc.)
-  # in its top octave, instead of always playing the highest C for all notes above C5"
+  # note 72 is as high as the oscillators go, "which is a hardware limitation" (release_notes) in
+  # the maker's words. THE INSTRUMENT HAS TWO CEILINGS, and one field cannot hold both. From
+  # firmware 1.0.6, "VCA Gate responds to MIDI notes above note 72 (VCO pitch still limited to note
+  # 72, which is a hardware limitation)" (release_notes, column 3 under the v1.0.6 heading) - so a
+  # note above 72 is answered to, and sounds at 72 rather than not at all. From v2.1 the addendum's
+  # WRAP TOP OCTAVE setting makes "a note which is above C5 ... play the equivalent pitch (C, D, E
+  # etc.) in its top octave, instead of always playing the highest C for all notes above C5"
   # (addendum, under the heading WRAP TOP OCTAVE BEHAVIOR on its first page).
   # So on the firmware this describes, transposing a part above 72 sounds, and sounds wrong
   # rather than silent, which is the opposite way round from what this file said before 2026-10-01.
@@ -162,8 +165,8 @@ groups:
   # KEYBOARD PRIORITY is the v2.1 addendum's name for that global setting, under GLOBAL
   # SETTINGS on its second page, where the
   # chart's row is KEY PRIORITY. And the chart's own description column calls each of the other
-  # three a performance control: "Modulation performance control", "Pitch Wheel 'UP' performance
-  # control".
+  # three a performance control: "Modulation performance control" (p. 23), "Pitch Wheel 'UP'
+  # performance control" (p. 23).
   keyboard: Keyboard Priority
   performance: Performance Controls
 

@@ -11,8 +11,8 @@ model:
   # This definition describes 1.1.1 because it is the manual's table plus what 1.1.0 added,
   # and nothing in either document changes a number the manual gives. **The manual's table
   # describes a firmware older than 1.1.0**: it does not list CC 91, and the v1.1.0 notes say
-  # of CC 91 that "Previously, MIDI CC 91 had no effect". So the two sources are read together
-  # and the source line says which number came from which.
+  # of CC 91 that "Previously, MIDI CC 91 had no effect" (release_notes p. 4). So the two sources
+  # are read together and the source line says which number came from which.
   # The manual's own colophon says "User Manual Version 1", which is the document's version
   # and not the firmware's.
   firmware: "1.1.1"
@@ -25,12 +25,12 @@ source: >-
   AND THE FIRMWARE v1.1.1 UPDATE DOCUMENT, five pages, published inside the firmware package
   rather than beside it, which carries v1.1.0's release notes as its last two pages. One
   control here comes from it and from nowhere else: CC 91, keyboard note priority, with its
-  own three-band table, on the notes' own p. 4. The manual's table does not list CC 91, and that document says why:
-  "Previously, MIDI CC 91 had no effect."
-  It also records three things the manual cannot, each marked where it belongs below: that
-  this instrument answers to pitch bend at all, which it did not before v1.1.0; that MIDI
-  notes received while a sequence runs now transpose the sequence rather than playing over it;
-  and that the highest pitch it will play unquantised became a C where it had been a C sharp.
+  own three-band table, on the notes' own p. 4. The manual's table does not list CC 91, and that
+  document says why: "Previously, MIDI CC 91 had no effect" (release_notes p. 4). It also records
+  three things the manual cannot, each marked where it belongs below: that this instrument answers
+  to pitch bend at all, which it did not before v1.1.0; that MIDI notes received while a sequence
+  runs now transpose the sequence rather than playing over it; and that the highest pitch it will
+  play unquantised became a C where it had been a C sharp.
 
   NOT RECORDED: polyphony and velocity, which neither document states, and the contents of the
   SysEx files that set channel and transport, which Moog publishes separately.
@@ -56,14 +56,13 @@ sources:
     page_offset: 0
     # The sha256 is of the update document itself, which is a member of the zip at the url
     # above rather than a file Moog serves on its own:
-    # "Subharmonicon_Firmware_v1_1_1/Subharmonicon_Firmware_Update_1.1.1.pdf". The zip hashes
-    # to dfe838f31dc06edfed9386e117ae83880a9647dbcff1af2c3b2142ab93bc04a6 and
-    # re-extracting that member reproduces the cited bytes, which was asserted rather than
-    # assumed.
+    # `Subharmonicon_Firmware_v1_1_1/Subharmonicon_Firmware_Update_1.1.1.pdf`. The zip hashes to
+    # dfe838f31dc06edfed9386e117ae83880a9647dbcff1af2c3b2142ab93bc04a6 and re-extracting that member
+    # reproduces the cited bytes, which was asserted rather than assumed.
     # Its date is the "March 2022" the document prints for itself. It gives no day, so none is
     # recorded: `dated` keeps whatever text it is given, and a month is what this one states.
-    # Five pages printing no numbers: cited by its own headings, and CC 91's table is on the
-    # file's p. 4.
+    # Five pages printing no numbers, so they are cited by sheet: CC 91's table is on the file's
+    # p. 4.
 
 midi:
   # 1-16 or All, factory 1, and set only by a SysEx file from moogmusic.com
@@ -72,8 +71,8 @@ midi:
   # MIDI clock overrides both the internal clock and any analogue clock, and
   # with it the sequencers run at 4 PPQ, 16th notes (p. 25).
   clock: receives
-  # "Play (MIDI Transport)": whether it follows MIDI transport is itself a
-  # setting, ON from the factory and changed only by SysEx (p. 44).
+  # "Play (MIDI Transport)" (p. 44): whether it follows MIDI transport is itself a setting, ON from
+  # the factory and changed only by SysEx.
   transport: receives
   sysex: true
 
@@ -88,17 +87,17 @@ voice:
   # Three facts from the firmware v1.1.1 document that the format has no field for, recorded
   # here rather than left out:
   # IT ANSWERS TO PITCH BEND, and did not before firmware 1.1.0: "Subharmonicon now changes
-  # pitch in response to MIDI Pitch Bend messages. Previously, Subharmonicon did not respond to
-  # MIDI Pitch Bend." How far it bends is stated nowhere, so `pitch_bend` is left empty: the
-  # field holds a range and a programmable flag, and neither document gives either.
+  # pitch in response to MIDI Pitch Bend messages ... Previously, Subharmonicon did not respond to
+  # MIDI Pitch Bend" (release_notes p. 4). How far it bends is stated nowhere, so `pitch_bend` is
+  # left empty: the field holds a range and a programmable flag, and neither document gives either.
   # NOTES RECEIVED WHILE A SEQUENCE RUNS TRANSPOSE IT, from the same release: "MIDI Notes sent
   # to Subharmonicon via the MIDI jack will now transpose the pitch of the sequence while the
   # sequence is running ... Previously, MIDI notes received while a sequence was running would
-  # play directly over the notes in the sequence." So what an incoming note does depends on
-  # whether the sequencer is running, which `addressing: relative` cannot say.
+  # play directly over the notes in the sequence" (release_notes p. 4). So what an incoming note
+  # does depends on whether the sequencer is running, which `addressing: relative` cannot say.
   # THE TOP OF ITS RANGE MOVED: "The highest pitch Subharmonicon will play in unquantized mode
-  # is now a C. Previously, the highest note in unquantized mode was C#." Neither document gives
-  # a MIDI note number for either, so `note_range` stays unrecorded.
+  # is now a C ... Previously, the highest note in unquantized mode was C#" (release_notes p. 5).
+  # Neither document gives a MIDI note number for either, so `note_range` stays unrecorded.
 
 # Every control below carries the same remark in the table: the CC replaces the
 # knob setting, and moving the knob overrides the CC. The instrument does not
@@ -206,9 +205,9 @@ controls:
 
   # ── Keyboard ──────────────────────────────────────────────────────────────
   # Not in the manual's table at all. From the firmware v1.1.0 release notes, carried in the
-  # v1.1.1 document, which give it a three-band table of its own and say "Previously, MIDI CC
-  # 91 had no effect." One message sets it, and the setting is remembered when the instrument
-  # is powered off.
+  # v1.1.1 document, which give it a three-band table of its own and say "Previously, MIDI CC 91 had
+  # no effect" (release_notes p. 4). One message sets it, and the setting is remembered when the
+  # instrument is powered off.
 
   note_priority:
     label: Keyboard Note Priority
@@ -219,10 +218,10 @@ controls:
     # the default below is its first value rather than zero.
     # THE DOCUMENT CONTRADICTS ITSELF HERE, and the table is followed: the sentence above it
     # offers two states where the table lists three - "You can now use MIDI CC 91 to set Low
-    # Note or Last Note priority on Subharmonicon" - and High Note Priority, which the prose
-    # leaves out, is the one that owns 43-85. Both readings were found by two independent
-    # extractions, and the v1.1.1 document reproduces the page a release later with the error
-    # intact.
+    # Note or Last Note priority on Subharmonicon" (release_notes p. 4) - and High Note Priority,
+    # which the prose leaves out, is the one that owns 43-85. Both readings were found by two
+    # independent extractions, and the v1.1.1 document reproduces the page a release later with the
+    # error intact.
     values: {low_note: 0, high_note: 43, last_note: 86}
     default: 86
     group: keyboard

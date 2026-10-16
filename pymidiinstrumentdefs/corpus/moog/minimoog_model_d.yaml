@@ -58,9 +58,9 @@ source: >-
 
 
   WHAT THE MIDI JACKS CARRY, stated twice and agreeing. "MIDI In: Note On (Trigger), Note #,
-  Velocity, Pitch Bend, and Mod Wheel" and "MIDI Out: Note On (Trigger), Note #, Velocity,
-  Aftertouch, Pitch Bend, and Mod Wheel" (guide p. 81), which is the same list page 35 gives in
-  prose.
+  Velocity, Pitch Bend, and Mod Wheel" (guide p. 81) and "MIDI Out: Note On (Trigger), Note #,
+  Velocity, Aftertouch, Pitch Bend, and Mod Wheel" (guide p. 81), which is the same list page 35
+  gives in prose.
 
 
   **SO AFTERTOUCH IS SENT, AND NO PAGE SAYS IT IS RECEIVED.** Both receive lists omit it and
@@ -78,9 +78,9 @@ source: >-
 
   THE CHANNEL IS SET BY HOLDING KEYS WHILE THE POWER COMES ON, and so is most of the rest of the
   MIDI behaviour. "Sets MIDI IN to MIDI channel 1-16 or OMNI" (guide p. 49), with the input and
-  output settable together or separately, note data transposable by "+/- 12 semitones" in either
-  direction (guide p. 49), local control switchable, and the pitch wheel, mod wheel and
-  aftertouch outputs each switchable on and off.
+  output settable together or separately, note data transposable by "+/- 12 semitones" (guide p. 49)
+  in either direction, local control switchable, and the pitch wheel, mod wheel and aftertouch
+  outputs each switchable on and off.
 
 
   **A READER WHOSE MIDI NOTES MAKE NO SOUND IS PROBABLY IN THE WRONG GATE SOURCE.** One of the
@@ -98,12 +98,12 @@ source: >-
 
 
   NOT RECORDED: a note range. The manual states the keyboard outright - "Key Range: F0 to C4"
-  and 44 keys (guide p. 80) - and anchors it to MIDI, since "This key corresponds to MIDI note
-  48, meaning that MIDI note 36 will produce a Pitch CV value of zero volts" (guide p. 51). That
-  gives 41 to 84 by arithmetic the manual explains. **It is still not recorded, for two
-  reasons**: the manual never says what the instrument does with a note outside that span, and
-  the MIDI In transpose moves the mapping by up to a year of semitones either way, so there is no
-  fixed range to record even if the first objection were answered.
+  (guide p. 80) and 44 keys - and anchors it to MIDI, since "This key corresponds to MIDI note 48,
+  meaning that MIDI note 36 will produce a Pitch CV value of zero volts" (guide p. 51). That gives
+  41 to 84 by arithmetic the manual explains. **It is still not recorded, for two reasons**: the
+  manual never says what the instrument does with a note outside that span, and the MIDI In
+  transpose moves the mapping by up to a year of semitones either way, so there is no fixed range to
+  record even if the first objection were answered.
 
 
   NOT RECORDED: `mode`. There is no MIDI implementation chart; the contents list ends at the
@@ -117,10 +117,10 @@ source: >-
 
   **THE SPECIFICATIONS PAGE IS NOT CAREFULLY CHECKED, WHICH IS WORTH KNOWING BECAUSE TWO FACTS
   HERE REST ON IT.** It gives the operational temperature as 50F to 122F where page 4 says 110F,
-  and its storage range reads "5F to 140F (2C to 60C)" where 5F is -15C. The bend range and the
-  MIDI jack lists come from that page, and both are corroborated elsewhere - the bend by the
-  pitch wheel going "up a fifth" on page 24, and the jack lists by page 35 - which is why they
-  are recorded and the temperatures are not mentioned at all.
+  and its storage range reads "5F to 140F (2C to 60C)" (guide p. 80) where 5F is -15C. The bend
+  range and the MIDI jack lists come from that page, and both are corroborated elsewhere - the bend
+  by the pitch wheel going "up a fifth" on page 24, and the jack lists by page 35 - which is why
+  they are recorded and the temperatures are not mentioned at all.
 
 sources:
   guide:
@@ -149,8 +149,8 @@ sources:
     # of this instrument's documents is two rather than one, and read so that nobody has to read
     # it again.
     # Those knob positions are a trap for anyone grepping it: "10 10 10 0 5 5 0 0 0 0 0 0 10 0 0
-    # 0 0 0 0" are panel settings on this instrument's printed 0 to 10 scale, they are the only
-    # numbers in the file, and no text beside them says so.
+    # 0 0 0 0" (patch_sheets) are panel settings on this instrument's printed 0 to 10 scale, they
+    # are the only numbers in the file, and no text beside them says so.
   downloads:
     kind: download_page
     title: "Downloads | Moog Music"
@@ -176,9 +176,9 @@ midi:
   channels: [1, 16]
   # "Some of these functions are accessed via Power-On commands, while others are accessed via
   # MIDI SysEx (System Exclusive) messages" (guide p. 46). **What the messages are is not
-  # published**: the same page says "SysEx documentation can be downloaded at moogmusic.com" and
-  # the maker's downloads listing does not offer it. So this records that the instrument answers
-  # to system exclusive and nothing about what to send it.
+  # published**: the same page says "SysEx documentation can be downloaded at
+  # moogmusic.com" (guide p. 46) and the maker's downloads listing does not offer it. So this
+  # records that the instrument answers to system exclusive and nothing about what to send it.
   sysex: true
 
 voice:

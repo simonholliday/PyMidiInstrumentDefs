@@ -9,10 +9,12 @@
 # extraction asserts it rather than assuming it.
 #
 # AND 14-BIT CAN BE SWITCHED OFF, which no page of the manual says. Firmware 1.0.8's release
-# notes add "MIDI 14-bit Enable (CONFIG Menu Page 3, Item 5)", and "Disabling 14-bit MIDI will
-# only send a traditional 7-bit MIDI message on the CC corresponding to the MSB for each control
-# (Mod Wheel will only send on CC1 and will not send any information on CC33)". So every `lsb`
-# below is what the instrument does as it leaves the factory and not what it always does.
+# notes add "MIDI 14-bit Enable (CONFIG Menu Page 3, Item 5)" (release_notes p. 2), and "Disabling
+# 14-bit MIDI will only send a traditional 7-bit MIDI message on the CC corresponding to the MSB for
+# each control (Mod Wheel will only send on CC1 and will not send any information on CC33)"
+# (release_notes p. 2).
+# So every `lsb` below is what the instrument does as it leaves the factory and not what it always
+# does.
 
 definition: 1
 
@@ -22,8 +24,8 @@ model:
   # NOT RECORDED, and here is what can be shown instead of a version. The manual names none
   # anywhere. Its control table already carries the two numbers firmware 1.0.7 moved - the 1.0.8
   # release notes record "Add Expression MIDI CC. Expression Input now sends/receives on CC11.
-  # SUB WAVE now sends/receives on CC71", and this table gives Expression Pedal 11 with LSB 43
-  # and Sub OSC Waveshape 71 - so it describes 1.0.7 or later.
+  # SUB WAVE now sends/receives on CC71" (release_notes p. 3), and this table gives Expression Pedal
+  # 11 with LSB 43 and Sub OSC Waveshape 71 - so it describes 1.0.7 or later.
   # 1.0.8 CHANGED NO NUMBER: it added the switch for turning 14-bit CCs off. AND 1.1.0 HAS NO
   # PUBLISHED NOTES AT ALL - Moog's downloads list offers its updater for Windows and Mac and no
   # guide - so whether anything moved after 1.0.8 is not established.
@@ -51,14 +53,15 @@ source: >-
   traditional 7-bit MIDI messages sending a value from 0-127 over a single CC" (p. 35).
 
   THE VALUES COLUMN IS WHY THIS FILE CARRIES BANDS AT ALL. Twenty-one controls are stepped and
-  the manual names every band - "0-31 = TRIANGLE; 32-63 = SAW; 64-95 = RAMP; 96-127 = SQUARE" -
-  and one is a list of exact values rather than bands, which is why LFO1 Destination carries
-  `choices` where the rest carry `values`. Five more are bipolar over the 14-bit range with 8192
-  as zero, which the format has no field for and which is noted beside each of them.
+  the manual names every band - "0-31 = TRIANGLE; 32-63 = SAW; 64-95 = RAMP; 96-127 =
+  SQUARE" (manual p. 36) - and one is a list of exact values rather than bands, which is why LFO1
+  Destination carries `choices` where the rest carry `values`. Five more are bipolar over the 14-bit
+  range with 8192 as zero, which the format has no field for and which is noted beside each of them.
 
   TWO OF THE MAKER'S BAND LISTS DO NOT COVER THEIR RANGE, and both are left as printed. OSC Mod
   Destination gives "32-64" and then "64-95", so 64 is in two bands at once; Filter KB Tracking
-  gives "0-42 = 0; 43-84 = 2/3; 85-126 = 1:1", which stops at 126 and says nothing about 127.
+  gives "0-42 = 0; 43-84 = 2/3; 85-126 = 1:1" (manual p. 36), which stops at 126 and says nothing
+  about 127.
   Bands are recorded by their lowest value, so neither changes what this file sends, and neither
   is guessed at.
 
@@ -67,7 +70,7 @@ source: >-
   Channel Coarse Tune and 03 Tuning Program Select are each marked received and not transmitted,
   and 04 Tuning Bank Select and 05 Modulation Depth Range are marked neither. A seventh is named
   nowhere in that list and appears in the control table instead: CC 74 is "MPE 3rd Dimension of
-  Control", "On/Off via MPE Activation message RPN 6".
+  Control" (manual p. 36), "On/Off via MPE Activation message RPN 6" (manual p. 36).
 
   THAT IS THE WHOLE OF WHAT THE MANUAL SAYS ABOUT MPE. One row of one table, on a synthesiser its
   own specification calls monophonic. Nothing says whether the instrument allocates a channel per
@@ -82,7 +85,8 @@ source: >-
   THOSE TWO CONFIG LISTS DISAGREE WITH EACH OTHER AND ONE OF THEM WITH ITSELF, which is recorded
   rather than resolved because nothing below rests on it. The up list offers +14, +17, +19 and
   +24 semitones and names each correctly; the down list offers -17, -19, -22 and -24, and labels
-  -17 "5th below octave" and -19 "4th below octave", which is the pair the other way round.
+  -17 "5th below octave" (manual p. 30) and -19 "4th below octave" (manual p. 30), which is the pair
+  the other way round.
 
   THREE PLACES IN THE MANUAL DISAGREE WITH THE APPENDIX, and the appendix is followed in all
   three because the panel agrees with it. The body says the oscillator octave offers "16', 8', 4'
@@ -132,22 +136,23 @@ sources:
     page_offset: 0
 
 midi:
-  # "MIDI Channels 1-16" in both directions (p. 34). It is set from the front panel and not from
+  # "MIDI Channels 1--16" (p. 34) in both directions. It is set from the front panel and not from
   # the CONFIG menu, and the input and the output channel need not be the same: "MIDI CHANNEL -
   # Selects MIDI input and output channels ... To select independent input/output channels, first
   # select a MIDI input channel with PGM buttons 1-16, and then press and hold a different PGM
   # button for 2 seconds to select that channel as MIDI output" (p. 29). This field holds one
   # range, which is the range each of the two may take.
   channels: [1, 16]
-  # "MIDI Clock Yes Yes" (p. 35), and 1.0.7 "MIDI Clock Output fully implemented" with a setting
-  # to turn transmission off (3.3 MIDI Clock Settings, p. 31).
+  # "MIDI Clock Yes Yes" (p. 35), and 1.0.7 "MIDI Clock Output fully
+  # implemented" (release_notes p. 3) with a setting to turn transmission off (3.3 MIDI Clock
+  # Settings, p. 31).
   clock: both
   # Song Position Pointer, Start and Stop are each marked both ways; Continue is received and not
   # sent; Song Select is neither (p. 35). So transport travels in both directions with one
   # message missing from one of them.
   transport: both
   program_change:
-    # "Program Change 1-128" both ways (p. 34), with "3.2 Program Change ... Send On (lit) Off
+    # "Program Change 1--128" (p. 34) both ways, with "3.2 Program Change ... Send On (lit) Off
     # (unlit) ... Receive On (lit) Off (unlit)" (p. 31).
     receives: true
     sends: true
@@ -155,9 +160,9 @@ midi:
     # 128 of them and "Bank Select Response Yes Yes" (p. 34) reaches the rest; the manual never
     # says which bank select number selects which of its sixteen banks.
     presets: 256
-  # "Manufacturer or Non-Commercial System Exclusive Yes Yes", footnoted "*No documentation for
-  # manufacturer sysex at this time (factory calibration, etc.)" (p. 34). Patches travel that way:
-  # "Patches can be exported from Messenger via SysEx" (p. 32).
+  # "Manufacturer or Non-Commercial System Exclusive Yes Yes" (manual p. 34), footnoted "*No
+  # documentation for manufacturer sysex at this time (factory calibration, etc.)" (p. 34). Patches
+  # travel that way: "Patches can be exported from Messenger via SysEx" (p. 32).
   sysex: true
   # A CHECKED ABSENCE AND NOT A SILENCE: "NRPNs No No" (p. 34), where the same table marks four
   # RPNs as received. See the source account.
@@ -169,28 +174,29 @@ midi:
 
 voice:
   addressing: pitches
-  # "Note Numbers 0-127" in both directions (p. 34), on a keyboard of 32 keys with an octave
+  # "Note Numbers 0--127" (p. 34) in both directions, on a keyboard of 32 keys with an octave
   # control that moves it two octaves either way.
   note_range: [0, 127]
-  # "TYPE: Monophonic Analog Synthesizer" and "POLYPHONY Monophonic" (p. 32).
+  # "TYPE: Monophonic Analog Synthesizer" (manual p. 32) and "POLYPHONY Monophonic" (p. 32).
   polyphony: 1
   velocity:
-    # "Note-On Velocity Yes Yes" against "Note-Off Velocity No No" (p. 34), so release velocity
-    # neither arrives nor leaves. "TYPE OF KEYS Semi-Weighted with Velocity and Aftertouch"
-    # (p. 32), and two controls below switch what velocity reaches - F ENV VELocity and A ENV
-    # VELocity. The first `Yes` of the Note-On Velocity row is under the table's TRANSMIT
+    # "Note-On Velocity Yes Yes" (manual p. 34) against "Note-Off Velocity No No" (p. 34), so
+    # release velocity neither arrives nor leaves. "TYPE OF KEYS Semi-Weighted with Velocity and
+    # Aftertouch" (p. 32), and two controls below switch what velocity reaches - F ENV VELocity and
+    # A ENV VELocity. The first `Yes` of the Note-On Velocity row is under the table's TRANSMIT
     # heading (p. 34), so it is sent as well as received. Until 2026-10-14 this said `received`.
     note_on: both
     note_off: false
-  # "Channel Aftertouch Yes Yes" against "Poly (Key) Aftertouch No No" (p. 34). Stated, in one
-  # direction each, which three instruments in this corpus could not manage between them.
+  # "Channel Aftertouch Yes Yes" (manual p. 34) against "Poly (Key) Aftertouch No No" (p. 34).
+  # Stated, in one direction each, which three instruments in this corpus could not manage between
+  # them.
   aftertouch: channel
   # Sent, as channel pressure: the same table has it Yes under TRANSMIT (p. 34).
   aftertouch_transmits: true
   pitch_bend:
     # "Default pitch bend range is +/- 7 semitones (can be changed in CONFIG menu)" (p. 7).
     semitones: 7
-    # Four ways to change it: "RPN 00 (Pitch Bend Sensitivity)" received (p. 34), CC 107 and
+    # Four ways to change it: "RPN 00 (Pitch Bend Sensitivity)" (p. 34) received, CC 107 and
     # CC 108 below for up and down separately, and CONFIG items 1.1 and 1.2 (p. 30).
     programmable: true
 

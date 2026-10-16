@@ -5,9 +5,10 @@ model:
   name: Matriarch
   # Moog publishes no firmware version on any page it serves - its downloads list is built in
   # the browser - and publishes one inside every firmware package. The package for this
-  # instrument carries "MATRIARCH FIRMWARE UPDATE V1.3.0 December 2022", which is the newest
-  # Moog offers (checked 2026-10-01), and its release notes are what settle the question:
-  # "CC 94 added to allow switching voice modes over MIDI", under CHANGES SINCE V1.2.3.
+  # instrument carries "MATRIARCH FIRMWARE UPDATE V1.3.0 December 2022" (release_notes p. 1), which
+  # is the newest Moog offers (checked 2026-10-01), and its release notes are what settle the
+  # question: "CC94 added to allow switching voice modes over MIDI" (release_notes p. 2), under
+  # CHANGES SINCE V1.2.3.
   # THE MANUAL'S OWN CHART CARRIES CC 94, so the manual describes firmware 1.3.0 or later, and
   # this definition describes 1.3.0. That is a conclusion from the maker's two documents rather
   # than from a date: the manual states no version at all, and the edition read here was fetched
@@ -26,36 +27,39 @@ source: >-
   package rather than beside it, cited for the firmware this definition describes and for two
   numbers the manual does not settle:
   CC 106 IS IN NEITHER THE CHART NOR THE MANUAL. The notes say "Arp/Sequencer Gate Length can
-  be adjusted using MIDI CC 106. Value 64 = 50% gate length (default)", under CHANGES SINCE
-  V1.2.0 on the notes' own p. 3, where the manual's chart gives Arp Gate Length as CC 15 with a fine half at CC 47.
+  be adjusted using MIDI CC 106. Value 64 = 50% gate length (default)" (release_notes p. 3), under
+  CHANGES SINCE V1.2.0 on the notes' own p. 3, where the manual's chart gives Arp Gate Length as CC
+  15 with a fine half at CC 47.
   Two of the maker's own documents give two numbers for what reads as one parameter, and both
   are recorded, each saying what the other says.
 
   CC 73 IS RECEIVED AND NOT SENT, which the chart does not distinguish: "Arp/Seq PLAY button
-  does not output MIDI CC 73 (can still respond to it if necessary)", under the same section,
-  with the reason "Improves compatibility with other Grandmother/Matriarchs".
+  does not output MIDI CC 73 (can still respond to it if necessary)" (release_notes p. 3), under the
+  same section, with the reason "Improves compatibility with other Grandmother/Matriarchs"
+  (release_notes p. 3).
 
   READ THOSE NOTES' HEADINGS CAREFULLY. Every change list in them is headed by the version it
-  is changes SINCE - "CHANGES SINCE V1.2.3", "CHANGES SINCE V1.2.0" - and never by the version
-  it shipped in, and the document names no v1.2.1 at all. So only two things in it can be
-  attributed outright: the first list, which is 1.3.0's because these are 1.3.0's notes, and the
-  known issues, whose heading says "AS OF V1.3.0". Everything cited here gives the heading it
-  sits under rather than a version it arrived in, CC 106 and CC 73 included.
+  is changes SINCE - "CHANGES SINCE V1.2.3" (release_notes p. 2), "CHANGES SINCE V1.2.0"
+  (release_notes p. 3) - and never by the version it shipped in, and the document names no v1.2.1 at
+  all. So only two things in it can be attributed outright: the first list, which is 1.3.0's because
+  these are 1.3.0's notes, and the known issues, whose heading says "AS OF V1.3.0"
+  (release_notes p. 5). Everything cited here gives the heading it sits under rather than a version
+  it arrived in, CC 106 and CC 73 included.
   Also in those notes, and recorded against the fields they touch rather than as controls: the
   clock's pulses-per-quarter-note default changed from 2 to 4; the MIDI clock output default
   changed to off; and the instrument "no longer outputs unexpected streams of MIDI CC/NRPN
-  data", which is a fault in firmware before this one rather than a feature of it. That line is
-  also the only place either document mentions NRPN, and it gives no NRPN number.
+  data" (release_notes p. 3), which is a fault in firmware before this one rather than a feature of
+  it. That line is also the only place either document mentions NRPN, and it gives no NRPN number.
 
   ONE PROMISE THOSE NOTES DO NOT KEEP: "Can now edit global settings via MIDI SysEx messages
-  (documented below)", and nothing below documents one. Their remaining pages describe reaching
-  the global settings from the keyboard, and no system exclusive message, byte or template
-  appears anywhere in them. So `sysex: true` below still rests on the manual, as it always did,
-  and this instrument's SysEx interface is documented somewhere Moog has not published here.
+  (documented below)" (release_notes p. 3), and nothing below documents one. Their remaining pages
+  describe reaching the global settings from the keyboard, and no system exclusive message, byte or
+  template appears anywhere in them. So `sysex: true` below still rests on the manual, as it always
+  did, and this instrument's SysEx interface is documented somewhere Moog has not published here.
 
   AND ONE KNOWN ISSUE WORTH A READER'S TIME: the notes' KNOWN OUTSTANDING ISSUES AS OF V1.3.0
-  include "Send Program Change - Seems to have no effect". This definition records program
-  change as received and says nothing about sending, which agrees with that.
+  include "Send Program Change - Seems to have no effect" (release_notes p. 5). This definition
+  records program change as received and says nothing about sending, which agrees with that.
 
   NOT RECORDED, and marked in place: the power-on default for the voice mode
   switch.
@@ -87,13 +91,14 @@ sources:
     retrieved: 2026-10-01
     page_offset: 0
     # The sha256 is of the update document itself, which is a member of the zip at the url
-    # above rather than a file Moog serves on its own: "Matriarch Firmware v1.3.0/
-    # Matriarch_V1.3.0_Firmware_Update_120522.pdf". The zip hashes to
+    # above rather than a file Moog serves on its own: `Matriarch Firmware
+    # v1.3.0/Matriarch_V1.3.0_Firmware_Update_120522.pdf`. The zip hashes to
     # 44137eda026c87e36f33a004547095887143a66d8c591753416ff95ceeab883f, and re-extracting that
     # member reproduces the cited bytes, which was asserted rather than assumed.
-    # The document prints "December 2022" and no day, which is what `dated` carries. Its file
-    # name carries 120522, which reads as 5 December 2022 and agrees with the month; that is an
-    # inference from a file name rather than something the maker printed, so it stays here.
+    # The document prints "December 2022" (release_notes p. 1) and no day, which is what `dated`
+    # carries. Its file name carries 120522, which reads as 5 December 2022 and agrees with the
+    # month; that is an inference from a file name rather than something the maker printed, so it
+    # stays here.
     # Five pages printing no page numbers, so it is cited by its own section headings:
     # CHANGES SINCE V1.2.3, CHANGES SINCE V1.2.0 and KNOWN OUTSTANDING ISSUES AS OF V1.3.0
     # carry everything this definition takes from it, and CC 106 is on the file's p. 3.
@@ -108,7 +113,7 @@ midi:
   transport: both
   program_change:
     receives: true
-    presets: 12          # "Selects saved sequences"
+    presets: 12          # "Selects saved sequences" (manual p. 70)
   nrpn: none             # chart section 1: NRPNs not supported
   sysex: true            # transmitted and recognised, but undocumented by Moog
 
@@ -165,7 +170,7 @@ groups:
 controls:
 
   # ── 14-bit pairs ──────────────────────────────────────────────────────────
-  # Twelve controls the manual pairs explicitly, each "MIN TO MAX (0 TO 16383)".
+  # Twelve controls the manual pairs explicitly, each "MIN TO MAX (0 TO 16383)" (manual p. 73).
   # Sending the coarse number alone is still a legal 7-bit message.
 
   mod_wheel:
@@ -245,7 +250,7 @@ controls:
     group: oscillator
 
   # ── Switches ──────────────────────────────────────────────────────────────
-  # All written "0-63 = OFF, 64-127 = ON" in the manual's table.
+  # All written "0-63 = OFF, 64-127 = ON" (pp. 73-74) in the manual's table.
 
   sustain_pedal:
     label: Sustain Pedal
@@ -270,7 +275,8 @@ controls:
     group: arpeggiator
     # The chart does not say which way a controller travels, and for this one the release notes
     # do: "Arp/Seq PLAY button does not output MIDI CC 73 (can still respond to it if
-    # necessary)", with the reason "Improves compatibility with other Grandmother/Matriarchs".
+    # necessary)" (release_notes p. 3), with the reason "Improves compatibility with other
+    # Grandmother/Matriarchs" (release_notes p. 3).
     # So it is answered to and not transmitted, from the firmware that changed it onwards.
   hard_sync_enable:
     label: Hard Sync Enable
@@ -344,7 +350,7 @@ controls:
   glide_type:
     label: Glide Type
     cc: 85
-    # "0-42 = LCR, 43-84 = LCT, 85-127 = EXP." - the Minitaur's glide type with
+    # "0-42 = LCR, 43-84 = LCT, 85-127 = EXP." (manual p. 74) - the Minitaur's glide type with
     # the same boundaries and the same option names.
     values: {lcr: 0, lct: 43, exp: 85}
     group: glide
@@ -364,9 +370,9 @@ controls:
     group: voicing
 
   # From the release notes and not from the chart. "Arp/Sequencer Gate Length can be adjusted
-  # using MIDI CC 106. Value 64 = 50% gate length (default)", under CHANGES SINCE V1.2.0. The
-  # manual's own chart gives Arp Gate Length as CC 15 with a fine half at 47 and does not
-  # mention CC 106; this entry and that one each point at the other.
+  # using MIDI CC 106. Value 64 = 50% gate length (default)" (release_notes p. 3), under CHANGES
+  # SINCE V1.2.0. The manual's own chart gives Arp Gate Length as CC 15 with a fine half at 47 and
+  # does not mention CC 106; this entry and that one each point at the other.
   arp_seq_gate_length:
     label: Arp/Sequencer Gate Length
     cc: 106
@@ -388,19 +394,19 @@ controls:
   arp_mode:
     label: Arp Mode
     cc: 91
-    # "0-42 = ARP, 43-84 = SEQ, 85-127 = REC"
+    # "0-42 = ARP, 43-84 = SEQ, 85-127 = REC" (manual p. 74)
     values: {arp: 0, seq: 43, rec: 85}
     group: arpeggiator
   arp_pattern:
     label: Arp Pattern
     cc: 92
-    # "0-42 = ORDER, 43-84 = FW/BW, 85-127 = RANDOM"
+    # "0-42 = ORDER, 43-84 = FW/BW, 85-127 = RANDOM" (manual p. 74)
     values: {order: 0, fw_bw: 43, random: 85}
     group: arpeggiator
   arp_range:
     label: Arp Range / Bank
     cc: 93
-    # "0-42 = 1, 43-84 = 2, 85-127 = 3" - the manual labels it Arp Range / Bank
+    # "0-42 = 1, 43-84 = 2, 85-127 = 3" (manual p. 74) - the manual labels it Arp Range / Bank
     # and names its states only by number.
     values: {one: 0, two: 43, three: 85}
     group: arpeggiator

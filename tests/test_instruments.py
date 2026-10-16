@@ -9239,8 +9239,7 @@ class TestDeluge:
 
 		assert "THE OFFICIAL GUIDEBOOK'S LAST CHAPTER IS THE USER-WRITTEN COMMUNITY GUIDE" \
 			in account
-		assert "the one page that says who wrote it is the one page that did not survive" \
-			in account
+		assert "is reprinted at the chapter's end, p. 321, without its heading" in account
 
 		# And that no number was taken from it.
 		assert "No number in this file comes from printed pages 295 to 322" in account

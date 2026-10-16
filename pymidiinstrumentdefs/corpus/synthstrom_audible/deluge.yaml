@@ -1,20 +1,23 @@
 definition: 1
 
 # THIS INSTRUMENT PUBLISHES NO CONTROLLER NUMBER AND NO NOTE NUMBER, BY DESIGN. Its chart answers
-# the control-change row "Yes" in both columns and then says how: "Numbers assigned by user" going
-# out and "Parameter must be 'learned' by user" coming in (guidebook_oled p. 241). So there is no
-# `controls` block and no `voices` map below, and both absences are the fact rather than an
-# omission - the reading the OP-1's four routed controllers and the DrumBrute Impact's whole panel
-# got.
+# the control-change row "Yes" in both columns and then says how: "Numbers assigned by user"
+# (guidebook_oled p. 241) going out and "Parameter must be 'learned' by user"
+# (guidebook_oled p. 241) coming in. So there is no `controls` block and no `voices` map below, and
+# both absences are the fact rather than an omission - the reading the OP-1's four routed
+# controllers and the DrumBrute Impact's whole panel got.
 #
 # AND ITS MAKER HAS BOUND SOMEBODY ELSE'S DOCUMENT INTO ITS OWN. The official guidebook's last
-# chapter is headed "COMMUNITY GUIDE", and it is not a chapter about the community: pages 3 to 23
-# of the separately published, user-written "Deluge Community Guide" are reprinted inside it, one
-# page to one page, in order. What the reprint leaves out is that guide's own page 2, which names
-# the six people who wrote it. The measurement is in the source note below. **Nothing in this file
-# rests on that chapter**, and `docs/adding-an-instrument.md` is why; the point of saying so here
-# is that a reader working from the official guidebook alone cannot see where the maker's own
-# writing stops, because the cover and the running head are the same on every page of it.
+# chapter is headed "COMMUNITY GUIDE" (guidebook_oled p. 295), and it is not a chapter about the
+# community: pages 2 to 27 of the separately published, user-written "Deluge Community Guide"
+# (product_page) are reprinted inside it, one page to one page, in order but for page 2, whose list
+# of the six people who contributed to the guide is moved to the chapter's end without its heading.
+# The measurement is in the source note below. **Nothing in this file rests on that chapter**, and
+# `docs/adding-an-instrument.md` is why; the point of saying so here is that a reader working from
+# the official guidebook alone cannot easily see where the maker's own writing stops: the cover and
+# the running foot are the same on every page of it, and the chapter heading, a cross-reference on
+# p. 55 and the list of contributors on p. 321 name a community guide, none of them saying it was
+# published apart.
 
 model:
   manufacturer: Synthstrom Audible
@@ -114,16 +117,15 @@ source: >-
 
   THE OFFICIAL GUIDEBOOK'S LAST CHAPTER IS THE USER-WRITTEN COMMUNITY GUIDE,
   REPRINTED. Chapter 15 is headed `COMMUNITY GUIDE` and runs from printed p. 295. Set
-  beside the separately published "Deluge Community Guide" - which the product page
+  beside the separately published "Deluge Community Guide" (product_page) - which the product page
   links in the same list as the two guidebooks, described as "A quick reference guide
   to the Deluge, adapted from contributions from our users" (product_page) - its
-  pages 3 to 23 map **one to one, in order, onto the chapter's 21 pages, at 91% to
-  98% of their words in common**, the remainder being the folio and running head the
-  guidebook adds. The three pages the chapter does not reprint are that guide's cover,
-  its pages 24-28, and **its page 2, which begins "The Following people have
-  contributed to the making of this community guide" (community_guide) and names six
-  of them**. So the one page that says who wrote it is the one page that did not
-  survive into the official document.
+  pages 3 to 23 map **one to one, in order, onto pp. 296-316, at 91% to
+  98% of their words in common**, and its pages 24 to 27 map one to one onto pp. 317-320; on all 26
+  reprinted pages the guide's own running head and folio are replaced by the guidebook's running
+  foot and folio. **Its page 2, which begins "The Following people have contributed to the making of
+  this community guide" (community_guide) and names six of them, is reprinted at the chapter's end,
+  p. 321, without its heading.** Only the guide's cover and its last page, p. 28, are not reprinted.
 
   THAT CHAPTER ALSO CONTRADICTS THE OFFICIAL CHAPTER BY ONE, WHICH IS WHY IT IS
   CITED AND NEVER READ FROM. The system settings table says of the default velocity
@@ -149,18 +151,17 @@ source: >-
   guidebook says "Deluge's maximum voice count relies on the CPU loading and
   processing power available, but around 64 is the limit for most basic synth sounds"
   (guidebook_oled p. 99), and the product page claims "Up to 64 synth voices may play
-  simultaneously" in one line and "Upto 90 unaffected sample voices may play
-  simultaneously" in another (product_page). Two engines, two CPU-bound ceilings, and
-  one field that holds one count: recording either would turn a limit that depends on
-  the patch into a figure a consumer could draw a voice meter from. So `polyphony` is
-  absent. The polyphony menu's own options - POLYPHONY, MONOPHONIC, AUTO, LEGATO,
-  CHOKE (p. 99) - are modes rather than counts, so `voicing_modes` does not fit them
-  either. Unison is a separate setting, "Number of voices from the maximum of 8"
-  (p. 100), and is not polyphony.
+  simultaneously" (product_page) in one line and "Upto 90 unaffected sample voices may play
+  simultaneously" (product_page) in another. Two engines, two CPU-bound ceilings, and one field that
+  holds one count: recording either would turn a limit that depends on the patch into a figure a
+  consumer could draw a voice meter from. So `polyphony` is absent. The polyphony menu's own options
+  - POLYPHONY, MONOPHONIC, AUTO, LEGATO, CHOKE (p. 99) - are modes rather than counts, so
+  `voicing_modes` does not fit them either. Unison is a separate setting, "Number of voices from the
+  maximum of 8" (p. 100), and is not polyphony.
 
   THE FIRMWARE IS OPEN SOURCE AND THE COMMUNITY BUILD IS NOT WHAT THIS DESCRIBES.
-  "The firmware for the Deluge is now open-source", says the maker's own page, with
-  "Community version 1.0.0 (Amadeus) is live now!" (open_source_page). Nothing here
+  "The firmware for the Deluge is now open-source" (open_source_page), says the maker's own page,
+  with "Community version 1.0.0 (Amadeus) is live now!" (open_source_page). Nothing here
   was read from that build or from its documentation, and a community release may add
   a MIDI answer this file does not carry; `model.firmware` says which firmware this
   is, which is the only honest way to hold that open.
@@ -190,7 +191,7 @@ sources:
     retrieved: 2026-10-03
     # 338 pages by pypdf and by PyMuPDF; `file` gives no count. The edition is the cover's own
     # word, `OS 4.1.0`, and the date is the file's own creation stamp, which matches the
-    # Last-Modified the bucket served. Titled "Deluge Official Manual" in its metadata and
+    # Last-Modified the bucket served. Titled `Deluge Official Manual` in its metadata and
     # authored there by **Synthdawg**, the collaborator the product page credits - so the
     # guidebook is written for Synthstrom rather than by it, which is a different arrangement
     # from the community chapter inside it and is disclosed on the maker's own page.
@@ -229,13 +230,13 @@ sources:
     retrieved: 2026-10-03
     paginated: false
     # CITED TO ESTABLISH WHAT CHAPTER 15 OF THE OFFICIAL GUIDEBOOK IS, AND FOR NOTHING ELSE. 28
-    # pages, authored in its metadata by a named person rather than by the company, titled
-    # "Deluge Community Doc Portrait", and its last page calls itself "The Community Quick
-    # Reference Version 3.2" while its cover says `OS 4.0` - two version numbers for one
-    # document, which is the kind of thing a maker's document does not usually do. **No value in
-    # this definition comes from it**; `docs/adding-an-instrument.md` forbids that, and the
-    # reason it is in the library at all is that the official guidebook reprints it without
-    # saying so, which could not be shown without having both.
+    # pages, authored in its metadata by a named person rather than by the company, titled `Deluge
+    # Community Doc Portrait`, and its last page calls itself "The Community Quick Reference Version
+    # 3.2" (community_guide) while its cover says `OS 4.0` - two version numbers for one document,
+    # which is the kind of thing a maker's document does not usually do. **No value in this
+    # definition comes from it**; `docs/adding-an-instrument.md` forbids that, and the reason it is
+    # in the library at all is that the official guidebook reprints it without saying so, which
+    # could not be shown without having both.
   product_page:
     kind: product_page
     title: Deluge - Synthstrom Audible
@@ -260,9 +261,9 @@ sources:
     paginated: false
     # The printed edition's shop page, and worth a source of its own because it states the
     # guidebook's firmware and its length in a second place, independently of the cover: "Up to
-    # date as of firmware version 4.1.0" and "A5 size, full colour, 312 pages". The second of
-    # those is the figure the folio count confirms exactly, against the product page's "300
-    # page". Marked "Out of stock".
+    # date as of firmware version 4.1.0" (manual_page) and "A5 size, full colour, 312
+    # pages" (manual_page). The second of those is the figure the folio count confirms exactly,
+    # against the product page's "300 page" (product_page). Marked "Out of stock" (manual_page).
   open_source_page:
     kind: web_page
     title: Open-Source - Synthstrom Audible
@@ -284,10 +285,10 @@ sources:
     paginated: false
     # CITED FOR AN ABSENCE. The maker's own news listing is the last place release notes for
     # V4.0.1, V4.1.3 or V4.1.4 could be, and there is no firmware post on it at all - its most
-    # recent entries are about the open-source project. It is here so that "no notes are
-    # published for the three releases after the guidebook" is evidenced rather than asserted.
-    # `https://synthstrom.com/news/` is a 404; the listing lives under `/category/news/`, which
-    # is where the site's own navigation points.
+    # recent entries are about the open-source project. It is here so that saying no notes are
+    # published for the releases after each guidebook edition is evidenced rather than asserted.
+    # `https://synthstrom.com/news/` is a 404; the listing lives under `/category/news/`, which is
+    # where the site's own navigation points.
   release_notes:
     kind: release_notes
     title: "Deluge firmware V3.1.5 released — Synthstrom Audible"
@@ -330,12 +331,13 @@ midi:
   # ways, which the format has no field for.
   transport: both
   # EVERY CONTROLLER NUMBER BELONGS TO THE PLAYER, IN BOTH DIRECTIONS. The chart answers `Yes`
-  # in both columns and qualifies each: "Numbers assigned by user" transmitted, "Parameter must
-  # be 'learned' by user" recognised (guidebook_oled p. 241). Going out, sixteen numbers can be
-  # set per clip - "In total 16 parameters (8 upper, 8 lower) can be set for MIDI controls" - and
-  # the range they may be chosen from is published: "CC messages range from CC0 - CC119, bend and
-  # aftertouch. CC1 is typically mod wheel" (p. 255). Coming in, a control is pointed at a
-  # parameter by holding LEARN and moving it, and the display answers `LEARNED` (p. 245).
+  # in both columns and qualifies each: "Numbers assigned by user" (guidebook_oled p. 241)
+  # transmitted, "Parameter must be 'learned' by user" (guidebook_oled p. 241) recognised. Going
+  # out, sixteen numbers can be set per clip - "In total 16 parameters (8 upper, 8 lower) can be set
+  # for MIDI controls" (guidebook_oled p. 255) - and the range they may be chosen from is published:
+  # "CC messages range from CC0 - CC119, bend and aftertouch. CC1 is typically mod wheel" (p. 255).
+  # Coming in, a control is pointed at a parameter by holding LEARN and moving it, and the display
+  # answers `LEARNED` (p. 245).
   control_change: learned
   # NO, IN EITHER DIRECTION: `No` transmitted and `No` recognised (guidebook_oled p. 241). The
   # words `SysEx` and `System Exclusive` appear nowhere else in either edition, so this is a
@@ -355,21 +357,23 @@ midi:
     # than an instrument. PGM change is `Yes` transmitted and `No` recognised, and both bank
     # select rows are the same way round, `CC 0` and `CC 32 (LSB)` each `Yes` and `No`
     # (guidebook_oled p. 241). What it sends is set per MIDI clip: "PGM Program ... None, 1-128.
-    # Program change message", "BANK Select ... None, 1-128 CC0 Bank select message" and
-    # "SUB-BANK ... None, 1-128 CC32 - LSB Sub bank message" (p. 253). `presets` is deliberately
-    # absent: 1-128 is the range of numbers it can be told to send at somebody else's synth, not
-    # a count of its own presets, which are files on an SD card and are not addressed by number.
+    # Program change message" (p. 253), "BANK Select ... None, 1-128 CC0 Bank select message"
+    # (p. 253) and "SUB-BANK ... None, 1-128 CC32 - LSB Sub bank message" (p. 253). `presets` is
+    # deliberately absent: 1-128 is the range of numbers it can be told to send at somebody else's
+    # synth, not a count of its own presets, which are files on an SD card and are not addressed by
+    # number.
     receives: false
     sends: true
 
 voice:
   # PITCHES, AND NOTHING IS WIRED TO A NOTE UNTIL SOMEBODY WIRES IT. A synth clip is played by
-  # pitch across the grid, and the way a controller reaches it is by learning: "Press & hold
-  # [LEARN / INPUT] + [AUDITION] pad of a note / pad to map", after which "The MIDI channel plus
-  # the external keyboard notes will now be mapped to the Deluge" (guidebook_oled p. 244). A kit
-  # is the other shape - one sound to a row, each row learned to its own note - but there is no
-  # factory note map for either, so there are no `voices` below and the `learned` note map is
-  # the whole answer. The maker publishes no default assignment anywhere in 338 pages.
+  # pitch across the grid, and the way a controller reaches it is by learning: "Press & hold [LEARN
+  # / INPUT] + [AUDITION] pad of a note / pad to map" (guidebook_oled p. 244), after which "The MIDI
+  # channel plus the external keyboard notes will now be mapped to the Deluge"
+  # (guidebook_oled p. 244). A kit is the other shape - one sound to a row, each row learned to its
+  # own note - but there is no factory note map for either, so there are no `voices` below and the
+  # `learned` note map is the whole answer. The maker publishes no default assignment anywhere in
+  # 338 pages.
   addressing: pitches
   note_map: learned
   velocity:

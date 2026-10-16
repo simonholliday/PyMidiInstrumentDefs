@@ -12,7 +12,7 @@
 # This instrument runs synth programs and vocoder programs, and the same knob is a different
 # parameter in each: CC 18 is Semitone or HPF Level, CC 83 is Filter Type or Formant Shift,
 # CC 85 is KBD Track or E.F.Sense. The label below is the synth meaning and a comment carries
-# the vocoder one. Rows marked "synth programs only" have no vocoder meaning at all, and the
+# the vocoder one. Rows marked `synth programs only` have no vocoder meaning at all, and the
 # sixteen vocoder band controls have no synth meaning.
 #
 # TWO DOCUMENTS, AND NEITHER CONTAINS THE OTHER'S HALF. Korg's plain-text MIDI implementation
@@ -33,9 +33,9 @@ model:
   # NOT RECORDED, and the search is worth writing down. Korg publishes no OS file, no release
   # notes and no system version for this instrument: its download page offers manuals, a sound
   # editor and templates, and nothing that names a firmware. The MIDI implementation's
-  # "Revision 1.4 (2002.06.27)" is the document's own revision, the way the wavestate's chart
-  # carries a version that is the chart's and not the instrument's. The manual states none
-  # either. Checked 2026-10-02.
+  # "Revision 1.4 (2002.06.27)" (implementation) is the document's own revision, the way the
+  # wavestate's chart carries a version that is the chart's and not the instrument's. The manual
+  # states none either. Checked 2026-10-02.
 
 source: >-
   Two documents, because this instrument's control map is split across both and neither half
@@ -43,12 +43,12 @@ source: >-
   cited by its own section numbers; the Owner's Manual E 2 has 80 pages and is cited by page.
 
   THE IMPLEMENTATION GIVES NO CONTROLLER NUMBER FOR ANY PANEL PARAMETER, which is this
-  instrument's first surprise. Its channel message rows say only "Control Change cc=00~95",
-  and its panel table is headed "Panel Knob & Switch Control (assignable)" - forty-odd
-  parameters in two columns and not one number against them. That is not an omission. The
-  numbers are the player's to set, and Korg prints the factory assignment in the manual
-  instead, in a table whose column is headed "Initial" (p. 56). Both facts are at the head of
-  this file because that is where somebody about to rely on a number is looking.
+  instrument's first surprise. Its channel message rows say only "Control Change
+  cc=00~95" (implementation), and its panel table is headed "Panel Knob & Switch Control
+  (assignable)" (implementation) - forty-odd parameters in two columns and not one number against
+  them. That is not an omission. The numbers are the player's to set, and Korg prints the factory
+  assignment in the manual instead, in a table whose column is headed "Initial" (p. 56). Both facts
+  are at the head of this file because that is where somebody about to rely on a number is looking.
 
   THE IMPLEMENTATION GIVES THE NRPNS, all 29, and prints them twice over - once for what the
   instrument transmits and once for what it recognises. The two copies are identical, which
@@ -66,11 +66,11 @@ source: >-
   than a channel.
 
   THE TWO DOCUMENTS DO NOT NAME THE SAME 41 CONTROLS, which is worth knowing before anybody
-  tries to reconcile them. The implementation's map of assignable slots includes an "EG2/Gate
-  Sw" and a "SEQ Off/On Sw" that the manual's table has no row for, while the manual's table
-  has Timbre Select and Sync Ctrl, which the implementation keeps as two global bytes of their
-  own rather than as slots in that map. The numbers below are the manual's, because the
-  implementation gives none; the overlap is recorded rather than resolved.
+  tries to reconcile them. The implementation's map of assignable slots includes an "EG2/Gate Sw"
+  (implementation) and a "SEQ Off/On Sw" (implementation) that the manual's table has no row for,
+  while the manual's table has Timbre Select and Sync Ctrl, which the implementation keeps as two
+  global bytes of their own rather than as slots in that map. The numbers below are the manual's,
+  because the implementation gives none; the overlap is recorded rather than resolved.
 
   NO BANK SELECT, said outright: "The microKORG does not transmit or receive bank select
   messages" (p. 52). That is the difference the microKORG S's own implementation adds, and it
@@ -138,7 +138,8 @@ sources:
     paginated: false
     # Cited for what Korg calls this instrument and for the absence of any firmware.
     # It also holds a trap worth knowing on this maker's site: the entry it labels
-    # "Owner's Manual (Spanish)" is served as a file named microKORG_S.pdf. The S is Spanish.
+    # "Owner's Manual (Spanish)" (download_page) is served as a file named microKORG_S.pdf. The S is
+    # Spanish.
     # Anything matching a file to a model by its name would file that as the microKORG S's.
 
 midi:
@@ -146,8 +147,9 @@ midi:
   # see the source paragraph and the sentence quoted there from p. 66.
   channels: [1, 16]
   # BOTH, AND WHICH IT DOES IS A SETTING with three states, "CLOCK [Internal, External, Auto]"
-  # (p. 51). The implementation agrees from each side: it transmits F8 "when the Clock is set
-  # to Internal", and recognises F8 "when the Clock is set to External or Auto".
+  # (p. 51). The implementation agrees from each side: it transmits F8 "when the 'Clock' is set to
+  # 'Internal'" (implementation), and recognises F8 "when the 'Clock' is set to 'External' or
+  # 'Auto'" (implementation).
   clock: both
   # RECEIVES ONLY, and this is a checked absence rather than silence. The recognised realtime
   # messages are timing clock, start, stop and active sensing; the transmitted realtime
@@ -172,7 +174,7 @@ midi:
   # directions - current program dump, program write request and the rest. Of the universal
   # messages it supports master volume and master fine tuning (p. 55). Its own model ID is
   # "58: microKORG model ID (same as MS2000/MS2000R)" (p. 55), and the manual says the data
-  # it will exchange with those is only "parameters that it shares" with them.
+  # it will exchange with those is only "parameters that it shares" (p. 55) with them.
   sysex: true
 
 voice:
@@ -184,13 +186,13 @@ voice:
   # between and `polyphony_shared` says nothing here.
   velocity:
     # "37 notes (mini keyboard, velocity sensitive, no aftertouch)" (p. 67), and the
-    # recognised note on row is "Note On vv=1~127". It is sent too: the implementation lists the
-    # same row among its transmitted data, and "When you play the keyboard of the microKORG,
-    # note-on/off messages are transmitted" (p. 52), where vv is "velocity". With POSITION at Post
-    # KBD, a fixed value can be set instead: "The fixed velocity you specify here will be output
-    # regardless of how strongly you play the keyboard." (p. 47); at Pre TG the keyboard's data
-    # goes out unaffected by any setting but OCTAVE SHIFT (p. 47). Until 2026-10-14 this said
-    # `received`.
+    # recognised note on row is "Note On vv=1~127" (implementation). It is sent too: the
+    # implementation lists the same row among its transmitted data, and "When you play the keyboard
+    # of the microKORG, note-on/off messages are transmitted" (p. 52), where vv is "velocity". With
+    # POSITION at Post KBD, a fixed value can be set instead: "The fixed velocity you specify here
+    # will be output regardless of how strongly you play the keyboard." (p. 47); at Pre TG the
+    # keyboard's data goes out unaffected by any setting but OCTAVE SHIFT (p. 47). Until 2026-10-14
+    # this said `received`.
     note_on: both
     # "The note-off velocity is transmitted at a fixed 64, but is not received" (p. 52), which
     # is both halves of the question in one sentence.
@@ -198,7 +200,8 @@ voice:
   polyphony: 4
   # NONE, AND CHECKED: the recognised channel messages enumerate what this instrument answers
   # to, and neither channel pressure nor polyphonic key pressure is among them. The
-  # specifications say the same of the keyboard, "no aftertouch", so neither side of it exists.
+  # specifications say the same of the keyboard, "no aftertouch" (p. 67), so neither side of it
+  # exists.
   aftertouch: none
   # Never sent: the transmitted channel messages have no channel pressure and no polyphonic key
   # pressure (implementation), and the chart on the manual's last sheet, which prints no number,

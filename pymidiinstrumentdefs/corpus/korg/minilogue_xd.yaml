@@ -6,14 +6,14 @@ model:
   # Korg's System Updater for this instrument is version 2.10, dated 2020.03.10, and that
   # is the newest firmware Korg publishes (checked 2026-10-01). The MIDI implementation
   # below is dated the same day on Korg's download page while stating "Revision 1.01
-  # (2020.2.10)" in its own first line, a month earlier: the document was written ahead of
-  # the release it describes, which is why neither date can be reasoned from on its own.
+  # (2020.2.10)" (midi_impl) in its own first line, a month earlier: the document was written ahead
+  # of the release it describes, which is why neither date can be reasoned from on its own.
   # The document's own internal evidence agrees that it describes the 2.x firmware: it
   # explains what happens when data saved with firmware Ver1.xx is loaded.
   firmware: "2.10"
   # One definition covers two boxes. The owner's manual says it "refers to both the
-  # minilogue xd and the minilogue xd module collectively as the minilogue xd", and uses
-  # "xd" and "xd-m" where they differ. Nothing in the MIDI implementation distinguishes
+  # minilogue xd and the minilogue xd module collectively as the 'minilogue xd'" (manual p. 3), and
+  # uses "xd" and "xd-m" where they differ. Nothing in the MIDI implementation distinguishes
   # them; the keyboard belongs to the xd alone and is recorded as such below.
 
 source: >-
@@ -35,8 +35,8 @@ source: >-
   here, because the two sides disagree.
 
   SYNC and RING are printed with opposite polarity in the two sections. Transmitting,
-  "SYNC:OFF, ON = vv:0,127"; receiving, "vv:0~63,64~127 = SYNC:ON, OFF". So a value of 0
-  is sent to mean OFF and is received to mean ON, and the same for RING. This file
+  "SYNC:OFF, ON = vv:0,127" (midi_impl); receiving, "vv:0~63,64~127 = SYNC:ON, OFF" (midi_impl). So
+  a value of 0 is sent to mean OFF and is received to mean ON, and the same for RING. This file
   records the receive reading, which is what reaches the instrument, and the contradiction
   is recorded here rather than resolved.
 
@@ -46,7 +46,7 @@ source: >-
   the document; the footnote numbered *5-14 is defined, is cited by nothing, and carries
   exactly this control's eighteen names. Its bands are used, and this note is why.
 
-  Second, MOD FX TYPE's receive bands are printed "0~25,26~51,52~76,77~102,102~127", in
+  Second, MOD FX TYPE's receive bands are printed "0~25,26~51,52~76,77~102,102~127" (midi_impl), in
   which 102 both ends one band and begins the next. The band starts recorded here make
   102 the first value of USER, which is one reading of an overlap the document does not
   resolve.
@@ -108,8 +108,8 @@ midi:
     sends: true
     # "500 (200 preset programs and 300 user programs as the factory-set default)" (manual
     # p. 66), reached as five banks of a hundred: Bank Select LSB takes vv=0~4 and a program
-    # change carries "Program Change (pp=0~99)" within the chosen bank. **The count is what
-    # the instrument holds, not what one program change reaches**, which is the rule every
+    # change carries "Program Change (pp=0~99)" (midi_impl) within the chosen bank. **The count is
+    # what the instrument holds, not what one program change reaches**, which is the rule every
     # other definition here follows and a test now states.
     presets: 500
   nrpn: supported          # 61 parameters, listed below; see the note on the MSB column
@@ -129,7 +129,8 @@ voice:
     # NOT RECORDED whether it acts on note-off velocity. The received Note Off row prints
     # vv=0~127, which says the byte is carried, not what the instrument does with it. What
     # it transmits is a fixed 64.
-  aftertouch: channel      # "Channel Pressure (as After Touch)", recognised and never sent
+  aftertouch: channel      # "Channel Pressure (as After Touch)" (midi_impl), recognised and never
+                           # sent
   # The transmitted data, section 1, has no channel pressure and no polyphonic key pressure.
   aftertouch_transmits: false
   # NOT RECORDED, note_range. Neither document states which notes it answers to over MIDI.
@@ -186,9 +187,9 @@ controls:
   lfo_wave:                  {label: LFO WAVE, cc: 57, values: {"sqr": 0, "tri": 43, "saw": 86}}
   lfo_mode:                  {label: LFO MODE, cc: 58, values: {"one_shot": 0, "normal": 43, "bpm": 86}}
   voice_mode_depth_no_display: {label: VOICE MODE DEPTH no display, cc: 59}
-  # Transmitting, this is "Hold1 (vv=0,127)"; receiving, it is "DAMPER (vv=0~127)". A
-  # different name and a different domain, and no footnote on either side says where
-  # DAMPER's switch point lies, so no values are recorded for it.
+  # Transmitting, this is "Hold1 (vv=0,127)" (midi_impl); receiving, it is "DAMPER
+  # (vv=0~127)" (midi_impl). A different name and a different domain, and no footnote on either side
+  # says where DAMPER's switch point lies, so no values are recorded for it.
   damper:                    {label: DAMPER, cc: 64}
   sync:                      {label: SYNC, cc: 80, values: {"on": 0, "off": 64}}
   ring:                      {label: RING, cc: 81, values: {"on": 0, "off": 64}}

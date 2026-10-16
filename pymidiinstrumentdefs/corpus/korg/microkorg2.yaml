@@ -53,15 +53,15 @@ source: >-
 
   THE MIDI IMPLEMENTATION IS A PLAIN TEXT FILE WITH NO PAGES, cited by its own section
   numbers. It states "microKORG 2 MIDI Implementation             Revision 1.0
-  (2024.05.10)" on its first line, which is the document's revision and not the
+  (2024.05.10)" (implementation) on its first line, which is the document's revision and not the
   instrument's - the trap the wavestate's chart set, and the TR-6S's. Korg's download page
   dates the same file 2024.11.27, seven months later, which is when it was last posted.
 
   ITS PANEL TABLE GIVES 71 CONTROL CHANGES, numbered 5 to 118, each with a parameter name
   and a value description. Both channel-message tables, the transmitted and the recognised,
   carry one row for the lot of them and say the same thing about it - "Control Data
-  cc=5~118" - so this instrument sends every number it answers to. THAT IS THE DIFFERENCE
-  FROM THE microKORG, whose implementation gives no controller number for any panel
+  cc=5~118" (implementation) - so this instrument sends every number it answers to. THAT IS THE
+  DIFFERENCE FROM THE microKORG, whose implementation gives no controller number for any panel
   parameter because the numbers there are the player's to assign. Here they are fixed, and
   the manual says so in as many words: "On the microKORG2, control change numbers are
   assigned to the main parameters that alter the sound, and you can use an external MIDI
@@ -93,12 +93,12 @@ source: >-
 
   WHERE THE IMPLEMENTATION CONTRADICTS ITSELF, AND WHAT THE MANUAL PUTS RIGHT. Its NRPN
   table prints each number in hexadecimal and again in decimal, which is a check the
-  document makes on itself and fails twice: Hardtune Speed is printed as "06 | 01 ( 2)" and
-  Hardtune Formant as "06 | 02 ( 3)". Taken as hexadecimal, Speed lands on Hardtune
-  Intensity's own address; taken as decimal, the three run 1, 2, 3. SEPARATELY, ALL SIX
-  `Patch N Destination` ROWS CARRY THE SAME ADDRESS, "04 | 20 (32)", where the six Source 1
-  rows run 04/00 to 04/05 and the six Source 2 rows run 04/10 to 04/15 - so five of the six
-  cannot be right.
+  document makes on itself and fails twice: Hardtune Speed is printed as "06 | 01 (
+  2)" (implementation) and Hardtune Formant as "06 | 02 ( 3)" (implementation). Taken as
+  hexadecimal, Speed lands on Hardtune Intensity's own address; taken as decimal, the three run 1,
+  2, 3. SEPARATELY, ALL SIX `Patch N Destination` ROWS CARRY THE SAME ADDRESS, "04 | 20 (32)"
+  (implementation), where the six Source 1 rows run 04/00 to 04/05 and the six Source 2 rows run
+  04/10 to 04/15 - so five of the six cannot be right.
 
   THE MANUAL SETTLES BOTH, ON ITS OWN PAGES AND IN ITS OWN SCHEME: the hard tune page
   annotates Intensity, Speed and Formant "(NRPN 6, 1)", "(NRPN 6, 2)" and "(NRPN 6, 3)"
@@ -110,8 +110,8 @@ source: >-
   the first, not a choice between two columns with nothing to settle it.
 
   AND THE TWO DOCUMENTS DISAGREE ABOUT TWO THINGS, which is recorded rather than resolved.
-  The implementation's recognised table lists "Local Control Off/On" on controller 122;
-  the chart's Aux Messages row for Local On/Off says X in both columns. And the chart says
+  The implementation's recognised table lists "Local Control Off/On" (implementation) on controller
+  122; the chart's Aux Messages row for Local On/Off says X in both columns. And the chart says
   All Notes Off is transmitted, while the only thing the implementation's transmitted table
   carries there is All Sound Off, controller 120, sent when a global setting changes. Both
   numbers are in the range this format refuses as controls in any case, so neither affects
@@ -160,11 +160,12 @@ source: >-
   numbers for what 2.0 added.
 
   THE COLOUR VARIANTS ARE THIS INSTRUMENT, settled three ways rather than assumed. The
-  product page describes the MBK and MWH as "two limited edition color models" differing in
-  the control panel, side panel, dials and wheels; the manual's specification covers all
-  three in one weight line, "MK-2: 2.2 kg/4.85 lb, MK-2 MBK/MWH: 2.1 kg/4.63 lb" (p. 131);
-  and the system updater page says it "can be used for the following products as well" and
-  names "microKORG2 MBK/MWH". One system, one manual, one map.
+  product page describes the MBK and MWH as "two limited edition color models" (product_page)
+  differing in the control panel, side panel, dials and wheels; the manual's specification covers
+  all three in one weight line, "MK-2: 2.2 kg/4.85 lb, MK-2 MBK/MWH: 2.1 kg/4.63 lb" (p. 131);
+  and the system updater page says it "can be used for the following products as
+  well" (release_notes) and names "microKORG2 MBK/MWH" (release_notes). One system, one manual, one
+  map.
 
   AND IT IS NOT THE microKORG, THE microKORG S, THE XL, THE XL+ OR THE CRYSTAL. Those are
   different instruments with different maps, and `korg/microkorg` is already here. The older
@@ -216,7 +217,8 @@ sources:
     retrieved: 2026-10-04
     # A plain text file of ruled ASCII tables, 1,784 lines, no pages at all - so it is cited by
     # its own section numbers and records `paginated: false`. The title above is the download
-    # page's; the document heads itself "microKORG 2 MIDI Implementation", with a space.
+    # page's; the document heads itself "microKORG 2 MIDI Implementation" (implementation), with a
+    # space.
     paginated: false
   manual:
     kind: manual

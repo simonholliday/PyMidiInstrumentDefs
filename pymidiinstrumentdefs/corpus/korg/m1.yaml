@@ -50,18 +50,18 @@ source: >-
   nothing in it was hard to read at 110 dots per inch.
 
   TEN CONTROL CHANGE NUMBERS ARE LISTED AND FOUR ARE PARAMETERS. The chart's Control Change
-  block gives 1 "Pitch MG", 2 "VDF modulation", 6 "Data entry (MSB)", 7 "Volume", 38 "Data entry
-  (LSB)", 64 "Sustain", 96 "Data increment", 97 "Data decrement", 100 "LSB of RPC for master
-  tune" and 101 "MSB of RPC for master tune". **Six of those ten are how a registered parameter
-  travels**, not parameters themselves, and they are held back exactly as `oberheim/teo_5` and
-  `oberheim/ob_x8` hold theirs back. 100 and 101 are also the only two rows in the whole block
-  marked transmitted "x" and "Recognized" "o", so the instrument answers to them and never sends
-  them - which is what an RPN target looks like.
+  block gives 1 "Pitch MG", 2 "VDF modulation" (p. 135), 6 "Data entry (MSB)" (p. 135), 7 "Volume",
+  38 "Data entry (LSB)" (p. 135), 64 "Sustain", 96 "Data increment" (p. 135), 97 "Data decrement"
+  (p. 135), 100 "LSB of RPC for master tune" (p. 135) and 101 "MSB of RPC for master tune" (p. 135).
+  **Six of those ten are how a registered parameter travels**, not parameters themselves, and they
+  are held back exactly as `oberheim/teo_5` and `oberheim/ob_x8` hold theirs back. 100 and 101 are
+  also the only two rows in the whole block marked transmitted "x" and "Recognized" "o", so the
+  instrument answers to them and never sends them - which is what an RPN target looks like.
 
   AND AN ELEVENTH ROW IS NOT A CONTROL AT ALL. Under the ten, the chart prints "0-101" against
-  "Sending and receiving Seq. Data only". That is the sequencer passing control changes through,
-  not the synthesiser answering to them, and **nothing in the range 0 to 101 is a control here
-  beyond the four above**. It is recorded in this account rather than as a control, because a
+  "Sending and receiving Seq. Data only" (p. 135). That is the sequencer passing control changes
+  through, not the synthesiser answering to them, and **nothing in the range 0 to 101 is a control
+  here beyond the four above**. It is recorded in this account rather than as a control, because a
   consumer that read it as one would offer 102 controllers that do nothing to the sound.
 
   EVERYTHING ELSE IS SYSTEM EXCLUSIVE, which the manual says in as many words: "Parameter change
@@ -72,25 +72,25 @@ source: >-
 
   FOUR GLOBAL SWITCHES DECIDE WHETHER ANY OF IT ARRIVES, AND THEY DO NOT DIVIDE THE WAY A
   READER WOULD GUESS. "MIDI FILTERING" (p. 116) has Combination/Program Change, After Touch,
-  Control Change and Exclusive, each "DIS/ENA", and "When set to DIS, the selected MIDI data is
-  not received or sent." The chart's footnotes then put each row under one of them - **and the
-  ten control change numbers are split between two different switches**. The four published
-  below are marked "Transmit/receive if CONTROL is set to ENA in GLOBAL Mode", and **so is pitch
-  bend**; the six held back - data entry, increment, decrement and the two halves of the RPN -
-  are marked "Transmit/receive if EXCLUSIVE is set to ENA in GLOBAL Mode", because on this
+  Control Change and Exclusive, each "DIS/ENA", and "When set to DIS, the selected MIDI data is not
+  received or sent" (p. 116). The chart's footnotes then put each row under one of them - **and the
+  ten control change numbers are split between two different switches**. The four published below
+  are marked "Transmit/receive if CONTROL is set to ENA in GLOBAL Mode" (p. 135), and **so is pitch
+  bend**; the six held back - data entry, increment, decrement and the two halves of the RPN - are
+  marked "Transmit/receive if EXCLUSIVE is set to ENA in GLOBAL Mode" (p. 135), because on this
   instrument they are the machinery of parameter editing rather than performance control. A
   definition that treats all ten as ordinary controllers names the wrong switch for six of them.
   **So every field below is what the instrument does with its switches on**, which is a
   condition this format cannot carry and the chart states four times.
 
   AND THE DOCUMENT CONTRADICTS ITSELF ABOUT WHICH SWITCH GOVERNS AFTERTOUCH. The chart's
-  lettered remark says channel pressure is gated by the AFTER TOUCH filter: "Transmit/receive
-  when AFTER TOUCH is set to ENA in GLOBAL Mode". The system exclusive section's own tables give
-  "Channel Pressure ( After Touch )" the enable code "C", which that section defines as "Enable
-  when Control is On" - and its key has no code for the AFTER TOUCH filter at all, defining only
-  A, C, P, E and Q. **Both readers checked the letter at full resolution and it is a C.** One of
-  the two statements is wrong and nothing in the manual says which, so neither is recorded as
-  fact and `aftertouch` below records only that it is the channel kind.
+  lettered remark says channel pressure is gated by the AFTER TOUCH filter: "Transmit/receive when
+  AFTER TOUCH is set to ENA in GLOBAL Mode" (p. 135). The system exclusive section's own tables give
+  "Channel Pressure ( After Touch )" (p. 122) the enable code "C", which that section defines as
+  "Enable when Control is On" (p. 122) - and its key has no code for the AFTER TOUCH filter at all,
+  defining only A, C, P, E and Q. **Both readers checked the letter at full resolution and it is a
+  C.** One of the two statements is wrong and nothing in the manual says which, so neither is
+  recorded as fact and `aftertouch` below records only that it is the channel kind.
 
   THE BULK DUMP IS AN EXCEPTION TO THE EXCLUSIVE SWITCH, which the chart does not say and the
   Global page does: "MIDI data dump can be sent and received when this page is selected
@@ -99,15 +99,15 @@ source: >-
 
   THE CLOCK AND THE TRANSPORT GO ONE WAY AT A TIME, AND WHICH WAY IS A SETTING. The chart marks
   both "o" in both columns with the footnote "When Clock is Internal, it transmits but does not
-  receive. When External, the opposite is true." The Global page agrees from the other side:
-  Clock Source is "INT/EXT", and "The M1 will receive start, stop, continue, song select, and
+  receive. When External, the opposite is true" (p. 135). The Global page agrees from the other
+  side: Clock Source is "INT/EXT", and "The M1 will receive start, stop, continue, song select, and
   song position data from external MIDI devices only when this function is set to EXT" (p. 115).
   So `both` records the pair of settings and not a simultaneous capability.
 
   EIGHT TIMBRES, EACH WITH ITS OWN MIDI CHANNEL, AND A GLOBAL CHANNEL THAT IS NOT ONE OF THEM.
-  "Selection of the MIDI receive channel of each Timbre" over eight rows of "1 ~ 16" (p. 73), and
-  "Playing eight separate Programs simultaneously is possible with multi-channel MIDI data
-  received through MIDI IN, when a different MIDI channel is set for each Timbre" (p. 73).
+  "Selection of the MIDI receive channel of each Timbre" (p. 73) over eight rows of "1 ~ 16"
+  (p. 73), and "Playing eight separate Programs simultaneously is possible with multi-channel MIDI
+  data received through MIDI IN, when a different MIDI channel is set for each Timbre" (p. 73).
   **What reaches a timbre is stated**: "Program change, pitch bend, after touch and control
   change parameters receive data over the MIDI channel set for each Timbre" (p. 73). The global
   channel is separate and governs the keyboard: "When playing the keyboard of the M1, only the
@@ -127,23 +127,23 @@ source: >-
   two paragraphs above it on the same page, so it is taken to be about the M1's own joystick,
   and the page does not say so itself.
 
-  THE PRESET COUNT IS A SETTING AND 100 IS ONE OF ITS TWO VALUES. "100 Programs" and "100
-  Combinations" in the specifications (p. 134), footnoted "Memory allocation can be changed to 50
-  Programs and 50 Combinations" - and the Global page offers "100 PROG/100 COMBI/4400 SEQ" or
-  "50 PROG/50 COMBI/7700 SEQ" (p. 117). 100 is recorded because the chart agrees with it from the
-  other side, "Program Change Actual No." being "0 ~ 99" transmitted; **a reader whose instrument
-  is set the other way has fifty.**
+  THE PRESET COUNT IS A SETTING AND 100 IS ONE OF ITS TWO VALUES. "100 Programs" (p. 134) and "100
+  Combinations" (p. 134) in the specifications, footnoted "Memory allocation can be changed to 50
+  Programs and 50 Combinations" (p. 134) - and the Global page offers "100 PROG/100 COMBI/4400 SEQ"
+  (p. 117) or "50 PROG/50 COMBI/7700 SEQ" (p. 117). 100 is recorded because the chart agrees with it
+  from the other side, "Program Change Actual No." (p. 135) being "0 ~ 99" transmitted; **a reader
+  whose instrument is set the other way has fifty.**
 
   NOT RECORDED: `nrpn`. **The chart has no NRPN row at all, and controllers 98 and 99 appear
   nowhere in the document** - the received-data table steps straight from 97 to 100. What the
   instrument has is one RPN, and it reaches exactly one parameter: control changes 100 and 101
-  are "LSB of RPC for master tune" and "MSB of RPC for master tune", RPC being Korg's spelling of
-  RPN, and the exclusive section prints their value bytes as fixed - "RPC Parameter No.(LSB)
-  (M.Tune)" against 1 and "RPC Parameter No.(MSB) (M.Tune)" against 0. **That is RPN 0,1, which
-  is the MIDI specification's own Master Fine Tuning**, and the chart marks both numbers
-  transmitted "x", so the instrument answers to it and never sends it. The parameter it moves is
-  Global "Master Tune", "-50 ~ +50" in cents (p. 110). An absence with pages behind it rather
-  than an unread one.
+  are "LSB of RPC for master tune" (p. 135) and "MSB of RPC for master tune" (p. 135), RPC being
+  Korg's spelling of RPN, and the exclusive section prints their value bytes as fixed - "RPC
+  Parameter No.(LSB) (M.Tune)" (p. 123) against 1 and "RPC Parameter No.(MSB) (M.Tune)" (p. 123)
+  against 0. **That is RPN 0,1, which is the MIDI specification's own Master Fine Tuning**, and the
+  chart marks both numbers transmitted "x", so the instrument answers to it and never sends it. The
+  parameter it moves is Global "Master Tune", "-50 ~ +50" in cents (p. 110). An absence with pages
+  behind it rather than an unread one.
 
   SIX MORE CONTROLLER NUMBERS EXIST INSIDE THE INSTRUMENT AND NEVER CROSS THE CABLE. The
   sequencer's event editor lists control numbers 102 to 107 - VDF Cutoff, two effect switches,
@@ -160,9 +160,9 @@ source: >-
 
   NOT RECORDED: a drum note map. The M1 has four Drum Kits of up to 30 sounds, and **the key each
   sound sits on is set by the player**: "Key sets the key (C0 to G8) to which the sound is
-  assigned" (p. 114), with "Two or more sounds cannot be assigned to the same key". **The manual
-  prints no factory assignment of them**, which is the same state as `soma/pulsar_23` reached by
-  a different road - that instrument learns its notes, this one has them assigned in a menu.
+  assigned" (p. 114), with "Two or more sounds cannot be assigned to the same key" (p. 114). **The
+  manual prints no factory assignment of them**, which is the same state as `soma/pulsar_23` reached
+  by a different road - that instrument learns its notes, this one has them assigned in a menu.
   `note_map` is `learned` in both: the word covers a note an owner assigns either way, and here
   it is said of the Drum Kits and of a Program that plays one. Until 2026-10-13 the field was
   left unset here. The manual draws drum sounds on a keyboard twice, and neither drawing is a
@@ -215,8 +215,9 @@ midi:
   # this function is set to EXT" (p. 115). Song select is bounded: "o 0 ~ 19" both ways.
   transport: both
   program_change:
-    # "Program Change Actual No." is "o 0 ~ 99" transmitted and "o 0 ~ 127" under "Recognized" over
-    # "0 ~ 99" (p. 135) - so it answers to the whole range and uses the first hundred of it.
+    # "Program Change Actual No." (p. 135) is "o 0 ~ 99" transmitted and "o 0 ~ 127" under
+    # "Recognized" over "0 ~ 99" (p. 135) - so it answers to the whole range and uses the first
+    # hundred of it.
     # **AND WHAT IT DOES WITH THE REST IS STATED**: a number above 99 has 100 taken off it, "ex.
     # 100 -> 00, 127 -> 27" (p. 123), and where the memory is allocated the other way 50 is taken
     # off repeatedly instead. So nothing in 0 to 127 is refused.
@@ -226,8 +227,8 @@ midi:
     presets: 100
   # NOT RECORDED: nrpn. The chart has no NRPN row; what it has is an RPN. See the source account.
   # "System Exclusive o / o" (p. 135), footnoted "Dumps and edits the Program data. Compatible
-  # with universal exclusive (Device ID)" - and it is how every parameter but the four below is
-  # reached.
+  # with universal exclusive (Device ID)" (p. 135) - and it is how every parameter but the four
+  # below is reached.
   sysex: true
 
 voice:
@@ -236,7 +237,8 @@ voice:
   # (p. 114), and so of a Program whose oscillator is a Drum Kit and not of one that is Single
   # or Double (p. 7). The manual prints no factory assignment: see NOT RECORDED in the account.
   note_map: learned
-  # "16 voice, 16 oscillator (Single mode)" and "8 voice, 16 oscillator (Double mode)" (p. 134).
+  # "16 voice, 16 oscillator (Single mode)" (p. 134) and "8 voice, 16 oscillator (Double mode)"
+  # (p. 134).
   # Sixteen is the figure a player gets unless a Program uses two oscillators per voice, so it is
   # the default and both are listed.
   polyphony: 16
@@ -251,15 +253,15 @@ voice:
   # arrives.
   note_range: [0, 127]
   velocity:
-    # "Velocity Note on o 9n, V=10 ~ 127" transmitted against "o 9n, V=1 ~ 127" received, and
-    # **note off is "x" in both columns** (p. 135). So a release velocity is neither sent nor
+    # "Velocity Note on o 9n, V=10 ~ 127" transmitted against "o 9n, V=1 ~ 127" (p. 135) received,
+    # and **note off is "x" in both columns** (p. 135). So a release velocity is neither sent nor
     # answered to. The keyboard's own floor is 10 where it answers down to 1. So Note On velocity
     # is sent as well as received; until 2026-10-14 this said `received`.
     note_on: both
     note_off: false
   # CHANNEL, AND THE CHART IS EXPLICIT: "After Touch Keys x / x" against "Ch's o / o" (p. 135).
   # Polyphonic key pressure is refused in both directions, which is a denial rather than a
-  # silence. Remarked "Transmit/receive when AFTER TOUCH is set to ENA in GLOBAL Mode".
+  # silence. Remarked "Transmit/receive when AFTER TOUCH is set to ENA in GLOBAL Mode" (p. 135).
   aftertouch: channel
   # Sent as well, by the same row's transmitted `o` (p. 135), under whichever switch governs it -
   # see the source account on the two the document names.
@@ -269,12 +271,12 @@ voice:
 parts:
   # EIGHT TIMBRES, EACH WITH ITS OWN RECEIVE CHANNEL. **These are the Combination mode's Multi
   # type, and the sequencer's eight Tracks are a different mechanism with the same count** - the
-  # tracks have playback channels and a four-way "OFF/EXT/INT/ON" status (p. 87) where the
+  # tracks have playback channels and a four-way "OFF/EXT/INT/ON" (p. 87) status where the
   # timbres have receive channels and four DIS/ENA switches. Both are eight parts on sixteen
   # shared voices, so the shape below is true of either, but they are configured on different
   # pages and only the timbres are described here.
-  # The channel is the player's to set - "Selection of the MIDI receive channel
-  # of each Timbre", eight rows of "1 ~ 16" (p. 73) - so none is recorded here.
+  # The channel is the player's to set - "Selection of the MIDI receive channel of each Timbre"
+  # (p. 73), eight rows of "1 ~ 16" (p. 73) - so none is recorded here.
   # **WHAT EACH ONE ANSWERS TO IS STATED RATHER THAN ASSUMED**: "Program change, pitch bend,
   # after touch and control change parameters receive data over the MIDI channel set for each
   # Timbre" (p. 73). Each timbre also has its own switch for program change, damper, after touch
@@ -296,15 +298,15 @@ parts:
 # implementation gives them. Every one is marked "o" in both columns, so all four travel each
 # way, and all four are subject to the Control Change filter being set to ENA.
 # **TWO OF THE FOUR ARE ONE JOYSTICK**, which the chart's abbreviations hide and the system
-# exclusive section spells out: controller 1 is "Pitch Modulation ( Joy Stick(+Y) )" and
-# controller 2 is "VDF Modulation ( Joy Stick(-Y) )" (p. 122). They are the two directions of
-# one axis, not a modulation wheel, and a panel that labels controller 1 "Modulation Wheel"
-# would be wrong about the control and about what it does.
+# exclusive section spells out: controller 1 is "Pitch Modulation (Joy Stick(+Y))" (p. 122) and
+# controller 2 is "VDF Modulation (Joy Stick(-Y))" (p. 122). They are the two directions of
+# one axis, not a modulation wheel, and a panel that labels controller 1 `Modulation Wheel` would be
+# wrong about the control and about what it does.
 #
 # AND CONTROLLER 64 IS PRINTED UNDER THREE NAMES in this one manual - "Sustain" in the chart,
-# "Damper Off" and "Damper On ( Damper Pedal )" in the exclusive section with the data bytes
-# written out, and "Damper Switch" in the sequencer's event editor. The chart's name is kept
-# below because the chart is this instrument's MIDI implementation.
+# "Damper Off" and "Damper On ( Damper Pedal )" (p. 122) in the exclusive section with the data
+# bytes written out, and "Damper Switch" (p. 105) in the sequencer's event editor. The chart's name
+# is kept below because the chart is this instrument's MIDI implementation.
 controls:
   pitch_mg:       {label: Pitch MG, cc: 1}
   vdf_modulation: {label: VDF modulation, cc: 2}

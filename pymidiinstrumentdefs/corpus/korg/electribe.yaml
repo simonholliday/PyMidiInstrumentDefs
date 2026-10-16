@@ -13,9 +13,9 @@
 #
 # SIXTEEN PARTS AND ONE MIDI CHANNEL, WHICH IS THE THING TO KNOW. "A single pattern consists of
 # 16 parts and a master effect" (manual p. 8), and "GLOBAL MIDI CH ... [01...16] Specifies the
-# MIDI channel of the electribe" - singular, for the whole instrument. **There is no per-part
-# channel anywhere in 852 lines**, and no document says which part a received note or controller
-# reaches. So there is no `parts` block below, and that absence is the maker's.
+# MIDI channel of the electribe" (guide p. 6) - singular, for the whole instrument. **There is no
+# per-part channel anywhere in 852 lines**, and no document says which part a received note or
+# controller reaches. So there is no `parts` block below, and that absence is the maker's.
 #
 # THIS IS THE 2014 INSTRUMENT KORG WRITES IN LOWER CASE. Its downloads are product 367. **The
 # electribe sampler is product 368**, a different instrument with its own MIDI implementation,
@@ -31,15 +31,16 @@ model:
   # wrong. Korg's downloads page offers **two system updaters, 2.02 and 1.19**, both dated
   # 2016.07.21, with nothing saying which an owner should want - but **no document here says
   # which firmware it describes.** The implementation's first line reads "KORG electribe MIDI
-  # Implementation     Revision 1.00 (Jan. 9 2015)", which is the document's revision and not
-  # the instrument's; the chart in the owner's manual is dated "January.  22. 2015" and says
-  # "Version: 1.02", which is a third number again and also the chart's own.
+  # Implementation     Revision 1.00 (Jan. 9 2015)" (midi_impl), which is the document's revision
+  # and not the instrument's; the chart in the owner's manual is dated "January.  22. 2015"
+  # (manual p. 110) and says "Version: 1.02" (manual p. 110), which is a third number again and also
+  # the chart's own.
   # SO THE CONTROL MAP BELOW IS REVISION 1.00's, written in January 2015 and never revised,
   # while the instrument has had at least two system versions since. The Parameter Guide is
   # plainly the later document - it footnotes one shortcut "* Supported in system ver.2.00 and
-  # later" - and four of the parameters it describes have no home in the implementation's
-  # exclusive layout at all. Writing 2.02 here would say the control map describes a firmware
-  # it predates.
+  # later" (guide p. 9) - and four of the parameters it describes have no home in the
+  # implementation's exclusive layout at all. Writing 2.02 here would say the control map describes
+  # a firmware it predates.
 
 source: >-
   MIDI Implementation, Revision 1.00, a plain text file of 852 lines and no pages: the
@@ -66,68 +67,71 @@ source: >-
 
   WHAT GATES THEM ALL IS ONE GLOBAL SETTING, and the implementation has a column for it that
   most charts do not. Every parameter row is marked "S : Enabled When Global MIDI RECEIVE/SEND
-  FILTER is 'Off'", and bank select and program change are marked "P : Enabled when Global MIDI
-  RECEIVE/SEND FILTER is 'Off' or 'Short'". The guide says what those mean from the player's
-  side: "MIDI RECEIVE FILTER ... OFF: All messages are received. Short: Short messages (Note
-  On/Off, Control Change) are not received. Short + Program: Short messages and program change
-  messages are not received" (guide p. 6), and a MIDI SEND FILTER does the same outward. **So a
-  single setting silences all eighteen parameters**, Short still passing bank select, and the
-  three channel mode messages at 120, 121 and 123 are the only ones marked "A : Always Enabled".
+  FILTER is 'Off'" (midi_impl), and bank select and program change are marked "P : Enabled when
+  Global MIDI RECEIVE/SEND FILTER is 'Off' or 'Short'" (midi_impl). The guide says what those mean
+  from the player's side: "MIDI RECEIVE FILTER ... OFF: All messages are received. Short: Short
+  messages (Note On/Off, Control Change) are not received. Short + Program: Short messages and
+  program change messages are not received" (guide p. 6), and a MIDI SEND FILTER does the same
+  outward. **So a single setting silences all eighteen parameters**, Short still passing bank
+  select, and the three channel mode messages at 120, 121 and 123 are the only ones marked "A
+  :Always Enabled" (midi_impl).
 
   SIXTEEN PARTS, AND NO WAY THE DOCUMENTS GIVE OF CHOOSING ONE. The system exclusive layout
   carries a parameter table for each part at its own offset, so a part's whole state can be read
   and written that way - but **the part parameter table has no MIDI channel field**, the only
   channel in the document is the global one, and no page of any of the three documents says which
   part a received note or control change acts on. On the panel the parts are chosen with the
-  "<Part, Part>" buttons and "You can change sound tone of the selected part by using the knob in
-  the edit section" (manual p. 9), and the implementation marks every parameter row as sent by
-  "P.C." - panel control. The reasonable reading is that a controller reaches whichever part is
-  selected, as the knobs do. **It is a reading and not a statement, so there is no `parts` block
+  "<Part, Part>" (manual p. 9) buttons and "You can change sound tone of the selected part by using
+  the knob in the edit section" (manual p. 9), and the implementation marks every parameter row as
+  sent by "P.C." - panel control. The reasonable reading is that a controller reaches whichever part
+  is selected, as the knobs do. **It is a reading and not a statement, so there is no `parts` block
   below and this paragraph is where it is said.**
   WHAT A PART WILL HOLD IS SET PER PART AND NOT PUBLISHED AS A NUMBER. "VOICE ASSIGN ... [Mono1,
   Mono2, Poly1, Poly2] Specifies the polyphony of the selected part" (guide p. 4), and the
   specification gives "The maximum number of sound (per part):    MAX, 4 voices" (manual p. 19),
-  printed with a comma after MAX and "number of sound" in the singular. The guide agrees from the
-  other side: "You can record up to four note numbers in each target step" (p. 5).
+  printed with a comma after MAX and "number of sound" (manual p. 19) in the singular. The guide
+  agrees from the other side: "You can record up to four note numbers in each target step" (p. 5).
 
   THREE PARAMETERS CHANGE MEANING WITH A TYPE THAT HAS NO CONTROLLER. Osc Edit (CC 82), Insert
   Fx Edit (CC 87) and the modulation's two depend on which oscillator, insert effect and
   modulation type the part is set to - and those types are reachable **only by system
-  exclusive**: the part table gives "Oscillator Type | 0~500", "Filter Type | 0~16" and
-  "Modulation Type | 0~71", with no control change for any of them. So a host can edit a sound
-  it cannot choose, and five hundred and one oscillator types are numbered in a table that names
-  none of them.
+  exclusive**: the part table gives "Oscillator Type | 0~500" (midi_impl), "Filter Type |
+  0~16" (midi_impl) and "Modulation Type | 0~71" (midi_impl), with no control change for any of
+  them. So a host can edit a sound it cannot choose, and five hundred and one oscillator types are
+  numbered in a table that names none of them.
 
   THE PATTERN MAP DOES NOT REACH THE LAST TWO PATTERNS. The instrument is "capable of creating
   and storing up to 250 patterns" (manual p. 8), and the footnote both bank select rows point at
-  gives the mapping as "Pattern 001 - 127    mm,bb,pp  : 00,00,01~7F  /  00,00,001~127" and
-  "Pattern 128 - 250                00,01,01~79  /  00,01,001~121". The second line offers 121
-  numbers for 123 patterns, so 248 of the 250 can be chosen this way and the maker's arithmetic
-  does not close. Recorded rather than resolved.
+  gives the mapping as "Pattern 001 - 127    mm,bb,pp  : 00,00,01~7F  /  00,00,001~127" (midi_impl)
+  and "Pattern 128 - 250                00,01,01~79  /  00,01,001~121" (midi_impl). The second line
+  offers 121 numbers for 123 patterns, so 248 of the 250 can be chosen this way and the maker's
+  arithmetic does not close. Recorded rather than resolved.
 
   THE CHART AND THE IMPLEMENTATION DISAGREE IN FIVE PLACES, and none of them changes a number
   below. **The chart names three controls differently**: 102 and 103 are "Master Fx X" and
   "Master Fx Y" in the implementation and "TouchPad X" and "TouchPad Y" in the chart, and 106 is
-  "Master Fx Off/On" against "TouchPad On/Off" - and the implementation's own motion-sequence
-  destination list calls that third one "MFX XY Pad On/Off", a third name. **The chart misspells
-  a fourth**: 72 is "EG Delay/Release" there and "EG Decay/Release" in the implementation, which
-  the part parameter table confirms. The labels below are the implementation's.
+  "Master Fx Off/On" (midi_impl) against "TouchPad On/Off" (manual p. 110) - and the
+  implementation's own motion-sequence destination list calls that third one "MFX XY Pad On/Off"
+  (midi_impl), a third name. **The chart misspells a fourth**: 72 is "EG Delay/Release"
+  (manual p. 110) there and "EG Decay/Release" (midi_impl) in the implementation, which the part
+  parameter table confirms. The labels below are the implementation's.
   The chart also puts All Notes Off on "123-127" where the implementation recognises 120, 121
   and 123 and never mentions 124 to 127; it says clock is transmitted when the clock mode is
-  "Int / Ext.Sync" where the implementation's footnote says "Internal"; and it claims the
-  instrument "also supports inquiry messages and master volume" where the implementation's
-  section for universal real-time exclusive messages reads "Not applicable" - and master volume
-  is a universal real-time message, so those two cannot both be true.
+  "Int / Ext.Sync" (manual p. 110) where the implementation's footnote says "Internal"; and it
+  claims the instrument "also supports inquiry messages and master volume" (manual p. 110) where the
+  implementation's section for universal real-time exclusive messages reads "Not applicable"
+  (midi_impl) - and master volume is a universal real-time message, so those two cannot both be
+  true.
 
   ONE THING THE CHART SETTLES THAT NOTHING ELSE COULD. Its Mode row reads X transmitted and
   **3** received, which is what `midi.mode` below records: the instrument answers as Omni Off,
   Poly. Nothing in the implementation says so.
 
   A SWITCH IS SENT NARROWER THAN IT IS HEARD. The transmitted footnote for the three on/off
-  controls is "00,7F : Off,On" and the received one is "00,01~7F : Off,On" - so the instrument
-  sends 0 or 127 and accepts **anything from 1 upward** as On. `choices` below carries 0 and
-  127, which is what it sends and therefore what is safest to send it; a host that sent 1 would
-  also be understood, and one that read 1 back would never see it.
+  controls is "00,7F : Off,On" (midi_impl) and the received one is "00,01~7F : Off,On" (midi_impl) -
+  so the instrument sends 0 or 127 and accepts **anything from 1 upward** as On. `choices` below
+  carries 0 and 127, which is what it sends and therefore what is safest to send it; a host that
+  sent 1 would also be understood, and one that read 1 back would never see it.
 
   NOT RECORDED: aftertouch and pitch bend, and both are checked absences rather than silences.
   The two tables list every status byte this instrument answers to and sends, and there are four
@@ -141,9 +145,9 @@ source: >-
   nowhere in it.
 
   NOT RECORDED: the kind of MIDI socket, because there is no field for one. The specification
-  gives "MIDI OUT jack, MIDI IN jack, USB connector (micro USB B type)" and the included items
-  are "Owner's manual, AC adapter, MIDI conversion cable x 2" (manual p. 19) - so MIDI is on a
-  stereo mini jack and reaches a DIN socket through an adapter, as on the volca series.
+  gives "MIDI OUT jack, MIDI IN jack, USB connector (micro USB B type)" (manual p. 19) and the
+  included items are "Owner's manual, AC adapter, MIDI conversion cable x 2" (manual p. 19) - so
+  MIDI is on a stereo mini jack and reaches a DIN socket through an adapter, as on the volca series.
 
 sources:
   midi_impl:
@@ -198,13 +202,14 @@ sources:
 
 midi:
   # "GLOBAL MIDI CH ... [01...16] Specifies the MIDI channel of the electribe" (guide p. 6), and
-  # the exclusive layout gives the same field as "Global Channel | 0~15=1~16". One channel for
-  # the whole instrument; see the source account for what that means for its sixteen parts.
+  # the exclusive layout gives the same field as "Global Channel | 0~15=1~16" (midi_impl). One
+  # channel for the whole instrument; see the source account for what that means for its sixteen
+  # parts.
   channels: [1, 16]
   # Five settings, three of which take clock from outside: "CLOCK MODE ... [Internal, Auto,
   # External USB, External MIDI, External Sync]" (guide p. 6). Internal sends it - the
   # implementation's real-time messages are footnoted "This message is transmitted when the
-  # Global 'CLOCK MODE' is set to 'Internal'" - and the external settings receive it.
+  # Global 'CLOCK MODE' is set to 'Internal'" (midi_impl) - and the external settings receive it.
   clock: both
   transport: both
   # Only the chart says this, in its Mode row: X transmitted, 3 received (manual p. 110). Mode 3
@@ -234,7 +239,7 @@ midi:
 
 voice:
   addressing: pitches
-  # Footnote *1 on note off gives "kk =  0 ~ 127", the guide's step editor offers
+  # Footnote *1 on note off gives "kk =  0 ~ 127" (midi_impl), the guide's step editor offers
   # "NOTE ... [---, C-1...G 09]" (p. 5), which is the same 128 notes under Korg's naming, and the
   # chart's Note Number row reads 0-127 in both columns (manual p. 110).
   # BUT THE CHART'S TRUE VOICE ROW READS 0-108 RECEIVED, so it takes all 128 and sounds the
@@ -243,8 +248,8 @@ voice:
   note_range: [0, 127]
   # "The maximum number of sounds (entire pattern):    MAX. 24 voices (The number of
   # simultaneous sounds in entire pattern depends on the type of Oscillator, Filter or Insert
-  # Fx.)" (manual p. 19), against "The maximum number of sound (per part):    MAX, 4 voices" on
-  # the same page.
+  # Fx.)" (manual p. 19), against "The maximum number of sound (per part):    MAX, 4 voices"
+  # (manual p. 19).
   # SO TWENTY-FOUR IS A CEILING SHARED BETWEEN THE SIXTEEN PARTS, not four each - sixteen parts
   # of four would be sixty-four - and the parenthesis says even the twenty-four depends on which
   # oscillator, filter and insert effect the parts are set to. **`polyphony_shared` would be the
@@ -252,12 +257,12 @@ voice:
   # voices and there is no `parts` block here; see the source account for why there is not.
   polyphony: 24
   velocity:
-    # "Note On  vv=1~127" in both tables, and the trigger pads have four response curves to
-    # choose between - "VELOCITY CURVE ... [Heavy, Normal, Light, Const96]", where "Const96: The
-    # velocity value will always be 96" (guide p. 6).
+    # "Note On  vv=1~127" (midi_impl) in both tables, and the trigger pads have four response curves
+    # to choose between - "VELOCITY CURVE ... [Heavy, Normal, Light, Const96]" (guide p. 6), where
+    # "Const96: The velocity value will always be 96" (guide p. 6).
     note_on: both
-    # Note off is "8n | kk  (kk) | 40    (64)" in both tables, a fixed 64, so there is no
-    # velocity in it - and the chart agrees, marking the note-off velocity "X 8n, V=64"
+    # Note off is "8n | kk  (kk) | 40    (64)" (midi_impl) in both tables, a fixed 64, so there is
+    # no velocity in it - and the chart agrees, marking the note-off velocity "X 8n, V=64"
     # transmitted and "X" received (manual p. 110).
     note_off: false
   # A CHECKED ABSENCE TWICE OVER. The implementation's two tables list every status byte this
@@ -291,10 +296,10 @@ controls:
   #
   # EVERY ONE OF THESE IS 7-BIT ON THE WIRE, which the footnotes say and which is easy to read
   # the wrong way. A bipolar parameter is still sent as 0 to 127 and only *reads* as a signed
-  # number on the display - "00,01~40~7F : L63,L63~Center~R63" for the pan, "00,01~7F :
-  # -63,-63~+63" for the two pitch figures - so none of them carries a negative `range`, because
-  # that field is the value on the wire. The three switches are sent as **0x00 or 0x7F** rather
-  # than 0 or 1, which is why they carry `choices` of 0 and 127: a host that sent 1 for "on"
+  # number on the display - "00,01~40~7F : L63,L63~Center~R63" (midi_impl) for the pan, "00,01~7F :
+  # -63,-63~+63" (midi_impl) for the two pitch figures - so none of them carries a negative `range`,
+  # because that field is the value on the wire. The three switches are sent as **0x00 or 0x7F**
+  # rather than 0 or 1, which is why they carry `choices` of 0 and 127: a host that sent 1 for "on"
   # would be following a guess rather than this document.
   # The groups are the parameter guide's own panel sections, because the tables are a flat list
   # in numerical order and give no grouping at all.

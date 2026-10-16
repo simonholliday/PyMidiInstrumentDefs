@@ -1,11 +1,12 @@
-# THIS MANUAL DESCRIBES THREE INSTRUMENTS AND THIS DEFINITION IS FOR ONE OF THEM. Its title is
-# "opsix/opsix SE/opsix module Owner's Manual", and it says so itself: "This Owner's Manual
-# applies to the opsix, opsix SE and opsix module" (p. 5). The three differ in ways a definition
-# cannot average: the specifications give "opsix: 32 voices", "opsix SE: 80 voices" and "opsix
-# module: 80 voices" (p. 105), and the keyboards differ too - "opsix: 37 keys (velocity and
-# release-velocity sensitive)" against "opsix SE: 61 keys, Natural Touch keyboard (velocity and
-# release-velocity sensitive, with aftertouch)". **Everything below is the opsix.** The SE and
-# the module each need a definition of their own, and the documents are already in the library.
+# THIS MANUAL DESCRIBES THREE INSTRUMENTS AND THIS DEFINITION IS FOR ONE OF THEM. Its PDF title is
+# `opsix/opsix SE/opsix module Owner's Manual`, and it says so itself: "This Owner's Manual applies
+# to the opsix, opsix SE and opsix module" (p. 5). The three differ in ways a definition cannot
+# average: the specifications give "opsix: 32 voices" (p. 105), "opsix SE: 80 voices" (p. 105) and
+# "opsix module: 80 voices" (p. 105), and the keyboards differ too - "opsix: 37 keys (velocity and
+# release-velocity sensitive)" (p. 105) against "opsix SE: 61 keys, Natural Touch keyboard
+# (velocity and release-velocity sensitive, with aftertouch)" (p. 105). **Everything below is the
+# opsix.** The SE and the module each need a definition of their own, and the documents are already
+# in the library.
 #
 # THE MANUAL NAMES NO opsix mk II AT ALL, although Korg serves it from the mk II's download
 # page. Whether the mk II differs from the opsix in anything MIDI reaches is therefore not
@@ -17,10 +18,10 @@
 # and the number 71 as two control characters. It was read twice - once by decoding the offset
 # and slicing by drawn position, once by rendering the page and reading it by eye.
 #
-# KORG'S "PROPERTY EXCHANGE MIDI IMPLEMENTATION" IS NOT A CONTROL MAP. The file of that name on
-# this instrument's download page holds MIDI-CI Property Exchange - discovery, capabilities,
-# resource lists - and not one controller number. The same maker's file of that name for the
-# minilogue xd **is** a control-change map. That trap cost the wavestate a search and is
+# KORG'S "PROPERTY EXCHANGE MIDI IMPLEMENTATION" (download_page) IS NOT A CONTROL MAP. The file of
+# that name on this instrument's download page holds MIDI-CI Property Exchange - discovery,
+# capabilities, resource lists - and not one controller number. The same maker's file of that name
+# for the minilogue xd **is** a control-change map. That trap cost the wavestate a search and is
 # recorded here so the next Korg does not pay for it again.
 
 definition: 1
@@ -29,8 +30,8 @@ model:
   manufacturer: Korg
   name: opsix
   # THE CHART'S VERSION IS THE INSTRUMENT'S, which took two statements to establish and was
-  # nearly recorded the other way. The chart's header reads "Version: 3.1.0", and a chart that
-  # carries a version is often stating its own - the wavestate's does. What settles it here is
+  # nearly recorded the other way. The chart's header reads "Version: 3.1.0" (chart), and a chart
+  # that carries a version is often stating its own - the wavestate's does. What settles it here is
   # the manual's own body, which names the same number as a system version: "This unit supports
   # some MIDI 2.0 functions (Property Exchange), and can interact with compatible MIDI devices.
   # (Supported in system ver.3.1.0 and later.)" (p. 6).
@@ -52,11 +53,11 @@ source: >-
   anywhere in the manual, searched for and absent.
 
   THREE OF THOSE 23 ENTRIES ARE NOT CONTROLS AND ARE NOT BELOW. Two give a span rather than a
-  controller - 1 to 119 "Assignable for Virtual Patch sources", which the instrument recognises
-  and does not send, and 1 to 119 "Transmittable from Motion Sequencer", which it sends and does
-  not recognise. So any controller in that span may be made to do something, and which one is
-  the player's business. The third is 120 and 121, the channel mode pair, which is a fact about
-  MIDI rather than about this instrument.
+  controller - 1 to 119 "Assignable for Virtual Patch sources" (chart), which the instrument
+  recognises and does not send, and 1 to 119 "Transmittable from Motion Sequencer" (chart), which it
+  sends and does not recognise. So any controller in that span may be made to do something, and
+  which one is the player's business. The third is 120 and 121, the channel mode pair, which is a
+  fact about MIDI rather than about this instrument.
 
   THE CHART'S TWO COLUMNS DISAGREE ON FIVE OF THE THIRTY CONTROLS, which is what `direction`
   exists for: volume, pan, expression, sostenuto and soft are recognised and never sent, and
@@ -64,7 +65,7 @@ source: >-
 
   AFTERTOUCH IS RECEIVED IN BOTH ITS FORMS AND SENT IN NEITHER, on this model. The chart marks
   both Key's and Channel aftertouch as recognised, marks Channel as transmitted and Key's as
-  not, and footnotes both "Only the opsix SE can send aftertouch" - and the specifications
+  not, and footnotes both "Only the opsix SE can send aftertouch" (chart) - and the specifications
   agree, giving the opsix 37 keys without aftertouch where the SE has 61 with it. Which form
   reaches the sound is then a setting: "Aftertouch Src ... Ch: Channel pressure is applied ...
   Poly: Polyphonic key pressure is applied. The effect intensity varies according to the note
@@ -94,8 +95,8 @@ sources:
     sha256: 84a5ed74373fb3d58bb0afa639a3af89fa7bdb2334ef75087f3a0497a3cceb71
     retrieved: 2026-10-02
     # 117 pages, and printed page = file page. THE CHART ITSELF CARRIES A VERSION, "Version:
-    # 3.1.0", dated January 17 2023 - which is the chart's own and not the instrument's, for the
-    # reason in the model block above. It is recorded here so that a later chart can be told
+    # 3.1.0" (chart), dated January 17 2023 - which is the chart's own and not the instrument's, for
+    # the reason in the model block above. It is recorded here so that a later chart can be told
     # from this one.
     page_offset: 0
   chart:
@@ -154,9 +155,9 @@ midi:
   # "System Real Time: Clock" is marked both ways (chart).
   clock: both
   # "System Real Time: Commands" is marked both ways (chart) - the start, stop and continue
-  # messages. The manual gives the setting that governs it from each side: "Rx Transport: Sets
-  # whether start and stop messages (which are MIDI real-time messages) will be received" and
-  # "Tx Transport" for the other direction (p. 41).
+  # messages. The manual gives the setting that governs it from each side: Rx Transport "Sets
+  # whether start and stop messages (which are MIDI real-time messages) will be received" (p. 78),
+  # and "Tx Transport" (p. 78) for the other direction.
   transport: both
   program_change:
     receives: true
@@ -169,7 +170,7 @@ midi:
     presets: 500
   # The chart marks system exclusive both ways, with the footnote "Supports universal system
   # exclusive messages device inquiry, master volume, master fine tuning, and master coarse
-  # tuning", and a second one: "Supports MIDI 2.0 Property Exchange" (chart). The file Korg
+  # tuning" (chart), and a second one: "Supports MIDI 2.0 Property Exchange" (chart). The file Korg
   # publishes about that layer is cited above.
   sysex: true
   # NOT RECORDED: NRPN. The chart has no NRPN row, and neither the manual nor the Property
@@ -184,10 +185,10 @@ voice:
   # same page gives the SE and the module 80, which is why this definition is the opsix alone.
   polyphony: 32
   velocity:
-    # "Note On O 9n, V=1-127" both ways, and "Note Off O 8n, V=1-64" transmitted against
-    # "O 8n, V=0-127" recognised, remarked "Received Note Off Velocity values are clipped at
-    # 64" (chart). So release velocity is both sent and received, which is rare enough to be
-    # worth saying: the specifications call the keyboard "velocity and release-velocity
+    # Note On "O 9n, V=1-127" (chart) both ways, and Note Off "O 8n, V=1-64" (chart) transmitted
+    # against "O 8n, V=0-127" (chart) recognised, remarked "Received Note Off Velocity values are
+    # clipped at 64" (chart). So release velocity is both sent and received, which is rare enough to
+    # be worth saying: the specifications call the keyboard "velocity and release-velocity
     # sensitive" (p. 105). The chart's Transmitted O on Note On says velocity is sent as well as
     # received; until 2026-10-14 this said `received`.
     note_on: both

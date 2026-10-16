@@ -2,16 +2,16 @@
 # one map re-channelled: twenty-one numbers appear on both charts naming different parameters,
 # four parameters can be reached in one implementation and not in the other, and a part's two
 # layers can be reached one at a time in one and only together in the other. The two are
-# "MIDI Implementation Chart (Split channel)" and "MIDI Implementation Chart (Single channel)",
-# both dated 2019.03.29, both on the same download page.
+# "MIDI Implementation Chart (Split channel)" (download_page) and "MIDI Implementation Chart (Single
+# channel)" (download_page), both dated 2019.03.29, both on the same download page.
 #
 # THE SPLIT-CHANNEL IMPLEMENTATION IS THE ONE THE INSTRUMENT HAS OUT OF THE BOX, and is the
 # factory mode below. Three documents say so. The split-channel chart: "This is the factory default
-# implementation." The single-channel chart: "This is an alternate implementation which can be
-# selected by setting a specific MIDI channel. The factory default implementation, split
-# channels, can be reverted to by deselecting the MIDI channel." And the owner's manual, from
-# the player's side: "Tapping the step for the selected channel (LED lit up) cancels the
-# selection and reverts to part 1-6 assigned to channels 1-6. (factory default)" (p. 3).
+# implementation" (chart p. 1). The single-channel chart: "This is an alternate implementation which
+# can be selected by setting a specific MIDI channel. The factory default implementation, split
+# channels, can be reverted to by deselecting the MIDI channel" (alternate_chart p. 1). And the
+# owner's manual, from the player's side: "Tapping the step for the selected channel (LED lit up)
+# cancels the selection and reverts to part 1-6 assigned to channels 1-6. (factory default)" (p. 3).
 #
 # **BOTH ARE CARRIED, EACH IN ITS MODE.** Until 2026-10-11 the format could not hold both: a
 # control's number was a fact about the instrument and not about the instrument in a mode, so
@@ -25,18 +25,18 @@ definition: 1
 model:
   manufacturer: Korg
   name: volca drum
-  # NOT RECORDED, and this one can be shown rather than merely asserted. Both charts print
-  # "Date: 2019.2.20" and "Version: 1.00", which is the chart's own version in the way the
-  # wavestate's is - and Korg has published two systems since. The System Updater page gives
-  # 1.11, "Fixes to MIDI CC assignments. Minor bug fix in program chaining", and then 1.14 of
-  # 2019.09.10, whose notes begin "Support for external clock synced delay. Added a new edit
-  # parameter to enable pitch quantization. Fixed single channel MIDI handling of note events.
-  # Fixed MIDI Song Position Pointer."
+  # NOT RECORDED, and this one can be shown rather than merely asserted. Both charts print "Date:
+  # 2019.2.20" (chart p. 1) and "Version: 1.00" (chart p. 1), which is the chart's own version in
+  # the way the wavestate's is - and Korg has published two systems since. The System Updater page
+  # gives 1.11, "Fixes to MIDI CC assignments. Minor bug fix in program chaining" (release_notes),
+  # and then 1.14 of 2019.09.10, whose notes begin "Support for external clock synced delay ...
+  # Added a new edit parameter to enable pitch quantization ... Fixed single channel MIDI handling
+  # of note events ... Fixed MIDI Song Position Pointer" (release_notes).
   # SO THE CHARTS DESCRIBE THIS INSTRUMENT BEFORE TWO CHANGES TO THE THINGS THEY CHART, and
   # Korg has not republished them. The owner's manual is newer and shows it: 1.14 added pitch
-  # quantization and the 2024 manual lists "QPI: enable pitch quantization (semitone)" among the
-  # part parameters (p. 3). Writing 1.14 here would claim the maps below match it, which the
-  # release notes themselves put in doubt. Checked 2026-10-02.
+  # quantization and the 2024 manual lists "QPI: enable pitch quantization (semitone)" (p. 3) among
+  # the part parameters. Writing 1.14 here would claim the maps below match it, which the release
+  # notes themselves put in doubt. Checked 2026-10-02.
 
 source: >-
   MIDI Implementation Chart (Split channel), one page, which is the whole of the split-channel
@@ -46,8 +46,9 @@ source: >-
   text and cited for what Korg publishes and for the system versions.
 
   THE SPLIT-CHANNEL CHART IS THE FACTORY DEFAULT and is the `split` mode below. Its
-  Mode row is remarked "Channel 1-6 = Parts 1-6" and its Velocity row "n=0-5 (Channel 1-6 =
-  Parts 1-6)", so the six parts are separately addressable with nothing set and nothing learned.
+  Mode row is remarked "Channel 1-6 = Parts 1-6" (chart p. 1) and its Velocity row "n=0-5 (Channel
+  1-6 = Parts 1-6)" (chart p. 1), so the six parts are separately addressable with nothing set and
+  nothing learned.
 
   THE SINGLE-CHANNEL CHART IS A DIFFERENT MAP, NOT THE SPLIT ONE MOVED. Setting a MIDI channel
   switches the instrument to the single-channel implementation, where all six parts answer on
@@ -92,10 +93,10 @@ source: >-
 
   TWO GLOBAL SETTINGS CAN TURN OFF WHAT THIS FILE DESCRIBES, and both ship on. Footnote *1,
   carried by every control-change row and by the note row, reads "Received when global parameter
-  MIDI RX ShortMessage is set to ON", and the manual's table of global parameters marks On as
-  the factory default for it (p. 3). Footnote *2, on song position, clock and commands, reads
-  "Not received when global parameter MIDI Clock src is set to Internal; received when set to
-  Auto", and Auto is that parameter's factory default (p. 3).
+  MIDI RX ShortMessage is set to ON" (chart p. 1), and the manual's table of global parameters marks
+  On as the factory default for it (p. 3). Footnote *2, on song position, clock and commands, reads
+  "Not received when global parameter MIDI Clock src is set to Internal; received when set to Auto"
+  (chart p. 1), and Auto is that parameter's factory default (p. 3).
 
   THAT FOOTNOTE IS APPLIED UNEVENLY, which is worth knowing before anyone relies on it. It
   marks the Note Number row, making note reception depend on MIDI RX ShortMessage too, and it
@@ -120,9 +121,9 @@ source: >-
   release. 6, 38 and 101 are on neither chart.
 
   NOTES REACH A PART WITHOUT NAMING ONE. The chart recognises note numbers 0 to 127 and remarks
-  "Each sound does not correspond to a note number", so on the split channels the channel says
-  which part sounds and the note number says nothing at all. That is why `addressing` is `any`:
-  the part takes every note, and no note says more than another.
+  "Each sound does not correspond to a note number" (chart p. 1), so on the split channels the
+  channel says which part sounds and the note number says nothing at all. That is why `addressing`
+  is `any`: the part takes every note, and no note says more than another.
 
   NOT RECORDED: which channel carries the four resonator controls in the split-channel
   implementation. The resonator is shared - "each part has two identical layers and the
@@ -148,10 +149,10 @@ source: >-
   change reaches. The manual's program memory is sixteen locations loaded with FUNC + LOAD PRG.
   (p. 3) and nothing connects a program change to them, so the number is not written here.
 
-  CHECKED AND ABSENT: NRPN and RPN. Neither word, nor "Registered", nor "Parameter Number",
-  appears anywhere on either chart or on printed page 3 of the manual. Three of their numbers
-  are on the single-channel chart as part 6's own, as above. System exclusive is marked X in
-  both columns of both charts.
+  CHECKED AND ABSENT: NRPN and RPN. Neither word, nor `Registered`, nor `Parameter Number`, appears
+  anywhere on either chart or on printed page 3 of the manual. Three of their numbers are on the
+  single-channel chart as part 6's own, as above. System exclusive is marked X in both columns of
+  both charts.
 
 sources:
   chart:
@@ -166,12 +167,13 @@ sources:
     # One page, cited as p. 1. The page prints its own date, 2019.2.20, which is a month before
     # the date the download page gives the file. Encrypted with an empty password, like every
     # PDF Korg serves for this instrument.
-    # NEITHER CHART PRINTS WHICH OF THE TWO IT IS. Both pages are headed "MIDI Implementation
-    # Chart" over "Model: volca drum", with the same date and the same "Version: 1.00", and
-    # nothing else outside the table. The title above is the file's own `/Title` field, which
-    # does carry the parenthetical; the page does not. Told apart from each other, the two are
-    # distinguishable only by the Notes paragraph at the foot - and the only page that prints
-    # the words "split channels" is the single-channel one, in the note that names this chart.
+    # NEITHER CHART PRINTS WHICH OF THE TWO IT IS. Both pages are headed "MIDI Implementation Chart"
+    # (chart p. 1) over "Model: volca drum" (chart p. 1), with the same date and the same "Version:
+    # 1.00" (chart p. 1), and nothing else outside the table. The title above is the file's own
+    # `/Title` field, which does carry the parenthetical; the page does not. Told apart from each
+    # other, the two are distinguishable only by the Notes paragraph at the foot - and the only page
+    # that prints the words "split channels" (alternate_chart p. 1) is the single-channel one, in
+    # the note that names this chart.
     page_offset: 0
   manual:
     kind: manual
@@ -238,8 +240,8 @@ midi:
   # chart say otherwise: the recognised mode is 3, which is omni off, and the Mode and Velocity
   # rows both spell out that channels 1 to 6 are parts 1 to 6. A device that is omni off and
   # answers on six channels has a basic channel. The single-channel chart gives 1-16 and
-  # "Memorized" for the same row. This file follows the X - as "in this mode the player cannot
-  # change it" rather than "there is none" - because that is the reading the two remarks agree
+  # "Memorized" for the same row. This file follows the X - read as saying the player cannot change
+  # it in this mode, not that there is none - because that is the reading the two remarks agree
   # with.
   channels: [1, 1]
   # Both charts' recognised Mode default, 3, which is omni off and poly. Mode messages are
@@ -302,7 +304,8 @@ parts:
     count: 6
     channel_offset: 0
     # A note reaches the part whose channel carried it and the note number means nothing: the
-    # chart recognises 0 to 127 and remarks "Each sound does not correspond to a note number".
+    # chart recognises 0 to 127 and remarks "Each sound does not correspond to a note number"
+    # (chart p. 1).
     # So this is a part that takes notes and reads nothing from their number, which is `any`.
     addressing: any
     receives: [notes, controls]

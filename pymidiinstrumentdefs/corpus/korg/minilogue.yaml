@@ -16,9 +16,10 @@ definition: 1
 model:
   manufacturer: Korg
   name: minilogue
-  # The newest firmware Korg publishes: the download page offers "minilogue/System Updater"
-  # at "2.01" (downloads), dated 2019.06.28, which is three weeks after the manual's chart is dated. The
-  # implementation text predates both by three years and says so in its own first line.
+  # The newest firmware Korg publishes: the download page offers "minilogue/System
+  # Updater" (downloads) at "2.01" (downloads), dated 2019.06.28, which is three weeks after the
+  # manual's chart is dated. The implementation text predates both by three years and says so in its
+  # own first line.
   firmware: "2.01"
 
 source: >-
@@ -103,8 +104,9 @@ sources:
     retrieved: 2026-10-04
     page_offset: 0
     # The edition is the PDF's own internal subject, "E 5"; the date is the download page's.
-    # Its MIDI Implementation Chart at p. 63 carries its own stamp, "Date: 2019.06.06" and
-    # "Version: 1.20" (manual p. 63), which is the chart's version and not the manual's.
+    # Its MIDI Implementation Chart at p. 63 carries its own stamp, "Date:
+    # 2019.06.06" (manual p. 63) and "Version: 1.20" (manual p. 63), which is the chart's version
+    # and not the manual's.
   downloads:
     kind: download_page
     title: "Downloads | minilogue | KORG (USA)"
@@ -113,7 +115,7 @@ sources:
     sha256: a35c80b208954583b92a4b3c4125dbb4e738fc6c2122fd973248d4986ad4a096
     retrieved: 2026-10-04
     paginated: false
-    # Cited for which firmware Korg ships - "minilogue/System Updater" at "2.01"
+    # Cited for which firmware Korg ships - "minilogue/System Updater" (downloads) at "2.01"
     # (downloads) - and for the
     # dates it gives the other two files. **Korg's download pages do not link the files**: each
     # entry is its own page at /support/download/manual/0/544/<id>/ with the content-hashed CDN
@@ -132,7 +134,7 @@ midi:
   # Timing Clock is transmitted (section 1-2) and recognised (section 2-2). Receiving it depends
   # on the Clock Source setting: "Auto (USB), Auto (MIDI): When there is no input, the internal
   # clock will be used; and when input is detected, the internal clock will be synchronized"
-  # (manual p. 46), while Internal uses "Only the internal clock".
+  # (manual p. 46), while Internal uses "Only the internal clock" (manual p. 46).
   clock: both
   # Start and Stop both ways; **Continue is recognised and never transmitted** - section 1-2 has
   # F8, FA, FC and FE, and section 2-2 has FB as well. The format has one field, so the asymmetry
@@ -187,8 +189,8 @@ voice:
   # table has no Dn and no An.
   aftertouch_transmits: false
   pitch_bend:
-    # "Bend Range +" and "Bend Range –" are each "[1 Note...12 Note]" (manual p. 35), set
-    # separately
+    # "Bend Range +" (manual p. 35) and "Bend Range –" (manual p. 35) are each "[1 Note...12 Note]"
+    # (manual p. 35), set separately
     # (manual p. 35), and they apply to the slider when it is assigned to pitch bend. The chart
     # marks Pitch Bend O both ways, gated by MIDI Rx Pitch Bend and MIDI Tx Pitch Bend.
     programmable: true
